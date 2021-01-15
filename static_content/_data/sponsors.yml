@@ -3,10 +3,22 @@
 gold:
 
 silver:
+- name: American Chemical Society
+  url: https://pubs.acs.org/
+  logo: ACS.jpg
+
+- name: American Physiological Association
+  url: https://www.apa.org/pubs
+  logo: apa.png
+
 - name: Copernicus Publications
   url: https://publications.copernicus.org
   logo: copernicus.svg
 
+- name: Danish Agency for Science and Higher Education
+  url: https://ufm.dk/
+  logo: ufm.svg
+  
 - name: Elsevier
   url: https://www.elsevier.com/
   logo: elsevier.svg
@@ -22,10 +34,6 @@ silver:
 - name: National Library of Sweden
   url: https://www.kb.se/
   logo: kbse.svg
-
-- name: MDPI
-  url: https://www.mdpi.com/
-  logo: mdpi.svg
 
 - name: Norwegian Centre for Research Data (NSD)
   url: https://www.nsd.uib.no/nsd/english/index.html
@@ -43,9 +51,9 @@ silver:
   url: https://vr.se/english.html
   logo: vr.svg
 
-- name: Danish Agency for Science and Higher Education
-  url: https://ufm.dk/
-  logo: ufm.svg
+- name: Ubiquity Press
+  url: https://www.ubiquitypress.com/
+  logo: ubiquity.svg
 
 bronze:
 - name: Physical Review Journals
@@ -100,6 +108,10 @@ bronze:
   url: https://www.lunduniversity.lu.se/
   logo: lu.png
 
+- name: MDPI
+  url: https://www.mdpi.com/
+  logo: mdpi.svg
+
 - name: Pensoft
   url: https://pensoft.net/
   logo: pensoft.svg
@@ -131,10 +143,6 @@ bronze:
 - name: Taylor & Francis Group
   url: https://www.taylorandfrancisgroup.com/
   logo: tf.svg
-
-- name: Ubiquity Press
-  url: https://www.ubiquitypress.com/
-  logo: ubiquity.svg
 
 - name: Wiley
   url: https://wiley.com/
