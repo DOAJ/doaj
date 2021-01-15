@@ -1777,10 +1777,10 @@ class FieldSetDefinitions:
         "label": "Publication fees",
         "fields": [
             FieldDefinitions.APC["name"],
-            FieldDefinitions.APC_URL["name"],
             FieldDefinitions.APC_CHARGES["name"],
             FieldDefinitions.APC_CURRENCY["name"],
             FieldDefinitions.APC_MAX["name"],
+            FieldDefinitions.APC_URL["name"],
         ]
     }
 
