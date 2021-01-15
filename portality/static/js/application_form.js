@@ -566,7 +566,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     }
 
     setAllFieldsOptionalIfAppropriate() {
-        return this.statusesNotRequiringValidation.includes(this.jq("#application_status").val());
+        return (this.statusesNotRequiringValidation.includes(this.jq("#application_status").val()) || this.jq("#make_all_fields_optional").is(":checked"))
     }
 
 };
