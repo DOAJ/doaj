@@ -1,4 +1,8 @@
-{% if not notabs %}<p class="label">Page 7 of {{ FORM | length + 1}}</p>{% endif %}
+{% if not notabs %}
+<p class="prevBtn label label--secondary" role="button" style="cursor: pointer;">&larr; Back</p>
+<p class="label">Page 7 of {{ FORM | length + 1}}</p>
+{% endif %}
+
 {% set t = { "val": 0} %}
 {% if obj %}
   <h1>{{ obj.data.bibjson.title }}</h1>

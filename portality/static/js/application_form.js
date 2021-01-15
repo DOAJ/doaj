@@ -200,8 +200,8 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         this.showTab(this.currentTab);
 
-        let nextSelector = this.jq("#nextBtn");
-        let prevSelector = this.jq("#prevBtn");
+        let nextSelector = this.jq(".nextBtn");
+        let prevSelector = this.jq(".prevBtn");
 
         edges.on(nextSelector, "click", this, "next");
         edges.on(prevSelector, "click", this, "prev");
@@ -237,14 +237,14 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         draftButton.show();
         // ... and fix the Previous/Next buttons:
         if (n === 0) {
-            this.jq("#prevBtn").hide();
+            this.jq(".prevBtn").hide();
         } else {
-            this.jq("#prevBtn").show();
+            this.jq(".prevBtn").show();
         }
 
         if (n === (this.tabs.length - 1)) {
             //show submit button only if all tabs are validated
-            this.jq("#nextBtn").hide();
+            this.jq(".nextBtn").hide();
             submitButton.show().attr("disabled", "disabled");
             draftButton.show();
 
@@ -256,7 +256,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
             });
 
         } else {
-            let nextBtn = this.jq("#nextBtn");
+            let nextBtn = this.jq(".nextBtn");
             nextBtn.show();
             nextBtn.html("Next");
             submitButton.hide();

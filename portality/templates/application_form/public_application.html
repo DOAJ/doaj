@@ -39,7 +39,9 @@
                     <div class="tab form-section">
                         {% include "application_form/07-review/index.html" %}
                     </div>
-                    <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot submit the application because it contains some invalid fields. Please review your answers and try again.</i></p>
+                    <p class="alert alert--danger" id="cannot-submit-invalid-fields" style="display: none">
+                      You cannot submit the application because it contains some invalid fields. Please review your answers and try again.
+                    </p>
                     {% include "application_form/_buttons.html" %}
 
                     {% if obj %}
