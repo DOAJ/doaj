@@ -1595,7 +1595,6 @@ class FieldDefinitions:
         "merge_disabled" : "merge_disabled_notes",
         "contexts" : {
             "admin" : {
-                # "merge_disabled" : False,
                 "widgets": [
                     {"infinite_repeat": {"enable_on_repeat": ["textarea"], "allow_delete" : True}},
                     "note_modal"
