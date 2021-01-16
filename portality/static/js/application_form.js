@@ -48,6 +48,7 @@ doaj.af.newBaseApplicationForm = function(params) {
 doaj.af.BaseApplicationForm = class {
     constructor(params) {
         this.form = $(".application_form");
+        this.parsley = this.form.parsley();
         this.context = this.form.attr("data-context");
         this.sections = $(".form-section");
 
@@ -159,7 +160,7 @@ doaj.af.BaseApplicationForm = class {
     };
 
     submitapplication() {
-        this.form.parsley();
+        this.parsley = this.form.parsley();
         this.form.submit();
     };
 };
@@ -248,7 +249,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
             submitButton.show().attr("disabled", "disabled");
             draftButton.show();
 
-            this.form.parsley().whenValidate().done(() => {
+            this.parsley.whenValidate().done(() => {
                 this.jq("#cannot-submit-invalid-fields").hide();
                 this.manage_review_checkboxes();
             }).fail(() => {
@@ -305,7 +306,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         this.updateStepIndicator();
         if (clearErrors) {
-            this.form.parsley().reset();
+            this.parsley.reset();
         }
     };
 
@@ -322,7 +323,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
     validateTabs() {
         var that = this;
         for (let i = 0; i < this.tabs.length - 1; i++) {
-            this.form.parsley().whenValidate({
+            this.parsley.whenValidate({
                 group: 'block-' + i
             }).done(() => {
                 that.tabValidationState[i].state = "valid";
@@ -354,16 +355,16 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
     next() {
         this.navigate(this.currentTab + 1);
-    };
+    }
 
     prev() {
         this.navigate(this.currentTab - 1, true);
-    };
+    }
 
     navigate(n, showEvenIfInvalid = false) {
         // Hide the current tab:
         // let form = $('#' + '{{ form_id }}');
-        this.form.parsley().whenValidate({
+        this.parsley.whenValidate({
             group: "block-" + this.currentTab
         }).done(() => {
             this.tabValidationState[this.currentTab].state = "valid";
@@ -443,7 +444,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         });
 
         // do a pre-validation to highlight any fields that require attention
-        this.form.parsley().validate();
+        this.parsley.validate();
     }
 
     displayableDiffValue(was) {
@@ -549,12 +550,12 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     }
 
     submitapplication() {
-        this.form.parsley();
+        this.parsley = this.form.parsley();
         let optional = this.jq("#make_all_fields_optional").is(":checked");
         if (optional) {
-            this.form.parsley().destroy();
+            this.parsley.destroy();
         } else {
-            this.form.parsley().whenValidate().done(() => {
+            this.parsley.whenValidate().done(() => {
                 this.jq("#cannot-submit-invalid-fields").hide();
 
             }).fail(() => {
@@ -572,7 +573,6 @@ doaj.af.newPublicApplicationForm = function(params) {
 doaj.af.PublicApplicationForm = class extends doaj.af.TabbedApplicationForm {
     constructor(params) {
         super(params);
-
         this.draft_id = false;
 
         let draftEl = $("input[name=id]", this.form);
@@ -600,10 +600,9 @@ doaj.af.PublicApplicationForm = class extends doaj.af.TabbedApplicationForm {
             draftEl.val(true);
         }
 
-        let parsleyForm = this.form.parsley();
-        parsleyForm.destroy();
+        this.parsley.destroy();
         this.form.submit();
-    };
+    }
 };
 
 doaj.af.newUpdateRequestForm = function(params) {
