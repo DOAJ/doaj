@@ -173,7 +173,7 @@ Example record:
             issns = md.findall("x:issn", NS)
             if issns is not None:
                 for issn in issns:
-                    if len(issn.attrib) == 0 or issn.attrib["media_type"] is None or issn.attrib["media_type"] == 'print':
+                    if len(issn.attrib) == 0 or issn.attrib["media_type"] == 'print':
                         bibjson.add_identifier(bibjson.P_ISSN, issn.text.upper())
                     elif issn.attrib["media_type"] == 'electronic':
                         bibjson.add_identifier(bibjson.E_ISSN, issn.text.upper())
