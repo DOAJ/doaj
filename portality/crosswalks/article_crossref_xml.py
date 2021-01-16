@@ -61,11 +61,11 @@ class CrossrefXWalk(object):
             self.validation_log = el
         return valid
 
-    def crosswalk_file(self, file_handle, add_journal_info, job):
+    def crosswalk_file(self, file_handle, add_journal_info):
         doc = self.validate_file(file_handle)
-        return self.crosswalk_doc(doc, job)
+        return self.crosswalk_doc(doc)
 
-    def crosswalk_doc(self, doc, job):
+    def crosswalk_doc(self, doc):
         # go through the records in the doc and crosswalk each one individually
         articles = []
         root = doc.getroot()
@@ -75,12 +75,12 @@ class CrossrefXWalk(object):
             for journal in journals:
                 arts = journal.findall("x:journal_article", NS)
                 for record in arts:
-                    article = self.crosswalk_article(record, journal, job)
+                    article = self.crosswalk_article(record, journal)
                     articles.append(article)
 
         return articles
 
-    def crosswalk_article(self, record, journal, job):
+    def crosswalk_article(self, record, journal):
         """
 Example record:
 <doi_batch version="4.4.2" xmlns="http://www.crossref.org/schema/4.4.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.crossref.org/schema/4.3.7 http://www.crossref.org/schema/deposit/crossref4.3.7.xsd">
@@ -173,7 +173,7 @@ Example record:
             issns = md.findall("x:issn", NS)
             if issns is not None:
                 for issn in issns:
-                    if len(issn.attrib) == 0 or issn.attrib["media_type"] is None or issn.attrib["media_type"] == 'print':
+                    if issn.attrib["media_type"] is None or issn.attrib["media_type"] == 'print':
                         bibjson.add_identifier(bibjson.P_ISSN, issn.text.upper())
                     elif issn.attrib["media_type"] == 'electronic':
                         bibjson.add_identifier(bibjson.E_ISSN, issn.text.upper())
