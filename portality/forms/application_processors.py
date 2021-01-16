@@ -249,7 +249,7 @@ class AdminApplication(ApplicationProcessor):
 
         # This patches the target with things that shouldn't change from the source
         self._carry_fixed_aspects()
-        self._merge_notes_forward()
+        self._merge_notes_forward(allow_delete=True)
 
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
@@ -777,7 +777,7 @@ class ManEdJournalReview(ApplicationProcessor):
             raise Exception("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
-        self._merge_notes_forward()
+        self._merge_notes_forward(allow_delete=True)
 
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):

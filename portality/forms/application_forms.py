@@ -1621,7 +1621,15 @@ class FieldDefinitions:
             {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}},
             "note_modal"
         ],
-        "merge_disabled" : "merge_disabled_notes"
+        "merge_disabled" : "merge_disabled_notes",
+        "contexts" : {
+            "admin" : {
+                "widgets": [
+                    {"infinite_repeat": {"enable_on_repeat": ["textarea"], "allow_delete" : True}},
+                    "note_modal"
+                ]
+            }
+        }
     }
 
     NOTE = {
@@ -2238,17 +2246,17 @@ def merge_disabled_notes(notes_group, original_form):
     merged = []
     wtf = notes_group.wtfield
     for entry in wtf.entries:
-        if entry.data.get("note") != "":
-            merged.append(entry)
+        if entry.data.get("note") != "" or entry.data.get("note_id") != "":
+            merged.append(entry.data)
     for entry in original_form.notes.entries:
         d = entry.data
-        keep = True
         for m in merged:
-            if m.data.get("id") == entry.data.get("id"):
-                keep = False
+            if m.get("note_id") != "" and m.get("note_id") == entry.data.get("note_id"):
+                # keep = False
+                if m.get("note") == "":
+                    m["note"] = entry.data.get("note")
+                m["note_date"] = entry.data.get("note_date")
                 break
-        if keep:
-            merged.append(entry)
 
     while True:
         try:
@@ -2257,8 +2265,7 @@ def merge_disabled_notes(notes_group, original_form):
             break
 
     for m in merged:
-        wtf.append_entry(m.data)
-
+        wtf.append_entry(m)
 
 #######################################################
 # Validation features
