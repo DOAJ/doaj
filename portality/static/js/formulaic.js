@@ -747,7 +747,17 @@ var formulaic = {
                     var grandparents = this.parentIndex[term];
                     if (grandparents.length > 0) {
                         var immediate = grandparents[grandparents.length - 1];
-                        newValues.push(immediate);
+                        var sharedParent = false;
+                        for (var i = 0; i < newValues.length;i ++) {
+                            var aunts = this.parentIndex[newValues[i]];
+                            if (aunts.length > 0 && aunts[aunts.length - 1] === immediate) {
+                                sharedParent = true;
+                                break;
+                            }
+                        }
+                        if (!sharedParent && $.inArray(immediate, newValues) === -1) {
+                            newValues.push(immediate);
+                        }
                     }
                 }
 
