@@ -768,6 +768,10 @@ var formulaic = {
 
             this.hideEmpty = edges.getParam(params.hideEmpty, false);
 
+            this.expanded = [];
+
+            this.lastScroll = 0;
+
             this.namespace = "formulaic-subject-browser";
 
             this.draw = function() {
@@ -811,11 +815,17 @@ var formulaic = {
                 this.component.context.html(frag);
                 feather.replace();
 
+                var mainListSelector = edges.css_id_selector(namespace, "main", this);
+                this.component.jq(mainListSelector).scrollTop(this.lastScroll);
+
                 var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
                 edges.on(checkboxSelector, "change", this, "filterToggle");
 
                 var searchSelector = edges.css_id_selector(namespace, "search", this);
                 edges.on(searchSelector, "keyup", this, "filterSubjects");
+
+                var fieldSelector = edges.css_class_selector(namespace, "field-toggle", this);
+                edges.on(fieldSelector, "click", this, "fieldToggle");
             };
 
             this._renderTree = function(params) {
@@ -825,6 +835,7 @@ var formulaic = {
                 var that = this;
 
                 var checkboxClass = edges.css_classes(this.namespace, "selector", this);
+                var toggleClass = edges.css_classes(that.namespace, "field-toggle", this);
 
                 function renderEntry(entry) {
                     if (that.hideEmpty && entry.count === 0 && entry.childCount === 0) {
@@ -836,11 +847,24 @@ var formulaic = {
                     if (entry.selected) {
                         checked = ' checked="checked" ';
                     }
+
+                    var chevron = "minus";
+                    var toggleLink = false;
+                    if (entry.children) {
+                        chevron = "chevron-right";
+                        toggleLink = true;
+                        if (entry.expanded) {
+                            chevron = "chevron-down";
+                        }
+                    }
+                    var toggle = '<span data-feather="' + chevron + '" aria-hidden="true"></span>';
+                    if (toggleLink) {
+                        toggle = '<a href="#" class="' + toggleClass + '" data-value="' + edges.escapeHtml(entry.value) + '">' + toggle + '</a>';
+                    }
                     // FIXME: putting this in for the moment, just so we can use it in dev
                     // var count = ' <span class="' + countClass + '">(' + entry.count + '/' + entry.childCount + ')</span>';
                     var count = "";
-
-                    var frag = '<input class="' + checkboxClass + '" data-value="' + edges.escapeHtml(entry.value) + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
+                    var frag = toggle + '<input class="' + checkboxClass + '" data-value="' + edges.escapeHtml(entry.value) + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
                         <label for="' + id + '" class="filter__label">' + entry.display + count + '</label>';
 
                     return frag;
@@ -867,6 +891,7 @@ var formulaic = {
                     var rFrag = "";
                     for (var i = 0; i < selected.length; i++) {
                         var entry = selected[i];
+                        entry.expanded = $.inArray(entry.value, that.expanded) > -1;
                         var entryFrag = renderEntry(entry);
                         if (entryFrag === "") {
                             continue;
@@ -883,12 +908,14 @@ var formulaic = {
                             // - one of the children is selected
                             // - the entry itself is selected
                             // - we don't want to only show the selected path
-                            if (!selectedPathOnly || childReport.anySelected || entry.selected) {
+                            // - the entry has been expanded
+                            if (!selectedPathOnly || childReport.anySelected || entry.selected || entry.expanded) {
                                 // Then, another level (separated out to save my brain from the tortuous logic)
                                 // only attach the children frag if, any of these are true:
                                 // - the entry or one of its children is selected
                                 // - we want to show more than one level at a time
-                                if (childReport.anySelected || entry.selected || !showOneLevel) {
+                                // - the entry has been expanded
+                                if (childReport.anySelected || entry.selected || !showOneLevel || entry.expanded) {
                                     var cFrag = childReport.frag;
                                     if (cFrag !== "") {
                                         entryFrag += '<ul class="filter__choices">';
@@ -909,7 +936,25 @@ var formulaic = {
                 return recurse(st);
             };
 
+            this.fieldToggle = function(element) {
+                var value = this.component.jq(element).attr("data-value");
+
+                var existing = $.inArray(value, this.expanded);
+                if (existing > -1) {
+                    this.expanded.splice(existing, 1);
+                } else {
+                    this.expanded.push(value);
+                }
+
+                var mainListSelector = edges.css_id_selector(this.namespace, "main", this);
+                this.lastScroll = this.component.jq(mainListSelector).scrollTop();
+                this.component.edge.cycle();
+            };
+
             this.filterToggle = function(element) {
+                var mainListSelector = edges.css_id_selector(this.namespace, "main", this);
+                this.lastScroll = this.component.jq(mainListSelector).scrollTop();
+
                 // var filter_id = this.component.jq(element).attr("id");
                 var checked = this.component.jq(element).is(":checked");
                 var value = this.component.jq(element).attr("data-value");
