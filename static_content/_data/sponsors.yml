@@ -1,6 +1,9 @@
 # List of sponsors separated by tiers (premier, sustaining, basic)
 
 gold:
+- name: Royal Society of Chemistry
+  url: https://www.rsc.org/
+  logo: rsc.png
 
 silver:
 - name: American Chemical Society
@@ -123,10 +126,6 @@ bronze:
 - name: Relawan Jurnal Indonesia
   url: http://relawanjurnal.id/
   logo: RelawanJurnalIndonesia.png
-
-- name: Royal Society of Chemistry
-  url: https://www.rsc.org/
-  logo: rsc.png
 
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
