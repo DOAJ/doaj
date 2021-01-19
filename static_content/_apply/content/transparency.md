@@ -11,7 +11,7 @@ An infographic of these Principles was commissioned by COPE and is available to 
 
 ---
 
-## Principles of transparency
+## Principles of transparency and best practice in scholarly publishing
 
 {:.numbered-table .numbered-table--labels}
 |   | Principle                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
