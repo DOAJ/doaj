@@ -864,8 +864,15 @@ var formulaic = {
                     // FIXME: putting this in for the moment, just so we can use it in dev
                     // var count = ' <span class="' + countClass + '">(' + entry.count + '/' + entry.childCount + ')</span>';
                     var count = "";
+
                     var frag = '<input class="' + checkboxClass + '" data-value="' + edges.escapeHtml(entry.value) + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
-                        <label for="' + id + '" class="filter__label">' + entry.display + count + toggle + '</label>';
+                        <label for="' + id + '" class="filter__label">' + entry.display + count;
+
+                    if (toggleLink) {
+                      var frag = frag + toggle + '</label>';
+                    } else {
+                      var frag = frag + '</label>';
+                    }
 
                     return frag;
                 }
