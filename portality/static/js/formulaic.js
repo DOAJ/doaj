@@ -848,17 +848,25 @@ var formulaic = {
                         checked = ' checked="checked" ';
                     }
 
-                    var chevron = "minus";
-                    var toggleLink = false;
+                    // the various rules to do with how this will toggle.
+                    // - whether the toggle is linked -> only when clickng it will have an effect
+                    // - whether the thing is togglable at all -> only when there are children
+                    var toggle = "";
+                    var chevron = "";
+                    var togglable = false;
                     if (entry.children) {
                         chevron = "chevron-right";
-                        toggleLink = true;
+                        togglable = true;
                         if (entry.expanded) {
                             chevron = "chevron-down";
                         }
+                        if (entry.selected) {
+                            togglable = false;
+                        }
                     }
-                    var toggle = '<span data-feather="' + chevron + '" aria-hidden="true"></span>';
-                    if (toggleLink) {
+
+                    if (togglable) {
+                        toggle = '<span data-feather="' + chevron + '" aria-hidden="true"></span>';
                         toggle = '<span role="button" class="' + toggleClass + '" data-value="' + edges.escapeHtml(entry.value) + '">' + toggle + '<span class="sr-only">Toggle this subject</span></span>';
                     }
                     // FIXME: putting this in for the moment, just so we can use it in dev
@@ -866,13 +874,7 @@ var formulaic = {
                     var count = "";
 
                     var frag = '<input class="' + checkboxClass + '" data-value="' + edges.escapeHtml(entry.value) + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
-                        <label for="' + id + '" class="filter__label">' + entry.display + count;
-
-                    if (toggleLink) {
-                      var frag = frag + toggle + '</label>';
-                    } else {
-                      var frag = frag + '</label>';
-                    }
+                        <label for="' + id + '" class="filter__label">' + entry.display + count + toggle + '</label>';
 
                     return frag;
                 }
