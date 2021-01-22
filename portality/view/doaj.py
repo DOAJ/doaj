@@ -58,13 +58,12 @@ def news():
     news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))
     return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
 
-
-# @blueprint.route("/widgets")
-# def widgets():
-#     return render_template('doaj/widgets.html',
-#                            env=app.config.get("DOAJENV"),
-#                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
-#                            )
+@blueprint.route("/widgets_demo")
+def widgets_demo():
+    return render_template('doaj/widgets.html',
+                           env=app.config.get("DOAJENV"),
+                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+                           )
 
 @blueprint.route("/ssw_demo")
 def ssw_demo():
