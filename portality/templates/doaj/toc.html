@@ -186,13 +186,11 @@
                                             {% endif %}
                                                 </p>
                                         {# Waivers #}
-                                        <p>&rarr;
-                                            {% if bibjson.waiver_url %}
-                                            There is a <a href="{{ bibjson.waiver_url }}" target="_blank" rel="noopener">waiver policy</a> for these charges.
-                                            {% else %}
-                                            There is <strong>no waiver policy</strong> for these charges.
+                                        {% if bibjson.waiver_url %}
+                                            <p>&rarr;There is a <a href="{{ bibjson.waiver_url }}" target="_blank" rel="noopener">waiver policy</a> for these charges.</p>
+                                        {% elif bibjson.apc or bibjson.has_other_charges and not bibjson.waiver_url %}
+                                            <p>&rarr;There is <strong>no waiver policy</strong> for these charges.</p>
                                         {% endif %}
-                                        </p>
                                     {% endif %}
                                 </div>
                             </article>
