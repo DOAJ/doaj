@@ -50,7 +50,7 @@
             {% for i in site.data.team %}
             <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
-                <figure class="portrait">
+                <figure class="portrait" aria-hidden="true">
                   {% if i.photo %}
                     <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/team/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                   {% else %}
@@ -88,7 +88,7 @@
             {% for i in site.data.ambassadors %}
             <li class="col-sm-6 col-md-4 col-lg-3">
               <div class="title-list__text">
-                <figure class="portrait">
+                <figure class="portrait" aria-hidden="true">
                   {% if i.photo %}
                 <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/ambassadors/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                   {% else %}
@@ -211,7 +211,7 @@
             <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 {% if i.photo %}
-                <figure class="portrait portrait--small">
+                <figure class="portrait portrait--small" aria-hidden="true">
                   <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                 </figure>
                 {% endif %}
@@ -233,7 +233,7 @@
             <li class="col-xs-6 col-md-4 col-lg-3">
               <div class="title-list__text">
                 {% if i.photo %}
-                <figure class="portrait portrait--small">
+                <figure class="portrait portrait--small" aria-hidden="true">
                   <div class="portrait__bg-img" style="background-image: url('{% if page.fragment %}/static_content/_site{% else %}../..{% endif %}/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                 </figure>
                 {% endif %}
