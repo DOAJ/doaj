@@ -51,7 +51,8 @@ if __name__ == "__main__":
         writer = csv.writer(f)
         writer.writerow(['ID', 'Changes', 'Errors'])
 
-        with open(args.infile, 'r', encoding='utf-8') as g:
+        # Open with encoding that deals with the Byte Order Mark since we're given files from Windows.
+        with open(args.infile, 'r', encoding='utf-8-sig') as g:
             reader = csv.DictReader(g)
 
             # verify header row with current CSV headers, report errors
