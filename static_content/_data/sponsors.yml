@@ -34,6 +34,10 @@ silver:
   url: https://www.frontiersin.org/
   logo: frontiers.svg
 
+- name: Karger
+  url: https://www.karger.com/
+  logo: karger.png
+  
 - name: National Library of Sweden
   url: https://www.kb.se/
   logo: kbse.svg
@@ -102,10 +106,6 @@ bronze:
 - name: ISSN
   url: https://www.issn.org/
   logo: issn.svg
-
-- name: Karger
-  url: https://www.karger.com/
-  logo: karger.png
 
 - name: Lund University
   url: https://www.lunduniversity.lu.se/
