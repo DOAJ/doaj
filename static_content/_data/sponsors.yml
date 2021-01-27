@@ -53,6 +53,10 @@ silver:
 - name: OUP
   url: https://global.oup.com/
   logo: OUP.jpg
+ 
+- name: SAGE Publishing
+  url: https://www.sagepublications.com/
+  logo: sage.svg
 
 - name: Swedish Research Council
   url: https://vr.se/english.html
@@ -126,10 +130,6 @@ bronze:
 - name: Relawan Jurnal Indonesia
   url: http://relawanjurnal.id/
   logo: RelawanJurnalIndonesia.png
-
-- name: SAGE Publishing
-  url: https://www.sagepublications.com/
-  logo: sage.svg
 
 - name: SciELO
   url: https://www.scielo.br/
