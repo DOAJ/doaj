@@ -192,3 +192,18 @@ The appeal should contain the following information:
 Appeals are considered by the DOAJ Appeals Committee, consisting of the Editor-in-Chief and members of the editorial team. Committee meetings are held monthly. After your case is discussed a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
+
+---
+
+## In other languages
+
+We are always looking for volunteers to translate our Basic criteria. If you would like to volunteer to do this, please [contact us](feedback@doaj.org).
+
+We have our Basic criteria in:
+
+- Finnish
+- French
+- [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
+- [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
+
+We hope more languages will follow soon.
