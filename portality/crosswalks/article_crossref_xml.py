@@ -173,10 +173,10 @@ Example record:
             issns = md.findall("x:issn", NS)
             if issns is not None:
                 for issn in issns:
-                    if len(issn.attrib) == 0 or issn.attrib["media_type"] == 'print':
-                        bibjson.add_identifier(bibjson.P_ISSN, issn.text.upper())
-                    elif issn.attrib["media_type"] == 'electronic':
+                    if len(issn.attrib) == 0 or issn.attrib["media_type"] == 'electronic':
                         bibjson.add_identifier(bibjson.E_ISSN, issn.text.upper())
+                    elif issn.attrib["media_type"] == 'print':
+                        bibjson.add_identifier(bibjson.P_ISSN, issn.text.upper())
 
 
         # publication date
@@ -235,6 +235,8 @@ Example record:
 
         # authors
         contributors = record.find("x:contributors", NS)
+        if contributors is None:
+            raise CrosswalkException(message="No contributors found.", inner_message="DOAJ requires at least one author for each article")
         contribs = contributors.findall("x:person_name", NS)
         if contribs is not None:
             for ctb in contribs:
