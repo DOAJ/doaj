@@ -62,7 +62,8 @@ def news():
 def widgets_demo():
     return render_template('doaj/widgets.html',
                            env=app.config.get("DOAJENV"),
-                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
+                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', ''),
+                           lcc_tree=lcc_jstree
                            )
 
 @blueprint.route("/ssw_demo")

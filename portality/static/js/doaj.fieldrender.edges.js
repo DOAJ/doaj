@@ -100,6 +100,12 @@ $.extend(true, doaj, {
     },
 
     templates : {
+        // newPublicSearchResults: function(params) {
+        //     return edges.instantiate(doaj.templates.PublicSearchResults, params, edges.newTemplate);
+        // },
+        // PublicSearchResults: function (params) {
+        //
+        // },
         newPublicSearch: function (params) {
             return edges.instantiate(doaj.templates.PublicSearch, params, edges.newTemplate);
         },
@@ -109,6 +115,7 @@ $.extend(true, doaj, {
             this.title = edges.getParam(params.title, "");
 
             this.titleBar = edges.getParam(params.titleBar, true);
+            this.resultsOnly = edges.getParam(params.resultsOnly, false);
 
             this.draw = function (edge) {
                 this.edge = edge;
@@ -125,8 +132,12 @@ $.extend(true, doaj, {
                         </div>\
                     </header>';
                 }
-
-                var frag = titleBarFrag + '\
+                var frag = "";
+                if (this.resultsOnly) {
+                    frag = `<div class="row"><div class="col-md-12"><ol class="search-results" id="results"></ol></div></div>`;
+                }
+                else {
+                    frag = titleBarFrag + '\
                     <p id="share_embed"></p>\
                     <h2 id="result-count"></h2>\
                     <div class="row">\
@@ -156,13 +167,14 @@ $.extend(true, doaj, {
                         </div>\
                     </div>';
 
-                // add the facets dynamically
-                var facets = edge.category("facet");
-                var facetContainers = "";
-                for (var i = 0; i < facets.length; i++) {
-                    facetContainers += '<li class="filter" id="' + facets[i].id + '"></li>';
+                    // add the facets dynamically
+                    var facets = edge.category("facet");
+                    var facetContainers = "";
+                    for (var i = 0; i < facets.length; i++) {
+                        facetContainers += '<li class="filter" id="' + facets[i].id + '"></li>';
+                    }
+                    frag = frag.replace(/{{FACETS}}/g, facetContainers);
                 }
-                frag = frag.replace(/{{FACETS}}/g, facetContainers);
                 edge.context.html(frag);
             };
         },
