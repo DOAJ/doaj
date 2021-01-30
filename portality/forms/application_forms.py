@@ -224,6 +224,7 @@ class FieldDefinitions:
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
                           "The ISSN must match what is given on the journal website."],
+            "short_help": "For example, 2049-3630",
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
@@ -296,6 +297,7 @@ class FieldDefinitions:
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
                           "The ISSN must match what is given on the journal website."],
+            "short_help": "For example, 0378-5955",
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
@@ -603,10 +605,10 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
-            "long_help": ["It is recommended that licensing information is "
-                          "included in full text articles. Answer <strong>Yes"
-                          "</strong> if licensing is displayed or embedded in "
-                          "all versions of each article."],
+            "long_help": ["It is recommended that licensing information is included in full-text articles "
+                          "but it is not required for inclusion. "
+                          "Answer <strong>Yes</strong> if licensing is displayed or "
+                          "embedded in all versions of each article."],
             "seal_criteria": "If the answer is Embed"
         },
         "validate": [
@@ -1079,9 +1081,10 @@ class FieldDefinitions:
         ],
         "help": {
             "long_help": [
-                "Only active archiving is accepted; content must be actively deposited in each of the options "
-                "you choose. If the journal is registered with a service but archiving is not yet active, "
-                "choose <em>No</em>.", "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."]
+                "Content must be actively deposited in each of the options you choose. "
+                "If the journal is registered with a service but archiving is not yet active,"
+                " choose <em>The journal content isn’t archived with a long-term preservation service</em>.",
+                "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."]
         },
         "validate": [
             "required"
