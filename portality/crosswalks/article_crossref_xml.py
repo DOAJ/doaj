@@ -6,6 +6,7 @@ import re
 from portality.bll import exceptions
 from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
+from portality.ui.messages import Messages
 
 NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih.gov/JATS1'}
 
@@ -236,7 +237,7 @@ Example record:
         # authors
         contributors = record.find("x:contributors", NS)
         if contributors is None:
-            raise CrosswalkException(message="No contributors found.", inner_message="DOAJ requires at least one author for each article")
+            raise CrosswalkException(message=Messages.EXCEPTION_NO_CONTRIBUTORS_FOUND, inner_message=Messages.EXCEPTION_NO_CONTRIBUTORS_EXPLANATION)
         contribs = contributors.findall("x:person_name", NS)
         if contribs is not None:
             for ctb in contribs:
