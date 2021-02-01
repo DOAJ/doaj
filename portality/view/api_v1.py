@@ -1,6 +1,7 @@
 from flask import Blueprint, url_for, redirect, request
 
 from portality.api.v2 import Api400Error
+from portality.view import api_v2
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional, swag, write_required
 from portality.lib import analytics
@@ -35,7 +36,9 @@ def docs():
 
 @blueprint.route('/search/articles/<path:search_query>')
 def search_articles(search_query):
-    return redirect(url_for('api_v2.search_articles', search_query=search_query))
+    # Redirects are disabled https://github.com/DOAJ/doajPM/issues/2664
+    # return redirect(url_for('api_v2.search_articles', search_query=search_query))
+    return api_v2.search_articles(search_query)
 
 
 @blueprint.route("/articles", methods=["POST"])
@@ -43,7 +46,9 @@ def search_articles(search_query):
 @write_required(api=True)
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('create_article', 'Create article'))
 def create_article():
-    return redirect(url_for('api_v2.create_article', **request.args), code=301)
+    # Redirects are disabled https://github.com/DOAJ/doajPM/issues/2664
+    # return redirect(url_for('api_v2.create_article', **request.args), code=301)
+    return api_v2.create_article()
 
 
 @blueprint.route("/articles/<article_id>", methods=["GET"])
@@ -51,7 +56,9 @@ def create_article():
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('retrieve_article', 'Retrieve article'),
                           record_value_of_which_arg='article_id')
 def retrieve_article(article_id):
-    return redirect(url_for('api_v2.retrieve_article', article_id=article_id, **request.args), code=301)
+    # Redirects are disabled https://github.com/DOAJ/doajPM/issues/2664
+    # return redirect(url_for('api_v2.retrieve_article', article_id=article_id, **request.args), code=301)
+    return api_v2.retrieve_article(article_id)
 
 
 @blueprint.route("/articles/<article_id>", methods=["PUT"])
@@ -60,7 +67,9 @@ def retrieve_article(article_id):
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('update_article', 'Update article'),
                           record_value_of_which_arg='article_id')
 def update_article(article_id):
-    return redirect(url_for('api_v2.update_article', article_id=article_id, **request.args), code=301)
+    # Redirects are disabled https://github.com/DOAJ/doajPM/issues/2664
+    # return redirect(url_for('api_v2.update_article', article_id=article_id, **request.args), code=301)
+    return api_v2.update_article(article_id)
 
 
 @blueprint.route("/articles/<article_id>", methods=["DELETE"])
@@ -69,7 +78,9 @@ def update_article(article_id):
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('delete_article', 'Delete article'),
                           record_value_of_which_arg='article_id')
 def delete_article(article_id):
-    return redirect(url_for('api_v2.delete_article', article_id=article_id, **request.args), code=301)
+    # Redirects are disabled https://github.com/DOAJ/doajPM/issues/2664
+    # return redirect(url_for('api_v2.delete_article', article_id=article_id, **request.args), code=301)
+    return api_v2.delete_article(article_id)
 
 
 @blueprint.route("/bulk/articles", methods=["POST"])
@@ -77,7 +88,9 @@ def delete_article(article_id):
 @write_required(api=True)
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('bulk_article_create', 'Bulk article create'))
 def bulk_article_create():
-    return redirect(url_for('api_v2.bulk_article_create', **request.args), code=301)
+    # Redirects are disabled https://github.com/DOAJ/doajPM/issues/2664
+    # return redirect(url_for('api_v2.bulk_article_create', **request.args), code=301)
+    return api_v2.bulk_article_create()
 
 
 @blueprint.route("/bulk/articles", methods=["DELETE"])
@@ -85,7 +98,9 @@ def bulk_article_create():
 @write_required(api=True)
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('bulk_article_delete', 'Bulk article delete'))
 def bulk_article_delete():
-    return redirect(url_for('api_v2.bulk_article_delete', **request.args), code=301)
+    # Redirects are disabled https://github.com/DOAJ/doajPM/issues/2664
+    # return redirect(url_for('api_v2.bulk_article_delete', **request.args), code=301)
+    return api_v2.bulk_article_delete()
 
 
 #######################################

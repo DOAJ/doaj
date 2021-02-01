@@ -1320,8 +1320,7 @@ var formulaic = {
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
                     var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
 
-                    container.append('<a href="#" class="' + viewClass + '">view note</a>');
-                    container.append(`
+                    container.append(`<div><a href="#" class="` + viewClass + `">view note</a>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                             <div class="modal__dialog" role="document">
                                 <p class="label">NOTE</p> 
@@ -1331,6 +1330,7 @@ var formulaic = {
                                 ` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `                        
                                 <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
                             </div>
+                        </div>
                         </div>
                     `);
                 }
@@ -1367,12 +1367,13 @@ var formulaic = {
             this.idRx = /(.+?-)(\d+)(-.+)/;
             this.template = "";
             this.container = false;
+            this.divs = false;
 
             this.init = function() {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 for (var i = 0 ; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none"><span data-feather="x" /></button>'));
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none">delete <span data-feather="x" /></button>'));
                     feather.replace();
                 }
 
@@ -1401,6 +1402,10 @@ var formulaic = {
 
                 edges.on(this.addFieldBtn, "click", this, "addField");
                 edges.on(this.removeFieldBtns, "click", this, "removeField");
+
+                if (this.args.allow_delete) {
+                    this.removeFieldBtns.show();
+                }
             };
 
             this.addField = function() {
@@ -1463,6 +1468,7 @@ var formulaic = {
             this.removeField = function(element) {
                 var container = $(element).parents("div[name='" + this.fieldDef["name"] + "__group']");
                 container.remove();
+                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
             };
 
             this.init();

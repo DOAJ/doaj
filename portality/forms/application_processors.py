@@ -249,7 +249,7 @@ class AdminApplication(ApplicationProcessor):
 
         # This patches the target with things that shouldn't change from the source
         self._carry_fixed_aspects()
-        self._merge_notes_forward()
+        self._merge_notes_forward(allow_delete=True)
 
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
@@ -447,6 +447,16 @@ class AdminApplication(ApplicationProcessor):
             self.add_alert('Sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.exception('Error sending application approved email failed - ' + magic)
 
+    def validate(self):
+        _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']
+        # make use of the ability to disable validation, otherwise, let it run
+        if self.form is not None:
+            if self.form.application_status.data in _statuses_not_requiring_validation:
+                self.pre_validate()
+                return True
+
+        return super(AdminApplication, self).validate()
+
 
 class EditorApplication(ApplicationProcessor):
     """
@@ -507,6 +517,7 @@ class EditorApplication(ApplicationProcessor):
         # if we need to email the associate because they have just been assigned, handle that here.
         if new_associate_assigned:
             try:
+                self.add_alert("New editor assigned - email with confirmation has been sent")
                 emails.send_assoc_editor_email(self.target)
             except app_email.EmailException:
                 self.add_alert("Problem sending email to associate editor - probably address is invalid")
@@ -776,7 +787,7 @@ class ManEdJournalReview(ApplicationProcessor):
             raise Exception("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
-        self._merge_notes_forward()
+        self._merge_notes_forward(allow_delete=True)
 
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):

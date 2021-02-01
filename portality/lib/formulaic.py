@@ -913,7 +913,6 @@ class FormProcessor(object):
         valid = False
         if f is not None:
             valid = f.validate()
-
         return valid
 
     @property
