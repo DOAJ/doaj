@@ -201,6 +201,7 @@ We are always looking for volunteers to translate our Basic criteria. If you wou
 
 We have our Basic criteria in:
 
+- [Chinese (application form only)](https://zenodo.org/record/4350096)
 - Finnish
 - French
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
