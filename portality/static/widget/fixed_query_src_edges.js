@@ -5,55 +5,22 @@ jQuery(document).ready(function($) {
     publicSearch : {
         activeEdges : {},
 
-        embedSnippet : function(renderer) {
-            var snip = '<script type="text/javascript">!window.jQuery && document.write("<scr" + "ipt type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js\"></scr" + "ipt>"); </script><script type="text/javascript">var doaj_url="https://doaj.org"; var SEARCH_CONFIGURED_OPTIONS={{QUERY}}</script><script src="https://doaj.org/static/widget/fixed_query.js" type="text/javascript"></script><div id="doaj-fixed-query-widget"></div></div>';
-            var query = renderer.component.edge.currentQuery.objectify({
-                        include_query_string : true,
-                        include_filters : true,
-                        include_paging : true,
-                        include_sort : true,
-                        include_fields : false,
-                        include_aggregations : false
-                    });
-            snip = snip.replace(/{{QUERY}}/g, JSON.stringify(query));
-            return snip;
-        },
-
         init : function(params) {
             if (!params) { params = {} }
 
-            var current_domain = document.location.host;
-            var current_scheme = window.location.protocol;
+            let current_domain = document.location.host;
+            let current_scheme = window.location.protocol;
 
-            var selector = params.selector || ".facetview";
-            var search_url = current_scheme + "//" + current_domain + doaj.publicSearchConfig.publicSearchPath;
+            let selector = params.selector || ".facetview";
+            let search_url = current_scheme + "//" + current_domain + doaj.publicSearchConfig.publicSearchPath;
 
-            var countFormat = edges.numFormat({
+            let countFormat = edges.numFormat({
                 thousandsSeparator: ","
             });
 
-            var components = [
-                // edges.newFullSearchController({
-                //     id: "search-input-bar",
-                //     category: "controller",
-                //     fieldOptions : [
-                //         {'display':'Title','field':'bibjson.title'},
-                //         {'display':'Keywords','field':'bibjson.keywords'},
-                //         {'display':'Subject','field':'index.classification'},
-                //         {'display':'ISSN', 'field':'index.issn.exact'},
-                //         {'display':'Publisher','field':'bibjson.publisher.name'},
-                //         {'display':'Country of publisher','field':'index.country'},
-                //         {'display':'Journal Language','field':'index.language'}
-                //     ],
-                //     defaultOperator : "AND",
-                //     renderer : doaj.renderers.newSearchBarRenderer({
-                //         freetextSubmitDelay: -1,
-                //         clearButton: false,
-                //         searchButton: true,
-                //         searchPlaceholder: "",
-                //     })
-                // }),
+            let query = params.queryString || "{'query':{'match_all':{}}";
 
+            let components = [
                 edges.newPager({
                     id: "result-count",
                     category: "pager",
@@ -63,138 +30,6 @@ jQuery(document).ready(function($) {
                         htmlContainerWrapper: false
                     })
                 }),
-
-                // edges.newFilterSetter({
-                //     id : "see_journals",
-                //     category: "facet",
-                //     filters : [
-                //         {
-                //             id: "with_seal",
-                //             display: "With a DOAJ Seal&nbsp;&nbsp;<span data-feather=\"check-circle\" aria-hidden=\"true\"></span>",
-                //             must : [
-                //                 es.newTermFilter({
-                //                     field: "index.has_seal.exact",
-                //                     value: "Yes"
-                //                 })
-                //             ]
-                //         },
-                //         {
-                //             id : "no_charges",
-                //             display: "Without publication fees",
-                //             must : [
-                //                 es.newTermFilter({
-                //                     field: "bibjson.apc.has_apc",
-                //                     value: false
-                //                 }),
-                //                 es.newTermFilter({
-                //                     field: "bibjson.other_charges.has_other_charges",
-                //                     value: false
-                //                 })
-                //             ]
-                //         }
-                //     ],
-                //     renderer : doaj.renderers.newFacetFilterSetterRenderer({
-                //         facetTitle : "See journals...",
-                //         open: true,
-                //         togglable: false,
-                //         showCount: false
-                //     })
-                // }),
-
-                // Subject Browser
-                ///////////////////////////////////
-                // doaj.components.subjectBrowser({tree: doaj.publicSearchConfig.lccTree}),
-
-                // edges.newORTermSelector({
-                //     id: "language",
-                //     category: "facet",
-                //     field: "index.language.exact",
-                //     display: "Languages",
-                //     size: 100,
-                //     syncCounts: false,
-                //     lifecycle: "update",
-                //     updateType: "fresh",
-                //     orderBy: "count",
-                //     orderDir: "desc",
-                //     renderer : doaj.renderers.newORTermSelectorRenderer({
-                //         showCount: true,
-                //         hideEmpty: false,
-                //         open: false,
-                //         togglable: true
-                //     })
-                // }),
-
-                // edges.newORTermSelector({
-                //     id: "journal_licence",
-                //     category: "facet",
-                //     field: "index.license.exact",
-                //     display: "Licenses",
-                //     size: 99,
-                //     syncCounts: false,
-                //     lifecycle: "update",
-                //     updateType: "fresh",
-                //     renderer : doaj.renderers.newORTermSelectorRenderer({
-                //         showCount: true,
-                //         hideEmpty: false,
-                //         open: false,
-                //         togglable: true
-                //     })
-                // }),
-
-                // edges.newORTermSelector({
-                //     id: "publisher",
-                //     category: "facet",
-                //     field: "bibjson.publisher.name.exact",
-                //     display: "Publishers",
-                //     size: 100,
-                //     syncCounts: false,
-                //     lifecycle: "update",
-                //     updateType: "fresh",
-                //     orderBy: "count",
-                //     orderDir: "desc",
-                //     renderer : doaj.renderers.newORTermSelectorRenderer({
-                //         showCount: true,
-                //         hideEmpty: false,
-                //         open: false,
-                //         togglable: true
-                //     })
-                // }),
-
-                // edges.newORTermSelector({
-                //     id: "country_publisher",
-                //     category: "facet",
-                //     field: "index.country.exact",
-                //     display: "Publishers' countries",
-                //     size: 100,
-                //     syncCounts: false,
-                //     lifecycle: "update",
-                //     updateType: "fresh",
-                //     orderBy: "count",
-                //     orderDir: "desc",
-                //     renderer : doaj.renderers.newORTermSelectorRenderer({
-                //         showCount: true,
-                //         hideEmpty: false,
-                //         open: false,
-                //         togglable: true
-                //     })
-                // }),
-
-                // edges.newORTermSelector({
-                //     id: "peer_review",
-                //     category: "facet",
-                //     field: "bibjson.editorial.review_process.exact",
-                //     display: "Peer review types",
-                //     size: 99,
-                //     syncCounts: false,
-                //     lifecycle: "update",
-                //     updateType: "fresh",
-                //     renderer : doaj.renderers.newORTermSelectorRenderer({
-                //         showCount: true,
-                //         hideEmpty: false,
-                //         open: false,
-                //         togglable: true
-                //     })
-                // }),
 
                 edges.newDateHistogramSelector({
                     id : "year_added",
@@ -209,96 +44,7 @@ jQuery(document).ready(function($) {
                         values.reverse();
                         return values;
                     },
-                    // renderer : doaj.renderers.newDateHistogramSelectorRenderer({
-                    //     open: false,
-                    //     togglable: true,
-                    //     countFormat: countFormat,
-                    //     hideInactive: false
-                    // })
                 }),
-
-                // edges.newFullSearchController({
-                //     id: "share_embed",
-                //     category: "controller",
-                //     urlShortener : doaj.bitlyShortener,
-                //     embedSnippet : doaj.publicSearch.embedSnippet,
-                //     renderer: doaj.renderers.newShareEmbedRenderer({
-                //         shareLinkText: '<span data-feather="share-2" aria-hidden="true"></span> Share or embed'
-                //     })
-                // }),
-
-                // edges.newFullSearchController({
-                //     id: "sort_by",
-                //     category: "controller",
-                //     sortOptions : [
-                //         {'display':'Added to DOAJ (newest first)','field':'created_date', "dir" : "desc"},
-                //         {'display':'Added to DOAJ (oldest first)','field':'created_date', "dir" : "asc"},
-                //         {'display':'Last updated (most recent first)','field':'last_manual_update', "dir" : "desc"},
-                //         {'display':'Last updated (less recent first)','field':'last_manual_update', "dir" : "asc"},
-                //         {'display':'Title (A-Z)','field':'index.unpunctitle.exact', "dir" : "asc"},
-                //         {'display':'Title (Z-A)','field':'index.unpunctitle.exact', "dir" : "desc"},
-                //         {'display':'Relevance','field':'_score'}
-                //     ],
-                //     renderer: doaj.renderers.newSortRenderer({
-                //         prefix: "Sort by",
-                //         dirSwitcher: false
-                //     })
-                // }),
-
-                // edges.newPager({
-                //     id: "rpp",
-                //     category: "pager",
-                //     renderer : doaj.renderers.newPageSizeRenderer({
-                //         sizeOptions: [50, 100, 200],
-                //         sizeLabel: "Results per page"
-                //     })
-                // }),
-
-                // selected filters display, with all the fields given their display names
-                // edges.newSelectedFilters({
-                //     id: "selected-filters",
-                //     category: "selected-filters",
-                //     compoundDisplays : [
-                //         {
-                //             filters : [
-                //                 es.newTermFilter({
-                //                     field: "bibjson.apc.has_apc",
-                //                     value: false
-                //                 }),
-                //                 es.newTermFilter({
-                //                     field: "bibjson.other_charges.has_other_charges",
-                //                     value: false
-                //                 })
-                //             ],
-                //             display : "Without publication fees"
-                //         }
-                //     ],
-                //     fieldDisplays : {
-                //         "index.has_seal.exact" : "With a DOAJ Seal",
-                //         "index.schema_codes_tree.exact" : "Subject",
-                //         "index.license.exact" : "Licenses",
-                //         "bibjson.publisher.name.exact" : "Publishers",
-                //         "index.country.exact" : "Publishers' countries",
-                //         "index.language.exact" : "Languages",
-                //         "bibjson.editorial.review_process.exact" : "Peer review",
-                //         "created_date" : "Date added"
-                //     },
-                //     rangeFunctions : {
-                //         "created_date" : doaj.valueMaps.displayYearPeriod
-                //     },
-                //     valueFunctions : {
-                //         "index.schema_codes_tree.exact" : doaj.valueMaps.schemaCodeToNameClosure(doaj.publicSearchConfig.lccTree)
-                //     },
-                //     renderer : doaj.renderers.newSelectedFiltersRenderer({
-                //         hideValues : [
-                //             "index.has_seal.exact"
-                //         ],
-                //         omit : [
-                //             "bibjson.apc.has_apc",
-                //             "bibjson.other_charges.has_other_charges"
-                //         ]
-                //     })
-                // }),
 
                 edges.newPager({
                     id: "top-pager",
@@ -326,7 +72,7 @@ jQuery(document).ready(function($) {
                 })
             ];
 
-            var e = edges.newEdge({
+            let e = edges.newEdge({
                 selector: selector,
                 template: doaj.templates.newPublicSearch({
                     titleBar: false,
@@ -334,10 +80,13 @@ jQuery(document).ready(function($) {
                 }),
                 search_url: search_url,
                 manageUrl : true,
+                // openingQuery : es.newQuery({
+                //     size : 12,
+                //     queryString: {queryString: query,
+                //         defaultField: "bibjson.publisher.name.exact"},
+                //     }),
                 openingQuery: es.newQuery({
-                    sort: [{"field" : "created_date", "order" : "desc"}],
-                    size: 50,
-                    queryString: "{'query':{'match_all':{}}"
+                    raw: query
                 }),
                 components : components,
                 callbacks : {
@@ -358,7 +107,7 @@ jQuery(document).ready(function($) {
 
 });
 
-    doaj.publicSearch.init();
-
+    let query = {"query":{"filtered":{"filter":{"bool":{"must":[{"terms":{"bibjson.publisher.name.exact":["MDPI AG"]}},{"terms":{"bibjson.editorial.review_process.exact":["Peer review"]}}]}},"query":{"match_all":{}}}}};
+    doaj.publicSearch.init({queryString: query});
 
 })();
