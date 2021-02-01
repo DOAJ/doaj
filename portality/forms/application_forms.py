@@ -1413,9 +1413,6 @@ class FieldDefinitions:
             "reserved_usernames",
             "owner_exists"
         ],
-        "help" : {
-            "render_error_box": False,
-        },
         "widgets": [
             {"autocomplete": {"type" : "account", "field": "id", "include" : False}},
             "clickable_owner"

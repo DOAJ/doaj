@@ -1,65 +1,51 @@
 <h2><span data-feather="settings" aria-hidden="true"></span> Administrative</h2>
-{% if obj.application_status not in ["accepted", "rejected"] and obj.current_journal == None %}
+{% if quick_reject and obj.application_status not in ["accepted", "rejected"] and obj.current_journal == None %}
   <button class="button button--primary" type="button" id="open_quick_reject" data-toggle="modal" data-target="#modal-quick_reject">Quick Reject</button>
 {% endif %}
 
 {% set fs = formulaic_context.fieldset("reviewers") %}
+{% if fs %}
 <fieldset>
     <h3 style="margin: 0 0 .75rem 0;">{{ fs.label }}</h3>
     <div class="row">
     {% for f in fs.fields() %}
         <div class="col-xs-6">
-        {% set field_template = f.template %}
-        {%  include field_template %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
         </div>
     {% endfor %}
     </div>
 </fieldset>
-{#        </div>#}
-{#        <p>#}
-{#            <small>#}
-{#                Group: <strong><code class="admin_value_preview" id="reviewers-value" data-source="#editor_group"></code></strong>#}
-{#                Editor: <strong><code class="admin_value_preview" id="reviewers-value" data-source="#editor"></code></strong>#}
-{#            </small>#}
-{#        </p>#}
+{% endif %}
 
-{#        <p>#}
-{#            <small>Status: <strong><code class="admin_value_preview" id="status-value" data-source="#application_status"></code></strong></small>#}
-{#        </p>#}
-
-{#        <h3 class="label" type="button" data-toggle="collapse" data-target="#reassign__admin_container" aria-expanded="false"> {{ fs.label }}#}
-{#            <span data-feather="plus" aria-hidden="true"></span>#}
-{#        </h3>#}
-{#        <div class="collapse" id="reassign__admin_container" aria-expanded="false">#}
 <fieldset>
     <div class="row">
     {% set fs = formulaic_context.fieldset("reassign") %}
-    {% for f in fs.fields() %}
-        <div class="col-xs-6">
-        <h3 style="margin: 0 0 1.5rem 0;">{{ fs.label }}</h3>
-        {% set field_template = f.template %}
-        {%  include field_template %}
-        </div>
-    {% endfor %}
+    {% if fs %}
+        {% for f in fs.fields() %}
+            <div class="col-xs-6">
+                <h3 style="margin: 0 0 1.5rem 0;">{{ fs.label }}</h3>
+                {% set field_template = f.template %}
+                {%  include field_template %}
+            </div>
+        {% endfor %}
+    {% endif %}
 
     {% set fs = formulaic_context.fieldset("status") %}
+    {% if fs %}
     {% for f in fs.fields() %}
         <div class="col-xs-6">
-        <h3 style="margin: 0 0 1.5rem 0;">{{ fs.label }}</h3>
-        {% set field_template = f.template %}
-        {%  include field_template %}
+            <h3 style="margin: 0 0 1.5rem 0;">{{ fs.label }}</h3>
+            {% set field_template = f.template %}
+            {%  include field_template %}
         </div>
     {% endfor %}
+    {% endif %}
     </div>
-    <div id="owner_checkbox-errors"></div>
 </fieldset>
-{#        </div>#}
-{#        <p>#}
-{#            <small>Assigned: <strong><code class="admin_value_preview" id="reassign-value" data-source="#owner"></code></strong></small>#}
-{#        </p>#}
-
 
 {% set fs = formulaic_context.fieldset("continuations") %}
+{% if fs %}
 <fieldset>
     <h3 style="margin: 0 0 .75rem 0;">{{ fs.label }}</h3>
     <div class="row">
@@ -71,28 +57,33 @@
     {% endfor %}
     </div>
 </fieldset>
+{% endif %}
 
 <fieldset class="form__question">
     <div class="row">
         <div class="col-xs-6">
             {% set fs = formulaic_context.fieldset("subject") %}
-            <h3 style="margin: 0 0 1.5rem 0;">{{ fs.label }}</h3>
-            {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-            {% endfor %}
-            <p>Selected: <strong class="admin_value_preview" id="subject-value" data-source="#subject"></strong></p>
-            <div id="subject_checkbox-errors"></div>
+            {% if fs %}
+                <h3 style="margin: 0 0 1.5rem 0;">{{ fs.label }}</h3>
+                {% for f in fs.fields() %}
+                    {% set field_template = f.template %}
+                    {%  include field_template %}
+                {% endfor %}
+                <p>Selected: <strong class="admin_value_preview" id="subject-value" data-source="#subject"></strong></p>
+                <div id="subject_checkbox-errors"></div>
+            {% endif %}
         </div>
 
         <div class="col-xs-6">
             {% set fs = formulaic_context.fieldset("seal") %}
-            <h3 style="margin: 0 0 1.5rem 0;">{{ fs.label }}</h3>
-            <p>The journal has fulfilled all the criteria for the Seal. </p>
-            {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-            {% endfor %}
+            {% if fs %}
+                <h3 style="margin: 0 0 1.5rem 0;">{{ fs.label }}</h3>
+                <p>The journal has fulfilled all the criteria for the Seal. </p>
+                {% for f in fs.fields() %}
+                    {% set field_template = f.template %}
+                    {%  include field_template %}
+                {% endfor %}
+            {% endif %}
         </div>
     </div>
 </fieldset>

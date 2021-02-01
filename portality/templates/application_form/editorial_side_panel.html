@@ -12,13 +12,11 @@
 
     <fieldset>
         {% set fs = formulaic_context.fieldset("notes") %}
-{#        <h3 class="label" type="button" data-toggle="collapse" data-target="#notes__admin_container" aria-expanded="false"> {{ fs.label }} <span data-feather="plus" aria-hidden="true"></span></h3>#}
-{#        <div class="collapse" id="notes__admin_container" aria-expanded="false">#}
-
+        {% if fs %}
             {% for f in fs.fields() %}
                 {% set field_template = f.template %}
                 {%  include field_template %}
             {% endfor %}
-{#        </div>#}
+        {% endif %}
     </fieldset>
 </aside>
