@@ -2070,8 +2070,8 @@ $.extend(true, doaj, {
 
 
             this.draw = function () {
-                if (doaj.publicSearch.activeEdges[this.selector]){
-                    this.currentQueryString = doaj.publicSearch.activeEdges[this.selector].currentQuery.queryString.queryString;
+                if (this.component.edge.currentQuery){
+                    this.currentQueryString = this.component.edge.currentQuery.queryString.queryString;
                 }
                 var frag = "<li class='alert'><p>You searched for <i>'";
                 frag += this.currentQueryString;

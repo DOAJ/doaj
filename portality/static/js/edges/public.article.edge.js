@@ -194,9 +194,7 @@ $.extend(true, doaj, {
                 edges.newResultsDisplay({
                     id: "results",
                     category: "results",
-                    renderer : doaj.renderers.newPublicSearchResultRenderer({
-                        "selector": selector
-                    })
+                    renderer : doaj.renderers.newPublicSearchResultRenderer()
                 }),
 
                 edges.newPager({
