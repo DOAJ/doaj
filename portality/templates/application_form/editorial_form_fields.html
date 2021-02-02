@@ -3,6 +3,24 @@
   <button class="button button--primary" type="button" id="open_quick_reject" data-toggle="modal" data-target="#modal-quick_reject">Quick Reject</button>
 {% endif %}
 
+{% if withdrawable %}
+    {% set withdraw_reinstate = "Withdraw" if obj.is_in_doaj() else "Reinstate" %}
+    {% if job %}
+        {% set withdraw_reinstate = "Withdrawing" if obj.is_in_doaj() else "Reinstating" %}
+    {% endif %}
+    <button class="button button--primary" type="button" id="open_withdraw_reinstate" data-toggle="modal" data-target="#modal-withdraw_reinstate">{{ withdraw_reinstate }}</button>
+{% endif %}
+
+{% set fs = formulaic_context.fieldset("optional_validation") %}
+{% if fs %}
+<fieldset>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
+</fieldset>
+{% endif %}
+
 {% set fs = formulaic_context.fieldset("reviewers") %}
 {% if fs %}
 <fieldset>
@@ -18,6 +36,7 @@
 </fieldset>
 {% endif %}
 
+{% if formulaic_context.fieldset("reassign") or formulaic_context.fieldset("status") %}
 <fieldset>
     <div class="row">
     {% set fs = formulaic_context.fieldset("reassign") %}
@@ -43,6 +62,7 @@
     {% endif %}
     </div>
 </fieldset>
+{% endif %}
 
 {% set fs = formulaic_context.fieldset("continuations") %}
 {% if fs %}
