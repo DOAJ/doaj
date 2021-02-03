@@ -172,13 +172,37 @@ Example record:
         md = journal.find("x:journal_metadata", NS)
         if md is not None:
             issns = md.findall("x:issn", NS)
-            if issns is not None:
-                for issn in issns:
-                    if len(issn.attrib) == 0 or issn.attrib["media_type"] == 'electronic':
-                        bibjson.add_identifier(bibjson.E_ISSN, issn.text.upper())
-                    elif issn.attrib["media_type"] == 'print':
-                        bibjson.add_identifier(bibjson.P_ISSN, issn.text.upper())
 
+            if len(issns) == 1:
+                if len(issns[0].attrib) == 0 or issns[0].attrib["media_type"] == 'electronic':
+                    bibjson.add_identifier(bibjson.E_ISSN, issns[0].text.upper())
+                elif issns[0].attrib["media_type"] == 'print':
+                     bibjson.add_identifier(bibjson.P_ISSN, issns[0].text.upper())
+
+            elif len(issns) == 2:
+                attrs = [0, 0]
+                if len(issns[0].attrib) != 0:
+                    attrs[0] = issns[0].attrib["media_type"]
+                if len(issns[1].attrib) != 0:
+                    attrs[1] = issns[1].attrib["media_type"]
+
+                if bool(attrs[0]) != bool(attrs[1]):
+                    if attrs[0] != 0:
+                        if attrs[0] == "electronic":
+                            attrs[1] = "print"
+                        else:
+                            attrs[1] = "electronic"
+                    else:
+                        if attrs[1] == "electronic":
+                            attrs[0] = "print"
+                        else:
+                            attrs[0] = "electronic"
+                elif attrs[0] == 0:
+                    attrs[0] = "electronic"
+                    attrs[1] = "print"
+
+                bibjson.add_identifier(bibjson.P_ISSN if attrs[0] == "print" else bibjson.E_ISSN, issns[0].text.upper())
+                bibjson.add_identifier(bibjson.P_ISSN if attrs[1] == "print" else bibjson.E_ISSN, issns[1].text.upper())
 
         # publication date
         pd = record.find("x:publication_date", NS)
