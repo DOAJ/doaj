@@ -203,7 +203,7 @@ We have our Basic criteria in:
 
 - [Chinese (application form only)](https://zenodo.org/record/4350096)
 - Finnish
-- [French](https://drive.google.com/drive/folders/1-9FraAimhA9Ks64tvKE_W4wsQ8LNob9a?usp=sharing)
+- [French (Canadian)](https://drive.google.com/drive/folders/1-9FraAimhA9Ks64tvKE_W4wsQ8LNob9a?usp=sharing)
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
 - [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
 
