@@ -60,3 +60,44 @@ class CrossrefArticleFixtureFactory(object):
     @classmethod
     def noids(cls):
         return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='NOIDS']]")
+
+    @classmethod
+    def upload_1_issn_electronic(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='1 ISSN - electronic']]")
+
+    @classmethod
+    def upload_1_issn_print(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='1 ISSN - print']]")
+
+    @classmethod
+    def upload_1_issn_no_type(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='1 ISSN - no type']]")
+
+    @classmethod
+    def upload_2_issns_1_electronic_2_no_type(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 ISSNs - electronic then no type']]")
+
+    @classmethod
+    def upload_2_issns_1_electronic_2_print(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 ISSNs - electronic then print']]")
+
+    @classmethod
+    def upload_2_issns_1_no_type_2_electronic(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 ISSNs - no type then electronic']]")
+
+    @classmethod
+    def upload_2_issns_1_print_2_no_type(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 ISSNs - print then no type']]")
+
+    @classmethod
+    def upload_2_issns_1_print_2_electronic(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 ISSNs - print then electronic']]")
+
+    @classmethod
+    def upload_2_issns_1_no_type_2_print(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 ISSNs - no type then print']]")
+
+    @classmethod
+    def upload_2_issns_no_type(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 ISSNs - no types']]")
+
