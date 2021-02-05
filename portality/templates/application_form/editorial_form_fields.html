@@ -74,6 +74,9 @@
         {% set field_template = f.template %}
         {%  include field_template %}
         </div>
+        {% if loop.index0 % 2 == 1 %}
+            </div><div class="row">
+        {% endif %}
     {% endfor %}
     </div>
 </fieldset>
