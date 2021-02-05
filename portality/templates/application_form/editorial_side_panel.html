@@ -8,6 +8,14 @@
     <input type="hidden" name="id" value="{{ obj.id }}">
 {% endif %}
 
+{% set fs = formulaic_context.fieldset("optional_validation") %}
+{% if fs %}
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
+{% endif %}
+
 <aside class="editorial-panel__content">
 
     <fieldset>
