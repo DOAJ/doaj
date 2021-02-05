@@ -7,7 +7,7 @@ Dear {{ publisher_name }},
 
 Thank you for your application.
 
-We receives hundreds of applications every month. We will review yours as soon as we can. You will receive an email from us when the review is complete or if we have questions.
+We receive hundreds of applications every month. We will review yours as soon as we can. You will receive an email from us when the review is complete or if we have questions.
 
 If you need to make a change to your application, send an email to our Help desk: feedback@doaj.org. Please include your ISSN.
 
