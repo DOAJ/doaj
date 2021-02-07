@@ -1,6 +1,6 @@
 import esprit, os, shutil, gzip, uuid
 from portality import models
-from portality.core import app
+from portality.core import app, es_connection
 from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.lib import dates
@@ -76,12 +76,14 @@ def anonymise_background_job(record):
 
     return bgjob.data
 
+
 anonymisation_procedures = {
     'account': anonymise_account,
     'background_job': anonymise_background_job,
     'journal': anonymise_journal,
     'suggestion': anonymise_suggestion
 }
+
 
 def _copy_on_complete(path):
     name = os.path.basename(path)
@@ -98,6 +100,7 @@ def _copy_on_complete(path):
     tmpStore.delete_file(container, name)
     tmpStore.delete_file(container, zipped_name)
 
+
 if __name__ == '__main__':
 
     import argparse
@@ -112,7 +115,7 @@ if __name__ == '__main__':
     else:
         limit = None
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+    conn = es_connection
 
     tmpStore = StoreFactory.tmp()
     mainStore = StoreFactory.get("anon_data")
@@ -121,7 +124,12 @@ if __name__ == '__main__':
     if args.clean:
         mainStore.delete_container(container)
 
-    for type_ in esprit.raw.list_types(connection=conn):
+    if conn.index_per_type:
+         type_list = filter(lambda x: x.startswith(app.config['ELASTIC_SEARCH_DB_PREFIX']), esprit.raw.list_indexes(conn))
+    else:
+        type_list = esprit.raw.list_types(connection=conn)
+
+    for type_ in type_list:
         filename = type_ + ".bulk"
         output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
         print((dates.now() + " " + type_ + " => " + output_file + ".*"))
@@ -138,4 +146,3 @@ if __name__ == '__main__':
         print((dates.now() + " done\n"))
 
     tmpStore.delete_container(container)
-
