@@ -60,6 +60,14 @@ def news():
 
 @blueprint.route("/widgets_demo")
 def widgets_demo():
+    return render_template('doaj/fqw_demo.html',
+                           env=app.config.get("DOAJENV"),
+                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', ''),
+                           lcc_tree=lcc_jstree
+                           )
+
+@blueprint.route("/widgets_demo_empty")
+def widgets_demo_empty():
     return render_template('doaj/widgets.html',
                            env=app.config.get("DOAJENV"),
                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', ''),

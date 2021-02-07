@@ -38,9 +38,8 @@ function scriptLoadHandler() {
 /******** Our main function ********/
 function main() {
     jQuery(document).ready(function($) {
-        console.log(doaj_url);
         let url = doaj_url + "/static/widget/fixed_query_body_dev_edges.html";
-        $('#doaj-fixed-query-widget').load(url);
+        $("#doaj-fixed-query-widget").load(url);
         $.ajax({
             type: "POST",
             crossDomain: true,

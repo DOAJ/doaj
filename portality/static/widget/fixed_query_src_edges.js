@@ -72,6 +72,7 @@ jQuery(document).ready(function($) {
                 })
             ];
 
+            console.log("creating new Edge")
             let e = edges.newEdge({
                 selector: selector,
                 template: doaj.templates.newPublicSearch({
@@ -80,24 +81,11 @@ jQuery(document).ready(function($) {
                 }),
                 search_url: search_url,
                 manageUrl : true,
-                // openingQuery : es.newQuery({
-                //     size : 12,
-                //     queryString: {queryString: query,
-                //         defaultField: "bibjson.publisher.name.exact"},
-                //     }),
-                openingQuery: es.newQuery({
-                    raw: query
-                }),
+                openingQuery : es.newQuery(query),
                 components : components,
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
-                    },
-                    "edges:post-init" : function() {
-                        feather.replace();
-                    },
-                    "edges:post-render" : function() {
-                        feather.replace();
                     }
                 }
             });
@@ -107,7 +95,6 @@ jQuery(document).ready(function($) {
 
 });
 
-    let query = {"query":{"filtered":{"filter":{"bool":{"must":[{"terms":{"bibjson.publisher.name.exact":["MDPI AG"]}},{"terms":{"bibjson.editorial.review_process.exact":["Peer review"]}}]}},"query":{"match_all":{}}}}};
-    doaj.publicSearch.init({queryString: query});
+    doaj.publicSearch.init({queryString: widget_fv_opts});
 
 })();
