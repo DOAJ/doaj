@@ -1,22 +1,17 @@
+"""
+Clear out the index and retrieve new anonymised data, according to a configuration file
+
+Configure the target index in your *.cfg override file
+For now, this import script requires the same index pattern (prefix, 'types', index-per-type setting) as the exporter.
+"""
+
 import esprit, json, gzip, shutil
 from portality.core import app, es_connection, initialise_index
 from portality.store import StoreFactory
-from botocore.exceptions import ClientError
 
 
 def do_import(config):
-    host = app.config["ELASTIC_SEARCH_HOST"]
-    index = app.config["ELASTIC_SEARCH_DB"]
-    if config.get("elastic_search_host") is not None:
-        host = config.get("elastic_search_host")
-        app.config["ELASTIC_SEARCH_HOST"] = host
-    if config.get("elastic_search_db") is not None:
-        index = config.get("elastic_search_db")
-        app.config["ELASTIC_SEARCH_DB"] = index
-
-    print("\n")
-    print(("Using host {x} and index {y}\n".format(x=host, y=index)))
-    conn = esprit.raw.make_connection(None, host, None, index)
+    conn = es_connection
 
     # filter for the types we are going to work with
     import_types = {}
@@ -87,6 +82,7 @@ def do_import(config):
 
     # once we've finished importing, clean up by deleting the entire temporary container
     tempStore.delete_container(container)
+
 
 if __name__ == '__main__':
 
