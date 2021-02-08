@@ -1,5 +1,4 @@
 <script type="text/javascript" src="/static/vendor/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-<script src="https://unpkg.com/feather-icons"></script>
 <script type="text/javascript" src="/static/js/doaj.js"></script>
 <link rel="stylesheet" href="/static_content/_site/css/main.css">
 
@@ -8,10 +7,27 @@
 </div>
 
 <script type="text/javascript">
+    let type = "";
+    if (typeof SEARCH_CONFIGURED_OPTIONS != 'undefined') {
+        if ("search_type" in SEARCH_CONFIGURED_OPTIONS)
+            // back compatibility:
+            type = SEARCH_CONFIGURED_OPTIONS.search_type;
+        else {
+            type = "journal,article"
+        }
+    }
+    else {
+        if ("search_type" in QUERY_OPTIONS) {
+             type = QUERY_OPTIONS.search_type
+        }
+        else {
+            type = "journal,article"
+        }
+    }
 
     $.extend(true, doaj, {
         publicSearchConfig : {
-            publicSearchPath : '/query/' + QUERY_OPTIONS.search_type + '/_search?ref=public_' + QUERY_OPTIONS.search_type,
+            publicSearchPath : '/query/' + type + '/_search?ref=public_' + type,
             lccTree: '{{ lcc_tree|tojson }}'
         }
     });
@@ -189,10 +205,12 @@ function optionsFromQuery(query) {
 
     // If options have been set using the Export method, use only those
     if (typeof SEARCH_CONFIGURED_OPTIONS != 'undefined') {
-        widget_fv_opts = optionsFromQuery(SEARCH_CONFIGURED_OPTIONS)
+        widget_fv_opts["queryString"] = SEARCH_CONFIGURED_OPTIONS.query_string;
+        widget_fv_opts["rawQuery"] = true;
     }
     // Otherwise, use options provided.
     else if (typeof QUERY_OPTIONS != 'undefined') {
+        widget_fv_opts["rawQuery"] = false;
         if (QUERY_OPTIONS.hasOwnProperty('query_string')) {
             widget_fv_opts['queryString'] = QUERY_OPTIONS.query_string
         }

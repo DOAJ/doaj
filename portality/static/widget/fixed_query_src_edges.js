@@ -18,7 +18,15 @@ jQuery(document).ready(function($) {
                 thousandsSeparator: ","
             });
 
-            let query = params.queryString || "{'query':{'match_all':{}}";
+            let query = {raw: {"query":{"match_all": {}}}};
+            if (params.queryString){
+                if (params.rawQuery){
+                    query = {raw: params.queryString};
+                }
+                else {
+                    query = params;
+                }
+            }
 
             let components = [
                 edges.newPager({
@@ -71,8 +79,6 @@ jQuery(document).ready(function($) {
                     })
                 })
             ];
-
-            console.log("creating new Edge")
             let e = edges.newEdge({
                 selector: selector,
                 template: doaj.templates.newPublicSearch({
@@ -81,7 +87,7 @@ jQuery(document).ready(function($) {
                 }),
                 search_url: search_url,
                 manageUrl : true,
-                openingQuery : es.newQuery(query),
+                openingQuery: es.newQuery(query),
                 components : components,
                 callbacks : {
                     "edges:query-fail" : function() {
@@ -94,7 +100,6 @@ jQuery(document).ready(function($) {
     }
 
 });
-
-    doaj.publicSearch.init({queryString: widget_fv_opts});
+    doaj.publicSearch.init(widget_fv_opts);
 
 })();
