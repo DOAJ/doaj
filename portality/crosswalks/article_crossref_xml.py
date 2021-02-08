@@ -173,6 +173,9 @@ Example record:
         if md is not None:
             issns = md.findall("x:issn", NS)
 
+            # if more than 2 issns raise the exception
+            if len(issns) > 2:
+                raise CrosswalkException(message="Too many ISSNs. Only 2 ISSNs are allowed")
             if len(issns) == 1:
                 if len(issns[0].attrib) == 0 or issns[0].attrib["media_type"] == 'electronic':
                     bibjson.add_identifier(bibjson.E_ISSN, issns[0].text.upper())
@@ -185,6 +188,10 @@ Example record:
                     attrs[0] = issns[0].attrib["media_type"]
                 if len(issns[1].attrib) != 0:
                     attrs[1] = issns[1].attrib["media_type"]
+
+                # if both issns have the same type - raise the exception
+                if issns[0].attrib["media_type"] == issns[1].attrib["media_type"]:
+                    raise CrosswalkException(message="Both ISSNs have the same type: {}".format(issns[1].attrib["media_type"]))
 
                 if bool(attrs[0]) != bool(attrs[1]):
                     if attrs[0] != 0:
