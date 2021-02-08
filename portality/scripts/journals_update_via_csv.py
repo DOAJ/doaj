@@ -99,7 +99,7 @@ if __name__ == "__main__":
                             writer.writerow([j.id, ' | '.join(updates), 'JOURNAL LOCKED - ' + str(e)])
                             continue
 
-                        # validate update_form
+                        # validate update_form - portality.forms.application_processors.PublisherUpdateRequest
                         formulaic_context = ApplicationFormFactory.context("update_request")
                         fc = formulaic_context.processor(
                             formdata=update_form,
@@ -120,12 +120,12 @@ if __name__ == "__main__":
                         try:
                             if not args.dry_run:
                                 # Save the update request
-                                fc.finalise()
+                                fc.finalise(email_alert=False)
 
                                 # This is the update request, in 'update request' state
                                 update_req_for_review = fc.target
 
-                                # Create an Admin update request review form
+                                # Create an Admin update request review form - portality.forms.application_processors.AdminApplication
                                 formulaic_context2 = ApplicationFormFactory.context("admin")
                                 fc2 = formulaic_context2.processor(
                                     source=update_req_for_review
@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
                                 # Accept the update request, and finalise to complete the changes
                                 fc2.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
-                                fc2.finalise(sys_acc)
+                                fc2.finalise(sys_acc, email_alert=False)
                                 print('Journal has been updated.')
                         except Exception as e:
                             writer.writerow([j.id, ' | '.join(updates), 'COULD NOT FINALISE - ' + str(e)])
