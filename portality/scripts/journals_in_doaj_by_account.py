@@ -1,10 +1,10 @@
 from portality import models
+from portality.core import app
 from portality.core import es_connection
 import esprit
 import csv
 import json
 from portality.util import ipt_prefix
-
 
 class JournalQuery(object):
     def __init__(self, owner):
@@ -12,23 +12,22 @@ class JournalQuery(object):
 
     def query(self):
         return {
-            "query": {
-                "filtered": {
-                    "filter": {
-                        "bool": {
-                            "must": [
-                                {"term": {"admin.owner.exact": self.owner}},
-                                {"term": {"admin.in_doaj": True}}
+            "query":{
+                "filtered":{
+                    "filter":{
+                        "bool":{
+                            "must":[
+                                {"term":{"admin.owner.exact": self.owner}},
+                                {"term" : {"admin.in_doaj" : True}}
                              ]
                          }
                     },
-                    "query": {
-                        "match_all": {}
+                    "query":{
+                        "match_all":{}
                     }
                 }
             }
         }
-
 
 if __name__ == "__main__":
 
