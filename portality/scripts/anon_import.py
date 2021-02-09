@@ -32,7 +32,10 @@ def do_import(config):
 
     # remove all the types that we are going to import
     for import_type in list(import_types.keys()):
-        esprit.raw.delete(conn, import_type)
+        if conn.index_per_type:
+            esprit.raw.delete_index(conn, import_type)
+        else:
+            esprit.raw.delete(conn, import_type)
 
     # re-initialise the index (sorting out mappings, etc)
     print("==Initialising Index for Mappings==")
