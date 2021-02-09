@@ -12,7 +12,7 @@ class Journal2QuestionXwalk(object):
 
     QTUP = [
         ("alternative_title", "Alternative title"),
-        ("apc_charges.apc_max", "APC amount"),
+        ("apc_charges", "APC amount"),
         ("apc_url", "APC information URL"),
         ("preservation_service", "Preservation Services"),
         ("preservation_service_library", "Preservation Service: national library"),
@@ -194,7 +194,7 @@ class Journal2QuestionXwalk(object):
         apcs = []
         for apc_charge in forminfo.get("apc_charges", []):
             apcs.append(str(apc_charge.get("apc_max")) + " " + apc_charge.get("apc_currency"))
-        kvs.append((cls.q("apc_charges.apc_max"), "; ".join(apcs)))
+        kvs.append((cls.q("apc_charges"), "; ".join(apcs)))
 
         kvs.append((cls.q("has_waiver"), yes_no_or_blank(forminfo.get("has_waiver"))))
         kvs.append((cls.q("waiver_url"), forminfo.get("waiver_url")))
@@ -242,10 +242,24 @@ class Journal2QuestionXwalk(object):
         :return: A MultiDict of updates to the form for validation and a formatted string of what was changed
         """
 
+        def _y_or_blank(x):
+            """ Some of the work of undoing yes_or_blank() """
+            return 'y' if x == 'Yes' else ''
+
+        def _unfurl_apc(x):
+            """ Allow an APC update by splitting the APC string from the spreadsheet """
+            apcs = []
+            for apc in x.split('; '):
+                [amt, cur] = apc.split()
+                apcs.append({'apc_max': int(amt), 'apc_currency': cur})
+            return apcs
+
         # Undo the transformations applied to specific fields. TODO: Add these as they are encountered in the wild
         REVERSE_TRANSFORM_MAP = {
             'license': lambda x: [lic.strip() for lic in x.split(',')],
-            'publication_time_weeks': lambda x: int(x)
+            'publication_time_weeks': lambda x: int(x),
+            'apc': _y_or_blank,
+            'apc_charges': _unfurl_apc
             # Country names to codes for institution, publisher
         }
 
