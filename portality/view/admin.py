@@ -362,7 +362,7 @@ def application(application_id):
         processor = fc.processor(formdata=request.form, source=ap)
         if processor.validate():
             try:
-                processor.finalise(current_user)
+                processor.finalise(current_user._get_current_object())
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
