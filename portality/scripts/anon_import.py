@@ -8,10 +8,10 @@ For now, this import script requires the same index pattern (prefix, 'types', in
 import esprit, json, gzip, shutil
 from portality.core import app, es_connection, initialise_index
 from portality.store import StoreFactory
+from portality.util import ipt_prefix
 
 
 def do_import(config):
-    conn = es_connection
 
     # filter for the types we are going to work with
     import_types = {}
@@ -32,10 +32,10 @@ def do_import(config):
 
     # remove all the types that we are going to import
     for import_type in list(import_types.keys()):
-        if conn.index_per_type:
-            esprit.raw.delete_index(conn, import_type)
+        if es_connection.index_per_type:
+            esprit.raw.delete_index(es_connection, ipt_prefix(import_type))
         else:
-            esprit.raw.delete(conn, import_type)
+            esprit.raw.delete(es_connection, import_type)
 
     # re-initialise the index (sorting out mappings, etc)
     print("==Initialising Index for Mappings==")
@@ -72,7 +72,7 @@ def do_import(config):
             tempStore.delete_file(container, filename + ".gz")
 
             print(("Importing from {x}".format(x=filename)))
-            imported_count = esprit.tasks.bulk_load(conn, import_type, uncompressed_file,
+            imported_count = esprit.tasks.bulk_load(es_connection, ipt_prefix(import_type), uncompressed_file,
                                                     limit=limit, max_content_length=config.get("max_content_length", 100000000))
             tempStore.delete_file(container, filename)
 

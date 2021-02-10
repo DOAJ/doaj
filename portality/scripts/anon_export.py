@@ -5,6 +5,7 @@ from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.lib import dates
 from portality.store import StoreFactory
+from portality.util import ipt_prefix
 
 
 def _anonymise_email(record):
@@ -115,8 +116,6 @@ if __name__ == '__main__':
     else:
         limit = None
 
-    conn = es_connection
-
     tmpStore = StoreFactory.tmp()
     mainStore = StoreFactory.get("anon_data")
     container = app.config.get("STORE_ANON_DATA_CONTAINER")
@@ -124,10 +123,12 @@ if __name__ == '__main__':
     if args.clean:
         mainStore.delete_container(container)
 
-    if conn.index_per_type:
-         type_list = filter(lambda x: x.startswith(app.config['ELASTIC_SEARCH_DB_PREFIX']), esprit.raw.list_indexes(conn))
+    if es_connection.index_per_type:
+        doaj_types = filter(lambda x: x.startswith(app.config['ELASTIC_SEARCH_DB_PREFIX']), esprit.raw.list_indexes(es_connection))
+        type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types]
+        print(type_list)
     else:
-        type_list = esprit.raw.list_types(connection=conn)
+        type_list = esprit.raw.list_types(connection=es_connection)
 
     for type_ in type_list:
         filename = type_ + ".bulk"
@@ -135,11 +136,11 @@ if __name__ == '__main__':
         print((dates.now() + " " + type_ + " => " + output_file + ".*"))
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
-            filenames = esprit.tasks.dump(conn, type_, limit=limit, transform=transform,
+            filenames = esprit.tasks.dump(es_connection, ipt_prefix(type_), limit=limit, transform=transform,
                                           out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
                                           es_bulk_fields=["_id"])
         else:
-            filenames = esprit.tasks.dump(conn, type_, limit=limit,
+            filenames = esprit.tasks.dump(es_connection, ipt_prefix(type_), limit=limit,
                                           out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
                                           es_bulk_fields=["_id"])
 
