@@ -99,4 +99,5 @@ local_store/tmp/*
 
 ##generated files
 #static_content/_site
-#static_content/css/*.css
+static_content/css/*.css
+static_content/css/*.css.map
