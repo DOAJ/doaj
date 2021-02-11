@@ -173,14 +173,6 @@ ass_ed:
   country: Spain
   language: Galician, Portuguese, Spanish, English
 
-- name: Ana Melro
-  area: Science, Technology
-  year_since:
-  city: Exeter
-  country: United Kingdom
-  language: Portuguese, English
-  photo: "AnaMelro.jpg" 
-
 - name: Andista Candra Yusro
   area: Social Sciences
   year_since:
