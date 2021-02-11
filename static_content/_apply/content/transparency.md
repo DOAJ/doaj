@@ -65,7 +65,7 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 [Open Access Scholarly Publishers Association]: https://publicationethics.org/
 [World Association of Medical Editors]: https://www.wame.org/
 
-## The Principles in other languages
+## In other languages
 
 - [Arabic](https://docs.google.com/document/d/1z6eEzHKsUjPw8GQtEx0JH2ucHPMrw3USF9tpnYrcwjM/edit?usp=sharing)
 - [Catalan](https://docs.google.com/document/d/16YHOkjonpI6J2VyIWd1kl0UYvPS5TC-1B7mfq8obIVk/edit?usp=sharing)
