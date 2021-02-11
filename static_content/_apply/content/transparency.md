@@ -77,13 +77,13 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 - [French (Canadian)](https://docs.google.com/document/d/1hN4UC2HZFvO7eX5abRNEsHpQ4QEFZ2b_I-gvjVXbTWc/edit?usp=sharing)
 - [Hindi](https://docs.google.com/document/d/1eygNcbFj3DjQ_R7WL0nvDp3Cp9r-Ytu3nPyl106JVVg/edit?usp=sharing)
 - [Indonesian](https://docs.google.com/document/d/1bgogeUE5VMiGhecPzYcDPCWR4Af-GVPSwn48f6BCZvk/edit?usp=sharing)
-- Italian
-- Korean
-- Polish
+- [Italian](https://docs.google.com/document/d/1KRRpMklSBmH7CunvZQXEZSt-MTSrsRc-zCqw6lQY1ks/edit?usp=sharing)
+- [Korean](https://docs.google.com/document/d/1cxbYLr-O4d_rdtVBUQHQSGvZAZQy7uAINmFx3F9kj60/edit?usp=sharing)
+- [Polish](https://docs.google.com/document/d/1YtWHntS_gHosEYlTLTrJr5KwY4k2_w7ohn9sB96J3uE/edit?usp=sharing)
 - [Portuguese](https://docs.google.com/document/d/12CQy0V4OT6bH5apdjrIUrYZmpHzjjM_52L5VgtufwNE/edit?usp=sharing)
-- Russian
+- [Russian](https://docs.google.com/document/d/1YGVPt5ItaCA8UC_H8S4Gv0WJI6iP2J5CBSe0RVjkDqQ/edit?usp=sharing)
 - [Spanish](https://docs.google.com/document/d/11GB_KNLzhpNNfRgyFdGHdAoaNfpnpb61z4iqSEj1dbA/edit?usp=sharing)
-- Swedish
-- Turkish
-- Ukrainian
+- [Swedish](https://docs.google.com/document/d/1NIi0-yGCpMrxJaWc05e_7Ww5pIUqYg6ThH_AnnjimeM/edit?usp=sharing)
+- [Turkish](https://docs.google.com/document/d/1AKbcm2YpAJOIH-1LLblmmLotXgmg5pi7-jI0-dwaEwQ/edit?usp=sharing)
+- [Ukrainian](https://docs.google.com/document/d/1wl9LnyQjiALsHBvbsah8-rwxBf4aASzh2tL38YnRVCY/edit?usp=sharing)
 
