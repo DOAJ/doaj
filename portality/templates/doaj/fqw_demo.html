@@ -1,0 +1,19 @@
+<div id="doaj-fixed-query-widget"></div>
+<script type="text/javascript">
+    !window.jQuery && document.write("<scr" + "ipt type=\"text/javascript\" src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js\"></scr" + "ipt>");
+</script>
+
+<script type="text/javascript">
+var doaj_url = "{{ config.get('BASE_URL') }}";
+var QUERY_OPTIONS = {
+    query_string : 'medicine',                     // The plain-text query string
+    query_field: 'bibjson.title',                  // The field we are querying
+    sort_field: 'index.unpunctitle.exact',         // Field to order results by
+    sort_direction:  'asc',                        // Direction of sort "asc" | "desc"
+    search_operator : 'AND',                       // Which sort operator to use "AND" | "OR"
+    search_type: 'journal',                        // Which type to search upon (omit for both) "article" | "journal"
+    page_size : 5,                                 // How many results to show per widget page
+    page_from : 0                                  // Which result to initially start from
+    }
+</script>
+<script src="/static/widget/fixed_query{{ widget_filename_suffix }}.js" type="text/javascript"></script>

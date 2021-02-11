@@ -2,15 +2,18 @@ import json, os, esprit, dictdiffer
 from datetime import datetime, timedelta
 from copy import deepcopy
 from collections import OrderedDict
-from portality.core import app
+from portality.core import app, create_es_connection
+from portality.util import ipt_prefix
 from portality import models
 from portality.lib import plugin
 from portality.lib.dataobj import DataStructureException
+from portality.lib.seamless import SeamlessException
 
 MODELS = {
     "journal": models.Journal,
     "article": models.Article,
     "suggestion": models.Suggestion,
+    "application": models.Application,
     "account": models.Account
 }
 
@@ -27,38 +30,37 @@ def do_upgrade(definition, verbose):
     target = definition.get("target")
 
     if source is None:
-        source = {
-            "host": app.config.get("ELASTIC_SEARCH_HOST"),
-            "index": app.config.get("ELASTIC_SEARCH_DB")
-        }
+        sconn = create_es_connection(app)
+    else:
+        sconn = esprit.raw.Connection(source.get("host"), source.get("index"))
 
     if target is None:
-        target = {
-            "host": app.config.get("ELASTIC_SEARCH_HOST"),
-            "index": app.config.get("ELASTIC_SEARCH_DB"),
-            "mappings": False
-        }
-
-    sconn = esprit.raw.Connection(source.get("host"), source.get("index"))
-    tconn = esprit.raw.Connection(target.get("host"), target.get("index"))
+        tconn = create_es_connection(app)
+    else:
+        tconn = esprit.raw.Connection(target.get("host"), target.get("index"))
 
     if verbose:
-        print "Source", source
-        print "Target", target
+        print("Source", source)
+        print("Target", target)
 
     # get the defined batch size
     batch_size = definition.get("batch", 500)
 
     for tdef in definition.get("types", []):
-        print "Upgrading", tdef.get("type")
+        print("Upgrading", tdef.get("type"))
         batch = []
         total = 0
-        first_page = esprit.raw.search(sconn, tdef.get("type"))
+        type_ = ipt_prefix(tdef.get("type"))
+        first_page = esprit.raw.search(sconn, type_)
         max = first_page.json().get("hits", {}).get("total", 0)
         type_start = datetime.now()
 
+        default_query={
+            "query": {"match_all": {}}
+        }
+
         try:
-            for result in esprit.tasks.scroll(sconn, tdef.get("type"), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), scan=True):
+            for result in esprit.tasks.scroll(sconn, type_, q=tdef.get("query", default_query), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), scan=True):
                 # learn what kind of model we've got
                 model_class = MODELS.get(tdef.get("type"))
 
@@ -67,8 +69,8 @@ def do_upgrade(definition, verbose):
                     # instantiate an object with the data
                     try:
                         result = model_class(**result)
-                    except DataStructureException as e:
-                        print "Could not create model for {0}, Error: {1}".format(result['id'], e.message)
+                    except (DataStructureException, SeamlessException) as e:
+                        print("Could not create model for {0}, Error: {1}".format(result['id'], str(e)))
                         continue
 
                 for function_path in tdef.get("functions", []):
@@ -81,7 +83,7 @@ def do_upgrade(definition, verbose):
                     # run the tasks specified with this object type
                     tasks = tdef.get("tasks", None)
                     if tasks:
-                        for func_call, kwargs in tasks.iteritems():
+                        for func_call, kwargs in tasks.items():
                             getattr(result, func_call)(**kwargs)
 
                     # run the prep routine for the record
@@ -89,7 +91,7 @@ def do_upgrade(definition, verbose):
                         result.prep()
                     except AttributeError:
                         if verbose:
-                            print tdef.get("type"), result.id, "has no prep method - no, pre-save preparation being done"
+                            print(tdef.get("type"), result.id, "has no prep method - no, pre-save preparation being done")
                         pass
 
                     data = result.data
@@ -103,13 +105,13 @@ def do_upgrade(definition, verbose):
 
                 batch.append(data)
                 if verbose:
-                    print "added", tdef.get("type"), _id, "to batch update"
+                    print("added", tdef.get("type"), _id, "to batch update")
 
                 # When we have enough, do some writing
                 if len(batch) >= batch_size:
                     total += len(batch)
-                    print datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
-                    esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
+                    print(datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
+                    esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=type_, bulk_type="update")
                     batch = []
                     # do some timing predictions
                     batch_tick = datetime.now()
@@ -117,20 +119,20 @@ def do_upgrade(definition, verbose):
                     seconds_so_far = time_so_far.total_seconds()
                     estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
                     estimated_finish = batch_tick + timedelta(seconds=estimated_seconds_remaining)
-                    print 'Estimated finish time for this type {0}.'.format(estimated_finish)
+                    print('Estimated finish time for this type {0}.'.format(estimated_finish))
         except esprit.tasks.ScrollTimeoutException:
             # Try to write the part-batch to index
             if len(batch) > 0:
                 total += len(batch)
-                print datetime.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
-                esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
+                print(datetime.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
+                esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=type_, bulk_type="update")
                 batch = []
 
         # Write the last part-batch to index
         if len(batch) > 0:
             total += len(batch)
-            print datetime.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
-            esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
+            print(datetime.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
+            esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=type_, bulk_type="update")
 
 
 def _diff(original, current):
@@ -165,22 +167,22 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.upgrade:
-        print "Please specify an upgrade package with the -u option"
+        print("Please specify an upgrade package with the -u option")
         exit()
 
     if not (os.path.exists(args.upgrade) and os.path.isfile(args.upgrade)):
-        print args.upgrade, "does not exist or is not a file"
+        print(args.upgrade, "does not exist or is not a file")
         exit()
 
-    print 'Starting {0}.'.format(datetime.now())
+    print('Starting {0}.'.format(datetime.now()))
 
     with open(args.upgrade) as f:
         try:
             instructions = json.loads(f.read(), object_pairs_hook=OrderedDict)
         except:
-            print args.upgrade, "does not parse as JSON"
+            print(args.upgrade, "does not parse as JSON")
             exit()
 
         do_upgrade(instructions, args.verbose)
 
-    print 'Finished {0}.'.format(datetime.now())
+    print('Finished {0}.'.format(datetime.now()))

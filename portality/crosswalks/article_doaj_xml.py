@@ -6,6 +6,7 @@ from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
 from datetime import datetime
 
+
 class DOAJXWalk(object):
     format_name = "doaj"
     schema_path = app.config.get("SCHEMAS", {}).get("doaj")
@@ -16,11 +17,15 @@ class DOAJXWalk(object):
         # load the schema into memory for more efficient usage in repeat calls to the crosswalk
         if self.schema_path is None:
             raise exceptions.IngestException(message="Unable to validate for DOAJXWalk, as schema path is not set in config")
-
         try:
-            schema_file = open(self.schema_path)
-            schema_doc = etree.parse(schema_file)
-            self.schema = etree.XMLSchema(schema_doc)
+            with open(self.schema_path) as schema_file:
+                schema_doc = etree.parse(schema_file)
+
+                # If we are using a test or dev environment, edit the schema to use local paths
+                if app.config.get("DOAJENV") != 'production':
+                    self._localise_schema(schema_doc)
+
+                self.schema = etree.XMLSchema(schema_doc)
         except Exception as e:
             raise exceptions.IngestException(message="There was an error attempting to load schema from " + self.schema_path, inner=e)
 
@@ -30,6 +35,9 @@ class DOAJXWalk(object):
             doc = etree.parse(file_handle)
         except etree.XMLSyntaxError as e:   # although the treatment is the same, pulling this out so we remember what the primary kind of exception should be
             raise CrosswalkException(message="Unable to parse XML file", inner=e)
+        except UnicodeDecodeError as e:
+            msg = 'Text decode failed, expected utf-8 encoded XML.'
+            raise CrosswalkException(message='Unable to parse XML file', inner=e, inner_message=msg)
         except Exception as e:
             raise CrosswalkException(message="Unable to parse XML file", inner=e)
 
@@ -54,11 +62,9 @@ class DOAJXWalk(object):
             self.validation_log = el
         return valid
 
-
     def crosswalk_file(self, file_handle, add_journal_info=True):
         doc = self.validate_file(file_handle)
         return self.crosswalk_doc(doc, add_journal_info=add_journal_info)
-
 
     def crosswalk_doc(self, doc, add_journal_info=True):
         # go through the records in the doc and crosswalk each one individually
@@ -69,7 +75,6 @@ class DOAJXWalk(object):
             articles.append(article)
 
         return articles
-
 
     def crosswalk_article(self, record, add_journal_info=True):
         """
@@ -93,6 +98,7 @@ class DOAJXWalk(object):
              <author>
                 <name>WIM Thiery</name>
                 <affiliationId>1</affiliationId>
+                <orcid_id>https://orcid.org/0001-1234-1234</orcid_id>
             </author>
          </authors>
           <affiliationsList>
@@ -201,7 +207,8 @@ class DOAJXWalk(object):
                 name = _element(ael, "name")
                 affid = _element(ael, "affiliationId")
                 aff = affiliations.get(affid)
-                bibjson.add_author(name, affiliation=aff)
+                orcid = _element(ael, "orcid_id")
+                bibjson.add_author(name, affiliation=aff, orcid_id=orcid)
 
         # abstract
         abstract = _element(record, "abstract")
@@ -230,9 +237,18 @@ class DOAJXWalk(object):
 
         return article
 
+    @staticmethod
+    def _localise_schema(schema_doc):
+        """ Edit the DOAJ Article schema in-memory to use local paths """
+        language_list_import = schema_doc.xpath("xs:import[contains(@schemaLocation, 'iso_639-2b.xsd')]",
+                                                namespaces=schema_doc.getroot().nsmap).pop()
+        language_list_import.attrib['schemaLocation'] = './iso_639-2b.xsd'
+        return schema_doc
+
 ###############################################################################
-## some convenient utilities
+# some convenient utilities
 ###############################################################################
+
 
 def _year_month(date):
     try:

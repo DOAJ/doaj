@@ -1,0 +1,23 @@
+{
+    "batch" : 10000,
+	"types": [
+		{
+			"type" : "suggestion",
+			"init_with_model" : true,
+			"keepalive" : "20m"
+		},
+		{
+			"type": "journal",
+			"init_with_model": true,
+			"keepalive": "20m"
+		},
+        {
+            "type": "article",
+			"init_with_model": true,
+			"keepalive": "20m",
+			"tasks": {
+				"add_journal_metadata": {}
+			}
+        }
+	]
+}

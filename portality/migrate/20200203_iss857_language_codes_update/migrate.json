@@ -1,0 +1,15 @@
+{
+    "batch" : 10000,
+	"types": [
+		{
+			"type" : "suggestion",
+			"init_with_model" : true,
+			"keepalive" : "10m"
+		},
+		{
+			"type": "journal",
+			"init_with_model": true,
+			"keepalive": "10m"
+		}
+	]
+}

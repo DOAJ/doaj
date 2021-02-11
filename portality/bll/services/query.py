@@ -1,4 +1,5 @@
-from portality.core import app
+from portality.core import app, es_connection
+from portality.util import ipt_prefix
 from portality.bll import exceptions
 from portality.lib import plugin
 from copy import deepcopy
@@ -109,7 +110,7 @@ class QueryService(object):
         # check that the request values permit a query to this endpoint
         required_parameters = cfg.get("required_parameters")
         if required_parameters is not None:
-            for k, vs in required_parameters.iteritems():
+            for k, vs in required_parameters.items():
                 val = additional_parameters.get(k)
                 if val is None or val not in vs:
                     raise exceptions.AuthoriseException()
@@ -141,14 +142,7 @@ class QueryService(object):
         limit = cfg.get("limit", None)
         keepalive = cfg.get("keepalive", "1m")
 
-        # Initialize esprit
-        source = {
-            "host": app.config.get("ELASTIC_SEARCH_HOST"),
-            "index": app.config.get("ELASTIC_SEARCH_DB")
-        }
-        conn = esprit.raw.Connection(source.get("host"), source.get("index"))
-
-        for result in esprit.tasks.scroll(conn, dao_klass.__type__, q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive, scan=scan):
+        for result in esprit.tasks.scroll(es_connection, ipt_prefix(dao_klass.__type__), q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive, scan=scan):
             res = self._post_filter_search_results(cfg, result, unpacked=True)
             yield res
 
@@ -166,7 +160,7 @@ class Query(object):
         if "query" in self.q:
             current_query = deepcopy(self.q["query"])
             del self.q["query"]
-            if len(current_query.keys()) == 0:
+            if len(list(current_query.keys())) == 0:
                 current_query = None
 
         self.filtered = True
@@ -195,16 +189,27 @@ class Query(object):
             del self.q["query"]["match_all"]
 
     def has_facets(self):
-        return "facets" in self.q
+        return "facets" in self.q or "aggregations" in self.q or "aggs" in self.q
+
+    def clear_facets(self):
+        if "facets" in self.q:
+            del self.q["facets"]
+        if "aggregations" in self.q:
+            del self.q["aggregations"]
+        if "aggs" in self.q:
+            del self.q["aggs"]
 
     def size(self):
         if "size" in self.q:
-            return self.q["size"]
+            try:
+                return int(self.q["size"])
+            except ValueError:
+                return 10
         return 10
 
     def from_result(self):
         if "from" in self.q:
-            return self.q["from"]
+            return int(self.q["from"])
         return 0
 
     def as_dict(self):
@@ -219,6 +224,11 @@ class Query(object):
             fields = [fields]
         self.q["_source"]["include"] = list(set(self.q["_source"]["include"] + fields))
 
+    def sort(self):
+        return self.q.get("sort")
+
+    def set_sort(self, s):
+        self.q["sort"] = s
 
 class QueryFilterException(Exception):
     pass

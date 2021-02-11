@@ -1,24 +1,23 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, flash
 from flask_login import current_user, login_required
 
 from portality.core import app
 from portality import models
 from portality.bll import DOAJ
-from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict
+from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.formcontext import formcontext
+from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
-from portality.view.forms import ArticleForm
 from portality.ui.messages import Messages
 from portality import lock
-from portality.crosswalks.article_form import ArticleFormXWalk
+from portality.models import DraftApplication
+from portality.lcc import lcc_jstree
 
-from huey.exceptions import QueueWriteException
+from huey.exceptions import TaskException
 
-import os, uuid
-from time import sleep
-
+import uuid
 
 blueprint = Blueprint('publisher', __name__)
 
@@ -31,7 +30,34 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template("publisher/index.html", search_page=True, facetviews=["publisher.journals.facetview"])
+    return render_template("publisher/index.html")
+
+
+@blueprint.route("/journal")
+@login_required
+@ssl_required
+def journals():
+    return render_template("publisher/journals.html", lcc_tree=lcc_jstree)
+
+
+@blueprint.route("/application/<application_id>/delete", methods=["GET"])
+def delete_application(application_id):
+    # if this is a draft application, we can just remove it
+    draft_application = DraftApplication.pull(application_id)
+    if draft_application is not None:
+        draft_application.delete()
+        return redirect(url_for("publisher.deleted_thanks"))
+
+    # otherwise delegate to the application service to sort this out
+    appService = DOAJ.applicationService()
+    appService.delete_application(application_id, current_user._get_current_object())
+
+    return redirect(url_for("publisher.deleted_thanks"))
+
+
+@blueprint.route("/application/deleted")
+def deleted_thanks():
+    return render_template("publisher/application_deleted.html")
 
 
 @blueprint.route("/update_request/<journal_id>", methods=["GET", "POST", "DELETE"])
@@ -83,36 +109,41 @@ def update_request(journal_id):
         if alock is not None: alock.delete()
         return redirect(url_for("publisher.updates_in_progress"))
 
+    fc = ApplicationFormFactory.context("update_request")
+
     # if we are requesting the page with a GET, we just want to show the form
     if request.method == "GET":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=application)
-        return fc.render_template(edit_suggestion_page=True)
+        fc.processor(source=application)
+        return fc.render_template(obj=application)
+        #fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=application)
+        #return fc.render_template(edit_suggestion_page=True)
 
     # if we are requesting the page with a POST, we need to accept the data and handle it
     elif request.method == "POST":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=request.form, source=application)
-        if fc.validate():
+        # fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=request.form, source=application)
+        processor = fc.processor(formdata=request.form, source=application)
+        if processor.validate():
             try:
-                fc.finalise()
+                processor.finalise()
                 Messages.flash(Messages.APPLICATION_UPDATE_SUBMITTED_FLASH)
-                for a in fc.alert:
+                for a in processor.alert:
                     Messages.flash_with_url(a, "success")
                 return redirect(url_for("publisher.updates_in_progress"))
-            except formcontext.FormContextException as e:
-                Messages.flash(e.message)
+            except Exception as e:
+                Messages.flash(str(e))
                 return redirect(url_for("publisher.update_request", journal_id=journal_id, _anchor='cannot_edit'))
             finally:
                 if jlock is not None: jlock.delete()
                 if alock is not None: alock.delete()
         else:
-            return fc.render_template(edit_suggestion_page=True)
+            return fc.render_template(obj=application)
 
 
-@blueprint.route("/view_update_request/<application_id>", methods=["GET", "POST"])
+@blueprint.route("/view_application/<application_id>", methods=["GET"])
 @login_required
 @ssl_required
 @write_required()
-def update_request_readonly(application_id):
+def application_readonly(application_id):
     # DOAJ BLL for this request
     applicationService = DOAJ.applicationService()
     authService = DOAJ.authorisationService()
@@ -123,16 +154,27 @@ def update_request_readonly(application_id):
     except AuthoriseException as e:
         abort(404)
 
-    fc = formcontext.ApplicationFormFactory.get_form_context(role="update_request_readonly", source=application)
-    return fc.render_template(no_sidebar=True)
+    fc = ApplicationFormFactory.context("application_read_only")
+    fc.processor(source=application)
+    # fc = formcontext.ApplicationFormFactory.get_form_context(role="update_request_readonly", source=application)
+    return fc.render_template(obj=application)
+
+
+@blueprint.route("/view_update_request/<application_id>", methods=["GET", "POST"])
+@login_required
+@ssl_required
+@write_required()
+def update_request_readonly(application_id):
+    return redirect(url_for("publisher.application_readonly", application_id=application_id))
+
 
 @blueprint.route('/progress')
 @login_required
 @ssl_required
 def updates_in_progress():
-    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["publisher.update_requests.facetview"])
+    return render_template("publisher/updates_in_progress.html")
 
-@blueprint.route("/uploadFile", methods=["GET", "POST"])
+
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
 @ssl_required
@@ -140,15 +182,20 @@ def updates_in_progress():
 def upload_file():
     # all responses involve getting the previous uploads
     previous = models.FileUpload.by_owner(current_user.id)
-    
+
     if request.method == "GET":
-        return render_template('publisher/uploadmetadata.html', previous=previous)
-    
+        schema = request.cookies.get("schema")
+        if schema is None:
+            schema = ""
+        return render_template('publisher/uploadmetadata.html', previous=previous, schema=schema)
+
     # otherwise we are dealing with a POST - file upload or supply of url
     f = request.files.get("file")
     schema = request.values.get("schema")
-    url = request.values.get("url")
-    
+    url = request.values.get("upload-xml-link")
+    resp = make_response(redirect(url_for("publisher.upload_file")))
+    resp.set_cookie("schema", schema)
+
     # file upload takes precedence over URL, in case the user has given us both
     if f is not None and f.filename != "" and url is not None and url != "":
         flash("You provided a file and a URL - the URL has been ignored")
@@ -156,93 +203,64 @@ def upload_file():
     try:
         job = IngestArticlesBackgroundTask.prepare(current_user.id, upload_file=f, schema=schema, url=url, previous=previous)
         IngestArticlesBackgroundTask.submit(job)
-    except (BackgroundException, QueueWriteException) as e:
+    except (BackgroundException, TaskException) as e:
         magic = str(uuid.uuid1())
         flash("An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the ID " + magic)
         app.logger.exception('File upload error. ' + magic)
-        return redirect(url_for("publisher.upload_file"))
+        return resp
 
     if f is not None and f.filename != "":
         flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
-        return redirect(url_for("publisher.upload_file"))
-    
+        return resp
+
     if url is not None and url != "":
         flash("File reference successfully received - it will be processed shortly", "success")
-        return redirect(url_for("publisher.upload_file"))
-    
-    flash("No file or URL provided", "error")
-    return redirect(url_for("publisher.upload_file"))
+        return resp
 
+    flash("No file or URL provided", "error")
+    return resp
 
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required
 @ssl_required
 @write_required()
 def metadata():
+    user = current_user._get_current_object()
     # if this is a get request, give the blank form - there is no edit feature
     if request.method == "GET":
-        form = ArticleForm()
-        return render_template('publisher/metadata.html', form=form)
-    
+        fc = formcontext.ArticleFormFactory.get_from_context(user=user, role="publisher")
+        return fc.render_template()
+
     # if this is a post request, a form button has been hit and we need to do
     # a bunch of work
     elif request.method == "POST":
-        form = ArticleForm(request.form)
-        
+
+        fc = formcontext.ArticleFormFactory.get_from_context(role="publisher", user=user,
+                                                             form_data=request.form)
         # first we need to do any server-side form modifications which
         # the user might request by pressing the add/remove authors buttons
-        more_authors = request.values.get("more_authors")
-        remove_author = None
-        for v in request.values.keys():
-            if v.startswith("remove_authors"):
-                remove_author = v.split("-")[1]
-        
-        # if the user wants more authors, add an extra entry
-        if more_authors:
-            form.authors.append_entry()
-            return render_template('publisher/metadata.html', form=form)
-        
-        # if the user wants to remove an author, do the various back-flips required
-        if remove_author is not None:
-            keep = []
-            while len(form.authors.entries) > 0:
-                entry = form.authors.pop_entry()
-                if entry.short_name == "authors-" + remove_author:
-                    break
-                else:
-                    keep.append(entry)
-            while len(keep) > 0:
-                form.authors.append_entry(keep.pop().data)
-            return render_template('publisher/metadata.html', form=form)
-        
-        # if we get to here, then this is the full submission, and we need to
-        # validate and return
-        enough_authors = _validate_authors(form)
-        if form.validate():
-            # if the form validates, then we have to do our own bit of validation,
-            # which is to check that there is at least one author supplied
-            if not enough_authors:
-                return render_template('publisher/metadata.html', form=form, author_error=True)
-            else:
-                xwalk = ArticleFormXWalk()
-                art = xwalk.crosswalk_form(form)
-                articleService = DOAJ.articleService()
-                try:
-                    articleService.create_article(art, current_user._get_current_object(), add_journal_info=True)
-                    Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
-                    form = ArticleForm()
-                    return render_template('publisher/metadata.html', form=form)
-                except ArticleMergeConflict:
-                    Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
-                    return render_template('publisher/metadata.html', form=form)
-        else:
-            return render_template('publisher/metadata.html', form=form, author_error=not enough_authors)
+
+        fc.modify_authors_if_required(request.values)
+
+        validated = False
+        if fc.validate():
+            try:
+                fc.finalise()
+                validated = True
+            except ArticleMergeConflict:
+                Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
+            except DuplicateArticleException:
+                Messages.flash(Messages.ARTICLE_METADATA_UPDATE_CONFLICT)
+
+        return fc.render_template(validated=validated)
+
 
 @blueprint.route("/help")
 @login_required
 @ssl_required
 def help():
     return render_template("publisher/help.html")
+
 
 def _validate_authors(form, require=1):
     counted = 0
@@ -251,4 +269,3 @@ def _validate_authors(form, require=1):
         if name is not None and name != "":
             counted += 1
     return counted >= require
-

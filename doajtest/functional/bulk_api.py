@@ -3,7 +3,7 @@ from copy import deepcopy
 from doajtest.fixtures import ApplicationFixtureFactory, ArticleFixtureFactory
 
 # applications
-API = "http://localhost:5004/api/v1/bulk/applications"
+API = "http://localhost:5004/api/v2/bulk/applications"
 KEY = "d117ad1b35b94469b3dae09c29bfed55"
 
 dataset = [ApplicationFixtureFactory.incoming_application()] * 10
@@ -14,10 +14,10 @@ assert resp.status_code == 201
 j = resp.json()
 assert len(j) == 10
 
-print j
+print(j)
 
 ids = [r.get("id") for r in j]
-print ids
+print(ids)
 
 time.sleep(2)
 
@@ -28,7 +28,7 @@ assert resp.status_code == 204
 # make sure you give the api key of a user who has a journal which is
 # in_doaj = True and also has the same ISSNs as the articles in the test
 # data - usually this will be PISSN 1234-5678 and EISSN 9876-5432
-API = "http://localhost:5004/api/v1/bulk/articles"
+API = "http://localhost:5004/api/v2/bulk/articles"
 KEY = "d117ad1b35b94469b3dae09c29bfed55"
 
 # make the dataset
@@ -53,10 +53,10 @@ assert resp.status_code == 201
 j = resp.json()
 assert len(j) == 10
 
-print j
+print(j)
 
 ids = [r.get("id") for r in j]
-print ids
+print(ids)
 
 time.sleep(2)
 

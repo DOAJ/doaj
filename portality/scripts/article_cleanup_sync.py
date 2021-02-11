@@ -21,21 +21,21 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-        print "System is in READ-ONLY mode, enforcing read-only for this script"
+        print("System is in READ-ONLY mode, enforcing read-only for this script")
         args.write = False
 
     if args.prepall and not args.write:
-        print "Prep all must be used with the -w flag set too (why prep but not save?). Exiting."
+        print("Prep all must be used with the -w flag set too (why prep but not save?). Exiting.")
         exit(1)
     elif args.prepall:
-        print "Prep all arg set. 'unchanged' articles will also have their indexes refreshed."
+        print("Prep all arg set. 'unchanged' articles will also have their indexes refreshed.")
 
     job = asc.ArticleCleanupSyncBackgroundTask.prepare("testuser", prepall=args.prepall, write=args.write)
     task = asc.ArticleCleanupSyncBackgroundTask(job)
     BackgroundApi.execute(task)
 
     end = datetime.now()
-    print start, "-", end
+    print(start, "-", end)
 
     for a in job.audit:
-        print a
+        print(a)

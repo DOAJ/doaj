@@ -70,21 +70,21 @@ def do_issn_cluster(issn, rels, cluster_register, success_register, cluster_data
 
 issn_clusters = []
 issn_success_register = {"prevfound" : [], "prevfail" : [], "nextfound" : [], "nextfail" : []}
-for issn, rels in issn_cluster.iteritems():
+for issn, rels in issn_cluster.items():
     register = []
     do_issn_cluster(issn, rels, register, issn_success_register, issn_cluster)
     issn_clusters.append(register)
 
 eissn_clusters = []
 eissn_success_register = {"prevfound" : [], "prevfail" : [], "nextfound" : [], "nextfail" : []}
-for issn, rels in eissn_cluster.iteritems():
+for issn, rels in eissn_cluster.items():
     register = []
     do_issn_cluster(issn, rels, register, eissn_success_register, eissn_cluster)
     eissn_clusters.append(register)
 
 all_clusters = []
 all_success_register = {"prevfound" : [], "prevfail" : [], "nextfound" : [], "nextfail" : []}
-for issn, rels in all_cluster.iteritems():
+for issn, rels in all_cluster.items():
     register = []
     do_issn_cluster(issn, rels, register, all_success_register, all_cluster)
     all_clusters.append(register)

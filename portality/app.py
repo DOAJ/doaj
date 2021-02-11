@@ -8,16 +8,18 @@ also be backed up by models, so have a look at the example models and use them /
 new ones as required too.
 """
 import os, sys
+import tzlocal
+import pytz
+import yaml
 
-from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
+from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, send_from_directory
 from flask_login import login_user, current_user
 
 from datetime import datetime
-import tzlocal
-import pytz
+from collections import OrderedDict
 
 import portality.models as models
-from portality.core import app, initialise_index
+from portality.core import app, es_connection, initialise_index
 from portality import settings
 
 from portality.view.account import blueprint as account
@@ -30,9 +32,14 @@ from portality.view.openurl import blueprint as openurl
 from portality.view.atom import blueprint as atom
 from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
-if 'api' in app.config['FEATURES']:
+from portality.view.jct import blueprint as jct
+from portality.view.apply import blueprint as apply
+if 'api1' in app.config['FEATURES']:
     from portality.view.api_v1 import blueprint as api_v1
+if 'api2' in app.config['FEATURES']:
+    from portality.view.api_v2 import blueprint as api_v2
 from portality.view.status import blueprint as status
+from portality.lib.normalise import normalise_doi
 
 app.register_blueprint(account, url_prefix='/account')
 app.register_blueprint(admin, url_prefix='/admin')
@@ -44,9 +51,14 @@ app.register_blueprint(query, url_prefix="/editor_query")
 app.register_blueprint(query, url_prefix="/associate_query")
 app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
-if 'api' in app.config['FEATURES']:
+if 'api1' in app.config['FEATURES']:
     app.register_blueprint(api_v1, url_prefix='/api/v1')
+if 'api2' in app.config['FEATURES']:
+    app.register_blueprint(api_v2, url_prefix='/api/v2')
 app.register_blueprint(status, url_prefix='/status')
+app.register_blueprint(apply, url_prefix='/apply')
+app.register_blueprint(status, url_prefix='/_status')
+app.register_blueprint(jct, url_prefix="/jct")
 
 app.register_blueprint(oaipmh)
 app.register_blueprint(openurl)
@@ -57,78 +69,32 @@ app.register_blueprint(doaj)
 # because that does not run if gunicorn is loading the app, as opposed
 # to the app being run directly by python portality/app.py
 # putting it here ensures it will run under any web server
-initialise_index(app)
+initialise_index(app, es_connection)
 
-"""
-FIXME: this needs to be sorted out - they shouldn't be in here and in doaj.py, but there is an issue
-with the 404 pages which requires them
-"""
-try:
-    if sys.version_info.major == 2 and sys.version_info.minor < 7:
-        from portality.ordereddict import OrderedDict
-except AttributeError:
-    if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-        from portality.ordereddict import OrderedDict
-    else:
-        from collections import OrderedDict
-else:
-    from collections import OrderedDict
+# Import list of Sponsors from the static site’s data file
+# Only display gold & silver sponsors for now on the homepage
+# The same file is used to display sponsors in the Sponsors page’s full list
+with open(os.path.join(app.config["BASE_FILE_PATH"],"../static_content/_data/sponsors.yml")) as f:
+    SPONSORS = yaml.load(f, Loader=yaml.FullLoader)
 
-# The key should correspond to the sponsor logo name in /static/doaj/images/sponsors without the extension for
-# consistency - no code should rely on this though. Sponsors are in tiers: gold, silver, bronze, and patron.
-# Only gold sponsors appear on the front page, and patrons are displayed text-only on the sponsors page alongside
-# the other tiers' logos.
-SPONSORS = {
-    'gold': {
-        'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'}
-    },
-    'silver': {
-        'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'https://www.frontiersin.org'},
-        #'hindawi': {'name': 'Hindawi Publishing Corporation', 'logo': 'hindawi.png', 'url': 'https://www.hindawi.com'},
-        'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.svg', 'url': 'http://www.mdpi.com/'},
-        'oclc': {'name': 'OCLC', 'logo': 'oclc.svg', 'url': 'https://www.oclc.org/en-europe/home.html'},
-        #'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.svg', 'url': 'https://www.plos.org/'},
-        'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
-        'ufm': {'name': 'Danish Agency for Science and Higher Education', 'logo': 'ufm.svg', 'url': 'https://ufm.dk/'},
-        'kbse': {'name': 'National Library of Sweden', 'logo': 'kbse.svg', 'url': 'https://www.kb.se/'},
-        'finnish-learned-soc': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-tsvlogo.svg', 'url': 'https://tsv.fi/en/frontpage'},
-        'nsd': {'name': 'NSD (Norwegian Centre for Research Data)', 'logo': 'nsd.svg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
-        'swedish-research': {'name': 'Swedish Research Council', 'logo': 'swedish-research.svg', 'url': 'https://vr.se/english.html'},
-        'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
-        'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://publications.copernicus.org/'},
-    },
-    'bronze': {
-        '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
-        'aps': {'name': 'American Physical Society', 'logo': 'aps.gif', 'url': 'https://journals.aps.org/'},
-        #'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'},
-        'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.svg', 'url': 'https://cottagelabs.com'},
-        'issn': {'name': 'ISSN (International Standard Serial Number)', 'logo': 'issn.jpg', 'url': 'http://www.issn.org/'},
-        'lund': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'https://www.lunduniversity.lu.se/'},
-        'sage': {'name': 'SAGE Publications', 'logo': 'sage.svg', 'url': 'http://www.sagepublications.com/'},
-        'scielo': {'name': 'SciELO (Scientific Electronic Library Online)', 'logo': 'scielo.svg', 'url': 'http://www.scielo.br/'},
-        'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.svg', 'url': 'http://www.taylorandfrancisgroup.com/'},
-        'wiley': {'name': 'Wiley', 'logo': 'wiley.svg', 'url': 'https://wiley.com'},
-        'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.svg', 'url': 'http://emeraldpublishing.com/'},
-        'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.svg', 'url': 'https://www.thieme.com'},
-        #'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tec-mx.png', 'url': 'https://tec.mx/es'},
-        #'brill': {'name': 'BRILL', 'logo': 'brill.jpg', 'url': 'https://brill.com/'},
-        'ubiquity': {'name': 'Ubiquity Press', 'logo': 'ubiquity_press.svg', 'url': 'https://www.ubiquitypress.com/'},
-        #'openedition': {'name': 'Open Edition', 'logo': 'open_edition.svg', 'url': 'https://www.openedition.org'},
-        'iop': {"name": "IOP Publishing", "logo": "iop.jpg", "url": "http://ioppublishing.org/"},
-        'degruyter': {'name': 'De Gruyter', 'logo': 'degruyter.jpg', 'url': 'https://www.degruyter.com/dg/page/open-access'},
-        'rsc': {'name': 'Royal Society of Chemistry', 'logo': 'rsc.svg', 'url': 'https://www.rsc.org'},
-        'edp': {'name': 'EDP Sciences', 'logo': 'edp.gif', 'url': 'https://www.edpsciences.org'},
-        'elife': {'name': 'eLife', 'logo': 'elife.png', 'url': 'https://elifesciences.org/'},
-    },
-    'patron': {
-        #'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
-        #'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.svg', 'url': 'https://www.karger.com/OpenAccess'},
-        #'enago': {'name': 'ENAGO', 'url': 'https://www.enago.com/'},
-    }
-}
+with open(os.path.join(app.config["BASE_FILE_PATH"],"../static_content/_data/volunteers.yml")) as f:
+    VOLUNTEERS = yaml.load(f, Loader=yaml.FullLoader)
 
-# In each tier, create an ordered dictionary sorted alphabetically by sponsor name
-SPONSORS = {k: OrderedDict(sorted(v.items(), key=lambda t: t[0])) for k, v in SPONSORS.items()}
+
+# serve static files from multiple potential locations
+# this allows us to override the standard static file handling with our own dynamic version
+@app.route("/static/<path:filename>")
+@app.route("/static_content/<path:filename>")
+def our_static(filename):
+    return custom_static(filename)
+
+
+def custom_static(path):
+    for dir in app.config.get("STATIC_PATHS", []):
+        target = os.path.join(app.root_path, dir, path)
+        if os.path.isfile(target):
+            return send_from_directory(os.path.dirname(target), os.path.basename(target))
+    abort(404)
 
 
 # Configure the Google Analytics tracker
@@ -136,16 +102,17 @@ from portality.lib import analytics
 try:
     analytics.create_logfile(app.config.get('GOOGLE_ANALTYICS_LOG_DIR', None))
     analytics.create_tracker(app.config['GOOGLE_ANALYTICS_ID'], app.config['BASE_DOMAIN'])
-except (KeyError, analytics.GAException):
+except KeyError:
     err = "No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'."
     if app.config.get("DOAJENV") == 'production':
         app.logger.error(err)
     else:
         app.logger.debug(err)
-
+except analytics.GAException as e:
+    app.logger.debug('Unable to send events to Google Analytics: ' + str(e))
 
 # Redirects from previous DOAJ app.
-# RJ: I have decided to put these here so that they can be managed 
+# RJ: I have decided to put these here so that they can be managed
 # alongside the DOAJ codebase.  I know they could also go into the
 # nginx config, but there is a chance that they will get lost or forgotten
 # some day, whereas this approach doesn't have that risk.
@@ -179,6 +146,14 @@ def legacy_doaj_XML_schema():
             )
 
 
+@app.route("/isCrossrefLoaded")
+def is_crossref_loaded():
+    if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").isAlive():
+        return "false"
+    else:
+        return "true"
+
+
 # FIXME: this used to calculate the site stats on request, but for the time being
 # this is an unnecessary overhead, so taking it out.  Will need to put something
 # equivalent back in when we do the admin area
@@ -194,9 +169,8 @@ def set_current_context():
     information.
     '''
     return {
-        'heading_title': '',
-        'heading_text': '',
         'sponsors': SPONSORS,
+        'volunteers': VOLUNTEERS,
         'settings': settings,
         'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
@@ -213,6 +187,7 @@ def bytes_to_filesize(size):
         size = float(size) / 1000.0     # note that it is no longer 1024
         scale += 1
     return "{size:.1f}{unit}".format(size=size, unit=units[scale])
+
 
 @app.template_filter('utc_timestamp')
 def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
@@ -236,8 +211,11 @@ def doi_url(doi):
     :param doi: the string DOI
     :return: the HTML link
     """
-    tendot = doi[doi.find('10.'):]
-    return "<a href='https://doi.org/{0}'>{0}</a>".format(tendot)
+
+    try:
+        return "https://doi.org/" + normalise_doi(doi)
+    except ValueError:
+        return ""
 
 
 @app.template_filter('form_diff_table_comparison_value')
@@ -260,9 +238,9 @@ def form_diff_table_comparison_value(val):
             dvals.append(form_diff_table_comparison_value(v))
         return ", ".join(dvals)
     else:
-        if val is True or (isinstance(val, basestring) and val.lower() == "true"):
+        if val is True or (isinstance(val, str) and val.lower() == "true"):
             return "Yes"
-        elif val is False or (isinstance(val, basestring) and val.lower() == "false"):
+        elif val is False or (isinstance(val, str) and val.lower() == "false"):
             return "No"
         return val
 
@@ -305,30 +283,63 @@ def standard_authentication():
         user = models.Account.pull(remote_user)
         if user:
             login_user(user, remember=False)
-    # add a check for provision of api key
     elif 'api_key' in request.values:
-        res = models.Account.query(q='api_key:"' + request.values['api_key'] + '"')['hits']['hits']
-        if len(res) == 1:
-            user = models.Account.pull(res[0]['_source']['id'])
-            if user:
-                login_user(user, remember=False)
+        q = models.Account.query(q='api_key:"' + request.values['api_key'] + '"')
+        if 'hits' in q:
+            res = q['hits']['hits']
+            if len(res) == 1:
+                user = models.Account.pull(res[0]['_source']['id'])
+                if user:
+                    login_user(user, remember=False)
 
 
-if 'api' in app.config['FEATURES']:
+# Register configured API versions
+features = app.config.get('FEATURES', [])
+if 'api1' in features or 'api2' in features:
     @app.route('/api/')
     def api_directory():
-        return jsonify(
-            {
-                'api_versions': [
-                    {
-                        'version': '1.0.0',
-                        'base_url': url_for('api_v1.api_spec', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
-                        'note': 'First version of the DOAJ API',
-                        'docs_url': url_for('api_v1.docs', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
-                    }
-                ]
-            }
-        )
+        vers = []
+        # NOTE: we never could run API v1 and v2 at the same time.
+        # This code is here for future reference to add additional API versions
+        if 'api1' in features:
+            vers.append(
+                {
+                    'version': '1.0.0',
+                    'base_url': url_for('api_v1.api_spec', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
+                    'note': 'First version of the DOAJ API',
+                    'docs_url': url_for('api_v1.docs', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
+                }
+            )
+        if 'api2' in features:
+            vers.append(
+                {
+                    'version': '2.0.0',
+                    'base_url': url_for('api_v2.api_spec', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
+                    'note': 'Second version of the DOAJ API',
+                    'docs_url': url_for('api_v2.docs', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
+                }
+            )
+        return jsonify({'api_versions': vers})
+
+
+# Make the reCAPTCHA key available to the js
+@app.route('/get_recaptcha_site_key')
+def get_site_key():
+    return app.config.get('RECAPTCHA_SITE_KEY', '')
+
+
+@app.errorhandler(400)
+def page_not_found(e):
+    return render_template('400.html'), 400
+
+
+@app.errorhandler(401)
+def page_not_found(e):
+    return render_template('401.html'), 401
 
 
 @app.errorhandler(404)
@@ -336,9 +347,9 @@ def page_not_found(e):
     return render_template('404.html'), 404
 
 
-@app.errorhandler(401)
+@app.errorhandler(500)
 def page_not_found(e):
-    return render_template('401.html'), 401
+    return render_template('500.html'), 500
 
 
 if __name__ == "__main__":

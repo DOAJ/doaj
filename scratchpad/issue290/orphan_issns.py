@@ -19,7 +19,7 @@ resp = esprit.raw.search(doaj, "journal,article", journal_issn_query, method="GE
 j = resp.json()
 jissns = [t.get("term") for t in j.get("facets", {}).get("issns", {}).get("terms", [])]
 
-print "Journal ISSNs", len(jissns)
+print("Journal ISSNs", len(jissns))
 
 article_issn_query = {
     "query" : {"term" : {"_type" : "article"}},
@@ -37,12 +37,12 @@ resp = esprit.raw.search(doaj, "journal,article", article_issn_query, method="GE
 j = resp.json()
 aissns = [t.get("term") for t in j.get("facets", {}).get("issns", {}).get("terms", [])]
 
-print "Article ISSNs", len(aissns)
+print("Article ISSNs", len(aissns))
 
 missing = [issn for issn in aissns if issn not in jissns]
 
-print "Orphaned", len(missing)
-print missing
+print("Orphaned", len(missing))
+print(missing)
 
 get_query = {
     "query" : {
@@ -66,7 +66,7 @@ for m in missing:
         title = r.get("bibjson", {}).get("journal", {}).get("title")
         info.append((m, title))
 
-print info
+print(info)
 
 name_query = {
     "query" : {
@@ -92,6 +92,6 @@ for i, n in info:
     for r in res:
         issns = r.get("index", {}).get("issn", [])
         new_info.append((i, n, issns))
-        print i, n, "=>", issns
+        print(i, n, "=>", issns)
 
-print unfound
+print(unfound)

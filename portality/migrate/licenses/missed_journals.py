@@ -7,7 +7,7 @@ Use a scroll search to update mis-labelled licenses in the DOAJ.
 '''
 
 # The articles missed by the update_licenses script
-missed_articles = [u'0028-9930', u'0034-7310', u'1089-6891', u'2014-7351', u'1960-6004', u'1326-2238', u'1678-4226', u'2036-3603', u'1678-4936', u'0104-7930', u'2009-4161', u'0173-5969', u'1863-5245', u'1679-2041', u'2065-7647', u'1406-0000', u'0182-1279', u'0000-0000', u'1301-3438', u'1402-150X', u'1985-8329', u'2163-7984', u'1670-7796', u'1670-7788', u'2067-7694', u'2307-5359', u'1862-4006', u'1985-8353', u'1614-2934', u'0158-1328', u'2163-3987', u'2250-5490', u'1176-4120', u'2008-4073', u'0232-0475']
+missed_articles = ['0028-9930', '0034-7310', '1089-6891', '2014-7351', '1960-6004', '1326-2238', '1678-4226', '2036-3603', '1678-4936', '0104-7930', '2009-4161', '0173-5969', '1863-5245', '1679-2041', '2065-7647', '1406-0000', '0182-1279', '0000-0000', '1301-3438', '1402-150X', '1985-8329', '2163-7984', '1670-7796', '1670-7788', '2067-7694', '2307-5359', '1862-4006', '1985-8353', '1614-2934', '0158-1328', '2163-3987', '2250-5490', '1176-4120', '2008-4073', '0232-0475']
 
 license_correct_dict = { "CC by" : "CC BY",
                          "CC by-nc" : "CC BY-NC",
@@ -47,17 +47,17 @@ for article_issn in missed_articles:
             article_model.data.get('index')['license'] = [license_correct_dict[a_license[0]]]
             write_batch.append(article_model.data)
         except ValueError:
-            print "Failed to create a model"
+            print("Failed to create a model")
         except KeyError:
-            print "No license to change"
+            print("No license to change")
 
     # When we have enough, do some writing
     if len(write_batch) >= batch_size:
-        print "writing ", len(write_batch)
+        print("writing ", len(write_batch))
         models.Article.bulk(write_batch)
         write_batch = []
 
 # Write all remaining files to index
 if len(write_batch) > 0:
-    print "writing ", len(write_batch)
+    print("writing ", len(write_batch))
     models.Article.bulk(write_batch)

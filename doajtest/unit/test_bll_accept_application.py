@@ -43,23 +43,23 @@ class TestBLLAcceptApplication(DoajTestCase):
         # create the application
         application = None
         if application_type == "save_fail":
-            application = Suggestion(**ApplicationFixtureFactory.make_application_source())
+            application = Suggestion(**ApplicationFixtureFactory.make_update_request_source())
             application.save = mock_save
             Journal.save = mock_save
         elif application_type == "with_current_journal":
-            application = Suggestion(**ApplicationFixtureFactory.make_application_source())
+            application = Suggestion(**ApplicationFixtureFactory.make_update_request_source())
             application.remove_notes()
             application.add_note("unique 1", "2002-01-01T00:00:00Z")
-            application.add_note("duplicate", "2001-01-01T00:00:00Z")
+            application.add_note("duplicate", "2001-01-01T00:00:00Z", "duplicate_id")
             cj = application.current_journal
             journal = Journal(**JournalFixtureFactory.make_journal_source())
             journal.set_id(cj)
             journal.remove_notes()
             journal.add_note("unique 2", "2003-01-01T00:00:00Z")
-            journal.add_note("duplicate", "2001-01-01T00:00:00Z")
+            journal.add_note("duplicate", "2001-01-01T00:00:00Z", "duplicate_id")
             journal.save(blocking=True)
         elif application_type == "no_current_journal":
-            application = Suggestion(**ApplicationFixtureFactory.make_application_source())
+            application = Suggestion(**ApplicationFixtureFactory.make_update_request_source())
             application.remove_current_journal()
 
 
@@ -113,7 +113,7 @@ class TestBLLAcceptApplication(DoajTestCase):
                 assert application.last_manual_update != "1970-01-01T00:00:00Z"
             elif result_manual_update == "no":
                 assert journal.last_manual_update is None
-                assert application.last_manual_update is None
+                assert application.last_manual_update == "2001-01-01T00:00:00Z"
 
             if application_type == "with_current_journal":
                 assert len(journal.notes) == 3

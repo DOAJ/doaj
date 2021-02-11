@@ -1,40 +1,30 @@
 {% extends "admin/admin_base.html" %}
 
 {% block admin_content %}
+<div class="row">
+  <div class="col-md-6">
+    <h1>Editor group</h1>
+    {% include "formcontext/_error_header.html" %}
+  </div>
 
+  <div class="col-md-6">
+    {% from "_formhelpers.html" import render_field_horizontal %}
 
-<h1>Editor Group</h1>
-<div class="row-fluid">
-    <div class="span12">
-
-        {% if there_were_errors %}
-            <h4 class="red">There is a problem with the submitted form.</h4>
-        {% endif %}
-
-        {% from "_formhelpers.html" import render_field_horizontal %}
-        {% from "_formhelpers.html" import render_field %}
-
-        <form method="post" action="{{ url_for('admin.editor_group') }}{% if form.group_id.data and form.group_id.data != '' %}/{{form.group_id.data}}{% endif %}" class="form-horizontal wide" id="editor_group_form">
-            <fieldset>
-                {{ form.group_id }}
-                {{ render_field_horizontal(form.name, style="width: 400px", placeholder="Enter a group name here (must be unique)") }}
-                {{ render_field_horizontal(form.editor, style="width: 200px", placeholder="Editor's User ID") }}
-                {{ render_field_horizontal(form.associates, style="width: 400px", placeholder="Associate Editor User IDs") }}
-
-                <div class="control-group">
-                    <div class="controls"><button class="btn btn-success" type="submit">Save Group</button></div>
-                </div>
-            </fieldset>
-        </form>
-
-    </div>
+    <form method="post" action="{{ url_for('admin.editor_group') }}{% if form.group_id.data and form.group_id.data != '' %}/{{form.group_id.data}}{% endif %}" class="form form--compact" id="editor_group_form">
+      <fieldset>
+        {{ form.group_id }}
+        {{ render_field_horizontal(form.name, placeholder="Enter a unique group name") }}
+        {{ render_field_horizontal(form.editor, placeholder="Editor’s user ID") }}
+        {{ render_field_horizontal(form.associates, placeholder="Associate editor user IDs") }}
+        <button class="button button--primary" type="submit">Save Group</button>
+      </fieldset>
+    </form>
+  </div>
 </div>
-
 {% endblock %}
 
 {% block extra_js_bottom %}
 <script type="text/javascript">
-
 
     function userAutocomplete(prefix, callback) {
         $.ajax({
@@ -43,11 +33,12 @@
             dataType: "json",
             url: "{{url_for('admin.user_autocomplete')}}",
             success: function(resp) {
-                var data = {results: resp}
+                var data = {results: resp};
                 callback(data);
             }
         })
     }
+
 
     $("#editor").select2({
         minimumInputLength: 1,
@@ -58,7 +49,7 @@
             var data = {id: element.val(), text: element.val()};
             callback(data);
         }
-    })
+    });
 
     $("#associates").select2({
         minimumInputLength: 1,
@@ -73,9 +64,7 @@
             });
             callback(data);
         }
-    })
-
-
+    });
 
 </script>
 

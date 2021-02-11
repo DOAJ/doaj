@@ -11,18 +11,21 @@ from portality.lib.paths import rel2abs
 from portality.core import app
 from doajtest.mocks.store import StoreMockFactory
 from doajtest.mocks.models_Cache import ModelCacheMockFactory
-from portality import store, clcsv
-from StringIO import StringIO
-import os, shutil
+from portality import store
+from io import StringIO
+import os, shutil, csv
+
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_journal_csv"), "journal_csv", "test_id",
                                {"test_id" : []})
 
+
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,
     "IOError" : IOError
 }
+
 
 class TestBLLJournalCSV(DoajTestCase):
 
@@ -96,7 +99,7 @@ class TestBLLJournalCSV(DoajTestCase):
         for i in range(len(journals)):
             journal = journals[i]
             bj = journal.bibjson()
-            bj.alternative_title = u"Заглавие на журнала"   # checking mixed unicode
+            bj.alternative_title = "Заглавие на журнала"   # checking mixed unicode
             issns = journal.bibjson().issns()
             source1 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=False)
             articles.append(models.Article(**source1))
@@ -120,8 +123,8 @@ class TestBLLJournalCSV(DoajTestCase):
             for i in range(len(noissns)):
                 noissn = noissns[i]
                 bj = noissn.bibjson()
-                bj.remove_identifiers(idtype=bj.P_ISSN)
-                bj.remove_identifiers(idtype=bj.E_ISSN)
+                del bj.eissn
+                del bj.pissn
                 noissn.set_id("no_issn_{i}".format(i=i))
             journals += noissns
 
@@ -182,7 +185,7 @@ class TestBLLJournalCSV(DoajTestCase):
                     break
 
             handle = self.localStore.get(self.container_id, latest, encoding="utf-8")
-            reader = clcsv.UnicodeReader(handle)
+            reader = csv.reader(handle)
             rows = [r for r in reader]
 
             if len(comparisons) > 0:
@@ -190,20 +193,20 @@ class TestBLLJournalCSV(DoajTestCase):
                 for i in range(len(expected_headers)):
                     h = expected_headers[i]
                     if h != rows[0][i]:
-                        print("{x} - {y}".format(x=h, y=rows[0][i]))
+                        print(("{x} - {y}".format(x=h, y=rows[0][i])))
                 assert rows[0] == expected_headers
 
                 assert len(rows) == journal_count + 1
 
                 for i in range(1, len(rows)):
                     row = rows[i]
-                    alt_title = row[2]
-                    issn = row[3]
-                    eissn = row[4]
-                    article_count = int(row[55])
-                    article_latest = row[56]
+                    alt_title = row[3]
+                    issn = row[4]
+                    eissn = row[5]
+                    article_count = int(row[51])
+                    article_latest = row[52]
 
-                    assert alt_title == u"Заглавие на журнала"
+                    assert alt_title == "Заглавие на журнала"
                     assert issn in comparisons[issn]["issns"]
                     assert eissn in comparisons[issn]["issns"]
                     assert article_count == comparisons[issn]["article_count"], (article_count, comparisons[issn]["article_count"])

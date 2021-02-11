@@ -91,9 +91,9 @@ class TestBLLArticleGetDuplicates(DoajTestCase):
         # first do get_duplicates
         if raises is not None:
             with self.assertRaises(raises):
-                self.svc.get_duplicates(article, owner_id)
+                self.svc.get_duplicates(article)
         else:
-            duplicates = self.svc.get_duplicates(article, owner_id)
+            duplicates = self.svc.get_duplicates(article)
 
             if len(duplicates) > 0:
                 first_article = duplicates[0]
@@ -116,12 +116,12 @@ class TestBLLArticleGetDuplicates(DoajTestCase):
         # then the same again on the singular get_duplicate
         if raises is not None:
             with self.assertRaises(raises):
-                self.svc.get_duplicate(article, owner_id)
+                self.svc.get_duplicate(article)
         elif expect_merge_conflict:
             with self.assertRaises(exceptions.ArticleMergeConflict):
-                self.svc.get_duplicate(article, owner_id)
+                self.svc.get_duplicate(article)
         else:
-            duplicate = self.svc.get_duplicate(article, owner_id)
+            duplicate = self.svc.get_duplicate(article)
 
             if expected_count > 0:
                 assert isinstance(duplicate, Article)

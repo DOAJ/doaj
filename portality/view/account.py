@@ -3,14 +3,14 @@ import uuid, json
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
 from flask_login import login_user, logout_user, current_user, login_required
-from wtforms import StringField, HiddenField, PasswordField, ValidationError, validators, Form
+from wtforms import StringField, HiddenField, PasswordField, validators, Form
 
+from portality import util
 from portality.core import app
 from portality.decorators import ssl_required, write_required
-from portality import models
-from portality import util, app_email
-
-from portality.formcontext.validate import ReservedUsernames
+from portality.models import Account
+from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
+from portality.notifications.application_emails import send_account_created_email, send_account_password_reset_email
 
 blueprint = Blueprint('account', __name__)
 
@@ -21,64 +21,122 @@ blueprint = Blueprint('account', __name__)
 def index():
     if not current_user.has_role("list_users"):
         abort(401)
-    return render_template("account/users.html", search_page=True, facetviews=["users.facetview"])
+    return render_template("account/users.html")
 
 
-@blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
+class UserEditForm(Form):
+
+    # Let's not allow anyone to change IDs - there lies madness and destruction (referential integrity)
+    # id = StringField('ID', [IgnoreUnchanged(), ReservedUsernames(), IdAvailable()])
+
+    name = StringField('Account name', [DataOptional(), validators.Length(min=3, max=64)])
+    email = StringField('Email address', [
+        IgnoreUnchanged(),
+        validators.Length(min=3, max=254),
+        validators.Email(message='Must be a valid email address'),
+        EmailAvailable(),
+        validators.EqualTo('email_confirm', message='Email confirmation must match'),
+    ])
+    email_confirm = StringField('Confirm email address')
+    roles = StringField('User roles')
+    password_change = PasswordField('Change password', [
+        validators.EqualTo('password_confirm', message='Passwords must match'),
+    ])
+    password_confirm = PasswordField('Confirm password')
+
+
+@blueprint.route('/<username>', methods=['GET', 'POST', 'DELETE'])
 @login_required
 @ssl_required
 @write_required()
 def username(username):
-    acc = models.Account.pull(username)
+    acc = Account.pull(username)
 
     if acc is None:
         abort(404)
-    elif ( request.method == 'DELETE' or
-            ( request.method == 'POST' and request.values.get('submit', False) == 'Delete' ) ):
+    if (request.method == 'DELETE' or
+            (request.method == 'POST' and request.values.get('submit', False) == 'Delete')):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
         else:
-            conf = request.values.get("confirm")
-            if conf is None or conf != "confirm":
-                flash('check the box to confirm you really mean it!', "error")
-                return render_template('account/view.html', account=acc)
+            conf = request.values.get("delete_confirm")
+            if conf is None or conf != "delete_confirm":
+                flash('Check the box to confirm you really mean it!', "error")
+                return render_template('account/view.html', account=acc, form=UserEditForm(obj=acc))
             acc.delete()
             flash('Account ' + acc.id + ' deleted')
             return redirect(url_for('.index'))
+
     elif request.method == 'POST':
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
+
+        form = UserEditForm(obj=acc, formdata=request.form)
+
+        if not form.validate():
+            return render_template('account/view.html', account=acc, form=form)
+
         newdata = request.json if request.json else request.values
-        if newdata.get('id', False):
-            if newdata['id'] != username:
-                acc = models.Account.pull(newdata['id'])
-        if request.values.get('submit', False) == 'Generate':
+        if request.values.get('submit', False) == 'Generate a new API Key':
             acc.generate_api_key()
-        for k, v in newdata.items():
-            if k not in ['marketing_consent', 'submit','password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
-                acc.data[k] = v
-        if 'password' in newdata and not newdata['password'].startswith('sha1'):
-            acc.set_password(newdata['password'])
+
+        # if 'id' in newdata and len(newdata['id']) > 0:
+        #     if newdata['id'] != current_user.id == acc.id:
+        #         flash('You may not edit the ID of your own account', 'error')
+        #         return render_template('account/view.html', account=acc, form=form)
+        #     else:
+        #         acc.delete()        # request for the old record to be deleted from ES
+        #         acc.set_id(newdata['id'])
+
+        if 'name' in newdata:
+            acc.set_name(newdata['name'])
+        if 'password_change' in newdata and len(newdata['password_change']) > 0 and not newdata['password_change'].startswith('sha1'):
+            acc.set_password(newdata['password_change'])
+
         # only super users can re-write roles
-        if "role" in newdata and current_user.is_super:
-            new_roles = [r.strip() for r in newdata.get("role").split(",")]
+        if "roles" in newdata and current_user.is_super:
+            new_roles = [r.strip() for r in newdata.get("roles").split(",")]
             acc.set_role(new_roles)
 
         if "marketing_consent" in newdata:
             acc.set_marketing_consent(newdata["marketing_consent"] == "true")
 
+        if 'email' in newdata and len(newdata['email']) > 0 and newdata['email'] != acc.email:
+            acc.set_email(newdata['email'])
+
+            # If the user updated their own email address, invalidate the password and require verification again.
+            if current_user.id == acc.id:
+                acc.clear_password()
+                reset_token = uuid.uuid4().hex
+                acc.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
+                try:
+                    send_account_password_reset_email(acc)
+                    flash("Email address updated. You have been logged out for email address verification.")
+                except Exception:
+                    flash('Error - Could not send verification, aborting email change', 'error')
+                    return render_template('account/view.html', account=acc, form=form)
+                acc.save()
+                logout_user()
+
+                if app.config.get('DEBUG', False):
+                    reset_url = url_for('account.reset', reset_token=acc.reset_token)
+                    util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(reset_url))
+
+                return redirect(url_for('doaj.home'))
+
         acc.save()
         flash("Record updated")
-        return render_template('account/view.html', account=acc)
-    else:
+        return render_template('account/view.html', account=acc, form=form)
+
+    else:  # GET
         if util.request_wants_json():
             resp = make_response(
-                json.dumps(acc.data, sort_keys=True, indent=4) )
+                json.dumps(acc.data, sort_keys=True, indent=4))
             resp.mimetype = "application/json"
             return resp
         else:
-            # do an mget on the journals, so that we can present them to the user
-            return render_template('account/view.html', account=acc)
+            form = UserEditForm(obj=acc)
+            return render_template('account/view.html', account=acc, form=form)
 
 
 def get_redirect_target(form=None):
@@ -110,7 +168,7 @@ class RedirectForm(Form):
 
 
 class LoginForm(RedirectForm):
-    username = StringField('Username', [validators.DataRequired()])
+    user = StringField('Email address or username', [validators.DataRequired()])
     password = PasswordField('Password', [validators.DataRequired()])
 
 
@@ -121,20 +179,35 @@ def login():
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
     if request.method == 'POST' and form.validate():
         password = form.password.data
-        username = form.username.data
-        user = models.Account.pull(username)
-        if user is None:
-            user = models.Account.pull_by_email(username)
-        if user is not None and user.check_password(password):
-            login_user(user, remember=True)
-            flash('Welcome back.', 'success')
-            # return form.redirect('index')
-            # return redirect(url_for('doaj.home'))
-            return redirect(get_redirect_target(form=form))
+        username = form.user.data
+
+        # If our settings allow, try getting the user account by ID first, then by email address
+        if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
+            user = Account.pull(username) or Account.pull_by_email(username)
         else:
-            flash('Incorrect username/password', 'error')
-    if request.method == 'POST' and not form.validate():
-        flash('Invalid credentials', 'error')
+            user = Account.pull_by_email(username)
+
+        # If we have a verified user account, proceed to attempt login
+        try:
+            if user is not None:
+                if user.check_password(password):
+                    login_user(user, remember=True)
+                    flash('Welcome back.', 'success')
+                    return redirect(get_redirect_target(form=form))
+                else:
+                    form.password.errors.append('The password you entered is incorrect. Try again or <a href="{0}">reset your password</a>.'.format(url_for(".forgot")))
+            else:
+                form.user.errors.append('Account not recognised. If you entered an email address, try your username instead.')
+        except KeyError:
+            # Account has no password set, the user needs to reset or use an existing valid reset link
+            FORGOT_INSTR = '<a href="{url}">&lt;click here&gt;</a> to send a new reset link.'.format(url=url_for('.forgot'))
+            util.flash_with_url('Account verification is incomplete. Check your emails for the link or ' + FORGOT_INSTR,
+                                'error')
+            return redirect(url_for('doaj.home'))
+
+    if request.args.get("redirected") == "apply":
+        form['next'].data = url_for("apply.public_application")
+        return render_template('account/login_to_apply.html', form=form)
     return render_template('account/login.html', form=form)
 
 
@@ -146,81 +219,77 @@ def forgot():
     if request.method == 'POST':
         # get hold of the user account
         un = request.form.get('un', "")
-        account = models.Account.pull(un)
+        if app.config.get('LOGIN_VIA_ACCOUNT_ID', False):
+            account = Account.pull(un) or Account.pull_by_email(un)
+        else:
+            account = Account.pull_by_email(un)
+
         if account is None:
-            account = models.Account.pull_by_email(un)
-        if account is None:
-            util.flash_with_url('Hm, sorry, your account username / email address is not recognised.' + CONTACT_INSTR, 'error')
+            util.flash_with_url('Error - your account username / email address is not recognised.' + CONTACT_INSTR,
+                                'error')
             return render_template('account/forgot.html')
 
         if not account.data.get('email'):
-            util.flash_with_url('Hm, sorry, your account does not have an associated email address.' + CONTACT_INSTR, 'error')
+            util.flash_with_url('Error - your account does not have an associated email address.' + CONTACT_INSTR,
+                                'error')
             return render_template('account/forgot.html')
 
         # if we get to here, we have a user account to reset
-        #newpass = util.generate_password()
-        #account.set_password(newpass)
         reset_token = uuid.uuid4().hex
         account.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
         account.save()
 
-        sep = "/"
-        if request.url_root.endswith("/"):
-            sep = ""
-        reset_url = request.url_root + sep + "account/reset/" + reset_token
-
-        to = [account.data['email']]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', app.config['ADMIN_EMAIL'])
-        subject = app.config.get("SERVICE_NAME", "") + " - password reset"
         try:
-            app_email.send_mail(to=to,
-                                fro=fro,
-                                subject=subject,
-                                template_name="email/password_reset.txt",
-                                account_id=account.id,
-                                reset_url=reset_url,
-                                )
+            send_account_password_reset_email(account)
             flash('Instructions to reset your password have been sent to you. Please check your emails.')
-            if app.config.get('DEBUG', False):
-                flash('Debug mode - url for reset is ' + reset_url)
         except Exception as e:
             magic = str(uuid.uuid1())
-            util.flash_with_url('Hm, sorry - sending the password reset email didn\'t work.' + CONTACT_INSTR + ' It would help us if you also quote this magic number: ' + magic + ' . Thank you!', 'error')
-            if app.config.get('DEBUG', False):
-                flash('Debug mode - url for reset is ' + reset_url)
+            util.flash_with_url('Error - sending the password reset email didn\'t work.' + CONTACT_INSTR + ' It would help us if you also quote this magic number: ' + magic + ' . Thank you!', 'error')
             app.logger.error(magic + "\n" + repr(e))
 
+        if app.config.get('DEBUG', False):
+            util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(
+                url_for('account.reset', reset_token=account.reset_token)))
+
     return render_template('account/forgot.html')
+
+
+class ResetForm(Form):
+    password = PasswordField('Password', [
+        validators.DataRequired(),
+        validators.EqualTo('confirm', message='Passwords must match')
+    ])
+    confirm = PasswordField('Repeat Password')
 
 
 @blueprint.route("/reset/<reset_token>", methods=["GET", "POST"])
 @ssl_required
 @write_required()
 def reset(reset_token):
-    account = models.Account.get_by_reset_token(reset_token)
+    form = ResetForm(request.form, csrf_enabled=False)
+    account = Account.get_by_reset_token(reset_token)
     if account is None:
         abort(404)
 
-    if request.method == "GET":
-        return render_template("account/reset.html", account=account)
-
-    elif request.method == "POST":
+    if request.method == "POST" and form.validate():
         # check that the passwords match, and bounce if not
         pw = request.values.get("password")
         conf = request.values.get("confirm")
         if pw != conf:
             flash("Passwords do not match - please try again", "error")
-            return render_template("account/reset.html", account=account)
+            return render_template("account/reset.html", account=account, form=form)
 
         # update the user's account
         account.set_password(pw)
         account.remove_reset_token()
         account.save()
-        flash("Password has been reset", "success")
+        flash("New password has been set and you're now logged in.", "success")
 
         # log the user in
         login_user(account, remember=True)
         return redirect(url_for('doaj.home'))
+
+    return render_template("account/reset.html", account=account, form=form)
 
 
 @blueprint.route('/logout')
@@ -231,44 +300,54 @@ def logout():
     return redirect('/')
 
 
-def existscheck(form, field):
-    test = models.Account.pull(form.w.data)
-    if test:
-        raise ValidationError('Taken! Please try another.')
-
-
-class RegisterForm(Form):
-    w = StringField('Username', [ReservedUsernames(), validators.Length(min=3, max=25), existscheck])
-    n = StringField('Email Address', [
-        validators.Length(min=3, max=254),
-        validators.Email(message='Must be a valid email address')
-    ])
-    s = PasswordField('Password', [
+class RegisterForm(RedirectForm):
+    identifier = StringField('ID', [ReservedUsernames(), IdAvailable()])
+    name = StringField('Name', [validators.Optional(), validators.Length(min=3, max=64)])
+    email = StringField('Email address', [
         validators.DataRequired(),
-        validators.EqualTo('c', message='Passwords must match')
+        validators.Length(min=3, max=254),
+        validators.Email(message='Must be a valid email address'),
+        EmailAvailable(message="That email address is already in use. Please <a href='/account/forgot'>reset your password</a>. If you still cannot login, <a href='/contact'>contact us</a>.")
     ])
-    c = PasswordField('Repeat Password')
     roles = StringField('Roles')
+    recaptcha_value = HiddenField()
 
 
 @blueprint.route('/register', methods=['GET', 'POST'])
-@login_required
 @ssl_required
 @write_required()
 def register():
-    if not app.config.get('PUBLIC_REGISTER', False) and not current_user.has_role("create_user"):
-        abort(401)
-    form = RegisterForm(request.form, csrf_enabled=False, roles='api')
+    # 3rd-party registration only for those with create_user role, only allow public registration when configured
+    if current_user.is_authenticated and not current_user.has_role("create_user") \
+            or current_user.is_anonymous and app.config.get('PUBLIC_REGISTER', False) is False:
+        abort(401)      # todo: we may need a template to explain this since it's linked from the application form
+
+    form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
     if request.method == 'POST' and form.validate():
-        account = models.Account.make_account(
-            username=form.w.data,
-            email=form.n.data,
-            roles=[r.strip() for r in form.roles.data.split(',')]
-        )
-        account.set_password(form.s.data)
-        account.save()
-        flash('Account created for ' + account.id + '. If not listed below, refresh the page to catch up.', 'success')
-        return redirect('/account')
+        recap_data = util.verify_recaptcha(form.recaptcha_value.data)
+        if recap_data["success"]:
+            account = Account.make_account(email=form.email.data, username=form.identifier.data, name=form.name.data,
+                                           roles=[r.strip() for r in form.roles.data.split(',')])
+            account.save()
+
+            send_account_created_email(account)
+
+            if app.config.get('DEBUG', False):
+                util.flash_with_url('Debug mode - url for verify is <a href={0}>{0}</a>'.format(url_for('account.reset', reset_token=account.reset_token)))
+
+            if current_user.is_authenticated:
+                util.flash_with_url('Account created for {0}. View Account: <a href={1}>{1}</a>'.format(account.email, url_for('.username', username=account.id)))
+                return redirect(url_for('.index'))
+            else:
+                flash('Thank you, please verify email address ' + form.email.data + ' to set your password and login.',
+                      'success')
+
+            # We must redirect home because the user now needs to verify their email address.
+            return redirect(url_for('doaj.home'))
+
+        else:  # recaptcha fail
+            util.flash("reCAPTCHA failed, please retry.")
+
     if request.method == 'POST' and not form.validate():
         flash('Please correct the errors', 'error')
     return render_template('account/register.html', form=form)

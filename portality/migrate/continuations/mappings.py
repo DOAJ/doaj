@@ -1,4 +1,4 @@
-from portality.core import app
+from portality.core import app, es_connection
 import esprit
 
 nm = {
@@ -14,5 +14,4 @@ nm = {
     }
 }
 
-conn = esprit.raw.Connection(app.config.get("ELASTIC_SEARCH_HOST"), app.config.get("ELASTIC_SEARCH_DB"))
-esprit.raw.put_mapping(conn, "journal", nm, es_version=app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5"))
+esprit.raw.put_mapping(es_connection, "journal", nm, es_version=app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5"))

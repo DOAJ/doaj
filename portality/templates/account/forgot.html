@@ -1,26 +1,27 @@
-{% extends "base.html" %}
+{% extends "layouts/base.html" %}
+
+{% block page_title %}Reset your password &ndash; {% endblock %}
 
 {% block content %}
-
-<div class="row-fluid">
-    <div class="span6">
-        <div class="well">
-            <h3>Forgot your password</h3>
-            <p>If you forgot your password, provide your username or email on the right and click "reset your password now".</p>
-            <p>NOTE that you must know your correct username or email, and you must have access to the account associated 
-            to the email address you used, as your password reset instructions will be sent there.</p>
-            <p>If you do not know these things, contact us directly for further help.</p>
+<main class="page-content">
+    <section class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Reset your password</h1>
+                <p>If you forgot your password, you can reset it here.</p>
+                <p>If the link that was emailed to you had expired, request a new one here.</p>
+                <p>You must use the email address that is linked to your account and have access to that account. Your password reset instructions will be sent there.</p>
+                <p>If you do not know the email address, <a href="/contact/">contact us</a> for further help.</p>
+            </div>
+            <br/>
+            <div class="col-md-6">
+                <form method="POST" action="">
+                    <label for="email">Email address or username</label>
+                    <input style="width: 70%" type="text" name="un" id="email"><br>
+                    <input type="submit" value="Reset your password" class="button button--primary">
+                </form>
+            </div>
         </div>
-    </div>
-    <div class="span6">
-        <div class="hero-unit">
-            <form method="POST" action="">
-                <p>Provide your username or email:</p>
-                <input type="text" name="un">
-                <input type="submit" value="Reset your password now" class="btn btn-primary">
-            </form>
-        </div>
-    </div>
-</div>
+    </section>
+</main>
 {% endblock %}
-

@@ -1,6 +1,7 @@
 import os, csv
 from lxml import etree
-from portality import article, models, settings
+from portality import models, settings
+from portality.models import article
 from datetime import datetime
 
 start = datetime.now()
@@ -63,7 +64,7 @@ articles_failed = 0
 articles_updated = 0
 articles_new = 0
 
-print "importing", total, "files from", xml_dir
+print("importing", total, "files from", xml_dir)
 
 def article_save_closure(upload_id):
     def article_callback(article):
@@ -71,7 +72,7 @@ def article_save_closure(upload_id):
         articles_in += 1
         article.set_upload_id(upload_id)
         article.save()
-        print "saved article", article.id
+        print("saved article", article.id)
     return article_callback
 
 """
@@ -92,7 +93,7 @@ def fail_closure(id, publisher, filename, uploaded):
         eissn = b.get_identifiers(b.E_ISSN)
         if title is not None:
             title = title.encode("ascii", errors="ignore")
-        print "illegitimate owner", title
+        print("illegitimate owner", title)
         failed_articles_writer.writerow([id, publisher, filename, uploaded, ", ".join(pissn), ", ".join(eissn), title])
     return fail_callback
 
@@ -113,19 +114,19 @@ for t in txt_files:
     # at this point we apply a correction in the event that we have a 
     # correction for this id
     if id in corrections:
-        print t, "correcting publisher", publisher, "-", corrections[id]
+        print(t, "correcting publisher", publisher, "-", corrections[id])
         publisher = corrections[id]
     
     acc = models.Account.pull(publisher)
     if acc is None:
-        print t, "No such publisher -", publisher
+        print(t, "No such publisher -", publisher)
         orphaned += 1
         orphan_writer.writerow([id, publisher, filename, uploaded])
         continue
     
     if publisher in imports:
         if filename in imports[publisher]:
-            preup = imports[publisher][filename].keys()[0]
+            preup = list(imports[publisher][filename].keys())[0]
             duplicate += 1
             if lm > preup:
                 rid = imports[publisher][filename][preup]
@@ -153,9 +154,9 @@ for t in txt_files:
 # files were uploaded
 lastmods = []
 lookup = {}
-for publisher, files in imports.iteritems():
-    for filename, details in files.iteritems():
-        lm = details.keys()[0]
+for publisher, files in imports.items():
+    for filename, details in files.items():
+        lm = list(details.keys())[0]
         id = details[lm]
         
         lastmods.append(lm)
@@ -190,7 +191,7 @@ for lm in lastmods:
             doc = etree.parse(open(xml_file))
         except:
             failed += 1
-            print f, "Malformed XML"
+            print(f, "Malformed XML")
             malformed_writer.writerow([f, publisher, filename, uploaded, acc.email])
             upload.failed("Unable to parse file")
             upload.save()
@@ -198,7 +199,7 @@ for lm in lastmods:
         
         # now try and validate the file
         validates = xwalk.validate(doc)
-        print f, ("Valid" if validates else "Invalid")
+        print(f, ("Valid" if validates else "Invalid"))
         
         if validates: 
             valid += 1
@@ -233,7 +234,7 @@ for lm in lastmods:
 
 end = datetime.now()
 
-print "Total", total, "attempted", attempted, "valid", valid, "invalid", invalid, "failed", failed, "duplicate", duplicate, "orphaned", orphaned
-print "Created Articles", articles_in, "Failed Articles", articles_failed
-print "New Articles", articles_new, "Updated Articles", articles_updated
-print start, end
+print("Total", total, "attempted", attempted, "valid", valid, "invalid", invalid, "failed", failed, "duplicate", duplicate, "orphaned", orphaned)
+print("Created Articles", articles_in, "Failed Articles", articles_failed)
+print("New Articles", articles_new, "Updated Articles", articles_updated)
+print(start, end)

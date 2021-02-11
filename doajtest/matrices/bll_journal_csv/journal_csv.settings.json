@@ -1,48 +1,51 @@
 {
   "parameters": [
     {
-      "type": "index", 
-      "name": "test_id"
-    }, 
+      "name": "test_id",
+      "type": "index"
+    },
     {
+      "name": "prune",
+      "type": "generated",
       "values": {
-        "False": {}, 
+        "True": {},
+        "False": {},
         "None": {
           "constraints": {
-            "main_write": {
-              "or": [
-                "success"
-              ]
-            }, 
-            "journals_no_issn": {
-              "or": [
-                "0"
-              ]
-            }, 
-            "journals": {
-              "or": [
-                "0"
-              ]
-            }, 
             "tmp_write": {
               "or": [
                 "success"
               ]
-            }, 
+            },
+            "main_write": {
+              "or": [
+                "success"
+              ]
+            },
+            "journals": {
+              "or": [
+                "0"
+              ]
+            },
+            "journals_no_issn": {
+              "or": [
+                "0"
+              ]
+            },
             "journals_with_articles": {
               "or": [
                 "0"
               ]
             }
           }
-        }, 
-        "True": {}
-      }, 
-      "type": "generated", 
-      "name": "prune"
-    }, 
+        }
+      }
+    },
     {
+      "name": "tmp_write",
+      "type": "generated",
       "values": {
+        "success": {},
         "fail": {
           "constraints": {
             "main_write": {
@@ -51,21 +54,20 @@
               ]
             }
           }
-        }, 
-        "success": {}
-      }, 
-      "type": "generated", 
-      "name": "tmp_write"
-    }, 
+        }
+      }
+    },
     {
+      "name": "main_write",
+      "type": "generated",
       "values": {
-        "fail": {}, 
-        "success": {}
-      }, 
-      "type": "generated", 
-      "name": "main_write"
-    }, 
+        "success": {},
+        "fail": {}
+      }
+    },
     {
+      "name": "journals",
+      "type": "generated",
       "values": {
         "0": {
           "constraints": {
@@ -75,29 +77,30 @@
               ]
             }
           }
-        }, 
+        },
         "3": {}
-      }, 
-      "type": "generated", 
-      "name": "journals"
-    }, 
+      }
+    },
     {
+      "name": "journals_no_issn",
+      "type": "generated",
       "values": {
-        "1": {}, 
-        "0": {}
-      }, 
-      "type": "generated", 
-      "name": "journals_no_issn"
-    }, 
+        "0": {},
+        "1": {}
+      }
+    },
     {
+      "name": "not_in_doaj",
+      "type": "generated",
       "values": {
         "1": {}
-      }, 
-      "type": "generated", 
-      "name": "not_in_doaj"
-    }, 
+      }
+    },
     {
+      "name": "journals_with_articles",
+      "type": "generated",
       "values": {
+        "0": {},
         "1": {
           "constraints": {
             "journals": {
@@ -106,8 +109,7 @@
               ]
             }
           }
-        }, 
-        "0": {}, 
+        },
         "3": {
           "constraints": {
             "journals": {
@@ -117,12 +119,12 @@
             }
           }
         }
-      }, 
-      "type": "generated", 
-      "name": "journals_with_articles"
-    }, 
+      }
+    },
     {
-      "default": "", 
+      "name": "raises",
+      "type": "conditional",
+      "default": "",
       "values": {
         "ArgumentException": {
           "conditions": [
@@ -134,7 +136,7 @@
               }
             }
           ]
-        }, 
+        },
         "IOError": {
           "conditions": [
             {
@@ -143,7 +145,7 @@
                   "fail"
                 ]
               }
-            }, 
+            },
             {
               "main_write": {
                 "or": [
@@ -153,13 +155,11 @@
             }
           ]
         }
-      }, 
-      "type": "conditional", 
-      "name": "raises"
-    }, 
+      }
+    },
     {
-      "type": "", 
-      "name": "comment"
+      "name": "comment",
+      "type": ""
     }
   ]
 }

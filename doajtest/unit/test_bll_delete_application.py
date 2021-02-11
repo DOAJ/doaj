@@ -109,10 +109,12 @@ class TestBLLDeleteApplication(DoajTestCase):
         if application is not None:
             if acc is not None:
                 application.set_owner(acc.id)
+            else:
+                application.set_owner("randomuser")
             application.save(blocking=True)
             application_id = application.id
         elif application_type == "not_found":
-            application_id = u"sdjfasofwefkwflkajdfasjd"
+            application_id = "sdjfasofwefkwflkajdfasjd"
 
         ###########################################################
         # Execution
@@ -121,7 +123,7 @@ class TestBLLDeleteApplication(DoajTestCase):
         if raises != "":
             with self.assertRaises(EXCEPTIONS[raises]):
                 svc.delete_application(application_id, acc)
-            time.sleep(1)
+            time.sleep(1.5)
             check_locks(application, cj, rj, acc)
         else:
             svc.delete_application(application_id, acc)

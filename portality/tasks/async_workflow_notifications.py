@@ -328,7 +328,7 @@ def associate_editor_notifications(emails_dict, limit=None):
 
 def send_emails(emails_dict):
 
-    for (email, (to_name, paragraphs)) in emails_dict.iteritems():
+    for (email, (to_name, paragraphs)) in emails_dict.items():
         pre = 'Dear ' + to_name + ',\n\n'
         post = '\n\nThe DOAJ Team\n\n***\nThis is an automated message. Please do not reply to this email.'
         full_body = pre + '\n\n'.join(paragraphs) + post

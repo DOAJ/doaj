@@ -39,6 +39,34 @@ class LCC(DomainObject):
 
         return None
 
+    def expand_codes(self, code):
+        def dive(node, path):
+            if node.get("code") == code:
+                path.append(code)
+                return True
+
+            if "children" not in node:
+                return False
+
+            path.append(node.get("code"))
+
+            for n in node.get("children", []):
+                found = dive(n, path)
+                if found:
+                    return True
+
+            path.pop()
+            return False
+
+        roots = self.data.get("children", [])
+        for r in roots:
+            path = []
+            found = dive(r, path)
+            if found:
+                return path
+
+        return []
+
     def longest(self, paths):
         """
         Returns only the longest paths from the provided classification paths (created with pathify)

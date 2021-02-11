@@ -23,7 +23,7 @@ for s in suggestion_iterator:
     
     delete_0000 = True
     if len(issns) == 1 and issns[0] == '0000-0000':
-        print 'suggestion {0} has only 1 id, 0000-0000, not deleting it'.format(s.id)
+        print('suggestion {0} has only 1 id, 0000-0000, not deleting it'.format(s.id))
         delete_0000 = False
     
     if delete_0000:
@@ -33,13 +33,13 @@ for s in suggestion_iterator:
     
     if len(batch) >= batch_size:
         total += len(batch)
-        print "writing", len(batch), "; total so far", total
+        print("writing", len(batch), "; total so far", total)
         models.Suggestion.bulk(batch)
         batch = []
 
 if len(batch) > 0:
     total += len(batch)
-    print "writing", len(batch), "; total so far", total
+    print("writing", len(batch), "; total so far", total)
     models.Suggestion.bulk(batch)
 
 
@@ -52,7 +52,7 @@ for j in journal_iterator:
     
     delete_0000 = True
     if len(issns) == 1 and issns[0] == '0000-0000':
-        print 'journal {0} has only 1 id, 0000-0000, not deleting it'.format(j.id)
+        print('journal {0} has only 1 id, 0000-0000, not deleting it'.format(j.id))
         delete_0000 = False
     
     if delete_0000:
@@ -62,11 +62,11 @@ for j in journal_iterator:
     
     if len(batch) >= batch_size:
         total += len(batch)
-        print "writing", len(batch), "; total so far", total
+        print("writing", len(batch), "; total so far", total)
         models.Journal.bulk(batch)
         batch = []
 
 if len(batch) > 0:
     total += len(batch)
-    print "writing", len(batch), "; total so far", total
+    print("writing", len(batch), "; total so far", total)
     models.Journal.bulk(batch)

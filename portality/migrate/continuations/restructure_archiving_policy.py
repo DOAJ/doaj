@@ -27,7 +27,7 @@ def _reformat_data(ap):
     if "policy" in ap:
         nap["known"] = []
         for p in ap["policy"]:
-            if isinstance(p, basestring):
+            if isinstance(p, str):
                 nap["known"].append(p)
             else:
                 k, v = p

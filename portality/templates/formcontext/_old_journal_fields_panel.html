@@ -1,0 +1,13 @@
+{% set old_journal_field_html = form_context.render_field_group("old_journal_fields", group_cfg={"label_width" : 4}) %}
+{% if old_journal_field_html %}
+<div class="row">
+    <div class="col-xs-12">
+        <section class="form-panel-left with-borders">
+            <h3>Old journal information</h3>
+            {% autoescape off %}
+            {{ old_journal_field_html }}
+            {% endautoescape %}
+        </section>
+    </div>
+</div>
+{% endif %}

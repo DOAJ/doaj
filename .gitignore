@@ -1,6 +1,7 @@
 # Local env file
 .env
 env/
+venv/
 
 .brackets.json
 *.pyc
@@ -11,7 +12,9 @@ build/*
 dist/*
 tmp/*
 *.zip
-.env
+scratch.py
+.coverage
+htmlcov/*
 
 # PyCharm and other IntelliJ-based IDE-s and editors' folder:
 .idea
@@ -88,3 +91,13 @@ local_store/main/*
 !local_store/main/README.md
 local_store/tmp/*
 !local_store/tmp/README.md
+
+# Static site / Jekyll / rbenv
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+.ruby-version
+
+##generated files
+#static_content/_site
+#static_content/css/*.css

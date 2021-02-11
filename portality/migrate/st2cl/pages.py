@@ -24,17 +24,17 @@ if not os.path.exists(OUT):
     os.mkdir(OUT)
     
 for lang in languages:
-    for name, page in pages.iteritems():
+    for name, page in pages.items():
         url = None
         if "?" not in page:
             url = page + "?uiLanguage=" + lang
         else:
             url = page + "&uiLanguage=" + lang
-        print url,
+        print(url, end=' ')
         sys.stdout.flush()
         resp = requests.get(url)
         if resp.status_code >= 400:
-            print resp.status_code
+            print(resp.status_code)
             continue
         directory = os.path.join(OUT, lang)
         if not os.path.exists(directory):
@@ -42,4 +42,4 @@ for lang in languages:
         f = os.path.join(directory, name + ".html")
         with codecs.open(f, "wb", "utf8") as fh:
             fh.write(resp.text)
-        print "done"
+        print("done")

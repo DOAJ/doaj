@@ -1,11 +1,12 @@
-import UserDict, requests, uuid
+import requests, uuid
+from collections import UserDict
 from copy import deepcopy
 from datetime import datetime, timedelta
 import time
 import re
 
-from portality.core import app
-import urllib2
+from portality.core import app, es_connection
+import urllib.parse
 import json
 
 import esprit
@@ -22,7 +23,7 @@ class ElasticSearchWriteException(Exception):
     pass
 
 
-class DomainObject(UserDict.IterableUserDict, object):
+class DomainObject(UserDict, object):
     __type__ = None                                                       # set the type on the model that inherits this
 
     def __init__(self, **kwargs):
@@ -43,31 +44,37 @@ class DomainObject(UserDict.IterableUserDict, object):
     @classmethod
     def target_whole_index(cls):
         t = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/') + '/'
-        t += app.config['ELASTIC_SEARCH_DB'] + '/'
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE'] and cls.__type__ is not None:
+            t += ','.join([app.config['ELASTIC_SEARCH_DB_PREFIX'] + t for t in cls.__type__.split(',')]) + '/'
+        else:
+            t += app.config['ELASTIC_SEARCH_DB'] + '/'
         return t
             
     @classmethod
     def target(cls):
         t = cls.target_whole_index()
-        t += cls.__type__ + '/'
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+            t += esprit.raw.INDEX_PER_TYPE_SUBSTITUTE + '/'
+        else:
+            t += cls.__type__ + '/'
         return t
     
     @classmethod
     def makeid(cls):
         """Create a new id for data object overwrite this in specific model types if required"""
-        return unicode(uuid.uuid4().hex)
+        return str(uuid.uuid4().hex)
 
     @property
     def id(self):
         rawid = self.data.get("id", None)
         if rawid is not None:
-            return unicode(rawid)
+            return str(rawid)
         return None
     
     def set_id(self, id=None):
         if id is None:
             id = self.makeid()
-        self.data["id"] = unicode(id)
+        self.data["id"] = str(id)
     
     @property
     def version(self):
@@ -108,6 +115,9 @@ class DomainObject(UserDict.IterableUserDict, object):
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
 
+        if 'es_type' not in self.data and self.__type__ is not None:
+            self.data['es_type'] = self.__type__
+
         now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         if (blocking or differentiate) and "last_updated" in self.data:
             diff = datetime.now() - datetime.strptime(self.data["last_updated"], "%Y-%m-%dT%H:%M:%SZ")
@@ -130,12 +140,12 @@ class DomainObject(UserDict.IterableUserDict, object):
             try:
                 r = requests.post(url, data=d)
                 if r.status_code > 400:
-                    raise ElasticSearchWriteException(u"Error on ES save. Response code {0}".format(r.status_code))
+                    raise ElasticSearchWriteException("Error on ES save. Response code {0}".format(r.status_code))
                 else:
                     break  # everything is OK, so r should now be assigned to the result
 
             except requests.exceptions.ConnectionError:
-                app.logger.exception(u"Failed to connect to ES")
+                app.logger.exception("Failed to connect to ES")
                 attempt += 1
             except ElasticSearchWriteException:
                 try:
@@ -146,15 +156,15 @@ class DomainObject(UserDict.IterableUserDict, object):
                 # Retries depend on which end the error lies.
                 if 400 <= r.status_code < 500:
                     # Bad request, do not retry as it won't work. Fail with ElasticSearchWriteException.
-                    app.logger.exception(u"Bad Request to ES, save failed. Details: {0}".format(error_details))
+                    app.logger.exception("Bad Request to ES, save failed. Details: {0}".format(error_details))
                     raise
                 elif r.status_code >= 500:
                     # Server error, this could be temporary so we may want to retry
-                    app.logger.exception(u"Server Error from ES, retrying. Details: {0}".format(error_details))
+                    app.logger.exception("Server Error from ES, retrying. Details: {0}".format(error_details))
                     attempt += 1
             except Exception:
                 # if any other exception occurs, make sure it's at least logged.
-                app.logger.exception(u"Unhandled exception in save method of DAO")
+                app.logger.exception("Unhandled exception in save method of DAO")
                 raise
 
             # wait before retrying
@@ -162,8 +172,8 @@ class DomainObject(UserDict.IterableUserDict, object):
 
         if attempt > retries:
             raise DAOSaveExceptionMaxRetriesReached(
-                u"After {attempts} attempts the record with "
-                u"id {id} failed to save.".format(
+                "After {attempts} attempts the record with "
+                "id {id} failed to save.".format(
                     attempts=attempt, id=self.data['id']))
 
         if blocking:
@@ -216,7 +226,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     @classmethod
     def pull(cls, id_):
         """Retrieve object by id."""
-        if id_ is None:
+        if id_ is None or id_ == '':
             return None
 
         # swallow any network exceptions
@@ -231,7 +241,21 @@ class DomainObject(UserDict.IterableUserDict, object):
         if out.status_code == 404:
             return None
         else:
-            return cls(**out.json())
+            try:
+                rec = out.json()
+            except Exception as e:
+                app.logger.exception("Cannot decode JSON. Object: {}, "
+                                     "Status Code: {}, "
+                                     "Reason: {}, "
+                                     "Exception message: {}"
+                                     .format(out.text,
+                                             out.status_code,
+                                             out.reason,
+                                             str(e)))
+                raise e
+            if "error" in rec and "status" in rec and rec["status"] >= 400:
+                raise Exception("ES returned an error: {x}".format(x=json.dumps(rec)))
+            return cls(**rec)
 
     @classmethod
     def pull_by_key(cls, key, value):
@@ -420,9 +444,11 @@ class DomainObject(UserDict.IterableUserDict, object):
             app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
             return
 
-        r = requests.delete(cls.target_whole_index())
-        return r
-    
+        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+            return esprit.raw.delete_index_by_prefix(es_connection, app.config['ELASTIC_SEARCH_DB_PREFIX'])
+        else:
+            return esprit.raw.delete_index(es_connection)
+
     def update(self, doc):
         """
         add the provided doc to the existing object
@@ -721,7 +747,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                             return
             else:
                 if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
-                    raise BlockTimeOutException(u"Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
+                    raise BlockTimeOutException("Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
 
             time.sleep(sleep)
 
@@ -729,6 +755,29 @@ class DomainObject(UserDict.IterableUserDict, object):
     def blockall(cls, ids_and_last_updateds, sleep=0.05, individual_max_retry_seconds=30):
         for id, lu in ids_and_last_updateds:
             cls.block(id, lu, sleep=sleep, max_retry_seconds=individual_max_retry_seconds)
+
+    @classmethod
+    def blockdeleted(cls, id, sleep=0.5, max_retry_seconds=30):
+        query = deepcopy(block_query)
+        query["query"]["bool"]["must"][0]["term"]["id.exact"] = id
+        start_time = datetime.now()
+        while True:
+            res = cls.query(q=query)
+            hits = res.get("hits", {}).get("hits", [])
+            if len(hits) == 0:
+                return
+            else:
+                if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
+                    raise BlockTimeOutException(
+                        "Attempting to block until record with id {id} deleted from Elasticsearch, but this has not happened after {limit}".format(
+                            id=id, limit=max_retry_seconds))
+
+            time.sleep(sleep)
+
+    @classmethod
+    def blockalldeleted(cls, ids, sleep=0.05, individual_max_retry_seconds=30):
+        for id in ids:
+            cls.blockdeleted(id, sleep, individual_max_retry_seconds)
 
 
 class BlockTimeOutException(Exception):
@@ -788,10 +837,12 @@ class Facetview2(object):
         return {"term": {term: value}}
 
     @staticmethod
-    def make_query(query_string=None, filters=None, default_operator="OR", sort_parameter=None, sort_order="asc"):
+    def make_query(query_string=None, filters=None, default_operator="OR", sort_parameter=None, sort_order="asc", default_field=None):
         query_part = {"match_all": {}}
         if query_string is not None:
             query_part = {"query_string": {"query": query_string, "default_operator": default_operator}}
+            if default_field is not None:
+                query_part["query_string"]["default_field"] = default_field
         query = {"query": query_part}
 
         if filters is not None:
@@ -809,4 +860,4 @@ class Facetview2(object):
 
     @staticmethod
     def url_encode_query(query):
-        return urllib2.quote(json.dumps(query).replace(' ', ''))
+        return urllib.parse.quote(json.dumps(query).replace(' ', ''))

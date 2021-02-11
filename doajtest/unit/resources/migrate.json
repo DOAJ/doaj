@@ -1,0 +1,20 @@
+{
+	"types": [
+		{
+			"type" : "journal",
+			"scroll_size" : 1000,
+			"keepalive" : "20m",
+            "functions" : [
+				"doajtest.unit.test_upgrade.operation"
+			],
+			"query":
+              {
+                "query": {
+                    "term": {
+                        "bibjson.title.exact":"Journal to Change"
+                    }
+                }
+              }
+		}
+	]
+}

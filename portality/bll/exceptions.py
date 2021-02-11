@@ -52,6 +52,14 @@ class DuplicateArticleException(Exception):
     """
     pass
 
+class ArticleNotAcceptable(Exception):
+    """
+    Exception to raise when an article does not have suitable data to be ingested into DOAJ
+    """
+    def __init__(self, *args, **kwargs):
+        self.errors = kwargs.get("errors", [])
+        super(ArticleNotAcceptable, self).__init__(*args)
+
 class ArticleMergeConflict(Exception):
     """
     Exception to raise when it's not clear which article to merge an update with
@@ -68,8 +76,8 @@ class IngestException(Exception):
 
         tb = sys.exc_info()[2]
         if self.inner is not None:
-            if self.inner_message is None and hasattr(self.inner, "message"):
-                self.inner_message = self.inner.message
+            if self.inner_message is None and self.inner.args[0] is not None:
+                self.inner_message = self.inner.args[0]
 
             if tb is not None:
                 self.stack = "".join(traceback.format_exception(self.inner.__class__, self.inner, tb))

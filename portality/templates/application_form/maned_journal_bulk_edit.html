@@ -1,0 +1,16 @@
+
+    {% if formulaic_context.errors %}
+    <h4 class="red form-status">There is a problem with the form.</h4>
+    {% endif %}
+
+<div class="row">
+    <div class="col-md-12 form-section">
+
+    {% set fs = formulaic_context.fieldset("bulk_edit") %}
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {%  include field_template %}
+    {% endfor %}
+
+    </div>
+</div>

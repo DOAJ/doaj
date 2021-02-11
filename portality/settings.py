@@ -10,13 +10,15 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.15.7"
+DOAJ_VERSION = "4.0.7"
 
 OFFLINE_MODE = False
 
-# List the features we want to be active
-FEATURES = ['api']
-VALID_FEATURES = ['api']
+# List the features we want to be active (API v1 remains with redirects to v2 features)
+FEATURES = ['api1', 'api2']
+VALID_FEATURES = ['api1', 'api2']
+
+API_VERSION = "2.0.0"
 
 # ========================
 # MAIN SETTINGS
@@ -31,10 +33,20 @@ elif BASE_URL.startswith('http://'):
     BASE_DOMAIN = BASE_URL[7:]
 else:
     BASE_DOMAIN = BASE_URL
-API_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
+
+BASE_API_URL = "https://doaj.org/api/v2/"
+API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
+API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
+
+# URL used for the journal ToC URL in the journal CSV export
+# NOTE: must be the correct route as configured in view/doaj.py
+JOURNAL_TOC_URL_FRAG = BASE_URL + '/toc/'
 
 # Used when generating external links, e.g. in the API docs
 PREFERRED_URL_SCHEME = 'https'
+
+# Whether the app is running behind a proxy, for generating URLs based on X-Forwarded-Proto
+PROXIED = False
 
 # make this something secret in your overriding app.cfg
 SECRET_KEY = "default-key"
@@ -69,9 +81,18 @@ SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 
 # elasticsearch settings
-ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
+ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://localhost:9200') # remember the http:// or https://
+
+# 2 sets of elasticsearch DB settings - index-per-project and index-per-type. Keep both for now so we can migrate.
+# e.g. host:port/index/type/id
 ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
+
+# e.g. host:port/type/doc/id
+ELASTIC_SEARCH_INDEX_PER_TYPE = True
+ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
+ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
+
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "1.7.5"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
@@ -83,21 +104,22 @@ ES_TERMS_LIMIT = 1024
 APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in production.cfg (or dev.cfg etc)
 
 # huey/redis settings
-HUEY_REDIS_HOST = '127.0.0.1'
-HUEY_REDIS_PORT = 6379
+HUEY_REDIS_HOST = os.getenv('HUEY_REDIS_HOST', '127.0.0.1')
+HUEY_REDIS_PORT = os.getenv('HUEY_REDIS_PORT', 6379)
 HUEY_EAGER = False
 
+#  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
 HUEY_SCHEDULE = {
     "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
     "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
-    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
+    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "35"},
     "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
     "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
     "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
-    "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
-    "public_data_dump" : {"month" : "*", "day" : "*/6", "day_of_week" : "*", "hour" : "10", "minute" : "0"}
+    "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
+    "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"}
 }
 
 HUEY_TASKS = {
@@ -111,6 +133,14 @@ DEBUG_PYCHARM_PORT = 6000
 
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True
+
+# paths where static content should be served from.
+# * in the order you want them searched
+# * relative to the portality directory
+STATIC_PATHS = [
+    "static",
+    "../static_content"
+]
 
 # =======================
 # email settings
@@ -140,6 +170,8 @@ from portality.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
 STORE_LOCAL_EXPOSE = False  # if you want to allow files in the local store to be exposed under /store/<path> urls.  For dev only.
+STORE_LOCAL_WRITE_BUFFER_SIZE = 16777216
+STORE_TMP_WRITE_BUFFER_SIZE = 16777216
 
 # containers (buckets in AWS) where various content will be stored
 # These values are placeholders, and must be overridden in live deployment
@@ -192,14 +224,6 @@ ASSOC_ED_NOTIFICATION_STATUSES = [
 ]
 
 # ========================
-# user login settings
-
-# amount of time a reset token is valid for (86400 is 24 hours)
-PASSWORD_RESET_TIMEOUT = 86400
-# amount of time a reset token for a new account is valid for
-PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
-
-# ========================
 # publisher settings
 
 # the earliest date accepted on the publisher's 'enter article metadata' form.
@@ -213,9 +237,16 @@ TICK_THRESHOLD = '2014-03-19T00:00:00Z'
 # authorisation settings
 
 # Can people register publicly? If false, only the superuser can create new accounts
-# PUBLIC_REGISTER = False
+PUBLIC_REGISTER = True
 
 SUPER_USER_ROLE = "admin"
+
+LOGIN_VIA_ACCOUNT_ID = True
+
+# amount of time a reset token is valid for (86400 is 24 hours)
+PASSWORD_RESET_TIMEOUT = 86400
+# amount of time a reset token for a new account is valid for
+PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 #"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
 TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api", "ultra_bulk_delete"]
@@ -225,6 +256,7 @@ ROLE_MAP = {
         "associate_editor",     # note, these don't cascade, so we still need to list all the low-level roles
         "edit_journal",
         "edit_suggestion",
+        "edit_application",      # todo: switchover from suggestion to application
         "editor_area",
         "assign_to_associate",
         "list_group_journals",
@@ -251,12 +283,24 @@ FACET_FIELD = ".exact"
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal",
-    "portality.models.Suggestion"
+    "portality.models.Application",
+    "portality.models.DraftApplication",
+    "portality.models.harvester.HarvestState"
 ]
 
 # Map from dataobj coercion declarations to ES mappings
 DATAOBJ_TO_MAPPING_DEFAULTS = {
     "unicode": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "str": {
         "type": "string",
         "fields": {
             "exact": {
@@ -275,6 +319,80 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
                 "store": True
             }
         }
+    },
+    "unicode_lower": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "isolang": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "isolang_2letter": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "country_code": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "currency_code": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "issn": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "url": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "utcdatetimemicros": {
+        "type": "date",
+        "format": "dateOptionalTime"
     },
     "utcdatetime": {
         "type": "date",
@@ -321,15 +439,12 @@ MAPPINGS = {
     }
 }
 MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['suggestion'] = {'suggestion': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['article_history'] = {'article_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['journal_history'] = {'journal_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
 
@@ -338,22 +453,33 @@ MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
 
 QUERY_ROUTE = {
     "query" : {
-        "journal,article" : {
+        "journal" : {
             "auth" : False,
             "role" : None,
             "query_validator" : "public_query_validator",
-            "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter", "prune_author_emails"],
-            "dao" : "portality.models.search.JournalArticle",
-            "required_parameters" : {"ref" : ["fqw", "please-stop-using-this-endpoint-directly-use-the-api"]}
+            "query_filters" : ["only_in_doaj", "last_update_fallback"],
+            "result_filters" : ["public_result_filter"],
+            "dao" : "portality.models.Journal",
+            "required_parameters" : {"ref" : ["ssw", "public_journal", "subject_page"]}
         },
         "article" : {
             "auth" : False,
             "role" : None,
+            "query_validator" : "public_query_validator",
             "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter", "prune_author_emails"],
+            "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Article",
-            "required_parameters" : {"ref" : ["please-stop-using-this-endpoint-directly-use-the-api"]}
+            "required_parameters" : {"ref" : ["public_article", "toc", "subject_page"]}
+        },
+        # back-compat for fixed query widget
+        "journal,article" : {
+            "auth" : False,
+            "role" : None,
+            "query_validator" : "public_query_validator",
+            "query_filters" : ["only_in_doaj", "strip_facets", "es_type_fix"],
+            "result_filters" : ["public_result_filter", "add_fqw_facets", "fqw_back_compat"],
+            "dao" : "portality.models.JournalArticle",
+            "required_parameters" : {"ref" : ["fqw"]}
         }
     },
     "publisher_query" : {
@@ -361,15 +487,22 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "publisher",
             "query_filters" : ["owner", "only_in_doaj"],
-            "result_filters" : ["publisher_result_filter", "prune_author_emails"],
+            "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.Journal"
         },
-        "suggestion" : {
+        "applications" : {
+            "auth" : True,
+            "role" : "publisher",
+            "query_filters" : ["owner", "not_update_request"],
+            "result_filters" : ["publisher_result_filter"],
+            "dao" : "portality.models.AllPublisherApplications"
+        },
+        "update_requests" : {
             "auth" : True,
             "role" : "publisher",
             "query_filters" : ["owner", "update_request"],
-            "result_filters" : ["publisher_result_filter", "prune_author_emails"],
-            "dao" : "portality.models.Suggestion"
+            "result_filters" : ["publisher_result_filter"],
+            "dao" : "portality.models.Application"
         }
     },
     "admin_query" : {
@@ -415,7 +548,7 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "associate_editor",
             "query_filters" : ["associate"],
-            "dao" : "portality.models.Suggestion"
+            "dao" : "portality.models.Application"
         }
     },
     "editor_query" : {
@@ -429,7 +562,7 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "editor",
             "query_filters" : ["editor"],
-            "dao" : "portality.models.Suggestion"
+            "dao" : "portality.models.Application"
         }
     },
     "api_query" : {
@@ -468,11 +601,16 @@ QUERY_FILTERS = {
     "update_request" : "portality.lib.query_filters.update_request",
     "associate" : "portality.lib.query_filters.associate",
     "editor" : "portality.lib.query_filters.editor",
+    "strip_facets" : "portality.lib.query_filters.strip_facets",
+    "es_type_fix" : "portality.lib.query_filters.es_type_fix",
+    "last_update_fallback" : "portality.lib.query_filters.last_update_fallback",
+    "not_update_request" : "portality.lib.query_filters.not_update_request",
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
     "publisher_result_filter": "portality.lib.query_filters.publisher_result_filter",
-    "prune_author_emails": "portality.lib.query_filters.prune_author_emails",
+    "add_fqw_facets" : "portality.lib.query_filters.add_fqw_facets",
+    "fqw_back_compat" : "portality.lib.query_filters.fqw_back_compat",
 
     # source filters
     "private_source": "portality.lib.query_filters.private_source",
@@ -482,10 +620,12 @@ QUERY_FILTERS = {
 UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"
 
 AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
-    "bibjson.publisher" : "index.publisher_ac",
-    "bibjson.institution" : "index.institution_ac",
-    "bibjson.provider" : "index.provider_ac"
+    "bibjson.publisher.name" : "index.publisher_ac",
+    "bibjson.institution.name" : "index.institution_ac"
 }
+
+# save the public application form as a draft every 60 seconds
+PUBLIC_FORM_AUTOSAVE = 60000
 
 # ========================
 # MEDIA SETTINGS
@@ -595,25 +735,22 @@ FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "
 # crosswalks available
 
 SCHEMAS = {
-    "doaj" : os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd")
+    "doaj": os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd"),
+    "crossref": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd")
 }
+
+DOAJ_SCHEMA = None
+CROSSREF_SCHEMA = None
+LOAD_CROSSREF_THREAD = None
 
 # mapping of format names to modules which implement the crosswalks
 ARTICLE_CROSSWALKS = {
-    "doaj" : "portality.crosswalks.article_doaj_xml.DOAJXWalk"
+    "doaj": "portality.crosswalks.article_doaj_xml.DOAJXWalk",
+    "crossref": "portality.crosswalks.article_crossref_xml.CrossrefXWalk"
 }
 
 # maximum size of files that can be provided by-reference (the default value is 250Mb)
 MAX_REMOTE_SIZE = 262144000
-
-# =================================
-# ReCaptcha settings
-# We use per-domain, not global keys
-RECAPTCHA_PUBLIC_KEY = '6LdaE-wSAAAAAKTofjeh5Zn94LN1zxzbrhxE8Zxr'
-# RECAPTCHA_PRIVATE_KEY is set in secret_settings.py which should not be
-# committed to the repository, but only held locally and on the server
-# (transfer using scp).
-
 
 # =================================
 # Cache settings
@@ -648,21 +785,6 @@ STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 TOC_CHANGEFREQ = "monthly"
 
 STATIC_PAGES = [
-    ("", "monthly"), # home page
-    # ("/search", "daily"),  # taken out since javascript-enabled bots were spidering this, causing enormous load - there should be other ways to present a list of all journals to them if we need to
-    ("/toc", "monthly"),
-    ("/application/new", "monthly"),
-    ("/about", "monthly"),
-    ("/publishers", "monthly"),
-    ("/support", "monthly"),
-    ("/contact", "yearly"),
-    ("/members", "monthly"),
-    ("/membership", "monthly"),
-    ("/publishermembers", "monthly"),
-    ("/faq", "monthly"),
-    ("/features", "monthly"),
-    ("/oainfo", "monthly"),
-    ("/sponsors", "monthly")
 ]
 
 
@@ -673,7 +795,7 @@ BLOG_URL = "http://doajournals.wordpress.com/"
 
 BLOG_FEED_URL = "http://doajournals.wordpress.com/feed/atom/"
 
-FRONT_PAGE_NEWS_ITEMS = 3
+FRONT_PAGE_NEWS_ITEMS = 9
 
 NEWS_PAGE_NEWS_ITEMS = 20
 
@@ -692,7 +814,7 @@ BACKGROUND_TASK_LOCK_TIMEOUT = 3600
 # Search query shortening settings
 
 # bit,ly api shortening service
-BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v3/shorten"
+BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v4/shorten"
 
 # bitly oauth token
 # ENTER YOUR OWN TOKEN IN APPROPRIATE .cfg FILE
@@ -781,6 +903,14 @@ DISCOVERY_RECORDS_PER_FILE = 100000
 REPORTS_BASE_DIR = "/home/cloo/reports/"
 REPORTS_EMAIL_TO = ["feedback@doaj.org"]
 
+
+# ========================================
+# Hotjar configuration
+
+# hotjar id - only activate this in production
+HOTJAR_ID = ""
+
+
 # ========================================
 # Google Analytics configuration
 # specify in environment .cfg file - avoids sending live analytics
@@ -830,6 +960,7 @@ GA_ACTIONS_API = {
     'bulk_article_delete': 'Bulk article delete'
 }
 
+
 # GA for fixed query widget
 GA_CATEGORY_FQW = 'FQW'
 GA_ACTION_FQW = 'Hit'
@@ -841,23 +972,22 @@ ANON_SALT = 'changeme'
 # ========================================
 # Quick Reject Feature Config
 QUICK_REJECT_REASONS = [
-    "No research content has been published in the journal in the last calendar year",
-    "The ISSN is incorrect and is not recognised by issn.org",
-    "The ISSN is listed as provisional by issn.org",
-    "The ISSN not yet registered at issn.org",
-    "The URL(s) or the web site does not work",
-    "The contact details provided are not real names of individuals",
-    "The journal is already in DOAJ",
-    "The journal is not Open Access",
-    "The journal or publisher has been rejected or removed from DOAJ recently",
-    "The journal title in the application doesn't correspond with title at issn.org",
-    "The journal title on the web site doesn't match what is registered at issn.org",
-    "The license type selected was 'Other' but no further information was provided",
-    "The same URL has been provided for all the questions which required a URL answer",
-    "There are answers in the application which are incomplete or missing",
-    "There is no mention of peer review or a review process being carried out",
-    "This application is a duplicate",
-    "You already have another application for the same journal in progress"
+    "The journal has not published enough research content to qualify for DOAJ inclusion.",
+    "The ISSN is incorrect, provisional or not registered with issn.org.",
+    "The URL(s) provided in the application do not work.",
+    "The journal is already in DOAJ.",
+    "The journal is not Open Access.",
+    "The journal title in the application and/or website does not match the title at issn.org.",
+    "The application has incorrect answers or the URLs given do not provide the required information.",
+    "This application is a duplicate.",
+    "The full-text articles are not available article by article with individual links.",
+    "The information in the journal implies that it does not employ a fair & robust peer review process.",
+    "The journal or publisher has been previously rejected or removed from DOAJ.",
+    "The journal's copyright policy is not available or unclear.",
+    "The journal's licensing policy is not available or unclear.",
+    "The information about the journal is in different languages.",
+    "The journal makes a false claim to be indexed in DOAJ or other databases or displays non-standard Impact Factors.",
+    "The journal does not employ good publishing practices."
 ]
 
 # ========================================
@@ -877,7 +1007,70 @@ ELASTIC_APM = {
 }
 
 ########################################
-## Consent Cookie
+## Consent Cookie and other Top-Level dismissable notes
 
 CONSENT_COOKIE_KEY = "doaj-cookie-consent"
+
+# site notes, which can be configured to run any time with any content
+SITE_NOTE_ACTIVE = False
+SITE_NOTE_KEY = "doaj-site-note"
+SITE_NOTE_SLEEP = 259200    # every 3 days
+SITE_NOTE_COOKIE_VALUE = "You have seen our most recent site wide announcement"
+SITE_NOTE_TEMPLATE = "doaj/site_note.html"
+
+
+#############################################
+## Harvester Configuration
+
+## Configuration options for the DOAJ API Client
+
+DOAJ_SEARCH_BASE = "https://doaj.org"
+
+DOAJ_SEARCH_PORT = 80
+
+DOAJ_QUERY_ENDPOINT = "query"
+
+DOAJ_SEARCH_TYPE = "journal,article"
+
+DOAJ_API1_BASE_URL = "https://doaj.org/api/v1/"
+DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
+
+
+## EPMC Client configuration
+
+EPMC_REST_API = "http://www.ebi.ac.uk/europepmc/webservices/rest/"
+EPMC_TARGET_VERSION = "6.2"
+
+# General harvester configuraiton
+
+HARVESTERS = [
+    "portality.harvester.epmc.epmc_harvester.EPMCHarvester"
+]
+
+INITIAL_HARVEST_DATE = "2015-12-01T00:00:00Z"
+
+# The mapping from account ids to API keys.  MUST NOT be checked into the repo, put these
+# in the local.cfg instead
+HARVESTER_API_KEYS = {
+
+}
+
+EPMC_HARVESTER_THROTTLE = 0.2
+
+# Process name while harvester is starting, running
+HARVESTER_STARTING_PROCTITLE = 'harvester: starting'
+HARVESTER_RUNNING_PROCTITLE = 'harvester: running'
+
+# Minutes we wait between terminate and kill
+HARVESTER_MAX_WAIT = 10
+
+# Email notifications
+HARVESTER_EMAIL_ON_EVENT = False
+HARVESTER_EMAIL_RECIPIENTS = None
+HARVESTER_EMAIL_FROM_ADDRESS = "harvester@doaj.org"
+HARVESTER_EMAIL_SUBJECT_PREFIX = "[harvester] "
+
+#Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
+RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
+RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 

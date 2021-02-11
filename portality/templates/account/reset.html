@@ -1,22 +1,24 @@
-{% extends "base.html" %}
+{% extends "layouts/base.html" %}
 
 {% block content %}
 
-<h1 style="margin-bottom: 40px">Hi {{account.id}}: Reset Your Password</h1>
+    <main class="page-content">
+        <section class="container">
+            <div class="row">
+                <div class="col-md-8">
 
-<div class="row-fluid">
-    <div class="span4">
-        &nbsp;
-    </div>
-    <div class="span5">
-        <form action="" method="POST">
-            <input type="password" name="password" placeholder="new password"><br>
-            <input type="password" name="confirm" placeholder="confirm your new password"><br>
-            <input type="submit" class="btn btn-success" name="submit" value="Update">
-        </form>
-    </div>
-    
-</div>
+                    <h3>Hi {{ account.name or account.email }}</h3>
+
+                    <p>Please set your new password.</p>
+
+                    {% include "account/_reset_form.html" %}
+
+                    <p>If you have any difficulties with your account, please <a href="/contact">contact us</a>.</p>
+
+                </div>
+            </div>
+        </section>
+      </main>
 
 {% endblock %}
 

@@ -1,0 +1,36 @@
+/* Highlighted list with large numbers */
+
+.highlighted-list {
+  padding: 0;
+  list-style: none;
+  width: 100%;
+
+  > li {
+    counter-increment: item;
+    border-bottom: 1px solid $grapefruit;
+    margin: 0;
+    padding: $spacing-04 0;
+    @include font-serif;
+    font-weight: 400;
+    @include typescale-02;
+
+    &:last-of-type {
+      border: 0;
+    }
+
+    &:before {
+      content: "0"counter(item)" ";
+    }
+
+    > ul {
+      margin-left: $spacing-04;
+      list-style: none;
+      font-size: 1rem;
+      @include font-sans;
+
+      li {
+        margin-bottom: $spacing-02;
+      }
+    }
+  }
+}

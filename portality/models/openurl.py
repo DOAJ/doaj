@@ -3,7 +3,7 @@ from flask import url_for
 from portality.models import Journal, Article
 from portality.core import app
 from copy import deepcopy
-from portality.util import parse_date
+from portality.lib import dates
 from portality.lib import analytics
 
 JOURNAL_SCHEMA_KEYS = ['doi', 'aulast', 'aufirst', 'auinit', 'auinit1', 'auinitm', 'ausuffix', 'au', 'aucorp', 'atitle',
@@ -15,8 +15,8 @@ SUPPORTED_GENRES = ['journal', 'article']
 
 # Mapping from OpenURL schema to both supported models (Journal, Article)
 OPENURL_TO_ES = {
-    'au': (None, 'author.name.exact'),
-    'aucorp': (None, 'author.affiliation.exact'),
+    'aulast': (None, 'bibjson.author.name.exact'),
+    'aucorp': (None, 'bibjson.author.affiliation.exact'),
     'atitle': (None, 'bibjson.title.exact'),
     'jtitle': ('index.title.exact', 'bibjson.journal.title.exact'),    # Note we use index.title.exact for journals, to support continuations
     'stitle': ('bibjson.alternative_title.exact', None),
@@ -49,7 +49,7 @@ class OpenURLRequest(object):
 
         # Save any attributes specified at creation time
         if kwargs:
-            for key, value in kwargs.iteritems():
+            for key, value in kwargs.items():
                 setattr(self, key, value)
 
     def __str__(self):
@@ -100,7 +100,10 @@ class OpenURLRequest(object):
         Get the URL for this OpenURLRequest's referent.
         :return: The url as a string, or None if not found.
         """
-        results = self.query_es()
+        try:
+            results = self.query_es()
+        except ValueError:
+            return None
 
         if results is None:
             return None
@@ -112,7 +115,7 @@ class OpenURLRequest(object):
                 # This time we've definitely failed
                 return None
 
-        if results.get('hits', {}).get('hits', [{}])[0].get('_type') == 'journal':
+        if results.get('hits', {}).get('hits', [{}])[0].get('_source', {}).get('es_type') == 'journal':
 
             # construct a journal object around the result
             journal = Journal(**results['hits']['hits'][0])
@@ -139,7 +142,7 @@ class OpenURLRequest(object):
                 jtoc_url = url_for("doaj.toc", identifier=ident)
             return jtoc_url
 
-        elif results.get('hits', {}).get('hits',[{}])[0].get('_type') == 'article':
+        elif results.get('hits', {}).get('hits', [{}])[0].get('_source', {}).get('es_type') == 'article':
             return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
 
     def query_for_vol(self, journalobj):
@@ -312,7 +315,7 @@ class OpenURLRequest(object):
     def date(self, val):
         if val:
             try:
-                parsed_date = parse_date(val)
+                parsed_date = dates.parse(val)
                 val = parsed_date.year
             except ValueError:
                 val = None

@@ -10,7 +10,7 @@ def schedule(action):
     cfg = app.config.get("HUEY_SCHEDULE", {})
     action_cfg = cfg.get(action)
     if action_cfg is None:
-        raise RuntimeError(u"No configuration for scheduled action '{x}'.  Define this in HUEY_SCHEDULE first then try again.".format(x=action))
+        raise RuntimeError("No configuration for scheduled action '{x}'.  Define this in HUEY_SCHEDULE first then try again.".format(x=action))
 
     return crontab(**action_cfg)
 
@@ -19,6 +19,6 @@ def configure(action):
     cfg = app.config.get("HUEY_TASKS", {})
     action_cfg = cfg.get(action)
     if action_cfg is None:
-        raise RuntimeError(u"No task configuration for action '{x}'.  Define this in HUEY_TASKS first then try again.".format(x=action))
+        raise RuntimeError("No task configuration for action '{x}'.  Define this in HUEY_TASKS first then try again.".format(x=action))
     return action_cfg
 

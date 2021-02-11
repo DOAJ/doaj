@@ -1,10 +1,12 @@
 {
   "parameters": [
     {
-      "type": "index", 
-      "name": "test_id"
-    }, 
+      "name": "test_id",
+      "type": "index"
+    },
     {
+      "name": "doi",
+      "type": "generated",
       "values": {
         "none": {
           "constraints": {
@@ -12,21 +14,21 @@
               "or": [
                 "-"
               ]
-            }, 
+            },
             "whitespace": {
               "or": [
                 "-"
               ]
             }
           }
-        }, 
+        },
         "exists": {
           "constraints": {
             "prefix": {
               "nor": [
                 "-"
               ]
-            }, 
+            },
             "whitespace": {
               "nor": [
                 "-"
@@ -34,39 +36,39 @@
             }
           }
         }
-      }, 
-      "type": "generated", 
-      "name": "doi"
-    }, 
+      }
+    },
     {
+      "name": "prefix",
+      "type": "generated",
       "values": {
-        "info:hdl/": {}, 
-        "none": {}, 
-        "invalid": {}, 
-        "http://hdl.handle.net/": {}, 
-        "-": {}, 
-        "https://doi.org/": {}, 
-        "http://doi.org/": {}, 
-        "https://hdl.handle.net/": {}, 
-        "info:doi/": {}, 
-        "https://dx.doi.org/": {}, 
-        "doi:": {}, 
-        "http://dx.doi.org/": {}
-      }, 
-      "type": "generated", 
-      "name": "prefix"
-    }, 
+        "-": {},
+        "none": {},
+        "doi:": {},
+        "info:doi/": {},
+        "https://dx.doi.org/": {},
+        "http://dx.doi.org/": {},
+        "https://doi.org/": {},
+        "http://doi.org/": {},
+        "http://hdl.handle.net/": {},
+        "https://hdl.handle.net/": {},
+        "info:hdl/": {},
+        "invalid": {}
+      }
+    },
     {
+      "name": "whitespace",
+      "type": "generated",
       "values": {
-        "yes": {}, 
-        "-": {}, 
+        "-": {},
+        "yes": {},
         "no": {}
-      }, 
-      "type": "generated", 
-      "name": "whitespace"
-    }, 
+      }
+    },
     {
-      "default": "", 
+      "name": "raises",
+      "type": "conditional",
+      "default": "",
       "values": {
         "ValueError": {
           "conditions": [
@@ -79,9 +81,7 @@
             }
           ]
         }
-      }, 
-      "type": "conditional", 
-      "name": "raises"
+      }
     }
   ]
 }

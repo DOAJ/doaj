@@ -53,5 +53,5 @@ if __name__ == "__main__":
     task = article_duplicate_report.ArticleDuplicateReportBackgroundTask(job)
     BackgroundApi.execute(task)
     for msg in job.audit:
-        print(msg["timestamp"] + " - " + msg["message"])
+        print((msg["timestamp"] + " - " + msg["message"]))
     app.logger.debug("Finished " + dates.now_with_microseconds())

@@ -1,0 +1,10 @@
+field,test_id,duplicate,merge_duplicate,is_update,raises
+type,index,generated,generated,conditional,conditional
+values,,same_as_update_article_id,yes,0,DuplicateArticle
+values,,different_than_update_article_id,no,1,
+values,,none,,,
+,,,,,
+conditional raises,,different_than_update_article_id,,,DuplicateArticle
+conditional is_update,,same_as_update_article_id,yes,1,
+conditional is_update,,none,yes,1,
+conditional is_update,,,no,0,

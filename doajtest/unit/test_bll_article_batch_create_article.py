@@ -203,13 +203,15 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         if duplicate_in_index == 1:
             gd_mock = BLLArticleMockFactory.get_duplicate(given_article_id=last_id, eissn=last_issn, pissn=last_issn, doi=last_doi, fulltext=last_ft)
         elif duplicate_in_index == 2:
-            gd_mock = BLLArticleMockFactory.get_duplicate(merge_conflict=True)
+            gd_mock = BLLArticleMockFactory.get_duplicate(merge_duplicate=True)
         else:
             gd_mock = BLLArticleMockFactory.get_duplicate(return_none=True)
         self.svc.get_duplicate = gd_mock
 
         ios_mock = BLLArticleMockFactory.issn_ownership_status([], [], [], [])
         self.svc.issn_ownership_status = ios_mock
+
+        self.svc._doi_or_fulltext_updated = BLLArticleMockFactory.doi_or_fulltext_updated(False,False)
 
         if add_journal_info:
             gj_mock = ModelArticleMockFactory.get_journal(journal_specs)

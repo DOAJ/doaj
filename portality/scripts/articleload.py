@@ -1,10 +1,10 @@
-from portality import models, article
-import json, codecs
+from portality import models
+import json
 from portality.core import app
 
 if __name__ == "__main__":
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-        print "System is in READ-ONLY mode, script cannot run"
+        print("System is in READ-ONLY mode, script cannot run")
         exit()
 
     import argparse
@@ -15,10 +15,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.source:
-        print "Please specify a source file with the -s option"
+        print("Please specify a source file with the -s option")
         exit()
 
-    f = codecs.open(args.source)
+    f = open(args.source)
     j = json.loads(f.read())
 
     for data in j:
@@ -26,7 +26,3 @@ if __name__ == "__main__":
         a.bibjson().remove_subjects()
         a.add_journal_metadata()
         a.save()
-
-
-
-

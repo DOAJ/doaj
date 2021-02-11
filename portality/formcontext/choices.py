@@ -1,4 +1,4 @@
-from portality import constants
+from portality import constants, models
 from portality import lcc
 from portality.datasets import language_options, main_license_options, country_options, currency_options, CURRENCY_DEFAULT
 from portality.formcontext import FormContextException
@@ -74,7 +74,7 @@ class Choices(object):
         (NONE, NONE),
         ('Sherpa/Romeo', 'Sherpa/Romeo'),
         ('Dulcinea', 'Dulcinea'),
-        ('H\xc3\xa9lo\xc3\xafse'.decode('utf-8'), 'H\xc3\xa9lo\xc3\xafse'.decode('utf-8')),
+        ('Héloïse', 'Héloïse'),
         ('Diadorim', 'Diadorim'),
         (OTHER, OTHER)
     ]
@@ -84,6 +84,12 @@ class Choices(object):
         ('CON', 'Conditional charges'),
         ('Y', 'Has charges'),
         ('NY', 'No information'),
+    ]
+
+    _license_display = [
+        ('no', 'no'),
+        ('embed', 'embed'),
+        ('display', 'display')
     ]
 
     _application_status_base = [        # This is all the Associate Editor sees
@@ -288,8 +294,8 @@ class Choices(object):
         return [cls.FALSE]
 
     @classmethod
-    def licence_embedded(cls):
-        return cls.binary()
+    def licence_display(cls):
+        return cls._license_display
 
     @classmethod
     def licence_embedded_url_optional(cls):
@@ -333,6 +339,26 @@ class Choices(object):
     @classmethod
     def copyright_url_optional(cls):
         return [cls.FALSE]
+
+    @classmethod
+    def deposit_policy_url_optional(cls):
+        return [cls.FALSE]
+
+    @classmethod
+    def other_charges(cls):
+        return cls.binary()
+
+    @classmethod
+    def other_charges_url_optional(cls):
+        return [cls.FALSE]
+
+    @classmethod
+    def orcid(cls):
+        return cls.binary()
+
+    @classmethod
+    def i40c_open_citations(cls):
+        return cls.binary()
 
     @classmethod
     def publishing_rights(cls):
@@ -416,3 +442,13 @@ class Choices(object):
                 forward_choices = [(constants.APPLICATION_STATUS_IN_PROGRESS, 'In Progress')] + forward_choices
 
             return forward_choices
+
+    @classmethod
+    def choices_for_article_issns(cls, user, article_id=None):
+        if "admin" in user.role and article_id is not None:
+                a = models.Article.pull(article_id)
+                issns = models.Journal.issns_by_owner(a.get_owner())
+        else:
+            issns = models.Journal.issns_by_owner(user.id)
+        ic = [("", "Select an ISSN")] + [(i, i) for i in issns]
+        return ic

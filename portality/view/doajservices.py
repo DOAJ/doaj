@@ -1,4 +1,4 @@
-import json, urllib, requests
+import json, urllib.request, urllib.parse, urllib.error, requests
 
 from flask import Blueprint, make_response, request, abort
 from flask_login import current_user, login_required
@@ -42,6 +42,8 @@ def unlock(object_type, object_id):
 @blueprint.route("/shorten", methods=["POST"])
 @jsonp
 def shorten():
+    # Enable this if you are testing and you want to see the front end work, without working bit.ly credentials
+    # return make_response(json.dumps({"url" : "testing url"}))
     try:
         # parse the json
         d = json.loads(request.data)
@@ -49,7 +51,7 @@ def shorten():
         q = d['query']
 
         # re-serialise the query, and url encode it
-        source = urllib.quote(json.dumps(q))
+        source = urllib.parse.quote(json.dumps(q))
 
         # assemble the DOAJ url
         doajurl = p + "?source=" + source
@@ -58,12 +60,19 @@ def shorten():
         # query arguments, so by this point it is double-encoded
         bitly = app.config.get("BITLY_SHORTENING_API_URL")
         bitly_oauth = app.config.get("BITLY_OAUTH_TOKEN")
-        bitlyurl = bitly + "?access_token=" + bitly_oauth + "&longUrl=" + urllib.quote(doajurl)
+
+        # Set an Auth Bearer token (Bitly 4.0)
+        headers = {'Authorization': 'Bearer ' + bitly_oauth}
+
+        # Add the long url as a payload
+        payload = {'long_url': doajurl}
 
         # make the request
-        resp = requests.get(bitlyurl)
-        j = resp.json()
-        shorturl = j.get("data", {}).get("url")
+        resp = requests.post(bitly, headers=headers, data=json.dumps(payload))
+        shorturl = resp.json().get('link')
+
+        if not shorturl:
+            abort(400)
 
         # make the response
         answer = make_response(json.dumps({"url": shorturl}))

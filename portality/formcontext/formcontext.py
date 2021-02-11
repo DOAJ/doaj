@@ -5,20 +5,31 @@ from datetime import datetime
 from flask import render_template, url_for, request
 from flask_login import current_user
 
+import portality.formcontext.forms
+from portality.crosswalks.journal_form import JournalFormXWalk
+from portality.crosswalks.article_form import ArticleFormXWalk
+from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality import constants
 from portality import models, app_email, util
+from portality.bll import DOAJ
 from portality.core import app
-from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
+from portality.formcontext import forms, render, choices, FormContextException
 from portality.lcc import lcc_jstree
 from portality.ui.messages import Messages
+import portality.notifications.application_emails as emails
+
+from portality.forms.application_forms import JAVASCRIPT_FUNCTIONS
 
 ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
             'account permissions to edit applications which are {0}.'
 
+FIELDS_WITH_DESCRIPTION = ["publisher", "society_institution", "platform", "title", "alternative_title"]
+URL_FIELDS = ["url", "processing_charges_url", "submission_charges_url", "articles_last_year_url", "digital_archiving_policy_url", "editorial_board_url", "review_process_url", "instructions_authors_url", "oa_statement_url", "license_url", "waiver_policy_url", "download_statistics_url", "copyright_url", "publishing_rights_url", "plagiarism_screening_url", "license_embedded_url", "aims_scope_url"]
+
 
 class FormContext(object):
-    def __init__(self, form_data=None, source=None):
+    def __init__(self, form_data=None, source=None, formulaic_context=None):
         # initialise our core properties
         self._source = source
         self._target = None
@@ -28,6 +39,7 @@ class FormContext(object):
         self._template = None
         self._alert = []
         self._info = ''
+        self._formulaic = formulaic_context
 
         # initialise the renderer (falling back to a default if necessary)
         self.make_renderer()
@@ -189,8 +201,6 @@ class FormContext(object):
             for field in self.form:
                 if field.errors:
                     error_fields.append(field.short_name)
-            if self.renderer is not None:
-                self.renderer.set_error_fields(error_fields)
 
         return valid
 
@@ -204,23 +214,44 @@ class FormContext(object):
     def render_template(self, **kwargs):
         return render_template(self.template, form_context=self, **kwargs)
 
-    def render_field_group(self, field_group_name=None):
-        return self.renderer.render_field_group(self, field_group_name)
+    #def render_field_group(self, field_group_name=None, **kwargs):
+    #    return self.renderer.render_field_group(self, field_group_name, **kwargs)
+
+    def fieldset(self, fieldset_name=None):
+        return self._formulaic.fieldset(fieldset_name)
+
+    def fieldsets(self):
+        return self._formulaic.fieldsets()
 
     def check_field_group_exists(self, field_group_name):
         return self.renderer.check_field_group_exists(field_group_name)
 
+    @property
+    def ui_settings(self):
+        return self._formulaic.ui_settings
 
 class PrivateContext(FormContext):
     def _expand_descriptions(self, fields):
         # add the contents of a few fields to their descriptions since select2 autocomplete
         # would otherwise obscure the full values
         for field in fields:
-            if self.form[field].data:
-                if not self.form[field].description:
-                    self.form[field].description = 'Full contents: ' + self.form[field].data
-                else:
-                    self.form[field].description += '<br><br>Full contents: ' + self.form[field].data
+            if field in self.form.data:
+                if self.form[field].data:
+                    if not self.form[field].description:
+                        self.form[field].description = '<small>Full contents: ' + self.form[field].data + '</small>'
+                    else:
+                        self.form[field].description += '<br><br><small>Full contents: ' + self.form[field].data + '</small>'
+
+    def _expand_url_descriptions(self, fields):
+        # add the contents of a few fields to their descriptions since select2 autocomplete
+        # would otherwise obscure the full values
+        for field in fields:
+            if field in self.form.data:
+                if self.form[field].data:
+                    if not self.form[field].description:
+                        self.form[field].description = '<small>Full contents: <a href=' + self.form[field].data + " target='_blank'>" + self.form[field].data + "</a><small>"
+                    else:
+                        self.form[field].description += '<br><br><small>Full contents: <a href=' + self.form[field].data + " target='_blank'>" + self.form[field].data + "</a><small>"
 
     def _carry_fixed_aspects(self):
         if self.source is None:
@@ -538,10 +569,10 @@ class ApplicationContext(PrivateContext):
             if current_journal is not None:
                 cj = models.Journal.pull(current_journal)
                 if cj is not None:
-                    jform = xwalk.JournalFormXWalk.obj2form(cj)
+                    jform = JournalFormXWalk.obj2form(cj)
                     if "notes" in jform:
                         del jform["notes"]
-                    aform = xwalk.SuggestionFormXWalk.obj2form(self.source)
+                    aform = ApplicationFormXWalk.obj2form(self.source)
                     if "notes" in aform:
                         del aform["notes"]
                     diff = self._form_diff(jform, aform)
@@ -549,11 +580,12 @@ class ApplicationContext(PrivateContext):
         return super(ApplicationContext, self).render_template(
             form_diff=diff,
             current_journal=cj,
+            js_functions=JAVASCRIPT_FUNCTIONS,
             **kwargs)
 
     def _form_diff(self, journal_form, application_form):
         diff = []
-        for k, v in application_form.iteritems():
+        for k, v in application_form.items():
             try:
                 q = self.form[k].label
             except KeyError:
@@ -577,7 +609,8 @@ class ApplicationFormFactory(object):
     @classmethod
     def get_form_context(cls, role=None, source=None, form_data=None):
         if role is None:
-            return PublicApplication(source=source, form_data=form_data)
+            # return PublicApplication(source=source, form_data=form_data)
+            return None
         elif role == "admin":
             return ManEdApplicationReview(source=source, form_data=form_data)
         elif role == "editor":
@@ -624,12 +657,14 @@ class ManEdApplicationReview(ApplicationContext):
     def data2form(self):
         self.form = forms.ManEdApplicationReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.ManEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.ManEdApplicationReviewForm(data=ApplicationFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
         if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             self.info = ACC_MSG
 
@@ -638,7 +673,7 @@ class ManEdApplicationReview(ApplicationContext):
         self._validate_editor_field()
 
     def form2target(self):
-        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -665,8 +700,8 @@ class ManEdApplicationReview(ApplicationContext):
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         # If we have changed the editors assinged to this application, let them know.
-        is_editor_group_changed = xwalk.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
-        is_associate_editor_changed = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        is_editor_group_changed = ApplicationFormXWalk.is_new_editor_group(self.form, self.source)
+        is_associate_editor_changed = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # record the event in the provenance tracker
         models.Provenance.make(current_user, "edit", self.target)
@@ -760,7 +795,11 @@ class ManEdApplicationReview(ApplicationContext):
         # If this is the first time this application has been assigned to an editor, notify the publisher.
         old_ed = self.source.editor
         if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            alerts = emails.send_publisher_editor_assigned_email(self.target)
+            is_update_request = self.target.current_journal is not None
+            if is_update_request:
+                alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
+            else:
+                alerts = emails.send_publisher_application_editor_assigned_email(self.target)
             for alert in alerts:
                 self.add_alert(alert)
 
@@ -842,12 +881,14 @@ class EditorApplicationReview(ApplicationContext):
     def data2form(self):
         self.form = forms.EditorApplicationReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.EditorApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.EditorApplicationReviewForm(data=ApplicationFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
         editor_choices = list(sum(choices.Choices.application_status('editor'), ()))       # flattens the list of tuples
         if self.source.application_status not in editor_choices:
             self.info = SCOPE_MSG.format(self.source.application_status)
@@ -861,7 +902,7 @@ class EditorApplicationReview(ApplicationContext):
             self.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
     def form2target(self):
-        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -888,7 +929,7 @@ class EditorApplicationReview(ApplicationContext):
         choices.Choices.validate_status_change('editor', self.source.application_status, self.target.application_status)
 
         # FIXME: may want to factor this out of the suggestionformxwalk
-        new_associate_assigned = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        new_associate_assigned = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -908,7 +949,11 @@ class EditorApplicationReview(ApplicationContext):
         # If this is the first time this application has been assigned to an editor, notify the publisher.
         old_ed = self.source.editor
         if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            alerts = emails.send_publisher_editor_assigned_email(self.target)
+            is_update_request = self.target.current_journal is not None
+            if is_update_request:
+                alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
+            else:
+                alerts = emails.send_publisher_application_editor_assigned_email(self.target)
             for alert in alerts:
                 self.add_alert(alert)
 
@@ -995,12 +1040,14 @@ class AssEdApplicationReview(ApplicationContext):
     def data2form(self):
         self.form = forms.AssEdApplicationReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.AssEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.AssEdApplicationReviewForm(data=ApplicationFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
         associate_editor_choices = list(sum(choices.Choices.application_status(), ()))     # flattens the list of tuples
         if self.source.application_status not in associate_editor_choices:
@@ -1014,7 +1061,7 @@ class AssEdApplicationReview(ApplicationContext):
             self.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
     def form2target(self):
-        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1052,7 +1099,11 @@ class AssEdApplicationReview(ApplicationContext):
         # inform publisher if this was set to 'in progress' from 'pending'
         if self.source.application_status == constants.APPLICATION_STATUS_PENDING and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                alerts = emails.send_publisher_inprogress_email(self.target)
+                is_update_request = self.target.current_journal is not None
+                if is_update_request:
+                    alerts = emails.send_publisher_update_request_inprogress_email(self.target)
+                else:
+                    alerts = emails.send_publisher_application_inprogress_email(self.target)
                 for alert in alerts:
                     self.add_alert(alert)
             else:
@@ -1106,12 +1157,14 @@ class PublisherUpdateRequest(ApplicationContext):
 
     def data2form(self):
         self.form = forms.PublisherUpdateRequestForm(formdata=self.form_data)
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
         self._disable_fields()
 
     def source2form(self):
-        self.form = forms.PublisherUpdateRequestForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self.form = forms.PublisherUpdateRequestForm(data=ApplicationFormXWalk.obj2form(self.source))
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
         self._disable_fields()
 
     def pre_validate(self):
@@ -1120,7 +1173,7 @@ class PublisherUpdateRequest(ApplicationContext):
 
         # carry forward the disabled fields
         bj = self.source.bibjson()
-        contacts = self.source.contacts()
+        contact = self.source.contact
 
         self.form.title.data = bj.title
         self.form.alternative_title.data = bj.alternative_title
@@ -1133,13 +1186,12 @@ class PublisherUpdateRequest(ApplicationContext):
         if eissn == "": eissn = None
         self.form.eissn.data = eissn
 
-        if len(contacts) == 0:
+        if len(contact) == 0:
             # this will cause a validation failure if the form does not provide them
             return
 
         # we copy across the contacts if they are necessary.  The contact details are conditionally
         # disabled, so they /may/ be set
-        contact = contacts[0]
         if "contact_name" in self.renderer.disabled_fields:
             self.form.contact_name.data = contact.get("name")
         if "contact_email" in self.renderer.disabled_fields:
@@ -1148,7 +1200,7 @@ class PublisherUpdateRequest(ApplicationContext):
             self.form.confirm_contact_email.data = contact.get("email")
 
     def form2target(self):
-        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
+        self.target = ApplicationFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1233,13 +1285,11 @@ class PublisherUpdateRequest(ApplicationContext):
         disable = ["title", "alternative_title", "pissn", "eissn"] # these are always disabled
 
         # contact fields are only disabled if they already have content in source
-        contacts = self.source.contacts()
-        if len(contacts) > 0:
-            c = contacts[0]
-            if c.get("name"):
-                disable.append("contact_name")
-            if c.get("email"):
-                disable += ["contact_email", "confirm_contact_email"]
+        contact = self.source.contact
+        if contact.get("name"):
+            disable.append("contact_name")
+        if contact.get("email"):
+            disable += ["contact_email", "confirm_contact_email"]
 
         self.renderer.set_disabled_fields(disable)
 
@@ -1272,81 +1322,6 @@ class PublisherUpdateRequest(ApplicationContext):
             raise e
 
 
-class PublicApplication(ApplicationContext):
-    """
-    Public Application Form Context.  This is also a sort of demonstrator as to how to implement
-    one, so it will do unnecessary things like override methods that don't actually need to be overridden.
-
-    This should be used in a context where an unauthenticated user is making a request to put a journal into the
-    DOAJ.  It does not have any edit capacity (i.e. the form can only be submitted once), and it does not provide
-    any form fields other than the essential journal bibliographic, application bibliographc and contact information
-    for the suggester.  On submission, it will set the status to "pending" and the item will be available for review
-    by the editors
-    """
-
-    def __init__(self, form_data=None, source=None):
-        #  initialise the object through the superclass
-        super(PublicApplication, self).__init__(form_data=form_data, source=source)
-
-    ############################################################
-    # PublicApplicationForm versions of FormContext lifecycle functions
-    ############################################################
-
-    def make_renderer(self):
-        self.renderer = render.PublicApplicationRenderer()
-
-    def set_template(self):
-        self.template = "formcontext/public_application_form.html"
-
-    def pre_validate(self):
-        # no pre-validation requirements
-        pass
-
-    def blank_form(self):
-        self.form = forms.PublicApplicationForm()
-
-    def data2form(self):
-        self.form = forms.PublicApplicationForm(formdata=self.form_data)
-
-    def source2form(self):
-        self.form = forms.PublicApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
-
-    def form2target(self):
-        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
-
-    def patch_target(self):
-        if self.source is not None:
-            self._carry_fixed_aspects()
-            self._merge_notes_forward()
-            self.target.set_owner(self.source.owner)
-            self.target.set_editor_group(self.source.editor_group)
-            self.target.set_editor(self.source.editor)
-            self._carry_continuations()
-
-            # we carry this over for completeness, although it will be overwritten in the finalise() method
-            self.target.set_application_status(self.source.application_status)
-
-    def finalise(self, save_target=True, email_alert=True):
-        super(PublicApplication, self).finalise()
-
-        # set some administrative data
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        self.target.suggested_on = now
-        self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
-
-        # Finally save the target
-        self.target.set_last_manual_update()
-        if save_target:
-            self.target.save()
-
-        if email_alert:
-            try:
-                emails.send_received_email(self.target)
-            except app_email.EmailException as e:
-                self.add_alert("We were unable to send you an email confirmation - possible problem with the email address provided")
-                app.logger.exception('Error sending application received email.')
-
-
 class PublisherUpdateRequestReadOnly(PrivateContext):
     """
     Read Only Application form for publishers. Nothing can be changed. Useful to show publishers what they
@@ -1366,13 +1341,15 @@ class PublisherUpdateRequestReadOnly(PrivateContext):
     def data2form(self):
         self.form = forms.PublisherUpdateRequestForm(formdata=self.form_data)
         # self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
         self.renderer.disable_all_fields(False)
 
     def source2form(self):
-        self.form = forms.PublisherUpdateRequestForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.PublisherUpdateRequestForm(data=JournalFormXWalk.obj2form(self.source))
         # self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
         self.renderer.set_disabled_fields(["digital_archiving_policy"])
         # self.renderer.disable_all_fields(True)
 
@@ -1403,7 +1380,6 @@ class PublisherUpdateRequestReadOnly(PrivateContext):
     """
 
 ### Journal form contexts ###
-
 class ManEdJournalReview(PrivateContext):
     """
     Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
@@ -1431,19 +1407,21 @@ class ManEdJournalReview(PrivateContext):
     def data2form(self):
         self.form = forms.ManEdJournalReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.ManEdJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.ManEdJournalReviewForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
     def pre_validate(self):
         # Editor field is populated in JS after page load - check the selected editor is actually in that editor group
         self._validate_editor_field()
 
     def form2target(self):
-        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
+        self.target = JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1474,8 +1452,8 @@ class ManEdJournalReview(PrivateContext):
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         # If we have changed the editors assinged to this application, let them know.
-        is_editor_group_changed = xwalk.JournalFormXWalk.is_new_editor_group(self.form, self.source)
-        is_associate_editor_changed = xwalk.JournalFormXWalk.is_new_editor(self.form, self.source)
+        is_editor_group_changed = JournalFormXWalk.is_new_editor_group(self.form, self.source)
+        is_associate_editor_changed = JournalFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1521,7 +1499,8 @@ class ManEdBulkEdit(PrivateContext):
 
     def data2form(self):
         self.form = forms.ManEdBulkEditJournalForm(formdata=self.form_data)
-        self._expand_descriptions(["publisher", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
 
 class EditorJournalReview(PrivateContext):
@@ -1553,15 +1532,17 @@ class EditorJournalReview(PrivateContext):
     def data2form(self):
         self.form = forms.EditorJournalReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.EditorJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.EditorJournalReviewForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
     def form2target(self):
-        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
+        self.target = JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1595,7 +1576,7 @@ class EditorJournalReview(PrivateContext):
         super(EditorJournalReview, self).finalise()
 
         # FIXME: may want to factor this out of the suggestionformxwalk
-        email_associate = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        email_associate = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1629,15 +1610,17 @@ class AssEdJournalReview(PrivateContext):
     def data2form(self):
         self.form = forms.AssEdJournalReviewForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.AssEdJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.AssEdJournalReviewForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
     def form2target(self):
-        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
+        self.target = JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
@@ -1696,12 +1679,14 @@ class ReadOnlyJournal(PrivateContext):
     def data2form(self):
         self.form = forms.ReadOnlyJournalForm(formdata=self.form_data)
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
     def source2form(self):
-        self.form = forms.ReadOnlyJournalForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
+        self.form = forms.ReadOnlyJournalForm(data=JournalFormXWalk.obj2form(self.source))
         self._set_choices()
-        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._expand_descriptions(FIELDS_WITH_DESCRIPTION)
+        self._expand_url_descriptions(URL_FIELDS)
 
     def form2target(self):
         pass  # you can't edit objects using this form
@@ -1725,3 +1710,131 @@ class ReadOnlyJournal(PrivateContext):
     def _set_choices(self):
         # no application status (this is a journal) or editorial info (it's not even in the form) to set
         pass
+
+
+class ArticleFormFactory(object):
+    @classmethod
+    def get_from_context(cls, role, source=None, form_data=None, user=None):
+        if role == "admin":
+            return AdminMetadataArticleForm(source=source, form_data=form_data, user=user)
+        if role == "publisher":
+            return PublisherMetadataForm(source=source, form_data=form_data, user=user)
+
+
+class MetadataForm(FormContext):
+
+    def __init__(self, source, form_data, user):
+        self.user = user
+        self.author_error = False
+        super(MetadataForm, self).__init__(source=source, form_data=form_data)
+
+    def _set_choices(self):
+        try:
+            ic = choices.Choices.choices_for_article_issns(user=self.user, article_id=self.source.id)
+            self.form.pissn.choices = ic
+            self.form.eissn.choices = ic
+        except Exception as e:
+            print (str(e))
+            # not logged in, and current_user is broken
+            # probably you are loading the class from the command line
+            pass
+
+    def modify_authors_if_required(self, request_data):
+
+        more_authors = request_data.get("more_authors")
+        remove_author = None
+        for v in list(request.values.keys()):
+            if v.startswith("remove_authors"):
+                remove_author = v.split("-")[1]
+
+        # if the user wants more authors, add an extra entry
+        if more_authors:
+            return self.render_template(more_authors=True)
+
+        # if the user wants to remove an author, do the various back-flips required
+        if remove_author is not None:
+            return self.render_template(remove_authors=remove_author)
+
+    def _check_for_author_errors(self, **kwargs):
+
+        if "more_authors" in kwargs and kwargs["more_authors"] == True:
+            self.form.authors.append_entry()
+        if "remove_authors" in kwargs:
+            keep = []
+            while len(self.form.authors.entries) > 0:
+                entry = self.form.authors.pop_entry()
+                if entry.short_name == "authors-" + kwargs["remove_author"]:
+                    break
+                else:
+                    keep.append(entry)
+            while len(keep) > 0:
+                self.form.authors.append_entry(keep.pop().data)
+
+    def _validate_authors(self):
+        counted = 0
+        for entry in self.form.authors.entries:
+            name = entry.data.get("name")
+            if name is not None and name != "":
+                counted += 1
+        return counted >= 1
+
+    def blank_form(self):
+        self.form = portality.formcontext.forms.ArticleForm()
+        self._set_choices()
+
+    def source2form(self):
+        self.form = portality.formcontext.forms.ArticleForm()
+        ArticleFormXWalk.obj2form(self.form, article=self.source)
+        self._set_choices()
+
+    def data2form(self):
+        self.form = portality.formcontext.forms.ArticleForm(formdata=self.form_data)
+        self._set_choices()
+
+    def form2target(self):
+        self.target = ArticleFormXWalk.form2obj(form=self.form)
+
+    def validate(self):
+        if not self._validate_authors():
+            self.author_error = True
+        if not self.form.validate():
+            return False
+        return True
+
+    def finalise(self, duplicate_check = True):
+        self.form2target()
+        if not self.author_error:
+            article_service = DOAJ.articleService()
+            article_service.create_article(self.target, self.user, add_journal_info=True,
+                                           update_article_id=self.source.id if self.source is not None else None,
+                                           duplicate_check = duplicate_check)
+            Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
+        else:
+            return
+
+
+class PublisherMetadataForm(MetadataForm):
+
+    def __init__(self, source, form_data, user):
+        super(PublisherMetadataForm, self).__init__(source=source, form_data=form_data, user=user)
+
+    def set_template(self):
+        self.template = "publisher/metadata.html"
+
+    def render_template(self, **kwargs):
+        self._check_for_author_errors(**kwargs)
+        if "validated" in kwargs and kwargs["validated"] == True:
+            self.blank_form()
+        return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)
+
+class AdminMetadataArticleForm(MetadataForm):
+
+    def __init__(self, source, form_data, user):
+        super(AdminMetadataArticleForm, self).__init__(source=source, form_data=form_data, user=user)
+
+    def set_template(self):
+        self.template = "admin/article_metadata.html"
+
+    def render_template(self, **kwargs):
+        self._check_for_author_errors(**kwargs)
+        return render_template(self.template, form=self.form, form_context=self, author_error=self.author_error)

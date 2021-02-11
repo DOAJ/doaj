@@ -10,7 +10,7 @@ If you provide a csv, you may also provide a second column containing the delete
 """
 
 from portality import models
-import json, codecs, csv
+import json, csv
 from portality.core import app
 from portality import constants
 
@@ -26,7 +26,7 @@ def remove_doi(article_id):
         else:
             print("WARN: could not remove DOI from {0} as it has no fulltext URL".format(article_id))
     except AttributeError as e:
-        print("ERROR: could not remove DOI from {0}: {1}".format(article_id, e.message))
+        print("ERROR: could not remove DOI from {0}: {1}".format(article_id, str(e)))
     
 
 def remove_fulltext(article_id):
@@ -40,7 +40,7 @@ def remove_fulltext(article_id):
         else:
             print("WARN: could not remove Fulltext from {0} as it has no DOI".format(article_id))
     except AttributeError as e:
-        print("ERROR: could not remove fulltext from {0}: {1}".format(article_id, e.message))
+        print("ERROR: could not remove fulltext from {0}: {1}".format(article_id, str(e)))
 
 
 if __name__ == "__main__":
@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
     if args.username is not None:
         models.Article.delete_selected(owner=args.username, snapshot=snapshot)
-        print "Articles deleted"
+        print("Articles deleted")
     elif args.query is not None:
         f = open(args.query)
         query = json.loads(f.read())
@@ -99,14 +99,14 @@ if __name__ == "__main__":
         # hits['total'] will show you all results that match the query,
         # not just the articles that will actually be deleted (which
         # will be just the page of results specified by from: and size:).
-        go_on = raw_input("This will delete " + str(total) + " articles.  Are you sure? [Y/N]:")
+        go_on = input("This will delete " + str(total) + " articles.  Are you sure? [Y/N]:")
         if go_on.lower() == "y":
             models.Article.delete_selected(query=query, snapshot=snapshot)
             print("Articles deleted")
         else:
             print("Aborted")
     elif args.csv is not None:
-        with codecs.open(args.csv) as f:
+        with open(args.csv) as f:
             reader = csv.reader(f)
             for row in reader:
                 article_id = row[0]

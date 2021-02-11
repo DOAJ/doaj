@@ -7,6 +7,7 @@ from esprit.snapshot import ESSnapshotsClient
 from portality.tasks.redis_huey import main_queue, schedule
 from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi
+# FIXME: update for index-per-type
 
 
 class RequestESBackupBackgroundTask(BackgroundTask):
@@ -36,7 +37,7 @@ class RequestESBackupBackgroundTask(BackgroundTask):
                 to=[app.config.get('ADMIN_EMAIL', 'sysadmin@cottagelabs.com')],
                 fro=app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org'),
                 subject='Alert: DOAJ ElasticSearch backup failure',
-                msg_body="The ElasticSearch snapshot could not requested. Error: \n" + e.message
+                msg_body="The ElasticSearch snapshot could not requested. Error: \n" + str(e)
             )
             raise e
 

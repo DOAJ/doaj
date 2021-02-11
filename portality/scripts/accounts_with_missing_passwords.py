@@ -6,9 +6,10 @@ with some useful account information, and possible explanations for the lack of 
 python accounts_with_missing_passwords.py -o accounts.csv
 ```
 """
-import esprit, codecs
-from portality.core import app
-from portality.clcsv import UnicodeWriter
+import csv
+import esprit
+from portality.core import es_connection
+from portality.util import ipt_prefix
 from portality import models
 
 MISSING_PASSWORD = {
@@ -27,7 +28,7 @@ MISSING_PASSWORD = {
 
 def publishers_with_journals():
     """ Get accounts for all publishers with journals in the DOAJ """
-    for acc in esprit.tasks.scroll(conn, 'account', q=MISSING_PASSWORD, page_size=100, keepalive='1m'):
+    for acc in esprit.tasks.scroll(conn, ipt_prefix('account'), q=MISSING_PASSWORD, page_size=100, keepalive='1m'):
         publisher_account = models.Account(**acc)
         journal_ids = publisher_account.journal
         if journal_ids is not None:
@@ -46,14 +47,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.out:
-        print "Please specify an output file path with the -o option"
+        print("Please specify an output file path with the -o option")
         parser.print_help()
         exit()
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+    conn = es_connection
 
-    with codecs.open(args.out, "wb", "utf-8") as f:
-        writer = UnicodeWriter(f)
+    with open(args.out, "w", encoding="utf-8") as f:
+        writer = csv.writer(f)
         writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?", "Has Reset Token", "Reset Token Expired?"])
 
         for account in publishers_with_journals():

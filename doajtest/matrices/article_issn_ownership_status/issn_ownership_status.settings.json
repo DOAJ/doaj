@@ -1,10 +1,12 @@
 {
   "parameters": [
     {
-      "type": "index", 
-      "name": "test_id"
-    }, 
+      "name": "test_id",
+      "type": "index"
+    },
     {
+      "name": "article",
+      "type": "generated",
       "values": {
         "none": {
           "constraints": {
@@ -12,41 +14,41 @@
               "or": [
                 "-"
               ]
-            }, 
+            },
             "article_pissn": {
               "or": [
                 "-"
               ]
-            }, 
+            },
             "seen_eissn": {
               "or": [
                 "-"
               ]
-            }, 
+            },
             "seen_pissn": {
               "or": [
                 "-"
               ]
             }
           }
-        }, 
+        },
         "exists": {
           "constraints": {
             "article_eissn": {
               "nor": [
                 "-"
               ]
-            }, 
+            },
             "article_pissn": {
               "nor": [
                 "-"
               ]
-            }, 
+            },
             "seen_eissn": {
               "nor": [
                 "-"
               ]
-            }, 
+            },
             "seen_pissn": {
               "nor": [
                 "-"
@@ -54,14 +56,14 @@
             }
           }
         }
-      }, 
-      "type": "generated", 
-      "name": "article"
-    }, 
+      }
+    },
     {
+      "name": "article_eissn",
+      "type": "generated",
       "values": {
-        "yes": {}, 
-        "-": {}, 
+        "-": {},
+        "yes": {},
         "no": {
           "constraints": {
             "article_pissn": {
@@ -71,14 +73,14 @@
             }
           }
         }
-      }, 
-      "type": "generated", 
-      "name": "article_eissn"
-    }, 
+      }
+    },
     {
+      "name": "article_pissn",
+      "type": "generated",
       "values": {
-        "yes": {}, 
-        "-": {}, 
+        "-": {},
+        "yes": {},
         "no": {
           "constraints": {
             "article_eissn": {
@@ -88,49 +90,39 @@
             }
           }
         }
-      }, 
-      "type": "generated", 
-      "name": "article_pissn"
-    }, 
+      }
+    },
     {
+      "name": "owner",
+      "type": "generated",
       "values": {
-        "none": {}, 
+        "none": {},
         "exists": {}
-      }, 
-      "type": "generated", 
-      "name": "owner"
-    }, 
+      }
+    },
     {
+      "name": "seen_eissn",
+      "type": "generated",
       "values": {
-        "yes": {}, 
-        "-": {}, 
+        "-": {},
+        "yes": {},
         "no": {}
-      }, 
-      "type": "generated", 
-      "name": "seen_eissn"
-    }, 
+      }
+    },
     {
+      "name": "seen_pissn",
+      "type": "generated",
       "values": {
-        "yes": {}, 
-        "-": {}, 
+        "-": {},
+        "yes": {},
         "no": {}
-      }, 
-      "type": "generated", 
-      "name": "seen_pissn"
-    }, 
+      }
+    },
     {
+      "name": "journal_owner",
+      "type": "generated",
       "values": {
-        "incorrect": {}, 
-        "mix": {
-          "constraints": {
-            "owner": {
-              "or": [
-                "exists"
-              ]
-            }
-          }
-        }, 
-        "none": {}, 
+        "none": {},
         "correct": {
           "constraints": {
             "owner": {
@@ -139,13 +131,23 @@
               ]
             }
           }
+        },
+        "incorrect": {},
+        "mix": {
+          "constraints": {
+            "owner": {
+              "or": [
+                "exists"
+              ]
+            }
+          }
         }
-      }, 
-      "type": "generated", 
-      "name": "journal_owner"
-    }, 
+      }
+    },
     {
-      "default": "", 
+      "name": "raises",
+      "type": "conditional",
+      "default": "",
       "values": {
         "ArgumentException": {
           "conditions": [
@@ -155,7 +157,7 @@
                   "none"
                 ]
               }
-            }, 
+            },
             {
               "owner": {
                 "or": [
@@ -165,9 +167,7 @@
             }
           ]
         }
-      }, 
-      "type": "conditional", 
-      "name": "raises"
+      }
     }
   ]
 }

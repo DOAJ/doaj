@@ -1,0 +1,11 @@
+{% if publisher_name %}
+Dear {{ publisher_name }},
+{% endif %}
+
+The update for "{{ journal_title }}" is now being reviewed.
+
+A member of the DOAJ Editorial team may contact you by email with questions. These emails can end up in your Spam folder so please check your Spam folder regularly.
+
+The DOAJ Team
+
+**This is an automated message.**

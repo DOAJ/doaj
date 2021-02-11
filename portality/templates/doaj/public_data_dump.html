@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "layouts/sidebar-page.html" %}
 
 {% block content %}
 
-    <h1>DOAJ Data Dumps</h1>
+    <h1>Data Dumps</h1>
 
     <p>You can access full data-dumps of the entire DOAJ public metadata below.  Data dumps are generated weekly.
         The following files provide you complete sets of articles and journals as JSON, in the form that they would also be
@@ -54,6 +54,6 @@
     <p>Records are not explicitly ordered and the order is not guaranteed to remain consistent across data dumps
     produced on different days.</p>
 
-    <p>The data structures are formatted as per the <a href="{{ url_for("api_v1.docs") }}">API</a>.</p>
+    <p>The data structures are formatted as per the <a href="{{ url_for("api_v2.docs") }}">API</a>.</p>
 
 {% endblock %}

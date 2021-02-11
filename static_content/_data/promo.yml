@@ -1,0 +1,35 @@
+# Snippets of news, interesting facts or reminders about DOAJ
+# To be displayed on the sidebar of various pages
+# Under the title "Just so you know..."
+
+# Do not insert links in SUMMARY
+# SUMMARY must be succinct (max. 2-3 short sentences) and can only be a single paragraph
+# URL can include a link to a blog post or any other DOAJ or non-DOAJ page
+
+- title: Provisional ISSNs versus confirmed ISSNs
+  summary: "At DOAJ, the ISSN for your journal must be fully registered _and_ confirmed at the time you submit an application to us. DOAJ does not allow provisional ISSNs."
+  url: https://blog.doaj.org/2020/04/21/provisional-issns-versus-confirmed-issns/
+
+- title: Support open infrastructure
+  summary: "DOAJ is an important piece of infrastructure that benefits from sustainable funding. By choosing a sustaining contribution, we are able to commit to long-term growth and development of the platform."
+  url: /support/
+
+- title: Understanding copyright and licensing
+  summary: "Copyright declares who owns the rights to the website’s content and its published academic content. Licensing describes the terms under which the website’s readers are allowed to use or re-use the copyrighted content."
+  url: /apply/guide/#licensing
+
+- title: Plagiarism checking
+  summary: "Using a plagiarism checking service is recommended for your journal, but it is not required for inclusion in DOAJ."
+  url: /apply/guide/#quality-control-process
+
+- title: Our definition of open access
+  summary: "At DOAJ, we believe that for Open Access to work effectively, user rights, via licensing, and copyright ownership need to be clear."
+  url: https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/
+
+- title: A journal doesn't need the Seal to be indexed
+  summary: "We have a basic set of criteria which need to be fulfilled for a journal to be indexed. Seal criteria are optional."
+  url: /apply/guide/#basic-criteria-for-inclusion
+
+- title: Publishers can update their journals
+  summary: "You don't need to contact us or to submit a new application. Just log in to your account and click the 'Update' button next to a journal."
+  url: /apply/guide/#updating-your-journal-record

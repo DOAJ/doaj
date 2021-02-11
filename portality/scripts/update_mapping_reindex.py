@@ -1,4 +1,5 @@
 """ This script runs an esprit reindex operation, to be used if you have changed the mappings."""
+# FIXME: update for index-per-type
 
 import esprit
 from portality.lib import es_data_mapping
@@ -23,7 +24,7 @@ if __name__ == "__main__":
     old = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, args.old)
     new = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, args.new)
 
-    esprit.tasks.reindex(old, new, args.alias, new_mappings.keys(), new_mappings, new_version="1.7.5")
+    esprit.tasks.reindex(old, new, args.alias, list(new_mappings.keys()), new_mappings, new_version="1.7.5")
 
-    eq = esprit.tasks.compare_index_counts([old, new], new_mappings.keys())
-    print "all equal: ", eq
+    eq = esprit.tasks.compare_index_counts([old, new], list(new_mappings.keys()))
+    print("all equal: ", eq)

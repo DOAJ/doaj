@@ -1,5 +1,5 @@
-<div class="row-fluid" style="margin-bottom: 20px">
-    <div class="span9">
+<div class="row" style="margin-bottom: 20px">
+    <div class="col-md-9">
         <h1>{{ heading_object_type }}: {{form_context.source.bibjson().title}}</h1>
         {% if form_context.source.last_updated %}
           <h4>Last updated: {{form_context.source.last_updated}}</h4>
@@ -8,11 +8,11 @@
             <h4 style="margin-top: 1em;"><a href="{{ url_for('doaj.journal_readonly', journal_id=form_context.source.current_journal) }}" target="_blank">View associated journal</a></h4>
         {% endif %}
     </div>
-    <div class="span3">
+    <div class="col-md-3">
         {% if lock %}
         <div class="well">
             Locked for editing until <strong><span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></strong><br><br>
-            <a href="#" id="unlock" class="btn btn-danger" data-type="{{ object_type }}" data-id="{{form_context.source.id}}">Unlock and Close <i class="icon-white icon-remove"></i></a>
+            <a href="#" id="unlock" class="btn btn-danger" data-type="{{ object_type }}" data-id="{{form_context.source.id}}">Unlock and Close <i class="glyphicon glyphicon-remove"></i></a>
         {% endif %}
         </div>
     </div>

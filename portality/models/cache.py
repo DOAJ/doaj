@@ -1,6 +1,10 @@
+""" The cache contains file metadata for the sitemap, journal csv, and the public data dump. It also holds site stats
+ for the front page """
+
 from portality.dao import DomainObject
 from datetime import datetime
 from portality.core import app
+
 
 class Cache(DomainObject):
     __type__ = "cache"
@@ -16,13 +20,17 @@ class Cache(DomainObject):
         # if the cache exists and is in date (or is otherwise returnable), then explicilty build the
         # cache object and return it.  If we are read-only mode, then we always return the current stats
         # since the cache won't be allowed to store the regenerated ones
-        if returnable or app.config.get("READ_ONLY_MODE", False):
-            return {
-                "articles" : rec.data.get("articles"),
-                "journals" : rec.data.get("journals"),
-                "countries" : rec.data.get("countries"),
-                "searchable" : rec.data.get("searchable")
-            }
+        try:
+            if returnable or app.config.get("READ_ONLY_MODE", False):
+                return {
+                    "journals": rec.data.get("journals"),
+                    "countries": rec.data.get("countries"),
+                    "abstracts": rec.data.get("abstracts"),
+                    "no_apc": rec.data.get("no_apc"),
+                    "new_journals": rec.data.get("new_journals")
+                }
+        except AttributeError:
+            pass    # Return None below
 
         # if we get to here, then we don't return the cache
         return None

@@ -1,16 +1,23 @@
-from portality.dao import DomainObject
-from portality.models import Journal, shared_structs
-from portality.models.bibjson import GenericBibJSON
+import string
+import warnings
+
+from unidecode import unidecode
+from functools import reduce
 from copy import deepcopy
 from datetime import datetime
-from portality import xwalk, regex, constants
-from portality.core import app
+
+from portality import datasets, constants
+from portality.dao import DomainObject
+from portality.models import Journal
+from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article specifically uses the v1 BibJSON
+from portality.models.v1 import shared_structs
 from portality.lib import normalise
 
-import string
-from unidecode import unidecode
 
 class NoJournalException(Exception):
+    pass
+
+class NoValidOwnerException(Exception):
     pass
 
 
@@ -18,10 +25,9 @@ class Article(DomainObject):
     __type__ = "article"
 
     @classmethod
-    def duplicates(cls, issns=None, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
+    def duplicates(cls, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
         # some input sanitisation
-        issns = issns if isinstance(issns, list) else []
-        urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, unicode) else []
+        urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, str) else []
 
         # make sure that we're dealing with the normal form of the identifiers
         norm_urls = []
@@ -40,49 +46,18 @@ class Article(DomainObject):
             # leave the doi as it is
             pass
 
-        # in order to make sure we don't send too many terms to the ES query, break the issn list down into chunks
-        terms_limit = app.config.get("ES_TERMS_LIMIT", 1024)
-        issn_groups = []
-        lower = 0
-        upper = terms_limit
-        while lower < len(issns):
-            issn_groups.append(issns[lower:upper])
-            lower = upper
-            upper = lower + terms_limit
+        q = DuplicateArticleQuery(publisher_record_id=publisher_record_id,
+                                    doi=doi,
+                                    urls=urls,
+                                    title=title,
+                                    volume=volume,
+                                    number=number,
+                                    start=start,
+                                    should_match=should_match,
+                                    size=size)
 
-        if issns is not None and len(issns) > 0:
-            duplicate_articles = []
-            for g in issn_groups:
-                q = DuplicateArticleQuery(issns=g,
-                                            publisher_record_id=publisher_record_id,
-                                            doi=doi,
-                                            urls=urls,
-                                            title=title,
-                                            volume=volume,
-                                            number=number,
-                                            start=start,
-                                            should_match=should_match,
-                                            size=size)
-                # print json.dumps(q.query())
-
-                res = cls.query(q=q.query())
-                duplicate_articles += [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
-
-            return duplicate_articles
-        else:
-            q = DuplicateArticleQuery(publisher_record_id=publisher_record_id,
-                                        doi=doi,
-                                        urls=urls,
-                                        title=title,
-                                        volume=volume,
-                                        number=number,
-                                        start=start,
-                                        should_match=should_match,
-                                        size=size)
-            # print json.dumps(q.query())
-
-            res = cls.query(q=q.query())
-            return [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+        res = cls.query(q=q.query())
+        return [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
 
     @classmethod
     def list_volumes(cls, issns):
@@ -101,12 +76,6 @@ class Article(DomainObject):
         q = ArticleQuery(issns=issns, volume=volume)
         articles = cls.iterate(q.query(), page_size=1000)
         return articles
-
-    @classmethod
-    def get_by_volume_issue(cls, issns, volume, issue):
-        q = ArticleIssueQuery(issns=issns, volume=volume, issue=issue)
-        articles = cls.query(q=q.query())
-        return _sort_articles([i['fields'] for i in articles.get('hits', {}).get('hits', [])])
 
     @classmethod
     def find_by_issns(cls, issns):
@@ -306,28 +275,16 @@ class Article(DomainObject):
                 bibjson.journal_title = jbib.title
             rbj.title = jbib.title
 
-        if jbib.get_license() is not None:
-            lic = jbib.get_license()
-            alic = bibjson.get_journal_license()
-
-            if lic is not None and (alic is None or (lic.get("title") != alic.get("title") or
-                    lic.get("type") != alic.get("type") or
-                    lic.get("url") != alic.get("url") or
-                    lic.get("version") != alic.get("version") or
-                    lic.get("open_access") != alic.get("open_access"))):
-
-                bibjson.set_journal_license(lic.get("title"),
-                                            lic.get("type"),
-                                            lic.get("url"),
-                                            lic.get("version"),
-                                            lic.get("open_access"))
-                trip = True
-
-            rbj.set_license(lic.get("title"),
-                            lic.get("type"),
-                            lic.get("url"),
-                            lic.get("version"),
-                            lic.get("open_access"))
+        bibjson.remove_journal_licences()
+        """
+        for lic in jbib.licences:
+            bibjson.add_journal_license(
+                lic.get("type"),
+                lic.get("type"),
+                lic.get("url")
+            )
+            rbj.add_license(lic.get("type"), lic.get("url"))
+        """
 
         if len(jbib.language) > 0:
             jlang = jbib.language
@@ -427,10 +384,10 @@ class Article(DomainObject):
         subjects = []
         schema_subjects = []
         schema_codes = []
+        schema_codes_tree = []
         classification = []
         langs = []
         country = None
-        licenses = []
         publisher = []
         classification_paths = []
         unpunctitle = None
@@ -470,7 +427,6 @@ class Article(DomainObject):
                 schema_codes.append(scheme + ":" + subs.get("code"))
 
         # copy the languages
-        from portality import datasets  # delayed import, as it loads some stuff from file
         if len(cbib.journal_language) > 0:
             langs = [datasets.name_for_lang(l) for l in cbib.journal_language]
 
@@ -478,12 +434,7 @@ class Article(DomainObject):
         if jindex.get('country'):
             country = jindex.get('country')
         elif cbib.journal_country:
-            country = xwalk.get_country_name(cbib.journal_country)
-
-        # get the title of the license
-        lic = cbib.get_journal_license()
-        if lic is not None:
-            licenses.append(lic.get("title"))
+            country = datasets.get_country_name(cbib.journal_country)
 
         # copy the publisher/provider
         if cbib.publisher:
@@ -494,7 +445,6 @@ class Article(DomainObject):
         subjects = list(set(subjects))
         schema_subjects = list(set(schema_subjects))
         classification = list(set(classification))
-        licenses = list(set(licenses))
         publisher = list(set(publisher))
         langs = list(set(langs))
         schema_codes = list(set(schema_codes))
@@ -514,6 +464,7 @@ class Article(DomainObject):
 
         # normalise the classification paths, so we only store the longest ones
         classification_paths = lcc.longest(classification_paths)
+        schema_codes_tree = cbib.lcc_codes_full_list()
 
         # create an unpunctitle
         if cbib.title is not None:
@@ -546,6 +497,8 @@ class Article(DomainObject):
                 # if we can't normalise the fulltext store it as-is
                 fulltext = source_fulltext
 
+
+
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -561,13 +514,11 @@ class Article(DomainObject):
             self.data["index"]["classification"] = classification
         if len(publisher) > 0:
             self.data["index"]["publisher"] = publisher
-        if len(licenses) > 0:
-            self.data["index"]["license"] = licenses
         if len(langs) > 0:
             self.data["index"]["language"] = langs
         if country is not None:
             self.data["index"]["country"] = country
-        if schema_codes > 0:
+        if len(schema_codes) > 0:
             self.data["index"]["schema_code"] = schema_codes
         if len(classification_paths) > 0:
             self.data["index"]["classification_paths"] = classification_paths
@@ -581,6 +532,8 @@ class Article(DomainObject):
             self.data["index"]["doi"] = doi
         if fulltext is not None:
             self.data["index"]["fulltext"] = fulltext
+        if len(schema_codes_tree) > 0:
+            self.data["index"]["schema_codes_tree"] = schema_codes_tree
 
     def prep(self):
         self._generate_index()
@@ -590,6 +543,34 @@ class Article(DomainObject):
         self._generate_index()
         return super(Article, self).save(*args, **kwargs)
 
+    def get_owner(self):
+        b = self.bibjson()
+        article_issns = b.get_identifiers(b.P_ISSN)
+        article_issns += b.get_identifiers(b.E_ISSN)
+        owners = []
+
+        seen_journal_issns = {}
+        for issn in article_issns:
+            journals = Journal.find_by_issn(issn)
+            if journals is not None and len(journals) > 0:
+                for j in journals:
+                    owners.append(j.owner)
+                    if j.owner not in seen_journal_issns:
+                        seen_journal_issns[j.owner] = []
+                    seen_journal_issns[j.owner] += j.bibjson().issns()
+
+        # deduplicate the list of owners
+        owners = list(set(owners))
+
+        # no owner means we can't confirm
+        if len(owners) == 0:
+            raise NoValidOwnerException
+
+        # multiple owners means ownership of this article is confused
+        if len(owners) > 1:
+            return NoValidOwnerException
+
+        return owners[0]
 
 class ArticleBibJSON(GenericBibJSON):
 
@@ -705,10 +686,12 @@ class ArticleBibJSON(GenericBibJSON):
     def publisher(self, value):
         self._set_with_struct("journal.publisher", value)
 
-    def add_author(self, name, affiliation=None):
+    def add_author(self, name, affiliation=None, orcid_id=None):
         aobj = {"name": name}
         if affiliation is not None:
             aobj["affiliation"] = affiliation
+        if orcid_id is not None:
+            aobj["orcid_id"] = orcid_id
         self._add_to_list_with_struct("author", aobj)
 
     @property
@@ -719,7 +702,13 @@ class ArticleBibJSON(GenericBibJSON):
     def author(self, authors):
         self._set_with_struct("author", authors)
 
-    def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+    def add_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+
+        :return:
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         lobj = {"title": licence_title, "type": licence_type}
         if url is not None:
             lobj["url"] = url
@@ -727,20 +716,52 @@ class ArticleBibJSON(GenericBibJSON):
             lobj["version"] = version
         if open_access is not None:
             lobj["open_access"] = open_access
+        self._add_to_list_with_struct("journal.license", lobj)
 
+    def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
+        lobj = {"title": licence_title, "type": licence_type}
+        if url is not None:
+            lobj["url"] = url
+        if version is not None:
+            lobj["version"] = version
+        if open_access is not None:
+            lobj["open_access"] = open_access
         self._set_with_struct("journal.license", lobj)
 
     def get_journal_license(self):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
         lics = self._get_list("journal.license")
         if len(lics) == 0:
             return None
         return lics[0]
 
+    @property
+    def journal_licenses(self):
+        """
+        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+        """
+        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
+        return self._get_list("journal.license")
+
+    def remove_journal_licences(self):
+        """
+        PENDING DEPRECATION - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
+        """
+        warnings.warn("PENDING DEPRECATION - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", PendingDeprecationWarning)
+        self._delete("journal.license")
+
     def get_publication_date(self, date_format='%Y-%m-%dT%H:%M:%SZ'):
         # work out what the date of publication is
         date = ""
         if self.year is not None:
-            if type(self.year is str):          # It should be, if the mappings are correct. but len() needs a sequence.
+            if type(self.year) is str:  # It should be, if the mappings are correct. but len() needs a sequence.
                 # fix 2 digit years
                 if len(self.year) == 2:
                     try:
@@ -764,12 +785,21 @@ class ArticleBibJSON(GenericBibJSON):
             date += str(self.year)
             if self.month is not None:
                 try:
-                    if type(self.month) is int or len(self.month) <= 2:
-                        month_number = self.month
-                    elif len(self.month) == 3:                                     # 'May' works with either case, obvz.
+                    if type(self.month) is int:
+                        if 1 <= int(self.month) <= 12:
+                            month_number = self.month
+                        else:
+                            month_number = 1
+                    elif len(self.month) <= 2:
+                        if 1 <= int(self.month) <= 12:
+                            month_number = self.month
+                        else:
+                            month_number = '1'
+                    elif len(self.month) == 3:  # 'May' works with either case, obvz.
                         month_number = datetime.strptime(self.month, '%b').month
                     else:
                         month_number = datetime.strptime(self.month, '%B').month
+
 
                     # pad the month number to two digits. This accepts int or string
                     date += '-{:0>2}'.format(month_number)
@@ -822,6 +852,20 @@ class ArticleBibJSON(GenericBibJSON):
 
         return jtitle.strip(), citation
 
+    def lcc_codes_full_list(self):
+        full_list = set()
+
+        from portality.lcc import lcc  # inline import since this hits the database
+        for subs in self.subjects():
+            scheme = subs.get("scheme")
+            if scheme != "LCC":
+                continue
+            code = subs.get("code")
+            expanded = lcc.expand_codes(code)
+            full_list.update(expanded)
+
+        return ["LCC:" + x for x in full_list if x is not None]
+
 ARTICLE_BIBJSON_EXTENSION = {
     "objects" : ["bibjson"],
     "structs" : {
@@ -845,7 +889,8 @@ ARTICLE_BIBJSON_EXTENSION = {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
                         "affiliation" : {"coerce" : "unicode"},
-                        "email" : {"coerce": "unicode"}
+                        "email" : {"coerce": "unicode"},
+                        "orcid_id" : {"coerce" : "unicode"}
                     }
                 },
 
@@ -916,69 +961,6 @@ class ArticleQuery(object):
             q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
 
         return q
-
-
-class ArticleIssueQuery(object):
-    base_query = {
-        "query" : {
-            "filtered": {
-                "filter": {
-                    "bool" : {
-                        "must" : []
-                    }
-                }
-            }
-        },
-        "sort": "bibjson.start_page",
-        "size": 100000,
-        "fields": [
-            "id",
-            "bibjson.journal.volume",
-            "bibjson.journal.number",
-            "bibjson.title",
-            "bibjson.author.name",
-            "bibjson.link.url",
-            "bibjson.start_page",
-            "bibjson.end_page",
-            "bibjson.abstract",
-            "bibjson.month",
-            "bibjson.year"
-        ]
-    }
-
-    _issn_terms = { "terms" : {"index.issn.exact" : ["<list of issns here>"]} }
-    _volume_term = { "term" : {"bibjson.journal.volume.exact" : "<volume here>"} }
-    _issue_term = { "term" : {"bibjson.journal.number.exact" : "<issue here>"} }
-    _noissue_term = { "missing" : {"field": "bibjson.journal.number.exact"} }
-
-    def __init__(self, issns=None, volume=None, issue=None):
-        self.issns = issns
-        self.volume = volume
-        self.issue = issue
-
-    def query(self):
-        q = deepcopy(self.base_query)
-
-        if self.issns is not None:
-            iq = deepcopy(self._issn_terms)
-            iq["terms"]["index.issn.exact"] = self.issns
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(iq)
-
-        if self.volume is not None:
-            vq = deepcopy(self._volume_term)
-            vq["term"]["bibjson.journal.volume.exact"] = self.volume
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
-
-        if self.issue is not None:
-            if self.issue == "unknown":
-                isq = deepcopy(self._noissue_term)
-            else:
-                isq = deepcopy(self._issue_term)
-                isq["term"]["bibjson.journal.number.exact"] = self.issue
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(isq)
-
-        return q
-
     
 class ArticleVolumesQuery(object):
     base_query = {
@@ -1076,7 +1058,7 @@ class DuplicateArticleQuery(object):
         self.issns = issns if isinstance(issns, list) else []
         self.publisher_record_id = publisher_record_id
         self.doi = doi
-        self.urls = urls if isinstance(urls, list) else [urls] if isinstance(urls, str) or isinstance(urls, unicode) else []
+        self.urls = urls if isinstance(urls, list) else [urls] if isinstance(urls, str) or isinstance(urls, str) else []
         self.title = title
         self.volume = volume
         self.number = number

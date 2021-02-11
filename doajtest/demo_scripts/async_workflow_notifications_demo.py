@@ -11,7 +11,7 @@ import time
 # Replace the async workflow send function with this one to limit emails sent in this demo.
 def send_emails(emails_dict):
 
-    for (email, (to_name, paragraphs)) in emails_dict.iteritems():
+    for (email, (to_name, paragraphs)) in emails_dict.items():
         time.sleep(0.6)
         pre = 'Dear ' + to_name + ',\n\n'
         post = '\n\nThe DOAJ Team\n\n***\nThis is an automated message. Please do not reply to this email.'

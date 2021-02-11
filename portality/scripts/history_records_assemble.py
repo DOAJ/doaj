@@ -1,4 +1,4 @@
-import codecs, os, shutil, tarfile, json
+import os, shutil, tarfile, json, csv
 from portality import clcsv
 
 # I have not included jsondiff in the requiremets for the app, as I don't think that we'll stick
@@ -7,16 +7,16 @@ from portality import clcsv
 # to pip install it.
 from jsondiff import diff, symbols
 
-ID = "83562250934e45e28416e22828004f5c"
+ID = "530ee48c2e31475eb4afd82581fd9710"
 
-ASSEMBLE = False
+ASSEMBLE = True
 DIFF = True
 
-CSV_DIR = "/home/richard/tmp/doaj/history/tosync"
+CSV_DIR = "/home/richard/tmp/doaj/history.20200306"
 
-TAR_DIR = "/home/richard/tmp/doaj/history/tosync"
+TAR_DIR = "/home/richard/tmp/doaj/history.20200306/history"
 
-OUT_DIR = "/home/richard/tmp/doaj/history/workspace/"
+OUT_DIR = "/home/richard/tmp/doaj/history.20200306/workspace/"
 
 
 def history_records_assemble(id, csv_dir, tar_dir, out_dir, assemble, do_diff):
@@ -32,8 +32,8 @@ def history_records_assemble(id, csv_dir, tar_dir, out_dir, assemble, do_diff):
         # find all the files from the index csvs
         for c in csvs:
             tarname = c.rsplit(".", 1)[0] + ".tar.gz"
-            with codecs.open(os.path.join(csv_dir, c), "rb", "utf-8") as f:
-                reader = clcsv.UnicodeReader(f)
+            with open(os.path.join(csv_dir, c), "r", encoding="utf-8") as f:
+                reader = csv.reader(f)
                 for row in reader:
                     if row[0] == id:
                         paths.append({
@@ -45,15 +45,20 @@ def history_records_assemble(id, csv_dir, tar_dir, out_dir, assemble, do_diff):
                         })
 
         # gather all the files in the target directory
-        with codecs.open(os.path.join(out_dir, "_index." + id + ".csv"), "wb", "utf-8") as g:
-            writer = clcsv.UnicodeWriter(g)
+        with open(os.path.join(out_dir, "_index." + id + ".csv"), "w", encoding="utf-8") as g:
+            writer = csv.writer(g)
             writer.writerow(["CSV", "Tar Name", "Tar Path", "Date", "File ID"])
             for p in paths:
                 tarball = tarfile.open(os.path.join(tar_dir, p["tarname"]), "r:gz")
-                member = tarball.getmember(p["tarpath"])
+                try:
+                    member = tarball.getmember(p["tarpath"])
+                except KeyError:
+                    p["tarpath"] = p["tarpath"][1:] if p["tarpath"].startswith("/") else p["tarpath"]
+                    member = tarball.getmember(p["tarpath"])
+
                 handle = tarball.extractfile(member)
                 out = os.path.join(out_dir, p["date"] + "_" + p["fileid"] + ".json")
-                with codecs.open(out, "wb", "utf-8") as f:
+                with open(out, "wb") as f:
                     shutil.copyfileobj(handle, f)
                 writer.writerow([p["csv"], p["tarname"], p["tarpath"], p["date"], p["fileid"]])
 
@@ -71,8 +76,8 @@ def history_records_assemble(id, csv_dir, tar_dir, out_dir, assemble, do_diff):
         for i in range(len(files) - 1):
             f1 = files[i]
             f2 = files[i + 1]
-            with codecs.open(os.path.join(out_dir, f1), "rb", "utf-8") as r1, \
-                    codecs.open(os.path.join(out_dir, f2), "rb", "utf-8") as r2:
+            with open(os.path.join(out_dir, f1), "r", encoding="utf-8") as r1, \
+                    open(os.path.join(out_dir, f2), "r", encoding="utf-8") as r2:
                 j1 = json.loads(r1.read())
                 j2 = json.loads(r2.read())
                 d = diff(j1, j2)
@@ -81,8 +86,12 @@ def history_records_assemble(id, csv_dir, tar_dir, out_dir, assemble, do_diff):
                 d = _fix_symbols(d)
                 changes.append(d)
 
-        with codecs.open(difffile, "wb", "utf-8") as o:
-            o.write(json.dumps(changes, indent=2, sort_keys=True))
+        with open(difffile, "w", encoding="utf-8") as o:
+            try:
+                o.write(json.dumps(changes, indent=2, sort_keys=True))
+            except TypeError:
+                print(changes)
+                raise
 
 
 def _fix_symbols(data):
@@ -90,7 +99,7 @@ def _fix_symbols(data):
         if not isinstance(d, dict):
             return d
         newData = {}
-        for k, v in d.iteritems():
+        for k, v in d.items():
             if isinstance(k, symbols.Symbol):
                 newData[repr(k)] = v
             else:
@@ -101,7 +110,7 @@ def _fix_symbols(data):
         if not isinstance(d, dict):
             return d
         d = fix_layer(d)
-        for k, v in d.items():
+        for k, v in list(d.items()):
             d[k] = recurse(d[k])
         return d
 

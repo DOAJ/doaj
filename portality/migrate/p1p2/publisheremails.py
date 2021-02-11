@@ -1,7 +1,7 @@
 import os, csv
 from portality import models, settings
 from datetime import datetime
-from StringIO import StringIO
+from io import StringIO
 
 corrections_csv = os.path.join(os.path.dirname(os.path.realpath(__file__)), "corrections.csv")
 malformed_csv = os.path.join(os.path.dirname(os.path.realpath(__file__)), "malformed.csv")
@@ -43,7 +43,7 @@ for row in malformed_reader:
         publisher = corrections[id]
     acc = models.Account.pull(publisher)
     if acc is None:
-        print publisher, "fail - shouldn't happen"
+        print(publisher, "fail - shouldn't happen")
         continue
     
     new_row = row[:4] + [acc.email]
@@ -64,7 +64,7 @@ for row in invalid_reader:
         publisher = corrections[id]
     acc = models.Account.pull(publisher)
     if acc is None:
-        print publisher, "fail - shouldn't happen"
+        print(publisher, "fail - shouldn't happen")
         continue
     
     new_row = row[:4] + [acc.email]

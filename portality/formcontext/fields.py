@@ -39,9 +39,9 @@ class TagListField(Field):
 
     def _value(self):
         if self.data:
-            return u', '.join(self.data)
+            return ', '.join(self.data)
         else:
-            return u''
+            return ''
 
     def get_list(self):
         return self.data
@@ -59,16 +59,19 @@ class URLField(TextField):
     widget = widgets.TextInput()
 
     def process_formdata(self, valuelist):
-        val = valuelist[0]
-        assumed_scheme = 'http://'
-
-        if val and not val.startswith(assumed_scheme) and not URL_REQUIRED_SCHEME_REGEX.match(val):
-            self.data = assumed_scheme + val
+        if valuelist is None or len(valuelist) == 0:
+            self.data = self.data = ''
         else:
-            if val == assumed_scheme:  # just to prevent http:// from showing up on its own in all the URL fields when you make a mistake elsewhere
-                self.data = u''
+            val = valuelist[0]
+            assumed_scheme = 'http://'
+
+            if val and not val.startswith(assumed_scheme) and not URL_REQUIRED_SCHEME_REGEX.match(val):
+                self.data = assumed_scheme + val
             else:
-                self.data = val
+                if val == assumed_scheme:  # just to prevent http:// from showing up on its own in all the URL fields when you make a mistake elsewhere
+                    self.data = ''
+                else:
+                    self.data = val
 
 
 class DisabledTextField(TextField):

@@ -6,18 +6,17 @@ from portality.app_email import email_archive
 from portality.background import BackgroundTask, BackgroundApi
 
 import esprit
-import codecs
 import os
 import shutil
 import json
+import csv
 from datetime import datetime
 from portality import models
 from portality.lib import dates
-from portality.core import app
-from portality.clcsv import UnicodeWriter, UnicodeReader
-import csv
+from portality.core import app, es_connection
 from portality.bll.doaj import DOAJ
 from portality.bll import exceptions
+from portality.util import ipt_prefix
 
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
@@ -47,15 +46,15 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         # Initialise our reports
         global_reportfile = 'duplicate_articles_global_' + dates.today() + '.csv'
         global_reportpath = os.path.join(outdir, global_reportfile)
-        f = codecs.open(global_reportpath, "wb", "utf-8")
-        global_report = UnicodeWriter(f)
+        f = open(global_reportpath, "w", encoding="utf-8")
+        global_report = csv.writer(f)
         header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "article_in_doaj", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns", "match_in_doaj", "owners_match", "titles_match", "article_title", "match_title"]
         global_report.writerow(header)
 
         noids_reportfile = 'noids_' + dates.today() + '.csv'
         noids_reportpath = os.path.join(outdir, noids_reportfile)
-        g = codecs.open(noids_reportpath, "wb", "utf-8")
-        noids_report = UnicodeWriter(g)
+        g = open(noids_reportpath, "w", encoding="utf-8")
+        noids_report = csv.writer(g)
         header = ["article_id", "article_created", "article_owner", "article_issns", "article_in_doaj"]
         noids_report.writerow(header)
 
@@ -67,8 +66,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         articleService = DOAJ.articleService()
 
         # Read back in the article csv file we created earlier
-        with codecs.open(tmp_csvpath, 'rb', 'utf-8') as t:
-            article_reader = UnicodeReader(t)
+        with open(tmp_csvpath, 'r', encoding='utf-8') as t:
+            article_reader = csv.reader(t)
 
             start = datetime.now()
             estimated_finish = ""
@@ -84,7 +83,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
                 # Get the global duplicates
                 try:
-                    global_duplicates = articleService.discover_duplicates(article, owner=None, results_per_match_type=10000)
+                    global_duplicates = articleService.discover_duplicates(article, results_per_match_type=10000, include_article = False)
                 except exceptions.DuplicateArticleException:
                     # this means the article did not have any ids that could be used for deduplication
                     owner = self._lookup_owner(article)
@@ -99,7 +98,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
                     # Deduplicate the DOI and fulltext duplicate lists
                     s = set([article.id] + [d.id for d in global_duplicates.get('doi', []) + global_duplicates.get('fulltext', [])])
-                    dupcount = len(s) - 1
+                    # remove article's own id from global_duplicates
+                    dupcount = len(s)-1
                     if s not in global_matches:
                         self._write_rows_from_duplicates(article, owner, global_duplicates, global_report)
                         global_matches.append(s)
@@ -124,15 +124,14 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
     @classmethod
     def _make_csv_dump(self, tmpdir, filename):
-        # Connection to the ES index, rely on esprit sorting out the port from the host
-        conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None,
-                                          app.config["ELASTIC_SEARCH_DB"])
+        # Connection to the ES index
+        conn = es_connection
 
         if not filename:
             filename = 'tmp_articles_' + dates.today() + '.csv'
         filename = os.path.join(tmpdir, filename)
 
-        with codecs.open(filename, 'wb', 'utf-8') as t:
+        with open(filename, 'w', encoding='utf-8') as t:
             count = self._create_article_csv(conn, t)
 
         return filename, count
@@ -153,7 +152,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
     def _create_article_csv(connection, file_object):
         """ Create a CSV file with the minimum information we require to find and report duplicates. """
 
-        csv_writer = UnicodeWriter(file_object, quoting=csv.QUOTE_ALL)
+        csv_writer = csv.writer(file_object, quoting=csv.QUOTE_ALL)
 
         # Scroll through all articles, newest to oldest
         scroll_query = {
@@ -174,7 +173,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         }
 
         count = 0
-        for a in esprit.tasks.scroll(connection, 'article', q=scroll_query, page_size=1000, keepalive='1m'):
+        for a in esprit.tasks.scroll(connection, ipt_prefix('article'), q=scroll_query, page_size=1000, keepalive='1m'):
             row = [
                 a['id'],
                 a['created_date'],
@@ -224,7 +223,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
         # write rows to report
         a_summary = self._summarise_article(article, owner)
-        for k, v in dups.iteritems():
+        for k, v in dups.items():
             row = [article.id,
                    a_summary['created'],
                    a_summary['doi'],

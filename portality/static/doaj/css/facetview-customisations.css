@@ -157,14 +157,6 @@ hr {
     padding: 10px;
 }
 
-#admin-bulk-label {
-    text-align: center;
-    margin-top: -20px;
-    margin-left: 25%;
-    margin-right: 25%;
-    background: #ffffff
-}
-
 #admin-bulk-box .controls {
     margin: 0 0 0 0;
 }

@@ -1,63 +1,50 @@
-{% extends "base.html" %}
+{% extends "layouts/base.html" %}
+
+{% block page_title %}Register &ndash; {% endblock %}
+
+{% block extra_stylesheets %}
+    <style>
+        #recaptcha_div iframe {
+            padding: unset;
+            border: unset;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-{% from "_formhelpers.html" import render_field %}
-
-<script type="text/javascript">
-jQuery(document).ready(function($) {
-    //$('#m').hide()
-    $('#m').css({
-        "border":"none",
-        "background":"none",
-        "cursor":"default",
-        "-moz-box-shadow":"none",
-        "-webkit-box-shadow":"none",
-        "box-shadow":"none"
-    });
-    var signup = function(event) {
-        event.preventDefault();
-        if ( $('#m').val() == "" ) {
-            $('#signupform').submit()
-        } else {
-            alert("Are you human? If so, don't put anything in that last box...")
-        }
-    };
-    $('#signup').bind('click',signup)
-});
-</script>
-
-<h1>Create a new user account</h1>
-<div class="hero-unit">
-    <div class="row">
-        <div class="span5">
-            <form id="signupform" method="post" action="{{url_for('account.register')}}">
-                {{ render_field(form.w) }}
-                {{ render_field(form.n) }}
-                {{ render_field(form.s, placeholder="********") }}
-                {{ render_field(form.c, placeholder="********") }}
-                {# Check current user role is super incase public registration is activated at some point #}
-                {% if current_user.is_super %}
-                    {{ render_field(form.roles) }}
+<main class="page-content">
+    <section class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Register</h1>
+                {% if current_user.is_authenticated %}
+                    <p>Create a new user account.</p>
+                {% else %}
+                    <p>DOAJ is free to use without logging in.</p>
+                    <p>You only need an account if you wish to create an application for a journal’s inclusion in the DOAJ or you are a volunteer.</p>
                 {% endif %}
-                <div class="actions">
-                    <input id="signup" type="submit" value="Create User" class="btn btn-primary" />
-                </div>
-            </form>
+            </div>
+            <div class="col-md-6">
+                {% include "account/_register_form.html" %}
+                <p>If you have difficulty registering, <a href="/contact">contact us</a>.</p>
+            </div>
         </div>
-        <div class="span5">
-        </div>
-    </div>
-</div>
-
+    </section>
+</main>
 {% endblock %}
 
 {% block extra_js_bottom %}
+    {% if current_user.is_authenticated and current_user.has_role("create_user") %}
+    <!-- select2 for role picker on admin create user form -->
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+        $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
+    });
+    </script>
 
-<script type="text/javascript">
-jQuery(document).ready(function($) {
-    $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
-});
-</script>
+{% endif %}
+    <!-- reCAPTCHA for the register form -->
+    <script type="text/javascript" src="/static/js/recaptcha.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script src="https://www.recaptcha.net/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 
-{% endblock extra_js_bottom %}
-
+{% endblock %}

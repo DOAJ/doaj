@@ -1,0 +1,122 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "duplicate",
+      "type": "generated",
+      "values": {
+        "same_as_article_id": {},
+        "different_than_article_id": {},
+        "none": {}
+      }
+    },
+    {
+      "name": "merge_duplicate",
+      "type": "generated",
+      "values": {
+        "yes": {},
+        "no": {}
+      }
+    },
+    {
+      "name": "doi_or_ft_updated",
+      "type": "generated",
+      "values": {
+        "yes": {
+          "constraints": {
+            "duplicate": {
+              "nor": [
+                "none"
+              ]
+            }
+          }
+        },
+        "no": {}
+      }
+    },
+    {
+      "name": "is_update",
+      "type": "conditional",
+      "values": {
+        "0": {
+          "conditions": [
+            {
+              "duplicate": {
+                "or": [
+                  "none"
+                ]
+              }
+            },
+            {
+              "merge_duplicate": {
+                "or": [
+                  "no"
+                ]
+              }
+            }
+          ]
+        },
+        "1": {
+          "conditions": [
+            {
+              "duplicate": {
+                "or": [
+                  "same_as_article_id"
+                ]
+              },
+              "merge_duplicate": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "doi_or_ft_updated": {
+                "or": [
+                  "no"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "raises",
+      "type": "conditional",
+      "values": {
+        "DuplicateArticle": {
+          "conditions": [
+            {
+              "duplicate": {
+                "or": [
+                  "different_than_article_id"
+                ]
+              }
+            },
+            {
+              "doi_or_ft_updated": {
+                "or": [
+                  "yes"
+                ]
+              }
+            },
+            {
+              "duplicate": {
+                "or": [
+                  "same_as_article_id"
+                ]
+              },
+              "merge_duplicate": {
+                "or": [
+                  "no"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

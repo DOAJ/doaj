@@ -1,4 +1,4 @@
-import sys, os, json, urllib, argparse
+import sys, os, json, urllib.request, urllib.parse, urllib.error, argparse
 
 TEST_SOURCE = "{%22query%22:{%22filtered%22:{%22query%22:{%22query_string%22:{%22query%22:%221893-3211%22,%22default_field%22:%22index.issn.exact%22,%22default_operator%22:%22AND%22}},%22filter%22:{%22bool%22:{%22must%22:%5B{%22term%22:{%22_type%22:%22article%22}}%5D}}}}}"
 
@@ -48,7 +48,7 @@ def convert_from_file_to_dir(i, o):
 
 
 def source2json(s):
-    parsed = urllib.unquote(s)
+    parsed = urllib.parse.unquote(s)
     return json.loads(parsed)
 
 
@@ -63,14 +63,14 @@ def main(argv=sys.argv):
     args = parser.parse_args()
 
     if args.querystring:
-        print json.dumps(source2json(args.querystring), indent=3)
+        print(json.dumps(source2json(args.querystring), indent=3))
         sys.exit(0)
 
     if args.test:
-        print 'Test encoded source (e.g. from a url with a source= argument in it)'
-        print TEST_SOURCE
-        print '  Result:'
-        print json.dumps(source2json(TEST_SOURCE), indent=3)
+        print('Test encoded source (e.g. from a url with a source= argument in it)')
+        print(TEST_SOURCE)
+        print('  Result:')
+        print(json.dumps(source2json(TEST_SOURCE), indent=3))
         sys.exit(0)
 
     if not args.input and not args.outputdir:
@@ -79,7 +79,7 @@ def main(argv=sys.argv):
         sys.exit(1)
     
     if (args.input and not args.outputdir) or (args.outputdir and not args.input):
-        print 'If you specify an input file, you must also specify the output dir. And vice versa.'
+        print('If you specify an input file, you must also specify the output dir. And vice versa.')
         sys.exit(1)
 
     convert_from_file_to_dir(args.input, args.outputdir)

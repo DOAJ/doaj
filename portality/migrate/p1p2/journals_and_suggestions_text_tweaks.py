@@ -8,12 +8,12 @@ suggestion_iterator = models.Suggestion.iterall(page_size=10000)
 for s in suggestion_iterator:
 
     update_deposit_policies = {
-        'H\xc3\xa9loise'.decode('utf-8'): 'H\xc3\xa9lo\xc3\xafse'.decode('utf-8'),
+        'Héloïse': 'Héloïse',
         'Diadorum': 'Diadorim'
     }
 
     changed = False
-    for old, new in update_deposit_policies.iteritems():
+    for old, new in update_deposit_policies.items():
         try:
             replace_index = s.bibjson().deposit_policy.index(old)
             s.bibjson().deposit_policy[replace_index] = new
@@ -27,13 +27,13 @@ for s in suggestion_iterator:
     
     if len(batch) >= batch_size:
         total += len(batch)
-        print "writing suggestions", len(batch), "; total so far", total
+        print("writing suggestions", len(batch), "; total so far", total)
         models.Suggestion.bulk(batch)
         batch = []
 
 if len(batch) > 0:
     total += len(batch)
-    print "writing suggestions", len(batch), "; total so far", total
+    print("writing suggestions", len(batch), "; total so far", total)
     models.Suggestion.bulk(batch)
 
 
@@ -48,7 +48,7 @@ for j in journal_iterator:
     }
 
     changed = False
-    for old, new in update_deposit_policies.iteritems():
+    for old, new in update_deposit_policies.items():
         try:
             replace_index = j.bibjson().deposit_policy.index(old)
             j.bibjson().deposit_policy[replace_index] = new
@@ -62,11 +62,11 @@ for j in journal_iterator:
     
     if len(batch) >= batch_size:
         total += len(batch)
-        print "writing journals", len(batch), "; total so far", total
+        print("writing journals", len(batch), "; total so far", total)
         models.Journal.bulk(batch)
         batch = []
 
 if len(batch) > 0:
     total += len(batch)
-    print "writing journals", len(batch), "; total so far", total
+    print("writing journals", len(batch), "; total so far", total)
     models.Journal.bulk(batch)

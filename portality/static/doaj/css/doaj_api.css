@@ -1,63 +1,36 @@
-em {
-    font-style: italic;
+/****************************************
+ * API Docs Styles
+ */
+
+.swagger-section .heading h3 {
+  font-family: 'Source Code Pro', monospace;
+  font-weight: 400;
 }
 
-strong {
-    font-weight: bold;
+.swagger-section .swagger-ui-wrap {
+    max-width: inherit;
 }
 
-img {
-    vertical-align: middle;
+.swagger-section .swagger-ui-wrap ul#resources {
+    padding-left: 0;
 }
 
-body {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    padding-top: 1em;
-    font-size: 13px;
+.swagger-section h4 {
+  font-family: 'Source Sans Pro', sans-serif;
+  letter-spacing: 0.01em;
 }
 
-.swagger-section {
-    font-size: 15px;
+ul,
+ol {
+    list-style: initial;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
 }
 
-.with-borders.sidebar-nav {
-    display: none;
+.swagger-section .swagger-ui-wrap .footer {
+    visibility: hidden;
 }
 
-footer {
-    margin-top: 2em;
-    margin-bottom: 1em;
-}
-
-#swagger-ui-container #resources_container > .footer > h4 {
-    display: none;
-}
-
-.search-query-docs {
-    font-weight: normal;
-}
-
-
-.swagger-section .swagger-ui-wrap ol {
-    list-style-type: decimal;
-}
-
-.swagger-section .swagger-ui-wrap ol li {
-    font-size: 14px;
-}
-
-#extra-docs > ul {
-    list-style: disc inside;
-}
-
-#extra-docs > ul > li {
-    margin-bottom: 0.3em;
-}
-
-ul.options {
-    font-size: 125%;
-}
-
-#api_info {
-    line-height: 150%;
+.swagger-section a {
+    width: 4rem !important;
 }

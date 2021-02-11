@@ -14,7 +14,7 @@ from portality import models, store
 from portality.core import app
 
 import os, shutil, tarfile, json
-from StringIO import StringIO
+from io import StringIO
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "tasks.public_data_dump"), "data_dump", "test_id",
@@ -78,8 +78,8 @@ class TestPublicDataDumpTask(DoajTestCase):
         journal_count = int(journals_arg)
         article_count = int(articles_arg)
         batch_size = int(batch_size_arg)
-        journal_file_count = 0 if journal_count == 0 else (journal_count / batch_size) + 1
-        article_file_count = 0 if article_count == 0 else (article_count / batch_size) + 1
+        journal_file_count = 0 if journal_count == 0 else (journal_count // batch_size) + 1
+        article_file_count = 0 if article_count == 0 else (article_count // batch_size) + 1
         first_article_file_records = 0 if article_count == 0 else batch_size if article_count > batch_size else article_count
         first_journal_file_records = 0 if journal_count == 0 else batch_size if journal_count > batch_size else journal_count
 
@@ -177,14 +177,14 @@ class TestPublicDataDumpTask(DoajTestCase):
 
                 if len(members) > 0:
                     f = tarball.extractfile(members[0])
-                    data = json.loads(f.read())
+                    data = json.loads(f.read().decode("utf-8"))
                     assert len(data) == first_article_file_records
 
                     record = data[0]
-                    for key in record.keys():
+                    for key in list(record.keys()):
                         assert key in ["admin", "bibjson", "id", "last_updated", "created_date"]
                     if "admin" in record:
-                        for key in record["admin"].keys():
+                        for key in list(record["admin"].keys()):
                             assert key in ["ticked", "seal"]
 
             if types_arg in ["-", "all", "journal"]:
@@ -198,14 +198,14 @@ class TestPublicDataDumpTask(DoajTestCase):
 
                 if len(members) > 0:
                     f = tarball.extractfile(members[0])
-                    data = json.loads(f.read())
+                    data = json.loads(f.read().decode("utf-8"))
                     assert len(data) == first_journal_file_records
 
                     record = data[0]
-                    for key in record.keys():
+                    for key in list(record.keys()):
                         assert key in ["admin", "bibjson", "id", "last_updated", "created_date"]
                     if "admin" in record:
-                        for key in record["admin"].keys():
+                        for key in list(record["admin"].keys()):
                             assert key in ["ticked", "seal"]
 
         else:

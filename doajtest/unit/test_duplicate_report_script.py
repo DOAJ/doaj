@@ -7,13 +7,13 @@ from portality.tasks import article_duplicate_report
 from portality.lib import paths
 from portality import models
 from portality.lib import dates
-from portality.clcsv import UnicodeReader
 
 from collections import OrderedDict
 
 import time
 import os
 import shutil
+import csv
 
 TMP_DIR = paths.rel2abs(__file__, "resources/article_duplicates_report")
 
@@ -154,33 +154,34 @@ class TestArticleMatch(DoajTestCase):
         task = article_duplicate_report.ArticleDuplicateReportBackgroundTask(job)
         task.run()
 
-        assert job.audit.pop(1).get('message', '') == '6 articles processed for duplicates. 3 global duplicate sets found.'
+        audit = job.audit
+        assert next((msg for msg in audit if msg["message"] == '6 articles processed for duplicates. 3 global duplicate sets found.'), None) is not None
 
         table = []
         with open(TMP_DIR + '/duplicate_articles_global_' + dates.today() + '.csv') as f:
-            reader = UnicodeReader(f)
+            reader = csv.reader(f)
             for row in reader:
                 table.append(row)
 
         # We expect there to be 10 rows.
-        assert len(table) == 10
+        assert len(table) == 10, "expected: 10, received: {}".format(len(table))
         headings = table.pop(0)
 
         # We expect there to be one ID with 4 duplicates, one with 3, and one with 2 (in that order)
         article_ids = [row[0] for row in table]
         [a, b, c] = list(OrderedDict.fromkeys(article_ids))                                       # Dedupe keeping order
         expected = {a: 4, b: 3, c: 2}
-        assert article_ids.count(a) == expected[a]
-        assert article_ids.count(b) == expected[b]
-        assert article_ids.count(c) == expected[c]
+        assert article_ids.count(a) == expected[a], "received: {}, expected: {}".format(article_ids.count(a), expected[a])
+        assert article_ids.count(b) == expected[b], "received: {}, expected: {}".format(article_ids.count(a), expected[a])
+        assert article_ids.count(c) == expected[c], "received: {}, expected: {}".format(article_ids.count(a), expected[a])
 
         # These counts should equal the number counted in the report itself
         for r in table:
-            assert int(r[headings.index('n_matches')]) == expected[r[0]]
+            assert int(r[headings.index('n_matches')]) == expected[r[0]], "received: {}, expected: {}".format(int(r[headings.index('n_matches')]), expected[r[0]])
 
         # Article a should have one doi+fulltext match, one doi match, and 2 fulltext matches.
         a_duplicates = [row for row in table if row[0] == a]
         a_match_types = [row[headings.index('match_type')] for row in a_duplicates]
-        assert a_match_types.count('doi+fulltext') == 1
-        assert a_match_types.count('doi') == 1
-        assert a_match_types.count('fulltext') == 2
+        assert a_match_types.count('doi+fulltext') == 1, "received: {}, expected 1".format(a_match_types.count('doi+fulltext'))
+        assert a_match_types.count('doi') == 1, "received: {}, expected 1".format(a_match_types.count('doi'))
+        assert a_match_types.count('fulltext') == 2, "received: {}, expected 2".format(a_match_types.count('fulltext'))

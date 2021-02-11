@@ -5,11 +5,12 @@ from nose.tools import assert_raises
 from werkzeug.datastructures import MultiDict
 
 from portality import constants
-from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import lcc
 from portality import models
-from portality.formcontext import formcontext
+from portality.forms.application_forms import ApplicationFormFactory
+from portality.forms.application_processors import AdminApplication
 
 
 #####################################################################
@@ -21,12 +22,12 @@ def editor_group_pull(cls, field, value):
     eg = models.EditorGroup()
     eg.set_editor("eddie")
     eg.set_associates(["associate", "assan"])
-    eg.set_name("Test Editor Group")
+    eg.set_name("editorgroup")
     return eg
 
 mock_lcc_choices = [
-    (u'H', u'Social Sciences'),
-    (u'HB1-3840', u'--Economic theory. Demography')
+    ('H', 'Social Sciences'),
+    ('HB1-3840', '--Economic theory. Demography')
 ]
 
 def mock_lookup_code(code):
@@ -34,16 +35,18 @@ def mock_lookup_code(code):
     if code == "HB1-3840": return "Economic theory. Demography"
     return None
 
+
 #####################################################################
 # Source objects to be used for testing
 #####################################################################
 
-APPLICATION_SOURCE = ApplicationFixtureFactory.make_application_source()
+APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
 APPLICATION_FORM = ApplicationFixtureFactory.make_application_form(role="maned")
 
 ######################################################
 # Main test class
 ######################################################
+
 
 class TestManEdAppReview(DoajTestCase):
 
@@ -70,27 +73,28 @@ class TestManEdAppReview(DoajTestCase):
     def test_01_maned_review_success(self):
         """Give the editor's application form a full workout"""
         acc = models.Account()
-        acc.set_id("richard")
+        acc.set_id("aga")
         acc.add_role("admin")
         ctx = self._make_and_push_test_context(acc=acc)
 
+        # Pre-existing applications will have an owner
+        owner = models.Account(**AccountFixtureFactory.make_publisher_source())
+        owner.save(blocking=True)
+
         # we start by constructing it from source
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=models.Suggestion(**APPLICATION_SOURCE))
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(source=models.Application(**APPLICATION_SOURCE))
+        assert isinstance(fc, AdminApplication)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
-        assert fc.template is not None
-
-        # no need to check form rendering - there are no disabled fields
 
         # now construct it from form data (with a known source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="admin",
-            form_data=MultiDict(APPLICATION_FORM) ,
+        fc = formulaic_context.processor(
+            formdata=MultiDict(APPLICATION_FORM),
             source=models.Suggestion(**APPLICATION_SOURCE))
 
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        assert isinstance(fc, AdminApplication)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None
@@ -118,7 +122,7 @@ class TestManEdAppReview(DoajTestCase):
         # everything else is overridden by the form, so no need to check it has patched
 
         # now do finalise (which will also re-run all of the steps above)
-        fc.finalise()
+        fc.finalise(acc)
 
         time.sleep(2)
 
@@ -133,6 +137,10 @@ class TestManEdAppReview(DoajTestCase):
         acc.set_id("richard")
         acc.add_role("admin")
         ctx = self._make_and_push_test_context(acc=acc)
+
+        # Pre-existing applications will have an owner
+        owner = models.Account(**AccountFixtureFactory.make_publisher_source())
+        owner.save(blocking=True)
 
         # There needs to be an existing journal in the index for this test to work
         jsource = JournalFixtureFactory.make_journal_source()
@@ -149,8 +157,8 @@ class TestManEdAppReview(DoajTestCase):
         assert len(h) == 1
 
         # set up an application which is an update on an existing journal
-        s = models.Suggestion(**APPLICATION_SOURCE)
-        s.set_current_journal("abcdefghijk_journal")
+        s = models.Application(**APPLICATION_SOURCE)
+        s.set_current_journal(extant_j.id)
         s.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
         # set up the form which "accepts" this update request
@@ -159,15 +167,16 @@ class TestManEdAppReview(DoajTestCase):
         fd = MultiDict(fd)
 
         # create and finalise the form context
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", form_data=fd, source=s)
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(source=s, formdata=fd)
 
         # with app.test_request_context():
-        fc.finalise()
+        fc.finalise(acc)
 
         # let the index catch up
         time.sleep(1)
 
-        j = models.Journal.pull("abcdefghijk_journal")
+        j = models.Journal.pull(extant_j.id)
         assert j is not None
         assert j.created_date == extant_j_created_date
         assert j.last_update_request is not None
@@ -180,42 +189,65 @@ class TestManEdAppReview(DoajTestCase):
         ctx.pop()
 
     def test_03_classification_required(self):
+        acc = models.Account()
+        acc.set_id("steve")
+        acc.add_role("admin")
+        ctx = self._make_and_push_test_context(acc=acc)
+
         # Check we can accept an application with a subject classification present
-        ready_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        ready_application = models.Application(**ApplicationFixtureFactory.make_application_source())
         ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
 
-        fc = formcontext.ApplicationFormFactory.get_form_context(role='admin', source=ready_application)
+        owner = models.Account()
+        owner.set_id("owner")
+        owner.add_role("publisher")
+        owner.save(blocking=True)
+
+        ready_application.set_owner(owner.id)
+
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(source=ready_application)
 
         # Make changes to the application status via the form, check it validates
         fc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
-        assert fc.validate()
+        assert fc.validate(), fc.form.errors
 
         # Without a subject classification, we should not be able to set the status to 'accepted'
         no_class_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         del no_class_application.data['bibjson']['subject']
-        fc = formcontext.ApplicationFormFactory.get_form_context(role='admin', source=no_class_application)
+
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(source=no_class_application)
         # Make changes to the application status via the form
         assert fc.source.bibjson().subjects() == []
         fc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
         assert not fc.validate()
 
+        # TODO: this behaviour has changed to be 'required' in all statuses according to form config (remove on verify)
         # However, we should be able to set it to a different status rather than 'accepted'
-        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        #fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        #assert fc.validate(), fc.form.errors
 
-        assert fc.validate()
+        ctx.pop()
 
     def test_04_maned_review_continuations(self):
+        acc = models.Account()
+        acc.set_id("steve")
+        acc.add_role("admin")
+        ctx = self._make_and_push_test_context(acc=acc)
+
         # construct it from form data (with a known source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role='admin',
-            form_data=MultiDict(APPLICATION_FORM),
-            source=models.Suggestion(**ApplicationFixtureFactory.make_application_source()))
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            source=models.Application(**ApplicationFixtureFactory.make_application_source()),
+            formdata=MultiDict(APPLICATION_FORM)
+        )
 
         # check the form has the continuations data
-        assert fc.form.replaces.data == ["1111-1111"]
-        assert fc.form.is_replaced_by.data == ["2222-2222"]
+        assert fc.form.continues.data == ["1111-1111"]
+        assert fc.form.continued_by.data == ["2222-2222"]
         assert fc.form.discontinued_date.data == "2001-01-01"
 
         # run the crosswalk, don't test it at all in this test
@@ -235,16 +267,22 @@ class TestManEdAppReview(DoajTestCase):
         acc.add_role("admin")
         ctx = self._make_and_push_test_context(acc=acc)
 
+        # Pre-existing applications will have an owner
+        owner = models.Account(**AccountFixtureFactory.make_publisher_source())
+        owner.save(blocking=True)
+
         # construct a context from a form submission
         source = deepcopy(APPLICATION_FORM)
         source["application_status"] = constants.APPLICATION_STATUS_ACCEPTED
         fd = MultiDict(source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="admin",
-            form_data=fd,
-            source=models.Suggestion(**APPLICATION_SOURCE))
 
-        fc.finalise()
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            source=models.Application(**APPLICATION_SOURCE),
+            formdata=fd
+        )
+
+        fc.finalise(acc)
         time.sleep(2)
 
         # now check that a provenance record was recorded
@@ -265,21 +303,21 @@ class TestManEdAppReview(DoajTestCase):
         acc.add_role("admin")
         ctx = self._make_and_push_test_context(acc=acc)
 
-        owner = models.Account()
-        owner.set_id("Owner")
-        owner.add_role("publisher")
+        # Pre-existing applications will have an owner
+        owner = models.Account(**AccountFixtureFactory.make_publisher_source())
         owner.save(blocking=True)
 
         # construct a context from a form submission
-        source = deepcopy(APPLICATION_FORM)
-        source["application_status"] = constants.APPLICATION_STATUS_REJECTED
-        fd = MultiDict(source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="admin",
-            form_data=fd,
-            source=models.Suggestion(**APPLICATION_SOURCE))
+        form_source = deepcopy(APPLICATION_FORM)
+        form_source["application_status"] = constants.APPLICATION_STATUS_REJECTED
+        fd = MultiDict(form_source)
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            source=models.Application(**APPLICATION_SOURCE),
+            formdata=fd
+        )
 
-        fc.finalise()
+        fc.finalise(acc)
         time.sleep(2)
 
         # now check that a provenance record was recorded
@@ -303,6 +341,10 @@ class TestManEdAppReview(DoajTestCase):
         acc.add_role("admin")
         ctx = self._make_and_push_test_context(acc=acc)
 
+        # Pre-existing applications will have an owner
+        owner = models.Account(**AccountFixtureFactory.make_publisher_source())
+        owner.save(blocking=True)
+
         # Check that an accepted application can't be regressed by a managing editor
         accepted_source = APPLICATION_SOURCE.copy()
         accepted_source['admin']['application_status'] = constants.APPLICATION_STATUS_ACCEPTED
@@ -311,19 +353,19 @@ class TestManEdAppReview(DoajTestCase):
         completed_form['application_status'] = constants.APPLICATION_STATUS_COMPLETED
 
         # Construct the formcontext from form data (with a known source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="admin",
-            form_data=MultiDict(completed_form),
-            source=models.Suggestion(**accepted_source)
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            source=models.Application(**accepted_source),
+            formdata=MultiDict(completed_form)
         )
 
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        assert isinstance(fc, AdminApplication)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None
 
         # Finalise the formcontext. This should raise an exception because the application has already been accepted.
-        assert_raises(formcontext.FormContextException, fc.finalise)
+        assert_raises(Exception, fc.finalise)
 
         # Check that an application status can when on hold.
         held_source = APPLICATION_SOURCE.copy()
@@ -333,19 +375,19 @@ class TestManEdAppReview(DoajTestCase):
         progressing_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Construct the formcontext from form data (with a known source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="admin",
-            form_data=MultiDict(progressing_form),
-            source=models.Suggestion(**held_source)
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            source=models.Application(**held_source),
+            formdata=MultiDict(progressing_form)
         )
 
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        assert isinstance(fc, AdminApplication)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None
 
         # Finalise the formcontext. This should not raise an exception.
-        fc.finalise()
+        fc.finalise(acc)
 
         # Check that an application status can be brought backwards in the review process
         pending_source = APPLICATION_SOURCE.copy()
@@ -354,13 +396,13 @@ class TestManEdAppReview(DoajTestCase):
         progressing_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Construct the formcontext from form data (with a known source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="admin",
-            form_data=MultiDict(progressing_form),
-            source=models.Suggestion(**pending_source)
+        formulaic_context = ApplicationFormFactory.context("admin")
+        fc = formulaic_context.processor(
+            source=models.Application(**pending_source),
+            formdata=MultiDict(progressing_form)
         )
 
         # Finalise the formcontext. This should not raise an exception.
-        fc.finalise()
+        fc.finalise(acc)
 
         ctx.pop()

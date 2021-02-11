@@ -55,7 +55,7 @@ if __name__ == "__main__":
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
     # Make sure the user is super serious about doing this.
-    resp = raw_input("\nAre you sure? This is a DESTRUCTIVE OPERATION y/N: ")
+    resp = input("\nAre you sure? This is a DESTRUCTIVE OPERATION y/N: ")
     if resp.lower() == 'y':
         # Run the function to remove the field
         print("Okay, here we go...")
@@ -64,4 +64,4 @@ if __name__ == "__main__":
         print("Better safe than sorry, exiting.")
 
     end = datetime.now()
-    print(str(start) + "-" + str(end))
+    print((str(start) + "-" + str(end)))

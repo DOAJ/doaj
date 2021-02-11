@@ -1,5 +1,37 @@
-<div class="row-fluid">
-    <div class="span12">
+{% set index = url_for("publisher.index") %}
+{% set journals = url_for('publisher.journals') %}
+{% set urs = url_for('publisher.updates_in_progress') %}
+{% set xml = url_for('publisher.upload_file') %}
+{% set metadata = url_for('publisher.metadata') %}
+{% set help = url_for('publisher.help') %}
+
+{% set tabs = [
+    (index, "My drafts"),
+    (journals, "My journals"),
+    (urs, "My update requests"),
+    (xml, "Upload article XML"),
+    (metadata, "Enter article metadata"),
+    (help, "Help"),
+    ]
+%}
+
+<div class="tabs">
+    <nav class="tabs__menu">
+        <ul class="tabs__list" role="tablist">
+            {% for url, label in tabs %}
+                {% set selected = url == request.path %}
+                <li class="tabs__item" {% if not selected %}role="presentation"{% endif %}>
+                    <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}">{{ label }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+</div>
+
+
+{#
+<div class="row">
+    <div class="col-md-12">
         <ul class="nav nav-tabs">
             <li{% if request.path == url_for('publisher.index') %} class="active"{% endif %}><a href="{{ url_for('publisher.index') }}">Your Journals</a></li>
             <li{% if request.path == url_for('publisher.updates_in_progress') %} class="active"{% endif %}><a href="{{ url_for('publisher.updates_in_progress') }}">Update Requests</a></li>
@@ -9,3 +41,4 @@
         </ul>
     </div>
 </div>
+#}

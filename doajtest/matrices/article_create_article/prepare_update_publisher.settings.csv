@@ -1,0 +1,13 @@
+field,test_id,duplicate,merge_duplicate,doi_or_ft_updated,is_update,raises
+type,index,generated,generated,generated,conditional,conditional
+values,,same_as_article_id,yes,yes,0,DuplicateArticle
+values,,different_than_article_id,no,no,1,
+values,,none,,,,
+,,,,,,
+conditional raises,,different_than_article_id,,,,DuplicateArticle
+conditional raises,,,,yes,,DuplicateArticle
+conditional raises,,same_as_article_id,no,,,DuplicateArticle
+conditional is_update,,same_as_article_id,yes,no,1,
+conditional is_update,,none,,,0,
+conditional is_update,,,no,,0,
+constraint doi_or_ft_updated,,!none,,yes,,

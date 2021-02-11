@@ -32,9 +32,9 @@ for tp in types:
                 bn += json.dumps({'index':{'_index':index_name, '_type': tp, '_id': record['id']}}) + '\n'
                 bn += json.dumps(record) + '\n'
             s = requests.post(new_index + '/_bulk', data=bn)
-            print tp
-            print processed[tp]
-            print s.status_code
+            print(tp)
+            print(processed[tp])
+            print(s.status_code)
             records = []
         processed[tp] += len(res['hits']['hits'])
         for r in res.get('hits',{}).get('hits',[]):
@@ -43,4 +43,4 @@ for tp in types:
             nxt = requests.get(old_index + '/_search/scroll?scroll=' + scroll_minutes + '&scroll_id=' + res['_scroll_id'])
             res = nxt.json()
 
-print json.dumps(processed, indent=2)
+print(json.dumps(processed, indent=2))

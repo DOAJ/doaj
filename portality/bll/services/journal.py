@@ -1,6 +1,8 @@
+import logging
+
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
-from portality import models, constants, clcsv
+from portality import models, constants
 from portality.bll import exceptions
 from portality.core import app
 from portality import lock
@@ -9,7 +11,7 @@ from portality.store import StoreFactory, prune_container
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
 
 from datetime import datetime
-import codecs, os, re
+import re, csv
 
 
 class JournalService(object):
@@ -35,7 +37,7 @@ class JournalService(object):
             {"arg" : account, "instance" : models.Account, "arg_name" : "account"}
         ], exceptions.ArgumentException)
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering journal_2_application")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering journal_2_application")
 
         authService = DOAJ.authorisationService()
 
@@ -46,21 +48,15 @@ class JournalService(object):
             except exceptions.AuthoriseException as e:
                 msg = "Account {x} is not permitted to create an update request on journal {y}".format(x=account.id, y=journal.id)
                 app.logger.info(msg)
-                e.message = msg
+                e.args += (msg,)
                 raise
 
         # copy all the relevant information from the journal to the application
         bj = journal.bibjson()
-        contacts = journal.contacts()
         notes = journal.notes
-        first_contact = None
 
         application = models.Suggestion()
         application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
-        for c in contacts:
-            application.add_contact(c.get("name"), c.get("email"))
-            if first_contact is None:
-                first_contact = c
         application.set_current_journal(journal.id)
         if keep_editors is True:
             if journal.editor is not None:
@@ -68,15 +64,16 @@ class JournalService(object):
             if journal.editor_group is not None:
                 application.set_editor_group(journal.editor_group)
         for n in notes:
-            application.add_note(n.get("note"), n.get("date"))
+            # NOTE: we keep the same id for notes between journal and application, since ids only matter within
+            # the scope of a record there are no id clashes, and at the same time it may be useful in future to
+            # check the origin of some journal notes by comparing ids to application notes.
+            application.add_note(n.get("note"), n.get("date"), n.get("id"))
         application.set_owner(journal.owner)
         application.set_seal(journal.has_seal())
         application.set_bibjson(bj)
-        if first_contact is not None:
-            application.set_suggester(first_contact.get("name"), first_contact.get("email"))
-        application.suggested_on = dates.now()
+        application.date_applied = dates.now()
 
-        if app.logger.isEnabledFor("debug"): app.logger.debug("Completed journal_2_application; return application object")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed journal_2_application; return application object")
         return application
 
     def journal(self, journal_id, lock_journal=False, lock_account=None, lock_timeout=None):
@@ -106,7 +103,7 @@ class JournalService(object):
         the_lock = None
         if journal is not None and lock_journal:
             if lock_account is not None:
-                the_lock = lock.lock("journal", journal_id, lock_account.id, lock_timeout)
+                the_lock = lock.lock(constants.LOCK_JOURNAL, journal_id, lock_account.id, lock_timeout)
             else:
                 raise exceptions.ArgumentException("If you specify lock_journal on journal retrieval, you must also provide lock_account")
 
@@ -153,12 +150,15 @@ class JournalService(object):
                 article_kvs = _get_article_kvs(j)
                 cols[issn] = kvs + meta_kvs + article_kvs
 
-            issns = cols.keys()
-            issns.sort()
+                # Get the toc URL separately from the meta kvs because it needs to be inserted earlier in the CSV
+                toc_kv = _get_doaj_toc_kv(j)
+                cols[issn].insert(2, toc_kv)
 
-            csvwriter = clcsv.UnicodeWriter(file_object)
+            issns = cols.keys()
+
+            csvwriter = csv.writer(file_object)
             qs = None
-            for i in issns:
+            for i in sorted(issns):
                 if qs is None:
                     qs = [q for q, _ in cols[i]]
                     csvwriter.writerow(qs)
@@ -172,12 +172,16 @@ class JournalService(object):
             :return: a list of (key, value) tuples for our metadata
             """
             kvs = [
+                ("Subjects", ' | '.join(journal.bibjson().lcc_paths())),
                 ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
-                ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
+                #("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
                 ("Added on Date", journal.created_date),
-                ("Subjects", ' | '.join(journal.bibjson().lcc_paths()))
+                ("Last updated Date", journal.last_manual_update)
             ]
             return kvs
+
+        def _get_doaj_toc_kv(journal):
+            return "URL in DOAJ", app.config.get('JOURNAL_TOC_URL_FRAG', 'https://doaj.org/toc/') + journal.id
 
         def _get_article_kvs(journal):
             stats = journal.article_stats()
@@ -187,7 +191,7 @@ class JournalService(object):
             ]
             return kvs
 
-        with codecs.open(out, 'wb', encoding='utf-8') as csvfile:
+        with open(out, 'w', encoding='utf-8') as csvfile:
             _make_journals_csv(csvfile)
 
         mainStore = StoreFactory.get("cache")

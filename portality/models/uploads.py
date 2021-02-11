@@ -2,6 +2,7 @@ from portality.dao import DomainObject
 from datetime import datetime
 from copy import deepcopy
 
+
 class FileUpload(DomainObject):
     __type__ = "upload"
 
@@ -106,67 +107,73 @@ class FileUpload(DomainObject):
         self.data["status"] = "downloaded"
 
     @classmethod
-    def list_valid(self):
+    def list_valid(cls):
         q = ValidFileQuery()
-        return self.iterate(q=q.query(), page_size=10000)
+        return cls.iterate(q=q.query(), page_size=10000)
 
     @classmethod
-    def list_remote(self):
+    def list_remote(cls):
         q = ExistsFileQuery()
-        return self.iterate(q=q.query(), page_size=10000)
+        return cls.iterate(q=q.query(), page_size=10000)
 
     @classmethod
-    def by_owner(self, owner, size=10):
+    def by_owner(cls, owner, size=10):
         q = OwnerFileQuery(owner)
-        res = self.query(q=q.query())
+        res = cls.query(q=q.query())
         rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
         return rs
 
+
 class ValidFileQuery(object):
     base_query = {
-        "query" : {
-            "term" : { "status.exact" : "validated" }
+        "query": {
+            "term": {"status.exact": "validated"}
         },
-        "sort" : [
-            {"created_date" : "asc"}
+        "sort": [
+            {"created_date": "asc"}
         ]
     }
+
     def __init__(self):
         self._query = deepcopy(self.base_query)
 
     def query(self):
         return self._query
+
 
 class ExistsFileQuery(object):
     base_query = {
-        "query" : {
-            "term" : { "status.exact" : "exists" }
+        "query": {
+            "term": {"status.exact": "exists"}
         },
-        "sort" : [
-            {"created_date" : "asc"}
+        "sort": [
+            {"created_date": "asc"}
         ]
     }
+
     def __init__(self):
         self._query = deepcopy(self.base_query)
 
     def query(self):
         return self._query
 
+
 class OwnerFileQuery(object):
     base_query = {
-        "query" : {
-            "bool" : {
-                "must" : []
+        "query": {
+            "bool": {
+                "must": []
             }
         },
-        "sort" : [
-            {"created_date" : "desc"}
+        "sort": [
+            {"created_date": "desc"}
         ],
-        "size" : 10
+        "size": 10
     }
+
     def __init__(self, owner, size=10):
         self._query = deepcopy(self.base_query)
-        owner_term = {"match" : {"owner" : owner}}
+        owner_term = {"match": {"owner": owner}}
         self._query["query"]["bool"]["must"].append(owner_term)
         self._query["size"] = size
 

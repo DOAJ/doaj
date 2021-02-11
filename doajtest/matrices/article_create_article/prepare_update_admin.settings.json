@@ -1,0 +1,87 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "duplicate",
+      "type": "generated",
+      "values": {
+        "same_as_update_article_id": {},
+        "different_than_update_article_id": {},
+        "none": {}
+      }
+    },
+    {
+      "name": "merge_duplicate",
+      "type": "generated",
+      "values": {
+        "yes": {},
+        "no": {}
+      }
+    },
+    {
+      "name": "is_update",
+      "type": "conditional",
+      "values": {
+        "0": {
+          "conditions": [
+            {
+              "merge_duplicate": {
+                "or": [
+                  "no"
+                ]
+              }
+            }
+          ]
+        },
+        "1": {
+          "conditions": [
+            {
+              "duplicate": {
+                "or": [
+                  "same_as_update_article_id"
+                ]
+              },
+              "merge_duplicate": {
+                "or": [
+                  "yes"
+                ]
+              }
+            },
+            {
+              "duplicate": {
+                "or": [
+                  "none"
+                ]
+              },
+              "merge_duplicate": {
+                "or": [
+                  "yes"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "raises",
+      "type": "conditional",
+      "values": {
+        "DuplicateArticle": {
+          "conditions": [
+            {
+              "duplicate": {
+                "or": [
+                  "different_than_update_article_id"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

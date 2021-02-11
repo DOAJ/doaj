@@ -6,21 +6,30 @@ from flask_login import current_user, login_required
 
 from werkzeug.datastructures import MultiDict
 
+from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
 from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
 
-from portality.formcontext import formcontext, choices
+from portality.formcontext import choices
 from portality import lock, app_email
 from portality.lib.es_query_http import remove_search_limits
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.core import app
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, article_bulk_delete
-from portality.bll.doaj import DOAJ
-from portality.formcontext import emails
+from portality.bll import DOAJ, exceptions
+from portality.lcc import lcc_jstree
+
+# from portality.formcontext import emails
+import portality.notifications.application_emails as emails
 from portality.ui.messages import Messages
+from portality.formcontext import formcontext
 
 from portality.view.forms import EditorGroupForm, MakeContinuation
+from portality.forms.application_forms import ApplicationFormFactory
 from portality.background import BackgroundSummary
+from portality import constants
+from portality.forms.application_forms import JournalFormFactory
+from portality.crosswalks.application_form import ApplicationFormXWalk
 
 blueprint = Blueprint('admin', __name__)
 
@@ -43,13 +52,11 @@ def index():
 @login_required
 @ssl_required
 def journals():
-    if not current_user.has_role("admin_journals"):
-        abort(401)
-    return render_template('admin/journals.html',
-               search_page=True,
-               facetviews=['admin.journals.facetview'],
-               admin_page=True
-           )
+    qs = request.query_string
+    target = url_for("admin.index")
+    if qs:
+        target += "?" + qs.decode()
+    return redirect(target)
 
 
 @blueprint.route("/journals", methods=["POST", "DELETE"])
@@ -104,7 +111,7 @@ def articles_list():
         try:
             query = json.loads(request.values.get("q"))
         except:
-            print request.values.get("q")
+            print(request.values.get("q"))
             abort(400)
         total = models.Article.hit_count(query, consistent_order=False)
         resp = make_response(json.dumps({"total" : total}))
@@ -128,7 +135,7 @@ def articles_list():
         return resp
 
 
-@blueprint.route("/article/<article_id>", methods=["POST"])
+@blueprint.route("/delete/article/<article_id>", methods=["POST"])
 @login_required
 @ssl_required
 @write_required()
@@ -148,45 +155,85 @@ def article_endpoint(article_id):
     resp.mimetype = "application/json"
     return resp
 
+@blueprint.route("/article/<article_id>", methods=["GET", "POST"])
+@login_required
+@ssl_required
+@write_required()
+def article_page(article_id):
+    if not current_user.has_role("edit_article"):
+        abort(401)
+    ap = models.Article.pull(article_id)
+    if ap is None:
+        abort(404)
+
+    fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=current_user)
+    if request.method == "GET":
+        return fc.render_template()
+
+    elif request.method == "POST":
+        user = current_user._get_current_object()
+        fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=user, form_data=request.form)
+
+        fc.modify_authors_if_required(request.values)
+
+        if fc.validate():
+            try:
+                fc.finalise()
+            except ArticleMergeConflict:
+                Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
+            except DuplicateArticleException:
+                Messages.flash(Messages.ARTICLE_METADATA_UPDATE_CONFLICT)
+
+        return fc.render_template()
+
 
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
 @write_required()
 def journal_page(journal_id):
-    if not current_user.has_role("edit_journal"):
-        abort(401)
-    ap = models.Journal.pull(journal_id)
-    if ap is None:
+    auth_svc = DOAJ.authorisationService()
+    journal_svc = DOAJ.journalService()
+
+    journal, _ = journal_svc.journal(journal_id)
+    if journal is None:
         abort(404)
+
+    try:
+        auth_svc.can_edit_journal(current_user._get_current_object(), journal)
+    except exceptions.AuthoriseException:
+        abort(401)
 
     # attempt to get a lock on the object
     try:
-        lockinfo = lock.lock("journal", journal_id, current_user.id)
+        lockinfo = lock.lock(constants.LOCK_JOURNAL, journal_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/journal_locked.html", journal=ap, lock=l.lock, edit_journal_page=True)
+        return render_template("admin/journal_locked.html", journal=journal, lock=l.lock)
 
+    fc = JournalFormFactory.context("admin")
     if request.method == "GET":
         job = None
         job_id = request.values.get("job")
         if job_id is not None and job_id != "":
             job = models.BackgroundJob.pull(job_id)
-        fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=ap)
-        return fc.render_template(edit_journal_page=True, lock=lockinfo, job=job)
+            flash("Job to withdraw/reinstate journal has been submitted")
+        fc.processor(source=journal)
+        return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree)
+
     elif request.method == "POST":
-        fc = formcontext.JournalFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
-        if fc.validate():
+        processor = fc.processor(formdata=request.form, source=journal)
+        if processor.validate():
             try:
-                fc.finalise()
+                processor.finalise()
                 flash('Journal updated.', 'success')
-                for a in fc.alert:
+                for a in processor.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='done'))
-            except formcontext.FormContextException as e:
-                flash(e.message)
-                return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='cannot_edit'))
+                return redirect(url_for("admin.journal_page", journal_id=journal.id, _anchor='done'))
+            except Exception as e:
+                flash(str(e))
+                return redirect(url_for("admin.journal_page", journal_id=journal.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(edit_journal_page=True, lock=lockinfo)
+            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
 
 ######################################################
 # Endpoints for reinstating/withdrawing journals from the DOAJ
@@ -276,46 +323,55 @@ def journal_continue(journal_id):
 @login_required
 @ssl_required
 def suggestions():
-    return render_template("admin/suggestions.html",
-                           admin_page=True, search_page=True,
-                           facetviews=['admin.applications.facetview'],
+    return render_template("admin/applications.html",
+                           admin_page=True,
                            application_status_choices=choices.Choices.application_status("admin"))
 
 
-@blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
+@blueprint.route("/application/<application_id>", methods=["GET", "POST"])
+@write_required()
 @login_required
 @ssl_required
-@write_required()
-def suggestion_page(suggestion_id):
-    if not current_user.has_role("edit_suggestion"):
-        abort(401)
-    ap = models.Suggestion.pull(suggestion_id)
+def application(application_id):
+    auth_svc = DOAJ.authorisationService()
+    application_svc = DOAJ.applicationService()
+
+    ap, _ = application_svc.application(application_id)
+
     if ap is None:
         abort(404)
 
-    # attempt to get a lock on the object
     try:
-        lockinfo = lock.lock("suggestion", suggestion_id, current_user.id)
+        auth_svc.can_edit_application(current_user._get_current_object(), ap)
+    except exceptions.AuthoriseException:
+        abort(401)
+
+    try:
+        lockinfo = lock.lock(constants.LOCK_APPLICATION, application_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/suggestion_locked.html", suggestion=ap, lock=l.lock, edit_suggestion_page=True)
+        return render_template("admin/application_locked.html", application=ap, lock=l.lock)
+
+    fc = ApplicationFormFactory.context("admin")
+    form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
 
     if request.method == "GET":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ap)
-        return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
+        fc.processor(source=ap)
+        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
+
     elif request.method == "POST":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
-        if fc.validate():
+        processor = fc.processor(formdata=request.form, source=ap)
+        if processor.validate():
             try:
-                fc.finalise()
+                processor.finalise(current_user._get_current_object())
                 flash('Application updated.', 'success')
-                for a in fc.alert:
+                for a in processor.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='done'))
-            except formcontext.FormContextException as e:
-                flash(e.message)
-                return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='cannot_edit'))
+                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
+            except Exception as e:
+                flash(str(e))
+                return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])
@@ -325,8 +381,8 @@ def suggestion_page(suggestion_id):
 def application_quick_reject(application_id):
 
     # extract the note information from the request
-    canned_reason = request.values.get("reject_reason", "")
-    additional_info = request.values.get("additional_reject_information", "")
+    canned_reason = request.values.get("quick_reject", "")
+    additional_info = request.values.get("quick_reject_details", "")
     reasons = []
     if canned_reason != "":
         reasons.append(canned_reason)
@@ -351,6 +407,11 @@ def application_quick_reject(application_id):
     if update_request:
         abort(400)
 
+    if application.owner is None:
+        Messages.flash_with_url(Messages.ADMIN__QUICK_REJECT__NO_OWNER, "error")
+        # redirect the user back to the edit page
+        return redirect(url_for('.application', application_id=application_id))
+
     # reject the application
     applicationService.reject_application(application, current_user._get_current_object(), note=note)
 
@@ -358,7 +419,7 @@ def application_quick_reject(application_id):
     sent = False
     send_report = []
     try:
-        send_report = emails.send_publisher_reject_email(application, note=reason, update_request=update_request, send_to_owner=True, send_to_suggester=True)
+        send_report = emails.send_publisher_reject_email(application, note=reason, update_request=update_request)
         sent = True
     except app_email.EmailException as e:
         pass
@@ -381,19 +442,20 @@ def application_quick_reject(application_id):
         flash(msg, flash_type)
 
     # redirect the user back to the edit page
-    return redirect(url_for('.suggestion_page', suggestion_id=application_id))
+    return redirect(url_for('.application', application_id=application_id))
 
 
 @blueprint.route("/admin_site_search", methods=["GET"])
 @login_required
 @ssl_required
 def admin_site_search():
-    edit_formcontext = formcontext.ManEdBulkEdit()
-    edit_form = edit_formcontext.render_template()
+    #edit_formcontext = formcontext.ManEdBulkEdit()
+    #edit_form = edit_formcontext.render_template()
+    edit_formulaic_context = JournalFormFactory.context("bulk_edit")
+    edit_form = edit_formulaic_context.render_template()
 
     return render_template("admin/admin_site_search.html",
-                           admin_page=True, search_page=True,
-                           facetviews=['admin.journalarticle.facetview'],
+                           admin_page=True,
                            edit_form=edit_form)
 
 
@@ -401,13 +463,13 @@ def admin_site_search():
 @login_required
 @ssl_required
 def editor_group_search():
-    return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['admin.editorgroups.facetview'])
+    return render_template("admin/editor_group_search.html", admin_page=True)
 
 @blueprint.route("/background_jobs")
 @login_required
 @ssl_required
 def background_jobs_search():
-    return render_template("admin/background_jobs_search.html", admin_page=True, search_page=True, facetviews=['admin.background_jobs.facetview'])
+    return render_template("admin/background_jobs_search.html", admin_page=True)
 
 @blueprint.route("/editor_group", methods=["GET", "POST"])
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
@@ -525,6 +587,9 @@ def eg_associates_dropdown():
     return resp
 
 
+####################################################
+## endpoints for bulk edit
+
 class BulkAdminEndpointException(Exception):
     pass
 
@@ -600,10 +665,9 @@ def bulk_edit_journal_metadata():
         raise BulkAdminEndpointException("key 'metadata' not present in request json")
 
     formdata = MultiDict(payload["metadata"])
-    fc = formcontext.JournalFormFactory.get_form_context(
-        role="bulk_edit",
-        form_data=formdata
-    )
+    formulaic_context = JournalFormFactory.context("bulk_edit")
+    fc = formulaic_context.processor(formdata=formdata)
+
     if not fc.validate():
         msg = "Unable to submit your request due to form validation issues: "
         for field in fc.form:
@@ -669,3 +733,5 @@ def bulk_articles_delete():
     )
 
     return make_json_resp(summary.as_dict(), status_code=200)
+
+#################################################

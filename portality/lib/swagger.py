@@ -1,5 +1,6 @@
 from copy import deepcopy
-from dataobj import DataSchemaException
+from .dataobj import DataSchemaException
+from portality.lib.seamless import Construct
 
 class SwaggerSupport(object):
     # Translation between our simple field types and swagger spec types.
@@ -39,7 +40,8 @@ class SwaggerSupport(object):
         except:
             self._swagger_trans = swagger_trans if swagger_trans is not None else deepcopy(self.DEFAULT_SWAGGER_TRANS)
 
-        super(SwaggerSupport, self).__init__(*args, **kwargs)
+        # super(SwaggerSupport, self).__init__(*args, **kwargs) # UT fails with args and kwargs - takes only one argument, object to initialize
+        super(SwaggerSupport, self).__init__()
 
     def struct_to_swag(self, struct=None, schema_title='', **kwargs):
         if not struct:
@@ -61,13 +63,13 @@ class SwaggerSupport(object):
         # If no struct is specified this is the first call, so set the
         # operating struct to the entire current DO struct.
 
-        if not isinstance(struct, dict):
+        if not (isinstance(struct, dict) or isinstance(struct, Construct)):
             raise DataSchemaException("The struct whose properties we're translating to Swagger should always be a dict-like object.")
 
         swag_properties = {}
 
         # convert simple fields
-        for simple_field, instructions in struct.get('fields', {}).iteritems():
+        for simple_field, instructions in iter(struct.get('fields', {}).items()):
             # no point adding to the path here, it's not gonna recurse any further from this field
             swag_properties[simple_field] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
 
@@ -83,7 +85,7 @@ class SwaggerSupport(object):
             swag_properties[obj]['required'] = deepcopy(instructions.get('required', []))
 
         # convert lists
-        for l, instructions in struct.get('lists', {}).iteritems():
+        for l, instructions in iter(struct.get('lists', {}).items()):
             newpath = l if not path else path + '.' + l
 
             swag_properties[l] = {}
@@ -97,6 +99,6 @@ class SwaggerSupport(object):
                 swag_properties[l]['items']['properties'] = self.__struct_to_swag_properties(struct=struct.get('structs', {}).get(l, {}), path=newpath)  # recursive call, process sub-struct(s)
                 swag_properties[l]['items']['required'] = deepcopy(struct.get('structs', {}).get(l, {}).get('required', []))
             else:
-                raise DataSchemaException(u"Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items.".format(x=newpath))
+                raise DataSchemaException("Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items. Found: {y}".format(x=newpath, y=instructions['contains']))
 
         return swag_properties
