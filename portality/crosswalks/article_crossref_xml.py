@@ -175,7 +175,7 @@ Example record:
 
             # if more than 2 issns raise the exception
             if len(issns) > 2:
-                raise CrosswalkException(message="Too many ISSNs. Only 2 ISSNs are allowed")
+                raise CrosswalkException(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
             if len(issns) == 1:
                 if len(issns[0].attrib) == 0 or issns[0].attrib["media_type"] == 'electronic':
                     bibjson.add_identifier(bibjson.E_ISSN, issns[0].text.upper())
@@ -191,7 +191,7 @@ Example record:
 
                 # if both issns have the same type - raise the exception
                 if issns[0].attrib["media_type"] == issns[1].attrib["media_type"]:
-                    raise CrosswalkException(message="Both ISSNs have the same type: {}".format(issns[1].attrib["media_type"]))
+                    raise CrosswalkException(message=Messages.EXCEPTION_ISSNS_OF_THE_SAME_TYPE.format(type=issns[1].attrib["media_type"]))
 
                 if bool(attrs[0]) != bool(attrs[1]):
                     if attrs[0] != 0:
