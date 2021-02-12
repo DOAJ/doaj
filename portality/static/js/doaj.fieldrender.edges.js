@@ -2071,7 +2071,10 @@ $.extend(true, doaj, {
 
             this.draw = function () {
                 if (this.component.edge.currentQuery){
-                    this.currentQueryString = this.component.edge.currentQuery.queryString.queryString;
+                    let qs = this.component.edge.currentQuery.getQueryString();
+                    if (qs) {
+                        this.currentQueryString = qs.queryString || "";
+                    }
                 }
                 var frag = "<li class='alert'><p>You searched for <i>'";
                 frag += this.currentQueryString;
