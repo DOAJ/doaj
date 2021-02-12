@@ -197,14 +197,15 @@ No further communication will be entered into after the appeal is heard and the 
 
 ## In other languages
 
-We are always looking for volunteers to translate our Basic criteria. If you would like to volunteer to do this, please [contact us](feedback@doaj.org).
+We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](feedback@doaj.org).
 
-We have our Basic criteria in:
+We have our criteria in:
 
 - [Chinese (application form only)](https://zenodo.org/record/4350096)
 - Finnish
 - [French (Canadian)](https://drive.google.com/drive/folders/1-9FraAimhA9Ks64tvKE_W4wsQ8LNob9a?usp=sharing)
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
 - [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
+- [Spanish](https://docs.google.com/document/d/1PN0droGJiuLzQSQA4VLLjd3ykSaFoc5RMsAFlexOuXA/edit?usp=sharing)
 
 We hope more languages will follow soon.

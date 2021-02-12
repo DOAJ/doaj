@@ -3,6 +3,15 @@
 
 ## All editors
 ed:
+
+- name: Alain Chaple
+  area: Medical Sciences
+  year_since:
+  city: La Habana
+  country: Cuba
+  language: Spanish, English
+  photo: "alainchaple.png"
+
 - name: Alicia Aparicio
   area: Humanities, Social Sciences
   year_since:
@@ -163,14 +172,6 @@ ass_ed:
   city: Granada
   country: Spain
   language: Galician, Portuguese, Spanish, English
-
-- name: Ana Melro
-  area: Science, Technology
-  year_since:
-  city: Exeter
-  country: United Kingdom
-  language: Portuguese, English
-  photo: "AnaMelro.jpg" 
 
 - name: Andista Candra Yusro
   area: Social Sciences
@@ -694,13 +695,6 @@ ass_ed:
   city: V.N Gaia
   country: Portugal
   language: Portuguese, Spanish, English
-
-- name: Mariana Solano Hernandez
-  area: Science
-  year_since:
-  city: Cartago
-  country: Costa Rica
-  language: Spanish, English
 
 - name: Mario Alejandro Marín
   area:
