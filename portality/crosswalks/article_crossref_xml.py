@@ -190,7 +190,7 @@ Example record:
                     attrs[1] = issns[1].attrib["media_type"]
 
                 # if both issns have the same type - raise the exception
-                if issns[0].attrib["media_type"] == issns[1].attrib["media_type"]:
+                if attrs[0] != 0 and attrs[0] == attrs[1]:
                     raise CrosswalkException(message=Messages.EXCEPTION_ISSNS_OF_THE_SAME_TYPE.format(type=issns[1].attrib["media_type"]))
 
                 if bool(attrs[0]) != bool(attrs[1]):

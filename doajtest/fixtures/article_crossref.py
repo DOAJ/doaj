@@ -101,3 +101,11 @@ class CrossrefArticleFixtureFactory(object):
     def upload_2_issns_no_type(cls):
         return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 ISSNs - no types']]")
 
+    @classmethod
+    def upload_2_issns_same_types(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 ISSNs - same types']]")
+
+    @classmethod
+    def upload_3_issns(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='3 ISSNs']]")
+
