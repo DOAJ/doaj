@@ -1038,10 +1038,11 @@ var formulaic = {
                 this.input = $("[name=" + this.fieldDef.name + "]");
                 this.input.hide();
 
-                this.input.after('<a href="#" class="button ' + modalOpenClass + '">Open Subject Classifier</a>');
+                this.input.after('<a href="#" class="button button--secondary ' + modalOpenClass + '">Open Subject Classifier</a>');
                 this.input.after(`<div class="modal" id="` + containerId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                                     <div class="modal__dialog" role="document">
-                                        <p class="label">Subject Classifications</p>
+                                        <h2 class="label">Subject Classifications</h2>
+                                        <p class="alert">Selecting a subject will not automatically select its sub-categories.</p>
                                         <div id="` + widgetId + `"></div>
                                         <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
                                     </div>
@@ -1157,7 +1158,7 @@ var formulaic = {
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">go to account page</a></small></p>');
+                        that.after('<p><small><a id="' + id + '" class="button ' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">Account page</a></small></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
@@ -1323,11 +1324,11 @@ var formulaic = {
                     container.append(`<div><a href="#" class="` + viewClass + `">view note</a>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                             <div class="modal__dialog" role="document">
-                                <p class="label">NOTE</p> 
+                                <p class="label">NOTE</p>
                                 <h3 class="modal__title">
                                     ` + date.val() + `
-                                </h3>        
-                                ` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `                        
+                                </h3>
+                                ` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `
                                 <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
                             </div>
                         </div>

@@ -1413,9 +1413,6 @@ class FieldDefinitions:
             "reserved_usernames",
             "owner_exists"
         ],
-        "help" : {
-            "render_error_box": False,
-        },
         "widgets": [
             {"autocomplete": {"type" : "account", "field": "id", "include" : False}},
             "clickable_owner"
@@ -1440,7 +1437,8 @@ class FieldDefinitions:
             "required"
         ],
         "help" : {
-            "render_error_box" : False
+            "update_requests_diff" : False,
+            "render_error_box": False
         },
         "disabled" : "application_status_disabled",
         "contexts" : {
@@ -1448,14 +1446,16 @@ class FieldDefinitions:
                 "help" : {
                     "render_error_box": False,
                     "short_help" : "Set the status to 'In Progress' to signal to the applicant that you have started your review."
-                                    "Set the status to 'Ready' to alert the Editor that you have completed your review."
+                                    "Set the status to 'Completed' to alert the Editor that you have completed your review.",
+                    "update_requests_diff": False
                 }
             },
             "editor" : {
                 "help" : {
                     "render_error_box" : False,
                     "short_help" : "Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed."
-                                    "Set the status to 'Completed' to alert the Managing Editor that you have completed your review."
+                                    "Set the status to 'Ready' to alert the Managing Editor that you have completed your review.",
+                    "update_requests_diff": False
                 }
             }
         },
@@ -1605,7 +1605,7 @@ class FieldDefinitions:
     NOTES = {
         "name" : "notes",
         "input": "group",
-        "label": "Note",
+        "label": "Notes",
         "repeatable" : {
             "initial" : 1,
             "add_button_placement" : "top"
