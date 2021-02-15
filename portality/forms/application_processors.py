@@ -332,6 +332,10 @@ class AdminApplication(ApplicationProcessor):
                 else:
                     self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner))
 
+        # if the application is already rejected, and we are moving it back into a non-rejected status
+        elif self.source.application_status == constants.APPLICATION_STATUS_REJECTED and self.target.application_status != constants.APPLICATION_STATUS_REJECTED:
+            applicationService.unreject_application(self.target, current_user._get_current_object())
+
         # the application was neither accepted or rejected, so just save it
         else:
             self.target.set_last_manual_update()

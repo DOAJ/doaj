@@ -85,6 +85,73 @@ class ApplicationService(object):
 
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed reject_application")
 
+
+    def unreject_application(self,
+                             application: models.Application,
+                             account: models.Account,
+                             manual_update: bool = True):
+        """
+        Un-reject an application.  This will:
+        * check that the application status is no longer "rejected"
+        * check for a related journal, and if one is present, promote that to current_journal (if no other UR exists)
+        * save the application
+
+        :param application:
+        :param account:
+        :param manual_update:
+        :return:
+        """
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering unreject_application")
+
+        journalService = DOAJ.journalService()
+
+        # check we're allowed to carry out this action
+        if not account.has_role("unreject_application"):
+            raise exceptions.AuthoriseException(message="This user is not allowed to unreject applications", reason=exceptions.AuthoriseException.WRONG_ROLE)
+
+        # ensure the application status is not "rejected"
+        if application.application_status == constants.APPLICATION_STATUS_REJECTED:
+            raise exceptions.IllegalStatusException(message="The application {id} is in 'rejected' state; place it into the correct new state before calling unreject_application".format(id=application.id))
+
+        rjid = application.related_journal
+        if rjid:
+            ur = models.Application.find_latest_by_current_journal(rjid)
+            if ur:
+                raise exceptions.DuplicateUpdateRequest(message="""Creating an update request from rejected application {id} 
+                is not possible as another application {urid}
+                 exists which is an update request for journal {jid}""".format(
+                    id=application.id,
+                    urid=ur.id,
+                    jid=rjid
+                ))
+
+            rj = models.Journal.pull(rjid)
+            if rj is None:
+                raise exceptions.NoSuchObjectException("Journal {jid} related to application {id} does not exist".format(jid=rjid, id=application.id))
+
+            # update the application's view of the current journal
+            application.set_current_journal(rjid)
+            application.remove_related_journal()
+
+            # update the journal's view of the current application
+            rj.set_current_application(application.id)
+            rj.remove_related_application(application.id)
+
+            saved = rj.save()
+            if saved is None:
+                raise exceptions.SaveException("Save on current_journal {id} in unreject_application failed".format(id=rj.id))
+
+        # if we were asked to record this as a manual update, record that on the application
+        if manual_update:
+            application.set_last_manual_update()
+
+        saved = application.save()
+        if saved is None:
+            raise exceptions.SaveException("Save on application {id} in unreject_application failed".format(id=application.id))
+
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed unreject_application")
+
+
     def accept_application(self, application, account, manual_update=True, provenance=True, save_journal=True, save_application=True):
         """
         Take the given application and create the Journal object in DOAJ for it.

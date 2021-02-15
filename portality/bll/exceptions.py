@@ -66,6 +66,23 @@ class ArticleMergeConflict(Exception):
     """
     pass
 
+class IllegalStatusException(Exception):
+    """
+    Exception to raise when an application is in a state that is not allowed for the current action
+    """
+
+    def __init__(self, message=None):
+        super(IllegalStatusException, self).__init__(message)
+
+class DuplicateUpdateRequest(Exception):
+    """
+    Exception to raise when an attempt is made to create mulitple or duplicate update requests for a journal
+    """
+
+    def __init__(self, message=None):
+        super(DuplicateUpdateRequest, self).__init__(message)
+
+
 class IngestException(Exception):
     def __init__(self, *args, **kwargs):
         self.stack = None
