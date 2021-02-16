@@ -69,7 +69,7 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 
 - [Arabic](https://docs.google.com/document/d/1z6eEzHKsUjPw8GQtEx0JH2ucHPMrw3USF9tpnYrcwjM/edit?usp=sharing)
 - [Catalan](https://docs.google.com/document/d/16YHOkjonpI6J2VyIWd1kl0UYvPS5TC-1B7mfq8obIVk/edit?usp=sharing)
-- [Chinese](https://docs.google.com/document/d/18xsQWtd6bffciE4ZBASMKOctLWsHoEWx4a3657-ThMU/edit?usp=sharing)
+- [Chinese](https://doi.org/10.5281/zenodo.4542763) (Hosted at Zenodo.)
 - [Dutch](https://docs.google.com/document/d/13vAVViVKkOIKWNYDerYqkazk0-xP84wLNOXU-sGn9mk/edit?usp=sharing)
 - [Farsi](https://docs.google.com/document/d/1YNlg6Tn6sSFh3U1M7xFAwsn-faaPuV51coQhcRrxyTQ/edit?usp=sharing)
 - [Finnish](https://docs.google.com/document/d/1banUWX10jT70uqIXGrqCHb8rXLXIhBVaeOXE8YhLWHc/edit?usp=sharing)
