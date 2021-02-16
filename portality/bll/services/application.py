@@ -92,7 +92,7 @@ class ApplicationService(object):
                              manual_update: bool = True):
         """
         Un-reject an application.  This will:
-        * check that the application status is no longer "rejected"
+        * check that the application status is no longer "rejected" (throw an error if it is)
         * check for a related journal, and if one is present, promote that to current_journal (if no other UR exists)
         * save the application
 

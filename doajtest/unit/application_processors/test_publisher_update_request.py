@@ -1,3 +1,4 @@
+import time
 from copy import deepcopy
 
 from portality import constants
@@ -111,3 +112,62 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert formulaic_context.get("pissn").get("disabled", False)
         assert formulaic_context.get("eissn").get("disabled", False)
         assert fc.validate()
+
+
+    ##############################################
+    # suite of tests for unrejecting an update request
+    #############################################
+
+    def test_03_reject_unreject_accept(self):
+        """Check that submitting an update request, then rejecting it, then unrejecting it and then accepting
+        it only results in a single resulting journal"""
+
+        # make the journal to update
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_id("123456789987654321")    # this id is the one the UR fixture uses for current_journal
+        journal.save(blocking=True)
+
+        acc = models.Account()
+        acc.set_id("testadmin")
+        acc.set_role("admin")
+        acc.save(blocking=True)
+        ctx = self._make_and_push_test_context(acc=acc)
+
+        pub = models.Account()
+        pub.set_id("publisher")
+        pub.set_email("publisher@example.com")
+        pub.save(blocking=True)
+
+        # create an update request
+        ur = models.Application(**UPDATE_REQUEST_SOURCE)
+        formulaic_context = ApplicationFormFactory.context("update_request")
+        fc = formulaic_context.processor(source=ur)
+        fc.finalise()
+
+        # get a handle on the update request
+        ur = fc.target
+
+        # reject that update request
+        admin_context = ApplicationFormFactory.context("admin")
+        afc = admin_context.processor(source=ur)
+        afc.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
+        afc.finalise(account=acc)
+
+        # unreject the update request
+        ur = models.Application.pull(ur.id)
+        urfc = admin_context.processor(source=ur)
+        urfc.form.application_status.data = constants.APPLICATION_STATUS_PENDING
+        urfc.finalise(account=acc)
+
+        # accept the update request
+        ur = models.Application.pull(ur.id)
+        acfc = admin_context.processor(source=ur)
+        acfc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
+        afc.finalise(account=acc)
+
+        # check that we only have one journal
+        time.sleep(2)
+        assert len(models.Journal.all()) == 1
+
+
+
