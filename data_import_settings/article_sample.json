@@ -16,7 +16,7 @@
 		"cache" : {"import" : false, "limit" : -1},
 		"article_history" : {"import" : false, "limit" : -1},
 		"lcc" : {"import" : false, "limit" : -1},
-		"suggestion" : {"import" : false, "limit" : -1},
+		"application" : {"import" : false, "limit" : -1},
 		"article" : {"import" : true, "limit" : 100000},
 		"news" : {"import" : false, "limit" : -1},
 		"editor_group" : {"import" : false, "limit" : -1},

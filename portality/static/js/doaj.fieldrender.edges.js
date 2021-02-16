@@ -2065,8 +2065,21 @@ $.extend(true, doaj, {
 
             this.namespace = "doaj-public-search";
 
+            this.selector = edges.getParam(params.selector, null)
+            this.currentQueryString  = "";
+
+
             this.draw = function () {
-                var frag = "<li class='alert'><p><strong>No results found</strong> that match your search.</p> <p>Try removing some of the filters you have set, modifying the text in the search box, or using less specific search terms.</p></li>";
+                if (this.component.edge.currentQuery){
+                    let qs = this.component.edge.currentQuery.getQueryString();
+                    if (qs) {
+                        this.currentQueryString = qs.queryString || "";
+                    }
+                }
+                var frag = "<li class='alert'><p>You searched for <i>'";
+                frag += this.currentQueryString;
+                frag +="'</i> and we found no results.</p><p>Search terms must be in <strong>English</strong>.</p> <p>Try removing some of the filters you have set, modifying the text in the search box, or using less specific search terms.</p></li>";;
+
                 if (this.component.results === false) {
                     frag = "";
                 }

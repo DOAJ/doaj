@@ -747,7 +747,17 @@ var formulaic = {
                     var grandparents = this.parentIndex[term];
                     if (grandparents.length > 0) {
                         var immediate = grandparents[grandparents.length - 1];
-                        newValues.push(immediate);
+                        var sharedParent = false;
+                        for (var i = 0; i < newValues.length;i ++) {
+                            var aunts = this.parentIndex[newValues[i]];
+                            if (aunts.length > 0 && aunts[aunts.length - 1] === immediate) {
+                                sharedParent = true;
+                                break;
+                            }
+                        }
+                        if (!sharedParent && $.inArray(immediate, newValues) === -1) {
+                            newValues.push(immediate);
+                        }
                     }
                 }
 
@@ -1082,10 +1092,11 @@ var formulaic = {
                 this.input = $("[name=" + this.fieldDef.name + "]");
                 this.input.hide();
 
-                this.input.after('<a href="#" class="button ' + modalOpenClass + '">Open Subject Classifier</a>');
+                this.input.after('<a href="#" class="button button--secondary ' + modalOpenClass + '">Open Subject Classifier</a>');
                 this.input.after(`<div class="modal" id="` + containerId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                                     <div class="modal__dialog" role="document">
-                                        <p class="label">Subject classifications</p>
+                                        <h2 class="label">Subject classifications</h2>
+                                        <p class="alert">Selecting a subject will not automatically select its sub-categories.</p>
                                         <div id="` + widgetId + `"></div>
                                         <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
                                     </div>
@@ -1201,7 +1212,7 @@ var formulaic = {
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">go to account page</a></small></p>');
+                        that.after('<p><small><a id="' + id + '" class="button ' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">Account page</a></small></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);

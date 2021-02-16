@@ -349,7 +349,7 @@ def application(application_id):
     try:
         lockinfo = lock.lock(constants.LOCK_APPLICATION, application_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/suggestion_locked.html", suggestion=ap, lock=l.lock, edit_suggestion_page=True)
+        return render_template("admin/application_locked.html", application=ap, lock=l.lock)
 
     fc = ApplicationFormFactory.context("admin")
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
@@ -362,7 +362,7 @@ def application(application_id):
         processor = fc.processor(formdata=request.form, source=ap)
         if processor.validate():
             try:
-                processor.finalise(current_user)
+                processor.finalise(current_user._get_current_object())
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
