@@ -4,6 +4,10 @@ gold:
 - name: Royal Society of Chemistry
   url: https://www.rsc.org/
   logo: rsc.png
+  
+- name: Georg Thieme Verlag KG
+  url: https://www.thieme.com/
+  logo: thieme.svg
 
 silver:
 - name: American Chemical Society
