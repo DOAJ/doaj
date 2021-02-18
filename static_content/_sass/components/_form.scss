@@ -2,7 +2,6 @@
    Question = groups paragraph text, label, input for a single question */
 
 .form {
-
   textarea {
     height: 20vh;
   }
@@ -62,8 +61,9 @@
 
 .form__error,
 .parsley-errors-list p {
+  margin-top: $spacing-02;
   line-height: 1.15;
-  
+
   small {
     color: $sanguine;
 
