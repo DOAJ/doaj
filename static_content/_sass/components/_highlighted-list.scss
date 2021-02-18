@@ -1,17 +1,16 @@
-/* Highlighted list with large numbers */
+/* Ordered list with large numbers */
 
 .highlighted-list {
-  padding: 0;
-  list-style: none;
   width: 100%;
+  @include unstyled-list;
 
   > li {
     counter-increment: item;
     border-bottom: 1px solid $grapefruit;
     margin: 0;
     padding: $spacing-04 0;
-    @include font-serif;
     font-weight: 400;
+    @include font-serif;
     @include typescale-02;
 
     &:last-of-type {
@@ -20,17 +19,6 @@
 
     &:before {
       content: "0"counter(item)" ";
-    }
-
-    > ul {
-      margin-left: $spacing-04;
-      list-style: none;
-      font-size: 1rem;
-      @include font-sans;
-
-      li {
-        margin-bottom: $spacing-02;
-      }
     }
   }
 }
