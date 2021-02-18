@@ -224,7 +224,7 @@ class FieldDefinitions:
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
                           "The ISSN must match what is given on the journal website."],
-            "placeholder": "2049-3630",
+            "short_help": "For example, 2049-3630",
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
@@ -297,7 +297,7 @@ class FieldDefinitions:
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
                           "The ISSN must match what is given on the journal website."],
-            "placeholder": "0378-5955",
+            "short_help": "For example, 0378-5955",
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
@@ -605,10 +605,10 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
-            "long_help": ["It is recommended that licensing information is "
-                          "included in full text articles. Answer <strong>Yes"
-                          "</strong> if licensing is displayed or embedded in "
-                          "all versions of each article."],
+            "long_help": ["It is recommended that licensing information is included in full-text articles "
+                          "but it is not required for inclusion. "
+                          "Answer <strong>Yes</strong> if licensing is displayed or "
+                          "embedded in all versions of each article."],
             "seal_criteria": "If the answer is Embed"
         },
         "validate": [
@@ -1081,9 +1081,10 @@ class FieldDefinitions:
         ],
         "help": {
             "long_help": [
-                "Only active archiving is accepted; content must be actively deposited in each of the options "
-                "you choose. If the journal is registered with a service but archiving is not yet active, "
-                "choose <em>No</em>.", "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."]
+                "Content must be actively deposited in each of the options you choose. "
+                "If the journal is registered with a service but archiving is not yet active,"
+                " choose <em>The journal content isn’t archived with a long-term preservation service</em>.",
+                "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."]
         },
         "validate": [
             "required"
@@ -1413,9 +1414,6 @@ class FieldDefinitions:
             "reserved_usernames",
             "owner_exists"
         ],
-        "help" : {
-            "render_error_box": False,
-        },
         "widgets": [
             {"autocomplete": {"type" : "account", "field": "id", "include" : False}},
             "clickable_owner"
@@ -1440,7 +1438,8 @@ class FieldDefinitions:
             "required"
         ],
         "help" : {
-            "render_error_box" : False
+            "update_requests_diff" : False,
+            "render_error_box": False
         },
         "disabled" : "application_status_disabled",
         "contexts" : {
@@ -1448,14 +1447,16 @@ class FieldDefinitions:
                 "help" : {
                     "render_error_box": False,
                     "short_help" : "Set the status to 'In Progress' to signal to the applicant that you have started your review."
-                                    "Set the status to 'Ready' to alert the Editor that you have completed your review."
+                                    "Set the status to 'Completed' to alert the Editor that you have completed your review.",
+                    "update_requests_diff": False
                 }
             },
             "editor" : {
                 "help" : {
                     "render_error_box" : False,
                     "short_help" : "Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed."
-                                    "Set the status to 'Completed' to alert the Managing Editor that you have completed your review."
+                                    "Set the status to 'Ready' to alert the Managing Editor that you have completed your review.",
+                    "update_requests_diff": False
                 }
             }
         },
@@ -1605,7 +1606,7 @@ class FieldDefinitions:
     NOTES = {
         "name" : "notes",
         "input": "group",
-        "label": "Note",
+        "label": "Notes",
         "repeatable" : {
             "initial" : 1,
             "add_button_placement" : "top"
@@ -1787,10 +1788,10 @@ class FieldSetDefinitions:
         "label": "Publication fees",
         "fields": [
             FieldDefinitions.APC["name"],
-            FieldDefinitions.APC_URL["name"],
             FieldDefinitions.APC_CHARGES["name"],
             FieldDefinitions.APC_CURRENCY["name"],
             FieldDefinitions.APC_MAX["name"],
+            FieldDefinitions.APC_URL["name"],
         ]
     }
 
