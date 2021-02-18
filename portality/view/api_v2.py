@@ -249,7 +249,7 @@ def update_article(article_id):
         raise Api400Error("Supplied data was not valid JSON")
 
     # delegate to the API implementation
-    ArticlesCrudApi.update(article_id, data, current_user)
+    ArticlesCrudApi.update(article_id, data, current_user._get_current_object())
 
     # respond with a suitable No Content successful response
     return no_content()
