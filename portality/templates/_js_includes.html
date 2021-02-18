@@ -1,12 +1,11 @@
-<!-- get jquery js -->
+{# get jquery js #}
 <script type="text/javascript" src="/static/vendor/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-
-<!-- get bootstrap js -->
+{# get bootstrap js #}
 {# TODO: this is probably not the right place to keep this file #}
 {# I’m using a much smaller & reduced version of Boostrap’s JS, with some modified classes and only the components we need #}
 <script type="text/javascript" src="/static_content/_site/js/vendors/bootstrap.js"></script>
 
-{% if not config.get("DEBUG", True) %}
+{%- if not config.get("DEBUG", True)  -%}
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-46560124-1"></script>
     <script>
@@ -17,18 +16,26 @@
       gtag('config', 'UA-46560124-1');
     </script>
 
-    <!-- Hotjar Tracking Code for https://doaj.org -->
-    <script>
-        (function(h,o,t,j,a,r){
-            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-            h._hjSettings={hjid:1039257,hjsv:6};
-            a=o.getElementsByTagName('head')[0];
-            r=o.createElement('script');r.async=1;
-            r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-            a.appendChild(r);
-        })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-    </script>
-{% endif %}
+    {# To check current page #}
+    {%- set url_list = request.url.split("/") -%}
+    {%- set endpoint = url_list[2:url_list|length-1] -%}
+    {%- set endpoint = endpoint[endpoint|length-1] -%}
+
+    {# Only include Hotjar in dashboards #}
+    {%- if endpoint == 'admin' or endpoint == 'editor' or endpoint == 'publisher' -%}
+        <!-- Hotjar Tracking Code for https://doaj.org -->
+        <script>
+            (function(h,o,t,j,a,r){
+                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+                h._hjSettings={hjid:1039257,hjsv:6};
+                a=o.getElementsByTagName('head')[0];
+                r=o.createElement('script');r.async=1;
+                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+                a.appendChild(r);
+            })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+        </script>
+    {%- endif -%}
+{%- endif -%}
 
 {# FIXME: do we need these any more? #}
 <!-- get tablesorter -->
