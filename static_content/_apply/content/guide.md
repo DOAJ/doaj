@@ -234,6 +234,17 @@ No further communication will be entered into after the appeal is heard and the 
 
 ---
 
+## Zero Tolerance Policy
+
+We expect the members of our Team, our volunteers and our Ambassadors to always be treated courteously and with respect for the work they are doing. They should not be subject to abusive behaviour in any form, which includes:
+- rude, disrespectful and offensive behaviour, including derogatory remarks or anything which amounts to verbal or emotional abuse in person or in communications
+- sexually inappropriate comments or behaviour
+- racist and discriminatory abuse
+- threats of physical violence
+- aggressive and violent behaviour
+
+---
+
 ## In other languages
 
 We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](feedback@doaj.org).
