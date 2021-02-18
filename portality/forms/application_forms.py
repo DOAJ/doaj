@@ -2363,7 +2363,7 @@ class RequiredBuilder:
 
 
 class IsURLBuilder:
-    msg = "Please enter a valid URL. It should start with http or https"
+    msg = "<p><small>" + "Please enter a valid URL. It should start with http or https" + "</p></small>"
 
     @staticmethod
     def render(settings, html_attrs):
