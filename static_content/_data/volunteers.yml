@@ -449,7 +449,7 @@ ass_ed:
   language: Arab, French, English
 
 - name: Handoko
-  area: Information Technology
+  area: Humanities, Social Sciences
   year_since:
   city: Padang
   country: Indonesia
@@ -704,10 +704,10 @@ ass_ed:
   language: Spanish, English
 
 - name: Maryam Jamilah
-  area: Science
+  area: Social Sciences
   year_since:
-  city:
-  country:
+  city: Padang
+  country: Indonesia
   language:
   photo: "jamilah.jpg"
 
