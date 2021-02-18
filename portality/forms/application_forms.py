@@ -628,7 +628,12 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/articles/article-page"
         },
         "validate": [
-            {"required_if": {"field": "license_display", "value": "y"}},
+            {"required_if": {
+                "field": "license_display",
+                "value": "y",
+                "message": "Enter the URL for any recent article that displays or embeds a license"
+                }
+            },
             "is_url"
         ],
         "widgets": [
@@ -729,7 +734,12 @@ class FieldDefinitions:
         },
         "conditional": [{"field": "review_process", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "review_process", "value": "other"}}
+            {"required_if": {
+                "field": "review_process",
+                "value": "other",
+                "message": "Enter the name of another type of peer review"
+                }
+            }
         ],
         "widgets" : [
             "trim_whitespace",
@@ -789,7 +799,12 @@ class FieldDefinitions:
                           "is done (including the name of any software or service used)."]
         },
         "validate": [
-            {"required_if": {"field": "plagiarism_detection", "value": "y"}},
+            {"required_if": {
+                "field": "plagiarism_detection",
+                "value": "y",
+                "message": "Enter the URL for the journal’s <strong>plagiarism policy</strong> page"
+                }
+            },
             "is_url"
         ],
         "widgets": [
@@ -935,7 +950,12 @@ class FieldDefinitions:
             "class": "input-xlarge"
         },
         "validate": [
-            {"required_if": {"field": "apc", "value": "y", "message": "Currency required because you answered YES to previous question"}}
+            {"required_if": {
+                "field": "apc",
+                "value": "y",
+                "message": "Enter the currency or currencies for the journal’s publishing fees"
+                }
+            }
         ]
     }
 
@@ -949,7 +969,12 @@ class FieldDefinitions:
             "placeholder": "Highest fee charged"
         },
         "validate":[
-            {"required_if": {"field": "apc", "value": "y", "message": "Required because you answered YES to previous question"}}
+            {"required_if": {
+                "field": "apc",
+                "value": "y",
+                "message": "Enter the value of the highest publishing fee the journal has charged"
+                }
+            }
         ],
         "attr": {
             "min": "1"
@@ -1012,7 +1037,12 @@ class FieldDefinitions:
              "placeholder": "https://www.my-journal.com/about#waiver"
         },
         "validate": [
-            {"required_if": {"field": "has_waiver", "value": "y"}},
+            {"required_if": {
+                "field": "has_waiver",
+                "value": "y",
+                "message": "Enter the URL for the journal’s <strong>waiver information</strong> page"
+                }
+            },
             "is_url"
         ],
         "widgets": [
@@ -1052,7 +1082,12 @@ class FieldDefinitions:
             "doaj_criteria": "You must provide a URL"
         },
         "validate": [
-            {"required_if": {"field": "has_other_charges", "value": "y"}},
+            {"required_if": {
+                "field": "has_other_charges",
+                "value": "y",
+                "message": "Enter the URL for the journal’s <strong>fees<strong> information page"
+                }
+            },
             "is_url"
         ],
         "widgets": [
@@ -1104,7 +1139,12 @@ class FieldDefinitions:
         },
         "conditional": [{"field": "preservation_service", "value": "national_library"}],
         "validate": [
-            {"required_if": {"field": "preservation_service", "value": "national_library"}}
+            {"required_if": {
+                "field": "preservation_service",
+                "value": "national_library",
+                "message": "Enter the name(s) of the national library or libraries where the journal is archived"
+                }
+            }
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -1121,7 +1161,12 @@ class FieldDefinitions:
         "input": "text",
         "conditional": [{"field": "preservation_service", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "preservation_service", "value": "other"}}
+            {"required_if": {
+                "field": "preservation_service",
+                "value": "other",
+                "message": "Enter the name of another archiving policy"
+                }
+            }
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -1205,7 +1250,12 @@ class FieldDefinitions:
         "input": "text",
         "conditional": [{"field": "deposit_policy", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "deposit_policy", "value": "other"}}
+            {"required_if": {
+                "field": "deposit_policy",
+                "value": "other",
+                "message": "Enter the name of another repository policy"
+                }
+            }
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -1291,7 +1341,12 @@ class FieldDefinitions:
         "input": "text",
         "conditional": [{"field": "persistent_identifiers", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "persistent_identifiers", "value": "other"}}
+            {"required_if": {
+                "field": "persistent_identifiers",
+                "value": "other",
+                "message": "Enter the name of another type of identifier"
+                }
+            }
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
