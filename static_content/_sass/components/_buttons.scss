@@ -1,6 +1,7 @@
 /* Buttons */
 
-[type="button"] {
+[type="button"],
+[role="button"] {
   cursor: pointer;
 }
 
