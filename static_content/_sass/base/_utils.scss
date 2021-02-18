@@ -44,3 +44,13 @@
   overflow: visible;
   clip: auto;
 }
+
+// Default style for all Creative Commons icons
+.cc-icon {
+  height: 1rem;
+  width: auto;
+
+  circle {
+    fill: transparent;
+  }
+}
