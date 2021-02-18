@@ -80,7 +80,7 @@ class FieldDefinitions:
             "doaj_criteria": "You must answer 'Yes'"
         },
         "validate": [
-            {"required": {"message": "You must answer YES to continue"}},
+            {"required": {"message": "You must answer <strong>Yes</strong> to continue"}},
             {"required_value" : {"value" : "y"}}
         ],
         "contexts": {
@@ -121,7 +121,7 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/open-access"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s Open Access statement page"}},
             "is_url"
         ],
         "widgets": [
@@ -146,7 +146,7 @@ class FieldDefinitions:
             "doaj_criteria": "Title in application form, title at ISSN and website must all match"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Enter the journal’s name"}}
         ],
         "widgets": [
             "trim_whitespace",
@@ -202,7 +202,7 @@ class FieldDefinitions:
         "contexts": {
             "public" : {
                 "validate": [
-                    "required",
+                    {"required": {"message": "Enter the URL for the journal’s <strong>homepage</strong>"}},
                     "is_url",
                     "journal_url_in_public_doaj"  # Check whether the journal url is already in a public DOAJ record
                 ],
@@ -229,7 +229,7 @@ class FieldDefinitions:
         },
         "validate": [
             {"optional_if": {"field": "eissn",
-                             "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                             "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "eissn", "message": "This field must contain a different value to 'ISSN ("
                                                            "online)'"}}
@@ -241,7 +241,7 @@ class FieldDefinitions:
             "public" : {
                 "validate": [
                     {"optional_if": {"field": "eissn",
-                                     "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},
                     {"different_to": {"field": "eissn",
                                       "message": "This field must contain a different value to 'ISSN ("
@@ -302,7 +302,7 @@ class FieldDefinitions:
         },
         "validate": [
             {"optional_if": {"field": "pissn",
-                             "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                             "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "pissn", "message" : "This field must contain a different value to 'ISSN (print)'"}}
         ],
@@ -313,7 +313,7 @@ class FieldDefinitions:
             "public" : {
                 "validate" : [
                     {"optional_if": {"field": "pissn",
-                                     "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},
                     {"different_to": {"field": "pissn",
                                       "message": "This field must contain a different value to 'ISSN (print)'"}},
@@ -353,7 +353,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "validate" : [
                     {"optional_if": {"field": "pissn",
-                                     "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},
                     {"different_to": {"field": "pissn",
                                       "message": "This field must contain a different value to 'ISSN (print)'"}}
@@ -376,7 +376,7 @@ class FieldDefinitions:
                           "and not the journal’s qualities.", "Keywords must be in English and separated by a comma."],
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter at least <strong>one subject keyword</strong> in English"}},
             {"stop_words": {"disallowed": STOP_WORDS}},
             {"max_tags": {"max": 6}}
         ],
@@ -408,7 +408,7 @@ class FieldDefinitions:
             "initial": 5
         },
         "validate": [
-            "required"
+            {"required": {"message": "Enter <strong>at least one</strong> language"}}
         ],
         "widgets": [
             {"select": {}},
@@ -427,7 +427,7 @@ class FieldDefinitions:
         "label": "Publisher’s name",
         "input": "text",
         "validate": [
-            "required"
+            {"required": {"message": "Enter the name of the journal’s publisher"}}
         ],
         "widgets": [
             "trim_whitespace",
@@ -456,7 +456,7 @@ class FieldDefinitions:
             "placeholder": "Type or select the country"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Enter the <strong>country</strong> where the publisher carries out its business operations and is registered"}}
         ],
         "widgets": [
             {"select": {}}
@@ -554,7 +554,7 @@ class FieldDefinitions:
             "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select <strong>at least one</strong> type of license"}}
         ]
     }
 
@@ -582,7 +582,7 @@ class FieldDefinitions:
         "label": "Where can we find this information?",
         "input": "text",
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>license terms</strong> page"}},
             "is_url"
         ],
         "help": {
@@ -612,7 +612,7 @@ class FieldDefinitions:
             "seal_criteria": "If the answer is Embed"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ]
     }
 
@@ -647,7 +647,7 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ],
         "help": {
             "long_help": ["Answer <strong>No</strong> if authors transfer "
@@ -681,7 +681,7 @@ class FieldDefinitions:
         "contexts": {
             "public": {
                 "validate": [
-                    "required",
+                    {"required": {"message": "Enter the URL for the journal’s <strong>copyright terms</strong> page"}},
                     "is_url"
                 ]
             },
@@ -716,7 +716,7 @@ class FieldDefinitions:
             "doaj_criteria": "Peer review must be carried out"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select <strong>at least one</strong> type of review process"}}
         ]
     }
 
@@ -748,7 +748,7 @@ class FieldDefinitions:
             "short_help": "Link to the journal’s peer review policy"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>peer review policy</strong> page"}},
             "is_url"
         ],
         "widgets": [
@@ -772,7 +772,7 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ]
     }
 
@@ -807,7 +807,7 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/about#aims"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>Aims & Scope</strong> page"}},
             "is_url"
         ],
         "widgets": [
@@ -818,14 +818,14 @@ class FieldDefinitions:
 
     EDITORIAL_BOARD_URL = {
         "name": "editorial_board_url",
-        "label": "Link to the journal’s <b>Editorial board</b>",
+        "label": "Link to the journal’s <b>Editorial Board</b>",
         "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL",
             "placeholder": "https://www.my-journal.com/about#board"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>Editorial Board</strong> page"}},
             "is_url"
         ],
         "widgets": [
@@ -843,7 +843,7 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/for_authors"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>Instructions for Authors</strong> page"}},
             "is_url"
         ],
         "widgets": [
@@ -858,7 +858,7 @@ class FieldDefinitions:
         "input": "number",
         "datatype": "integer",
         "validate": [
-            "required",
+            {"required": {"message": "Enter an average number of weeks"}},
             {"int_range": {"gte": 1, "lte": 100}}
         ],
         "asynchronous_warning": [
@@ -886,7 +886,7 @@ class FieldDefinitions:
             "doaj_criteria": "You must tell us about any APCs"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ]
     }
 
@@ -968,7 +968,7 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/about#apc"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>publication fees</strong> information page"}},
             "is_url"
         ],
         "widgets": [
@@ -995,7 +995,7 @@ class FieldDefinitions:
                           "demonstrable needs."]
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ]
     }
 
@@ -1036,7 +1036,7 @@ class FieldDefinitions:
             "doaj_criteria": "You must declare any other charges if they exist"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ]
     }
 
@@ -1087,7 +1087,7 @@ class FieldDefinitions:
                 "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."]
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select <strong>at least one</strong> option"}}
         ]
     }
 
@@ -1195,7 +1195,7 @@ class FieldDefinitions:
                           "For a journal to qualify for the DOAJ Seal, it must allow all versions to be deposited in an institutional or other repository of the author’s choice without embargo."
                           ]},
         "validate": [
-            "required"
+            {"required": {"message": "Select <strong>at least one</strong> option"}}
         ]
     }
 
@@ -1281,7 +1281,7 @@ class FieldDefinitions:
                          "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>"],
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select <strong>at least one</strong> option"}}
         ]
     }
 
@@ -1317,12 +1317,12 @@ class FieldDefinitions:
         "contexts" : {
             "public" : {
                 "validate": [
-                    "required"
+                    {"required": {"message": "Select Yes or No"}}
                 ]
             },
             "update_request" : {
                 "validate" : [
-                    "required"
+                    {"required": {"message": "Select Yes or No"}}
                 ]
             }
         }
@@ -1343,12 +1343,12 @@ class FieldDefinitions:
         "contexts" : {
             "public" : {
                 "validate": [
-                    "required"
+                    {"required": {"message": "Select Yes or No"}}
                 ]
             },
             "update_request" : {
                 "validate" : [
-                    "required"
+                    {"required": {"message": "Select Yes or No"}}
                 ]
             }
         }
