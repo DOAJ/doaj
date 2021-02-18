@@ -1,5 +1,5 @@
 <div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
-    <a name="question__{{ f.name }}"></a>
+    <a id="question-{{ f.name }}"></a>
     <label>
         {% autoescape off %}{{ f.label }}{% endautoescape %}
         {% if f.help("long_help") %}
