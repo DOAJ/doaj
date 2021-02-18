@@ -106,7 +106,7 @@
             </aside>
             {% endif %}
 
-            <aside class="promo">
+            <aside class="highlight highlight--aside">
               <p class="label">Just so you know&hellip;</p>
 
               {% assign min = 0 %}
@@ -114,11 +114,11 @@
               {% assign diff = max | minus: min %}
               {% assign random = "now" | date: "%N" | modulo: diff | plus: min %}
 
-              <h2 class="promo__heading">{{ site.data.promo[random].title }}</h2>
-              <p class="promo__text">
+              <h2>{{ site.data.promo[random].title }}</h2>
+              <p>
                 {{ site.data.promo[random].summary }}
-                <a href="{{ site.data.promo[random].url }}" target="_blank" class="promo__link">Learn more</a>
               </p>
+              <a href="{{ site.data.promo[random].url }}" target="_blank" class="button">Learn more</a>
             </aside>
           {% endif %}
         </div>

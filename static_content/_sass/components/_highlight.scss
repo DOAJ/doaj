@@ -15,12 +15,6 @@
   padding: $spacing-03;
   color: $warm-black;
 
-  h2, h3, h4 {
-    margin: 0 0 $spacing-03 0;
-    font-size: 1em;
-    @include font-sans;
-  }
-
   hr {
     margin: $spacing-02 0;
   }
