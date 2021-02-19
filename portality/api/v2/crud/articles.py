@@ -202,6 +202,7 @@ class ArticlesCrudApi(CrudApi):
         new_ar.bibjson().set_subjects(ar.bibjson().subjects())
 
         try:
+            # Article save occurs in the BLL create_article
             result = articleService.create_article(new_ar, account, add_journal_info=True, update_article_id=id)
         except ArticleMergeConflict as e:
             raise Api400Error(str(e))
@@ -213,11 +214,6 @@ class ArticlesCrudApi(CrudApi):
         if result.get("success") == 0:
             raise Api400Error("Article update failed for unanticipated reason")
 
-        """
-        new_ar.set_id(id)
-        # finally save the new article, and return to the caller
-        new_ar.save()
-        """
         return new_ar
 
     @classmethod
