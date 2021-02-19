@@ -2202,6 +2202,9 @@ $.extend(true, doaj, {
                         var lic = resultobj.bibjson.license[i];
                         var license_url = lic.url || terms_url;
                         licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + edges.escapeHtml(lic.type) + '</a>';
+                        if (i != (resultobj.bibjson.license.length-1)) {
+                          licenses += ', ';
+                        }
                     }
                 }
 
