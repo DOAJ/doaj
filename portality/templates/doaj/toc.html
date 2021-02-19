@@ -183,6 +183,7 @@
                                             {% elif bibjson.has_other_charges and bibjson.apc != true %}
                                                 but there are
                                                 {% if bibjson.other_charges_url %}<a href="{{ bibjson.other_charges_url }}" target="_blank" rel="noopener">{% endif %}
+                                                  other charges{% if bibjson.other_charges_url %}</a>.{% endif %}
                                             {% endif %}
                                                 </p>
                                         {# Waivers #}
