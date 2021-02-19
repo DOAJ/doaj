@@ -5,7 +5,7 @@
   <option value="es">Español</option>
 </select> -->
 
-Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them.
+Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them. A [PDF version of the application form](/static/doaj/docs/2021-02-17-DOAJQuestions.pdf) is available for reference only.
 
 ## Basic criteria for inclusion
 
