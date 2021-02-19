@@ -54,3 +54,39 @@
     fill: transparent;
   }
 }
+
+.bg-black {
+  background-color: $warm-black;
+}
+
+.bg-grey{
+  background-color: $dark-grey;
+}
+
+.bg-white{
+  background-color: $warm-white;
+}
+
+.type-01 {
+  @include typescale-01;
+}
+
+.type-02 {
+  @include typescale-02;
+}
+
+.type-03 {
+  @include typescale-03;
+}
+
+.type-04 {
+  @include typescale-04;
+}
+
+.type-05 {
+  @include typescale-05;
+}
+
+.type-06 {
+  @include typescale-06;
+}
