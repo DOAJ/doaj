@@ -2352,7 +2352,7 @@ class RequiredBuilder:
     def render(settings, html_attrs):
         html_attrs["required"] = ""
         if "message" in settings:
-            html_attrs["data-parsley-required-message"] = "<p><small>" + settings["message"] + "</p></small>"
+            html_attrs["data-parsley-required-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
             html_attrs["data-parsley-required-message"] = "<p><small>" + "This answer is required" + "</p></small>"
         html_attrs["data-parsley-validate-if-empty"] = "true"
@@ -2443,7 +2443,7 @@ class OptionalIfBuilder:
     def render(settings, html_attrs):
         html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-optional-if"] = settings.get("field")
-        html_attrs["data-parsley-optional-if-message"] = "<p><small>" + settings["message"] + "</p></small>"
+        html_attrs["data-parsley-optional-if-message"] = "<p><small>" + settings.get("message") + "</p></small>"
 
     @staticmethod
     def wtforms(field, settings):
@@ -2493,9 +2493,9 @@ class RequiredIfBuilder:
         html_attrs["data-parsley-required-if"] = val
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
         if "message" in settings:
-            html_attrs["data-parsley-required-if-message"] = "<p><small>" + settings["message"] + "</p></small>"
+            html_attrs["data-parsley-required-if-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
-            html_attrs["data-parsley-required-if-message"] = "<p><small>" + "This answer is required" + "</p></small>"
+            html_attrs["data-parsley-required-if-message"] = "<p><small>" + "This answer is required" + "</small></p>"
 
     @staticmethod
     def wtforms(field, settings):
