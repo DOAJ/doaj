@@ -14,6 +14,10 @@
         {{ label }}
     {% endif %}
 
+    {% if f.help("short_help") %}
+       <p><small>{{ f.help("short_help") | safe }}</small></p>
+    {% endif %}
+
     {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
     {% if f.has_widget("multiple_field") or f.has_widget("infinite_repeat") %}
         <div class="removable_field">
@@ -63,9 +67,6 @@
     </div>
     {% endif %}
 
-    {% if f.help("short_help") %}
-       <p><small>{{ f.help("short_help") | safe }}</small></p>
-    {% endif %}
 </div>
 
 {% include "application_form/modal.html" %}
