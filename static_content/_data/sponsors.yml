@@ -30,6 +30,10 @@ silver:
   url: https://www.elsevier.com/
   logo: elsevier.svg
 
+- name: EBSCO
+  url: https://www.ebsco.com/
+  logo: ebsco.svg
+
 - name: Federation of Finnish Learned Societies
   url: https://tsv.fi/en/frontpage
   logo: tsv.png
@@ -86,10 +90,6 @@ bronze:
 - name: Digital Science
   url: https://www.digital-science.com/
   logo: digsci.png
-
-- name: EBSCO
-  url: https://www.ebsco.com/
-  logo: ebsco.svg
 
 - name: EDP Sciences
   url: https://www.edpsciences.org/
