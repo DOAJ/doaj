@@ -107,6 +107,14 @@
   @include typescale-06;
 }
 
+.flex-end- {
+  @media (min-width: 769px) {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+  }
+}
+
 // For content that overflows outside of its container
 .bleed {
   z-index: 10;

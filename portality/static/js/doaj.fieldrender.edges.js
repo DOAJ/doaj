@@ -143,11 +143,11 @@ $.extend(true, doaj, {
                             \
                         <div class="col-md-9">\
                             <aside id="selected-filters"></aside>\
-                            <nav class="search-options">\
+                            <nav>\
                                 <h3 class="sr-only">Display options</h3>\
                                 <div class="row">\
                                     <form class="col-sm-6" id="sort_by"></form>\
-                                    <form class="col-sm-6 search-options__right" id="rpp"></form>\
+                                    <form class="col-sm-6 flex-end" id="rpp"></form>\
                                 </div>\
                             </nav>\
                             <nav class="pagination" id="top-pager"></nav>\
