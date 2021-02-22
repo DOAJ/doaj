@@ -4,25 +4,33 @@
 .stretch-list {
   padding: 0;
   margin: 0 0 $spacing-04 0;
-  list-style: none;
+  width: 100%;
+  @include unstyled-list;
 }
 
+.stretch-list li,
 .stretch-list__item {
-  padding: 0;
+  padding: $spacing-03 0;
+  display: block;
   border-bottom: 1px solid $grapefruit;
 
   &:last-of-type {
     border: 0;
   }
-
-  a {
-    text-decoration: none;
-  }
 }
 
-.stretch-list__link,
-.stretch-list__item {
-  padding: $spacing-03 0;
+.stretch-list a
+.stretch-list__link {
   display: block;
   text-decoration: none;
+}
+
+ol.stretch-list,
+.stretch-list--ordered {
+  counter-increment: item;
+
+  li:before,
+  .stretch-list__itemv:before {
+    content: "0"counter(item)" ";
+  }
 }
