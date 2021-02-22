@@ -128,3 +128,30 @@
     width: 1170px - 60px;
   }
 }
+
+// TEMP: admin edit button on static site
+.admin-edit {
+  position: fixed;
+  z-index: 2000;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  top: 100px;
+  right: 0;
+  background-color: $warm-black;
+
+  svg {
+    display: block;
+    margin: 10px auto;
+    height: 30px;
+    stroke: $warm-white;
+  }
+
+  + .admin-edit {
+    top: 150px;
+  }
+
+  &:hover {
+    background-color: $sanguine;
+  }
+}
