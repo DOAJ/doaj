@@ -103,7 +103,11 @@ class ApplicationService(object):
         """
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering unreject_application")
 
-        journalService = DOAJ.journalService()
+        if application is None:
+            raise exceptions.ArgumentException("You must supply an application to unreject_application")
+
+        if account is None:
+            raise exceptions.ArgumentException("You must supply an account to unreject_application")
 
         # check we're allowed to carry out this action
         if not account.has_role("unreject_application"):
@@ -141,13 +145,13 @@ class ApplicationService(object):
             if saved is None:
                 raise exceptions.SaveException("Save on current_journal {id} in unreject_application failed".format(id=rj.id))
 
-        # if we were asked to record this as a manual update, record that on the application
-        if manual_update:
-            application.set_last_manual_update()
+            # if we were asked to record this as a manual update, record that on the application
+            if manual_update:
+                application.set_last_manual_update()
 
-        saved = application.save()
-        if saved is None:
-            raise exceptions.SaveException("Save on application {id} in unreject_application failed".format(id=application.id))
+            saved = application.save()
+            if saved is None:
+                raise exceptions.SaveException("Save on application {id} in unreject_application failed".format(id=application.id))
 
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed unreject_application")
 
