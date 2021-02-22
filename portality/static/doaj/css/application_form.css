@@ -1,25 +1,3 @@
-.form__question > ul {
-    list-style-type: none;
-    padding: 0;
-    display: inline;
-}
-
-.form__question > ul > li {
-    display:inline;
-}
-
-.form__question > div.input-group {
-    width: 75%
-}
-
-#apc_charges-apc_currency {
-    width: 25%
-}
-
-#apc_charges-apc_max {
-    width: 75%
-}
-
 .tab {
   display: none;
 }
@@ -38,19 +16,6 @@ li.parsley-required {
 li.parsley-type {
     color: #982E0A;
 }
-
-#submitBtn.pager-buttons__right {
-    margin-right: 5px;
-}
-
-.application-nav__list-item a ::before {
-    color: #982E0A;
-}
-
-/*.formulaic-clickableurl-visit {*/
-/*    color: #982E0A;*/
-/*    text-decoration: #982E0A;*/
-/*}*/
 
 .form_group {
     display: flex;
@@ -82,7 +47,3 @@ li.parsley-type {
     resize: vertical;
     width: 100%;
 }
-
-/* .editorial-panel {
-    position: static !important;
-} */

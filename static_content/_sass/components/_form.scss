@@ -25,6 +25,10 @@
 .form__question {
   margin: $spacing-05 0;
 
+  ul, ol {
+    @include unstyled-list;
+  }
+
   p, label {
     margin-bottom: $spacing-03;
     @include typescale-05;

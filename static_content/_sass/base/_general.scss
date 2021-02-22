@@ -242,6 +242,10 @@ input, select, button, textarea {
   @include font-sans;
 }
 
+textarea {
+  resize: vertical;
+}
+
 select {
   padding-right: 30px;
   -webkit-appearance: none;
