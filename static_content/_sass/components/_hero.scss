@@ -1,6 +1,6 @@
-/* Highlight sections */
+// Hero sections (slightly darker background, highlighted content)
 
-.highlight {
+.hero {
   background-color: $fair-pink;
 
   header {
@@ -10,7 +10,7 @@
   }
 }
 
-.highlight--aside {
+.hero--aside {
   margin: $spacing-05 0 0 0;
   padding: $spacing-03;
   color: $warm-black;
