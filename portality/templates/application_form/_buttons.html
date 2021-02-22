@@ -1,8 +1,8 @@
 {% block buttons %}
     <p class="pager-buttons">
         {% if not notabs %}
-        <button type="button" id="prevBtn" class="button button--secondary pager-buttons__left">Back</button>
-        <button type="button" id="nextBtn" class="button button--secondary pager-buttons__right">Next</button>
+        <button type="button" class="prevBtn button button--secondary pager-buttons__left">Back</button>
+        <button type="button" class="nextBtn button button--secondary pager-buttons__right">Next</button>
         {% endif %}
 
         {% if formulaic_context.name == "public" or formulaic_context.name == "update_request" %}

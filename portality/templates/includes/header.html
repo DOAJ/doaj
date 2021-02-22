@@ -327,7 +327,7 @@
                   {% if category == "error" %}
                       {% set category = "danger" %}
                   {% endif %}
-                  <section class="container flash_container">
+                  <aside class="container flash_container">
                       <h2 class="sr-only">Notifications</h2>
                       <p class="alert alert--{{category}}">
                         <span data-feather="alert-octagon" aria-hidden="true"></span>
@@ -338,7 +338,7 @@
                         {% endif %}
                         &nbsp;<span class="flash_close alert__close" role="button">(Dismiss)</span>
                       </p>
-                  </section>
+                  </aside>
               {% endfor %}
         {% endif %}
     {% endwith %}

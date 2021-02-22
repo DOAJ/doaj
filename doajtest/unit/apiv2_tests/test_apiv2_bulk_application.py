@@ -180,7 +180,7 @@ class TestBulkApplication(DoajTestCase):
                 # Create some new applications
                 resp = t_client.post(url_for('api_v2.bulk_application_create', api_key=account.api_key),
                                      data=json.dumps(dataset))
-                assert resp.status_code == 201
+                assert resp.status_code == 201, resp.status_code
                 reply = json.loads(resp.data.decode("utf-8"))
                 assert len(reply) == len(dataset)
                 first_apl = reply.pop()

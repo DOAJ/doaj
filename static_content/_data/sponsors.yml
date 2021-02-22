@@ -1,6 +1,13 @@
 # List of sponsors separated by tiers (premier, sustaining, basic)
 
 gold:
+- name: Royal Society of Chemistry
+  url: https://www.rsc.org/
+  logo: rsc.png
+  
+- name: Georg Thieme Verlag KG
+  url: https://www.thieme.com/
+  logo: thieme.svg
 
 silver:
 - name: American Chemical Society
@@ -31,6 +38,10 @@ silver:
   url: https://www.frontiersin.org/
   logo: frontiers.svg
 
+- name: Karger
+  url: https://www.karger.com/
+  logo: karger.png
+  
 - name: National Library of Sweden
   url: https://www.kb.se/
   logo: kbse.svg
@@ -46,6 +57,10 @@ silver:
 - name: OUP
   url: https://global.oup.com/
   logo: OUP.jpg
+ 
+- name: SAGE Publishing
+  url: https://www.sagepublications.com/
+  logo: sage.svg
 
 - name: Swedish Research Council
   url: https://vr.se/english.html
@@ -100,10 +115,6 @@ bronze:
   url: https://www.issn.org/
   logo: issn.svg
 
-- name: Karger
-  url: https://www.karger.com/
-  logo: karger.png
-
 - name: Lund University
   url: https://www.lunduniversity.lu.se/
   logo: lu.png
@@ -123,14 +134,6 @@ bronze:
 - name: Relawan Jurnal Indonesia
   url: http://relawanjurnal.id/
   logo: RelawanJurnalIndonesia.png
-
-- name: Royal Society of Chemistry
-  url: https://www.rsc.org/
-  logo: rsc.png
-
-- name: SAGE Publishing
-  url: https://www.sagepublications.com/
-  logo: sage.svg
 
 - name: SciELO
   url: https://www.scielo.br/

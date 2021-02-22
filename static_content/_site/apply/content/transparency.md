@@ -1,7 +1,7 @@
 
 ## Introduction
 
-The [Committee on Publication Ethics], the Directory of Open Access Journals, the [Open Access Scholarly Publishers Association] and the [World Association of Medical Editors] are scholarly organizations that have seen an increase in the number, and broad range in the quality of, membership applications. Our organizations have collaborated to identify principles of transparency and best practice for scholarly publications and to clarify that these principles form the basis of the criteria by which suitability for membership is assessed by COPE, DOAJ and OASPA, and part of the criteria on which membership applications are evaluated by WAME. Each organization also has their own, additional criteria which are used when evaluating applications. The organizations will not share lists of publishers or journals that failed to demonstrate that they met the criteria for transparency and best practice.
+The [Committee on Publication Ethics], DOAJ, the [Open Access Scholarly Publishers Association] and the [World Association of Medical Editors] are scholarly organizations that have seen an increase in the number, and broad range in the quality of, membership applications. Our organizations have collaborated to identify principles of transparency and best practice for scholarly publications and to clarify that these principles form the basis of the criteria by which suitability for membership is assessed by COPE, DOAJ and OASPA, and part of the criteria on which membership applications are evaluated by WAME. Each organization also has their own, additional criteria which are used when evaluating applications. The organizations will not share lists of publishers or journals that failed to demonstrate that they met the criteria for transparency and best practice.
 
 This is the third version of a work in progress (published January 2018); the first version was made available by OASPA in December 2013 and a second version in June 2015. We encourage its wide dissemination and continue to welcome feedback on the general principles and the specific criteria. Background on the organizations is below.
 
@@ -11,7 +11,7 @@ An infographic of these Principles was commissioned by COPE and is available to 
 
 ---
 
-## Principles of transparency
+## Principles of transparency and best practice in scholarly publishing
 
 {:.numbered-table .numbered-table--labels}
 |   | Principle                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
@@ -43,19 +43,19 @@ First version published on DOAJ: `10 January 2014`
 
 ---
 
-## About the [Committee on Publication Ethics] (COPE)
+## About the Committee on Publication Ethics (COPE)
 
 COPE provides advice to editors and publishers on all aspects of publication ethics and, in particular, how to handle cases of research and publication misconduct. It also provides a forum for its members to discuss individual cases. COPE does not investigate individual cases but encourages editors to ensure that cases are investigated by the appropriate authorities (usually a research institution or employer). All COPE members are expected to apply COPE principles of publication ethics outlined in the core practices.
 
-## About the [Directory of Open Access Journals] (DOAJ)
+## About DOAJ
 
 The mission of the DOAJ is: to curate, maintain and develop a source of reliable information about open access scholarly journals on the web; to verify that entries on the list comply with reasonable standards; to increase the visibility, dissemination, discoverability and attraction of open access journals; to enable scholars, libraries, universities, research funders and other stakeholders to benefit from the information and services provided; to facilitate the integration of open access journals into library and aggregator services; to assist, where possible, publishers and their journals to meet reasonable digital publishing standards; and to thereby support the transition of the system of scholarly communication and publishing into a model that serves science, higher education, industry, innovation, societies and the people. Through this work, DOAJ will cooperate and collaborate with all interested parties working toward these objectives.
 
-## About the [Open Access Scholarly Publishers Association] (OASPA)
+## About the Open Access Scholarly Publishers Association (OASPA)
 
 OASPA is a trade association that was established in 2008 in order to represent the interests of Open Access (OA) publishers globally across all disciplines. By encouraging collaboration in developing appropriate business models, tools and standards to support OA publishing, OASPA aims to help ensure a prosperous and sustainable future for the benefit of its members and the scholarly communities they serve. This mission is carried out through exchanging information, setting standards, advancing models, advocacy, education, and the promotion of innovation.
 
-## About the [World Association of Medical Editors] (WAME)
+## About the World Association of Medical Editors (WAME)
 
 WAME is a global nonprofit voluntary association of editors of peer-reviewed medical journals who seek to foster cooperation and communication among editors; improve editorial standards; promote professionalism in medical editing through education, self-criticism, and self-regulation; and encourage research on the principles and practice of medical editing. WAME develops policies and recommendations of best practices for medical journal editors and has a syllabus for editors that members are encouraged to follow.
 
@@ -64,3 +64,26 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 [Directory of Open Access Journals]: https://www.doaj.org
 [Open Access Scholarly Publishers Association]: https://publicationethics.org/
 [World Association of Medical Editors]: https://www.wame.org/
+
+## In other languages
+
+- [Arabic](https://docs.google.com/document/d/1z6eEzHKsUjPw8GQtEx0JH2ucHPMrw3USF9tpnYrcwjM/edit?usp=sharing)
+- [Catalan](https://docs.google.com/document/d/16YHOkjonpI6J2VyIWd1kl0UYvPS5TC-1B7mfq8obIVk/edit?usp=sharing)
+- [Chinese](https://doi.org/10.5281/zenodo.4542763) (hosted at Zenodo)
+- [Dutch](https://docs.google.com/document/d/13vAVViVKkOIKWNYDerYqkazk0-xP84wLNOXU-sGn9mk/edit?usp=sharing)
+- [Farsi](https://docs.google.com/document/d/1YNlg6Tn6sSFh3U1M7xFAwsn-faaPuV51coQhcRrxyTQ/edit?usp=sharing)
+- [Finnish](https://docs.google.com/document/d/1banUWX10jT70uqIXGrqCHb8rXLXIhBVaeOXE8YhLWHc/edit?usp=sharing)
+- [French](https://docs.google.com/document/d/1fmV7qGAv_Nt3H1zjS6u-bzjpD2XSN1MqUv-n2uXPkqQ/edit?usp=sharing)
+- [French (Canadian)](https://docs.google.com/document/d/1hN4UC2HZFvO7eX5abRNEsHpQ4QEFZ2b_I-gvjVXbTWc/edit?usp=sharing)
+- [Hindi](https://docs.google.com/document/d/1eygNcbFj3DjQ_R7WL0nvDp3Cp9r-Ytu3nPyl106JVVg/edit?usp=sharing)
+- [Indonesian](https://docs.google.com/document/d/1bgogeUE5VMiGhecPzYcDPCWR4Af-GVPSwn48f6BCZvk/edit?usp=sharing)
+- [Italian](https://docs.google.com/document/d/1KRRpMklSBmH7CunvZQXEZSt-MTSrsRc-zCqw6lQY1ks/edit?usp=sharing)
+- [Korean](https://docs.google.com/document/d/1cxbYLr-O4d_rdtVBUQHQSGvZAZQy7uAINmFx3F9kj60/edit?usp=sharing)
+- [Polish](https://docs.google.com/document/d/1YtWHntS_gHosEYlTLTrJr5KwY4k2_w7ohn9sB96J3uE/edit?usp=sharing)
+- [Portuguese](https://docs.google.com/document/d/12CQy0V4OT6bH5apdjrIUrYZmpHzjjM_52L5VgtufwNE/edit?usp=sharing)
+- [Russian](https://docs.google.com/document/d/1YGVPt5ItaCA8UC_H8S4Gv0WJI6iP2J5CBSe0RVjkDqQ/edit?usp=sharing)
+- [Spanish](https://docs.google.com/document/d/11GB_KNLzhpNNfRgyFdGHdAoaNfpnpb61z4iqSEj1dbA/edit?usp=sharing)
+- [Swedish](https://docs.google.com/document/d/1NIi0-yGCpMrxJaWc05e_7Ww5pIUqYg6ThH_AnnjimeM/edit?usp=sharing)
+- [Turkish](https://docs.google.com/document/d/1AKbcm2YpAJOIH-1LLblmmLotXgmg5pi7-jI0-dwaEwQ/edit?usp=sharing)
+- [Ukrainian](https://docs.google.com/document/d/1wl9LnyQjiALsHBvbsah8-rwxBf4aASzh2tL38YnRVCY/edit?usp=sharing)
+

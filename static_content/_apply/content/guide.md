@@ -133,6 +133,45 @@ The following information must be available online, and easily accessible from t
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
 
+---
+
+## Further help on copyright and licensing
+
+### Licensing
+
+We recommend that you use Creative Commons licenses to show your readers how the published content can be used. In some cases, we will accept a publisher's own license if it is broadly equivalent to one of the Creative Commons licenses.
+
+You may not add to or adapt the terms of a Creative Commons license. For example, you cannot display on your website: ‘[Other conditions] will apply and prevail over all conflicting provisions of the [open access] license’ model. Creative Commons states clearly that '[For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply](https://creativecommons.org/licenses/by-sa/4.0/legalcode)'.
+
+### Copyright
+
+We recommend that journals allow authors to retain the copyright of their papers without restrictions. Authors may grant the publisher non-exclusive publishing rights to publish the articles. Granting the publisher the right of first publishing also qualifies as unrestricted copyright (because there is no restriction imposed by the publisher on the author's copyright).
+
+Restrictions are sometimes imposed by the publisher even though the author retains copyright:
+- The publisher requires exclusive publishing rights. The author no longer holds the copyright without restrictions.
+- The publisher requires a transfer of commercial rights or an exclusive grant of commercial rights. The author no longer retains copyright without restrictions.
+
+### The difficult bits about licensing and copyright together
+
+The terms of the user license do not apply to the copyright holder. Therefore:
+- when copyright is retained by the author without restrictions, the license applies to the readers and the publisher.
+- when copyright is transferred to the publisher, the license applies to the readers and the author(s).
+- when the author retains copyright but commercial rights are transferred to the publisher and a non-commercial license is used, the license applies to the reader and the author.
+- when the author retains copyright but exclusive publishing rights are granted to the publisher, this is equivalent to the transfer of commercial rights to the publisher.
+
+### Fair use
+
+An open access journal cannot restrict the rights of the author to fair use only. This is not open access and we will not accept a journal with these restrictions. A common example of fair use is when a journal allows authors to only retain the rights to:
+- use the substance of the article in future works, including lectures and books;
+- reproduce the article for one's own purposes, provided that copies are not offered for sale;
+- self-archive the article.
+
+### Further reading
+
+Further reading and examples are [available on our blog](https://blog.doaj.org/?s=copyright+and+licensing+-+part).
+
+---
+
 ## The application process
 
 1. Your application is successfully submitted when you see a _Thank You_ screen and receive a confirmation email.
@@ -192,3 +231,31 @@ The appeal should contain the following information:
 Appeals are considered by the DOAJ Appeals Committee, consisting of the Editor-in-Chief and members of the editorial team. Committee meetings are held monthly. After your case is discussed a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
+
+---
+
+## Zero Tolerance Policy
+
+We expect the members of our Team, our volunteers and our Ambassadors to always be treated courteously and with respect for the work they are doing. They should not be subject to abusive behaviour in any form, which includes:
+- rude, disrespectful and offensive behaviour, including derogatory remarks or anything which amounts to verbal or emotional abuse in person or in communications
+- sexually inappropriate comments or behaviour
+- racist and discriminatory abuse
+- threats of physical violence
+- aggressive and violent behaviour
+
+---
+
+## In other languages
+
+We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](feedback@doaj.org).
+
+We have our criteria in:
+
+- [Chinese (application form only)](https://zenodo.org/record/4350096)
+- Finnish
+- [French (Canadian)](https://drive.google.com/drive/folders/1-9FraAimhA9Ks64tvKE_W4wsQ8LNob9a?usp=sharing)
+- [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
+- [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
+- [Spanish](https://docs.google.com/document/d/1PN0droGJiuLzQSQA4VLLjd3ykSaFoc5RMsAFlexOuXA/edit?usp=sharing)
+
+We hope more languages will follow soon.

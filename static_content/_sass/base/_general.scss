@@ -217,14 +217,10 @@ form {
 
   label, p {
     display: block;
-    margin: $spacing-03 0;
+    margin: 0 0 $spacing-03 0;
 
     small, a {
       color: $dark-grey;
-    }
-
-    &:first-child {
-      margin-top: auto;
     }
   }
 }
