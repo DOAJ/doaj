@@ -59,12 +59,24 @@
   background-color: $warm-black;
 }
 
-.bg-grey{
+.bg-grey {
   background-color: $dark-grey;
 }
 
-.bg-white{
+.bg-white {
   background-color: $warm-white;
+}
+
+.font-serif {
+  @include font-serif;
+}
+
+.font-sans {
+  @include font-sans;
+}
+
+.font-mono {
+  @include font-monospace;
 }
 
 .type-01 {
