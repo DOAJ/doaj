@@ -22,21 +22,21 @@ DOAJ has a global network of Ambassadors who promote open access and best practi
 
 DOAJ partners with many organisations. The nature of the partnerships vary and may include membership, contracts for work, exchanges of information or services, initiative signatories, or access to information resources that assist DOAJ with our application review process.
 
-{:.full-width-list}
-+ {:.full-width-list__item} [Creative Commons Global Network](https://network.creativecommons.org/)
-+ {:.full-width-list__item} [COPE](https://publicationethics.org/)
-+ {:.full-width-list__item} [Cottage Labs LLP](https://cottagelabs.com/)
-+ {:.full-width-list__item} [Érudit](https://www.erudit.org/en/)
-+ {:.full-width-list__item} [Federation of Finnish Learned Societies](https://tsv.fi/en)
-+ {:.full-width-list__item} [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
-+ {:.full-width-list__item} [ISSN](https://www.issn.org/)
-+ {:.full-width-list__item} [Library Publishing Coalition](https://librarypublishing.org/)
-+ {:.full-width-list__item} [OASPA](https://oaspa.org/)
-+ {:.full-width-list__item} [OCLC](https://www.oclc.org/en/home.html)
-+ {:.full-width-list__item} [Redalyc](http://www.redalyc.org/home.oa)
-+ {:.full-width-list__item} [Research4Life](https://www.research4life.org/)
-+ {:.full-width-list__item} [SciELO](http://www.scielo.org/)
-+ {:.full-width-list__item} [Think. Check. Submit.](https://thinkchecksubmit.org/)
+{:.stretch-list}
++ {:.stretch-list__item} [Creative Commons Global Network](https://network.creativecommons.org/)
++ {:.stretch-list__item} [COPE](https://publicationethics.org/)
++ {:.stretch-list__item} [Cottage Labs LLP](https://cottagelabs.com/)
++ {:.stretch-list__item} [Érudit](https://www.erudit.org/en/)
++ {:.stretch-list__item} [Federation of Finnish Learned Societies](https://tsv.fi/en)
++ {:.stretch-list__item} [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
++ {:.stretch-list__item} [ISSN](https://www.issn.org/)
++ {:.stretch-list__item} [Library Publishing Coalition](https://librarypublishing.org/)
++ {:.stretch-list__item} [OASPA](https://oaspa.org/)
++ {:.stretch-list__item} [OCLC](https://www.oclc.org/en/home.html)
++ {:.stretch-list__item} [Redalyc](http://www.redalyc.org/home.oa)
++ {:.stretch-list__item} [Research4Life](https://www.research4life.org/)
++ {:.stretch-list__item} [SciELO](http://www.scielo.org/)
++ {:.stretch-list__item} [Think. Check. Submit.](https://thinkchecksubmit.org/)
 
 ## Diversity
 
