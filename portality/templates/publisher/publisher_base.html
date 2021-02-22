@@ -1,16 +1,18 @@
 {% extends "layouts/base.html" %}
 
 {% block extra_stylesheets %}
-  <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+<link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
 {% endblock %}
 
 {% block content %}
-  <main class="container">
-    <h1>Publisher dashboard</h1>
+<main class="container">
+  <h1>Publisher dashboard</h1>
 
-      {% include 'publisher/nav.html' %}
+    {% include 'publisher/nav.html' %}
 
-      {% block publisher_content %}
-      {% endblock %}
-  </main>
+    {% block publisher_content %}
+    {% endblock %}
+</main>
+
+{% include "includes/_hotjar.html" %}
 {% endblock %}
