@@ -107,6 +107,18 @@
   @include typescale-06;
 }
 
+.stroke-gold {
+  stroke: $gold;
+}
+
+.stroke-silver {
+  stroke: $silver;
+}
+
+.stroke-bronze {
+  stroke: $bronze;
+}
+
 .flex-end {
   @media (min-width: 769px) {
     display: flex;
