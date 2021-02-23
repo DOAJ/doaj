@@ -1,15 +1,16 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.models import Article, Account,Journal
+from portality.models import Application, Account, Journal
 from portality.lib.paths import rel2abs
 from doajtest.mocks.bll_article import BLLArticleMockFactory
 from doajtest.mocks.model_Article import ModelArticleMockFactory
 from portality.dao import ESMappingMissingError
+from portality import constants
 
 import time
 
@@ -54,181 +55,53 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
         ###############################################
         ## set up
 
-        success = int(success_arg)
-        fail = int(fail_arg)
-        update = int(update_arg)
+        journal_id = None
+        if related_journal_present_arg == "yes":
+            journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+            journal.save(blocking=True)
+            journal_id = journal_id
+        else:
+            journal_id = Journal.makeid()
 
-        duplicate_in_batch = duplicate_in_batch_arg == "yes"
-        duplicate_in_index = int(duplicate_in_index_arg)
 
-        raises = EXCEPTIONS.get(raises_arg)
+        application = None
+        if application_arg != "none":
+            application = Application(**ApplicationFixtureFactory.make_application_source())
+            if application_arg == "rejected":
+                application.set_application_status(constants.APPLICATION_STATUS_REJECTED)
+            elif application_arg == "pending":
+                application.set_application_status(constants.APPLICATION_STATUS_PENDING)
 
-        duplicate_check = None
-        if duplicate_check_arg != "none":
-            duplicate_check = True if duplicate_check_arg == "true" else False
+            if related_journal_linked_arg == "no":
+                application.remove_related_journal()
+            else:
+                application.set_related_journal(journal_id)
 
-        merge_duplicate = None
-        if merge_duplicate_arg != "none":
-            merge_duplicate = True if merge_duplicate_arg == "true" else False
+            application.save(blocking=True)
 
-        limit_to_account = None
-        if limit_to_account_arg != "none":
-            limit_to_account = True if limit_to_account_arg == "true" else False
-
-        add_journal_info = None
-        if add_journal_info_arg != "none":
-            add_journal_info = True if add_journal_info_arg == "true" else False
+        if duplicate_ur_arg == "yes":
+            duplicate = Application(**ApplicationFixtureFactory.make_application_source())
+            duplicate.set_id(duplicate.makeid())
+            duplicate.set_related_journal(journal_id)
+            duplicate.save(blocking=True)
 
         account = None
         if account_arg != "none":
-            source = AccountFixtureFactory.make_publisher_source()
-            account = Account(**source)
+            account = Account()
+            account.set_role(account_arg)
 
-        journal_specs = []
-        last_doi = None
-        last_ft = None
-        last_issn = None
-        last_id = None
-        articles = None
-        if articles_arg != "none":
-            articles = []
-            if articles_arg == "yes":
-                # one with a DOI and no fulltext
-                source = ArticleFixtureFactory.make_article_source(
-                    eissn="0000-0000",
-                    pissn="0000-0000",
-                    doi="10.123/abc/0",
-                    fulltext=False
-                )
-                del source["bibjson"]["journal"]
-                article = Article(**source)
-                article.set_id()
-                articles.append(article)
-                if add_journal_info:
-                    journal_specs.append({"title" : "0", "pissn" : "0000-0000", "eissn" : "0000-0000"})
-
-                # another with a DOI and no fulltext
-                source = ArticleFixtureFactory.make_article_source(
-                    eissn="1111-1111",
-                    pissn="1111-1111",
-                    doi="10.123/abc/1",
-                    fulltext=False
-                )
-                del source["bibjson"]["journal"]
-                article = Article(**source)
-                article.set_id()
-                articles.append(article)
-                if add_journal_info:
-                    journal_specs.append({"title" : "1", "pissn" : "1111-1111", "eissn" : "1111-1111"})
-
-                # one with a fulltext and no DOI
-                source = ArticleFixtureFactory.make_article_source(
-                    eissn="2222-2222",
-                    pissn="2222-2222",
-                    fulltext="http://example.com/2",
-                    doi=False
-                )
-                del source["bibjson"]["journal"]
-                article = Article(**source)
-                article.set_id()
-                articles.append(article)
-                if add_journal_info:
-                    journal_specs.append({"title" : "2", "pissn" : "2222-2222", "eissn" : "2222-2222"})
-
-                # another one with a fulltext and no DOI
-                source = ArticleFixtureFactory.make_article_source(
-                    eissn="3333-3333",
-                    pissn="3333-3333",
-                    fulltext="http://example.com/3",
-                    doi=False
-                )
-                del source["bibjson"]["journal"]
-                article = Article(**source)
-                article.set_id()
-                articles.append(article)
-                if add_journal_info:
-                    journal_specs.append({"title" : "3", "pissn" : "3333-3333", "eissn" : "3333-3333"})
-
-                last_issn = "3333-3333"
-                last_doi = "10.123/abc/1"
-                last_ft = "http://example.com/3"
-                last_id = articles[-1].id
-
-                if duplicate_in_batch:
-                    # one with a duplicated DOI
-                    source = ArticleFixtureFactory.make_article_source(
-                        eissn="4444-4444",
-                        pissn="4444-4444",
-                        doi="10.123/abc/0",
-                        fulltext="http://example.com/4"
-                    )
-                    del source["bibjson"]["journal"]
-                    article = Article(**source)
-                    article.set_id()
-                    articles.append(article)
-                    if add_journal_info:
-                        journal_specs.append({"title" : "4", "pissn" : "4444-4444", "eissn" : "4444-4444"})
-
-                    # one with a duplicated Fulltext
-                    source = ArticleFixtureFactory.make_article_source(
-                        eissn="5555-5555",
-                        pissn="5555-5555",
-                        doi="10.123/abc/5",
-                        fulltext="http://example.com/1"
-                    )
-                    del source["bibjson"]["journal"]
-                    article = Article(**source)
-                    article.set_id()
-                    articles.append(article)
-                    if add_journal_info:
-                        journal_specs.append({"title" : "5", "pissn" : "5555-5555", "eissn" : "5555-5555"})
-
-        ilo_mock = None
-        if account_arg == "owner":
-            ilo_mock = BLLArticleMockFactory.is_legitimate_owner(legit=True)
-        elif account_arg == "own_1":
-            ilo_mock = BLLArticleMockFactory.is_legitimate_owner(legit_on_issn=[last_issn])
-        else:
-            ilo_mock = BLLArticleMockFactory.is_legitimate_owner()
-        self.svc.is_legitimate_owner = ilo_mock
-
-        gd_mock = None
-        if duplicate_in_index == 1:
-            gd_mock = BLLArticleMockFactory.get_duplicate(given_article_id=last_id, eissn=last_issn, pissn=last_issn, doi=last_doi, fulltext=last_ft)
-        elif duplicate_in_index == 2:
-            gd_mock = BLLArticleMockFactory.get_duplicate(merge_duplicate=True)
-        else:
-            gd_mock = BLLArticleMockFactory.get_duplicate(return_none=True)
-        self.svc.get_duplicate = gd_mock
-
-        ios_mock = BLLArticleMockFactory.issn_ownership_status([], [], [], [])
-        self.svc.issn_ownership_status = ios_mock
-
-        self.svc._doi_or_fulltext_updated = BLLArticleMockFactory.doi_or_fulltext_updated(False,False)
-
-        if add_journal_info:
-            gj_mock = ModelArticleMockFactory.get_journal(journal_specs)
-            Article.get_journal = gj_mock
+        manual_update = manual_update_arg == "True"
+        raises = EXCEPTIONS.get(raises_arg)
 
         ###########################################################
         # Execution
 
         if raises is not None:
             with self.assertRaises(raises):
-                try:
-                    self.svc.batch_create_articles(articles, account, duplicate_check, merge_duplicate,
-                                                   limit_to_account, add_journal_info)
-                except exceptions.IngestException as e:
-                    if duplicate_in_index != 2:
-                        report = e.result
-                        assert report["success"] == success
-                        assert report["fail"] == fail
-                        assert report["update"] == update
-                        assert report["new"] == success - update
-                    raise
+                self.svc.unreject_application(application, account, manual_update)
+
         else:
-            report = self.svc.batch_create_articles(articles, account, duplicate_check, merge_duplicate,
-                                                    limit_to_account, add_journal_info)
+            self.svc.unreject_application(application, account, manual_update)
 
             # make sure all the articles are saved before running the asserts
             aids = [(a.id, a.last_updated) for a in articles]
