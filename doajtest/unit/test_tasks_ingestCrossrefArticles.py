@@ -1723,38 +1723,47 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         self.cleanup_paths.append(path)
 
         fixtureFactoryMethods = [CrossrefArticleFixtureFactory.upload_1_issn_electronic,
-                                 CrossrefArticleFixtureFactory.upload_1_issn_print,
-                                 CrossrefArticleFixtureFactory.upload_1_issn_no_type,
-                                 CrossrefArticleFixtureFactory.upload_2_issns_1_electronic_2_no_type,
-                                 CrossrefArticleFixtureFactory.upload_2_issns_1_electronic_2_print,
-                                 CrossrefArticleFixtureFactory.upload_2_issns_1_no_type_2_electronic,
-                                 CrossrefArticleFixtureFactory.upload_2_issns_1_print_2_no_type,
-                                 CrossrefArticleFixtureFactory.upload_2_issns_1_print_2_electronic,
-                                 CrossrefArticleFixtureFactory.upload_2_issns_1_no_type_2_print,
-                                 CrossrefArticleFixtureFactory.upload_2_issns_no_type]
+                                CrossrefArticleFixtureFactory.upload_1_issn_print,
+                                CrossrefArticleFixtureFactory.upload_1_issn_no_type,
 
-        # fixtureFactoryMethods = [CrossrefArticleFixtureFactory.upload_1_issn_electronic]
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_electronic_2_no_type,
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_electronic_2_print,
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_no_type_2_electronic,
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_print_2_no_type,
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_print_2_electronic,
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_no_type_2_print,
+                                CrossrefArticleFixtureFactory.upload_2_issns_no_type]
+
+        # fixtureFactoryMethods = [CrossrefArticleFixtureFactory.upload_1_issn_print]
 
         for m in fixtureFactoryMethods:
-            stream = m()
-            with open(path, "wb") as f:
-                f.write(stream.read())
+            handle = m()
+
+            f = FileMockFactory(stream=handle)
+
+            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
+            id = job.params.get("ingest_articles__file_upload_id")
+            self.cleanup_ids.append(id)
+
+            # because file upload gets created and saved by prepare
+            time.sleep(2)
 
             task = ingestarticles.IngestArticlesBackgroundTask(job)
-            task._process(file_upload)
+            task.run()
 
-            assert not os.path.exists(path)
             # because file upload needs to be re-saved
             time.sleep(2)
 
-            assert file_upload.status == "processed", "expected 'processed', received: {}, for: {}".format(file_upload.status, m)
+            fu = models.FileUpload.pull(id)
+
+            assert fu.status == "processed", "expected 'processed', received: {}, , error code: {}, for: {}".format(file_upload.status, file_upload.error, m)
 
         # because file upload needs to be re-saved
         time.sleep(2)
 
         found = [a for a in models.Article.find_by_issns(["9876-5432", "1234-5678"])]
 
-        # assert len(found) == 10, "expected: 10, found: {}".format([a.bibjson().title for a in found])
+        assert len(fixtureFactoryMethods) == len(found), "expected: {}, found: {}".format(len(fixtureFactoryMethods), [a.bibjson().title for a in found])
         for a in found:
             bib = a.bibjson()
             if bib.title == "1 ISSN - electronic" or bib.title == "1 ISSN - no type":

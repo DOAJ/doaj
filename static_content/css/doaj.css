@@ -1071,11 +1071,9 @@ form {
   margin-bottom: 1.5rem; }
   form label, form p {
     display: block;
-    margin: 0.75rem 0; }
+    margin: 0 0 0.75rem 0; }
     form label small, form label a, form p small, form p a {
       color: #5C5956; }
-    form label:first-child, form p:first-child {
-      margin-top: auto; }
 
 input, select, button, textarea {
   -webkit-appearance: none;
@@ -1971,10 +1969,6 @@ button[type="submit"].button--secondary {
   .form__question p, .form__question label {
     margin-bottom: 0.75rem;
     font-size: 1.125em; }
-  .form__question small {
-    display: block;
-    margin-top: -0.375rem;
-    color: #5C5956; }
   .form__question input, .form__question select, .form__question textarea {
     width: 75%; }
     .form__question input[type="number"], .form__question select[type="number"], .form__question textarea[type="number"] {
@@ -1988,6 +1982,11 @@ button[type="submit"].button--secondary {
 .form__question--optional {
   color: rgba(92, 89, 86, 0.5);
   font-size: 1rem; }
+
+.form__hint {
+  display: block;
+  margin-top: -0.375rem;
+  color: #5C5956; }
 
 .form__subquestion {
   display: none;
@@ -2020,6 +2019,24 @@ button[type="submit"].button--secondary {
     .form--compact .form__question input[type="checkbox"] + label,
     .form--compact .form__question input[type="radio"] + label {
       font-size: 1em; }
+
+.parsley-errors-list {
+  padding-left: 0;
+  margin: 0 0 0.75rem 0;
+  list-style: none; }
+  .parsley-errors-list p {
+    margin: 0.375rem 0 0.1875rem 0;
+    line-height: 1.15; }
+  .parsley-errors-list small {
+    color: #982E0A; }
+    .parsley-errors-list small:before {
+      display: inline-block;
+      margin-right: 0.1875rem;
+      content: '';
+      background-image: url("data:image/svg+xml,%3Csvg width='14' height='14' viewBox='0 0 14 14' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 4.6V7M7 9.4H7.006M4.516 1H9.484L13 4.516V9.484L9.484 13H4.516L1 9.484V4.516L4.516 1Z' stroke='%23982E0A' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E%0A");
+      background-repeat: no-repeat;
+      height: 14px;
+      width: 14px; }
 
 /* Lists in which each item is bordered & takes up full-width of page
 /* Use with single-level lists only */
@@ -2416,8 +2433,12 @@ button[type="submit"].button--secondary {
 .portrait {
   position: relative;
   margin: 0.375rem 0 1.5rem 0;
+  width: 50%;
   background-color: rgba(152, 46, 10, 0.25);
   border: 1px solid #982E0A; }
+  @media (min-width: 769px) {
+    .portrait {
+      width: 100%; } }
 
 .portrait--small {
   width: 50%; }
@@ -2433,7 +2454,7 @@ button[type="submit"].button--secondary {
 .portrait__bg-img {
   position: relative;
   width: 100%;
-  height: 12rem;
+  height: 30vh;
   background-size: cover;
   background-position: center;
   border: 1px solid #982E0A;
@@ -2443,6 +2464,9 @@ button[type="submit"].button--secondary {
   left: 0.375rem;
   background-color: #982E0A;
   color: #FEFBF8; }
+  @media (min-width: 769px) {
+    .portrait__bg-img {
+      height: 12rem; } }
 
 /* Top / primary nav */
 .primary-nav {
