@@ -15,11 +15,6 @@
 
       gtag('config', 'UA-46560124-1');
     </script>
-
-    {# To check current page #}
-    {%- set url_list = request.url.split("/") -%}
-    {%- set endpoint = url_list[2:url_list|length-1] -%}
-    {%- set endpoint = endpoint[endpoint|length-1] -%}
 {%- endif -%}
 
 {# FIXME: do we need these any more? #}
