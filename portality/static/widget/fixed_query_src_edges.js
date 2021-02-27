@@ -29,7 +29,7 @@ jQuery(document).ready(function($) {
             let current_domain = document.location.host;
             let current_scheme = window.location.protocol;
 
-            let selector = params.selector || "#doaj_fqw_widget";
+            let selector = params.selector || ".facetview";
             let search_url = current_scheme + "//" + current_domain + doaj.publicSearchConfig.publicSearchPath;
 
 
