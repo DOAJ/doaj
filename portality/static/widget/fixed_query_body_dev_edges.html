@@ -19,7 +19,7 @@
 
     // If options have been set using the Export method, use only those
     if (typeof SEARCH_CONFIGURED_OPTIONS != 'undefined') {
-        widget_fv_opts["queryString"] = SEARCH_CONFIGURED_OPTIONS.query_string;
+        widget_fv_opts["queryString"] = SEARCH_CONFIGURED_OPTIONS;
         widget_fv_opts["rawQuery"] = true;
     }
     // Otherwise, use options provided.
@@ -40,7 +40,7 @@
 
         widget_fv_opts[`queryString`] = {};
         if (QUERY_OPTIONS.hasOwnProperty('query_string')) {
-            widget_fv_opts['queryString'][queryString] = QUERY_OPTIONS.query_string;
+            widget_fv_opts['queryString']['queryString'] = QUERY_OPTIONS.query_string;
         }
         if (QUERY_OPTIONS.hasOwnProperty('query_field')) {
             widget_fv_opts['queryString']['defaultField'] = QUERY_OPTIONS.query_field;
@@ -51,10 +51,10 @@
 
         widget_fv_opts['sortFilter'] = {}
         if (QUERY_OPTIONS.hasOwnProperty('sort_field')) {
-            widget_fv_opts['queryString']['field'] = QUERY_OPTIONS.sort_field;
+            widget_fv_opts['sortFilter']['field'] = QUERY_OPTIONS.sort_field;
         }
         if (QUERY_OPTIONS.hasOwnProperty('sort_direction')) {
-            widget_fv_opts['queryString']['defaultOperator'] = QUERY_OPTIONS.sort_direction;
+            widget_fv_opts['sortFilter']['sort_direction'] = QUERY_OPTIONS.sort_direction;
         }
 
         if (QUERY_OPTIONS.hasOwnProperty('search_type')) {
@@ -62,6 +62,7 @@
         }
 
     }
+
 </script>
 <script type="text/javascript" src="/static/vendor/edges/src/edges.jquery.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/vendor/edges/src/es.js?v={{config.get('DOAJ_VERSION')}}"></script>

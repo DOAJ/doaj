@@ -6,12 +6,12 @@
 
 <script type="text/javascript">
 var doaj_url = "{{ config.get('BASE_URL') }}";
-// var SEARCH_CONFIGURED_OPTIONS = {search_type: "journal", query_string: {"query":{"filtered":{"filter":{"bool":{"must":[{"terms":{"bibjson.publisher.name.exact":["MDPI AG"]}},{"terms":{"bibjson.editorial.review_process.exact":["Peer review"]}}]}},"query":{"match_all":{}}}}}};
+//var SEARCH_CONFIGURED_OPTIONS = {"query":{"query_string":{"query":"autism","default_operator":"AND"}},"size":50,"sort":[{"created_date":{"order":"desc"}}]};
 var QUERY_OPTIONS = {
-    query_string : 'deaf',                      // The plain-text query string
-    query_field: 'bibjson.title',                  // The field we are querying
-    sort: 'index.unpunctitle.exact',         // Field to order results by
-    sort_direction:  'asc',                        // Direction of sort "asc" | "desc"
+    query_string : 'plos',                      // The plain-text query string
+    //query_field: 'bibjson.title',                  // The field we are querying
+    sort: 'created_date',         // Field to order results by
+    sort_direction:  'desc',                        // Direction of sort "asc" | "desc"
     search_operator : 'AND',                       // Which sort operator to use "AND" | "OR"
     search_type: 'journal',                        // Which type to search upon (omit for both) "article" | "journal"
     page_size : 5,                                 // How many results to show per widget page
