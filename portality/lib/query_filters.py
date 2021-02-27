@@ -13,13 +13,12 @@ def public_query_validator(q):
     if q.size() > 200:
         return False
 
-    # if the query has facets, that's fine
-    # otherwise, if it has no facets, only allow "count" style
-    # queries with zero results returned
-    if q.has_facets():
-        return True
-    else:
+    # we do not expect the fqw
+
+    if not q.has_facets():
         return q.size() == 0
+    else:
+        return True
 
 
 # query filters

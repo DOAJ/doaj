@@ -3,203 +3,17 @@
 <link rel="stylesheet" href="/static_content/_site/css/main.css">
 
 <div></div>
-<div class="facetview journals_and_articles">
+<div id="doaj_fqw_widget">
 </div>
 
 <script type="text/javascript">
-    let type = "";
-    if (typeof SEARCH_CONFIGURED_OPTIONS != 'undefined') {
-        if ("search_type" in SEARCH_CONFIGURED_OPTIONS)
-            // back compatibility:
-            type = SEARCH_CONFIGURED_OPTIONS.search_type;
-        else {
-            type = "journal,article"
-        }
-    }
-    else {
-        if ("search_type" in QUERY_OPTIONS) {
-             type = QUERY_OPTIONS.search_type
-        }
-        else {
-            type = "journal,article"
-        }
-    }
 
     $.extend(true, doaj, {
         publicSearchConfig : {
-            publicSearchPath : '/query/' + type + '/_search?ref=public_' + type,
+            publicSearchPath : '/query/journal,article/_search?ref=fqw',
             lccTree: '{{ lcc_tree|tojson }}'
         }
     });
-    console.log(doaj.publicSearchConfig.publicSearchPath)
-
-    // The reserved characters in elasticsearch query strings
-// Note that the "\" has to go first, as when these are substituted, that character
-// will get introduced as an escape character
-var esSpecialChars = ["\\", "+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", '"', "~", "*", "?", ":", "/"];
-
-// the reserved special character set with * and " removed, so that users can do quote searches and wildcards
-// if they want
-var esSpecialCharsSubSet = ["\\", "+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", "~", "?", ":", "/"];
-
-// values that have to be in even numbers in the query or they will be escaped
-var esPairs = ['"'];
-
-// FIXME: esSpecialChars is not currently used for encoding, but it would be worthwhile giving the facetview an option
-// to allow/disallow specific values, but that requires a much better (automated) understanding of the
-// query DSL
-
-var elasticsearch_distance_units = ["km", "mi", "miles", "in", "inch", "yd", "yards", "kilometers", "mm", "millimeters", "cm", "centimeters", "m", "meters"]
-
-function optionsFromQuery(query) {
-
-    function stripDistanceUnits(val) {
-        for (var i=0; i < elasticsearch_distance_units.length; i=i+1) {
-            var unit = elasticsearch_distance_units[i];
-            if (endsWith(val, unit)) {
-                return val.substring(0, val.length - unit.length)
-            }
-        }
-        return val
-    }
-
-    function unescapeQueryString(val) {
-        function escapeRegExp(string) {
-            return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-        }
-
-        function unReplaceAll(string, find) {
-            return string.replace(new RegExp("\\\\(" + escapeRegExp(find) + ")", 'g'), "$1");
-        }
-
-        // Note we use the full list of special chars
-        for (var i = 0; i < esSpecialChars.length; i++) {
-            var char = esSpecialChars[i];
-            val = unReplaceAll(val, char)
-        }
-
-        return val;
-    }
-
-    var opts = {};
-
-    // FIXME: note that fields are not supported here
-
-    // from position
-    if (query.hasOwnProperty("from")) { opts["from"] = query.from }
-
-    // page size
-    if (query.size) { opts["page_size"] = query.size }
-
-    if (query["sort"]) { opts["sort"] = query["sort"] }
-
-    // get hold of the bool query if it is there
-    // and get hold of the query string and default operator if they have been provided
-    if (query.query) {
-        var sq = query.query;
-        var must = [];
-        var qs = undefined;
-
-        // if this is a filtered query, pull must and qs out of the filter
-        // otherwise the root of the query is the query_string object
-        if (sq.filtered) {
-            must = sq.filtered.filter.bool.must;
-            qs = sq.filtered.query
-        } else {
-            qs = sq
-        }
-
-        // go through each clause in the must and pull out the options
-        if (must.length > 0) {
-            opts["_active_filters"] = {};
-            opts["_selected_operators"] = {}
-        }
-        for (var i = 0; i < must.length; i++) {
-            var clause = must[i];
-
-            // could be a term query (implies AND on this field)
-            if ("term" in clause) {
-                for (var field in clause.term) {
-                    if (clause.term.hasOwnProperty(field)) {
-                        opts["_selected_operators"][field] = "AND";
-                        var value = clause.term[field];
-                        if (!(field in opts["_active_filters"])) {
-                            opts["_active_filters"][field] = []
-                        }
-                        opts["_active_filters"][field].push(value)
-                    }
-                }
-            }
-
-            // could be a terms query (implies OR on this field)
-            if ("terms" in clause) {
-                for (var field=0; field < clause.terms.length; field=field+1) {
-                    opts["_selected_operators"][field] = "OR";
-                    var values = clause.terms[field];
-                    if (!(field in opts["_active_filters"])) {
-                        opts["_active_filters"][field] = []
-                    }
-                    opts["_active_filters"][field] = opts["_active_filters"][field].concat(values)
-                }
-            }
-
-            // could be a range query (which may in turn be a range or a date histogram facet)
-            if ("range" in clause) {
-                // get the field that we're ranging on
-                var r = clause.range;
-                var fields = Object.keys(r);
-                var field = false;
-                if (fields.length > 0) {
-                    field = fields[0];
-                }
-
-                if (field) {
-                    var rparams = r[field];
-                    var range = {};
-                    if ("lt" in rparams) { range["to"] = rparams.lt }
-                    if ("gte" in rparams) { range["from"] = rparams.gte }
-                    opts["_active_filters"][field] = range;
-                }
-            }
-
-            // cound be a geo distance query
-            if ("geo_distance_range" in clause) {
-                var gdr = clause.geo_distance_range;
-
-                // the range is defined at the root of the range filter
-                var range = {};
-                if ("lt" in gdr) { range["to"] = stripDistanceUnits(gdr.lt) }
-                if ("gte" in gdr) { range["from"] = stripDistanceUnits(gdr.gte) }
-
-                // FIXME: at some point we may need to make this smarter, if we start including other data
-                // in the geo_distance_range filter definition
-                // then we have to go looking for the field name
-                for (var field=0; field < gdr.length; field=field+1) {
-                    if (field === "lt" || field === "gte") { continue }
-                    opts["_active_filters"][field] = range
-                    break
-                }
-            }
-
-            // FIXME: support for statistical facet and terms_stats facet
-        }
-
-        if (qs) {
-            if (qs.query_string) {
-                var string = unescapeQueryString(qs.query_string.query);
-                var field = qs.query_string.default_field;
-                var op = qs.query_string.default_operator;
-                if (string) { opts["q"] = string }
-                if (field) { opts["searchfield"] = field }
-                if (op) { opts["default_operator"] = op }
-            } else if (qs.match_all) {
-                opts["q"] = ""
-            }
-        }
-
-        return opts
-    }
-}
 
     var widget_fv_opts = {};
 
@@ -211,29 +25,42 @@ function optionsFromQuery(query) {
     // Otherwise, use options provided.
     else if (typeof QUERY_OPTIONS != 'undefined') {
         widget_fv_opts["rawQuery"] = false;
+
+        if(QUERY_OPTIONS.hasOwnProperty('selector')){
+            widget_fv_opts['selector'] = QUERY_OPTIONS.selector;
+        }
+
+        widget_fv_opts[`initialParams`] = {};
+        if (QUERY_OPTIONS.hasOwnProperty('size')) {
+            widget_fv_opts['initialParams']['size'] = QUERY_OPTIONS.size;
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('from')) {
+            widget_fv_opts['initialParams']['from'] = QUERY_OPTIONS.from;
+        }
+
+        widget_fv_opts[`queryString`] = {};
         if (QUERY_OPTIONS.hasOwnProperty('query_string')) {
-            widget_fv_opts['queryString'] = QUERY_OPTIONS.query_string
+            widget_fv_opts['queryString'][queryString] = QUERY_OPTIONS.query_string;
         }
         if (QUERY_OPTIONS.hasOwnProperty('query_field')) {
-            widget_fv_opts['defaultField'] = QUERY_OPTIONS.query_field
-        }
-        if (QUERY_OPTIONS.hasOwnProperty('sort_field') && QUERY_OPTIONS.hasOwnProperty('sort_direction')) {
-            var sort_entry = {};
-            sort_entry[QUERY_OPTIONS.sort_field] = {order: QUERY_OPTIONS.sort_direction};
-            widget_fv_opts['sort'] = [sort_entry]
+            widget_fv_opts['queryString']['defaultField'] = QUERY_OPTIONS.query_field;
         }
         if (QUERY_OPTIONS.hasOwnProperty('search_operator')) {
-            widget_fv_opts['defaultOperator'] = QUERY_OPTIONS.search_operator
+            widget_fv_opts['queryString']['defaultOperator'] = QUERY_OPTIONS.search_operator;
         }
+
+        widget_fv_opts['sortFilter'] = {}
+        if (QUERY_OPTIONS.hasOwnProperty('sort_field')) {
+            widget_fv_opts['queryString']['field'] = QUERY_OPTIONS.sort_field;
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('sort_direction')) {
+            widget_fv_opts['queryString']['defaultOperator'] = QUERY_OPTIONS.sort_direction;
+        }
+
         if (QUERY_OPTIONS.hasOwnProperty('search_type')) {
-            widget_fv_opts['include_filters'] = {_type: [QUERY_OPTIONS.search_type]};
+            widget_fv_opts['es_type'] = QUERY_OPTIONS.search_type;
         }
-        if (QUERY_OPTIONS.hasOwnProperty('page_size')) {
-            widget_fv_opts['size'] = QUERY_OPTIONS.page_size
-        }
-        if (QUERY_OPTIONS.hasOwnProperty('page_from')) {
-            widget_fv_opts['from'] = QUERY_OPTIONS.page_from
-        }
+
     }
 </script>
 <script type="text/javascript" src="/static/vendor/edges/src/edges.jquery.js?v={{config.get('DOAJ_VERSION')}}"></script>
