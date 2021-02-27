@@ -8,7 +8,7 @@ jQuery(document).ready(function($) {
         buildQuery: function(params){
             let query;
             if (params.rawQuery){
-                query = es.newQuery({raw: params.rawQuery});
+                query = es.newQuery({raw: params.queryString});
             }
             else {
                 query = es.newQuery(params.initialParams);

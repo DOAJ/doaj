@@ -9,13 +9,14 @@
 
 <script type="text/javascript">
 var doaj_url = "{{ config.get('BASE_URL') }}";
-var SEARCH_CONFIGURED_OPTIONS = {"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"es_type":"chicken"}}]}},"query":{"query_string":{"query":"autism","default_operator":"OR","default_field":"bibjson.title"}}}},"sort":[{"_score":{"order":"desc"}}]};
+var SEARCH_CONFIGURED_OPTIONS = {"query":{"query_string":{"query":"autism","default_operator":"AND"}},"size":50,"sort":[{"created_date":{"order":"desc"}}]};
+//{"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"es_type":"article"}}]}},"query":{"query_string":{"query":"autism","default_operator":"AND"}}}},"sort":[{"_score":{"order":"desc"}}]}
 var QUERY_OPTIONS = {
     query_string : 'autism',                      // The plain-text query string
-    query_field: 'bibjson.title',                  // The field we are querying
-    //sort: 'index.unpunctitle.exact',         // Field to order results by
-    //sort_direction:  'asc',                        // Direction of sort "asc" | "desc"
-    //search_operator : 'AND',                       // Which sort operator to use "AND" | "OR"
+    //query_field: 'bibjson.title',                  // The field we are querying
+    sort: 'created_date',         // Field to order results by
+    sort_direction:  'desc',                        // Direction of sort "asc" | "desc"
+    search_operator : 'AND',                       // Which sort operator to use "AND" | "OR"
     search_type: 'article',                        // Which type to search upon (omit for both) "article" | "journal"
     page_size : 5,                                 // How many results to show per widget page
     page_from : 0                                  // Which result to initially start from
@@ -35,7 +36,7 @@ var QUERY_OPTIONS = {
 
     // If options have been set using the Export method, use only those
     if (typeof SEARCH_CONFIGURED_OPTIONS != 'undefined') {
-        widget_fv_opts["queryString"] = SEARCH_CONFIGURED_OPTIONS.query_string;
+        widget_fv_opts["queryString"] = SEARCH_CONFIGURED_OPTIONS;
         widget_fv_opts["rawQuery"] = true;
     }
     // Otherwise, use options provided.
