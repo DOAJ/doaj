@@ -53,4 +53,3 @@ function main() {
 
 })(); // We call our anonymous function immediately
 
-//# sourceURL = http://localhost:5004/static/widget/fixed_query_src_edges.js
