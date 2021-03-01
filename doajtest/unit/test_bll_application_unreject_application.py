@@ -7,9 +7,6 @@ from portality.bll import DOAJ
 from portality.bll import exceptions
 from portality.models import Application, Account, Journal
 from portality.lib.paths import rel2abs
-from doajtest.mocks.bll_article import BLLArticleMockFactory
-from doajtest.mocks.model_Article import ModelArticleMockFactory
-from portality.dao import ESMappingMissingError
 from portality import constants
 
 import time
@@ -56,10 +53,13 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
         ## set up
 
         journal_id = None
+        journal = None
         if related_journal_present_arg == "yes":
             journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-            journal.save(blocking=True)
-            journal_id = journal_id
+            journal.remove_current_application()
+            journal.remove_related_applications()
+            journal.set_id(journal.makeid())
+            journal_id = journal.id
         else:
             journal_id = Journal.makeid()
 
@@ -67,6 +67,8 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
         application = None
         if application_arg != "none":
             application = Application(**ApplicationFixtureFactory.make_application_source())
+            application.remove_current_journal()
+            application.set_last_manual_update("1970-01-01T00:00:00Z")
             if application_arg == "rejected":
                 application.set_application_status(constants.APPLICATION_STATUS_REJECTED)
             elif application_arg == "pending":
@@ -79,10 +81,15 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
 
             application.save(blocking=True)
 
+        if journal is not None:
+            if application is not None:
+                journal.add_related_application(application.id)
+            journal.save(blocking=True)
+
         if duplicate_ur_arg == "yes":
             duplicate = Application(**ApplicationFixtureFactory.make_application_source())
             duplicate.set_id(duplicate.makeid())
-            duplicate.set_related_journal(journal_id)
+            duplicate.set_current_journal(journal_id)
             duplicate.save(blocking=True)
 
         account = None
@@ -93,8 +100,13 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
         manual_update = manual_update_arg == "True"
         raises = EXCEPTIONS.get(raises_arg)
 
+        if application is not None:
+            last_updated = application.last_updated
+            if outcome_arg == "noop":
+                time.sleep(1)   # this allows us to differentiate save times, so we can check that there was noop
+
         ###########################################################
-        # Execution
+        # Execution and Assertion
 
         if raises is not None:
             with self.assertRaises(raises):
@@ -103,29 +115,18 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
         else:
             self.svc.unreject_application(application, account, manual_update)
 
-            # make sure all the articles are saved before running the asserts
-            aids = [(a.id, a.last_updated) for a in articles]
-            for aid, lu in aids:
-                Article.block(aid, lu, sleep=0.05)
+            if outcome_arg == "noop":
+                assert application.last_updated == last_updated
+                assert application.last_manual_update == "1970-01-01T00:00:00Z"
 
-            assert report["success"] == success
-            assert report["fail"] == fail
-            assert report["update"] == update
-            assert report["new"] == success - update
+            elif outcome_arg == "unrejected":
+                journal = Journal.pull(journal_id)
+                assert application.current_journal == journal_id
+                assert application.related_journal is None
+                assert journal.current_application == application.id
+                assert len(journal.related_applications) == 0
 
-            if success > 0:
-                all_articles = Article.all()
-                if len(all_articles) != success:
-                    time.sleep(0.5)
-                    all_articles = Article.all()
-                assert len(all_articles) == success
-                for article in all_articles:
-                    if add_journal_info:
-                        assert article.bibjson().journal_title is not None
-                    else:
-                        assert article.bibjson().journal_title is None
-
-            else:
-                # there's nothing in the article index
-                with self.assertRaises(ESMappingMissingError):
-                    Article.all()
+                if manual_update:
+                    assert application.last_updated == application.last_manual_update
+                else:
+                    assert application.last_manual_update == "1970-01-01T00:00:00Z"

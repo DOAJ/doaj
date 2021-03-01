@@ -1,5 +1,5 @@
 field,test_id,application,related_journal_linked,related_journal_present,duplicate_ur,account,manual_update,raises,outcome
-type,index,generated,generated,,,generated,generated,conditional,conditional
+type,index,generated,generated,generated,generated,generated,generated,conditional,conditional
 default,,,,,,,,,
 ,,,,,,,,,
 values,,none,yes,yes,yes,none,True,AuthoriseException,noop
@@ -16,8 +16,8 @@ constraint account,,,no,no,no,publisher,,,
 constraint manual_update,,!none,,,,,True,,
 ,,,,,,,,,
 conditional raises,,,,,,none,,ArgumentException,
-conditional raises,,,,,,publisher,,AuthoriseException,
-conditional raises,,rejected,,,,,,IllegalStatusException,
+conditional raises,,!none,,,,publisher,,AuthoriseException,
+conditional raises,,rejected,,,,admin,,IllegalStatusException,
 conditional raises,,pending,yes,,yes,,,DuplicateUpdateRequest,
 conditional raises,,pending,yes,no,,,,NoSuchObjectException,
 conditional raises,,none,,,,,,ArgumentException,
