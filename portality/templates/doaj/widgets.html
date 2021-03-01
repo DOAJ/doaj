@@ -15,7 +15,7 @@ var QUERY_OPTIONS = {
     sort: 'created_date',         // Field to order results by
     sort_direction:  'desc',                        // Direction of sort "asc" | "desc"
     search_operator : 'AND',                       // Which sort operator to use "AND" | "OR"
-    search_type: 'article',                        // Which type to search upon (omit for both) "article" | "journal"
+    search_type: 'journal',                        // Which type to search upon (omit for both) "article" | "journal"
     page_size : 5,                                 // How many results to show per widget page
     page_from : 0                                  // Which result to initially start from
     }
@@ -80,6 +80,5 @@ var QUERY_OPTIONS = {
 
 </script>
 <script type="text/javascript" src="/static/widget/fqw_js.js"></script>
-<script type="text/javascript" src="/static/js/doaj.fieldrender.edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/vendor/edges/src/components/search.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/widget/fixed_query_src_edges.js"></script>
