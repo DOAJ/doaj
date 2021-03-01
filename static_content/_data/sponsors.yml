@@ -54,10 +54,6 @@ silver:
   url: https://www.nsd.uib.no/nsd/english/index.html
   logo: nsd.svg
 
-- name: OCLC
-  url: https://www.oclc.org/
-  logo: oclc.svg
-  
 - name: OUP
   url: https://global.oup.com/
   logo: OUP.jpg
@@ -122,6 +118,10 @@ bronze:
 - name: MDPI
   url: https://www.mdpi.com/
   logo: mdpi.svg
+
+- name: OCLC
+  url: https://www.oclc.org/
+  logo: oclc.svg
 
 - name: Pensoft
   url: https://pensoft.net/
