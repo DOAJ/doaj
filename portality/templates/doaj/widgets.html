@@ -1,15 +1,13 @@
-<script src="https://unpkg.com/feather-icons"></script>
 <script type="text/javascript" src="/static/vendor/jquery-3.4.1/jquery-3.4.1.min.js"></script>
 <script type="text/javascript" src="/static/js/doaj.js"></script>
 <link rel="stylesheet" href="/static_content/_site/css/main.css">
 
-<div></div>
 <div class="facetview">
 </div>
 
 <script type="text/javascript">
 var doaj_url = "{{ config.get('BASE_URL') }}";
-var SEARCH_CONFIGURED_OPTIONS = {"query":{"query_string":{"query":"autism","default_operator":"AND"}},"size":50,"sort":[{"created_date":{"order":"desc"}}]};
+//var SEARCH_CONFIGURED_OPTIONS = {"query":{"query_string":{"query":"autism","default_operator":"AND"}},"size":50,"sort":[{"created_date":{"order":"desc"}}]};
 //{"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"es_type":"article"}}]}},"query":{"query_string":{"query":"autism","default_operator":"AND"}}}},"sort":[{"_score":{"order":"desc"}}]}
 var QUERY_OPTIONS = {
     query_string : 'autism',                      // The plain-text query string
@@ -81,26 +79,7 @@ var QUERY_OPTIONS = {
     }
 
 </script>
-<script type="text/javascript" src="/static/vendor/edges/src/edges.jquery.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/es.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
+<script type="text/javascript" src="/static/widget/fqw_js.js"></script>
 <script type="text/javascript" src="/static/js/doaj.fieldrender.edges.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
-<script type="text/javascript" src="/static/vendor/edges/src/templates/bs3.Facetview.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/components/selectors.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/vendor/edges/src/components/search.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.ResultCountRenderer.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.SortRenderer.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.FacetFilterSetterRenderer.js?v={{config.get('DOAJ_VERSION')}}"></script>
-
-
-
-<script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.RefiningANDTermSelectorRenderer.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.ORTermSelectorRenderer.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.ResultsFieldsByRowRenderer.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.PagerRenderer.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.SelectedFiltersRenderer.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.SearchingNotificationRenderer.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="/static/vendor/edges/src/renderers/bs3.DateHistogramSelectorRenderer.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript" src="/static/widget/fixed_query_src_edges.js"></script>
