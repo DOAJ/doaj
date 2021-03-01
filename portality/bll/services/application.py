@@ -89,7 +89,8 @@ class ApplicationService(object):
     def unreject_application(self,
                              application: models.Application,
                              account: models.Account,
-                             manual_update: bool = True):
+                             manual_update: bool = True,
+                             disallow_status: list = None):
         """
         Un-reject an application.  This will:
         * check that the application status is no longer "rejected" (throw an error if it is)
@@ -99,6 +100,7 @@ class ApplicationService(object):
         :param application:
         :param account:
         :param manual_update:
+        :param disallow_status: statuses that we are not allowed to unreject to (excluding rejected, which is always disallowed)
         :return:
         """
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering unreject_application")
@@ -116,6 +118,13 @@ class ApplicationService(object):
         # ensure the application status is not "rejected"
         if application.application_status == constants.APPLICATION_STATUS_REJECTED:
             raise exceptions.IllegalStatusException(message="The application {id} is in 'rejected' state; place it into the correct new state before calling unreject_application".format(id=application.id))
+
+        # by default reject transitions to the accepted status (because acceptance implies other processing that this
+        # method does not handle).  You can override this by passing in an empty list
+        if disallow_status is None:
+            disallow_status = [constants.APPLICATION_STATUS_ACCEPTED]
+        if application.application_status in disallow_status:
+            raise exceptions.IllegalStatusException(message="The application {id} is in '{x}' status, which is disallowed in this call context".format(id=application.id, x=application.application_status))
 
         rjid = application.related_journal
         if rjid:

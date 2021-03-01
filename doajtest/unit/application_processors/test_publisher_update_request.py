@@ -297,7 +297,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert ur1.application_status == constants.APPLICATION_STATUS_REJECTED
 
 
-    def test_06_reject_reject_unreject(self):
+    def test_06_reject_reject_accept(self):
         """Check that submitting an update request and rejecting it, then submitting another and rejecting
         that still allows you to successfully unreject the first one"""
 
@@ -351,16 +351,19 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
         time.sleep(2)
 
-        # now unreject the first one
+        # now unreject the first one (and at the same time accept it)
         ur1 = models.Application.pull(ur1.id)
         urfc = admin_context.processor(source=ur1)
-        urfc.form.application_status.data = constants.APPLICATION_STATUS_PENDING
+        urfc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
         urfc.finalise(account=acc)
 
-        # check that we were not successful in unrejecting the application
+        # check that we were successful in both unrejecting and accepting the application
         time.sleep(2)
         ur1 = models.Application.pull(ur1.id)
-        assert ur1.application_status == constants.APPLICATION_STATUS_PENDING
+        assert ur1.application_status == constants.APPLICATION_STATUS_ACCEPTED
+
+        journal = models.Journal.pull(journal.id)
+        assert journal.related_application_record(ur1.id) is not None
 
 
 

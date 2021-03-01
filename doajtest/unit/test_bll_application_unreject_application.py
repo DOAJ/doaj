@@ -45,6 +45,7 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
         duplicate_ur_arg = kwargs.get("duplicate_ur")
         account_arg = kwargs.get("account")
         manual_update_arg = kwargs.get("manual_update")
+        disallow_statuses_arg = kwargs.get("disallow_statuses")
 
         raises_arg = kwargs.get("raises")
         outcome_arg = kwargs.get("outcome")
@@ -69,10 +70,13 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
             application = Application(**ApplicationFixtureFactory.make_application_source())
             application.remove_current_journal()
             application.set_last_manual_update("1970-01-01T00:00:00Z")
+
             if application_arg == "rejected":
                 application.set_application_status(constants.APPLICATION_STATUS_REJECTED)
             elif application_arg == "pending":
                 application.set_application_status(constants.APPLICATION_STATUS_PENDING)
+            elif application_arg == "accepted":
+                application.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
 
             if related_journal_linked_arg == "no":
                 application.remove_related_journal()
@@ -98,6 +102,11 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
             account.set_role(account_arg)
 
         manual_update = manual_update_arg == "True"
+
+        disallow_statuses = []
+        if disallow_statuses_arg == "accepted":
+            disallow_statuses.append(constants.APPLICATION_STATUS_ACCEPTED)
+
         raises = EXCEPTIONS.get(raises_arg)
 
         if application is not None:
@@ -110,10 +119,10 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
 
         if raises is not None:
             with self.assertRaises(raises):
-                self.svc.unreject_application(application, account, manual_update)
+                self.svc.unreject_application(application, account, manual_update, disallow_statuses)
 
         else:
-            self.svc.unreject_application(application, account, manual_update)
+            self.svc.unreject_application(application, account, manual_update, disallow_statuses)
 
             if outcome_arg == "noop":
                 assert application.last_updated == last_updated

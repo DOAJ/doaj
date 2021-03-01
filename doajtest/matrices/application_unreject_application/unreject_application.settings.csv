@@ -1,25 +1,31 @@
-field,test_id,application,related_journal_linked,related_journal_present,duplicate_ur,account,manual_update,raises,outcome
-type,index,generated,generated,generated,generated,generated,generated,conditional,conditional
-default,,,,,,,,,
-,,,,,,,,,
-values,,none,yes,yes,yes,none,True,AuthoriseException,noop
-values,,rejected,no,no,no,publisher,False,IllegalStatusException,unrejected
-values,,pending,,,,admin,,DuplicateUpdateRequest,
-values,,,,,,,,NoSuchObjectException,
-values,,,,,,,,ArgumentException,
-,,,,,,,,,
-constraint application,,none,no,no,no,,False,,
-constraint related_journal_linked,,,no,no,no,,,,
-constraint related_journal_present,,,,no,no,,,,
-constraint account,,,no,no,no,none,,,
-constraint account,,,no,no,no,publisher,,,
-constraint manual_update,,!none,,,,,True,,
-,,,,,,,,,
-conditional raises,,,,,,none,,ArgumentException,
-conditional raises,,!none,,,,publisher,,AuthoriseException,
-conditional raises,,rejected,,,,admin,,IllegalStatusException,
-conditional raises,,pending,yes,,yes,,,DuplicateUpdateRequest,
-conditional raises,,pending,yes,no,,,,NoSuchObjectException,
-conditional raises,,none,,,,,,ArgumentException,
-conditional outcome,,pending,no,,,admin,,,noop
-conditional outcome,,pending,yes,yes,no,admin,,,unrejected
+field,test_id,application,related_journal_linked,related_journal_present,duplicate_ur,account,manual_update,disallow_statuses,raises,outcome
+type,index,generated,generated,generated,generated,generated,generated,generated,conditional,conditional
+default,,,,,,,,,,
+,,,,,,,,,,
+values,,none,yes,yes,yes,none,True,none,AuthoriseException,noop
+values,,rejected,no,no,no,publisher,False,accepted,IllegalStatusException,unrejected
+values,,pending,,,,admin,,,DuplicateUpdateRequest,
+values,,accepted,,,,,,,NoSuchObjectException,
+values,,,,,,,,,ArgumentException,
+,,,,,,,,,,
+constraint application,,none,no,no,no,,False,none,,
+constraint related_journal_linked,,,no,no,no,,,,,
+constraint related_journal_present,,,,no,no,,,,,
+constraint account,,,no,no,no,none,,,,
+constraint account,,,no,no,no,publisher,,,,
+constraint manual_update,,!none,,,,,True,accepted,,
+constraint disallow_statuses,,!none,,,,admin,,accepted,,
+,,,,,,,,,,
+conditional raises,,,,,,none,,,ArgumentException,
+conditional raises,,!none,,,,publisher,,,AuthoriseException,
+conditional raises,,rejected,,,,admin,,,IllegalStatusException,
+conditional raises,,pending,yes,,yes,,,,DuplicateUpdateRequest,
+conditional raises,,accepted,yes,,yes,,,none,DuplicateUpdateRequest,
+conditional raises,,pending,yes,no,,,,,NoSuchObjectException,
+conditional raises,,accepted,yes,no,,,,none,NoSuchObjectException,
+conditional raises,,none,,,,,,,ArgumentException,
+conditional raises,,accepted,,,,admin,,accepted,IllegalStatusException,
+conditional outcome,,pending,no,,,admin,,,,noop
+conditional outcome,,accepted,no,,,admin,,,,noop
+conditional outcome,,pending,yes,yes,no,admin,,,,unrejected
+conditional outcome,,accepted,yes,yes,no,admin,,,,unrejected

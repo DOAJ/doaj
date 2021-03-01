@@ -29,11 +29,17 @@
               "or": [
                 "False"
               ]
+            },
+            "disallow_statuses": {
+              "or": [
+                "none"
+              ]
             }
           }
         },
         "rejected": {},
-        "pending": {}
+        "pending": {},
+        "accepted": {}
       }
     },
     {
@@ -136,10 +142,36 @@
               "nor": [
                 "none"
               ]
+            },
+            "disallow_statuses": {
+              "or": [
+                "accepted"
+              ]
             }
           }
         },
         "False": {}
+      }
+    },
+    {
+      "name": "disallow_statuses",
+      "type": "generated",
+      "values": {
+        "none": {},
+        "accepted": {
+          "constraints": {
+            "application": {
+              "nor": [
+                "none"
+              ]
+            },
+            "account": {
+              "or": [
+                "admin"
+              ]
+            }
+          }
+        }
       }
     },
     {
@@ -176,6 +208,23 @@
                   "admin"
                 ]
               }
+            },
+            {
+              "application": {
+                "or": [
+                  "accepted"
+                ]
+              },
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              },
+              "disallow_statuses": {
+                "or": [
+                  "accepted"
+                ]
+              }
             }
           ]
         },
@@ -197,6 +246,28 @@
                   "yes"
                 ]
               }
+            },
+            {
+              "application": {
+                "or": [
+                  "accepted"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "duplicate_ur": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "disallow_statuses": {
+                "or": [
+                  "none"
+                ]
+              }
             }
           ]
         },
@@ -216,6 +287,28 @@
               "related_journal_present": {
                 "or": [
                   "no"
+                ]
+              }
+            },
+            {
+              "application": {
+                "or": [
+                  "accepted"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "related_journal_present": {
+                "or": [
+                  "no"
+                ]
+              },
+              "disallow_statuses": {
+                "or": [
+                  "none"
                 ]
               }
             }
@@ -264,6 +357,23 @@
                   "admin"
                 ]
               }
+            },
+            {
+              "application": {
+                "or": [
+                  "accepted"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "no"
+                ]
+              },
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              }
             }
           ]
         },
@@ -273,6 +383,33 @@
               "application": {
                 "or": [
                   "pending"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "related_journal_present": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "duplicate_ur": {
+                "or": [
+                  "no"
+                ]
+              },
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              }
+            },
+            {
+              "application": {
+                "or": [
+                  "accepted"
                 ]
               },
               "related_journal_linked": {

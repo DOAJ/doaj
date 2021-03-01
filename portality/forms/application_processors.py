@@ -282,6 +282,14 @@ class AdminApplication(ApplicationProcessor):
         from portality.bll.doaj import DOAJ
         applicationService = DOAJ.applicationService()
 
+        # if the application is already rejected, and we are moving it back into a non-rejected status
+        if self.source.application_status == constants.APPLICATION_STATUS_REJECTED and self.target.application_status != constants.APPLICATION_STATUS_REJECTED:
+            try:
+                applicationService.unreject_application(self.target, current_user._get_current_object(), disallow_status=[])
+            except exceptions.DuplicateUpdateRequest as e:
+                self.add_alert("Could not unreject application, as a new Update Request for the journal now exists")
+                return
+
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             j = applicationService.accept_application(self.target, account)
@@ -333,15 +341,6 @@ class AdminApplication(ApplicationProcessor):
                     self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner, email=send_report[0].get("email"), name=send_report[0].get("name")))
                 else:
                     self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner))
-
-        # if the application is already rejected, and we are moving it back into a non-rejected status
-        elif self.source.application_status == constants.APPLICATION_STATUS_REJECTED and self.target.application_status != constants.APPLICATION_STATUS_REJECTED:
-            try:
-                applicationService.unreject_application(self.target, current_user._get_current_object())
-            except exceptions.DuplicateUpdateRequest as e:
-                self.add_alert("Could not unreject application, as a new Update Request for the journal now exists")
-                return
-
 
         # the application was neither accepted or rejected, so just save it
         else:
