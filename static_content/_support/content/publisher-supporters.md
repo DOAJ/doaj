@@ -5,7 +5,7 @@ To make it easier for publishers to choose the level of support that they are mo
 It is also possible to choose a discounted 3-year sustaining contribution, based on the rates below, or a single annual ammount. For more information about that, [contact us](mailto:feedback@doaj.org) stating the name of your organisation.
 
 {:.tabular-list}
-- Publishing more than **2,500** articles/year
+- Publishing more than **2,000** articles/year
   - GBP £2,000 per year
 - Publishing **1,000-2,000** articles/year
   - GBP £1,500 per year  
