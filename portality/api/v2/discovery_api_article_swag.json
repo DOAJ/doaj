@@ -2,6 +2,7 @@
     "notes": "This is a longer string of important things", 
     "responses": {
         "200": {
+            "description" : "Search was successful",
             "schema": {
                 "properties": {
                     "pageSize": {
