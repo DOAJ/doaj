@@ -13,8 +13,8 @@ Warning: don’t send us your passwords or API keys.
 
 
 **User account you are logged in to when this occurred**
-The account’s e-mail address or username
-*please do not send us your password or API keys*
+The account’s e-mail address
+*please do not send password or API keys*
 
 
 **Where this happened**
