@@ -1,6 +1,7 @@
 {
     "responses": {
         "200": {
+            "description" : "Search was successful",
             "schema": {
                 "properties": {
                     "pageSize": {
@@ -142,16 +143,24 @@
                                             "type": "array"
                                         }, 
                                         "deposit_policy": {
-                                            "properties": {
-                                                "service": {
-                                                    "type" : "array"
+                                            "items" : {
+                                                "type" : "object",
+                                                "properties": {
+                                                    "service": {
+                                                        "items" : {
+                                                            "type" : "string",
+                                                            "title" : "service"
+                                                        },
+                                                        "type" : "array"
+                                                    },
+                                                    "url" : {
+                                                        "type" : "string"
+                                                    }
                                                 },
-                                                "url" : {
-                                                    "type" : "string"
-                                                }
+                                                "title" : "deposit_policy"
                                             },
                                             "type": "array"
-                                        }, 
+                                        },
                                         "license": {
                                             "items": {
                                                 "type": "object", 

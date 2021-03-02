@@ -19,7 +19,7 @@ class ArticlesBulkApi(Api):
             {
                 "description": "<div class=\"search-query-docs\">A list/array of article JSON objects that you would like to create or update. The contents should be a list, and each object in the list should comply with the schema displayed in the <a href=\"/api/v1/docs#CRUD_Articles_get_api_v1_articles_article_id\"> GET (Retrieve) an article route</a>. Partial updates are not allowed, you have to supply the full JSON.</div>",
                 "required": True,
-                "type": "string",
+                "schema": {"type" : "string"},
                 "name": "article_json",
                 "in": "body"
             }
@@ -60,7 +60,7 @@ class ArticlesBulkApi(Api):
             {
                 "description": "<div class=\"search-query-docs\">A list/array of DOAJ article IDs. E.g. [\"4cf8b72139a749c88d043129f00e1b07\", \"232b53726fb74cc4a8eb4717e5a43193\"].</div>",
                 "required": True,
-                "type": "string",
+                "schema": {"type" : "string"},
                 "name": "article_ids",
                 "in": "body"
             }

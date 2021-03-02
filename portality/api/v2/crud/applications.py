@@ -36,7 +36,7 @@ class ApplicationsCrudApi(CrudApi):
             Explicit documentation for the structure of this data is also <a href="https://github.com/DOAJ/doaj/blob/master/docs/system/IncomingAPIApplication.md">provided here</a>.
             Partial updates are not allowed, you have to supply the full JSON.</div>""",
         "required": True,
-        "type": "string",
+        "schema": {"type" : "string"},
         "name": "application_json",
         "in": "body"
     }
