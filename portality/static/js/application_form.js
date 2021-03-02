@@ -926,7 +926,7 @@ window.Parsley.addValidator("type", {
             if (!/^any$/i.test(step || '')) {
                 var nb = Number(value);
                 var decimals = Math.max(doaj.af.decimalPlaces(step), doaj.af.decimalPlaces(base));
-                if (decimalPlaces(nb) > decimals) // Value can't have too many decimals
+                if (doaj.af.decimalPlaces(nb) > decimals) // Value can't have too many decimals
                     return false;
                 // Be careful of rounding errors by using integers.
                 var toInt = f => Math.round(f * Math.pow(10, decimals));
