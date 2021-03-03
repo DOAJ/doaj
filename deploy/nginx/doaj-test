@@ -39,7 +39,6 @@ server {
 
     if ($new_uri != "") {
         rewrite ^(.*)$ $new_uri permanent;
-        # return 301 $new_uri
     }
 
     location / {
