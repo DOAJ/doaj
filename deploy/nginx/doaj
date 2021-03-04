@@ -48,7 +48,7 @@ upstream doaj_index {
 
 # Redirect map for legacy page routes https://github.com/DOAJ/doajPM/issues/2398
 map $request_uri $new_uri {
-    include /etc/nginx/doaj-redirects.map
+    include /etc/nginx/doaj-redirects.map;
 }
 
 # redirect to SSL version but serve some crucial xml schemas via plain http as well
