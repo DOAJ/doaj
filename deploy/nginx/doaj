@@ -47,7 +47,6 @@ upstream doaj_index {
 }
 
 # Redirect map for legacy page routes https://github.com/DOAJ/doajPM/issues/2398
-map_hash_bucket_size 64;
 map $request_uri $new_uri {
     include /etc/nginx/doaj-redirects.map
 }
