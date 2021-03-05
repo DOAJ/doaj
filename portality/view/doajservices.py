@@ -1,6 +1,6 @@
 import json, urllib.request, urllib.parse, urllib.error, requests
 
-from flask import Blueprint, make_response, request, abort
+from flask import Blueprint, make_response, request, abort, render_template
 from flask_login import current_user, login_required
 
 from portality.core import app
@@ -37,6 +37,16 @@ def unlock(object_type, object_id):
     resp = make_response(json.dumps({"result" : "success"}))
     resp.mimetype = "application/json"
     return resp
+
+
+@blueprint.route("/unlocked")
+@login_required
+def unlocked():
+    """
+    Redirect to this route on completion of an unlock
+    :return:
+    """
+    return render_template("unlocked.html")
 
 
 @blueprint.route("/shorten", methods=["POST"])
