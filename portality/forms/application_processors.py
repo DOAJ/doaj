@@ -287,7 +287,7 @@ class AdminApplication(ApplicationProcessor):
             try:
                 applicationService.unreject_application(self.target, current_user._get_current_object(), disallow_status=[])
             except exceptions.DuplicateUpdateRequest as e:
-                self.add_alert("Could not unreject application, as a new Update Request for the journal now exists")
+                self.add_alert(Messages.FORMS__APPLICATION_PROCESSORS__ADMIN_APPLICATION__FINALISE__COULD_NOT_UNREJECT)
                 return
 
         # if this application is being accepted, then do the conversion to a journal

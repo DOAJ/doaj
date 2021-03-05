@@ -8,6 +8,7 @@ from portality.core import app
 from portality import constants
 from portality import lock
 from portality.bll.doaj import DOAJ
+from portality.ui.messages import Messages
 
 class ApplicationService(object):
 
@@ -106,33 +107,35 @@ class ApplicationService(object):
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering unreject_application")
 
         if application is None:
-            raise exceptions.ArgumentException("You must supply an application to unreject_application")
+            raise exceptions.ArgumentException(Messages.BLL__UNREJECT_APPLICATION__NO_APPLICATION)
 
         if account is None:
-            raise exceptions.ArgumentException("You must supply an account to unreject_application")
+            raise exceptions.ArgumentException(Messages.BLL__UNREJECT_APPLICATION__NO_ACCOUNT)
 
         # check we're allowed to carry out this action
         if not account.has_role("unreject_application"):
-            raise exceptions.AuthoriseException(message="This user is not allowed to unreject applications", reason=exceptions.AuthoriseException.WRONG_ROLE)
+            raise exceptions.AuthoriseException(message=Messages.BLL__UNREJECT_APPLICATION__WRONG_ROLE,
+                                                reason=exceptions.AuthoriseException.WRONG_ROLE)
 
         # ensure the application status is not "rejected"
         if application.application_status == constants.APPLICATION_STATUS_REJECTED:
-            raise exceptions.IllegalStatusException(message="The application {id} is in 'rejected' state; place it into the correct new state before calling unreject_application".format(id=application.id))
+            raise exceptions.IllegalStatusException(message=Messages.BLL__UNREJECT_APPLICATION__ILLEGAL_STATE_REJECTED.format(id=application.id))
 
         # by default reject transitions to the accepted status (because acceptance implies other processing that this
         # method does not handle).  You can override this by passing in an empty list
         if disallow_status is None:
             disallow_status = [constants.APPLICATION_STATUS_ACCEPTED]
         if application.application_status in disallow_status:
-            raise exceptions.IllegalStatusException(message="The application {id} is in '{x}' status, which is disallowed in this call context".format(id=application.id, x=application.application_status))
+            raise exceptions.IllegalStatusException(
+                message=Messages.BLL__UNREJECT_APPLICATION__ILLEGAL_STATE_DISALLOWED.format(
+                    id=application.id, x=application.application_status
+                ))
 
         rjid = application.related_journal
         if rjid:
             ur = models.Application.find_latest_by_current_journal(rjid)
             if ur:
-                raise exceptions.DuplicateUpdateRequest(message="""Creating an update request from rejected application {id} 
-                is not possible as another application {urid}
-                 exists which is an update request for journal {jid}""".format(
+                raise exceptions.DuplicateUpdateRequest(message=Messages.BLL__UNREJECT_APPLICATION__DUPLICATE_UR.format(
                     id=application.id,
                     urid=ur.id,
                     jid=rjid
@@ -140,7 +143,9 @@ class ApplicationService(object):
 
             rj = models.Journal.pull(rjid)
             if rj is None:
-                raise exceptions.NoSuchObjectException("Journal {jid} related to application {id} does not exist".format(jid=rjid, id=application.id))
+                raise exceptions.NoSuchObjectException(Messages.BLL__UNREJECT_APPLICATION__JOURNAL_MISSING.format(
+                    jid=rjid, id=application.id
+                ))
 
             # update the application's view of the current journal
             application.set_current_journal(rjid)
@@ -152,7 +157,10 @@ class ApplicationService(object):
 
             saved = rj.save()
             if saved is None:
-                raise exceptions.SaveException("Save on current_journal {id} in unreject_application failed".format(id=rj.id))
+                raise exceptions.SaveException(Messages.BLL__UNREJECT_APPLICATION__SAVE_FAIL.format(
+                    obj="current_journal",
+                    id=rj.id
+                ))
 
             # if we were asked to record this as a manual update, record that on the application
             if manual_update:
@@ -160,7 +168,10 @@ class ApplicationService(object):
 
             saved = application.save()
             if saved is None:
-                raise exceptions.SaveException("Save on application {id} in unreject_application failed".format(id=application.id))
+                raise exceptions.SaveException(Messages.BLL__UNREJECT_APPLICATION__SAVE_FAIL.format(
+                    obj="application",
+                    id=application.id
+                ))
 
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed unreject_application")
 
