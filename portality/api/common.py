@@ -13,16 +13,17 @@ CREATED_TEMPLATE = {"status": {"type": "string"}, "id": {"type": "string"}, "loc
 
 class Api(object):
     SWAG_TEMPLATE = {
+        "description" : "",
         "responses": {},
         "parameters": [],
         "tags": []
     }
-    R200 = {"schema": {}}
-    R201 = {"schema": {"properties": CREATED_TEMPLATE, "description": "Resource created successfully, response "
-                                                                      "contains the new resource ID and location."}}
-    R201_BULK = {"schema": {"items": {"properties" : CREATED_TEMPLATE, "type" : "object"}, "type" : "array",
+    R200 = {"schema": {}, "description": "A successful request/response"}
+    R201 = {"schema": {"properties": CREATED_TEMPLATE}, "description": "Resource created successfully, response "
+                                                                      "contains the new resource ID and location."}
+    R201_BULK = {"schema": {"items": {"properties" : CREATED_TEMPLATE, "type" : "object"}, "type" : "array"},
                             "description": "Resources created successfully, response contains the new resource IDs "
-                                           "and locations."}}
+                                           "and locations."}
     R204 = {"description": "OK (Request succeeded), No Content"}
     R400 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Bad Request. Your request body was missing a "
                                                                      "required field, or the data in one of the "
