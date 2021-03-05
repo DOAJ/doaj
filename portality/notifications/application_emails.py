@@ -200,7 +200,7 @@ def send_assoc_editor_inprogress_email(application):
     url_root = app.config.get("BASE_URL")
     query_for_id = Facetview2.make_query(query_string=application.id)
     string_id_query = json.dumps(query_for_id).replace(' ', '')       # Avoid '+' being added to URLs by removing spaces
-    url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
+    url_for_application = url_root + url_for("editor.associate_suggestions", source=string_id_query)
 
     # This is to the associate editor assigned to this application
     assoc_editor = models.Account.pull(application.editor)
