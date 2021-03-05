@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "4.0.7"
+DOAJ_VERSION = "4.0.11"
 
 OFFLINE_MODE = False
 
@@ -1039,7 +1039,7 @@ DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
 ## EPMC Client configuration
 
 EPMC_REST_API = "http://www.ebi.ac.uk/europepmc/webservices/rest/"
-EPMC_TARGET_VERSION = "6.2"
+EPMC_TARGET_VERSION = "6.5"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
 
 # General harvester configuraiton
 

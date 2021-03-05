@@ -162,9 +162,9 @@ BASE_ARTICLE_COERCE["link_type_optional"] = dataobj.string_canonicalise(["fullte
 BASE_ARTICLE_COERCE["link_content_type"] = dataobj.string_canonicalise(["PDF", "HTML", "ePUB", "XML"], allow_fail=True)
 
 BASE_ARTICLE_SWAGGER_TRANS = deepcopy(swagger.SwaggerSupport.DEFAULT_SWAGGER_TRANS)
-BASE_ARTICLE_SWAGGER_TRANS["link_type"] = {"type": "string", "format": "link_type"},  # TODO extend swagger-ui with support for this format and let it produce example values etc. on the front-end
-BASE_ARTICLE_SWAGGER_TRANS["link_type_optional"] = {"type": "string", "format": "link_type_optional"},  # TODO extend swagger-ui with support for this format and let it produce example values etc. on the front-end
-BASE_ARTICLE_SWAGGER_TRANS["link_content_type"] = {"type": "string", "format": "link_content_type"},  # TODO extend swagger-ui with support for this format and let it produce example values etc. on the front-end
+BASE_ARTICLE_SWAGGER_TRANS["link_type"] = {"type": "string", "format": "link_type"}  # TODO extend swagger-ui with support for this format and let it produce example values etc. on the front-end
+BASE_ARTICLE_SWAGGER_TRANS["link_type_optional"] = {"type": "string", "format": "link_type_optional"}  # TODO extend swagger-ui with support for this format and let it produce example values etc. on the front-end
+BASE_ARTICLE_SWAGGER_TRANS["link_content_type"] = {"type": "string", "format": "link_content_type"}  # TODO extend swagger-ui with support for this format and let it produce example values etc. on the front-end
 
 
 class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):

@@ -19,9 +19,9 @@ Here is a table of each element in the DOAJ XML file. It shows you whether or no
 | Language, ISO code | Optional, max 1                                                             |
 | Publisher          | Optional, max 1                                                             |
 | **Journal title**  | Required, only 1                                                            |
-| ISSN               | Optional, max. 1 <br>Either the ISSN or the EISSN must be present, or both  |
-| EISSN              | Optional, max. 1  <br>Either the ISSN or the EISSN must be present, or both |
-| **Publication date** | Required, only 1                                                            |
+| ISSN               | Optional, max. 1 <br>Either the ISSN or the EISSN must be present, or both. (The number of ISSNs sent in the article metadata must match what is stored in the DOAJ record for the journal.)  |
+| EISSN              | Optional, max. 1  <br>Either the ISSN or the EISSN must be present, or both. (The number of ISSNs sent in the article metadata must match what is stored in the DOAJ record for the journal.) |
+| **Publication date** | Required, only 1                                                          |
 | Volume number      | Optional, max. 1                                                            |
 | Issue number       | Optional, max. 1                                                            |
 | Start page         | Optional, max. 1                                                            |

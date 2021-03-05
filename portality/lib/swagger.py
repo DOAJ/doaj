@@ -49,10 +49,14 @@ class SwaggerSupport(object):
                 raise DataSchemaException("No struct to translate to Swagger.")
             struct = self._struct
 
+
         swag = {
-            "properties": self.__struct_to_swag_properties(struct=struct, **kwargs),
-            "required": deepcopy(struct.get('required', []))
+            "properties": self.__struct_to_swag_properties(struct=struct, **kwargs)
         }
+        required = deepcopy(struct.get('required', []))
+        if len(required) > 0:
+            swag["required"] = required
+
         if schema_title:
             swag['title'] = schema_title
 
@@ -82,7 +86,9 @@ class SwaggerSupport(object):
             swag_properties[obj]['title'] = newpath
             swag_properties[obj]['type'] = 'object'
             swag_properties[obj]['properties'] = self.__struct_to_swag_properties(struct=instructions, path=newpath)  # recursive call, process sub-struct(s)
-            swag_properties[obj]['required'] = deepcopy(instructions.get('required', []))
+            required = deepcopy(instructions.get('required', []))
+            if len(required) > 0:
+                swag_properties[obj]['required'] = required
 
         # convert lists
         for l, instructions in iter(struct.get('lists', {}).items()):
@@ -97,7 +103,10 @@ class SwaggerSupport(object):
                 swag_properties[l]['items']['type'] = 'object'
                 swag_properties[l]['items']['title'] = newpath
                 swag_properties[l]['items']['properties'] = self.__struct_to_swag_properties(struct=struct.get('structs', {}).get(l, {}), path=newpath)  # recursive call, process sub-struct(s)
-                swag_properties[l]['items']['required'] = deepcopy(struct.get('structs', {}).get(l, {}).get('required', []))
+
+                required = deepcopy(struct.get('structs', {}).get(l, {}).get('required', []))
+                if len(required) > 0:
+                    swag_properties[l]['items']['required'] = required
             else:
                 raise DataSchemaException("Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items. Found: {y}".format(x=newpath, y=instructions['contains']))
 

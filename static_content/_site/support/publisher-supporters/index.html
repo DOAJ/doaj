@@ -640,31 +640,33 @@
                 </nav>
 
                 <div class="tabs__content">
-                  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="pub-supporters-yearly" class="tabs__panel" role="tabpanel" aria-hidden="false">
+                  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" id="pub-supporters-yearly" class="tabs__panel" role="tabpanel" aria-hidden="false">
                     <input type="hidden" name="cmd" value="_s-xclick">
                     <input type="hidden" name="hosted_button_id" value="T8RHKSMJ2JN7S">
-                    <input type="hidden" name="on0" value="Please select a yearly contribution based on your size">
+                    <input type="hidden" name="on0" value="Select an amount based on the size of your organisation">
                     <label for="support-publishers-yearly">Please select a yearly contribution based on your size.</label>
                     <select id="support-publishers-yearly" name="os0">
-                      <option value="Extra large">Extra large: £3,000.00 GBP (yearly)</option>
-                      <option value="Large">Large: £1,000.00 GBP (yearly)</option>
-                      <option value="Medium">Medium: £500.00 GBP (yearly)</option>
-                      <option value="Small">Small: £200.00 GBP (yearly)</option>
+                      <option value="More than 2,500 articles">More than 2,500 articles: £2,000.00 GBP (yearly)</option>
+                      <option value="1,000-2,000 articles">1,000-2,000 articles: £1,500.00 GBP (yearly)</option>
+                      <option value="500-1,000 articles">500-1,000 articles: £1,000.00 GBP (yearly)</option>
+                      <option value="250-500 articles">250-500 articles: £500.00 GBP (yearly)</option>
+                      <option value="Up to 250 articles">Up to 250 articles: £300.00 GB (yearly)</option>
                     </select>
                     <input type="hidden" name="currency_code" value="GBP">
                     <input type="submit" name="submit" value="Support" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button">
                   </form>
 
-                  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" id="pub-supporters-one-time" class="tabs__panel" role="tabpanel" aria-hidden="true">
+                  <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" id="pub-supporters-one-time" class="tabs__panel" role="tabpanel" aria-hidden="true">
                     <input type="hidden" name="cmd" value="_s-xclick">
                     <input type="hidden" name="hosted_button_id" value="7JEXFR4S7X2VN">
                     <input type="hidden" name="on0" value="Please select your business size">
                     <label for="support-publishers-yearly">Please select your business size for a one-time donation.</label>
                     <select name="os0">
-                      <option value="Extra large">Extra large: £3,000.00 GBP</option>
-                      <option value="Large">Large: £1,000.00 GBP</option>
-                      <option value="Medium">Medium: £500.00 GBP</option>
-                      <option value="Small">Small: £200.00 GBP</option>
+                      <option value="More than 2,500 articles">More than 2,500 articles: £2,000.00 GBP</option>
+                    	<option value="1,000-2,000 articles">1,000-2,000 articles: £1,500.00 GBP</option>
+                    	<option value="500-1,000 articles">500-1,000 articles: £1,000.00 GBP</option>
+                    	<option value="250-500 articles">250-500 articles: £500.00 GBP</option>
+                    	<option value="Up to 250 articles">Up to 250 articles: £300.00 GBP</option>
                     </select>
                     <input type="hidden" name="currency_code" value="GBP">
                     <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button">
@@ -682,10 +684,10 @@
               
               
 
-              <h2 class="promo__heading">Our definition of open access</h2>
+              <h2 class="promo__heading">Understanding copyright and licensing</h2>
               <p class="promo__text">
-                At DOAJ, we believe that for Open Access to work effectively, user rights, via licensing, and copyright ownership need to be clear.
-                <a href="https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/" target="_blank" class="promo__link" rel="noopener">Learn more</a>
+                Copyright declares who owns the rights to the website’s content and its published academic content. Licensing describes the terms under which the website’s readers are allowed to use or re-use the copyrighted content.
+                <a href="/apply/guide/#licensing" target="_blank" class="promo__link">Learn more</a>
               </p>
             </aside>
           
@@ -705,7 +707,7 @@
 <p>It is also possible to choose a discounted 3-year sustaining contribution, based on the rates below, or a single annual ammount. For more information about that, <a href="mailto:feedback@doaj.org">contact us</a> stating the name of your organisation.</p>
 
 <ul class="tabular-list">
-  <li>Publishing more than <strong>2,500</strong> articles/year
+  <li>Publishing more than <strong>2,000</strong> articles/year
     <ul>
       <li>GBP £2,000 per year</li>
     </ul>
@@ -1335,7 +1337,7 @@
         $('html,body').animate({
           scrollTop: id.offset().top - headerHeight
         }, 50, 'linear')
-      };
+      }
     });
   });
 

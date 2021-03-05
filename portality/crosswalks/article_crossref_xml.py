@@ -6,6 +6,7 @@ import re
 from portality.bll import exceptions
 from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
+from portality.ui.messages import Messages
 
 NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih.gov/JATS1'}
 
@@ -171,13 +172,44 @@ Example record:
         md = journal.find("x:journal_metadata", NS)
         if md is not None:
             issns = md.findall("x:issn", NS)
-            if issns is not None:
-                for issn in issns:
-                    if issn.attrib["media_type"] is None or issn.attrib["media_type"] == 'print':
-                        bibjson.add_identifier(bibjson.P_ISSN, issn.text.upper())
-                    elif issn.attrib["media_type"] == 'electronic':
-                        bibjson.add_identifier(bibjson.E_ISSN, issn.text.upper())
 
+            # if more than 2 issns raise the exception
+            if len(issns) > 2:
+                raise CrosswalkException(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
+            if len(issns) == 1:
+                if len(issns[0].attrib) == 0 or issns[0].attrib["media_type"] == 'electronic':
+                    bibjson.add_identifier(bibjson.E_ISSN, issns[0].text.upper())
+                elif issns[0].attrib["media_type"] == 'print':
+                     bibjson.add_identifier(bibjson.P_ISSN, issns[0].text.upper())
+
+            elif len(issns) == 2:
+                attrs = [0, 0]
+                if len(issns[0].attrib) != 0:
+                    attrs[0] = issns[0].attrib["media_type"]
+                if len(issns[1].attrib) != 0:
+                    attrs[1] = issns[1].attrib["media_type"]
+
+                # if both issns have the same type - raise the exception
+                if attrs[0] != 0 and attrs[0] == attrs[1]:
+                    raise CrosswalkException(message=Messages.EXCEPTION_ISSNS_OF_THE_SAME_TYPE.format(type=issns[1].attrib["media_type"]))
+
+                if bool(attrs[0]) != bool(attrs[1]):
+                    if attrs[0] != 0:
+                        if attrs[0] == "electronic":
+                            attrs[1] = "print"
+                        else:
+                            attrs[1] = "electronic"
+                    else:
+                        if attrs[1] == "electronic":
+                            attrs[0] = "print"
+                        else:
+                            attrs[0] = "electronic"
+                elif attrs[0] == 0:
+                    attrs[0] = "electronic"
+                    attrs[1] = "print"
+
+                bibjson.add_identifier(bibjson.P_ISSN if attrs[0] == "print" else bibjson.E_ISSN, issns[0].text.upper())
+                bibjson.add_identifier(bibjson.P_ISSN if attrs[1] == "print" else bibjson.E_ISSN, issns[1].text.upper())
 
         # publication date
         pd = record.find("x:publication_date", NS)
@@ -235,6 +267,8 @@ Example record:
 
         # authors
         contributors = record.find("x:contributors", NS)
+        if contributors is None:
+            raise CrosswalkException(message=Messages.EXCEPTION_NO_CONTRIBUTORS_FOUND, inner_message=Messages.EXCEPTION_NO_CONTRIBUTORS_EXPLANATION)
         contribs = contributors.findall("x:person_name", NS)
         if contribs is not None:
             for ctb in contribs:
