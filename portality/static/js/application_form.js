@@ -357,7 +357,6 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
     };
 
     next() {
-        console.log("next");
         this.navigate(this.currentTab + 1);
     }
 
@@ -367,28 +366,24 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
     navigate(n, showEvenIfInvalid = false) {
         this.currentTab = parseInt(n);
-        this.showTab(this.currentTab)
-        //this.parsley.reset();
-        // Hide the current tab:
-        // let form = $('#' + '{{ form_id }}');
-        // this.parsley.whenValidate({
-        //     group: "block-" + this.currentTab
-        // }).done(() => {
-        //     this.tabValidationState[this.currentTab].state = "valid";
-        //     this.currentTab = parseInt(n);
-        //     this.previousTab = this.currentTab-1;
-        //     // Otherwise, display the correct tab:
-        //     this.showTab(this.currentTab);
-        // }).fail(() => {
-        //     // $("#validated-" + this.currentTab).val("False");
-        //     this.tabValidationState[this.currentTab].state = "invalid";
-        //     if (showEvenIfInvalid){
-        //         this.currentTab = parseInt(n);
-        //         this.previousTab = this.currentTab-1;
-        //         // Otherwise, display the correct tab:
-        //         this.showTab(this.currentTab);
-        //     }
-        // });
+        this.parsley.whenValidate({
+            group: "block-" + this.currentTab
+        }).done(() => {
+            this.tabValidationState[this.currentTab].state = "valid";
+            this.currentTab = parseInt(n);
+            this.previousTab = this.currentTab-1;
+            // Otherwise, display the correct tab:
+            this.showTab(this.currentTab);
+        }).fail(() => {
+            // $("#validated-" + this.currentTab).val("False");
+            this.tabValidationState[this.currentTab].state = "invalid";
+            if (showEvenIfInvalid){
+                this.currentTab = parseInt(n);
+                this.previousTab = this.currentTab-1;
+                // Otherwise, display the correct tab:
+                this.showTab(this.currentTab);
+            }
+        });
     };
 
     updateStepIndicator() {
