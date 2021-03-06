@@ -204,7 +204,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         let nextSelector = this.jq("#nextBtn");
         let prevSelector = this.jq("#prevBtn");
 
-        edges.on(nextSelector, "click", this, "next", 0, false, true);
+        edges.on(nextSelector, "click", this, "next");
         edges.on(prevSelector, "click", this, "prev");
 
         let reviewedSelector = this.jq("#reviewed");
@@ -270,9 +270,6 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         }
         this.updateStepIndicator();
 
-        // We want the window to scroll to the top, but for some reason in Firefox window.scrollTo(0,0) doesn't
-        // work here.  We think it's a bug in Firefox.  By issuing a small scrollBy first, it somehow snaps
-        // Firefox out of it, and then the scrollTo works.
         $('html').animate({
             scrollTop: 0
         }, 500, () => {
@@ -365,7 +362,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
     }
 
     navigate(n, showEvenIfInvalid = false) {
-        this.currentTab = parseInt(n);
+        //this.currentTab = parseInt(n);
         this.parsley.whenValidate({
             group: "block-" + this.currentTab
         }).done(() => {
