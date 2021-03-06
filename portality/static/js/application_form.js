@@ -204,7 +204,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         let nextSelector = this.jq("#nextBtn");
         let prevSelector = this.jq("#prevBtn");
 
-        edges.on(nextSelector, "click", this, "next");
+        edges.on(nextSelector, "click", this, "next", 0, false, true);
         edges.on(prevSelector, "click", this, "prev");
 
         let reviewedSelector = this.jq("#reviewed");
@@ -232,7 +232,6 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         let submitButton = this.jq("#submitBtn");
         let draftButton = this.jq("#draftBtn");
-        $(this.tabs[n]).show();
         this.jq("#cannot_save_draft").hide();
         submitButton.hide();
         draftButton.show();
@@ -274,8 +273,12 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         // We want the window to scroll to the top, but for some reason in Firefox window.scrollTo(0,0) doesn't
         // work here.  We think it's a bug in Firefox.  By issuing a small scrollBy first, it somehow snaps
         // Firefox out of it, and then the scrollTo works.
-        window.scrollBy(-100, -100);
-        window.scrollTo(0,0);
+        $('html').animate({
+            scrollTop: 0
+        }, 500, () => {
+            $(this.tabs[n]).show();
+            $("#nextBtn").blur()
+        })
     };
 
     prepNavigation(clearErrors = true) {
@@ -354,6 +357,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
     };
 
     next() {
+        console.log("next");
         this.navigate(this.currentTab + 1);
     }
 
@@ -362,27 +366,29 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
     }
 
     navigate(n, showEvenIfInvalid = false) {
+        this.currentTab = parseInt(n);
+        this.showTab(this.currentTab)
+        //this.parsley.reset();
         // Hide the current tab:
         // let form = $('#' + '{{ form_id }}');
-        this.parsley.whenValidate({
-            group: "block-" + this.currentTab
-        }).done(() => {
-            this.tabValidationState[this.currentTab].state = "valid";
-            this.currentTab = parseInt(n);
-            this.previousTab = this.currentTab-1;
-            // Otherwise, display the correct tab:
-            this.showTab(this.currentTab);
-        }).fail(() => {
-            // $("#validated-" + this.currentTab).val("False");
-            this.tabValidationState[this.currentTab].state = "invalid";
-            if (showEvenIfInvalid){
-                this.currentTab = parseInt(n);
-                this.previousTab = this.currentTab-1;
-                // Otherwise, display the correct tab:
-                this.showTab(this.currentTab);
-            }
-
-        });
+        // this.parsley.whenValidate({
+        //     group: "block-" + this.currentTab
+        // }).done(() => {
+        //     this.tabValidationState[this.currentTab].state = "valid";
+        //     this.currentTab = parseInt(n);
+        //     this.previousTab = this.currentTab-1;
+        //     // Otherwise, display the correct tab:
+        //     this.showTab(this.currentTab);
+        // }).fail(() => {
+        //     // $("#validated-" + this.currentTab).val("False");
+        //     this.tabValidationState[this.currentTab].state = "invalid";
+        //     if (showEvenIfInvalid){
+        //         this.currentTab = parseInt(n);
+        //         this.previousTab = this.currentTab-1;
+        //         // Otherwise, display the correct tab:
+        //         this.showTab(this.currentTab);
+        //     }
+        // });
     };
 
     updateStepIndicator() {
