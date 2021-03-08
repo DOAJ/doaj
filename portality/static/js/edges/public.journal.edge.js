@@ -17,8 +17,8 @@ $.extend(true, doaj, {
 <div id="doaj-fixed-query-widget"></div>`;
 
             var query = renderer.component.edge.cloneQuery();
-            query.addMust(es.newTermFilter({field: "es_type.exact", value: "journal"}))
-            var query = query.objectify({
+            query.addMust(es.newTermFilter({field: "_type", value: "journal"}))
+            query = query.objectify({
                         include_query_string : true,
                         include_filters : true,
                         include_paging : true,
