@@ -104,4 +104,5 @@ static_content/css/*.css
 static_content/css/*.css.map
 
 # generated static content
-pages/fragments/*.html
+pages/fragments/**/
+!pages/fragments/.gitkeep
