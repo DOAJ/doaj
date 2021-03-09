@@ -102,3 +102,6 @@ local_store/tmp/*
 #static_content/_site
 static_content/css/*.css
 static_content/css/*.css.map
+
+# generated static content
+pages/fragments/*.html
