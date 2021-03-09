@@ -1729,7 +1729,6 @@ var formulaic = {
             this.init();
         },
 
-
         newTagList : function(params) {
             return edges.instantiate(formulaic.widgets.TagList, params);
         },
@@ -1775,7 +1774,8 @@ var formulaic = {
                 };
 
                 // apply the create search choice
-                $("[name='" + this.fieldDef.name + "']").select2({
+                let selector = "[name='" + this.fieldDef.name + "']";
+                $(selector).select2({
                     multiple: true,
                     minimumInputLength: 1,
                     ajax: ajax,
@@ -1789,6 +1789,14 @@ var formulaic = {
                     width: 'resolve'
                 });
 
+                edges.on(selector, "focus", this, "_select2_shift_focus");
+
+            };
+
+            this._select2_shift_focus  = function(elem){
+                let id = $(elem).attr("id");
+                let select2_elem  = $("#s2id_" + id).find("input");
+                $(select2_elem).focus();
             };
 
             this.init();
@@ -1805,16 +1813,18 @@ var formulaic = {
             this.ns = "formulaic-tagentry";
 
             this.init = function() {
-                $("[name='" + this.fieldDef.name + "']").select2({
+                let selector = "[name='" + this.fieldDef.name + "']";
+                $(selector).select2({
                     minimumInputLength: 1,
                     tags: [],
                     tokenSeparators: [','],
                     width: 'resolve'
                 });
             };
-
             this.init();
         },
+
+
 
         newLoadEditors: function(params) {
             return edges.instantiate(formulaic.widgets.LoadEditors, params);

@@ -207,8 +207,14 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         edges.on(nextSelector, "click", this, "next");
         edges.on(prevSelector, "click", this, "prev");
 
+        //edges.on("#keywords", "focus", this, "_move_focus");
+
         let reviewedSelector = this.jq("#reviewed");
         edges.on(reviewedSelector, "click", this, "manage_review_checkboxes", false, false, false);
+    }
+
+    _move_focus() {
+        $("#s2id_autogen2").focus();
     }
 
     useStepIndicator() {
