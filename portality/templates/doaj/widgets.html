@@ -8,18 +8,18 @@
 
 <script type="text/javascript">
 var doaj_url = "{{ config.get('BASE_URL') }}";
-var SEARCH_CONFIGURED_OPTIONS = {"query":{"query_string":{"query":"autism","default_operator":"AND"}},"size":50,"sort":[{"created_date":{"order":"desc"}}]};
+{#var SEARCH_CONFIGURED_OPTIONS = {"query":{"query_string":{"query":"autism","default_operator":"AND"}},"size":50,"sort":[{"created_date":{"order":"desc"}}]};#}
 //{"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"es_type":"article"}}]}},"query":{"query_string":{"query":"autism","default_operator":"AND"}}}},"sort":[{"_score":{"order":"desc"}}]}
-{#var QUERY_OPTIONS = {#}
-{#    query_string : 'autism',                      // The plain-text query string#}
-{#    //query_field: 'bibjson.title',                  // The field we are querying#}
-{#    sort: 'created_date',         // Field to order results by#}
-{#    sort_direction:  'desc',                        // Direction of sort "asc" | "desc"#}
-{#    search_operator : 'AND',                       // Which sort operator to use "AND" | "OR"#}
-{#    search_type: 'journal',                        // Which type to search upon (omit for both) "article" | "journal"#}
-{#    page_size : 5,                                 // How many results to show per widget page#}
-{#    page_from : 0                                  // Which result to initially start from#}
-{#    }#}
+var QUERY_OPTIONS = {
+    query_string : 'autism',                      // The plain-text query string
+    //query_field: 'bibjson.title',                  // The field we are querying
+    sort: 'created_date',         // Field to order results by
+    sort_direction:  'desc',                        // Direction of sort "asc" | "desc"
+    search_operator : 'AND',                       // Which sort operator to use "AND" | "OR"
+    search_type: 'journal',                        // Which type to search upon (omit for both) "article" | "journal"
+    page_size : 5,                                 // How many results to show per widget page
+    page_from : 0                                  // Which result to initially start from
+    }
 </script>
 
 <script type="text/javascript">
@@ -47,11 +47,11 @@ var SEARCH_CONFIGURED_OPTIONS = {"query":{"query_string":{"query":"autism","defa
         }
 
         widget_fv_opts[`initialParams`] = {};
-        if (QUERY_OPTIONS.hasOwnProperty('size')) {
-            widget_fv_opts['initialParams']['size'] = QUERY_OPTIONS.size;
+        if (QUERY_OPTIONS.hasOwnProperty('page_size')) {
+            widget_fv_opts['initialParams']['size'] = QUERY_OPTIONS.page_size;
         }
-        if (QUERY_OPTIONS.hasOwnProperty('from')) {
-            widget_fv_opts['initialParams']['from'] = QUERY_OPTIONS.from;
+        if (QUERY_OPTIONS.hasOwnProperty('page_from')) {
+            widget_fv_opts['initialParams']['from'] = QUERY_OPTIONS.page_from;
         }
 
         widget_fv_opts[`queryString`] = {};
@@ -80,5 +80,5 @@ var SEARCH_CONFIGURED_OPTIONS = {"query":{"query_string":{"query":"autism","defa
     }
 
 </script>
-<script type="text/javascript" src="/static/widget/fqw_js.js"></script>
+<script type="text/javascript" src="/static/widget/fq_widget_depends_compiled.js"></script>
 <script type="text/javascript" src="/static/widget/fixed_query_src_edges.js"></script>

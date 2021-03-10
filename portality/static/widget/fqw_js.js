@@ -1535,6 +1535,59 @@ var es = {
     /** @namespace */
 var edges = {
 
+    numFormat : function(params) {
+        var reflectNonNumbers = edges.getParam(params.reflectNonNumbers, false);
+        var prefix = edges.getParam(params.prefix, "");
+        var zeroPadding = edges.getParam(params.zeroPadding, false);
+        var decimalPlaces = edges.getParam(params.decimalPlaces, false);
+        var thousandsSeparator = edges.getParam(params.thousandsSeparator, false);
+        var decimalSeparator = edges.getParam(params.decimalSeparator, ".");
+        var suffix = edges.getParam(params.suffix, "");
+
+        return function(number) {
+            // ensure this is really a number
+            var num = parseFloat(number);
+            if (isNaN(num)) {
+                if (reflectNonNumbers) {
+                    return number;
+                } else {
+                    return num;
+                }
+            }
+
+            // first off we need to convert the number to a string, which we can do directly, or using toFixed if that
+            // is suitable here
+            if (decimalPlaces !== false) {
+                num = num.toFixed(decimalPlaces);
+            } else {
+                num  = num.toString();
+            }
+
+            // now "num" is a string containing the formatted number that we can work on
+
+            var bits = num.split(".");
+
+            if (zeroPadding !== false) {
+                var zeros = zeroPadding - bits[0].length;
+                var pad = "";
+                for (var i = 0; i < zeros; i++) {
+                    pad += "0";
+                }
+                bits[0] = pad + bits[0];
+            }
+
+            if (thousandsSeparator !== false) {
+                bits[0] = bits[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
+            }
+
+            if (bits.length == 1) {
+                return prefix + bits[0] + suffix;
+            } else {
+                return prefix + bits[0] + decimalSeparator + bits[1] + suffix;
+            }
+        }
+    },
+
     //////////////////////////////////////////////////////
     /** @namespace */
     /** function to run to start a new Edge */
@@ -1760,6 +1813,7 @@ var edges = {
             // now issue a query
             this.cycle();
         };
+
         //
         // /////////////////////////////////////////////////////////
         // // Edges lifecycle functions
@@ -7401,4 +7455,260 @@ $.extend(edges, {
 //             params.callback();
 //         }
      }
+});
+$.extend(true, edges, {
+
+    newPager: function (params) {
+        if (!params) {
+            params = {}
+        }
+        edges.Pager.prototype = edges.newComponent(params);
+        return new edges.Pager(params);
+    },
+    Pager: function (params) {
+
+        this.defaultRenderer = params.defaultRenderer || "newPagerRenderer";
+
+        ///////////////////////////////////////
+        // internal state
+
+        this.from = false;
+        this.to = false;
+        this.total = false;
+        this.page = false;
+        this.pageSize = false;
+        this.totalPages = false;
+
+        this.synchronise = function () {
+            // reset the state of the internal variables
+            this.from = false;
+            this.to = false;
+            this.total = false;
+            this.page = false;
+            this.pageSize = false;
+            this.totalPages = false;
+
+            // calculate the properties based on the latest query/results
+            if (this.edge.currentQuery) {
+                this.from = parseInt(this.edge.currentQuery.getFrom()) + 1;
+                this.pageSize = parseInt(this.edge.currentQuery.getSize());
+            }
+            if (this.edge.result) {
+                this.total = this.edge.result.total()
+            }
+            if (this.from !== false && this.total !== false) {
+                this.to = this.from + this.pageSize - 1;
+                this.page = Math.ceil((this.from - 1) / this.pageSize) + 1;
+                this.totalPages = Math.ceil(this.total / this.pageSize)
+            }
+        };
+
+        this.setFrom = function (from) {
+            var nq = this.edge.cloneQuery();
+
+            from = from - 1; // account for the human readability of the value, ES is 0 indexed here
+            if (from < 0) {
+                from = 0;
+            }
+            nq.from = from;
+
+            this.edge.pushQuery(nq);
+            this.edge.doQuery();
+        };
+
+        this.setSize = function (size) {
+            var nq = this.edge.cloneQuery();
+            nq.size = size;
+            this.edge.pushQuery(nq);
+            this.edge.doQuery();
+        };
+
+        this.decrementPage = function () {
+            var from = this.from - this.pageSize;
+            this.setFrom(from);
+        };
+
+        this.incrementPage = function () {
+            var from = this.from + this.pageSize;
+            this.setFrom(from);
+        };
+
+        this.goToPage = function(params) {
+            var page = params.page;
+            var nf = ((page - 1) * this.pageSize) + 1;  // we're working with the human notion of from, here, so is indexed from 1
+            this.setFrom(nf);
+        }
+    },
+
+    bs3 : {
+        newPagerRenderer: function (params) {
+            if (!params) {
+                params = {}
+            }
+            edges.bs3.PagerRenderer.prototype = edges.newRenderer(params);
+            return new edges.bs3.PagerRenderer(params);
+        },
+        PagerRenderer: function (params) {
+
+            this.scroll = edges.getParam(params.scroll, true);
+
+            this.scrollSelector = edges.getParam(params.scrollSelector, "body");
+
+            this.showSizeSelector = edges.getParam(params.showSizeSelector, true);
+
+            this.sizeOptions = edges.getParam(params.sizeOptions, [10, 25, 50, 100]);
+
+            this.sizePrefix = edges.getParam(params.sizePrefix, "");
+
+            this.sizeSuffix = edges.getParam(params.sizeSuffix, " per page");
+
+            this.showRecordCount = edges.getParam(params.showRecordCount, true);
+
+            this.showPageNavigation = edges.getParam(params.showPageNavigation, true);
+
+            this.numberFormat = edges.getParam(params.numberFormat, false);
+
+            this.namespace = "edges-bs3-pager";
+
+            this.draw = function () {
+                if (this.component.total === false || this.component.total === 0) {
+                    this.component.context.html("");
+                    return;
+                }
+
+                // classes we'll need
+                var containerClass = edges.css_classes(this.namespace, "container", this);
+                var totalClass = edges.css_classes(this.namespace, "total", this);
+                var navClass = edges.css_classes(this.namespace, "nav", this);
+                var firstClass = edges.css_classes(this.namespace, "first", this);
+                var prevClass = edges.css_classes(this.namespace, "prev", this);
+                var pageClass = edges.css_classes(this.namespace, "page", this);
+                var nextClass = edges.css_classes(this.namespace, "next", this);
+                var sizeSelectClass = edges.css_classes(this.namespace, "size", this);
+
+                // the total number of records found
+                var recordCount = "";
+                if (this.showRecordCount) {
+                    var total = this.component.total;
+                    if (this.numberFormat) {
+                        total = this.numberFormat(total);
+                    }
+                    recordCount = '<span class="' + totalClass + '">' + total + '</span> results found';
+                }
+
+                // the number of records per page
+                var sizer = "";
+                if (this.showSizeSelector) {
+                    var sizer = '<div class="form-inline">' + recordCount + this.sizePrefix + '<div class="form-group"><select class="form-control input-sm ' + sizeSelectClass + '" name="' + this.component.id + '-page-size">{{SIZES}}</select></div>' + this.sizeSuffix + '</div>';
+                    var sizeopts = "";
+                    var optarr = this.sizeOptions.slice(0);
+                    if ($.inArray(this.component.pageSize, optarr) === -1) {
+                        optarr.push(this.component.pageSize)
+                    }
+                    optarr.sort(function (a, b) {
+                        return a - b
+                    });  // sort numerically
+                    for (var i = 0; i < optarr.length; i++) {
+                        var so = optarr[i];
+                        var selected = "";
+                        if (so === this.component.pageSize) {
+                            selected = "selected='selected'";
+                        }
+                        sizeopts += '<option name="' + so + '" ' + selected + '>' + so + '</option>';
+                    }
+                    sizer = sizer.replace(/{{SIZES}}/g, sizeopts);
+                }
+
+                var nav = "";
+                if (this.showPageNavigation) {
+                    var first = '<a href="#" class="' + firstClass + '">First</a>';
+                    var prev = '<a href="#" class="' + prevClass + '">Prev</a>';
+                    if (this.component.page === 1) {
+                        first = '<span class="' + firstClass + ' disabled">First</span>';
+                        prev = '<span class="' + prevClass + ' disabled">Prev</span>';
+                    }
+
+                    var next = '<a href="#" class="' + nextClass + '">Next</a>';
+                    if (this.component.page === this.component.totalPages) {
+                        next = '<span class="' + nextClass + ' disabled">Next</a>';
+                    }
+
+                    var pageNum = this.component.page;
+                    var totalPages = this.component.totalPages;
+                    if (this.numberFormat) {
+                        pageNum = this.numberFormat(pageNum);
+                        totalPages = this.numberFormat(totalPages);
+                    }
+                    nav = '<div class="' + navClass + '">' + first + prev +
+                        '<span class="' + pageClass + '">Page ' + pageNum + ' of ' + totalPages + '</span>' +
+                        next + "</div>";
+                }
+
+                var frag = "";
+                if (this.showSizeSelector && !this.showPageNavigation) {
+                    frag = '<div class="' + containerClass + '"><div class="row"><div class="col-md-12">{{COUNT}}</div></div></div>';
+                } else if (!this.showSizeSelector && this.showPageNavigation) {
+                    frag = '<div class="' + containerClass + '"><div class="row"><div class="col-md-12">{{NAV}}</div></div></div>';
+                } else {
+                    frag = '<div class="' + containerClass + '"><div class="row"><div class="col-md-6">{{COUNT}}</div><div class="col-md-6">{{NAV}}</div></div></div>';
+                }
+                frag = frag.replace(/{{COUNT}}/g, sizer).replace(/{{NAV}}/g, nav);
+
+                this.component.context.html(frag);
+
+                // now create the selectors for the functions
+                if (this.showPageNavigation) {
+                    var firstSelector = edges.css_class_selector(this.namespace, "first", this);
+                    var prevSelector = edges.css_class_selector(this.namespace, "prev", this);
+                    var nextSelector = edges.css_class_selector(this.namespace, "next", this);
+
+                    // bind the event handlers
+                    if (this.component.page !== 1) {
+                        edges.on(firstSelector, "click", this, "goToFirst");
+                        edges.on(prevSelector, "click", this, "goToPrev");
+                    }
+                    if (this.component.page !== this.component.totalPages) {
+                        edges.on(nextSelector, "click", this, "goToNext");
+                    }
+                }
+
+                if (this.showSizeSelector) {
+                    var sizeSelector = edges.css_class_selector(this.namespace, "size", this);
+                    edges.on(sizeSelector, "change", this, "changeSize");
+                }
+            };
+
+            this.doScroll = function () {
+                $(this.scrollSelector).animate({    // note we do not use component.jq, because the scroll target could be outside it
+                    scrollTop: $(this.scrollSelector).offset().top
+                }, 1);
+            };
+
+            this.goToFirst = function (element) {
+                if (this.scroll) {
+                    this.doScroll();
+                }
+                this.component.setFrom(1);
+            };
+
+            this.goToPrev = function (element) {
+                if (this.scroll) {
+                    this.doScroll();
+                }
+                this.component.decrementPage();
+            };
+
+            this.goToNext = function (element) {
+                if (this.scroll) {
+                    this.doScroll();
+                }
+                this.component.incrementPage();
+            };
+
+            this.changeSize = function (element) {
+                var size = $(element).val();
+                this.component.setSize(size);
+            };
+        }
+    }
 });

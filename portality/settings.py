@@ -475,7 +475,7 @@ QUERY_ROUTE = {
         "journal,article" : {
             "auth" : False,
             "role" : None,
-            # "query_validator" : "public_query_validator",
+            "query_validator" : "public_query_validator",
             "query_filters" : ["only_in_doaj", "strip_facets", "es_type_fix"],
             "result_filters" : ["public_result_filter", "add_fqw_facets", "fqw_back_compat"],
             "dao" : "portality.models.JournalArticle",

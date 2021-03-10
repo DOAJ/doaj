@@ -31,6 +31,9 @@ jQuery(document).ready(function($) {
 
             let selector = params.selector || ".facetview";
             let search_url = current_scheme + "//" + current_domain + doaj.publicSearchConfig.publicSearchPath;
+            let countFormat = edges.numFormat({
+                thousandsSeparator: ","
+            });
 
 
             let components = [
@@ -40,6 +43,26 @@ jQuery(document).ready(function($) {
                     id: "results",
                     category: "results",
                     renderer : doaj.renderers.newPublicSearchResultRenderer()
+                }),
+
+                // the pager, with the explicitly set page size options (see the openingQuery for the initial size)
+                edges.newPager({
+                    id: "top-pager",
+                    category: "top-pager",
+                    renderer: edges.bs3.newPagerRenderer({
+                        sizeOptions: [10, 25, 50, 100],
+                        numberFormat: countFormat,
+                        scrollSelector: "html, body"
+                    })
+                }),
+                edges.newPager({
+                    id: "bottom-pager",
+                    category: "bottom-pager",
+                    renderer: edges.bs3.newPagerRenderer({
+                        sizeOptions: [10, 25, 50, 100],
+                        numberFormat: countFormat,
+                        scrollSelector: "html, body"
+                    })
                 })
             ];
             let e = edges.newEdge({
@@ -49,7 +72,7 @@ jQuery(document).ready(function($) {
                     resultsOnly: true
                 }),
                 search_url: search_url,
-                manageUrl : true,
+                manageUrl : false,
                 openingQuery: this.buildQuery(params),
                 components : components,
                 callbacks : {

@@ -7,14 +7,14 @@ OUT="fq_widget_depends_compiled.js"
 BUILD="fq_widget_build_info.txt"
 
 # path to dependencies
-DEPS="fqw_dependencies"
+
 
 # combine all the dependencies into a single file in the right order (without jquery)
-cat $DEPS/es.js <(echo) \
-    $DEPS/bootstrap2.facetview.theme.js <(echo) \
-    $DEPS/doaj.facetview.theme.js <(echo) \
-    $DEPS/jquery.facetview2.js <(echo) \
-    fixed_query_src.js <(echo) \
+cat ../vendor/edges/src/es.js <(echo) \
+    ../vendor/edges/src/edges.js <(echo) \
+    ../vendor/edges/src/components/search.js <(echo) \
+    ../js/doaj.fieldrender.edges.js <(echo) \
+    ../vendor/edges/src/renderers/bs3.PagerRenderer.js <(echo) \
     > $OUT
 
 # Record the Build time

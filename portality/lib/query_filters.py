@@ -15,7 +15,7 @@ def public_query_validator(q):
 
     # we do not expect the fqw
 
-    if not q.has_facets():
+    if q.has_facets():
         return q.size() == 0
     else:
         return True
