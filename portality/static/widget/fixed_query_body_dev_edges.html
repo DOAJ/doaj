@@ -1,10 +1,5 @@
-<script type="text/javascript" src="/static/vendor/jquery-3.4.1/jquery-3.4.1.min.js"></script>
-<script type="text/javascript" src="/static/js/doaj.js"></script>
-<link rel="stylesheet" href="/static_content/_site/css/main.css">
-
-<div></div>
-<div class="facetview">
-</div>
+<link rel="stylesheet" href="http://localhost:5004/static_content/_site/css/main.css">
+<script type="text/javascript" src="http://localhost:5004/static/js/doaj.js"></script>
 
 <script type="text/javascript">
 
@@ -15,54 +10,6 @@
         }
     });
 
-    var widget_fv_opts = {};
-
-    // If options have been set using the Export method, use only those
-    if (typeof SEARCH_CONFIGURED_OPTIONS != 'undefined') {
-        widget_fv_opts["queryString"] = SEARCH_CONFIGURED_OPTIONS;
-        widget_fv_opts["rawQuery"] = true;
-    }
-    // Otherwise, use options provided.
-    else if (typeof QUERY_OPTIONS != 'undefined') {
-        widget_fv_opts["rawQuery"] = false;
-
-        if(QUERY_OPTIONS.hasOwnProperty('selector')){
-            widget_fv_opts['selector'] = QUERY_OPTIONS.selector;
-        }
-
-        widget_fv_opts[`initialParams`] = {};
-        if (QUERY_OPTIONS.hasOwnProperty('page_size')) {
-            widget_fv_opts['initialParams']['size'] = QUERY_OPTIONS.page_size;
-        }
-        if (QUERY_OPTIONS.hasOwnProperty('page_from')) {
-            widget_fv_opts['initialParams']['from'] = QUERY_OPTIONS.page_from;
-        }
-
-        widget_fv_opts[`queryString`] = {};
-        if (QUERY_OPTIONS.hasOwnProperty('query_string')) {
-            widget_fv_opts['queryString']['queryString'] = QUERY_OPTIONS.query_string;
-        }
-        if (QUERY_OPTIONS.hasOwnProperty('query_field')) {
-            widget_fv_opts['queryString']['defaultField'] = QUERY_OPTIONS.query_field;
-        }
-        if (QUERY_OPTIONS.hasOwnProperty('search_operator')) {
-            widget_fv_opts['queryString']['defaultOperator'] = QUERY_OPTIONS.search_operator;
-        }
-
-        widget_fv_opts['sortFilter'] = {}
-        if (QUERY_OPTIONS.hasOwnProperty('sort_field')) {
-            widget_fv_opts['sortFilter']['field'] = QUERY_OPTIONS.sort_field;
-        }
-        if (QUERY_OPTIONS.hasOwnProperty('sort_direction')) {
-            widget_fv_opts['sortFilter']['sort_direction'] = QUERY_OPTIONS.sort_direction;
-        }
-
-        if (QUERY_OPTIONS.hasOwnProperty('search_type')) {
-            widget_fv_opts['es_type'] = QUERY_OPTIONS.search_type;
-        }
-
-    }
-
 </script>
-<script type="text/javascript" src="/static/widget/fq_widget_depends_compiled.js"></script>
-<script type="text/javascript" src="/static/widget/fixed_query_src_edges.js"></script>
+<script type="text/javascript" src="http://localhost:5004/static/widget/fq_widget_depends_compiled.js"></script>
+<script type="text/javascript" src="http://localhost:5004/static/widget/fixed_query_src_edges.js"></script>

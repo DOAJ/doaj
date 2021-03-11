@@ -8,15 +8,21 @@ BUILD="fq_widget_build_info.txt"
 
 # path to dependencies
 
+#first add doaj.js to the file
 
 # combine all the dependencies into a single file in the right order (without jquery)
-cat ../vendor/edges/src/es.js <(echo) \
+cat ../js/doaj.js <(echo) \
+    public_search_config.js <(echo) \
+    ../vendor/edges/src/es.js <(echo) \
     ../vendor/edges/src/edges.js <(echo) \
     ../vendor/edges/src/components/search.js <(echo) \
     ../js/doaj.fieldrender.edges.js <(echo) \
     ../vendor/edges/src/renderers/bs3.PagerRenderer.js <(echo) \
     > $OUT
 
-# Record the Build time
+#replace all $ with jQuery
+# sed -i 's/\$/jQuery/g' $OUT
 
+
+# Record the Build time
 echo "Build $(date -u +"%Y-%m-%dT%H:%M:%SZ")" > $BUILD

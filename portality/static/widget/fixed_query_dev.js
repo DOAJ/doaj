@@ -22,7 +22,7 @@ if (window.jQuery === undefined || window.jQuery.fn.jquery !== "1.9.1") {
     (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
 } else {
     // The jQuery version on the window is the one we want to use
-    jQuery = window.jQuery;
+    // jQuery = window.jQuery;
     main();
 }
 
@@ -30,24 +30,49 @@ if (window.jQuery === undefined || window.jQuery.fn.jquery !== "1.9.1") {
 function scriptLoadHandler() {
     // Restore $ and window.jQuery to their previous values and store the
     // new jQuery in our local jQuery variable
-    jQuery = window.jQuery.noConflict(true);
+    // jQuery = window.jQuery.noConflict(true);
     // Call our main function
     main();
 }
 
 /******** Our main function ********/
 function main() {
-    jQuery(document).ready(function($) {
-        let url = doaj_url + "/static/widget/fixed_query_body_dev_edges.html";
-        $("#doaj-fixed-query-widget").load(url);
+    $(document).ready(function($) {
+        console.log("fixed_query_dev")
+
+        let head = document.head || document.getElementsByTagName('head')[0];
+
+        let scr  = document.createElement('script');
+        scr.src = 'https://unpkg.com/feather-icons';
+        scr.async = false;
+        scr.defer = false;
+        head.insertBefore(scr, head.firstChild);
+
+        scr  = document.createElement('script');
+        scr.src = 'http://localhost:5004/static/widget/fq_widget_depends_compiled.js';
+        scr.async = false;
+        scr.defer = false;
+        head.insertBefore(scr, head.firstChild);
+
+        scr  = document.createElement('script');
+        scr.src = 'http://localhost:5004/static/widget/fixed_query_src_edges.js';
+        scr.async = false;
+        scr.defer = false;
+        head.insertBefore(scr, head.firstChild);
+
+        scr = document.createElement('link');
+        scr.rel = 'stylesheet';
+        scr.href = 'http://localhost:5004/static_content/_site/css/main.css';
+        head.insertBefore(scr, head.firstChild);
+
+        $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));
+
         $.ajax({
             type: "POST",
             crossDomain: true,
             url: doaj_url + "/fqw_hit",
             data: {embedding_page: window.location.href}
-        }).done(
-            (response) => {console.log("ajax has been called: " + response);}
-        );
+        })
     });
 }
 
