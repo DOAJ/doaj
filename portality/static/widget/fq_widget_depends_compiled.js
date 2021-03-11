@@ -1,5 +1,3 @@
-console.log("fq_widget_depends_compiled")
-
 /** base namespace for all DOAJ-specific functions */
 var doaj = {
     init : function() {

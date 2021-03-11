@@ -38,7 +38,6 @@ function scriptLoadHandler() {
 /******** Our main function ********/
 function main() {
     $(document).ready(function($) {
-        console.log("fixed_query_dev")
 
         let head = document.head || document.getElementsByTagName('head')[0];
 

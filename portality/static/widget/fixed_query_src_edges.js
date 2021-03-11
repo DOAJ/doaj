@@ -1,5 +1,3 @@
-    console.log("fixed_query_src_edges");
-
     $.extend(true, doaj, {
 
         publicSearch : {
