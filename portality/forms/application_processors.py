@@ -1,20 +1,22 @@
 import uuid
 from datetime import datetime
 
+import portality.notifications.application_emails as emails
 from portality.core import app
 from portality import models, constants, app_email
 from portality.lib.formulaic import FormProcessor
-import portality.notifications.application_emails as emails
 from portality.ui.messages import Messages
-
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
+from portality.formcontext.choices import Choices
+from portality.bll import exceptions
+
 from flask import url_for, request, has_request_context
 from flask_login import current_user
 
 from wtforms import FormField, FieldList
 
-from portality.formcontext.choices import Choices
+
 
 
 class ApplicationProcessor(FormProcessor):
@@ -279,6 +281,14 @@ class AdminApplication(ApplicationProcessor):
         # delayed import of the DOAJ BLL
         from portality.bll.doaj import DOAJ
         applicationService = DOAJ.applicationService()
+
+        # if the application is already rejected, and we are moving it back into a non-rejected status
+        if self.source.application_status == constants.APPLICATION_STATUS_REJECTED and self.target.application_status != constants.APPLICATION_STATUS_REJECTED:
+            try:
+                applicationService.unreject_application(self.target, current_user._get_current_object(), disallow_status=[])
+            except exceptions.DuplicateUpdateRequest as e:
+                self.add_alert(Messages.FORMS__APPLICATION_PROCESSORS__ADMIN_APPLICATION__FINALISE__COULD_NOT_UNREJECT)
+                return
 
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
