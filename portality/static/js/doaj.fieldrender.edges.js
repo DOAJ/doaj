@@ -2093,8 +2093,7 @@ $.extend(true, doaj, {
                 }
 
                 this.component.context.html(frag);
-                //TODO: bring it back for non-widget usage!
-                //feather.replace();
+                feather.replace();
 
                 // now bind the abstract expander
                 var abstractAction = edges.css_class_selector(this.namespace, "abstractaction", this);
