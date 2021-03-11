@@ -31,11 +31,11 @@
         }
 
         widget_fv_opts[`initialParams`] = {};
-        if (QUERY_OPTIONS.hasOwnProperty('size')) {
-            widget_fv_opts['initialParams']['size'] = QUERY_OPTIONS.size;
+        if (QUERY_OPTIONS.hasOwnProperty('page_size')) {
+            widget_fv_opts['initialParams']['size'] = QUERY_OPTIONS.page_size;
         }
-        if (QUERY_OPTIONS.hasOwnProperty('from')) {
-            widget_fv_opts['initialParams']['from'] = QUERY_OPTIONS.from;
+        if (QUERY_OPTIONS.hasOwnProperty('page_from')) {
+            widget_fv_opts['initialParams']['from'] = QUERY_OPTIONS.page_from;
         }
 
         widget_fv_opts[`queryString`] = {};

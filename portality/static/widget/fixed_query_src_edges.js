@@ -38,13 +38,6 @@ jQuery(document).ready(function($) {
 
             let components = [
 
-                // results display
-                edges.newResultsDisplay({
-                    id: "results",
-                    category: "results",
-                    renderer : doaj.renderers.newPublicSearchResultRenderer()
-                }),
-
                 // the pager, with the explicitly set page size options (see the openingQuery for the initial size)
                 edges.newPager({
                     id: "top-pager",
@@ -54,22 +47,19 @@ jQuery(document).ready(function($) {
                         numberFormat: countFormat,
                         scrollSelector: "html, body"
                     })
-                }),
-                edges.newPager({
-                    id: "bottom-pager",
-                    category: "bottom-pager",
-                    renderer: edges.bs3.newPagerRenderer({
-                        sizeOptions: [10, 25, 50, 100],
-                        numberFormat: countFormat,
-                        scrollSelector: "html, body"
-                    })
                 })
+                // results display
+                edges.newResultsDisplay({
+                    id: "results",
+                    category: "results",
+                    renderer : doaj.renderers.newPublicSearchResultRenderer()
+                }),
             ];
             let e = edges.newEdge({
                 selector: selector,
                 template: doaj.templates.newPublicSearch({
                     titleBar: false,
-                    resultsOnly: true
+                    resultsOnly: false
                 }),
                 search_url: search_url,
                 manageUrl : false,
