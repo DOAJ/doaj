@@ -48,20 +48,20 @@ function main() {
         head.insertBefore(scr, head.firstChild);
 
         scr  = document.createElement('script');
-        scr.src = 'http://localhost:5004/static/widget/fq_widget_depends_compiled.js';
+        scr.src = doaj_url + '/static/widget/fq_widget_depends_compiled.js';
         scr.async = false;
         scr.defer = false;
         head.insertBefore(scr, head.firstChild);
 
         scr  = document.createElement('script');
-        scr.src = 'http://localhost:5004/static/widget/fixed_query_src_edges.js';
+        scr.src = doaj_url + '/static/widget/fixed_query_src_edges.js';
         scr.async = false;
         scr.defer = false;
         head.insertBefore(scr, head.firstChild);
 
         scr = document.createElement('link');
         scr.rel = 'stylesheet';
-        scr.href = 'http://localhost:5004/static_content/_site/css/main.css';
+        scr.href = doaj_url + '/static_content/_site/css/main.css';
         head.insertBefore(scr, head.firstChild);
 
         $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));
