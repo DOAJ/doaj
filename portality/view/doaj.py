@@ -542,7 +542,7 @@ def editorial_subcommittee():
 
 @blueprint.route("/about/volunteers/")
 def volunteers():
-    return render_template("layouts/static_page.html", page_frag="/about/volunteers-fragment/index.html", page_title="Volunteers")
+    return render_template("layouts/static_page.html", page_frag="/about/volunteers.html", page_title="Volunteers")
 
 
 @blueprint.route("/about/team/")
