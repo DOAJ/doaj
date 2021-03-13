@@ -1,9 +1,17 @@
 import os
 import markdown
+import shutil
 
 BASE = "pages"
-SRC = os.path.join(BASE, "src")
+SRC = os.path.join(BASE, "source")
 OUT = os.path.join(BASE, "fragments")
+
+for filename in os.listdir(OUT):
+    filepath = os.path.join(OUT, filename)
+    try:
+        shutil.rmtree(filepath)
+    except OSError:
+        os.remove(filepath)
 
 for dirpath, dirnames, filenames in os.walk(SRC):
     for fn in filenames:

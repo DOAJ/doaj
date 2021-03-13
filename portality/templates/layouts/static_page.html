@@ -1,9 +1,14 @@
 {% extends "layouts/base.html" %}
 
-{% block page_title %}{{ page_title }} &ndash; {% endblock %}
+{% block page_title %}{{ page.title }} &ndash; {% endblock %}
 
 {% block content %}
 
-    {% include page_frag %}
+    {% if page.layout %}
+        {% set inc = "layouts/" + page.layout + ".html" %}
+        {% include inc %}
+    {% else %}
+        {% include page.frag %}
+    {% endif %}
 
 {% endblock %}

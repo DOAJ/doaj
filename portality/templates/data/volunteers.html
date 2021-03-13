@@ -1,0 +1,44 @@
+<!-- About section: volunteers -->
+<h2>Editors</h2>
+<ul class="row title-list">
+    {% for i in data.volunteers.ed %}
+        <li class="col-xs-6 col-md-4 col-lg-3">
+            <div class="title-list__text">
+                {% if i.photo %}
+                    <figure class="portrait portrait--small" aria-hidden="true">
+                        <div class="portrait__bg-img" style="background-image: url('/static_content/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                    </figure>
+                {% endif %}
+                <p class="label">{% if i.city %}{{ i.city }}, {% endif %}{{ i.country }}</p>
+                <h3 class="title-list__heading">{{ i.name }}</h3>
+                <p class="label label--tertiary">
+                    {{ i.area }}<br/>
+                    {{ i.language }}<br/>
+                </p>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+
+<h2>Associate editors</h2>
+<ul class="row title-list">
+    {% for i in data.volunteers.ass_ed %}
+        {% if i.area %}
+            <li class="col-xs-6 col-md-4 col-lg-3">
+                <div class="title-list__text">
+                    {% if i.photo %}
+                        <figure class="portrait portrait--small" aria-hidden="true">
+                            <div class="portrait__bg-img" style="background-image: url('/static_content/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                        </figure>
+                    {% endif %}
+                    <p class="label">{% if i.city %}{{ i.city }}, {% endif %}{{ i.country }}</p>
+                    <h3 class="title-list__heading">{{ i.name }}</h3>
+                    <p class="label label--tertiary">
+                        {{ i.area }}<br/>
+                        {{ i.language }}<br/>
+                    </p>
+                </div>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
