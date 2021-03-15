@@ -13,6 +13,9 @@ for filename in os.listdir(OUT):
     except OSError:
         os.remove(filepath)
 
+
+# Do all the page fragments
+
 for dirpath, dirnames, filenames in os.walk(SRC):
     for fn in filenames:
         nfn = fn.rsplit(".", 1)[0] + ".html"

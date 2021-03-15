@@ -42,7 +42,8 @@ setup(
         "parameterized==0.7.0",
         "awscli==1.16.269",
         "boto3==1.10.5",
-        "Flask-DebugToolbar==0.10.1"
+        "Flask-DebugToolbar==0.10.1",
+        "libsass==0.20.1"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     url='http://cottagelabs.com/',
     author='Cottage Labs',
