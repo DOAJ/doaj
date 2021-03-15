@@ -1004,6 +1004,14 @@ var formulaic = {
     },
 
     widgets : {
+
+        _select2_shift_focus: function(){
+            let id = $(this).attr("id");
+            console.log("focused on " + id);
+            let select2_elem  = $("#s2id_" + id).find("input");
+            $(select2_elem).focus();
+        },
+
         newSubjectTree : function(params) {
             return edges.instantiate(formulaic.widgets.SubjectTree, params);
         },
@@ -1724,15 +1732,7 @@ var formulaic = {
                     newOption: true,
                     placeholder: "Start typing…"
                 });
-
-                edges.on(this.elements, "focus", this, "_select2_shift_focus");
-            };
-
-            this._select2_shift_focus  = function(elem){
-                let id = $(elem).attr("id");
-                console.log("focused on " + id);
-                let select2_elem  = $("#s2id_" + id).find("input");
-                $(select2_elem).focus();
+                $(this.elements).on("focus", formulaic.widgets._select2_shift_focus);
             };
 
             this.init();
@@ -1798,15 +1798,8 @@ var formulaic = {
                     width: 'resolve'
                 });
 
-                edges.on(selector, "focus", this, "_select2_shift_focus");
+                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
 
-            };
-
-            this._select2_shift_focus  = function(elem){
-                let id = $(elem).attr("id");
-                console.log("focused on " + id);
-                let select2_elem  = $("#s2id_" + id).find("input");
-                $(select2_elem).focus();
             };
 
             this.init();
@@ -1830,14 +1823,7 @@ var formulaic = {
                     tokenSeparators: [','],
                     width: 'resolve'
                 });
-                edges.on(selector, "focus", this, "_select2_shift_focus");
-            };
-
-            this._select2_shift_focus  = function(elem){
-                let id = $(elem).attr("id");
-                console.log("focused on " + id);
-                let select2_elem  = $("#s2id_" + id).find("input");
-                $(select2_elem).focus();
+                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
             };
 
             this.init();
@@ -1965,14 +1951,7 @@ var formulaic = {
                     });
                 }
 
-                edges.on(selector, "focus", this, "_select2_shift_focus");
-            };
-
-            this._select2_shift_focus  = function(elem){
-                let id = $(elem).attr("id");
-                console.log("focused on " + id);
-                let select2_elem  = $("#s2id_" + id).find("input");
-                $(select2_elem).focus();
+                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
             };
 
             this.init()
