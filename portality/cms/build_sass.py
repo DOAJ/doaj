@@ -1,7 +1,7 @@
 import sass
 import os
 
-SASS = os.path.join("portality", "static", "_sass")
+SASS = os.path.join("pages", "_sass")
 MAIN = os.path.join(SASS, "main.scss")
 STYLE = "compressed"
 CSS = os.path.join("portality", "static", "doaj", "css", "main.css")
