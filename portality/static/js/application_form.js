@@ -207,14 +207,8 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         edges.on(nextSelector, "click", this, "next");
         edges.on(prevSelector, "click", this, "prev");
 
-        //edges.on("#keywords", "focus", this, "_move_focus");
-
         let reviewedSelector = this.jq("#reviewed");
         edges.on(reviewedSelector, "click", this, "manage_review_checkboxes", false, false, false);
-    }
-
-    _move_focus() {
-        $("#s2id_autogen2").focus();
     }
 
     useStepIndicator() {
@@ -380,6 +374,11 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         }).fail(() => {
             // $("#validated-" + this.currentTab).val("False");
             this.tabValidationState[this.currentTab].state = "invalid";
+            let that = this;
+            let errFields = $(this.parsley.fields).filter(function(){return (this.validationResult !== true && this.domOptions.group === "block-" + that.currentTab)});
+            let errFirst = $(errFields.first()[0].element);
+            errFirst.trigger("focus");
+            errFirst.trigger("focus");
             if (showEvenIfInvalid){
                 this.currentTab = parseInt(n);
                 this.previousTab = this.currentTab-1;

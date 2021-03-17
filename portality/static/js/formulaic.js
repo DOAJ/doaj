@@ -1486,6 +1486,7 @@ var formulaic = {
                 for (var idx = 0; idx < this.fields.length; idx++) {
                     let f = this.fields[idx];
                     let s2_input = $($(f).select2());
+                    $(f).on("focus", formulaic.widgets._select2_shift_focus);
                     s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
                     if (idx !== 0) {
                         s2_input.attr("required", false);
@@ -1929,6 +1930,8 @@ var formulaic = {
                 };
 
                 let selector = "[name='" + this.fieldDef.name + "']";
+
+                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
 
                 if (include_input) {
                     // apply the create search choice
