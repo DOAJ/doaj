@@ -1,6 +1,6 @@
     $.extend(true, doaj, {
 
-        publicSearch : {
+        fqwidget : {
             activeEdges : {},
 
             buildQuery: function(params){
@@ -105,7 +105,7 @@
                 ];
                 let e = edges.newEdge({
                     selector: selector,
-                    template: doaj.templates.newPublicSearch({
+                    template: doaj.templates.newFQWidget({
                         titleBar: false,
                         resultsOnly: false
                     }),
@@ -119,9 +119,9 @@
                         }
                     }
                 });
-                doaj.publicSearch.activeEdges[selector] = e;
+                doaj.fqwidget.activeEdges[selector] = e;
             }
         }
 
     });
-    doaj.publicSearch.init();
+    doaj.fqwidget.init();

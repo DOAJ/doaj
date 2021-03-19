@@ -179,6 +179,79 @@ $.extend(true, doaj, {
             };
         },
 
+        newFQWidget: function (params) {
+            return edges.instantiate(doaj.templates.FQWidget, params, edges.newTemplate);
+        },
+        FQWidget: function (params) {
+            this.namespace = "fqwidget";
+
+            this.title = edges.getParam(params.title, "");
+
+            this.titleBar = edges.getParam(params.titleBar, true);
+            this.resultsOnly = edges.getParam(params.resultsOnly, false);
+
+            this.draw = function (edge) {
+                this.edge = edge;
+
+                var titleBarFrag = "";
+                if (this.titleBar) {
+                    titleBarFrag = '<header class="search__header"> \
+                        <p class="label">Search</p>\n \
+                        <h1>' + this.title + ' \
+                            <span data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-help" type="button"></span><span class="sr-only">Help</span> \
+                        </h1> \
+                        <div class="row">\
+                            <form id="search-input-bar" class="col-md-9" role="search"></form>\
+                        </div>\
+                    </header>';
+                }
+                var frag = "";
+                if (this.resultsOnly) {
+                    frag = `<div class="row"><div class="col-md-12"><ol class="search-results" id="results"></ol></div></div>`;
+                }
+                else {
+                    frag = titleBarFrag + '\
+                    <p id="share_embed"></p>\
+                    <h2 id="result-count"></h2>\
+                    <div class="row">\
+                        <div class="col-md-3">\
+                            <aside class="filters">\
+                              <h2 class="filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
+                                <span data-feather="sliders" aria-hidden="true"></span> Refine search results \
+                              </h2>\
+                              <ul class="collapse filters__list" id="filters" aria-expanded="false">\
+                                  {{FACETS}}\
+                              </ul>\
+                            </aside>\
+                        </div>\
+                            \
+                        <div class="col-md-9">\
+                            <aside id="selected-filters"></aside>\
+                            <nav class="search-options">\
+                                <h3 class="sr-only">Display options</h3>\
+                                <div class="row">\
+                                    <form class="col-sm-6" id="sort_by"></form>\
+                                    <form class="col-sm-6 search-options__right" id="rpp"></form>\
+                                </div>\
+                            </nav>\
+                            <nav class="pagination" id="top-pager"></nav>\
+                            <ol class="search-results" id="results"></ol>\
+                            <nav class="pagination" id="bottom-pager"></nav>\
+                        </div>\
+                    </div>';
+
+                    // add the facets dynamically
+                    var facets = edge.category("facet");
+                    var facetContainers = "";
+                    for (var i = 0; i < facets.length; i++) {
+                        facetContainers += '<li class="filter" id="' + facets[i].id + '"></li>';
+                    }
+                    frag = frag.replace(/{{FACETS}}/g, facetContainers);
+                }
+                edge.context.html(frag);
+            };
+        },
+
         newPublisherApplications: function (params) {
             return edges.instantiate(doaj.templates.PublisherApplications, params, edges.newTemplate);
         },
