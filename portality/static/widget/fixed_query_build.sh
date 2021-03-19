@@ -17,6 +17,7 @@ cat ../js/doaj.js <(echo) \
     ../vendor/edges/src/edges.js <(echo) \
     ../vendor/edges/src/components/search.js <(echo) \
     ../js/doaj.fieldrender.edges.js <(echo) \
+    ../vendor/edges/src/renderers/bs3.ResultCountRenderer.js \
     ../vendor/edges/src/renderers/bs3.PagerRenderer.js <(echo) \
     > $OUT
 
