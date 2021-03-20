@@ -25,13 +25,11 @@
     </header>
     {% if page.highlight %}</div>{% endif %}
 
-    <div class="container">
     {% if page.include %}
-        {% for inc in page.include %}
-            {% include inc %}
-        {% endfor %}
-    {% endif %}
+    <div class="container">
+        {% include page.include %}
     </div>
+    {% endif %}
 
 {# FIXME: all the different pages data requirements are calculated here, we need to factor them out #}
 {#

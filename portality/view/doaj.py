@@ -519,30 +519,12 @@ def about():
 
 @blueprint.route("/about/ambassadors/")
 def ambassadors():
-    return render_template("layouts/static_page.html", page={
-        "frag" : "/about/ambassadors.html",
-        "include" : ["/data/ambassadors.html"],
-        "layout" : "no-sidenav",
-        "title" : "Ambassadors",
-        "order" : 3,
-        "section": "About",
-        "highlight": True,
-        "toc" : True
-    })
+    return render_template("layouts/static_page.html", page_frag="/about/ambassadors.html")
 
 
 @blueprint.route("/about/advisory-board-council/")
 def abc():
-    return render_template("layouts/static_page.html", page={
-        "frag" : "/about/advisory-board-council.html",
-        "include" : ["/data/advisory-board-council.html"],
-        "layout" : "no-sidenav",
-        "title" : "Advisory Board & Council",
-        "order" : 4,
-        "section": "About",
-        "highlight" : False,
-        "toc" : True
-    })
+    return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council.html")
 
 
 @blueprint.route("/about/editorial-subcommittee/")
@@ -552,14 +534,7 @@ def editorial_subcommittee():
 
 @blueprint.route("/about/volunteers/")
 def volunteers():
-    return render_template("layouts/static_page.html", page={
-        "frag" : "/about/volunteers.html",
-        "include" : ["/data/volunteers.html"],
-        "layout": "no-sidenav",
-        "title": "Volunteers",
-        "section": "About",
-        "highlight": True
-    })
+    return render_template("layouts/static_page.html", page_frag="/about/volunteers.html")
 
 
 @blueprint.route("/about/team/")

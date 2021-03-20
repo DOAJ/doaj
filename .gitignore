@@ -106,3 +106,4 @@ static_content/css/*.css.map
 # generated static content
 pages/fragments/**/
 !pages/fragments/.gitkeep
+pages/_data/frontmatter.yml
