@@ -54,6 +54,13 @@ class Messages(object):
     EXCEPTION_NO_DOI_NO_FULLTEXT = "The article must have a DOI and/or a Full-Text URL"
     EXCEPTION_ARTICLE_OVERRIDE = "Cannot update the article. An article with this URL and DOI already exists. If you are sure you want to replace it please delete it and then re-create it."
 
+    EXCEPTION_NO_CONTRIBUTORS_FOUND = "No contributors found."
+    EXCEPTION_NO_CONTRIBUTORS_EXPLANATION = "DOAJ requires at least one author for each article."
+
+    EXCEPTION_TOO_MANY_ISSNS = "Too many ISSNs. Only 2 ISSNs are allowed"
+    EXCEPTION_ISSNS_OF_THE_SAME_TYPE = "Both ISSNs have the same type: {type}"
+
+
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
     {data_dump_url}. You can also harvest from our OAI-PMH endpoints; articles: {oai_article_url}, journals: {oai_journal_url}"""
@@ -62,6 +69,18 @@ class Messages(object):
 
     FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR = "We were unable to send you an email confirmation - possible problem with the email address provided"
     FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR = 'Error sending application received email.'
+    FORMS__APPLICATION_PROCESSORS__ADMIN_APPLICATION__FINALISE__COULD_NOT_UNREJECT = "Could not unreject application, as a new Update Request for the journal now exists"
+
+    BLL__UNREJECT_APPLICATION__NO_APPLICATION = "You must supply an application to unreject_application"
+    BLL__UNREJECT_APPLICATION__NO_ACCOUNT = "You must supply an account to unreject_application"
+    BLL__UNREJECT_APPLICATION__WRONG_ROLE = "This user is not allowed to unreject applications"
+    BLL__UNREJECT_APPLICATION__ILLEGAL_STATE_REJECTED = "The application {id} is in 'rejected' state; place it into the correct new state before calling unreject_application"
+    BLL__UNREJECT_APPLICATION__ILLEGAL_STATE_DISALLOWED = "The application {id} is in '{x}' status, which is disallowed in this call context"
+    BLL__UNREJECT_APPLICATION__DUPLICATE_UR = """Creating an update request from rejected application {id} is not possible as another application {urid} exists which is an update request for journal {jid}"""
+    BLL__UNREJECT_APPLICATION__JOURNAL_MISSING = "Journal {jid} related to application {id} does not exist"
+    BLL__UNREJECT_APPLICATION__SAVE_FAIL = "Save on {obj} {id} in unreject_application failed"
+
+
 
     @classmethod
     def flash(cls, tup):

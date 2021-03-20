@@ -62,7 +62,7 @@ class TestCrudReturnValues(DoajTestCase):
 
             # CREATE a new application
             response = t_client.post('/api/v2/applications?api_key=' + self.api_key, data=json.dumps(user_data))
-            assert response.status_code == 201          # 201 "Created"
+            assert response.status_code == 201, response.status_code          # 201 "Created"
             assert response.mimetype == 'application/json'
 
             # Check it gives back a newly created application, with an ID
@@ -73,7 +73,7 @@ class TestCrudReturnValues(DoajTestCase):
 
             # RETRIEVE the same application using the ID
             response = t_client.get('/api/v2/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))
-            assert response.status_code == 200          # 200 "OK"
+            assert response.status_code == 200, response.status_code          # 200 "OK"
             assert response.mimetype == 'application/json'
 
             retrieved_application = json.loads(response.data.decode("utf-8"))
@@ -121,7 +121,7 @@ class TestCrudReturnValues(DoajTestCase):
 
             # CREATE a new article
             response = t_client.post('/api/v2/articles?api_key=' + self.api_key, data=json.dumps(user_data))
-            assert response.status_code == 201          # 201 "Created"
+            assert response.status_code == 201, response.status_code          # 201 "Created"
             assert response.mimetype == 'application/json'
 
             # Check it gives back a newly created article, with an ID
@@ -174,7 +174,7 @@ class TestCrudReturnValues(DoajTestCase):
             # attempt to CREATE a new article with invalid JSON
             bad_data = json.dumps(user_data) + 'blarglrandomblah'
             response = t_client.post('/api/v2/articles?api_key=' + self.api_key, data=bad_data)
-            assert response.status_code == 400  # 400 "Bad Request"
+            assert response.status_code == 400, response.status_code  # 400 "Bad Request"
             assert response.mimetype == 'application/json'
             assert 'Supplied data was not valid JSON' in response.json['error']
 

@@ -15,6 +15,7 @@ def swag(swag_summary, swag_spec):
     def decorator(f):
         f.summary = swag_summary
         f.swag = swag_spec
+        f.description = swag_summary
         return f
 
     return decorator

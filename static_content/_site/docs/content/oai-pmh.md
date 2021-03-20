@@ -78,6 +78,7 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
 
 | Date changes were made live | Changes                                                                                                                                                                                                                                                 |
 |-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 25 November 2020            | a minor edit to `dc:relation`: 'Links to related resources: the journal home page and the journal author-pays link if relevant' became 'Links to related resources (if present): the journal home page, open access statement, author instructions, aims, and waiver pages'|
 | 20 April 2015               | `subject` elements which represent a Library of Congress Classification \(LCC\) topic will now be marked with an additional OAI DC\-compliant attribute to denote this: `xsi:type="dcterms:LCSH"`\. LCC subjects will no longer be prefixed by `LCC:`\. |
 | 13 December 2013            | Initial release                                                                                                                                                                                                                                         |
 

@@ -26,7 +26,7 @@ class ArticlesCrudApi(CrudApi):
             Explicit documentation for the structure of this data is also <a href="https://github.com/DOAJ/doaj/blob/master/docs/system/IncomingAPIArticle.md">provided here</a>.
             Partial updates are not allowed, you have to supply the full JSON.</div>""",
         "required": True,
-        "type": "string",
+        "schema": {"type" : "string"},
         "name": "article_json",
         "in": "body"
     }
@@ -193,17 +193,27 @@ class ArticlesCrudApi(CrudApi):
 
         # if that works, convert it to an Article object bringing over everything outside the
         # incoming article from the original article
-        new_ar = ia.to_article_model(ar)
 
         # we need to ensure that any properties of the existing article that aren't allowed to change
         # are copied over
+        new_ar = ia.to_article_model(ar)
         new_ar.set_id(id)
         new_ar.set_created(ar.created_date)
         new_ar.bibjson().set_subjects(ar.bibjson().subjects())
-        new_ar = cls.__handle_journal_info(new_ar)
 
-        # finally save the new article, and return to the caller
-        new_ar.save()
+        try:
+            # Article save occurs in the BLL create_article
+            result = articleService.create_article(new_ar, account, add_journal_info=True, update_article_id=id)
+        except ArticleMergeConflict as e:
+            raise Api400Error(str(e))
+        except ArticleNotAcceptable as e:
+            raise Api400Error("; ".join(e.errors))
+        except DuplicateArticleException as e:
+            raise Api403Error(str(e))
+
+        if result.get("success") == 0:
+            raise Api400Error("Article update failed for unanticipated reason")
+
         return new_ar
 
     @classmethod

@@ -6,7 +6,7 @@ We do not check metadata quality as we ingest it — this is the publisher's res
 
 + First convert your article metadata into an accepted XML format: DOAJ or Crossref.
   + It must be structured correctly.
-  + Its format must follow a set of rules laid out in the [DOAJ XML schema file](/static/doaj/doajArticles.xsd), or the rules laid out in [Crossref’s schema file](https://www.crossref.org/education/content-registration/crossrefs-metadata-deposit-schema/crossref-xsd-schema-quick-reference/).
+  + Its format must follow a set of rules laid out in the [DOAJ XML schema file](http://doaj.org/static/doaj/doajArticles.xsd), or the rules laid out in [Crossref’s schema file](https://www.crossref.org/education/content-registration/crossrefs-metadata-deposit-schema/crossref-xsd-schema-quick-reference/).
 + If you are creating DOAJ XML manually, try [formatting](https://jsonformatter.org/xml-formatter) and [validating](https://www.xmlvalidation.com/) the file before you upload it to us.
 + If you are exporting XML from an OJS plugin, you can [upload the file](/publisher/uploadfile) immediately.
 
@@ -19,9 +19,9 @@ Here is a table of each element in the DOAJ XML file. It shows you whether or no
 | Language, ISO code | Optional, max 1                                                             |
 | Publisher          | Optional, max 1                                                             |
 | **Journal title**  | Required, only 1                                                            |
-| ISSN               | Optional, max. 1 <br>Either the ISSN or the EISSN must be present, or both  |
-| EISSN              | Optional, max. 1  <br>Either the ISSN or the EISSN must be present, or both |
-| **Publication date** | Required, only 1                                                            |
+| ISSN               | Optional, max. 1 <br>Either the ISSN or the EISSN must be present, or both. (The number of ISSNs sent in the article metadata must match what is stored in the DOAJ record for the journal.)  |
+| EISSN              | Optional, max. 1  <br>Either the ISSN or the EISSN must be present, or both. (The number of ISSNs sent in the article metadata must match what is stored in the DOAJ record for the journal.) |
+| **Publication date** | Required, only 1                                                          |
 | Volume number      | Optional, max. 1                                                            |
 | Issue number       | Optional, max. 1                                                            |
 | Start page         | Optional, max. 1                                                            |
@@ -108,17 +108,17 @@ The example file below contains only one record.
 
 ## The doajArticles.xsd schema file
 
-The [doajArticles.xsd](http://www.doaj.org/static/doaj/doajArticles.xsd) file specifies what may or may not be uploaded to the database.
+The [doajArticles.xsd](http://doaj.org/static/doaj/doajArticles.xsd) file specifies what may or may not be uploaded to the database.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema 
            version = "1.3"
            xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-           xmlns:iso_639-2b="https://doaj.org/schemas/iso_639-2b/1.1">
+           xmlns:iso_639-2b="http://doaj.org/schemas/iso_639-2b/1.1">
   
-  <xs:import namespace="https://doaj.org/schemas/iso_639-2b/1.1" 
-             schemaLocation="https://doaj.org/static/doaj/iso_639-2b.xsd">
+  <xs:import namespace="http://doaj.org/schemas/iso_639-2b/1.1" 
+             schemaLocation="http://doaj.org/static/doaj/iso_639-2b.xsd">
     <xs:annotation>
       <xs:documentation>
         This schema determines allowable xml file formats

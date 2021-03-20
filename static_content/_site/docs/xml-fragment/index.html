@@ -35,7 +35,7 @@
   <li>First convert your article metadata into an accepted XML format: DOAJ or Crossref.
     <ul>
       <li>It must be structured correctly.</li>
-      <li>Its format must follow a set of rules laid out in the <a href="/static/doaj/doajArticles.xsd">DOAJ XML schema file</a>, or the rules laid out in <a href="https://www.crossref.org/education/content-registration/crossrefs-metadata-deposit-schema/crossref-xsd-schema-quick-reference/" target="_blank" rel="noopener">Crossref’s schema file</a>.</li>
+      <li>Its format must follow a set of rules laid out in the <a href="http://doaj.org/static/doaj/doajArticles.xsd" target="_blank" rel="noopener">DOAJ XML schema file</a>, or the rules laid out in <a href="https://www.crossref.org/education/content-registration/crossrefs-metadata-deposit-schema/crossref-xsd-schema-quick-reference/" target="_blank" rel="noopener">Crossref’s schema file</a>.</li>
     </ul>
   </li>
   <li>If you are creating DOAJ XML manually, try <a href="https://jsonformatter.org/xml-formatter" target="_blank" rel="noopener">formatting</a> and <a href="https://www.xmlvalidation.com/" target="_blank" rel="noopener">validating</a> the file before you upload it to us.</li>
@@ -68,11 +68,11 @@
     </tr>
     <tr>
       <td>ISSN</td>
-      <td>Optional, max. 1 <br>Either the ISSN or the EISSN must be present, or both</td>
+      <td>Optional, max. 1 <br>Either the ISSN or the EISSN must be present, or both. (The number of ISSNs sent in the article metadata must match what is stored in the DOAJ record for the journal.)</td>
     </tr>
     <tr>
       <td>EISSN</td>
-      <td>Optional, max. 1  <br>Either the ISSN or the EISSN must be present, or both</td>
+      <td>Optional, max. 1  <br>Either the ISSN or the EISSN must be present, or both. (The number of ISSNs sent in the article metadata must match what is stored in the DOAJ record for the journal.)</td>
     </tr>
     <tr>
       <td><strong>Publication date</strong></td>
@@ -231,16 +231,16 @@
 
 <h2 id="the-doajarticlesxsd-schema-file">The doajArticles.xsd schema file</h2>
 
-<p>The <a href="http://www.doaj.org/static/doaj/doajArticles.xsd" target="_blank" rel="noopener">doajArticles.xsd</a> file specifies what may or may not be uploaded to the database.</p>
+<p>The <a href="http://doaj.org/static/doaj/doajArticles.xsd" target="_blank" rel="noopener">doajArticles.xsd</a> file specifies what may or may not be uploaded to the database.</p>
 
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 <span class="nt">&lt;xs:schema</span> 
            <span class="na">version =</span> <span class="s">"1.3"</span>
            <span class="na">xmlns:xs=</span><span class="s">"http://www.w3.org/2001/XMLSchema"</span> 
-           <span class="na">xmlns:iso_639-2b=</span><span class="s">"https://doaj.org/schemas/iso_639-2b/1.1"</span><span class="nt">&gt;</span>
+           <span class="na">xmlns:iso_639-2b=</span><span class="s">"http://doaj.org/schemas/iso_639-2b/1.1"</span><span class="nt">&gt;</span>
   
-  <span class="nt">&lt;xs:import</span> <span class="na">namespace=</span><span class="s">"https://doaj.org/schemas/iso_639-2b/1.1"</span> 
-             <span class="na">schemaLocation=</span><span class="s">"https://doaj.org/static/doaj/iso_639-2b.xsd"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;xs:import</span> <span class="na">namespace=</span><span class="s">"http://doaj.org/schemas/iso_639-2b/1.1"</span> 
+             <span class="na">schemaLocation=</span><span class="s">"http://doaj.org/static/doaj/iso_639-2b.xsd"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;xs:annotation&gt;</span>
       <span class="nt">&lt;xs:documentation&gt;</span>
         This schema determines allowable xml file formats

@@ -4,8 +4,13 @@
 .portrait {
   position: relative;
   margin: $spacing-02 0 $spacing-04 0;
+  width: 50%;
   background-color: rgba($sanguine, 0.25);
   border: 1px solid $sanguine;
+
+  @media (min-width: 769px) {
+    width: 100%;
+  }
 }
 
 .portrait--small {
@@ -26,8 +31,8 @@
 
 .portrait__bg-img {
   position: relative;
-  width:  100%;
-  height: $spacing-06 * 2;
+  width: 100%;
+  height: 30vh;
   background-size: cover;
   background-position: center;
   border: 1px solid $sanguine;
@@ -37,4 +42,8 @@
   left: $spacing-02;
   background-color: $sanguine;
   color: $warm-white;
+
+  @media (min-width: 769px) {
+    height: $spacing-06 * 2;
+  }
 }

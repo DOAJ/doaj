@@ -460,6 +460,11 @@ def supporters():
     return render_template("layouts/static_page.html", page_frag="/support/supporters-fragment/index.html", page_title="Supporters")
 
 
+@blueprint.route("/support/thank-you/")
+def application_thanks():
+    return render_template("layouts/static_page.html", page_frag="/support/thank-you-fragment/index.html", page_title="Thank you for your support")
+
+
 @blueprint.route("/apply/guide/")
 def guide():
     return render_template("layouts/static_page.html", page_frag="/apply/guide-fragment/index.html", page_title="Guide to applying")

@@ -727,6 +727,9 @@ class Journal(JournalLikeObject):
     def remove_related_applications(self):
         self.__seamless__.delete("admin.related_applications")
 
+    def remove_related_application(self, application_id):
+        self.set_related_applications([r for r in self.related_applications if r.get("application_id") != application_id])
+
     def related_application_record(self, application_id):
         for record in self.related_applications:
             if record.get("application_id") == application_id:

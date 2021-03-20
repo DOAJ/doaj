@@ -13,16 +13,17 @@ CREATED_TEMPLATE = {"status": {"type": "string"}, "id": {"type": "string"}, "loc
 
 class Api(object):
     SWAG_TEMPLATE = {
+        "description" : "",
         "responses": {},
         "parameters": [],
         "tags": []
     }
-    R200 = {"schema": {}}
-    R201 = {"schema": {"properties": CREATED_TEMPLATE, "description": "Resource created successfully, response "
-                                                                      "contains the new resource ID and location."}}
-    R201_BULK = {"schema": {"items": {"properties" : CREATED_TEMPLATE, "type" : "object"}, "type" : "array",
+    R200 = {"schema": {}, "description": "A successful request/response"}
+    R201 = {"schema": {"properties": CREATED_TEMPLATE}, "description": "Resource created successfully, response "
+                                                                      "contains the new resource ID and location."}
+    R201_BULK = {"schema": {"items": {"properties" : CREATED_TEMPLATE, "type" : "object"}, "type" : "array"},
                             "description": "Resources created successfully, response contains the new resource IDs "
-                                           "and locations."}}
+                                           "and locations."}
     R204 = {"description": "OK (Request succeeded), No Content"}
     R400 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Bad Request. Your request body was missing a "
                                                                      "required field, or the data in one of the "
@@ -85,7 +86,7 @@ class Api(object):
         return template
 
     @classmethod
-    def _build_swag_response(cls, template, api_key_optional_override=None):
+    def _build_swag_response(cls, template, api_key_optional_override=None, api_key_override=None):
         """
         Construct the swagger response structure upon a template
         :param template
@@ -94,10 +95,12 @@ class Api(object):
         """
         template = deepcopy(template)
         cls._add_swag_tag(template)
-        if api_key_optional_override is not None:
-            cls._add_api_key(template, optional=api_key_optional_override)
-        elif hasattr(cls, 'API_KEY_OPTIONAL'):
-            cls._add_api_key(template, optional=cls.API_KEY_OPTIONAL)
+        if api_key_override is not False:
+            if api_key_optional_override is not None:
+                cls._add_api_key(template, optional=api_key_optional_override)
+            elif hasattr(cls, 'API_KEY_OPTIONAL'):
+                cls._add_api_key(template, optional=cls.API_KEY_OPTIONAL)
+
         return template
 
 

@@ -39,6 +39,17 @@
 
   Log into your account and go to your [Publisher dashboard](/publisher/). Under the '[My journals](/publisher/journal)' tab, you will see all the journals connected to your account. You can use the 'Update' button to submit an update to us. You cannot update the title or ISSN of your journal this way. 
   
+## How do I upload article metadata?
+
+  There are three ways to do this: 
+  - via [our API](/docs/api/) - you will need an API key to do this.
+  - [uploading XML](/publisher/uploadfile)
+  - [entering the metadata manually](/publisher/metadata)
+  
+  You must have a publisher account to upload metadata to us. Log into your account and go to your [Publisher dashboard](/publisher/) to begin.
+  
+  [Help on creating and uploading XML](/docs/xml/) is available.
+
 ## How do I update the title or ISSN of my journal?
 
   Contact us with the following details:

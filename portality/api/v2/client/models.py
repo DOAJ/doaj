@@ -5,38 +5,41 @@ from portality.api.v2.data_objects.article import IncomingArticleDO
 class Journal(OutgoingJournal):
 
     def all_issns(self):
-        issns = [self.data["bibjson"]["pissn"], self.data["bibjson"]["eissn"]]
+        issns = []
+        for _ident in ('pissn', 'eissn'):
+            if self.data.get('bibjson', {}).get(_ident) is not None:
+                issns.append(self.data['bibjson'][_ident])
         return issns
 
 
 class Article(IncomingArticleDO):
 
-    def add_identifier(self, type, id):
-        if type is None or id is None:
+    def add_identifier(self, _type, _id):
+        if _type is None or _id is None:
             return
-        self._add_to_list("bibjson.identifier", {"type" : type, "id" : id})
+        self._add_to_list("bibjson.identifier", {"type": _type, "id": _id})
 
-    def get_identifier(self, type):
-        for id in self._get_list("bibjson.identifier"):
-            if id.get("type") == type:
-                return id.get("id")
+    def get_identifier(self, _type):
+        for _id in self._get_list("bibjson.identifier"):
+            if _id.get("type") == _type:
+                return _id.get("id")
         return None
 
-    def add_link(self, type, url):
+    def add_link(self, _type, url):
         if type is None or url is None:
             return
-        self._add_to_list("bibjson.link", {"type" : type, "url" : url})
+        self._add_to_list("bibjson.link", {"type": _type, "url": url})
 
-    def get_link(self, type):
+    def get_link(self, _type):
         for link in self._get_list("bibjson.link"):
-            if link.get("type") == type:
+            if link.get("type") == _type:
                 return link.get("url")
         return None
 
     def add_author(self, name):
         if name is None:
             return
-        self._add_to_list("bibjson.author", {"name" : name})
+        self._add_to_list("bibjson.author", {"name": name})
 
     def is_api_valid(self):
         self.check_construct()

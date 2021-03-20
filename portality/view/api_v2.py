@@ -43,7 +43,6 @@ def api_spec():
     swag = swagger(app)
     swag['info']['title'] = ""
     swag['info']['version'] = API_VERSION_NUMBER
-    swag['info']['base_url'] = app.config.get("BASE_URL")
 
     return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
 
@@ -151,7 +150,8 @@ def search_articles(search_query):
 @blueprint.route("/applications", methods=["POST"])
 @api_key_required
 @write_required(api=True)
-@swag(swag_summary='Create an application <span class="red">[Authenticated, not public]</span>', swag_spec=ApplicationsCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+@swag(swag_summary='Create an application <span class="red">[Authenticated, not public]</span>',
+      swag_spec=ApplicationsCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('create_application', 'Create application'))
 def create_application():
     # get the data from the request
@@ -249,7 +249,7 @@ def update_article(article_id):
         raise Api400Error("Supplied data was not valid JSON")
 
     # delegate to the API implementation
-    ArticlesCrudApi.update(article_id, data, current_user)
+    ArticlesCrudApi.update(article_id, data, current_user._get_current_object())
 
     # respond with a suitable No Content successful response
     return no_content()

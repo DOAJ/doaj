@@ -46,6 +46,11 @@ upstream doaj_index {
     server 10.131.99.251:9200;
 }
 
+# Redirect map for legacy page routes https://github.com/DOAJ/doajPM/issues/2398
+map $request_uri $new_uri {
+    include /etc/nginx/doaj-redirects.map;
+}
+
 # redirect to SSL version but serve some crucial xml schemas via plain http as well
 server {
     listen          80;
@@ -80,6 +85,10 @@ server {
 
     access_log /var/log/nginx/doaj.access.log ip_cloudflare;
     error_log /var/log/nginx/doaj.error.log;
+
+    if ($new_uri != "") {
+        rewrite ^(.*)$ $new_uri permanent;
+    }
 
     location /api {
         if ($http_user_agent ~* (bot|spider) ) {
