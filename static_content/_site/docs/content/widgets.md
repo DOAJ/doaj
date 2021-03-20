@@ -18,10 +18,6 @@ Copy and paste the code below into your page where you want the widget to be dis
 
 ```html
 <script type="text/javascript">
-    !window.jQuery && document.write("<scr" + "ipt type=\"text/javascript\" src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js\"></scr" + "ipt>");
-</script>
-
-<script type="text/javascript">
 var doaj_url = "https://doaj.org";
 var QUERY_OPTIONS = {
     query_string : 'medicine',                   // The plain-text query string
