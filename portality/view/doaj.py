@@ -514,7 +514,7 @@ def faq():
 
 @blueprint.route("/about/")
 def about():
-    return render_template("layouts/static_page.html", page_frag="/about/index-fragment/index.html", page_title="About DOAJ")
+    return render_template("layouts/static_page.html", page_frag="/about/index.html")
 
 
 @blueprint.route("/about/ambassadors/")
@@ -529,7 +529,7 @@ def abc():
 
 @blueprint.route("/about/editorial-subcommittee/")
 def editorial_subcommittee():
-    return render_template("layouts/static_page.html", page_frag="/about/editorial-subcommittee-fragment/index.html", page_title="Editorial Subcommittee")
+    return render_template("layouts/static_page.html", page_frag="/about/editorial-subcommittee.html")
 
 
 @blueprint.route("/about/volunteers/")

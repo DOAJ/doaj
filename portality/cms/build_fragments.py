@@ -19,6 +19,7 @@ extensions = [
     "meta",
     "markdown.extensions.tables",
     "markdown.extensions.fenced_code",
+    'attr_list',
     'markdown_link_attr_modifier'
 ]
 
