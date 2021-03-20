@@ -76,6 +76,7 @@ $.extend(true, doaj, {
         init : function() {
 
             let params = this.buildParams();
+            let query = this.buildQuery(params);
 
             let selector = params.selector || ".facetview";
             let search_url = doaj_url + doaj.publicSearchConfig.publicSearchPath;
@@ -91,7 +92,7 @@ $.extend(true, doaj, {
                     category: "pager",
                     renderer : edges.bs3.newResultCountRenderer({
                         countFormat: countFormat,
-                        suffix: ` results found for <code> Query String</code>`,
+                        suffix: ` results found for <code>` + query.queryString.queryString + `</code>`,
                         htmlContainerWrapper: false
                     })
                 }),
@@ -127,6 +128,7 @@ $.extend(true, doaj, {
                     renderer : doaj.renderers.newPublicSearchResultRenderer()
                 }),
             ];
+
             let e = edges.newEdge({
                 selector: selector,
                 template: doaj.templates.newFQWidget({
@@ -135,7 +137,7 @@ $.extend(true, doaj, {
                 }),
                 search_url: search_url,
                 manageUrl : false,
-                openingQuery: this.buildQuery(params),
+                openingQuery: query,
                 components : components,
                 callbacks : {
                     "edges:query-fail" : function() {
