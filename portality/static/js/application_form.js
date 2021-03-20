@@ -377,8 +377,9 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
             let that = this;
             let errFields = $(this.parsley.fields).filter(function(){return (this.validationResult !== true && this.domOptions.group === "block-" + that.currentTab)});
             let errFirst = $(errFields.first()[0].element);
-            errFirst.trigger("focus");
-            errFirst.trigger("focus");
+            // The Firefox does not handle focus on hidden fields and select2 does not implement this after autofocus on select2 fields
+            // it resolves this issue and fixes: https://github.com/DOAJ/doajPM/issues/2626
+            errFirst.triggerHandler("focus");
             if (showEvenIfInvalid){
                 this.currentTab = parseInt(n);
                 this.previousTab = this.currentTab-1;
