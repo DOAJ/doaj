@@ -101,7 +101,7 @@ $.extend(true, doaj, {
                     id: "rpp",
                     category: "pager",
                     renderer : doaj.renderers.newPageSizeRenderer({
-                        sizeOptions: [50, 100, 200],
+                        sizeOptions: [5, 50, 100, 200],
                         sizeLabel: "Results per page"
                     })
                 }),
