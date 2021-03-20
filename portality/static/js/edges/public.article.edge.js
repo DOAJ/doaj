@@ -4,8 +4,16 @@ $.extend(true, doaj, {
         activeEdges : {},
 
         embedSnippet : function(renderer) {
-            var snip = '<script type="text/javascript">var doaj_url="https://doaj.org"; var SEARCH_CONFIGURED_OPTIONS={{QUERY}}</script><script src="https://doaj.org/static/widget/fixed_query.js" type="text/javascript"></script><div id="doaj-fixed-query-widget"></div></div>';
-            var query = renderer.component.edge.currentQuery.objectify({
+            var snip = `<script type="text/javascript">
+  var doaj_url="https://doaj.org"; 
+  var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
+</script>
+<script src="https://doaj.org/static/widget/fixed_query.js" type="text/javascript"></script>
+<div id="doaj-fixed-query-widget"></div>`;
+
+            var query = renderer.component.edge.cloneQuery();
+            query.addMust(es.newTermFilter({field: "_type", value: "article"}))
+            query = query.objectify({
                         include_query_string : true,
                         include_filters : true,
                         include_paging : true,
