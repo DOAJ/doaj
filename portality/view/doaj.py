@@ -539,7 +539,7 @@ def volunteers():
 
 @blueprint.route("/about/team/")
 def team():
-    return render_template("layouts/static_page.html", page_frag="/about/team-fragment/index.html", page_title="DOAJ team")
+    return render_template("layouts/static_page.html", page_frag="/about/team.html")
 
 
 # LEGACY ROUTES

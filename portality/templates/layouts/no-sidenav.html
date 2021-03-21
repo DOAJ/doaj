@@ -70,40 +70,6 @@
                     </li>
                 {% endfor %}
             </ul>
-
-            {% elsif page.relative_path == '_about/editorial-subcommittee.md' or page.relative_path == '_about/editorial-subcommittee-fragment.md' %}
-            <!-- About section: editorial subcommittee -->
-            <h2>Members</h2>
-            <ul class="row title-list">
-                {% for i in site.data.editorial-subcommittee %}
-                    <li class="col-sm-6 col-md-4 col-lg-3">
-                        <div class="title-list__text">
-                            <p class="label">{{ i.region }}</p>
-                            <h3 class="title-list__heading">{{ i.name }}</h3>
-                            <p class="label label--secondary title-list__para">
-                                {{ i.org }}
-                            </p>
-                            <p class="title-list__para">
-                                {{ i.bio }}
-                            </p>
-                            {% if i.coi %}
-                                <div class="title-list__para">
-                                    <h3 class="label label--tertiary">Conflict of interest statement(s):</h3>
-                                    <ul class="tags">
-                                        {% for j in i.coi %}
-                                            <li>
-                                                {% if j[1] %}<a href="{{ j[1] }}" target="_blank" class="tag">{% endif %}
-                                                {{ j[0] }}
-                                                {% if j[1] %}</a>{% endif %}
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
         {% endif %}
     </div>
 #}
