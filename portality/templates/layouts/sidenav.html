@@ -6,8 +6,7 @@
             {% if page.toc %}
                 <nav class="page-nav nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
                     <h2 class="page-nav__heading">Jump to:</h2>
-                    {# {{ content | toc_only }} #}
-                    TODO
+                    {% include "includes/_sidenav_toc.html" %}
                 </nav>
 
             {% else %}

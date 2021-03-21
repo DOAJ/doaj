@@ -17,6 +17,7 @@ for filename in os.listdir(OUT):
 
 extensions = [
     "meta",
+    "toc",
     "markdown.extensions.tables",
     "markdown.extensions.fenced_code",
     'attr_list',
@@ -46,10 +47,6 @@ for dirpath, dirnames, filenames in os.walk(SRC):
         with open(input) as f:
             md = markdown.Markdown(extensions=extensions, extension_configs=cfg)
             body = md.convert(f.read())
-            # body = markdown.markdown(f.read(),
-            #             extensions=extensions,
-            #             extension_configs=cfg
-            #         )
 
         meta = md.Meta
 
@@ -63,6 +60,9 @@ for dirpath, dirnames, filenames in os.walk(SRC):
                 nm[k] = False
             elif nm[k].isdigit():
                 nm[k] = int(nm[k])
+
+        if nm.get("toc") is True:
+            nm["toc_tokens"] = md.toc_tokens
 
         nm["frag"] = file_ident
         fm[file_ident] = nm

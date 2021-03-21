@@ -1,0 +1,14 @@
+{% macro toc(toc_tokens) -%}
+    <ul class="page-nav__list">
+        {% for entry in toc_tokens %}
+            <li class="page-nav__item item-h{{ entry.level }}">
+                <a href="#{{ entry.id }}">{{ entry.name }}</a>
+                {% if entry.children|length > 0 %}
+                    {{ toc(entry.children) }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{%- endmacro %}
+
+{{ toc(page.toc_tokens) }}
