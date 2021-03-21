@@ -434,7 +434,7 @@ def terms():
 
 @blueprint.route("/support/")
 def support():
-    return render_template("layouts/static_page.html", page_frag="/support/index-fragment/index.html", page_title="Support DOAJ")
+    return render_template("layouts/static_page.html", page_frag="/support/index.html")
 
 
 @blueprint.route("/support/sponsors/")
