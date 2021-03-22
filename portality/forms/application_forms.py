@@ -235,7 +235,8 @@ class FieldDefinitions:
                                                            "online)'"}}
         ],
         "widgets" : [
-            "trim_whitespace"
+            "trim_whitespace",
+            "full_contents"
         ],
         "contexts": {
             "public" : {
@@ -307,7 +308,8 @@ class FieldDefinitions:
             {"different_to": {"field": "pissn", "message" : "This field must contain a different value to 'ISSN (print)'"}}
         ],
         "widgets" : [
-            "trim_whitespace"
+            "trim_whitespace",
+            "full_contents"
         ],
         "contexts": {
             "public" : {
