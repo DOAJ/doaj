@@ -18,7 +18,7 @@ On DOAJ, the parameters included in the request are passed to our search interfa
 
 There are a few things you can try if you keep seeing the _Not Found_ page or getting the wrong result:
 
-[comment]: # ({:.numbered-table .numbered-table--labels})
+{:.numbered-table .numbered-table--labels}
 |   | Troubleshooting tip                 | Details                                                                                               |
 |---|-------------------------------------|-------------------------------------------------------------------------------------------------------|
 |   | Use a trustworthy field             | Identifiers like `issn` are more reliable than free text like `title`.                                |

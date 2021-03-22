@@ -2,7 +2,10 @@ import os
 import markdown
 import shutil
 import yaml
+
 from copy import deepcopy
+
+from portality.cms import implied_attr_list
 
 BASE = "pages"
 SRC = os.path.join(BASE, "source")
@@ -24,7 +27,8 @@ extensions = [
     'attr_list',
     'markdown_link_attr_modifier',
     "mdx_truly_sane_lists",
-    "codehilite"
+    "codehilite",
+    implied_attr_list.ImpliedAttrListExtension()
 ]
 
 cfg = {

@@ -12,7 +12,7 @@ DOAJ indexes and promotes quality, peer-reviewed open access journals from aroun
 
 ### Why your journal should be indexed in DOAJ
 
-[comment]: # ({:.numbered-table .numbered-table--labels})
+{:.numbered-table .numbered-table--labels}
 | | | |
 | --- | --- | --- |
 |   | Reputation and prominence | DOAJ is the most important [community-driven, open access service in the world](http://repository.jisc.ac.uk/6269/10/final-KE-Report-V5.1-20JAN2016.pdf) and has a reputation for advocating best practices and standards in open access. By indexing your journal in DOAJ, its reputation and prominence will be enhanced. |

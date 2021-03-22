@@ -52,32 +52,32 @@ var QUERY_OPTIONS = {
 
 The parameter `QUERY_OPTIONS` takes a subset of fields to define which results to retrieve. The example above displays, in alphabetical order, journals that contain the word `medicine` in the title. Configuration via these `QUERY_OPTIONS` provides a simplified way to display results by keyword. There are a handful of options available. All are optional; omit them from `QUERY_OPTIONS` for the default behaviour.
 
-[comment]: #({:.tabular-list})
+{:.tabular-list}
 - `query_string`
   - Accepts plain text: any text you might put in the search box
 - `query_field`
   - The field to query. Omit to search in any field, or specify one of these:
-      - `bibjson.title`: title
-      - `bibjson.keywords`: keywords
-      - `index.classification`: subject
-      - `index.issn.exact`: ISSN
-      - `bibjson.identifier.id`: DOI
-      - `index.country`: country of publisher
-      - `index.language`: journal language
-      - `index.publisher`: publisher name
+    - `bibjson.title`: title
+    - `bibjson.keywords`: keywords
+    - `index.classification`: subject
+    - `index.issn.exact`: ISSN
+    - `bibjson.identifier.id`: DOI
+    - `index.country`: country of publisher
+    - `index.language`: journal language
+    - `index.publisher`: publisher name
 - `sort_field`
-    - `created_date`: sort by date added to DOAJ (default)
-    - `index.unpunctitle.exact`: sort by title
+  - `created_date`: sort by date added to DOAJ (default)
+  - `index.unpunctitle.exact`: sort by title
 - `sort_direction`
-    - `asc`: ascending (default)
-    - `desc`: descending
+  - `asc`: ascending (default)
+  - `desc`: descending
 - `search_operator`
-    - `AND`: use AND for the terms in the query string (default)
-    - `OR`: use OR for the terms in the query string
+  - `AND`: use AND for the terms in the query string (default)
+  - `OR`: use OR for the terms in the query string
 - `search_type`
   - The type of result to show. Omit this property to show results of both type    
-      - `journal`: only show journals
-      - `article`: only show articles
+    - `journal`: only show journals
+    - `article`: only show articles
 - `page_size`
   - `integer`: how many results to show per page, 1 or more (default: 10)
 - `page_from`
