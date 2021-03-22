@@ -1,3 +1,4 @@
+---
 layout: no-sidenav
 include: /data/team.html
 title: DOAJ team

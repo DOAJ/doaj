@@ -1,3 +1,4 @@
+---
 layout: sidenav
 title: Why index your journal in DOAJ?
 order: 4

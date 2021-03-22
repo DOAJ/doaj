@@ -2,6 +2,7 @@ import os
 import markdown
 import shutil
 import yaml
+from copy import deepcopy
 
 BASE = "pages"
 SRC = os.path.join(BASE, "source")
@@ -16,7 +17,7 @@ for filename in os.listdir(OUT):
         os.remove(filepath)
 
 extensions = [
-    "meta",
+    "full_yaml_metadata",
     "toc",
     "markdown.extensions.tables",
     "markdown.extensions.fenced_code",
@@ -49,19 +50,7 @@ for dirpath, dirnames, filenames in os.walk(SRC):
             md = markdown.Markdown(extensions=extensions, extension_configs=cfg)
             body = md.convert(f.read())
 
-        meta = md.Meta
-
-        # do some format conversions so we have propertly structured yaml come out
-        nm = {}
-        for k, v in meta.items():
-            nm[k] = v[0] if len(v) == 1 else v
-            if nm[k] == "true":
-                nm[k] = True
-            elif nm[k] == "false":
-                nm[k] = False
-            elif nm[k].isdigit():
-                nm[k] = int(nm[k])
-
+        nm = deepcopy(md.Meta)
         if nm.get("toc") is True:
             nm["toc_tokens"] = md.toc_tokens
 

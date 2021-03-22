@@ -1,3 +1,4 @@
+---
 layout: no-sidenav
 include: /data/ambassadors.html
 title: Ambassadors

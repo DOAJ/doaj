@@ -45,7 +45,8 @@ setup(
         "Flask-DebugToolbar==0.10.1",
         "libsass==0.20.1",
         "markdown-link-attr-modifier==0.2.0",
-        "mdx_truly_sane_lists==1.2"
+        "mdx_truly_sane_lists==1.2",
+        "markdown-full-yaml-metadata==2.0.1"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     url='http://cottagelabs.com/',
     author='Cottage Labs',

@@ -1,3 +1,4 @@
+---
 layout: sidenav
 title: The DOAJ Seal
 order: 2

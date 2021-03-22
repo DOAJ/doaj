@@ -1,3 +1,4 @@
+---
 layout: sidenav
 title: Transparency & best practice
 order: 3

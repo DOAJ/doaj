@@ -1,3 +1,4 @@
+---
 layout: no-sidenav
 title: Thank you for your application.
 section: Apply

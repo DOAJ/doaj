@@ -1,3 +1,4 @@
+---
 layout: sidenav
 title: About DOAJ
 order: 1

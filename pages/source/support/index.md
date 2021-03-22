@@ -1,3 +1,4 @@
+---
 layout: sidenav
 sidenav_include: /includes/_sidenav_donation.html
 include: /includes/contribution_rates.html 
