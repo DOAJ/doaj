@@ -1,0 +1,27 @@
+entries:
+  - id: "search"
+    label: "Search"
+    footer: true
+    entries:
+      - label: "Journals"
+        route: "doaj.journals_search"
+      - label: "Articles"
+        route: "doaj.articles_search"
+  - id: "documentation"
+    label: "Documentation"
+    footer: true
+    entries:
+      - label: "API"
+        route: "doaj.docs"
+      - label: "OAI-PMH"
+        route: "doaj.oai_pmh"
+      - label: "Widgets"
+        route: "doaj.widgets"
+      - label: "Public data dump"
+        route: 'doaj.public_data_dump'
+      - label: "OpenURL"
+        route: 'doaj.openurl'
+      - label: "XML"
+        route: 'doaj.xml'
+      - label: "FAQs"
+        route: 'doaj.faq'

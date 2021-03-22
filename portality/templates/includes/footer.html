@@ -2,47 +2,13 @@
     <div class="container">
         <a class="back-to-top" data-spy="affix" href="#" id="top"><span aria-hidden="true" data-feather="arrow-up"></span><span class="sr-only">Back to top</span></a>
         <section class="row">
-            <div class="col-xs-6 col-sm-4 col-lg-2">
-                <h2>
-                    Search
-                </h2>
-                <ul>
-                    <li>
-                        <a href="{{ url_for('doaj.journals_search') }}">Journals</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.articles_search') }}">Articles</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-xs-6 col-sm-4 col-lg-2">
-                <h2>
-                    Documentation
-                </h2>
-                <ul>
-                    <li>
-                        <a href="{{ url_for('doaj.docs') }}">API</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.oai_pmh') }}">OAI-PMH</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.widgets') }}">Widgets</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.public_data_dump') }}">Public data dump</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.openurl') }}">OpenURL</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.xml') }}">XML</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.faq') }}">FAQs</a>
-                    </li>
-                </ul>
-            </div>
+            {% set columns = data.nav.entries|selectattr("footer")|list %}
+            {% for column in columns %}
+                {% set section_id=column.id %}
+                {% include "includes/footer-column.html" %}
+            {% endfor %}
+
+            {#  TODO migrate the rest of these to the nav file #}
             <div class="col-xs-6 col-sm-4 col-lg-2">
                 <h2>
                     About

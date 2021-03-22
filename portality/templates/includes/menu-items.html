@@ -1,3 +1,13 @@
+{% set selected_nav = data.nav.entries|selectattr("id", "equalto", section_id)|first %}
+{% for entry in selected_nav.entries %}
+<li>
+  <a href="{{ url_for(entry.route) }}">
+    {{ entry.label }}
+  </a>
+</li>
+{% endfor %}
+
+{#
 {% capture section_name %}{{ include.section }}{% endcapture %}
 {% assign section = site[section_name] | sort: 'order' %}
 {% for page in section %}
@@ -13,3 +23,4 @@
 </li>
 {% endif %}
 {% endfor %}
+#}
