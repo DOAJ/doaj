@@ -1,14 +1,19 @@
-{% macro toc(toc_tokens) -%}
-    <ul class="page-nav__list">
+{% macro toc(toc_tokens, is_sublist) -%}
+    {% set clazz = "page-nav__list" %}
+    {% if is_sublist %}
+        {% set clazz = "page-nav__sublist" %}
+    {% endif %}
+
+    <ul class="{{ clazz }}">
         {% for entry in toc_tokens %}
             <li class="page-nav__item item-h{{ entry.level }}">
                 <a href="#{{ entry.id }}">{{ entry.name }}</a>
                 {% if entry.children|length > 0 %}
-                    {{ toc(entry.children) }}
+                    {{ toc(entry.children, True) }}
                 {% endif %}
             </li>
         {% endfor %}
     </ul>
 {%- endmacro %}
 
-{{ toc(page.toc_tokens) }}
+{{ toc(page.toc_tokens, False) }}

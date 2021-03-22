@@ -21,7 +21,8 @@ extensions = [
     "markdown.extensions.tables",
     "markdown.extensions.fenced_code",
     'attr_list',
-    'markdown_link_attr_modifier'
+    'markdown_link_attr_modifier',
+    "mdx_truly_sane_lists"
 ]
 
 cfg = {

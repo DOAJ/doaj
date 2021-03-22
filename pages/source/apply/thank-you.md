@@ -1,3 +1,11 @@
+layout: no-sidenav
+title: Thank you for your application.
+section: Apply
+toc: false
+highlight: false
+aside: /includes/_aside_in_case_of_rejection.html
+---
+
 Most applications are processed in three months.
 
 We don’t reply to requests for status updates on applications that are less than three months old.

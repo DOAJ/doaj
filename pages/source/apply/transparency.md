@@ -1,3 +1,11 @@
+layout: sidenav
+title: Transparency & best practice
+order: 3
+section: Apply
+toc: true
+sticky_sidenav: true
+highlight: false
+---
 
 ## Introduction
 
@@ -13,7 +21,7 @@ An infographic of these Principles was commissioned by COPE and is available to 
 
 ## Principles of transparency and best practice in scholarly publishing
 
-{:.numbered-table .numbered-table--labels}
+[comment]: # ({:.numbered-table .numbered-table--labels})
 |   | Principle                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 |---|-----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 |   | Website                                                                           | A journal's website, including the text that it contains, shall demonstrate that care has been taken to ensure high ethical and professional standards. It must not contain information that might mislead readers or authors, including any attempt to mimic another journal/publisher’s site. <br><br>An 'Aims & Scope' statement should be included on the website and the readership clearly defined. There should be a statement on what a journal will consider for publication including authorship criteria (e.g. not considering multiple submissions, redundant publications) to be included. ISSNs should be clearly displayed (separate for print and electronic). |

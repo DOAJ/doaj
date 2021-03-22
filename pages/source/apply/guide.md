@@ -1,9 +1,11 @@
-<!-- <label for="languages">Show me this guide in&hellip;</label>
-<select name="languages" id="languages">
-  <option value="en">English</option>
-  <option value="fr">Français</option>
-  <option value="es">Español</option>
-</select> -->
+layout: sidenav
+title: Guide to applying
+order: 1
+section: Apply
+toc: true
+sticky_sidenav: true
+highlight: false
+---
 
 Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them. A [PDF version of the application form](/static/doaj/docs/2021-02-17-DOAJQuestions.pdf) is available for reference only.
 
@@ -104,7 +106,8 @@ The following information must be available online, and easily accessible from t
 
 ## Additional criteria for some journal types
 
-{:.tabular-list}
+[comment]: # (This should be in a ul with class `tabular-list` but the python markdown compiler cannot apply attrs to list containers.  We'll need to write our own extension if we want that)
+
 - ### Arts and humanities journals
    - For these disciplines ([pages 10-16 only](http://uis.unesco.org/sites/default/files/documents/international-standard-classification-of-education-fields-of-education-and-training-2013-detailed-field-descriptions-2015-en.pdf)), DOAJ can accept journals that undertake editorial review, rather than peer review. Editorial review must be handled with a minimum of two editors.
 
@@ -132,6 +135,7 @@ The following information must be available online, and easily accessible from t
 
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
+
 
 ---
 

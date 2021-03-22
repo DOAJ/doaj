@@ -459,22 +459,22 @@ def application_thanks():
 
 @blueprint.route("/apply/guide/")
 def guide():
-    return render_template("layouts/static_page.html", page_frag="/apply/guide-fragment/index.html", page_title="Guide to applying")
+    return render_template("layouts/static_page.html", page_frag="/apply/guide.html")
 
 
 @blueprint.route("/apply/seal/")
 def seal():
-    return render_template("layouts/static_page.html", page_frag="/apply/seal-fragment/index.html", page_title="The DOAJ Seal")
+    return render_template("layouts/static_page.html", page_frag="/apply/seal.html")
 
 
 @blueprint.route("/apply/transparency/")
 def transparency():
-    return render_template("layouts/static_page.html", page_frag="/apply/transparency-fragment/index.html", page_title="Transparency & best practice")
+    return render_template("layouts/static_page.html", page_frag="/apply/transparency.html")
 
 
 @blueprint.route("/apply/why-index/")
 def why_index():
-    return render_template("layouts/static_page.html", page_frag="/apply/why-index-fragment/index.html", page_title="Why index your journal in DOAJ?")
+    return render_template("layouts/static_page.html", page_frag="/apply/why-index.html")
 
 
 @blueprint.route("/docs/oai-pmh/")
