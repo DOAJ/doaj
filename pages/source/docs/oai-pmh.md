@@ -1,6 +1,16 @@
+---
+layout: sidenav
+title: OAI-PMH
+order: 1
+section: Docs
+toc: true
+sticky_sidenav: true
+highlight: false
+---
+
 ## Journal feed
 
-{:.tabular-list}
+[comment]: # ({:.tabular-list})
 - `Identify`
   - Access the [base Identify endpoint](/oai?verb=Identify).
 - `ListSets`
@@ -86,7 +96,7 @@ The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the
 
 ## Article feed
 
-{:.tabular-list}
+[comment]: # ({:.tabular-list})
 - `Identify`
   - Access the [base Identify endpoint](http://www.doaj.org/oai.article?verb=Identify).
 - `ListSets`

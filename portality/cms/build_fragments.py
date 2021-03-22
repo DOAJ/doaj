@@ -23,13 +23,17 @@ extensions = [
     "markdown.extensions.fenced_code",
     'attr_list',
     'markdown_link_attr_modifier',
-    "mdx_truly_sane_lists"
+    "mdx_truly_sane_lists",
+    "codehilite"
 ]
 
 cfg = {
     'markdown_link_attr_modifier': {
         "new_tab" : "external_only",
         "no_referrer" : "external_only"
+    },
+    "codehilite" : {
+        "css_class" : "highlight"
     }
 }
 
@@ -51,6 +55,8 @@ for dirpath, dirnames, filenames in os.walk(SRC):
             body = md.convert(f.read())
 
         nm = deepcopy(md.Meta)
+        if nm is None:
+            nm = {}
         if nm.get("toc") is True:
             nm["toc_tokens"] = md.toc_tokens
 

@@ -1,3 +1,13 @@
+---
+layout: sidenav
+title: Widgets
+order: 2
+section: Docs
+toc: true
+sticky_sidenav: true
+highlight: false
+---
+
 Widgets are tools that allow you to embed DOAJ into your site. There are two widgets available:
 
 1. A Simple Journal Search widget which embeds a search box on your page. Upon submitting the search, the user is taken to their journal search results on DOAJ.
@@ -42,7 +52,7 @@ var QUERY_OPTIONS = {
 
 The parameter `QUERY_OPTIONS` takes a subset of fields to define which results to retrieve. The example above displays, in alphabetical order, journals that contain the word `medicine` in the title. Configuration via these `QUERY_OPTIONS` provides a simplified way to display results by keyword. There are a handful of options available. All are optional; omit them from `QUERY_OPTIONS` for the default behaviour.
 
-{:.tabular-list}
+[comment]: #({:.tabular-list})
 - `query_string`
   - Accepts plain text: any text you might put in the search box
 - `query_field`

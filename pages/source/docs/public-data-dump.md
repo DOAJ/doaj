@@ -1,3 +1,13 @@
+---
+layout: sidenav
+title: Public data dump
+order: 3
+section: Docs
+toc: true
+sticky_sidenav: true
+highlight: false
+---
+
 An [exportable version of the journal metadata](/csv) is available as a CSV file.
 
 Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the same form as those retrieved via the API.

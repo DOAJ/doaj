@@ -479,7 +479,7 @@ def why_index():
 
 @blueprint.route("/docs/oai-pmh/")
 def oai_pmh():
-    return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh-fragment/index.html", page_title="OAI-PMH")
+    return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh.html")
 
 
 @blueprint.route('/docs/api/')
@@ -489,27 +489,27 @@ def docs():
 
 @blueprint.route("/docs/xml/")
 def xml():
-    return render_template("layouts/static_page.html", page_frag="/docs/xml-fragment/index.html", page_title="XML")
+    return render_template("layouts/static_page.html", page_frag="/docs/xml.html")
 
 
 @blueprint.route("/docs/widgets/")
 def widgets():
-    return render_template("layouts/static_page.html", page_frag="/docs/widgets-fragment/index.html", page_title="Widgets")
+    return render_template("layouts/static_page.html", page_frag="/docs/widgets.html")
 
 
 @blueprint.route("/docs/public-data-dump/")
 def public_data_dump():
-    return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump-fragment/index.html", page_title="Public data dump")
+    return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump.html")
 
 
 @blueprint.route("/docs/openurl/")
 def openurl():
-    return render_template("layouts/static_page.html", page_frag="/docs/openurl-fragment/index.html", page_title="OpenURL")
+    return render_template("layouts/static_page.html", page_frag="/docs/openurl.html")
 
 
 @blueprint.route("/docs/faq/")
 def faq():
-    return render_template("layouts/static_page.html", page_frag="/docs/faq-fragment/index.html", page_title="FAQs")
+    return render_template("layouts/static_page.html", page_frag="/docs/faq.html")
 
 
 @blueprint.route("/about/")
