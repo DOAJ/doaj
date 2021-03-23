@@ -59,6 +59,10 @@
   @include unstyled-list;
 }
 
+.inlined-list {
+  @include unstyled-list($inline: true);
+}
+
 .bg-black {
   background-color: $warm-black;
 }
