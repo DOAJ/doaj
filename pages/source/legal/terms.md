@@ -8,7 +8,7 @@ toc: true
 sticky_sidenav: true
 highlight: false
 permalink: /terms/
----~~~~
+---
 
 ### Conditions of use
 

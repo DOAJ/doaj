@@ -32,25 +32,36 @@ DOAJ has a global network of Ambassadors who promote open access and best practi
 
 DOAJ partners with many organisations. The nature of the partnerships vary and may include membership, contracts for work, exchanges of information or services, initiative signatories, or access to information resources that assist DOAJ with our application review process.
 
-[comment]: # (attr_lists cannot be applied with python markdown, so we must use full HTML if we want our lists formatted like that)
-
-<ul class="full-width-list">
-  <li class="full-width-list__item"><a href="https://network.creativecommons.org/" target="_blank" rel="noopener">Creative Commons Global Network</a></li>
-  <li class="full-width-list__item"><a href="https://publicationethics.org/" target="_blank" rel="noopener">COPE</a></li>
-  <li class="full-width-list__item"><a href="https://cottagelabs.com/" target="_blank" rel="noopener">Cottage Labs LLP</a></li>
-  <li class="full-width-list__item"><a href="https://www.erudit.org/en/" target="_blank" rel="noopener">Érudit</a></li>
-  <li class="full-width-list__item"><a href="https://tsv.fi/en" target="_blank" rel="noopener">Federation of Finnish Learned Societies</a></li>
-  <li class="full-width-list__item"><a href="https://www.helsinki-initiative.org/" target="_blank" rel="noopener">Helsinki Initiative on Multilingualism</a></li>
-  <li class="full-width-list__item"><a href="https://www.issn.org/" target="_blank" rel="noopener">ISSN</a></li>
-  <li class="full-width-list__item"><a href="https://librarypublishing.org/" target="_blank" rel="noopener">Library Publishing Coalition</a></li>
-  <li class="full-width-list__item"><a href="https://oaspa.org/" target="_blank" rel="noopener">OASPA</a></li>
-  <li class="full-width-list__item"><a href="https://www.oclc.org/en/home.html" target="_blank" rel="noopener">OCLC</a></li>
-  <li class="full-width-list__item"><a href="http://www.redalyc.org/home.oa" target="_blank" rel="noopener">Redalyc</a></li>
-  <li class="full-width-list__item"><a href="https://www.research4life.org/" target="_blank" rel="noopener">Research4Life</a></li>
-  <li class="full-width-list__item"><a href="http://www.scielo.org/" target="_blank" rel="noopener">SciELO</a></li>
-  <li class="full-width-list__item"><a href="https://thinkchecksubmit.org/" target="_blank" rel="noopener">Think. Check. Submit.</a></li>
-</ul>
-
+{:.full-width-list}
++ [Creative Commons Global Network](https://network.creativecommons.org/)
+  {:.full-width-list__item}
++ [COPE](https://publicationethics.org/)
+  {:.full-width-list__item}
++ [Cottage Labs LLP](https://cottagelabs.com/)
+  {:.full-width-list__item}
++ [Érudit](https://www.erudit.org/en/)
+  {:.full-width-list__item}
++ [Federation of Finnish Learned Societies](https://tsv.fi/en)
+  {:.full-width-list__item}
++ [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
+  {:.full-width-list__item}
++ [ISSN](https://www.issn.org/)
+  {:.full-width-list__item}
++ [Library Publishing Coalition](https://librarypublishing.org/)
+  {:.full-width-list__item}
++ [OASPA](https://oaspa.org/)
+  {:.full-width-list__item}
++ [OCLC](https://www.oclc.org/en/home.html)
+  {:.full-width-list__item}
++ [Redalyc](http://www.redalyc.org/home.oa)
+  {:.full-width-list__item}
++ [Research4Life](https://www.research4life.org/)
+  {:.full-width-list__item}
++ [SciELO](http://www.scielo.org/)
+  {:.full-width-list__item}
++ [Think. Check. Submit.](https://thinkchecksubmit.org/)
+  {:.full-width-list__item}
+  
 
 ## Diversity
 
