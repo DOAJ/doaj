@@ -139,8 +139,7 @@ PUBLIC_ACCESSIBLE_JSON = True
 # * relative to the portality directory
 STATIC_PATHS = [
     "static",
-    "../pages/static",
-    "../static_content" # FIXME: this needs to be removed
+    "../pages/static"
 ]
 
 # =======================
