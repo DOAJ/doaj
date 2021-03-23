@@ -16,6 +16,7 @@ Open access journals published in any language may apply.
 - The journal must be actively publishing scholarly research
   - All research subject areas are accepted
   - Should publish at least 5 research articles per year
+  - Newly launched journals must demonstrate a publishing history of more than one year, or have published at least 10 articles. This is in addition to the requirement to publish at least 5 research articles per year.
 - The primary target audience should be researchers or practitioners
 
 ---
