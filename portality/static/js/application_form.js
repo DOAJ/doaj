@@ -485,8 +485,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         let id = params.id;
 
         let success_callback = (data) => {
-            window.open('', '_self', ''); //open the current window
-            window.close();
+            window.location.href = "/service/unlocked";
         };
 
         let error_callback = (jqXHR, textStatus, errorThrown) => {
