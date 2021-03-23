@@ -1,3 +1,15 @@
+---
+layout: sidenav
+title: Privacy information notice
+short_title: Privacy
+order: 2
+section: About
+toc: true
+sticky_sidenav: true
+highlight: false
+permalink: /privacy/
+---
+
 Protecting your privacy is important to us. Please take a few moments to review this Policy.
 
 ### Summary

@@ -414,22 +414,22 @@ def google_webmaster_tools():
 
 @blueprint.route("/accessibility/")
 def accessibility():
-    return render_template("layouts/static_page.html", page_frag="/accessibility-fragment.html", page_title="Accessibility statement for doaj.org")
+    return render_template("layouts/static_page.html", page_frag="/legal/accessibility.html")
 
 
 @blueprint.route("/privacy/")
 def privacy():
-    return render_template("layouts/static_page.html", page_frag="/privacy-fragment.html", page_title="Privacy information notice")
+    return render_template("layouts/static_page.html", page_frag="/legal/privacy.html")
 
 
 @blueprint.route("/contact/")
 def contact():
-    return render_template("layouts/static_page.html", page_frag="/contact-fragment.html", page_title="Contact us")
+    return render_template("layouts/static_page.html", page_frag="/legal/contact.html")
 
 
 @blueprint.route("/terms/")
 def terms():
-    return render_template("layouts/static_page.html", page_frag="/terms-fragment.html", page_title="Terms & conditions")
+    return render_template("layouts/static_page.html", page_frag="/legal/terms.html")
 
 
 @blueprint.route("/support/")

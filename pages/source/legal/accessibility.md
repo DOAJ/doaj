@@ -1,3 +1,14 @@
+---
+layout: sidenav
+title: Accessibility statement for doaj.org
+short_title: Accessibility
+order: 1
+toc: true
+sticky_sidenav: true
+highlight: false
+permalink: /accessibility/
+---
+
 This accessibility statement applies to [doaj.org](https://www.doaj.org) exclusively.
 
 Its subdomain [blog.doaj.org](https://blog.doaj.org) and its sister site, [doajbestpracticeguide.org](https://www.doajbestpracticeguide.org), are WordPress sites and **are not covered by this statement**.

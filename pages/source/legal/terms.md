@@ -1,3 +1,15 @@
+---
+layout: sidenav
+title: "Terms and conditions"
+short_title: "T&Cs"
+order: 4
+section: About
+toc: true
+sticky_sidenav: true
+highlight: false
+permalink: /terms/
+---~~~~
+
 ### Conditions of use
 
 DOAJ uses a variety of licenses for the different parts of its website and the content in it:

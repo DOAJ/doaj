@@ -35,6 +35,8 @@ then
     exit 0
 fi
 
+# TODO: add static pages build here
+
 # Restart all supervisor tasks, which will cover the app, and huey on the background server. Then reload nginx.
 sudo supervisorctl update
 sudo supervisorctl restart all || sudo supervisorctl start all

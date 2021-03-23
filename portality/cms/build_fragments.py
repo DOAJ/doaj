@@ -74,3 +74,8 @@ for dirpath, dirnames, filenames in os.walk(SRC):
 
 with open(FRONT_MATTER, "w") as f:
     f.write(yaml.dump(fm))
+
+# TODO: write the output to a temporary directory until we are sure that everything works.  Then at this final stage
+# remove the old files and replace with the new ones.
+#
+# If we fail anywhere along the line, cleanup and exit with a suitable exit code
