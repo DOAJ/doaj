@@ -17,20 +17,6 @@ li.parsley-type {
     color: #982E0A;
 }
 
-.form_group {
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 0.5em;
-}
-
-.form_group > select {
-    width: 60%;
-}
-
-.form_group > input {
-    width: 30%;
-}
-
 [name="notes__group"] {
     display: block;
 }
