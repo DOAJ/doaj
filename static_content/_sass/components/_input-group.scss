@@ -8,16 +8,20 @@
   border-collapse: separate;
   width: 100%;
 
-  input, select, button {
+  input, select, button, .select2-container {
     margin-bottom: $spacing-02;
+
+    &:not(:first-child) {
+      margin-left: -1px;
+    }
+  }
+
+  input, select, .select2-container {
+    width: 50%;
   }
 
   &:last-of-type {
     margin: 0;
-  }
-
-  input[type="number"] {
-    width: 75%;
   }
 }
 

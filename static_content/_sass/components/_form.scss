@@ -34,7 +34,7 @@
     @include typescale-05;
   }
 
-  input, select, textarea {
+  input, select, textarea, .select2-container {
     margin-bottom: $spacing-03;
     width: 75%;
 
