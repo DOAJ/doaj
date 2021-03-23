@@ -35,6 +35,7 @@
   }
 
   input, select, textarea {
+    margin-bottom: $spacing-03;
     width: 75%;
 
     &[type="number"] {
