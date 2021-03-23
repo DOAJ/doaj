@@ -1,10 +1,19 @@
 {% set selected_nav = data.nav.entries|selectattr("id", "equalto", section_id)|first %}
 {% for entry in selected_nav.entries %}
-<li>
-  <a href="{{ url_for(entry.route) }}">
-    {{ entry.label }}
-  </a>
-</li>
+    <li>
+        {% set url = entry.url %}
+        {% set urlAttrs = 'rel="noopener" target="_blank"' %}
+        {% if entry.route %}
+            {% set url = url_for(entry.route) %}
+            {% set urlAttrs = "" %}
+        {% endif %}
+        <a {{ urlAttrs }} href="{{ url }}">
+            {% if entry.feather %}
+            <span aria-hidden="true" data-feather="{{ entry.feather }}"></span>
+            {% endif %}
+            {{ entry.label }}
+        </a>
+    </li>
 {% endfor %}
 
 {#

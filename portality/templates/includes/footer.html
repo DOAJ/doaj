@@ -7,99 +7,6 @@
                 {% set section_id=column.id %}
                 {% include "includes/footer-column.html" %}
             {% endfor %}
-
-            {#  TODO migrate the rest of these to the nav file #}
-            <div class="col-xs-6 col-sm-4 col-lg-2">
-                <h2>
-                    About
-                </h2>
-                <ul>
-                    <li>
-                        <a href="{{ url_for('doaj.about') }}">About DOAJ</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.team') }}">DOAJ team</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.ambassadors') }}">Ambassadors</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.abc') }}">Advisory Board &amp; Council</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.editorial_subcommittee') }}">Editorial Subcommittee</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.volunteers') }}">Volunteers</a>
-                    </li>
-                    <li>
-                        <a href="https://blog.doaj.org" rel="noopener" target="_blank">News</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-xs-6 col-sm-4 col-lg-2">
-                <h2>
-                    Support
-                </h2>
-                <ul>
-                    <li>
-                        <a href="{{ url_for('doaj.support') }}">Support DOAJ</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.sponsors') }}">Sponsors</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.publisher_supporters') }}">Publisher supporters</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.supporters') }}">Supporters</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-xs-6 col-sm-4 col-lg-2">
-                <h2>
-                    Apply
-                </h2>
-                <ul>
-                    <li>
-                        <a href="{{ url_for('apply.public_application') }}">Application form</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.guide') }}">Guide to applying</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.seal') }}">The DOAJ Seal</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.transparency') }}">Transparency &amp; best practice</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.why_index') }}">Why index your journal in DOAJ?</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-xs-6 col-sm-4 col-lg-2">
-                <h2>
-                    Stay up to date
-                </h2>
-                <ul>
-                    <li>
-                        <a href="https://twitter.com/DOAJplus" rel="noopener" target="_blank"><span aria-hidden="true" data-feather="twitter"></span> Twitter</a>
-                    </li>
-                    <li>
-                        <a href="https://www.facebook.com/DirectoryofOpenAccessJournals/" rel="noopener" target="_blank"><span aria-hidden="true" data-feather="facebook"></span> Facebook</a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/DOAJ" rel="noopener" target="_blank"><span aria-hidden="true" data-feather="github"></span> Github</a>
-                    </li>
-                    <li>
-                        <a href="https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/" rel="noopener" target="_blank"><span aria-hidden="true" data-feather="linkedin"></span> Linkedin</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('atom.feed') }}"><span aria-hidden="true" data-feather="rss"></span> Atom feed</a>
-                    </li>
-                </ul>
-            </div>
         </section>
         <section class="legal">
             <h2 class="sr-only">
@@ -109,28 +16,12 @@
                 <p>
                     © DOAJ 2020 default by all rights reserved <a href="{{ url_for('doaj.terms') }}" style="text-decoration: underline;">unless otherwise specified</a>.
                 </p>
-                <ul>
-                    <li>
-                        <a href="{{ url_for('doaj.accessibility') }}">Accessibility</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.privacy') }}">Privacy</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.contact') }}">Contact</a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('doaj.terms') }}">T&amp;Cs</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li>
-                        <a href="https://is4oa.org/" rel="noopener" target="_blank">IS4OA</a>
-                    </li>
-                    <li>
-                        <a href="https://cottagelabs.com/" rel="noopener" target="_blank">Cottage Labs LLP</a>
-                    </li>
-                </ul>
+
+                {% set section_id = "legal" %}
+                <ul>{% include "includes/menu-items.html" %}</ul>
+
+                {% set section_id = "companies" %}
+                <ul>{% include "includes/menu-items.html" %}</ul>
             </div>
             <div>
                 <p>
