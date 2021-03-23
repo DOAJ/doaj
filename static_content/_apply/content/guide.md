@@ -247,7 +247,7 @@ We expect the members of our Team, our volunteers and our Ambassadors to always 
 
 ## In other languages
 
-We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](feedback@doaj.org).
+We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](mailto:feedback@doaj.org).
 
 We have our criteria in:
 
