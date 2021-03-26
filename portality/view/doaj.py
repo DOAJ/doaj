@@ -439,22 +439,22 @@ def support():
 
 @blueprint.route("/support/sponsors/")
 def sponsors():
-    return render_template("layouts/static_page.html", page_frag="/support/sponsors-fragment/index.html", page_title="Contributors")
+    return render_template("layouts/static_page.html", page_frag="/support/sponsors.html")
 
 
 @blueprint.route("/support/publisher-supporters/")
 def publisher_supporters():
-    return render_template("layouts/static_page.html", page_frag="/support/publisher-supporters-fragment/index.html", page_title="Publisher supporters")
+    return render_template("layouts/static_page.html", page_frag="/support/publisher-supporters.html")
 
 
 @blueprint.route("/support/supporters/")
 def supporters():
-    return render_template("layouts/static_page.html", page_frag="/support/supporters-fragment/index.html", page_title="Supporters")
+    return render_template("layouts/static_page.html", page_frag="/support/supporters.html")
 
 
 @blueprint.route("/support/thank-you/")
 def application_thanks():
-    return render_template("layouts/static_page.html", page_frag="/support/thank-you-fragment/index.html", page_title="Thank you for your support")
+    return render_template("layouts/static_page.html", page_frag="/support/thank-you.html")
 
 
 @blueprint.route("/apply/guide/")

@@ -1,3 +1,16 @@
+---
+layout: sidenav
+sidenav_include: /includes/_sidenav_publisher_supporter.html
+include: /data/publisher-supporters.html
+title: Publisher supporters
+order: 3
+section: Support
+support-type: publisher-supporters
+toc: false
+sticky_sidenav: true
+highlight: false
+---
+
 Supporting DOAJ is a way for publishers to show their commitment, not only to open access, but to a community-driven, non-profit, and diverse organisation.
 
 To make it easier for publishers to choose the level of support that they are most comfortable with, we offer a variety of options. The list below shows suggested contributions based on business size, or publishers can offer any amount of their choosing. You can process your payment on the right.

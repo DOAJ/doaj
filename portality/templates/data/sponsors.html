@@ -1,0 +1,34 @@
+{% if data.sponsors.gold %}
+    <h3><span data-feather="award" aria-hidden="true" class="stroke-gold"></span> Premier contributors</h3>
+    <div class="row">
+        {% for i in data.sponsors.gold %}
+            <div class="col-xs-6 sponsor">
+                <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                    <img src="/static_content/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<h3><span data-feather="award" aria-hidden="true" class="stroke-silver"></span> Sustaining contributors</h3>
+<div class="row">
+    {% for i in data.sponsors.silver %}
+        <div class="col-xs-4 sponsor">
+            <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                <img src="/static_content/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+            </a>
+        </div>
+    {% endfor %}
+</div>
+
+<h3><span data-feather="award" aria-hidden="true" class="stroke-bronze"></span> Basic contributors</h3>
+<div class="row">
+    {% for i in data.sponsors.bronze %}
+        <div class="col-xs-4 sponsor">
+            <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
+                <img src="/static_content/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+            </a>
+        </div>
+    {% endfor %}
+</div>

@@ -1,3 +1,14 @@
+---
+layout: sidenav
+preface: /data/sponsors.html
+title: Contributors (Publishers and Aggregators)
+order: 2
+section: Support
+toc: true
+sticky_sidenav: true
+highlight: false
+---
+
 ## Benefits for contributing publishers and aggregators 2021
 
 ([A downloadable version](https://docs.google.com/document/d/1xTVxUvqLkh2-r53cYlWdSIHsPGSnhcE7gi7bRFCaJik/edit?usp=sharing) of these benefits is available.)
