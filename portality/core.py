@@ -38,6 +38,7 @@ def create_app():
     initialise_apm(app)
     DebugToolbarExtension(app)
     proxyfix(app)
+    build_statics(app)
     return app
 
 
@@ -222,6 +223,19 @@ def _load_data(app):
         dataname = dataname.replace("-", "_")
         app.jinja_env.globals["data"][dataname] = data
 
+
+def build_statics(app):
+    if not app.config.get("DEBUG", False):
+        return
+    from portality.cms import build_fragments, build_sass
+
+    here = os.path.dirname(os.path.abspath(__file__))
+    base_path = os.path.dirname(here)
+
+    print("Compiling static content")
+    build_fragments.build(base_path)
+    print("Compiling SASS")
+    build_sass.build(base_path)
 
 app = create_app()
 es_connection = create_es_connection(app)
