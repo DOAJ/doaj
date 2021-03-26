@@ -5,6 +5,11 @@
 
 {% block content %}
 
+    {% if current_user.has_role("admin") %}
+    <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/static_pages/static_content/_{{ page.section }}/content/{{ page.frag }}" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
+    <a class="admin-edit" href="https://github.com/DOAJ/doaj/edit/static_pages/static_content/_data/FIXME.yml" target="_blank" rel="noopener"><span class="sr-only">Edit data content</span><span data-feather="database" aria-hidden="true"></span></a>
+    {% endif %}
+
     {% if page.layout %}
         {% set inc = "layouts/" + page.layout + ".html" %}
         {% include inc %}
