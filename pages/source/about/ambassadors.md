@@ -2,7 +2,6 @@
 layout: no-sidenav
 include: /data/ambassadors.html
 title: Ambassadors
-order: 3
 section: About
 toc: true
 highlight: true

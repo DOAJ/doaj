@@ -1,11 +1,9 @@
 ---
 layout: sidenav
 title: Public data dump
-order: 3
 section: Docs
 toc: true
 sticky_sidenav: true
-highlight: false
 ---
 
 An [exportable version of the journal metadata](/csv) is available as a CSV file.

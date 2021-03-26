@@ -5,8 +5,6 @@ short_title: Accessibility
 order: 1
 toc: true
 sticky_sidenav: true
-highlight: false
-permalink: /accessibility/
 ---
 
 This accessibility statement applies to [doaj.org](https://www.doaj.org) exclusively.

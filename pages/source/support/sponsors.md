@@ -2,11 +2,9 @@
 layout: sidenav
 preface: /data/sponsors.html
 title: Contributors (Publishers and Aggregators)
-order: 2
 section: Support
 toc: true
 sticky_sidenav: true
-highlight: false
 ---
 
 ## Benefits for contributing publishers and aggregators 2021

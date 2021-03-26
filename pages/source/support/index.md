@@ -3,11 +3,8 @@ layout: sidenav
 sidenav_include: /includes/_sidenav_donation.html
 include: /includes/contribution_rates.html 
 title: Support DOAJ
-order: 1
 section: Support
-toc: false
 sticky_sidenav: true
-highlight: false
 ---
 
 Support of DOAJ by academic organisations is vital and we are proud to acknowledge that over 80% of our support comes to us this way. We are very grateful to all our supporting academic organisations from around the world.

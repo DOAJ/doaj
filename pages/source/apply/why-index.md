@@ -1,11 +1,9 @@
 ---
 layout: sidenav
 title: Why index your journal in DOAJ?
-order: 4
 section: Apply
 toc: true
 sticky_sidenav: true
-highlight: false
 ---
 
 DOAJ indexes and promotes quality, peer-reviewed open access journals from around the world. We see open access as the only truly sustainable model for the future of scholarly publishing. DOAJ strives to achieve an equitable global transition to open access by raising the reputation and visibility of peer-reviewed open access journals from any country or discipline.

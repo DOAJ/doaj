@@ -1,13 +1,10 @@
 ---
 layout: sidenav
-title: "Terms and conditions"
-short_title: "T&Cs"
-order: 4
+title: Terms and conditions
+short_title: T&Cs
 section: About
 toc: true
 sticky_sidenav: true
-highlight: false
-permalink: /terms/
 ---
 
 ### Conditions of use

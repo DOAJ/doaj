@@ -2,8 +2,6 @@
 layout: no-sidenav
 title: Thank you for your application.
 section: Apply
-toc: false
-highlight: false
 aside: /includes/_aside_in_case_of_rejection.html
 ---
 

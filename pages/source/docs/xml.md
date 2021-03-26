@@ -1,11 +1,9 @@
 ---
 layout: sidenav
 title: XML
-order: 5
 section: Docs
 toc: true
 sticky_sidenav: true
-highlight: false
 ---
 
 Article metadata is provided to DOAJ by publishers on the understanding that the data will then be available for free, to be distributed to any third party who wants it.

@@ -2,7 +2,6 @@
 layout: no-sidenav
 include: /data/editorial-subcommittee.html
 title: Editorial Subcommittee
-order: 5
 section: About
 toc: true
 highlight: true

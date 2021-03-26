@@ -1,12 +1,9 @@
 ---
 layout: sidenav
 title: Supporters
-order: 4
 section: Support
 support-type: supporters
-toc: false
 sticky_sidenav: true
-highlight: false
 ---
 
 We are proud that over 80% of DOAJ's funding comes from academic organisations (libraries, library consortia, universities, research centres). Without this vital support, we wouldn't be able to continue the high levels of service that the research community expects of us. We are grateful for the trust shown in us by our supporters.

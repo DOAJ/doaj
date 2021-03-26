@@ -1,11 +1,9 @@
 ---
 layout: sidenav
 title: FAQs
-order: 6
 section: About
 toc: true
 sticky_sidenav: true
-highlight: false
 ---
 
 ## How can I contribute to DOAJ?

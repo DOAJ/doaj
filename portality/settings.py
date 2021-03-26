@@ -142,6 +142,9 @@ STATIC_PATHS = [
     "../pages/static"
 ]
 
+# GitHub base url where static content can be edited by the DOAJ team
+STATIC_PAGE_EDIT_BASE_URL = "https://github.com/DOAJ/doaj/edit/static_pages/static_content"
+
 # =======================
 # email settings
 

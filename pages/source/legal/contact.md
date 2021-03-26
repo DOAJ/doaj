@@ -2,11 +2,8 @@
 layout: no-sidenav
 title: Contact us
 short_title: Contact
-order: 3
 toc: true
 sticky_sidenav: true
-highlight: false
-permalink: /contact/
 ---
 
 We welcome your feedback, comments and questions about the DOAJ web site and services, or if you have feedback on a journal which is indexed in DOAJ. Please be assured that all communication with us is treated as confidential.

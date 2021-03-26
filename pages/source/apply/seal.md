@@ -1,11 +1,9 @@
 ---
 layout: sidenav
 title: The DOAJ Seal
-order: 2
 section: Apply
 toc: true
 sticky_sidenav: true
-highlight: false
 ---
 
 The DOAJ Seal is awarded to journals that demonstrate best practice in open access publishing. Around 10% of journals indexed in DOAJ have been awarded the Seal.

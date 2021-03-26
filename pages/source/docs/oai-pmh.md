@@ -1,11 +1,9 @@
 ---
 layout: sidenav
 title: OAI-PMH
-order: 1
 section: Docs
 toc: true
 sticky_sidenav: true
-highlight: false
 ---
 
 ## Journal feed

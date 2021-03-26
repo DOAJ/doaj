@@ -1,7 +1,6 @@
 ---
 layout: no-sidenav
 title: Volunteers
-order: 6
 section: About
 toc: true
 highlight: true

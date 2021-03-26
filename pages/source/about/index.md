@@ -1,11 +1,9 @@
 ---
 layout: sidenav
 title: About DOAJ
-order: 1
 section: About
 toc: true
 sticky_sidenav: true
-highlight: false
 ---
 
 The DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open access journals. Today, this [independent](https://blog.doaj.org/2018/11/07/doaj-independence-and-the-importance-of-impartiality/) database contains over 15 000 peer-reviewed open access journals covering all areas of science, technology, medicine, social sciences, arts and humanities. Open access journals from all countries and in all languages are welcome to apply for inclusion.
