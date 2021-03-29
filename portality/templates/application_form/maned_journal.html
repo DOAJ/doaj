@@ -11,6 +11,8 @@
 {% set quick_reject = false %}
 {% set withdrawable = true %}
 
+{% block page_title %}Journal: {{ obj.bibjson().title }} (Managing Editor){% endblock %}
+
 {% block content scoped %}
 <body id="apply">
     <main class="container page-content">

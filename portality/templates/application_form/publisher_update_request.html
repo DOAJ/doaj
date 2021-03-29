@@ -1,5 +1,7 @@
 {% extends "publisher/publisher_base.html" %}
 
+{% block page_title %}{{ obj.bibjson().title }} &ndash; Update request{% endblock %}
+
 {% set form_id = "update_request" %}
 {% set form_action = url_for("publisher.update_request", journal_id=obj.current_journal) %}
 {% set formulaic_after = url_for("publisher.updates_in_progress") %}
@@ -15,7 +17,6 @@
 {% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6] %}
 
 {% block publisher_content scoped %}
-
 <body id="apply">
     <main class="container">
         {% include "application_form/_backend_validation.html" %}
@@ -24,7 +25,7 @@
             <div class="col-md-8">
                 <section class="page-content">
 
-                    <h2>Journal update request form</h2>
+                    <h2>Journal update request form for <em>{{ obj.bibjson().title }}</em></h2>
 
                     <div class="alert">
                       <p>This form is for you to update the information that we hold about your journal. It is a copy of what we hold currently. Once you submit the update, it will be reviewed by one of our Managing Editors.</p>
