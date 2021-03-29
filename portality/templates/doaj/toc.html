@@ -114,21 +114,33 @@
                 </p>
             {% endif %}
 
-            {%- set seal = journal.has_seal() -%}
-            {% if seal %}
-                <a href="/apply/seal/" class="tag tag--featured">
-                    <span data-feather="check-circle" aria-hidden="true"></span>
-                    DOAJ Seal
-                </a>
-            {%- endif %}
+            <ul class="tags">
+                {%- set seal = journal.has_seal() -%}
+                {% if seal %}
+                <li class="tag tag--featured">
+                    <a href="/apply/seal/">
+                        <span data-feather="check-circle" aria-hidden="true"></span>
+                        DOAJ Seal
+                    </a>
+                </li>
+                {%- endif %}
 
-            {% if bibjson.journal_url %}
-                <a href="{{ bibjson.journal_url }}" target="_blank" rel="noopener" class="tag">
-                    <span data-feather="external-link" aria-hidden="true"></span>
-                    Website
-                </a>
-            {% endif %}
+                {% if bibjson.journal_url %}
+                <li class="tag">
+                    <a href="{{ bibjson.journal_url }}" target="_blank" rel="noopener">
+                        <span data-feather="external-link" aria-hidden="true"></span>
+                        Website
+                    </a>
+                </li>
+                {% endif %}
 
+                <li class="tag">
+                  <a href="https://portal.issn.org/resource/ISSN/{{ bibjson.get_preferred_issn() }}" target="_blank" rel="noopener">
+                      <span data-feather="external-link" aria-hidden="true"></span>
+                      ROAD Record
+                  </a>
+              </li>
+            </ul>
         </header>
 
         <div class="tabs">
