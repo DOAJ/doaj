@@ -198,12 +198,8 @@ def setup_jinja(app):
     app.jinja_env.globals['type'] = type
     app.jinja_env.globals['constants'] = constants
     _load_data(app)
-    # app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates',
-    #                                          os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_site',
-    #                                          os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_includes',
-    #                                          os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_layouts'])
     app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates',
-                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/pages/fragments'])
+                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/cms/fragments'])
 
     # a jinja filter that prints to the Flask log
     def jinja_debug(text):
@@ -215,7 +211,7 @@ def setup_jinja(app):
 def _load_data(app):
     if not "data" in app.jinja_env.globals:
         app.jinja_env.globals["data"] = {}
-    datadir = os.path.join(app.config["BASE_FILE_PATH"], "..", "pages", "_data")
+    datadir = os.path.join(app.config["BASE_FILE_PATH"], "..", "cms", "data")
     for datafile in os.listdir(datadir):
         with open(os.path.join(datadir, datafile)) as f:
             data = yaml.load(f, Loader=yaml.FullLoader)

@@ -4,7 +4,7 @@
         {% for i in data.sponsors.gold %}
             <div class="col-xs-6 sponsor">
                 <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
-                    <img src="/static_content/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                    <img src="/assets/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
                 </a>
             </div>
         {% endfor %}
@@ -16,7 +16,7 @@
     {% for i in data.sponsors.silver %}
         <div class="col-xs-4 sponsor">
             <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
-                <img src="/static_content/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                <img src="/assets/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
             </a>
         </div>
     {% endfor %}
@@ -27,7 +27,7 @@
     {% for i in data.sponsors.bronze %}
         <div class="col-xs-4 sponsor">
             <a href="{{ i.url }}"  title="Go to {{ i.name }}’s website" target="_blank" class="sponsor__link">
-                <img src="/static_content/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
+                <img src="/assets/img/sponsors/{{ i.logo }}" alt="{{ i.name }} logo" class="sponsor__logo"/>
             </a>
         </div>
     {% endfor %}

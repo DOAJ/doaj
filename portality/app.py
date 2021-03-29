@@ -73,8 +73,9 @@ initialise_index(app, es_connection)
 
 # serve static files from multiple potential locations
 # this allows us to override the standard static file handling with our own dynamic version
+# @app.route("/static_content/<path:filename>")
 @app.route("/static/<path:filename>")
-@app.route("/static_content/<path:filename>")
+@app.route("/assets/<path:filename>")
 def our_static(filename):
     return custom_static(filename)
 

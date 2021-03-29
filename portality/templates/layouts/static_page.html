@@ -6,10 +6,10 @@
 {% block content %}
     {# content editing buttons for admins #}
     {% if current_user.has_role("admin") %}
-        <a class="admin-edit" href="{{ config.get("STATIC_PAGE_EDIT_BASE_URL") }}/source{{ page.frag.split(".")|first }}.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
+        <a class="admin-edit" href="{{ config.get("CMS_EDIT_BASE_URL") }}/pages{{ page.frag.split(".")|first }}.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
         {% if page.include and page.include.startswith("/data/") %}
-            <a class="admin-edit" href="{{ config.get("STATIC_PAGE_EDIT_BASE_URL") }}{{ page.include.split(".")|first }}.yml" target="_blank" rel="noopener"><span class="sr-only">Edit data content</span><span data-feather="database" aria-hidden="true"></span></a>
+            <a class="admin-edit" href="{{ config.get("CMS_EDIT_BASE_URL") }}{{ page.include.split(".")|first }}.yml" target="_blank" rel="noopener"><span class="sr-only">Edit data content</span><span data-feather="database" aria-hidden="true"></span></a>
         {% endif %}
     {% endif %}
 

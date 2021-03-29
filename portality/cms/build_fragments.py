@@ -7,10 +7,10 @@ from copy import deepcopy
 
 from portality.cms import implied_attr_list
 
-BASE = "pages"
-SRC = os.path.join(BASE, "source")
+BASE = "cms"
+SRC = os.path.join(BASE, "pages")
 OUT = os.path.join(BASE, "fragments")
-FRONT_MATTER = os.path.join(BASE, "_data/frontmatter.yml")
+FRONT_MATTER = os.path.join(BASE, "data/frontmatter.yml")
 
 def _localise_paths(base_path=None):
     if base_path is None:

@@ -6,25 +6,27 @@
   <meta name="description" content="{% block meta_description %}DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.{% endblock %}">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 
-  <!-- PWA -->
-  <link rel="manifest" href="/static_content/manifest.json">
+{# removing this as it doesn't provide correct information, and as DOAJ is not a progressive web app (it won't work offline, for sure)
+I'm not sure of the value of it.  Leaving the code snippet here to remind us #}
+  {# <!-- PWA -->
+  <link rel="manifest" href="/static_content/manifest.json"> #}
 
   <!-- generics -->
-  <link rel="icon" href="/static_content/img/favicon/32.png" sizes="32x32">
-  <link rel="icon" href="/static_content/img/favicon/57.png" sizes="57x57">
-  <link rel="icon" href="/static_content/img/favicon/76.png" sizes="76x76">
-  <link rel="icon" href="/static_content/img/favicon/96.png" sizes="96x96">
-  <link rel="icon" href="/static_content/img/favicon/128.png" sizes="128x128">
-  <link rel="icon" href="/static_content/img/favicon/192.png" sizes="192x192">
-  <link rel="icon" href="/static_content/img/favicon/228.png" sizes="228x228">
+  <link rel="icon" href="/assets/img/favicon/32.png" sizes="32x32">
+  <link rel="icon" href="/assets/img/favicon/57.png" sizes="57x57">
+  <link rel="icon" href="/assets/img/favicon/76.png" sizes="76x76">
+  <link rel="icon" href="/assets/img/favicon/96.png" sizes="96x96">
+  <link rel="icon" href="/assets/img/favicon/128.png" sizes="128x128">
+  <link rel="icon" href="/assets/img/favicon/192.png" sizes="192x192">
+  <link rel="icon" href="/assets/img/favicon/228.png" sizes="228x228">
 
   <!-- Android -->
-  <link rel="shortcut icon" sizes="196x196" href="/static_content/img/favicon/196.png">
+  <link rel="shortcut icon" sizes="196x196" href="/assets/img/favicon/196.png">
 
   <!-- iOS -->
-  <link rel="apple-touch-icon" href="/static_content/img/favicon/120.png" sizes="120x120">
-  <link rel="apple-touch-icon" href="/static_content/img/favicon/152.png" sizes="152x152">
-  <link rel="apple-touch-icon" href="/static_content/img/favicon/180.png" sizes="180x180">
+  <link rel="apple-touch-icon" href="/assets/img/favicon/120.png" sizes="120x120">
+  <link rel="apple-touch-icon" href="/assets/img/favicon/152.png" sizes="152x152">
+  <link rel="apple-touch-icon" href="/assets/img/favicon/180.png" sizes="180x180">
 
   <!-- Windows 8 IE 10-->
   <meta name="msapplication-TileColor" content="#F8F3EF">

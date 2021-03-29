@@ -6,7 +6,7 @@
             <div class="title-list__text">
                 {% if i.photo %}
                     <figure class="portrait portrait--small" aria-hidden="true">
-                        <div class="portrait__bg-img" style="background-image: url('/static_content/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                        <div class="portrait__bg-img" style="background-image: url('/assets/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                     </figure>
                 {% endif %}
                 <p class="label">{% if i.city %}{{ i.city }}, {% endif %}{{ i.country }}</p>
@@ -28,7 +28,7 @@
                 <div class="title-list__text">
                     {% if i.photo %}
                         <figure class="portrait portrait--small" aria-hidden="true">
-                            <div class="portrait__bg-img" style="background-image: url('/static_content/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                            <div class="portrait__bg-img" style="background-image: url('/assets/img/volunteers/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
                         </figure>
                     {% endif %}
                     <p class="label">{% if i.city %}{{ i.city }}, {% endif %}{{ i.country }}</p>
