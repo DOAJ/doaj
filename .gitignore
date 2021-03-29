@@ -102,3 +102,4 @@ local_store/tmp/*
 cms/fragments/**/
 !cms/fragments/.gitkeep
 cms/data/frontmatter.yml
+cms/components

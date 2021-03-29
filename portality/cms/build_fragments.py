@@ -26,6 +26,8 @@ def build(base_path=None):
 
     base_dir, src_dir, out_dir, fm_file = _localise_paths(base_path)
 
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
     for filename in os.listdir(out_dir):
         filepath = os.path.join(out_dir, filename)
         try:
