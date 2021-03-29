@@ -4,7 +4,6 @@ sidenav_include: /includes/_sidenav_publisher_supporter.html
 include: /data/publisher-supporters.html
 title: Publisher supporters
 section: Support
-support-type: publisher-supporters
 sticky_sidenav: true
 ---
 

@@ -1,7 +1,6 @@
 ---
 layout: sidenav
 title: Privacy information notice
-short_title: Privacy
 section: About
 toc: true
 sticky_sidenav: true

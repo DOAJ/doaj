@@ -2,7 +2,6 @@
 layout: sidenav
 title: Thank you for your support
 section: Support
-support-type: supporters
 ---
 
 Your payment has been processed and the transaction is complete.

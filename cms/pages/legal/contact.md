@@ -1,7 +1,6 @@
 ---
 layout: no-sidenav
 title: Contact us
-short_title: Contact
 toc: true
 sticky_sidenav: true
 ---

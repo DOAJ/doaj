@@ -2,7 +2,6 @@
 layout: sidenav
 title: Supporters
 section: Support
-support-type: supporters
 sticky_sidenav: true
 ---
 

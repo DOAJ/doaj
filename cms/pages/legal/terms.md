@@ -1,7 +1,6 @@
 ---
 layout: sidenav
 title: Terms and conditions
-short_title: T&Cs
 section: About
 toc: true
 sticky_sidenav: true
