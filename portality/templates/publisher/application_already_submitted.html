@@ -1,9 +1,18 @@
 {% extends "publisher/publisher_base.html" %}
 
 {% block publisher_content %}
+<div class="row">
+  <div class="col-md-6">
+    <h1>
+      Update request &ndash; <br/>
+      {{journal.bibjson().title}}
+    </h1>
+  </div>
 
-<h2>Update Request For: {{journal.bibjson().title}}</h2>
+  <div class="col-md-6">
+    <p class="alert">You <strong>cannot</strong> currently edit this update request</p>
 
-<p>The update request for the above title has already been submitted to the DOAJ administrators, and can no longer be edited.</p>
-
+    <p>The update request for {{journal.bibjson().title}} has already been submitted to the DOAJ administrators, and can no longer be edited.</p>
+  </div>
+</div>
 {% endblock %}

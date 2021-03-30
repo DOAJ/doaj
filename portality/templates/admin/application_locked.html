@@ -1,5 +1,7 @@
 {% extends "admin/admin_base.html" %}
 
+{% block page_title %}(Locked) {{ application.bibjson().title }}{% endblock %}
+
 {% block admin_content %}
 <div class="row">
   <div class="col-md-6">
@@ -11,7 +13,7 @@
       <p class="label">Last updated: {{application.last_updated}}</p>
     {% endif %}
   </div>
-  
+
   <div class="col-md-6">
     <p class="alert">You <strong>cannot</strong> currently edit this application</p>
 
