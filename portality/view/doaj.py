@@ -14,7 +14,7 @@ from portality.ui.messages import Messages
 from portality.forms.application_forms import JournalFormFactory
 
 import json
-import os
+import os, re
 
 blueprint = Blueprint('doaj', __name__)
 
@@ -107,8 +107,13 @@ def articles_search():
     return render_template("doaj/articles_search.html", lcc_tree=lcc_jstree)
 
 
-@blueprint.route("/search/", methods=['GET'])
+@blueprint.route("/search", methods=['GET'])
 def search():
+    # If there are URL params, check if we need to redirect to articles rather than journals
+    if request.values:
+        # Flat search the query params as string so we don't have to traverse all the way down the decoded json.
+        if re.search(r'\"_type\"\s*:\s*\"article\"', request.values.get('source', '')):
+            return redirect(url_for("doaj.articles_search"), 301)
     return redirect(url_for("doaj.journals_search"), 301)
 
 
