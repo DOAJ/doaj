@@ -10,6 +10,8 @@
 {% set diff_table = true %}
 {% set quick_reject = true %}
 
+{% block page_title %}Application: {{ obj.bibjson().title }}{% endblock %}
+
 {% block content scoped %}
 <body id="apply">
     <main class="container page-content">

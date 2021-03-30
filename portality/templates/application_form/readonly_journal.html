@@ -16,6 +16,8 @@
 {% set TAB_ED = {"title": "Admin", "fieldsets": ["subject", "notes"]} %}
 {% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6, TAB_ED] %}
 
+{% block page_title %}(Read-only) {{ obj.bibjson().title }}{% endblock %}
+
 {% block content scoped %}
 <body id="apply">
     <main class="container">
