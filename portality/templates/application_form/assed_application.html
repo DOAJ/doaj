@@ -10,11 +10,15 @@
 {% set diff_table = false %}
 {% set quick_reject = false %}
 
+{% block page_title %}Application: {{ obj.bibjson().title }}{% endblock %}
+
 {% block editor_content scoped %}
 <body id="apply">
     <main class="container page-content">
         {% include "application_form/editorial_form_body.html" %}
     </main>
+
+    {% include "includes/_hotjar.html" %}
  </body>
 {% endblock %}
 

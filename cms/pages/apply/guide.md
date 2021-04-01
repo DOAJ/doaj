@@ -17,7 +17,11 @@ Open access journals published in any language may apply.
 - The journal must be actively publishing scholarly research
   - All research subject areas are accepted
   - Should publish at least 5 research articles per year
-- The primary target audience should be researchers or practitioners
+  - The primary target audience should be researchers or practitioners
+
+- Newly launched journals
+  - Before applying to DOAJ, a new journal must demonstrate a publishing history of more than one year, or have published at least 10 articles.
+  - This is in addition to the standard requirement to publish a minimum of 5 research articles per year.
 
 ---
 
@@ -241,7 +245,7 @@ We expect the members of our Team, our volunteers and our Ambassadors to always 
 
 ## In other languages
 
-We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](feedback@doaj.org).
+We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](mailto:feedback@doaj.org).
 
 We have our criteria in:
 

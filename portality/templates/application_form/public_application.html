@@ -1,5 +1,7 @@
 {% extends "layouts/base.html" %}
 
+{% block page_title %}Application form{% endblock %}
+
 {% set form_id = "new_form" %}
 {% set form_action = url_for("apply.public_application") %}
 {% set formulaic_after = url_for("apply.application_thanks") %}

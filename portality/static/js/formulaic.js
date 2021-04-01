@@ -1822,12 +1822,12 @@ var formulaic = {
                         };
                     },
                     results: function (data, page) {
-                        return {results: data["suggestions"]};
+                        return {results: data["suggestions"].filter((x) => $.inArray(x.text.toLowerCase(), stopWords) === -1)};
                     }
                 };
 
                 var csc = function (term) {
-                    if ($.inArray(term, stopWords) !== -1) {
+                    if ($.inArray(term.toLowerCase(), stopWords) !== -1) {
                         return null;
                     }
                     return {id: $.trim(term), text: $.trim(term)};

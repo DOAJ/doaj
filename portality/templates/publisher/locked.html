@@ -1,22 +1,25 @@
 {% extends "publisher/publisher_base.html" %}
 
-{% block publisher_content %}
+{% block page_title %}(Locked) {{ journal.bibjson().title }}{% endblock %}
 
-<div class="row" style="margin-bottom: 3em;">
-  <div class="col-md-12">
-    <h1>Update Request For: {{journal.bibjson().title}}</h1>
+{% block publisher_content %}
+<div class="row">
+  <div class="col-md-6">
+    <h1>
+      Update request &mdash;<br/>
+      {{ journal.bibjson().title }}
+    </h1>
+    {% if journal.last_updated %}
+      <p class="label">Last updated: {{journal.last_updated}}</p>
+    {% endif %}
+  </div>
+
+  <div class="col-md-6">
+    <p class="alert">You <strong>cannot</strong> currently edit this update request</p>
+
+    <p>An editor is currently working on this record, and until they are finished, you cannot access it.</p>
+
+    <p>Please try again later!</p>
   </div>
 </div>
-
-<div class="row">
-    <div class="col-md-12">
-        <p><strong>You cannot currently edit this update request</strong></p>
-
-        <p>An editor is currently working on this record, and until they are finished, you cannot access it.</p>
-
-        <p>Please try again later!</p>
-    </div>
-</div>
-
 {% endblock %}
-

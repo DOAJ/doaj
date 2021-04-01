@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
 {% set page = data.frontmatter[page_frag] %}
 
-{% block page_title %}{{ page.title }} &ndash; {% endblock %}
+{% block page_title %}{{ page_title }}{% endblock %}
 
 {% block content %}
     {# content editing buttons for admins #}

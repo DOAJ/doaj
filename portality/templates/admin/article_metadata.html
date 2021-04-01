@@ -1,5 +1,7 @@
 {% extends "admin/admin_base.html" %}
 
+{% block page_title %}{{ form_context.source.bibjson().title }} &ndash; Article metadata{% endblock %}
+
 {% block admin_content %}
 {% set object_type = 'article' %}
 {% set heading_object_type = 'Article' %}
