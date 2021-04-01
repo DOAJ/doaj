@@ -103,3 +103,6 @@ cms/fragments/**/
 !cms/fragments/.gitkeep
 cms/data/frontmatter.yml
 cms/components
+cms/error_fragments.txt
+cms/error_sass.txt
+portality/static/doaj/css/main.css*
