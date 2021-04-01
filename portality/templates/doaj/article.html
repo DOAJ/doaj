@@ -79,8 +79,8 @@
     {% set doi = bibjson.get_one_identifier("doi") %}
     {% set normalised_doi = article.get_normalised_doi() %}
 
-    <main class="page-content article-summary">
-        <div class="highlight">
+    <main class="page-content">
+        <div class="hero">
             <header class="container">
                 <p class="label">
                     <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}">{{jtitle}}</a>
@@ -155,24 +155,21 @@
         <div class="container">
             <div class="row">
                 <section class="col-md-8">
-                    <header class="flex-header">
-                        <h2 class="flex-header__child">Abstract</h2>
-                        <p class="flex-header__child">
-                            {% if bibjson.get_urls("fulltext") %}
-                                {% for url in bibjson.get_urls("fulltext") %}
-                                    <a href="{{url}}" class="button button--primary" target="_blank" rel="noopener" role="button">Read online</a>
-                                {% endfor %}
-                            {% else %}
-                                {% if doi %}
-                                    {% set url_text = normalised_doi | doi_url | safe %}
-                                    {% if url_text != "" %}
-                                        <a href="{{url_text}}" class="button button--primary" target="_blank" rel="noopener" role="button">Read online</a>
-                                    {% endif %}
+                      <h2>Abstract</h2>
+                      <p>
+                        {% if bibjson.get_urls("fulltext") %}
+                            {% for url in bibjson.get_urls("fulltext") %}
+                                <a href="{{url}}" class="button button--primary" target="_blank" rel="noopener" role="button">Read online</a>
+                            {% endfor %}
+                        {% else %}
+                            {% if doi %}
+                            {% set url_text = normalised_doi | doi_url | safe %}
+                                {% if url_text != "" %}
+                                    <a href="{{url_text}}" class="button button--primary" target="_blank" rel="noopener" role="button">Read online</a>
                                 {% endif %}
                             {% endif %}
-
-                        </p>
-                    </header>
+                        {% endif %}
+                      </p>
                     {% if bibjson.abstract %}
                         <p class="article-details__abstract">{{ bibjson.abstract | striptags }}</p>
                     {% else %}

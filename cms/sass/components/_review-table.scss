@@ -5,21 +5,22 @@
   @include typescale-06;
 
   &__header {
-    background: $warm-black;
     border: 0;
+    background: $warm-black;
+    color: $warm-white;
+
+    .label {
+      color: $warm-white;
+    }
 
     th {
       &:first-child {
         padding-left: $spacing-03;
       }
+
+      &:last-child {
+        text-align: right;
+      }
     }
-  }
-
-  .label {
-    color: $warm-white;
-  }
-
-  .button {
-    float: right;
   }
 }

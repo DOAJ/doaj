@@ -1,6 +1,10 @@
 # List of sponsors separated by tiers (premier, sustaining, basic)
 
 gold:
+- name: PeerJ
+  url: https://peerj.org/
+  logo: peerj.svg
+
 - name: Royal Society of Chemistry
   url: https://www.rsc.org/
   logo: rsc.png

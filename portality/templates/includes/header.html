@@ -127,7 +127,6 @@
                 {% set category = category[:category.rfind(category_url_indicator)] %}
                 {% set message_has_url = True %}
             {% endif %}
-
             {# shift from bs2 to bs3 terminology #}
             {% if category == "error" %}
                 {% set category = "danger" %}

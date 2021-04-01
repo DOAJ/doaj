@@ -1,15 +1,15 @@
 /* Buttons */
 
-[type="button"] {
+[type="button"],
+[role="button"] {
   cursor: pointer;
 }
 
 button,
 input[type="button"],
 .button {
-  display: inline-block;
   padding: $spacing-02 $spacing-03;
-  margin: 0;
+  margin: 0 0 $spacing-04 0;
   transition: all 0.15s ease;
   width: auto;
   border: 1px solid $warm-black;

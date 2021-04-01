@@ -11,12 +11,10 @@
                 <input type="hidden" name="ref" value="homepage-box">
                 <input type="hidden" name="origin" value="ui">
                 <div class="col-xs-12 col-md-8">
-                    <div class="inline-fields">
-                        <input type="radio" id="journals" name="content-type" value="journals" checked>
-                        <label for="journals">Journals</label>
-                        <input type="radio" id="articles" name="content-type" value="articles">
-                        <label for="articles">Articles</label>
-                    </div>
+                    <input type="radio" id="journals" name="content-type" value="journals" checked>
+                    <label for="journals">Journals</label>
+                    <input type="radio" id="articles" name="content-type" value="articles">
+                    <label for="articles">Articles</label>
                 </div>
 
                 <div class="col-xs-12 col-md-8">
@@ -38,7 +36,7 @@
                 </div>
             </form>
 
-            <section class="row mobile-scrollable-row">
+            <section class="row row--scrollable">
                 <h2 class="sr-only">DOAJ in numbers</h2>
                 <p class="col-md-2 stat">
                     <span class="stat__number">80</span>
@@ -199,6 +197,41 @@
     <!-- Volunteers -->
     <section class="homepage__volunteers">
         <div class="container">
+         {# TODO: this was in the static pages directory, but is not on the live site.  Preserving the code snippet here
+         in case we should re-instate it
+
+        <h2 class="sr-only">Community</h2>
+        <div class="row">
+          <section class="col-sm-3 homepage__funding">
+            <header>
+              <h3 class="label">Funding</h3>
+              <p>Some organisations and publishers support DOAJ with either a one-off payment or an annual payment.</p>
+              <p>
+                <a href="/support/" class="button">Support us →</a>
+              </p>
+            </header>
+              <ul>
+                <li>
+                  <article>
+                    <h4>Supporters</h4>
+                    <p>DOAJ Membership is recommended for those who can support us with a long-term annual fixed contribution.</p>
+                    <a href="/support/supporters/">
+                      <p>Learn more</p>
+                    </a>
+                  </article>
+                </li>
+                <li>
+                  <article>
+                    <h4>Publisher supporters</h4>
+                    <p>If you publish or own an Open Access journal, you may prefer to become a Publisher Supporter with DOAJ.</p>
+                    <a href="/support/publisher-supporters/">
+                      <p>Learn more</p>
+                    </a>
+                  </article>
+                </li>
+              </ul>
+          </section>
+            #}
           <header>
               <h2 class="label">Volunteers</h2>
               <p>DOAJ would not be able to do the work that we do without our volunteers..</p>
@@ -234,7 +267,7 @@
                 <p>&rarr; <a href="{{ url_for('doaj.csv_data') }}">Download all journals as CSV</a></p>
             </header>
             <div class="col-sm-8">
-                <ul class="row mobile-scrollable-row title-list">
+                <ul class="row row--scrollable title-list">
                     {% for r in recent_journals %}
                     <li class="col-xs-6 col-md-3 col-lg-3">
                         <a href="{{ url_for('doaj.toc', identifier=r.bibjson().get_preferred_issn()) }}" class="title-list__link">{{ r.bibjson().title }}</a>

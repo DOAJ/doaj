@@ -7,11 +7,11 @@ section: Support
 sticky_sidenav: true
 ---
 
-Supporting DOAJ is a way for publishers to show their commitment, not only to open access, but to a community-driven, non-profit, and diverse organisation.
+Supporting DOAJ is a way for publishers to show their commitment, not only to open access, but to a community-driven, non-profit, diverse organisation.
 
-To make it easier for publishers to choose the level of support that they are most comfortable with, we offer a variety of options. The list below shows suggested contributions based on business size, or publishers can offer any amount of their choosing. You can process your payment on the right.
+We offer a variety of options so that publishers can choose the level of support that they are most comfortable with. The list below shows suggested contributions based on business size but publishers can offer any amount of their choosing.
 
-It is also possible to choose a discounted 3-year sustaining contribution, based on the rates below, or a single annual ammount. For more information about that, [contact us](mailto:feedback@doaj.org) stating the name of your organisation.
+It is possible to choose a discounted 3-year sustaining contribution, based on the rates below, or a single annual ammount. To do that, [contact us](mailto:feedback@doaj.org) stating the name of your organisation as we will be happy to help.
 
 {:.tabular-list}
 - Publishing more than **2,000** articles/year
@@ -27,4 +27,4 @@ It is also possible to choose a discounted 3-year sustaining contribution, based
 
 ## Our publisher supporters
 
-The publishers below have chosen to show their commitment to quality open access by supporting DOAJ. We thank them! Without them, our work would not be possible.
+The publishers below have chosen to show their commitment to quality, peer-reviewed open access by supporting DOAJ. We thank them! Without them, our work would not be possible.

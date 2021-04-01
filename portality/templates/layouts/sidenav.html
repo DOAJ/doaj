@@ -15,18 +15,18 @@
                     {% include page.sidenav_include %}
                 {% endif %}
 
-                <aside class="promo">
+                <aside class="hero hero-aside">
                     <p class="label">Just so you know&hellip;</p>
 
                     {% set min = 0 %}
                     {% set max = data.promo | length %}
                     {% set rand = range(min, max) | random %}
 
-                    <h2 class="promo__heading">{{ data.promo[rand].title }}</h2>
-                    <p class="promo__text">
+                    <h2>{{ data.promo[rand].title }}</h2>
+                    <p>
                         {{ data.promo[rand].summary }}
-                        <a href="{{ data.promo[rand].url }}" target="_blank" class="promo__link">Learn more</a>
                     </p>
+                    <a href="{{ data.promo[rand].url }}" target="_blank" class="promo__link">Learn more</a>
                 </aside>
             {% endif %}
         </div>
