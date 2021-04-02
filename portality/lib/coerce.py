@@ -73,6 +73,9 @@ def to_country_code(val):
     return uc(nv)
 
 def to_issn(issn):
+    if issn == '':
+        return issn
+
     if len(issn) > 9:
         raise ValueError("Unable to normalise {x} to valid ISSN".format(x=issn))
 
