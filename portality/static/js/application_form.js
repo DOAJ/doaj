@@ -155,7 +155,7 @@ doaj.af.BaseApplicationForm = class {
                 result = result + ", " + value[i];
             }
         }
-        return result;
+        return result.replace(/,(?! )/g, ", ");
     };
 
     submitapplication() {
