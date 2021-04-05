@@ -1846,7 +1846,6 @@ var formulaic = {
                 };
 
                 let field = $("[name='" + this.fieldDef.name + "']");
-                field.data("taglist", "true");
 
                 // apply the create search choice
                 field.select2({
