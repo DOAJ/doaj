@@ -13,16 +13,6 @@ def public_query_validator(q):
     if q.size() > 200:
         return False
 
-    # we do not expect the fqw
-    # for inital search q.size() == 0 ?
-
-    # TODO: think through this validator
-
-    # if q.has_facets():
-    #     return q.size() > 0
-    # else:
-    #     return True
-
     return True
 
 

@@ -84,15 +84,16 @@ $.extend(true, doaj, {
                 thousandsSeparator: ','
             });
 
-
             let components = [
-
                 edges.newPager({
                     id: "result-count",
                     category: "pager",
                     renderer : edges.bs3.newResultCountRenderer({
                         countFormat: countFormat,
-                        suffix: ` results found for <code>` + query.queryString.queryString + `</code>`,
+                        // TODO: I've taken this out because it needs a more thorough treatment than just displaying
+                        // the query string.  Opened an issue to track the additional requirement.
+                        // suffix: ` results found for <code>` + query.queryString.queryString + `</code>`,
+                        suffix: ` results`,
                         htmlContainerWrapper: false
                     })
                 }),
@@ -101,7 +102,7 @@ $.extend(true, doaj, {
                     id: "rpp",
                     category: "pager",
                     renderer : doaj.renderers.newPageSizeRenderer({
-                        sizeOptions: [5, 50, 100, 200],
+                        sizeOptions: [5, 10, 25],
                         sizeLabel: "Results per page"
                     })
                 }),
@@ -138,12 +139,13 @@ $.extend(true, doaj, {
                 search_url: search_url,
                 manageUrl : false,
                 openingQuery: query,
-                components : components,
-                callbacks : {
-                    "edges:query-fail" : function() {
-                        alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
-                    }
-                }
+                components : components//,
+                // Turning off the error callback, as it would just be confusing in the embedded site
+                // callbacks : {
+                //     "edges:query-fail" : function() {
+                //         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
+                //     }
+                // }
             });
             doaj.fqwidget.activeEdges[selector] = e;
         }
