@@ -7,8 +7,7 @@ let jQuery;
 if (window.jQuery === undefined || window.jQuery.fn.jquery !== "1.9.1") {
     let script_tag = document.createElement("script");
     script_tag.setAttribute("type","text/javascript");
-    script_tag.setAttribute("src",
-        "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js");
+    script_tag.setAttribute("src", doaj_url + '/static/vendor/jquery-3.4.1/jquery-3.4.1.min.js');
     if (script_tag.readyState) {
       script_tag.onreadystatechange = function () { // For old versions of IE
           if (this.readyState === "complete" || this.readyState === "loaded") {
