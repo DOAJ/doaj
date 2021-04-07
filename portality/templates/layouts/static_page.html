@@ -5,7 +5,7 @@
 
 {% block content %}
     {# content editing buttons for admins #}
-    {% if current_user.has_role("admin") %}
+    {% if not current_user.is_anonymous and current_user.has_role("admin") %}
         <a class="admin-edit" href="{{ config.get("CMS_EDIT_BASE_URL") }}/pages{{ page.frag.split(".")|first }}.md" target="_blank" rel="noopener"><span class="sr-only">Edit text content</span><span data-feather="edit-3" aria-hidden="true"></span></a>
 
         {% if page.include and page.include.startswith("/data/") %}
