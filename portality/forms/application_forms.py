@@ -175,7 +175,7 @@ class FieldDefinitions:
         },
         "widgets": [
             "trim_whitespace",
-            "full_contents"
+            {"full_contents" : {"empty_disabled" : "[The journal has no alternative title]"}}
         ],
         "contexts": {
             "update_request": {
