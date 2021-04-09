@@ -373,7 +373,7 @@ def article_page(identifier=None):
         if len(journals) > 0:
             journal = journals[0]
 
-    return render_template('doaj/article.html', article=article, journal=journal)
+    return render_template('doaj/article.html', article=article, journal=journal, page={"highlight" : True})
 
 # Not using this form for now but we might bring it back later
 # @blueprint.route("/contact/", methods=["GET", "POST"])
