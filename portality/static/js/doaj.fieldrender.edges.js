@@ -2029,7 +2029,8 @@ $.extend(true, doaj, {
             };
 
             this.doScroll = function () {
-                $(this.scrollSelector).animate({    // note we do not use component.jq, because the scroll target could be outside it
+                // note we do not use component.jq, because the scroll target could be outside it
+                $("html, body").animate({
                     scrollTop: $(this.scrollSelector).offset().top
                 }, 1);
             };

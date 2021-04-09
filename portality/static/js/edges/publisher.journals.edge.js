@@ -212,6 +212,7 @@ $.extend(true, doaj, {
                     },
                     "edges:post-render" : function() {
                         feather.replace();
+                        doaj.scroller(selector);
                     }
                 }
             });
