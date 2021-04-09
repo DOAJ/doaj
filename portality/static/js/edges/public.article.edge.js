@@ -186,7 +186,7 @@ $.extend(true, doaj, {
                     category: "top-pager",
                     renderer : doaj.renderers.newPagerRenderer({
                         numberFormat: countFormat,
-                        scrollSelector: "#top-pager"
+                        scroll: false
                     })
                 }),
 
@@ -202,7 +202,7 @@ $.extend(true, doaj, {
                     category: "bottom-pager",
                     renderer : doaj.renderers.newPagerRenderer({
                         numberFormat: countFormat,
-                        scrollSelector: "#top-pager"    // FIXME: these selectors don't work, why not?
+                        scroll: false
                     })
                 })
             ];

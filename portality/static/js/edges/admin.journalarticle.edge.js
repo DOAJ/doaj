@@ -314,7 +314,7 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newPagerRenderer({
                         sizeOptions: [10, 25, 50, 100],
                         numberFormat: countFormat,
-                        scrollSelector: "html, body"
+                        scroll: false
                     })
                 }),
                 edges.newPager({
@@ -323,7 +323,7 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newPagerRenderer({
                         sizeOptions: [10, 25, 50, 100],
                         numberFormat: countFormat,
-                        scrollSelector: "html, body"
+                        scroll: false
                     })
                 }),
 
