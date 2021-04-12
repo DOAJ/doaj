@@ -93,14 +93,11 @@ p, blockquote, ul, ol {
 pre, code {
   @include font-monospace;
   @include typescale-06;
+  background: $fair-pink;
 }
 
 pre {
   padding: $spacing-02;
-}
-
-code {
-  background: $fair-pink;
 }
 
 strong, b {
