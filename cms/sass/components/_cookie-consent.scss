@@ -17,6 +17,7 @@
   }
 
   .button {
+    display: block;
     color: $warm-black;
 
     &:hover, &:active, &:focus {
