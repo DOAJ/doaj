@@ -98,7 +98,7 @@
                 <div class="row article-details__meta">
                     {% if bibjson.author %}
                         <div class="col-md-6 col-lg-6">
-                            <ul>
+                            <ul class="inlined-list">
                                 {% for author in bibjson.author %}
                                     <li>{{author.name}}{% if loop.last %}{% else %}, {% endif %}</li>
                                 {% endfor %}
