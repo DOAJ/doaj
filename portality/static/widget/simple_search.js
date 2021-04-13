@@ -55,7 +55,10 @@ function main() {
         scr.href = doaj_url + '/static_content/_site/css/main.css';
         head.insertBefore(scr, head.firstChild);
 
-        $('#doaj-simple-search-widget').load(doaj_url + '/static/widget/simple_search_body.html', () => { feather.replace(); });
+        $('#doaj-simple-search-widget').load(doaj_url + '/static/widget/simple_search_body.html', () => {
+            $("form").attr("action", doaj_url + "/search");
+            feather.replace();
+        });
 
     });
 }
