@@ -427,7 +427,7 @@ class RequiredIfOtherValue(MultiFieldValidator):
             dr = validators.DataRequired(self.message)
             dr(form, field)
         else:
-            if not field.data or not field.data.strip():
+            if not field.data or (isinstance(field.data, str) and not field.data.strip()):
                 raise validators.StopValidation()
 
     def _match_list(self, form, field, other_field):
