@@ -126,7 +126,7 @@ $.extend(true, doaj, {
                     </header>';
                 }
 
-                var frag = titleBarFrag + '\
+                var frag = '<div id="searching-notification"></div>' + titleBarFrag + '\
                     <p id="share_embed"></p>\
                     <h2 id="result-count"></h2>\
                     <div class="row">\

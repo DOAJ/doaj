@@ -7,6 +7,27 @@
 {% block meta_description %}Find open acccess journals in DOAJ.{% endblock %}
 
 {% block content %}
+<style type="text/css">
+.overlay {
+    background-color: #ffffff;
+    opacity: 1;
+    width: 100%;
+    height: auto;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    position: fixed;
+    z-index: 10000
+}
+
+.overlay .loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+</style>
+
     <main class="container page-content">
         <div id="public-journal-search"></div>
         {% include "includes/search-help-modal.html" %}

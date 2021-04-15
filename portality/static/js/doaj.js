@@ -211,7 +211,7 @@ var doaj = {
         return isodate_str.replace('T',' ').replace('Z','')
     },
 
-    scroller : function(selector, notFirstTime, duration) {
+    scroller : function(selector, notFirstTime, duration, callback) {
         if (!duration) {
             duration = 1
         }
@@ -220,9 +220,15 @@ var doaj = {
         }
 
         if (doaj.scroller.hasOwnProperty("doScroll")) {
-            $("html, body").animate({
-                scrollTop: $(selector).offset().top
-            }, duration);
+            $("html, body").animate(
+                {
+                    scrollTop: $(selector).offset().top
+                },
+                {
+                    duration: duration,
+                    always: callback
+                }
+            );
         } else {
             doaj.scroller.doScroll = true;
         }
