@@ -1288,7 +1288,6 @@ var formulaic = {
                 if (val && (val.substring(0,7) === "http://" || val.substring(0,8) === "https://") && val.length > 10) {
                     if (this.link) {
                         this.link.attr("href", val);
-                        this.link.html(val);
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
@@ -1312,6 +1311,7 @@ var formulaic = {
         FullContents : function(params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
+            this.args = params.args;
 
             this.ns = "formulaic-fullcontents";
 
@@ -1319,8 +1319,6 @@ var formulaic = {
 
             this.init = function() {
                 var elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                // TODO: should work as-you-type by changing "change" to "keyup" event; doesn't work in edges
-                //edges.on(elements, "change.ClickableUrl", this, "updateUrl");
                 edges.on(elements, "keyup.FullContents", this, "updateContents");
 
                 for (var i = 0; i < elements.length; i++) {
@@ -1332,18 +1330,26 @@ var formulaic = {
                 var that = $(element);
                 var val = that.val();
 
+                // if there is a behaviour for when the field is empty and disabled, then check if it is, and if
+                // it is include the desired alternative text
+                if (this.args && this.args.empty_disabled) {
+                    if (val === "" && that.prop("disabled")) {
+                        val = this.args.empty_disabled;
+                    }
+                }
+
                 if (val) {
                     if (this.container) {
-                        this.container.html('<small>Full contents: ' + val + '</small>');
+                        this.container.html('<strong>Full contents: ' + val + '</strong>');
                     } else {
                         var classes = edges.css_classes(this.ns, "contents");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p id="' + id + '" class="' + classes + '"><small>Full contents: ' + val + '</small></p>');
+                        that.after('<p id="' + id + '" class="' + classes + '"><strong>' + val + '</strong></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.container = $(selector, this.form.context);
                     }
-                } else if (this.link) {
+                } else if (this.container) {
                     this.container.remove();
                     this.container = false;
                 }
