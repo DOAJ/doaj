@@ -1,0 +1,35 @@
+{% set selected_nav = data.nav.entries|selectattr("id", "equalto", section_id)|first %}
+{% for entry in selected_nav.entries %}
+    <li>
+        {% set url = entry.url %}
+        {% set urlAttrs = 'rel="noopener" target="_blank"' %}
+        {% if entry.route %}
+            {% set url = url_for(entry.route) %}
+            {% set urlAttrs = "" %}
+        {% endif %}
+        <a {{ urlAttrs }} href="{{ url }}">
+            {% if entry.feather %}
+            <span aria-hidden="true" data-feather="{{ entry.feather }}"></span>
+            {% endif %}
+            {{ entry.label }}
+        </a>
+    </li>
+{% endfor %}
+
+{#
+{% capture section_name %}{{ include.section }}{% endcapture %}
+{% assign section = site[section_name] | sort: 'order' %}
+{% for page in section %}
+{% if page.fragment != true and page.order %}
+<li>
+  <a href="{{ page.url }}"{% if include.header %} class="dropdown__link"{% endif %}>
+    {% if include.short_title %}
+    {{ page.short_title }}
+    {% else %}
+    {{ page.title }}
+    {% endif %}
+  </a>
+</li>
+{% endif %}
+{% endfor %}
+#}

@@ -1,0 +1,44 @@
+/* Input groups */
+
+.input-group {
+  margin: 0 0 1rem 0;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  border-collapse: separate;
+  width: 100%;
+
+  input, select, button, .select2-container {
+    margin-bottom: $spacing-02;
+
+    &:not(:first-child) {
+      margin-left: -1px;
+    }
+  }
+
+  input, select, .select2-container {
+    width: 50%;
+  }
+
+  &:last-of-type {
+    margin: 0;
+  }
+}
+
+.input-group-authors {
+  flex-flow: column;
+}
+
+.input-group__input {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0;
+
+  &:not([type="submit"]) {
+    flex-grow: 1;
+  }
+
+  &:not(:first-child) {
+    margin-left: -1px;
+  }
+}

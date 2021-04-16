@@ -420,7 +420,7 @@ class FieldDefinitions:
             "placeholder": "Type or select the language"
         },
         "attr": {
-            "class": "input-xlarge"
+            "class": "input-xlarge unstyled-list"
         }
     }
 
@@ -1154,7 +1154,10 @@ class FieldDefinitions:
         "widgets": [
             "trim_whitespace",
             "multiple_field"
-        ]
+        ],
+        "attr": {
+            "class": "input-xlarge unstyled-list"
+        }
     }
 
     PRESERVATION_SERVICE_OTHER = {

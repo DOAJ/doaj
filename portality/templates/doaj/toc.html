@@ -274,18 +274,18 @@
 
                                                 <a href="{{ ldata[0] }}" target="_blank" rel="noopener" style="text-decoration: none;">
                                                     {% if license.type != "Publisher's own license" %}
-                                                        {% include 'svg/cc.svg' %}
+                                                        {% include 'includes/svg/cc.svg' %}
                                                     {% endif %}
                                                     {% for license_option in ldata[1] %}
                                                         {# TODO: how do we display public domain licenses + publishers’ own? #}
                                                         {# TODO: there’s probably a better way to do this #}
                                                         {# RJ Note: I have adjusted this bit of the template to do this slightly better, but until we have journals with multiple lincenses we're not sure how weird it will look #}
-                                                        {% if license_option == 'by' %}{% include 'svg/by.svg' %}<span class="sr-only">Attribution</span>{% endif %}
-                                                        {% if license_option == 'nc' %}{% include 'svg/nc.svg' %}<span class="sr-only">Non-Commercial</span>{% endif %}
-                                                        {% if license_option == 'nd' %}{% include 'svg/nd.svg' %}<span class="sr-only">No Derivatives</span>{% endif %}
-                                                        {% if license_option == 'sa' %}{% include 'svg/sa.svg' %}<span class="sr-only">Share Alike</span>{% endif %}
+                                                        {% if license_option == 'by' %}{% include 'includes/svg/by.svg' %}<span class="sr-only">Attribution</span>{% endif %}
+                                                        {% if license_option == 'nc' %}{% include 'includes/svg/nc.svg' %}<span class="sr-only">Non-Commercial</span>{% endif %}
+                                                        {% if license_option == 'nd' %}{% include 'includes/svg/nd.svg' %}<span class="sr-only">No Derivatives</span>{% endif %}
+                                                        {% if license_option == 'sa' %}{% include 'includes/svg/sa.svg' %}<span class="sr-only">Share Alike</span>{% endif %}
                                                     {% endfor %}
-                                                    {% if license.type == 'CC0' %}{% include 'svg/zero.svg' %}<span class="sr-only">Public Domain</span>{% endif %}
+                                                    {% if license.type == 'CC0' %}{% include 'includes/svg/zero.svg' %}<span class="sr-only">Public Domain</span>{% endif %}
                                                     {% if loop.last %}{% else %}<br/>{% endif %}
                                                 </a>
 
@@ -299,7 +299,7 @@
                             </article>
 
                             <article class="card card--with-icon">
-                                {% include 'svg/copyright.svg' %}
+                                {% include 'includes/svg/copyright.svg' %}
                                 <div>
                                     <p>
                                       The author

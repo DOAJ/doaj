@@ -1,0 +1,24 @@
+<!-- About section: ambassadors -->
+<h2>Ambassadors</h2>
+<ul class="row title-list">
+    {% for i in data.ambassadors %}
+        <li class="col-sm-6 col-md-4 col-lg-4">
+            <div class="title-list__text">
+                <figure class="portrait" aria-hidden="true">
+                    {% if i.photo %}
+                        <div class="portrait__bg-img" style="background-image: url('/assets/img/ambassadors/{{ i.photo }}')" alt="Portrait of {{ i.name }}"></div>
+                    {% else %}
+                        <div class="portrait__img--empty"></div>
+                    {% endif %}
+                </figure>
+                <p class="label">{{ i.region }}</p>
+                <h3 class="title-list__heading">{{ i.name }}</h3>
+                {% if i.bio %}
+                    <p class="title-list__para">
+                        {% autoescape off %}{{ i.bio }}{% endautoescape %}
+                    </p>
+                {% endif %}
+            </div>
+        </li>
+    {% endfor %}
+</ul>

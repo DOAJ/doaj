@@ -98,7 +98,11 @@ local_store/tmp/*
 .jekyll-metadata
 .ruby-version
 
-##generated files
-#static_content/_site
-static_content/css/*.css
-static_content/css/*.css.map
+# generated static content
+cms/fragments/**/
+!cms/fragments/.gitkeep
+cms/data/frontmatter.yml*
+cms/components
+cms/error_fragments.txt
+cms/error_sass.txt
+portality/static/doaj/css/main.css*

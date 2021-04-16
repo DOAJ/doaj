@@ -1434,12 +1434,12 @@ var formulaic = {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 for (var i = 0 ; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none">delete <span data-feather="x" /></button>'));
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
                     feather.replace();
                 }
 
                 this.template = $(this.divs[0]).html();
-                this.container = $(this.divs[0]).parents(".multiple_input");
+                this.container = $(this.divs[0]).parents(".removable-fields");
 
                 if (this.divs.length === 1) {
                     let div = $(this.divs[0]);
@@ -1482,7 +1482,7 @@ var formulaic = {
                 }
                 var newId = currentLargest + 1;
 
-                var frag = '<div class="form_group" name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
+                var frag = '<div class="input-group" name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
                 var jqt = $(frag);
                 var that = this;
                 jqt.find(":input").each(function() {
@@ -1555,7 +1555,7 @@ var formulaic = {
                 for (var idx = 0; idx < this.fields.length; idx++) {
                     let f = this.fields[idx];
                     let s2_input = $($(f).select2());
-                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
                     if (idx !== 0) {
                         s2_input.attr("required", false);
                         s2_input.attr("data-parsley-validate-if-empty", "true");
@@ -1614,7 +1614,7 @@ var formulaic = {
                 for (var idx = 0; idx < this.fields.length; idx++) {
                     let f = this.fields[idx];
                     let jqf = $(f);
-                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
                     if (idx !== 0) {
                         jqf.attr("required", false);
                         jqf.attr("data-parsley-validate-if-empty", "true");
@@ -1691,7 +1691,7 @@ var formulaic = {
 
                 for (var idx = 0; idx < this.divs.length; idx++) {
                     let div = $(this.divs[idx]);
-                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
 
                     if (idx !== 0) {
                         let inputs = div.find(":input");
@@ -1797,7 +1797,6 @@ var formulaic = {
                 this.elements = $("select[name$='" + this.fieldDef.name + "']");
                 this.elements.select2({
                     allowClear: allow_clear,
-                    width: 'resolve',
                     newOption: true,
                     placeholder: "Start typing…"
                 });

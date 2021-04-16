@@ -14,7 +14,7 @@ blueprint = Blueprint('apply', __name__)
 
 @blueprint.route("/thank-you", methods=["GET"])
 def application_thanks():
-    return render_template("layouts/static_page.html", page_frag="/apply/thank-you-fragment/index.html", page_title="Thank you")
+    return render_template("layouts/static_page.html", page_frag="/apply/thank-you.html")
 
 
 @blueprint.route("/draft", methods=["GET"])
