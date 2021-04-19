@@ -2879,3 +2879,39 @@ WTFORMS_BUILDERS = [
 
 ApplicationFormFactory = Formulaic(APPLICATION_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
 JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--type", help="object type to output")
+    parser.add_argument("-c", "--context", help="context to output")
+    parser.add_argument("-o", "--out", help="output file path")
+    args = parser.parse_args()
+
+    if not args.out:
+        print("Please specify an output file path with the -o option")
+        parser.print_help()
+        exit()
+
+    if not args.context:
+        print("Please specify a context to output")
+        parser.print_help()
+        exit()
+
+    if not args.type:
+        print("Please specify a type to output")
+        parser.print_help()
+        exit()
+
+    fc = None
+    if args.type == "journal":
+        fc = JournalFormFactory.context(args.context)
+    elif args.type == "application":
+        fc = ApplicationFormFactory.context(args.context)
+
+    if fc is not None:
+        fc.to_summary_csv(args.out)
+    else:
+        print("You did not enter a valid type.  Use one of 'journal' or 'application'")
