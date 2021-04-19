@@ -68,7 +68,7 @@ def editor(q):
 
 
 def private_source(q):
-    q.add_include(["admin.application_status", "suggestion", "admin.ticked",
+    q.add_include(["admin.application_status", "admin.ticked",
         "admin.seal", "last_updated", "created_date", "id", "bibjson"])
     return q
 
