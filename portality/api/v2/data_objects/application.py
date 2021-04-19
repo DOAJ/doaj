@@ -135,7 +135,6 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         if len(list(self.__seamless__.data.keys())) == 0:
             return
 
-
         # extract the p/e-issn identifier objects
         pissn = self.data["bibjson"]["pissn"]
         eissn = self.data["bibjson"]["eissn"]
@@ -199,7 +198,6 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         if existing is None:
             return models.Suggestion(**nd)
         else:
-            #nnd = dataobj.merge_outside_construct(self._struct, nd, existing.data)
             nnd = seamless.SeamlessMixin.extend_struct(self._struct, nd)
             return models.Suggestion(**nnd)
 

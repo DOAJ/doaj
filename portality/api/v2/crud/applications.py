@@ -7,15 +7,10 @@ from portality import models
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException, NoSuchObjectException
 from portality import lock
-# from portality.formcontext import formcontext
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.forms.application_forms import ApplicationFormFactory
-from werkzeug.datastructures import MultiDict
 
 from copy import deepcopy
-
-from portality.models.v2 import shared_structs
-from portality.models.v2.application import APPLICATION_STRUCT
 
 
 class ApplicationsCrudApi(CrudApi):
@@ -104,7 +99,6 @@ class ApplicationsCrudApi(CrudApi):
             form = ApplicationFormXWalk.obj2formdata(ap)
             formulaic_context = ApplicationFormFactory.context("update_request")
             fc = formulaic_context.processor(formdata=form, source=vanilla_ap)
-            # fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
 
             if fc.validate():
                 try:
@@ -123,10 +117,6 @@ class ApplicationsCrudApi(CrudApi):
 
         # otherwise, this is a brand-new application
         else:
-            # convert the incoming application into the web form
-            # form = MultiDict(ApplicationFormXWalk.obj2form(ap))
-            #from doajtest.fixtures.v2.common import expanded2compact
-            #form = MultiDict(expanded2compact(ApplicationFormXWalk.obj2form(ap)))
             form = ApplicationFormXWalk.obj2formdata(ap)
 
             # create a template that will hold all the values we want to persist across the form submission
