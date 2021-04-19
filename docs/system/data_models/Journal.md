@@ -1,31 +1,36 @@
-# Application
+# Journal
 
 The JSON structure of the model is as follows:
 
 ```json
 {
     "admin": {
-        "application_status": "string",
         "bulk_upload": "string",
         "contact": {
             "email": "string",
             "name": "string"
         },
-        "current_journal": "string",
-        "date_applied": "2021-01-11T14:08:19Z",
+        "current_application": "string",
         "editor": "string",
         "editor_group": "string",
-        "last_manual_update": "2021-01-11T14:08:19Z",
+        "in_doaj": true,
         "notes": [
             {
-                "date": "2021-01-11T14:08:19Z",
+                "date": "2021-04-16T12:49:43Z",
                 "id": "string",
                 "note": "string"
             }
         ],
         "owner": "string",
-        "related_journal": "string",
-        "seal": true
+        "related_applications": [
+            {
+                "application_id": "string",
+                "date_accepted": "2021-04-16T12:49:43Z",
+                "status": "string"
+            }
+        ],
+        "seal": true,
+        "ticked": true
     },
     "bibjson": {
         "alternative_title": "string",
@@ -60,7 +65,7 @@ The JSON structure of the model is as follows:
             ],
             "url": "string"
         },
-        "discontinued_date": "2021-01-11",
+        "discontinued_date": "2021-04-16",
         "editorial": {
             "board_url": "string",
             "review_process": [
@@ -145,11 +150,10 @@ The JSON structure of the model is as follows:
             "url": "string"
         }
     },
-    "created_date": "2021-01-11T14:08:19Z",
+    "created_date": "2021-04-16T12:49:43Z",
     "es_type": "string",
     "id": "string",
     "index": {
-        "application_type": "string",
         "asciiunpunctitle": "string",
         "classification": [
             "string"
@@ -163,6 +167,7 @@ The JSON structure of the model is as follows:
         "has_editor": "string",
         "has_editor_group": "string",
         "has_seal": "string",
+        "institution_ac": "string",
         "issn": [
             "string"
         ],
@@ -172,6 +177,7 @@ The JSON structure of the model is as follows:
         "license": [
             "string"
         ],
+        "publisher_ac": "string",
         "schema_code": [
             "string"
         ],
@@ -189,8 +195,9 @@ The JSON structure of the model is as follows:
         ],
         "unpunctitle": "string"
     },
-    "last_manual_update": "2021-01-11T14:08:19Z",
-    "last_updated": "2021-01-11T14:08:19Z"
+    "last_manual_update": "2021-04-16T12:49:43Z",
+    "last_reapplication": "2021-04-16T12:49:43Z",
+    "last_updated": "2021-04-16T12:49:43Z"
 }
 ```
 
@@ -198,21 +205,22 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 
 | Field | Description | Datatype | Format | Allowed Values |
 | ----- | ----------- | -------- | ------ | -------------- |
-| admin.application_status |  | str |  |  |
 | admin.bulk_upload |  | str |  |  |
 | admin.contact.email |  | str |  |  |
 | admin.contact.name |  | str |  |  |
-| admin.current_journal |  | str |  |  |
-| admin.date_applied |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| admin.current_application |  | str |  |  |
 | admin.editor |  | str |  |  |
 | admin.editor_group |  | str |  |  |
-| admin.last_manual_update |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| admin.in_doaj |  | bool |  |  |
 | admin.notes.date |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
 | admin.notes.id |  | str |  |  |
 | admin.notes.note |  | str |  |  |
 | admin.owner |  | str |  |  |
-| admin.related_journal |  | str |  |  |
+| admin.related_applications.application_id |  | str |  |  |
+| admin.related_applications.date_accepted |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| admin.related_applications.status |  | str |  |  |
 | admin.seal |  | bool |  |  |
+| admin.ticked |  | bool |  |  |
 | bibjson.alternative_title |  | str |  |  |
 | bibjson.apc.has_apc |  | bool |  |  |
 | bibjson.apc.max.currency |  | str |  |  |
@@ -274,7 +282,6 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | created_date |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
 | es_type |  | str |  |  |
 | id |  | str |  |  |
-| index.application_type |  | str |  |  |
 | index.asciiunpunctitle |  | str |  |  |
 | index.classification |  | str |  |  |
 | index.classification_paths |  | str |  |  |
@@ -284,9 +291,11 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | index.has_editor |  | str |  |  |
 | index.has_editor_group |  | str |  |  |
 | index.has_seal |  | str |  |  |
+| index.institution_ac |  | str |  |  |
 | index.issn |  | str |  |  |
 | index.language |  | str |  |  |
 | index.license |  | str |  |  |
+| index.publisher_ac |  | str |  |  |
 | index.schema_code |  | str |  |  |
 | index.schema_codes_tree |  | str |  |  |
 | index.schema_subject |  | str |  |  |
@@ -294,4 +303,5 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | index.title |  | str |  |  |
 | index.unpunctitle |  | str |  |  |
 | last_manual_update |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| last_reapplication |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
 | last_updated |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |

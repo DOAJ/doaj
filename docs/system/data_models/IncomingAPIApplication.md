@@ -1,36 +1,15 @@
-# Journal
+# IncomingApplication
 
 The JSON structure of the model is as follows:
 
 ```json
 {
     "admin": {
+        "application_status": "string",
         "bulk_upload": "string",
-        "contact": {
-            "email": "string",
-            "name": "string"
-        },
-        "current_application": "string",
-        "editor": "string",
-        "editor_group": "string",
-        "in_doaj": true,
-        "notes": [
-            {
-                "date": "2021-01-11T14:08:18Z",
-                "id": "string",
-                "note": "string"
-            }
-        ],
-        "owner": "string",
-        "related_applications": [
-            {
-                "application_id": "string",
-                "date_accepted": "2021-01-11T14:08:18Z",
-                "status": "string"
-            }
-        ],
-        "seal": true,
-        "ticked": true
+        "current_journal": "string",
+        "date_applied": "string",
+        "owner": "string"
     },
     "bibjson": {
         "alternative_title": "string",
@@ -65,7 +44,7 @@ The JSON structure of the model is as follows:
             ],
             "url": "string"
         },
-        "discontinued_date": "2021-01-11",
+        "discontinued_date": "2021-04-16",
         "editorial": {
             "board_url": "string",
             "review_process": [
@@ -150,54 +129,10 @@ The JSON structure of the model is as follows:
             "url": "string"
         }
     },
-    "created_date": "2021-01-11T14:08:18Z",
-    "es_type": "string",
+    "created_date": "2021-04-16T12:49:45Z",
     "id": "string",
-    "index": {
-        "asciiunpunctitle": "string",
-        "classification": [
-            "string"
-        ],
-        "classification_paths": [
-            "string"
-        ],
-        "continued": "string",
-        "country": "string",
-        "has_apc": "string",
-        "has_editor": "string",
-        "has_editor_group": "string",
-        "has_seal": "string",
-        "institution_ac": "string",
-        "issn": [
-            "string"
-        ],
-        "language": [
-            "string"
-        ],
-        "license": [
-            "string"
-        ],
-        "publisher_ac": "string",
-        "schema_code": [
-            "string"
-        ],
-        "schema_codes_tree": [
-            "string"
-        ],
-        "schema_subject": [
-            "string"
-        ],
-        "subject": [
-            "string"
-        ],
-        "title": [
-            "string"
-        ],
-        "unpunctitle": "string"
-    },
-    "last_manual_update": "2021-01-11T14:08:18Z",
-    "last_reapplication": "2021-01-11T14:08:18Z",
-    "last_updated": "2021-01-11T14:08:18Z"
+    "last_manual_update": "2021-04-16T12:49:45Z",
+    "last_updated": "2021-04-16T12:49:45Z"
 }
 ```
 
@@ -205,23 +140,12 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 
 | Field | Description | Datatype | Format | Allowed Values |
 | ----- | ----------- | -------- | ------ | -------------- |
-| admin.bulk_upload |  | str |  |  |
-| admin.contact.email |  | str |  |  |
-| admin.contact.name |  | str |  |  |
-| admin.current_application |  | str |  |  |
-| admin.editor |  | str |  |  |
-| admin.editor_group |  | str |  |  |
-| admin.in_doaj |  | bool |  |  |
-| admin.notes.date |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| admin.notes.id |  | str |  |  |
-| admin.notes.note |  | str |  |  |
-| admin.owner |  | str |  |  |
-| admin.related_applications.application_id |  | str |  |  |
-| admin.related_applications.date_accepted |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| admin.related_applications.status |  | str |  |  |
-| admin.seal |  | bool |  |  |
-| admin.ticked |  | bool |  |  |
-| bibjson.alternative_title |  | str |  |  |
+| admin.application_status | Status of the application.  If provided, will be ignored and set automatically by our system | str |  |  |
+| admin.bulk_upload | ID of the bulk upload this application was originally supplied with.  If provided, will be ignored. | str |  |  |
+| admin.current_journal | ID of a journal that you would like to request an update for | str |  |  |
+| admin.date_applied | Date this application was originally made.  If provided, will be ignored and set automatically by our system | str |  |  |
+| admin.owner | Your user account ID.  If provided, will be ignored and overridden by the account ID related to the API key | str |  |  |
+| bibjson.alternative_title | See application form Q3 - https://doaj.org/application/new#alternative_title-container | str |  |  |
 | bibjson.apc.has_apc |  | bool |  |  |
 | bibjson.apc.max.currency |  | str |  |  |
 | bibjson.apc.max.price |  | int |  |  |
@@ -244,15 +168,15 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | bibjson.eissn |  | str |  |  |
 | bibjson.institution.country |  | str |  |  |
 | bibjson.institution.name |  | str |  |  |
-| bibjson.is_replaced_by |  | str |  |  |
-| bibjson.keywords |  | str |  |  |
-| bibjson.language |  | str | 2 letter ISO language code |  |
-| bibjson.license.BY |  | bool |  |  |
-| bibjson.license.NC |  | bool |  |  |
-| bibjson.license.ND |  | bool |  |  |
-| bibjson.license.SA |  | bool |  |  |
-| bibjson.license.type |  | str |  |  |
-| bibjson.license.url |  | str | URL |  |
+| bibjson.is_replaced_by | Provided for parity with Application retrieve.  Will be ignored if provided. | str |  |  |
+| bibjson.keywords | as per application form Q34 - https://doaj.org/application/new#keywords-container | str |  |  |
+| bibjson.language | as per application form Q35 - https://doaj.org/application/new#languages-container | str | 2 letter ISO language code |  |
+| bibjson.license.BY | Does the licence have an attribution clause.  You may omit if using one of the defined licence types in application form Q47 - https://doaj.org/application/new#license-container | bool |  |  |
+| bibjson.license.NC | Does the licence have a non-commercial clause.  You may omit if using one of the defined licence types in application form Q47 - https://doaj.org/application/new#license-container | bool |  |  |
+| bibjson.license.ND | Does the licence have a no-derivatives clause.  You may omit if using one of the defined licence types in application form Q47 - https://doaj.org/application/new#license-container | bool |  |  |
+| bibjson.license.SA | Does the licence have a share-alike clause.  You may omit if using one of the defined licence types in application form Q47 - https://doaj.org/application/new#license-container | bool |  |  |
+| bibjson.license.type | The licence type from application form Q47 - https://doaj.org/application/new#license-container | str |  |  |
+| bibjson.license.url | see application form Q49 - https://doaj.org/application/new#license_url-container | str | URL |  |
 | bibjson.other_charges.has_other_charges |  | bool |  |  |
 | bibjson.other_charges.url |  | str | URL |  |
 | bibjson.pid_scheme.has_pid_scheme |  | bool |  |  |
@@ -272,36 +196,14 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | bibjson.ref.journal |  | str | URL |  |
 | bibjson.ref.license_terms |  | str | URL |  |
 | bibjson.ref.oa_statement |  | str | URL |  |
-| bibjson.replaces |  | str |  |  |
-| bibjson.subject.code |  | str |  |  |
-| bibjson.subject.scheme |  | str |  |  |
-| bibjson.subject.term |  | str |  |  |
-| bibjson.title |  | str |  |  |
+| bibjson.replaces | Provided for parity with Application retrieve.  Will be ignored if provided | str |  |  |
+| bibjson.subject.code | assigned subject code, provided for parity with Application retrieve. Will be ignored if provided | str |  |  |
+| bibjson.subject.scheme | assigned subject scheme, will be ignored if provided | str |  |  |
+| bibjson.subject.term | assigned subject term, will be ignored if provided | str |  |  |
+| bibjson.title | see application form Q1 - https://doaj.org/application/new#title-container | str |  |  |
 | bibjson.waiver.has_waiver |  | bool |  |  |
 | bibjson.waiver.url |  | str | URL |  |
-| created_date |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| es_type |  | str |  |  |
-| id |  | str |  |  |
-| index.asciiunpunctitle |  | str |  |  |
-| index.classification |  | str |  |  |
-| index.classification_paths |  | str |  |  |
-| index.continued |  | str |  |  |
-| index.country |  | str |  |  |
-| index.has_apc |  | str |  |  |
-| index.has_editor |  | str |  |  |
-| index.has_editor_group |  | str |  |  |
-| index.has_seal |  | str |  |  |
-| index.institution_ac |  | str |  |  |
-| index.issn |  | str |  |  |
-| index.language |  | str |  |  |
-| index.license |  | str |  |  |
-| index.publisher_ac |  | str |  |  |
-| index.schema_code |  | str |  |  |
-| index.schema_codes_tree |  | str |  |  |
-| index.schema_subject |  | str |  |  |
-| index.subject |  | str |  |  |
-| index.title |  | str |  |  |
-| index.unpunctitle |  | str |  |  |
+| created_date | Date the record was created in DOAJ.  Will be ignored if provided. | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| id | ID assigned by DOAJ for the record.  Will be ignored if provided | str |  |  |
 | last_manual_update |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| last_reapplication |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
-| last_updated |  | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| last_updated | Date the record was last updated in DOAJ.  Will be ignored if provided. | str | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
