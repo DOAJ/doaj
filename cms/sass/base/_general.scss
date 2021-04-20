@@ -231,7 +231,7 @@ input, select, button, textarea {
   -moz-appearance: none;
   border-radius: 0;
 
-  display: block;
+  display: inline-block;
   padding: 0.5em;
   background-color: $warm-white;
   border: 1px solid $warm-black;
