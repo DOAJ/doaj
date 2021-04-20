@@ -1482,7 +1482,7 @@ var formulaic = {
                 }
                 var newId = currentLargest + 1;
 
-                var frag = '<div class="input-group" name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
+                var frag = '<div name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
                 var jqt = $(frag);
                 var that = this;
                 jqt.find(":input").each(function() {

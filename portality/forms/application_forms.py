@@ -1677,7 +1677,7 @@ class FieldDefinitions:
             "note_id"
         ],
         "template": "application_form/_list.html",
-        "entry_template": "application_form/_entry_group_horizontal.html",
+        "entry_template": "application_form/_entry_group.html",
         "widgets": [
             {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}},
             "note_modal"

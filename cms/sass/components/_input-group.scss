@@ -9,6 +9,7 @@
   width: 100%;
 
   input, select, button, .select2-container {
+    margin-top: 0;
     margin-bottom: $spacing-02;
 
     &:not(:first-child) {
