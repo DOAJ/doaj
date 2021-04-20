@@ -35,6 +35,18 @@ then
     exit 0
 fi
 
+# Compile the static pages
+python portality/cms/build_fragments.py
+if test -f "cms/error_fragments.txt"; then
+  exit 1
+fi
+
+# compile the sass
+python portality/cms/build_sass.py
+if test -f "cms/error_sass.txt"; then
+  exit 1
+fi
+
 # Restart all supervisor tasks, which will cover the app, and huey on the background server. Then reload nginx.
 sudo supervisorctl update
 sudo supervisorctl restart all || sudo supervisorctl start all
