@@ -3,7 +3,7 @@
 gold:
 - name: JMIR Publications
   url: http://jmirpublications.com/
-  logo:
+  logo: jmir.svg
 
 - name: PeerJ
   url: https://peerj.org/
