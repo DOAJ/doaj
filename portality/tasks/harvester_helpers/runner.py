@@ -1,4 +1,4 @@
-from portality.harvester import workflow
+from portality.tasks.harvester_helpers import workflow
 from portality.core import app, es_connection, initialise_index
 from portality.models.harvester import HarvesterProgressReport as Report
 import flask.logging

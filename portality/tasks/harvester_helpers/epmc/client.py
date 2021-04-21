@@ -1,8 +1,8 @@
 from portality.core import app
 from portality.lib import httputil
 import urllib.request, urllib.parse, urllib.error, string
-from portality.harvester.epmc import models
-from portality.harvester.epmc.queries import QueryBuilder
+from portality.tasks.harvester_helpers.epmc import models
+from portality.tasks.harvester_helpers.epmc.queries import QueryBuilder
 from datetime import datetime
 import time
 

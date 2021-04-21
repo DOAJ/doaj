@@ -1,10 +1,11 @@
 from portality.models.harvester import HarvesterPlugin
-from portality.harvester.epmc import client, queries
+from portality.tasks.harvester_helpers.epmc import client, queries
 from portality.lib import dates
 from portality.api.v2.client import models as doaj
 from portality.core import app
 from datetime import datetime
 import time
+
 
 class EPMCHarvester(HarvesterPlugin):
     def get_name(self):

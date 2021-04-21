@@ -1,9 +1,12 @@
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi
 
-from portality.harvester import workflow
+from portality.tasks.harvester_helpers import workflow
 from portality.core import app, es_connection, initialise_index
 from portality.models.harvester import HarvesterProgressReport as Report
+from portality.tasks.redis_huey import main_queue, schedule
+from portality.decorators import write_required
+
 import flask.logging
 
 from setproctitle import setproctitle
@@ -12,6 +15,7 @@ import psutil, time, datetime
 STARTING_PROCTITLE = app.config.get('HARVESTER_STARTING_PROCTITLE', 'harvester: starting')
 RUNNING_PROCTITLE = app.config.get('HARVESTER_RUNNING_PROCTITLE', 'harvester: running')
 MAX_WAIT = app.config.get('HARVESTER_MAX_WAIT', 10)
+
 
 class HarvesterBackgroundTask(BackgroundTask):
     mail_prereqs = False
@@ -105,59 +109,20 @@ class HarvesterBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        # read_news.schedule(args=(background_job.id,), delay=10)
+        harvest.schedule(args=(background_job.id,), delay=10)
         # fixme: schedule() could raise a huey.exceptions.HueyException and not reach redis- would that be logged?
 
-def run_only_once():
-    # Identify running harvester instances.
-    setproctitle(STARTING_PROCTITLE)
-    running_harvesters = []
-    starting_harvesters = []
-    for p in psutil.process_iter():
-        try:
-            if p.cmdline() and p.cmdline()[0] == RUNNING_PROCTITLE:
-                running_harvesters.append(p)
-            if p.cmdline() and p.cmdline()[0] == STARTING_PROCTITLE:
-                starting_harvesters.append(p)
-        except (psutil.AccessDenied, psutil.NoSuchProcess):
-            pass
 
-    if len(starting_harvesters) > 1:
-        print("Harvester is already starting. Aborting this instance.")
-        exit(1)
+@main_queue.periodic_task(schedule("harvest"))
+@write_required(script=True)
+def scheduled_harvest():
+    user = app.config.get("SYSTEM_USERNAME")
+    job = HarvesterBackgroundTask.prepare(user)
+    HarvesterBackgroundTask.submit(job)
 
-    # Send SIGTERM to all extant instances of the harvester.
-    if len(running_harvesters) > 0:
-        print("Sending SIGTERM to extant harvester instances.")
-        [h.terminate() for h in running_harvesters]
-
-    # Check if they terminated correctly
-    started = datetime.datetime.utcnow()
-    still_running = [hrv for hrv in running_harvesters if hrv.is_running()]
-    while len(still_running) > 0 and datetime.datetime.utcnow() - started < datetime.timedelta(minutes=MAX_WAIT):
-        time.sleep(10)
-        still_running = [hrv for hrv in running_harvesters if hrv.is_running()]
-
-    # Move on to killing the processes if they don't respond to terminate
-    if len(still_running) > 0:
-        print("Old Harvesters are still running. Escalating to SIGKILL.")
-        [h.kill() for h in running_harvesters]
-        time.sleep(10)
-
-    # Startup complete, change process name to running.
-    setproctitle(RUNNING_PROCTITLE)
-
-# @main_queue.periodic_task(schedule("harvest"))
-# @write_required(script=True)
-# def scheduled_read_news():
-#     user = app.config.get("SYSTEM_USERNAME")
-#     job = HarvesterBackgroundTask.prepare(user)
-#     HarvesterBackgroundTask.submit(job)
-#
-#
-# @main_queue.task()
-# @write_required(script=True)
-# def harvest(job_id):
-#     job = models.BackgroundJob.pull(job_id)
-#     task = HarvesterBackgroundTask(job)
-#     BackgroundApi.execute(task)
+@main_queue.task()
+@write_required(script=True)
+def harvest(job_id):
+    job = models.BackgroundJob.pull(job_id)
+    task = HarvesterBackgroundTask(job)
+    BackgroundApi.execute(task)
