@@ -67,7 +67,7 @@ $.extend(true, doaj, {
                             }
                             displayTree.push(entry);
                         }
-                        displayTree.sort((a, b) => a.display > b.display);
+                        displayTree.sort((a, b) => a.display > b.display ? 1 : -1);
                         return displayTree;
                     }
                     return recurse(tree);
@@ -142,11 +142,11 @@ $.extend(true, doaj, {
                             \
                         <div class="col-md-9">\
                             <aside id="selected-filters"></aside>\
-                            <nav class="search-options">\
+                            <nav>\
                                 <h3 class="sr-only">Display options</h3>\
                                 <div class="row">\
                                     <form class="col-sm-6" id="sort_by"></form>\
-                                    <form class="col-sm-6 search-options__right" id="rpp"></form>\
+                                    <form class="col-sm-6 flex-end" id="rpp"></form>\
                                 </div>\
                             </nav>\
                             <nav class="pagination" id="top-pager"></nav>\
@@ -2284,7 +2284,7 @@ $.extend(true, doaj, {
                           </h3>\
                         </header>\
                         <div class="search-results__body">\
-                          <ul>\
+                          <ul class="inlined-list">\
                             <li>\
                               ' + published + '\
                             </li>\
@@ -2335,7 +2335,7 @@ $.extend(true, doaj, {
                 // set the authors
                 var authors = "";
                 if (edges.hasProp(resultobj, "bibjson.author") && resultobj.bibjson.author.length > 0) {
-                    authors = '<ul class="article-summary__authors">';
+                    authors = '<ul class="inlined-list">';
                     var anames = [];
                     var bauthors = resultobj.bibjson.author;
                     for (var i = 0; i < bauthors.length; i++) {
@@ -2352,7 +2352,7 @@ $.extend(true, doaj, {
 
                 var keywords = "";
                 if (edges.hasProp(resultobj, "bibjson.keywords") && resultobj.bibjson.keywords.length > 0) {
-                    keywords = '<h4>Article keywords</h4><ul>';
+                    keywords = '<h4>Article keywords</h4><ul class="inlined-list">';
                     keywords+= '<li>' + resultobj.bibjson.keywords.join(",&nbsp;</li><li>") + '</li>';
                     keywords += '</ul>';
                 }
@@ -2371,11 +2371,11 @@ $.extend(true, doaj, {
                     var abstractAction = edges.css_classes(this.namespace, "abstractaction", this);
                     var abstractText = edges.css_classes(this.namespace, "abstracttext", this);
 
-                    abstract = '<h4 class="article-summary__abstract-heading ' + abstractAction + '" type="button" aria-expanded="false" rel="' + resultobj.id + '">\
+                    abstract = '<h4 class="' + abstractAction + '" type="button" aria-expanded="false" rel="' + resultobj.id + '">\
                             Abstract\
                             <span data-feather="plus" aria-hidden="true"></span>\
                           </h4>\
-                          <p rel="' + resultobj.id + '" class="collapse article-summary__abstract-body ' + abstractText + '" aria-expanded="false">\
+                          <p rel="' + resultobj.id + '" class="collapse ' + abstractText + '" aria-expanded="false">\
                             ' + edges.escapeHtml(resultobj.bibjson.abstract) + '\
                           </p>';
                 }
@@ -2433,7 +2433,7 @@ $.extend(true, doaj, {
 
                 var frag = '<li class="search-results__record">\
                     <article class="row">\
-                      <div class="col-sm-8 search-results__main article-summary">\
+                      <div class="col-sm-8 search-results__main">\
                         <header>\
                           <p class="label"><a href="/toc/' + issns[0] + '" target="_blank">\
                             ' + edges.escapeHtml(journal) + ' ' + date + '\
@@ -2977,7 +2977,7 @@ $.extend(true, doaj, {
                           </h3>\
                         </header>\
                         <div class="search-results__body">\
-                          <ul>\
+                          <ul class="inlined-list">\
                             <li>\
                               ' + published + '\
                             </li>\

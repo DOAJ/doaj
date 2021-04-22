@@ -1118,7 +1118,7 @@ var formulaic = {
                                 }
                                 displayTree.push(entry);
                             }
-                            displayTree.sort((a, b) => a.display > b.display);
+                            displayTree.sort((a, b) => a.display > b.display ? 1 : -1);
                             return displayTree;
                         }
                         return recurse(tree);
@@ -1288,7 +1288,6 @@ var formulaic = {
                 if (val && (val.substring(0,7) === "http://" || val.substring(0,8) === "https://") && val.length > 10) {
                     if (this.link) {
                         this.link.attr("href", val);
-                        this.link.html(val);
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
@@ -1312,6 +1311,7 @@ var formulaic = {
         FullContents : function(params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
+            this.args = params.args;
 
             this.ns = "formulaic-fullcontents";
 
@@ -1319,8 +1319,6 @@ var formulaic = {
 
             this.init = function() {
                 var elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                // TODO: should work as-you-type by changing "change" to "keyup" event; doesn't work in edges
-                //edges.on(elements, "change.ClickableUrl", this, "updateUrl");
                 edges.on(elements, "keyup.FullContents", this, "updateContents");
 
                 for (var i = 0; i < elements.length; i++) {
@@ -1332,18 +1330,26 @@ var formulaic = {
                 var that = $(element);
                 var val = that.val();
 
+                // if there is a behaviour for when the field is empty and disabled, then check if it is, and if
+                // it is include the desired alternative text
+                if (this.args && this.args.empty_disabled) {
+                    if (val === "" && that.prop("disabled")) {
+                        val = this.args.empty_disabled;
+                    }
+                }
+
                 if (val) {
                     if (this.container) {
-                        this.container.html('<small>Full contents: ' + val + '</small>');
+                        this.container.html('<strong>Full contents: ' + val + '</strong>');
                     } else {
                         var classes = edges.css_classes(this.ns, "contents");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p id="' + id + '" class="' + classes + '"><small>Full contents: ' + val + '</small></p>');
+                        that.after('<p id="' + id + '" class="' + classes + '"><strong>' + val + '</strong></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.container = $(selector, this.form.context);
                     }
-                } else if (this.link) {
+                } else if (this.container) {
                     this.container.remove();
                     this.container = false;
                 }
@@ -1428,12 +1434,12 @@ var formulaic = {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 for (var i = 0 ; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none">delete <span data-feather="x" /></button>'));
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
                     feather.replace();
                 }
 
                 this.template = $(this.divs[0]).html();
-                this.container = $(this.divs[0]).parents(".multiple_input");
+                this.container = $(this.divs[0]).parents(".removable-fields");
 
                 if (this.divs.length === 1) {
                     let div = $(this.divs[0]);
@@ -1476,7 +1482,7 @@ var formulaic = {
                 }
                 var newId = currentLargest + 1;
 
-                var frag = '<div class="form_group" name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
+                var frag = '<div name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
                 var jqt = $(frag);
                 var that = this;
                 jqt.find(":input").each(function() {
@@ -1549,7 +1555,7 @@ var formulaic = {
                 for (var idx = 0; idx < this.fields.length; idx++) {
                     let f = this.fields[idx];
                     let s2_input = $($(f).select2());
-                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
                     if (idx !== 0) {
                         s2_input.attr("required", false);
                         s2_input.attr("data-parsley-validate-if-empty", "true");
@@ -1608,7 +1614,7 @@ var formulaic = {
                 for (var idx = 0; idx < this.fields.length; idx++) {
                     let f = this.fields[idx];
                     let jqf = $(f);
-                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
                     if (idx !== 0) {
                         jqf.attr("required", false);
                         jqf.attr("data-parsley-validate-if-empty", "true");
@@ -1685,7 +1691,7 @@ var formulaic = {
 
                 for (var idx = 0; idx < this.divs.length; idx++) {
                     let div = $(this.divs[idx]);
-                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
 
                     if (idx !== 0) {
                         let inputs = div.find(":input");
@@ -1791,7 +1797,6 @@ var formulaic = {
                 this.elements = $("select[name$='" + this.fieldDef.name + "']");
                 this.elements.select2({
                     allowClear: allow_clear,
-                    width: 'resolve',
                     newOption: true,
                     placeholder: "Start typing…"
                 });
@@ -1823,12 +1828,12 @@ var formulaic = {
                         };
                     },
                     results: function (data, page) {
-                        return {results: data["suggestions"]};
+                        return {results: data["suggestions"].filter((x) => $.inArray(x.text.toLowerCase(), stopWords) === -1)};
                     }
                 };
 
                 var csc = function (term) {
-                    if ($.inArray(term, stopWords) !== -1) {
+                    if ($.inArray(term.toLowerCase(), stopWords) !== -1) {
                         return null;
                     }
                     return {id: $.trim(term), text: $.trim(term)};
@@ -1845,8 +1850,10 @@ var formulaic = {
                     callback(data);
                 };
 
+                let field = $("[name='" + this.fieldDef.name + "']");
+
                 // apply the create search choice
-                $("[name='" + this.fieldDef.name + "']").select2({
+                field.select2({
                     multiple: true,
                     minimumInputLength: 1,
                     ajax: ajax,

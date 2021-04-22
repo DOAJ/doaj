@@ -60,7 +60,7 @@ function main() {
 
         scr = document.createElement('link');
         scr.rel = 'stylesheet';
-        scr.href = doaj_url + '/static_content/_site/css/main.css';
+        scr.href = doaj_url + '/static/doaj/css/main.css';
         head.insertBefore(scr, head.firstChild);
 
         $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));

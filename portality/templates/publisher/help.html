@@ -1,12 +1,21 @@
 {% extends "publisher/publisher_base.html" %}
 
+{% block page_title %}Help for publishers{% endblock %}
+
 {% block publisher_content %}
 
-<h1>Help<h1>
-  
+<h1>Help for publishers</h1>
+
 <h2>Uploading metadata/article content a file</h2>
 
-  <p>There are three ways to upload article metadata to DOAJ: [API](/docs/api/) (you will need an API key to do this), [uploading XML](/publisher/uploadfile), or [entering the metadata manually](/publisher/metadata).
+  <p>There are three ways to upload article metadata to DOAJ:</p>
+
+  <ol>
+    <li><a href="{{ url_for('doaj.docs') }}">API</a> (you will need an API key to do this),</li>
+    <li><a href="{{ url_for('publisher.upload_file') }}">uploading XML</a>, or</li>
+    <li><a href="{{ url_for('publisher.metadata') }}">entering the metadata manually</a>.</li>
+  </ol>
+
   <p>There are instructions on how to prepare and upload your XML file on our <a href="{{ url_for('doaj.xml') }}">XML documentation page</a>.</p>
 
 <h2>Failed XML uploads explained</h2>

@@ -94,6 +94,9 @@ doaj.af.BaseApplicationForm = class {
                     if (f.label !== undefined && !f.hasOwnProperty("conditional") || (f.subfield === undefined && formulaic.active.isConditionSatisfied({field: f.name}))){
                         let value = this.determineFieldsValue(f.name);
                         let text = this.convertValueToText(value);
+                        if (f.input === 'taglist') {
+                            text = this.addSpaces(text);
+                        }
 
                         if (f.validate && $.inArray("is_url", f.validate) !== -1) {
                             text = '<a href="' + text + '" target="_blank" rel="noopener">' + text + '</a>';
@@ -156,7 +159,12 @@ doaj.af.BaseApplicationForm = class {
             }
         }
         return result;
+
     };
+
+    addSpaces(text){
+        return text.replace(/,(?! )/g, ", ");
+    }
 
     submitapplication() {
         this.form.parsley();
@@ -485,8 +493,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         let id = params.id;
 
         let success_callback = (data) => {
-            window.open('', '_self', ''); //open the current window
-            window.close();
+            window.location.href = "/service/unlocked";
         };
 
         let error_callback = (jqXHR, textStatus, errorThrown) => {

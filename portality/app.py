@@ -71,20 +71,11 @@ app.register_blueprint(doaj)
 # putting it here ensures it will run under any web server
 initialise_index(app, es_connection)
 
-# Import list of Sponsors from the static site’s data file
-# Only display gold & silver sponsors for now on the homepage
-# The same file is used to display sponsors in the Sponsors page’s full list
-with open(os.path.join(app.config["BASE_FILE_PATH"],"../static_content/_data/sponsors.yml")) as f:
-    SPONSORS = yaml.load(f, Loader=yaml.FullLoader)
-
-with open(os.path.join(app.config["BASE_FILE_PATH"],"../static_content/_data/volunteers.yml")) as f:
-    VOLUNTEERS = yaml.load(f, Loader=yaml.FullLoader)
-
-
 # serve static files from multiple potential locations
 # this allows us to override the standard static file handling with our own dynamic version
+# @app.route("/static_content/<path:filename>")
 @app.route("/static/<path:filename>")
-@app.route("/static_content/<path:filename>")
+@app.route("/assets/<path:filename>")
 def our_static(filename):
     return custom_static(filename)
 
@@ -169,8 +160,6 @@ def set_current_context():
     information.
     '''
     return {
-        'sponsors': SPONSORS,
-        'volunteers': VOLUNTEERS,
         'settings': settings,
         'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
