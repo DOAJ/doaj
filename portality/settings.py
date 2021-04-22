@@ -143,9 +143,7 @@ STATIC_PATHS = [
 ]
 
 # GitHub base url where static content can be edited by the DOAJ team (you can leave out the trailing slash)
-#CMS_EDIT_BASE_URL = "https://github.com/DOAJ/doaj/edit/static_pages/static_content"
-# FIXME: set the correct URL when we merge this
-CMS_EDIT_BASE_URL = "https://github.com/DOAJ/doaj/edit/feature/2394_static_pages_refactor/cms"
+CMS_EDIT_BASE_URL = "https://github.com/DOAJ/doaj/edit/static_pages/cms"
 
 # =======================
 # email settings
