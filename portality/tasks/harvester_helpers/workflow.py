@@ -117,8 +117,8 @@ class HarvesterWorkflow(object):
         try:
             id, loc = doaj.create_article(article)
         except doajclient.DOAJException as e:
-            app.logger.info("Article caused DOAJException: {m} ... skipping".format(m=str(e)))
-            Report.record_error((article.get_identifier("doi") or "< DOI MISSING >") + " - " + str(e))
+            app.logger.info("Article caused DOAJException: {m} ... skipping".format(m=e.message))
+            Report.record_error((article.get_identifier("doi") or "< DOI MISSING >") + " - " + e.message)
             return False
         app.logger.info("Created article in DOAJ for Account:{x} with ID: {y}".format(x=account_id, y=id))
         return True

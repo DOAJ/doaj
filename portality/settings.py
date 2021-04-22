@@ -1025,7 +1025,7 @@ SITE_NOTE_TEMPLATE = "doaj/site_note.html"
 
 ## Configuration options for the DOAJ API Client
 
-DOAJ_SEARCH_BASE = "https://doaj.org"
+DOAJ_SEARCH_BASE = "https://localhost:5004"
 
 DOAJ_SEARCH_PORT = 80
 
@@ -1033,8 +1033,8 @@ DOAJ_QUERY_ENDPOINT = "query"
 
 DOAJ_SEARCH_TYPE = "journal,article"
 
-DOAJ_API1_BASE_URL = "https://doaj.org/api/v1/"
-DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
+DOAJ_API1_BASE_URL = "http://localhost:5004/api/v1/"
+DOAJ_API2_BASE_URL = "http://localhost:5004/api/v2/"
 
 
 ## EPMC Client configuration
@@ -1048,7 +1048,7 @@ HARVESTERS = [
     "portality.tasks.harvester_helpers.epmc.epmc_harvester.EPMCHarvester"
 ]
 
-INITIAL_HARVEST_DATE = "2015-12-01T00:00:00Z"
+INITIAL_HARVEST_DATE = "2021-04-22T00:00:00Z"
 
 # The mapping from account ids to API keys.  MUST NOT be checked into the repo, put these
 # in the local.cfg instead
