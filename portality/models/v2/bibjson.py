@@ -637,6 +637,28 @@ class JournalLikeBibJSON(SeamlessMixin):
 
         return ["LCC:" + x for x in full_list if x is not None]
 
+    def lcc_paths_and_codes(self):
+        paths_and_codes = {}
+
+        # calculate the classification paths
+        from portality.lcc import lcc  # inline import since this hits the database
+        for subs in self.subjects():
+            scheme = subs.get("scheme")
+            if scheme != "LCC":
+                continue
+            term = subs.get("term")
+            code = subs.get("code")
+            p = lcc.pathify(term)
+            if p is not None:
+                paths_and_codes[p] = "LCC:" + code
+
+        return [(x, paths_and_codes[x]) for x in lcc.longest(list(paths_and_codes.keys()))]
+        #
+        # # normalise the classification paths, so we only store the longest ones
+        # classification_paths = lcc.longest(classification_paths)
+        #
+        # return classification_paths
+
 
     # to help with ToC - we prefer to refer to a journal by E-ISSN, or
     # if not, then P-ISSN

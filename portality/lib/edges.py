@@ -4,7 +4,7 @@ import json
 
 def make_url_query(**params):
     query = make_query(**params)
-    return parse.quote(json.dumps(query))
+    return parse.quote_plus(json.dumps(query))
 
 
 def make_query(**params):
@@ -14,12 +14,13 @@ def make_query(**params):
 
 class GeneralSearchQery(object):
     def __init__(self, terms=None):
-        self.terms = terms
+        self.terms = terms if isinstance(terms, list) else [terms]
 
     def query(self):
         musts = []
         if self.terms is not None:
-            musts.append(self.terms)
+            for term in self.terms:
+                musts.append({"terms" : term})
 
         return {
             "query" : {
