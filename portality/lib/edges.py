@@ -13,8 +13,9 @@ def make_query(**params):
 
 
 class GeneralSearchQery(object):
-    def __init__(self, terms=None):
-        self.terms = terms if isinstance(terms, list) else [terms]
+    def __init__(self, terms=None, query_string=None):
+        self.terms = None if terms is None else terms if isinstance(terms, list) else [terms]
+        self.query_string = query_string
 
     def query(self):
         musts = []
@@ -22,15 +23,20 @@ class GeneralSearchQery(object):
             for term in self.terms:
                 musts.append({"terms" : term})
 
-        return {
-            "query" : {
+        query = {"match_all" : {}}
+        if self.query_string is not None:
+            query = {"query_string" : {"default_operator" : "AND", "query" : self.query_string}}
+
+        if len(musts) > 0:
+            query = {
                 "filtered" : {
                     "filter" : {
                         "bool": {
                             "must": musts
                         }
                     },
-                    "query" : {"match_all": {}}
+                    "query" : query
                 }
             }
-        }
+
+        return { "query" : query }
