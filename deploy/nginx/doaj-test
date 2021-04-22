@@ -86,7 +86,7 @@ server {
         alias /home/cloo/doaj-static/src/doaj/deploy/robots-test.txt;
     }
     location /static/ {
-        alias /home/cloo/doaj/src/doaj-static/portality/static/;
+        alias /home/cloo/doaj-static/src/doaj/portality/static/;
         autoindex off;
         expires max;
     }
