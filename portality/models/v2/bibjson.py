@@ -657,12 +657,6 @@ class JournalLikeBibJSON(SeamlessMixin):
                 paths_and_codes[p] = "LCC:" + code
 
         return [(x, paths_and_codes[x]) for x in lcc.longest(list(paths_and_codes.keys()))]
-        #
-        # # normalise the classification paths, so we only store the longest ones
-        # classification_paths = lcc.longest(classification_paths)
-        #
-        # return classification_paths
-
 
     # to help with ToC - we prefer to refer to a journal by E-ISSN, or
     # if not, then P-ISSN
