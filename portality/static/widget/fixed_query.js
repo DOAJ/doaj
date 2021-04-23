@@ -44,24 +44,24 @@ function main() {
         scr.src = 'https://unpkg.com/feather-icons';
         scr.async = false;
         scr.defer = false;
-        head.insertBefore(scr, head.firstChild);
+        head.appendChild(scr);
 
         scr  = document.createElement('script');
         scr.src = doaj_url + '/static/widget/fq_widget_depends_compiled.js';
         scr.async = false;
         scr.defer = false;
-        head.insertBefore(scr, head.firstChild);
+        head.appendChild(scr);
 
         scr  = document.createElement('script');
         scr.src = doaj_url + '/static/widget/fixed_query_src.js';
         scr.async = false;
         scr.defer = false;
-        head.insertBefore(scr, head.firstChild);
+        head.appendChild(scr);
 
         scr = document.createElement('link');
         scr.rel = 'stylesheet';
-        scr.href = doaj_url + '/static/doaj/css/main.css';
-        head.insertBefore(scr, head.firstChild);
+        scr.href = doaj_url + '/static/doaj/css/fq_widget.css';
+        head.appendChild(scr);
 
         $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));
 
@@ -70,7 +70,7 @@ function main() {
             crossDomain: true,
             url: doaj_url + "/fqw_hit",
             data: {embedding_page: window.location.href}
-        })
+        });
     });
 }
 

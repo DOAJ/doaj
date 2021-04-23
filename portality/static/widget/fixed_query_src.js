@@ -132,10 +132,7 @@ $.extend(true, doaj, {
 
             let e = edges.newEdge({
                 selector: selector,
-                template: doaj.templates.newFQWidget({
-                    titleBar: false,
-                    resultsOnly: false
-                }),
+                template: doaj.templates.newFQWidget(),
                 search_url: search_url,
                 manageUrl : false,
                 openingQuery: query,
