@@ -1,6 +1,10 @@
 # List of sponsors separated by tiers (premier, sustaining, basic)
 
 gold:
+- name: JMIR Publications
+  url: http://jmirpublications.com/
+  logo: jmir.svg
+
 - name: PeerJ
   url: https://peerj.org/
   logo: peerj.svg
@@ -102,6 +106,10 @@ bronze:
 - name: Emerald Publishing
   url: https://emeraldpublishing.com/
   logo: emerald.svg
+
+- name: IEEE
+  url: https://www.ieee.org/
+  logo: ieee.png
 
 - name: The Institution of Engineering and Technology (IET)
   url: https://www.theiet.org/
