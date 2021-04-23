@@ -605,6 +605,10 @@ class JournalLikeBibJSON(SeamlessMixin):
         langs = [to_utf8_unicode(l) for l in langs]
         return list(set(langs))
 
+    def term_path(self, term):
+        from portality.lcc import lcc
+        return lcc.term_path(term)
+
     def lcc_paths(self):
         classification_paths = []
 

@@ -4,14 +4,7 @@ from portality.dao import DomainObject
 class LCC(DomainObject):
     __type__ = "lcc"
 
-    def pathify(self, term, path_separator=": "):
-        """
-        Convert the given term into a string containing the path from the root via the parents to the term
-        :param term:
-        :param path_separator:
-        :return:
-        """
-
+    def term_path(self, term):
         def dive(node, path):
             if node.get("name") == term:
                 path.append(term)
@@ -35,8 +28,20 @@ class LCC(DomainObject):
             path = []
             found = dive(r, path)
             if found:
-                return path_separator.join(path)
+                return path
 
+        return None
+
+    def pathify(self, term, path_separator=": "):
+        """
+        Convert the given term into a string containing the path from the root via the parents to the term
+        :param term:
+        :param path_separator:
+        :return:
+        """
+        path = self.term_path(term)
+        if path is not None:
+            return path_separator.join(path)
         return None
 
     def expand_codes(self, code):
