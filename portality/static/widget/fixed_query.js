@@ -63,7 +63,7 @@ function main() {
         scr.href = doaj_url + '/static/doaj/css/fq_widget.css';
         head.appendChild(scr);
 
-        $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));
+        $('#doaj-fixed-query-widget').append($('<div class="facetview container"></div>'));
 
         $.ajax({
             type: "POST",

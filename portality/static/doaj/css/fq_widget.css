@@ -513,6 +513,8 @@
     .facetview .pagination .feather {
       position: relative;
       top: 0.1875rem; }
+  .facetview header {
+    padding-top: 15px; }
   .facetview .pagination ul {
     width: 100%; }
   .facetview .search-results {

@@ -55,9 +55,13 @@
     @import "../base/logo";
     @import "label";
     @import "pagination";
+    header {
+        padding-top: 15px;
+    }
     .pagination ul {
         width: 100%;
     }
+
     @import "search-results";
 
 }
