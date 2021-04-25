@@ -130,16 +130,3 @@ class TestBLLAcceptApplication(DoajTestCase):
 
             if save:
                 pass
-
-    def test_02_does_not_ingest_empty_string(self):
-        application = Suggestion(**ApplicationFixtureFactory.incoming_application())
-        application.bibjson().add_identifier("pissn", "")
-
-        acc = Account(**AccountFixtureFactory.make_managing_editor_source())
-
-        svc = DOAJ.applicationService()
-        journal = svc.accept_application(application, acc)
-        time.sleep(1)
-
-        assert journal.bibjson().get_one_identifier("pissn") != "", "Journals pissn should not be '' (empty string)"
-        assert journal.bibjson().get_one_identifier("pissn") is None, "Journal should not have pissn at all, instead it exists and equals {}".format(journal.bibjson().get_one_identifier("pissn"))
