@@ -7,9 +7,16 @@
 # rm docs/code/*
 # epydoc --html -o docs/code/ --name "DOAJ" --url https://github.com/DOAJ/doaj --graph all --inheritance grouped --docformat restructuredtext portality
 
-DOAJ_DOCS="../doaj-docs"
+# Set up the variables we need for the script
+DOAJ_DOCS="docs/generated"
 BRANCH=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
-OUTDIR=$DOAJ_DOCS/docs/$BRANCH/data_models
+OUTDIR=$DOAJ_DOCS/$BRANCH/data_models
+
+# make sure that we have the documentation submodule up-to-date
+git submodule update --init --recursive
+(cd $DOAJ_DOCS && git pull origin master)
+
+# ensure that the output directory exists
 mkdir -p $OUTDIR
 
 # Generate the model documentation in markdown
