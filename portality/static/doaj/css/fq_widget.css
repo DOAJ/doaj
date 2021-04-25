@@ -1,5 +1,6 @@
 @charset "UTF-8";
 .facetview {
+  height: 100%;
   background-color: #FEFBF8;
   color: #282624;
   line-height: 1.45;
@@ -8,6 +9,7 @@
   font-weight: 400;
   font-family: 'Source Sans Pro', sans-serif;
   letter-spacing: 0.01em;
+  overflow: scroll;
   /* Fonts mixins */
   /* Variables for spacing units
      Use with margins & padding
