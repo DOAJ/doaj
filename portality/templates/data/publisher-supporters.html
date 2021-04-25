@@ -1,0 +1,7 @@
+<ul class="row title-list">
+    {% for i in data.publisher_supporters %}
+        <li class="col-md-3">
+            <a href="{{ i.url }}" target="_blank" class="title-list__link">{{ i.name }}</a>
+        </li>
+    {% endfor %}
+</ul>

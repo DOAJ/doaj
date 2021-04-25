@@ -16,6 +16,14 @@
 {% set TAB6 = {"title": "Best practice", "fieldsets": ["archiving_policy", "deposit_policy", "unique_identifiers"]} %}
 {% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6] %}
 
+{% block extra_stylesheets %}
+<style>
+input[disabled] {
+  display: none;
+}
+</style>
+{% endblock %}
+
 {% block publisher_content scoped %}
 <body id="apply">
     <main class="container">

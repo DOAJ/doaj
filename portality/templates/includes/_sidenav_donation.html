@@ -1,0 +1,20 @@
+<aside class="hero hero--aside">
+    <h2 class="label">Make a one-time donation</h2>
+    <p><em>You will be redirected to Paypal’s website.</em></p>
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="hosted_button_id" value="UP6B3VXCP2FHJ">
+        <input type="hidden" name="on0" value="One-off payment">
+        <label for="support-one-off">Please select a donation type</label>
+        <div class="input-group">
+            <select name="os0" id="support-one-off">
+                <option value="Individual">Individual</option>
+                <option value="Academic Library">Academic Library</option>
+                <option value="Library Consortium">Library Consortium</option>
+                <option value="Aggregator">Aggregator</option>
+            </select>
+            <input type="submit" name="submit" value="Donate" title="PayPal - The safer, easier way to pay online!"
+                   alt="Donate with PayPal button"/>
+        </div>
+    </form>
+</aside>
