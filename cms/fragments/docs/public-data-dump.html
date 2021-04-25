@@ -1,0 +1,23 @@
+<p>An <a href="/csv">exportable version of the journal metadata</a> is available as a CSV file.</p>
+<p>Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the same form as those retrieved via the API.</p>
+<p><a href="/public-data-dump/journal">Download the journal metadata</a> (4.4Mb, licensed under a <a href="https://creativecommons.org/licenses/by-sa/4.0/" referrerpolicy="no-referrer" rel="noopener noreferrer" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) license</a>)</p>
+<p><a href="/public-data-dump/article">Download the article metadata</a> (3.5Gb, copyrights and related rights for article metadata waived via <a href="https://creativecommons.org/publicdomain/zero/1.0/" referrerpolicy="no-referrer" rel="noopener noreferrer" target="_blank">CC0 1.0 Universal (CC0) Public Domain Dedication</a>)</p>
+<p>Each file is a <code>tar.gz</code>.</p>
+<h2 id="structure">Structure</h2>
+<p>The data dumps are structured as follows:</p>
+<ol>
+<li>When you unzip/untar the file, you will have a single directory of the form <code>doaj_zx[type]_data_[date generated]</code>.</li>
+<li>Inside that directory, you will find a list of files with names of the form <code>[type]_batch_[number].json</code>.<ul>
+<li>For example, <code>journal_batch_3.json</code> or <code>article_batch_27.json</code>.</li>
+</ul>
+</li>
+<li>Each file contains up to 100,000 records and is UTF-8 encoded. All files should contain the same number of records, apart from the last one, which may have fewer.</li>
+<li>The structure of each file is as a JSON list:
+  <code>[
+        { ... first record ... },
+        { ... second record ... },
+        { ... third record ...},
+        ... etc ...
+    ]</code></li>
+<li>Records are not explicitly ordered and the order is not guaranteed to remain consistent across data dumps produced on different days.</li>
+</ol>

@@ -1,0 +1,696 @@
+/about/advisory-board-council.html:
+  frag: /about/advisory-board-council.html
+  include: /data/advisory-board-council.html
+  layout: no-sidenav
+  section: About
+  title: Advisory Board & Council
+  toc: true
+  toc_tokens: []
+/about/ambassadors.html:
+  frag: /about/ambassadors.html
+  highlight: true
+  include: /data/ambassadors.html
+  layout: no-sidenav
+  section: About
+  title: Ambassadors
+  toc: true
+  toc_tokens: []
+/about/editorial-subcommittee.html:
+  frag: /about/editorial-subcommittee.html
+  highlight: true
+  include: /data/editorial-subcommittee.html
+  layout: no-sidenav
+  section: About
+  title: Editorial Subcommittee
+  toc: true
+  toc_tokens: []
+/about/index.html:
+  frag: /about/index.html
+  layout: sidenav
+  section: About
+  sticky_sidenav: true
+  title: About DOAJ
+  toc: true
+  toc_tokens:
+  - children: []
+    id: our-mission
+    level: 2
+    name: Our mission
+  - children: []
+    id: constitution
+    level: 2
+    name: Constitution
+  - children: []
+    id: partnerships-and-collaborations
+    level: 2
+    name: Partnerships and collaborations
+  - children: []
+    id: diversity
+    level: 2
+    name: Diversity
+/about/team.html:
+  frag: /about/team.html
+  include: /data/team.html
+  layout: no-sidenav
+  section: About
+  title: DOAJ team
+  toc: true
+  toc_tokens: []
+/about/volunteers.html:
+  frag: /about/volunteers.html
+  highlight: true
+  include: /data/volunteers.html
+  layout: no-sidenav
+  section: About
+  title: Volunteers
+  toc: true
+  toc_tokens: []
+/apply/guide.html:
+  frag: /apply/guide.html
+  layout: sidenav
+  section: Apply
+  sticky_sidenav: true
+  title: Guide to applying
+  toc: true
+  toc_tokens:
+  - children:
+    - children: []
+      id: the-type-of-journal-that-can-apply
+      level: 3
+      name: The type of journal that can apply
+    - children: []
+      id: the-type-of-open-access
+      level: 3
+      name: The type of open access
+    - children: []
+      id: journal-website
+      level: 3
+      name: Journal website
+    - children: []
+      id: issn
+      level: 3
+      name: ISSN
+    - children: []
+      id: quality-control-process
+      level: 3
+      name: Quality control process
+    - children: []
+      id: licensing
+      level: 3
+      name: Licensing
+    - children: []
+      id: copyright
+      level: 3
+      name: Copyright
+    id: basic-criteria-for-inclusion
+    level: 2
+    name: Basic criteria for inclusion
+  - children:
+    - children: []
+      id: arts-and-humanities-journals
+      level: 3
+      name: Arts and humanities journals
+    - children: []
+      id: clinical-case-reports-journals
+      level: 3
+      name: Clinical case reports journals
+    - children: []
+      id: conference-proceedings-journals
+      level: 3
+      name: Conference proceedings journals
+    - children: []
+      id: data-journals
+      level: 3
+      name: Data journals
+    - children: []
+      id: overlay-journals
+      level: 3
+      name: Overlay journals
+    - children: []
+      id: student-run-journals
+      level: 3
+      name: Student-run journals
+    - children: []
+      id: flipped-journals
+      level: 3
+      name: Flipped journals
+    - children: []
+      id: mirror-journals
+      level: 3
+      name: Mirror journals
+    id: additional-criteria-for-some-journal-types
+    level: 2
+    name: Additional criteria for some journal types
+  - children:
+    - children: []
+      id: licensing_1
+      level: 3
+      name: Licensing
+    - children: []
+      id: copyright_1
+      level: 3
+      name: Copyright
+    - children: []
+      id: the-difficult-bits-about-licensing-and-copyright-together
+      level: 3
+      name: The difficult bits about licensing and copyright together
+    - children: []
+      id: fair-use
+      level: 3
+      name: Fair use
+    - children: []
+      id: further-reading
+      level: 3
+      name: Further reading
+    id: further-help-on-copyright-and-licensing
+    level: 2
+    name: Further help on copyright and licensing
+  - children:
+    - children: []
+      id: time-from-submission-to-decision
+      level: 3
+      name: Time from submission to decision
+    id: the-application-process
+    level: 2
+    name: The application process
+  - children: []
+    id: updating-your-journal-record
+    level: 2
+    name: Updating your journal record
+  - children: []
+    id: if-your-application-is-rejected
+    level: 2
+    name: If your application is rejected
+  - children: []
+    id: appeals
+    level: 2
+    name: Appeals
+  - children: []
+    id: zero-tolerance-policy
+    level: 2
+    name: Zero tolerance policy
+  - children: []
+    id: in-other-languages
+    level: 2
+    name: In other languages
+/apply/seal.html:
+  frag: /apply/seal.html
+  layout: sidenav
+  section: Apply
+  sticky_sidenav: true
+  title: The DOAJ Seal
+  toc: true
+  toc_tokens:
+  - children: []
+    id: criteria
+    level: 2
+    name: Criteria
+/apply/thank-you.html:
+  aside: /includes/_aside_in_case_of_rejection.html
+  frag: /apply/thank-you.html
+  layout: no-sidenav
+  section: Apply
+  title: Thank you for your application.
+/apply/transparency.html:
+  frag: /apply/transparency.html
+  layout: sidenav
+  section: Apply
+  sticky_sidenav: true
+  title: Transparency & best practice
+  toc: true
+  toc_tokens:
+  - children: []
+    id: introduction
+    level: 2
+    name: Introduction
+  - children: []
+    id: principles-of-transparency-and-best-practice-in-scholarly-publishing
+    level: 2
+    name: Principles of transparency and best practice in scholarly publishing
+  - children: []
+    id: about-the-committee-on-publication-ethics-cope
+    level: 2
+    name: About the Committee on Publication Ethics (COPE)
+  - children: []
+    id: about-doaj
+    level: 2
+    name: About DOAJ
+  - children: []
+    id: about-the-open-access-scholarly-publishers-association-oaspa
+    level: 2
+    name: About the Open Access Scholarly Publishers Association (OASPA)
+  - children: []
+    id: about-the-world-association-of-medical-editors-wame
+    level: 2
+    name: About the World Association of Medical Editors (WAME)
+  - children: []
+    id: in-other-languages
+    level: 2
+    name: In other languages
+/apply/why-index.html:
+  frag: /apply/why-index.html
+  layout: sidenav
+  section: Apply
+  sticky_sidenav: true
+  title: Why index your journal in DOAJ?
+  toc: true
+  toc_tokens:
+  - children: []
+    id: why-your-journal-should-be-indexed-in-doaj
+    level: 3
+    name: Why your journal should be indexed in DOAJ
+/docs/faq.html:
+  frag: /docs/faq.html
+  layout: sidenav
+  section: About
+  sticky_sidenav: true
+  title: FAQs
+  toc: true
+  toc_tokens:
+  - children: []
+    id: how-can-i-contribute-to-doaj
+    level: 2
+    name: How can I contribute to DOAJ?
+  - children: []
+    id: how-do-i-reset-my-password
+    level: 2
+    name: How do I reset my password?
+  - children: []
+    id: i-havent-heard-anything-about-the-application-or-update-i-submitted
+    level: 2
+    name: I haven't heard anything about the application or update I submitted
+  - children: []
+    id: i-know-a-journal-which-should-be-in-doaj-but-isnt-what-should-i-do
+    level: 2
+    name: "I know a journal which should be in DOAJ but isn\u2019t. What should I\
+      \ do?"
+  - children: []
+    id: the-journal-i-am-looking-for-isnt-in-doaj-why
+    level: 2
+    name: "The journal I am looking for isn\u2019t in DOAJ. Why?"
+  - children: []
+    id: how-do-i-report-a-bug-or-ask-for-technical-help
+    level: 2
+    name: How do I report a bug or ask for technical help?
+  - children: []
+    id: how-do-i-update-the-information-about-my-journal
+    level: 2
+    name: How do I update the information about my journal?
+  - children: []
+    id: how-do-i-upload-article-metadata
+    level: 2
+    name: How do I upload article metadata?
+  - children: []
+    id: how-do-i-update-the-title-or-issn-of-my-journal
+    level: 2
+    name: How do I update the title or ISSN of my journal?
+  - children: []
+    id: how-do-i-update-the-account-details-you-have
+    level: 2
+    name: How do I update the account details you have?
+/docs/oai-pmh.html:
+  frag: /docs/oai-pmh.html
+  layout: sidenav
+  section: Docs
+  sticky_sidenav: true
+  title: OAI-PMH
+  toc: true
+  toc_tokens:
+  - children:
+    - children: []
+      id: example-of-a-record
+      level: 3
+      name: Example of a record
+    - children: []
+      id: revision-history
+      level: 3
+      name: Revision history
+    id: journal-feed
+    level: 2
+    name: Journal feed
+  - children:
+    - children:
+      - children: []
+        id: example-of-a-record_1
+        level: 4
+        name: Example of a record
+      - children: []
+        id: revision-history_1
+        level: 4
+        name: Revision history
+      id: dublin-core-oai-article-format-oai_dc
+      level: 3
+      name: Dublin Core OAI Article format (OAI_DC)
+    - children:
+      - children: []
+        id: example-of-a-record_2
+        level: 4
+        name: Example of a record
+      - children: []
+        id: revision-history_2
+        level: 4
+        name: Revision history
+      id: doaj-oai-article-format-oai_doaj
+      level: 3
+      name: DOAJ OAI Article format (OAI_DOAJ)
+    id: article-feed
+    level: 2
+    name: Article feed
+/docs/openurl.html:
+  frag: /docs/openurl.html
+  layout: sidenav
+  section: Docs
+  sticky_sidenav: true
+  title: OpenURL
+  toc: true
+  toc_tokens:
+  - children: []
+    id: improving-results
+    level: 2
+    name: Improving results
+  - children: []
+    id: supported-openurl-version
+    level: 2
+    name: Supported OpenURL version
+/docs/public-data-dump.html:
+  frag: /docs/public-data-dump.html
+  layout: sidenav
+  section: Docs
+  sticky_sidenav: true
+  title: Public data dump
+  toc: true
+  toc_tokens:
+  - children: []
+    id: structure
+    level: 2
+    name: Structure
+/docs/widgets.html:
+  frag: /docs/widgets.html
+  layout: sidenav
+  section: Docs
+  sticky_sidenav: true
+  title: Widgets
+  toc: true
+  toc_tokens:
+  - children: []
+    id: simple-search
+    level: 2
+    name: Simple Search
+  - children:
+    - children: []
+      id: configuring-via-query_options
+      level: 3
+      name: Configuring via QUERY_OPTIONS
+    id: fixed-query
+    level: 2
+    name: Fixed Query
+/docs/xml.html:
+  frag: /docs/xml.html
+  layout: sidenav
+  section: Docs
+  sticky_sidenav: true
+  title: XML
+  toc: true
+  toc_tokens:
+  - children: []
+    id: uploading-an-xml-file
+    level: 2
+    name: Uploading an XML file
+  - children: []
+    id: list-of-doaj-xml-elements
+    level: 2
+    name: List of DOAJ XML elements
+  - children: []
+    id: example-doaj-xml-file
+    level: 2
+    name: Example DOAJ XML File
+  - children: []
+    id: the-doajarticlesxsd-schema-file
+    level: 2
+    name: The doajArticles.xsd schema file
+/legal/accessibility.html:
+  frag: /legal/accessibility.html
+  layout: sidenav
+  sticky_sidenav: true
+  title: Accessibility statement for doaj.org
+  toc: true
+  toc_tokens:
+  - children: []
+    id: how-accessible-is-this-website
+    level: 2
+    name: How accessible is this website?
+  - children: []
+    id: feedback-and-contact-information
+    level: 2
+    name: Feedback and contact information
+  - children: []
+    id: reporting-accessibility-problems-with-this-website
+    level: 2
+    name: Reporting accessibility problems with this website
+  - children: []
+    id: enforcement-procedure
+    level: 2
+    name: Enforcement procedure
+  - children:
+    - children: []
+      id: compliance-status
+      level: 3
+      name: Compliance status
+    id: technical-information-about-this-websites-accessibility
+    level: 2
+    name: "Technical information about this website\u2019s accessibility"
+  - children:
+    - children: []
+      id: non-compliance-with-the-accessibility-regulations
+      level: 3
+      name: Non-compliance with the accessibility regulations
+    - children: []
+      id: disproportionate-burden
+      level: 3
+      name: Disproportionate burden
+    - children: []
+      id: content-thats-not-within-the-scope-of-the-accessibility-regulations
+      level: 3
+      name: "Content that\u2019s not within the scope of the accessibility regulations"
+    - children: []
+      id: preparation-of-this-accessibility-statement
+      level: 3
+      name: Preparation of this accessibility statement
+    id: non-accessible-content
+    level: 2
+    name: Non-accessible content
+/legal/contact.html:
+  frag: /legal/contact.html
+  layout: no-sidenav
+  sticky_sidenav: true
+  title: Contact us
+  toc: true
+  toc_tokens: []
+/legal/privacy.html:
+  frag: /legal/privacy.html
+  layout: sidenav
+  section: About
+  sticky_sidenav: true
+  title: Privacy information notice
+  toc: true
+  toc_tokens:
+  - children: []
+    id: summary
+    level: 3
+    name: Summary
+  - children: []
+    id: who-to-contact-at-doaj-about-protecting-your-privacy
+    level: 3
+    name: Who to contact at DOAJ about protecting your privacy
+  - children: []
+    id: the-policy
+    level: 3
+    name: The policy
+  - children:
+    - children: []
+      id: 1a-journal-applications
+      level: 4
+      name: 1a Journal applications
+    - children: []
+      id: 1b-volunteer-applications
+      level: 4
+      name: 1b Volunteer applications
+    - children: []
+      id: 1c-via-cookies
+      level: 4
+      name: 1c Via cookies
+    - children: []
+      id: 1d-a-user-account
+      level: 4
+      name: 1d A user account
+    - children: []
+      id: 1e-our-business-updates-newsletter
+      level: 4
+      name: 1e Our business updates newsletter
+    id: 1-the-information-we-collect-and-how-we-use-it
+    level: 3
+    name: 1) The information we collect and how we use it
+  - children:
+    - children: []
+      id: 2a-journals-and-uploading-article-metadata
+      level: 4
+      name: 2a Journals and uploading article metadata
+    - children: []
+      id: 2b-journal-applications
+      level: 4
+      name: 2b Journal applications
+    - children: []
+      id: 2c-business-updates-newsletter
+      level: 4
+      name: 2c Business updates newsletter
+    id: 2-why-we-need-to-collect-personal-data
+    level: 3
+    name: 2) Why we need to collect personal data
+  - children: []
+    id: 3-which-cookies-are-in-use-on-this-site-and-why
+    level: 3
+    name: 3) Which cookies are in use on this site and why
+  - children:
+    - children: []
+      id: 4a-journal-applications
+      level: 4
+      name: 4a Journal applications
+    - children: []
+      id: 4b-journal-records
+      level: 4
+      name: 4b Journal records
+    - children: []
+      id: 4c-user-accounts
+      level: 4
+      name: 4c User accounts
+    - children: []
+      id: 4b-volunteer-applications
+      level: 4
+      name: 4b Volunteer applications
+    - children: []
+      id: 4c-doaj-team
+      level: 4
+      name: 4c DOAJ team
+    id: 4-how-we-store-personal-data
+    level: 3
+    name: 4) How we store personal data
+  - children:
+    - children: []
+      id: 5a-account-holders
+      level: 4
+      name: 5a Account holders
+    - children: []
+      id: 5b-volunteers
+      level: 4
+      name: 5b Volunteers
+    id: 5-how-we-process-personal-data
+    level: 3
+    name: 5) How we process personal data
+  - children:
+    - children: []
+      id: 6a-journal-applications
+      level: 4
+      name: 6a Journal applications
+    - children: []
+      id: 6b-volunteer-applications
+      level: 4
+      name: 6b Volunteer applications
+    id: 6-how-long-we-store-personal-data-for-and-when-we-delete-data
+    level: 3
+    name: 6) How long we store personal data for and when we delete data
+  - children: []
+    id: 7-who-we-share-data-with
+    level: 3
+    name: 7) Who we share data with
+  - children:
+    - children: []
+      id: 8a-how-to-delete-your-account
+      level: 4
+      name: 8a How to delete your account
+    - children: []
+      id: 8b-how-to-request-that-all-personal-data-is-deleted
+      level: 4
+      name: 8b How to request that all personal data is deleted
+    id: 8-how-to-delete-your-account-and-request-that-personal-data-is-deleted
+    level: 3
+    name: 8) How to delete your account and request that personal data is deleted
+  - children:
+    - children: []
+      id: 9a-what-is-a-subject-access-request-sar
+      level: 4
+      name: 9a What is a subject access request (SAR)?
+    - children: []
+      id: 9b-how-to-make-an-sar-to-doaj
+      level: 4
+      name: 9.b How to make an SAR to DOAJ
+    id: 9-subject-access-request-sar
+    level: 3
+    name: 9) Subject access request (SAR)
+  - children: []
+    id: 10-withdrawing-consent
+    level: 3
+    name: 10) Withdrawing consent
+  - children: []
+    id: 11-how-to-complain
+    level: 3
+    name: 11) How to complain
+/legal/terms.html:
+  frag: /legal/terms.html
+  layout: sidenav
+  section: About
+  sticky_sidenav: true
+  title: Terms and conditions
+  toc: true
+  toc_tokens:
+  - children: []
+    id: conditions-of-use
+    level: 3
+    name: Conditions of use
+  - children: []
+    id: copyright
+    level: 3
+    name: Copyright
+  - children: []
+    id: conditions-of-using-this-website
+    level: 3
+    name: Conditions of using this website
+/support/index.html:
+  frag: /support/index.html
+  include: /includes/contribution_rates.html
+  layout: sidenav
+  section: Support
+  sidenav_include: /includes/_sidenav_donation.html
+  sticky_sidenav: true
+  title: Support DOAJ
+/support/publisher-supporters.html:
+  frag: /support/publisher-supporters.html
+  include: /data/publisher-supporters.html
+  layout: sidenav
+  section: Support
+  sidenav_include: /includes/_sidenav_publisher_supporter.html
+  sticky_sidenav: true
+  title: Publisher supporters
+/support/sponsors.html:
+  frag: /support/sponsors.html
+  layout: sidenav
+  preface: /data/sponsors.html
+  section: Support
+  sticky_sidenav: true
+  title: Contributors (Publishers and Aggregators)
+  toc: true
+  toc_tokens:
+  - children: []
+    id: benefits-for-contributing-publishers-and-aggregators-2021
+    level: 2
+    name: Benefits for contributing publishers and aggregators 2021
+/support/supporters.html:
+  frag: /support/supporters.html
+  layout: sidenav
+  section: Support
+  sticky_sidenav: true
+  title: Supporters
+/support/thank-you.html:
+  frag: /support/thank-you.html
+  layout: sidenav
+  section: Support
+  title: Thank you for your support
