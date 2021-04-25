@@ -1,0 +1,69 @@
+.facetview {
+    @import "base/palette";
+
+    height: 100%;
+    background-color: $warm-white;
+    color: $warm-black;
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-family: 'Source Sans Pro', sans-serif;
+    letter-spacing: 0.01em;
+    overflow: scroll;
+    a {
+        text-decoration: none;
+        color: #282624;
+    }
+
+    header {
+        display: block;
+
+        h2 {
+            font-size: 1.602em;
+            margin: 1.5rem 0 .75rem 0;
+            line-height: 1.05;
+            font-weight: 400;
+        }
+
+        p {
+            display: block;
+            margin-top: 0;
+            margin-bottom: .375rem;
+            line-height: 1.15;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: smaller;
+            color: #982E0A;
+
+            .label--tertiary {
+                color: #5C5956;
+                text-transform: none;
+
+                :last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+    }
+
+    @import "base/fonts";
+    @import "base/spacing";
+    @import "base/typescale";
+    @import "base/utils";
+    @import "base/general";
+    @import "base/grid";
+    @import "base/logo";
+    @import "components/label";
+    @import "components/pagination";
+    header {
+        padding-top: 15px;
+    }
+    .pagination ul {
+        width: 100%;
+    }
+
+    @import "components/search-results";
+
+}
