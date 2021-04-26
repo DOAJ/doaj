@@ -175,7 +175,7 @@ class FieldDefinitions:
         },
         "widgets": [
             "trim_whitespace",
-            "full_contents"
+            {"full_contents" : {"empty_disabled" : "[The journal has no alternative title]"}}
         ],
         "contexts": {
             "update_request": {
@@ -235,7 +235,8 @@ class FieldDefinitions:
                                                            "online)'"}}
         ],
         "widgets" : [
-            "trim_whitespace"
+            "trim_whitespace",
+            "full_contents"
         ],
         "contexts": {
             "public" : {
@@ -307,7 +308,8 @@ class FieldDefinitions:
             {"different_to": {"field": "pissn", "message" : "This field must contain a different value to 'ISSN (print)'"}}
         ],
         "widgets" : [
-            "trim_whitespace"
+            "trim_whitespace",
+            "full_contents"
         ],
         "contexts": {
             "public" : {
@@ -418,7 +420,7 @@ class FieldDefinitions:
             "placeholder": "Type or select the language"
         },
         "attr": {
-            "class": "input-xlarge"
+            "class": "input-xlarge unstyled-list"
         }
     }
 
@@ -1152,7 +1154,10 @@ class FieldDefinitions:
         "widgets": [
             "trim_whitespace",
             "multiple_field"
-        ]
+        ],
+        "attr": {
+            "class": "input-xlarge unstyled-list"
+        }
     }
 
     PRESERVATION_SERVICE_OTHER = {
@@ -1672,7 +1677,7 @@ class FieldDefinitions:
             "note_id"
         ],
         "template": "application_form/_list.html",
-        "entry_template": "application_form/_entry_group_horizontal.html",
+        "entry_template": "application_form/_entry_group.html",
         "widgets": [
             {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}},
             "note_modal"
