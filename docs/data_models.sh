@@ -14,7 +14,7 @@ OUTDIR=$DOAJ_DOCS/$BRANCH/data_models
 
 # make sure that we have the documentation submodule up-to-date
 git submodule update --init --recursive
-(cd $DOAJ_DOCS && git pull origin master)
+(cd $DOAJ_DOCS && git checkout master && git pull origin master)
 
 # ensure that the output directory exists
 mkdir -p $OUTDIR
