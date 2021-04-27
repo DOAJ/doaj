@@ -2115,7 +2115,7 @@ $.extend(true, doaj, {
                     }
                 }
                 var frag = "<li class='alert'><p>You searched for <i>'";
-                frag += this.currentQueryString;
+                frag += edges.escapeHtml(this.currentQueryString);
                 frag +="'</i> and we found no results.</p><p>Search terms must be in <strong>English</strong>.</p> <p>Try removing some of the filters you have set, modifying the text in the search box, or using less specific search terms.</p></li>";;
 
                 if (this.component.results === false) {
