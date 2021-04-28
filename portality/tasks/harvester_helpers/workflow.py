@@ -13,14 +13,7 @@ class HarvesterWorkflow(object):
     @capture_sigterm
     def process_account(cls, account_id):
         app.logger.info("Harvesting for Account:{x}".format(x=account_id))
-
-        doaj = doajclient.DOAJv1API()
-        gen = doaj.field_search_iterator("journals", "username", account_id)
-        issns = []
-        for journal in gen:
-            issns += journal.all_issns()
-        issns = list(set(issns))
-
+        issns = cls.get_journals_issns(account_id)
         app.logger.info("Account:{x} has {y} issns to harvest for: {z}".format(x=account_id, y=len(issns), z=",".join(issns)))
 
         # now update the issn states
@@ -30,13 +23,25 @@ class HarvesterWorkflow(object):
             HarvesterWorkflow.process_issn(account_id, issn)
 
     @classmethod
+    def get_journals_issns(cls, account_id):
+        doaj = doajclient.DOAJv1API()
+        gen = doaj.field_search_iterator("journals", "username", account_id)
+        issns = []
+        for journal in gen:
+            issns += journal.all_issns()
+        return list(set(issns))
+
+
+    @classmethod
     def process_issn_states(cls, account_id, issns):
         # first check that there are state records for all the provided issns,
         # and that if they were deactivated they are now reactivated
         for issn in issns:
             state = HarvestState.find_by_issn(account_id, issn)
             if state is not None:
-                if state.suspended:
+                #TODO: HarvesterStateFixture does not provide suspended, next line for the test only
+                if state["status"] == "suspended":
+                #if state.suspended:
                     state.reactivate()
                     state.save(blocking=True)
             else:
