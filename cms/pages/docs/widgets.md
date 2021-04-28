@@ -16,9 +16,18 @@ Widgets are tools that allow you to embed DOAJ into your site. There are two wid
 Copy and paste the code below into your page where you want the search box to be displayed.
 
 ```html
-<script src="https://doaj.org/static/widget/simple_search.js" type="text/javascript"></script>
+<script src="{{ base_url }}/static/widget/simple_search.js" type="text/javascript"></script>
 <div id="doaj-simple-search-widget"></div>
 ```
+
+[comment]: <> (todo: awaiting SSW update)
+[comment]: <> (**Example:**)
+
+[comment]: <> (<!-- this is the actual script embed -->)
+
+[comment]: <> (<script src="{{ base_url }}/static/widget/simple_search.js" type="text/javascript"></script>)
+
+[comment]: <> (<div id="doaj-simple-search-widget"></div>)
 
 ## Fixed Query
 
@@ -26,7 +35,7 @@ Copy and paste the code below into your page where you want the widget to be dis
 
 ```html
 <script type="text/javascript">
-var doaj_url = "https://doaj.org";
+var doaj_url = "{{ base_url }}";
 var QUERY_OPTIONS = {
     query_string : 'medicine',                   // The plain-text query string
     query_field: 'bibjson.title',                // The field we are querying
@@ -38,9 +47,28 @@ var QUERY_OPTIONS = {
     page_from : 0                                // Which result to start from
     }
 </script>
-<script src="https://doaj.org/static/widget/fixed_query.js" type="text/javascript"></script>
+<script src="{{ base_url }}/static/widget/fixed_query.js" type="text/javascript"></script>
 <div id="doaj-fixed-query-widget"></div>
 ```
+
+**Example:**
+<!-- this is the actual script embed -->
+<script type="text/javascript">
+var doaj_url = "{{ base_url }}";
+var QUERY_OPTIONS = {
+    query_string : 'medicine',                   // The plain-text query string
+    query_field: 'bibjson.title',                // The field we are querying
+    sort_field: 'index.unpunctitle.exact',       // Field to order results by
+    sort_direction:  'asc',                      // Direction of sort "asc" | "desc"
+    search_operator : 'AND',                     // Which sort operator to use "AND" | "OR"
+    search_type: 'journal',                      // Which type to search upon (omit for both) "article" | "journal"
+    page_size : 5,                               // How many results to show per widget page
+    page_from : 0                                // Which result to start from
+    }
+</script>
+<script src="{{ base_url }}/static/widget/fixed_query.js" type="text/javascript"></script>
+<div id="doaj-fixed-query-widget"></div>
+<br/>
 
 ### Configuring via `QUERY_OPTIONS`
 
