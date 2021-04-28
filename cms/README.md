@@ -47,6 +47,16 @@ To compile only the SASS:
 python portality/cms/build_sass.py
 ```
 
+### Compiling the CSS for the widgets
+
+The CSS for the widgets is compiled separately from the main CSS and committed to the codebase. This is so that we don't
+ break the widgets accidentally via a change to the main CSS. To run this process add the `--widgets` or `-w` argument
+(for both the Fixed Query Widget and the Simple Search Widget):
+
+```
+python portality/cms/build_sass.py -w
+```
+
 ## Managing Assets
 
 Static assets include images and other content-like objects that form part of the site content, such as downloadable

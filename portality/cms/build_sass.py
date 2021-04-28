@@ -1,28 +1,47 @@
+""" Build the SASS - main.css and optionally the widgets """
+
 import sass
 import os
 import shutil
 
 from datetime import datetime
 
+# SASS directory
 SASS = os.path.join("cms", "sass")
-MAIN = os.path.join(SASS, "main.scss")
+
+# Output style
 STYLE = "compressed"
-CSS = os.path.join("portality", "static", "doaj", "css", "main.css")
-SOURCE_MAP = CSS + ".map"
-ERROR = os.path.join("cms", "error_sass.txt")
+
+# SASS and error file for the main CSS
+MAIN_SETTINGS = (os.path.join(SASS, "main.scss"),
+                 os.path.join("portality", "static", "doaj", "css", "main.css"),
+                 os.path.join("cms", "error_sass.txt"))
+
+# SASS file and error file for each widget
+WIDGET_SETTINGS = {
+    'FQW': (os.path.join(SASS, "fq_widget.scss"),
+            os.path.join("portality", "static", "doaj", "css", "fq_widget.css"),
+            os.path.join("cms", "error_fqw_sass.txt")),
+    # 'SSW': (os.path.join(SASS, "ss_widget.scss"), #todo
+    #         os.path.join("portality", "static", "doaj", "css", "ss_widget.css"),
+    #         os.path.join("cms", "error_ssw_sass.txt"))
+}
 
 
-def _localise_paths(base_path=None):
+def _localise_paths(paths, base_path=None):
+    SCSS_IN, CSS_OUT, ERROR_OUT = paths
+    SOURCE_MAP = CSS_OUT + ".map"
+
     now = datetime.utcnow().timestamp()
     if base_path is None:
-        return SASS, MAIN, CSS, CSS + "." + str(now), SOURCE_MAP, SOURCE_MAP + "." + str(now), ERROR
+        return SASS, SCSS_IN, CSS_OUT, CSS_OUT + "." + str(now), SOURCE_MAP, SOURCE_MAP + "." + str(now), ERROR_OUT
     return (os.path.join(base_path, SASS),
-            os.path.join(base_path, MAIN),
-            os.path.join(base_path, CSS),
-            os.path.join(base_path, CSS + "." + str(now)),
+            os.path.join(base_path, SCSS_IN),
+            os.path.join(base_path, CSS_OUT),
+            os.path.join(base_path, CSS_OUT + "." + str(now)),
             os.path.join(base_path, SOURCE_MAP),
             os.path.join(base_path, SOURCE_MAP + "." + str(now)),
-            os.path.join(base_path, ERROR))
+            os.path.join(base_path, ERROR_OUT))
 
 
 def _swap(old, new):
@@ -36,10 +55,10 @@ def _swap(old, new):
             os.remove(old + ".old")
 
 
-def build(base_path=None):
+def build(paths, base_path=None):
     sass_file, main_file, css_file, css_tmp, map_file, map_tmp, error_file = None, None, None, None, None, None, None
     try:
-        sass_file, main_file, css_file, css_tmp, map_file, map_tmp, error_file = _localise_paths(base_path)
+        sass_file, main_file, css_file, css_tmp, map_file, map_tmp, error_file = _localise_paths(paths, base_path)
 
         css, map = sass.compile(filename=main_file,
                      output_style=STYLE,
@@ -82,4 +101,15 @@ def build(base_path=None):
 
 
 if __name__ == "__main__":
-    build()
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-w", "--widgets", help="Generate the widgets CSS", action="store_true")
+    args = parser.parse_args()
+
+    # Build the site CSS
+    build(MAIN_SETTINGS)
+
+    # If this is run manually with the widget arg, also build the widgets (intended to commit result to the tree)
+    if args.widgets:
+        [build(widget) for widget in WIDGET_SETTINGS.values()]
