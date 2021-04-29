@@ -52,7 +52,7 @@ function main() {
 
         scr = document.createElement('link');
         scr.rel = 'stylesheet';
-        scr.href = doaj_url + '/static/doaj/css/main.css';
+        scr.href = doaj_url + '/static/doaj/css/simple_widget.css';
         head.insertBefore(scr, head.firstChild);
 
         $('#doaj-simple-search-widget').load(doaj_url + '/static/widget/simple_search_body.html', () => {
