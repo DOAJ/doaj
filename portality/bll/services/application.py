@@ -366,9 +366,9 @@ class ApplicationService(object):
         journal.set_seal(application.has_seal())
 
         b = application.bibjson()
-        if b.get_one_identifier("pissn") == "":
+        if b.pissn == "":
             b.add_identifier("pissn", None)
-        if b.get_one_identifier("eissn") == "":
+        if b.eissn == "":
             b.add_identifier("eissn", None)
 
         # no relate the journal to the application and place it in_doaj
