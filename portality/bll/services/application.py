@@ -365,6 +365,12 @@ class ApplicationService(object):
             journal.set_owner(application.owner)
         journal.set_seal(application.has_seal())
 
+        b = application.bibjson()
+        if b.pissn == "":
+            b.add_identifier("pissn", None)
+        if b.eissn == "":
+            b.add_identifier("eissn", None)
+
         # no relate the journal to the application and place it in_doaj
         journal.add_related_application(application.id, dates.now())
         journal.set_in_doaj(True)
