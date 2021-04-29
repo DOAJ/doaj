@@ -212,7 +212,7 @@
                                 <div>
                                     <p>Look up the journal’s:</p>
                                     <ul>
-                                        {% if bibjson.get_single_url("aims_scope") %}
+                                        {% if bibjson.aims_scope_url %}
                                             <li><a href="{{ bibjson.aims_scope_url }}" target="_blank" rel="noopener">Aims & scope</a></li>
                                         {% endif %}
                                         {% if bibjson.author_instructions_url %}
@@ -349,6 +349,7 @@
                                             {% for policy in bibjson.deposit_policy %}
                                                 {%  set policy_data = DEPOSIT_POLICY_MAP.get(policy) %}
                                                 <li>
+                                                {# FIXME: not a big fan of this hard-coding, presumably this could come from config somewhere #}
                                                     {% if policy == "Sherpa/Romeo" or policy == "Diadorim" or policy == "Héloïse" or policy == "Dulcinea" %}
                                                         <a href="{{ policy_data|safe }}{{ bibjson.get_preferred_issn() }}" target="_blank" rel="noopener">
                                                             {{ policy }}
@@ -387,7 +388,8 @@
                                     {% if bibjson.publisher_name %}
                                         <dt>Publisher</dt>
                                         <dd>
-                                          <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22terms%22%3A%7B%22bibjson.publisher.name.exact%22%3A%5B%22{{ bibjson.publisher_name|safe }}%22%5D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D">{{bibjson.publisher_name}}</a>{% if bibjson.publisher_country %}, {{bibjson.publisher_country_name()}}{% endif %}
+                                            {% set source = search_query_source(terms=[{"bibjson.publisher.name.exact": [bibjson.publisher_name]}]) %}
+                                            <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source={{ source }}">{{bibjson.publisher_name}}</a>{% if bibjson.publisher_country %}, {{bibjson.publisher_country_name()}}{% endif %}
                                         </dd>
                                     {% endif %}
 
@@ -406,10 +408,11 @@
                             <article class="card card--with-icon">
                                 <span data-feather="tag" aria-hidden="true"></span>
                                 <dl>
-                                    {% for path in bibjson.lcc_paths() %}
+                                    {% for path, code in bibjson.lcc_paths_and_codes() %}
                                         {% if loop.index0 == 0 %}<dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span><span class="sr-only">Look up the Library of Congress Classification Outline</span></a></dt>{% endif %}
                                         <dd>
-                                            <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ path }}%22%2C%22default_operator%22%3A%22AND%22%2C%22default_field%22%3A%22index.classification%22%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D">
+                                            {% set source = search_query_source(terms=[{"index.schema_codes_tree.exact": [code]}]) %}
+                                             <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source={{ source }}">
                                                 {{ path }}
                                             </a>
                                         </dd>
@@ -419,7 +422,8 @@
                                         <dt>Keywords</dt>
                                         <dd>
                                             {% for keyword in bibjson.keywords %}
-                                                <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22{{ keyword|safe }}%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D" class="tag">{{ keyword }}</a>
+                                                {% set source = search_query_source(query_string=keyword) %}
+                                                <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source={{ source }}" class="tag">{{ keyword }}</a>
                                             {% endfor %}
                                         </dd>
                                     {% endif %}
