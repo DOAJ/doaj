@@ -344,17 +344,13 @@ class ApplicationService(object):
         jbj = journal.bibjson()
 
         # now carry over key administrative properties from the application itself
-        # * contacts
         # * notes
         # * editor
         # * editor_group
         # * owner
         # * seal
-        # contacts = application.contacts()
         notes = application.notes
 
-        #for contact in contacts:
-        #    journal.add_contact(contact.get("name"), contact.get("email"))
         if application.editor is not None:
             journal.set_editor(application.editor)
         if application.editor_group is not None:
@@ -393,13 +389,8 @@ class ApplicationService(object):
                     journal.add_related_application(r.get("application_id"), r.get("date_accepted"), r.get("status"))
 
                 # carry over any properties that are not already set from the application
-                # * contact
                 # * editor & editor_group (together or not at all)
                 # * owner
-                #if len(journal.contacts()) == 0:
-                #    old_contacts = cj.contacts()
-                #    for contact in old_contacts:
-                #        journal.add_contact(contact.get("name"), contact.get("email"))
                 if journal.editor is None and journal.editor_group is None:
                     journal.set_editor(cj.editor)
                     journal.set_editor_group(cj.editor_group)

@@ -212,7 +212,7 @@
                                 <div>
                                     <p>Look up the journal’s:</p>
                                     <ul>
-                                        {% if bibjson.get_single_url("aims_scope") %}
+                                        {% if bibjson.aims_scope_url %}
                                             <li><a href="{{ bibjson.aims_scope_url }}" target="_blank" rel="noopener">Aims & scope</a></li>
                                         {% endif %}
                                         {% if bibjson.author_instructions_url %}
@@ -349,6 +349,7 @@
                                             {% for policy in bibjson.deposit_policy %}
                                                 {%  set policy_data = DEPOSIT_POLICY_MAP.get(policy) %}
                                                 <li>
+                                                {# FIXME: not a big fan of this hard-coding, presumably this could come from config somewhere #}
                                                     {% if policy == "Sherpa/Romeo" or policy == "Diadorim" or policy == "Héloïse" or policy == "Dulcinea" %}
                                                         <a href="{{ policy_data|safe }}{{ bibjson.get_preferred_issn() }}" target="_blank" rel="noopener">
                                                             {{ policy }}
