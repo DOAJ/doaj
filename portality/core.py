@@ -230,8 +230,9 @@ def build_statics(app):
 
     print("Compiling static content")
     build_fragments.build(base_path)
-    print("Compiling SASS")
-    build_sass.build(base_path)
+    print("Compiling main SASS")
+    build_sass.build(build_sass.MAIN_SETTINGS, base_path=base_path)
+
 
 app = create_app()
 es_connection = create_es_connection(app)

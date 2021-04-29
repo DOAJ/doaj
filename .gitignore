@@ -1,3 +1,6 @@
+# Ignore generated css
+cms/sass/*.css*
+
 # Local env file
 .env
 env/
