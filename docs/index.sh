@@ -13,6 +13,10 @@ git submodule update --init --recursive
 # ensure that the output directory exists
 mkdir -p $OUTDIR
 
-OUTFILE=$OUTDIR/index.md
+# generate the index for the specific branch
+OUTFILE=$OUTDIR/README.md
+python portality/scripts/generate_docs_index.py -b -f $OUTFILE -d $OUTDIR
 
-python portality/scripts/generate_docs_index.py -f $OUTFILE -d $OUTDIR
+# generate the global index for the docs repo
+README=$DOAJ_DOCS/README.md
+python portality/scripts/generate_docs_index.py -g -f $README -d $DOAJ_DOCS
