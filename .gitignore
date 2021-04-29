@@ -92,11 +92,19 @@ local_store/main/*
 local_store/tmp/*
 !local_store/tmp/README.md
 
-# Static site / Jekyll
+# Static site / Jekyll / rbenv
 .sass-cache/
 .jekyll-cache/
 .jekyll-metadata
+.ruby-version
 
-##generated files
-#static_content/_site
-#static_content/css/*.css
+# generated static content
+cms/fragments/**/
+!cms/fragments/.gitkeep
+cms/data/frontmatter.yml*
+cms/components
+cms/error_fragments.txt
+cms/error_sass.txt
+portality/static/doaj/css/main.css*
+cms/sass/*.css
+cms/sass/*.css.*

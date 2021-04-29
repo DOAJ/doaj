@@ -1,20 +1,22 @@
 import uuid
 from datetime import datetime
 
+import portality.notifications.application_emails as emails
 from portality.core import app
 from portality import models, constants, app_email
 from portality.lib.formulaic import FormProcessor
-import portality.notifications.application_emails as emails
 from portality.ui.messages import Messages
-
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
-from flask import url_for, request
+from portality.formcontext.choices import Choices
+from portality.bll import exceptions
+
+from flask import url_for, request, has_request_context
 from flask_login import current_user
 
 from wtforms import FormField, FieldList
 
-from portality.formcontext.choices import Choices
+
 
 
 class ApplicationProcessor(FormProcessor):
@@ -249,7 +251,7 @@ class AdminApplication(ApplicationProcessor):
 
         # This patches the target with things that shouldn't change from the source
         self._carry_fixed_aspects()
-        self._merge_notes_forward()
+        self._merge_notes_forward(allow_delete=True)
 
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
@@ -280,15 +282,24 @@ class AdminApplication(ApplicationProcessor):
         from portality.bll.doaj import DOAJ
         applicationService = DOAJ.applicationService()
 
+        # if the application is already rejected, and we are moving it back into a non-rejected status
+        if self.source.application_status == constants.APPLICATION_STATUS_REJECTED and self.target.application_status != constants.APPLICATION_STATUS_REJECTED:
+            try:
+                applicationService.unreject_application(self.target, current_user._get_current_object(), disallow_status=[])
+            except exceptions.DuplicateUpdateRequest as e:
+                self.add_alert(Messages.FORMS__APPLICATION_PROCESSORS__ADMIN_APPLICATION__FINALISE__COULD_NOT_UNREJECT)
+                return
+
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
-            j = applicationService.accept_application(self.target, current_user._get_current_object())
+            j = applicationService.accept_application(self.target, account)
             # record the url the journal is available at in the admin are and alert the user
-            jurl = url_for("doaj.toc", identifier=j.toc_id)
-            if self.source.current_journal is not None:  # todo: are alerts displayed?
-                self.add_alert('<a href="{url}" target="_blank">Existing journal updated</a>.'.format(url=jurl))
-            else:
-                self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
+            if has_request_context():       # fixme: if we handle alerts via a notification service we won't have to toggle on request context
+                jurl = url_for("doaj.toc", identifier=j.toc_id)
+                if self.source.current_journal is not None:  # todo: are alerts displayed?
+                    self.add_alert('<a href="{url}" target="_blank">Existing journal updated</a>.'.format(url=jurl))
+                else:
+                    self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
 
             # Add the journal to the account and send the notification email
             try:
@@ -300,7 +311,8 @@ class AdminApplication(ApplicationProcessor):
                 owner.save()
 
                 # for all acceptances, send an email to the owner of the journal
-                self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
+                if email_alert:
+                    self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
             except AttributeError:
                 raise Exception("Account {owner} does not exist".format(owner=j.owner))
             except app_email.EmailException:
@@ -316,7 +328,7 @@ class AdminApplication(ApplicationProcessor):
             applicationService.reject_application(self.target, current_user._get_current_object())
 
             # if this was an update request, send an email to the owner
-            if is_update_request:
+            if is_update_request and email_alert:
                 sent = False
                 send_report = []
                 try:
@@ -335,78 +347,79 @@ class AdminApplication(ApplicationProcessor):
             self.target.set_last_manual_update()
             self.target.save()
 
-        # if revisions were requested, email the publisher
-        if self.source.application_status != constants.APPLICATION_STATUS_REVISIONS_REQUIRED and self.target.application_status == constants.APPLICATION_STATUS_REVISIONS_REQUIRED:
-            try:
-                emails.send_publisher_update_request_revisions_required(self.target)
-                self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
-            except app_email.EmailException as e:
-                self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
+        if email_alert:
+            # if revisions were requested, email the publisher
+            if self.source.application_status != constants.APPLICATION_STATUS_REVISIONS_REQUIRED and self.target.application_status == constants.APPLICATION_STATUS_REVISIONS_REQUIRED:
+                try:
+                    emails.send_publisher_update_request_revisions_required(self.target)
+                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
+                except app_email.EmailException as e:
+                    self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
 
-        # if we need to email the editor and/or the associate, handle those here
-        if is_editor_group_changed:
-            try:
-                emails.send_editor_group_email(self.target)
-            except app_email.EmailException:
-                self.add_alert("Problem sending email to editor - probably address is invalid")
-                app.logger.exception("Email to associate failed.")
-        if is_associate_editor_changed:
-            try:
-                emails.send_assoc_editor_email(self.target)
-            except app_email.EmailException:
-                self.add_alert("Problem sending email to associate editor - probably address is invalid")
-                app.logger.exception("Email to associate failed.")
+            # if we need to email the editor and/or the associate, handle those here
+            if is_editor_group_changed:
+                try:
+                    emails.send_editor_group_email(self.target)
+                except app_email.EmailException:
+                    self.add_alert("Problem sending email to editor - probably address is invalid")
+                    app.logger.exception("Email to associate failed.")
+            if is_associate_editor_changed:
+                try:
+                    emails.send_assoc_editor_email(self.target)
+                except app_email.EmailException:
+                    self.add_alert("Problem sending email to associate editor - probably address is invalid")
+                    app.logger.exception("Email to associate failed.")
 
-        # If this is the first time this application has been assigned to an editor, notify the publisher.
-        old_ed = self.source.editor
-        if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            is_update_request = self.target.current_journal is not None
-            if is_update_request:
-                alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
-            else:
-                alerts = emails.send_publisher_application_editor_assigned_email(self.target)
-            for alert in alerts:
-                self.add_alert(alert)
+            # If this is the first time this application has been assigned to an editor, notify the publisher.
+            old_ed = self.source.editor
+            if (old_ed is None or old_ed == '') and self.target.editor is not None:
+                is_update_request = self.target.current_journal is not None
+                if is_update_request:
+                    alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
+                else:
+                    alerts = emails.send_publisher_application_editor_assigned_email(self.target)
+                for alert in alerts:
+                    self.add_alert(alert)
 
-        # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
-        if (self.source.application_status == constants.APPLICATION_STATUS_READY or self.source.application_status == constants.APPLICATION_STATUS_COMPLETED) and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
-            # First, the editor
-            try:
-                emails.send_editor_inprogress_email(self.target)
-                self.add_alert('An email has been sent to notify the editor of the change in status.')
-            except AttributeError:
-                magic = str(uuid.uuid1())
-                self.add_alert('Couldn\'t find a recipient for this email - check editor groups are correct. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                app.logger.exception('No editor recipient for failed review email - ' + magic)
-            except app_email.EmailException:
-                magic = str(uuid.uuid1())
-                self.add_alert('Sending the failed review email to editor didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                app.logger.exception('Error sending review failed email to editor - ' + magic)
+            # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
+            if (self.source.application_status == constants.APPLICATION_STATUS_READY or self.source.application_status == constants.APPLICATION_STATUS_COMPLETED) and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
+                # First, the editor
+                try:
+                    emails.send_editor_inprogress_email(self.target)
+                    self.add_alert('An email has been sent to notify the editor of the change in status.')
+                except AttributeError:
+                    magic = str(uuid.uuid1())
+                    self.add_alert('Couldn\'t find a recipient for this email - check editor groups are correct. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                    app.logger.exception('No editor recipient for failed review email - ' + magic)
+                except app_email.EmailException:
+                    magic = str(uuid.uuid1())
+                    self.add_alert('Sending the failed review email to editor didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                    app.logger.exception('Error sending review failed email to editor - ' + magic)
 
-            # Then the associate
-            try:
-                emails.send_assoc_editor_inprogress_email(self.target)
-                self.add_alert('An email has been sent to notify the assigned associate editor of the change in status.')
-            except AttributeError:
-                magic = str(uuid.uuid1())
-                self.add_alert('Couldn\'t find a recipient for this email - check an associate editor is assigned. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                app.logger.exception('No associate editor recipient for failed review email - ' + magic)
-            except app_email.EmailException:
-                magic = str(uuid.uuid1())
-                self.add_alert('Sending the failed review email to associate editor didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                app.logger.exception('Error sending review failed email to associate editor - ' + magic)
+                # Then the associate
+                try:
+                    emails.send_assoc_editor_inprogress_email(self.target)
+                    self.add_alert('An email has been sent to notify the assigned associate editor of the change in status.')
+                except AttributeError:
+                    magic = str(uuid.uuid1())
+                    self.add_alert('Couldn\'t find a recipient for this email - check an associate editor is assigned. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                    app.logger.exception('No associate editor recipient for failed review email - ' + magic)
+                except app_email.EmailException:
+                    magic = str(uuid.uuid1())
+                    self.add_alert('Sending the failed review email to associate editor didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                    app.logger.exception('Error sending review failed email to associate editor - ' + magic)
 
-        # email other managing editors if this was newly set to 'ready'
-        if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
-            # this template requires who made the change, say it was an Admin
-            ed_id = 'an administrator'
-            try:
-                emails.send_admin_ready_email(self.target, editor_id=ed_id)
-                self.add_alert('A confirmation email has been sent to the Managing Editors.')
-            except app_email.EmailException:
-                magic = str(uuid.uuid1())
-                self.add_alert('Sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                app.logger.exception('Error sending ready status email to managing editors - ' + magic)
+            # email other managing editors if this was newly set to 'ready'
+            if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
+                # this template requires who made the change, say it was an Admin
+                ed_id = 'an administrator'
+                try:
+                    emails.send_admin_ready_email(self.target, editor_id=ed_id)
+                    self.add_alert('A confirmation email has been sent to the Managing Editors.')
+                except app_email.EmailException:
+                    magic = str(uuid.uuid1())
+                    self.add_alert('Sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                    app.logger.exception('Error sending ready status email to managing editors - ' + magic)
 
     def _send_application_approved_email(self, journal_title, publisher_name, email, update_request=False):
         """Email the publisher when an application is accepted (it's here because it's too troublesome to factor out)"""
@@ -446,6 +459,16 @@ class AdminApplication(ApplicationProcessor):
             magic = str(uuid.uuid1())
             self.add_alert('Sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.exception('Error sending application approved email failed - ' + magic)
+
+    def validate(self):
+        _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']
+        # make use of the ability to disable validation, otherwise, let it run
+        if self.form is not None:
+            if self.form.application_status.data in _statuses_not_requiring_validation:
+                self.pre_validate()
+                return True
+
+        return super(AdminApplication, self).validate()
 
 
 class EditorApplication(ApplicationProcessor):
@@ -507,6 +530,7 @@ class EditorApplication(ApplicationProcessor):
         # if we need to email the associate because they have just been assigned, handle that here.
         if new_associate_assigned:
             try:
+                self.add_alert("New editor assigned - email with confirmation has been sent")
                 emails.send_assoc_editor_email(self.target)
             except app_email.EmailException:
                 self.add_alert("Problem sending email to associate editor - probably address is invalid")
@@ -776,7 +800,7 @@ class ManEdJournalReview(ApplicationProcessor):
             raise Exception("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
-        self._merge_notes_forward()
+        self._merge_notes_forward(allow_delete=True)
 
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):

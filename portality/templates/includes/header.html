@@ -1,462 +1,148 @@
 <!--[if IE]>
-<!-p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p> -->
+<p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+<![endif]-->
 
-{% set url_list = request.url.split("/") %}
-{% set endpoint = url_list[2:url_list|length-1] %}
-{% set highlighted = ["ambassadors", "volunteers", "editorial-subcommittee", "article"] %}
-<header class="page-header">
-    <div class="primary-nav" id="primary-nav">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-4 col-sm-6">
-                    <a href="/" class="logo">
-                        <h2 class="sr-only">The Directory of Open Access Journals</h2>
-                        {% include "svg/logo.svg" %}
-                    </a>
-                </div>
-                <nav class="col-xs-8 col-sm-6">
-                    <h2 class="sr-only">Main actions</h2>
-                    <ul class="nav-bar">
-                        <li class="dropdown primary-nav__item_desktop">
-                            <a href="{{ url_for('doaj.support') }}" class="dropdown__trigger nav-bar__link" id="action-menu-support" role="button" aria-haspopup="true" aria-expanded="false">
-                                <span data-feather="heart" aria-hidden="true"></span>
-                                Support
-                                <span data-feather="chevron-down" aria-hidden="true"></span>
-                            </a>
-                            <ul class="dropdown__menu" aria-labelledby="action-menu-support">
-                                <li>
-                                    <a href="{{ url_for('doaj.support') }}" class="dropdown__link">
-                                        Support DOAJ
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ url_for('doaj.sponsors') }}" class="dropdown__link">
-                                        Sponsors
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ url_for('doaj.publisher_supporters') }}" class="dropdown__link">
-                                        Publisher supporters
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ url_for('doaj.supporters') }}" class="dropdown__link">
-                                        Supporters
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="dropdown primary-nav__item_desktop">
-                            <a href="{{ url_for('apply.public_application') }}" class="dropdown__trigger nav-bar__link" id="action-menu-apply" role="button" aria-haspopup="true" aria-expanded="false">
-                                Apply
-                                <span data-feather="chevron-down" aria-hidden="true"></span>
-                            </a>
-                            <ul class="dropdown__menu" aria-labelledby="action-menu-apply">
-                                <li>
-                                    <a href="{{ url_for('apply.public_application') }}" class="dropdown__link">
-                                        Application form
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ url_for('doaj.guide') }}" class="dropdown__link">
-                                        Guide to applying
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ url_for('doaj.seal') }}" class="dropdown__link">
-                                        The DOAJ Seal
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ url_for('doaj.transparency') }}" class="dropdown__link">
-                                        Transparency & best practice
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ url_for('doaj.why_index') }}" class="dropdown__link">
-                                        Why index your journal in DOAJ?
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0">
+<div class="primary-nav" id="primary-nav">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-4 col-sm-6">
+                <a href="/" class="logo">
+                    <h2 class="sr-only">The Directory of Open Access Journals</h2>
+                    {% include "includes/svg/logo.svg" %}
+                </a>
+            </div>
+            <nav class="col-xs-8 col-sm-6">
+                <h2 class="sr-only">Main actions</h2>
+                {% set columns = data.nav.entries|selectattr("primary")|list %}
+                <ul class="nav-bar">
+
+                    {% for column in columns %}
+                        {% set section_id=column.id %}
+                        {% include "includes/header-primary-navigation.html" %}
+                    {% endfor %}
+
+                    <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0">
                             <span role="button">
                                 <span data-feather="search" aria-hidden="true"></span>
                                 <span class="sr-only"> Search</span>
                             </span>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+                    </li>
+
+                </ul>
+            </nav>
         </div>
     </div>
-    <nav class="secondary-nav {% if endpoint|length == 1 or endpoint[endpoint|length-1] in highlighted %} secondary-nav--precedes-highlight {% endif %}">
-        <div class="container">
-            <div class="secondary-nav__menu-toggle" aria-label="Click to open menu" role="button">
-                <span data-feather="menu" aria-hidden="true"></span> <h2 class="secondary-nav__header">Menu</h2>
-            </div>
-            <ul class="nav-bar secondary-nav__menu">
+</div>
+
+{# static pages may declare "highlight" in their front matter, and if they do we want to adjust the nav accordingly #}
+{% set extraClass = "" %}
+{% if page %}
+    {% if page.highlight %}
+        {% set extraClass="secondary-nav--precedes-highlight" %}
+    {% endif %}
+{% endif %}
+<nav class="secondary-nav {{ extraClass }}">
+    <div class="container">
+        <div class="secondary-nav__menu-toggle" aria-label="Click to open menu" role="button">
+            <span data-feather="menu" aria-hidden="true"></span> <h2 class="secondary-nav__header">Menu</h2>
+        </div>
+        <ul class="nav-bar secondary-nav__menu">
+
+            {% set columns = data.nav.entries|selectattr("secondary")|list %}
+            {% for column in columns %}
+                {% set section_id=column.id %}
+                {% include "includes/header-secondary-navigation.html" %}
+            {% endfor %}
+
+            {% if not current_user.is_anonymous %}
                 <li class="dropdown">
-                    <span class="dropdown__trigger nav-bar__link" id="menu-journals-articles" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
-                        Search
-                        <span data-feather="chevron-down" aria-hidden="true"></span>
-                    </span>
-                    <ul class="dropdown__menu" aria-labelledby="menu-journals-articles">
-                        <li>
-                            <a href="{{ url_for('doaj.journals_search') }}" class="dropdown__link">
-                                Journals
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.articles_search') }}" class="dropdown__link">
-                                Articles
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <span class="dropdown__trigger nav-bar__link" id="menu-data" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
-                        Documentation
-                        <span data-feather="chevron-down" aria-hidden="true"></span>
-                    </span>
-                    <ul class="dropdown__menu" aria-labelledby="menu-data">
-                        <li>
-                            <a href="{{ url_for('doaj.docs') }}" class="dropdown__link">
-                                API
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.oai_pmh') }}" class="dropdown__link">
-                                OAI-PMH
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.xml') }}" class="dropdown__link">
-                                XML
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.widgets') }}" class="dropdown__link">
-                                Widgets
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.public_data_dump') }}" class="dropdown__link">
-                                Public data dump
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.openurl') }}" class="dropdown__link">
-                                OpenURL
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.faq') }}" class="dropdown__link">FAQs</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <span class="dropdown__trigger nav-bar__link" id="menu-about" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
-                        About
-                        <span data-feather="chevron-down" aria-hidden="true"></span>
-                    </span>
-                    <ul class="dropdown__menu" aria-labelledby="menu-about">
-                        <li>
-                            <a href="{{ url_for('doaj.about') }}" class="dropdown__link">
-                                About DOAJ
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.team') }}" class="dropdown__link">
-                                DOAJ team
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.ambassadors') }}" class="dropdown__link">
-                                Ambassadors
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.abc') }}" class="dropdown__link">
-                                Advisory Board & Council
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.editorial_subcommittee') }}" class="dropdown__link">Editorial Subcommittee</a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.volunteers') }}" class="dropdown__link">
-                                Volunteers
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://blog.doaj.org" target="_blank" rel="noopener" class="dropdown__link">
-                                News
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                {% if not current_user.is_anonymous %}
-                    <li class="dropdown">
                         <span class="dropdown__trigger nav-bar__link" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
                             My Account
                             <span data-feather="chevron-down" aria-hidden="true"></span>
                         </span>
-                        <ul class="dropdown__menu" aria-labelledby="menu-account">
-                            {% if current_user.has_role("admin") %}
-                                <li>
-                                    <a href="{{ url_for('admin.index') }}" class="dropdown__link">
-                                        Admin
-                                    </a>
-                                </li>
-                            {% endif %}
-                            {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
-                                <li>
-                                    <a href="{{ url_for('editor.index') }}" class="dropdown__link">
-                                        Editor
-                                    </a>
-                                </li>
-                            {% endif %}
-                            {% if current_user.has_role("publisher") %}
-                                <li>
-                                    <a href="{{ url_for('publisher.index') }}" class="dropdown__link">
-                                        Publisher
-                                    </a>
-                                </li>
-                            {% endif %}
+                    <ul class="dropdown__menu" aria-labelledby="menu-account">
+                        {% if current_user.has_role("admin") %}
                             <li>
-                                <a href="{{ url_for('account.username', username=current_user.id) }}" class="dropdown__link">
-                                    Settings
+                                <a href="{{ url_for('admin.index') }}" class="dropdown__link">
+                                    Admin
                                 </a>
                             </li>
-                        </ul>
-                    </li>
-                {% endif %}
-                <li class="dropdown secondary-nav__item_mobile">
-                    <span class="dropdown__trigger nav-bar__link" id="menu-support" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <strong>Support</strong>
-                        <span data-feather="chevron-down" aria-hidden="true"></span>
-                    </span>
-                    <ul class="dropdown__menu" aria-labelledby="menu-support">
-                        <li>
-                            <a href="{{ url_for('doaj.support') }}" class="dropdown__link">
-                                Support DOAJ
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.sponsors') }}" class="dropdown__link">
-                                Sponsors
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.publisher_supporters') }}" class="dropdown__link">
-                                Publisher supporters
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.supporters') }}" class="dropdown__link">
-                                Supporters
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="dropdown secondary-nav__item_mobile">
-                    <span class="dropdown__trigger nav-bar__link" id="menu-apply" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <strong>Apply</strong>
-                        <span data-feather="chevron-down" aria-hidden="true"></span>
-                    </span>
-                    <ul class="dropdown__menu" aria-labelledby="menu-apply">
-                        <li>
-                            <a href="/apply/" class="dropdown__link">
-                                Application form
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.guide') }}" class="dropdown__link">
-                                Guide to applying
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.seal') }}" class="dropdown__link">
-                                The DOAJ Seal
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.transparency') }}" class="dropdown__link">
-                                Transparency & best practice
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ url_for('doaj.why_index') }}" class="dropdown__link">
-                                Why index your journal in DOAJ?
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="secondary-nav__login">
-                    {% if current_user.is_anonymous %}
-                        <a href="{{ url_for('account.login') }}" class="nav-bar__link">
-                            Login
-                            <span data-feather="log-in" aria-hidden="true"></span>
-                        </a>
-                    {% else %}
-                        <a href="{{ url_for('account.logout') }}" class="nav-bar__link">
-                            Logout
-                            <span data-feather="log-out" aria-hidden="true"></span>
-                        </a>
-                    {% endif %}
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    {# Flash notifications #}
-    {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-
-              {% set category_url_indicator = '+contains-url' %}
-
-              {% for category, message in messages %}
-                  {% set message_has_url = False %}
-                  {% if category.endswith(category_url_indicator) %}
-                      {% set category = category[:category.rfind(category_url_indicator)] %}
-                      {% set message_has_url = True %}
-                  {% endif %}
-
-                  {# shift from bs2 to bs3 terminology #}
-                  {% if category == "error" %}
-                      {% set category = "danger" %}
-                  {% endif %}
-                  <section class="container flash_container">
-                      <h2 class="sr-only">Notifications</h2>
-                      <p class="alert alert--{{category}}">
-                        <span data-feather="alert-octagon" aria-hidden="true"></span>
-                        {% if message_has_url %}
-                        {{ message | safe }}
-                        {% else %}
-                        {{ message }}
                         {% endif %}
-                        &nbsp;<span class="flash_close alert__close" role="button">(Dismiss)</span>
-                      </p>
-                  </section>
-              {% endfor %}
-        {% endif %}
-    {% endwith %}
+                        {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
+                            <li>
+                                <a href="{{ url_for('editor.index') }}" class="dropdown__link">
+                                    Editor
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if current_user.has_role("publisher") %}
+                            <li>
+                                <a href="{{ url_for('publisher.index') }}" class="dropdown__link">
+                                    Publisher
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li>
+                            <a href="{{ url_for('account.username', username=current_user.id) }}" class="dropdown__link">
+                                Settings
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
 
-    {# Display large search header on homepage only #}
-    {% if request.endpoint == 'doaj.home' %} {#  FIXME: this is a bad way to decide if to incorporate this box #}
-        <section class="homepage__search">
-            <div class="container">
-                <p class="label">The Directory of Open Access Journals</p>
-                <h1>Find open access journals & articles.</h1>
-                <form class="row doaj-minisearch--container" role="search" action="{{ url_for('doaj.search_post') }}" method="post">
-                    <input type="hidden" name="ref" value="homepage-box">
-                    <input type="hidden" name="origin" value="ui">
-                    <div class="col-xs-12 col-md-8">
-                        <div class="inline-fields">
-                            <input type="radio" id="journals" name="content-type" value="journals" checked>
-                            <label for="journals">Journals</label>
-                            <input type="radio" id="articles" name="content-type" value="articles">
-                            <label for="articles">Articles</label>
-                        </div>
-                    </div>
+            {% set columns = data.nav.entries|selectattr("secondary_mobile")|list %}
+            {% for column in columns %}
+                {% set section_id=column.id %}
+                {% set mobile=True %}
+                {% include "includes/header-secondary-navigation.html" %}
+            {% endfor %}
 
-                    <div class="col-xs-12 col-md-8">
-                        <div class="input-group">
-                            <label for="keywords" class="sr-only">Search by keywords:</label>
-                            <input class="input-group__input" type="text" name="keywords" id="keywords" required>
-
-                            <label for="fields" class="sr-only">In the field:</label>
-                            <select class="input-group__input" name="fields" id="fields">
-                                <option value="all">In all fields</option>
-                                <option value="title">Title</option>
-                                <option value="issn">ISSN</option>
-                                <option value="subject">Subject</option>
-                                <option value="publisher">Publisher</option>
-                            </select>
-
-                            <button class="input-group__input" type="submit">Search</button>
-                        </div>
-                    </div>
-                </form>
-
-                <section class="row mobile-scrollable-row">
-                    <h2 class="sr-only">DOAJ in numbers</h2>
-                    <p class="col-md-2 stat">
-                        <span class="stat__number">80</span>
-                        <span class="stat__description">languages</span>
-                    </p>
-                    <p class="col-md-2 stat">
-                        <span class="stat__number">{{ statistics.countries }}</span>
-                        <span class="stat__description">countries represented</span>
-                    </p>
-                    {# TODO: define query for recent journals, six months? 1 year? #}
-                    {# <p class="col-md-2 stat">
-                  <a href='{{ url_for("doaj.journals_search")?source=%7B%22query%22%3A%7B%22filtered%22%3A%7B%22filter%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22range%22%3A%7B%22created_date%22%3A%7B%22gte%22%3A%221546300800000%22%7D%7D%7D%5D%7D%7D%2C%22query%22%3A%7B%22match_all%22%3A%7B%7D%7D%7D%7D%2C%22size%22%3A50%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%7D'>
-                      <span class="stat__number">{{ statistics.new_journals }}</span>
-                      <span class="stat__description">new journals</span>
-                  </a>
-              </p>#}
-                    <p class="col-md-2 stat">
-                        {# TODO: link to query for journals w/out APCs #}
-                        <a href='{{ url_for('doaj.journals_search') }}?source=%7B"query"%3A%7B"filtered"%3A%7B"filter"%3A%7B"bool"%3A%7B"must"%3A%5B%7B"term"%3A%7B"bibjson.apc.has_apc"%3Afalse%7D%7D%2C%7B"term"%3A%7B"bibjson.other_charges.has_other_charges"%3Afalse%7D%7D%5D%7D%7D%2C"query"%3A%7B"match_all"%3A%7B%7D%7D%7D%7D%2C"size"%3A50%2C"sort"%3A%5B%7B"created_date"%3A%7B"order"%3A"desc"%7D%7D%5D%7D'>
-                            <span class="stat__number">{{ statistics.no_apc }}</span>
-                            <span class="stat__description">journals without APC<span style="text-transform: lowercase;">s</span></span>
-                        </a>
-                    </p>
-                    <p class="col-md-2 stat">
-                        <a href="{{ url_for('doaj.journals_search') }}">
-                            <span class="stat__number">{{ statistics.journals }}</span>
-                            <span class="stat__description">journals</span>
-                        </a>
-                    </p>
-                    <p class="col-md-2 stat">
-                        <a href="{{ url_for('doaj.articles_search') }}">
-                            <span class="stat__number">{{ statistics.abstracts }}</span>
-                            <span class="stat__description">article records</span>
-                        </a>
-                    </p>
-                </section>
-            </div>
-        </section>
-    {% endif %}
-</header>
-
-{# Quick search modal #}
-<section class="modal" id="modal-search" tabindex="-1" role="dialog">
-    <div class="modal__dialog" role="document">
-        <form class="quick-search__form doaj-minisearch--container" role="search" action="{{ url_for('doaj.search_post') }}" method="post">
-            <input type="hidden" name="ref" value="quick-search">
-            <input type="hidden" name="origin" value="ui">
-            <h2 class="modal__title">Quick search</h2>
-            <div class="inline-fields">
-                <input type="radio" id="quick-search-journals" name="content-type" value="journals" checked>
-                <label for="quick-search-journals">Journals</label>
-                <input type="radio" id="quick-search-articles" name="content-type" value="articles">
-                <label for="quick-search-articles">Articles</label>
-            </div>
-            <div class="input-group">
-                <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-                <input type="text" name="keywords" id="quick-search-keywords" required>
-
-                <label for="quick-search-fields" class="sr-only">In the field:</label>
-                <select name="fields" id="quick-search-fields" class="input-group__input">
-                    <option value="all">In all fields</option>
-                    <option value="title">Title</option>
-                    <option value="issn">ISSN</option>
-                    <option value="subject">Subject</option>
-                    <option value="publisher">Publisher</option>
-                </select>
-                <button type="submit">
-                    <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
-                </button>
-            </div>
-        </form>
-        <p><span class="button button--secondary" data-dismiss="modal" role="button">Close</span></p>
+            <li class="secondary-nav__login">
+                {% if current_user.is_anonymous %}
+                    <a href="{{ url_for('account.login') }}" class="nav-bar__link">
+                        Login
+                        <span data-feather="log-in" aria-hidden="true"></span>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('account.logout') }}" class="nav-bar__link">
+                        Logout
+                        <span data-feather="log-out" aria-hidden="true"></span>
+                    </a>
+                {% endif %}
+            </li>
+        </ul>
     </div>
-</section>
+</nav>
 
-{# global site note #}
-{% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
-    {% include config.get("SITE_NOTE_TEMPLATE") %}
-{% endif %}
+{# Flash notifications #}
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+
+        {% set category_url_indicator = '+contains-url' %}
+
+        {% for category, message in messages %}
+            {% set message_has_url = False %}
+            {% if category.endswith(category_url_indicator) %}
+                {% set category = category[:category.rfind(category_url_indicator)] %}
+                {% set message_has_url = True %}
+            {% endif %}
+            {# shift from bs2 to bs3 terminology #}
+            {% if category == "error" %}
+                {% set category = "danger" %}
+            {% endif %}
+            <aside class="container flash_container">
+                <h2 class="sr-only">Notifications</h2>
+                <p class="alert alert--{{category}}">
+                    <span data-feather="alert-octagon" aria-hidden="true"></span>
+                    {% if message_has_url %}
+                        {{ message | safe }}
+                    {% else %}
+                        {{ message }}
+                    {% endif %}
+                    &nbsp;<span class="flash_close alert__close" role="button">(Dismiss)</span>
+                </p>
+            </aside>
+        {% endfor %}
+    {% endif %}
+{% endwith %}

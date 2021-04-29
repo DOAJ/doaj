@@ -747,7 +747,17 @@ var formulaic = {
                     var grandparents = this.parentIndex[term];
                     if (grandparents.length > 0) {
                         var immediate = grandparents[grandparents.length - 1];
-                        newValues.push(immediate);
+                        var sharedParent = false;
+                        for (var i = 0; i < newValues.length;i ++) {
+                            var aunts = this.parentIndex[newValues[i]];
+                            if (aunts.length > 0 && aunts[aunts.length - 1] === immediate) {
+                                sharedParent = true;
+                                break;
+                            }
+                        }
+                        if (!sharedParent && $.inArray(immediate, newValues) === -1) {
+                            newValues.push(immediate);
+                        }
                     }
                 }
 
@@ -767,6 +777,10 @@ var formulaic = {
             this.title = edges.getParam(params.title, "");
 
             this.hideEmpty = edges.getParam(params.hideEmpty, false);
+
+            this.expanded = [];
+
+            this.lastScroll = 0;
 
             this.namespace = "formulaic-subject-browser";
 
@@ -811,11 +825,17 @@ var formulaic = {
                 this.component.context.html(frag);
                 feather.replace();
 
+                var mainListSelector = edges.css_id_selector(namespace, "main", this);
+                this.component.jq(mainListSelector).scrollTop(this.lastScroll);
+
                 var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
                 edges.on(checkboxSelector, "change", this, "filterToggle");
 
                 var searchSelector = edges.css_id_selector(namespace, "search", this);
                 edges.on(searchSelector, "keyup", this, "filterSubjects");
+
+                var fieldSelector = edges.css_class_selector(namespace, "field-toggle", this);
+                edges.on(fieldSelector, "click", this, "fieldToggle");
             };
 
             this._renderTree = function(params) {
@@ -825,6 +845,7 @@ var formulaic = {
                 var that = this;
 
                 var checkboxClass = edges.css_classes(this.namespace, "selector", this);
+                var toggleClass = edges.css_classes(that.namespace, "field-toggle", this);
 
                 function renderEntry(entry) {
                     if (that.hideEmpty && entry.count === 0 && entry.childCount === 0) {
@@ -836,12 +857,34 @@ var formulaic = {
                     if (entry.selected) {
                         checked = ' checked="checked" ';
                     }
+
+                    // the various rules to do with how this will toggle.
+                    // - whether the toggle is linked -> only when clickng it will have an effect
+                    // - whether the thing is togglable at all -> only when there are children
+                    var toggle = "";
+                    var chevron = "";
+                    var togglable = false;
+                    if (entry.children) {
+                        chevron = "chevron-right";
+                        togglable = true;
+                        if (entry.expanded) {
+                            chevron = "chevron-down";
+                        }
+                        if (entry.selected) {
+                            togglable = false;
+                        }
+                    }
+
+                    if (togglable) {
+                        toggle = '<span data-feather="' + chevron + '" aria-hidden="true"></span>';
+                        toggle = '<span role="button" class="' + toggleClass + '" data-value="' + edges.escapeHtml(entry.value) + '">' + toggle + '<span class="sr-only">Toggle this subject</span></span>';
+                    }
                     // FIXME: putting this in for the moment, just so we can use it in dev
                     // var count = ' <span class="' + countClass + '">(' + entry.count + '/' + entry.childCount + ')</span>';
                     var count = "";
 
                     var frag = '<input class="' + checkboxClass + '" data-value="' + edges.escapeHtml(entry.value) + '" id="' + id + '" type="checkbox" name="' + id + '"' + checked + '>\
-                        <label for="' + id + '" class="filter__label">' + entry.display + count + '</label>';
+                        <label for="' + id + '" class="filter__label">' + entry.display + count + toggle + '</label>';
 
                     return frag;
                 }
@@ -867,6 +910,7 @@ var formulaic = {
                     var rFrag = "";
                     for (var i = 0; i < selected.length; i++) {
                         var entry = selected[i];
+                        entry.expanded = $.inArray(entry.value, that.expanded) > -1;
                         var entryFrag = renderEntry(entry);
                         if (entryFrag === "") {
                             continue;
@@ -883,12 +927,14 @@ var formulaic = {
                             // - one of the children is selected
                             // - the entry itself is selected
                             // - we don't want to only show the selected path
-                            if (!selectedPathOnly || childReport.anySelected || entry.selected) {
+                            // - the entry has been expanded
+                            if (!selectedPathOnly || childReport.anySelected || entry.selected || entry.expanded) {
                                 // Then, another level (separated out to save my brain from the tortuous logic)
                                 // only attach the children frag if, any of these are true:
                                 // - the entry or one of its children is selected
                                 // - we want to show more than one level at a time
-                                if (childReport.anySelected || entry.selected || !showOneLevel) {
+                                // - the entry has been expanded
+                                if (childReport.anySelected || entry.selected || !showOneLevel || entry.expanded) {
                                     var cFrag = childReport.frag;
                                     if (cFrag !== "") {
                                         entryFrag += '<ul class="filter__choices">';
@@ -909,7 +955,25 @@ var formulaic = {
                 return recurse(st);
             };
 
+            this.fieldToggle = function(element) {
+                var value = this.component.jq(element).attr("data-value");
+
+                var existing = $.inArray(value, this.expanded);
+                if (existing > -1) {
+                    this.expanded.splice(existing, 1);
+                } else {
+                    this.expanded.push(value);
+                }
+
+                var mainListSelector = edges.css_id_selector(this.namespace, "main", this);
+                this.lastScroll = this.component.jq(mainListSelector).scrollTop();
+                this.component.edge.cycle();
+            };
+
             this.filterToggle = function(element) {
+                var mainListSelector = edges.css_id_selector(this.namespace, "main", this);
+                this.lastScroll = this.component.jq(mainListSelector).scrollTop();
+
                 // var filter_id = this.component.jq(element).attr("id");
                 var checked = this.component.jq(element).is(":checked");
                 var value = this.component.jq(element).attr("data-value");
@@ -1036,10 +1100,11 @@ var formulaic = {
                 this.input = $("[name=" + this.fieldDef.name + "]");
                 this.input.hide();
 
-                this.input.after('<a href="#" class="button ' + modalOpenClass + '">Open Subject Classifier</a>');
+                this.input.after('<a href="#" class="button button--secondary ' + modalOpenClass + '">Open Subject Classifier</a>');
                 this.input.after(`<div class="modal" id="` + containerId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                                     <div class="modal__dialog" role="document">
-                                        <p class="label">Subject Classifications</p>
+                                        <h2 class="label">Subject classifications</h2>
+                                        <p class="alert">Selecting a subject will not automatically select its sub-categories.</p>
                                         <div id="` + widgetId + `"></div>
                                         <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
                                     </div>
@@ -1061,7 +1126,7 @@ var formulaic = {
                                 }
                                 displayTree.push(entry);
                             }
-                            displayTree.sort((a, b) => a.display > b.display);
+                            displayTree.sort((a, b) => a.display > b.display ? 1 : -1);
                             return displayTree;
                         }
                         return recurse(tree);
@@ -1155,7 +1220,7 @@ var formulaic = {
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">go to account page</a></small></p>');
+                        that.after('<p><small><a id="' + id + '" class="button ' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">Account page</a></small></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
@@ -1231,7 +1296,6 @@ var formulaic = {
                 if (val && (val.substring(0,7) === "http://" || val.substring(0,8) === "https://") && val.length > 10) {
                     if (this.link) {
                         this.link.attr("href", val);
-                        this.link.html(val);
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
@@ -1255,6 +1319,7 @@ var formulaic = {
         FullContents : function(params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
+            this.args = params.args;
 
             this.ns = "formulaic-fullcontents";
 
@@ -1262,8 +1327,6 @@ var formulaic = {
 
             this.init = function() {
                 var elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                // TODO: should work as-you-type by changing "change" to "keyup" event; doesn't work in edges
-                //edges.on(elements, "change.ClickableUrl", this, "updateUrl");
                 edges.on(elements, "keyup.FullContents", this, "updateContents");
 
                 for (var i = 0; i < elements.length; i++) {
@@ -1275,18 +1338,26 @@ var formulaic = {
                 var that = $(element);
                 var val = that.val();
 
+                // if there is a behaviour for when the field is empty and disabled, then check if it is, and if
+                // it is include the desired alternative text
+                if (this.args && this.args.empty_disabled) {
+                    if (val === "" && that.prop("disabled")) {
+                        val = this.args.empty_disabled;
+                    }
+                }
+
                 if (val) {
                     if (this.container) {
-                        this.container.html('<small>Full contents: ' + val + '</small>');
+                        this.container.html('<strong>Full contents: ' + val + '</strong>');
                     } else {
                         var classes = edges.css_classes(this.ns, "contents");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p id="' + id + '" class="' + classes + '"><small>Full contents: ' + val + '</small></p>');
+                        that.after('<p id="' + id + '" class="' + classes + '"><strong>' + val + '</strong></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.container = $(selector, this.form.context);
                     }
-                } else if (this.link) {
+                } else if (this.container) {
                     this.container.remove();
                     this.container = false;
                 }
@@ -1318,17 +1389,17 @@ var formulaic = {
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
                     var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
 
-                    container.append('<a href="#" class="' + viewClass + '">view note</a>');
-                    container.append(`
+                    container.append(`<div><a href="#" class="` + viewClass + `">view note</a>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                             <div class="modal__dialog" role="document">
-                                <p class="label">NOTE</p> 
+                                <p class="label">NOTE</p>
                                 <h3 class="modal__title">
                                     ` + date.val() + `
-                                </h3>        
-                                ` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `                        
+                                </h3>
+                                ` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `
                                 <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
                             </div>
+                        </div>
                         </div>
                     `);
                 }
@@ -1365,17 +1436,18 @@ var formulaic = {
             this.idRx = /(.+?-)(\d+)(-.+)/;
             this.template = "";
             this.container = false;
+            this.divs = false;
 
             this.init = function() {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 for (var i = 0 ; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none"><span data-feather="x" /></button>'));
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
                     feather.replace();
                 }
 
                 this.template = $(this.divs[0]).html();
-                this.container = $(this.divs[0]).parents(".multiple_input");
+                this.container = $(this.divs[0]).parents(".removable-fields");
 
                 if (this.divs.length === 1) {
                     let div = $(this.divs[0]);
@@ -1399,6 +1471,10 @@ var formulaic = {
 
                 edges.on(this.addFieldBtn, "click", this, "addField");
                 edges.on(this.removeFieldBtns, "click", this, "removeField");
+
+                if (this.args.allow_delete) {
+                    this.removeFieldBtns.show();
+                }
             };
 
             this.addField = function() {
@@ -1414,7 +1490,7 @@ var formulaic = {
                 }
                 var newId = currentLargest + 1;
 
-                var frag = '<div class="form_group" name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
+                var frag = '<div name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
                 var jqt = $(frag);
                 var that = this;
                 jqt.find(":input").each(function() {
@@ -1461,6 +1537,7 @@ var formulaic = {
             this.removeField = function(element) {
                 var container = $(element).parents("div[name='" + this.fieldDef["name"] + "__group']");
                 container.remove();
+                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
             };
 
             this.init();
@@ -1487,7 +1564,7 @@ var formulaic = {
                     let f = this.fields[idx];
                     let s2_input = $($(f).select2());
                     $(f).on("focus", formulaic.widgets._select2_shift_focus);
-                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
                     if (idx !== 0) {
                         s2_input.attr("required", false);
                         s2_input.attr("data-parsley-validate-if-empty", "true");
@@ -1546,7 +1623,7 @@ var formulaic = {
                 for (var idx = 0; idx < this.fields.length; idx++) {
                     let f = this.fields[idx];
                     let jqf = $(f);
-                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
                     if (idx !== 0) {
                         jqf.attr("required", false);
                         jqf.attr("data-parsley-validate-if-empty", "true");
@@ -1623,7 +1700,7 @@ var formulaic = {
 
                 for (var idx = 0; idx < this.divs.length; idx++) {
                     let div = $(this.divs[idx]);
-                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" /></button>'));
+                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
 
                     if (idx !== 0) {
                         let inputs = div.find(":input");
@@ -1729,7 +1806,6 @@ var formulaic = {
                 this.elements = $("select[name$='" + this.fieldDef.name + "']");
                 this.elements.select2({
                     allowClear: allow_clear,
-                    width: 'resolve',
                     newOption: true,
                     placeholder: "Start typing…"
                 });
@@ -1761,12 +1837,12 @@ var formulaic = {
                         };
                     },
                     results: function (data, page) {
-                        return {results: data["suggestions"]};
+                        return {results: data["suggestions"].filter((x) => $.inArray(x.text.toLowerCase(), stopWords) === -1)};
                     }
                 };
 
                 var csc = function (term) {
-                    if ($.inArray(term, stopWords) !== -1) {
+                    if ($.inArray(term.toLowerCase(), stopWords) !== -1) {
                         return null;
                     }
                     return {id: $.trim(term), text: $.trim(term)};

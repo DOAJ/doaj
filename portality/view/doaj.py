@@ -14,7 +14,7 @@ from portality.ui.messages import Messages
 from portality.forms.application_forms import JournalFormFactory
 
 import json
-import os
+import os, re
 
 blueprint = Blueprint('doaj', __name__)
 
@@ -55,16 +55,8 @@ def dismiss_site_note():
 
 @blueprint.route("/news")
 def news():
-    news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))
-    return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
+    return redirect("https://blog.doaj.org")
 
-
-# @blueprint.route("/widgets")
-# def widgets():
-#     return render_template('doaj/widgets.html',
-#                            env=app.config.get("DOAJENV"),
-#                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
-#                            )
 
 @blueprint.route("/ssw_demo")
 def ssw_demo():
@@ -107,8 +99,13 @@ def articles_search():
     return render_template("doaj/articles_search.html", lcc_tree=lcc_jstree)
 
 
-@blueprint.route("/search/", methods=['GET'])
+@blueprint.route("/search", methods=['GET'])
 def search():
+    # If there are URL params, check if we need to redirect to articles rather than journals
+    if request.values:
+        # Flat search the query params as string so we don't have to traverse all the way down the decoded json.
+        if re.search(r'\"_type\"\s*:\s*\"article\"', request.values.get('source', '')):
+            return redirect(url_for("doaj.articles_search"), 301)
     return redirect(url_for("doaj.journals_search"), 301)
 
 
@@ -376,7 +373,7 @@ def article_page(identifier=None):
         if len(journals) > 0:
             journal = journals[0]
 
-    return render_template('doaj/article.html', article=article, journal=journal)
+    return render_template('doaj/article.html', article=article, journal=journal, page={"highlight" : True})
 
 # Not using this form for now but we might bring it back later
 # @blueprint.route("/contact/", methods=["GET", "POST"])
@@ -422,67 +419,72 @@ def google_webmaster_tools():
 
 @blueprint.route("/accessibility/")
 def accessibility():
-    return render_template("layouts/static_page.html", page_frag="/accessibility-fragment.html", page_title="Accessibility statement for doaj.org")
+    return render_template("layouts/static_page.html", page_frag="/legal/accessibility.html")
 
 
 @blueprint.route("/privacy/")
 def privacy():
-    return render_template("layouts/static_page.html", page_frag="/privacy-fragment.html", page_title="Privacy information notice")
+    return render_template("layouts/static_page.html", page_frag="/legal/privacy.html")
 
 
 @blueprint.route("/contact/")
 def contact():
-    return render_template("layouts/static_page.html", page_frag="/contact-fragment.html", page_title="Contact us")
+    return render_template("layouts/static_page.html", page_frag="/legal/contact.html")
 
 
 @blueprint.route("/terms/")
 def terms():
-    return render_template("layouts/static_page.html", page_frag="/terms-fragment.html", page_title="Terms & conditions")
+    return render_template("layouts/static_page.html", page_frag="/legal/terms.html")
 
 
 @blueprint.route("/support/")
 def support():
-    return render_template("layouts/static_page.html", page_frag="/support/index-fragment/index.html", page_title="Support DOAJ")
+    return render_template("layouts/static_page.html", page_frag="/support/index.html")
 
 
 @blueprint.route("/support/sponsors/")
 def sponsors():
-    return render_template("layouts/static_page.html", page_frag="/support/sponsors-fragment/index.html", page_title="Contributors")
+    return render_template("layouts/static_page.html", page_frag="/support/sponsors.html")
 
 
 @blueprint.route("/support/publisher-supporters/")
 def publisher_supporters():
-    return render_template("layouts/static_page.html", page_frag="/support/publisher-supporters-fragment/index.html", page_title="Publisher supporters")
+    return render_template("layouts/static_page.html", page_frag="/support/publisher-supporters.html")
 
 
 @blueprint.route("/support/supporters/")
 def supporters():
-    return render_template("layouts/static_page.html", page_frag="/support/supporters-fragment/index.html", page_title="Supporters")
+    return render_template("layouts/static_page.html", page_frag="/support/supporters.html")
+
+
+@blueprint.route("/support/thank-you/")
+def application_thanks():
+    return render_template("layouts/static_page.html", page_frag="/support/thank-you.html")
 
 
 @blueprint.route("/apply/guide/")
 def guide():
-    return render_template("layouts/static_page.html", page_frag="/apply/guide-fragment/index.html", page_title="Guide to applying")
+    return render_template("layouts/static_page.html", page_frag="/apply/guide.html")
 
 
 @blueprint.route("/apply/seal/")
 def seal():
-    return render_template("layouts/static_page.html", page_frag="/apply/seal-fragment/index.html", page_title="The DOAJ Seal")
+    return render_template("layouts/static_page.html", page_frag="/apply/seal.html")
 
 
 @blueprint.route("/apply/transparency/")
 def transparency():
-    return render_template("layouts/static_page.html", page_frag="/apply/transparency-fragment/index.html", page_title="Transparency & best practice")
+    return render_template("layouts/static_page.html", page_frag="/apply/transparency.html")
 
 
 @blueprint.route("/apply/why-index/")
 def why_index():
-    return render_template("layouts/static_page.html", page_frag="/apply/why-index-fragment/index.html", page_title="Why index your journal in DOAJ?")
+    return render_template("layouts/static_page.html", page_frag="/apply/why-index.html")
 
 
 @blueprint.route("/docs/oai-pmh/")
 def oai_pmh():
-    return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh-fragment/index.html", page_title="OAI-PMH")
+    return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh.html")
 
 
 @blueprint.route('/docs/api/')
@@ -492,57 +494,57 @@ def docs():
 
 @blueprint.route("/docs/xml/")
 def xml():
-    return render_template("layouts/static_page.html", page_frag="/docs/xml-fragment/index.html", page_title="XML")
+    return render_template("layouts/static_page.html", page_frag="/docs/xml.html")
 
 
 @blueprint.route("/docs/widgets/")
 def widgets():
-    return render_template("layouts/static_page.html", page_frag="/docs/widgets-fragment/index.html", page_title="Widgets")
+    return render_template("layouts/static_page.html", page_frag="/docs/widgets.html")
 
 
 @blueprint.route("/docs/public-data-dump/")
 def public_data_dump():
-    return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump-fragment/index.html", page_title="Public data dump")
+    return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump.html")
 
 
 @blueprint.route("/docs/openurl/")
 def openurl():
-    return render_template("layouts/static_page.html", page_frag="/docs/openurl-fragment/index.html", page_title="OpenURL")
+    return render_template("layouts/static_page.html", page_frag="/docs/openurl.html")
 
 
 @blueprint.route("/docs/faq/")
 def faq():
-    return render_template("layouts/static_page.html", page_frag="/docs/faq-fragment/index.html", page_title="FAQs")
+    return render_template("layouts/static_page.html", page_frag="/docs/faq.html")
 
 
 @blueprint.route("/about/")
 def about():
-    return render_template("layouts/static_page.html", page_frag="/about/index-fragment/index.html", page_title="About DOAJ")
+    return render_template("layouts/static_page.html", page_frag="/about/index.html")
 
 
 @blueprint.route("/about/ambassadors/")
 def ambassadors():
-    return render_template("layouts/static_page.html", page_frag="/about/ambassadors-fragment/index.html", page_title="Ambassadors")
+    return render_template("layouts/static_page.html", page_frag="/about/ambassadors.html")
 
 
 @blueprint.route("/about/advisory-board-council/")
 def abc():
-    return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council-fragment/index.html", page_title="Advisory Board & Council")
+    return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council.html")
 
 
 @blueprint.route("/about/editorial-subcommittee/")
 def editorial_subcommittee():
-    return render_template("layouts/static_page.html", page_frag="/about/editorial-subcommittee-fragment/index.html", page_title="Editorial Subcommittee")
+    return render_template("layouts/static_page.html", page_frag="/about/editorial-subcommittee.html")
 
 
 @blueprint.route("/about/volunteers/")
 def volunteers():
-    return render_template("layouts/static_page.html", page_frag="/about/volunteers-fragment/index.html", page_title="Volunteers")
+    return render_template("layouts/static_page.html", page_frag="/about/volunteers.html")
 
 
 @blueprint.route("/about/team/")
 def team():
-    return render_template("layouts/static_page.html", page_frag="/about/team-fragment/index.html", page_title="DOAJ team")
+    return render_template("layouts/static_page.html", page_frag="/about/team.html")
 
 
 # LEGACY ROUTES

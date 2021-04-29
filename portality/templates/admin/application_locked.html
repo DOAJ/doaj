@@ -1,0 +1,25 @@
+{% extends "admin/admin_base.html" %}
+
+{% block page_title %}(Locked) {{ application.bibjson().title }}{% endblock %}
+
+{% block admin_content %}
+<div class="row">
+  <div class="col-md-6">
+    <h1>
+      Application for Journal &mdash; <br/>
+      {{application.bibjson().title}}
+    </h1>
+    {% if application.last_updated %}
+      <p class="label">Last updated: {{application.last_updated}}</p>
+    {% endif %}
+  </div>
+
+  <div class="col-md-6">
+    <p class="alert">You <strong>cannot</strong> currently edit this application</p>
+
+    <p>The user <span class="tag">{{lock.username}}</span> is currently editing this record, and has an edit-lock until <strong><span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></strong></p>
+
+    <p>Please try again later!</p>
+  </div>
+</div>
+{% endblock %}

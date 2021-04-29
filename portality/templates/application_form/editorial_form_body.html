@@ -1,0 +1,28 @@
+<h1>{{ obj.bibjson().title }}</h1>
+{% include "application_form/_edit_status.html" %}
+{% include "application_form/_backend_validation.html" %}
+{% include "application_form/_contact.html" %}
+
+<form id="{{ form_id }}"
+      data-context="{{ formulaic_context.name }}"
+      class="row application_form form form--compact"
+      novalidate
+      action="{{ form_action }}"
+      method="post"
+      data-formulaic-after="{{ formulaic_after }}">
+
+    <div class="col-md-8 page">
+        <section class="page-content">
+            {% if diff_table %}
+                {% include 'application_form/_application_diff.html' %}
+            {% endif %}
+            {% include 'application_form/editorial_form_fields.html' %}
+            {% include "application_form/_fieldsets.html" %}
+        </section>
+    </div>
+    <div class="col-md-4 editorial-panel">
+        {% include "application_form/editorial_side_panel.html" %}
+    </div>
+</form>
+
+{% include "includes/_hotjar.html" %}

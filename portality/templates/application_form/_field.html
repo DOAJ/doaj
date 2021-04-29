@@ -1,5 +1,5 @@
 <div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
-    <a name="question__{{ f.name }}"></a>
+    <a id="question-{{ f.name }}"></a>
     {% set label %}
     <label for="{{ f.name }}">
         {% autoescape off %}{{ f.label | safe }}{% endautoescape %}
@@ -14,12 +14,14 @@
         {{ label }}
     {% endif %}
 
+    {% if f.help("short_help") %}
+       <p><small>{{ f.help("short_help") | safe }}</small></p>
+    {% endif %}
+
     {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
     {% if f.has_widget("multiple_field") or f.has_widget("infinite_repeat") %}
-        <div class="removable_field">
-          <div class="repeatable-fields" id="removable_field__{{ f.name }}">
-              {{ f.render_form_control() }}
-          </div>
+        <div class="removable-fields" id="removable_field__{{ f.name }}">
+          {{ f.render_form_control() }}
           <p class="add_field__button_div">
               <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add</button>
           </p>
@@ -37,7 +39,7 @@
     {% endif %}
 
     {% if form_diff %}
-        {% if f.name in form_diff %}
+        {% if f.help("update_requests_diff", True) and f.name in form_diff %}
             <p class="alert alert--message">
               <strong>WAS:</strong>
               <em>
@@ -63,9 +65,6 @@
     </div>
     {% endif %}
 
-    {% if f.help("short_help") %}
-       <p><small>{{ f.help("short_help") | safe }}</small></p>
-    {% endif %}
 </div>
 
 {% include "application_form/modal.html" %}

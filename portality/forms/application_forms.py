@@ -80,7 +80,7 @@ class FieldDefinitions:
             "doaj_criteria": "You must answer 'Yes'"
         },
         "validate": [
-            {"required": {"message": "You must answer YES to continue"}},
+            {"required": {"message": "You must answer <strong>Yes</strong> to continue"}},
             {"required_value" : {"value" : "y"}}
         ],
         "contexts": {
@@ -121,7 +121,7 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/open-access"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s Open Access statement page"}},
             "is_url"
         ],
         "widgets": [
@@ -146,7 +146,7 @@ class FieldDefinitions:
             "doaj_criteria": "Title in application form, title at ISSN and website must all match"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Enter the journal’s name"}}
         ],
         "widgets": [
             "trim_whitespace",
@@ -175,7 +175,7 @@ class FieldDefinitions:
         },
         "widgets": [
             "trim_whitespace",
-            "full_contents"
+            {"full_contents" : {"empty_disabled" : "[The journal has no alternative title]"}}
         ],
         "contexts": {
             "update_request": {
@@ -202,7 +202,7 @@ class FieldDefinitions:
         "contexts": {
             "public" : {
                 "validate": [
-                    "required",
+                    {"required": {"message": "Enter the URL for the journal’s <strong>homepage</strong>"}},
                     "is_url",
                     "journal_url_in_public_doaj"  # Check whether the journal url is already in a public DOAJ record
                 ],
@@ -224,24 +224,25 @@ class FieldDefinitions:
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
                           "The ISSN must match what is given on the journal website."],
-            "placeholder": "2049-3630",
+            "short_help": "For example, 2049-3630",
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
             {"optional_if": {"field": "eissn",
-                             "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                             "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "eissn", "message": "This field must contain a different value to 'ISSN ("
                                                            "online)'"}}
         ],
         "widgets" : [
-            "trim_whitespace"
+            "trim_whitespace",
+            "full_contents"
         ],
         "contexts": {
             "public" : {
                 "validate": [
                     {"optional_if": {"field": "eissn",
-                                     "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},
                     {"different_to": {"field": "eissn",
                                       "message": "This field must contain a different value to 'ISSN ("
@@ -297,23 +298,24 @@ class FieldDefinitions:
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
                           "The ISSN must match what is given on the journal website."],
-            "placeholder": "0378-5955",
+            "short_help": "For example, 0378-5955",
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
             {"optional_if": {"field": "pissn",
-                             "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                             "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
             {"is_issn": {"message": "This is not a valid ISSN"}},
             {"different_to": {"field": "pissn", "message" : "This field must contain a different value to 'ISSN (print)'"}}
         ],
         "widgets" : [
-            "trim_whitespace"
+            "trim_whitespace",
+            "full_contents"
         ],
         "contexts": {
             "public" : {
                 "validate" : [
                     {"optional_if": {"field": "pissn",
-                                     "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},
                     {"different_to": {"field": "pissn",
                                       "message": "This field must contain a different value to 'ISSN (print)'"}},
@@ -353,7 +355,7 @@ class FieldDefinitions:
                 "disabled": True,
                 "validate" : [
                     {"optional_if": {"field": "pissn",
-                                     "message": "You must provide one or both of an online ISSN or a print ISSN"}},
+                                     "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
                     {"is_issn": {"message": "This is not a valid ISSN"}},
                     {"different_to": {"field": "pissn",
                                       "message": "This field must contain a different value to 'ISSN (print)'"}}
@@ -376,7 +378,7 @@ class FieldDefinitions:
                           "and not the journal’s qualities.", "Keywords must be in English and separated by a comma."],
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter at least <strong>one subject keyword</strong> in English"}},
             {"stop_words": {"disallowed": STOP_WORDS}},
             {"max_tags": {"max": 6}}
         ],
@@ -408,7 +410,7 @@ class FieldDefinitions:
             "initial": 5
         },
         "validate": [
-            "required"
+            {"required": {"message": "Enter <strong>at least one</strong> language"}}
         ],
         "widgets": [
             {"select": {}},
@@ -418,7 +420,7 @@ class FieldDefinitions:
             "placeholder": "Type or select the language"
         },
         "attr": {
-            "class": "input-xlarge"
+            "class": "input-xlarge unstyled-list"
         }
     }
 
@@ -427,7 +429,7 @@ class FieldDefinitions:
         "label": "Publisher’s name",
         "input": "text",
         "validate": [
-            "required"
+            {"required": {"message": "Enter the name of the journal’s publisher"}}
         ],
         "widgets": [
             "trim_whitespace",
@@ -456,7 +458,7 @@ class FieldDefinitions:
             "placeholder": "Type or select the country"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Enter the <strong>country</strong> where the publisher carries out its business operations and is registered"}}
         ],
         "widgets": [
             {"select": {}}
@@ -554,7 +556,7 @@ class FieldDefinitions:
             "seal_criteria": "Yes: CC BY, CC BY-SA, CC BY-NC"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select <strong>at least one</strong> type of license"}}
         ]
     }
 
@@ -582,7 +584,7 @@ class FieldDefinitions:
         "label": "Where can we find this information?",
         "input": "text",
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>license terms</strong> page"}},
             "is_url"
         ],
         "help": {
@@ -605,14 +607,14 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "help": {
-            "long_help": ["It is recommended that licensing information is "
-                          "included in full text articles. Answer <strong>Yes"
-                          "</strong> if licensing is displayed or embedded in "
-                          "all versions of each article."],
+            "long_help": ["It is recommended that licensing information is included in full-text articles "
+                          "but it is not required for inclusion. "
+                          "Answer <strong>Yes</strong> if licensing is displayed or "
+                          "embedded in all versions of each article."],
             "seal_criteria": "If the answer is Embed"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ]
     }
 
@@ -628,7 +630,12 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/articles/article-page"
         },
         "validate": [
-            {"required_if": {"field": "license_display", "value": "y"}},
+            {"required_if": {
+                "field": "license_display",
+                "value": "y",
+                "message": "Enter the URL for any recent article that displays or embeds a license"
+                }
+            },
             "is_url"
         ],
         "widgets": [
@@ -647,7 +654,7 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ],
         "help": {
             "long_help": ["Answer <strong>No</strong> if authors transfer "
@@ -681,7 +688,7 @@ class FieldDefinitions:
         "contexts": {
             "public": {
                 "validate": [
-                    "required",
+                    {"required": {"message": "Enter the URL for the journal’s <strong>copyright terms</strong> page"}},
                     "is_url"
                 ]
             },
@@ -716,7 +723,7 @@ class FieldDefinitions:
             "doaj_criteria": "Peer review must be carried out"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select <strong>at least one</strong> type of review process"}}
         ]
     }
 
@@ -729,7 +736,12 @@ class FieldDefinitions:
         },
         "conditional": [{"field": "review_process", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "review_process", "value": "other"}}
+            {"required_if": {
+                "field": "review_process",
+                "value": "other",
+                "message": "Enter the name of another type of peer review"
+                }
+            }
         ],
         "widgets" : [
             "trim_whitespace",
@@ -748,7 +760,7 @@ class FieldDefinitions:
             "short_help": "Link to the journal’s peer review policy"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>peer review policy</strong> page"}},
             "is_url"
         ],
         "widgets": [
@@ -772,7 +784,7 @@ class FieldDefinitions:
             {"display": "No", "value": "n"}
         ],
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ]
     }
 
@@ -789,7 +801,12 @@ class FieldDefinitions:
                           "is done (including the name of any software or service used)."]
         },
         "validate": [
-            {"required_if": {"field": "plagiarism_detection", "value": "y"}},
+            {"required_if": {
+                "field": "plagiarism_detection",
+                "value": "y",
+                "message": "Enter the URL for the journal’s <strong>plagiarism policy</strong> page"
+                }
+            },
             "is_url"
         ],
         "widgets": [
@@ -807,7 +824,7 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/about#aims"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>Aims & Scope</strong> page"}},
             "is_url"
         ],
         "widgets": [
@@ -818,14 +835,14 @@ class FieldDefinitions:
 
     EDITORIAL_BOARD_URL = {
         "name": "editorial_board_url",
-        "label": "Link to the journal’s <b>Editorial board</b>",
+        "label": "Link to the journal’s <b>Editorial Board</b>",
         "input": "text",
         "help": {
             "doaj_criteria": "You must provide a URL",
             "placeholder": "https://www.my-journal.com/about#board"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>Editorial Board</strong> page"}},
             "is_url"
         ],
         "widgets": [
@@ -843,7 +860,7 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/for_authors"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>Instructions for Authors</strong> page"}},
             "is_url"
         ],
         "widgets": [
@@ -858,7 +875,7 @@ class FieldDefinitions:
         "input": "number",
         "datatype": "integer",
         "validate": [
-            "required",
+            {"required": {"message": "Enter an average number of weeks"}},
             {"int_range": {"gte": 1, "lte": 100}}
         ],
         "asynchronous_warning": [
@@ -886,7 +903,7 @@ class FieldDefinitions:
             "doaj_criteria": "You must tell us about any APCs"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ]
     }
 
@@ -935,7 +952,12 @@ class FieldDefinitions:
             "class": "input-xlarge"
         },
         "validate": [
-            {"required_if": {"field": "apc", "value": "y", "message": "Currency required because you answered YES to previous question"}}
+            {"required_if": {
+                "field": "apc",
+                "value": "y",
+                "message": "Enter the currency or currencies for the journal’s publishing fees"
+                }
+            }
         ]
     }
 
@@ -949,7 +971,12 @@ class FieldDefinitions:
             "placeholder": "Highest fee charged"
         },
         "validate":[
-            {"required_if": {"field": "apc", "value": "y", "message": "Required because you answered YES to previous question"}}
+            {"required_if": {
+                "field": "apc",
+                "value": "y",
+                "message": "Enter the value of the highest publishing fee the journal has charged"
+                }
+            }
         ],
         "attr": {
             "min": "1"
@@ -968,7 +995,7 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/about#apc"
         },
         "validate": [
-            "required",
+            {"required": {"message": "Enter the URL for the journal’s <strong>publication fees</strong> information page"}},
             "is_url"
         ],
         "widgets": [
@@ -995,7 +1022,7 @@ class FieldDefinitions:
                           "demonstrable needs."]
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ]
     }
 
@@ -1012,7 +1039,12 @@ class FieldDefinitions:
              "placeholder": "https://www.my-journal.com/about#waiver"
         },
         "validate": [
-            {"required_if": {"field": "has_waiver", "value": "y"}},
+            {"required_if": {
+                "field": "has_waiver",
+                "value": "y",
+                "message": "Enter the URL for the journal’s <strong>waiver information</strong> page"
+                }
+            },
             "is_url"
         ],
         "widgets": [
@@ -1036,7 +1068,7 @@ class FieldDefinitions:
             "doaj_criteria": "You must declare any other charges if they exist"
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select Yes or No"}}
         ]
     }
 
@@ -1052,7 +1084,12 @@ class FieldDefinitions:
             "doaj_criteria": "You must provide a URL"
         },
         "validate": [
-            {"required_if": {"field": "has_other_charges", "value": "y"}},
+            {"required_if": {
+                "field": "has_other_charges",
+                "value": "y",
+                "message": "Enter the URL for the journal’s <strong>fees<strong> information page"
+                }
+            },
             "is_url"
         ],
         "widgets": [
@@ -1081,12 +1118,13 @@ class FieldDefinitions:
         ],
         "help": {
             "long_help": [
-                "Only active archiving is accepted; content must be actively deposited in each of the options "
-                "you choose. If the journal is registered with a service but archiving is not yet active, "
-                "choose <em>No</em>.", "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."]
+                "Content must be actively deposited in each of the options you choose. "
+                "If the journal is registered with a service but archiving is not yet active,"
+                " choose <em>The journal content isn’t archived with a long-term preservation service</em>.",
+                "PubMed Central covers PMC U.S.A. and EuropePMC(Wellcome Trust)."]
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select <strong>at least one</strong> option"}}
         ]
     }
 
@@ -1103,7 +1141,12 @@ class FieldDefinitions:
         },
         "conditional": [{"field": "preservation_service", "value": "national_library"}],
         "validate": [
-            {"required_if": {"field": "preservation_service", "value": "national_library"}}
+            {"required_if": {
+                "field": "preservation_service",
+                "value": "national_library",
+                "message": "Enter the name(s) of the national library or libraries where the journal is archived"
+                }
+            }
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -1111,7 +1154,10 @@ class FieldDefinitions:
         "widgets": [
             "trim_whitespace",
             "multiple_field"
-        ]
+        ],
+        "attr": {
+            "class": "input-xlarge unstyled-list"
+        }
     }
 
     PRESERVATION_SERVICE_OTHER = {
@@ -1120,7 +1166,12 @@ class FieldDefinitions:
         "input": "text",
         "conditional": [{"field": "preservation_service", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "preservation_service", "value": "other"}}
+            {"required_if": {
+                "field": "preservation_service",
+                "value": "other",
+                "message": "Enter the name of another archiving policy"
+                }
+            }
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -1194,7 +1245,7 @@ class FieldDefinitions:
                           "For a journal to qualify for the DOAJ Seal, it must allow all versions to be deposited in an institutional or other repository of the author’s choice without embargo."
                           ]},
         "validate": [
-            "required"
+            {"required": {"message": "Select <strong>at least one</strong> option"}}
         ]
     }
 
@@ -1204,7 +1255,12 @@ class FieldDefinitions:
         "input": "text",
         "conditional": [{"field": "deposit_policy", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "deposit_policy", "value": "other"}}
+            {"required_if": {
+                "field": "deposit_policy",
+                "value": "other",
+                "message": "Enter the name of another repository policy"
+                }
+            }
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -1280,7 +1336,7 @@ class FieldDefinitions:
                          "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>"],
         },
         "validate": [
-            "required"
+            {"required": {"message": "Select <strong>at least one</strong> option"}}
         ]
     }
 
@@ -1290,7 +1346,12 @@ class FieldDefinitions:
         "input": "text",
         "conditional": [{"field": "persistent_identifiers", "value": "other"}],
         "validate": [
-            {"required_if": {"field": "persistent_identifiers", "value": "other"}}
+            {"required_if": {
+                "field": "persistent_identifiers",
+                "value": "other",
+                "message": "Enter the name of another type of identifier"
+                }
+            }
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -1316,12 +1377,12 @@ class FieldDefinitions:
         "contexts" : {
             "public" : {
                 "validate": [
-                    "required"
+                    {"required": {"message": "Select Yes or No"}}
                 ]
             },
             "update_request" : {
                 "validate" : [
-                    "required"
+                    {"required": {"message": "Select Yes or No"}}
                 ]
             }
         }
@@ -1342,12 +1403,12 @@ class FieldDefinitions:
         "contexts" : {
             "public" : {
                 "validate": [
-                    "required"
+                    {"required": {"message": "Select Yes or No"}}
                 ]
             },
             "update_request" : {
                 "validate" : [
-                    "required"
+                    {"required": {"message": "Select Yes or No"}}
                 ]
             }
         }
@@ -1413,9 +1474,6 @@ class FieldDefinitions:
             "reserved_usernames",
             "owner_exists"
         ],
-        "help" : {
-            "render_error_box": False,
-        },
         "widgets": [
             {"autocomplete": {"type" : "account", "field": "id", "include" : False}},
             "clickable_owner"
@@ -1440,7 +1498,8 @@ class FieldDefinitions:
             "required"
         ],
         "help" : {
-            "render_error_box" : False
+            "update_requests_diff" : False,
+            "render_error_box": False
         },
         "disabled" : "application_status_disabled",
         "contexts" : {
@@ -1448,14 +1507,16 @@ class FieldDefinitions:
                 "help" : {
                     "render_error_box": False,
                     "short_help" : "Set the status to 'In Progress' to signal to the applicant that you have started your review."
-                                    "Set the status to 'Ready' to alert the Editor that you have completed your review."
+                                    "Set the status to 'Completed' to alert the Editor that you have completed your review.",
+                    "update_requests_diff": False
                 }
             },
             "editor" : {
                 "help" : {
                     "render_error_box" : False,
                     "short_help" : "Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed."
-                                    "Set the status to 'Completed' to alert the Managing Editor that you have completed your review."
+                                    "Set the status to 'Ready' to alert the Managing Editor that you have completed your review.",
+                    "update_requests_diff": False
                 }
             }
         },
@@ -1605,7 +1666,7 @@ class FieldDefinitions:
     NOTES = {
         "name" : "notes",
         "input": "group",
-        "label": "Note",
+        "label": "Notes",
         "repeatable" : {
             "initial" : 1,
             "add_button_placement" : "top"
@@ -1616,12 +1677,20 @@ class FieldDefinitions:
             "note_id"
         ],
         "template": "application_form/_list.html",
-        "entry_template": "application_form/_entry_group_horizontal.html",
+        "entry_template": "application_form/_entry_group.html",
         "widgets": [
             {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}},
             "note_modal"
         ],
-        "merge_disabled" : "merge_disabled_notes"
+        "merge_disabled" : "merge_disabled_notes",
+        "contexts" : {
+            "admin" : {
+                "widgets": [
+                    {"infinite_repeat": {"enable_on_repeat": ["textarea"], "allow_delete" : True}},
+                    "note_modal"
+                ]
+            }
+        }
     }
 
     NOTE = {
@@ -1779,10 +1848,10 @@ class FieldSetDefinitions:
         "label": "Publication fees",
         "fields": [
             FieldDefinitions.APC["name"],
-            FieldDefinitions.APC_URL["name"],
             FieldDefinitions.APC_CHARGES["name"],
             FieldDefinitions.APC_CURRENCY["name"],
             FieldDefinitions.APC_MAX["name"],
+            FieldDefinitions.APC_URL["name"],
         ]
     }
 
@@ -2238,17 +2307,17 @@ def merge_disabled_notes(notes_group, original_form):
     merged = []
     wtf = notes_group.wtfield
     for entry in wtf.entries:
-        if entry.data.get("note") != "":
-            merged.append(entry)
+        if entry.data.get("note") != "" or entry.data.get("note_id") != "":
+            merged.append(entry.data)
     for entry in original_form.notes.entries:
         d = entry.data
-        keep = True
         for m in merged:
-            if m.data.get("id") == entry.data.get("id"):
-                keep = False
+            if m.get("note_id") != "" and m.get("note_id") == entry.data.get("note_id"):
+                # keep = False
+                if m.get("note") == "":
+                    m["note"] = entry.data.get("note")
+                m["note_date"] = entry.data.get("note_date")
                 break
-        if keep:
-            merged.append(entry)
 
     while True:
         try:
@@ -2257,8 +2326,7 @@ def merge_disabled_notes(notes_group, original_form):
             break
 
     for m in merged:
-        wtf.append_entry(m.data)
-
+        wtf.append_entry(m)
 
 #######################################################
 # Validation features
@@ -2289,9 +2357,9 @@ class RequiredBuilder:
     def render(settings, html_attrs):
         html_attrs["required"] = ""
         if "message" in settings:
-            html_attrs["data-parsley-required-message"] = settings["message"]
+            html_attrs["data-parsley-required-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
-            html_attrs["data-parsley-required-message"] = "This answer is required"
+            html_attrs["data-parsley-required-message"] = "<p><small>" + "This answer is required" + "</p></small>"
         html_attrs["data-parsley-validate-if-empty"] = "true"
 
     @staticmethod
@@ -2300,7 +2368,7 @@ class RequiredBuilder:
 
 
 class IsURLBuilder:
-    msg = "Please enter a valid URL. It should start with http or https"
+    msg = "<p><small>" + "Please enter a valid URL. It should start with http or https" + "</p></small>"
 
     @staticmethod
     def render(settings, html_attrs):
@@ -2380,7 +2448,7 @@ class OptionalIfBuilder:
     def render(settings, html_attrs):
         html_attrs["data-parsley-validate-if-empty"] = "true"
         html_attrs["data-parsley-optional-if"] = settings.get("field")
-        html_attrs["data-parsley-optional-if-message"] = settings.get("message")
+        html_attrs["data-parsley-optional-if-message"] = "<p><small>" + settings.get("message") + "</p></small>"
 
     @staticmethod
     def wtforms(field, settings):
@@ -2430,9 +2498,9 @@ class RequiredIfBuilder:
         html_attrs["data-parsley-required-if"] = val
         html_attrs["data-parsley-required-if-field"] = settings.get("field")
         if "message" in settings:
-            html_attrs["data-parsley-required-if-message"] = settings["message"]
+            html_attrs["data-parsley-required-if-message"] = "<p><small>" + settings["message"] + "</small></p>"
         else:
-            html_attrs["data-parsley-required-if-message"] = "This answer is required"
+            html_attrs["data-parsley-required-if-message"] = "<p><small>" + "This answer is required" + "</small></p>"
 
     @staticmethod
     def wtforms(field, settings):
@@ -2811,3 +2879,39 @@ WTFORMS_BUILDERS = [
 
 ApplicationFormFactory = Formulaic(APPLICATION_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
 JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYTHON_FUNCTIONS, javascript_functions=JAVASCRIPT_FUNCTIONS)
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--type", help="object type to output")
+    parser.add_argument("-c", "--context", help="context to output")
+    parser.add_argument("-o", "--out", help="output file path")
+    args = parser.parse_args()
+
+    if not args.out:
+        print("Please specify an output file path with the -o option")
+        parser.print_help()
+        exit()
+
+    if not args.context:
+        print("Please specify a context to output")
+        parser.print_help()
+        exit()
+
+    if not args.type:
+        print("Please specify a type to output")
+        parser.print_help()
+        exit()
+
+    fc = None
+    if args.type == "journal":
+        fc = JournalFormFactory.context(args.context)
+    elif args.type == "application":
+        fc = ApplicationFormFactory.context(args.context)
+
+    if fc is not None:
+        fc.to_summary_csv(args.out)
+    else:
+        print("You did not enter a valid type.  Use one of 'journal' or 'application'")

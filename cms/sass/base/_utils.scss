@@ -1,0 +1,173 @@
+/* Utilities */
+
+@mixin unstyled-list($inline: false) {
+  padding-left: 0;
+  margin: 0 0 $spacing-03 0;
+  list-style: none;
+  @if $inline {
+
+    li {
+      display: inline-block;
+    }
+  }
+}
+
+@mixin sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/// Make element visible or focussable to screen readers only
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+}
+
+// Default style for all Creative Commons icons
+.cc-icon {
+  height: 1rem;
+  width: auto;
+
+  circle {
+    fill: transparent;
+  }
+}
+
+.unstyled-list {
+  @include unstyled-list;
+}
+
+.inlined-list {
+  @include unstyled-list($inline: true);
+}
+
+.bg-black {
+  background-color: $warm-black;
+}
+
+.bg-grey {
+  background-color: $dark-grey;
+}
+
+.bg-white {
+  background-color: $warm-white;
+}
+
+.font-serif {
+  @include font-serif;
+}
+
+.font-sans {
+  @include font-sans;
+}
+
+.font-mono {
+  @include font-monospace;
+}
+
+.type-01 {
+  @include typescale-01;
+}
+
+.type-02 {
+  @include typescale-02;
+}
+
+.type-03 {
+  @include typescale-03;
+}
+
+.type-04 {
+  @include typescale-04;
+}
+
+.type-05 {
+  @include typescale-05;
+}
+
+.type-06 {
+  @include typescale-06;
+}
+
+.stroke-gold {
+  stroke: $gold;
+}
+
+.stroke-silver {
+  stroke: $silver;
+}
+
+.stroke-bronze {
+  stroke: $bronze;
+}
+
+.flex-end {
+  @media (min-width: 769px) {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+  }
+}
+
+// For content that overflows outside of its container
+.bleed {
+  z-index: 10;
+  @media (min-width: 992px) {
+    margin-right: -264px;
+    width: 970px - 60px;
+  }
+
+  @media (min-width: 1200px) {
+    margin-right: -330px;
+    width: 1170px - 60px;
+  }
+}
+
+// TEMP: admin edit button on static site
+.admin-edit {
+  position: fixed;
+  z-index: 2000;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  top: 100px;
+  right: 0;
+  background-color: $warm-black;
+
+  svg {
+    display: block;
+    margin: 10px auto;
+    height: 30px;
+    stroke: $warm-white;
+  }
+
+  + .admin-edit {
+    top: 150px;
+  }
+
+  &:hover {
+    background-color: $sanguine;
+  }
+}

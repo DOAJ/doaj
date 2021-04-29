@@ -1,0 +1,441 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "application",
+      "type": "generated",
+      "values": {
+        "none": {
+          "constraints": {
+            "related_journal_linked": {
+              "or": [
+                "no"
+              ]
+            },
+            "related_journal_present": {
+              "or": [
+                "no"
+              ]
+            },
+            "duplicate_ur": {
+              "or": [
+                "no"
+              ]
+            },
+            "manual_update": {
+              "or": [
+                "False"
+              ]
+            },
+            "disallow_statuses": {
+              "or": [
+                "none"
+              ]
+            }
+          }
+        },
+        "rejected": {},
+        "pending": {},
+        "accepted": {}
+      }
+    },
+    {
+      "name": "related_journal_linked",
+      "type": "generated",
+      "values": {
+        "yes": {},
+        "no": {
+          "constraints": {
+            "related_journal_present": {
+              "or": [
+                "no"
+              ]
+            },
+            "duplicate_ur": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "related_journal_present",
+      "type": "generated",
+      "values": {
+        "yes": {},
+        "no": {
+          "constraints": {
+            "duplicate_ur": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "duplicate_ur",
+      "type": "generated",
+      "values": {
+        "yes": {},
+        "no": {}
+      }
+    },
+    {
+      "name": "account",
+      "type": "generated",
+      "values": {
+        "none": {
+          "constraints": {
+            "related_journal_linked": {
+              "or": [
+                "no"
+              ]
+            },
+            "related_journal_present": {
+              "or": [
+                "no"
+              ]
+            },
+            "duplicate_ur": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        },
+        "publisher": {
+          "constraints": {
+            "related_journal_linked": {
+              "or": [
+                "no"
+              ]
+            },
+            "related_journal_present": {
+              "or": [
+                "no"
+              ]
+            },
+            "duplicate_ur": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        },
+        "admin": {}
+      }
+    },
+    {
+      "name": "manual_update",
+      "type": "generated",
+      "values": {
+        "True": {
+          "constraints": {
+            "application": {
+              "nor": [
+                "none"
+              ]
+            },
+            "disallow_statuses": {
+              "or": [
+                "accepted"
+              ]
+            }
+          }
+        },
+        "False": {}
+      }
+    },
+    {
+      "name": "disallow_statuses",
+      "type": "generated",
+      "values": {
+        "none": {},
+        "accepted": {
+          "constraints": {
+            "application": {
+              "nor": [
+                "none"
+              ]
+            },
+            "account": {
+              "or": [
+                "admin"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "raises",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "AuthoriseException": {
+          "conditions": [
+            {
+              "application": {
+                "nor": [
+                  "none"
+                ]
+              },
+              "account": {
+                "or": [
+                  "publisher"
+                ]
+              }
+            }
+          ]
+        },
+        "IllegalStatusException": {
+          "conditions": [
+            {
+              "application": {
+                "or": [
+                  "rejected"
+                ]
+              },
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              }
+            },
+            {
+              "application": {
+                "or": [
+                  "accepted"
+                ]
+              },
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              },
+              "disallow_statuses": {
+                "or": [
+                  "accepted"
+                ]
+              }
+            }
+          ]
+        },
+        "DuplicateUpdateRequest": {
+          "conditions": [
+            {
+              "application": {
+                "or": [
+                  "pending"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "duplicate_ur": {
+                "or": [
+                  "yes"
+                ]
+              }
+            },
+            {
+              "application": {
+                "or": [
+                  "accepted"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "duplicate_ur": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "disallow_statuses": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        },
+        "NoSuchObjectException": {
+          "conditions": [
+            {
+              "application": {
+                "or": [
+                  "pending"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "related_journal_present": {
+                "or": [
+                  "no"
+                ]
+              }
+            },
+            {
+              "application": {
+                "or": [
+                  "accepted"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "related_journal_present": {
+                "or": [
+                  "no"
+                ]
+              },
+              "disallow_statuses": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        },
+        "ArgumentException": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "none"
+                ]
+              }
+            },
+            {
+              "application": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "outcome",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "noop": {
+          "conditions": [
+            {
+              "application": {
+                "or": [
+                  "pending"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "no"
+                ]
+              },
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              }
+            },
+            {
+              "application": {
+                "or": [
+                  "accepted"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "no"
+                ]
+              },
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              }
+            }
+          ]
+        },
+        "unrejected": {
+          "conditions": [
+            {
+              "application": {
+                "or": [
+                  "pending"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "related_journal_present": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "duplicate_ur": {
+                "or": [
+                  "no"
+                ]
+              },
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              }
+            },
+            {
+              "application": {
+                "or": [
+                  "accepted"
+                ]
+              },
+              "related_journal_linked": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "related_journal_present": {
+                "or": [
+                  "yes"
+                ]
+              },
+              "duplicate_ur": {
+                "or": [
+                  "no"
+                ]
+              },
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

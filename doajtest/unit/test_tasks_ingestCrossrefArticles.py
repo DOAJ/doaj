@@ -1679,7 +1679,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         file_upload = models.FileUpload()
         file_upload.set_id()
-        file_upload.set_schema("doaj")
+        file_upload.set_schema("crossref")
         file_upload.upload("testowner", "filename.xml")
 
         upload_dir = app.config.get("UPLOAD_DIR")
@@ -1697,5 +1697,160 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         assert file_upload.status == "failed"
 
+    def test_determine_issns_types(self):
+        etree.XMLSchema = self.mock_load_schema
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("crossref")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        fixtureFactoryMethods = [CrossrefArticleFixtureFactory.upload_1_issn_electronic,
+                                CrossrefArticleFixtureFactory.upload_1_issn_print,
+                                CrossrefArticleFixtureFactory.upload_1_issn_no_type,
+
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_electronic_2_no_type,
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_electronic_2_print,
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_no_type_2_electronic,
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_print_2_no_type,
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_print_2_electronic,
+                                CrossrefArticleFixtureFactory.upload_2_issns_1_no_type_2_print,
+                                CrossrefArticleFixtureFactory.upload_2_issns_no_type]
+
+        # fixtureFactoryMethods = [CrossrefArticleFixtureFactory.upload_1_issn_print]
+
+        for m in fixtureFactoryMethods:
+            handle = m()
+
+            f = FileMockFactory(stream=handle)
+
+            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
+            id = job.params.get("ingest_articles__file_upload_id")
+            self.cleanup_ids.append(id)
+
+            # because file upload gets created and saved by prepare
+            time.sleep(2)
+
+            task = ingestarticles.IngestArticlesBackgroundTask(job)
+            task.run()
+
+            # because file upload needs to be re-saved
+            time.sleep(2)
+
+            fu = models.FileUpload.pull(id)
+
+            assert fu.status == "processed", "expected 'processed', received: {}, , error code: {}, for: {}".format(file_upload.status, file_upload.error, m)
+
+        # because file upload needs to be re-saved
+        time.sleep(2)
+
+        found = [a for a in models.Article.find_by_issns(["9876-5432", "1234-5678"])]
+
+        assert len(fixtureFactoryMethods) == len(found), "expected: {}, found: {}".format(len(fixtureFactoryMethods), [a.bibjson().title for a in found])
+        for a in found:
+            bib = a.bibjson()
+            if bib.title == "1 ISSN - electronic" or bib.title == "1 ISSN - no type":
+                assert bib.get_one_identifier(bib.E_ISSN) == "9876-5432", "article '{}' expects to have EISSN: 9876-5432".format(bib.title)
+                assert bib.get_one_identifier(bib.P_ISSN) is None, "article '{}' should not have PISSN".format(bib.title)
+            elif bib.title == "1 ISSN - print":
+                assert bib.get_one_identifier(
+                    bib.P_ISSN) == "1234-5678", "article '{}' expects to have PISSN: 1234-5678".format(bib.title)
+                assert bib.get_one_identifier(bib.E_ISSN) is None, "article '{}' should not have EISSN".format(
+                    bib.title)
+            else:
+                assert bib.get_one_identifier(
+                    bib.P_ISSN) == "1234-5678", "article '{}' expects to have PISSN: 1234-5678".format(bib.title)
+                assert bib.get_one_identifier(bib.E_ISSN) == "9876-5432", "article '{}' expects to have EISSN: 9876-5432".format(bib.title)
 
 
+    def test_49_2_issns_same_type(self):
+        etree.XMLSchema = self.mock_load_schema
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("crossref")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = CrossrefArticleFixtureFactory.upload_2_issns_same_types()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
+        assert file_upload.error == "Both ISSNs have the same type: print", "expected error: 'Both ISSNs have the same type: print', received: {}".format(file_upload.error)
+
+    def test_50_3_issns(self):
+        etree.XMLSchema = self.mock_load_schema
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("crossref")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = CrossrefArticleFixtureFactory.upload_3_issns()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
+        assert file_upload.error == "Too many ISSNs. Only 2 ISSNs are allowed", "expected error: 'Too many ISSNs. Only 2 ISSNs are allowed', received: {}".format(
+            file_upload.error)

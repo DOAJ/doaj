@@ -1,0 +1,5 @@
+<div name="{{ f.name }}__group">
+    {% for subfield in f.group_subfields() %}
+        {{ subfield.render_form_control(wtfinst=entry[subfield.name]) }}
+    {% endfor %}
+</div>

@@ -95,6 +95,9 @@ doaj.af.BaseApplicationForm = class {
                     if (f.label !== undefined && !f.hasOwnProperty("conditional") || (f.subfield === undefined && formulaic.active.isConditionSatisfied({field: f.name}))){
                         let value = this.determineFieldsValue(f.name);
                         let text = this.convertValueToText(value);
+                        if (f.input === 'taglist') {
+                            text = this.addSpaces(text);
+                        }
 
                         if (f.validate && $.inArray("is_url", f.validate) !== -1) {
                             text = '<a href="' + text + '" target="_blank" rel="noopener">' + text + '</a>';
@@ -157,10 +160,15 @@ doaj.af.BaseApplicationForm = class {
             }
         }
         return result;
+
     };
 
+    addSpaces(text){
+        return text.replace(/,(?! )/g, ", ");
+    }
+
     submitapplication() {
-        this.parsley = this.form.parsley();
+        this.form.parsley();
         this.form.submit();
     };
 };
@@ -201,8 +209,8 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         this.showTab(this.currentTab);
 
-        let nextSelector = this.jq("#nextBtn");
-        let prevSelector = this.jq("#prevBtn");
+        let nextSelector = this.jq(".nextBtn");
+        let prevSelector = this.jq(".prevBtn");
 
         edges.on(nextSelector, "click", this, "next");
         edges.on(prevSelector, "click", this, "prev");
@@ -237,14 +245,14 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         draftButton.show();
         // ... and fix the Previous/Next buttons:
         if (n === 0) {
-            this.jq("#prevBtn").hide();
+            this.jq(".prevBtn").hide();
         } else {
-            this.jq("#prevBtn").show();
+            this.jq(".prevBtn").show();
         }
 
         if (n === (this.tabs.length - 1)) {
             //show submit button only if all tabs are validated
-            this.jq("#nextBtn").hide();
+            this.jq(".nextBtn").hide();
             submitButton.show().attr("disabled", "disabled");
             draftButton.show();
 
@@ -256,7 +264,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
             });
 
         } else {
-            let nextBtn = this.jq("#nextBtn");
+            let nextBtn = this.jq(".nextBtn");
             nextBtn.show();
             nextBtn.html("Next");
             submitButton.hide();
@@ -359,7 +367,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
     prev() {
         this.navigate(this.currentTab - 1, true);
-    }
+    };
 
     navigate(n, showEvenIfInvalid = false) {
         //this.currentTab = parseInt(n);
@@ -427,6 +435,8 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     constructor(params) {
         super(params);
 
+        this.statusesNotRequiringValidation = ['rejected', 'pending', 'in progress', 'on hold'];
+
         this.formDiff = edges.getParam(params.formDiff, false);
 
         this.sections.each((idx, sec) => {
@@ -488,8 +498,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         let id = params.id;
 
         let success_callback = (data) => {
-            window.open('', '_self', ''); //open the current window
-            window.close();
+            window.location.href = "/service/unlocked";
         };
 
         let error_callback = (jqXHR, textStatus, errorThrown) => {
@@ -550,16 +559,15 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             }
             return false;
         }
-        return recurse(code, doaj.af.lccTree)
+        return recurse(code, doaj.af.lccTree);
     }
 
     submitapplication() {
         this.parsley = this.form.parsley();
-        let optional = this.jq("#make_all_fields_optional").is(":checked");
-        if (optional) {
-            this.parsley.destroy();
+        if (this.setAllFieldsOptionalIfAppropriate()) {
+            this.parsley().destroy();
         } else {
-            this.parsley.whenValidate().done(() => {
+            this.parsley().whenValidate().done(() => {
                 this.jq("#cannot-submit-invalid-fields").hide();
 
             }).fail(() => {
@@ -568,6 +576,11 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         }
         this.form.submit();
     }
+
+    setAllFieldsOptionalIfAppropriate() {
+        return (this.statusesNotRequiringValidation.includes(this.jq("#application_status").val()) || this.jq("#make_all_fields_optional").is(":checked"));
+    }
+
 };
 
 doaj.af.newPublicApplicationForm = function(params) {
@@ -750,7 +763,7 @@ window.Parsley.addValidator("requiredvalue", {
         return (value === requirement);
     },
     messages: {
-        en: 'DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.'
+        en: '<p><small>DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time.</small></p>'
     },
     priority: 32
 });
@@ -862,4 +875,81 @@ window.Parsley.addValidator("notIf", {
         en: 'This only can be true when requirements are met'
     },
     priority: 1
+});
+
+
+///////////////////////////////////////////////////////////////
+// workaround to allow underscores on the parsley type=url validator
+///////////////////////////////////////////////////////////////
+
+// These are the parsley default type testers, sourced from
+// https://github.com/guillaumepotier/Parsley.js/blob/master/src/parsley/validator_registry.js#L15
+// but with our own custom URL validator
+doaj.af.typeTesters =  {
+  email: /^((([a-zA-Z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-zA-Z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))$/,
+
+  // Follow https://www.w3.org/TR/html5/infrastructure.html#floating-point-numbers
+  number: /^-?(\d*\.)?\d+(e[-+]?\d+)?$/i,
+
+  integer: /^-?\d+$/,
+
+  digits: /^\d+$/,
+
+  alphanum: /^\w+$/i,
+
+  date: {
+    test: value => Utils.parse.date(value) !== null
+  },
+
+  url: new RegExp(
+      "^https?://([^/:]+\.[a-z]{2,63}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$"
+    )
+};
+doaj.af.typeTesters.range = doaj.af.typeTesters.number;
+
+doaj.af.decimalPlaces = num => {
+  var match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+  if (!match) { return 0; }
+  return Math.max(
+       0,
+       // Number of digits right of decimal point.
+       (match[1] ? match[1].length : 0) -
+       // Adjust for scientific notation.
+       (match[2] ? +match[2] : 0));
+};
+
+// remove the old type validator
+window.Parsley.removeValidator("type");
+
+// add the new type validator, based on https://github.com/guillaumepotier/Parsley.js/blob/master/src/parsley/validator_registry.js#L261
+window.Parsley.addValidator("type", {
+    validateString: function(value, type, {step = 'any', base = 0} = {}) {
+        var tester = doaj.af.typeTesters[type];
+        if (!tester) {
+            throw new Error('validator type `' + type + '` is not supported');
+        }
+        if (!value)
+            return true;  // Builtin validators all accept empty strings, except `required` of course
+        if (!tester.test(value))
+            return false;
+        if ('number' === type) {
+            if (!/^any$/i.test(step || '')) {
+                var nb = Number(value);
+                var decimals = Math.max(doaj.af.decimalPlaces(step), doaj.af.decimalPlaces(base));
+                if (doaj.af.decimalPlaces(nb) > decimals) // Value can't have too many decimals
+                    return false;
+                // Be careful of rounding errors by using integers.
+                var toInt = f => Math.round(f * Math.pow(10, decimals));
+                if ((toInt(nb) - toInt(base)) % toInt(step) != 0)
+                    return false;
+            }
+        }
+        return true;
+    },
+    requirementType: {
+        '': 'string',
+        step: 'string',
+        base: 'number'
+    },
+    priority: 256
 });

@@ -21,6 +21,7 @@ from collections import OrderedDict
 import portality.models as models
 from portality.core import app, es_connection, initialise_index
 from portality import settings
+from portality.lib import edges
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -71,20 +72,11 @@ app.register_blueprint(doaj)
 # putting it here ensures it will run under any web server
 initialise_index(app, es_connection)
 
-# Import list of Sponsors from the static site’s data file
-# Only display gold & silver sponsors for now on the homepage
-# The same file is used to display sponsors in the Sponsors page’s full list
-with open(os.path.join(app.config["BASE_FILE_PATH"],"../static_content/_data/sponsors.yml")) as f:
-    SPONSORS = yaml.load(f, Loader=yaml.FullLoader)
-
-with open(os.path.join(app.config["BASE_FILE_PATH"],"../static_content/_data/volunteers.yml")) as f:
-    VOLUNTEERS = yaml.load(f, Loader=yaml.FullLoader)
-
-
 # serve static files from multiple potential locations
 # this allows us to override the standard static file handling with our own dynamic version
+# @app.route("/static_content/<path:filename>")
 @app.route("/static/<path:filename>")
-@app.route("/static_content/<path:filename>")
+@app.route("/assets/<path:filename>")
 def our_static(filename):
     return custom_static(filename)
 
@@ -169,8 +161,6 @@ def set_current_context():
     information.
     '''
     return {
-        'sponsors': SPONSORS,
-        'volunteers': VOLUNTEERS,
         'settings': settings,
         'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
@@ -273,6 +263,13 @@ def form_diff_table_subject_expand(val):
             results.append(v)
 
     return ", ".join(results)
+
+
+@app.context_processor
+def search_query_source_wrapper():
+    def search_query_source(**params):
+        return edges.make_url_query(**params)
+    return dict(search_query_source=search_query_source)
 
 
 @app.before_request

@@ -16,7 +16,11 @@ $.extend(true, doaj, {
                     if (result != "") {
                         result += "<br>";
                     }
-                    result += "<strong>Produced Journal</strong>: <a href='" + fvurl + "'>" + resultobj.admin.related_journal + '</a>';
+                    let label = "Produced Journal";
+                    if (resultobj.admin.application_status === "rejected") {
+                        label = "Originally For Journal";
+                    }
+                    result += "<strong>" + label + "</strong>: <a href='" + fvurl + "'>" + resultobj.admin.related_journal + '</a>';
                 }
             }
             return result;

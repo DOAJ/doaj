@@ -376,7 +376,7 @@ class StopWords(object):
     def __call__(self, form, field):
         for v in field.data:
             if v.strip() in self.stopwords:
-                raise validators.ValidationError(self.message.format(stop_word=v))
+                raise validators.StopValidation(self.message.format(stop_word=v))
 
 
 class DifferentTo(MultiFieldValidator):
@@ -427,7 +427,7 @@ class RequiredIfOtherValue(MultiFieldValidator):
             dr = validators.DataRequired(self.message)
             dr(form, field)
         else:
-            if not field.data or not field.data.strip():
+            if not field.data or (isinstance(field.data, str) and not field.data.strip()):
                 raise validators.StopValidation()
 
     def _match_list(self, form, field, other_field):

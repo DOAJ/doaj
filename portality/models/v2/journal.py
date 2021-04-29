@@ -377,6 +377,14 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             if "code" in subs:
                 schema_codes.append(scheme + ":" + subs.get("code"))
 
+        # now expand the classification to hold all its parent terms too
+        additional = []
+        for c in classification:
+            tp = cbib.term_path(c)
+            if tp is not None:
+                additional += tp
+        classification += additional
+
         # add the keywords to the non-schema subjects (but not the classification)
         subjects += cbib.keywords
 
@@ -726,6 +734,9 @@ class Journal(JournalLikeObject):
 
     def remove_related_applications(self):
         self.__seamless__.delete("admin.related_applications")
+
+    def remove_related_application(self, application_id):
+        self.set_related_applications([r for r in self.related_applications if r.get("application_id") != application_id])
 
     def related_application_record(self, application_id):
         for record in self.related_applications:
