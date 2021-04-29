@@ -109,6 +109,8 @@ cms/components
 cms/error_fragments.txt
 cms/error_sass.txt
 portality/static/doaj/css/main.css*
+portality/static/doaj/css/fq_widget.css*
+portality/static/doaj/css/simple_widget.css*
 
 cms/sass/main.css
 cms/sass/main.css.map

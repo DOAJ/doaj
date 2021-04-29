@@ -22,9 +22,9 @@ WIDGET_SETTINGS = {
     'FQW': (os.path.join(SASS, "fq_widget.scss"),
             os.path.join("portality", "static", "doaj", "css", "fq_widget.css"),
             os.path.join("cms", "error_fqw_sass.txt")),
-    # 'SSW': (os.path.join(SASS, "ss_widget.scss"), #todo
-    #         os.path.join("portality", "static", "doaj", "css", "ss_widget.css"),
-    #         os.path.join("cms", "error_ssw_sass.txt"))
+    'SSW': (os.path.join(SASS, "simple_widget.scss"), #todo
+            os.path.join("portality", "static", "doaj", "css", "simple_widget.css"),
+            os.path.join("cms", "error_ssw_sass.txt"))
 }
 
 
