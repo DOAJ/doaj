@@ -1136,11 +1136,17 @@ $.extend(true, doaj, {
             // event handlers
 
             this.changeSearchField = function (element) {
-                var val = this.component.jq(element).val();
-                this.component.setSearchField(val, false);
-
+                // find out if there's any search text
                 var textIdSelector = edges.css_id_selector(this.namespace, "text", this);
                 var text = this.component.jq(textIdSelector).val();
+
+                if (text === "") {
+                    return;
+                }
+
+                // if there is search text, then proceed to run the search
+                var val = this.component.jq(element).val();
+                this.component.setSearchField(val, false);
                 this.component.setSearchText(text);
             };
 
