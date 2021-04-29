@@ -2286,7 +2286,10 @@ $.extend(true, doaj, {
 
                 var date = "";
                 if (resultobj.index.date) {
-                    date = "(" + doaj.humanYearMonth(resultobj.index.date) + ")";
+                    let humanised = doaj.humanYearMonth(resultobj.index.date);
+                    if (humanised) {
+                        date = "(" + humanised + ")";
+                    }
                 }
 
                 var title = "";
