@@ -395,7 +395,7 @@
 
                                     {% if bibjson.institution_name %}
                                         <dt>Society or institution</dt>
-                                        <dd>{{bibjson.institution_name}}{% if bibjson.institution_country %}, {{ bibjson.institution_country }}{% endif %}</dd>
+                                        <dd>{{bibjson.institution_name}}{% if bibjson.institution_country %}, {{ bibjson.institution_country_name() }}{% endif %}</dd>
                                     {% endif %}
 
                                     {% if bibjson.language %}
