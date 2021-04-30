@@ -17,12 +17,12 @@ Widgets are tools that allow you to embed DOAJ into your site. There are two wid
 Copy and paste the code below into your page where you want the search box to be displayed.
 
 ```html
-<script src="{{ base_url }}/static/widget/simple_search.js" type="text/javascript"></script>
+<script src="https://testdoaj.cottagelabs.com/static/widget/simple_search.js" type="text/javascript"></script>
 <div id="doaj-simple-search-widget"></div>
 ```
 **Example:**
 <!-- this is the actual script embed -->
-<script src="{{ base_url }}/static/widget/simple_search.js" type="text/javascript"></script>
+<script src="https://testdoaj.cottagelabs.com/static/widget/simple_search.js" type="text/javascript"></script>
 <div id="doaj-simple-search-widget"></div>
 
 [comment]: <> (todo: awaiting SSW update)
@@ -40,7 +40,7 @@ Copy and paste the code below into your page where you want the widget to be dis
 
 ```html
 <script type="text/javascript">
-var doaj_url = "{{ base_url }}";
+var doaj_url = "https://testdoaj.cottagelabs.com";
 var QUERY_OPTIONS = {
     query_string : 'medicine',                   // The plain-text query string
     query_field: 'bibjson.title',                // The field we are querying
@@ -59,7 +59,7 @@ var QUERY_OPTIONS = {
 **Example:**
 <!-- this is the actual script embed -->
 <script type="text/javascript">
-var doaj_url = "{{ base_url }}";
+var doaj_url = "https://testdoaj.cottagelabs.com";
 var QUERY_OPTIONS = {
     query_string : 'medicine',                   // The plain-text query string
     query_field: 'bibjson.title',                // The field we are querying
