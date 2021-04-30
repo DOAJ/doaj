@@ -599,6 +599,11 @@ class JournalLikeBibJSON(SeamlessMixin):
             return datasets.get_country_name(self.publisher_country)
         return None
 
+    def institution_country_name(self):
+        if self.institution_country is not None:
+            return datasets.get_country_name(self.institution_country)
+        return None
+
     def language_name(self):
         # copy the languages and convert them to their english forms
         langs = [datasets.name_for_lang(l) for l in self.language]
