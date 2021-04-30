@@ -1202,15 +1202,7 @@ class FieldDefinitions:
             {"field": "preservation_service", "value": "other"}
         ],
         "validate": [
-            {"required_if": {"field": "preservation_service", "values": ["CINES"]}},
-            {"required_if": {"field": "preservation_service", "values": ["CLOCKSS"]}},
-            {"required_if": {"field": "preservation_service", "values": ["LOCKSS"]}},
-            {"required_if": {"field": "preservation_service", "values": ["Internet Archive"]}},
-            {"required_if": {"field": "preservation_service", "values": ["PKP PN"]}},
-            {"required_if": {"field": "preservation_service", "values": ["PMC"]}},
-            {"required_if": {"field": "preservation_service", "values": ["Portico"]}},
-            {"required_if": {"field": "preservation_service", "values": ["national_library"]}},
-            {"required_if": {"field": "preservation_service", "values": ["other"]}},
+            {"required_if": {"field": "preservation_service", "value": ["CINES", "CLOCKSS", "Internet Archive", "PKP PN", "PMC", "Portico", "national_library", "other"]}},
             "is_url"
         ],
         "widgets": [
@@ -1295,21 +1287,13 @@ class FieldDefinitions:
         "contexts" : {
             "public" : {
                 "validate": [
-                    {"required_if": {"field": "deposit_policy", "value": "Sherpa/Romeo"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Dulcinea"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Héloïse"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Diadorim"}},
-                    {"required_if": {"field": "deposit_policy", "value": "other"}},
+                    {"required_if": {"field": "deposit_policy", "value": ["Sherpa/Romeo", "Dulcinea", "Héloïse", "Diadorim", "other"]}},
                     "is_url"
                 ]
             },
             "update_request" : {
                 "validate" : [
-                    {"required_if": {"field": "deposit_policy", "value": "Sherpa/Romeo"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Dulcinea"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Héloïse"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Diadorim"}},
-                    {"required_if": {"field": "deposit_policy", "value": "other"}},
+                    {"required_if": {"field": "deposit_policy", "value": ["Sherpa/Romeo", "Dulcinea", "Héloïse", "Diadorim", "other"]}},
                     "is_url"
                 ]
             }
