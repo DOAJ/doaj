@@ -69,7 +69,7 @@ var QUERY_OPTIONS = {
     page_from : 0                                // Which result to start from
     }
 </script>
-<script src="http://testdoaj.cottagelabs.com/static/widget/fixed_query.js" type="text/javascript"></script>
+<script src="https://testdoaj.cottagelabs.com/static/widget/fixed_query.js" type="text/javascript"></script>
 <div id="doaj-fixed-query-widget"></div>
 <br/>
 

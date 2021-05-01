@@ -6,7 +6,7 @@ let jQuery;
 // dev: 'http://localhost:5004'
 // test: 'https://testdoaj.cottagelabs.com/'
 // production: 'https://www.doaj.org'
-let doaj_url = "http://testdoaj.cottagelabs.com";
+let doaj_url = "https://testdoaj.cottagelabs.com";
 /******** Load jQuery if not present *********/
 if (window.jQuery === undefined || window.jQuery.fn.jquery !== "1.9.1") {
     let script_tag = document.createElement("script");
