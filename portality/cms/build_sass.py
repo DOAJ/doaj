@@ -18,15 +18,12 @@ MAIN_SETTINGS = (os.path.join(SASS, "main.scss"),
                  os.path.join("cms", "error_sass.txt"))
 
 # SASS file and error file for each widget
-WIDGET_SETTINGS = {
-    'FQW': (os.path.join(SASS, "fq_widget.scss"),
+FQ_WIDGET_SETTINGS =  (os.path.join(SASS, "fq_widget.scss"),
             os.path.join("portality", "static", "doaj", "css", "fq_widget.css"),
-            os.path.join("cms", "error_fqw_sass.txt")),
-    'SSW': (os.path.join(SASS, "simple_widget.scss"), #todo
+            os.path.join("cms", "error_fqw_sass.txt"))
+SS_WIDGET_SETTINGS = (os.path.join(SASS, "simple_widget.scss"),
             os.path.join("portality", "static", "doaj", "css", "simple_widget.css"),
             os.path.join("cms", "error_ssw_sass.txt"))
-}
-
 
 def _localise_paths(paths, base_path=None):
     SCSS_IN, CSS_OUT, ERROR_OUT = paths
