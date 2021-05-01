@@ -8,6 +8,23 @@ var jQuery;
 // production: 'https://www.doaj.org'
 let doaj_url = 'https://testdoaj.cottagelabs.com';
 
+/******** Load scripts *********/
+
+ let head = document.head || document.getElementsByTagName('head')[0];
+
+let scr  = document.createElement('script');
+scr.src = doaj_url + '/static/vendor/feather/feather.min.js';
+//scr.src = 'https://unpkg.com/feather-icons';
+scr.async = false;
+scr.defer = false;
+head.appendChild(scr);
+
+scr = document.createElement('link');
+scr.rel = 'stylesheet';
+scr.href = doaj_url + '/static/doaj/css/simple_widget.css';
+head.appendChild(scr);
+
+
 /******** Load jQuery if not present *********/
 if (window.jQuery === undefined || window.jQuery.fn.jquery !== '3.4.1') {
     var script_tag = document.createElement('script');
@@ -82,22 +99,8 @@ function main() {
 
         // window.onclick = (e) => { console.log(e.target); console.log($("#quick-search-articles").is("checked"));}
 
-        let head = document.head || document.getElementsByTagName('head')[0];
-
-        let scr  = document.createElement('script');
-        scr.src = doaj_url + '/static/vendor/feather/feather.min.js';
-        scr.async = false;
-        scr.defer = false;
-        head.insertBefore(scr, head.firstChild);
-
-        scr = document.createElement('link');
-        scr.rel = 'stylesheet';
-        scr.href = doaj_url + '/static/doaj/css/simple_widget.css';
-        head.insertBefore(scr, head.firstChild);
-
         $('#doaj-simple-search-widget').html(html);
         $("form").attr("action", doaj_url + "/search");
-        feather.replace();
 
         // $('#doaj-simple-search-widget').load(doaj_url + '/static/widget/simple_search_body.html', () => {
         //     $("form").attr("action", doaj_url + "/search");
@@ -107,6 +110,7 @@ function main() {
         $("#quick-search-articles").on("click", () => {
             $("#quick-search-articles").prop('checked', true);
         });
+        feather.replace();
 
     });
 }
