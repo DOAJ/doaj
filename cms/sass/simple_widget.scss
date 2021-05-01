@@ -1,4 +1,14 @@
 #doaj-simple-search-widget {
+    @import "base/_fonts";
+    @import "base/_spacing";
+    @import "base/_typescale";
+    @import "base/_palette";
+    @import "base/_utils";
+    @import "base/_general";
+    @import "base/_grid";
+    @import "base/logo";
+    @import "components/label";
+
     height: 100%;
     width: 100%;
     max-width: 100%;
@@ -14,6 +24,8 @@
 
     .container {
         width: 100%;
+        padding-left: 40px;
+        padding-right: 40px;
     }
 
     a {
@@ -52,16 +64,6 @@
             }
         }
     }
-
-    @import "base/_fonts";
-    @import "base/_spacing";
-    @import "base/_typescale";
-    @import "base/_palette";
-    @import "base/_utils";
-    @import "base/_general";
-    @import "base/_grid";
-    @import "base/logo";
-    @import "components/label";
     header {
         padding-top: 15px;
     }
