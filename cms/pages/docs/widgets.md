@@ -40,6 +40,7 @@ Copy and paste the code below into your page where you want the widget to be dis
 
 ```html
 <script type="text/javascript">
+var doaj_url = 'https://doaj.org';
 var QUERY_OPTIONS = {
     query_string : 'medicine',                   // The plain-text query string
     query_field: 'bibjson.title',                // The field we are querying
@@ -58,6 +59,7 @@ var QUERY_OPTIONS = {
 **Example:**
 <!-- this is the actual script embed -->
 <script type="text/javascript">
+var doaj_url = 'https://testdoaj.cottagelabs.com';
 var QUERY_OPTIONS = {
     query_string : 'medicine',                   // The plain-text query string
     query_field: 'bibjson.title',                // The field we are querying

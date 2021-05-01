@@ -4,9 +4,8 @@
 let jQuery;
 // doaj_url values:
 // dev: 'http://localhost:5004'
-// test: 'https://testdoaj.cottagelabs.com/'
+// test: 'https://testdoaj.cottagelabs.com'
 // production: 'https://www.doaj.org'
-let doaj_url = "https://testdoaj.cottagelabs.com";
 /******** Load jQuery if not present *********/
 if (window.jQuery === undefined || window.jQuery.fn.jquery !== "1.9.1") {
     let script_tag = document.createElement("script");
@@ -79,5 +78,3 @@ function main() {
 }
 
 })(); // We call our anonymous function immediately
-
-//# sourceURL=http://localhost:5004/static/widget/fixed_query_body_dev_edges.html

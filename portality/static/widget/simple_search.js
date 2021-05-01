@@ -4,9 +4,9 @@
 var jQuery;
 // doaj_url values:
 // dev: 'http://localhost:5004'
-// test: 'https://testdoaj.cottagelabs.com/'
+// test: 'https://testdoaj.cottagelabs.com'
 // production: 'https://www.doaj.org'
-let doaj_url = 'https://testdoaj.cottagelabs.com/';
+let doaj_url = 'https://testdoaj.cottagelabs.com';
 
 /******** Load jQuery if not present *********/
 if (window.jQuery === undefined || window.jQuery.fn.jquery !== '3.4.1') {
