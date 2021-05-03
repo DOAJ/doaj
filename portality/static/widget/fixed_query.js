@@ -70,7 +70,7 @@
     function main() {
         $(document).ready(function($) {
 
-            $('#doaj-fixed-query-widget').append($('<div class="facetview container"></div>'));
+            $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));
 
             $.ajax({
                 type: "POST",

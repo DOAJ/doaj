@@ -1,71 +1,70 @@
 (function() {
 
 // Localize jQuery variable
-var jQuery;
+    var jQuery;
 // TODO: change the value before release!
 // doaj_url values:
 // dev:
 // let doaj_url = 'http://localhost:5004';
 // test:
-let doaj_url = 'https://testdoaj.cottagelabs.com';
+    let doaj_url = 'https://testdoaj.cottagelabs.com';
 // production:
 //let doaj_url = 'https://www.doaj.org';
 
 
-/******** Load scripts *********/
+    /******** Load scripts *********/
 
- let head = document.head || document.getElementsByTagName('head')[0];
+    let head = document.head || document.getElementsByTagName('head')[0];
 
-let scr  = document.createElement('script');
-scr.src = doaj_url + '/static/vendor/feather/feather.min.js';
+    let scr  = document.createElement('script');
+    scr.src = doaj_url + '/static/vendor/feather/feather.min.js';
 //scr.src = 'https://unpkg.com/feather-icons';
-scr.async = false;
-scr.defer = false;
-head.appendChild(scr);
+    scr.async = false;
+    scr.defer = false;
+    head.appendChild(scr);
 
-scr = document.createElement('link');
-scr.rel = 'stylesheet';
-scr.href = doaj_url + '/static/doaj/css/simple_widget.css';
-head.appendChild(scr);
+    scr = document.createElement('link');
+    scr.rel = 'stylesheet';
+    scr.href = doaj_url + '/static/doaj/css/simple_widget.css';
+    head.appendChild(scr);
 
 
-/******** Load jQuery if not present *********/
-if (window.jQuery === undefined || window.jQuery.fn.jquery !== '3.4.1') {
-    var script_tag = document.createElement('script');
-    script_tag.setAttribute("type","text/javascript");
-    script_tag.setAttribute("src", doaj_url + '/static/vendor/jquery-3.4.1/jquery-3.4.1.min.js');
-    if (script_tag.readyState) {
-      script_tag.onreadystatechange = function () { // For old versions of IE
-          if (this.readyState == 'complete' || this.readyState == 'loaded') {
-              scriptLoadHandler();
-          }
-      };
-    } else { // Other browsers
-      script_tag.onload = scriptLoadHandler;
+    /******** Load jQuery if not present *********/
+    if (window.jQuery === undefined || window.jQuery.fn.jquery !== '3.4.1') {
+        var script_tag = document.createElement('script');
+        script_tag.setAttribute("type","text/javascript");
+        script_tag.setAttribute("src", doaj_url + '/static/vendor/jquery-3.4.1/jquery-3.4.1.min.js');
+        if (script_tag.readyState) {
+            script_tag.onreadystatechange = function () { // For old versions of IE
+                if (this.readyState == 'complete' || this.readyState == 'loaded') {
+                    scriptLoadHandler();
+                }
+            };
+        } else { // Other browsers
+            script_tag.onload = scriptLoadHandler;
+        }
+        // Try to find the head, otherwise default to the documentElement
+        (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
+    } else {
+        // The jQuery version on the window is the one we want to use
+        jQuery = window.jQuery;
+        main();
     }
-    // Try to find the head, otherwise default to the documentElement
-    (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
-} else {
-    // The jQuery version on the window is the one we want to use
-    jQuery = window.jQuery;
-    main();
-}
 
-/******** Called once jQuery has loaded ******/
-function scriptLoadHandler() {
-    // Restore $ and window.jQuery to their previous values and store the
-    // new jQuery in our local jQuery variable
-    jQuery = window.jQuery.noConflict(true);
-    // Call our main function
-    main(); 
-}
+    /******** Called once jQuery has loaded ******/
+    function scriptLoadHandler() {
+        // Restore $ and window.jQuery to their previous values and store the
+        // new jQuery in our local jQuery variable
+        jQuery = window.jQuery.noConflict(true);
+        // Call our main function
+        main();
+    }
 
-/******** Our main function ********/
-function main() { 
-    jQuery(document).ready(function($) {
+    /******** Our main function ********/
+    function main() {
+        jQuery(document).ready(function($) {
 
-        let html = `
-        <div class="container">
+            let html = `
     <form role="search" id="doaj-search-form" method="POST">
         <h2>
             <a href="https://doaj.org/" target="_blank" rel="noopener">
@@ -99,24 +98,13 @@ function main() {
         <input type="hidden" name="origin" value="ui"/>
         <input type="hidden" name="ref" value="ssw">
     </form>
-</div>`
+`
+            $('#doaj-simple-search-widget').html(html);
+            $("form").attr("action", doaj_url + "/search");
 
-        // window.onclick = (e) => { console.log(e.target); console.log($("#quick-search-articles").is("checked"));}
+            feather.replace();
 
-        $('#doaj-simple-search-widget').html(html);
-        $("form").attr("action", doaj_url + "/search");
-
-        // $('#doaj-simple-search-widget').load(doaj_url + '/static/widget/simple_search_body.html', () => {
-        //     $("form").attr("action", doaj_url + "/search");
-        //     feather.replace();
-        // });
-
-        $("#quick-search-articles").on("click", () => {
-            $("#quick-search-articles").prop('checked', true);
         });
-        feather.replace();
-
-    });
-}
+    }
 
 })();
