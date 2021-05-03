@@ -2164,9 +2164,10 @@ $.extend(true, doaj, {
             };
 
             this._renderPublicJournal = function(resultobj) {
+                var doaj_url = "https://doaj.org";
                 var seal = "";
                 if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="/apply/seal" class="tag tag--featured" target="_blank">\
+                    seal = '<a href="' + doaj_url + '/apply/seal" class="tag tag--featured" target="_blank">\
                             <span data-feather="check-circle" aria-hidden="true"></span>\
                             DOAJ Seal\
                           </a>';
@@ -2274,7 +2275,7 @@ $.extend(true, doaj, {
                         <header>\
                           ' + seal + '\
                           <h3 class="search-results__heading">\
-                            <a href="/toc/' + issn + '">\
+                            <a href="' + doaj_url + '/toc/' + issn + '">\
                               ' + edges.escapeHtml(resultobj.bibjson.title) + '\
                               <sup>\
                                 <span data-feather="link" aria-hidden="true"></span>\
@@ -2320,6 +2321,7 @@ $.extend(true, doaj, {
             };
 
             this._renderPublicArticle = function(resultobj) {
+                var doaj_url = "https://doaj.org";
                 var journal = resultobj.bibjson.journal ? resultobj.bibjson.journal.title : "";
 
                 var date = "";
@@ -2435,11 +2437,11 @@ $.extend(true, doaj, {
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
-                          <p class="label"><a href="/toc/' + issns[0] + '" target="_blank">\
+                          <p class="label"><a href="' + doaj_url + '/toc/' + issns[0] + '" target="_blank">\
                             ' + edges.escapeHtml(journal) + ' ' + date + '\
                           </a></p>\
                           <h3 class="search-results__heading">\
-                            <a href="/article/' + resultobj.id + '" class="">\
+                            <a href="' + doaj_url + '/article/' + resultobj.id + '" class="">\
                               ' + title + '\
                             </a>\
                           </h3>\
@@ -2456,7 +2458,7 @@ $.extend(true, doaj, {
                             <a href="' + ftl + '" target="_blank" rel="noopener">Read online <span data-feather="external-link" aria-hidden="true"></span></a>\
                           </li>\
                           <li>\
-                            <a href="/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
+                            <a href="' + doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
                           </li>\
                           <li>\
                             ' + published + '\
