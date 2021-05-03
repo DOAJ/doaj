@@ -2,13 +2,15 @@
 
 // Localize jQuery variable
 var jQuery;
-// doaj_url values:
-// dev: 'http://localhost:5004'
-// test: 'https://testdoaj.cottagelabs.com'
-// production: 'https://www.doaj.org'
-
 // TODO: change the value before release!
+// doaj_url values:
+// dev:
+// let doaj_url = 'http://localhost:5004';
+// test:
 let doaj_url = 'https://testdoaj.cottagelabs.com';
+// production:
+//let doaj_url = 'https://www.doaj.org';
+
 
 /******** Load scripts *********/
 
