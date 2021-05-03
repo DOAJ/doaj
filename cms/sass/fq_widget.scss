@@ -1,4 +1,6 @@
-.facetview {
+#doaj-fixed-query-widget {
+  all: unset;
+  .facetview {
    // Import partials
 @import
   "vendors/normalize",
@@ -16,6 +18,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 400;
+  margin-bottom: 0;
+  padding: $spacing-01;
   @include font-sans;
 
 @import
@@ -72,4 +76,5 @@
   "pages/sponsors"
 ;
 
+  }
 }

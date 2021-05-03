@@ -1,5 +1,5 @@
 #doaj-simple-search-widget {
-
+all: unset;
 // Import partials
 @import
   "vendors/normalize",
@@ -17,6 +17,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 400;
+  text-align: left;
   @include font-sans;
 
 @import
@@ -26,55 +27,28 @@
   "base/logo",
   "base/highlight",
 
-  "layout/editorial-panel",
-  "layout/nav-bar",
-  "layout/page-header",
-  "layout/page-content",
-  "layout/page-footer",
-  "layout/page-nav",
-  "layout/primary-nav",
-  "layout/secondary-nav",
-  "layout/sidenav",
-
-  "components/alert",
-  "components/back-to-top",
   "components/buttons",
-  "components/card",
-  "components/cookie-consent",
   "components/dropdown",
   "components/filters",
   "components/form",
   "components/hero",
   "components/input-group",
   "components/label",
-  "components/loading",
   "components/modal",
-  "components/numbered-table",
   "components/pager-buttons",
   "components/pagination",
-  "components/portrait",
-  "components/removable-fields",
-  "components/review-table",
-  "components/select2",
   "components/search-results",
-  "components/stat",
-  "components/stretch-list",
   "components/tabs",
   "components/tabular-list",
   "components/tag",
   "components/title-list",
 
-  "pages/apply",
   "pages/article-details",
-  "pages/error-page",
-  "pages/homepage",
   "pages/journal-details",
-  "pages/search",
-  "pages/sponsors"
+  "pages/search"
 ;
-  .container {
-    width: auto;
-    padding-left: 20px;
-    padding-right: 20px;
+  .form {
+    margin-bottom: 0;
+    padding: $spacing-01;
   }
 }
