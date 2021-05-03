@@ -6537,7 +6537,7 @@ $.extend(true, doaj, {
                         <header>\
                           ' + seal + '\
                           <h3 class="search-results__heading">\
-                            <a href="' + doaj_url + '/toc/' + issn + '">\
+                            <a href="' + doaj_url + '/toc/' + issn + '" target="_blank">\
                               ' + edges.escapeHtml(resultobj.bibjson.title) + '\
                               <sup>\
                                 <span data-feather="link" aria-hidden="true"></span>\
@@ -6703,7 +6703,7 @@ $.extend(true, doaj, {
                             ' + edges.escapeHtml(journal) + ' ' + date + '\
                           </a></p>\
                           <h3 class="search-results__heading">\
-                            <a href="' + doaj_url + '/article/' + resultobj.id + '" class="">\
+                            <a href="' + doaj_url + '/article/' + resultobj.id + '" class="" target="_blank">\
                               ' + title + '\
                             </a>\
                           </h3>\
