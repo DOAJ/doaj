@@ -5,9 +5,9 @@
 // TODO: change the value before release!
 // doaj_url values:
 // dev:
-// let doaj_url = 'http://localhost:5004';
+let doaj_url = 'http://localhost:5004';
 // test:
-    let doaj_url = 'https://testdoaj.cottagelabs.com';
+// let doaj_url = 'https://testdoaj.cottagelabs.com';
 // production:
 //let doaj_url = 'https://www.doaj.org';
 
