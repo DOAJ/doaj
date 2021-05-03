@@ -52,7 +52,7 @@ all: unset;
     padding: $spacing-01;
   }
 
-   & > * {
+   * {
      all: inherit;
    }
 
