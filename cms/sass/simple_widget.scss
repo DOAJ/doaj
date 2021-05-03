@@ -1,70 +1,145 @@
 #doaj-simple-search-widget {
-    @import "base/_fonts";
-    @import "base/_spacing";
-    @import "base/_typescale";
-    @import "base/_palette";
-    @import "base/_utils";
-    @import "base/_general";
-    @import "base/_grid";
-    @import "base/logo";
-    @import "components/label";
 
-    height: 100%;
-    width: 100%;
-    max-width: 100%;
-    background-color: #FEFBF8;
-    color: #282624;
-    line-height: 1.45;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-weight: 400;
-    font-family: 'Source Sans Pro', sans-serif;
-    letter-spacing: 0.01em;
-    overflow: auto;
+// Import partials
+@import
+  "vendors/normalize",
+  "vendors/bootstrap",
 
-    .container {
-        width: auto;
-        padding-left: 40px;
-        padding-right: 40px;
-    }
+  "base/palette",
+  "base/spacing",
+  "base/typescale",
+  "base/fonts",
+  "base/body";
 
-    a {
-        text-decoration: none;
-        color: #282624;
-    }
+  background-color: $warm-white;
+  color: $warm-black;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  @include font-sans;
 
-    header {
-        display: block;
+@import
+  "base/general",
+  "base/grid",
+  "base/utils",
+  "base/logo",
+  "base/highlight",
 
-        h2 {
-            font-size: 1.602em;
-            margin: 1.5rem 0 .75rem 0;
-            line-height: 1.05;
-            font-weight: 400;
-        }
+  "layout/editorial-panel",
+  "layout/nav-bar",
+  "layout/page-header",
+  "layout/page-content",
+  "layout/page-footer",
+  "layout/page-nav",
+  "layout/primary-nav",
+  "layout/secondary-nav",
+  "layout/sidenav",
 
-        p {
-            display: block;
-            margin-top: 0;
-            margin-bottom: .375rem;
-            line-height: 1.15;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            font-size: smaller;
-            color: #982E0A;
+  "components/alert",
+  "components/back-to-top",
+  "components/buttons",
+  "components/card",
+  "components/cookie-consent",
+  "components/dropdown",
+  "components/filters",
+  "components/form",
+  "components/hero",
+  "components/input-group",
+  "components/label",
+  "components/loading",
+  "components/modal",
+  "components/numbered-table",
+  "components/pager-buttons",
+  "components/pagination",
+  "components/portrait",
+  "components/removable-fields",
+  "components/review-table",
+  "components/select2",
+  "components/search-results",
+  "components/stat",
+  "components/stretch-list",
+  "components/tabs",
+  "components/tabular-list",
+  "components/tag",
+  "components/title-list",
 
-            .label--tertiary {
-                color: #5C5956;
-                text-transform: none;
+  "pages/apply",
+  "pages/article-details",
+  "pages/error-page",
+  "pages/homepage",
+  "pages/journal-details",
+  "pages/search",
+  "pages/sponsors"
+;
 
-                :last-child {
-                    margin-bottom: 0;
-                }
-            }
-        }
-    }
-    header {
-        padding-top: 15px;
-    }
+
+//    @import "base/_fonts";
+//    @import "base/_spacing";
+//    @import "base/_typescale";
+//    @import "base/_palette";
+//    @import "base/_utils";
+//    @import "base/_general";
+//    @import "base/_grid";
+//    @import "base/logo";
+//    @import "components/label";
+//
+//    height: 100%;
+//    width: 100%;
+//    max-width: 100%;
+//    background-color: #FEFBF8;
+//    color: #282624;
+//    line-height: 1.45;
+//    -webkit-font-smoothing: antialiased;
+//    -moz-osx-font-smoothing: grayscale;
+//    font-weight: 400;
+//    font-family: 'Source Sans Pro', sans-serif;
+//    letter-spacing: 0.01em;
+//    overflow: auto;
+//
+//    .container {
+//        width: auto;
+//        padding-left: 40px;
+//        padding-right: 40px;
+//    }
+//
+//    a {
+//        text-decoration: none;
+//        color: #282624;
+//    }
+//
+//    header {
+//        display: block;
+//
+//        h2 {
+//            font-size: 1.602em;
+//            margin: 1.5rem 0 .75rem 0;
+//            line-height: 1.05;
+//            font-weight: 400;
+//        }
+//
+//        p {
+//            display: block;
+//            margin-top: 0;
+//            margin-bottom: .375rem;
+//            line-height: 1.15;
+//            font-weight: 600;
+//            letter-spacing: 0.05em;
+//            text-transform: uppercase;
+//            font-size: smaller;
+//            color: #982E0A;
+//
+//            .label--tertiary {
+//                color: #5C5956;
+//                text-transform: none;
+//
+//                :last-child {
+//                    margin-bottom: 0;
+//                }
+//            }
+//        }
+//    }
+//    header {
+//        padding-top: 15px;
+//    }
 }

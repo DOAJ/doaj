@@ -6,6 +6,8 @@ var jQuery;
 // dev: 'http://localhost:5004'
 // test: 'https://testdoaj.cottagelabs.com'
 // production: 'https://www.doaj.org'
+
+// TODO: change the value before release!
 let doaj_url = 'https://testdoaj.cottagelabs.com';
 
 /******** Load scripts *********/
