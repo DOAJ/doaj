@@ -51,4 +51,9 @@ all: unset;
     margin-bottom: 0;
     padding: $spacing-01;
   }
+
+   & > * {
+     all: inherit;
+   }
+
 }
