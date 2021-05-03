@@ -57,6 +57,8 @@
     @import "base/logo";
     @import "components/label";
     @import "components/pagination";
+    @import "vendors/_bootstrap.scss";
+
     header {
         padding-top: 15px;
     }
