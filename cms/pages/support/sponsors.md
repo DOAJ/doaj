@@ -5,6 +5,7 @@ title: Contributors (Publishers and Aggregators)
 section: Support
 toc: true
 sticky_sidenav: true
+intro:
 ---
 
 ## Benefits for contributing publishers and aggregators 2021
