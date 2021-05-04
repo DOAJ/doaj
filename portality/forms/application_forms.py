@@ -1208,6 +1208,7 @@ class FieldDefinitions:
                     "value": [
                         "CINES",
                         "CLOCKSS",
+                        "LOCKSS",
                         "Internet Archive",
                         "PKP PN",
                         "PMC",
