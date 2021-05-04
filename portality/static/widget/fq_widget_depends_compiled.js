@@ -6362,6 +6362,12 @@ $.extend(true, doaj, {
         PublicSearchResultRenderer : function(params) {
 
             this.widget = params.widget;
+            if (params.doaj_url) {
+                this.doaj_url = params.doaj_url;
+            }
+            else {
+                this.doaj_url = "https://doaj.url"
+            }
 
             this.actions = edges.getParam(params.actions, []);
 
@@ -6428,15 +6434,15 @@ $.extend(true, doaj, {
             };
 
             this._renderPublicJournal = function(resultobj) {
-                var doaj_url = "http://localhost:5004";
+
                 var seal = "";
                 if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="' + doaj_url + '/apply/seal" class="tag tag--featured" target="_blank">'
+                    seal = '<a href="' + this.doaj_url + '/apply/seal" class="tag tag--featured" target="_blank">'
                     if (this.widget){
-                        seal += '<img src="' + doaj_url + '/static/doaj/images/feather-icons/check-circle.svg" alt="check-circle icon">'
+                        seal += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/check-circle.svg" alt="check-circle icon">'
                     }
                     else {
-                        seal += '<i data-feather="plus" aria-hidden="true"></i>'
+                        seal += '<i data-feather="check-circle" aria-hidden="true"></i>'
                     }
                     seal += 'DOAJ Seal</a>';
                 }
@@ -6543,11 +6549,11 @@ $.extend(true, doaj, {
                         <header>\
                           ' + seal + '\
                           <h3 class="search-results__heading">\
-                            <a href="' + doaj_url + '/toc/' + issn + '" target="_blank">\
+                            <a href="' + this.doaj_url + '/toc/' + issn + '" target="_blank">\
                               ' + edges.escapeHtml(resultobj.bibjson.title) + '\
                               <sup>'
                 if (this.widget){
-                    frag += '<img src="' + doaj_url + '/static/doaj/images/feather-icons/link.svg" alt="link icon">'
+                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/link.svg" alt="link icon">'
                 }
                 else {
                     frag += '<i data-feather="link" aria-hidden="true"></i>'
@@ -6578,10 +6584,10 @@ $.extend(true, doaj, {
                           </li>\
                           ' + articles + '\
                           <li>\
-                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website'
+                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website '
 
                 if (this.widget){
-                    frag += '<img src="' + doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
+                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
                 }
                 else {
                     frag += '<i data-feather="external-link" aria-hidden="true"></i>'
@@ -6606,7 +6612,6 @@ $.extend(true, doaj, {
             };
 
             this._renderPublicArticle = function(resultobj) {
-                var doaj_url = "http://localhost:5004";
                 var journal = resultobj.bibjson.journal ? resultobj.bibjson.journal.title : "";
 
                 var date = "";
@@ -6661,7 +6666,7 @@ $.extend(true, doaj, {
                     abstract = '<h4 class="' + abstractAction + '" type="button" aria-expanded="false" rel="' + resultobj.id + '">\
                             Abstract'
                     if (this.widget){
-                        abstract += '<img src="' + doaj_url + '/static/doaj/images/feather-icons/plus.svg" alt="external-link icon">'
+                        abstract += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/plus.svg" alt="external-link icon">'
                     }
                     else {
                         abstract += '<i data-feather="plus" aria-hidden="true"></i>'
@@ -6727,11 +6732,11 @@ $.extend(true, doaj, {
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
-                          <p class="label"><a href="' + doaj_url + '/toc/' + issns[0] + '" target="_blank">\
+                          <p class="label"><a href="' + this.doaj_url + '/toc/' + issns[0] + '" target="_blank">\
                             ' + edges.escapeHtml(journal) + ' ' + date + '\
                           </a></p>\
                           <h3 class="search-results__heading">\
-                            <a href="' + doaj_url + '/article/' + resultobj.id + '" class="" target="_blank">\
+                            <a href="' + this.doaj_url + '/article/' + resultobj.id + '" class="" target="_blank">\
                               ' + title + '\
                             </a>\
                           </h3>\
@@ -6745,16 +6750,16 @@ $.extend(true, doaj, {
                       <aside class="col-sm-4 search-results__aside">\
                         <ul>\
                           <li>\
-                            <a href="' + ftl + '" target="_blank" rel="noopener"> Read online'
+                            <a href="' + ftl + '" target="_blank" rel="noopener"> Read online '
                 if (this.widget){
-                    frag += '<img src="' + doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
+                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
                 }
                 else {
                     frag += '<i data-feather="external-link" aria-hidden="true"></i>'
                 }
                 frag += '</a></li>\
                           <li>\
-                            <a href="' + doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
+                            <a href="' + this.doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
                           </li>\
                           <li>\
                             ' + published + '\
