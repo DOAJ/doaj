@@ -51,4 +51,17 @@
   "pages/search"
 ;
 
+  img {
+    position: relative;
+    top: 0.1em;
+    height: 0.75em;
+    width: auto;
+    overflow: hidden;
+    vertical-align: initial;
+  }
+
+  button {
+    padding: 0;
+  }
+
 }

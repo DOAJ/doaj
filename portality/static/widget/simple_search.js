@@ -16,16 +16,16 @@ let doaj_url = 'http://localhost:5004';
 
     let head = document.head || document.getElementsByTagName('head')[0];
 
-    let scr  = document.createElement('script');
+    let scr = document.createElement('link');
+    scr.rel = 'stylesheet';
+    scr.href = doaj_url + '/static/doaj/css/simple_widget.css';
+    head.appendChild(scr);
+
+    scr  = document.createElement('script');
     scr.src = doaj_url + '/static/vendor/feather/feather.min.js';
 //scr.src = 'https://unpkg.com/feather-icons';
     scr.async = false;
     scr.defer = false;
-    head.appendChild(scr);
-
-    scr = document.createElement('link');
-    scr.rel = 'stylesheet';
-    scr.href = doaj_url + '/static/doaj/css/simple_widget.css';
     head.appendChild(scr);
 
 
@@ -92,7 +92,7 @@ let doaj_url = 'http://localhost:5004';
             <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
             <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
             <button class="input-group__input" type="submit">
-                <span data-feather="search" aria-hidden="true"></span><span class="sr-only"> Search</span>
+                <img src="` + doaj_url + `/static/doaj/images/feather-icons/search.svg" alt="search icon">
             </button>
         </div>
         <input type="hidden" name="origin" value="ui"/>
