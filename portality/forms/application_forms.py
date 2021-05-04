@@ -1202,7 +1202,21 @@ class FieldDefinitions:
             {"field": "preservation_service", "value": "other"}
         ],
         "validate": [
-            {"required_if": {"field": "preservation_service", "value": ["CINES", "CLOCKSS", "Internet Archive", "PKP PN", "PMC", "Portico", "national_library", "other"]}},
+            {
+                "required_if": {
+                    "field": "preservation_service",
+                    "value": [
+                        "CINES",
+                        "CLOCKSS",
+                        "Internet Archive",
+                        "PKP PN",
+                        "PMC",
+                        "Portico",
+                        "national_library",
+                        "other"
+                    ]
+                }
+            },
             "is_url"
         ],
         "widgets": [
@@ -1287,13 +1301,35 @@ class FieldDefinitions:
         "contexts" : {
             "public" : {
                 "validate": [
-                    {"required_if": {"field": "deposit_policy", "value": ["Sherpa/Romeo", "Dulcinea", "Héloïse", "Diadorim", "other"]}},
+                    {
+                        "required_if": {
+                            "field": "deposit_policy",
+                            "value": [
+                                "Sherpa/Romeo",
+                                "Dulcinea",
+                                "Héloïse",
+                                "Diadorim",
+                                "other"
+                            ]
+                        }
+                    },
                     "is_url"
                 ]
             },
             "update_request" : {
                 "validate" : [
-                    {"required_if": {"field": "deposit_policy", "value": ["Sherpa/Romeo", "Dulcinea", "Héloïse", "Diadorim", "other"]}},
+                    {
+                        "required_if": {
+                            "field": "deposit_policy",
+                            "value": [
+                                "Sherpa/Romeo",
+                                "Dulcinea",
+                                "Héloïse",
+                                "Diadorim",
+                                "other"
+                            ]
+                        }
+                    },
                     "is_url"
                 ]
             }
