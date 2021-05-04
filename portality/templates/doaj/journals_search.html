@@ -8,23 +8,23 @@
 
 {% block content %}
 <style type="text/css">
-.overlay {
-    background-color: #ffffff;
-    opacity: 1;
-    width: 100%;
-    height: auto;
-    bottom: 0;
-    top: 0;
-    left: 0;
-    position: fixed;
-    z-index: 10000
+/* Move this utility selector to _utils.scss before .flex-end */
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.overlay .loading {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+/* Move this to either _utils.scss or create its own component file in components/_overlay.scss */
+.overlay {
+  position: fixed;
+  opacity: 1;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1080;
+  background-color: #FEFBF8; /* Replace with $warm-white var */
+  top: 0;
+  left: 0;
 }
 </style>
 

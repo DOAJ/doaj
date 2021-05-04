@@ -31,13 +31,13 @@ $.extend(true, doaj, {
             this.draw = function () {
 
                 if (this.component.searching) {
-                    this.component.context.addClass("overlay");
+                    this.component.context.addClass("overlay flex-center");
                     this.component.context.css("opacity", "0.5");
                     var frag = `<div class='loading'>
                         <div></div>
                         <div></div>
                         <div></div>
-                        <span class='sr-only'>Loading results…</span> 
+                        <span class='sr-only'>Loading results…</span>
                       </div>`
                     this.component.context.html(frag);
 
@@ -52,7 +52,7 @@ $.extend(true, doaj, {
                         {
                             duration: 1000,
                             always: function() {
-                                that.component.context.removeClass("overlay");
+                                that.component.context.removeClass("overlay flex-center");
                                 that.component.context.html("");
                             }
                         }
