@@ -2182,7 +2182,7 @@ $.extend(true, doaj, {
                     else {
                         seal += '<i data-feather="check-circle" aria-hidden="true"></i>'
                     }
-                    seal += 'DOAJ Seal</a>';
+                    seal += ' DOAJ Seal</a>';
                 }
                 var issn = resultobj.bibjson.pissn;
                 if (!issn) {
