@@ -126,7 +126,7 @@ $.extend(true, doaj, {
                 edges.newResultsDisplay({
                     id: "results",
                     category: "results",
-                    renderer : doaj.renderers.newPublicSearchResultRenderer()
+                    renderer : doaj.renderers.newPublicSearchResultRenderer({widget: true})
                 }),
             ];
 

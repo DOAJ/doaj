@@ -9,30 +9,32 @@
 
     /******** Load scripts *********/
 
-    let head = document.head || document.getElementsByTagName('head')[0];
+    function loadCustomScript() {
+        let head = document.head || document.getElementsByTagName('head')[0];
 
-    let scr  = document.createElement('script');
-    scr.src = 'https://unpkg.com/feather-icons';
-    scr.async = false;
-    scr.defer = false;
-    head.appendChild(scr);
+        let scr = document.createElement('link');
+        scr.rel = 'stylesheet';
+        scr.href = doaj_url + '/static/doaj/css/fq_widget.css';
+        head.appendChild(scr);
 
-    scr  = document.createElement('script');
-    scr.src = doaj_url + '/static/widget/fq_widget_depends_compiled.js';
-    scr.async = false;
-    scr.defer = false;
-    head.appendChild(scr);
+        scr = document.createElement('script');
+        scr.src = doaj_url + '/static/vendor/feather/feather.min.js';
+        scr.async = false;
+        scr.defer = false;
+        head.appendChild(scr);
 
-    scr  = document.createElement('script');
-    scr.src = doaj_url + '/static/widget/fixed_query_src.js';
-    scr.async = false;
-    scr.defer = false;
-    head.appendChild(scr);
+        scr = document.createElement('script');
+        scr.src = doaj_url + '/static/widget/fq_widget_depends_compiled.js';
+        scr.async = false;
+        scr.defer = false;
+        head.appendChild(scr);
 
-    scr = document.createElement('link');
-    scr.rel = 'stylesheet';
-    scr.href = doaj_url + '/static/doaj/css/fq_widget.css';
-    head.appendChild(scr);
+        scr = document.createElement('script');
+        scr.src = doaj_url + '/static/widget/fixed_query_src.js';
+        scr.async = false;
+        scr.defer = false;
+        head.appendChild(scr);
+    }
 
 
     /******** Load jQuery if not present *********/
@@ -68,6 +70,7 @@
 
     /******** Our main function ********/
     function main() {
+        loadCustomScript();
         $(document).ready(function($) {
 
             $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));

@@ -108,9 +108,16 @@ cms/data/frontmatter.yml*
 cms/components
 cms/error_fragments.txt
 cms/error_sass.txt
-portality/static/doaj/css/main.css*
-portality/static/doaj/css/fq_widget.css*
-portality/static/doaj/css/simple_widget.css*
+cms/error_fqw_sass.txt
+cms/fragments*
+portality/static/doaj/css/*.css
+portality/static/doaj/css/*.css.map
 
-cms/sass/main.css
-cms/sass/main.css.map
+
+cms/sass/*.css
+cms/sass/*.css.map
+
+portality/static/widget/fq_widget_build_info.txt
+
+
+

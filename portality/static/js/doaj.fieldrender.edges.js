@@ -2099,6 +2099,8 @@ $.extend(true, doaj, {
         },
         PublicSearchResultRenderer : function(params) {
 
+            this.widget = params.widget;
+
             this.actions = edges.getParam(params.actions, []);
 
             this.namespace = "doaj-public-search";
@@ -2164,13 +2166,17 @@ $.extend(true, doaj, {
             };
 
             this._renderPublicJournal = function(resultobj) {
-                var doaj_url = "https://doaj.org";
+                var doaj_url = "http://localhost:5004";
                 var seal = "";
                 if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="' + doaj_url + '/apply/seal" class="tag tag--featured" target="_blank">\
-                            <span data-feather="check-circle" aria-hidden="true"></span>\
-                            DOAJ Seal\
-                          </a>';
+                    seal = '<a href="' + doaj_url + '/apply/seal" class="tag tag--featured" target="_blank">'
+                    if (this.widget){
+                        seal += '<img src="' + doaj_url + '/static/doaj/images/feather-icons/check-circle.svg" alt="check-circle icon">'
+                    }
+                    else {
+                        seal += '<i data-feather="check-circle" aria-hidden="true"></i>'
+                    }
+                    seal += 'DOAJ Seal</a>';
                 }
                 var issn = resultobj.bibjson.pissn;
                 if (!issn) {
@@ -2242,7 +2248,7 @@ $.extend(true, doaj, {
                         var license_url = lic.url || terms_url;
                         licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + edges.escapeHtml(lic.type) + '</a>';
                         if (i != (resultobj.bibjson.license.length-1)) {
-                          licenses += ', ';
+                            licenses += ', ';
                         }
                     }
                 }
@@ -2277,9 +2283,16 @@ $.extend(true, doaj, {
                           <h3 class="search-results__heading">\
                             <a href="' + doaj_url + '/toc/' + issn + '" target="_blank">\
                               ' + edges.escapeHtml(resultobj.bibjson.title) + '\
-                              <sup>\
-                                <span data-feather="link" aria-hidden="true"></span>\
-                              </sup>\
+                              <sup>'
+                if (this.widget){
+                    frag += '<img src="' + doaj_url + '/static/doaj/images/feather-icons/link.svg" alt="link icon">'
+                }
+                else {
+                    frag += '<i data-feather="link" aria-hidden="true"></i>'
+                }
+
+
+                frag +='</sup>\
                             </a>\
                             ' + subtitle + '\
                           </h3>\
@@ -2303,8 +2316,18 @@ $.extend(true, doaj, {
                           </li>\
                           ' + articles + '\
                           <li>\
-                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>\
-                          </li>\
+                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website '
+
+                if (this.widget){
+                    frag += '<img src="' + doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
+                }
+                else {
+                    frag += '<i data-feather="external-link" aria-hidden="true"></i>'
+                }
+
+
+
+                frag += '</a></li>\
                           <li>\
                             ' + apcs + '\
                           </li>\
@@ -2321,7 +2344,7 @@ $.extend(true, doaj, {
             };
 
             this._renderPublicArticle = function(resultobj) {
-                var doaj_url = "https://doaj.org";
+                var doaj_url = "http://localhost:5004";
                 var journal = resultobj.bibjson.journal ? resultobj.bibjson.journal.title : "";
 
                 var date = "";
@@ -2374,9 +2397,14 @@ $.extend(true, doaj, {
                     var abstractText = edges.css_classes(this.namespace, "abstracttext", this);
 
                     abstract = '<h4 class="' + abstractAction + '" type="button" aria-expanded="false" rel="' + resultobj.id + '">\
-                            Abstract\
-                            <span data-feather="plus" aria-hidden="true"></span>\
-                          </h4>\
+                            Abstract'
+                    if (this.widget){
+                        abstract += '<img src="' + doaj_url + '/static/doaj/images/feather-icons/plus.svg" alt="external-link icon">'
+                    }
+                    else {
+                        abstract += '<i data-feather="plus" aria-hidden="true"></i>'
+                    }
+                    abstract += '</h4>\
                           <p rel="' + resultobj.id + '" class="collapse ' + abstractText + '" aria-expanded="false">\
                             ' + edges.escapeHtml(resultobj.bibjson.abstract) + '\
                           </p>';
@@ -2455,8 +2483,14 @@ $.extend(true, doaj, {
                       <aside class="col-sm-4 search-results__aside">\
                         <ul>\
                           <li>\
-                            <a href="' + ftl + '" target="_blank" rel="noopener">Read online <span data-feather="external-link" aria-hidden="true"></span></a>\
-                          </li>\
+                            <a href="' + ftl + '" target="_blank" rel="noopener"> Read online '
+                if (this.widget){
+                    frag += '<img src="' + doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
+                }
+                else {
+                    frag += '<i data-feather="external-link" aria-hidden="true"></i>'
+                }
+                frag += '</a></li>\
                           <li>\
                             <a href="' + doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
                           </li>\
@@ -2774,7 +2808,7 @@ $.extend(true, doaj, {
                 var deleteLinkUrl = deleteLinkTemplate.replace("__application_id__", resultobj.id);
                 var deleteClass = edges.css_classes(this.namespace, "delete", this);
                 if (resultobj.es_type === "draft_application" ||
-                        resultobj.admin.application_status === "update_request") {
+                    resultobj.admin.application_status === "update_request") {
                     deleteLink = '<li class="tag">\
                         <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-update-request" class="' + deleteClass + '"\
                             data-title="' + titleText + '">\
