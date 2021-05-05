@@ -45,12 +45,12 @@
   }
 
   .page-header {
-    background-color: $warm-black;
+    background-color: $warm-white;
     background-image: url('/static/doaj/images/pattern.png');
     background-size: 20%;
     background-position: right;
     background-repeat: repeat-y;
-    color: $warm-white;
+    color: $warm-black;
 
     a, .dropdown__trigger, input[type="checkbox"]+label, input[type="radio"]+label, .stat__description {
       color: currentColor;
@@ -61,11 +61,11 @@
     }
 
     .label, input[type="checkbox"]:checked+label, input[type="radio"]:checked+label {
-      color: #A3C386;
+      color: #47A178;
     }
 
     input[type="checkbox"]:checked+label::before, input[type="radio"]:checked+label::before {
-      background: #A3C386;
+      background: #47A178;
     }
 
     button[type="submit"] {
