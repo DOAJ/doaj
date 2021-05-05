@@ -61,11 +61,16 @@
     }
 
     .label, input[type="checkbox"]:checked+label, input[type="radio"]:checked+label {
-      color: $grapefruit;
+      color: #A3C386;
     }
 
     input[type="checkbox"]:checked+label::before, input[type="radio"]:checked+label::before {
-      background: $grapefruit;
+      background: #A3C386;
+    }
+
+    button[type="submit"] {
+      border: 1px solid $warm-black;
+      background-color: #F9D950;
     }
   }
 
