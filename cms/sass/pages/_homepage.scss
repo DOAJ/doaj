@@ -8,7 +8,8 @@
   }
 
   .secondary-nav {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba($warm-black, .5);
+    color: $warm-white;
 
     .nav-bar {
       border: 0;
@@ -44,10 +45,28 @@
   }
 
   .page-header {
-    background-color: #F8F3EF;
-    background-image: url('/static/doaj/images/bg/01.jpeg');
-    background-size: cover;
-    background-blend-mode: multiply;
+    background-color: $warm-black;
+    background-image: url('/static/doaj/images/pattern.png');
+    background-size: 20%;
+    background-position: right;
+    background-repeat: repeat-y;
+    color: $warm-white;
+
+    a, .dropdown__trigger, input[type="checkbox"]+label, input[type="radio"]+label, .stat__description {
+      color: currentColor;
+    }
+
+    input[type="checkbox"]+label::before, input[type="radio"]+label::before {
+      border-color: currentColor;
+    }
+
+    .label, input[type="checkbox"]:checked+label, input[type="radio"]:checked+label {
+      color: $grapefruit;
+    }
+
+    input[type="checkbox"]:checked+label::before, input[type="radio"]:checked+label::before {
+      background: $grapefruit;
+    }
   }
 
   .page-content > section {
@@ -56,6 +75,8 @@
   }
 
   &__search {
+    padding-top: $spacing-05;
+    padding-bottom: $spacing-06;
 
     .input-group input[type="text"] {
       width: 40%;
