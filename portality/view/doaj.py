@@ -571,7 +571,7 @@ def bestpractice(cc=None):
 
 @blueprint.route("/suggest", methods=['GET'])
 def suggest():
-    return redirect(url_for('.suggestion', **request.args), code=301)
+    return redirect(url_for('apply.public_application', **request.args), code=301)
 
 
 @blueprint.route("/membership")
