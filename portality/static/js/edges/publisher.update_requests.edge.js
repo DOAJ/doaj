@@ -42,6 +42,12 @@ $.extend(true, doaj, {
             });
 
             var components = [
+                edges.newSearchingNotification({
+                    id: "searching-notification",
+                    finishedEvent: "edges:post-render",
+                    renderer : doaj.renderers.newSearchingNotificationRenderer()
+                }),
+
                 // facets
                 edges.newORTermSelector({
                     id: "application_status",
@@ -146,40 +152,10 @@ $.extend(true, doaj, {
                     },
                     "edges:post-init" : function() {
                         feather.replace();
-                    },
-                    "edges:post-render" : function() {
-                        feather.replace();
-                        doaj.scroller(selector);
                     }
                 }
             });
             doaj.publisherUpdatesSearch.activeEdges[selector] = e;
-
-            // $(selector).on("edges:post-render", function () {
-            //     $(".delete_suggestion_link").unbind("click").click(function (event) {
-            //         event.preventDefault();
-            //
-            //         function success_callback(data) {
-            //             alert("The update request was successfully deleted");
-            //             doaj.publisherUpdatesSearch.activeEdges[selector].cycle();
-            //         }
-            //
-            //         function error_callback() {
-            //             alert("There was an error deleting the update request")
-            //         }
-            //
-            //         var c = confirm("Are you really really sure?  You can't undo this operation!");
-            //         if (c) {
-            //             var href = $(this).attr("href");
-            //             $.ajax({
-            //                 type: "DELETE",
-            //                 url: href,
-            //                 success: success_callback,
-            //                 error: error_callback
-            //             })
-            //         }
-            //     });
-            // });
         }
     }
 });

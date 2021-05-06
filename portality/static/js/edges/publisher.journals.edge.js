@@ -36,6 +36,12 @@ $.extend(true, doaj, {
             });
 
             var components = [
+                edges.newSearchingNotification({
+                    id: "searching-notification",
+                    finishedEvent: "edges:post-render",
+                    renderer : doaj.renderers.newSearchingNotificationRenderer()
+                }),
+
                 edges.newPager({
                     id: "result-count",
                     category: "pager",
@@ -209,10 +215,6 @@ $.extend(true, doaj, {
                     },
                     "edges:post-init" : function() {
                         feather.replace();
-                    },
-                    "edges:post-render" : function() {
-                        feather.replace();
-                        doaj.scroller(selector);
                     }
                 }
             });

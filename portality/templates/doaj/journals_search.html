@@ -7,27 +7,6 @@
 {% block meta_description %}Find open acccess journals in DOAJ.{% endblock %}
 
 {% block content %}
-<style type="text/css">
-/* Move this utility selector to _utils.scss before .flex-end */
-.flex-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Move this to either _utils.scss or create its own component file in components/_overlay.scss */
-.overlay {
-  position: fixed;
-  opacity: 1;
-  width: 100vw;
-  height: 100vh;
-  z-index: 1080;
-  background-color: #FEFBF8; /* Replace with $warm-white var */
-  top: 0;
-  left: 0;
-}
-</style>
-
     <main class="container page-content">
         <div id="public-journal-search"></div>
         {% include "includes/search-help-modal.html" %}

@@ -1,4 +1,14 @@
 /* Utilities */
+.overlay {
+  position: fixed;
+  opacity: 1;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1080;
+  background-color: $warm-white;
+  top: 0;
+  left: 0;
+}
 
 @mixin unstyled-list($inline: false) {
   padding-left: 0;
@@ -121,6 +131,12 @@
 
 .stroke-bronze {
   stroke: $bronze;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .flex-end {

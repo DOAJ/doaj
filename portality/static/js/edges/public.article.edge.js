@@ -31,6 +31,12 @@ $.extend(true, doaj, {
             });
 
             var components = [
+                edges.newSearchingNotification({
+                    id: "searching-notification",
+                    finishedEvent: "edges:post-render",
+                    renderer : doaj.renderers.newSearchingNotificationRenderer()
+                }),
+
                 edges.newFullSearchController({
                     id: "search-input-bar",
                     category: "controller",
@@ -225,10 +231,6 @@ $.extend(true, doaj, {
                     },
                     "edges:post-init" : function() {
                         feather.replace();
-                    },
-                    "edges:post-render" : function() {
-                        feather.replace();
-                        doaj.scroller(selector);
                     }
                 }
             });

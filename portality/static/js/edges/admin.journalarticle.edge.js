@@ -107,6 +107,12 @@ $.extend(true, doaj, {
             });
 
             var components = [
+                edges.newSearchingNotification({
+                    id: "searching-notification",
+                    finishedEvent: "edges:post-render",
+                    renderer : doaj.renderers.newSearchingNotificationRenderer()
+                }),
+
                 // facets
                 edges.newRefiningANDTermSelector({
                     id: "journals_articles",
@@ -545,12 +551,6 @@ $.extend(true, doaj, {
                             "F" : "False"
                         }
                     }
-                }),
-
-                // the standard searching notification
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    category: "searching-notification"
                 })
             ];
 
@@ -563,9 +563,6 @@ $.extend(true, doaj, {
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
-                    },
-                    "edges:post-render" : function() {
-                        doaj.scroller(selector);
                     }
                 }
             });

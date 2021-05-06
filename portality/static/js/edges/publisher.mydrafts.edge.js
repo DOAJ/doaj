@@ -70,10 +70,6 @@ $.extend(true, doaj, {
                     },
                     "edges:post-init" : function() {
                         feather.replace();
-                    },
-                    "edges:post-render" : function() {
-                        feather.replace();
-                        doaj.scroller(selector);
                     }
                 }
             });

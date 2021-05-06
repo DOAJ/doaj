@@ -140,6 +140,12 @@ $.extend(true, doaj, {
             });
 
             var components = [
+                edges.newSearchingNotification({
+                    id: "searching-notification",
+                    finishedEvent: "edges:post-render",
+                    renderer : doaj.renderers.newSearchingNotificationRenderer()
+                }),
+
                 // facets
                 edges.newRefiningANDTermSelector({
                     id: "action",
@@ -242,12 +248,6 @@ $.extend(true, doaj, {
                         'user.exact' : 'Submitted By',
                         'status.exact' : 'Status'
                     }
-                }),
-
-                // the standard searching notification
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    category: "searching-notification"
                 })
             ];
 
@@ -263,9 +263,6 @@ $.extend(true, doaj, {
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
-                    },
-                    "edges:post-render" : function() {
-                        doaj.scroller(selector);
                     }
                 }
             });

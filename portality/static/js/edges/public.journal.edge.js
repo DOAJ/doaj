@@ -342,21 +342,12 @@ $.extend(true, doaj, {
                 }),
                 components : components,
                 callbacks : {
-                    // "edges:pre-query" : function() {
-                    //     $(selector).css("opacity", "0.3");
-                    // },
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
                     },
                     "edges:post-init" : function() {
                         feather.replace();
-                    },
-                    // "edges:post-render" : function() {
-                    //     feather.replace();
-                    //     doaj.scroller(selector, true, 1, function() {
-                    //         $(selector).css("opacity", "1");
-                    //     });
-                    // }
+                    }
                 }
             });
             doaj.publicSearch.activeEdges[selector] = e;
