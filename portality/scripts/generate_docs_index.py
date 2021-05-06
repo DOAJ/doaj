@@ -27,7 +27,7 @@ def generate_global_index(file, dir):
                     continue
                 md += "* [{x}/{y}]({x}/{y}/README.md)".format(x=entry, y=leaf)
         else:
-            md += "* [{x}]({x}.README.md)".format(x=entry)
+            md += "* [{x}]({x}/README.md)".format(x=entry)
 
     with open(file, "w", encoding="utf-8") as f:
         f.write(md)
