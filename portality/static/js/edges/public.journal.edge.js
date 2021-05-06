@@ -17,117 +17,6 @@ $.extend(true, doaj, {
             return snip;
         },
 
-        newSearchingNotificationRenderer: function (params) {
-            return edges.instantiate(doaj.publicSearch.SearchingNotificationRenderer, params, edges.newRenderer);
-        },
-        SearchingNotificationRenderer: function (params) {
-            // namespace to use in the page
-            this.namespace = "doaj-notification";
-
-            this.searching = false;
-
-            this.finishQueued = false;
-
-            this.draw = function () {
-
-                if (this.component.searching) {
-                    this.component.context.addClass("overlay flex-center");
-                    this.component.context.css("opacity", "0.5");
-                    var frag = `<div class='loading'>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <span class='sr-only'>Loading results…</span>
-                      </div>`
-                    this.component.context.html(frag);
-
-                    // this.component.context[0].scrollIntoView(true)
-                    window.scrollTo(0, this.component.edge.context.offset().top);
-                } else {
-                    let that = this;
-                    this.component.context.animate(
-                        {
-                            opacity: "0",
-                        },
-                        {
-                            duration: 1000,
-                            always: function() {
-                                that.component.context.removeClass("overlay flex-center");
-                                that.component.context.html("");
-                            }
-                        }
-                    );
-                    // this.component.context.removeClass("overlay");
-                    // this.component.context.html("");
-                    // this.component.edge.context.css("opacity", "1")
-                }
-
-                // if the component called us to draw the "I'm finished searching" state
-                // but we are still doing the searching transition, then we need to queue
-                // up the finish operation
-                // if (!this.component.searching && this.searching) {
-                //     this.finishQueued = true;
-                //     return;
-                // }
-
-                // let that = this;
-                // if (this.component.searching) {
-                //     this.searching = true
-                //
-                //     // this.component.edge.context.css("opacity", "0.3");
-                //     var frag = `<div class='loading'>
-                //         <div></div>
-                //         <div></div>
-                //         <div></div>
-                //         <span class='sr-only'>Loading results…</span>
-                //       </div>`
-                //     this.component.context.html(frag);
-                //
-                //     this.component.context.addClass("overlay");
-                //     this.component.edge.context.animate(
-                //         {
-                //             opacity: "0.3",
-                //         },
-                //         {
-                //             duration: 1,
-                //             always : function() {
-                //                 $("html, body").animate(
-                //                     {
-                //                         scrollTop: that.component.edge.context.offset().top
-                //                     },
-                //                     {
-                //                         duration: 1,
-                //                         always:  function() {
-                //                             that.searching = false;
-                //                             if (that.finishQueued) {
-                //                                 that.draw();
-                //                             }
-                //                         }
-                //                     }
-                //                 )
-                //             }
-                //         }
-                //     );
-                //
-                //
-                // } else {
-                //     this.component.edge.context.animate(
-                //         {
-                //             opacity: "1",
-                //         },
-                //         {
-                //             duration: 1000,
-                //             always: function() {
-                //                 that.component.context.removeClass("overlay");
-                //                 that.component.context.html("");
-                //                 that.finishQueued = false;
-                //             }
-                //         }
-                //     );
-                // }
-            }
-        },
-
         init : function(params) {
             if (!params) { params = {} }
 
@@ -145,9 +34,7 @@ $.extend(true, doaj, {
                 edges.newSearchingNotification({
                     id: "searching-notification",
                     finishedEvent: "edges:post-render",
-                    renderer : doaj.publicSearch.newSearchingNotificationRenderer({
-
-                    })
+                    renderer : doaj.renderers.newSearchingNotificationRenderer()
                 }),
                 edges.newFullSearchController({
                     id: "search-input-bar",

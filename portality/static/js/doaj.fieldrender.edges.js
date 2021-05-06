@@ -190,6 +190,50 @@ $.extend(true, doaj, {
     },
 
     renderers : {
+        newSearchingNotificationRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.SearchingNotificationRenderer, params, edges.newRenderer);
+        },
+        SearchingNotificationRenderer: function (params) {
+
+            this.scrollTarget = edges.getParam(params.scrollTarget, "body");
+
+            // namespace to use in the page
+            this.namespace = "doaj-notification";
+
+            this.searching = false;
+
+            this.draw = function () {
+
+                if (this.component.searching) {
+                    this.component.context.addClass("overlay flex-center");
+                    this.component.context.css("opacity", "0.5");
+                    var frag = `<div class='loading'>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <span class='sr-only'>Loading results…</span>
+                      </div>`
+                    this.component.context.html(frag);
+                    let offset = $(this.scrollTarget).offset().top
+                    window.scrollTo(0, offset);
+                } else {
+                    let that = this;
+                    this.component.context.animate(
+                        {
+                            opacity: "0",
+                        },
+                        {
+                            duration: 1000,
+                            always: function() {
+                                that.component.context.removeClass("overlay flex-center");
+                                that.component.context.html("");
+                            }
+                        }
+                    );
+                }
+            }
+        },
+
         newSubjectBrowser : function(params) {
             return edges.instantiate(doaj.renderers.SubjectBrowser, params, edges.newRenderer);
         },
