@@ -1,0 +1,125 @@
+/* Buttons */
+
+[type="button"],
+[role="button"] {
+  cursor: pointer;
+}
+
+button,
+input[type="button"],
+.button {
+  padding: $spacing-02 $spacing-03;
+  margin: 0 0 $spacing-04 0;
+  transition: all 0.15s ease;
+  width: auto;
+  border: 1px solid $warm-black;
+  background: $fair-pink;
+  cursor: pointer;
+  vertical-align: middle;
+  white-space: normal;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-align: center;
+  font-size: smaller;
+  color: $warm-black;
+
+  &:hover,
+  &:active,
+  &:focus {
+    border-color: $warm-black;
+    background-color: $warm-black;
+    color: $warm-white;
+  }
+
+  .feather {
+    position: relative;
+    top: 0.1em;
+    height: 0.75em;
+  }
+
+  + .button {
+    margin-left: $spacing-03;
+  }
+}
+
+input[type="submit"],
+button[type="submit"] {
+  background-color: $warm-black;
+  color: $warm-white;
+}
+
+button:disabled,
+button[disabled],
+input[disabled],
+.button[disabled] {
+  background-color: rgba($dark-grey, 0.15);
+  border: 0;
+  color: $warm-black;
+  box-shadow: none;
+  font-style: italic;
+  cursor: not-allowed;
+}
+
+input[disabled] + label {
+  color: rgba($dark-grey, 0.5)
+}
+
+// "Flat 3D"-style buttons for primary buttons only
+.button--primary {
+  position: relative;
+  left: 0;
+  top: 0;
+  transition: all 0.15s ease;
+  border-color: $sanguine;
+  box-shadow: $spacing-01 $spacing-01 0 0 $sanguine;
+  background-color: $warm-white;
+  color: $sanguine;
+
+  &:hover,
+  &:active,
+  &:focus {
+    left: $spacing-01;
+    top: $spacing-01;
+    box-shadow: 0 0 0 0 $sanguine;
+    background-color: $sanguine;
+    border-color: $sanguine;
+  }
+}
+
+.button--cta,
+input[type="submit"],
+button[type="submit"] {
+  background-color: $grapefruit;
+  border-color: $grapefruit;
+  color: $warm-black;
+
+  &:hover,
+  &:active,
+  &:focus {
+    background-color: $grapefruit;
+    border-color: $grapefruit;
+    color: $warm-black;
+  }
+}
+
+.button--secondary,
+input[type="submit"].button--secondary,
+button[type="submit"].button--secondary {
+  position: relative;
+  left: 0;
+  top: 0;
+  transition: all 0.15s ease;
+  border-color: $warm-black;
+  background-color: $fair-pink;
+  box-shadow: $spacing-01 $spacing-01 0 0 $warm-black;
+  color: $warm-black;
+
+  &:hover,
+  &:active,
+  &:focus {
+    left: $spacing-01;
+    top: $spacing-01;
+    box-shadow: 0 0 0 0 $warm-black;
+  }
+}

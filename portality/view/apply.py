@@ -14,12 +14,12 @@ blueprint = Blueprint('apply', __name__)
 
 @blueprint.route("/thank-you", methods=["GET"])
 def application_thanks():
-    return render_template("layouts/static_page.html", page_frag="/apply/thank-you-fragment/index.html", page_title="Thank you")
+    return render_template("layouts/static_page.html", page_frag="/apply/thank-you.html")
 
 
 @blueprint.route("/draft", methods=["GET"])
 def draft_saved():
-    return render_template("layouts/static_page.html", page_frag="doaj/draft_saved.html", page_title="Draft saved")
+    return render_template("layouts/static_page.html", page_frag="/apply/draft_saved.html")
 
 
 @blueprint.route("/", methods=["GET", "POST"])

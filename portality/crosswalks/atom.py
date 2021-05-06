@@ -31,8 +31,6 @@ class AtomCrosswalk(object):
 
         if b.publisher is not None:
             entry["author"] = b.publisher
-        elif b.provider is not None:
-            entry["author"] = b.provider
         else:
             entry["author"] = app.config.get("SERVICE_NAME")
 

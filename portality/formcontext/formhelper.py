@@ -151,10 +151,10 @@ class FormHelperBS3(object):
             #    extra_input_fields[field.value](**{"class" : "extra_input_field"})
 
         if field.errors:
-            frag += '<ul class="errors">'
+            frag += '<div class="alert alert--danger"><ul>'
             for error in field.errors:
                 frag += '<li>' + error + '</li>'
-            frag += "</ul>"
+            frag += "</ul></div>"
 
         if field.description:
             frag += '<p class="help-block">' + field.description + '</p>'

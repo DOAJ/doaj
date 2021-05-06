@@ -121,17 +121,7 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
-
-                edges.newFullSearchController({
-                    id: "share_embed",
-                    category: "controller",
-                    urlShortener : doaj.bitlyShortener,
-                    embedSnippet : doaj.publicToC.embedSnippet,
-                    renderer: doaj.renderers.newShareEmbedRenderer({
-                        shareLinkText: '<span data-feather="share-2" aria-hidden="true"></span> Share or embed'
-                    })
-                }),
-
+                
                 edges.newFullSearchController({
                     id: "sort_by",
                     category: "controller",

@@ -1,0 +1,9 @@
+{% set entry = data.nav.entries|selectattr("id", "equalto", section_id)|first %}
+<div class="col-xs-6 col-sm-4 col-lg-2">
+    <h2>
+        {{ entry.label }}
+    </h2>
+    <ul>
+        {% include "includes/menu-items.html" %}
+    </ul>
+</div>

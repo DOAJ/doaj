@@ -1,5 +1,6 @@
 import os
 import threading
+import yaml
 
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
@@ -37,6 +38,7 @@ def create_app():
     initialise_apm(app)
     DebugToolbarExtension(app)
     proxyfix(app)
+    build_statics(app)
     return app
 
 
@@ -195,11 +197,9 @@ def setup_jinja(app):
     app.jinja_env.globals['getattr'] = getattr
     app.jinja_env.globals['type'] = type
     app.jinja_env.globals['constants'] = constants
+    _load_data(app)
     app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates',
-                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_site',
-                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_includes',
-                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/static_content/_layouts'])
-
+                                             os.path.dirname(app.config['BASE_FILE_PATH']) + '/cms/fragments'])
 
     # a jinja filter that prints to the Flask log
     def jinja_debug(text):
@@ -207,6 +207,31 @@ def setup_jinja(app):
         return ''
     app.jinja_env.filters['debug']=jinja_debug
 
+
+def _load_data(app):
+    if not "data" in app.jinja_env.globals:
+        app.jinja_env.globals["data"] = {}
+    datadir = os.path.join(app.config["BASE_FILE_PATH"], "..", "cms", "data")
+    for datafile in os.listdir(datadir):
+        with open(os.path.join(datadir, datafile)) as f:
+            data = yaml.load(f, Loader=yaml.FullLoader)
+        dataname = datafile.split(".")[0]
+        dataname = dataname.replace("-", "_")
+        app.jinja_env.globals["data"][dataname] = data
+
+
+def build_statics(app):
+    if not app.config.get("DEBUG", False):
+        return
+    from portality.cms import build_fragments, build_sass
+
+    here = os.path.dirname(os.path.abspath(__file__))
+    base_path = os.path.dirname(here)
+
+    print("Compiling static content")
+    build_fragments.build(base_path)
+    print("Compiling SASS")
+    build_sass.build(base_path)
 
 app = create_app()
 es_connection = create_es_connection(app)
