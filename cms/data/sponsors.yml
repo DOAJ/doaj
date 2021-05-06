@@ -26,6 +26,10 @@ silver:
   url: https://www.apa.org/pubs
   logo: apa.png
 
+- name: Cappelen Damm Akademisk
+  url: https://www.cappelendammundervisning.no/
+  logo: CDA.jpg
+
 - name: Copernicus Publications
   url: https://publications.copernicus.org
   logo: copernicus.svg
