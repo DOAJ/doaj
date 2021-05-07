@@ -23,3 +23,4 @@ default "";
 /news https://blog.doaj.org;
 ~/admin/suggestions(?<q>.*) /admin/applications$q;
 ~/admin/suggestion/(?<id>.*) /admin/application/$id;
+/suggest /apply
