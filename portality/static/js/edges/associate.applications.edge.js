@@ -144,7 +144,7 @@ $.extend(true, doaj, {
                     id: "search-controller",
                     category: "controller",
                     sortOptions: [
-                        {'display':'Date applied','field':'suggestion.suggested_on'},
+                        {'display':'Date applied','field':'admin.date_applied'},
                         {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
                         {'display':'Title','field':'index.unpunctitle.exact'}
                     ],

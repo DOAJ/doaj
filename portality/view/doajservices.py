@@ -16,6 +16,11 @@ blueprint = Blueprint('doajservices', __name__)
 @ssl_required
 @write_required()
 def unlock(object_type, object_id):
+    # change from suggestion to application after redesign, that needs refactoring to make the code consistent
+    # that if is only for quick hotfix to make sure the functionality works
+    if object_type == "application":
+        object_type = "suggestion"
+
     # first figure out if we are allowed to even contemplate this action
     if object_type not in ["journal", "suggestion"]:
         abort(404)

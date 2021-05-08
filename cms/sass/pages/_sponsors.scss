@@ -3,10 +3,7 @@
 .sponsor {
   margin-top: $spacing-05;
   margin-bottom: $spacing-05;
-
-  &:nth-child(3n+1) {
-    clear: both;
-  }
+  min-height: 100px;
 }
 
 .sponsor__link {

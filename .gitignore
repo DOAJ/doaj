@@ -109,15 +109,10 @@ cms/components
 cms/error_fragments.txt
 cms/error_sass.txt
 cms/error_fqw_sass.txt
-cms/fragments*
 portality/static/doaj/css/*.css
 portality/static/doaj/css/*.css.map
-
-
 cms/sass/*.css
 cms/sass/*.css.map
+cms/fragments*
 
 portality/static/widget/fq_widget_build_info.txt
-
-
-
