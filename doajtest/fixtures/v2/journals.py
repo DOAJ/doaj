@@ -63,7 +63,6 @@ JOURNAL_SOURCE = {
     "last_manual_update": "2001-01-01T00:00:00Z",
     "last_updated": "2002-01-01T00:00:00Z",
     "admin": {
-        "bulk_upload": "bulk_1234567890",
         "current_application": "qwertyuiop",
         "editor_group": "editorgroup",
         "editor": "associate",
