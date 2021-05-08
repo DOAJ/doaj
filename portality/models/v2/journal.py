@@ -14,9 +14,6 @@ import string, uuid
 from unidecode import unidecode
 
 JOURNAL_STRUCT = {
-    "fields": {
-        "last_reapplication": {"coerce": "utcdatetime"}
-    },
     "objects": [
         "admin", "index"
     ],
