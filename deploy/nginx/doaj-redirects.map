@@ -1,6 +1,7 @@
 default "";
 /volunteers /about/volunteers;
 /application/new /apply;
+/suggest /apply;
 /application/thanks /apply/thank-you;
 /publishers /apply/guide;
 /rights /apply/guide/#licensing;
