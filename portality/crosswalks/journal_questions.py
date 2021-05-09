@@ -27,6 +27,7 @@ class Journal2QuestionXwalk(object):
         ("eissn", "Journal EISSN (online version)"),
         ("continues", "Continues"),
         ("continued_by", "Continued By"),
+        ("discontinued_date", "Discontinued Date"),
         ("institution_name", "Society or institution"),
         ("keywords", "Keywords"),
         ("language", "Languages in which the journal accepts manuscripts"),
@@ -227,6 +228,7 @@ class Journal2QuestionXwalk(object):
 
         kvs.append((cls.q("continues"), ", ".join(forminfo.get("continues"))))
         kvs.append((cls.q("continued_by"), ", ".join(forminfo.get("continued_by"))))
+        kvs.append((cls.q("discontinued_date"), forminfo.get("discontinued_date")))
 
         kvs.append((cls.q("subject"), "|".join(forminfo.get("subject"))))
 
