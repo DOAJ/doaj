@@ -63,13 +63,11 @@ _SHARED_STRUCT = {
                 },
                 "article": {
                     "fields": {
+                        "license_display": {"coerce": "unicode",
+                                            "allowed_values": ["Embed", "Display", "No"]}
                         "license_display_example_url": {"coerce": "url"},
                         "orcid": {"coerce": "bool"},
                         "i4oc_open_citations": {"coerce": "bool"}
-                    },
-                    "lists": {
-                        "license_display": {"contains": "field", "coerce": "unicode",
-                                            "allowed_values": ["Embed", "Display", "No"]},
                     }
                 },
                 "copyright": {

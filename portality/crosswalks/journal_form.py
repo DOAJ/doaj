@@ -165,7 +165,7 @@ class JournalGenericXWalk(object):
 
         # FIXME: this is not quite what we planned
         if form.license_display.data:
-            bibjson.article_license_display = ["Embed"] if form.license_display.data == "y" else ["No"]
+            bibjson.article_license_display = "Embed" if form.license_display.data == "y" else "No"
 
         if form.license_display_example_url.data:
             bibjson.article_license_display_example_url = form.license_display_example_url.data
@@ -362,7 +362,7 @@ class JournalGenericXWalk(object):
         forminfo["license_attributes"] = license_attributes
         forminfo["license"] = ltypes
 
-        if bibjson.article_license_display is not None and len(bibjson.article_license_display) > 0:
+        if bibjson.article_license_display is not None and bibjson.article_license_display != "":
             forminfo["license_display"] = "y" if "Embed" in bibjson.article_license_display else "n"
         forminfo["license_display_example_url"] = bibjson.article_license_display_example_url
         if bibjson.boai is not None:

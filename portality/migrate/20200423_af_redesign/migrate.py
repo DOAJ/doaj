@@ -445,7 +445,7 @@ def bibjson_migration(source, target):
         tbj.add_license(ltype, typeurl, by=by, sa=sa, nc=nc, nd=nd)
 
         embedded = lic.get("embedded")
-        tbj.article_license_display = ["Embed"] if embedded else ["No"]
+        tbj.article_license_display = "Embed" if embedded else "No"
 
         example_url = lic.get("embedded_example_url")
         if example_url is not None and example_url != "":

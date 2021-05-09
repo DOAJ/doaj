@@ -56,12 +56,10 @@ JOURNAL_BIBJSON = {
                 },
                 "article" : {
                     "fields" : {
+                        "license_display" : {"coerce" : "unicode", "allowed_values" : ["Embed", "Display", "No"]},
                         "license_display_example_url" : {"coerce" : "url", "set__allow_coerce_failure" : True},
                         "orcid" : {"coerce" : "bool"},
                         "i4oc_open_citations" : {"coerce" : "bool"}
-                    },
-                    "lists" : {
-                        "license_display" : {"contains" : "field", "coerce" : "unicode", "allowed_values" : ["Embed", "Display", "No"]},
                     }
                 },
                 "copyright" : {

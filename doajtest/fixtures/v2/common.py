@@ -32,7 +32,7 @@ JOURNAL_LIKE_BIBJSON = {
         "has_apc": True
     },
     "article": {
-        "license_display": ["Embed"],
+        "license_display": "Embed",
         "license_display_example_url": "http://licence.embedded",
         "orcid": True,
         "i4oc_open_citations": False

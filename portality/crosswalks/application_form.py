@@ -27,7 +27,7 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         "keywords" : "bibjson.keywords",
         "language" : "bibjson.language",
         "license_attributes" : "bibjson.license[].BY, NC, ND and NA",
-        "license_display" : "bibjson.article.license_display[]",
+        "license_display" : "bibjson.article.license_display",
         "license_display_example_url" : "bibjson.article.license_display_example_url",
         "boai" : "bibjson.boai",
         "license" : "bibjson.license[].type",

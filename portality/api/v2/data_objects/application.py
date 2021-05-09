@@ -166,7 +166,7 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
 
         # if licence_display is "embed", then the url is a required field   #TODO: what with "display"
         art = self.data["bibjson"]["article"]
-        if "embed" in art["license_display"] or "display" in art["license_display"]:
+        if art["license_display"] == "embed" or art["license_display"] == "display":
             if art["license_display_example_url"] is None or art["license_display_example_url"] ==  "":
                 raise seamless.SeamlessException("In this context bibjson.article.license_display_example_url is required")
 

@@ -631,7 +631,7 @@ class TestModels(DoajTestCase):
         assert bj.apc[0].get("price") == 2
         assert bj.apc_url == "http://apc.com"
         assert bj.has_apc is True
-        assert bj.article_license_display == ["Embed"]
+        assert bj.article_license_display == "Embed"
         assert bj.article_license_display_example_url == "http://licence.embedded"
         assert bj.article_orcid is True
         assert bj.article_i4oc_open_citations is False
@@ -717,7 +717,7 @@ class TestModels(DoajTestCase):
         assert bj.replaces == ["3333-3333"]
         assert len(bj.subject) == 1
         assert bj.apc_url == "http://apc2.com"
-        assert bj.article_license_display == ["No"]
+        assert bj.article_license_display == "No"
         assert bj.article_license_display_example_url == "http://licence2.embedded"
         assert bj.article_orcid is False
         assert bj.article_i4oc_open_citations is False

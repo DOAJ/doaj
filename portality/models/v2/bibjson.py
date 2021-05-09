@@ -218,7 +218,7 @@ class JournalLikeBibJSON(SeamlessMixin):
 
     @property
     def article_license_display(self):
-        return self.__seamless__.get_list("article.license_display")
+        return self.__seamless__.get_single("article.license_display")
 
     @article_license_display.setter
     def article_license_display(self, val):
