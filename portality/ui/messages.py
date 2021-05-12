@@ -10,7 +10,7 @@ class Messages(object):
         for review. Click the 'Edit' button to make further changes, or 'Delete' to cancel the request.
         """, 'success')
 
-    ARTICLE_METADATA_SUBMITTED_FLASH = ("Article created/updated", "success")
+    ARTICLE_METADATA_SUBMITTED_FLASH = ("<a href='{url}' target='_blank'>Article created/updated</a>", "success")
     ARTICLE_METADATA_MERGE_CONFLICT = ("""Article could not be submitted, as it matches more than one existing article.
     Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
     ARTICLE_METADATA_UPDATE_CONFLICT = ("""Article could not be updated, as it matches another existing article.

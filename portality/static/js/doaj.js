@@ -165,6 +165,10 @@ var doaj = {
         var monthnum = date.getUTCMonth();
         var year = date.getUTCFullYear();
 
+        if (isNaN(monthnum) || isNaN(year)) {
+            return "";
+        }
+
         return doaj.monthmap[monthnum] + " " + String(year);
     },
 
@@ -173,6 +177,10 @@ var doaj = {
         var dom = date.getUTCDate();
         var monthnum = date.getUTCMonth();
         var year = date.getUTCFullYear();
+
+        if (isNaN(monthnum) || isNaN(year) || isNaN(dom)) {
+            return "";
+        }
 
         return String(dom) + " " + doaj.monthmap[monthnum] + " " + String(year);
     },
@@ -184,6 +192,10 @@ var doaj = {
         var year = date.getUTCFullYear();
         var hour = date.getUTCHours();
         var minute = date.getUTCMinutes();
+
+        if (isNaN(monthnum) || isNaN(year) || isNaN(dom) || isNaN(hour) || isNaN(minute)) {
+            return "";
+        }
 
         if (String(hour).length === 1) {
             hour = "0" + String(hour);

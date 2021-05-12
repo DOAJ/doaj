@@ -6,9 +6,14 @@
 # You will need to activate your virtualenv and have coverage installed: pip install coverage
 ###############################################
 
-# Specify the directory you want the output data and report to go to
-OUTDIR=../doaj-docs/python3_edges_bs3_xml/coverage
+# Set up the variables we need for the script
+DOAJ_DOCS="docs/generated"
+BRANCH=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
+OUTDIR=$DOAJ_DOCS/$BRANCH/coverage
 
+# make sure that we have the documentation submodule up-to-date
+git submodule update --init --recursive
+(cd $DOAJ_DOCS && git checkout master && git pull origin master)
 
 COVERAGE_FILE=$OUTDIR/coverage.data
 export COVERAGE_FILE

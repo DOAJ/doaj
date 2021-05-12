@@ -3,7 +3,7 @@ import sys
 
 setup(
     name='doaj',
-    version='5.0.1',
+    version='5.0.3',
     packages=find_packages(),
     install_requires=[
         "Werkzeug==0.16.0",

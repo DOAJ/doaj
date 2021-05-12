@@ -62,7 +62,7 @@ def editor(q):
 
 
 def private_source(q):
-    q.add_include(["admin.application_status", "suggestion", "admin.ticked",
+    q.add_include(["admin.application_status", "admin.ticked",
         "admin.seal", "last_updated", "created_date", "id", "bibjson"])
     return q
 
@@ -180,11 +180,12 @@ def prune_author_emails(results, unpacked=False):
 
 
 def publisher_result_filter(results, unpacked=False):
+    allowed_admin = ["ticked", "seal", "in_doaj", "related_applications", "current_application", "current_journal", "application_status"]
     # Dealing with single unpacked ES result
     if unpacked:
         if "admin" in results:
             for k in list(results["admin"]):
-                if k not in ["ticked", "seal", "in_doaj", "related_applications", "current_application", "current_journal", "application_status"]:
+                if k not in allowed_admin:
                     del results["admin"][k]
         return results
 
@@ -198,7 +199,7 @@ def publisher_result_filter(results, unpacked=False):
         if "_source" in hit:
             if "admin" in hit["_source"]:
                 for k in list(hit["_source"]["admin"]):
-                    if k not in ["ticked", "seal", "in_doaj", "related_applications", "current_application", "current_journal", "application_status"]:
+                    if k not in allowed_admin:
                         del hit["_source"]["admin"][k]
 
     return results

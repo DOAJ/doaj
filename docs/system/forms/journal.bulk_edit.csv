@@ -1,0 +1,5 @@
+Form Position,Field Name,Label,Input Type,Options,Disabled?,Fieldset ID
+1,publisher_name,Publisher’s name,text,,False,bulk_edit
+2,change_doaj_seal,Award the Seal,select,Leave unchanged (); Yes (True); No (False),False,bulk_edit
+3,publisher_country,Publisher’s country,select,iso_country_list,False,bulk_edit
+4,owner,DOAJ Account,text,,False,bulk_edit
