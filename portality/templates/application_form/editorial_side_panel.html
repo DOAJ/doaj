@@ -1,10 +1,10 @@
 {% if obj %}
     <h3 class="label"> LOCKED FOR EDITING UNTIL <span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></h3>
-    {% if obj.application_status != constants.APPLICATION_STATUS_ACCEPTED %}
-        <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot save the application because it contains some invalid fields. Please review the answers and admin fields and try again.</i></p>
-        <button id="submitBtn" class="button button--cta" type="button">Save</button>
-    {% endif %}
-    <button type="button" class="button button--secondary" id="unlock" data-type="suggestion" data-id="{{obj.id}}">Unlock & Close</button>
+      {% if obj.application_status != constants.APPLICATION_STATUS_ACCEPTED %}
+          <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><em>You cannot save the application because it contains some invalid fields. Please review the answers and admin fields and try again.</em></p>
+          <button id="submitBtn" class="button button--cta" type="button">Save</button>
+      {% endif %}
+      <button type="button" class="button" id="unlock" data-type="{{ obj.es_type }}" data-id="{{obj.id}}">Unlock & Close</button>
     <input type="hidden" name="id" value="{{ obj.id }}">
 {% endif %}
 

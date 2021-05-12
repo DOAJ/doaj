@@ -1,5 +1,5 @@
 <div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
-    <a name="question__{{ f.name }}"></a>
+    <a id="question-{{ f.name }}"></a>
     <label>
         {% autoescape off %}{{ f.label }}{% endautoescape %}
         {% if f.help("long_help") %}
@@ -19,13 +19,11 @@
             {{ add_button }}
         {% endif %}
 
-        <div class="removable_field">
-            <div class= 'multiple_input'>
-                {% for entry in f.wtfield %}
-                    {% set entry_template = f.entry_template %}
-                    {% include entry_template %}
-                {% endfor %}
-            </div>
+        <div class="removable-fields">
+          {% for entry in f.wtfield %}
+              {% set entry_template = f.entry_template %}
+              {% include entry_template %}
+          {% endfor %}
         </div>
 
         {% if f.repeatable.add_button_placement != "top" %}

@@ -599,11 +599,20 @@ class JournalLikeBibJSON(SeamlessMixin):
             return datasets.get_country_name(self.publisher_country)
         return None
 
+    def institution_country_name(self):
+        if self.institution_country is not None:
+            return datasets.get_country_name(self.institution_country)
+        return None
+
     def language_name(self):
         # copy the languages and convert them to their english forms
         langs = [datasets.name_for_lang(l) for l in self.language]
         langs = [to_utf8_unicode(l) for l in langs]
         return list(set(langs))
+
+    def term_path(self, term):
+        from portality.lcc import lcc
+        return lcc.term_path(term)
 
     def lcc_paths(self):
         classification_paths = []
@@ -637,6 +646,22 @@ class JournalLikeBibJSON(SeamlessMixin):
 
         return ["LCC:" + x for x in full_list if x is not None]
 
+    def lcc_paths_and_codes(self):
+        paths_and_codes = {}
+
+        # calculate the classification paths
+        from portality.lcc import lcc  # inline import since this hits the database
+        for subs in self.subjects():
+            scheme = subs.get("scheme")
+            if scheme != "LCC":
+                continue
+            term = subs.get("term")
+            code = subs.get("code")
+            p = lcc.pathify(term)
+            if p is not None:
+                paths_and_codes[p] = "LCC:" + code
+
+        return [(x, paths_and_codes[x]) for x in lcc.longest(list(paths_and_codes.keys()))]
 
     # to help with ToC - we prefer to refer to a journal by E-ISSN, or
     # if not, then P-ISSN

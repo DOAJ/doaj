@@ -1,0 +1,116 @@
+entries:
+  - id: journals-articles
+    label: Search
+    footer: true
+    secondary: true
+    entries:
+      - label: Journals
+        route: doaj.journals_search
+      - label: Articles
+        route: doaj.articles_search
+  - id: documentation
+    label: Documentation
+    footer: true
+    secondary: true
+    entries:
+      - label: API
+        route: doaj.docs
+      - label: OAI-PMH
+        route: doaj.oai_pmh
+      - label: Widgets
+        route: doaj.widgets
+      - label: Public data dump
+        route: doaj.public_data_dump
+      - label: OpenURL
+        route: doaj.openurl
+      - label: XML
+        route: doaj.xml
+      - label: FAQs
+        route: doaj.faq
+  - id: about
+    label: About
+    footer: true
+    secondary: true
+    entries:
+      - label: About DOAJ
+        route: doaj.about
+      - label: DOAJ team
+        route: doaj.team
+      - label: Ambassadors
+        route: doaj.ambassadors
+      - label: Advisory Board & Council
+        route: doaj.abc
+      - label: Editorial Subcommittee
+        route: doaj.editorial_subcommittee
+      - label: Volunteers
+        route: doaj.volunteers
+      - label: News
+        url: https://blog.doaj.org
+  - id: support
+    label: Support
+    feather: heart
+    footer: true
+    primary: true
+    secondary_mobile: true
+    route: doaj.support
+    entries:
+      - label: Support DOAJ
+        route: doaj.support
+      - label: Sponsors
+        route: doaj.sponsors
+      - label: Publisher supporters
+        route: doaj.publisher_supporters
+      - label: Supporters
+        route: doaj.supporters
+  - id: apply
+    label: Apply
+    footer: true
+    primary: true
+    secondary_mobile: true
+    route: apply.public_application
+    entries:
+      - label: Application Form
+        route: apply.public_application
+      - label: Guide to applying
+        route: doaj.guide
+      - label: The DOAJ Seal
+        route: doaj.seal
+      - label: Transparency & best practice
+        route: doaj.transparency
+      - label: Why index your journal in DOAJ?
+        route: doaj.why_index
+  - id: stay_up_to_date
+    label: Stay up to date
+    footer: true
+    entries:
+      - label: Twitter
+        feather: twitter
+        url: https://twitter.com/DOAJplus
+      - label: Facebook
+        feather: facebook
+        url: https://www.facebook.com/DirectoryofOpenAccessJournals/
+      - label: Github
+        feather: github
+        url: https://github.com/DOAJ
+      - label: Linkedin
+        feather: linkedin
+        url: https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/
+      - label: Atom feed
+        feather: rss
+        route: atom.feed
+  - id: legal
+    entries:
+      - label: Accessibility
+        route:  doaj.accessibility
+      - label: Privacy
+        route: doaj.privacy
+      - label: Contact
+        route: doaj.contact
+      - label: T&Cs
+        route: doaj.terms
+  - id: companies
+    entries:
+      - label: IS4OA
+        url: https://is4oa.org/
+      - label: Cottage Labs
+        url: https://cottagelabs.com

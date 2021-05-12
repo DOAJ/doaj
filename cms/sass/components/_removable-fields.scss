@@ -1,0 +1,13 @@
+// Repeatable fields as seen in the language selector of the form
+
+.removable-fields {
+  @include unstyled-list;
+
+  ul {
+    @include unstyled-list;
+  }
+
+  label {
+    @extend .sr-only; // a11y-friendly, can’t add class to the form itself
+  }
+}

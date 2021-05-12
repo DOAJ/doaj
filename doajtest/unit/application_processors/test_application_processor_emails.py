@@ -915,7 +915,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * to the journal contact, informing them of the journal's acceptance
         publisher_template = 'publisher_update_request_accepted.txt'
         publisher_to = re.escape(owner.email)
-        publisher_subject = 'journal accepted'
+        publisher_subject = 'update request accepted'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,

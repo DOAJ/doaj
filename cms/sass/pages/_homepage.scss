@@ -1,0 +1,141 @@
+/* Homepage-specific styles  */
+
+.homepage {
+
+  // Override style for homepage only
+  .primary-nav {
+    top: 0 !important;
+  }
+
+  .secondary-nav {
+    background-color: rgba(0, 0, 0, 0.1);
+
+    .nav-bar {
+      border: 0;
+    }
+  }
+
+  .page-content {
+    padding-top: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  h3 {
+    margin-top: 0;
+    @include font-serif;
+    font-weight: 600;
+  }
+
+  time {
+    color: $dark-grey;
+  }
+
+  section {
+    header {
+      margin-bottom: $spacing-05;
+    }
+
+    h2 {
+      margin-bottom: $spacing-04;
+    }
+  }
+
+  .page-header {
+    background-color: #F8F3EF;
+    background-image: url('/static/doaj/images/bg/01.jpeg');
+    background-size: cover;
+    background-blend-mode: multiply;
+  }
+
+  .page-content > section {
+    padding-top: $spacing-05;
+    padding-bottom: $spacing-05;
+  }
+
+  &__search {
+
+    .input-group input[type="text"] {
+      width: 40%;
+    }
+
+    .input-group select {
+      width: 40%;
+      margin-left: -1px;
+    }
+    .input-group input[type="submit"] {
+      width: 20%;
+      margin-left: -1px;
+    }
+
+  }
+
+  &__about section {
+    margin-top: $spacing-04;
+    padding-top: $spacing-04;
+    border-width: 0 0 1px 0;
+    border-style: dashed;
+    border-color: $sanguine;
+
+    @media (min-width: 769px) {
+      margin-top: 0;
+      padding-top: 0;
+      border-width: 0 0 0 1px;
+    }
+  }
+
+  &__blog {
+    margin-bottom: $spacing-04;
+
+    h3 {
+      @include typescale-06;
+      line-height: 1.25;
+    }
+
+    article {
+      margin-bottom: $spacing-04;
+
+      // &:first-of-type a {
+      //   margin-top: $spacing-03;
+      //   margin-bottom: $spacing-05;
+      //   display: block;
+      // }
+      //
+      // &:not(:first-of-type) h3 {
+      //   font-size: 1em;
+      // }
+
+      &:nth-of-type(4) {
+        clear: both; // Make sure fifth blog post starts on new line
+      }
+    }
+
+    .blog-img {
+      background-image: url('/static/doaj/images/bg/06.jpeg');
+      background-size: cover;
+      height: 375px;
+    }
+
+    .twitter-embed {
+      background-color: $fair-pink;
+      text-align: center;
+    }
+  }
+
+  &__volunteers {
+    background-color: $fair-pink;
+    background-image: url('/static/doaj/images/bg/02.jpeg');
+    background-size: cover;
+    background-blend-mode: multiply;
+
+    article {
+      margin-bottom: $spacing-05;
+    }
+
+    p {
+      margin-bottom: $spacing-03;
+    }
+  }
+}
