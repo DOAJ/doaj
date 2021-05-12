@@ -1,11 +1,11 @@
 "use strict";
+let script = document.querySelector("script[src$='/static/widget/fixed_query.js']");
+let parser = document.createElement('a');
+parser.href = script.attributes.src.value;
+var doaj_url = parser.protocol + '//' + parser.host;
+
 (function() {
-// Localize jQuery variable
     let jQuery;
-// doaj_url values:
-// dev: 'http://localhost:5004'
-// test: 'https://testdoaj.cottagelabs.com'
-// production: 'https://www.doaj.org'
 
     /******** Load scripts *********/
 
