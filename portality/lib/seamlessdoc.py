@@ -128,17 +128,18 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-k", "--klazz", help="class to document")
     parser.add_argument("-o", "--out", help="output file")
-    parser.add_argument("-f", "--fields", help="field descriptions table")
+    parser.add_argument("-f", "--fields", action="append", help="field descriptions table(s)")
     args = parser.parse_args()
 
     descriptions = {}
     if args.fields:
-        with open(args.fields) as f:
-            fds = f.read()
-        lines = fds.split("\n")
-        for line in lines:
-            sep = line.find(":")
-            descriptions[line[:sep]] = line[sep + 1:].strip()
+        for field_file in args.fields:
+            with open(field_file) as f:
+                fds = f.read()
+            lines = fds.split("\n")
+            for line in lines:
+                sep = line.find(":")
+                descriptions[line[:sep]] = line[sep + 1:].strip()
 
     k = plugin.load_class_raw(args.klazz)
     example, fields = document(k, descriptions)
