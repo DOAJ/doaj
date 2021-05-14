@@ -80,7 +80,7 @@ def _generate_forms_section(dir):
     for file in os.listdir(dir):
         name = file.split(".")[:2]
         name = " ".join(name).title()
-        md += "* [" + name + "](form/" + file + ")\n"
+        md += "* [" + name + "](forms/" + file + ")\n"
     return md + "\n\n"
 
 
