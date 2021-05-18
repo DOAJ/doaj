@@ -84,6 +84,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
             timestamp = dates.now_with_microseconds()
         obj = {"message": msg, "timestamp": timestamp}
         self._add_to_list_with_struct("audit", obj)
+        print(msg)
 
 
 class StdOutBackgroundJob(BackgroundJob):

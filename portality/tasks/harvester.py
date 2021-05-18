@@ -28,7 +28,7 @@ class HarvesterBackgroundTask(BackgroundTask):
         """
         accs = list(app.config.get("HARVESTER_API_KEYS", {}).keys())
         for account_id in accs:
-            workflow.HarvesterWorkflow.process_account(account_id)
+            workflow.HarvesterWorkflow.process_account(account_id, self.background_job)
 
         report = Report.write_report()
         app.logger.info(report)

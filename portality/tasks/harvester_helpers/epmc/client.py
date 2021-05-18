@@ -58,6 +58,7 @@ class EPMCFullTextException(Exception):
 
 
 class EuropePMC(object):
+    job = None
     @classmethod
     def get_by_pmcid(cls, pmcid, cursor=""):
         return cls.field_search("PMCID", pmcid, cursor=cursor)
@@ -92,7 +93,7 @@ class EuropePMC(object):
     def field_search_iterator(cls, field, value, fuzzy=False, page_size=25, throttle=None):
         qb = QueryBuilder()
         qb.add_string_field(field, value, fuzzy)
-        return cls.iterate(qb.to_url_query_param(), page_size=page_size, throttle=throttle)
+        return cls.iterate(qb.to_url_query_param(), cls.job, page_size=page_size, throttle=throttle)
 
     @classmethod
     def complex_search(cls, query_builder, cursor="", page_size=25):
@@ -102,22 +103,23 @@ class EuropePMC(object):
         return cls.query(query_builder.to_url_query_param(), cursor=cursor, page_size=page_size)
 
     @classmethod
-    def complex_search_iterator(cls, query_builder, page_size=1000, throttle=None):
-        return cls.iterate(query_builder.to_url_query_param(), page_size=page_size, throttle=throttle)
+    def complex_search_iterator(cls, query_builder, job, page_size=1000, throttle=None):
+        return cls.iterate(query_builder.to_url_query_param(), job, page_size=page_size, throttle=throttle)
 
     @classmethod
-    def iterate(cls, query_string, page_size=1000, throttle=None):
+    def iterate(cls, query_string, job, page_size=1000, throttle=None):
+        cls.job = job
         cursor = ""
         last = None
         while True:
             if last is not None and throttle is not None:
                 diff = (datetime.utcnow() - last).total_seconds()
-                app.logger.debug("Last request at {x}, {y}s ago; throttle {z}s".format(x=last, y=diff, z=throttle))
+                cls.job.add_audit_message("Last request at {x}, {y}s ago; throttle {z}s".format(x=last, y=diff, z=throttle))
                 if diff < throttle:
                     waitfor = throttle - diff
-                    app.logger.debug("Throttling EPMC requests for {x}s".format(x=waitfor))
+                    cls.job.add_audit_message("Throttling EPMC requests for {x}s".format(x=waitfor))
                     time.sleep(waitfor)
-            results, cursor = cls.query(query_string, cursor=cursor, page_size=page_size)
+            results, cursor = cls.query(query_string, job, cursor=cursor, page_size=page_size)
             last = datetime.utcnow()
             if len(results) == 0:
                 break
@@ -125,7 +127,8 @@ class EuropePMC(object):
                 yield r
 
     @classmethod
-    def query(cls, query_string, cursor="", page_size=25):
+    def query(cls, query_string, job, cursor="", page_size=25):
+        cls.job = job
         """
         :return: (results, next_cursor)
         """
@@ -140,7 +143,7 @@ class EuropePMC(object):
 
         if cursor != "":
             url += "&cursorMark=" + qcursor
-        app.logger.debug("Requesting EPMC metadata from " + url)
+        cls.job.add_audit_message("Requesting EPMC metadata from " + url)
 
         resp = httputil.get(url)
         if resp is None:
@@ -161,7 +164,7 @@ class EuropePMC(object):
     @classmethod
     def fulltext(cls, pmcid):
         url = app.config.get("EPMC_REST_API") + pmcid + "/fullTextXML"
-        app.logger.debug("Searching for Fulltext at " + url)
+        cls.job.add_audit_message("Searching for Fulltext at " + url)
         resp = httputil.get(url)
         if resp is None:
             raise EuropePMCException(message="could not get a response for fulltext from EPMC")
