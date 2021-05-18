@@ -1,7 +1,9 @@
+from portality.api.v2 import ArticlesCrudApi
 from portality.api.v2.client import client as doajclient
 from portality.core import app
 from portality.lib import plugin
 from portality.decorators import capture_sigterm
+from portality.models import Journal, Account
 from portality.models.harvester import HarvesterProgressReport as Report
 from portality.models.harvester import HarvestState
 from portality.lib.dataobj import DataObjException
@@ -24,12 +26,14 @@ class HarvesterWorkflow(object):
 
     @classmethod
     def get_journals_issns(cls, account_id):
-        doaj = doajclient.DOAJv1API()
-        gen = doaj.field_search_iterator("journals", "username", account_id)
-        issns = []
-        for journal in gen:
-            issns += journal.all_issns()
-        return list(set(issns))
+        # doaj = doajclient.DOAJv1API()
+        # gen = doaj.field_search_iterator("journals", "username", account_id)
+        # issns = []
+        # for journal in gen:
+        #     issns += journal.all_issns()
+        # return list(set(issns))
+
+        return Journal.issns_by_owner(account_id)
 
 
     @classmethod
@@ -103,6 +107,7 @@ class HarvesterWorkflow(object):
     @classmethod
     def process_article(cls, account_id, article):
         app.logger.info("Processing Article for Account:{y}".format(y=account_id))
+        print(article.data)
 
         try:
             article.is_api_valid()
@@ -114,16 +119,14 @@ class HarvesterWorkflow(object):
         # FIXME: in production, we will need a way to get the account_id's api_key
         # but in this version we just need to have a list of the api keys that we're
         # working with
-        api_key = HarvesterWorkflow.get_api_key(account_id)
-        doaj = doajclient.DOAJv1API(api_key=api_key)
-
         # if this throws an exception other than DOAJ complaint, allow the harvester to die, because it is either
         # systemic or the doaj is down.
+        acc = Account.pull(account_id)
         try:
-            id, loc = doaj.create_article(article)
-        except doajclient.DOAJException as e:
-            app.logger.info("Article caused DOAJException: {m} ... skipping".format(m=e.message))
-            Report.record_error((article.get_identifier("doi") or "< DOI MISSING >") + " - " + e.message)
+            id = ArticlesCrudApi.create(article.data, acc).id
+        except Exception as e:
+            app.logger.info("Article caused DOAJException: {m} ... skipping".format(m=e))
+            Report.record_error((article.get_identifier("doi") or "< DOI MISSING >"))
             return False
         app.logger.info("Created article in DOAJ for Account:{x} with ID: {y}".format(x=account_id, y=id))
         return True

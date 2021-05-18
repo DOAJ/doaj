@@ -1,4 +1,9 @@
+import itertools
+import json
 import time
+from datetime import date, datetime
+
+from unittest.mock import Mock, patch
 
 from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory
 from doajtest.fixtures.harvester import HarvestStateFactory, EPMCFixtureFactory
@@ -7,30 +12,34 @@ from portality.api.v2.client.client import DOAJv1API
 from portality.core import app
 from portality.tasks.harvester import HarvesterBackgroundTask
 from portality import models
+from portality.tasks.harvester_helpers.epmc import models as h_models
+from portality.lib import httputil
 from portality.api.v2.client import client as doajclient
 from portality.tasks.harvester_helpers import workflow
 from portality.tasks.harvester_helpers.workflow import HarvesterWorkflow
 from portality.models.harvester import HarvestState
 from portality.models.harvester import HarvesterPlugin
 
+
 class TestHarvester(DoajTestCase):
+
 
     def mock_get_journals_issns(self, string1):
         return ["1234-5678", "9876-5432"]
 
-    def mock_harvest_find_by_issn(self, account, issns):
-        return HarvestStateFactory.harvest_state()
 
-    def mock_EuropePMC_complex_search_iterator(self, query, throttle):
-        return EPMCFixtureFactory.epmc_metadata()
+    def mock_get_url(self, url):
+        if url.startswith("https://www.ebi.ac.uk/europepmc"):
+            return "blabla"
+        else:
+            self.old_get(url)
 
     def setUp(self):
-        self.complex_search_iterator_old = EPMCFixtureFactory.epmc_metadata
-        EPMCFixtureFactory.epmc_metadata = self.mock_EuropePMC_complex_search_iterator
+        super(TestHarvester, self).setUp()
+
         self.get_journals_issns_old = HarvesterWorkflow.get_journals_issns
         HarvesterWorkflow.get_journals_issns = self.mock_get_journals_issns
-        self.old_harvest_find_by_issn = HarvestState.find_by_issn
-        HarvestState.find_by_issn = self.mock_harvest_find_by_issn
+
         self.publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
         self.journal = models.Journal(**JournalFixtureFactory.make_journal_source())
         self.publisher.add_journal(self.journal.id)
@@ -40,22 +49,49 @@ class TestHarvester(DoajTestCase):
         self.journal.save()
         time.sleep(2)
 
-        # self.old_harvesters = app.config.get('HARVESTERS')
-        # app.config['HARVESTERS'] = "harvesters"
         self.old_harvester_api_keys = app.config.get('HARVESTER_API_KEYS')
-        # app.config['HARVESTER_API_KEYS'] = {self.publisher.id: self.publisher.api_key}
+        self.old_initial_harvest_date = app.config.get("INITIAL_HARVEST_DATE")
 
-        self.article_correct = models.Article(**ArticleFixtureFactory.make_article_source("1234-5678", "9876-5432"))
-        self.article_incorrect = models.Article(**ArticleFixtureFactory.make_article_source("1111-1111", "2222-2222"))
+
+        app.config['HARVESTER_API_KEYS'] = {self.publisher.id: self.publisher.api_key}
+
+        self.old_get = httputil.get
+
+        today = datetime.today().strftime('%Y-%m-%d')
+        app.config["INITIAL_HARVEST_DATE"] = today
+        with open('resources/harvester_resp.json') as json_file:
+            articles = json.load(json_file)
+
+        articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + today + ' sort_date:"y"',
+        json_file = open('resources/harvester_resp.json', 'w')
+        json.dump(articles, json_file)
+        json_file.close()
 
     def tearDown(self):
-        # app.config['HARVESTERS'] = self.old_harvesters
+        super(TestHarvester, self).tearDown()
         app.config['HARVESTER_API_KEYS'] = self.old_harvester_api_keys
-        HarvesterWorkflow.get_journals_issns = self.get_journals_issns_old
-        HarvestState.find_by_issn = self.old_harvest_find_by_issn
-        EPMCFixtureFactory.epmc_metadata = self.complex_search_iterator_old
+        app.config["INITIAL_HARVEST_DATE"] = self.old_initial_harvest_date
+        HarvesterWorkflow.get_journals_issns = self.mock_get_journals_issns
 
-    def test_harvest(self):
+    @patch('portality.tasks.harvester_helpers.epmc.client.EuropePMC.query')
+    def test_harvest(self, mock_query):
+
+        with open('resources/harvester_resp.json') as json_file:
+            articles = json.load(json_file)
+
+        results = [h_models.EPMCMetadata(r) for r in articles.get("resultList", {}).get("result", [])]
+        a = (results, "")
+        b = ([], "AoJwgOTOsdfTeDE0ODA4OTIz")
+        mock_query.side_effect = itertools.cycle([a, b])
+
         job = models.BackgroundJob()
         task = HarvesterBackgroundTask(job)
-        task.run()
+        task.submit(job)
+
+        time.sleep(2)
+
+        articles_saved = [a for a in self.journal.all_articles()]
+
+        assert len(articles_saved) == 1, "expected 1 article, found: {}".format(len(articles))
+        assert articles_saved[0].bibjson().title == "Harvester Test Article"
+
