@@ -107,7 +107,6 @@ class HarvesterWorkflow(object):
     @classmethod
     def process_article(cls, account_id, article):
         app.logger.info("Processing Article for Account:{y}".format(y=account_id))
-        print(article.data)
 
         try:
             article.is_api_valid()
