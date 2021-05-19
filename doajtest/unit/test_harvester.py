@@ -46,8 +46,7 @@ class TestHarvester(DoajTestCase):
         self.publisher.generate_api_key()
 
         self.publisher.save()
-        self.journal.save()
-        time.sleep(2)
+        self.journal.save(blocking=True)
 
         self.old_harvester_api_keys = app.config.get('HARVESTER_API_KEYS')
         self.old_initial_harvest_date = app.config.get("INITIAL_HARVEST_DATE")
