@@ -73,8 +73,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return records
 
     @classmethod
-    def issns_by_owner(cls, owner):
-        q = IssnQuery(owner)
+    def issns_by_owner(cls, owner, in_doaj=None):
+        q = IssnQuery(owner, in_doaj=in_doaj)
         res = cls.query(q=q.query())
         issns = [term.get("term") for term in res.get("facets", {}).get("issns", {}).get("terms", [])]
         return issns
@@ -990,9 +990,12 @@ class IssnQuery(object):
         }
     }
 
-    def __init__(self, owner):
+    def __init__(self, owner, in_doaj=None):
         self._query = deepcopy(self.base_query)
         self._query["query"]["term"]["admin.owner.exact"] = owner
+        if in_doaj is not None:
+            in_doaj_string = "True" if in_doaj else "False"
+            self._query["query"]["bool"] = {"must": {"term": {"admin.id_doaj": in_doaj_string}}}
 
     def query(self):
         return self._query

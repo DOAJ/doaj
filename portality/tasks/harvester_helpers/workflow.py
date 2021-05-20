@@ -27,7 +27,7 @@ class HarvesterWorkflow(object):
 
     @classmethod
     def get_journals_issns(cls, account_id):
-        return Journal.issns_by_owner(account_id)
+        return Journal.issns_by_owner(account_id, in_doaj=True)
 
 
     @classmethod
