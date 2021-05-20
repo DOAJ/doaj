@@ -2,7 +2,6 @@ from portality.api.v2 import ArticlesCrudApi
 from portality.api.v2.client import client as doajclient
 from portality.core import app
 from portality.lib import plugin
-from portality.decorators import capture_sigterm
 from portality.models import Journal, Account
 from portality.models.harvester import HarvesterProgressReport as Report
 from portality.models.harvester import HarvestState
@@ -14,7 +13,6 @@ class HarvesterWorkflow(object):
     job = None
 
     @classmethod
-    @capture_sigterm
     def process_account(cls, account_id, job):
         cls.job = job
         cls.job.add_audit_message("Harvesting for Account:{x}".format(x=account_id))
@@ -59,7 +57,6 @@ class HarvesterWorkflow(object):
                 hs.save(blocking=True)
 
     @classmethod
-    @capture_sigterm
     def process_issn(cls, account_id, issn):
         cls.job.add_audit_message("Processing ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
 

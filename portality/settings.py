@@ -1028,7 +1028,7 @@ SITE_NOTE_TEMPLATE = "doaj/site_note.html"
 
 ## Configuration options for the DOAJ API Client
 
-DOAJ_SEARCH_BASE = "https://localhost:5004"
+DOAJ_SEARCH_BASE = "https://doaj.org"
 
 DOAJ_SEARCH_PORT = 80
 
