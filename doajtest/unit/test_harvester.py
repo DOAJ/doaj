@@ -49,7 +49,7 @@ class TestHarvester(DoajTestCase):
 
         articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + today + ' sort_date:"y"',
         json_file = open('resources/harvester_resp.json', 'w')
-        json.dump(articles, json_file)
+        json.dump(articles, json_file, indent=4)
         json_file.close()
 
     def tearDown(self):
