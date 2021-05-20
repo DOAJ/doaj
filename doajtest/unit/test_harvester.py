@@ -23,22 +23,8 @@ from portality.models.harvester import HarvesterPlugin
 
 class TestHarvester(DoajTestCase):
 
-
-    def mock_get_journals_issns(self, string1):
-        return ["1234-5678", "9876-5432"]
-
-
-    def mock_get_url(self, url):
-        if url.startswith("https://www.ebi.ac.uk/europepmc"):
-            return "blabla"
-        else:
-            self.old_get(url)
-
     def setUp(self):
         super(TestHarvester, self).setUp()
-
-        self.get_journals_issns_old = HarvesterWorkflow.get_journals_issns
-        HarvesterWorkflow.get_journals_issns = self.mock_get_journals_issns
 
         self.publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
         self.journal = models.Journal(**JournalFixtureFactory.make_journal_source())
@@ -70,7 +56,6 @@ class TestHarvester(DoajTestCase):
         super(TestHarvester, self).tearDown()
         app.config['HARVESTER_API_KEYS'] = self.old_harvester_api_keys
         app.config["INITIAL_HARVEST_DATE"] = self.old_initial_harvest_date
-        HarvesterWorkflow.get_journals_issns = self.mock_get_journals_issns
 
     @patch('portality.tasks.harvester_helpers.epmc.client.EuropePMC.query')
     def test_harvest(self, mock_query):
