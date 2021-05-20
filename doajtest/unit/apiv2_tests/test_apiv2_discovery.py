@@ -1,4 +1,4 @@
-`from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.api.v2 import DiscoveryApi, DiscoveryException
 from portality.api.common import generate_link_headers
