@@ -1051,7 +1051,7 @@ HARVESTERS = [
     "portality.tasks.harvester_helpers.epmc.epmc_harvester.EPMCHarvester"
 ]
 
-INITIAL_HARVEST_DATE = "2021-04-22T00:00:00Z"
+INITIAL_HARVEST_DATE = "2015-12-01T00:00:00Z"
 
 # The mapping from account ids to API keys.  MUST NOT be checked into the repo, put these
 # in the local.cfg instead

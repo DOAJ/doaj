@@ -2,20 +2,12 @@ from portality import models
 from portality.background import BackgroundTask, BackgroundApi
 
 from portality.tasks.harvester_helpers import workflow
-from portality.core import app, es_connection, initialise_index
+from portality.core import app
 from portality.models.harvester import HarvesterProgressReport as Report
-from portality.tasks.redis_huey import main_queue, schedule
+from portality.tasks.redis_huey import schedule, long_running
 from portality.decorators import write_required
 
-import flask.logging
-
-from setproctitle import setproctitle
-import psutil, time, datetime
-
-STARTING_PROCTITLE = app.config.get('HARVESTER_STARTING_PROCTITLE', 'harvester: starting')
-RUNNING_PROCTITLE = app.config.get('HARVESTER_RUNNING_PROCTITLE', 'harvester: running')
-MAX_WAIT = app.config.get('HARVESTER_MAX_WAIT', 10)
-
+import datetime
 
 class HarvesterBackgroundTask(BackgroundTask):
     mail_prereqs = False
@@ -83,17 +75,6 @@ class HarvesterBackgroundTask(BackgroundTask):
                     msg_body="A new running instance of the harvester has started."
                 )
 
-        if app.debug:
-            # Augment the default flask debug log to include a timestamp.
-            app.debug_log_format = (
-                    '-' * 80 + '\n' +
-                    '%(asctime)s\n'
-                    '%(levelname)s in %(module)s [%(pathname)s:%(lineno)d]:\n' +
-                    '%(message)s\n' +
-                    '-' * 80
-            )
-            flask.logging.create_logger(app)
-
         # first prepare a job record
         job = models.BackgroundJob()
         job.user = username
@@ -113,14 +94,14 @@ class HarvesterBackgroundTask(BackgroundTask):
         # fixme: schedule() could raise a huey.exceptions.HueyException and not reach redis- would that be logged?
 
 
-@main_queue.periodic_task(schedule("harvest"))
+@long_running.periodic_task(schedule("harvest"))
 @write_required(script=True)
 def scheduled_harvest():
     user = app.config.get("SYSTEM_USERNAME")
     job = HarvesterBackgroundTask.prepare(user)
     HarvesterBackgroundTask.submit(job)
 
-@main_queue.task()
+@long_running.task()
 @write_required(script=True)
 def harvest(job_id):
     job = models.BackgroundJob.pull(job_id)
