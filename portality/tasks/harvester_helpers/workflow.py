@@ -37,9 +37,7 @@ class HarvesterWorkflow(object):
         for issn in issns:
             state = HarvestState.find_by_issn(account_id, issn)
             if state is not None:
-                #TODO: HarvesterStateFixture does not provide suspended, next line for the test only
-                if state["status"] == "suspended":
-                #if state.suspended:
+                if state.suspended:
                     state.reactivate()
                     state.save(blocking=True)
             else:
