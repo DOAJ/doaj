@@ -100,6 +100,8 @@ import csv
 from copy import deepcopy
 from wtforms import Form
 from wtforms.fields.core import UnboundField, FieldList, FormField
+
+from portality import datasets
 from portality.lib import plugin
 from flask import render_template
 import json
@@ -276,6 +278,9 @@ class FormulaicContext(object):
                 else:
                     fieldlist.append(field)
         return fieldlist
+
+    def lang_to_country(self, lang):
+        return datasets.language_for(lang).name
 
     def make_wtform_class(self, fields):
         class TempForm(Form):
