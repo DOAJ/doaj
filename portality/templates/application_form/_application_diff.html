@@ -30,9 +30,10 @@
         {% for k, v in form_diff|dictsort if k != "application_status" %}
             {% set previous = v['a'] %}
             {% set new = v['b'] %}
+            {% set fc = formulaic_context %}
             <tr>
                 <td>
-                    <a href="#question-{{ k }}">{{ k }}</a>
+                    <a href="#question-{{ k }}">{{ fc.get(k).get("label") }}</a>
                 </td>
                 <td>
                     {{ value(previous) }}
