@@ -13,6 +13,8 @@ from portality.core import app
 from portality.tasks.harvester import HarvesterBackgroundTask
 from portality import models
 from portality.tasks.harvester_helpers.epmc import models as h_models
+from portality.tasks.harvester_helpers.epmc.client import EuropePMC, EuropePMCException
+from portality.tasks.harvester_helpers.epmc.models import EPMCMetadata
 from portality.lib import httputil
 from portality.api.v2.client import client as doajclient
 from portality.tasks.harvester_helpers import workflow
@@ -76,4 +78,37 @@ class TestHarvester(DoajTestCase):
 
         assert len(articles_saved) == 1, "expected 1 article, found: {}".format(len(articles))
         assert articles_saved[0].bibjson().title == "Harvester Test Article"
+
+    @patch('portality.lib.httputil.get')
+    def test_query(self, mock_get):
+
+        with open('resources/harvester_resp.json') as json_file:
+            articles = json.load(json_file)
+
+        mock_get.return_value.status_code = 401
+
+        job = models.BackgroundJob()
+        with self.assertRaises(EuropePMCException):
+            EuropePMC.query("query_string", job)
+
+        mock_get.return_value = None
+
+        with self.assertRaises(EuropePMCException):
+            EuropePMC.query("query_string", job)
+
+        mock_get.return_value = Mock()
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.json.return_value = articles
+
+        result, cursor = EuropePMC.query("query_string", job)
+
+        assert len(result) == 2
+        assert isinstance(result[0], EPMCMetadata)
+        assert result[0].journal == "My Journal"
+        assert isinstance(result[1], EPMCMetadata)
+        assert result[1].journal == "My Journal"
+
+
+
+
 

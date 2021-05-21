@@ -2,7 +2,7 @@
     "hitCount": 2,
     "request": {
         "queryString": [
-            "ISSN:\"1234-5678\" OPEN_ACCESS:\"y\" UPDATE_DATE:2021-05-20 sort_date:\"y\""
+            "ISSN:\"1234-5678\" OPEN_ACCESS:\"y\" UPDATE_DATE:2021-05-21 sort_date:\"y\""
         ],
         "resultType": "core",
         "pageSize": 1000,

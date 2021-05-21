@@ -108,3 +108,6 @@ cms/error_sass.txt
 portality/static/doaj/css/main.css*
 cms/sass/main.css.map
 cms/sass/main.css
+
+#json for harvester test
+doajtest/unit/resources/harvester_resp.json
