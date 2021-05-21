@@ -127,15 +127,12 @@ class EuropePMC(object):
                 yield r
 
     @classmethod
-    def query(cls, query_string, job, cursor="", page_size=25):
-        cls.job = job
-        """
-        :return: (results, next_cursor)
-        """
+    def url_from_query(cls, query_string, cursor, page_size):
         quoted = quote(query_string, safe="/")
-        qcursor = quote(str(cursor))
         qsize = quote(str(page_size))
-        if qsize is None or qcursor is None or quoted is None:
+        qcursor = quote(str(cursor))
+
+        if qsize is None or quoted is None or qcursor is None:
             raise EuropePMCException(None, "unable to url escape the string")
 
         url = app.config.get("EPMC_REST_API") + "search?query=" + query_string
@@ -143,6 +140,16 @@ class EuropePMC(object):
 
         if cursor != "":
             url += "&cursorMark=" + qcursor
+
+        return url
+
+    @classmethod
+    def query(cls, query_string, job, cursor="", page_size=25):
+        cls.job = job
+        """
+        :return: (results, next_cursor)
+        """
+        url = cls.url_from_query(query_string, cursor, page_size)
         cls.job.add_audit_message("Requesting EPMC metadata from " + url)
 
         resp = httputil.get(url)

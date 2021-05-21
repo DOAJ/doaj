@@ -40,8 +40,6 @@ class TestHarvester(DoajTestCase):
 
         app.config['HARVESTER_API_KEYS'] = {self.publisher.id: self.publisher.api_key}
 
-        self.old_get = httputil.get
-
         today = datetime.today().strftime('%Y-%m-%d')
         app.config["INITIAL_HARVEST_DATE"] = today
         with open('resources/harvester_resp.json') as json_file:
