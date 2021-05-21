@@ -27,13 +27,13 @@
         </tr>
         </thead>
         <tbody>
-        {% for k, v in form_diff|dictsort if k != "application_status" %}
-            {% set previous = v['a'] %}
-            {% set new = v['b'] %}
-            {% set fc = formulaic_context %}
+        {% for f in formulaic_context.list_fields_in_order() %}
+          {% if f.name in form_diff %}
+            {% set previous = form_diff[f.name]['a'] %}
+            {% set new = form_diff[f.name]['b'] %}
             <tr>
                 <td>
-                    <a href="#question-{{ k }}">{{ fc.get(k).get("label") }}</a>
+                    <a href="#question-{{ k }}">{{ f.label }}</a>
                 </td>
                 <td>
                     {{ value(previous) }}
@@ -42,6 +42,7 @@
                     {{ value(new) }}
                 </td>
             </tr>
+           {% endif %}
         {% endfor %}
         </tbody>
     </table>
