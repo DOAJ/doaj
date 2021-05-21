@@ -1036,8 +1036,8 @@ DOAJ_QUERY_ENDPOINT = "query"
 
 DOAJ_SEARCH_TYPE = "journal,article"
 
-DOAJ_API1_BASE_URL = "http://localhost:5004/api/v1/"
-DOAJ_API2_BASE_URL = "http://localhost:5004/api/v2/"
+DOAJ_API1_BASE_URL = "http://doaj.org/api/v1/"
+DOAJ_API2_BASE_URL = "http://doaj.org/api/v2/"
 
 
 ## EPMC Client configuration
