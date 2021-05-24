@@ -22,7 +22,7 @@ Copy and paste the code below into your page where you want the search box to be
 ```
 **Example:**
 <!-- this is the actual script embed -->
-<script src="https://testdoaj.cottagelabs.com/static/widget/simple_search.js" type="text/javascript"></script>
+<script src="https://doaj.org/static/widget/simple_search.js" type="text/javascript"></script>
 <div id="doaj-simple-search-widget"></div>
 
 [comment]: <> (todo: awaiting SSW update)
@@ -69,7 +69,7 @@ var QUERY_OPTIONS = {
     page_from : 0                                // Which result to start from
     }
 </script>
-<script src="https://testdoaj.cottagelabs.com/static/widget/fixed_query.js" type="text/javascript"></script>
+<script src="https://doaj.org/static/widget/fixed_query.js" type="text/javascript"></script>
 <div id="doaj-fixed-query-widget"></div>
 <br/>
 
