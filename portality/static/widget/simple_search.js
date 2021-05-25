@@ -78,14 +78,14 @@ let doaj_url = parser.protocol + '//' + parser.host;
         <p class="label label--secondary">Search the Directory of Open Access Journals</p><br/>
 
         <div class="inline-fields">
-            <input type="radio" id="quick-search-journals" name="content-type" value="journals" checked>
-            <label for="quick-search-journals">Journals</label>
-            <input type="radio" id="quick-search-articles" name="content-type" value="articles">
-            <label for="quick-search-articles">Articles</label>
+            <input type="radio" id="doaj_simple-search-journals" name="content-type" value="journals" checked>
+            <label for="doaj_simple-search-journals">Journals</label>
+            <input type="radio" id="doaj_simple-search-articles" name="content-type" value="articles">
+            <label for="doaj_simple-search-articles">Articles</label>
         </div>
         <div class="input-group">
             <label for="quick-search-keywords" class="sr-only">Search by keywords:</label>
-            <input class="input-group__input" type="text" name="keywords" id="quick-search-keywords" required>
+            <input class="input-group__input" type="text" name="keywords" id="doaj_simple-search-keywords" required>
             <button class="input-group__input" type="submit">
                 <img src="` + doaj_url + `/static/doaj/images/feather-icons/search.svg" alt="search icon">
             </button>
