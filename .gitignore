@@ -1,6 +1,3 @@
-# Ignore generated css
-cms/sass/*.css*
-
 # Local env file
 .env
 env/
@@ -109,10 +106,11 @@ cms/components
 cms/error_fragments.txt
 cms/error_sass.txt
 cms/error_fqw_sass.txt
-portality/static/doaj/css/*.css
-portality/static/doaj/css/*.css.map
-cms/sass/*.css
-cms/sass/*.css.map
+portality/static/doaj/css/*.css*
+cms/sass/*.css*
 cms/fragments*
+
+# Intentionally keep the widgets css in the source tree and manually generate them (so we don't break them with changes)
+!portality/static/doaj/css/*_widget.css
 
 portality/static/widget/fq_widget_build_info.txt
