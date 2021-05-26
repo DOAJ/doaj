@@ -64,9 +64,11 @@ def build(paths, base_path=None):
                      include_paths=[sass_file],
                      omit_source_map_url=True)
 
-        # Add the source map URL ourselves, since it was being generated incorrectly
-        css += f'\n/*# sourceMappingURL={os.path.basename(map_file)} */'
+        # FIXME: the following line does correctly fix the source map issue, but we don't serve cms/sass so it's useless
+        # options: serve the /css/sass directory with flask (multiple static) or nginx (doesn't help dev on localhost)
 
+        # Add the source map URL ourselves, since it was being generated incorrectly
+        # css += f'\n/*# sourceMappingURL={os.path.basename(map_file)} */'
 
         with open(css_tmp, "w") as f:
             f.write(css)
