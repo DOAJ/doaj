@@ -1,7 +1,7 @@
 (function() {
 
 // Localize jQuery variable
-    var jQuery;
+var jQuery;
 let script = document.querySelector("script[src$='/static/widget/simple_search.js']");
 let parser = document.createElement('a');
 parser.href = script.attributes.src.value;
@@ -17,7 +17,7 @@ let doaj_url = parser.protocol + '//' + parser.host;
     head.appendChild(scr);
 
     scr  = document.createElement('script');
-    scr.src = doaj_url + '/static/vendor/feather/feather.min.js';
+    scr.src = doaj_url + '/static/vendor/feather-4.28.0/feather.min.js';
 //scr.src = 'https://unpkg.com/feather-icons';
     scr.async = false;
     scr.defer = false;
@@ -31,7 +31,7 @@ let doaj_url = parser.protocol + '//' + parser.host;
         script_tag.setAttribute("src", doaj_url + '/static/vendor/jquery-3.4.1/jquery-3.4.1.min.js');
         if (script_tag.readyState) {
             script_tag.onreadystatechange = function () { // For old versions of IE
-                if (this.readyState == 'complete' || this.readyState == 'loaded') {
+                if (this.readyState === 'complete' || this.readyState === 'loaded') {
                     scriptLoadHandler();
                 }
             };

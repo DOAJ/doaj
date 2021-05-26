@@ -18,12 +18,13 @@ MAIN_SETTINGS = (os.path.join(SASS, "main.scss"),
                  os.path.join("cms", "error_sass.txt"))
 
 # SASS file and error file for each widget
-FQ_WIDGET_SETTINGS =  (os.path.join(SASS, "fq_widget.scss"),
-            os.path.join("portality", "static", "doaj", "css", "fq_widget.css"),
-            os.path.join("cms", "error_fqw_sass.txt"))
+FQ_WIDGET_SETTINGS = (os.path.join(SASS, "fq_widget.scss"),
+                      os.path.join("portality", "static", "doaj", "css", "fq_widget.css"),
+                      os.path.join("cms", "error_fqw_sass.txt"))
 SS_WIDGET_SETTINGS = (os.path.join(SASS, "simple_widget.scss"),
-            os.path.join("portality", "static", "doaj", "css", "simple_widget.css"),
-            os.path.join("cms", "error_ssw_sass.txt"))
+                      os.path.join("portality", "static", "doaj", "css", "simple_widget.css"),
+                      os.path.join("cms", "error_ssw_sass.txt"))
+
 
 def _localise_paths(paths, base_path=None):
     SCSS_IN, CSS_OUT, ERROR_OUT = paths
@@ -57,16 +58,21 @@ def build(paths, base_path=None):
     try:
         sass_file, main_file, css_file, css_tmp, map_file, map_tmp, error_file = _localise_paths(paths, base_path)
 
-        css, map = sass.compile(filename=main_file,
+        css, src_map = sass.compile(filename=main_file,
                      output_style=STYLE,
                      source_map_filename=map_file,
-                     include_paths=[sass_file])
+                     include_paths=[sass_file],
+                     omit_source_map_url=True)
+
+        # Add the source map URL ourselves, since it was being generated incorrectly
+        css += f'\n/*# sourceMappingURL={os.path.basename(map_file)} */'
+
 
         with open(css_tmp, "w") as f:
             f.write(css)
 
         with open(map_tmp, "w") as f:
-            f.write(map)
+            f.write(src_map)
 
         _swap(css_file, css_tmp)
         _swap(map_file, map_tmp)
@@ -109,4 +115,5 @@ if __name__ == "__main__":
 
     # If this is run manually with the widget arg, also build the widgets (intended to commit result to the tree)
     if args.widgets:
-        [build(widget) for widget in WIDGET_SETTINGS.values()]
+        build(SS_WIDGET_SETTINGS)
+        build(FQ_WIDGET_SETTINGS)

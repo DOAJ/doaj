@@ -18,7 +18,7 @@ var doaj_url = parser.protocol + '//' + parser.host;
         head.appendChild(scr);
 
         scr = document.createElement('script');
-        scr.src = doaj_url + '/static/vendor/feather/feather.min.js';
+        scr.src = doaj_url + '/static/vendor/feather-4.28.0/feather.min.js';
         scr.async = false;
         scr.defer = false;
         head.appendChild(scr);
