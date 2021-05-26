@@ -105,6 +105,12 @@ cms/data/frontmatter.yml*
 cms/components
 cms/error_fragments.txt
 cms/error_sass.txt
-portality/static/doaj/css/main.css*
-cms/sass/main.css.map
-cms/sass/main.css
+cms/error_fqw_sass.txt
+portality/static/doaj/css/*.css*
+cms/sass/*.css*
+cms/fragments*
+
+# Intentionally keep the widgets css in the source tree and manually generate them (so we don't break them with changes)
+!portality/static/doaj/css/*_widget.css
+
+portality/static/widget/fq_widget_build_info.txt

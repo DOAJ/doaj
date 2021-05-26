@@ -7,16 +7,23 @@ OUT="fq_widget_depends_compiled.js"
 BUILD="fq_widget_build_info.txt"
 
 # path to dependencies
-DEPS="fqw_dependencies"
+
+#first add doaj.js to the file
 
 # combine all the dependencies into a single file in the right order (without jquery)
-cat $DEPS/es.js <(echo) \
-    $DEPS/bootstrap2.facetview.theme.js <(echo) \
-    $DEPS/doaj.facetview.theme.js <(echo) \
-    $DEPS/jquery.facetview2.js <(echo) \
-    fixed_query_src.js <(echo) \
+cat ../js/doaj.js <(echo) \
+    public_search_config.js <(echo) \
+    ../vendor/edges/src/es.js <(echo) \
+    ../vendor/edges/src/edges.js <(echo) \
+    ../vendor/edges/src/components/search.js <(echo) \
+    ../js/doaj.fieldrender.edges.js <(echo) \
+    ../vendor/edges/src/renderers/bs3.ResultCountRenderer.js \
+    ../vendor/edges/src/renderers/bs3.PagerRenderer.js <(echo) \
     > $OUT
 
-# Record the Build time
+#replace all $ with jQuery
+# sed -i 's/\$/jQuery/g' $OUT
 
+
+# Record the Build time
 echo "Build $(date -u +"%Y-%m-%dT%H:%M:%SZ")" > $BUILD

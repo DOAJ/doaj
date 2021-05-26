@@ -6,4 +6,4 @@
 	url = https://github.com/swagger-api/swagger-ui.git
 [submodule "docs/generated"]
 	path = docs/generated
-	url = git@github.com:DOAJ/doaj-docs.git
+	url = https://github.com/DOAJ/doaj-docs.git

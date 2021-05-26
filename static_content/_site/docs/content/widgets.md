@@ -1,12 +1,4 @@
 
----
-layout: sidenav
-title: Widgets
-section: Docs
-toc: true
-sticky_sidenav: true
----
-
 Widgets are tools that allow you to embed DOAJ into your site. There are two widgets available:
 
 1. A Simple Journal Search widget which embeds a search box on your page. Upon submitting the search, the user is taken to their journal search results on DOAJ.
@@ -17,13 +9,9 @@ Widgets are tools that allow you to embed DOAJ into your site. There are two wid
 Copy and paste the code below into your page where you want the search box to be displayed.
 
 ```html
-<script src="{{ base_url }}/static/widget/simple_search.js" type="text/javascript"></script>
+<script src="https://doaj.org/static/widget/simple_search.js" type="text/javascript"></script>
 <div id="doaj-simple-search-widget"></div>
 ```
-**Example:**
-<!-- this is the actual script embed -->
-<script src="{{ base_url }}/static/widget/simple_search.js" type="text/javascript"></script>
-<div id="doaj-simple-search-widget"></div>
 
 ## Fixed Query
 
@@ -31,6 +19,7 @@ Copy and paste the code below into your page where you want the widget to be dis
 
 ```html
 <script type="text/javascript">
+var doaj_url = "https://doaj.org";
 var QUERY_OPTIONS = {
     query_string : 'medicine',                   // The plain-text query string
     query_field: 'bibjson.title',                // The field we are querying
@@ -42,27 +31,9 @@ var QUERY_OPTIONS = {
     page_from : 0                                // Which result to start from
     }
 </script>
-<script src="{{ base_url }}/static/widget/fixed_query.js" type="text/javascript"></script>
+<script src="https://doaj.org/static/widget/fixed_query.js" type="text/javascript"></script>
 <div id="doaj-fixed-query-widget"></div>
 ```
-
-**Example:**
-<!-- this is the actual script embed -->
-<script type="text/javascript">
-var QUERY_OPTIONS = {
-    query_string : 'medicine',                   // The plain-text query string
-    query_field: 'bibjson.title',                // The field we are querying
-    sort_field: 'index.unpunctitle.exact',       // Field to order results by
-    sort_direction:  'asc',                      // Direction of sort "asc" | "desc"
-    search_operator : 'AND',                     // Which sort operator to use "AND" | "OR"
-    search_type: 'journal',                      // Which type to search upon (omit for both) "article" | "journal"
-    page_size : 5,                               // How many results to show per widget page
-    page_from : 0                                // Which result to start from
-    }
-</script>
-<script src="{{ base_url }}/static/widget/fixed_query.js" type="text/javascript"></script>
-<div id="doaj-fixed-query-widget"></div>
-<br/>
 
 ### Configuring via `QUERY_OPTIONS`
 
@@ -73,27 +44,27 @@ The parameter `QUERY_OPTIONS` takes a subset of fields to define which results t
   - Accepts plain text: any text you might put in the search box
 - `query_field`
   - The field to query. Omit to search in any field, or specify one of these:
-    - `bibjson.title`: title
-    - `bibjson.keywords`: keywords
-    - `index.classification`: subject
-    - `index.issn.exact`: ISSN
-    - `bibjson.identifier.id`: DOI
-    - `index.country`: country of publisher
-    - `index.language`: journal language
-    - `index.publisher`: publisher name
+      - `bibjson.title`: title
+      - `bibjson.keywords`: keywords
+      - `index.classification`: subject
+      - `index.issn.exact`: ISSN
+      - `bibjson.identifier.id`: DOI
+      - `index.country`: country of publisher
+      - `index.language`: journal language
+      - `index.publisher`: publisher name
 - `sort_field`
-  - `created_date`: sort by date added to DOAJ (default)
-  - `index.unpunctitle.exact`: sort by title
+    - `created_date`: sort by date added to DOAJ (default)
+    - `index.unpunctitle.exact`: sort by title
 - `sort_direction`
-  - `asc`: ascending (default)
-  - `desc`: descending
+    - `asc`: ascending (default)
+    - `desc`: descending
 - `search_operator`
-  - `AND`: use AND for the terms in the query string (default)
-  - `OR`: use OR for the terms in the query string
+    - `AND`: use AND for the terms in the query string (default)
+    - `OR`: use OR for the terms in the query string
 - `search_type`
   - The type of result to show. Omit this property to show results of both type    
-    - `journal`: only show journals
-    - `article`: only show articles
+      - `journal`: only show journals
+      - `article`: only show articles
 - `page_size`
   - `integer`: how many results to show per page, 1 or more (default: 10)
 - `page_from`
