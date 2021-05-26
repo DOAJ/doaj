@@ -17,22 +17,13 @@ Widgets are tools that allow you to embed DOAJ into your site. There are two wid
 Copy and paste the code below into your page where you want the search box to be displayed.
 
 ```html
-<script src="https://doaj.org/static/widget/simple_search.js" type="text/javascript"></script>
+<script src="{{ base_url }}/static/widget/simple_search.js" type="text/javascript"></script>
 <div id="doaj-simple-search-widget"></div>
 ```
 **Example:**
 <!-- this is the actual script embed -->
 <script src="{{ base_url }}/static/widget/simple_search.js" type="text/javascript"></script>
 <div id="doaj-simple-search-widget"></div>
-
-[comment]: <> (todo: awaiting SSW update)
-[comment]: <> (**Example:**)
-
-[comment]: <> (<!-- this is the actual script embed -->)
-
-[comment]: <> (<script src="{{ base_url }}/static/widget/simple_search.js" type="text/javascript"></script>)
-
-[comment]: <> (<div id="doaj-simple-search-widget"></div>)
 
 ## Fixed Query
 
@@ -51,7 +42,7 @@ var QUERY_OPTIONS = {
     page_from : 0                                // Which result to start from
     }
 </script>
-<script src="https://doaj.org/static/widget/fixed_query.js" type="text/javascript"></script>
+<script src="{{ base_url }}/static/widget/fixed_query.js" type="text/javascript"></script>
 <div id="doaj-fixed-query-widget"></div>
 ```
 
