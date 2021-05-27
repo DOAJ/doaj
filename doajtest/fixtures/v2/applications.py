@@ -112,7 +112,6 @@ APPLICATION_SOURCE = {
     "last_updated" : "2002-01-01T00:00:00Z",
     "admin": {
         "application_status" : constants.APPLICATION_STATUS_PENDING,
-        "bulk_upload": "bulk123456789",
         "current_journal" : "poiuytrewq",
         "editor" : "associate",
         "editor_group" : "editorgroup",
