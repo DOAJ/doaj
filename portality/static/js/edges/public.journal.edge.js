@@ -6,7 +6,6 @@ $.extend(true, doaj, {
         embedSnippet : function(renderer) {
             var snip =
 `<script type="text/javascript">
-  var doaj_url="https://doaj.org"; 
   var SEARCH_CONFIGURED_OPTIONS={{QUERY}}
 </script>
 <script src="https://doaj.org/static/widget/fixed_query.js" type="text/javascript"></script>

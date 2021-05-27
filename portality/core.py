@@ -232,10 +232,6 @@ def build_statics(app):
     build_fragments.build(base_path)
     print("Compiling main SASS")
     build_sass.build(build_sass.MAIN_SETTINGS, base_path=base_path)
-    print("Compiling ss_widget SASS")
-    build_sass.build(build_sass.SS_WIDGET_SETTINGS, base_path=base_path)
-    print("Compiling fq_widget SASS")
-    build_sass.build(build_sass.FQ_WIDGET_SETTINGS, base_path=base_path)
 
 
 app = create_app()

@@ -57,6 +57,8 @@ The CSS for the widgets is compiled separately from the main CSS and committed t
 python portality/cms/build_sass.py -w
 ```
 
+Keep in mind the CSS isn't the only requirement for the fixed query widget - collating the JavaScript requires you to run the shell script `portality/static/widget/fixed_query_build.sh`
+
 ## Managing Assets
 
 Static assets include images and other content-like objects that form part of the site content, such as downloadable
