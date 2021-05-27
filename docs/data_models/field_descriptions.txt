@@ -1,0 +1,1 @@
+admin.editor: the currently assigned DOAJ editor for this journal

@@ -6,40 +6,41 @@ class ApplicationFormXWalk(JournalGenericXWalk):
 
     _formFields2objectFields = {
         "alternative_title" : "bibjson.alternative_title",
-        "apc_charges.apc_max" : "bibjson.apc.max[].price",
-        "apc_charges.apc_currency" : "bibjson.apc.max[].currency",
+        "apc_charges.apc_max" : "bibjson.apc.max.price",
+        "apc_charges.apc_currency" : "bibjson.apc.max.currency",
         "apc_url" : "bibjson.apc.url",
-        "preservation_service" : "bibjson.preservation.service[]",
-        "preservation_service_other" : "bibjson.preservation.service[]",
-        "preservation_service_library" : "bibjson.preservation.national_library[]",
+        "preservation_service" : "bibjson.preservation.service",
+        "preservation_service_other" : "bibjson.preservation.service",
+        "preservation_service_library" : "bibjson.preservation.national_library",
         "preservation_service_url" : "bibjson.preservation.url",
         "copyright_author_retains" : "bibjson.copyright.author_retains",
         "copyright_url" : "bibjson.copyright.url",
         "publisher.publisher_country" : "bibjson.publisher.country",
-        "deposit_policy" : "bibjson.deposit_policy.service[]",
-        "deposit_policy_other" : "bibjson.deposit_policy.service[]",
-        "review_process" : "bibjson.editorial.review_process[]",
-        "review_process_other" : "bibjson.editorial.review_process[]",
+        "deposit_policy" : "bibjson.deposit_policy.service",
+        "deposit_policy_other" : "bibjson.deposit_policy.service",
+        "review_process" : "bibjson.editorial.review_process",
+        "review_process_other" : "bibjson.editorial.review_process",
         "review_url" : "bibjson.editorial.review_url",
         "pissn" : "bibjson.pissn",
         "eissn" : "bibjson.eissn",
         "institution.institution_name" : "bibjson.institution.name",
         "keywords" : "bibjson.keywords",
         "language" : "bibjson.language",
-        "license_attributes" : "bibjson.license[].BY, NC, ND and NA",
-        "license_display" : "bibjson.article.license_display[]",
+        "license_attributes" : (["bibjson.license.BY", "bibjson.license.NC", "bibjson.license.ND", "bibjson.license.SA"],
+                                "bibjson.license[].BY, NC, ND and SA"),
+        "license_display" : "bibjson.article.license_display",
         "license_display_example_url" : "bibjson.article.license_display_example_url",
         "boai" : "bibjson.boai",
-        "license" : "bibjson.license[].type",
-        "license_terms_url" : "bibjson.license[].url",
+        "license" : "bibjson.license.type",
+        "license_terms_url" : "bibjson.license.url",
         "oa_statement_url" : "bibjson.ref.oa_statement",
         "journal_url" : "bibjson.ref.journal",
         "aims_scope_url" : "bibjson.ref.aims_scope",
         "editorial_board_url" : "bibjon.editorial.board_url",
         "author_instructions_url" : "bibjson.ref.author_instructions",
         "waiver_url" : "bibjson.waiver.url",
-        "persistent_identifiers" : "bibjson.pid_scheme.scheme[]",
-        "persistent_identifiers_other" : "bibjson.pid_scheme.scheme[]",
+        "persistent_identifiers" : "bibjson.pid_scheme.scheme",
+        "persistent_identifiers_other" : "bibjson.pid_scheme.scheme",
         "plagiarism_detection" : "bibjson.plagiarism.detection",
         "plagiarism_url" : "bibjson.plagiarism.url",
         "publication_time_weeks" : "bibjson.publication_time_weeks",
@@ -56,7 +57,20 @@ class ApplicationFormXWalk(JournalGenericXWalk):
 
     @classmethod
     def formField2objectField(cls, field):
-        return cls._formFields2objectFields.get(field, field)
+        data = cls._formFields2objectFields.get(field, field)
+        if isinstance(data, str):
+            return data
+        return data[1]
+
+    @classmethod
+    def formField2objectFields(cls, field):
+        data = cls._formFields2objectFields.get(field, field)
+        if isinstance(data, str):
+            return [data]
+        fields = data[0]
+        if not isinstance(fields, list):
+            return [fields]
+        return fields
 
     @classmethod
     def form2obj(cls, form):
