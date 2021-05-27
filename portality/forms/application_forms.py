@@ -2903,6 +2903,28 @@ JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYT
 
 
 if __name__ == "__main__":
+    """
+    Running this file from the command line enables you to output documentation for a given form context.
+    
+    See `docs/forms.sh` for where this is used
+    
+    To create the documentation you can call this file with 3 arguments:
+    
+    -t - the object type to output.  Either 'journal' or 'application'
+    -c - the form context.  Will be one of the contexts defined elsewhere in this file, which may be specific to the 
+            object type.  For example, 'admin' or 'editor'
+    -o - the path to the file where to output the result
+    
+    The output is a CSV which lists the following information:
+    
+    * Form Position - the position in the form.  Felds are listed in order
+    * Field Name - the form field name
+    * Label - the form field label
+    * Input Type - what kind of input (e.g. radio, text)
+    * Options - the express options allowed, or the name of the function which generates the options
+    * Disabled? - is the field disabled in this context
+    * Fieldset ID - the ID (from this file) of the fieldset that this field is part of
+    """
     import argparse
 
     parser = argparse.ArgumentParser()

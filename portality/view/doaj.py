@@ -58,22 +58,6 @@ def news():
     return redirect("https://blog.doaj.org")
 
 
-@blueprint.route("/ssw_demo")
-def ssw_demo():
-    return render_template('doaj/ssw_demo.html',
-                           env=app.config.get("DOAJENV"),
-                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
-                           )
-
-@blueprint.route("/fqw_demo")
-def fqw_demo():
-    return render_template('doaj/fqw_demo.html',
-                           env=app.config.get("DOAJENV"),
-                           widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
-                           )
-
-
-
 @blueprint.route("/fqw_hit", methods=['POST'])
 def fqw_hit():
     page = request.form.get('embedding_page')
@@ -499,7 +483,7 @@ def xml():
 
 @blueprint.route("/docs/widgets/")
 def widgets():
-    return render_template("layouts/static_page.html", page_frag="/docs/widgets.html")
+    return render_template("layouts/static_page.html", page_frag="/docs/widgets.html", base_url=app.config.get('BASE_URL'))
 
 
 @blueprint.route("/docs/public-data-dump/")

@@ -1,0 +1,11 @@
+//IMPORTANT: If anything changes here it has to change in simple_widget.scss and fq_widget.scs
+
+body {
+  background-color: $warm-white;
+  color: $warm-black;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  @include font-sans;
+}
