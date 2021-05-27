@@ -273,8 +273,7 @@ Example record:
         if contribs is not None:
             for ctb in contribs:
                 if ctb.attrib["contributor_role"] == 'author':
-                    e = _element(ctb, "x:surname", NS)
-                    name = e if e else ""
+                    name = _element(ctb, "x:surname", NS)
                     e = _element(ctb, "x:given_name", NS)
                     name = name + ' ' + e if e else name
                     e = _element(ctb, "x:affiliation", NS)
