@@ -190,7 +190,7 @@ We cannot provide a status update for applications which are less than three mon
 
 For journals that have been accepted into DOAJ, it is important that the information we hold about them is up to date. 
 
-You can update the journal information by logging into your account and going to your Publisher dashboard. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button, next to each journal record, to submit an update request to us.
+You can update the journal information via our API or by logging into your account and going to your Publisher dashboard. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button, next to each journal record, to submit an update request to us.
 
 A journal update request form will open with the current answers pre-filled. Change any answers that need to be updated. If you haven't updated the journal since before November 2020, when we revised the form, we suggest that you review every answer. Note that some questions may not have an answer, as new questions were added in November 2020.
 

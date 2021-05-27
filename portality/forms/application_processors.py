@@ -429,7 +429,10 @@ class AdminApplication(ApplicationProcessor):
 
         to = [email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
+        if update_request:
+            subject = app.config.get("SERVICE_NAME", "") + " - update request accepted"
+        else:
+            subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
         publisher_name = publisher_name if publisher_name is not None else "Journal Owner"
 
         try:

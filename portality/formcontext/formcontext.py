@@ -493,6 +493,7 @@ class ApplicationContext(PrivateContext):
         to = [email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
         subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
+
         publisher_name = publisher_name if publisher_name is not None else "Journal Owner"
 
         try:
@@ -1808,7 +1809,9 @@ class MetadataForm(FormContext):
             article_service.create_article(self.target, self.user, add_journal_info=True,
                                            update_article_id=self.source.id if self.source is not None else None,
                                            duplicate_check = duplicate_check)
-            Messages.flash(Messages.ARTICLE_METADATA_SUBMITTED_FLASH)
+            article_url = url_for('doaj.article_page', identifier=self.target.id)
+            msg, how = Messages.ARTICLE_METADATA_SUBMITTED_FLASH
+            Messages.flash_with_url(msg.format(url=article_url), how)
         else:
             return
 

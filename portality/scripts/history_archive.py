@@ -4,9 +4,9 @@ path_regex = "^history/([^/]+)/((\d{4})-\d{2}-\d{2})/(.+)$"
 existing_regex = "^([^\/]+)/(\d{4}-\d{2}-\d{2})/(.+)$"
 
 def history_archive(config):
-    #_extract_and_restructure(config)
-    #_merge_existing(config)
-    #_history_dirs_reports(config)
+    _extract_and_restructure(config)
+    _merge_existing(config)
+    _history_dirs_reports(config)
     _create_new_archives(config)
 
 

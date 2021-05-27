@@ -1202,15 +1202,22 @@ class FieldDefinitions:
             {"field": "preservation_service", "value": "other"}
         ],
         "validate": [
-            {"required_if": {"field": "preservation_service", "values": ["CINES"]}},
-            {"required_if": {"field": "preservation_service", "values": ["CLOCKSS"]}},
-            {"required_if": {"field": "preservation_service", "values": ["LOCKSS"]}},
-            {"required_if": {"field": "preservation_service", "values": ["Internet Archive"]}},
-            {"required_if": {"field": "preservation_service", "values": ["PKP PN"]}},
-            {"required_if": {"field": "preservation_service", "values": ["PMC"]}},
-            {"required_if": {"field": "preservation_service", "values": ["Portico"]}},
-            {"required_if": {"field": "preservation_service", "values": ["national_library"]}},
-            {"required_if": {"field": "preservation_service", "values": ["other"]}},
+            {
+                "required_if": {
+                    "field": "preservation_service",
+                    "value": [
+                        "CINES",
+                        "CLOCKSS",
+                        "LOCKSS",
+                        "Internet Archive",
+                        "PKP PN",
+                        "PMC",
+                        "Portico",
+                        "national_library",
+                        "other"
+                    ]
+                }
+            },
             "is_url"
         ],
         "widgets": [
@@ -1295,21 +1302,35 @@ class FieldDefinitions:
         "contexts" : {
             "public" : {
                 "validate": [
-                    {"required_if": {"field": "deposit_policy", "value": "Sherpa/Romeo"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Dulcinea"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Héloïse"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Diadorim"}},
-                    {"required_if": {"field": "deposit_policy", "value": "other"}},
+                    {
+                        "required_if": {
+                            "field": "deposit_policy",
+                            "value": [
+                                "Sherpa/Romeo",
+                                "Dulcinea",
+                                "Héloïse",
+                                "Diadorim",
+                                "other"
+                            ]
+                        }
+                    },
                     "is_url"
                 ]
             },
             "update_request" : {
                 "validate" : [
-                    {"required_if": {"field": "deposit_policy", "value": "Sherpa/Romeo"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Dulcinea"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Héloïse"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Diadorim"}},
-                    {"required_if": {"field": "deposit_policy", "value": "other"}},
+                    {
+                        "required_if": {
+                            "field": "deposit_policy",
+                            "value": [
+                                "Sherpa/Romeo",
+                                "Dulcinea",
+                                "Héloïse",
+                                "Diadorim",
+                                "other"
+                            ]
+                        }
+                    },
                     "is_url"
                 ]
             }
@@ -2882,6 +2903,28 @@ JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYT
 
 
 if __name__ == "__main__":
+    """
+    Running this file from the command line enables you to output documentation for a given form context.
+    
+    See `docs/forms.sh` for where this is used
+    
+    To create the documentation you can call this file with 3 arguments:
+    
+    -t - the object type to output.  Either 'journal' or 'application'
+    -c - the form context.  Will be one of the contexts defined elsewhere in this file, which may be specific to the 
+            object type.  For example, 'admin' or 'editor'
+    -o - the path to the file where to output the result
+    
+    The output is a CSV which lists the following information:
+    
+    * Form Position - the position in the form.  Felds are listed in order
+    * Field Name - the form field name
+    * Label - the form field label
+    * Input Type - what kind of input (e.g. radio, text)
+    * Options - the express options allowed, or the name of the function which generates the options
+    * Disabled? - is the field disabled in this context
+    * Fieldset ID - the ID (from this file) of the fieldset that this field is part of
+    """
     import argparse
 
     parser = argparse.ArgumentParser()
