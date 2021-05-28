@@ -19,7 +19,8 @@ def find_nested(substr, d, result):
     for key, value in d.items():
         if isinstance(value, dict):
             return find_nested(substr, value, result)
-        if isinstance(value, str):
+        if isinstance(value, str) and substr in value:
+            print("found! {" + key + ": " + value + "}")
             result.append({key, value})
     return result
 
