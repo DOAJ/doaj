@@ -4,9 +4,7 @@ from portality.api.v2.data_objects.article import IncomingArticleDO, OutgoingArt
 from portality.lib import dataobj
 from portality import models
 from portality.bll.doaj import DOAJ
-from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, DuplicateArticleException, \
-    ScriptTagFound
-
+from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, DuplicateArticleException
 from copy import deepcopy
 
 class ArticlesCrudApi(CrudApi):
@@ -82,8 +80,6 @@ class ArticlesCrudApi(CrudApi):
             raise Api400Error("; ".join(e.errors))
         except DuplicateArticleException as e:
             raise Api403Error(str(e))
-        except ScriptTagFound as e:
-            raise Api400Error(str(e))
 
         # Check we are allowed to create an article for this journal
         if result.get("fail", 0) == 1:
@@ -98,6 +94,8 @@ class ArticlesCrudApi(CrudApi):
         try:
             ia = IncomingArticleDO(data)
         except dataobj.DataStructureException as e:
+            raise Api400Error(str(e))
+        except dataobj.ScriptTagFoundException as e:
             raise Api400Error(str(e))
 
         # if that works, convert it to an Article object
@@ -213,8 +211,6 @@ class ArticlesCrudApi(CrudApi):
             raise Api400Error("; ".join(e.errors))
         except DuplicateArticleException as e:
             raise Api403Error(str(e))
-        except ScriptTagFound as e:
-            raise Api400Error(str(e))
 
         if result.get("success") == 0:
             raise Api400Error("Article update failed for unanticipated reason")

@@ -181,9 +181,6 @@ class ArticleService(object):
         if isinstance(has_permissions_result,dict):
             return has_permissions_result
 
-        if self._check_for_script(article):
-            raise exceptions.ScriptTagFound(Messages.EXCEPTION_SCRIPT_TAG_FOUND)
-
         is_update = 0
         if duplicate_check:
             duplicate = self.get_duplicate(article)
@@ -290,17 +287,6 @@ class ArticleService(object):
                 return False
 
         return True
-
-    def _check_for_script(self, article):
-        for key, value in article.items():
-            if value:
-                if isinstance(value, dict):
-                    if self._check_for_script(value):
-                        return True
-                elif isinstance(value, str):
-                    if "<script>" in value:
-                        return True
-        return False
 
     def _doi_or_fulltext_updated(self, new_article, update_id):
         if new_article.id is None:

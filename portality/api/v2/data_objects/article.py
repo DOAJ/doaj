@@ -2,6 +2,7 @@ import re
 
 from portality.lib import dataobj, swagger
 from portality import models, regex
+from portality.ui.messages import Messages
 from portality.util import normalise_issn
 from copy import deepcopy
 from portality.regex import DOI,DOI_COMPILED
@@ -210,6 +211,9 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         # remove all fields with empty data ""
         self._trim_empty_strings()
 
+        if self._check_for_script(self.data):
+            raise dataobj.ScriptTagFoundException(Messages.EXCEPTION_SCRIPT_TAG_FOUND)
+
         # at least one of print issn / e-issn, and they must be different
         #
         # check that there are identifiers at all
@@ -257,6 +261,16 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
                         "Invalid DOI format.")
                 break
 
+    def _check_for_script(self, article):
+        for key, value in article.items():
+            if value:
+                if isinstance(value, dict):
+                    if self._check_for_script(value):
+                        return True
+                elif isinstance(value, str):
+                    if "<script>" in value:
+                        return True
+        return False
 
     def to_article_model(self, existing=None):
         dat = deepcopy(self.data)
