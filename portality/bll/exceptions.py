@@ -66,6 +66,12 @@ class ArticleMergeConflict(Exception):
     """
     pass
 
+class ScriptTagFound(Exception):
+    """
+        Exception to raise when script tag has been found in metadata
+    """
+    pass
+
 class IllegalStatusException(Exception):
     """
     Exception to raise when an application is in a state that is not allowed for the current action
