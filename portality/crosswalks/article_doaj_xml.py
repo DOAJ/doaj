@@ -41,7 +41,7 @@ class DOAJXWalk(object):
         except Exception as e:
             raise CrosswalkException(message="Unable to parse XML file", inner=e)
 
-        # then pass the doc to the validator and check for any script tags
+        # then pass the doc to the validator
         valid = self.validate(doc)
 
         if not valid:
