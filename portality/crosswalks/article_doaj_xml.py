@@ -42,18 +42,11 @@ class DOAJXWalk(object):
             raise CrosswalkException(message="Unable to parse XML file", inner=e)
 
         # then pass the doc to the validator and check for any script tags
-        schema_valid = self.validate(doc)
+        valid = self.validate(doc)
 
-        if not schema_valid:
+        if not valid:
             msg = "Validation message from schema '{x}': {y}\n".format(x=DOAJXWalk.format_name, y=self.validation_log)
             raise CrosswalkException(message="Unable to validate document with identified schema", inner_message=msg)
-
-        # check for script tags
-        script_tags_valid = self._check_for_script(doc)
-
-        if not script_tags_valid:
-            msg = "Articles containing script html tags are not accepted due to security reasons. Please remove any script HTML tags from your metadata"
-            raise CrosswalkException(message="Script HTML tag found", inner_message=msg)
 
         return doc
 
@@ -68,13 +61,6 @@ class DOAJXWalk(object):
                 el = match.group(1)
             self.validation_log = el
         return valid
-
-    def _check_for_script(self, doc):
-        root = doc.getroot()
-        for elem in list(root.iter()):
-            if re.search(".*<script>.*", elem.text):
-                return False
-        return True
 
     def crosswalk_file(self, file_handle, add_journal_info=True):
         doc = self.validate_file(file_handle)
