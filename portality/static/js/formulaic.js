@@ -1340,11 +1340,11 @@ var formulaic = {
 
                 if (val) {
                     if (this.container) {
-                        this.container.html('<strong>Full contents: ' + val + '</strong>');
+                        this.container.html('<strong>Full contents: ' + edges.escapeHtml(val) + '</strong>');
                     } else {
                         var classes = edges.css_classes(this.ns, "contents");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p id="' + id + '" class="' + classes + '"><strong>' + val + '</strong></p>');
+                        that.after('<p id="' + id + '" class="' + classes + '"><strong>' + edges.escapeHtml(val) + '</strong></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.container = $(selector, this.form.context);

@@ -31,7 +31,7 @@ from portality.forms.validate import (
     BigEndDate,
     ReservedUsernames,
     CustomRequired,
-    OwnerExists
+    OwnerExists, NoScriptTag
 )
 
 from portality.datasets import language_options, country_options, currency_options
@@ -146,7 +146,8 @@ class FieldDefinitions:
             "doaj_criteria": "Title in application form, title at ISSN and website must all match"
         },
         "validate": [
-            {"required": {"message": "Enter the journal’s name"}}
+            {"required": {"message": "Enter the journal’s name"}},
+            "no_script_tag"
         ],
         "widgets": [
             "trim_whitespace",
@@ -173,6 +174,9 @@ class FieldDefinitions:
         "help": {
             "placeholder": "Ma revue"
         },
+        "validate": [
+            "no_script_tag"
+        ],
         "widgets": [
             "trim_whitespace",
             {"full_contents" : {"empty_disabled" : "[The journal has no alternative title]"}}
@@ -2463,6 +2467,18 @@ class JournalURLInPublicDOAJBuilder:
     def wtforms(field, settings):
         return JournalURLInPublicDOAJ(message=settings.get("message"))
 
+class NoScriptTagBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-no-script-tag"] = ""
+        if "message" in settings:
+            html_attrs["data-parsley-noScriptTag-message"] = "<p><small>" + settings["message"] + "</small></p>"
+        else:
+            html_attrs["data-parsley-no-script-tag-message"] = "<p><small>" + "No script tags allowed" + "</p></small>"
+
+    @staticmethod
+    def wtforms(field, settings):
+        return NoScriptTag(settings.get("value"))
 
 class OptionalIfBuilder:
     @staticmethod
@@ -2625,7 +2641,8 @@ PYTHON_FUNCTIONS = {
             "group_member" : GroupMemberBuilder.render,
             "not_if" : NotIfBuildier.render,
             "required_value" : RequiredValueBuilder.render,
-            "bigenddate": BigEndDateBuilder.render
+            "bigenddate": BigEndDateBuilder.render,
+            "no_script_tag": NoScriptTagBuilder.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -2646,7 +2663,8 @@ PYTHON_FUNCTIONS = {
             "required_value" : RequiredValueBuilder.wtforms,
             "bigenddate": BigEndDateBuilder.wtforms,
             "reserved_usernames" : ReservedUsernamesBuilder.wtforms,
-            "owner_exists" : OwnerExistsBuilder.wtforms
+            "owner_exists" : OwnerExistsBuilder.wtforms,
+            "no_script_tag": NoScriptTagBuilder.wtforms
         }
     }
 }
