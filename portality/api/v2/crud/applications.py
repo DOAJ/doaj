@@ -64,17 +64,21 @@ class ApplicationsCrudApi(CrudApi):
         except dataobj.ScriptTagFoundException as e:
             email_data = {"application": data, "account": account.__dict__}
             jdata = json.dumps(email_data, indent=4)
-            # send warning email about the service tag in article metadata detected
-            to = app.config.get('SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS')
-            fro = app.config.get("SYSTEM_EMAIL_FROM", "feedback@doaj.org")
-            subject = app.config.get("SERVICE_NAME", "") + " - script tag detected in application metadata"
-            es_type = "application"
-            app_email.send_mail(to=to,
-                                 fro=fro,
-                                 subject=subject,
-                                 template_name="email/script_tag_detected",
-                                 es_type=es_type,
-                                 data=jdata)
+            try:
+                # send warning email about the service tag in article metadata detected
+                to = app.config.get('SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS')
+                fro = app.config.get("SYSTEM_EMAIL_FROM", "feedback@doaj.org")
+                subject = app.config.get("SERVICE_NAME", "") + " - script tag detected in application metadata"
+                es_type = "application"
+                app_email.send_mail(to=to,
+                                     fro=fro,
+                                     subject=subject,
+                                     template_name="email/script_tag_detected",
+                                     es_type=es_type,
+                                     data=jdata)
+            except app_email.EmailException:
+                app.logger.exception('Error sending script tag detection email - ' + jdata)
+
             raise Api400Error(str(e))
 
         # if that works, convert it to a Suggestion object
