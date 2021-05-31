@@ -56,11 +56,11 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
-        # too many keywords
-        data = ArticleFixtureFactory.make_article_source()
-        data["bibjson"]["keywords"] = ["one", "two", "three", "four", "five", "six", "seven"]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
+        # test unnecessary https://github.com/DOAJ/doajPM/issues/2950
+        # data = ArticleFixtureFactory.make_article_source()
+        # data["bibjson"]["keywords"] = ["one", "two", "three", "four", "five", "six", "seven"]
+        # with self.assertRaises(DataStructureException):
+        #     ia = IncomingArticleDO(data)
 
         # incorrect orcid format
         data = ArticleFixtureFactory.make_article_source()
