@@ -1,4 +1,4 @@
-The attempt of sending article's metadata with '<script>' tag has been detected.
+The attempt of sending {{ es_type }}'s metadata with '<script>' tag has been detected.
 
 Data in question:
 
