@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 
+from portality.api.v2.data_objects.common import _check_for_script
 from portality.lib import swagger, seamless, coerce, dates, dataobj
 from portality import models
 from copy import deepcopy
@@ -135,7 +136,7 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         if len(list(self.__seamless__.data.keys())) == 0:
             return
 
-        if self._check_for_script(self.data):
+        if _check_for_script(self.data):
             raise dataobj.ScriptTagFoundException(Messages.EXCEPTION_SCRIPT_TAG_FOUND)
 
         # extract the p/e-issn identifier objects
@@ -182,17 +183,6 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         # check the number of keywords is no more than 6
         if len(self.data["bibjson"]["keywords"]) > 6:
             raise seamless.SeamlessException("bibjson.keywords may only contain a maximum of 6 keywords")
-
-    def _check_for_script(self, article):
-        for key, value in article.items():
-            if value:
-                if isinstance(value, dict):
-                    if self._check_for_script(value):
-                        return True
-                elif isinstance(value, str):
-                    if "<script>" in value:
-                        return True
-        return False
 
     def _normalise_issn(self, issn):
         issn = issn.upper()
