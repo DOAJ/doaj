@@ -62,7 +62,8 @@ class ApplicationsCrudApi(CrudApi):
         except seamless.SeamlessException as e:
             raise Api400Error(str(e))
         except dataobj.ScriptTagFoundException as e:
-            jdata = json.dumps(data, indent=4)
+            email_data = {"application": data, "account": account.__dict__}
+            jdata = json.dumps(email_data, indent=4)
             # send warning email about the service tag in article metadata detected
             to = app.config.get('SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS')
             fro = app.config.get("SYSTEM_EMAIL_FROM", "feedback@doaj.org")
