@@ -1,4 +1,5 @@
 def _check_for_script(data):
+    print(data)
     for key, value in data.items():
         if value:
             if isinstance(value, dict):
@@ -9,6 +10,7 @@ def _check_for_script(data):
                     return True
             elif isinstance(value, list):
                 for x in value:
-                    if _check_for_script(x):
-                        return True
+                    if isinstance(x, str):
+                        if "<script>" in value:
+                            return True
     return False
