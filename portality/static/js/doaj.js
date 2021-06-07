@@ -34,7 +34,7 @@ var doaj = {
             if (prevScrollPos > currentScrollPos) {
                 document.getElementById("primary-nav").style.top = "0";
             } else {
-                document.getElementById("primary-nav").style.top = "-50px";
+                document.getElementById("primary-nav").style.top = "-75px";
             }
 
             prevScrollPos = currentScrollPos;
