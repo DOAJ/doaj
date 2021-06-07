@@ -2,56 +2,57 @@
  * Bootstrap v3.4.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- */
+**/
 
 .dropdown {
- position: relative;
- cursor: pointer;
- @include unstyled-list;
+  margin: 0;
+  position: relative;
+  cursor: pointer;
+  list-style: none;
 
- a {
-   text-decoration: none;
- }
+  a {
+    text-decoration: none;
+  }
 }
 
 .dropdown__menu {
- display: none;
- position: absolute;
- top: 100%;
- left: 0;
- z-index: 1000;
- float: left;
- list-style: none;
- padding: 0;
- margin: $spacing-03 0 0 0;
- background-color: $fair-pink;
- border: 1px solid $warm-black;
- -webkit-background-clip: padding-box;
- background-clip: padding-box;
+  display: none;
+  padding: 0;
+  margin: $spacing-03 0 0 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  float: left;
+  list-style: none;
+  background-color: $fair-pink;
+  border: 1px solid $warm-black;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
 
- > li {
-   display: block;
- }
+  > li {
+    display: block;
+  }
 }
 
 .dropdown__link {
- display: block;
- padding: $spacing-03;
- clear: both;
- white-space: nowrap;
- color: $warm-black;
- font-weight: 400;
- text-transform: none;
- line-height: 1;
- @include typescale-06;
+  display: block;
+  padding: $spacing-03;
+  clear: both;
+  white-space: nowrap;
+  color: $warm-black;
+  font-weight: 400;
+  text-transform: none;
+  line-height: 1;
+  @include typescale-06;
 
- &:hover,
- &:active,
- &:focus {
-   color: $warm-black;
-   text-decoration: none;
-   background-color: $grapefruit;
- }
+  &:hover,
+  &:active,
+  &:focus {
+    color: $warm-black;
+    text-decoration: none;
+    background-color: $grapefruit;
+  }
 }
 
 .dropdown__link--disabled {
@@ -79,6 +80,6 @@
 @media (min-width: 769px) {
   // Only display dropdown menu on hover in desktop
   .dropdown:hover .dropdown__menu {
-   display: block;
+    display: block;
   }
 }
