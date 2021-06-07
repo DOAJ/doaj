@@ -1,0 +1,9 @@
+admin.contact.email: Email address of the contact for this journal
+admin.contact.name: Name for the contact for this journal
+admin.in_doaj: Whether the journal appears in the public corpus of DOAJ
+admin.owner: The user ID who owns the journal.  If accessing this via the API
+admin.seal: Does the journal qualify for the DOAJ Seal
+admin.ticked: Is the journal ticked?  This means that it has successfully re-applied for continued presence in DOAJ
+created_date: Date the record was created in DOAJ.
+id: ID assigned by DOAJ for the record.
+last_updated: Date the record was last updated in DOAJ.
