@@ -39,7 +39,9 @@ class JournalArticle(DomainObject):
                 stats["no_apc"] = "{0:,}".format(b.get("doc_count"))
                 break
 
-        stats["new_journals"] = "{0:,}".format(journal_data.get("aggregations", {}).get("creation", {}).get("buckets", [])[0].get("doc_count", 0))
+        nj_stat = journal_data.get("aggregations", {}).get("creation", {}).get("buckets", [])
+        if len(nj_stat) > 0:
+            stats["new_journals"] = "{0:,}".format(nj_stat[0].get("doc_count", 0))
 
         # get the article data
         qa = ArticleStatsQuery()
