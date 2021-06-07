@@ -1,5 +1,4 @@
 def _check_for_script(data):
-    print(data)
     for key, value in data.items():
         if value:
             if isinstance(value, dict):
