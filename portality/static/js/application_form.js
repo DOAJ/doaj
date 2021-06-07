@@ -563,11 +563,10 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     }
 
     submitapplication() {
-        this.parsley = this.form.parsley();
         if (this.setAllFieldsOptionalIfAppropriate()) {
-            this.parsley().destroy();
+            this.form.parsley().destroy();
         } else {
-            this.parsley().whenValidate().done(() => {
+            this.form.parsley().whenValidate().done(() => {
                 this.jq("#cannot-submit-invalid-fields").hide();
 
             }).fail(() => {
