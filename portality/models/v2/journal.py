@@ -14,9 +14,6 @@ import string, uuid
 from unidecode import unidecode
 
 JOURNAL_STRUCT = {
-    "fields": {
-        "last_reapplication": {"coerce": "utcdatetime"}
-    },
     "objects": [
         "admin", "index"
     ],
@@ -183,13 +180,6 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     def set_seal(self, value):
         self.__seamless__.set_with_struct("admin.seal", value)
-
-    @property
-    def bulk_upload_id(self):
-        return self.__seamless__.get_single("admin.bulk_upload")
-
-    def set_bulk_upload_id(self, bulk_upload_id):
-        self.__seamless__.set_with_struct("admin.bulk_upload", bulk_upload_id)
 
     @property
     def owner(self):

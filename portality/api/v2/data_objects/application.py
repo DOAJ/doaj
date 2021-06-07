@@ -25,7 +25,6 @@ OUTGOING_APPLICATION_STRUCT = {
         "admin" : {
             "fields" : {
                 "application_status" : {"coerce" : "unicode"},
-                "bulk_upload" : {"coerce" : "unicode"},
                 "current_journal" : {"coerce" : "unicode"},
                 "date_applied" : {"coerce" : "unicode"},
                 "owner" : {"coerce" : "unicode"}
@@ -260,13 +259,6 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
 
     def set_seal(self, value):
         self.__seamless__.set_with_struct("admin.seal", value)
-
-    @property
-    def bulk_upload_id(self):
-        return self.__seamless__.get_single("admin.bulk_upload")
-
-    def set_bulk_upload_id(self, bulk_upload_id):
-        self.__seamless__.set_with_struct("admin.bulk_upload", bulk_upload_id)
 
     @property
     def owner(self):
