@@ -63,16 +63,23 @@
   @include unstyled-list($inline: true);
 }
 
-.bg-black {
+.bg-black {
   background-color: $warm-black;
+  color: $warm-white;
+
+  a {
+    color: currentColor;
+  }
 }
 
 .bg-grey {
   background-color: $dark-grey;
+  color: $warm-white;
 }
 
 .bg-white {
   background-color: $warm-white;
+  color: $warm-black;
 }
 
 .font-serif {
