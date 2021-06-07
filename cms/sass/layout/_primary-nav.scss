@@ -7,19 +7,16 @@
   position: fixed;
   width: 100vw;
   z-index: 10;
-  height: 100px;
+  height: auto;
   background-color: $warm-black;
   transition: top 0.3s;
   text-transform: uppercase;
   font-weight: 600;
   color: $warm-white;
 
-  a {
-    color: $warm-black;
-  }
-
-  .dropdown__menu {
+  .dropdown__menu, a {
     background-color: $warm-black;
+    color: currentColor;
   }
 
   @media (max-width: 768px) {
