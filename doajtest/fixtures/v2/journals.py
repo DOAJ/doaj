@@ -150,6 +150,7 @@ CSV_HEADERS = [
     "URL for journal's Open Access statement",
     "Continues",
     "Continued By",
+    "Discontinued Date",
     "LCC Codes",
     'Subjects',  # (added outside journal2questions)
     'DOAJ Seal',  # (added outside journal2questions)
@@ -195,7 +196,7 @@ JOURNAL_QUESTION_ANSWERS = [
     'Yes',
     'http://other.charges',
     'LOCKSS, CLOCKSS, A safe place',
-    'Trinity; Imperial',
+    'Trinity, Imperial',
     'http://digital.archiving.policy',
     'Sherpa/Romeo, Store it',
     "http://deposit.policy",
@@ -206,5 +207,6 @@ JOURNAL_QUESTION_ANSWERS = [
     'http://oa.statement',
     "1111-1111",
     "2222-2222",
-    "HB1-3840|H"
+    "2001-01-01",
+    "HB1-3840, H"
 ]
