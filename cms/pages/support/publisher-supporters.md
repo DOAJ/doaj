@@ -7,7 +7,7 @@ section: Support
 sticky_sidenav: true
 ---
 
-Supporting DOAJ is a way for publishers to show their commitment, not only to open access, but to a community-driven, non-profit, diverse organisation.
+Supporting us is a way for publishers to show their commitment, not only to open access, but to a community-driven, non-profit, diverse organisation.
 
 We offer a variety of options so that publishers can choose the level of support that they are most comfortable with. The list below shows suggested contributions based on business size but publishers can offer any amount of their choosing.
 
