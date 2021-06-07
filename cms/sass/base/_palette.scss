@@ -12,7 +12,7 @@ $fair-pink:         #F8F3EF;
 
 // Secondary
 $dark-green:        #3A5959;
-$mid-green:         #47A178;
+$mid-green:         #3A5959;
 $light-green:       #A3C386;
 $yellow:            #F9D950;
 
@@ -22,16 +22,16 @@ $silver:            #A7A7AD;
 $bronze:            #A77044;
 
 :root {
-  --warm-black:     $warm-black;
-  --dark-grey:      $dark-grey;
-  --warm-white:     $warm-white;
+  --warm-black:     #282624;
+  --dark-grey:      #5C5956;
+  --warm-white:     #FEFBF8;
 
-  --sanguine:       $sanguine;
-  --grapefruit:     $grapefruit;
-  --fair-pink:      $fair-pink;
+  --sanguine:       #982E0A;
+  --grapefruit:     #FD5A3B;
+  --fair-pink:      #F8F3EF;
 
-  --dark-green:     $dark-green;
-  --mid-green:      $mid-green;
-  --light-greeen:   $light-green;
-  --yellow:         $yellow;
+  --dark-green:     #3A5959;
+  --mid-green:      #3A5959;
+  --light-greeen:   #F9D950;
+  --yellow:         #F9D950;
 }
