@@ -1,21 +1,37 @@
 /* Variables for colour palette */
 
 // Greyscale
+$warm-black:        #282624;
+$dark-grey:         #5C5956;
+$warm-white:        #FEFBF8;
 
-$warm-black:    #282624;
-$dark-grey:     #5C5956;
-$warm-white:    #FEFBF8;
+// Primary
+$sanguine:          #982E0A;
+$grapefruit:        #FD5A3B;
+$fair-pink:         #F8F3EF;
 
-// Colour
+// Secondary
+$dark-green:        #3A5959;
+$mid-green:         #47A178;
+$light-green:       #A3C386;
+$yellow:            #F9D950;
 
-$sanguine:      #982E0A;
-$grapefruit:    #FD5A3B;
-$fair-pink:     #F8F3EF;
+// Tiers
+$gold:              #D6AF36;
+$silver:            #A7A7AD;
+$bronze:            #A77044;
 
-$pine:          #006D6D;
-$teal:          #1F9C9A;
+:root {
+  --warm-black:     $warm-black;
+  --dark-grey:      $dark-grey;
+  --warm-white:     $warm-white;
 
-// Tiers: gold, silver, bronze
-$gold:          #D6AF36;
-$silver:        #A7A7AD;
-$bronze:        #A77044;
+  --sanguine:       $sanguine;
+  --grapefruit:     $grapefruit;
+  --fair-pink:      $fair-pink;
+
+  --dark-green:     $dark-green;
+  --mid-green:      $mid-green;
+  --light-greeen:   $light-green;
+  --yellow:         $yellow;
+}
