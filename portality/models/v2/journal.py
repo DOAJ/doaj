@@ -377,6 +377,14 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             if "code" in subs:
                 schema_codes.append(scheme + ":" + subs.get("code"))
 
+        # now expand the classification to hold all its parent terms too
+        additional = []
+        for c in classification:
+            tp = cbib.term_path(c)
+            if tp is not None:
+                additional += tp
+        classification += additional
+
         # add the keywords to the non-schema subjects (but not the classification)
         subjects += cbib.keywords
 

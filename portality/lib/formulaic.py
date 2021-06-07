@@ -96,7 +96,7 @@ CONTEXT_EXAMPLE = {
     "processor" : "module.path.to.processor"
 }
 """
-
+import csv
 from copy import deepcopy
 from wtforms import Form
 from wtforms.fields.core import UnboundField, FieldList, FormField
@@ -206,7 +206,6 @@ class Formulaic(object):
         return field_defs
 
     @classmethod
-    #def run_options_fn(cls, field_def, options_function_map, context_name):
     def run_options_fn(cls, field_def, formulaic_context):
         # opt_fn = options_function_map.get(field_def["options_fn"])
         opt_fn = formulaic_context.function_map.get("options", {}).get(field_def.get("options_fn"))
@@ -406,6 +405,47 @@ class FormulaicContext(object):
             field_definition = FormulaicField.make_wtforms_field(self, field)
             setattr(FormClass, field_name, field_definition)
 
+    def to_summary_csv(self, out_file):
+        def _make_row(i, fs, parent, field, writer):
+            options = ""
+            if field.explicit_options:
+                options = "; ".join([o.get("display") + " (" + o.get("value") + ")" for o in field.explicit_options])
+            elif field.options_fn_name:
+                options = field.options_fn_name
+
+            label = ""
+            if hasattr(field, "label"):
+                label = field.label
+
+            name = ""
+            if parent is not None and hasattr(parent, "name"):
+                name = parent.name + "."
+            if hasattr(field, "name"):
+                name += field.name
+
+            writer.writerow([
+                i,
+                name,
+                label,
+                field.input,
+                options,
+                field.is_disabled,
+                fs.name
+            ])
+
+        with open(out_file, "w", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(["Form Position", "Field Name", "Label", "Input Type", "Options", "Disabled?", "Fieldset ID"])
+            i = 1
+            for fs in self.fieldsets():
+                for field in fs.fields():
+                    _make_row(i, fs, None, field, writer)
+                    i += 1
+                    if field.group_subfields():
+                        for sf in field.group_subfields():
+                            _make_row(i, fs, field, sf, writer)
+                            i += 1
+
 
 class FormulaicFieldset(object):
     def __init__(self, definition, parent):
@@ -515,6 +555,10 @@ class FormulaicField(object):
         if isinstance(opts, list):
             return opts
         return []
+
+    @property
+    def options_fn_name(self):
+        return self._definition.get("options_fn")
 
     @property
     def is_disabled(self):

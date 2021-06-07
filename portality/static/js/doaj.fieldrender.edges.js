@@ -1136,11 +1136,17 @@ $.extend(true, doaj, {
             // event handlers
 
             this.changeSearchField = function (element) {
-                var val = this.component.jq(element).val();
-                this.component.setSearchField(val, false);
-
+                // find out if there's any search text
                 var textIdSelector = edges.css_id_selector(this.namespace, "text", this);
                 var text = this.component.jq(textIdSelector).val();
+
+                if (text === "") {
+                    return;
+                }
+
+                // if there is search text, then proceed to run the search
+                var val = this.component.jq(element).val();
+                this.component.setSearchField(val, false);
                 this.component.setSearchText(text);
             };
 
@@ -2077,7 +2083,7 @@ $.extend(true, doaj, {
                     }
                 }
                 var frag = "<li class='alert'><p>You searched for <i>'";
-                frag += this.currentQueryString;
+                frag += edges.escapeHtml(this.currentQueryString);
                 frag +="'</i> and we found no results.</p><p>Search terms must be in <strong>English</strong>.</p> <p>Try removing some of the filters you have set, modifying the text in the search box, or using less specific search terms.</p></li>";;
 
                 if (this.component.results === false) {
@@ -2286,7 +2292,10 @@ $.extend(true, doaj, {
 
                 var date = "";
                 if (resultobj.index.date) {
-                    date = "(" + doaj.humanYearMonth(resultobj.index.date) + ")";
+                    let humanised = doaj.humanYearMonth(resultobj.index.date);
+                    if (humanised) {
+                        date = "(" + humanised + ")";
+                    }
                 }
 
                 var title = "";

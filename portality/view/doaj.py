@@ -571,12 +571,6 @@ def old_application():
 def bestpractice(cc=None):
     return redirect(url_for("doaj.transparency", **request.args), code=308)
 
-
-@blueprint.route("/suggest", methods=['GET'])
-def suggest():
-    return redirect(url_for('.suggestion', **request.args), code=301)
-
-
 @blueprint.route("/membership")
 def membership():
     return redirect(url_for("doaj.support", **request.args), code=308)

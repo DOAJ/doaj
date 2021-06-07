@@ -1,0 +1,56 @@
+Form Position,Field Name,Label,Input Type,Options,Disabled?,Fieldset ID
+1,boai,Does the journal adhere to DOAJ’s definition of open access?,radio,Yes (y); No (n),True,basic_compliance
+2,oa_statement_url,The journal website must display its open access statement. Where can we find this information?,text,,False,basic_compliance
+3,title,Journal title,text,,True,about_the_journal
+4,alternative_title,Alternative title (including translation of the title),text,,False,about_the_journal
+5,journal_url,Link to the journal’s homepage,text,,False,about_the_journal
+6,pissn,ISSN (print),text,,True,about_the_journal
+7,eissn,ISSN (online),text,,True,about_the_journal
+8,keywords,Up to 6 subject keywords in English,taglist,,False,about_the_journal
+9,language,Languages in which the journal accepts manuscripts,select,iso_language_list,False,about_the_journal
+10,publisher_name,Publisher’s name,text,,False,publisher
+11,publisher_country,Publisher’s country,select,iso_country_list,True,publisher
+12,institution_name,Society or institution’s name,text,,False,society_or_institution
+13,institution_country,Society or institution’s country,select,iso_country_list,False,society_or_institution
+14,license,License(s) permitted by the journal,checkbox,CC BY (CC BY); CC BY-SA (CC BY-SA); CC BY-ND (CC BY-ND); CC BY-NC (CC BY-NC); CC BY-NC-SA (CC BY-NC-SA); CC BY-NC-ND (CC BY-NC-ND); CC0 (CC0); Public domain (Public domain); Publisher's own license (Publisher's own license),False,licensing
+15,license_attributes,Select all the attributes that your license has,checkbox,Attribution (BY); Share Alike (SA); No Derivatives (ND); No Commercial Usage (NC),False,licensing
+16,license_terms_url,Where can we find this information?,text,,False,licensing
+17,license_display,Does the journal embed and/or display licensing information in its articles?,radio,Yes (y); No (n),False,embedded_licensing
+18,license_display_example_url,Recent article displaying or embedding a license in the full text,text,,False,embedded_licensing
+19,copyright_author_retains,"For all the licenses you have indicated above, do authors retain the copyright <b>and</b> full publishing rights without restrictions?",radio,Yes (y); No (n),False,copyright
+20,copyright_url,Where can we find this information?,text,,False,copyright
+21,review_process,DOAJ only accepts peer-reviewed journals. Which type(s) of peer review does this journal use?,checkbox,Editorial review (Editorial review); Peer review (Peer review); Blind peer review (Blind peer review); Double blind peer review (Double blind peer review); Post-publication peer review (Post-publication peer review); Open peer review (Open peer review); Other (other),False,peer_review
+22,review_process_other,Other peer review,text,,False,peer_review
+23,review_url,Where can we find this information?,text,,False,peer_review
+24,plagiarism_detection,Does the journal routinely screen article submissions for plagiarism?,radio,Yes (y); No (n),False,plagiarism
+25,plagiarism_url,Where can we find this information?,text,,False,plagiarism
+26,aims_scope_url,Link to the journal’s <b>Aims & Scope</b>,text,,False,editorial
+27,editorial_board_url,Link to the journal’s <b>Editorial Board</b>,text,,False,editorial
+28,author_instructions_url,Link to the journal’s <b>Instructions for Authors</b>,text,,False,editorial
+29,publication_time_weeks,Average number of <strong>weeks</strong> between article submission & publication,number,,False,editorial
+30,apc,Does the journal charge fees for publishing an article (APCs)?,radio,Yes (y); No (n),False,apc
+31,apc_charges,Highest fee charged,group,,False,apc
+32,apc_charges.apc_currency,,select,iso_currency_list,False,apc
+33,apc_charges.apc_max,,number,,False,apc
+34,apc_url,Where can we find this information?,text,,False,apc
+35,has_waiver,Does the journal provide a waiver or discount on publication fees for authors?,radio,Yes (y); No (n),False,apc_waivers
+36,waiver_url,Where can we find this information?,text,,False,apc_waivers
+37,has_other_charges,Does the journal charge any other fees to authors?,radio,Yes (y); No (n),False,other_fees
+38,other_charges_url,Where can we find this information?,text,,False,other_fees
+39,preservation_service,Long-term preservation service(s) where the journal is currently archived,checkbox,CINES (CINES); CLOCKSS (CLOCKSS); LOCKSS (LOCKSS); Internet Archive (Internet Archive); PKP PN (PKP PN); PubMed Central (PMC) (PMC); Portico (Portico); A national library (national_library); Other (other); <em>The journal content isn’t archived with a long-term preservation service</em> (none),False,archiving_policy
+40,preservation_service_library,A national library,text,,False,archiving_policy
+41,preservation_service_other,Other archiving policy:,text,,False,archiving_policy
+42,preservation_service_url,Where can we find this information?,text,,False,archiving_policy
+43,deposit_policy,Does the journal have a policy allowing authors to deposit versions of their work in an institutional or other repository of their choice? Where is this policy recorded?,checkbox,Sherpa/Romeo (Sherpa/Romeo); Dulcinea (Dulcinea); Héloïse (Héloïse); Diadorim (Diadorim); Other (including publisher’s own site) (other); <em>The journal has no repository policy</em> (none),False,deposit_policy
+44,deposit_policy_other,Name of other website where policy is registered,text,,False,deposit_policy
+45,deposit_policy_url,Where can we find this information?,text,,False,deposit_policy
+46,persistent_identifiers,Persistent article identifiers used by the journal,checkbox,DOIs (DOI); ARKs (ARK); Handles (Handles); PURLs (PURL); Other (other); <em>The journal does not use persistent article identifiers</em> (none),False,unique_identifiers
+47,persistent_identifiers_other,Other identifier,text,,False,unique_identifiers
+48,orcid_ids,Does the journal allow for ORCID iDs to be present in article metadata?,radio,Yes (y); No (n),False,unique_identifiers
+49,open_citations,Does the journal comply with I4OC standards for open citations?,radio,Yes (y); No (n),False,unique_identifiers
+50,application_status,Change status,select,application_statuses,True,status
+51,subject,Assign one or a maximum of two subject classifications,taglist,,False,subject
+52,notes,Notes,group,,False,notes
+53,notes.note_date,,text,,True,notes
+54,notes.note,,textarea,,True,notes
+55,notes.note_id,,hidden,,False,notes

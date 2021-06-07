@@ -68,7 +68,7 @@ class OAI_DC(OAI_Crosswalk):
             term = subs.get("term")
 
             if scheme and scheme.lower() == 'lcc':
-                attrib = {"{{{nspace}}}type".format(nspace=self.XSI_NAMESPACE): "dcterms:LCSH"}
+                attrib = {"{{{nspace}}}type".format(nspace=self.XSI_NAMESPACE): "dcterms:LCC"}
                 termtext = term
                 codetext = code
             else:

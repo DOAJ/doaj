@@ -21,6 +21,7 @@ from collections import OrderedDict
 import portality.models as models
 from portality.core import app, es_connection, initialise_index
 from portality import settings
+from portality.lib import edges
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -262,6 +263,13 @@ def form_diff_table_subject_expand(val):
             results.append(v)
 
     return ", ".join(results)
+
+
+@app.context_processor
+def search_query_source_wrapper():
+    def search_query_source(**params):
+        return edges.make_url_query(**params)
+    return dict(search_query_source=search_query_source)
 
 
 @app.before_request
