@@ -15,6 +15,7 @@ from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping
 
 import esprit
+import elasticsearch
 
 login_manager = LoginManager()
 
@@ -122,42 +123,53 @@ def create_es_connection(app):
     #import logging
     #esprit.raw.configure_logging(logging.DEBUG)
 
+    # FIXME: we are removing esprit conn in favour of elasticsearch lib
     # make a connection to the index
-    if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-        conn = esprit.raw.Connection(host=app.config['ELASTIC_SEARCH_HOST'], index='')
-    else:
-        conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
+    # if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+    #     conn = esprit.raw.Connection(host=app.config['ELASTIC_SEARCH_HOST'], index='')
+    # else:
+    #     conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
+
+    conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'])
 
     return conn
 
-
-def mutate_mapping(conn, type, mapping):
-    """ When we are using an index-per-type connection change the mappings to be keyed 'doc' rather than the type """
-    if conn.index_per_type:
-        try:
-            mapping[esprit.raw.INDEX_PER_TYPE_SUBSTITUTE] = mapping.pop(type)
-        except KeyError:
-            # Allow this mapping through unaltered if it isn't keyed by type
-            pass
-
-        # Add the index prefix to the mapping as we create the type
-        type = app.config['ELASTIC_SEARCH_DB_PREFIX'] + type
-    return type
+# FIXME: deprecated no longer necessary
+# def mutate_mapping(conn, type, mapping):
+#     """ When we are using an index-per-type connection change the mappings to be keyed 'doc' rather than the type """
+#     if conn.index_per_type:
+#         try:
+#             mapping[esprit.raw.INDEX_PER_TYPE_SUBSTITUTE] = mapping.pop(type)
+#         except KeyError:
+#             # Allow this mapping through unaltered if it isn't keyed by type
+#             pass
+#
+#         # Add the index prefix to the mapping as we create the type
+#         type = app.config['ELASTIC_SEARCH_DB_PREFIX'] + type
+#     return type
 
 
 def put_mappings(conn, mappings):
     # get the ES version that we're working with
-    es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
+    #es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
 
     # for each mapping (a class may supply multiple), create a mapping, or mapping and index
+    # for key, mapping in iter(mappings.items()):
+    #     altered_key = mutate_mapping(conn, key, mapping)
+    #     ix = conn.index or altered_key
+    #     if not esprit.raw.type_exists(conn, altered_key, es_version=es_version):
+    #         r = esprit.raw.put_mapping(conn, altered_key, mapping, es_version=es_version)
+    #         print("Creating ES Type + Mapping in index {0} for {1}; status: {2}".format(ix, key, r.status_code))
+    #     else:
+    #         print("ES Type + Mapping already exists in index {0} for {1}".format(ix, key))
+
     for key, mapping in iter(mappings.items()):
-        altered_key = mutate_mapping(conn, key, mapping)
-        ix = conn.index or altered_key
-        if not esprit.raw.type_exists(conn, altered_key, es_version=es_version):
-            r = esprit.raw.put_mapping(conn, altered_key, mapping, es_version=es_version)
-            print("Creating ES Type + Mapping in index {0} for {1}; status: {2}".format(ix, key, r.status_code))
+        altered_key = app.config['ELASTIC_SEARCH_DB_PREFIX'] + key
+        if not conn.indices.exists(altered_key):
+            r = conn.indices.create(index=altered_key, body=mapping)
+            print("Creating ES Type + Mapping in index {0} for {1}; status: {2}".format(altered_key, key, r))
         else:
-            print("ES Type + Mapping already exists in index {0} for {1}".format(ix, key))
+            print("ES Type + Mapping already exists in index {0} for {1}".format(altered_key, key))
 
 
 def initialise_index(app, conn):

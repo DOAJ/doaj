@@ -17,6 +17,7 @@ import esprit
 
 
 ES_MAPPING_MISSING_REGEX = re.compile(r'.*No mapping found for \[[a-zA-Z0-9-_]+?\] in order to sort on.*', re.DOTALL)
+CONTENT_TYPE_JSON = {'Content-Type': 'application/json'}
 
 
 class ElasticSearchWriteException(Exception):
@@ -53,6 +54,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def target(cls):
         t = cls.target_whole_index()
+        # fixme: on search, the type is not necessary any more 299 Elasticsearch-7.10.2-747e1cc71def077253878a59143c1f785afa92b9 "[types removal] Specifying types in search requests is deprecated."
         if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
             t += esprit.raw.INDEX_PER_TYPE_SUBSTITUTE + '/'
         else:
@@ -138,7 +140,7 @@ class DomainObject(UserDict, object):
         r = None
         while attempt <= retries:
             try:
-                r = requests.post(url, data=d)
+                r = requests.post(url, data=d, headers=CONTENT_TYPE_JSON)
                 if r.status_code > 400:
                     raise ElasticSearchWriteException("Error on ES save. Response code {0}".format(r.status_code))
                 else:
@@ -181,7 +183,11 @@ class DomainObject(UserDict, object):
                 "query": {
                     "term": {"id.exact": self.id}
                 },
-                "fields": ["last_updated"]
+                "fields": [
+                    # TODO: For ES7.10 the default format includes milliseconds, but our timestamps don't.
+                    {"field": "last_updated", "format": "date_time_no_millis"}
+                ],
+                "_source": False,
             }
             while True:
                 res = self.query(q=q, return_raw_resp=True)
@@ -209,7 +215,7 @@ class DomainObject(UserDict, object):
         for r in bibjson_list:
             data += json.dumps({'index': {'_id': r[idkey]}}) + '\n'
             data += json.dumps(r) + '\n'
-        r = requests.post(cls.target() + '_bulk', data=data)
+        r = requests.post(cls.target() + '_bulk', data=data, headers=CONTENT_TYPE_JSON)
         if refresh:
             cls.refresh()
         return r.json()
@@ -220,7 +226,7 @@ class DomainObject(UserDict, object):
             app.logger.warn("System is in READ-ONLY mode, refresh command cannot run")
             return
 
-        r = requests.post(cls.target() + '_refresh')
+        r = requests.post(cls.target() + '_refresh',  headers=CONTENT_TYPE_JSON)
         return r.json()
 
     @classmethod
@@ -362,7 +368,7 @@ class DomainObject(UserDict, object):
             sort_specified = True
 
         if not sort_specified and consistent_order:
-            query['sort'] = [{"id": {"order": "asc"}}]
+            query['sort'] = [{"id.exact": {"order": "asc"}}]
 
         # print json.dumps(query)
         return query
@@ -394,7 +400,8 @@ class DomainObject(UserDict, object):
                 if endpoint in ['_mapping']:
                     r = requests.get(cls.target() + recid + endpoint)
                 else:
-                    r = requests.post(cls.target() + recid + endpoint, data=json.dumps(qobj))
+                    # ES 7.10 updated target to whole index, since specifying type for search is deprecated
+                    r = requests.post(cls.target_whole_index() + recid + endpoint, data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
                 break
             except Exception as e:
                 exception = e
@@ -444,10 +451,12 @@ class DomainObject(UserDict, object):
             app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
             return
 
-        if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-            return esprit.raw.delete_index_by_prefix(es_connection, app.config['ELASTIC_SEARCH_DB_PREFIX'])
-        else:
-            return esprit.raw.delete_index(es_connection)
+        # if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+        #     return esprit.raw.delete_index_by_prefix(es_connection, app.config['ELASTIC_SEARCH_DB_PREFIX'])
+        # else:
+        #     return esprit.raw.delete_index(es_connection)
+        print('Destroying indexes with prefix ' + app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
+        return es_connection.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
 
     def update(self, doc):
         """
@@ -457,7 +466,7 @@ class DomainObject(UserDict, object):
             app.logger.warn("System is in READ-ONLY mode, update command cannot run")
             return
 
-        return requests.post(self.target() + self.id + "/_update", data=json.dumps({"doc": doc}))
+        return requests.post(self.target() + self.id + "/_update", data=json.dumps({"doc": doc}),  headers=CONTENT_TYPE_JSON)
     
     @classmethod
     def delete_all(cls):
@@ -726,7 +735,7 @@ class DomainObject(UserDict, object):
     def hit_count(cls, query, **kwargs):
         res = cls.query(q=query, **kwargs)
 
-        return res.get("hits", {}).get("total", 0)
+        return res.get("hits", {}).get("total", {}).get("value", 0)
 
     @classmethod
     def block(cls, id, last_updated, sleep=0.5, max_retry_seconds=30):
@@ -817,7 +826,9 @@ block_query = {
             ]
         }
     },
-    "fields": ["last_updated"]
+    "fields": [
+        {"field": "last_updated", "format": "date_time_no_millis"}
+    ]
 }
 
 #########################################################################

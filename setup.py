@@ -20,7 +20,8 @@ setup(
         "tzlocal==2.0.0",
         "pytz==2019.3",
         "pycountry==19.8.18",
-        "esprit==0.1.0",
+        "esprit==0.1.0",   # legacy for scripts etc (phasing out)
+        "elasticsearch==7.13.0",
         "nose==1.3.7",
         "Unidecode==1.1.1",
         "Flask-Swagger==0.2.13",

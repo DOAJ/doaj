@@ -17,7 +17,7 @@ def get_mappings(app):
     # load each class and execute the "mappings" function to get the mappings that need to be imported
     for cname in mapping_daos:
         klazz = plugin.load_class_raw(cname)
-        mappings[klazz.__type__] = klazz().mappings()
+        mappings[klazz.__type__] = {'mappings': klazz().mappings()}
 
     return mappings
 

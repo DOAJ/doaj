@@ -81,7 +81,9 @@ SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 
 # elasticsearch settings
+# FIXME: changing from single host / esprit to multi host on ES
 ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://localhost:9200') # remember the http:// or https://
+ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9202}, {'host': 'localhost', 'port': 9201}]
 
 # 2 sets of elasticsearch DB settings - index-per-project and index-per-type. Keep both for now so we can migrate.
 # e.g. host:port/index/type/id
@@ -94,7 +96,7 @@ ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
-ELASTIC_SEARCH_VERSION = "1.7.5"
+ELASTIC_SEARCH_VERSION = "7.8.0"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
@@ -294,101 +296,101 @@ ELASTIC_SEARCH_MAPPINGS = [
 # Map from dataobj coercion declarations to ES mappings
 DATAOBJ_TO_MAPPING_DEFAULTS = {
     "unicode": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "str": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "unicode_upper": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
-        }
+        },
     },
     "unicode_lower": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
-        }
+        },
     },
     "isolang": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "isolang_2letter": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "country_code": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "currency_code": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "issn": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "url": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
@@ -413,18 +415,26 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
     }
 }
 
+# TODO: we may want a big-type and little-type setting
+DEFAULT_INDEX_SETTINGS = \
+    {
+        'number_of_shards': 4,
+        'number_of_replicas': 1
+    }
+
 
 DEFAULT_DYNAMIC_MAPPING = {
-    "dynamic_templates": [
+    'dynamic_templates': [
         {
-            "default": {
-                "match": "*",
+            "strings": {
                 "match_mapping_type": "string",
                 "mapping": {
-                    "type": "multi_field",
+                    "type": "text",
                     "fields": {
-                        "{name}": {"type": "{dynamic_type}", "index": "analyzed", "store": "no"},
-                        "exact": {"type": "{dynamic_type}", "index": "not_analyzed", "store": "yes"}
+                        "exact": {
+                            "type": "keyword",
+                            "normalizer": "lowercase"
+                        }
                     }
                 }
             }
@@ -435,21 +445,25 @@ DEFAULT_DYNAMIC_MAPPING = {
 # LEGACY MAPPINGS
 # a dict of the ES mappings. identify by name, and include name as first object name
 # and identifier for how non-analyzed fields for faceting are differentiated in the mappings
-
 MAPPINGS = {
     'account': {
-        'account': DEFAULT_DYNAMIC_MAPPING
+        # 'aliases': {
+        #     'account': {}
+        # },
+        'mappings': DEFAULT_DYNAMIC_MAPPING,
+        'settings': DEFAULT_INDEX_SETTINGS
     }
 }
-MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
+
+MAPPINGS['article'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}
+MAPPINGS['upload'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}
+MAPPINGS['cache'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}
+MAPPINGS['lcc'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}
+MAPPINGS['editor_group'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}
+MAPPINGS['news'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}
+MAPPINGS['lock'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}
+MAPPINGS['provenance'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}
+MAPPINGS['background_job'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}
 
 # ========================
 # QUERY SETTINGS
