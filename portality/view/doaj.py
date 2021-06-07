@@ -546,6 +546,9 @@ def volunteers():
 def team():
     return render_template("layouts/static_page.html", page_frag="/about/team.html")
 
+@blueprint.route("/preservation/")
+def preservation():
+    return render_template("layouts/static_page.html", page_frag="/preservation/index.html")
 
 # LEGACY ROUTES
 @blueprint.route("/subjects")
