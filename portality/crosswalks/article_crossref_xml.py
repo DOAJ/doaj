@@ -275,7 +275,7 @@ Example record:
                 if ctb.attrib["contributor_role"] == 'author':
                     name = _element(ctb, "x:surname", NS)
                     e = _element(ctb, "x:given_name", NS)
-                    name = name + ' ' + e if e else name
+                    name = e + ' ' + name if e else name
                     e = _element(ctb, "x:affiliation", NS)
                     affiliation = e if e else None
                     e = _element(ctb, "x:ORCID", NS)
