@@ -2076,6 +2076,7 @@ $.extend(true, doaj, {
                 $('html').animate({    // note we do not use component.jq, because the scroll target could be outside it
                     scrollTop: $(this.scrollSelector).offset().top
                 }, 1, () => {
+                    callback("hello")
                     if (callback === "setFrom") {
                         this.component.setFrom(1)
                     }
@@ -2090,7 +2091,12 @@ $.extend(true, doaj, {
 
             this.goToFirst = function (element) {
                 if (this.scroll) {
-                    this.doScroll("setFrom");
+                    var myFunction = edges.objClosure(this, "setFrom")
+                    var that = this;
+                    function showEnclosed() {
+                        that.setFrom(1);
+                    }
+                    this.doScroll(myFunction);
                 }
             };
 
