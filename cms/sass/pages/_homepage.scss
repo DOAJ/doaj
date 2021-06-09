@@ -7,7 +7,7 @@
   }
 
   .secondary-nav {
-    margin-bottom: $spacing-03;
+    margin-bottom: $spacing-04;
   }
 
   a {
@@ -35,7 +35,7 @@
   }
 
   .page-header {
-    background-color: $warm-white;
+    background-color: transparent;
     color: $warm-black;
 
     button, input {
@@ -45,29 +45,30 @@
     button[type="submit"] {
       border: 1px solid $warm-black;
       background-color: $yellow;
+
+      &:hover, &:active, &:focus {
+        background-color: $warm-black;
+        color: $grapefruit;
+      }
     }
   }
 
-  .page-content {
-    position: relative;
-
-    > section {
-      padding-top: $spacing-05;
-      padding-bottom: $spacing-05;
-    }
+  .page-content > section {
+    padding-top: $spacing-06;
+    padding-bottom: $spacing-06;
   }
 
   &__background {
-    position: fixed;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 673 1723'%3E%3Cdefs/%3E%3Cpath fill='%233A5959' d='M160 1212.62c88.366 0 160 71.64 160 160H0c0-88.36 71.634-160 160-160zM160 1212.62c88.366 0 160-71.63 160-160H0c0 88.37 71.634 160 160 160z'/%3E%3Cpath fill='%23FD5A3B' d='M320 160c0 88.366-71.634 160-160 160H0c0-88.366 71.634-160 160-160h160z'/%3E%3Cpath fill='%23982E0A' d='M320 160C320 71.634 248.366 0 160 0H0c0 88.366 71.634 160 160 160h160z'/%3E%3Cpath fill='%233A5959' d='M0 1563c0-88.37 71.634-160 160-160v160H0zM320 1563c0-88.37-71.634-160-160-160v160h160z'/%3E%3Cpath fill='%2347A178' d='M160 1563c0 88.37-71.634 160-160 160v-160h160zM160 1563c0 88.37 71.634 160 160 160v-160H160z'/%3E%3Cpath fill='%23F9D950' d='M320 513c0 88.366-71.634 160-160 160V513H0c0-88.366 71.635-160 160-160 88.366 0 160 71.634 160 160z'/%3E%3Cpath fill='%23282624' d='M320 862.25c0-88.366-71.634-160-160-160S0 773.884 0 862.25s71.634 160 160 160 160-71.634 160-160z'/%3E%3Cpath fill='%23FD5A3B' d='M513 160c88.366 0 160 71.634 160 160H353c0-88.366 71.634-160 160-160z'/%3E%3Cpath fill='%23982E0A' d='M513 160c88.366 0 160-71.634 160-160H353c0 88.366 71.634 160 160 160z'/%3E%3Cpath fill='%23F9D950' d='M353 513c0-88.366 71.634-160 160-160h160c0 88.366-71.634 160-160 160H353zM353 513c0 88.366 71.634 160 160 160h160c0-88.366-71.634-160-160-160H353z'/%3E%3Cpath fill='%23282624' d='M513 862.25c88.366 0 160-71.634 160-160H353c0 88.366 71.634 160 160 160zM513 1022.25c88.366 0 160-71.634 160-160H353c0 88.366 71.634 160 160 160z'/%3E%3Cpath fill='%23A3C386' d='M513 1723c-88.366 0-160-71.63-160-160h160v-160c88.366 0 160 71.63 160 160s-71.634 160-160 160z'/%3E%3Cpath fill='%2347A178' d='M673 1212.62c0 88.37-71.634 160-160 160v-160h160z'/%3E%3Cpath fill='%233A5959' d='M353 1372.62c0-88.36 71.634-160 160-160v160H353z'/%3E%3Cpath fill='%2347A178' d='M673 1052.62c0 88.37-71.634 160-160 160v-160h160z'/%3E%3Cpath fill='%233A5959' d='M353 1212.62c0-88.36 71.634-160 160-160v160H353z'/%3E%3C/svg%3E%0A");
-    background-size: contain;
-    background-position: right;
-    background-repeat: repeat-y;
-    height: 80vh;
-    width: 100vw;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 673 1723'%3E%3Cdefs/%3E%3Cpath fill='%233A5959' d='M160 1212.62c88.366 0 160 71.64 160 160H0c0-88.36 71.634-160 160-160zM160 1212.62c88.366 0 160-71.63 160-160H0c0 88.37 71.634 160 160 160z'/%3E%3Cpath fill='%23FD5A3B' d='M320 160c0 88.366-71.634 160-160 160H0c0-88.366 71.634-160 160-160h160z'/%3E%3Cpath fill='%23982E0A' d='M320 160C320 71.634 248.366 0 160 0H0c0 88.366 71.634 160 160 160h160z'/%3E%3Cpath fill='%233A5959' d='M0 1563c0-88.37 71.634-160 160-160v160H0zM320 1563c0-88.37-71.634-160-160-160v160h160z'/%3E%3Cpath fill='%2347A178' d='M160 1563c0 88.37-71.634 160-160 160v-160h160zM160 1563c0 88.37 71.634 160 160 160v-160H160z'/%3E%3Cpath fill='%23F9D950' d='M320 513c0 88.366-71.634 160-160 160V513H0c0-88.366 71.635-160 160-160 88.366 0 160 71.634 160 160z'/%3E%3Cpath fill='%23282624' d='M320 862.25c0-88.366-71.634-160-160-160S0 773.884 0 862.25s71.634 160 160 160 160-71.634 160-160z'/%3E%3Cpath fill='%23FD5A3B' d='M513 160c88.366 0 160 71.634 160 160H353c0-88.366 71.634-160 160-160z'/%3E%3Cpath fill='%23982E0A' d='M513 160c88.366 0 160-71.634 160-160H353c0 88.366 71.634 160 160 160z'/%3E%3Cpath fill='%23F9D950' d='M353 513c0-88.366 71.634-160 160-160h160c0 88.366-71.634 160-160 160H353zM353 513c0 88.366 71.634 160 160 160h160c0-88.366-71.634-160-160-160H353z'/%3E%3Cpath fill='%23282624' d='M513 862.25c88.366 0 160-71.634 160-160H353c0 88.366 71.634 160 160 160zM513 1022.25c88.366 0 160-71.634 160-160H353c0 88.366 71.634 160 160 160z'/%3E%3Cpath fill='%23A3C386' d='M513 1723c-88.366 0-160-71.63-160-160h160v-160c88.366 0 160 71.63 160 160s-71.634 160-160 160z'/%3E%3Cpath fill='%2347A178' d='M673 1212.62c0 88.37-71.634 160-160 160v-160h160z'/%3E%3Cpath fill='%233A5959' d='M353 1372.62c0-88.36 71.634-160 160-160v160H353z'/%3E%3Cpath fill='%2347A178' d='M673 1052.62c0 88.37-71.634 160-160 160v-160h160z'/%3E%3Cpath fill='%233A5959' d='M353 1212.62c0-88.36 71.634-160 160-160v160H353z'/%3E%3C/svg%3E%0A") no-repeat right top;
+    background-size: auto 100%;
   }
 
   &__search {
+    transition: all 0.35s;
+
+    @media screen and (max-width: 1279px) {
+      background-color: rgba($warm-white, 0.75);
+    }
 
     .container {
       padding-top: $spacing-05;
@@ -94,7 +95,7 @@
     padding-top: $spacing-04;
     border-width: 0 0 1px 0;
     border-style: dashed;
-    border-color: $sanguine;
+    border-color: $light-green;
 
     @media (min-width: 769px) {
       margin-top: 0;
@@ -105,12 +106,18 @@
 
   &__blog {
     h3 {
-      @include typescale-06;
+      @include typescale-05;
       line-height: 1.25;
     }
 
     article {
       margin-bottom: $spacing-04;
+
+      a {
+        display: block;
+        padding-top: $spacing-04;
+        border-top: 1px dashed $grapefruit;
+      }
 
       &:nth-of-type(4) {
         clear: both; // Make sure fifth blog post starts on new line
@@ -122,18 +129,9 @@
       background-size: cover;
       height: 375px;
     }
-
-    .twitter-embed {
-      background-color: $fair-pink;
-      text-align: center;
-    }
   }
 
   &__volunteers {
-    background-color: $fair-pink;
-    background-image: url('/static/doaj/images/bg/02.jpeg');
-    background-size: cover;
-    background-blend-mode: multiply;
 
     article {
       margin-bottom: $spacing-05;
