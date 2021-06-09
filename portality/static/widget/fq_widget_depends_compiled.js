@@ -6543,7 +6543,7 @@ $.extend(true, doaj, {
                     actions += '</ul>';
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
@@ -6728,7 +6728,7 @@ $.extend(true, doaj, {
                     published = 'Published ' + name;
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
@@ -6931,7 +6931,7 @@ $.extend(true, doaj, {
                     </li>';
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-4 search-results__main">\
                         <header>\
@@ -7103,7 +7103,7 @@ $.extend(true, doaj, {
 
 
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-4 search-results__main">\
                         <header>\
@@ -7267,7 +7267,7 @@ $.extend(true, doaj, {
                     actions += '</ul>';
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
