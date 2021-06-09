@@ -66,13 +66,6 @@
   }
 }
 
-.dropdown__trigger {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: $warm-black;
-}
-
 .open > .dropdown__menu {
   display: block;
 }

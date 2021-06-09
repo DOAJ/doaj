@@ -4,7 +4,7 @@
   padding-top: 75px;
   text-transform: uppercase;
   font-weight: 600;
-  height: 75px;
+  height: 150px;
 
   .nav-bar {
     border-bottom: 1px solid $dark-grey;
@@ -35,6 +35,15 @@
 // Mobile / hamburger menu
 
 @media (max-width: 768px) {
+  .secondary-nav > .container {
+    z-index: 1;
+    position: fixed;
+    width: 100%;
+    background-color: rgba($light-grey, 0.5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
   .secondary-nav__menu {
     max-height: 0;
     overflow: hidden;
