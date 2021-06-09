@@ -132,8 +132,8 @@
                         {% for n in news %}
                         <article class="col-sm-4 col-md-4">
                             <a href="{{ n.url }}" target="_blank" rel="noopener">
-                                <h3>{{ n.title|safe }}</h3>
                                 <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
+                                <h3>{{ n.title|safe }}</h3>
                             </a>
                         </article>
                         {% endfor %}
@@ -190,12 +190,13 @@
           <header>
               <h2 class="label">Volunteers</h2>
               <p>DOAJ would not be able to do the work that we do without our volunteers.</p>
+              <p><a href="{{ url_for('doaj.volunteers') }}" class="button">&rarr; Meet our volunteers</a></p>
           </header>
 
             <div class="row">
                 {% for volunteer in data.volunteers.ed %}
                 {% if volunteer.featured == true %}
-                    <article class="col-md-4">
+                    <article class="col-md-3">
                         {# TODO: Still need volunteer photos
                         <figure class="portrait portrait__img--split">
                             <div class="portrait__bg portrait__bg-img--3d" style="background-image: url('../../img/team/clara.jpg')" alt="Portrait of {{ volunteer.name }}"></div>
@@ -207,8 +208,6 @@
                 {% endif %}
                 {% endfor %}
             </div>
-
-            <p><a href="{{ url_for('doaj.volunteers') }}" class="button">&rarr; See our volunteers</a></p>
         </div>
     </section>
 

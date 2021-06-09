@@ -7,7 +7,7 @@
   }
 
   .secondary-nav {
-    margin-bottom: $spacing-04;
+    margin-bottom: 100px;
   }
 
   a {
@@ -15,7 +15,7 @@
   }
 
   h3 {
-    margin-top: 0;
+    margin-top: $spacing-02;
     @include font-serif;
     font-weight: 600;
   }
@@ -123,18 +123,20 @@
         clear: both; // Make sure fifth blog post starts on new line
       }
     }
-
-    .blog-img {
-      background-image: url('/static/doaj/images/bg/06.jpeg');
-      background-size: cover;
-      height: 375px;
-    }
   }
 
   &__volunteers {
+    background-image: url("data:image/svg+xml,%3Csvg width='1440' height='963' viewBox='0 0 1440 963' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 803C0 891.366 71.6344 963 160 963L160 643C71.6344 643 0 714.634 0 803Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M160 160C160 248.366 231.634 320 320 320V0C231.634 0 160 71.6344 160 160Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1280 483C1280 571.366 1351.63 643 1440 643V323C1351.63 323 1280 394.634 1280 483Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1120 483C1120 571.366 1048.37 643 960 643V323C1048.37 323 1120 394.634 1120 483Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M800 160C800 71.6344 728.366 0 640 0V320C728.366 320 800 248.366 800 160Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M160 160C160 248.366 88.3656 320 0 320L0 0C88.3656 0 160 71.6344 160 160Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1280 483C1280 571.366 1208.37 643 1120 643V323C1208.37 323 1280 394.634 1280 483Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M160 323C71.6344 323 0 394.634 0 483L9.15527e-05 643C88.3657 643 160 571.366 160 483L160 323Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M960 0C871.634 0 800 71.6344 800 160L800 320C888.366 320 960 248.366 960 160V0Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1120 0C1031.63 0 960 71.6344 960 160L960 320C1048.37 320 1120 248.366 1120 160V0Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M960 643C960 554.634 888.366 483 800 483L640 483C640 571.366 711.634 643 800 643H960Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M960 323C960 411.366 888.366 483 800 483L640 483C640 394.634 711.634 323 800 323H960Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M960 643C871.634 643 800 714.634 800 803L800 963C888.366 963 960 891.366 960 803V643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M960 643C1048.37 643 1120 714.634 1120 803L1120 963C1031.63 963 960 891.366 960 803V643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M320 803C231.634 803 160 874.634 160 963H320V803Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M320 803C231.634 803 160 731.366 160 643H320V803Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M640 643C551.634 643 480 571.366 480 483H640V643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M640 323C551.634 323 480 394.634 480 483H640V323Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M320 963C408.366 963 480 891.366 480 803H320V963Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M320 643C408.366 643 480 714.634 480 803H320V643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M480 483C480 394.634 408.366 323 320 323V483H160C160 571.366 231.634 643 320 643C408.366 643 480 571.366 480 483Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1280 643C1191.63 643 1120 714.634 1120 803H1280V963C1368.37 963 1440 891.366 1440 803C1440 714.634 1368.37 643 1280 643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M640 643C728.366 643 800 714.634 800 803C800 891.366 728.366 963 640 963C551.634 963 480 891.366 480 803C480 714.634 551.634 643 640 643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M480 0C568.366 0 640 71.6344 640 160C640 248.366 568.366 320 480 320C391.634 320 320 248.366 320 160C320 71.6344 391.634 0 480 0Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1280 0C1368.37 0 1440 71.6344 1440 160C1440 248.366 1368.37 320 1280 320C1191.63 320 1120 248.366 1120 160C1120 71.6344 1191.63 0 1280 0Z' fill='white' fill-opacity='0.025'/%3E%3C/svg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: auto 75%;
 
     article {
       margin-bottom: $spacing-05;
+
+      &:nth-of-type(5) {
+        clear: both;
+      }
     }
 
     p {
