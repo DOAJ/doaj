@@ -56,10 +56,10 @@
 
             {% if not current_user.is_anonymous %}
                 <li class="dropdown">
-                        <span class="dropdown__trigger nav-bar__link" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
+                        <a href="" class="dropdown__trigger nav-bar__link" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             My Account
                             <span data-feather="chevron-down" aria-hidden="true"></span>
-                        </span>
+                        </a>
                     <ul class="dropdown__menu" aria-labelledby="menu-account">
                         {% if current_user.has_role("admin") %}
                             <li>

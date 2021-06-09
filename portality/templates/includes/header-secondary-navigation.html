@@ -6,10 +6,10 @@
 {% endif %}
 
 <li class="dropdown {{ extraClasses }}">
-    <span class="dropdown__trigger nav-bar__link" data-toggle="dropdown" id="menu-{{ selected_nav.id }}" role="button" aria-haspopup="true" aria-expanded="false">
+    <a href="" class="dropdown__trigger nav-bar__link" data-toggle="dropdown" id="menu-{{ selected_nav.id }}" role="button" aria-haspopup="true" aria-expanded="false">
         {{ selected_nav.label }}
         <span data-feather="chevron-down" aria-hidden="true"></span>
-    </span>
+    </a>
 
     <ul class="dropdown__menu" aria-labelledby="menu-{{ selected_nav.id }}">
         {% for entry in selected_nav.entries %}
