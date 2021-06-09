@@ -69,7 +69,7 @@
 
 .bg-black {
   background-color: $warm-black;
-  color: $warm-white;
+  color: $white;
 
   a {
     color: currentColor;
@@ -83,11 +83,11 @@
 
 .bg-grey {
   background-color: $dark-grey;
-  color: $warm-white;
+  color: $white;
 }
 
 .bg-white {
-  background-color: $warm-white;
+  background-color: $white;
   color: $warm-black;
 }
 
@@ -182,7 +182,7 @@
     display: block;
     margin: 10px auto;
     height: 30px;
-    stroke: $warm-white;
+    stroke: $white;
   }
 
   + .admin-edit {

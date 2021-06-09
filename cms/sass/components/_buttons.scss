@@ -29,7 +29,7 @@ input[type="button"],
   &:focus {
     border-color: $warm-black;
     background-color: $warm-black;
-    color: $warm-white;
+    color: $white;
   }
 
   .feather {
@@ -46,7 +46,7 @@ input[type="button"],
 input[type="submit"],
 button[type="submit"] {
   background-color: $warm-black;
-  color: $warm-white;
+  color: $white;
 }
 
 button:disabled,
@@ -73,7 +73,7 @@ input[disabled] + label {
   transition: all 0.15s ease;
   border-color: $sanguine;
   box-shadow: $spacing-01 $spacing-01 0 0 $sanguine;
-  background-color: $warm-white;
+  background-color: $white;
   color: $sanguine;
 
   &:hover,

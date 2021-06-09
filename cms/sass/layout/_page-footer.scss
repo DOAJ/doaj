@@ -7,7 +7,7 @@
   z-index: 100;
   width: 100%;
   background-color: $warm-black;
-  color: $warm-white;
+  color: $white;
   @include typescale-06;
 
   h2 {
@@ -28,7 +28,7 @@
 
   a {
     text-decoration: none;
-    color: $warm-white;
+    color: $white;
     line-height: 1.5;
 
     &:hover,
@@ -47,7 +47,7 @@
 
 .legal {
   padding: $spacing-04 0;
-  border-top: 1px solid $warm-white;
+  border-top: 1px solid $white;
   @include typescale-06;
 
   li {
@@ -56,7 +56,7 @@
   }
 
   path {
-    fill: $warm-white;
+    fill: $white;
   }
 
   @media (min-width: 768px) {

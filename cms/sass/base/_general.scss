@@ -223,7 +223,7 @@ input, select, button, textarea {
 
   display: inline-block;
   padding: 0.5em;
-  background-color: $warm-white;
+  background-color: $white;
   border: 1px solid $warm-black;
   font-size: smaller;
   @include font-sans;
@@ -276,8 +276,8 @@ input[type="radio"] {
     &::before {
       content: '\a0';
       background: $sanguine;
-      border: 1px solid $warm-white;
-      box-shadow: inset 0 0 0 1px $warm-white, 0 0 0 1px $sanguine;
+      border: 1px solid $white;
+      box-shadow: inset 0 0 0 1px $white, 0 0 0 1px $sanguine;
     }
   }
 }

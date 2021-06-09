@@ -13,7 +13,7 @@
   p, a {
     margin: 0;
     line-height: 1;
-    color: $warm-white;
+    color: $white;
   }
 
   .button {
@@ -21,8 +21,8 @@
     color: $warm-black;
 
     &:hover, &:active, &:focus {
-      color: $warm-white;
-      border-color: $warm-white;
+      color: $white;
+      border-color: $white;
     }
   }
 }

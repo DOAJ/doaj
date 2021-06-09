@@ -40,7 +40,7 @@
   &:focus,
   &:active {
     background: $warm-black;
-    color: $warm-white;
+    color: $white;
   }
 }
 
@@ -55,6 +55,6 @@
   &:active {
     border-color: $sanguine;
     background: $sanguine;
-    color: $warm-white;
+    color: $white;
   }
 }
