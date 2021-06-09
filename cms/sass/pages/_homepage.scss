@@ -2,6 +2,10 @@
 
 .homepage {
 
+  .page-header {
+    height: auto;
+  }
+
   .primary-nav {
     top: 0 !important; // Top nav sticks on the homepage only
   }
