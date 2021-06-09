@@ -966,8 +966,25 @@ class JournalURLQuery(object):
 class IssnQuery(object):
     base_query = {
         "query": {
-            "term": {"admin.owner.exact": "<owner id here>"}
-        },
+         "filtered": {
+           "filter": {
+             "bool": {
+               "must": [
+                 {
+                   "term": {
+                     "admin.in_doaj": "True"
+                   }
+                 }
+               ]
+             }
+           },
+           "query": {
+             "term": {
+               "admin.owner.exact": "<owner id here>"
+             }
+           }
+         }
+       },
         "size": 0,
         "facets": {
             "issns": {
@@ -980,12 +997,12 @@ class IssnQuery(object):
         }
     }
 
-    def __init__(self, owner, in_doaj=None):
+    def __init__(self, owner, in_doaj=False):
         self._query = deepcopy(self.base_query)
-        self._query["query"]["term"]["admin.owner.exact"] = owner
-        if in_doaj is not None:
-            in_doaj_string = "True" if in_doaj else "False"
-            self._query["query"]["bool"] = {"must": {"term": {"admin.id_doaj": in_doaj_string}}}
+        self._query["query"]["filtered"]["query"]["term"]["admin.owner.exact"] = owner
+        in_doaj_str = "True" if in_doaj else "False"
+        self._query["query"]["filtered"]["filter"]["bool"]["must"][0]["term"]["admin.in_doaj"] = in_doaj_str
+
 
     def query(self):
         return self._query

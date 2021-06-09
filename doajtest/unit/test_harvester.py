@@ -1,5 +1,6 @@
 import itertools
 import json
+import os
 import time
 from datetime import date, datetime
 
@@ -22,6 +23,7 @@ from portality.tasks.harvester_helpers.workflow import HarvesterWorkflow
 from portality.models.harvester import HarvestState
 from portality.models.harvester import HarvesterPlugin
 
+RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources/")
 
 class TestHarvester(DoajTestCase):
 
@@ -29,7 +31,7 @@ class TestHarvester(DoajTestCase):
         super(TestHarvester, self).setUp()
 
         self.publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
-        self.journal = models.Journal(**JournalFixtureFactory.make_journal_source())
+        self.journal = models.Journal(**JournalFixtureFactory.make_journal_source(True))
         self.publisher.add_journal(self.journal.id)
         self.publisher.generate_api_key()
 
@@ -44,11 +46,11 @@ class TestHarvester(DoajTestCase):
 
         today = datetime.today().strftime('%Y-%m-%d')
         app.config["INITIAL_HARVEST_DATE"] = today
-        with open('resources/harvester_resp.json') as json_file:
+        with open(RESOURCES + 'harvester_resp.json') as json_file:
             articles = json.load(json_file)
 
         articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + today + ' sort_date:"y"',
-        json_file = open('resources/harvester_resp.json', 'w')
+        json_file = open(RESOURCES + 'harvester_resp.json', 'w')
         json.dump(articles, json_file, indent=4)
         json_file.close()
 
@@ -76,7 +78,7 @@ class TestHarvester(DoajTestCase):
 
         articles_saved = [a for a in self.journal.all_articles()]
 
-        assert len(articles_saved) == 1, "expected 1 article, found: {}".format(len(articles))
+        assert len(articles_saved) == 1, "expected 1 article, found: {}".format(len(articles_saved))
         assert articles_saved[0].bibjson().title == "Harvester Test Article"
 
     @patch('portality.lib.httputil.get')
