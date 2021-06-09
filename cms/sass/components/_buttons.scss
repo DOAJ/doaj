@@ -12,8 +12,8 @@ input[type="button"],
   margin: 0 0 $spacing-04 0;
   transition: all 0.15s ease;
   width: auto;
-  border: 1px solid $warm-black;
-  background: $fair-pink;
+  border: 1px solid currentColor;
+  background: transparent;
   cursor: pointer;
   vertical-align: middle;
   white-space: normal;
@@ -22,7 +22,7 @@ input[type="button"],
   text-decoration: none;
   text-align: center;
   font-size: smaller;
-  color: $warm-black;
+  color: currentColor;
 
   &:hover,
   &:active,
@@ -55,7 +55,7 @@ input[disabled],
 .button[disabled] {
   background-color: rgba($dark-grey, 0.15);
   border: 0;
-  color: $warm-black;
+  color: currentColor;
   box-shadow: none;
   font-style: italic;
   cursor: not-allowed;
@@ -110,16 +110,16 @@ button[type="submit"].button--secondary {
   left: 0;
   top: 0;
   transition: all 0.15s ease;
-  border-color: $warm-black;
-  background-color: $fair-pink;
-  box-shadow: $spacing-01 $spacing-01 0 0 $warm-black;
-  color: $warm-black;
+  border-color: currentColor;
+  box-shadow: $spacing-01 $spacing-01 0 0 currentColor;
 
   &:hover,
   &:active,
   &:focus {
     left: $spacing-01;
     top: $spacing-01;
-    box-shadow: 0 0 0 0 $warm-black;
+    border-color: currentColor;
+    box-shadow: 0 0 0 0 currentColor;
+    color: currentColor;
   }
 }
