@@ -132,7 +132,7 @@
                         {% for n in news %}
                         <article class="col-sm-4 col-md-4">
                             <a href="{{ n.url }}" target="_blank" rel="noopener">
-                                <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
+                                <time datetime="{{ n.published }}"><small class="label label--tertiary">{{ n.published_formatted() }}</small></time>
                                 <h3>{{ n.title|safe }}</h3>
                             </a>
                         </article>
