@@ -8,6 +8,7 @@
 button,
 input[type="button"],
 .button {
+  display: inline-block;
   padding: $spacing-02 $spacing-03;
   margin: 0 0 $spacing-04 0;
   transition: all 0.15s ease;

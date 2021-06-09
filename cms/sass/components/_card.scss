@@ -13,6 +13,11 @@
   }
 }
 
+.card__header {
+  margin-bottom: $spacing-04;
+  border-bottom: 1px solid $dark-grey;
+}
+
 .card__desc {
   color: $dark-grey;
   margin-bottom: $spacing-01;
