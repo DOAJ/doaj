@@ -83,7 +83,7 @@ p, blockquote, ul, ol {
 pre, code {
   @include font-monospace;
   @include typescale-06;
-  background: $fair-pink;
+  background: $light-grey;
 }
 
 pre {

@@ -18,14 +18,14 @@
   float: left;
   border: 1px solid $warm-black;
   background: $warm-black;
-  color: $fair-pink;
+  color: $light-grey;
 
   &:hover,
   &:focus,
   &:active {
     border-color: $warm-black;
     background: $warm-black;
-    color: $fair-pink;
+    color: $light-grey;
   }
 }
 
