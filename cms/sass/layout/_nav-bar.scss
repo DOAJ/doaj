@@ -7,8 +7,8 @@
   justify-content: space-between;
   align-items: center;
   list-style: none;
-  height: auto;
-  @include typescale-06;
+  height: 75px;
+  font-size: smaller;
 
   .feather {
     margin: 0 0.5em;
@@ -23,5 +23,5 @@
 
 .nav-bar__link {
   display: block;
-  line-height: 50px;
+  line-height: 75px;
 }
