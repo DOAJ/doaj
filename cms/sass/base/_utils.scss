@@ -23,6 +23,10 @@
   border: 0;
 }
 
+@mixin box-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 3px 8px;
+}
+
 /// Make element visible or focussable to screen readers only
 .sr-only {
   position: absolute;
@@ -69,6 +73,11 @@
 
   a {
     color: currentColor;
+  }
+
+  .label, .button:hover, .button:active, .button:focus, .stat {
+    color: $light-green;
+    border-color: currentColor;
   }
 }
 
