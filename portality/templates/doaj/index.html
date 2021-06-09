@@ -218,11 +218,13 @@
         <div class="container">
             <div class="row">
                 <header class="col-sm-4">
-                    <h2 class="label label--secondary">Recently-added journals</h2>
-                    <p>DOAJ’s team of managing editors, editors, and volunteers work together with publishers to index new journals. As soon as they’re accepted, these journals are displayed on our website, freely accessible to everyone.</p>
-                    {# TODO: Make sure these links work #}
-                    <p>&rarr; <a href="{{ url_for('atom.feed') }}">See Atom feed</a></p>
-                    <p>&rarr; <a href="{{ url_for('doaj.csv_data') }}">Download all journals as CSV</a></p>
+                    <div class="card">
+                        <h2 class="label label--secondary">Recently-added journals</h2>
+                        <p>DOAJ’s team of managing editors, editors, and volunteers work together with publishers to index new journals. As soon as they’re accepted, these journals are displayed on our website, freely accessible to everyone.</p>
+                        {# TODO: Make sure these links work #}
+                        <p>&rarr; <a href="{{ url_for('atom.feed') }}">See Atom feed</a></p>
+                        <p>&rarr; <a href="{{ url_for('doaj.csv_data') }}">Download all journals as CSV</a></p>
+                    </div>
                 </header>
                 <div class="col-sm-8">
                     <ul class="row row--scrollable title-list">
