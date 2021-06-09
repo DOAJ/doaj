@@ -8,6 +8,14 @@
 
   .primary-nav {
     top: 0 !important; // Top nav sticks on the homepage only
+    transition: all 0.35s;
+  }
+
+  .primary-nav--scrolled {
+    background-color: rgba($light-grey, 0.5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: $warm-black;
   }
 
   .secondary-nav {

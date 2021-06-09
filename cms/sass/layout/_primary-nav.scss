@@ -2,6 +2,7 @@
 
 .primary-nav {
   position: fixed;
+  top: 0;
   width: 100vw;
   z-index: 10;
   height: 75px;
@@ -11,8 +12,16 @@
   font-weight: 600;
   color: $white;
 
-  .dropdown__menu, a {
+  &--scrolled {
+    top: -75px;
+  }
+
+  .dropdown__menu {
     background-color: $warm-black;
+    color: currentColor;
+  }
+
+  a {
     color: currentColor;
   }
 
