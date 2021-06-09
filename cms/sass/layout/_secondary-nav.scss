@@ -87,20 +87,20 @@
   // Dropdown
   .open {
     > .dropdown__menu {
-    position: static;
-    float: none;
-    width: 100%;
-    background-color: transparent;
-    border: 0;
-   }
+      position: static;
+      float: none;
+      width: 100%;
+      background-color: transparent;
+      border: 0;
+    }
 
-   > .dropdown__trigger {
-     font-weight: 600;
-   }
+    > .dropdown__trigger {
+      font-weight: 600;
+    }
 
-   a {
-     font-weight: 600;
-   }
+    a {
+      font-weight: 600;
+    }
   }
 
 
