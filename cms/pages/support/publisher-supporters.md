@@ -5,6 +5,10 @@ include: /data/publisher-supporters.html
 title: Publisher supporters
 section: Support
 sticky_sidenav: true
+featuremap:
+ - ~~PublisherSupporters:Fragment->PublisherSupporterSidenav:Template~~
+ - ~~->PublisherSupportersData:Template~~
+
 ---
 
 Supporting us is a way for publishers to show their commitment, not only to open access, but to a community-driven, non-profit, diverse organisation.

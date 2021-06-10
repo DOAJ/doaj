@@ -4,6 +4,8 @@ title: Terms and conditions
 section: About
 toc: true
 sticky_sidenav: true
+featuremap: ~~Terms:Fragment~~
+
 ---
 
 ### Conditions of use
