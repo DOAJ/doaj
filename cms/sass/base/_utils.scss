@@ -152,13 +152,11 @@
 
 .overlay {
   position: fixed;
-  opacity: 1;
-  width: 100vw;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
-  z-index: 1080;
-  background-color: $warm-white;
-  top: 0;
-  left: 0;
+  width: inherit;
+  z-index: 1000;
 }
 
 // TEMP: admin edit button on static site
