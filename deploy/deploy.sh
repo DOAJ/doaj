@@ -15,7 +15,7 @@ sudo pip install awscli
 
 # activate the virtualenv that we expect to be at /home/cloo/doaj
 . /home/cloo/doaj/bin/activate
-cd /home/cloo/doaj/src/doaj
+cd /home/cloo/doaj/src/doaj || exit 1
 
 # Install DOAJ submodules and requirements
 git submodule update --init --recursive

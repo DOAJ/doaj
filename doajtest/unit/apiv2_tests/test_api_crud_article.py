@@ -56,11 +56,11 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
-        # too many keywords
-        data = ArticleFixtureFactory.make_article_source()
-        data["bibjson"]["keywords"] = ["one", "two", "three", "four", "five", "six", "seven"]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
+        # test unnecessary https://github.com/DOAJ/doajPM/issues/2950
+        # data = ArticleFixtureFactory.make_article_source()
+        # data["bibjson"]["keywords"] = ["one", "two", "three", "four", "five", "six", "seven"]
+        # with self.assertRaises(DataStructureException):
+        #     ia = IncomingArticleDO(data)
 
         # incorrect orcid format
         data = ArticleFixtureFactory.make_article_source()
@@ -520,8 +520,10 @@ class TestCrudArticle(DoajTestCase):
         data = ArticleFixtureFactory.make_article_source()
         data['bibjson']['keywords'] = ['one', 'two', 'three', 'four', 'five', 'six', 'seven']
 
-        with self.assertRaises(Api400Error):
-            ArticlesCrudApi.create(data, account)
+        # limit removed - https://github.com/DOAJ/doajPM/issues/2950 - should now succeed
+        # with self.assertRaises(Api400Error):
+        #     ArticlesCrudApi.create(data, account)
+        ArticlesCrudApi.create(data, account)
 
     def test_13_trim_empty_string_data(self):
 

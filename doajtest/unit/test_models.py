@@ -63,7 +63,6 @@ class TestModels(DoajTestCase):
         j.set_last_updated("2002-01-01T00:00:00Z")
         j.set_last_manual_update("2004-01-01T00:00:00Z")
         j.set_seal(True)
-        j.set_bulk_upload_id("abcdef")
         j.set_owner("richard")
         j.set_editor_group("worldwide")
         j.set_editor("eddie")
@@ -80,7 +79,6 @@ class TestModels(DoajTestCase):
         assert j.last_manual_update_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2004-01-01T00:00:00Z"
         assert j.has_been_manually_updated() is True
         assert j.has_seal() is True
-        assert j.bulk_upload_id == "abcdef"
         assert j.owner == "richard"
         assert j.editor_group == "worldwide"
         assert j.editor == "eddie"
@@ -228,7 +226,6 @@ class TestModels(DoajTestCase):
         s.set_last_updated("2002-01-01T00:00:00Z")
         s.set_last_manual_update("2004-01-01T00:00:00Z")
         s.set_seal(True)
-        s.set_bulk_upload_id("abcdef")
         s.set_owner("richard")
         s.set_editor_group("worldwide")
         s.set_editor("eddie")
@@ -245,7 +242,6 @@ class TestModels(DoajTestCase):
         assert s.last_manual_update_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2004-01-01T00:00:00Z"
         assert s.has_been_manually_updated() is True
         assert s.has_seal() is True
-        assert s.bulk_upload_id == "abcdef"
         assert s.owner == "richard"
         assert s.editor_group == "worldwide"
         assert s.editor == "eddie"
@@ -1168,16 +1164,16 @@ class TestModels(DoajTestCase):
         j.save(blocking=True)
 
         res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "Bio")
-        assert len(res) == 2
+        assert len(res) == 2, "autocomplete for 'Bio': found {}, expected 2".format(len(res))
 
         res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "BioMed")
-        assert len(res) == 2
+        assert len(res) == 2, "autocomplete for 'BioMed': found {}, expected 2".format(len(res))
 
         res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "De ")
-        assert len(res) == 1
+        assert len(res) == 1, "autocomplete for 'De ': found {}, expected 2".format(len(res))
 
         res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "BioMed C")
-        assert len(res) == 1
+        assert len(res) == 1, "autocomplete for 'BioMed C': found {}, expected 2".format(len(res))
 
     def test_23_provenance(self):
         """Read and write properties into the provenance model"""

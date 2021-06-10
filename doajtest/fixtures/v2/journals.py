@@ -63,7 +63,6 @@ JOURNAL_SOURCE = {
     "last_manual_update": "2001-01-01T00:00:00Z",
     "last_updated": "2002-01-01T00:00:00Z",
     "admin": {
-        "bulk_upload": "bulk_1234567890",
         "current_application": "qwertyuiop",
         "editor_group": "editorgroup",
         "editor": "associate",
@@ -151,6 +150,7 @@ CSV_HEADERS = [
     "URL for journal's Open Access statement",
     "Continues",
     "Continued By",
+    "Discontinued Date",
     "LCC Codes",
     'Subjects',  # (added outside journal2questions)
     'DOAJ Seal',  # (added outside journal2questions)
@@ -196,7 +196,7 @@ JOURNAL_QUESTION_ANSWERS = [
     'Yes',
     'http://other.charges',
     'LOCKSS, CLOCKSS, A safe place',
-    'Trinity; Imperial',
+    'Trinity, Imperial',
     'http://digital.archiving.policy',
     'Sherpa/Romeo, Store it',
     "http://deposit.policy",
@@ -207,5 +207,6 @@ JOURNAL_QUESTION_ANSWERS = [
     'http://oa.statement',
     "1111-1111",
     "2222-2222",
-    "HB1-3840|H"
+    "2001-01-01",
+    "HB1-3840, H"
 ]

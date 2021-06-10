@@ -89,7 +89,7 @@
 
                 <h1>
                     {%  if bibjson.title %}
-                        {{ bibjson.title | safe }}
+                        {{ bibjson.title | striptags }}
                     {% else %}
                         <em>[Article title missing]</em>
                     {% endif %}

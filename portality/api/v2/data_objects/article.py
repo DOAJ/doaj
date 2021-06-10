@@ -241,9 +241,10 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
             if pissn.id == eissn.id:
                 raise dataobj.DataStructureException("P-ISSN and E-ISSN should be different")
 
-        # check the number of keywords is no more than 6
-        if len(self.bibjson.keywords) > 6:
-            raise dataobj.DataStructureException("bibjson.keywords may only contain a maximum of 6 keywords")
+
+        # check removed: https://github.com/DOAJ/doajPM/issues/2950
+        # if len(self.bibjson.keywords) > 6:
+        #     raise dataobj.DataStructureException("bibjson.keywords may only contain a maximum of 6 keywords")
 
         # check if orcid id is valid
         for author in self.bibjson.author:
