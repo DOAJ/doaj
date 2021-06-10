@@ -7,8 +7,10 @@
         Yes
     {% elif x == "n" %}
         No
-    {% elif field_name == "language" or field_name == "publisher_country" or field_name == "institution_country" %}
-        {{ formulaic_context.lang_to_country("EN") }}
+    {% elif field_name == "language" %}
+        {{ formulaic_context.language_name_from_language(x) }}
+    {% elif field_name == "publisher_country" or field_name == "institution_country" %}
+        {{ formulaic_context.country_name_from_code(x) }}
     {% else %}
         {{ x }}
     {% endif %}

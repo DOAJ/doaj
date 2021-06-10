@@ -268,6 +268,12 @@ class FormulaicContext(object):
     def default_group_template(self):
         return self._definition.get("templates", {}).get("default_group")
 
+    def language_name_from_language(self, lang):
+        return datasets.name_for_lang(lang)
+
+    def country_name_from_code(self, code):
+        return datasets.get_country_name(code)
+
     def list_fields_in_order(self):
         fieldlist = []
         for fs in self.fieldsets():
@@ -278,9 +284,6 @@ class FormulaicContext(object):
                 else:
                     fieldlist.append(field)
         return fieldlist
-
-    def lang_to_country(self, lang):
-        return datasets.language_for(lang).name
 
     def make_wtform_class(self, fields):
         class TempForm(Form):
