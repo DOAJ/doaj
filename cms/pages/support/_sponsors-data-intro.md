@@ -1,0 +1,1 @@
+Doing the intro in an explicitly included markdown file (_sponsors-data-intro.md)

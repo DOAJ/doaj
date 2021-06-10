@@ -5,8 +5,13 @@ title: Contributors (Publishers and Aggregators)
 section: Support
 toc: true
 sticky_sidenav: true
-intro:
+meta_description: enter the meta description here
+
 ---
+
+Doing the intro in the sponsors.md markdown file
+
+<div>{% include '/data/sponsors.html' %}</div>
 
 ## Benefits for contributing publishers and aggregators 2021
 
