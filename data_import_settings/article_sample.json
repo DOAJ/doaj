@@ -5,7 +5,6 @@
 	"max_content_length" : 100000000,
 	"types" : {
 		"account" : {"import" : false, "limit" : -1},
-		"bulk_upload" : {"import" : false, "limit" : -1},
 		"bulk_reapplication" : {"import" : false, "limit" : -1},
 		"background_job" : {"import" : false, "limit" : -1},
 		"lock" : {"import" : false, "limit" : -1},

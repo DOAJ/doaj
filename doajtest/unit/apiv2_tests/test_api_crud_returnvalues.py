@@ -178,14 +178,15 @@ class TestCrudReturnValues(DoajTestCase):
             assert response.mimetype == 'application/json'
             assert 'Supplied data was not valid JSON' in response.json['error']
 
+            # limit removed - https://github.com/DOAJ/doajPM/issues/2950 - should now succeed
             # attempt to CREATE a new article with too many keywords (exception propagates from DataObj)
-            too_many_kwds = deepcopy(user_data)
-            too_many_kwds['bibjson']['keywords'] = ['one', 'two', 'three', 'four', 'five', 'six', 'SEVEN']
-
-            response = t_client.post('/api/v2/articles?api_key=' + self.api_key, data=json.dumps(too_many_kwds))
-            assert response.status_code == 400  # 400 "Bad Request"
-            assert response.mimetype == 'application/json'
-            assert 'maximum of 6 keywords' in response.json['error']
+            # too_many_kwds = deepcopy(user_data)
+            # too_many_kwds['bibjson']['keywords'] = ['one', 'two', 'three', 'four', 'five', 'six', 'SEVEN']
+            #
+            # response = t_client.post('/api/v2/articles?api_key=' + self.api_key, data=json.dumps(too_many_kwds))
+            # assert response.status_code == 400  # 400 "Bad Request"
+            # assert response.mimetype == 'application/json'
+            # assert 'maximum of 6 keywords' in response.json['error']
 
             # attempt to CREATE an article with a missing required field (exception propagates from DataObj)
             missing_title = deepcopy(user_data)

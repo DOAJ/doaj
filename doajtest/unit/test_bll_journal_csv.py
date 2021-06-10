@@ -194,7 +194,7 @@ class TestBLLJournalCSV(DoajTestCase):
                     h = expected_headers[i]
                     if h != rows[0][i]:
                         print(("{x} - {y}".format(x=h, y=rows[0][i])))
-                assert rows[0] == expected_headers
+                assert rows[0] == expected_headers, (rows[0], expected_headers)
 
                 assert len(rows) == journal_count + 1
 
@@ -203,8 +203,8 @@ class TestBLLJournalCSV(DoajTestCase):
                     alt_title = row[3]
                     issn = row[4]
                     eissn = row[5]
-                    article_count = int(row[51])
-                    article_latest = row[52]
+                    article_count = int(row[52])
+                    article_latest = row[53]
 
                     assert alt_title == "Заглавие на журнала"
                     assert issn in comparisons[issn]["issns"]
