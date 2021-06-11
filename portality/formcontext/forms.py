@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from flask_login import current_user
-from wtforms import Form, validators
+from wtforms import Form, validators, ValidationError
 from wtforms import StringField, TextAreaField, BooleanField, FormField, FieldList, RadioField
 from wtforms.fields.html5 import IntegerField
 from wtforms import widgets
@@ -22,6 +22,12 @@ ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
 BIG_END_DATE_REGEX = regex.BIG_END_DATE_COMPILED
 DATE_ERROR = "Date must be supplied in the form YYYY-MM-DD"
+
+# custom wtf validator for <script> tags
+
+def custom_check_script_tags_validator(form, field):
+    if "<script>" in field.data:
+        raise ValidationError('Metadata cannot contain script HTML tag')
 
 
 ###########################################################################
@@ -655,17 +661,17 @@ INITIAL_AUTHOR_FIELDS = 3
 
 
 class AuthorForm(Form):
-    name = StringField("Name", [validators.Optional()])
-    affiliation = StringField("Affiliation", [validators.Optional()])
+    name = StringField("Name", [validators.Optional(),custom_check_script_tags_validator])
+    affiliation = StringField("Affiliation", [validators.Optional(), custom_check_script_tags_validator])
     orcid_id = StringField("ORCID iD", [validators.Optional(), validators.Regexp(regex=ORCID_REGEX, message=ORCID_ERROR)])
 
 
 class ArticleForm(Form):
-    title = StringField("Article title <em>(required)</em>", [validators.DataRequired()])
+    title = StringField("Article title <em>(required)</em>", [validators.DataRequired(), custom_check_script_tags_validator])
     doi = StringField("DOI", [OptionalIf("fulltext", "You must provide the DOI or the Full-Text URL"), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)], description="(You must provide a DOI and/or a Full-Text URL)")
     authors = FieldList(FormField(AuthorForm), min_entries=1) # We have to do the validation for this at a higher level
-    abstract = TextAreaField("Abstract", [validators.Optional()])
-    keywords = TagListField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
+    abstract = TextAreaField("Abstract", [validators.Optional(), custom_check_script_tags_validator])
+    keywords = TagListField("Keywords", [validators.Optional(), custom_check_script_tags_validator], description="Use a , to separate keywords") # enhanced with select2
     fulltext = StringField("Full-text URL", [OptionalIf("doi", "You must provide the Full-Text URL or the DOI"), validators.URL()])
     publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
     publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )

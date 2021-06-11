@@ -61,6 +61,7 @@ ENABLE_EMAIL = True
 ENABLE_PUBLISHER_EMAIL = True
 MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
 CONTACT_FORM_ADDRESS = "feedback+contactform@doaj.org"
+SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS = ["aga@cottagelabs.com"]
 
 # Error logging via email
 SUPPRESS_ERROR_EMAILS = False
