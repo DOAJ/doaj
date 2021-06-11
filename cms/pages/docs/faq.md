@@ -4,6 +4,8 @@ title: FAQs
 section: About
 toc: true
 sticky_sidenav: true
+featuremap: ~~FAQ:Fragment~~
+
 ---
 
 ## How can I contribute to DOAJ?

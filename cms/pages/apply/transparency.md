@@ -4,6 +4,8 @@ title: Transparency & best practice
 section: Apply
 toc: true
 sticky_sidenav: true
+featuremap: ~~Transparency:Fragment~~
+
 ---
 
 ## Introduction
