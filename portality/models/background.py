@@ -1,3 +1,4 @@
+from portality.core import app
 from portality.lib import dataobj, dates
 from portality import dao
 
@@ -94,7 +95,8 @@ class StdOutBackgroundJob(BackgroundJob):
 
     def add_audit_message(self, msg, timestamp=None):
         super(StdOutBackgroundJob, self).add_audit_message(msg, timestamp)
-        print(msg)
+        if app.config.get("DOAJENV") == 'dev':
+            print(msg)
 
 
 BACKGROUND_STRUCT = {

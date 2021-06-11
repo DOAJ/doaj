@@ -972,7 +972,7 @@ class IssnQuery(object):
                "must": [
                  {
                    "term": {
-                     "admin.in_doaj": "True"
+                     "admin.in_doaj": True
                    }
                  }
                ]
@@ -997,11 +997,13 @@ class IssnQuery(object):
         }
     }
 
-    def __init__(self, owner, in_doaj=False):
+    def __init__(self, owner, in_doaj=None):
         self._query = deepcopy(self.base_query)
         self._query["query"]["filtered"]["query"]["term"]["admin.owner.exact"] = owner
-        in_doaj_str = "True" if in_doaj else "False"
-        self._query["query"]["filtered"]["filter"]["bool"]["must"][0]["term"]["admin.in_doaj"] = in_doaj_str
+        if in_doaj:
+            self._query["query"]["filtered"]["filter"]["bool"]["must"][0]["term"]["admin.in_doaj"] = in_doaj
+        else:
+            del self._query["query"]["filtered"]["filter"]
 
 
     def query(self):
