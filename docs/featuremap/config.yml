@@ -18,6 +18,7 @@ exclude:
   - ".gitmodules"
   - ".python-version"
   - "*.svg"
+  - "frontmatter.yml"
 exclude_dirs:
   - portality/static/crossref
   - portality/static/vendor
@@ -26,7 +27,7 @@ exclude_dirs:
   - portality/migrate
   - docs/generated
   - cms/fragments
-  - cms/sass/.sass-cache
+  - cms/sass
   - failed_articles
   - history
   - local_store
