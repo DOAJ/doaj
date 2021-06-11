@@ -1068,6 +1068,14 @@ var formulaic = {
     },
 
     widgets : {
+
+        _select2_shift_focus: function(){
+            let id = $(this).attr("id");
+            console.log("focused on " + id);
+            let select2_elem  = $("#s2id_" + id).find("input");
+            $(select2_elem).focus();
+        },
+
         newSubjectTree : function(params) {
             return edges.instantiate(formulaic.widgets.SubjectTree, params);
         },
@@ -1555,6 +1563,7 @@ var formulaic = {
                 for (var idx = 0; idx < this.fields.length; idx++) {
                     let f = this.fields[idx];
                     let s2_input = $($(f).select2());
+                    $(f).on("focus", formulaic.widgets._select2_shift_focus);
                     s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
                     if (idx !== 0) {
                         s2_input.attr("required", false);
@@ -1800,11 +1809,11 @@ var formulaic = {
                     newOption: true,
                     placeholder: "Start typing…"
                 });
+                $(this.elements).on("focus", formulaic.widgets._select2_shift_focus);
             };
 
             this.init();
         },
-
 
         newTagList : function(params) {
             return edges.instantiate(formulaic.widgets.TagList, params);
@@ -1850,10 +1859,9 @@ var formulaic = {
                     callback(data);
                 };
 
-                let field = $("[name='" + this.fieldDef.name + "']");
-
                 // apply the create search choice
-                field.select2({
+                let selector = "[name='" + this.fieldDef.name + "']";
+                $(selector).select2({
                     multiple: true,
                     minimumInputLength: 1,
                     ajax: ajax,
@@ -1866,6 +1874,8 @@ var formulaic = {
                     maximumSelectionSize: this.args["maximumSelectionSize"],
                     width: 'resolve'
                 });
+
+                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
 
             };
 
@@ -1883,16 +1893,20 @@ var formulaic = {
             this.ns = "formulaic-tagentry";
 
             this.init = function() {
-                $("[name='" + this.fieldDef.name + "']").select2({
+                let selector = "[name='" + this.fieldDef.name + "']";
+                $(selector).select2({
                     minimumInputLength: 1,
                     tags: [],
                     tokenSeparators: [','],
                     width: 'resolve'
                 });
+                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
             };
 
             this.init();
         },
+
+
 
         newLoadEditors: function(params) {
             return edges.instantiate(formulaic.widgets.LoadEditors, params);
@@ -1993,6 +2007,8 @@ var formulaic = {
 
                 let selector = "[name='" + this.fieldDef.name + "']";
 
+                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
+
                 if (include_input) {
                     // apply the create search choice
                     $(selector).select2({
@@ -2013,6 +2029,8 @@ var formulaic = {
                         width: 'resolve'
                     });
                 }
+
+                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
             };
 
             this.init()
