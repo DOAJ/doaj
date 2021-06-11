@@ -8,9 +8,9 @@
     {% elif x == "n" %}
         No
     {% elif field_name == "language" %}
-        {{ formulaic_context.language_name_from_language(x) }}
+        {{ datasets.name_for_lang(x) }}
     {% elif field_name == "publisher_country" or field_name == "institution_country" %}
-        {{ formulaic_context.country_name_from_code(x) }}
+        {{ datasets.get_country_name(x) }}
     {% else %}
         {{ x }}
     {% endif %}
