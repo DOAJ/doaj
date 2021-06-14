@@ -26,21 +26,17 @@
     text-decoration: none;
   }
 
+  h2 {
+    margin-bottom: $spacing-04;
+  }
+
   h3 {
     margin-top: $spacing-03;
-    @include font-serif;
     font-weight: 600;
   }
 
   time {
     color: $dark-grey;
-  }
-
-  section {
-
-    h2 {
-      margin-bottom: $spacing-04;
-    }
   }
 
   .page-header {
@@ -63,8 +59,8 @@
   }
 
   .page-content > section {
-    padding-top: $spacing-06;
-    padding-bottom: $spacing-06;
+    padding-top: $spacing-05;
+    padding-bottom: $spacing-05;
   }
 
   &__background {
