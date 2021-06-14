@@ -1286,7 +1286,6 @@ class FieldDefinitions:
         "input": "text",
         "conditional": [{"field": "deposit_policy", "value": "Sherpa/Romeo"},
                         {"field": "deposit_policy", "value": "Dulcinea"},
-                        {"field": "deposit_policy", "value": "Héloïse"},
                         {"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
@@ -1311,7 +1310,6 @@ class FieldDefinitions:
                             "value": [
                                 "Sherpa/Romeo",
                                 "Dulcinea",
-                                "Héloïse",
                                 "Diadorim",
                                 "other"
                             ]
@@ -1328,7 +1326,6 @@ class FieldDefinitions:
                             "value": [
                                 "Sherpa/Romeo",
                                 "Dulcinea",
-                                "Héloïse",
                                 "Diadorim",
                                 "other"
                             ]
