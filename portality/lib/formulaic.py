@@ -100,6 +100,7 @@ import csv
 from copy import deepcopy
 from wtforms import Form
 from wtforms.fields.core import UnboundField, FieldList, FormField
+
 from portality.lib import plugin
 from flask import render_template
 import json
@@ -265,6 +266,17 @@ class FormulaicContext(object):
     @property
     def default_group_template(self):
         return self._definition.get("templates", {}).get("default_group")
+
+    def list_fields_in_order(self):
+        fieldlist = []
+        for fs in self.fieldsets():
+            for field in fs.fields():
+                if field.group_subfields():
+                    for sf in field.group_subfields():
+                        fieldlist.append(sf)
+                else:
+                    fieldlist.append(field)
+        return fieldlist
 
     def make_wtform_class(self, fields):
         class TempForm(Form):

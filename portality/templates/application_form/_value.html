@@ -1,0 +1,17 @@
+{% macro value(x, field_name, formulaic_context) %}
+    {% if x == None or x == "" or x == [] %}
+        <em>[Nothing]</em>
+    {% elif x is string and x.startswith("http") %}
+        <a href="{{ x }}" target="_blank" rel="noopener" style="word-break: break-all">{{ x }}</a>
+    {% elif x == "y" %}
+        Yes
+    {% elif x == "n" %}
+        No
+    {% elif field_name == "language" %}
+        {{ datasets.name_for_lang(x) }}
+    {% elif field_name == "publisher_country" or field_name == "institution_country" %}
+        {{ datasets.get_country_name(x) }}
+    {% else %}
+        {{ x }}
+    {% endif %}
+{% endmacro %}
