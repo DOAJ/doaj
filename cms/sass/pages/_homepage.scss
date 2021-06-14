@@ -95,8 +95,9 @@
 
   }
 
-  &__about section {
+  &__about article:first-of-type {
     margin-top: $spacing-04;
+    margin-bottom: $spacing-04;
     padding-top: $spacing-04;
     border-width: 0 0 1px 0;
     border-style: solid;
@@ -105,7 +106,7 @@
     @media (min-width: 769px) {
       margin-top: 0;
       padding-top: 0;
-      border-width: 0 0 0 1px;
+      border-width: 0 1px 0 0;
     }
   }
 
