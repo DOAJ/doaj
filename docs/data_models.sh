@@ -5,9 +5,9 @@
 # Set up the variables we need for the script
 DOAJ_DOCS="docs/generated"
 BRANCH=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
-BRANCHDIR=$DOAJ_DOCS/$BRANCH/
+BRANCHDIR=$DOAJ_DOCS/$BRANCH
 OUTDIR=$BRANCHDIR/data_models
-FORMFILE=$BRANCHDIR/forms/application.pubic.csv
+FORMFILE=$BRANCHDIR/forms/application.public.csv
 
 # make sure that we have the documentation submodule up-to-date
 git submodule update --init --recursive

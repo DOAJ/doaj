@@ -4,6 +4,8 @@ title: Public data dump
 section: Docs
 toc: true
 sticky_sidenav: true
+featuremap: ~~PublicDataDump:Fragment~~
+
 ---
 
 An [exportable version of the journal metadata](/csv) is available as a CSV file.

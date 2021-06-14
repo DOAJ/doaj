@@ -117,5 +117,5 @@ class TestCrosswalks(DoajTestCase):
         assert bibjson.get_one_identifier(bibjson.E_ISSN) == "9876-5432", "expected '9876-5432', received: {}".format(bibjson.get_one_identifier(bibjson.E_ISSN))
         assert bibjson.year == "2004", "expected '2004', received: {}".format(bibjson.year)
         assert bibjson.title == "Article 12292005 9:32", "expected 'Article 12292005 9:32', received: {}".format(bibjson.title)
-        assert bibjson.author == [{'name': 'Surname, Bob'}], "expected [{{'name': 'Surname, Bob'}}]', received: {}".format(bibjson.author)
+        assert bibjson.author == [{'name': 'Bob Surname', 'orcid_id': 'http://orcid.org/0000-0002-4011-3590'}], "expected [{{'name': 'Bob Surname', 'orcid_id': 'http://orcid.org/0000-0002-4011-3590'}}]', received: {}".format(bibjson.author)
         assert bibjson.get_single_url("fulltext") == "http://www.crossref.org/", "expected 'http://www.crossref.org/', received: {}".format(bibjson.get_single_url("fulltext"))

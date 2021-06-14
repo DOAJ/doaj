@@ -2,9 +2,10 @@ project_name: DOAJ
 base_dir: .
 # source_url: defined at run-time
 include:
-  - "*.py"
-  - "*.html"
-  - "*.md"
+  - "*"
+#  - "*.py"
+#  - "*.html"
+#  - "*.md"
 exclude:
   - "*.pyc"
   - "*.png"
@@ -12,6 +13,11 @@ exclude:
   - "*.jpg"
   - "*.ico"
   - "*.jpeg"
+  - ".env"
+  - ".gitignore"
+  - ".gitmodules"
+  - ".python-version"
+  - "*.svg"
 exclude_dirs:
   - portality/static/crossref
   - portality/static/vendor
@@ -19,6 +25,16 @@ exclude_dirs:
   - portality/static/widget/fqw_dependencies
   - portality/migrate
   - docs/generated
+  - cms/fragments
+  - cms/sass/.sass-cache
+  - failed_articles
+  - history
+  - local_store
+  - reapp_csvs
+  - upload
+  - .git
+  - .idea
+  - cms/assets/img
 ignore_parse_errors:
   - noop
 delimiter: ~~

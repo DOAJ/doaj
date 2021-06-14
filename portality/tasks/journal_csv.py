@@ -40,11 +40,7 @@ class JournalCSVBackgroundTask(BackgroundTask):
         :param kwargs: arbitrary keyword arguments pertaining to this task type
         :return: a BackgroundJob instance representing this task
         """
-        cdir = app.config.get("CACHE_DIR")
-        if cdir is None:
-            raise BackgroundException("You must set CACHE_DIR in the config")
-
-        # first prepare a job record
+        # prepare a job record
         job = models.BackgroundJob()
         job.user = username
         job.action = cls.__action__
