@@ -101,7 +101,6 @@ from copy import deepcopy
 from wtforms import Form
 from wtforms.fields.core import UnboundField, FieldList, FormField
 
-from portality import datasets
 from portality.lib import plugin
 from flask import render_template
 import json
