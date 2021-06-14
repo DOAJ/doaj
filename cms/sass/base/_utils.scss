@@ -146,6 +146,12 @@
 }
 
 .flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.flex-end-col {
   @media (min-width: 769px) {
     display: flex;
     align-items: flex-end;
