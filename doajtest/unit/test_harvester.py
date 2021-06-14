@@ -3,6 +3,7 @@ import json
 import os
 import time
 from datetime import date, datetime
+from shutil import copyfile
 
 from unittest.mock import Mock, patch
 
@@ -46,11 +47,12 @@ class TestHarvester(DoajTestCase):
 
         today = datetime.today().strftime('%Y-%m-%d')
         app.config["INITIAL_HARVEST_DATE"] = today
-        with open(RESOURCES + 'harvester_resp.json') as json_file:
+        copyfile(RESOURCES + 'harvester_resp.json', RESOURCES + 'harvester_resp_temp.json')
+        with open(RESOURCES + 'harvester_resp_temp.json') as json_file:
             articles = json.load(json_file)
 
         articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + today + ' sort_date:"y"',
-        json_file = open(RESOURCES + 'harvester_resp.json', 'w')
+        json_file = open(RESOURCES + 'harvester_resp_temp.json', 'w')
         json.dump(articles, json_file, indent=4)
         json_file.close()
 
@@ -58,11 +60,12 @@ class TestHarvester(DoajTestCase):
         super(TestHarvester, self).tearDown()
         app.config['HARVESTER_API_KEYS'] = self.old_harvester_api_keys
         app.config["INITIAL_HARVEST_DATE"] = self.old_initial_harvest_date
+        os.remove(RESOURCES + 'harvester_resp_temp.json')
 
     @patch('portality.tasks.harvester_helpers.epmc.client.EuropePMC.query')
     def test_harvest(self, mock_query):
 
-        with open('resources/harvester_resp.json') as json_file:
+        with open('resources/harvester_resp_temp.json') as json_file:
             articles = json.load(json_file)
 
         results = [h_models.EPMCMetadata(r) for r in articles.get("resultList", {}).get("result", [])]
@@ -84,7 +87,7 @@ class TestHarvester(DoajTestCase):
     @patch('portality.lib.httputil.get')
     def test_query(self, mock_get):
 
-        with open('resources/harvester_resp.json') as json_file:
+        with open('resources/harvester_resp_temp.json') as json_file:
             articles = json.load(json_file)
 
         mock_get.return_value.status_code = 401
