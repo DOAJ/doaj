@@ -12,8 +12,37 @@
   font-weight: 600;
   color: $white;
 
+  // TODO: Needs to be renamed from seecondary-nav since it’s been moved outside of there
+  // Also appears in JS
+  .secondary-nav__menu-toggle {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .secondary-nav__menu-toggle {
+      display: flex;
+      padding: $spacing-03 0;
+      color: $white;
+      stroke: $white;
+
+      h2 {
+        color: $white;
+      }
+    }
+
+    .secondary-nav__menu-toggle--active {
+      max-height: 100%;
+      height: auto;
+    }
+  }
+
   &--scrolled {
     top: -75px;
+
+    .secondary-nav__menu-toggle {
+      color: $warm-black;
+      stroke: $warm-black;
+    }
   }
 
   .dropdown__menu {

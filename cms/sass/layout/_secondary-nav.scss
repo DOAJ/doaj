@@ -11,14 +11,6 @@
   }
 }
 
-.secondary-nav__header {
-  display: inline-block;
-  margin: 0;
-  font-size: 1rem;
-  font-weight: normal;
-  @include font-sans;
-}
-
 .secondary-nav--precedes-highlight {
   background-color: $light-grey;
 }
@@ -28,13 +20,13 @@
   font-weight: 400;
 }
 
-.secondary-nav__menu-toggle {
-  display: none;
-}
-
 // Mobile / hamburger menu
 
 @media (max-width: 768px) {
+  .secondary-nav {
+    height: 75px;
+  }
+
   .secondary-nav > .container {
     z-index: 20;
     position: fixed;
@@ -69,24 +61,6 @@
         border: 0;
       }
     }
-  }
-
-  .secondary-nav__menu-toggle {
-    display: inline-block;
-    padding: $spacing-03 0;
-    color: $warm-black;
-    stroke: $warm-black;
-
-    svg {
-      margin-top: -$spacing-01;
-      display: inline-block;
-      vertical-align: middle;
-    }
-  }
-
-  .secondary-nav__menu-toggle--active {
-    max-height: 100%;
-    height: auto;
   }
 
   .secondary-nav__login {
