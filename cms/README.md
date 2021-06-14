@@ -1,5 +1,7 @@
 # DOAJ CMS
 
+~~CMS:Documentation->CMS:DataStore~~
+
 This directory in the source contains all the content, data and other assets that are managed separately from the
 main software.  This is:
 
@@ -26,6 +28,8 @@ if the system is restarted unexpectedly.
 If you think your static pages or CSS is out of date, just restart the app, and everything will be updated.
 
 ### On demand
+
+~~->CMS:Script~~
 
 You can compile the Markdown and SASS directly using scripts provided:
 

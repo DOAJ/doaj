@@ -5,6 +5,8 @@ section: About
 toc: true
 highlight: true
 include: /data/volunteers.html
+featuremap: ~~Volunteers:Fragment->VolunteersData:Template~~
+
 ---
 
 DOAJ would not be able to do the work that we do without our volunteers. We are very grateful for the work that our volunteers do to help us review applications for journals to be included in DOAJ. We have published the names of our team of volunteers below, in recognition of their support for DOAJ and the open access community.

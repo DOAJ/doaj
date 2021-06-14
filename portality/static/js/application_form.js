@@ -876,6 +876,18 @@ window.Parsley.addValidator("notIf", {
     priority: 1
 });
 
+window.Parsley.addValidator("noScriptTag", {
+    validateString : function(value, parsleyInstance) {
+        return !value.includes("<script>")
+
+    },
+    messages: {
+        en: 'Script tags are not allowed'
+    },
+    priority: 300
+    }
+)
+
 
 ///////////////////////////////////////////////////////////////
 // workaround to allow underscores on the parsley type=url validator

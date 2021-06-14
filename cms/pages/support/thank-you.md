@@ -2,6 +2,8 @@
 layout: sidenav
 title: Thank you for your support
 section: Support
+featuremap: ~~SupportThanks:Fragment~~
+
 ---
 
 Your payment has been processed and the transaction is complete.

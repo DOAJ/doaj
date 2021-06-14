@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from flask import url_for
 from doajtest.helpers import DoajTestCase
-from portality.lib.dataobj import DataStructureException
+from portality.lib.dataobj import DataStructureException, ScriptTagFoundException
 from portality.api.v2.data_objects.article import IncomingArticleDO, OutgoingArticleDO
 from portality.api.v2 import ArticlesCrudApi, Api401Error, Api400Error, Api404Error
 from portality import models
@@ -36,6 +36,11 @@ class TestCrudArticle(DoajTestCase):
         data = ArticleFixtureFactory.make_article_source()
         del data["bibjson"]["title"]
         with self.assertRaises(DataStructureException):
+            ia = IncomingArticleDO(data)
+
+        data = ArticleFixtureFactory.make_article_source()
+        data["bibjson"]["title"] = "This is title with <script> tag inside </script> and it should be rejected"
+        with self.assertRaises(ScriptTagFoundException):
             ia = IncomingArticleDO(data)
 
         # now progressively remove the conditionally required/advanced validation stuff
