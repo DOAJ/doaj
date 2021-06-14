@@ -19,10 +19,12 @@
   .button {
     display: block;
     color: $warm-black;
+    border-color: $white;
+    background: $white;
 
     &:hover, &:active, &:focus {
-      color: $white;
-      border-color: $white;
+      color: currentColor;
+      background: $warm-black;
     }
   }
 }
