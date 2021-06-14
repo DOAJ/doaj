@@ -4408,7 +4408,7 @@ $.extend(true, doaj, {
                                 <h3 class="sr-only">Display options</h3>\
                                 <div class="row">\
                                     <form class="col-sm-6" id="sort_by"></form>\
-                                    <form class="col-sm-6 flex-end" id="rpp"></form>\
+                                    <form class="col-sm-6 flex-end-col" id="rpp"></form>\
                                 </div>\
                             </nav>\
                             <nav class="pagination" id="top-pager"></nav>\
@@ -7975,4 +7975,3 @@ $.extend(true, edges, {
         }
     }
 });
-
