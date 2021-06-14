@@ -25,9 +25,9 @@ def generate_global_index(file, dir):
             for leaf in second:
                 if not os.path.isdir(os.path.join(dir, entry, leaf)):
                     continue
-                md += "* [{x}/{y}]({x}/{y}/README.md)".format(x=entry, y=leaf)
+                md += "* [{x}/{y}]({x}/{y}/README.md)\n".format(x=entry, y=leaf)
         else:
-            md += "* [{x}]({x}.README.md)".format(x=entry)
+            md += "* [{x}]({x}/README.md)\n".format(x=entry)
 
     with open(file, "w", encoding="utf-8") as f:
         f.write(md)
@@ -38,6 +38,7 @@ def generate_branch_index(file, dir):
     md += _generate_data_models_section(dir)
     md += _generate_coverage_section(dir)
     md += _generate_featuremap_section(dir)
+    md += _generate_forms_section(dir)
     with open(file, "w", encoding="utf-8") as f:
         f.write(md)
 
@@ -46,6 +47,8 @@ def _generate_data_models_section(dir):
     md = "## Data Models\n\n"
     dir = os.path.join(dir, "data_models")
     for file in os.listdir(dir):
+        if os.path.isdir(os.path.join(dir, file)):
+            continue
         name = file.split(".")[0]
         md += "* [" + name + "](data_models/" + name + ")\n"
     return md + "\n\n"
@@ -54,7 +57,7 @@ def _generate_data_models_section(dir):
 def _generate_coverage_section(dir):
     cov = os.path.join(dir, "coverage")
     if not os.path.exists(cov):
-        return
+        return ""
     md = "## Test Coverage\n\n"
     md += "* [Coverage Report](coverage/report/index.html)"
     return md + "\n\n"
@@ -63,9 +66,21 @@ def _generate_coverage_section(dir):
 def _generate_featuremap_section(dir):
     md = "## Feature Map\n\n"
     dir = os.path.join(dir, "featuremap", "html")
+    if not os.path.exists(dir):
+        return ""
     for file in os.listdir(dir):
         name = file.split(".")[0]
         md += "* [" + name + "](featuremap/html/" + file + ")\n"
+    return md + "\n\n"
+
+
+def _generate_forms_section(dir):
+    md = "## Application/Journal Forms\n\n"
+    dir = os.path.join(dir, "forms")
+    for file in os.listdir(dir):
+        name = file.split(".")[:2]
+        name = " ".join(name).title()
+        md += "* [" + name + "](forms/" + file + ")\n"
     return md + "\n\n"
 
 

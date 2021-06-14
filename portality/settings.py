@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "5.0.3"
+DOAJ_VERSION = "5.0.5"
 
 OFFLINE_MODE = False
 
@@ -61,6 +61,7 @@ ENABLE_EMAIL = True
 ENABLE_PUBLISHER_EMAIL = True
 MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
 CONTACT_FORM_ADDRESS = "feedback+contactform@doaj.org"
+SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS = ["aga@cottagelabs.com"]
 
 # Error logging via email
 SUPPRESS_ERROR_EMAILS = False

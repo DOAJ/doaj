@@ -107,7 +107,6 @@ $.extend(true, doaj, {
             this.namespace = "doajpublicsearch";
 
             this.title = edges.getParam(params.title, "");
-
             this.titleBar = edges.getParam(params.titleBar, true);
 
             this.draw = function (edge) {
@@ -163,6 +162,45 @@ $.extend(true, doaj, {
                     facetContainers += '<li class="filter" id="' + facets[i].id + '"></li>';
                 }
                 frag = frag.replace(/{{FACETS}}/g, facetContainers);
+
+                edge.context.html(frag);
+            };
+        },
+
+        newFQWidget: function (params) {
+            return edges.instantiate(doaj.templates.FQWidget, params, edges.newTemplate);
+        },
+        FQWidget: function (params) {
+            this.namespace = "fqwidget";
+
+            this.draw = function (edge) {
+                this.edge = edge;
+
+                var frag = `
+                    <header>
+                        <a href="https://doaj.org/" target="_blank" rel="noopener">
+                            <svg height="30px" viewBox="0 0 149 53" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <title>DOAJ Logotype</title>
+                                <g id="logotype" fill="#282624" fill-rule="nonzero">
+                                    <path d="M0,0.4219 L17.9297,0.4219 C24.8672,0.4688 30.0703,3.3516 33.5391,9.0703 C34.7812,10.9922 35.5664,13.0078 35.8945,15.1172 C36.1523,17.2266 36.2812,20.8711 36.2812,26.0508 C36.2812,31.5586 36.082,35.4023 35.6836,37.582 C35.4961,38.6836 35.2148,39.668 34.8398,40.5352 C34.4414,41.3789 33.9609,42.2578 33.3984,43.1719 C31.8984,45.5859 29.8125,47.5781 27.1406,49.1484 C24.4922,50.8359 21.2461,51.6797 17.4023,51.6797 L0,51.6797 L0,0.4219 Z M7.7695,44.332 L17.0508,44.332 C21.4102,44.332 24.5742,42.8438 26.543,39.8672 C27.4102,38.7656 27.9609,37.3711 28.1953,35.6836 C28.4062,34.0195 28.5117,30.9023 28.5117,26.332 C28.5117,21.8789 28.4062,18.6914 28.1953,16.7695 C27.9141,14.8477 27.2461,13.2891 26.1914,12.0938 C24.0352,9.1172 20.9883,7.6758 17.0508,7.7695 L7.7695,7.7695 L7.7695,44.332 Z"></path>
+                                    <path d="M39.5938,26.0508 C39.5938,20.0977 39.7695,16.1133 40.1211,14.0977 C40.4961,12.082 41.0703,10.4531 41.8438,9.2109 C43.0859,6.8438 45.0781,4.7344 47.8203,2.8828 C50.5156,1.0078 53.8789,0.0469 57.9102,0 C61.9883,0.0469 65.3867,1.0078 68.1055,2.8828 C70.8008,4.7344 72.7461,6.8438 73.9414,9.2109 C74.809,10.4531 75.406,12.082 75.734,14.0977 C76.039,16.1133 76.191,20.0977 76.191,26.0508 C76.191,31.9102 76.039,35.8711 75.734,37.9336 C75.406,39.9961 74.809,41.6484 73.9414,42.8906 C72.7461,45.2578 70.8008,47.3438 68.1055,49.1484 C65.3867,51.0234 61.9883,52.0078 57.9102,52.1016 C53.8789,52.0078 50.5156,51.0234 47.8203,49.1484 C45.0781,47.3438 43.0859,45.2578 41.8438,42.8906 C41.4688,42.1172 41.1289,41.3789 40.8242,40.6758 C40.543,39.9492 40.3086,39.0352 40.1211,37.9336 C39.7695,35.8711 39.5938,31.9102 39.5938,26.0508 Z M47.3984,26.0508 C47.3984,31.0898 47.5859,34.5 47.9609,36.2812 C48.2891,38.0625 48.957,39.5039 49.9648,40.6055 C50.7852,41.6602 51.8633,42.5156 53.1992,43.1719 C54.5117,43.9453 56.082,44.332 57.9102,44.332 C59.7617,44.332 61.3672,43.9453 62.7266,43.1719 C64.0156,42.5156 65.0469,41.6602 65.8203,40.6055 C66.8281,39.5039 67.5195,38.0625 67.8945,36.2812 C68.2461,34.5 68.4219,31.0898 68.4219,26.0508 C68.4219,21.0117 68.2461,17.5781 67.8945,15.75 C67.5195,14.0156 66.8281,12.5977 65.8203,11.4961 C65.0469,10.4414 64.0156,9.5625 62.7266,8.8594 C61.3672,8.1797 59.7617,7.8164 57.9102,7.7695 C56.082,7.8164 54.5117,8.1797 53.1992,8.8594 C51.8633,9.5625 50.7852,10.4414 49.9648,11.4961 C48.957,12.5977 48.2891,14.0156 47.9609,15.75 C47.5859,17.5781 47.3984,21.0117 47.3984,26.0508 Z"></path>
+                                    <path d="M104.008,33.3281 L96.59,10.9336 L96.449,10.9336 L89.031,33.3281 L104.008,33.3281 Z M106.223,40.2188 L86.781,40.2188 L82.844,51.6797 L74.617,51.6797 L93.25,0.4219 L99.754,0.4219 L118.387,51.6797 L110.195,51.6797 L106.223,40.2188 Z"></path>
+                                    <path d="M124.82,40.8867 C125.547,41.8477 126.484,42.6328 127.633,43.2422 C128.781,43.9688 130.129,44.332 131.676,44.332 C133.738,44.3789 135.707,43.6641 137.582,42.1875 C138.496,41.4609 139.211,40.5 139.727,39.3047 C140.266,38.1562 140.535,36.7148 140.535,34.9805 L140.535,0.4219 L148.305,0.4219 L148.305,35.7539 C148.211,40.9102 146.523,44.8945 143.242,47.707 C139.984,50.5898 136.199,52.0547 131.887,52.1016 C125.934,51.9609 121.492,49.7344 118.562,45.4219 L124.82,40.8867 Z"></path>
+                                </g>
+                            </svg>
+                        </a>
+                        <h2 id="result-count"></h2>\
+                        <p class="label label--tertiary">On the Directory of Open Access Journals</p>
+                        <p></p>
+                    </header>
+                    <nav class="search-options">
+                        <form class="colsearch-options__left" id="rpp"></form>
+                    </nav>
+                    <nav class="pagination" id="top-pager"></nav>
+                    <ol class="search-results" id="results"></ol>
+                    <nav class="pagination" id="bottom-pager"></nav>
+                `
+
                 edge.context.html(frag);
             };
         },
@@ -2112,6 +2150,14 @@ $.extend(true, doaj, {
         },
         PublicSearchResultRenderer : function(params) {
 
+            this.widget = params.widget;
+            if (params.doaj_url) {
+                this.doaj_url = params.doaj_url;
+            }
+            else {
+                this.doaj_url = "https://doaj.org"
+            }
+
             this.actions = edges.getParam(params.actions, []);
 
             this.namespace = "doaj-public-search";
@@ -2177,12 +2223,17 @@ $.extend(true, doaj, {
             };
 
             this._renderPublicJournal = function(resultobj) {
+
                 var seal = "";
                 if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="/apply/seal" class="tag tag--featured" target="_blank">\
-                            <span data-feather="check-circle" aria-hidden="true"></span>\
-                            DOAJ Seal\
-                          </a>';
+                    seal = '<a href="' + this.doaj_url + '/apply/seal" class="tag tag--featured" target="_blank">'
+                    if (this.widget){
+                        seal += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/check-circle.svg" alt="check-circle icon">'
+                    }
+                    else {
+                        seal += '<i data-feather="check-circle" aria-hidden="true"></i>'
+                    }
+                    seal += ' DOAJ Seal</a>';
                 }
                 var issn = resultobj.bibjson.pissn;
                 if (!issn) {
@@ -2254,7 +2305,7 @@ $.extend(true, doaj, {
                         var license_url = lic.url || terms_url;
                         licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + edges.escapeHtml(lic.type) + '</a>';
                         if (i != (resultobj.bibjson.license.length-1)) {
-                          licenses += ', ';
+                            licenses += ', ';
                         }
                     }
                 }
@@ -2287,11 +2338,18 @@ $.extend(true, doaj, {
                         <header>\
                           ' + seal + '\
                           <h3 class="search-results__heading">\
-                            <a href="/toc/' + issn + '">\
+                            <a href="' + this.doaj_url + '/toc/' + issn + '" target="_blank">\
                               ' + edges.escapeHtml(resultobj.bibjson.title) + '\
-                              <sup>\
-                                <span data-feather="link" aria-hidden="true"></span>\
-                              </sup>\
+                              <sup>'
+                if (this.widget){
+                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/link.svg" alt="link icon">'
+                }
+                else {
+                    frag += '<i data-feather="link" aria-hidden="true"></i>'
+                }
+
+
+                frag +='</sup>\
                             </a>\
                             ' + subtitle + '\
                           </h3>\
@@ -2315,8 +2373,18 @@ $.extend(true, doaj, {
                           </li>\
                           ' + articles + '\
                           <li>\
-                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website <span data-feather="external-link" aria-hidden="true"></span></a>\
-                          </li>\
+                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website '
+
+                if (this.widget){
+                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
+                }
+                else {
+                    frag += '<i data-feather="external-link" aria-hidden="true"></i>'
+                }
+
+
+
+                frag += '</a></li>\
                           <li>\
                             ' + apcs + '\
                           </li>\
@@ -2388,9 +2456,14 @@ $.extend(true, doaj, {
                     var abstractText = edges.css_classes(this.namespace, "abstracttext", this);
 
                     abstract = '<h4 class="' + abstractAction + '" type="button" aria-expanded="false" rel="' + resultobj.id + '">\
-                            Abstract\
-                            <span data-feather="plus" aria-hidden="true"></span>\
-                          </h4>\
+                            Abstract'
+                    if (this.widget){
+                        abstract += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/plus.svg" alt="external-link icon">'
+                    }
+                    else {
+                        abstract += '<i data-feather="plus" aria-hidden="true"></i>'
+                    }
+                    abstract += '</h4>\
                           <p rel="' + resultobj.id + '" class="collapse ' + abstractText + '" aria-expanded="false">\
                             ' + edges.escapeHtml(resultobj.bibjson.abstract) + '\
                           </p>';
@@ -2451,11 +2524,11 @@ $.extend(true, doaj, {
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
-                          <p class="label"><a href="/toc/' + issns[0] + '" target="_blank">\
+                          <p class="label"><a href="' + this.doaj_url + '/toc/' + issns[0] + '" target="_blank">\
                             ' + edges.escapeHtml(journal) + ' ' + date + '\
                           </a></p>\
                           <h3 class="search-results__heading">\
-                            <a href="/article/' + resultobj.id + '" class="">\
+                            <a href="' + this.doaj_url + '/article/' + resultobj.id + '" class="" target="_blank">\
                               ' + title + '\
                             </a>\
                           </h3>\
@@ -2469,10 +2542,16 @@ $.extend(true, doaj, {
                       <aside class="col-sm-4 search-results__aside">\
                         <ul>\
                           <li>\
-                            <a href="' + ftl + '" target="_blank" rel="noopener">Read online <span data-feather="external-link" aria-hidden="true"></span></a>\
-                          </li>\
+                            <a href="' + ftl + '" target="_blank" rel="noopener"> Read online '
+                if (this.widget){
+                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
+                }
+                else {
+                    frag += '<i data-feather="external-link" aria-hidden="true"></i>'
+                }
+                frag += '</a></li>\
                           <li>\
-                            <a href="/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
+                            <a href="' + this.doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
                           </li>\
                           <li>\
                             ' + published + '\
@@ -2788,7 +2867,7 @@ $.extend(true, doaj, {
                 var deleteLinkUrl = deleteLinkTemplate.replace("__application_id__", resultobj.id);
                 var deleteClass = edges.css_classes(this.namespace, "delete", this);
                 if (resultobj.es_type === "draft_application" ||
-                        resultobj.admin.application_status === "update_request") {
+                    resultobj.admin.application_status === "update_request") {
                     deleteLink = '<li class="tag">\
                         <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-update-request" class="' + deleteClass + '"\
                             data-title="' + titleText + '">\

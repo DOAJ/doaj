@@ -30,7 +30,7 @@ $.extend(true, doaj, {
             if (resultobj.admin) {
                 if (resultobj.admin.current_application) {
                     var fvurl = doaj.adminJournalsSearchConfig.applicationsUrl + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.current_application + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
-                    result += "<strong>Current Update Request</strong>: <a href='" + fvurl + "'>" + resultobj.admin.current_application + "</a>";
+                    result += "<strong>Current Update Request</strong>: <a href='" + fvurl + "'>" + edges.escapeHtml(resultobj.admin.current_application) + "</a>";
                 }
                 if (resultobj.admin.related_applications && resultobj.admin.related_applications.length > 0) {
                     if (result != "") {

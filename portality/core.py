@@ -9,7 +9,7 @@ from flask_cors import CORS
 from jinja2 import FileSystemLoader
 from lxml import etree
 
-from portality import settings, constants
+from portality import settings, constants, datasets
 from portality.bll import exceptions
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping
@@ -197,6 +197,7 @@ def setup_jinja(app):
     app.jinja_env.globals['getattr'] = getattr
     app.jinja_env.globals['type'] = type
     app.jinja_env.globals['constants'] = constants
+    app.jinja_env.globals['datasets'] = datasets
     _load_data(app)
     app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates',
                                              os.path.dirname(app.config['BASE_FILE_PATH']) + '/cms/fragments'])
@@ -230,8 +231,9 @@ def build_statics(app):
 
     print("Compiling static content")
     build_fragments.build(base_path)
-    print("Compiling SASS")
-    build_sass.build(base_path)
+    print("Compiling main SASS")
+    build_sass.build(build_sass.MAIN_SETTINGS, base_path=base_path)
+
 
 app = create_app()
 es_connection = create_es_connection(app)

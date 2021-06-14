@@ -27,13 +27,14 @@ class Journal2QuestionXwalk(object):
         ("eissn", "Journal EISSN (online version)"),
         ("continues", "Continues"),
         ("continued_by", "Continued By"),
+        ("discontinued_date", "Discontinued Date"),
         ("institution_name", "Society or institution"),
         ("keywords", "Keywords"),
         ("language", "Languages in which the journal accepts manuscripts"),
         ("license_attributes", "License attributes"),
         ("license_display", "Machine-readable CC licensing information embedded or displayed in articles"),
         ("license_display_example_url", "URL to an example page with embedded licensing information"),
-        ("boai", "Does this journal allow unrestricted reuse in compliance with BOAI?"),
+        ("boai", "Does the journal comply to DOAJ's definition of open access?"),
         ("license", "Journal license"),
         ("license_terms_url", "URL for license terms"),
         ("oa_statement_url", "URL for journal's Open Access statement"),
@@ -47,7 +48,7 @@ class Journal2QuestionXwalk(object):
         ("plagiarism_url", "Plagiarism information URL"),
         ("publication_time_weeks", "Average number of weeks between article submission and publication"),
         ("publisher_name", "Publisher"),
-        ("other_charges_url", "Other submission fees information URL"),
+        ("other_charges_url", "Other fees information URL"),
         ("title", "Journal title"),
         ("institution_country", "Country of society or institution"),
         ("apc", "APC"),
@@ -194,7 +195,7 @@ class Journal2QuestionXwalk(object):
         apcs = []
         for apc_charge in forminfo.get("apc_charges", []):
             apcs.append(str(apc_charge.get("apc_max")) + " " + apc_charge.get("apc_currency"))
-        kvs.append((cls.q("apc_charges"), "; ".join(apcs)))
+        kvs.append((cls.q("apc_charges"), ", ".join(apcs)))
 
         kvs.append((cls.q("has_waiver"), yes_no_or_blank(forminfo.get("has_waiver"))))
         kvs.append((cls.q("waiver_url"), forminfo.get("waiver_url")))
@@ -209,7 +210,7 @@ class Journal2QuestionXwalk(object):
             dap.append(forminfo.get("preservation_service_other"))
         if "none" in dap: dap.remove("none")
         kvs.append((cls.q("preservation_service"), ", ".join(dap)))
-        kvs.append((cls.q("preservation_service_library"), "; ".join(forminfo.get("preservation_service_library", []))))
+        kvs.append((cls.q("preservation_service_library"), ", ".join(forminfo.get("preservation_service_library", []))))
         kvs.append((cls.q("preservation_service_url"), forminfo.get("preservation_service_url")))
 
         deposit_policies = other_list("deposit_policy", "deposit_policy_other", "other")
@@ -227,8 +228,9 @@ class Journal2QuestionXwalk(object):
 
         kvs.append((cls.q("continues"), ", ".join(forminfo.get("continues"))))
         kvs.append((cls.q("continued_by"), ", ".join(forminfo.get("continued_by"))))
+        kvs.append((cls.q("discontinued_date"), forminfo.get("discontinued_date")))
 
-        kvs.append((cls.q("subject"), "|".join(forminfo.get("subject"))))
+        kvs.append((cls.q("subject"), ", ".join(forminfo.get("subject"))))
 
         return kvs
 

@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from flask import url_for
 from doajtest.helpers import DoajTestCase
-from portality.lib.dataobj import DataStructureException
+from portality.lib.dataobj import DataStructureException, ScriptTagFoundException
 from portality.api.v2.data_objects.article import IncomingArticleDO, OutgoingArticleDO
 from portality.api.v2 import ArticlesCrudApi, Api401Error, Api400Error, Api404Error
 from portality import models
@@ -38,6 +38,11 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
+        data = ArticleFixtureFactory.make_article_source()
+        data["bibjson"]["title"] = "This is title with <script> tag inside </script> and it should be rejected"
+        with self.assertRaises(ScriptTagFoundException):
+            ia = IncomingArticleDO(data)
+
         # now progressively remove the conditionally required/advanced validation stuff
         #
         # missing identifiers
@@ -56,11 +61,11 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
-        # too many keywords
-        data = ArticleFixtureFactory.make_article_source()
-        data["bibjson"]["keywords"] = ["one", "two", "three", "four", "five", "six", "seven"]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
+        # test unnecessary https://github.com/DOAJ/doajPM/issues/2950
+        # data = ArticleFixtureFactory.make_article_source()
+        # data["bibjson"]["keywords"] = ["one", "two", "three", "four", "five", "six", "seven"]
+        # with self.assertRaises(DataStructureException):
+        #     ia = IncomingArticleDO(data)
 
         # incorrect orcid format
         data = ArticleFixtureFactory.make_article_source()
@@ -520,8 +525,10 @@ class TestCrudArticle(DoajTestCase):
         data = ArticleFixtureFactory.make_article_source()
         data['bibjson']['keywords'] = ['one', 'two', 'three', 'four', 'five', 'six', 'seven']
 
-        with self.assertRaises(Api400Error):
-            ArticlesCrudApi.create(data, account)
+        # limit removed - https://github.com/DOAJ/doajPM/issues/2950 - should now succeed
+        # with self.assertRaises(Api400Error):
+        #     ArticlesCrudApi.create(data, account)
+        ArticlesCrudApi.create(data, account)
 
     def test_13_trim_empty_string_data(self):
 

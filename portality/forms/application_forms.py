@@ -31,7 +31,7 @@ from portality.forms.validate import (
     BigEndDate,
     ReservedUsernames,
     CustomRequired,
-    OwnerExists
+    OwnerExists, NoScriptTag
 )
 
 from portality.datasets import language_options, country_options, currency_options
@@ -146,7 +146,8 @@ class FieldDefinitions:
             "doaj_criteria": "Title in application form, title at ISSN and website must all match"
         },
         "validate": [
-            {"required": {"message": "Enter the journal’s name"}}
+            {"required": {"message": "Enter the journal’s name"}},
+            "no_script_tag"
         ],
         "widgets": [
             "trim_whitespace",
@@ -173,6 +174,9 @@ class FieldDefinitions:
         "help": {
             "placeholder": "Ma revue"
         },
+        "validate": [
+            "no_script_tag"
+        ],
         "widgets": [
             "trim_whitespace",
             {"full_contents" : {"empty_disabled" : "[The journal has no alternative title]"}}
@@ -1202,15 +1206,22 @@ class FieldDefinitions:
             {"field": "preservation_service", "value": "other"}
         ],
         "validate": [
-            {"required_if": {"field": "preservation_service", "values": ["CINES"]}},
-            {"required_if": {"field": "preservation_service", "values": ["CLOCKSS"]}},
-            {"required_if": {"field": "preservation_service", "values": ["LOCKSS"]}},
-            {"required_if": {"field": "preservation_service", "values": ["Internet Archive"]}},
-            {"required_if": {"field": "preservation_service", "values": ["PKP PN"]}},
-            {"required_if": {"field": "preservation_service", "values": ["PMC"]}},
-            {"required_if": {"field": "preservation_service", "values": ["Portico"]}},
-            {"required_if": {"field": "preservation_service", "values": ["national_library"]}},
-            {"required_if": {"field": "preservation_service", "values": ["other"]}},
+            {
+                "required_if": {
+                    "field": "preservation_service",
+                    "value": [
+                        "CINES",
+                        "CLOCKSS",
+                        "LOCKSS",
+                        "Internet Archive",
+                        "PKP PN",
+                        "PMC",
+                        "Portico",
+                        "national_library",
+                        "other"
+                    ]
+                }
+            },
             "is_url"
         ],
         "widgets": [
@@ -1295,21 +1306,35 @@ class FieldDefinitions:
         "contexts" : {
             "public" : {
                 "validate": [
-                    {"required_if": {"field": "deposit_policy", "value": "Sherpa/Romeo"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Dulcinea"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Héloïse"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Diadorim"}},
-                    {"required_if": {"field": "deposit_policy", "value": "other"}},
+                    {
+                        "required_if": {
+                            "field": "deposit_policy",
+                            "value": [
+                                "Sherpa/Romeo",
+                                "Dulcinea",
+                                "Héloïse",
+                                "Diadorim",
+                                "other"
+                            ]
+                        }
+                    },
                     "is_url"
                 ]
             },
             "update_request" : {
                 "validate" : [
-                    {"required_if": {"field": "deposit_policy", "value": "Sherpa/Romeo"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Dulcinea"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Héloïse"}},
-                    {"required_if": {"field": "deposit_policy", "value": "Diadorim"}},
-                    {"required_if": {"field": "deposit_policy", "value": "other"}},
+                    {
+                        "required_if": {
+                            "field": "deposit_policy",
+                            "value": [
+                                "Sherpa/Romeo",
+                                "Dulcinea",
+                                "Héloïse",
+                                "Diadorim",
+                                "other"
+                            ]
+                        }
+                    },
                     "is_url"
                 ]
             }
@@ -2442,6 +2467,18 @@ class JournalURLInPublicDOAJBuilder:
     def wtforms(field, settings):
         return JournalURLInPublicDOAJ(message=settings.get("message"))
 
+class NoScriptTagBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-no-script-tag"] = ""
+        if "message" in settings:
+            html_attrs["data-parsley-noScriptTag-message"] = "<p><small>" + settings["message"] + "</small></p>"
+        else:
+            html_attrs["data-parsley-no-script-tag-message"] = "<p><small>" + "No script tags allowed" + "</p></small>"
+
+    @staticmethod
+    def wtforms(field, settings):
+        return NoScriptTag(settings.get("value"))
 
 class OptionalIfBuilder:
     @staticmethod
@@ -2604,7 +2641,8 @@ PYTHON_FUNCTIONS = {
             "group_member" : GroupMemberBuilder.render,
             "not_if" : NotIfBuildier.render,
             "required_value" : RequiredValueBuilder.render,
-            "bigenddate": BigEndDateBuilder.render
+            "bigenddate": BigEndDateBuilder.render,
+            "no_script_tag": NoScriptTagBuilder.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -2625,7 +2663,8 @@ PYTHON_FUNCTIONS = {
             "required_value" : RequiredValueBuilder.wtforms,
             "bigenddate": BigEndDateBuilder.wtforms,
             "reserved_usernames" : ReservedUsernamesBuilder.wtforms,
-            "owner_exists" : OwnerExistsBuilder.wtforms
+            "owner_exists" : OwnerExistsBuilder.wtforms,
+            "no_script_tag": NoScriptTagBuilder.wtforms
         }
     }
 }
@@ -2882,6 +2921,28 @@ JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYT
 
 
 if __name__ == "__main__":
+    """
+    Running this file from the command line enables you to output documentation for a given form context.
+    
+    See `docs/forms.sh` for where this is used
+    
+    To create the documentation you can call this file with 3 arguments:
+    
+    -t - the object type to output.  Either 'journal' or 'application'
+    -c - the form context.  Will be one of the contexts defined elsewhere in this file, which may be specific to the 
+            object type.  For example, 'admin' or 'editor'
+    -o - the path to the file where to output the result
+    
+    The output is a CSV which lists the following information:
+    
+    * Form Position - the position in the form.  Felds are listed in order
+    * Field Name - the form field name
+    * Label - the form field label
+    * Input Type - what kind of input (e.g. radio, text)
+    * Options - the express options allowed, or the name of the function which generates the options
+    * Disabled? - is the field disabled in this context
+    * Fieldset ID - the ID (from this file) of the fieldset that this field is part of
+    """
     import argparse
 
     parser = argparse.ArgumentParser()

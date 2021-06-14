@@ -1,21 +1,17 @@
 {
 	"new" : [
 		{
-			"tar" : "history.20210204.app1.tar.gz",
+			"tar" : "history.20210519.app1.tar.gz",
 			"source" : "web-2019"
 		},
 		{
-			"tar" : "history.20210204.bg1.tar.gz",
+			"tar" : "history.20210519.bg1.tar.gz",
 			"source" : "background-2019"
 		}
 	],
 	"existing" : [
-		"article_2019_background-2019.tar.gz",
-		"article_2019_web-2019.tar.gz",
-		"article_2020_background-2019.tar.gz",
-		"article_2020_web-2019.tar.gz",
-		"journal_2019_background-2019.tar.gz",
-		"journal_2019_web-2019.tar.gz",
-		"journal_2020_background-2019.tar.gz"
+		"article_2021_background-2019.tar.gz",
+		"article_2021_web-2019.tar.gz",
+		"journal_2021_background-2019.tar.gz"
 	]
 }

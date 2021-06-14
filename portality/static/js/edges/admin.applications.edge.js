@@ -8,8 +8,8 @@ $.extend(true, doaj, {
             if (resultobj.admin) {
                 var journals_url = doaj.adminApplicationsSearchConfig.journalsUrl;
                 if (resultobj.admin.current_journal) {
-                    var fvurl = journals_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.current_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
-                    result += "<strong>Update Request For</strong>: <a href='" + fvurl + "'>" + resultobj.admin.current_journal + '</a>';
+                    var fvurl = journals_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + edges.escapeHtml(resultobj.admin.current_journal) + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
+                    result += "<strong>Update Request For</strong>: <a href='" + fvurl + "'>" + edges.escapeHtml(resultobj.admin.current_journal) + '</a>';
                 }
                 if (resultobj.admin.related_journal) {
                      var fvurl = journals_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.related_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
@@ -20,7 +20,7 @@ $.extend(true, doaj, {
                     if (resultobj.admin.application_status === "rejected") {
                         label = "Originally For Journal";
                     }
-                    result += "<strong>" + label + "</strong>: <a href='" + fvurl + "'>" + resultobj.admin.related_journal + '</a>';
+                    result += "<strong>" + label + "</strong>: <a href='" + fvurl + "'>" + edges.escapeHtml(resultobj.admin.related_journal) + '</a>';
                 }
             }
             return result;

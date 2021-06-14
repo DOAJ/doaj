@@ -8,6 +8,7 @@ from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Er
 from portality.api.v2.crud.applications import ApplicationsCrudApi
 from portality.api.v2.data_objects.application import IncomingApplication, OutgoingApplication
 from portality.formcontext import FormContextException, formcontext
+from portality.lib.dataobj import ScriptTagFoundException
 from portality.lib.seamless import SeamlessException
 from portality.forms.application_processors import ApplicationProcessor
 
@@ -38,6 +39,12 @@ class TestCrudApplication(DoajTestCase):
         # make one from an incoming application model fixture
         data = ApplicationFixtureFactory.incoming_application()
         ia = IncomingApplication(data)
+
+        # make application with <script> tag
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["title"] = "This is title with <script> tag inside </script> and it should be rejected"
+        with self.assertRaises(ScriptTagFoundException):
+            ia = IncomingApplication(data)
 
         # make another one that's broken
         data = ApplicationFixtureFactory.incoming_application()

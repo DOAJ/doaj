@@ -1,5 +1,7 @@
 # DOAJ CMS
 
+~~CMS:Documentation->CMS:DataStore~~
+
 This directory in the source contains all the content, data and other assets that are managed separately from the
 main software.  This is:
 
@@ -27,6 +29,8 @@ If you think your static pages or CSS is out of date, just restart the app, and 
 
 ### On demand
 
+~~->CMS:Script~~
+
 You can compile the Markdown and SASS directly using scripts provided:
 
 To compile only the static content:
@@ -46,6 +50,18 @@ To compile only the SASS:
 ```
 python portality/cms/build_sass.py
 ```
+
+### Compiling the CSS for the widgets
+
+The CSS for the widgets is compiled separately from the main CSS and committed to the codebase. This is so that we don't
+ break the widgets accidentally via a change to the main CSS. To run this process add the `--widgets` or `-w` argument
+(for both the Fixed Query Widget and the Simple Search Widget):
+
+```
+python portality/cms/build_sass.py -w
+```
+
+Keep in mind the CSS isn't the only requirement for the fixed query widget - collating the JavaScript requires you to run the shell script `portality/static/widget/fixed_query_build.sh`
 
 ## Managing Assets
 
