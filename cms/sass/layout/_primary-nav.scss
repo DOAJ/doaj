@@ -12,6 +12,11 @@
   font-weight: 600;
   color: $white;
 
+  .label {
+    margin: 0 $spacing-02;
+    color: $white;
+  }
+
   // TODO: Needs to be renamed from seecondary-nav since it’s been moved outside of there
   // Also appears in JS
   .secondary-nav__menu-toggle {
@@ -20,19 +25,10 @@
 
   @media (max-width: 768px) {
     .secondary-nav__menu-toggle {
+      margin-left: $spacing-03;
       display: flex;
-      padding: $spacing-03 0;
       color: $white;
       stroke: $white;
-
-      h2 {
-        color: $white;
-      }
-    }
-
-    .secondary-nav__menu-toggle--active {
-      max-height: 100%;
-      height: auto;
     }
   }
 
@@ -54,7 +50,16 @@
     color: currentColor;
   }
 
+  .primary-nav__item_desktop, .primary-nav__search {
+    margin-left: $spacing-04;
+  }
+
   @media (max-width: 768px) {
+    .feather {
+      margin: 0;
+      height: 20px;
+    }
+
     .nav-bar {
       float: right;
     }
@@ -64,15 +69,5 @@
     .primary-nav__item_desktop {
       display: none !important;
     }
-  }
-}
-
-.primary-nav__search {
-  padding: 0 $spacing-03;
-  cursor: pointer;
-
-  .feather-search {
-    top: $spacing-01;
-    height: 20px;
   }
 }
