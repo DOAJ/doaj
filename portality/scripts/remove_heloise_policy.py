@@ -12,9 +12,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.out:
-        print("Please specify an output file path with the -o option")
-        parser.print_help()
-        exit()
+        args.out = "out.csv"
+        # print("Please specify an output file path with the -o option")
+        # parser.print_help()
+        # exit()
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -26,9 +27,12 @@ if __name__ == "__main__":
             j = Journal.pull(i.rstrip('\n'))
             print(j.bibjson().deposit_policy)
             if j:
+                bib = j.bibjson()
                 deposit_policy = j.bibjson().deposit_policy
                 if 'Héloïse' in deposit_policy:
                     deposit_policy.remove('Héloïse')
+                if len(deposit_policy) == 0:
+                    bib.has_deposit_policy = False
                     j.save(blocking=True)
                     writer.writerow("Journal {} modified and saved.".format(j.id))
         f.close()
