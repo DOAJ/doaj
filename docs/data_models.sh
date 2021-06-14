@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 # Before running this file you must auto-generate the form documentation using `forms.sh`
 
+# ~~DataModels:Script->Forms:Script~~
+# ~~->FieldDescriptions:Documentation~~
+# ~~->Seamless:Technology~~
+# ~~->DataObj:Technology~~
+# ~~->Journal:Model~~
+# ~~->Application:Model~~
+# ~~->IncomingArticle:Model~~
+# ~~->IncomingApplication:Model~~
+# ~~->OutgoingJournal:Model~~
+
 
 # Set up the variables we need for the script
 DOAJ_DOCS="docs/generated"

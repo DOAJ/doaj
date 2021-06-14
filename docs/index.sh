@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# ~~GeneratedDocsIndex:Script~~
+
 # Generate the documentation index file
 
 DOAJ_DOCS="docs/generated"

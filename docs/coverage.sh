@@ -4,6 +4,8 @@
 # Execute the test coverage analysis
 #
 # You will need to activate your virtualenv and have coverage installed: pip install coverage
+#
+# ~~TestCoverage:Script->UnitTests:Test~~
 ###############################################
 
 # Set up the variables we need for the script

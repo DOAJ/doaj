@@ -8,6 +8,8 @@
 # git clone git@github.com:CottageLabs/FeatureMap.git
 # cd FeatureMap
 # pip install -r requirements.txt
+#
+# ~~FeatureMap:Script->FeatureMap:Technology~~
 
 # Set up the variables we need for the script
 DOAJ_DOCS="docs/generated"
