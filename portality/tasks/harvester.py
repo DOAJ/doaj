@@ -20,7 +20,12 @@ class HarvesterBackgroundTask(BackgroundTask):
         """
         accs = list(app.config.get("HARVESTER_API_KEYS", {}).keys())
         for account_id in accs:
-            workflow.HarvesterWorkflow.process_account(account_id, self.background_job)
+            logger = workflow.HarvesterWorkflow.create_logger()
+            workflow.HarvesterWorkflow.process_account(account_id)
+            msgs = logger.readlines()
+            for msg in msgs:
+                self.background_job.add_audit_msg(msg)
+            workflow.HarvesterWorkflow.remove_logger()
 
         report = Report.write_report()
         app.logger.info(report)

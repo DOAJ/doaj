@@ -6,18 +6,39 @@ from portality.models import Journal, Account
 from portality.models.harvester import HarvesterProgressReport as Report
 from portality.models.harvester import HarvestState
 from portality.lib.dataobj import DataObjException
+from portality.settings import BASE_FILE_PATH
 
 
 class HarvesterWorkflow(object):
-
-    job = None
+    logger = None
 
     @classmethod
-    def process_account(cls, account_id, job):
-        cls.job = job
-        cls.job.add_audit_message("Harvesting for Account:{x}".format(x=account_id))
+    def create_logger(cls):
+        try:
+            cls.logger = open(BASE_FILE_PATH + "/Harvester_logger.log", "x")
+        except:
+            cls.logger = open(BASE_FILE_PATH + "/Harvester_logger.log", "wr")
+            cls.logger.truncate(0)
+        return cls.logger
+
+    @classmethod
+    def remove_logger(cls):
+        import os
+        cls.logger.close()
+        os.remove(BASE_FILE_PATH + "Harvester_logger.log")
+
+    @classmethod
+    def _write_to_logger(cls, msg):
+        try:
+            cls._write_to_logger(msg)
+        except:
+            app.logger.warn("Logger not provided for HarvesterWorkflow, cls_init method probably not called, message: {}").format(msg)
+
+    @classmethod
+    def process_account(cls, account_id):
+        cls._write_to_logger("Harvesting for Account:{x}".format(x=account_id))
         issns = cls.get_journals_issns(account_id)
-        cls.job.add_audit_message("Account:{x} has {y} issns to harvest for: {z}".format(x=account_id, y=len(issns), z=",".join(issns)))
+        cls._write_to_logger("Account:{x} has {y} issns to harvest for: {z}".format(x=account_id, y=len(issns), z=",".join(issns)))
 
         # now update the issn states
         HarvesterWorkflow.process_issn_states(account_id, issns)
@@ -56,7 +77,7 @@ class HarvesterWorkflow(object):
 
     @classmethod
     def process_issn(cls, account_id, issn):
-        cls.job.add_audit_message("Processing ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
+        cls._write_to_logger("Processing ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
 
         state = HarvestState.find_by_issn(account_id, issn)
         # if this issn is suspended, don't process it
@@ -75,8 +96,8 @@ class HarvesterWorkflow(object):
                     lh = app.config.get("INITIAL_HARVEST_DATE")
                 Report.set_start_by_issn(p_name, issn, lh)
 
-                for article, lhd in p.iterate(issn, lh, cls.job):
-                    cls.job.add_audit_message(article.data, lhd)
+                for article, lhd in p.iterate(issn, lh, logger=cls.logger):
+                    cls._write_to_logger(article.data, lhd)
                     saved = HarvesterWorkflow.process_article(account_id, article)
                     Report.increment_articles_processed(p_name)
 
@@ -85,7 +106,7 @@ class HarvesterWorkflow(object):
                         state.set_harvested(p_name, lhd)
                         Report.increment_articles_saved_successfully(p_name)
         except Exception:
-            cls.job.add_audit_message("Exception Processing ISSN:{x} for Account:{y} ".format(y=account_id, x=issn))
+            cls._write_to_logger("Exception Processing ISSN:{x} for Account:{y} ".format(y=account_id, x=issn))
             raise
         finally:
             # once we've finished working with this issn, we should update the state
@@ -93,16 +114,16 @@ class HarvesterWorkflow(object):
             # to record where we got to, without having to do a save after each article
             # create
             state.save(blocking=True)
-            cls.job.add_audit_message("Saved state record for ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
+            cls._write_to_logger("Saved state record for ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
 
     @classmethod
     def process_article(cls, account_id, article):
-        cls.job.add_audit_message("Processing Article for Account:{y}".format(y=account_id))
+        cls._write_to_logger("Processing Article for Account:{y}".format(y=account_id))
 
         try:
             article.is_api_valid()
         except DataObjException as e:
-            cls.job.add_audit_message("Article for Account:{y} was not API valid ... skipping".format(y=account_id))
+            cls._write_to_logger("Article for Account:{y} was not API valid ... skipping".format(y=account_id))
             Report.record_error((article.get_identifier("doi") or "< DOI MISSING >") + " - " + str(e))
             return False
 
@@ -115,10 +136,10 @@ class HarvesterWorkflow(object):
         try:
             id = ArticlesCrudApi.create(article.data, acc).id
         except Exception as e:
-            cls.job.add_audit_message("Article caused DOAJException: {m} ... skipping".format(m=e))
+            cls._write_to_logger("Article caused DOAJException: {m} ... skipping".format(m=e))
             Report.record_error((article.get_identifier("doi") or "< DOI MISSING >"))
             return False
-        cls.job.add_audit_message("Created article in DOAJ for Account:{x} with ID: {y}".format(x=account_id, y=id))
+        cls._write_to_logger("Created article in DOAJ for Account:{x} with ID: {y}".format(x=account_id, y=id))
         return True
 
     @classmethod

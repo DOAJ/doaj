@@ -1,6 +1,8 @@
 from portality.core import app
 from portality.lib import httputil
 import urllib.request, urllib.parse, urllib.error, string
+
+from portality.settings import BASE_FILE_PATH
 from portality.tasks.harvester_helpers.epmc import models
 from portality.tasks.harvester_helpers.epmc.queries import QueryBuilder
 from datetime import datetime
@@ -58,7 +60,16 @@ class EPMCFullTextException(Exception):
 
 
 class EuropePMC(object):
-    job = None
+
+    logger = None
+
+    @classmethod
+    def _write_to_logger(cls, msg):
+        try:
+            cls.logger.write(msg)
+        except:
+            app.logger.warn("Logger not provided for Harvester Background task, message: {}").format(msg)
+
     @classmethod
     def get_by_pmcid(cls, pmcid, cursor=""):
         return cls.field_search("PMCID", pmcid, cursor=cursor)
@@ -93,7 +104,7 @@ class EuropePMC(object):
     def field_search_iterator(cls, field, value, fuzzy=False, page_size=25, throttle=None):
         qb = QueryBuilder()
         qb.add_string_field(field, value, fuzzy)
-        return cls.iterate(qb.to_url_query_param(), cls.job, page_size=page_size, throttle=throttle)
+        return cls.iterate(qb.to_url_query_param(), page_size=page_size, throttle=throttle)
 
     @classmethod
     def complex_search(cls, query_builder, cursor="", page_size=25):
@@ -103,23 +114,23 @@ class EuropePMC(object):
         return cls.query(query_builder.to_url_query_param(), cursor=cursor, page_size=page_size)
 
     @classmethod
-    def complex_search_iterator(cls, query_builder, job, page_size=1000, throttle=None):
-        return cls.iterate(query_builder.to_url_query_param(), job, page_size=page_size, throttle=throttle)
+    def complex_search_iterator(cls, query_builder, page_size=1000, throttle=None):
+        return cls.iterate(query_builder.to_url_query_param(), page_size=page_size, throttle=throttle)
 
     @classmethod
-    def iterate(cls, query_string, job, page_size=1000, throttle=None):
-        cls.job = job
+    def iterate(cls, query_string, page_size=1000, throttle=None, logger=None):
+        cls.logger = logger
         cursor = ""
         last = None
         while True:
             if last is not None and throttle is not None:
                 diff = (datetime.utcnow() - last).total_seconds()
-                cls.job.add_audit_message("Last request at {x}, {y}s ago; throttle {z}s".format(x=last, y=diff, z=throttle))
+                cls._write_to_logger("Last request at {x}, {y}s ago; throttle {z}s".format(x=last, y=diff, z=throttle))
                 if diff < throttle:
                     waitfor = throttle - diff
-                    cls.job.add_audit_message("Throttling EPMC requests for {x}s".format(x=waitfor))
+                    cls._write_to_logger("Throttling EPMC requests for {x}s".format(x=waitfor))
                     time.sleep(waitfor)
-            results, cursor = cls.query(query_string, job, cursor=cursor, page_size=page_size)
+            results, cursor = cls.query(query_string, cursor=cursor, page_size=page_size)
             last = datetime.utcnow()
             if len(results) == 0:
                 break
@@ -144,13 +155,12 @@ class EuropePMC(object):
         return url
 
     @classmethod
-    def query(cls, query_string, job, cursor="", page_size=25):
-        cls.job = job
+    def query(cls, query_string, cursor="", page_size=25):
         """
         :return: (results, next_cursor)
         """
         url = cls.url_from_query(query_string, cursor, page_size)
-        cls.job.add_audit_message("Requesting EPMC metadata from " + url)
+        cls._write_to_logger("Requesting EPMC metadata from " + url)
 
         resp = httputil.get(url)
         if resp is None:
@@ -171,7 +181,7 @@ class EuropePMC(object):
     @classmethod
     def fulltext(cls, pmcid):
         url = app.config.get("EPMC_REST_API") + pmcid + "/fullTextXML"
-        cls.job.add_audit_message("Searching for Fulltext at " + url)
+        cls._write_to_logger("Searching for Fulltext at " + url)
         resp = httputil.get(url)
         if resp is None:
             raise EuropePMCException(message="could not get a response for fulltext from EPMC")
