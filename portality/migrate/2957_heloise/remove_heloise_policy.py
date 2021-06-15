@@ -33,6 +33,6 @@ if __name__ == "__main__":
                     deposit_policy.remove('Héloïse')
                 if len(deposit_policy) == 0:
                     bib.has_deposit_policy = False
-                    j.save(blocking=True)
-                    writer.writerow("Journal {} modified and saved.".format(j.id))
+                    j.save()
+                    writer.writerow(["Journal {} modified and saved.".format(j.id)])
         f.close()
