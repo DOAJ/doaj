@@ -517,7 +517,7 @@ class NoScriptTag(object):
         self.message = message
 
     def __call__(self, form, field):
-        if "<script>" in field.data:
+        if field.data is not None and "<script>" in field.data:
             raise validators.ValidationError(self.message)
 
 
