@@ -46,18 +46,18 @@ if __name__ == "__main__":
             results = find_nested("<script>", article.__dict__, [])
 
             for key, value in results:
-                writer.writerow([article.id, article.bibjson().title, key, value])
+                writer.writerow(["article", article.id, article.bibjson().title, key, value])
 
         for j in esprit.tasks.scroll(conn, ipt_prefix(models.Application.__type__), q=ALL, page_size=100, keepalive='5m'):
             app = models.Application(_source=j)
             results = find_nested("<script>", app.__dict__, [])
 
             for key, value in results:
-                writer.writerow([app.id, app.bibjson().title, key, value])
+                writer.writerow(["application", app.id, app.bibjson().title, key, value])
 
         for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=ALL, page_size=100, keepalive='5m'):
             j = models.Journal(_source=j)
             results = find_nested("<script>", j.__dict__, [])
 
             for key, value in results:
-                writer.writerow([j.id, j.bibjson().title, key, value])
+                writer.writerow(["journal", j.id, j.bibjson().title, key, value])
