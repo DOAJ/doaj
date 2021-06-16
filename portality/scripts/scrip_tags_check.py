@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(["ID", "Article Title", "field", "value"])
+        writer.writerow(["es_type", "ID", "Title", "field", "value"])
 
         for j in esprit.tasks.scroll(conn, ipt_prefix(models.Article.__type__), q=ALL, page_size=100, keepalive='5m'):
             article = models.Article(_source=j)
