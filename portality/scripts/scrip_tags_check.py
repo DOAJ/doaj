@@ -5,16 +5,7 @@ import esprit
 import re
 import csv
 
-ALL_ARTICLES = {
-    "query": {
-        "match_all": {}
-    },
-    "sort": [{
-        "in_doaj": "desc"
-    }]
-}
-
-ALL_APPLICATIONS = {
+ALL = {
     "query": {
         "match_all": {}
     }
@@ -50,16 +41,24 @@ if __name__ == "__main__":
         writer = csv.writer(f)
         writer.writerow(["ID", "Article Title", "field", "value"])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Article.__type__), q=ALL_ARTICLES, page_size=100, keepalive='5m'):
+        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Article.__type__), q=ALL, page_size=100, keepalive='5m'):
             article = models.Article(_source=j)
             results = find_nested("<script>", article.__dict__, [])
 
             for key, value in results:
                 writer.writerow([article.id, article.bibjson().title, key, value])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Application.__type__), q=ALL_APPLICATIONS, page_size=100, keepalive='5m'):
+        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Application.__type__), q=ALL, page_size=100, keepalive='5m'):
             app = models.Application(_source=j)
             results = find_nested("<script>", app.__dict__, [])
 
             for key, value in results:
                 writer.writerow([app.id, app.bibjson().title, key, value])
+
+        #ALL_APPLICATION IS FINE
+        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=ALL, page_size=100, keepalive='5m'):
+            j = models.Journal(_source=j)
+            results = find_nested("<script>", j.__dict__, [])
+
+            for key, value in results:
+                writer.writerow([j.id, j.bibjson().title, key, value])
