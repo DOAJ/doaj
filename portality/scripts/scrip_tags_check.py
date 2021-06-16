@@ -55,7 +55,6 @@ if __name__ == "__main__":
             for key, value in results:
                 writer.writerow([app.id, app.bibjson().title, key, value])
 
-        #ALL_APPLICATION IS FINE
         for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=ALL, page_size=100, keepalive='5m'):
             j = models.Journal(_source=j)
             results = find_nested("<script>", j.__dict__, [])
