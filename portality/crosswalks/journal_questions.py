@@ -246,6 +246,10 @@ class Journal2QuestionXwalk(object):
             """ Some of the work of undoing yes_or_blank() """
             return 'y' if x == 'Yes' else ''
 
+        def _y_n_or_blank(x):
+            """ Undoing yes_no_or_blank() to 'y' or 'n' ONLY """
+            return 'y' if x == 'Yes' else 'n' if x != '' else None
+
         def _unfurl_apc(x):
             """ Allow an APC update by splitting the APC string from the spreadsheet """
             apcs = []
@@ -259,7 +263,8 @@ class Journal2QuestionXwalk(object):
             'license': lambda x: [lic.strip() for lic in x.split(',')],
             'publication_time_weeks': lambda x: int(x),
             'apc': _y_or_blank,
-            'apc_charges': _unfurl_apc
+            'apc_charges': _unfurl_apc,
+            'has_waiver': _y_n_or_blank
             # Country names to codes for institution, publisher
         }
 
