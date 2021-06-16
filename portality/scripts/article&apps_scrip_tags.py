@@ -14,6 +14,12 @@ ALL_ARTICLES = {
     }]
 }
 
+ALL_APPLICATIONS = {
+    "query": {
+        "match_all": {}
+    }
+}
+
 
 def find_nested(substr, d, result):
     for key, value in d.items():
@@ -46,8 +52,14 @@ if __name__ == "__main__":
 
         for j in esprit.tasks.scroll(conn, ipt_prefix(models.Article.__type__), q=ALL_ARTICLES, page_size=100, keepalive='5m'):
             article = models.Article(_source=j)
-            print("Analyzing article: " + article.id)
             results = find_nested("<script>", article.__dict__, [])
 
             for key, value in results:
                 writer.writerow([article.id, article.bibjson().title, key, value])
+
+        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Application.__type__), q=ALL_APPLICATIONS, page_size=100, keepalive='5m'):
+            app = models.Application(_source=j)
+            results = find_nested("<script>", app.__dict__, [])
+
+            for key, value in results:
+                writer.writerow([app.id, app.bibjson().title, key, value])
