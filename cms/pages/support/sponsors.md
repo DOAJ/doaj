@@ -1,15 +1,14 @@
 ---
 layout: sidenav
-preface: /data/sponsors.html
 title: Contributors (Publishers and Aggregators)
 section: Support
 toc: true
 sticky_sidenav: true
-meta_description: enter the meta description here
+meta_description: 
 
 ---
 
-Doing the intro in the sponsors.md markdown file
+<!-- insert introductory text here -->
 
 <div>{% include '/data/sponsors.html' %}</div>
 
