@@ -1,5 +1,7 @@
 # Authorisation and Authentication
 
+[comment] <>: (~~AuthNZ:Documentation~~)
+
 ## Creating a new user
 
 To create a new user for the DOAJ use the createuser.py script in the first instance:
@@ -8,17 +10,25 @@ To create a new user for the DOAJ use the createuser.py script in the first inst
 
 This will create a new user with the "admin" role.
 
+[comment] <>: (~~->CreateUser:Script~~)
+
 If you want to update the user account at any point via the command line, use the same command again.  Any user that already exists and is identified by the argument to the -u option will be modified/overwritten
 
 To edit the user via the web interface, login to the DOAJ application and go to
 
     /account/<username>
 
+[comment] <>: (~~->User:Endpoint~~)
+
 Once you have created the initial administrator, new users can be created when logged in as that administrator via:
 
     /account/register
 
+[comment] <>: (~~->Register:Endpoint~~)
+
 ## Role-based authorisation
+
+[comment] <>: (~~->UserRoles:Feature~~)
 
 The DOAJ user area uses role-based authorisation.
 
@@ -42,6 +52,8 @@ At a later stage, and when it becomes necessary, we will implement mappings of t
 
 
 ## Authentication
+
+[comment] <>: (~~->Flask:Technology~~)
 
 When developing authenticated areas of the DOAJ site, there are two things you should do.
 

@@ -1,5 +1,9 @@
 ## DOAJ and AWS
 
+[comment] <>: (~~AWS:Documentation->S3:Technology~~)
+[comment] <>: (~~->SecretsManager:Technology~~)
+[comment] <>: (~~->Lambda:Technology~~)
+
 terms:
 * AWS is Amazon Web Services - we are billed monthly depending on our usage.
     + IAM is the account manager for AWS. A user has an account on IAM if they have an API key or access to the AWS management console. This applies to machines as well as people.
@@ -10,7 +14,9 @@ terms:
 
 todo: summary table
 
-### ElasticSearch backups
+### ElasticSearch backups
+
+[comment] <>: (~~->Elasticsearch:Technology~~)
 
 ElasticSearch has a bucket configured to send its index snapshots to, using the [`cloud-aws`](https://github.com/elastic/elasticsearch-cloud-aws) plugin version 2.7.1 installed on each index node. The requests for the snapshots are issued via background jobs on the background server.
 
@@ -106,7 +112,7 @@ The creation syntax is a little different. See the example below.
 
     aws --profile doaj-app-upload secretsmanager create-secret --name doaj/app-credentials --description "app.cfg for live app servers" --secret-binary file://app.cfg
 
-### AWS Lambda
+### AWS Lambda
 
 We use a Lambda function to check our index backup snapshot has occurred correctly every morning. That way it's completely separate from our production infrastructure. It's configured via the online interface to run at 1200h daily. The Lambda function has permissions to access the AWS buckets via an IAM role, and it has its own secrets in Secrets Manager to store email credentials when alerting us if a backup hasn't occurred.
 
