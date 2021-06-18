@@ -310,7 +310,7 @@ def _element(xml, field, namespace):
     if el is not None:
         string = etree.tostring(el).decode("utf-8")
         start = string.index(">") + 1
-        end = string.index('</' + etree.QName(el).localname)
+        end = string.rindex('</')
         text = string[start:end]
         return text if text else None
     else:
