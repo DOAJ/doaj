@@ -132,7 +132,7 @@
                         <div class="col-md-6 blog-img" aria-hidden="true"></div>
                         <a href="{{ n.url }}" target="_blank" rel="noopener" class="col-md-6">
                             TODO: in the future (right now we don't have category) <p class="label">{{ n.category }}</p>
-                            <h3>{{ n.title|safe }}</h3>
+                            <h3>{{ n.title }}</h3>
                             TODO: figure out why "more-links" is inserted in the summary
                               <p>{% autoescape off%}{{ n.summary|truncate(200) }}{% endautoescape %}</p>
 
@@ -145,7 +145,7 @@
                     {% for n in news %}
                     <article class="col-sm-4 col-md-4">
                         <a href="{{ n.url }}" target="_blank" rel="noopener">
-                            <h3>{{ n.title|safe }}</h3>
+                            <h3>{{ n.title }}</h3>
                             <time datetime="{{ n.published }}"><small>{{ n.published_formatted() }}</small></time>
                         </a>
                     </article>
