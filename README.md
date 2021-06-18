@@ -1,6 +1,8 @@
 # The Directory of Open Access Journals (DOAJ)
+<!-- ~~DOAJ:Documentation~~ -->
 
-This repository provides the software which drives the DOAJ website and the DOAJ directory.
+This repository provides the software which drives the DOAJ website and the DOAJ 
+directory.
 
 ## Reporting issues
 
@@ -12,15 +14,27 @@ to accomplish, whether you saw an error code, and the time it occurred.
 If you'd like to contribute and enhancement or bugfix to the DOAJ, you're more than welcome
 to open a pull request!
 
-## Install
+## Documentation
 
-See docs/system/INSTALL.md
+<!-- ~~->Install:Documentation~~ -->
+* [Install](docs/system/INSTALL.md)
 
-## Data Models
+<!-- ~~->AuthNZ:Documentation~~ -->
+* [Authorisation and Authentication](docs/system/AUTHNZ.md)
 
-See docs/system/DATA_MODELS.md
+<!-- ~~->AWS:Documentation~~ -->
+* [AWS Configurations](docs/system/AWS.md)
 
-## Authentication and Authorisation System
+<!-- ~~->S3:Documentation~~ -->
+* [S3 Specific documentation](docs/system/S3.md)
 
-See docs/system/AUTHNZ.md
+<!-- ~~->OpenURL:Documentation~~ -->
+* [OpenURL](docs/system/OPENURL.md)
+
+<!-- ~~->DocSite:Documentation~~ -->
+* [DOAJ Auto-generated docs](https://doaj.github.io/doaj-docs/) - here you will find 
+data models, test coverage reports, form documentation and a map of the software
+  
+
+
 
