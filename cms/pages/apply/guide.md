@@ -184,19 +184,6 @@ Further reading and examples are [available on our blog](https://blog.doaj.org/?
 The time from submission to decision varies greatly and is dependent on the responsiveness of the journal contact and/or applicant. Generally a decision is reached within three months.
 We cannot provide a status update for applications which are less than three months old.
 
----
-
-## Updating your journal record
-
-For journals that have been accepted into DOAJ, it is important that the information we hold about them is up to date. 
-
-You can update the journal information via our API or by logging into your account and going to your Publisher dashboard. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button, next to each journal record, to submit an update request to us.
-
-A journal update request form will open with the current answers pre-filled. Change any answers that need to be updated. If you haven't updated the journal since before November 2020, when we revised the form, we suggest that you review every answer. Note that some questions may not have an answer, as new questions were added in November 2020.
-
-Once you have amended and reviewed the answers, submit the update request to us.
-
-Update requests are reviewed by the DOAJ editorial team for accuracy and we aim to process them within six weeks of submission.
 
 ---
 
@@ -229,6 +216,21 @@ The appeal should contain the following information:
 Appeals are considered by the DOAJ Appeals Committee, consisting of the Editor-in-Chief and members of the editorial team. Committee meetings are held monthly. After your case is discussed a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
+
+---
+
+## Updating your journal record
+
+For journals that have been accepted into DOAJ, it is important that the information we hold about them is up to date. 
+
+You can update the journal information via our API or by logging into your account and going to your Publisher dashboard. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button, next to each journal record, to submit an update request to us.
+
+A journal update request form will open with the current answers pre-filled. Change any answers that need to be updated. If you haven't updated the journal since before November 2020, when we revised the form, we suggest that you review every answer. Note that some questions may not have an answer, as new questions were added in November 2020.
+
+Once you have amended and reviewed the answers, submit the update request to us.
+
+Update requests are reviewed by the DOAJ editorial team for accuracy and we aim to process them within six weeks of submission.
+
 
 ---
 
