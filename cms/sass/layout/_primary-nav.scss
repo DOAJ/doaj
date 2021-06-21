@@ -4,7 +4,7 @@
   position: fixed;
   top: 0;
   width: 100vw;
-  z-index: 10;
+  z-index: 3000;
   height: 75px;
   background-color: $warm-black;
   transition: top 0.3s;
@@ -14,10 +14,10 @@
 
   .label {
     margin: 0 $spacing-02;
-    color: $white;
+    color: currentColor;
   }
 
-  // TODO: Needs to be renamed from seecondary-nav since it’s been moved outside of there
+  // TODO: Needs to be renamed from secondary-nav since it’s been moved outside of there
   // Also appears in JS
   .secondary-nav__menu-toggle {
     display: none;
@@ -55,11 +55,6 @@
   }
 
   @media (max-width: 768px) {
-    .feather {
-      margin: 0;
-      height: 20px;
-    }
-
     .nav-bar {
       float: right;
     }

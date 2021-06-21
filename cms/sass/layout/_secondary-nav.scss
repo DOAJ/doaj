@@ -5,10 +5,6 @@
   text-transform: uppercase;
   font-weight: 600;
   height: 150px;
-
-  .nav-bar {
-    border-bottom: 1px solid $dark-grey;
-  }
 }
 
 .secondary-nav--precedes-highlight {
@@ -28,12 +24,10 @@
   }
 
   .secondary-nav > .container {
-    z-index: 20;
+    z-index: 3000;
     position: fixed;
     width: 100%;
-    background-color: rgba($light-grey, 0.5);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    background-color: $light-grey;
   }
 
   .secondary-nav__menu {
