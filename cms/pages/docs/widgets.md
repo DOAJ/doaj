@@ -4,7 +4,11 @@ title: Widgets
 section: Docs
 toc: true
 sticky_sidenav: true
-featuremap: ~~Widgets:Fragment~~
+featuremap: 
+ - ~~Widgets:Fragment->SimpleSearchWidget:Asset~~
+ - ~~->FixedQueryWidget:Asset~~
+ - ~~->Journal:Model~~
+ - ~~->Article:Model~~
 
 ---
 
