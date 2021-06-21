@@ -72,12 +72,12 @@
   color: $white;
 
   a {
-    color: currentColor;
+    color: $white;
   }
 
   .label, .button:hover, .button:active, .button:focus, .stat {
     color: $light-green;
-    border-color: currentColor;
+    border-color: $light-green;
   }
 }
 

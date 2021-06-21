@@ -23,7 +23,7 @@
     background: $white;
 
     &:hover, &:active, &:focus {
-      color: currentColor;
+      color: $white;
       background: $warm-black;
     }
   }

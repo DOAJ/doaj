@@ -14,7 +14,7 @@
 
   .label {
     margin: 0 $spacing-02;
-    color: currentColor;
+    color: $white;
   }
 
   // TODO: Needs to be renamed from secondary-nav since it’s been moved outside of there
@@ -43,11 +43,11 @@
 
   .dropdown__menu {
     background-color: $warm-black;
-    color: currentColor;
+    color: $white;
   }
 
   a {
-    color: currentColor;
+    color: white;
   }
 
   .primary-nav__item_desktop, .primary-nav__search {
