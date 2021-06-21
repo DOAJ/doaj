@@ -12,6 +12,10 @@
   font-weight: 600;
   color: $white;
 
+  a {
+    color: $white;
+  }
+
   .label {
     margin: 0 $spacing-02;
     color: $white;
@@ -35,7 +39,10 @@
   &--scrolled {
     top: -75px;
 
-    .secondary-nav__menu-toggle {
+    a,
+    .secondary-nav__menu-toggle,
+    .nav-bar__link,
+    .label {
       color: $warm-black;
       stroke: $warm-black;
     }
@@ -44,10 +51,6 @@
   .dropdown__menu {
     background-color: $warm-black;
     color: $white;
-  }
-
-  a {
-    color: white;
   }
 
   .primary-nav__item_desktop, .primary-nav__search {
