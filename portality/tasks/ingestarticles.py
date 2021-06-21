@@ -286,12 +286,13 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         ingest_exception = False
         result = {}
+        ids = []
         try:
             with open(path) as handle:
                 articles = xwalk.crosswalk_file(handle, add_journal_info=False) # don't import the journal info, as we haven't validated ownership of the ISSNs in the article yet
                 for article in articles:
                     article.set_upload_id(file_upload.id)
-                result = articleService.batch_create_articles(articles, account, add_journal_info=True)
+                result, ids = articleService.batch_create_articles(articles, account, add_journal_info=True)
         except IngestException as e:
             job.add_audit_message("IngestException: {msg}. Inner message: {inner}.  Stack: {x}".format(msg=e.message, inner=e.inner_message, x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
@@ -317,6 +318,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             except:
                 job.add_audit_message("Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
                 return
+
+        job.add_audit_message("Articles created/updated: {}".format(ids))
 
         success = result.get("success", 0)
         fail = result.get("fail", 0)

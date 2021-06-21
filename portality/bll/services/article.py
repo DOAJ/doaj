@@ -50,10 +50,11 @@ class ArticleService(object):
         all_unowned = set()
         all_unmatched = set()
 
+        ids = []
 
         for article in articles:
             try:
-                result = self.create_article(article, account,
+                result, id = self.create_article(article, account,
                                              duplicate_check=duplicate_check,
                                              merge_duplicate=merge_duplicate,
                                              limit_to_account=limit_to_account,
@@ -69,6 +70,7 @@ class ArticleService(object):
             all_shared.update(result.get("shared", set()))
             all_unowned.update(result.get("unowned", set()))
             all_unmatched.update(result.get("unmatched", set()))
+            ids.append(id)
 
         report = {"success": success, "fail": fail, "update": update, "new": new, "shared": all_shared,
                   "unowned": all_unowned, "unmatched": all_unmatched}
@@ -82,7 +84,7 @@ class ArticleService(object):
                 articles[i].save(blocking=block)
 
             # return some stats on the import
-            return report
+            return report, ids
         else:
             raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_FAIL, result=report)
 
@@ -179,7 +181,7 @@ class ArticleService(object):
 
         has_permissions_result = self.has_permissions(account, article, limit_to_account)
         if isinstance(has_permissions_result,dict):
-            return has_permissions_result
+            return has_permissions_result, None
 
         is_update = 0
         if duplicate_check:
@@ -201,7 +203,7 @@ class ArticleService(object):
             article.save()
 
         return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),
-                "unmatched": set()}
+                "unmatched": set()}, article.id
 
 
     def has_permissions(self, account, article, limit_to_account):
