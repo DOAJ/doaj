@@ -2004,7 +2004,7 @@
             <!-- ====== This is the article's metadata ======== -->
             <journal_article publication_type="full_text">
                 <titles>
-                    <title>here will be title with some html tags</title>
+                    <title>{REPLACEME}</title>
                 </titles>
                 <contributors>
                     <person_name sequence="first" contributor_role="author">

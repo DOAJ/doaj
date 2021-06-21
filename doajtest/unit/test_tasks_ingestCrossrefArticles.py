@@ -1879,29 +1879,14 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         xpath = "//x:body/x:journal[x:journal_metadata[x:full_title='HTML tags in title']]"
 
-        with open(ARTICLES) as f:
-            doc = etree.parse(f)
-        records = doc.getroot()
-        a = records.xpath(xpath, namespaces=NS)[0]
-        ns = "{%s}" % NS['x']
-        nr = etree.Element(ns + "doi_batch")
-        nr.append(records.xpath("//x:head", namespaces=NS)[0])
-        nr.append(etree.Element(ns + "body"))
-        body = nr.find("x:body", NS)
+        with open(ARTICLES, "r") as f:
+            data = f.read()
+        new_data = data.replace("{REPLACEME}", "This article has <i>unescaped</i> and &lt;i&gt;escaped&lt;/i&gt; html tags")
+        with open(ARTICLES, "w") as f:
+            f.write(new_data)
 
-        title = records.xpath(
-            "//x:body/x:journal[x:journal_metadata[x:full_title='HTML tags in title']]/x:journal_article/x:titles/x:title",
-            namespaces=NS)[0]
-        title.text = ""
-        title_with_tags = etree.fromstring(
-            f"<temp>This article has <i>unescaped</i> and &lt;i&gt;escaped&lt;/i&gt; html tags</temp>")
-        title.append(title_with_tags)
-        etree.strip_tags(title, "temp")
-
-        body.append(a)
-        out = etree.tostring(nr, encoding="UTF-8", xml_declaration=True)
-
-        f = FileMockFactory(stream=BytesIO(out))
+        stream = CrossrefArticleFixtureFactory.upload_html_tags_in_text()
+        f = FileMockFactory(stream=stream)
 
         previous = []
         job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
@@ -1929,7 +1914,13 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert len(found) == 1, "expected 1, found: {}".format(len(found))
         art = found[0]
         bib = art.bibjson()
-        assert bib.title == "This article has <i>unescaped</i> and &lt;i&gt;unexcaped&lt;/i&gt; html tags", "expected: 'This article has <i>unescaped</i> and &lt;i&gt;unexcaped&lt;/i&gt; html tags', received: {}".format(bib.title)
+        assert bib.title == "This article has <ns0:i>unescaped</ns0:i> and &lt;i&gt;escaped&lt;/i&gt; html tags", "expected: 'This article has <i>unescaped</i> and &lt;i&gt;unexcaped&lt;/i&gt; html tags', received: {}".format(bib.title)
+
+        with open(ARTICLES, "r") as f:
+            data = f.read()
+        new_data = data.replace("This article has <i>unescaped</i> and &lt;i&gt;escaped&lt;/i&gt; html tags", "{REPLACEME}")
+        with open(ARTICLES, "w") as f:
+            f.write(new_data)
 
     def test_51_html_tags_in_title_attr(self):
         file = etree.parse(ARTICLES)
