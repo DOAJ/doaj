@@ -181,7 +181,7 @@ class ArticleService(object):
 
         has_permissions_result = self.has_permissions(account, article, limit_to_account)
         if isinstance(has_permissions_result,dict):
-            return has_permissions_result, None
+            return has_permissions_result
 
         is_update = 0
         if duplicate_check:

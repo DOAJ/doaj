@@ -319,8 +319,6 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 job.add_audit_message("Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
                 return
 
-        job.add_audit_message("Articles created/updated: {}".format(ids))
-
         success = result.get("success", 0)
         fail = result.get("fail", 0)
         update = result.get("update", 0)
@@ -343,7 +341,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         job.add_audit_message("Shared ISSNs: " + ", ".join(list(shared)))
         job.add_audit_message("Unowned ISSNs: " + ", ".join(list(unowned)))
         job.add_audit_message("Unmatched ISSNs: " + ", ".join(list(unmatched)))
-        job.add_audit_message("Created articles: " + ", ".join(list(ids)))
+        job.add_audit_message("Created/updated articles: " + ", ".join(list(ids)))
 
         if not ingest_exception:
             try:
