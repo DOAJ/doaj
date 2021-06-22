@@ -116,6 +116,7 @@ class BackgroundTask(object):
     - cleanup
     - prepare (class method)
 
+    ~~BackgroundTask:Process~~
     """
 
     __action__ = None
@@ -178,8 +179,10 @@ class BackgroundTask(object):
 
 
 class AdminBackgroundTask(BackgroundTask):
+    """~~AdminBackgroundTask:Process->BackgroundTask:Process~~"""
     @classmethod
     def check_admin_privilege(cls, username):
+        # ~~->Account:Model~~
         a = models.Account.pull(username)
         if a is None:
             # very unlikely, as they would have had to log in to get to here..
