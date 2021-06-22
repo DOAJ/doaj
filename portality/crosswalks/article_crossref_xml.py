@@ -315,9 +315,3 @@ def _element(xml, field, namespace):
         return text if text else None
     else:
         return None
-
-# def _element(xml, field, namepsace):
-#     el = xml.find(field, namepsace)
-#     if el is not None and el.text is not None and el.text != "":
-#         return el.text.strip()
-#     return None

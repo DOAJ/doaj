@@ -1922,7 +1922,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         with open(ARTICLES, "w") as f:
             f.write(new_data)
 
-    def test_51_html_tags_in_title_attr(self):
+    def test_52_html_tags_in_title_attr(self):
         file = etree.parse(ARTICLES)
         root = file.getroot()
         NS = {'x': 'http://www.crossref.org/schema/4.4.2'}

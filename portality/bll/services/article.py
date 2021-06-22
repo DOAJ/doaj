@@ -54,7 +54,7 @@ class ArticleService(object):
 
         for article in articles:
             try:
-                result, id = self.create_article(article, account,
+                result = self.create_article(article, account,
                                              duplicate_check=duplicate_check,
                                              merge_duplicate=merge_duplicate,
                                              limit_to_account=limit_to_account,
@@ -70,10 +70,10 @@ class ArticleService(object):
             all_shared.update(result.get("shared", set()))
             all_unowned.update(result.get("unowned", set()))
             all_unmatched.update(result.get("unmatched", set()))
-            ids.append(id)
+            ids.append(result.get("id", None))
 
         report = {"success": success, "fail": fail, "update": update, "new": new, "shared": all_shared,
-                  "unowned": all_unowned, "unmatched": all_unmatched}
+                  "unowned": all_unowned, "unmatched": all_unmatched, "ids": ids}
 
         # if there were no failures in the batch, then we can do the save
         if fail == 0:
@@ -84,7 +84,7 @@ class ArticleService(object):
                 articles[i].save(blocking=block)
 
             # return some stats on the import
-            return report, ids
+            return report
         else:
             raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_FAIL, result=report)
 
@@ -203,7 +203,7 @@ class ArticleService(object):
             article.save()
 
         return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),
-                "unmatched": set()}, article.id
+                "unmatched": set(), "id": article.id}
 
 
     def has_permissions(self, account, article, limit_to_account):
