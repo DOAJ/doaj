@@ -2719,9 +2719,9 @@ class ListWidgetWithSubfields(object):
         html = ['<%s %s>' % (self.html_tag, html_params(**kwargs))]
         for subfield in field:
             if self.prefix_label:
-                html.append('<li>%s %s' % (subfield.label, subfield(**kwargs)))
+                html.append('<li tabindex=0>%s %s' % (subfield.label, subfield(**kwargs)))
             else:
-                html.append('<li>%s %s' % (subfield(**kwargs), subfield.label))
+                html.append('<li tabindex=0>%s %s' % (subfield(**kwargs), subfield.label))
 
             html.append("</li>")
 

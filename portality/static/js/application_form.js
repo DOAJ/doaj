@@ -391,7 +391,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
                 errFirst.triggerHandler("focus");
             }
             else {
-                $("label[for='" + $(errFirst).attr('id') + "']").focus()
+                errFirst.closest("li[tabindex='0']").focus();
             }
             //$(".nextBtn").blur();
             if (showEvenIfInvalid){
