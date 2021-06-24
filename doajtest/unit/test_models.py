@@ -1490,23 +1490,52 @@ class TestModels(DoajTestCase):
         # recent(cls, max=10):
 
 # TODO: reinstate this test when author emails have been disallowed again
-'''
-    def test_33_article_with_author_email(self):
-        """Check the system disallows articles with emails in the author field"""
-        a_source = ArticleFixtureFactory.make_article_source()
+# '''
+#     def test_33_article_with_author_email(self):
+#         """Check the system disallows articles with emails in the author field"""
+#         a_source = ArticleFixtureFactory.make_article_source()
+#
+#         # Creating a model from a source with email is rejected by the DataObj
+#         a_source['bibjson']['author'][0]['email'] = 'author@example.com'
+#         with self.assertRaises(dataobj.DataStructureException):
+#             a = models.Article(**a_source)
+#             bj = a.bibjson()
+#
+#         # Remove the email address again to create the model
+#         del a_source['bibjson']['author'][0]['email']
+#         a = models.Article(**a_source)
+#
+#         # We can't add an author with an email address any more.
+#         with self.assertRaises(TypeError):
+#             a.bibjson().add_author(name='Ms Test', affiliation='School of Rock', email='author@example.com')
+# '''
 
-        # Creating a model from a source with email is rejected by the DataObj
-        a_source['bibjson']['author'][0]['email'] = 'author@example.com'
-        with self.assertRaises(dataobj.DataStructureException):
-            a = models.Article(**a_source)
-            bj = a.bibjson()
+    def test_34_preserve(self):
+        model = models.Preserve()
+        model.set_id("1234")
+        model.set_created("2021-06-10T00:00:00Z")
+        model.initiated("rama", "test_article.zip")
 
-        # Remove the email address again to create the model
-        del a_source['bibjson']['author'][0]['email']
-        a = models.Article(**a_source)
+        assert model.id == "1234"
+        assert model.owner == "rama"
+        assert model.created_date == "2021-06-10T00:00:00Z"
+        assert model.status == "initiated"
 
-        # We can't add an author with an email address any more.
-        with self.assertRaises(TypeError):
-            a.bibjson().add_author(name='Ms Test', affiliation='School of Rock', email='author@example.com')
-'''
+        model.validated()
+        assert model.status == "validated"
+
+        model.pending()
+        assert model.status == "pending"
+
+        model.uploaded_to_ia()
+        assert model.status == "Uploaded to IA"
+
+        model.failed("Unknown Reason", "Error: Unknown  Reason")
+        assert model.status == "failed"
+        assert model.error == "Unknown Reason"
+        assert model.error_details == "Error: Unknown  Reason"
+
+
+
+
 
