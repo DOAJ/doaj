@@ -16,7 +16,7 @@ setup(
         "Markdown==3.1.1",
         "GitPython==2.1.14",
         "lxml==4.4.1",
-        "feedparser==5.2.1",
+        "feedparser==6.0.8",
         "tzlocal==2.0.0",
         "pytz==2019.3",
         "pycountry==19.8.18",
