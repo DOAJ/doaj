@@ -45,7 +45,7 @@ Open access journals published in any language may apply.
 - Each article must be available as an individual, full-text article
   - one unique URL per article
   - HTML or PDF, as a minimum
-- Journals that include intrusive advertising will not be accepted
+- Journals that include intrusive advertising will not be accepted. See our [recommendation](https://www.doaj.org/apply/transparency) for best practices about advertising. 
 - DOAJ does not approve of the use of Impact Factors. However, we acknowledge that the only official Impact Factor is that created by Clarivate. Journals must not display Impact Factors/similar rankings from any other service
 - The website does not need to be in English. If the site is available in multiple languages the information provided must be the same in all languages.
 
