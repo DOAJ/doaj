@@ -45,6 +45,9 @@ Open access journals published in any language may apply.
 - Each article must be available as an individual, full-text article
   - one unique URL per article
   - HTML or PDF, as a minimum
+- Journals that include intrusive advertising will not be accepted
+- DOAJ does not approve of the use of Impact Factors. However, we acknowledge that the only official Impact Factor is that created by Clarivate. Journals must not display Impact Factors/similar rankings from any other service
+- The website does not need to be in English. If the site is available in multiple languages the information provided must be the same in all languages.
 
 The following information must be available online, and easily accessible from the journal homepage:
 
@@ -86,6 +89,9 @@ The following information must be available online, and easily accessible from t
 - All articles must pass through a quality control system (peer review) before publication.
   - The type and details of the peer review process must be stated clearly on the website.
 - Use of a plagiarism checking service is recommended, but not required for inclusion in DOAJ.
+- The editorial board for the journal should consist of at least five people. It is recommended that board members should not all come from the same institution.
+- Endogeny
+  - The proportion of published papers where at least one of the authors is an editor, editorial board member or reviewer, or affiliated to the journal's institution must not exceed 20%, based on the latest two issues.
 
 ---
 
@@ -130,6 +136,8 @@ The following information must be available online, and easily accessible from t
    - For a journal to be included in DOAJ, all content published after it has flipped must be completely open access.
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
+- ### Book review journals
+   - Journals consisting only of book reviews will not be accepted. 
   
 ---
 
