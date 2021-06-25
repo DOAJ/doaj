@@ -8,7 +8,7 @@ class HarvesterPlugin(object):
     def get_name(self):
         raise NotImplementedError()
 
-    def iterate(self, issn, since, job, to=None):
+    def iterate(self, issn, since, to=None):
         """
         Iterate over the records associated with the issn from "since" until "to"
 
@@ -17,7 +17,6 @@ class HarvesterPlugin(object):
 
         :param issn:
         :param since:
-        :param job:
         :param to:
         :return:
         """

@@ -17,12 +17,6 @@ from portality import models
 from portality.tasks.harvester_helpers.epmc import models as h_models
 from portality.tasks.harvester_helpers.epmc.client import EuropePMC, EuropePMCException
 from portality.tasks.harvester_helpers.epmc.models import EPMCMetadata
-from portality.lib import httputil
-from portality.api.v2.client import client as doajclient
-from portality.tasks.harvester_helpers import workflow
-from portality.tasks.harvester_helpers.workflow import HarvesterWorkflow
-from portality.models.harvester import HarvestState
-from portality.models.harvester import HarvesterPlugin
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources/")
 
@@ -94,18 +88,18 @@ class TestHarvester(DoajTestCase):
 
         job = models.BackgroundJob()
         with self.assertRaises(EuropePMCException):
-            EuropePMC.query("query_string", job)
+            EuropePMC().query("query_string")
 
         mock_get.return_value = None
 
         with self.assertRaises(EuropePMCException):
-            EuropePMC.query("query_string", job)
+            EuropePMC().query("query_string")
 
         mock_get.return_value = Mock()
         mock_get.return_value.status_code = 200
         mock_get.return_value.json.return_value = articles
 
-        result, cursor = EuropePMC.query("query_string", job)
+        result, cursor = EuropePMC().query("query_string")
 
         assert len(result) == 2
         assert isinstance(result[0], EPMCMetadata)

@@ -19,13 +19,10 @@ class HarvesterBackgroundTask(BackgroundTask):
         :return:
         """
         accs = list(app.config.get("HARVESTER_API_KEYS", {}).keys())
+        harvester_workflow = workflow.HarvesterWorkflow()
         for account_id in accs:
-            logger = workflow.HarvesterWorkflow.create_logger()
-            workflow.HarvesterWorkflow.process_account(account_id)
-            msgs = logger.readlines()
-            for msg in msgs:
-                self.background_job.add_audit_msg(msg)
-            workflow.HarvesterWorkflow.remove_logger()
+            harvester_workflow.process_account(account_id)
+            self.background_job.add_audit_message(harvester_workflow.logger)
 
         report = Report.write_report()
         app.logger.info(report)

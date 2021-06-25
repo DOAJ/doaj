@@ -111,7 +111,7 @@ class TestState(DoajTestCase):
         hs.issn = "4444-4444"
         hs.save(blocking=True)
 
-        workflow.HarvesterWorkflow.process_issn_states("abcdefg", issns)
+        workflow.HarvesterWorkflow().process_issn_states("abcdefg", issns)
 
         hs1 = models.HarvestState.find_by_issn("abcdefg", "1111-1111")
         assert hs1 is not None

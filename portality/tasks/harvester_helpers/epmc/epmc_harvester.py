@@ -8,11 +8,18 @@ import time
 
 
 class EPMCHarvester(HarvesterPlugin):
+
+    def __init__(self):
+        self.logger = ""
+        super(EPMCHarvester, self).__init__()
+
+    def _write_to_logger(self, msg):
+        self.logger = self.logger + "\n" + msg
+
     def get_name(self):
         return "epmc"
 
-    def iterate(self, issn, since, job, to=None):
-        self.job = job
+    def iterate(self, issn, since, to=None):
         # set the default value for to, if not already set
         if to is None:
             to = dates.now()
@@ -35,18 +42,22 @@ class EPMCHarvester(HarvesterPlugin):
             # throttle each day
             if last is not None and throttle is not None:
                 diff = (datetime.utcnow() - last).total_seconds()
-                app.logger.debug("Last day request at {x}, {y}s ago; throttle {z}s".format(x=last, y=diff, z=throttle))
+                self._write_to_logger("Last day request at {x}, {y}s ago; throttle {z}s".format(x=last, y=diff, z=throttle))
                 if diff < throttle:
                     waitfor = throttle - diff
-                    self.job.add_audit_message("Throttling EPMC requests for {x}s".format(x=waitfor))
+                    self._write_to_logger(
+                            "Throttling EPMC requests for {x}s".format(x=waitfor))
                     time.sleep(waitfor)
 
             # build the query for the oa articles in that issn for the specified day (note we don't use the range, as the granularity in EPMC means we'd double count
             # note that we use date_sort=True as a weak proxy for ordering by updated date (it actually orders by publication date, which may be partially the same as updated date)
             query = queries.oa_issn_updated(issn, fr, date_sort=True)
-            for record in client.EuropePMC.complex_search_iterator(query, self.job, throttle=throttle):   # also throttle paging requests
+            epmc = client.EuropePMC()
+            for record in epmc.complex_search_iterator(query, throttle=throttle):   # also throttle paging requests
                 article = self.crosswalk(record)
                 yield article, fr
+
+            self._write_to_logger(epmc.logger)
 
             last = datetime.utcnow()
 
