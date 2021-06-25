@@ -68,7 +68,7 @@ class EuropePMC(object):
         try:
             cls.logger.write(msg)
         except:
-            app.logger.warn("Logger not provided for Harvester Background task, message: {}").format(msg)
+            app.logger.debug("Logger not provided for Harvester Background task, message: {}").format(msg)
 
     @classmethod
     def get_by_pmcid(cls, pmcid, cursor=""):
