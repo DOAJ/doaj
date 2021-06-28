@@ -13,10 +13,12 @@ Long-term archiving of research resources is of paramount importance for scholar
 
 As a scholarly community, we are pledged to eliminate the possibility that high-value resources can disappear*. Project JASPER aims to close the gap in preservation coverage that currently exists among open access journals.
 
-_*References_
-M. Laakso, M. Matthias, N. Jahn. _Open is not forever: A study of vanished open access journals_. Journal of the Association for Information Science and Technology, Feb. 2021. https://doi.org/10.1002/asi.24460
+Any questions about JASPER can be sent to preservation@doaj.org.
 
-J. Bosman et al. _OA Diamond Journals Study_. https://zenodo.org/record/4558704
+_*References_
+
+1. M. Laakso, M. Matthias, N. Jahn. _Open is not forever: A study of vanished open access journals_. Journal of the Association for Information Science and Technology, Feb. 2021. https://doi.org/10.1002/asi.24460
+2. J. Bosman et al. _OA Diamond Journals Study_. https://zenodo.org/record/4558704
 
 ### Phase One
 Phase One of Project JASPER is a pilot project between CLOCKSS, DOAJ, Internet Archive, Keepers Registry and PKP. It is a scoping exercise aiming to find a solution that will reduce the number of unarchived open access journals. 
@@ -43,8 +45,6 @@ It is always safer for a journal’s content to be archived in more than one pla
 There are often costs associated with adding new journals to a preservation service. JASPER aims to significantly reduce these costs by using DOAJ as a common interface to the thousands of journals indexed in it. By delivering content to an FTP server hosted by Internet Archive, content deliveries are unified into a single format and available from a single location.
 
 Phase One will design, implement and test this process, supported by money or services donated by the five project partners. Once the process has been tested for workflow efficiencies, capacity and usability, and the project is secured with sustainable funding, the process will be opened up to more Keepers.
-
-Any questions about JASPER can be sent to preservation@doaj.org.
 
 ## For libraries and universities
 Long-term preservation is a profoundly important mission for libraries, universities, and other memory organisations. By supporting DOAJ, the archiving services participating in this project, and in Keepers, you are helping us preserve valuable scholarly content for the long-term and in a very cost-effective way. Thank you for your continuing support!
