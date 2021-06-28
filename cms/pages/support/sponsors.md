@@ -4,11 +4,13 @@ title: Contributors (Publishers and Aggregators)
 section: Support
 toc: true
 sticky_sidenav: true
-meta_description: 
+meta_description:
 
 ---
 
-<!-- insert introductory text here -->
+DOAJ is a non-profit organisation and contributions from its supporters are crucial to keeping DOAJ operating to its strategy and mission. We are grateful to all of our Contributors for their continued support.
+
+The following organisations have committed to supporting DOAJ over a 3-year period (Premier, Sustaining) or a 1-year period (Basic).
 
 <div>{% include '/data/sponsors.html' %}</div>
 
