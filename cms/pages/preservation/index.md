@@ -13,7 +13,7 @@ Long-term archiving of research resources is of paramount importance for scholar
 
 As a scholarly community, we are pledged to eliminate the possibility that high-value resources can disappear*. Project JASPER aims to close the gap in preservation coverage that currently exists among open access journals.
 
-References
+_*References_
 M. Laakso, M. Matthias, N. Jahn. _Open is not forever: A study of vanished open access journals_. Journal of the Association for Information Science and Technology, Feb. 2021. https://doi.org/10.1002/asi.24460
 
 J. Bosman et al. _OA Diamond Journals Study_. https://zenodo.org/record/4558704
