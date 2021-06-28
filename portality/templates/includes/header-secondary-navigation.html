@@ -5,13 +5,13 @@
     {% set extraClasses = "secondary-nav__item_mobile" %}
 {% endif %}
 
-<li class="dropdown {{ extraClasses }}">
-    <a href="" class="dropdown__trigger nav-bar__link" data-toggle="dropdown" id="menu-{{ selected_nav.id }}" role="button" aria-haspopup="true" aria-expanded="false">
+<li class="dropdown {{ extraClasses }}" role="none">
+    <a href="#" class="dropdown__trigger nav-bar__link" data-toggle="dropdown" id="menu-{{ selected_nav.id }}" role="button" aria-haspopup="true" aria-expanded="false" role="menuitem">
         {{ selected_nav.label }}
         <span data-feather="chevron-down" aria-hidden="true"></span>
     </a>
 
-    <ul class="dropdown__menu" aria-labelledby="menu-{{ selected_nav.id }}">
+    <ul class="dropdown__menu" aria-labelledby="menu-{{ selected_nav.id }}" aria-label="{{ selected_nav.label }}" role="menu">
         {% for entry in selected_nav.entries %}
             {% set url = entry.url %}
             {% set urlAttrs = 'rel="noopener" target="_blank"' %}
@@ -20,8 +20,8 @@
                 {% set urlAttrs = "" %}
             {% endif %}
 
-            <li>
-                <a {{ urlAttrs }} href="{{ url }}" class="dropdown__link">
+            <li role="none">
+                <a {{ urlAttrs }} href="{{ url }}" class="dropdown__link"  role="menuitem">
                     {{ entry.label }}
                 </a>
             </li>
