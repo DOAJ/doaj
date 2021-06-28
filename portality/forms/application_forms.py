@@ -1239,7 +1239,6 @@ class FieldDefinitions:
         "options": [
             {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo", "subfields": ["deposit_policy_url"]},
             {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
-            {"display": "Héloïse", "value": "Héloïse", "subfields": ["deposit_policy_url"]},
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
             {"display": "Other (including publisher’s own site)", "value": "other", "subfields": ["deposit_policy_other", "deposit_policy_url"]},
             {"display": "<em>The journal has no repository policy</em>", "value": "none", "exclusive": True}
@@ -1287,7 +1286,6 @@ class FieldDefinitions:
         "input": "text",
         "conditional": [{"field": "deposit_policy", "value": "Sherpa/Romeo"},
                         {"field": "deposit_policy", "value": "Dulcinea"},
-                        {"field": "deposit_policy", "value": "Héloïse"},
                         {"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
@@ -1312,7 +1310,6 @@ class FieldDefinitions:
                             "value": [
                                 "Sherpa/Romeo",
                                 "Dulcinea",
-                                "Héloïse",
                                 "Diadorim",
                                 "other"
                             ]
@@ -1329,7 +1326,6 @@ class FieldDefinitions:
                             "value": [
                                 "Sherpa/Romeo",
                                 "Dulcinea",
-                                "Héloïse",
                                 "Diadorim",
                                 "other"
                             ]
