@@ -184,7 +184,6 @@ SHARED_JOURNAL_LIKE = {
         "admin" : {
             "fields" : {
                 "seal" : {"coerce" : "bool"},
-                "bulk_upload" : {"coerce" : "unicode"},
                 "owner" : {"coerce" : "unicode"},
                 "editor_group" : {"coerce" : "unicode"},
                 "editor" : {"coerce" : "unicode"},

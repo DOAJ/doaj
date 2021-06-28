@@ -11,8 +11,11 @@ from lxml import etree
 from datetime import datetime
 from operator import itemgetter
 
-class SitemapBackgroundTask(BackgroundTask):
 
+class SitemapBackgroundTask(BackgroundTask):
+    """
+    ~~Sitemap:BackgroundTask~~
+    """
     __action__ = "sitemap"
 
     def run(self):
@@ -25,6 +28,7 @@ class SitemapBackgroundTask(BackgroundTask):
         base_url = app.config.get("BASE_URL")
         if not base_url.endswith("/"):
             base_url += "/"
+        # ~~-> Sitemap:DataStore ~~
         cdir = app.config.get("CACHE_DIR")
         smdir = os.path.join(cdir, "sitemap")
         toc_changefreq = app.config.get("TOC_CHANGEFREQ", "monthly")
@@ -133,12 +137,14 @@ class SitemapBackgroundTask(BackgroundTask):
         background_job.save()
         generate_sitemap.schedule(args=(background_job.id,), delay=10)
 
+
 @main_queue.periodic_task(schedule("sitemap"))
 @write_required(script=True)
 def scheduled_sitemap():
     user = app.config.get("SYSTEM_USERNAME")
     job = SitemapBackgroundTask.prepare(user)
     SitemapBackgroundTask.submit(job)
+
 
 @main_queue.task()
 @write_required(script=True)

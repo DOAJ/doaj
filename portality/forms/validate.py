@@ -506,6 +506,20 @@ class NotIf(OnlyIf):
                 # Fail if the other field has the specified value
                 validators.ValidationError(self.message)
 
+class NoScriptTag(object):
+    """
+    Checks that a field does not contain a script html tag
+    """
+
+    def __init__(self, message=None):
+        if not message:
+            message = "Value cannot contain script tag"
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data is not None and "<script>" in field.data:
+            raise validators.ValidationError(self.message)
+
 
 class GroupMember(MultiFieldValidator):
     """ Validation passes when a field's value is a member of the specified group """

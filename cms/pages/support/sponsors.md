@@ -5,6 +5,8 @@ title: Contributors (Publishers and Aggregators)
 section: Support
 toc: true
 sticky_sidenav: true
+featuremap: ~~Sponsors:Fragment->SponsorsData:Template~~
+
 ---
 
 ## Benefits for contributing publishers and aggregators 2021
