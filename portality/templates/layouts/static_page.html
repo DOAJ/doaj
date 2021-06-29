@@ -3,6 +3,10 @@
 
 {% block page_title %}{{ page.title }}{% endblock %}
 
+{% if page.meta_description %}
+    {% block meta_description %}{{ page.meta_description }}{% endblock %}
+{% endif %}
+
 {% block content %}
     {# content editing buttons for admins #}
     {% if not current_user.is_anonymous and current_user.has_role("admin") %}
