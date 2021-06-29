@@ -1528,7 +1528,7 @@ class TestModels(DoajTestCase):
         assert model.status == "pending"
 
         model.uploaded_to_ia()
-        assert model.status == "Uploaded to IA"
+        assert model.status == "uploaded"
 
         model.failed("Unknown Reason", "Error: Unknown  Reason")
         assert model.status == "failed"

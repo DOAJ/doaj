@@ -48,7 +48,7 @@ class Preserve(DomainObject):
         self.status = "pending"
 
     def uploaded_to_ia(self):
-        self.status = "Uploaded to IA"
+        self.status = "uploaded"
 
     def failed(self, message, details=None):
         self.status = "failed"
