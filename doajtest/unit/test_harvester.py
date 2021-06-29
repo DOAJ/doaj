@@ -17,6 +17,7 @@ from portality import models
 from portality.tasks.harvester_helpers.epmc import models as h_models
 from portality.tasks.harvester_helpers.epmc.client import EuropePMC, EuropePMCException
 from portality.tasks.harvester_helpers.epmc.models import EPMCMetadata
+from portality.background import BackgroundApi
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources/")
 
@@ -63,13 +64,18 @@ class TestHarvester(DoajTestCase):
             articles = json.load(json_file)
 
         results = [h_models.EPMCMetadata(r) for r in articles.get("resultList", {}).get("result", [])]
-        a = (results, "")
-        b = ([], "AoJwgOTOsdfTeDE0ODA4OTIz")
+        a = (results, "AoJwgOTOsdfTeDE0ODA4OTIz")
+        b = ([], "")
         mock_query.side_effect = itertools.cycle([a, b])
 
-        job = models.BackgroundJob()
+        # possible alternative way to execute the job
+        job = HarvesterBackgroundTask.prepare("testuser")
         task = HarvesterBackgroundTask(job)
-        task.submit(job)
+        BackgroundApi.execute(task)
+
+        # job = models.BackgroundJob()
+        # task = HarvesterBackgroundTask(job)
+        # task.submit(job)
 
         time.sleep(2)
 
