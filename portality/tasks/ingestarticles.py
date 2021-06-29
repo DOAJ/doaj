@@ -286,7 +286,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         ingest_exception = False
         result = {}
-        ids = []
+        articles = None
         try:
             with open(path) as handle:
                 articles = xwalk.crosswalk_file(handle, add_journal_info=False) # don't import the journal info, as we haven't validated ownership of the ISSNs in the article yet
@@ -326,7 +326,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         shared = result.get("shared", [])
         unowned = result.get("unowned", [])
         unmatched = result.get("unmatched", [])
-        ids = result.get("ids", [])
+        ids = [a.id for a in articles]
 
         if success == 0 and fail > 0 and not ingest_exception:
             file_upload.failed("All articles in file failed to import")

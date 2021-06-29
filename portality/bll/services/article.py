@@ -70,10 +70,9 @@ class ArticleService(object):
             all_shared.update(result.get("shared", set()))
             all_unowned.update(result.get("unowned", set()))
             all_unmatched.update(result.get("unmatched", set()))
-            ids.append(result.get("id", None))
 
         report = {"success": success, "fail": fail, "update": update, "new": new, "shared": all_shared,
-                  "unowned": all_unowned, "unmatched": all_unmatched, "ids": ids}
+                  "unowned": all_unowned, "unmatched": all_unmatched}
 
         # if there were no failures in the batch, then we can do the save
         if fail == 0:
