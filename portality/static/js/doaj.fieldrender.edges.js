@@ -2110,7 +2110,7 @@ $.extend(true, doaj, {
                 this.doaj_url = params.doaj_url;
             }
             else {
-                this.doaj_url = "https://doaj.org"
+                this.doaj_url = ""
             }
 
             this.actions = edges.getParam(params.actions, []);
