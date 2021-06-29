@@ -1010,7 +1010,7 @@ class IssnQuery(object):
         return self._query
 
 
-class OwnerQuery(IssnQuery):
+class OwnerQuery(object):
     """ Query to supply all full journal sources by owner """
     base_query = {
         "query": {
@@ -1018,6 +1018,13 @@ class OwnerQuery(IssnQuery):
         },
         "size": 10000,
     }
+
+    def __init__(self, owner):
+        self._query = deepcopy(self.base_query)
+        self._query["query"]["term"]["admin.owner.exact"] = owner
+
+    def query(self):
+        return self._query
 
 
 class PublisherQuery(object):
