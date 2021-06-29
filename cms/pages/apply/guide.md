@@ -212,7 +212,7 @@ Please ensure that, if you do apply again after the exclusion period, the journa
 
 ## Appeals
 
-You may submit an appeal if your journal has been removed from DOAJ, or your application has been rejected and no new application is allowed for at least a year. Send and email to the [DOAJ Appeals Committee](mailto:appeals@doaj.org).
+You may submit an appeal if your journal has been removed from DOAJ, or your application has been rejected and no new application is allowed for at least a year. Send an email to the [DOAJ Appeals Committee](mailto:appeals@doaj.org).
 
 If you have been advised that another application is allowed after 6 months, you may not appeal unless the rejection was for an unconfirmed ISSN.
 
