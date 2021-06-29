@@ -73,10 +73,6 @@ class TestHarvester(DoajTestCase):
         task = HarvesterBackgroundTask(job)
         BackgroundApi.execute(task)
 
-        # job = models.BackgroundJob()
-        # task = HarvesterBackgroundTask(job)
-        # task.submit(job)
-
         time.sleep(2)
 
         articles_saved = [a for a in self.journal.all_articles()]
