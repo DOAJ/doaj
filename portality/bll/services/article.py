@@ -202,7 +202,7 @@ class ArticleService(object):
             article.save()
 
         return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),
-                "unmatched": set(), "id": article.id}
+                "unmatched": set()}
 
 
     def has_permissions(self, account, article, limit_to_account):
