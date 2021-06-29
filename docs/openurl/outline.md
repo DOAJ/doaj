@@ -258,7 +258,6 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
         "in_doaj" : true|false,
         "ticked" : true|false,
         "application_status" : "state of journal application",
-        "bulk_upload" : "<id of bulk_upload from which this journal/application came>",
         "notes" : [
             {
                 "note" : "<note>",
@@ -513,7 +512,6 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
         "in_doaj" : true|false,
         "ticked" : true|false,
         "application_status" : "state of journal application",
-        "bulk_upload" : "<id of bulk_upload from which this journal/application came>",
         "notes" : [
             {
                 "note" : "<note>",

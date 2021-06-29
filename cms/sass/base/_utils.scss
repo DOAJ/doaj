@@ -123,6 +123,12 @@
   stroke: $bronze;
 }
 
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .flex-end {
   @media (min-width: 769px) {
     display: flex;

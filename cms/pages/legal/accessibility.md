@@ -3,6 +3,8 @@ layout: sidenav
 title: Accessibility statement for doaj.org
 toc: true
 sticky_sidenav: true
+featuremap: ~~Accessibility:Fragment~~
+
 ---
 
 This accessibility statement applies to [doaj.org](https://www.doaj.org) exclusively.

@@ -1,7 +1,8 @@
 import uuid
 from datetime import datetime
 
-from portality.lib import swagger, seamless, coerce, dates
+from portality.api.v2.data_objects.common import _check_for_script
+from portality.lib import swagger, seamless, coerce, dates, dataobj
 from portality import models
 from copy import deepcopy
 
@@ -12,6 +13,7 @@ from portality.api.v2.data_objects.common_journal_application import OutgoingCom
 from portality.lib.coerce import COERCE_MAP
 from portality.lib.seamless import SeamlessMixin
 from portality.models import JournalLikeBibJSON
+from portality.ui.messages import Messages
 
 OUTGOING_APPLICATION_STRUCT = {
     "fields": {
@@ -25,7 +27,6 @@ OUTGOING_APPLICATION_STRUCT = {
         "admin" : {
             "fields" : {
                 "application_status" : {"coerce" : "unicode"},
-                "bulk_upload" : {"coerce" : "unicode"},
                 "current_journal" : {"coerce" : "unicode"},
                 "date_applied" : {"coerce" : "unicode"},
                 "owner" : {"coerce" : "unicode"}
@@ -134,6 +135,9 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         # only attempt to validate if this is not a blank object
         if len(list(self.__seamless__.data.keys())) == 0:
             return
+
+        if _check_for_script(self.data):
+            raise dataobj.ScriptTagFoundException(Messages.EXCEPTION_SCRIPT_TAG_FOUND)
 
         # extract the p/e-issn identifier objects
         pissn = self.data["bibjson"]["pissn"]
@@ -260,13 +264,6 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
 
     def set_seal(self, value):
         self.__seamless__.set_with_struct("admin.seal", value)
-
-    @property
-    def bulk_upload_id(self):
-        return self.__seamless__.get_single("admin.bulk_upload")
-
-    def set_bulk_upload_id(self, bulk_upload_id):
-        self.__seamless__.set_with_struct("admin.bulk_upload", bulk_upload_id)
 
     @property
     def owner(self):

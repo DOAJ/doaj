@@ -1,0 +1,51 @@
+project_name: DOAJ
+base_dir: .
+# source_url: defined at run-time
+include:
+  - "*"
+#  - "*.py"
+#  - "*.html"
+#  - "*.md"
+exclude:
+  - "*.pyc"
+  - "*.png"
+  - "*.gif"
+  - "*.jpg"
+  - "*.ico"
+  - "*.jpeg"
+  - ".env"
+  - ".gitignore"
+  - ".gitmodules"
+  - ".python-version"
+  - "*.svg"
+exclude_dirs:
+  - portality/static/crossref
+  - portality/static/vendor
+  - portality/static/js/vendors
+  - portality/static/widget/fqw_dependencies
+  - portality/migrate
+  - docs/generated
+  - cms/fragments
+  - cms/sass/.sass-cache
+  - failed_articles
+  - history
+  - local_store
+  - reapp_csvs
+  - upload
+  - .git
+  - .idea
+  - cms/assets/img
+ignore_parse_errors:
+  - noop
+delimiter: ~~
+types: docs/featuremap/types.csv
+type_validation: error
+terminals: docs/featuremap/terminals.csv
+# out_dir: to be specified at run-time
+serialisers:
+  - class: featuremap.jsonserialiser.JSONSerialiser
+    dir: json
+  - class: featuremap.csvserialiser.CSVSerialiser
+    dir: csv
+  - class: featuremap.htmlserialiser.HTMLSerialiser
+    dir: html

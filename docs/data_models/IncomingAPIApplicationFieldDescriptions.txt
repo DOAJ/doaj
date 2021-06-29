@@ -1,0 +1,7 @@
+admin.application_status: Status of the application.  If provided, will be ignored and set automatically by our system
+admin.current_journal: ID of a journal that you would like to request an update for
+admin.date_applied: Date this application was originally made.  If provided, will be ignored and set automatically by our system
+admin.owner: Your user account ID.  If provided, will be ignored and overridden by the account ID related to the API key
+created_date: Date the record was created in DOAJ.  Will be ignored if provided.
+id: ID assigned by DOAJ for the record.  Will be ignored if provided
+last_updated: Date the record was last updated in DOAJ.  Will be ignored if provided.

@@ -9,16 +9,6 @@ html {
   }
 }
 
-body {
-  background-color: $warm-white;
-  color: $warm-black;
-  line-height: 1.45;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-weight: 400;
-  @include font-sans;
-}
-
 h2, h3, h4, h5, h6 {
   margin: $spacing-04 0 $spacing-03 0;
   line-height: 1.05;

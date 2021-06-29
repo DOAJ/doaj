@@ -26,7 +26,7 @@ API_v2_ERROR = "Version 1 is no longer supported."
 
 @blueprint.route('/')
 def api_v1_root():
-    return redirect(url_for('.api_spec'))
+    return redirect(url_for('api_v2.api_spec'))
 
 
 @blueprint.route('/docs')

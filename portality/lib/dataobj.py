@@ -957,6 +957,12 @@ class DataStructureException(DataObjException):
 class ConstructException(DataObjException):
     pass
 
+class ScriptTagFoundException(DataObjException):
+    """
+        Exception to raise when script tag has been found in metadata
+    """
+    pass
+
 
 def construct_validate(struct, context=""):
     """

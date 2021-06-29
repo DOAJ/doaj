@@ -33,7 +33,7 @@ class Journal2QuestionXwalk(object):
         ("license_attributes", "License attributes"),
         ("license_display", "Machine-readable CC licensing information embedded or displayed in articles"),
         ("license_display_example_url", "URL to an example page with embedded licensing information"),
-        ("boai", "Does this journal allow unrestricted reuse in compliance with BOAI?"),
+        ("boai", "Does the journal comply to DOAJ's definition of open access?"),
         ("license", "Journal license"),
         ("license_terms_url", "URL for license terms"),
         ("oa_statement_url", "URL for journal's Open Access statement"),
@@ -47,7 +47,7 @@ class Journal2QuestionXwalk(object):
         ("plagiarism_url", "Plagiarism information URL"),
         ("publication_time_weeks", "Average number of weeks between article submission and publication"),
         ("publisher_name", "Publisher"),
-        ("other_charges_url", "Other submission fees information URL"),
+        ("other_charges_url", "Other fees information URL"),
         ("title", "Journal title"),
         ("institution_country", "Country of society or institution"),
         ("apc", "APC"),
@@ -246,6 +246,10 @@ class Journal2QuestionXwalk(object):
             """ Some of the work of undoing yes_or_blank() """
             return 'y' if x == 'Yes' else ''
 
+        def _y_n_or_blank(x):
+            """ Undoing yes_no_or_blank() to 'y' or 'n' ONLY """
+            return 'y' if x == 'Yes' else 'n' if x != '' else None
+
         def _unfurl_apc(x):
             """ Allow an APC update by splitting the APC string from the spreadsheet """
             apcs = []
@@ -259,7 +263,8 @@ class Journal2QuestionXwalk(object):
             'license': lambda x: [lic.strip() for lic in x.split(',')],
             'publication_time_weeks': lambda x: int(x),
             'apc': _y_or_blank,
-            'apc_charges': _unfurl_apc
+            'apc_charges': _unfurl_apc,
+            'has_waiver': _y_n_or_blank
             # Country names to codes for institution, publisher
         }
 

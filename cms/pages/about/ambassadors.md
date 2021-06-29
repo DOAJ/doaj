@@ -5,6 +5,8 @@ title: Ambassadors
 section: About
 toc: true
 highlight: true
+featuremap: ~~Ambassadors:Fragment->AmbassadorsData:Template~~
+
 ---
 
 Since 2016 DOAJ has been proud to work with a group of Ambassadors who share our belief that open access is the way forward in scholarly publishing. Our Ambassador program focuses especially on areas of the world where greater awareness of the issues surrounding open access is needed, or where open access journals from the region are under-represented in DOAJ.

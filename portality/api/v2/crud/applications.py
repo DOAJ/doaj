@@ -1,8 +1,11 @@
+import json
+
 from portality.api.v2.crud.common import CrudApi
 from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Error, Api409Error
 from portality.api.v2.data_objects.application import IncomingApplication, OutgoingApplication
-from portality.lib import seamless
-from portality import models
+from portality.core import app
+from portality.lib import seamless, dataobj
+from portality import models, app_email
 
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException, NoSuchObjectException
@@ -57,6 +60,25 @@ class ApplicationsCrudApi(CrudApi):
         try:
             ia = IncomingApplication(data)
         except seamless.SeamlessException as e:
+            raise Api400Error(str(e))
+        except dataobj.ScriptTagFoundException as e:
+            email_data = {"application": data, "account": account.__dict__}
+            jdata = json.dumps(email_data, indent=4)
+            try:
+                # send warning email about the service tag in article metadata detected
+                to = app.config.get('SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS')
+                fro = app.config.get("SYSTEM_EMAIL_FROM", "feedback@doaj.org")
+                subject = app.config.get("SERVICE_NAME", "") + " - script tag detected in application metadata"
+                es_type = "application"
+                app_email.send_mail(to=to,
+                                     fro=fro,
+                                     subject=subject,
+                                     template_name="email/script_tag_detected",
+                                     es_type=es_type,
+                                     data=jdata)
+            except app_email.EmailException:
+                app.logger.exception('Error sending script tag detection email - ' + jdata)
+
             raise Api400Error(str(e))
 
         # if that works, convert it to a Suggestion object
