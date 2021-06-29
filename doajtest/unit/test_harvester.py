@@ -84,16 +84,6 @@ class TestHarvester(DoajTestCase):
         assert len(articles_saved) == 1, "expected 1 article, found: {}".format(len(articles_saved))
         assert articles_saved[0].bibjson().title == "Harvester Test Article"
 
-    def test_loop(self):
-        self.tearDown()
-        count = 0
-        while 1:
-            count += 1
-            print("-------------------------- RUN {} ---------------------------------------------".format(count))
-            self.setUp()
-            self.test_harvest()
-            self.tearDown()
-
     @patch('portality.lib.httputil.get')
     def test_query(self, mock_get):
 

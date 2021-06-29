@@ -14,8 +14,8 @@
             {
                 "id": "12345678",
                 "source": "MED",
-                "pmid": "12345678",
-                "pmcid": "PMC1234567",
+                "pmid": "02345678",
+                "pmcid": "PMC1234560",
                 "fullTextIdList": {
                     "fullTextId": [
                         "PMC1234567"
