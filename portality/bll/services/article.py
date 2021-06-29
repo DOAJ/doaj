@@ -50,8 +50,6 @@ class ArticleService(object):
         all_unowned = set()
         all_unmatched = set()
 
-        ids = []
-
         for article in articles:
             try:
                 result = self.create_article(article, account,
