@@ -45,7 +45,7 @@ Open access journals published in any language may apply.
 - Each article must be available as an individual, full-text article
   - one unique URL per article
   - HTML or PDF, as a minimum
-- Journals that include intrusive advertising will not be accepted. See our [recommendation](https://www.doaj.org/apply/transparency) for best practices about advertising. 
+- Journals that include intrusive advertising will not be accepted. See best practice [recommendations](https://www.doaj.org/apply/transparency) for advertising. 
 - DOAJ does not approve of the use of Impact Factors. However, we acknowledge that the only official Impact Factor is that created by Clarivate. Journals must not display Impact Factors/similar rankings from any other service
 - The website does not need to be in English. If the site is available in multiple languages the information provided must be the same in all languages.
 
@@ -86,12 +86,12 @@ The following information must be available online, and easily accessible from t
   - The editorial board must be listed on the website.
   - The name and affiliation of all editors and board members must be included.
   - If the journal is run by a student body, it must have an advisory board of which at least two members have a PhD or equivalent.
+  - The editorial board for the journal should consist of at least five people. It is recommended that board members should not all come from the same institution.
 - All articles must pass through a quality control system (peer review) before publication.
   - The type and details of the peer review process must be stated clearly on the website.
 - Use of a plagiarism checking service is recommended, but not required for inclusion in DOAJ.
-- The editorial board for the journal should consist of at least five people. It is recommended that board members should not all come from the same institution.
-- Endogeny
-  - The proportion of published papers where at least one of the authors is an editor, editorial board member or reviewer, or affiliated to the journal's institution must not exceed 20%, based on the latest two issues.
+- Endogeny should be minimised.
+  - The proportion of published papers where at least one of the authors is an editor, editorial board member or reviewer, or affiliated to the journal's institution must not exceed 20%, based on the research content of the latest two issues.
 
 ---
 
@@ -212,7 +212,9 @@ Please ensure that, if you do apply again after the exclusion period, the journa
 
 ## Appeals
 
-If you would like to appeal against a decision to reject your application for more than 6 months or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, [managing-editors@doaj.org](mailto:managing-editors@doaj.org).
+You may submit an appeal if your journal has been removed from DOAJ, or your application has been rejected and no new application is allowed for at least a year. Send and email to the [DOAJ Appeals Committee](mailto:appeals@doaj.org).
+
+If you have been advised that another application is allowed after 6 months, you may not appeal unless the rejection was for an unconfirmed ISSN.
 
 The appeal should contain the following information:
 - Journal title
