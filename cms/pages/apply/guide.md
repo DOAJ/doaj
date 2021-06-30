@@ -199,6 +199,8 @@ We cannot provide a status update for applications which are less than three mon
 
 You will receive an email giving the reasons for rejection of the application. Unless otherwise advised by DOAJ staff, you may not submit another application for the same journal until 6 months after the date of the notification of rejection.
 
+If your application was rejected due to an unconfirmed ISSN, we may be able to reopen the application if the ISSN is confirmed within 3 months of the DOAJ rejection. Send an email to the [DOAJ Helpdesk](mailto:helpdesk@doaj.org).
+
 You are responsible for providing accurate information when submitting an application. Applications that contain information that is inaccurate or wrong, or that have answers missing, are automatically rejected. 
 In cases where journal information is found to be untrue or misleading, DOAJ may decide not to allow further applications from the publisher for a period of up to three years.
 
@@ -213,8 +215,6 @@ Please ensure that, if you do apply again after the exclusion period, the journa
 ## Appeals
 
 You may submit an appeal if your journal has been removed from DOAJ, or your application has been rejected and no new application is allowed for at least a year. Send an email to the [DOAJ Appeals Committee](mailto:appeals@doaj.org).
-
-If you have been advised that another application is allowed after 6 months, you may not appeal unless the rejection was for an unconfirmed ISSN.
 
 The appeal should contain the following information:
 - Journal title
