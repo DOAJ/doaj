@@ -1,13 +1,13 @@
 ---
 layout: sidenav
-title: preservation
-section: preservation
+title: Project JASPER
+section: digital preservation
 toc: true
 ---
 
-## Project JASPER (JournAlS re Preserved forevER)
+## Open access journals must be preserved forever
 
-Project JASPER is an initiative to preserve open access journals. It was launched on [World Preservation Day 2020](https://www.dpconline.org/events/world-digital-preservation-day) and is in response to research* that shows that online journals—both open and closed access journals—can just disappear from the internet. This happens because of a lack of awareness amongst smaller publishers around the need for long-term digital preservation and/or the resources to enroll a journal in a long-term digital preservation scheme.
+Project JASPER (JournAlS are Preserved forevER) is an initiative to preserve open access journals. It was launched on [World Preservation Day 2020](https://www.dpconline.org/events/world-digital-preservation-day) and is in response to research* that shows that online journals—both open and closed access journals—can just disappear from the internet. This happens because of a lack of awareness amongst smaller publishers around the need for long-term digital preservation and/or the resources to enroll a journal in a long-term digital preservation scheme.
 
 Long-term archiving of research resources is of paramount importance for scholarship. Authors want to ensure their contributions to the scholarly record will be permanent. Scholars must be able to access all of the published research in their fields, both now and long into the future. 
 
@@ -20,7 +20,7 @@ _*References_
 1. M. Laakso, M. Matthias, N. Jahn. _Open is not forever: A study of vanished open access journals_. Journal of the Association for Information Science and Technology, Feb. 2021. https://doi.org/10.1002/asi.24460
 2. J. Bosman et al. _OA Diamond Journals Study_. https://zenodo.org/record/4558704
 
-### Phase One
+## Phase One
 Phase One of Project JASPER is a pilot project between CLOCKSS, DOAJ, Internet Archive, Keepers Registry and PKP. It is a scoping exercise aiming to find a solution that will reduce the number of unarchived open access journals. 
 
 Starting with a list of diamond open access (i.e. non-APC charging) journals from DOAJ, the five partners are working together to produce an open and sustainable process that will facilitate the archiving of more journals. The process will be open to a diverse community of archiving services, notably those participating in the Keepers Registry. Other “Keepers” and other preservation repositories will be invited to join at a later stage once design, implementation, and testing are complete.
@@ -41,12 +41,12 @@ Towards the end of 2021, DOAJ will send an email to the DOAJ account holders of 
 #### More copies, better preservation
 It is always safer for a journal’s content to be archived in more than one place and, ideally, in at least three. To make this easy for smaller publishers, journals opting for Route 2 will automatically have their content preserved via Route 3. Future phases of the project will add the possibility for Route 1 journals to take part in other routes too.
 
-## For the Keepers
+### For the Keepers
 There are often costs associated with adding new journals to a preservation service. JASPER aims to significantly reduce these costs by using DOAJ as a common interface to the thousands of journals indexed in it. By delivering content to an FTP server hosted by Internet Archive, content deliveries are unified into a single format and available from a single location.
 
 Phase One will design, implement and test this process, supported by money or services donated by the five project partners. Once the process has been tested for workflow efficiencies, capacity and usability, and the project is secured with sustainable funding, the process will be opened up to more Keepers.
 
-## For libraries and universities
+### For libraries and universities
 Long-term preservation is a profoundly important mission for libraries, universities, and other memory organisations. By supporting DOAJ, the archiving services participating in this project, and in Keepers, you are helping us preserve valuable scholarly content for the long-term and in a very cost-effective way. Thank you for your continuing support!
 
 ## About the project partners
