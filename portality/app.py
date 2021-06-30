@@ -6,7 +6,10 @@ For inclusion in your own project you should make your own version of this contr
 and include the views you require, as well as writing new ones. Of course, views must
 also be backed up by models, so have a look at the example models and use them / write
 new ones as required too.
+
+~~DOAJ:WebApp~~
 """
+
 import os, sys
 import tzlocal
 import pytz
@@ -42,29 +45,29 @@ if 'api2' in app.config['FEATURES']:
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 
-app.register_blueprint(account, url_prefix='/account')
-app.register_blueprint(admin, url_prefix='/admin')
-app.register_blueprint(publisher, url_prefix='/publisher')
-app.register_blueprint(query, url_prefix='/query')
+app.register_blueprint(account, url_prefix='/account') #~~->Account:Blueprint~~
+app.register_blueprint(admin, url_prefix='/admin') #~~-> Admin:Blueprint~~
+app.register_blueprint(publisher, url_prefix='/publisher') #~~-> Publisher:Blueprint~~
+app.register_blueprint(query, url_prefix='/query') # ~~-> Query:Blueprint~~
 app.register_blueprint(query, url_prefix="/admin_query")
 app.register_blueprint(query, url_prefix="/publisher_query")
 app.register_blueprint(query, url_prefix="/editor_query")
 app.register_blueprint(query, url_prefix="/associate_query")
-app.register_blueprint(editor, url_prefix='/editor')
-app.register_blueprint(services, url_prefix='/service')
+app.register_blueprint(editor, url_prefix='/editor') # ~~-> Editor:Blueprint~~
+app.register_blueprint(services, url_prefix='/service') # ~~-> Services:Blueprint~~
 if 'api1' in app.config['FEATURES']:
-    app.register_blueprint(api_v1, url_prefix='/api/v1')
+    app.register_blueprint(api_v1, url_prefix='/api/v1') # ~~-> APIv1:Blueprint~~
 if 'api2' in app.config['FEATURES']:
-    app.register_blueprint(api_v2, url_prefix='/api/v2')
-app.register_blueprint(status, url_prefix='/status')
-app.register_blueprint(apply, url_prefix='/apply')
+    app.register_blueprint(api_v2, url_prefix='/api/v2') # ~~-> APIv2:Blueprint~~
+app.register_blueprint(status, url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, url_prefix='/_status')
-app.register_blueprint(jct, url_prefix="/jct")
+app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
+app.register_blueprint(jct, url_prefix="/jct") # ~~-> JCT:Blueprint~~
 
-app.register_blueprint(oaipmh)
-app.register_blueprint(openurl)
-app.register_blueprint(atom)
-app.register_blueprint(doaj)
+app.register_blueprint(oaipmh) # ~~-> OAIPMH:Blueprint~~
+app.register_blueprint(openurl) # ~~-> OpenURL:Blueprint~~
+app.register_blueprint(atom) # ~~-> Atom:Blueprint~~
+app.register_blueprint(doaj) # ~~-> DOAJ:Blueprint~~
 
 # initialise the index - don't put into if __name__ == '__main__' block,
 # because that does not run if gunicorn is loading the app, as opposed
@@ -74,6 +77,7 @@ initialise_index(app, es_connection)
 
 # serve static files from multiple potential locations
 # this allows us to override the standard static file handling with our own dynamic version
+# ~~-> Assets:WebRoute~~
 # @app.route("/static_content/<path:filename>")
 @app.route("/static/<path:filename>")
 @app.route("/assets/<path:filename>")
@@ -90,6 +94,7 @@ def custom_static(path):
 
 
 # Configure the Google Analytics tracker
+# ~~-> GoogleAnalytics:ExternalService~~
 from portality.lib import analytics
 try:
     analytics.create_logfile(app.config.get('GOOGLE_ANALTYICS_LOG_DIR', None))
@@ -108,6 +113,7 @@ except analytics.GAException as e:
 # alongside the DOAJ codebase.  I know they could also go into the
 # nginx config, but there is a chance that they will get lost or forgotten
 # some day, whereas this approach doesn't have that risk.
+# ~~-> Legacy:WebRoute~~
 @app.route("/doaj")
 def legacy():
     func = request.values.get("func")
@@ -128,7 +134,9 @@ def legacy():
 def another_legacy_csv_route():
     return redirect("/csv"), 301
 
+###################################################
 
+# ~~-> DOAJArticleXML:Schema~~
 @app.route("/schemas/doajArticles.xsd")
 def legacy_doaj_XML_schema():
     schema_fn = 'doajArticles.xsd'
@@ -138,6 +146,7 @@ def legacy_doaj_XML_schema():
             )
 
 
+# ~~-> CrossrefArticleXML:WebRoute~~
 @app.route("/isCrossrefLoaded")
 def is_crossref_loaded():
     if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").isAlive():
@@ -149,6 +158,7 @@ def is_crossref_loaded():
 # FIXME: this used to calculate the site stats on request, but for the time being
 # this is an unnecessary overhead, so taking it out.  Will need to put something
 # equivalent back in when we do the admin area
+# ~~-> SiteStats:Feature~~
 @app.context_processor
 def set_current_context():
     """ Set some template context globals. """
@@ -168,6 +178,9 @@ def set_current_context():
         "current_year": datetime.now().strftime('%Y'),
         }
 
+
+# Jinja2 Template Filters
+# ~~-> Jinja2:Environment~~
 
 @app.template_filter("bytesToFilesize")
 def bytes_to_filesize(size):
@@ -265,6 +278,8 @@ def form_diff_table_subject_expand(val):
     return ", ".join(results)
 
 
+#######################################################
+
 @app.context_processor
 def search_query_source_wrapper():
     def search_query_source(**params):
@@ -272,6 +287,8 @@ def search_query_source_wrapper():
     return dict(search_query_source=search_query_source)
 
 
+# ~~-> Account:Model~~
+# ~~-> AuthNZ:Feature~~
 @app.before_request
 def standard_authentication():
     """Check remote_user on a per-request basis."""
@@ -291,6 +308,8 @@ def standard_authentication():
 
 
 # Register configured API versions
+# ~~-> APIv1:Blueprint~~
+# ~~-> APIv2:Blueprint~~
 features = app.config.get('FEATURES', [])
 if 'api1' in features or 'api2' in features:
     @app.route('/api/')
@@ -324,6 +343,7 @@ if 'api1' in features or 'api2' in features:
 
 
 # Make the reCAPTCHA key available to the js
+# ~~-> ReCAPTCHA:ExternalService~~
 @app.route('/get_recaptcha_site_key')
 def get_site_key():
     return app.config.get('RECAPTCHA_SITE_KEY', '')

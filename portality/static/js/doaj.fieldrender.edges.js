@@ -2110,7 +2110,7 @@ $.extend(true, doaj, {
                 this.doaj_url = params.doaj_url;
             }
             else {
-                this.doaj_url = "https://doaj.org"
+                this.doaj_url = ""
             }
 
             this.actions = edges.getParam(params.actions, []);
@@ -2236,7 +2236,8 @@ $.extend(true, doaj, {
                 var apcs = '<li>';
                 if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
                     apcs += "APCs: ";
-                    for (var i = 0; i < resultobj.bibjson.apc.max.length; i++) {
+                    let length = resultobj.bibjson.apc.max.length;
+                    for (var i = 0; i < length; i++) {
                         apcs += "<strong>";
                         var apcRecord = resultobj.bibjson.apc.max[i];
                         if (apcRecord.hasOwnProperty("price")) {
@@ -2244,6 +2245,9 @@ $.extend(true, doaj, {
                         }
                         if (apcRecord.currency) {
                             apcs += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
+                        }
+                        if (i < length - 1) {
+                            apcs += ', ';
                         }
                         apcs += "</strong>";
                     }
@@ -2966,7 +2970,8 @@ $.extend(true, doaj, {
                 var apcs = '<li>';
                 if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
                     apcs += "APCs: ";
-                    for (var i = 0; i < resultobj.bibjson.apc.max.length; i++) {
+                    let length = resultobj.bibjson.apc.max.length;
+                    for (var i = 0; i < length; i++) {
                         apcs += "<strong>";
                         var apcRecord = resultobj.bibjson.apc.max[i];
                         if (apcRecord.hasOwnProperty("price")) {
@@ -2974,6 +2979,9 @@ $.extend(true, doaj, {
                         }
                         if (apcRecord.currency) {
                             apcs += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
+                        }
+                        if (i < length - 1) {
+                            apcs += ', ';
                         }
                         apcs += "</strong>";
                     }

@@ -269,7 +269,7 @@ class DataObj(object):
         "license": string_canonicalise(["CC BY", "CC BY-NC", "CC BY-NC-ND", "CC BY-NC-SA", "CC BY-ND", "CC BY-SA", "Not CC-like"], allow_fail=True),
         "persistent_identifier_scheme": string_canonicalise(["None", "DOI", "Handles", "ARK"], allow_fail=True),
         "format": string_canonicalise(["PDF", "HTML", "ePUB", "XML"], allow_fail=True),
-        "deposit_policy": string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Héloïse", "Diadorim"], allow_fail=True),
+        "deposit_policy": string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Diadorim"], allow_fail=True),
     }
 
     def __init__(self, raw=None, struct=None, construct_raw=True, expose_data=False, properties=None, coerce_map=None, construct_silent_prune=False, construct_maintain_reference=False, *args, **kwargs):
