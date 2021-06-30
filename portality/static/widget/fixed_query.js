@@ -4,7 +4,7 @@ let parser = document.createElement('a');
 parser.href = script.attributes.src.value;
 var doaj_url = parser.protocol + '//' + parser.host;
 
-    let jQuery;
+let jQuery;
 
 (function(){
     /******** Load jQuery if not present *********/
@@ -12,6 +12,8 @@ var doaj_url = parser.protocol + '//' + parser.host;
         let script_tag = document.createElement("script");
         script_tag.setAttribute("type","text/javascript");
         script_tag.setAttribute("src", doaj_url + '/static/vendor/jquery-3.4.1/jquery-3.4.1.min.js');
+        // Try to find the head, otherwise default to the documentElement
+        (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
         if (script_tag.readyState) {
             script_tag.onreadystatechange = function () { // For old versions of IE
                 if (this.readyState === "complete" || this.readyState === "loaded") {
@@ -21,8 +23,6 @@ var doaj_url = parser.protocol + '//' + parser.host;
         } else { // Other browsers
             script_tag.onload = main;
         }
-        // Try to find the head, otherwise default to the documentElement
-        (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
     } else {
         // The jQuery version on the window is the one we want to use
         // jQuery = window.jQuery;
@@ -61,10 +61,8 @@ var doaj_url = parser.protocol + '//' + parser.host;
 
     /******** Our main function ********/
     function main() {
-        loadCustomScript();
-
-
             $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));
+            loadCustomScript();
 
             $.ajax({
                 type: "POST",
@@ -72,5 +70,4 @@ var doaj_url = parser.protocol + '//' + parser.host;
                 url: doaj_url + "/fqw_hit",
                 data: {embedding_page: window.location.href}
             });
-
     }
