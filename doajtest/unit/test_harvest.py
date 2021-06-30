@@ -40,28 +40,24 @@ class TestHarvester(DoajTestCase):
 
         app.config['HARVESTER_API_KEYS'] = {self.publisher.id: self.publisher.api_key}
 
-        today = datetime.today().strftime('%Y-%m-%d')
-        app.config["INITIAL_HARVEST_DATE"] = today
+        self.today = datetime.today().strftime('%Y-%m-%d')
+        app.config["INITIAL_HARVEST_DATE"] = self.today
         copyfile(RESOURCES + 'harvester_resp.json', RESOURCES + 'harvester_resp_temp.json')
         with open(RESOURCES + 'harvester_resp_temp.json') as json_file:
             articles = json.load(json_file)
-
-        articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + today + ' sort_date:"y"',
-        json_file = open(RESOURCES + 'harvester_resp_temp.json', 'w')
-        json.dump(articles, json_file, indent=4)
-        json_file.close()
 
     def tearDown(self):
         super(TestHarvester, self).tearDown()
         app.config['HARVESTER_API_KEYS'] = self.old_harvester_api_keys
         app.config["INITIAL_HARVEST_DATE"] = self.old_initial_harvest_date
-        os.remove(RESOURCES + 'harvester_resp_temp.json')
 
     @patch('portality.tasks.harvester_helpers.epmc.client.EuropePMC.query')
     def test_harvest(self, mock_query):
 
-        with open('resources/harvester_resp_temp.json') as json_file:
+        with open('resources/harvester_resp.json') as json_file:
             articles = json.load(json_file)
+
+        articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + self.today + ' sort_date:"y"',
 
         results = [h_models.EPMCMetadata(r) for r in articles.get("resultList", {}).get("result", [])]
         a = (results, "AoJwgOTOsdfTeDE0ODA4OTIz")
@@ -83,8 +79,10 @@ class TestHarvester(DoajTestCase):
     @patch('portality.lib.httputil.get')
     def test_query(self, mock_get):
 
-        with open('resources/harvester_resp_temp.json') as json_file:
+        with open('resources/harvester_resp.json') as json_file:
             articles = json.load(json_file)
+
+        articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + self.today + ' sort_date:"y"',
 
         mock_get.return_value.status_code = 401
 
