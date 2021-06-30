@@ -6,6 +6,8 @@
 # SUMMARY must be succinct (max. 2-3 short sentences) and can only be a single paragraph
 # URL can include a link to a blog post or any other DOAJ or non-DOAJ page
 
+# ~~Promo:Data~~
+
 - title: Provisional ISSNs versus confirmed ISSNs
   summary: "At DOAJ, the ISSN for your journal must be fully registered _and_ confirmed at the time you submit an application to us. DOAJ does not allow provisional ISSNs."
   url: https://blog.doaj.org/2020/04/21/provisional-issns-versus-confirmed-issns/

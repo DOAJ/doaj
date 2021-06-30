@@ -1,11 +1,6 @@
 project_name: DOAJ
 base_dir: .
 # source_url: defined at run-time
-include:
-  - "*"
-#  - "*.py"
-#  - "*.html"
-#  - "*.md"
 exclude:
   - "*.pyc"
   - "*.png"
@@ -13,11 +8,20 @@ exclude:
   - "*.jpg"
   - "*.ico"
   - "*.jpeg"
-  - ".env"
+  - "*.env"
   - ".gitignore"
   - ".gitmodules"
   - ".python-version"
   - "*.svg"
+  - "frontmatter.yml"
+  - "dev.cfg"
+  - "doajtest/matrices/*"
+  - "docs/data_models/*.txt"
+  - "requirements.txt"
+  - "production.cfg"
+  - "test.cfg"
+  - "setup.py"
+#include:
 exclude_dirs:
   - portality/static/crossref
   - portality/static/vendor
@@ -26,7 +30,7 @@ exclude_dirs:
   - portality/migrate
   - docs/generated
   - cms/fragments
-  - cms/sass/.sass-cache
+  - cms/sass
   - failed_articles
   - history
   - local_store
@@ -35,6 +39,7 @@ exclude_dirs:
   - .git
   - .idea
   - cms/assets/img
+  - doaj.egg-info
 ignore_parse_errors:
   - noop
 delimiter: ~~

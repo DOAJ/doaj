@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "5.0.4"
+DOAJ_VERSION = "5.0.6"
 
 OFFLINE_MODE = False
 
@@ -253,7 +253,7 @@ PASSWORD_RESET_TIMEOUT = 86400
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 #"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
-TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api", "ultra_bulk_delete"]
+TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api", "ultra_bulk_delete", "preservation"]
 
 ROLE_MAP = {
     "editor": [
