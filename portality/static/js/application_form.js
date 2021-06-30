@@ -48,6 +48,7 @@ doaj.af.newBaseApplicationForm = function(params) {
 doaj.af.BaseApplicationForm = class {
     constructor(params) {
         this.form = $(".application_form");
+        this.parsley = this.form.parsley();
         this.context = this.form.attr("data-context");
         this.sections = $(".form-section");
 
@@ -239,7 +240,6 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         let submitButton = this.jq("#submitBtn");
         let draftButton = this.jq("#draftBtn");
-        $(this.tabs[n]).show();
         this.jq("#cannot_save_draft").hide();
         submitButton.hide();
         draftButton.show();
@@ -256,7 +256,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
             submitButton.show().attr("disabled", "disabled");
             draftButton.show();
 
-            this.form.parsley().whenValidate().done(() => {
+            this.parsley.whenValidate().done(() => {
                 this.jq("#cannot-submit-invalid-fields").hide();
                 this.manage_review_checkboxes();
             }).fail(() => {
@@ -278,11 +278,12 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         }
         this.updateStepIndicator();
 
-        // We want the window to scroll to the top, but for some reason in Firefox window.scrollTo(0,0) doesn't
-        // work here.  We think it's a bug in Firefox.  By issuing a small scrollBy first, it somehow snaps
-        // Firefox out of it, and then the scrollTo works.
-        window.scrollBy(-100, -100);
-        window.scrollTo(0,0);
+        $('html').animate({
+            scrollTop: 0
+        }, 500, () => {
+            $(this.tabs[n]).show();
+            $(".nextBtn").blur()
+        })
     };
 
     prepNavigation(clearErrors = true) {
@@ -313,7 +314,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
         this.updateStepIndicator();
         if (clearErrors) {
-            this.form.parsley().reset();
+            this.parsley.reset();
         }
     };
 
@@ -330,7 +331,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
     validateTabs() {
         var that = this;
         for (let i = 0; i < this.tabs.length - 1; i++) {
-            this.form.parsley().whenValidate({
+            this.parsley.whenValidate({
                 group: 'block-' + i
             }).done(() => {
                 that.tabValidationState[i].state = "valid";
@@ -362,16 +363,15 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
 
     next() {
         this.navigate(this.currentTab + 1);
-    };
+    }
 
     prev() {
         this.navigate(this.currentTab - 1, true);
     };
 
     navigate(n, showEvenIfInvalid = false) {
-        // Hide the current tab:
-        // let form = $('#' + '{{ form_id }}');
-        this.form.parsley().whenValidate({
+        //this.currentTab = parseInt(n);
+        this.parsley.whenValidate({
             group: "block-" + this.currentTab
         }).done(() => {
             this.tabValidationState[this.currentTab].state = "valid";
@@ -382,13 +382,24 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         }).fail(() => {
             // $("#validated-" + this.currentTab).val("False");
             this.tabValidationState[this.currentTab].state = "invalid";
+            let that = this;
+            let errFields = $(this.parsley.fields).filter(function(){return (this.validationResult !== true && this.domOptions.group === "block-" + that.currentTab)});
+            let errFirst = $(errFields.first()[0].element);
+            // The Firefox does not handle focus on hidden fields and select2 does not implement this after autofocus on select2 fields
+            // it resolves this issue and fixes: https://github.com/DOAJ/doajPM/issues/2626
+            if ($(errFirst).attr("type") !== "radio"){
+                errFirst.triggerHandler("focus");
+            }
+            else {
+                errFirst.closest("li[tabindex='0']").focus();
+            }
+            //$(".nextBtn").blur();
             if (showEvenIfInvalid){
                 this.currentTab = parseInt(n);
                 this.previousTab = this.currentTab-1;
                 // Otherwise, display the correct tab:
                 this.showTab(this.currentTab);
             }
-
         });
     };
 
@@ -453,7 +464,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         });
 
         // do a pre-validation to highlight any fields that require attention
-        this.form.parsley().validate();
+        this.parsley.validate();
     }
 
     displayableDiffValue(was) {
@@ -558,7 +569,6 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     }
 
     submitapplication() {
-        this.form.parsley();
         if (this.setAllFieldsOptionalIfAppropriate()) {
             this.form.parsley().destroy();
         } else {
@@ -572,7 +582,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         this.form.submit();
     }
 
-    setAllFieldsOptionalIfAppropriate() {``
+    setAllFieldsOptionalIfAppropriate() {
         return (this.statusesNotRequiringValidation.includes(this.jq("#application_status").val()) || this.jq("#make_all_fields_optional").is(":checked"));
     }
 
@@ -585,7 +595,6 @@ doaj.af.newPublicApplicationForm = function(params) {
 doaj.af.PublicApplicationForm = class extends doaj.af.TabbedApplicationForm {
     constructor(params) {
         super(params);
-
         this.draft_id = false;
 
         let draftEl = $("input[name=id]", this.form);
@@ -613,10 +622,9 @@ doaj.af.PublicApplicationForm = class extends doaj.af.TabbedApplicationForm {
             draftEl.val(true);
         }
 
-        let parsleyForm = this.form.parsley();
-        parsleyForm.destroy();
+        this.parsley.destroy();
         this.form.submit();
-    };
+    }
 };
 
 doaj.af.newUpdateRequestForm = function(params) {
@@ -873,6 +881,18 @@ window.Parsley.addValidator("notIf", {
     },
     priority: 1
 });
+
+window.Parsley.addValidator("noScriptTag", {
+    validateString : function(value, parsleyInstance) {
+        return !value.includes("<script>")
+
+    },
+    messages: {
+        en: 'Script tags are not allowed'
+    },
+    priority: 300
+    }
+)
 
 
 ///////////////////////////////////////////////////////////////

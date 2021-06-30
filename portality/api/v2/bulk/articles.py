@@ -43,7 +43,7 @@ class ArticlesBulkApi(Api):
             raise Api401Error()
 
         # convert the data into a suitable article models
-        articles = [ArticlesCrudApi.prep_article(data) for data in articles]
+        articles = [ArticlesCrudApi.prep_article(data, account) for data in articles]
 
         articleService = DOAJ.articleService()
         try:
