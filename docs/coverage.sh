@@ -6,6 +6,7 @@
 # You will need to activate your virtualenv and have coverage installed: pip install coverage
 ###############################################
 
+echo "Running tests for coverage report (this will take a while)"
 # Set up the variables we need for the script
 DOAJ_DOCS="docs/generated"
 BRANCH=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
