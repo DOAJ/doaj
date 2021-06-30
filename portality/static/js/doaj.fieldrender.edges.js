@@ -2055,10 +2055,6 @@ $.extend(true, doaj, {
         },
         PagerRenderer: function (params) {
 
-            this.scroll = edges.getParam(params.scroll, true);
-
-            this.scrollSelector = edges.getParam(params.scrollSelector, "body");
-
             this.numberFormat = edges.getParam(params.numberFormat, false);
 
             this.namespace = "doaj-pager";
@@ -2116,31 +2112,15 @@ $.extend(true, doaj, {
                 }
             };
 
-            this.doScroll = function () {
-                // note we do not use component.jq, because the scroll target could be outside it
-                $("html, body").animate({
-                    scrollTop: $(this.scrollSelector).offset().top
-                }, 1);
-            };
-
             this.goToFirst = function (element) {
-                if (this.scroll) {
-                    this.doScroll();
-                }
                 this.component.setFrom(1);
             };
 
             this.goToPrev = function (element) {
-                if (this.scroll) {
-                    this.doScroll();
-                }
                 this.component.decrementPage();
             };
 
             this.goToNext = function (element) {
-                if (this.scroll) {
-                    this.doScroll();
-                }
                 this.component.incrementPage();
             };
         },

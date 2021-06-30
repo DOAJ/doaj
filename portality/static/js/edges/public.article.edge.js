@@ -198,8 +198,7 @@ $.extend(true, doaj, {
                     id: "top-pager",
                     category: "top-pager",
                     renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scroll: false
+                        numberFormat: countFormat
                     })
                 }),
 
@@ -214,8 +213,7 @@ $.extend(true, doaj, {
                     id: "bottom-pager",
                     category: "bottom-pager",
                     renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scroll: false
+                        numberFormat: countFormat
                     })
                 })
             ];

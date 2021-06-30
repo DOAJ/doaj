@@ -98,16 +98,14 @@ $.extend(true, doaj, {
                     id: "top-pager",
                     category: "top-pager",
                     renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scroll: false
+                        numberFormat: countFormat
                     })
                 }),
                 edges.newPager({
                     id: "bottom-pager",
                     category: "bottom-pager",
                     renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scroll: false
+                        numberFormat: countFormat
                     })
                 }),
 
