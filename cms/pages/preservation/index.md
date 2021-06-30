@@ -14,7 +14,7 @@ Long-term archiving of research resources is of paramount importance for scholar
 
 As a scholarly community, we are pledged to eliminate the possibility that high-value resources can disappear*. Project JASPER aims to close the gap in preservation coverage that currently exists among open access journals.
 
-Any questions about JASPER can be sent to preservation@doaj.org.
+Questions? [Email us](mailto:preservation@doaj.org).
 
 _*References_
 
