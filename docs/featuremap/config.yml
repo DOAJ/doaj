@@ -1,11 +1,6 @@
 project_name: DOAJ
 base_dir: .
 # source_url: defined at run-time
-include:
-  - "*"
-#  - "*.py"
-#  - "*.html"
-#  - "*.md"
 exclude:
   - "*.pyc"
   - "*.png"
