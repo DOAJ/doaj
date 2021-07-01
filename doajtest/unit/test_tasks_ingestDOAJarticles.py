@@ -1798,3 +1798,21 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # and placed into the failed dir
         fad = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
         assert os.path.exists(fad)
+
+    def test_59_same_issns(self):
+        handle = DoajXmlArticleFixtureFactory.upload_the_same_issns()
+        f = FileMockFactory(stream=handle)
+
+        previous = []
+        with self.assertRaises(BackgroundException):
+            id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+
+        assert len(previous) == 1
+        id = previous[0].id
+        self.cleanup_ids.append(id)
+
+        file_upload = models.FileUpload.pull(id)
+
+        assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
+        assert file_upload.error == "Identical ISSNs. ISSNs provided need to be different", "expected error: 'Identical ISSNs. ISSNs provided need to be different', received: {}".format(
+            file_upload.error)

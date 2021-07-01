@@ -1854,3 +1854,41 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
         assert file_upload.error == "Too many ISSNs. Only 2 ISSNs are allowed", "expected error: 'Too many ISSNs. Only 2 ISSNs are allowed', received: {}".format(
             file_upload.error)
+
+    def test_51_same_issns(self):
+        etree.XMLSchema = self.mock_load_schema
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("crossref")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = CrossrefArticleFixtureFactory.upload_the_same_issns()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
+        assert file_upload.error == "Identical ISSNs. ISSNs provided need to be different", "expected error: 'Identical ISSNs. ISSNs provided need to be different', received: {}".format(
+            file_upload.error)
