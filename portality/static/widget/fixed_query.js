@@ -4,8 +4,6 @@ let parser = document.createElement('a');
 parser.href = script.attributes.src.value;
 var doaj_url = parser.protocol + '//' + parser.host;
 
-let jQuery;
-
 (function(){
     /******** Load jQuery if not present *********/
     if (window.jQuery === undefined || window.jQuery.fn.jquery !== "3.4.1") {
@@ -25,7 +23,6 @@ let jQuery;
         }
     } else {
         // The jQuery version on the window is the one we want to use
-        // jQuery = window.jQuery;
         main();
     }
 })();
