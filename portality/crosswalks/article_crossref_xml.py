@@ -193,6 +193,11 @@ Example record:
                 if attrs[0] != 0 and attrs[0] == attrs[1]:
                     raise CrosswalkException(message=Messages.EXCEPTION_ISSNS_OF_THE_SAME_TYPE.format(type=issns[1].attrib["media_type"]))
 
+                #if both issns have the same value - raise the exception
+                if issns[0].text.upper() == issns[1].text.upper():
+                    raise CrosswalkException(
+                        message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN.format(value=issns[0].text.upper()))
+
                 if bool(attrs[0]) != bool(attrs[1]):
                     if attrs[0] != 0:
                         if attrs[0] == "electronic":

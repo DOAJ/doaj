@@ -6,6 +6,7 @@ from doajtest.mocks.ftp import FTPMockFactory
 from doajtest.mocks.file import FileMockFactory
 from doajtest.mocks.response import ResponseMockFactory
 from doajtest.mocks.xwalk import XwalkMockFactory
+from portality.crosswalks.exceptions import CrosswalkException
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
@@ -1800,19 +1801,36 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert os.path.exists(fad)
 
     def test_59_same_issns(self):
-        handle = DoajXmlArticleFixtureFactory.upload_the_same_issns()
-        f = FileMockFactory(stream=handle)
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save(blocking=True)
 
-        previous = []
-        with self.assertRaises(BackgroundException):
-            id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
 
-        assert len(previous) == 1
-        id = previous[0].id
-        self.cleanup_ids.append(id)
+        job = models.BackgroundJob()
 
-        file_upload = models.FileUpload.pull(id)
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("doaj")
+        file_upload.upload("testowner", "filename.xml")
 
-        assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
-        assert file_upload.error == "Identical ISSNs. ISSNs provided need to be different", "expected error: 'Identical ISSNs. ISSNs provided need to be different', received: {}".format(
-            file_upload.error)
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = DoajXmlArticleFixtureFactory.upload_the_same_issns()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed", "expected: failed, received: {}".format(file_upload.status)
+        assert file_upload.error == 'PISSN and EISSN are identical and equal 1234-5678. They must be different', "Expected: 'PISSN and EISSN are identical and equal 1234-5678. They must be different', received: {}".format(file_upload.error)

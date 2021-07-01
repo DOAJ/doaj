@@ -1890,5 +1890,5 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert not os.path.exists(path)
 
         assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
-        assert file_upload.error == "Identical ISSNs. ISSNs provided need to be different", "expected error: 'Identical ISSNs. ISSNs provided need to be different', received: {}".format(
+        assert file_upload.error == "PISSN and EISSN are identical and equal 1234-5678. They must be different", "expected error: 'Identical ISSNs. ISSNs provided need to be different', received: {}".format(
             file_upload.error)
