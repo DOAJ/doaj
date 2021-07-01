@@ -8,7 +8,7 @@ let jQuery;
 
 (function(){
     /******** Load jQuery if not present *********/
-    if (window.jQuery === undefined || window.jQuery.fn.jquery !== "1.9.1") {
+    if (window.jQuery === undefined || window.jQuery.fn.jquery !== "3.4.1") {
         let script_tag = document.createElement("script");
         script_tag.setAttribute("type","text/javascript");
         script_tag.setAttribute("src", doaj_url + '/static/vendor/jquery-3.4.1/jquery-3.4.1.min.js');
@@ -63,8 +63,8 @@ function loadCustomScript() {
 /******** Our main function ********/
 
 function main() {
-    $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));
     $( document ).ready(function() {
+        $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));
         loadCustomScript();
         $.ajax({
             type: "POST",
