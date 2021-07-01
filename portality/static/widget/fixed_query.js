@@ -30,44 +30,47 @@ let jQuery;
     }
 })();
 
-    /******** Load scripts *********/
+/******** Load scripts *********/
 
-    function loadCustomScript() {
-        let head = document.head || document.getElementsByTagName('head')[0];
+function loadCustomScript() {
+    let head = document.head || document.getElementsByTagName('head')[0];
 
-        let scr = document.createElement('link');
-        scr.rel = 'stylesheet';
-        scr.href = doaj_url + '/static/doaj/css/fq_widget.css';
-        head.appendChild(scr);
+    let scr = document.createElement('link');
+    scr.rel = 'stylesheet';
+    scr.href = doaj_url + '/static/doaj/css/fq_widget.css';
+    head.appendChild(scr);
 
-        scr = document.createElement('script');
-        scr.src = doaj_url + '/static/vendor/feather-4.28.0/feather.min.js';
-        scr.async = false;
-        scr.defer = false;
-        head.appendChild(scr);
+    scr = document.createElement('script');
+    scr.src = doaj_url + '/static/vendor/feather-4.28.0/feather.min.js';
+    scr.async = false;
+    scr.defer = false;
+    head.appendChild(scr);
 
-        scr = document.createElement('script');
-        scr.src = doaj_url + '/static/widget/fq_widget_depends_compiled.js';
-        scr.async = false;
-        scr.defer = false;
-        head.appendChild(scr);
+    scr = document.createElement('script');
+    scr.src = doaj_url + '/static/widget/fq_widget_depends_compiled.js';
+    scr.async = false;
+    scr.defer = false;
+    head.appendChild(scr);
 
-        scr = document.createElement('script');
-        scr.src = doaj_url + '/static/widget/fixed_query_src.js';
-        scr.async = false;
-        scr.defer = false;
-        head.appendChild(scr);
-    }
+    scr = document.createElement('script');
+    scr.src = doaj_url + '/static/widget/fixed_query_src.js';
+    scr.async = false;
+    scr.defer = false;
+    head.appendChild(scr);
+}
 
-    /******** Our main function ********/
-    function main() {
-            $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));
-            loadCustomScript();
 
-            $.ajax({
-                type: "POST",
-                crossDomain: true,
-                url: doaj_url + "/fqw_hit",
-                data: {embedding_page: window.location.href}
-            });
-    }
+/******** Our main function ********/
+
+function main() {
+    $('#doaj-fixed-query-widget').append($('<div class="facetview"></div>'));
+    $( document ).ready(function() {
+        loadCustomScript();
+        $.ajax({
+            type: "POST",
+            crossDomain: true,
+            url: doaj_url + "/fqw_hit",
+            data: {embedding_page: window.location.href}
+        });
+    });
+}
