@@ -5,6 +5,10 @@ include: /includes/contribution_rates.html
 title: Support DOAJ
 section: Support
 sticky_sidenav: true
+featuremap:
+ - ~~Support:Fragment->DonationSidenav:Template~~
+ - ~~->ContributionRates:Template~~
+
 ---
 
 Support of DOAJ by academic organisations is vital and we are proud to acknowledge that over 80% of our support comes to us this way. We are very grateful to all our supporting academic organisations from around the world.

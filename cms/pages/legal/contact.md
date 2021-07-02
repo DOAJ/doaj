@@ -3,6 +3,8 @@ layout: no-sidenav
 title: Contact us
 toc: true
 sticky_sidenav: true
+featuremap: ~~ContactUs:Fragment~~
+
 ---
 
 We welcome your feedback, comments and questions about the DOAJ web site and services, or if you have feedback on a journal which is indexed in DOAJ. Please be assured that all communication with us is treated as confidential.

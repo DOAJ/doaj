@@ -1,5 +1,7 @@
 # API Developer Documentation
 
+[comment] <>: (~~API:Documentation~~)
+
 ## Creating API Model objects from Core Model Objects
 
 API Model objects are created by loading the related Core model object
@@ -9,10 +11,10 @@ data is removed prior to exposure.
 
 For example:
 
-* Load the Suggestion model from the database (e.g. by ID).  This contains things like
+* Load the Application model from the database (e.g. by ID).  This contains things like
 notes, other admin data, workflow information, etc.  We don't want to expose that.
 
-* Extract the "data" property (the raw python data structure which backs the Suggestion)
+* Extract the "data" property (the raw python data structure which backs the Application)
 
 * Pass the data into the OutgoingApplication model.  In this case, prior to constructing
 the model object, a data crosswalk from the new archiving_policy data structure to the old
@@ -25,6 +27,9 @@ class OutgoingApplication(OutgoingCommonJournalApplication):
         self._add_struct(BASE_APPLICATION_STRUCT)
         super(OutgoingApplication, self).__init__(raw, construct_silent_prune=True, expose_data=True)
 ```
+
+[comment] <>: (~~->OutgoingApplication:Model~~)
+[comment] <>: (~~->OutgoingCommonJournalApplication:Model~~)
 
 * silent_prune removes all data that is not specified in the BASE_APPLICATION_STRUCT, leaving behind
 a clean object for exposure via the API.
@@ -41,6 +46,8 @@ appropriate "from_model" method on the API model.
 
 ## How Swagger docs are generated from Structs
 
+[comment] <>: (~~->Swagger:Documentation~~)
+
 Each API endpoint provides an additional function where swagger documentation is retrieved.  For example
 "retrieve" on an object type has also "retrieve_swag".
 
@@ -53,6 +60,8 @@ as an example):
 ```python
 IncomingApplication().struct_to_swag(schema_title='Application schema')
 ```
+
+[comment] <>: (~~->IncomingApplication:Model~~)
 
 This code can be included in the "retrieve_swag" function to add the structure of the object to the documentation
 using JSON-schema.  For example:
@@ -67,5 +76,5 @@ Additionally, the Swagger spec can be pre-generated if that's more appropriate, 
 `retrieve_swag` in this example could do something like:
 
 ```python
-return json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'crud_api_application_retrieve_swag.json')))
+return json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v2', 'crud_api_application_retrieve_swag.json')))
 ```

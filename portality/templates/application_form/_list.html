@@ -1,3 +1,5 @@
+{% from "application_form/_value.html" import value %}
+
 <div class="{{ f.name }}__container form__question {% if f.has_conditional %} form__subquestion {% endif %}">
     <a id="question-{{ f.name }}"></a>
     <label>
@@ -43,13 +45,7 @@
         <p class="alert alert--message">
           <strong>WAS:</strong>
           <em>
-            {% if form_diff[f.name].a == 'n' %}
-              No
-            {% elif form_diff[f.name].a == 'y' %}
-              Yes
-            {% else %}
-              {{ form_diff[f.name].a }}
-            {% endif %}
+            {{ value(form_diff[f.name].a, f.name, formulaic_context) }}
           </em>
         </p>
         {% endif %}

@@ -274,8 +274,14 @@ Example record:
             for ctb in contribs:
                 if ctb.attrib["contributor_role"] == 'author':
                     name = _element(ctb, "x:surname", NS)
-                    name = name + ', ' + _element(ctb, "x:given_name", NS)
-                    bibjson.add_author(name, affiliation=None)
+                    e = _element(ctb, "x:given_name", NS)
+                    name = e + ' ' + name if e else name
+                    e = _element(ctb, "x:affiliation", NS)
+                    affiliation = e if e else None
+                    e = _element(ctb, "x:ORCID", NS)
+                    orcid = e if e else None
+                    bibjson.add_author(name, affiliation, orcid)
+
 
         # abstract
         abstract_par = record.find("j:abstract", NS)

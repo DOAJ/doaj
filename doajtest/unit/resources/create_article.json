@@ -1,0 +1,58 @@
+{
+    "id": "abcdefghijk_article",
+    "admin": {
+        "in_doaj": true,
+        "seal": false,
+        "publisher_record_id": "some_identifier",
+        "upload_id": "zyxwvutsrqpo_upload_id"
+    },
+    "bibjson": {
+        "title": "Article Title",
+        "identifier": [
+            {"type": "doi", "id": "10.0000/SOME.IDENTIFIER"},
+            {"type": "pissn", "id": "1234-5678"},
+            {"type": "eissn", "id": "9876-5432"}
+        ],
+        "journal": {
+            "volume": "1",
+            "number": "99",
+            "publisher": "The Publisher",
+            "title": "The Title",
+            "language": ["EN", "FR"],
+            "country": "US"
+        },
+        "year": "1991",
+        "month": "January",
+        "start_page": "3",
+        "end_page": "21",
+        "link": [
+            {
+                "url": "http://www.example.com/article",
+                "type": "fulltext",
+                "content_type": "HTML"
+            }
+        ],
+        "abstract": "This is the abstract for the example article.",
+        "author": [
+            {
+                "name" : "The Author",
+                "affiliation" : "University Cottage Labs",
+                "orcid_id" : "https://orcid.org/0000-0001-1234-1234"
+            }
+        ],
+        "keywords": ["word", "key"],
+        "subject": [
+            {
+                "scheme": "LCC",
+                "term": "Economic theory. Demography",
+                "code": "HB1-3840"
+            },
+            {
+                "scheme": "LCC",
+                "term": "Social Sciences",
+                "code": "H"
+            }
+        ]
+    },
+    "created_date": "2000-01-01T00:00:00Z"
+}

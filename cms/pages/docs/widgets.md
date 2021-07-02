@@ -1,10 +1,11 @@
-
 ---
 layout: sidenav
 title: Widgets
 section: Docs
 toc: true
 sticky_sidenav: true
+featuremap: ~~Widgets:Fragment~~
+
 ---
 
 Widgets are tools that allow you to embed DOAJ into your site. There are two widgets available:

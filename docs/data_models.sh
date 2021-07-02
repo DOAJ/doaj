@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
 # Before running this file you must auto-generate the form documentation using `forms.sh`
 
+# ~~DataModels:Script->Forms:Script~~
+# ~~->FieldDescriptions:Documentation~~
+# ~~->Seamless:Technology~~
+# ~~->DataObj:Technology~~
+# ~~->Journal:Model~~
+# ~~->Application:Model~~
+# ~~->IncomingArticle:Model~~
+# ~~->IncomingApplication:Model~~
+# ~~->OutgoingJournal:Model~~
 
+
+echo "Generating data model documentation"
 # Set up the variables we need for the script
 DOAJ_DOCS="docs/generated"
 BRANCH=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
-BRANCHDIR=$DOAJ_DOCS/$BRANCH/
+BRANCHDIR=$DOAJ_DOCS/$BRANCH
 OUTDIR=$BRANCHDIR/data_models
-FORMFILE=$BRANCHDIR/forms/application.pubic.csv
+FORMFILE=$BRANCHDIR/forms/application.public.csv
 
 # make sure that we have the documentation submodule up-to-date
 git submodule update --init --recursive

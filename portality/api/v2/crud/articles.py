@@ -1,11 +1,13 @@
+import json
+
 from portality.api.v2.crud.common import CrudApi
 from portality.api.v2 import Api400Error, Api401Error, Api403Error, Api404Error, Api500Error
 from portality.api.v2.data_objects.article import IncomingArticleDO, OutgoingArticleDO
+from portality.core import app
 from portality.lib import dataobj
-from portality import models
+from portality import models, app_email
 from portality.bll.doaj import DOAJ
 from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, DuplicateArticleException
-
 from copy import deepcopy
 
 class ArticlesCrudApi(CrudApi):
@@ -70,7 +72,7 @@ class ArticlesCrudApi(CrudApi):
             raise Api401Error()
 
         # convert the data into a suitable article model (raises Api400Error if doesn't conform to struct)
-        am = cls.prep_article(data)
+        am = cls.prep_article(data, account)
 
         articleService = DOAJ.articleService()
         try:
@@ -90,11 +92,29 @@ class ArticlesCrudApi(CrudApi):
 
 
     @classmethod
-    def prep_article(cls, data):
+    def prep_article(cls, data, account):
         # first thing to do is a structural validation, by instantiating the data object
         try:
             ia = IncomingArticleDO(data)
         except dataobj.DataStructureException as e:
+            raise Api400Error(str(e))
+        except dataobj.ScriptTagFoundException as e:
+            email_data = {"article": data, "account": account.__dict__}
+            jdata = json.dumps(email_data, indent=4)
+            # send warning email about the service tag in article metadata detected
+            try:
+                to = app.config.get('SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS')
+                fro = app.config.get("SYSTEM_EMAIL_FROM", "feedback@doaj.org")
+                subject = app.config.get("SERVICE_NAME", "") + " - script tag detected in application metadata"
+                es_type="article"
+                app_email.send_mail(to=to,
+                                     fro=fro,
+                                     subject=subject,
+                                     template_name="email/script_tag_detected",
+                                     es_type=es_type,
+                                     data=jdata)
+            except app_email.EmailException:
+                app.logger.exception('Error sending script tag detection email - ' + jdata)
             raise Api400Error(str(e))
 
         # if that works, convert it to an Article object

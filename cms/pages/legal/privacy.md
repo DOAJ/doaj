@@ -4,6 +4,8 @@ title: Privacy information notice
 section: About
 toc: true
 sticky_sidenav: true
+featuremap: ~~Privacy:Fragment~~
+
 ---
 
 Protecting your privacy is important to us. Please take a few moments to review this Policy.

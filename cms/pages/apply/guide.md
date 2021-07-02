@@ -4,6 +4,8 @@ title: Guide to applying
 section: Apply
 toc: true
 sticky_sidenav: true
+featuremap: ~~GuideToApplying:Fragment~~
+
 ---
 
 Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them. A [PDF version of the application form](/static/doaj/docs/2021-02-17-DOAJQuestions.pdf) is available for reference only.
@@ -45,6 +47,9 @@ Open access journals published in any language may apply.
 - Each article must be available as an individual, full-text article
   - one unique URL per article
   - HTML or PDF, as a minimum
+- Journals that include intrusive advertising will not be accepted. See best practice [recommendations](https://www.doaj.org/apply/transparency) for advertising. 
+- DOAJ does not approve of the use of Impact Factors. However, we acknowledge that the only official Impact Factor is that created by Clarivate. Journals must not display Impact Factors/similar rankings from any other service
+- The website does not need to be in English. If the site is available in multiple languages the information provided must be the same in all languages.
 
 The following information must be available online, and easily accessible from the journal homepage:
 
@@ -83,9 +88,12 @@ The following information must be available online, and easily accessible from t
   - The editorial board must be listed on the website.
   - The name and affiliation of all editors and board members must be included.
   - If the journal is run by a student body, it must have an advisory board of which at least two members have a PhD or equivalent.
+  - The editorial board for the journal should consist of at least five people. It is recommended that board members should not all come from the same institution.
 - All articles must pass through a quality control system (peer review) before publication.
   - The type and details of the peer review process must be stated clearly on the website.
 - Use of a plagiarism checking service is recommended, but not required for inclusion in DOAJ.
+- Endogeny should be minimised.
+  - The proportion of published papers where at least one of the authors is an editor, editorial board member or reviewer, or affiliated to the journal's institution must not exceed 20%, based on the research content of the latest two issues.
 
 ---
 
@@ -130,6 +138,8 @@ The following information must be available online, and easily accessible from t
    - For a journal to be included in DOAJ, all content published after it has flipped must be completely open access.
 - ### Mirror journals
    - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
+- ### Book review journals
+   - Journals consisting only of book reviews will not be accepted. 
   
 ---
 
@@ -184,25 +194,14 @@ Further reading and examples are [available on our blog](https://blog.doaj.org/?
 The time from submission to decision varies greatly and is dependent on the responsiveness of the journal contact and/or applicant. Generally a decision is reached within three months.
 We cannot provide a status update for applications which are less than three months old.
 
----
-
-## Updating your journal record
-
-For journals that have been accepted into DOAJ, it is important that the information we hold about them is up to date. 
-
-You can update the journal information via our API or by logging into your account and going to your Publisher dashboard. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button, next to each journal record, to submit an update request to us.
-
-A journal update request form will open with the current answers pre-filled. Change any answers that need to be updated. If you haven't updated the journal since before November 2020, when we revised the form, we suggest that you review every answer. Note that some questions may not have an answer, as new questions were added in November 2020.
-
-Once you have amended and reviewed the answers, submit the update request to us.
-
-Update requests are reviewed by the DOAJ editorial team for accuracy and we aim to process them within six weeks of submission.
 
 ---
 
 ## If your application is rejected
 
 You will receive an email giving the reasons for rejection of the application. Unless otherwise advised by DOAJ staff, you may not submit another application for the same journal until 6 months after the date of the notification of rejection.
+
+If your application was rejected due to an unconfirmed ISSN, we may be able to reopen the application if the ISSN is confirmed within 3 months of the DOAJ rejection. Send an email to the [DOAJ Helpdesk](mailto:helpdesk@doaj.org).
 
 You are responsible for providing accurate information when submitting an application. Applications that contain information that is inaccurate or wrong, or that have answers missing, are automatically rejected. 
 In cases where journal information is found to be untrue or misleading, DOAJ may decide not to allow further applications from the publisher for a period of up to three years.
@@ -217,7 +216,7 @@ Please ensure that, if you do apply again after the exclusion period, the journa
 
 ## Appeals
 
-If you would like to appeal against a decision to reject your application for more than 6 months or remove your journal from DOAJ, send an email to the DOAJ Managing Editors, [managing-editors@doaj.org](mailto:managing-editors@doaj.org).
+You may submit an appeal if your journal has been removed from DOAJ, or your application has been rejected and no new application is allowed for at least a year. Send an email to the [DOAJ Appeals Committee](mailto:appeals@doaj.org).
 
 The appeal should contain the following information:
 - Journal title
@@ -229,6 +228,21 @@ The appeal should contain the following information:
 Appeals are considered by the DOAJ Appeals Committee, consisting of the Editor-in-Chief and members of the editorial team. Committee meetings are held monthly. After your case is discussed a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
+
+---
+
+## Updating your journal record
+
+For journals that have been accepted into DOAJ, it is important that the information we hold about them is up to date. 
+
+You can update the journal information via our API or by logging into your account and going to your Publisher dashboard. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button, next to each journal record, to submit an update request to us.
+
+A journal update request form will open with the current answers pre-filled. Change any answers that need to be updated. If you haven't updated the journal since before November 2020, when we revised the form, we suggest that you review every answer. Note that some questions may not have an answer, as new questions were added in November 2020.
+
+Once you have amended and reviewed the answers, submit the update request to us.
+
+Update requests are reviewed by the DOAJ editorial team for accuracy and we aim to process them within six weeks of submission.
+
 
 ---
 

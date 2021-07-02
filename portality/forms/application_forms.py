@@ -31,7 +31,7 @@ from portality.forms.validate import (
     BigEndDate,
     ReservedUsernames,
     CustomRequired,
-    OwnerExists
+    OwnerExists, NoScriptTag
 )
 
 from portality.datasets import language_options, country_options, currency_options
@@ -146,7 +146,8 @@ class FieldDefinitions:
             "doaj_criteria": "Title in application form, title at ISSN and website must all match"
         },
         "validate": [
-            {"required": {"message": "Enter the journal’s name"}}
+            {"required": {"message": "Enter the journal’s name"}},
+            "no_script_tag"
         ],
         "widgets": [
             "trim_whitespace",
@@ -173,6 +174,9 @@ class FieldDefinitions:
         "help": {
             "placeholder": "Ma revue"
         },
+        "validate": [
+            "no_script_tag"
+        ],
         "widgets": [
             "trim_whitespace",
             {"full_contents" : {"empty_disabled" : "[The journal has no alternative title]"}}
@@ -1235,7 +1239,6 @@ class FieldDefinitions:
         "options": [
             {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo", "subfields": ["deposit_policy_url"]},
             {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
-            {"display": "Héloïse", "value": "Héloïse", "subfields": ["deposit_policy_url"]},
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
             {"display": "Other (including publisher’s own site)", "value": "other", "subfields": ["deposit_policy_other", "deposit_policy_url"]},
             {"display": "<em>The journal has no repository policy</em>", "value": "none", "exclusive": True}
@@ -1283,7 +1286,6 @@ class FieldDefinitions:
         "input": "text",
         "conditional": [{"field": "deposit_policy", "value": "Sherpa/Romeo"},
                         {"field": "deposit_policy", "value": "Dulcinea"},
-                        {"field": "deposit_policy", "value": "Héloïse"},
                         {"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
@@ -1308,7 +1310,6 @@ class FieldDefinitions:
                             "value": [
                                 "Sherpa/Romeo",
                                 "Dulcinea",
-                                "Héloïse",
                                 "Diadorim",
                                 "other"
                             ]
@@ -1325,7 +1326,6 @@ class FieldDefinitions:
                             "value": [
                                 "Sherpa/Romeo",
                                 "Dulcinea",
-                                "Héloïse",
                                 "Diadorim",
                                 "other"
                             ]
@@ -2463,6 +2463,18 @@ class JournalURLInPublicDOAJBuilder:
     def wtforms(field, settings):
         return JournalURLInPublicDOAJ(message=settings.get("message"))
 
+class NoScriptTagBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-no-script-tag"] = ""
+        if "message" in settings:
+            html_attrs["data-parsley-noScriptTag-message"] = "<p><small>" + settings["message"] + "</small></p>"
+        else:
+            html_attrs["data-parsley-no-script-tag-message"] = "<p><small>" + "No script tags allowed" + "</p></small>"
+
+    @staticmethod
+    def wtforms(field, settings):
+        return NoScriptTag(settings.get("value"))
 
 class OptionalIfBuilder:
     @staticmethod
@@ -2625,7 +2637,8 @@ PYTHON_FUNCTIONS = {
             "group_member" : GroupMemberBuilder.render,
             "not_if" : NotIfBuildier.render,
             "required_value" : RequiredValueBuilder.render,
-            "bigenddate": BigEndDateBuilder.render
+            "bigenddate": BigEndDateBuilder.render,
+            "no_script_tag": NoScriptTagBuilder.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -2646,7 +2659,8 @@ PYTHON_FUNCTIONS = {
             "required_value" : RequiredValueBuilder.wtforms,
             "bigenddate": BigEndDateBuilder.wtforms,
             "reserved_usernames" : ReservedUsernamesBuilder.wtforms,
-            "owner_exists" : OwnerExistsBuilder.wtforms
+            "owner_exists" : OwnerExistsBuilder.wtforms,
+            "no_script_tag": NoScriptTagBuilder.wtforms
         }
     }
 }
@@ -2701,9 +2715,9 @@ class ListWidgetWithSubfields(object):
         html = ['<%s %s>' % (self.html_tag, html_params(**kwargs))]
         for subfield in field:
             if self.prefix_label:
-                html.append('<li>%s %s' % (subfield.label, subfield(**kwargs)))
+                html.append('<li tabindex=0>%s %s' % (subfield.label, subfield(**kwargs)))
             else:
-                html.append('<li>%s %s' % (subfield(**kwargs), subfield.label))
+                html.append('<li tabindex=0>%s %s' % (subfield(**kwargs), subfield.label))
 
             html.append("</li>")
 

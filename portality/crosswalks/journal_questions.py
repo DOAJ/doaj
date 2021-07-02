@@ -27,7 +27,6 @@ class Journal2QuestionXwalk(object):
         ("eissn", "Journal EISSN (online version)"),
         ("continues", "Continues"),
         ("continued_by", "Continued By"),
-        ("discontinued_date", "Discontinued Date"),
         ("institution_name", "Society or institution"),
         ("keywords", "Keywords"),
         ("language", "Languages in which the journal accepts manuscripts"),
@@ -195,7 +194,7 @@ class Journal2QuestionXwalk(object):
         apcs = []
         for apc_charge in forminfo.get("apc_charges", []):
             apcs.append(str(apc_charge.get("apc_max")) + " " + apc_charge.get("apc_currency"))
-        kvs.append((cls.q("apc_charges"), ", ".join(apcs)))
+        kvs.append((cls.q("apc_charges"), "; ".join(apcs)))
 
         kvs.append((cls.q("has_waiver"), yes_no_or_blank(forminfo.get("has_waiver"))))
         kvs.append((cls.q("waiver_url"), forminfo.get("waiver_url")))
@@ -210,7 +209,7 @@ class Journal2QuestionXwalk(object):
             dap.append(forminfo.get("preservation_service_other"))
         if "none" in dap: dap.remove("none")
         kvs.append((cls.q("preservation_service"), ", ".join(dap)))
-        kvs.append((cls.q("preservation_service_library"), ", ".join(forminfo.get("preservation_service_library", []))))
+        kvs.append((cls.q("preservation_service_library"), "; ".join(forminfo.get("preservation_service_library", []))))
         kvs.append((cls.q("preservation_service_url"), forminfo.get("preservation_service_url")))
 
         deposit_policies = other_list("deposit_policy", "deposit_policy_other", "other")
@@ -228,9 +227,8 @@ class Journal2QuestionXwalk(object):
 
         kvs.append((cls.q("continues"), ", ".join(forminfo.get("continues"))))
         kvs.append((cls.q("continued_by"), ", ".join(forminfo.get("continued_by"))))
-        kvs.append((cls.q("discontinued_date"), forminfo.get("discontinued_date")))
 
-        kvs.append((cls.q("subject"), ", ".join(forminfo.get("subject"))))
+        kvs.append((cls.q("subject"), "|".join(forminfo.get("subject"))))
 
         return kvs
 
@@ -248,6 +246,10 @@ class Journal2QuestionXwalk(object):
             """ Some of the work of undoing yes_or_blank() """
             return 'y' if x == 'Yes' else ''
 
+        def _y_n_or_blank(x):
+            """ Undoing yes_no_or_blank() to 'y' or 'n' ONLY """
+            return 'y' if x == 'Yes' else 'n' if x != '' else None
+
         def _unfurl_apc(x):
             """ Allow an APC update by splitting the APC string from the spreadsheet """
             apcs = []
@@ -261,7 +263,8 @@ class Journal2QuestionXwalk(object):
             'license': lambda x: [lic.strip() for lic in x.split(',')],
             'publication_time_weeks': lambda x: int(x),
             'apc': _y_or_blank,
-            'apc_charges': _unfurl_apc
+            'apc_charges': _unfurl_apc,
+            'has_waiver': _y_n_or_blank
             # Country names to codes for institution, publisher
         }
 
