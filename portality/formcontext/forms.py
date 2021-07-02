@@ -13,7 +13,7 @@ from portality.core import app
 
 from portality.formcontext.fields import DOAJSelectField, DOAJSelectMultipleField, URLField, TagListField, DisabledTextField, PermissiveSelectField, OptionalRadioField
 from portality.forms.validate import HTTPURL, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, \
-    MaxLen, RegexpOnTagList, ReservedUsernames, ThisOrThat
+    MaxLen, RegexpOnTagList, ReservedUsernames, ThisOrThat, DifferentTo
 
 from portality.formcontext.choices import Choices
 
@@ -675,8 +675,8 @@ class ArticleForm(Form):
     fulltext = StringField("Full-text URL", [OptionalIf("doi", "You must provide the Full-Text URL or the DOI"), validators.URL()])
     publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
     publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
-    pissn = DOAJSelectField("Print", [ThisOrThat("eissn", "Either this field or Online ISSN is required")], choices=[]) # choices set at construction
-    eissn = DOAJSelectField("Online", [ThisOrThat("pissn", "Either this field or Print ISSN is required")], choices=[]) # choices set at construction
+    pissn = DOAJSelectField("Print", [ThisOrThat("eissn", "Either this field or Online ISSN is required"), DifferentTo("eissn")], choices=[]) # choices set at construction
+    eissn = DOAJSelectField("Online", [ThisOrThat("pissn", "Either this field or Print ISSN is required"), DifferentTo("pissn")], choices=[]) # choices set at construction
 
     volume = StringField("Volume", [validators.Optional()])
     number = StringField("Issue", [validators.Optional()])
