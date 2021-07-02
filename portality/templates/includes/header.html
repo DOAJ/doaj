@@ -11,10 +11,10 @@
                     {% include "includes/svg/logo.svg" %}
                 </a>
             </div>
-            <nav class="col-xs-8 col-sm-6" aria-label="Main actions">
+            <nav class="col-xs-8 col-sm-6">
                 <h2 class="sr-only">Main actions</h2>
                 {% set columns = data.nav.entries|selectattr("primary")|list %}
-                <ul class="nav-bar" role="menubar" id="main_actions" aria-label="Main actions">
+                <ul class="nav-bar" role="menubar" id="main_actions">
                     {% for column in columns %}
                         {% set section_id=column.id %}
                         {% include "includes/header-primary-navigation.html" %}
@@ -40,12 +40,13 @@
         {% set extraClass="secondary-nav--precedes-highlight" %}
     {% endif %}
 {% endif %}
-<nav class="secondary-nav {{ extraClass }}" aria-label="Secondary Nav">
+<nav class="secondary-nav {{ extraClass }}">
+<h2 class="sr-only">Menu</h2>
     <div class="container">
         <div class="secondary-nav__menu-toggle" aria-label="Click to open menu" role="button">
             <span data-feather="menu" aria-hidden="true"></span> <h2 class="secondary-nav__header">Menu</h2>
         </div>
-        <ul class="nav-bar secondary-nav__menu" role="menu" aria-label="Secondary Menu">
+        <ul class="nav-bar secondary-nav__menu" role="menu">
 
             {% set columns = data.nav.entries|selectattr("secondary")|list %}
             {% for column in columns %}
