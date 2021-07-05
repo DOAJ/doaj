@@ -6,7 +6,7 @@ from doajtest.fixtures import ProvenanceFixtureFactory, ApplicationFixtureFactor
 import time, os, shutil, csv, json
 from copy import deepcopy
 
-from portality import clcsv, models
+from portality import models
 from portality.tasks import reporting
 from portality.lib import dates, paths
 
