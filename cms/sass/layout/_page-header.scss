@@ -2,7 +2,11 @@
 
 .page-header {
   height: 150px;
-  
+
+  @media screen and (max-width: 768px) {
+    height: 100px;
+  }
+
   a {
     text-decoration: none;
   }
