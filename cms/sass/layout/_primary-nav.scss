@@ -48,6 +48,10 @@
     }
   }
 
+  .dropdown__trigger {
+    line-height: 75px;
+  }
+
   .dropdown__menu {
     background-color: $warm-black;
     color: $white;
