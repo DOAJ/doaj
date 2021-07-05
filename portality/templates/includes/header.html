@@ -110,35 +110,3 @@
         </ul>
     </div>
 </nav>
-
-{# Flash notifications #}
-{% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-
-        {% set category_url_indicator = '+contains-url' %}
-
-        {% for category, message in messages %}
-            {% set message_has_url = False %}
-            {% if category.endswith(category_url_indicator) %}
-                {% set category = category[:category.rfind(category_url_indicator)] %}
-                {% set message_has_url = True %}
-            {% endif %}
-            {# shift from bs2 to bs3 terminology #}
-            {% if category == "error" %}
-                {% set category = "danger" %}
-            {% endif %}
-            <aside class="container flash_container">
-                <h2 class="sr-only">Notifications</h2>
-                <p class="alert alert--{{category}}">
-                    <span data-feather="alert-octagon" aria-hidden="true"></span>
-                    {% if message_has_url %}
-                        {{ message | safe }}
-                    {% else %}
-                        {{ message }}
-                    {% endif %}
-                    &nbsp;<span class="flash_close alert__close" role="button">(Dismiss)</span>
-                </p>
-            </aside>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
