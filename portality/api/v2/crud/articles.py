@@ -7,7 +7,8 @@ from portality.core import app
 from portality.lib import dataobj
 from portality import models, app_email
 from portality.bll.doaj import DOAJ
-from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, DuplicateArticleException
+from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, DuplicateArticleException, \
+    IngestException
 from copy import deepcopy
 
 class ArticlesCrudApi(CrudApi):
@@ -83,6 +84,9 @@ class ArticlesCrudApi(CrudApi):
             raise Api400Error("; ".join(e.errors))
         except DuplicateArticleException as e:
             raise Api403Error(str(e))
+        except IngestException as e:
+            raise Api400Error(str(e) if str(e) else e.message)
+
 
         # Check we are allowed to create an article for this journal
         if result.get("fail", 0) == 1:

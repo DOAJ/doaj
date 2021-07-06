@@ -141,6 +141,25 @@ class ArticleService(object):
                 raise exceptions.DuplicateArticleException()
         return is_update
 
+    # here we should have the final point of validation for all incoming articles
+    def _sanity_check(self, article):
+        # only 2 issns: one print, one electronic
+        b = article.bibjson()
+        pissn = b.get_identifiers("pissn")
+        eissn = b.get_identifiers("eissn")
+
+        if len(pissn) > 1 or len(eissn) > 1:
+            raise exceptions.IngestException(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
+
+        pissn = b.get_one_identifier("pissn")
+        eissn = b.get_one_identifier("eissn")
+
+        #pissn and eissn identical
+        if pissn == eissn:
+            raise exceptions.IngestException(message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN)
+
+
+
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
 
@@ -180,6 +199,11 @@ class ArticleService(object):
         has_permissions_result = self.has_permissions(account, article, limit_to_account)
         if isinstance(has_permissions_result,dict):
             return has_permissions_result
+
+        try:
+            self._sanity_check(article)
+        except Exception as e:
+            raise e
 
         is_update = 0
         if duplicate_check:
