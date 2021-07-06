@@ -2,21 +2,24 @@
 
 .homepage {
 
-  // Override style for homepage only
+  .page-header {
+    height: auto;
+  }
+
   .primary-nav {
-    top: 0 !important;
+    top: 0 !important; // Top nav sticks on the homepage only
+    transition: all 0.35s;
+  }
+
+  .primary-nav--scrolled {
+    background-color: rgba($light-grey, 0.5);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: $warm-black;
   }
 
   .secondary-nav {
-    background-color: rgba(0, 0, 0, 0.1);
-
-    .nav-bar {
-      border: 0;
-    }
-  }
-
-  .page-content {
-    padding-top: 0;
+    margin-bottom: 25px;
   }
 
   a {
@@ -24,8 +27,7 @@
   }
 
   h3 {
-    margin-top: 0;
-    @include font-serif;
+    margin-top: $spacing-03;
     font-weight: 600;
   }
 
@@ -33,29 +35,50 @@
     color: $dark-grey;
   }
 
-  section {
-    header {
-      margin-bottom: $spacing-05;
-    }
-
-    h2 {
-      margin-bottom: $spacing-04;
-    }
-  }
-
   .page-header {
-    background-color: #F8F3EF;
-    background-image: url('/static/doaj/images/bg/01.jpeg');
-    background-size: cover;
-    background-blend-mode: multiply;
+    background-color: transparent;
+    color: $warm-black;
+
+    button, input {
+      padding: $spacing-03;
+    }
+
+    button[type="submit"] {
+      border: 1px solid $warm-black;
+      background-color: $yellow;
+
+      &:hover, &:active, &:focus {
+        background-color: $warm-black;
+        color: $grapefruit;
+      }
+    }
   }
 
   .page-content > section {
     padding-top: $spacing-05;
     padding-bottom: $spacing-05;
+    
+    h2 {
+      margin-bottom: $spacing-04;
+    }
+  }
+
+  &__background {
+    background: url("data:image/svg+xml,%3Csvg width='673' height='1723' viewBox='0 0 673 1723' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M159.5 1022V1022.5H160C248.642 1022.5 320.5 950.642 320.5 862C320.5 773.358 248.642 701.5 160 701.5C71.3589 701.5 -0.5 773.358 -0.5 862V862.5H0H159.5V1022Z' fill='%23F9D950' stroke='%23F9D950'/%3E%3Cpath d='M352.5 862V862.5H352.501C352.77 950.912 424.525 1022.5 513 1022.5H673H673.5V1022C673.5 937.654 608.438 868.504 525.763 862C608.438 855.496 673.5 786.346 673.5 702V701.5H673H513C424.525 701.5 352.77 773.088 352.501 861.5H352.5V862Z' fill='%23F9D950' stroke='%23F9D950'/%3E%3Cpath d='M320.5 160V160.5H320H160C71.3579 160.5 -0.5 88.6421 -0.5 0V-0.5H0H160C248.642 -0.5 320.5 71.3579 320.5 160Z' fill='%23282624' stroke='%23282624'/%3E%3Cpath d='M320 159.5H320.5V160C320.5 248.642 248.642 320.5 160 320.5H0H-0.5V320C-0.5 231.358 71.3579 159.5 160 159.5H320Z' fill='%23282624' stroke='%23282624'/%3E%3Cpath d='M673.5 0V-0.5H673H353H352.5V0C352.5 82.5511 414.822 150.545 494.983 159.5H353H352.5V160C352.5 248.642 424.358 320.5 513 320.5C601.642 320.5 673.5 248.642 673.5 160V159.5H673H531.017C611.178 150.545 673.5 82.5511 673.5 0Z' fill='%23282624' stroke='%23282624'/%3E%3Cpath d='M-0.5 1564V1564.5H0H159.5H160H160.5H320H320.5V1564C320.5 1475.52 248.912 1403.77 160.5 1403.5V1403.5H160H159.5V1403.5C71.0878 1403.77 -0.5 1475.52 -0.5 1564Z' fill='%233A5959' stroke='%233A5959'/%3E%3Cpath d='M0 1724.5C84.3464 1724.5 153.496 1659.44 160 1576.76C166.504 1659.44 235.654 1724.5 320 1724.5H320.5V1724V1564V1563.5H320H160.5H160H159.5H0H-0.5V1564V1724V1724.5H0Z' fill='%2347A178' stroke='%2347A178'/%3E%3Cpath d='M353 1563.5H352.5V1564C352.5 1652.65 424.358 1724.5 513 1724.5C601.642 1724.5 673.5 1652.65 673.5 1564C673.5 1475.35 601.642 1403.5 513 1403.5H512.5V1404V1563.5H353Z' fill='%23A3C386' stroke='%23A3C386'/%3E%3Cpath d='M320 1373.5H320.5V1373C320.5 1288.66 255.438 1219.5 172.762 1213C255.438 1206.5 320.5 1137.35 320.5 1053V1052.5H320H0H-0.5V1053C-0.5 1137.35 64.5621 1206.5 147.238 1213C64.562 1219.5 -0.5 1288.66 -0.5 1373V1373.5H0H320Z' fill='%233A5959' stroke='%233A5959'/%3E%3Cpath d='M673.5 1213V1212.5H673H513H512.5V1213V1373V1373.5H513C601.642 1373.5 673.5 1301.65 673.5 1213Z' fill='%2347A178' stroke='%2347A178'/%3E%3Cpath d='M352.5 1373V1373.5H353H513H513.5V1373V1213V1212.5H513C424.358 1212.5 352.5 1284.36 352.5 1373Z' fill='%233A5959' stroke='%233A5959'/%3E%3Cpath d='M673.5 1053V1052.5H673H513H512.5V1053V1213V1213.5H513C601.642 1213.5 673.5 1141.65 673.5 1053Z' fill='%2347A178' stroke='%2347A178'/%3E%3Cpath d='M352.5 1213V1213.5H353H513H513.5V1213V1053V1052.5H513C424.358 1052.5 352.5 1124.36 352.5 1213Z' fill='%233A5959' stroke='%233A5959'/%3E%3Cpath d='M320.5 511C320.5 422.358 248.642 350.5 160 350.5C71.3579 350.5 -0.5 422.358 -0.5 511C-0.5 599.642 71.3579 671.5 160 671.5C248.642 671.5 320.5 599.642 320.5 511Z' fill='%23FD5A3B' stroke='%23FD5A3B'/%3E%3Cpath d='M352.5 351V350.5H353C441.642 350.5 513.5 422.358 513.5 511C513.5 599.642 441.642 671.5 353 671.5H352.5V671V351Z' fill='%23FD5A3B' stroke='%23FD5A3B'/%3E%3Cpath d='M673 671.5H673.5V671V351V350.5H673C584.358 350.5 512.5 422.358 512.5 511C512.5 599.642 584.358 671.5 673 671.5Z' fill='%23982E0A' stroke='%23982E0A'/%3E%3C/svg%3E%0A") no-repeat right top;
+    background-size: auto 100%;
   }
 
   &__search {
+    transition: all 0.35s;
+
+    @media screen and (max-width: 1279px) {
+      background-color: rgba($white, 0.85);
+    }
+
+    .container {
+      padding-top: $spacing-05;
+      padding-bottom: $spacing-06;
+    }
 
     .input-group input[type="text"] {
       width: 40%;
@@ -72,66 +95,54 @@
 
   }
 
-  &__about section {
+  &__about article:first-of-type {
     margin-top: $spacing-04;
+    margin-bottom: $spacing-04;
     padding-top: $spacing-04;
     border-width: 0 0 1px 0;
-    border-style: dashed;
-    border-color: $sanguine;
+    border-style: solid;
+    border-color: $light-green;
 
     @media (min-width: 769px) {
       margin-top: 0;
       padding-top: 0;
-      border-width: 0 0 0 1px;
+      border-width: 0 1px 0 0;
     }
   }
 
   &__blog {
-    margin-bottom: $spacing-04;
-
     h3 {
-      @include typescale-06;
+      @include typescale-05;
       line-height: 1.25;
     }
 
     article {
       margin-bottom: $spacing-04;
 
-      // &:first-of-type a {
-      //   margin-top: $spacing-03;
-      //   margin-bottom: $spacing-05;
-      //   display: block;
-      // }
-      //
-      // &:not(:first-of-type) h3 {
-      //   font-size: 1em;
-      // }
+      a {
+        display: block;
+        padding-top: $spacing-03;
+        border-top: 1px solid $grapefruit;
+      }
 
       &:nth-of-type(4) {
         clear: both; // Make sure fifth blog post starts on new line
       }
     }
-
-    .blog-img {
-      background-image: url('/static/doaj/images/bg/06.jpeg');
-      background-size: cover;
-      height: 375px;
-    }
-
-    .twitter-embed {
-      background-color: $fair-pink;
-      text-align: center;
-    }
   }
 
   &__volunteers {
-    background-color: $fair-pink;
-    background-image: url('/static/doaj/images/bg/02.jpeg');
-    background-size: cover;
-    background-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg width='1440' height='963' viewBox='0 0 1440 963' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 803C0 891.366 71.6344 963 160 963L160 643C71.6344 643 0 714.634 0 803Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M160 160C160 248.366 231.634 320 320 320V0C231.634 0 160 71.6344 160 160Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1280 483C1280 571.366 1351.63 643 1440 643V323C1351.63 323 1280 394.634 1280 483Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1120 483C1120 571.366 1048.37 643 960 643V323C1048.37 323 1120 394.634 1120 483Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M800 160C800 71.6344 728.366 0 640 0V320C728.366 320 800 248.366 800 160Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M160 160C160 248.366 88.3656 320 0 320L0 0C88.3656 0 160 71.6344 160 160Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1280 483C1280 571.366 1208.37 643 1120 643V323C1208.37 323 1280 394.634 1280 483Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M160 323C71.6344 323 0 394.634 0 483L9.15527e-05 643C88.3657 643 160 571.366 160 483L160 323Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M960 0C871.634 0 800 71.6344 800 160L800 320C888.366 320 960 248.366 960 160V0Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1120 0C1031.63 0 960 71.6344 960 160L960 320C1048.37 320 1120 248.366 1120 160V0Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M960 643C960 554.634 888.366 483 800 483L640 483C640 571.366 711.634 643 800 643H960Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M960 323C960 411.366 888.366 483 800 483L640 483C640 394.634 711.634 323 800 323H960Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M960 643C871.634 643 800 714.634 800 803L800 963C888.366 963 960 891.366 960 803V643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M960 643C1048.37 643 1120 714.634 1120 803L1120 963C1031.63 963 960 891.366 960 803V643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M320 803C231.634 803 160 874.634 160 963H320V803Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M320 803C231.634 803 160 731.366 160 643H320V803Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M640 643C551.634 643 480 571.366 480 483H640V643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M640 323C551.634 323 480 394.634 480 483H640V323Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M320 963C408.366 963 480 891.366 480 803H320V963Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M320 643C408.366 643 480 714.634 480 803H320V643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M480 483C480 394.634 408.366 323 320 323V483H160C160 571.366 231.634 643 320 643C408.366 643 480 571.366 480 483Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1280 643C1191.63 643 1120 714.634 1120 803H1280V963C1368.37 963 1440 891.366 1440 803C1440 714.634 1368.37 643 1280 643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M640 643C728.366 643 800 714.634 800 803C800 891.366 728.366 963 640 963C551.634 963 480 891.366 480 803C480 714.634 551.634 643 640 643Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M480 0C568.366 0 640 71.6344 640 160C640 248.366 568.366 320 480 320C391.634 320 320 248.366 320 160C320 71.6344 391.634 0 480 0Z' fill='white' fill-opacity='0.025'/%3E%3Cpath d='M1280 0C1368.37 0 1440 71.6344 1440 160C1440 248.366 1368.37 320 1280 320C1191.63 320 1120 248.366 1120 160C1120 71.6344 1191.63 0 1280 0Z' fill='white' fill-opacity='0.025'/%3E%3C/svg%3E%0A");
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: auto 75%;
 
     article {
       margin-bottom: $spacing-05;
+
+      &:nth-of-type(5) {
+        clear: both;
+      }
     }
 
     p {

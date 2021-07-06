@@ -58,7 +58,7 @@
           display: inline-block;
           margin-right: $spacing-01;
           content:  counter(step);
-          background: $fair-pink;
+          background: $light-grey;
           width: 30px;
           height: 30px;
           border: 1px solid rgba($dark-grey, 0.5);
@@ -104,7 +104,7 @@
       }
 
       &:before, ~ li:before {
-        border: 1px dashed rgba($dark-grey, 0.25);
+        border: 1px solid rgba($dark-grey, 0.25);
       }
     }
 
@@ -122,7 +122,7 @@
       }
 
       &:before, ~ li:before {
-        border: 1px dashed rgba($dark-grey, 0.25);
+        border: 1px solid rgba($dark-grey, 0.25);
       }
     }
 

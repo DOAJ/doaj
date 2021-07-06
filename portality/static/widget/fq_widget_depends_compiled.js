@@ -4408,7 +4408,7 @@ $.extend(true, doaj, {
                                 <h3 class="sr-only">Display options</h3>\
                                 <div class="row">\
                                     <form class="col-sm-6" id="sort_by"></form>\
-                                    <form class="col-sm-6 flex-end" id="rpp"></form>\
+                                    <form class="col-sm-6 flex-end-col" id="rpp"></form>\
                                 </div>\
                             </nav>\
                             <nav class="pagination" id="top-pager"></nav>\
@@ -6543,7 +6543,7 @@ $.extend(true, doaj, {
                     actions += '</ul>';
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
@@ -6728,7 +6728,7 @@ $.extend(true, doaj, {
                     published = 'Published ' + name;
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
@@ -6931,7 +6931,7 @@ $.extend(true, doaj, {
                     </li>';
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-4 search-results__main">\
                         <header>\
@@ -7103,7 +7103,7 @@ $.extend(true, doaj, {
 
 
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-4 search-results__main">\
                         <header>\
@@ -7267,7 +7267,7 @@ $.extend(true, doaj, {
                     actions += '</ul>';
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
@@ -7975,4 +7975,3 @@ $.extend(true, edges, {
         }
     }
 });
-

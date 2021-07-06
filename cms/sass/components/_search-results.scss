@@ -14,13 +14,12 @@
   display: block;
   padding: $spacing-04;
   margin-bottom: $spacing-04;
-  background-color: $fair-pink;
   @include typescale-06;
 }
 
 .search-results__main {
   @media (min-width: 769px) {
-    border-right: 1px dashed rgba($dark-grey, 0.25);
+    border-right: 1px solid rgba($dark-grey, 0.25);
   }
 }
 
