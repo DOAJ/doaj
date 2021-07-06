@@ -159,7 +159,6 @@ class ArticleService(object):
             raise exceptions.IngestException(message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN)
 
 
-
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
 
