@@ -1,6 +1,7 @@
 Asset
 BackgroundTask
 Blueprint
+Build
 Config
 Crosswalk
 Data
@@ -11,13 +12,14 @@ Environment
 ExternalService
 Feature
 Fragment
+Framework
 Library
 Model
 Process
 Query
+Regex
 Schema
 Script
-SourceData
 Technology
 Template
 Test

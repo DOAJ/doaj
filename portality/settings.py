@@ -1,85 +1,41 @@
+"""
+~~AppSettings:Config~~
+"""
 import os
-
 from portality import constants
+from portality.lib import paths
 
-# Use these options to place the application into READ ONLY mode
-
-# This puts the UI into READ_ONLY mode
-READ_ONLY_MODE = False
-
-# This puts the cron jobs into READ_ONLY mode
-SCRIPTS_READ_ONLY_MODE = False
+###########################################
+# Application Version information
+# ~~->API:Feature~~
 
 DOAJ_VERSION = "5.0.5"
-
-OFFLINE_MODE = False
-
-# List the features we want to be active (API v1 remains with redirects to v2 features)
-FEATURES = ['api1', 'api2']
-VALID_FEATURES = ['api1', 'api2']
-
 API_VERSION = "2.0.0"
 
-# ========================
-# MAIN SETTINGS
+######################################
+# Deployment configuration
 
-# base path, to the directory where this settings file lives
-BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
-
-BASE_URL = "https://doaj.org"
-if BASE_URL.startswith('https://'):
-    BASE_DOMAIN = BASE_URL[8:]
-elif BASE_URL.startswith('http://'):
-    BASE_DOMAIN = BASE_URL[7:]
-else:
-    BASE_DOMAIN = BASE_URL
-
-BASE_API_URL = "https://doaj.org/api/v2/"
-API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
-API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
-
-# URL used for the journal ToC URL in the journal CSV export
-# NOTE: must be the correct route as configured in view/doaj.py
-JOURNAL_TOC_URL_FRAG = BASE_URL + '/toc/'
-
-# Used when generating external links, e.g. in the API docs
-PREFERRED_URL_SCHEME = 'https'
-
-# Whether the app is running behind a proxy, for generating URLs based on X-Forwarded-Proto
-PROXIED = False
-
-# make this something secret in your overriding app.cfg
-SECRET_KEY = "default-key"
-
-# contact info
-ADMIN_NAME = "DOAJ"
-ADMIN_EMAIL = "sysadmin@cottagelabs.com"
-ADMINS = ["steve@cottagelabs.com", "mark@cottagelabs.com"]
-SYSTEM_EMAIL_FROM = 'feedback@doaj.org'
-CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the future
-ENABLE_EMAIL = True
-ENABLE_PUBLISHER_EMAIL = True
-MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
-CONTACT_FORM_ADDRESS = "feedback+contactform@doaj.org"
-SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS = ["aga@cottagelabs.com"]
-
-# Error logging via email
-SUPPRESS_ERROR_EMAILS = False
-ERROR_LOGGING_EMAIL = 'doaj.internal@gmail.com'
-ERROR_MAIL_HOSTNAME = 'smtp.mailgun.org'
-ERROR_MAIL_USERNAME = None
-ERROR_MAIL_PASSWORD = None
-
-# service info
-SERVICE_NAME = "Directory of Open Access Journals"
-SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
 HOST = '0.0.0.0'
 DEBUG = False
-DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
-DEBUG_TB_INTERCEPT_REDIRECTS = False
 PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
+
+####################################
+# Debug Mode
+
+# PyCharm debug settings
+DEBUG_PYCHARM = False  # do not try to connect to the PyCharm debugger by default
+DEBUG_PYCHARM_SERVER = 'localhost'
+DEBUG_PYCHARM_PORT = 6000
+
+#~~->DebugToolbar:Framework~~
+DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
+DEBUG_TB_INTERCEPT_REDIRECTS = False
+
+#######################################
+# Elasticsearch configuration
+#~~->Elasticsearch:Technology
 
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://localhost:9200') # remember the http:// or https://
@@ -101,68 +57,63 @@ ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
 
-# /status endpoint connection to all app machines
-APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in production.cfg (or dev.cfg etc)
+###########################################
+# Read Only Mode
+#
+# Use these options to place the application into READ ONLY mode
 
-# huey/redis settings
-HUEY_REDIS_HOST = os.getenv('HUEY_REDIS_HOST', '127.0.0.1')
-HUEY_REDIS_PORT = os.getenv('HUEY_REDIS_PORT', 6379)
-HUEY_EAGER = False
+# This puts the UI into READ_ONLY mode
+# ~~->ReadOnlyMode:Feature~~
+READ_ONLY_MODE = False
 
-#  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
-HUEY_SCHEDULE = {
-    "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
-    "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
-    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "35"},
-    "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
-    "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
-    "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
-    "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
-    "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
-    "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
-    "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"}
-}
+# This puts the cron jobs into READ_ONLY mode
+SCRIPTS_READ_ONLY_MODE = False
 
-HUEY_TASKS = {
-    "ingest_articles": {"retries": 10, "retry_delay": 15}
-}
+###########################################
+# Feature Toggles
 
-# PyCharm debug settings
-DEBUG_PYCHARM = False  # do not try to connect to the PyCharm debugger by default
-DEBUG_PYCHARM_SERVER = 'localhost'
-DEBUG_PYCHARM_PORT = 6000
+# ~~->OfflineMode:Feature~~
+OFFLINE_MODE = False
 
-# can anonymous users get raw JSON records via the query endpoint?
-PUBLIC_ACCESSIBLE_JSON = True
+# List the features we want to be active (API v1 remains with redirects to v2 features)
+# ~~->API:Feature~~
+FEATURES = ['api1', 'api2']
+VALID_FEATURES = ['api1', 'api2']
 
-# paths where static content should be served from.
-# * in the order you want them searched
-# * relative to the portality directory
-STATIC_PATHS = [
-    "static",
-    "../cms/assets"
-]
+########################################
+# File Path and URL Path settings
 
-# GitHub base url where static content can be edited by the DOAJ team (you can leave out the trailing slash)
-CMS_EDIT_BASE_URL = "https://github.com/DOAJ/doaj/edit/static_pages/cms"
+# base path, to the directory where this settings file lives
+BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 
-# =======================
-# email settings
+BASE_URL = "https://doaj.org"
+if BASE_URL.startswith('https://'):
+    BASE_DOMAIN = BASE_URL[8:]
+elif BASE_URL.startswith('http://'):
+    BASE_DOMAIN = BASE_URL[7:]
+else:
+    BASE_DOMAIN = BASE_URL
 
-# Settings for Flask-Mail. Set in app.cfg
-MAIL_SERVER = None          # default localhost
-MAIL_PORT = 25              # default 25
-#MAIL_USE_TLS               # default False
-#MAIL_USE_SSL               # default False
-#MAIL_DEBUG                 # default app.debug
-#MAIL_USERNAME              # default None
-#MAIL_PASSWORD              # default None
-#MAIL_DEFAULT_SENDER        # default None
-#MAIL_MAX_EMAILS            # default None
-#MAIL_SUPPRESS_SEND         # default app.testing
+# ~~->API:Feature~~
+BASE_API_URL = "https://doaj.org/api/v2/"
+API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
+API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
 
-# ================================
+# URL used for the journal ToC URL in the journal CSV export
+# NOTE: must be the correct route as configured in view/doaj.py
+# ~~->ToC:WebRoute~~
+JOURNAL_TOC_URL_FRAG = BASE_URL + '/toc/'
+
+# Used when generating external links, e.g. in the API docs
+PREFERRED_URL_SCHEME = 'https'
+
+# Whether the app is running behind a proxy, for generating URLs based on X-Forwarded-Proto
+# ~~->ProxyFix:Framework~~
+PROXIED = False
+
+##################################
 # File store
+# ~~->FileStore:Feature~~
 
 # put this in your production.cfg, to store on S3:
 # STORE_IMPL = "portality.store.StoreS3"
@@ -170,7 +121,6 @@ MAIL_PORT = 25              # default 25
 STORE_IMPL = "portality.store.StoreLocal"
 STORE_TMP_IMPL = "portality.store.TempStore"
 
-from portality.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
 STORE_LOCAL_EXPOSE = False  # if you want to allow files in the local store to be exposed under /store/<path> urls.  For dev only.
@@ -184,8 +134,8 @@ STORE_ANON_DATA_CONTAINER = "doaj-anon-data-placeholder"
 STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
 
-
 # S3 credentials for relevant scopes
+# ~~->S3:Technology~~
 STORE_S3_SCOPES = {
     "anon_data" : {
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
@@ -197,48 +147,43 @@ STORE_S3_SCOPES = {
     },
     # Used by the api_export script to dump data from the api
     "public_data_dump" : {
-
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }
 }
 
+####################################
+# CMS configuration
 
-# ========================
-# workflow email notification settings
-MAN_ED_IDLE_WEEKS = 4      # weeks before an application is considered reminder-worthy
-ED_IDLE_WEEKS = 3           # weeks before the editor is warned about idle applications in their group
-ASSOC_ED_IDLE_DAYS = 10
-ASSOC_ED_IDLE_WEEKS = 3
-
-# Which statuses the notification queries should be filtered to show
-MAN_ED_NOTIFICATION_STATUSES = [
-    constants.APPLICATION_STATUS_PENDING,
-    constants.APPLICATION_STATUS_IN_PROGRESS, constants.APPLICATION_STATUS_COMPLETED,
-    constants.APPLICATION_STATUS_ON_HOLD
-]
-ED_NOTIFICATION_STATUSES = [
-    constants.APPLICATION_STATUS_PENDING,
-    constants.APPLICATION_STATUS_IN_PROGRESS,
-    constants.APPLICATION_STATUS_COMPLETED
-]
-ASSOC_ED_NOTIFICATION_STATUSES = [
-    constants.APPLICATION_STATUS_PENDING,
-    constants.APPLICATION_STATUS_IN_PROGRESS
+# paths where static content should be served from.
+# * in the order you want them searched
+# * relative to the portality directory
+# ~~->CMS:DataStore~~
+STATIC_PATHS = [
+    "static",
+    "../cms/assets"
 ]
 
-# ========================
-# publisher settings
+# GitHub base url where static content can be edited by the DOAJ team (you can leave out the trailing slash)
+#~~->GitHub:ExternalService~~
+CMS_EDIT_BASE_URL = "https://github.com/DOAJ/doaj/edit/static_pages/cms"
 
-# the earliest date accepted on the publisher's 'enter article metadata' form.
-# code will default to 15 years before current year if commented out.
-METADATA_START_YEAR = 1960
+######################################
+# Service Descriptive Text
 
-# tick (on toc) and doaj seal settings
-TICK_THRESHOLD = '2014-03-19T00:00:00Z'
+SERVICE_NAME = "Directory of Open Access Journals"
+SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
 
-# ========================
-# authorisation settings
+###################################
+# Security settings
+
+# make this something secret in your overriding app.cfg
+# ~~->Cookies:Feature~~
+SECRET_KEY = "default-key"
+
+####################################
+# Authorisation settings
+# ~~->AuthNZ:Feature~~
 
 # Can people register publicly? If false, only the superuser can create new accounts
 PUBLIC_REGISTER = True
@@ -278,21 +223,138 @@ ROLE_MAP = {
 SYSTEM_USERNAME = "system"
 RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user accounts with this id
 
-# ========================
-# MAPPING SETTINGS
+
+####################################
+# Email Settings
+# ~~->Email:ExternalService
+
+# Settings for Flask-Mail. Set in app.cfg
+MAIL_SERVER = None          # default localhost
+MAIL_PORT = 25              # default 25
+#MAIL_USE_TLS               # default False
+#MAIL_USE_SSL               # default False
+#MAIL_DEBUG                 # default app.debug
+#MAIL_USERNAME              # default None
+#MAIL_PASSWORD              # default None
+#MAIL_DEFAULT_SENDER        # default None
+#MAIL_MAX_EMAILS            # default None
+#MAIL_SUPPRESS_SEND         # default app.testing
+
+ENABLE_EMAIL = True
+ENABLE_PUBLISHER_EMAIL = True
+
+ADMIN_NAME = "DOAJ"
+ADMIN_EMAIL = "sysadmin@cottagelabs.com"
+ADMINS = ["steve@cottagelabs.com", "mark@cottagelabs.com"]
+
+MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
+CONTACT_FORM_ADDRESS = "feedback+contactform@doaj.org"
+SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS = ["feedback@doaj.org"]
+
+SYSTEM_EMAIL_FROM = 'feedback@doaj.org'
+CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the future
+
+# Error logging via email
+SUPPRESS_ERROR_EMAILS = False
+ERROR_LOGGING_EMAIL = 'doaj.internal@gmail.com'
+ERROR_MAIL_HOSTNAME = 'smtp.mailgun.org'
+ERROR_MAIL_USERNAME = None
+ERROR_MAIL_PASSWORD = None
+
+########################################
+# workflow email notification settings
+# ~~->WorkflowNotifications:Feature~~
+
+MAN_ED_IDLE_WEEKS = 4      # weeks before an application is considered reminder-worthy
+ED_IDLE_WEEKS = 3           # weeks before the editor is warned about idle applications in their group
+ASSOC_ED_IDLE_DAYS = 10
+ASSOC_ED_IDLE_WEEKS = 3
+
+# Which statuses the notification queries should be filtered to show
+MAN_ED_NOTIFICATION_STATUSES = [
+    constants.APPLICATION_STATUS_PENDING,
+    constants.APPLICATION_STATUS_IN_PROGRESS, constants.APPLICATION_STATUS_COMPLETED,
+    constants.APPLICATION_STATUS_ON_HOLD
+]
+ED_NOTIFICATION_STATUSES = [
+    constants.APPLICATION_STATUS_PENDING,
+    constants.APPLICATION_STATUS_IN_PROGRESS,
+    constants.APPLICATION_STATUS_COMPLETED
+]
+ASSOC_ED_NOTIFICATION_STATUSES = [
+    constants.APPLICATION_STATUS_PENDING,
+    constants.APPLICATION_STATUS_IN_PROGRESS
+]
+
+###################################
+# status endpoint configuration
+# ~~->StatusEndpoint:Feature~~
+
+# /status endpoint connection to all app machines
+APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in production.cfg (or dev.cfg etc)
+
+###########################################
+# Background Jobs settings
+# ~~->Huey:Technology~~
+# ~~->Redis:Technology~~
+# ~~->BackgroundTasks:Feature~~
+
+# huey/redis settings
+HUEY_REDIS_HOST = os.getenv('HUEY_REDIS_HOST', '127.0.0.1')
+HUEY_REDIS_PORT = os.getenv('HUEY_REDIS_PORT', 6379)
+HUEY_EAGER = False
+
+#  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
+HUEY_SCHEDULE = {
+    "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
+    "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
+    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "35"},
+    "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
+    "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
+    "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
+    "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
+    "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
+    "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
+    "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"}
+}
+
+HUEY_TASKS = {
+    "ingest_articles": {"retries": 10, "retry_delay": 15}
+}
+
+####################################
+# publisher area settings
+
+# the earliest date accepted on the publisher's 'enter article metadata' form.
+# code will default to 15 years before current year if commented out.
+# ~~->ArticleMetadata:Page~~
+METADATA_START_YEAR = 1960
+
+# tick (on toc) and doaj seal settings
+# ~~->Tick:Feature~~
+TICK_THRESHOLD = '2014-03-19T00:00:00Z'
+
+# ~~->UpdateRequests:Feature~~
+UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"
+
+##############################################
+# Elasticsearch Mappings
+# ~~->Elasticsearch:Technology~~
 
 FACET_FIELD = ".exact"
 
 # an array of DAO classes from which to retrieve the type-specific ES mappings
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
-    "portality.models.Journal",
-    "portality.models.Application",
-    "portality.models.DraftApplication",
-    "portality.models.harvester.HarvestState"
+    "portality.models.Journal", # ~~->Journal:Model~~
+    "portality.models.Application", # ~~->Application:Model~~
+    "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
+    "portality.models.harvester.HarvestState"   # ~~->HarvestState:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
+# ~~->DataObj:Library~~
+# ~~->Seamless:Library~~
 DATAOBJ_TO_MAPPING_DEFAULTS = {
     "unicode": {
         "type": "string",
@@ -439,21 +501,22 @@ DEFAULT_DYNAMIC_MAPPING = {
 
 MAPPINGS = {
     'account': {
-        'account': DEFAULT_DYNAMIC_MAPPING
+        'account': DEFAULT_DYNAMIC_MAPPING  #~~->Account:Model~~
     }
 }
-MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}  #~~->Article:Model~~
+MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING} #~~->Upload:Model~~
+MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING} #~~->Cache:Model~~
+MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}  #~~->LCC:Model~~
+MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->EditorGroup:Model~~
+MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
+MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
+MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
+MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}    #~~->BackgroundJob:Model~~
 
-# ========================
-# QUERY SETTINGS
+#########################################
+# Query Routes
+# ~~->Query:WebRoute~~
 
 QUERY_ROUTE = {
     "query" : {
@@ -463,7 +526,7 @@ QUERY_ROUTE = {
             "query_validator" : "public_query_validator",
             "query_filters" : ["only_in_doaj", "last_update_fallback"],
             "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Journal",
+            "dao" : "portality.models.Journal", # ~~->Journal:Model~~
             "required_parameters" : {"ref" : ["ssw", "public_journal", "subject_page"]}
         },
         "article" : {
@@ -621,7 +684,6 @@ QUERY_FILTERS = {
     "public_source": "portality.lib.query_filters.public_source",
 }
 
-UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"
 
 AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
     "bibjson.publisher.name" : "index.publisher_ac",

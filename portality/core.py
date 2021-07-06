@@ -21,26 +21,48 @@ login_manager = LoginManager()
 
 @login_manager.user_loader
 def load_account_for_login_manager(userid):
+    """
+    ~~LoginManager:Feature->Account:Model~~
+    :param userid:
+    :return:
+    """
     from portality import models
     out = models.Account.pull(userid)
     return out
 
 
 def create_app():
+    """
+    ~~CreateApp:Framework->Flask:Technology~~
+    :return:
+    """
     app = Flask(__name__)
+    # ~~->AppSettings:Config~~
     configure_app(app)
+    #~~->ErrorHandler:Feature~~
     setup_error_logging(app)
+    #~~->Jinja2:Environment~~
     setup_jinja(app)
+    #~~->CrossrefXML:Feature~~
     app.config["LOAD_CROSSREF_THREAD"] = threading.Thread(target=load_crossref_schema, args=(app, ), daemon=True)
     app.config["LOAD_CROSSREF_THREAD"].start()
+    #~~->LoginManager:Feature~~
     login_manager.init_app(app)
+    #~~->CORS:Framework~~
     CORS(app)
+    #~~->APM:Feature~~
     initialise_apm(app)
+    #~~->DebugToolbar:Framework~~
     DebugToolbarExtension(app)
+    #~~->ProxyFix:Framework~~
     proxyfix(app)
+    #~~->CMS:Build~~
     build_statics(app)
     return app
 
+
+##################################################
+# Configure the App
 
 def configure_app(app):
     """
@@ -104,7 +126,15 @@ application configuration (settings.py or app.cfg).
     return env
 
 
+################################################
+# Crossref setup
+
 def load_crossref_schema(app):
+    """
+    ~~CrossrefXML:Feature->CrossrefXML:Schema~~
+    :param app:
+    :return:
+    """
     schema_path = app.config["SCHEMAS"].get("crossref")
 
     if not app.config.get("CROSSREF_SCHEMA"):
@@ -117,17 +147,17 @@ def load_crossref_schema(app):
                 message="There was an error attempting to load schema from " + schema_path, inner=e)
 
 
-def create_es_connection(app):
-    # temporary logging config for debugging index-per-type
-    #import logging
-    #esprit.raw.configure_logging(logging.DEBUG)
 
+############################################
+# Elasticsearch initialisation
+
+def create_es_connection(app):
+    # ~~ElasticConnection:Framework->Elasticsearch:Technology~~
     # make a connection to the index
     if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
         conn = esprit.raw.Connection(host=app.config['ELASTIC_SEARCH_HOST'], index='')
     else:
         conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
-
     return conn
 
 
@@ -161,6 +191,12 @@ def put_mappings(conn, mappings):
 
 
 def initialise_index(app, conn):
+    """
+    ~~InitialiseIndex:Framework->Elasticsearch:Technology~~
+    :param app:
+    :param conn:
+    :return:
+    """
     if not app.config['INITIALISE_INDEX']:
         app.logger.warn('INITIALISE_INDEX config var is not True, initialise_index command cannot run')
         return
@@ -176,29 +212,56 @@ def initialise_index(app, conn):
     put_mappings(conn, mappings)
 
 
+##################################################
+# APM
+
 def initialise_apm(app):
+    """
+    ~~APM:Feature->ElasticAPM:Technology~~
+    :param app:
+    :return:
+    """
     if app.config.get('ENABLE_APM', False):
         from elasticapm.contrib.flask import ElasticAPM
         app.logger.info("Configuring Elastic APM")
         apm = ElasticAPM(app, logging=True)
 
 
+##################################################
+# proxyfix
+
 def proxyfix(app):
+    """
+    ~~ProxyFix:Framework~~
+    :param app:
+    :return:
+    """
     if app.config.get('PROXIED', False):
         from werkzeug.middleware.proxy_fix import ProxyFix
         app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 
+##################################################
+# Jinja2
+
 def setup_jinja(app):
+    """
+    Jinja2:Environment->Jinja2:Technology
+    :param app:
+    :return:
+    """
     '''Add jinja extensions and other init-time config as needed.'''
 
     app.jinja_env.add_extension('jinja2.ext.do')
     app.jinja_env.add_extension('jinja2.ext.loopcontrols')
     app.jinja_env.globals['getattr'] = getattr
     app.jinja_env.globals['type'] = type
+    #~~->Constants:Config~~
     app.jinja_env.globals['constants'] = constants
+    #~~->Datasets:Data~~
     app.jinja_env.globals['datasets'] = datasets
     _load_data(app)
+    #~~->CMS:DataStore~~
     app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates',
                                              os.path.dirname(app.config['BASE_FILE_PATH']) + '/cms/fragments'])
 
@@ -221,7 +284,16 @@ def _load_data(app):
         app.jinja_env.globals["data"][dataname] = data
 
 
+##################################################
+# Static Content
+
 def build_statics(app):
+    """
+    ~~CMS:Build->Fragments:Build~~
+    ~~->SASS:Build~~
+    :param app:
+    :return:
+    """
     if not app.config.get("DEBUG", False):
         return
     from portality.cms import build_fragments, build_sass
