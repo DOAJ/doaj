@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# ~~Forms:Script->ApplicationForms:Feature~~
+
 echo "Generating form documentation CSVs"
 # Set up the variables we need for the script
 DOAJ_DOCS="docs/generated"

@@ -4,6 +4,8 @@
 # Execute the test coverage analysis
 #
 # You will need to activate your virtualenv and have coverage installed: pip install coverage
+#
+# ~~TestCoverage:Script->UnitTests:Test~~
 ###############################################
 
 echo "Running tests for coverage report (this will take a while)"

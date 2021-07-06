@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# ~~GeneratedDocsIndex:Script~~
+
 echo "Generating the documentation index file"
 DOAJ_DOCS="docs/generated"
 BRANCH=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)

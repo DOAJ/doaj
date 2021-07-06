@@ -2,24 +2,63 @@
 
 .primary-nav {
   position: fixed;
+  top: 0;
   width: 100vw;
-  z-index: 10;
-  height: 50px;
+  z-index: 3000;
+  height: 75px;
   background-color: $warm-black;
   transition: top 0.3s;
   text-transform: uppercase;
   font-weight: 600;
+  color: $white;
 
   a {
-    color: $warm-white;
+    color: $white;
+  }
+
+  .label {
+    margin: 0 $spacing-02;
+    color: $white;
+  }
+
+  // TODO: Needs to be renamed from secondary-nav since it’s been moved outside of there
+  // Also appears in JS
+  .secondary-nav__menu-toggle {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .secondary-nav__menu-toggle {
+      margin-left: $spacing-03;
+      display: flex;
+      color: $white;
+      stroke: $white;
+    }
+  }
+
+  &--scrolled {
+    top: -75px;
+
+    a,
+    .secondary-nav__menu-toggle,
+    .nav-bar__link,
+    .label {
+      color: $warm-black;
+      stroke: $warm-black;
+    }
+  }
+
+  .dropdown__trigger {
+    line-height: 75px;
   }
 
   .dropdown__menu {
     background-color: $warm-black;
+    color: $white;
   }
 
-  .logo path {
-    fill: $warm-white;
+  .primary-nav__item_desktop, .primary-nav__search {
+    margin-left: $spacing-04;
   }
 
   @media (max-width: 768px) {
@@ -32,16 +71,5 @@
     .primary-nav__item_desktop {
       display: none !important;
     }
-  }
-}
-
-.primary-nav__search {
-  padding: 0 $spacing-03;
-  background-color: $grapefruit;
-  cursor: pointer;
-
-  .feather-search {
-    top: $spacing-01;
-    height: 20px;
   }
 }

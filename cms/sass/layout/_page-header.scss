@@ -1,6 +1,12 @@
 /* Page header */
 
 .page-header {
+  min-height: 150px;
+
+  @media screen and (max-width: 768px) {
+    min-height: 100px;
+  }
+
   a {
     text-decoration: none;
   }

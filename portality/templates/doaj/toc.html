@@ -47,7 +47,6 @@
         set DEPOSIT_POLICY_MAP = {
           "Sherpa/Romeo" : "https://v2.sherpa.ac.uk/cgi/search/publication/basic?publication_title-auto=",
           "Diadorim" : "https://diadorim.ibict.br/simple-search?query=",
-          "Héloïse" : "https://heloise.ccsd.cnrs.fr/search/searchreview?parameter_0=",
           "Dulcinea" : "https://www.accesoabierto.net/dulcinea/lista/REVISTA/",
         }
     %}
@@ -360,7 +359,7 @@
                                                 {%  set policy_data = DEPOSIT_POLICY_MAP.get(policy) %}
                                                 <li>
                                                 {# FIXME: not a big fan of this hard-coding, presumably this could come from config somewhere #}
-                                                    {% if policy == "Sherpa/Romeo" or policy == "Diadorim" or policy == "Héloïse" or policy == "Dulcinea" %}
+                                                    {% if policy == "Sherpa/Romeo" or policy == "Diadorim" or policy == "Dulcinea" %}
                                                         <a href="{{ policy_data|safe }}{{ bibjson.get_preferred_issn() }}" target="_blank" rel="noopener">
                                                             {{ policy }}
                                                         </a>

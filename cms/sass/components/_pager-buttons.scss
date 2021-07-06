@@ -16,15 +16,16 @@
 
 .pager-buttons__left {
   float: left;
-  border: 1px solid $dark-grey;
-  background: $dark-grey;
-  color: $fair-pink;
+  border: 1px solid $warm-black;
+  background: $warm-black;
+  color: $light-grey;
 
   &:hover,
   &:focus,
   &:active {
     border-color: $warm-black;
     background: $warm-black;
+    color: $light-grey;
   }
 }
 
@@ -39,7 +40,7 @@
   &:focus,
   &:active {
     background: $warm-black;
-    color: $warm-white;
+    color: $white;
   }
 }
 
@@ -54,6 +55,6 @@
   &:active {
     border-color: $sanguine;
     background: $sanguine;
-    color: $warm-white;
+    color: $white;
   }
 }
