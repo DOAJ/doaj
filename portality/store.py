@@ -31,7 +31,9 @@ class StoreFactory(object):
         return sm()
 
 class Store(object):
-
+    """
+    ~~FileStore:Feature~~
+    """
     def __init__(self, scope):
         pass
 
@@ -60,6 +62,8 @@ class Store(object):
 class StoreS3(Store):
     """
     Primitive local storage system.  Use this for testing in place of remote store
+    ~~->FileStoreS3:Feature~~
+    ~~!FileStoreS3:Feature->S3:Technology~~
     """
     def __init__(self, scope):
         cfg = app.config.get("STORE_S3_SCOPES", {}).get(scope)
@@ -161,6 +165,9 @@ class StoreS3(Store):
 
 
 class StoreLocal(Store):
+    """
+    ~~->FileStoreLocal:Feature~~
+    """
     def __init__(self, scope):
         self.dir = app.config.get("STORE_LOCAL_DIR")
         if self.dir is None:
@@ -228,6 +235,9 @@ class StoreLocal(Store):
 
 
 class TempStore(StoreLocal):
+    """
+    ~~->FileStoreTemp:Feature~~
+    """
     def __init__(self):
         self.dir = app.config.get("STORE_TMP_DIR")
         if self.dir is None:

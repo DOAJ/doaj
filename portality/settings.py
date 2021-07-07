@@ -57,6 +57,24 @@ ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
 
+#####################################################
+# Elastic APM config  (MUST be configured in env file)
+# ~~->APM:Feature~~
+
+ENABLE_APM = False
+
+ELASTIC_APM = {
+  # Set required service name. Allowed characters:
+  # a-z, A-Z, 0-9, -, _, and space
+  'SERVICE_NAME': '',
+
+  # Use if APM Server requires a token
+  'SECRET_TOKEN': '',
+
+  # Set custom APM Server URL (default: http://localhost:8200)
+  'SERVER_URL': '',
+}
+
 ###########################################
 # Read Only Mode
 #
@@ -82,6 +100,9 @@ VALID_FEATURES = ['api1', 'api2']
 
 ########################################
 # File Path and URL Path settings
+
+# root of the git repo
+ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 
 # base path, to the directory where this settings file lives
 BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -110,6 +131,14 @@ PREFERRED_URL_SCHEME = 'https'
 # Whether the app is running behind a proxy, for generating URLs based on X-Forwarded-Proto
 # ~~->ProxyFix:Framework~~
 PROXIED = False
+
+# directory to upload files to.  MUST be full absolute path
+# The default takes the directory above this, and then down in to "upload"
+UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
+FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "failed_articles")
+
+# directory where reports are output
+REPORTS_BASE_DIR = "/home/cloo/reports/"
 
 ##################################
 # File store
@@ -168,6 +197,14 @@ STATIC_PATHS = [
 #~~->GitHub:ExternalService~~
 CMS_EDIT_BASE_URL = "https://github.com/DOAJ/doaj/edit/static_pages/cms"
 
+# Where static files are served from - in case we need to serve a file
+# from there ourselves using Flask instead of nginx (e.g. to support a
+# legacy route to that file)
+# Changing this will not change the actual folder that Flask serves
+# static files from.
+# http://flask.pocoo.org/snippets/102/
+STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
+
 ######################################
 # Service Descriptive Text
 
@@ -175,11 +212,24 @@ SERVICE_NAME = "Directory of Open Access Journals"
 SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
 
 ###################################
-# Security settings
+# Cookie settings
 
 # make this something secret in your overriding app.cfg
 # ~~->Cookies:Feature~~
 SECRET_KEY = "default-key"
+
+
+# Consent Cookie and other Top-Level dismissable notes
+# ~~->ConsentCookie:Feature~~
+CONSENT_COOKIE_KEY = "doaj-cookie-consent"
+
+# site notes, which can be configured to run any time with any content
+# ~~-> SiteNote:Feature~~
+SITE_NOTE_ACTIVE = False
+SITE_NOTE_KEY = "doaj-site-note"
+SITE_NOTE_SLEEP = 259200    # every 3 days
+SITE_NOTE_COOKIE_VALUE = "You have seen our most recent site wide announcement"
+SITE_NOTE_TEMPLATE = "doaj/site_note.html"
 
 ####################################
 # Authorisation settings
@@ -260,6 +310,9 @@ ERROR_LOGGING_EMAIL = 'doaj.internal@gmail.com'
 ERROR_MAIL_HOSTNAME = 'smtp.mailgun.org'
 ERROR_MAIL_USERNAME = None
 ERROR_MAIL_PASSWORD = None
+
+# Reports email recipient
+REPORTS_EMAIL_TO = ["feedback@doaj.org"]
 
 ########################################
 # workflow email notification settings
@@ -520,6 +573,7 @@ MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}    #~~-
 
 QUERY_ROUTE = {
     "query" : {
+        # ~~->PublicJournalQuery:Endpoint~~
         "journal" : {
             "auth" : False,
             "role" : None,
@@ -529,130 +583,148 @@ QUERY_ROUTE = {
             "dao" : "portality.models.Journal", # ~~->Journal:Model~~
             "required_parameters" : {"ref" : ["ssw", "public_journal", "subject_page"]}
         },
+        # ~~->PublicArticleQuery:Endpoint~~
         "article" : {
             "auth" : False,
             "role" : None,
             "query_validator" : "public_query_validator",
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Article",
+            "dao" : "portality.models.Article", # ~~->Article:Model~~
             "required_parameters" : {"ref" : ["public_article", "toc", "subject_page"]}
         },
         # back-compat for fixed query widget
+        # ~~->PublicJournalArticleQuery:Endpoint~~
         "journal,article" : {
             "auth" : False,
             "role" : None,
             "query_validator" : "public_query_validator",
             "query_filters" : ["only_in_doaj", "strip_facets", "es_type_fix"],
             "result_filters" : ["public_result_filter", "add_fqw_facets", "fqw_back_compat"],
-            "dao" : "portality.models.JournalArticle",
+            "dao" : "portality.models.JournalArticle",  # ~~->JournalArticle:Model~~
             "required_parameters" : {"ref" : ["fqw"]}
         }
     },
     "publisher_query" : {
+        # ~~->PublisherJournalQuery:Endpoint~~
         "journal" : {
             "auth" : True,
             "role" : "publisher",
             "query_filters" : ["owner", "only_in_doaj"],
             "result_filters" : ["publisher_result_filter"],
-            "dao" : "portality.models.Journal"
+            "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
         },
+        # ~~->PublisherApplicationQuery:Endpoint~~
         "applications" : {
             "auth" : True,
             "role" : "publisher",
             "query_filters" : ["owner", "not_update_request"],
             "result_filters" : ["publisher_result_filter"],
-            "dao" : "portality.models.AllPublisherApplications"
+            "dao" : "portality.models.AllPublisherApplications" # ~~->AllPublisherApplications:Model~~
         },
+        # ~~->PublisherUpdateRequestsQuery:Endpoint~~
         "update_requests" : {
             "auth" : True,
             "role" : "publisher",
             "query_filters" : ["owner", "update_request"],
             "result_filters" : ["publisher_result_filter"],
-            "dao" : "portality.models.Application"
+            "dao" : "portality.models.Application"  # ~~->Application:Model~~
         }
     },
     "admin_query" : {
+        # ~~->AdminJournalQuery:Endpoint~~
         "journal" : {
             "auth" : True,
             "role" : "admin",
-            "dao" : "portality.models.Journal"
+            "dao" : "portality.models.Journal"   # ~~->Journal:Model~~
         },
+        # ~~->AdminApplicationQuery:Endpoint~~
         "suggestion" : {
             "auth" : True,
             "role" : "admin",
-            "dao" : "portality.models.Suggestion"
+            "dao" : "portality.models.Suggestion"    # ~~->Application:Model~~
         },
+        # ~~->AdminEditorGroupQuery:Endpoint~~
         "editor,group" : {
             "auth" : True,
             "role" : "admin",
-            "dao" : "portality.models.EditorGroup"
+            "dao" : "portality.models.EditorGroup"   # ~~->EditorGroup:Model~~
         },
+        # ~~->AdminAccountQuery:Endpoint~~
         "account" : {
             "auth" : True,
             "role" : "admin",
-            "dao" : "portality.models.Account"
+            "dao" : "portality.models.Account"   # ~~->Account:Model~~
         },
+        # ~~->AdminJournalArticleQuery:Endpoint~~
         "journal,article" : {
             "auth" : True,
             "role" : "admin",
-            "dao" : "portality.models.search.JournalArticle"
+            "dao" : "portality.models.search.JournalArticle"     # ~~->JournalArticle:Model~~
         },
+        # ~~->AdminBackgroundJobQuery:Endpoint~~
         "background,job" : {
             "auth" : True,
             "role" : "admin",
-            "dao" : "portality.models.BackgroundJob"
+            "dao" : "portality.models.BackgroundJob"     # ~~->BackgroundJob:Model~~
         }
     },
     "associate_query" : {
+        # ~~->AssEdJournalQuery:Endpoint~~
         "journal" : {
             "auth" : True,
             "role" : "associate_editor",
             "query_filters" : ["associate"],
-            "dao" : "portality.models.Journal"
+            "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
         },
+        # ~~->AssEdApplicationQuery:Endpoint~~
         "suggestion" : {
             "auth" : True,
             "role" : "associate_editor",
             "query_filters" : ["associate"],
-            "dao" : "portality.models.Application"
+            "dao" : "portality.models.Application"  # ~~->Application:Model~~
         }
     },
     "editor_query" : {
+        # ~~->EditorJournalQuery:Endpoint~~
         "journal" : {
             "auth" : True,
             "role" : "editor",
             "query_filters" : ["editor"],
-            "dao" : "portality.models.Journal"
+            "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
         },
+        # ~~->EditorApplicationQuery:Endpoint~~
         "suggestion" : {
             "auth" : True,
             "role" : "editor",
             "query_filters" : ["editor"],
-            "dao" : "portality.models.Application"
+            "dao" : "portality.models.Application"  # ~~->Application:Model~~
         }
     },
     "api_query" : {
+        # ~~->APIArticleQuery:Endpoint~~
         "article" : {
             "auth" : False,
             "role" : None,
             "query_filters" : ["only_in_doaj", "public_source"],
-            "dao" : "portality.models.Article",
+            "dao" : "portality.models.Article", # ~~->Article:Model~~
             "required_parameters" : None,
             "keepalive" : "10m"
         },
+        # ~~->APIJournalQuery:Endpoint~~
         "journal" : {
             "auth" : False,
             "role" : None,
             "query_filters" : ["only_in_doaj", "public_source"],
-            "dao" : "portality.models.Journal",
+            "dao" : "portality.models.Journal", # ~~->Journal:Model~~
             "required_parameters" : None
         },
+        # ~~->APIApplicationQuery:Endpoint~~
         "application" : {
             "auth" : True,
             "role" : None,
             "query_filters" : ["owner", "private_source"],
-            "dao" : "portality.models.Suggestion",
+            "dao" : "portality.models.Suggestion",  # ~~->Application:Model~~
             "required_parameters" : None
         }
     }
@@ -684,57 +756,26 @@ QUERY_FILTERS = {
     "public_source": "portality.lib.query_filters.public_source",
 }
 
+####################################################
+# Autocomplete
 
+# ~~->BibJSON:Model~~
 AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
     "bibjson.publisher.name" : "index.publisher_ac",
     "bibjson.institution.name" : "index.institution_ac"
 }
 
+####################################################
+# Application Form
+# ~~->ApplicationForm:Feature~~
+
 # save the public application form as a draft every 60 seconds
 PUBLIC_FORM_AUTOSAVE = 60000
 
-# ========================
-# MEDIA SETTINGS
 
-# location of media storage folder
-MEDIA_FOLDER = "media"
-
-
-# ========================
-# PAGEMANAGER SETTINGS
-
-# folder name for storing page content
-# will be added under the templates/pagemanager route
-CONTENT_FOLDER = "content"
-
-
-
-# etherpad endpoint if available for collaborative editing
-COLLABORATIVE = 'http://localhost:9001'
-
-# when a page is deleted from the index should it also be removed from
-# filesystem and etherpad (if they are available in the first place)
-DELETE_REMOVES_FS = False # True / False
-DELETE_REMOVES_EP = False # MUST BE THE ETHERPAD API-KEY OR DELETES WILL FAIL
-
-# disqus account shortname if available for page comments
-COMMENTS = ''
-
-
-# ========================
-# HOOK SETTINGS
-
-REPOS = {
-    "portality": {
-        "path": "/opt/portality/src/portality"
-    },
-    "content": {
-        "path": "/opt/portality/src/portality/portality/templates/pagemanager/content"
-    }
-}
-
-# ========================
-# FEED SETTINGS
+############################################
+# Atom Feed
+# ~~->AtomFeed:Feature~~
 
 FEED_TITLE = "DOAJ Recent Journals Added"
 
@@ -745,23 +786,24 @@ MAX_FEED_ENTRIES = 100
 # Maximum age of feed entries (in seconds) (default value here is 30 days).
 MAX_FEED_ENTRY_AGE = 2592000
 
-# NOT USED IN THIS IMPLEMENTATION
-# Which index to run feeds from
-#FEED_INDEX = "journal"
-
 # Licensing terms for feed content
+# ~~SiteLicence:Content~~
 FEED_LICENCE = "(c) DOAJ 2013. CC BY-SA."
 
 # name of the feed generator (goes in the atom:generator element)
 FEED_GENERATOR = "CottageLabs feed generator"
 
 # Larger image to use as the logo for all of the feeds
+# ~~->Favicon:Content~~
 FEED_LOGO = "https://doaj.org/static/doaj/images/favicon.ico"
 
 
-# ============================
+###########################################
 # OAI-PMH SETTINGS
+# ~~->OAIPMH:Feature~~
 
+# ~~->OAIAriticleXML:Crosswalk~~
+# ~~->OAIJournalXML:Crosswalk~~
 OAI_DC_METADATA_FORMAT = {
     "metadataPrefix": "oai_dc",
     "schema": "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",
@@ -789,27 +831,27 @@ OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE = 300
 
 OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 
-# =================================
-# File Upload and crosswalk settings
 
-# directory to upload files to.  MUST be full absolute path
-# The default takes the directory above this, and then down in to "upload"
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
-FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "failed_articles")
+##########################################
+# Article XML configuration
 
 # paths to schema files to validate incoming documents against for the various
 # crosswalks available
-
+# ~~->CrossrefXML:Schema~~
+# ~~->DOAJArticleXML:Schema~~
 SCHEMAS = {
     "doaj": os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd"),
     "crossref": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd")
 }
 
+# placeholders for the loaded schemas
 DOAJ_SCHEMA = None
 CROSSREF_SCHEMA = None
 LOAD_CROSSREF_THREAD = None
 
 # mapping of format names to modules which implement the crosswalks
+# ~~->DOAJArticleXML:Crosswalk~~
+# ~~->CrossrefXML:Crosswalk~~
 ARTICLE_CROSSWALKS = {
     "doaj": "portality.crosswalks.article_doaj_xml.DOAJXWalk",
     "crossref": "portality.crosswalks.article_crossref_xml.CrossrefXWalk"
@@ -818,44 +860,37 @@ ARTICLE_CROSSWALKS = {
 # maximum size of files that can be provided by-reference (the default value is 250Mb)
 MAX_REMOTE_SIZE = 262144000
 
-# =================================
+#################################################
 # Cache settings
+# ~~->Cache:Feature~~
 
 # number of seconds site statistics should be considered fresh
 # 1800s = 30mins
 SITE_STATISTICS_TIMEOUT = 1800
 
-# root of the git repo
-ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
-
 # directory into which to put files which are cached (e.g. the csv)
 CACHE_DIR = os.path.join(ROOT_DIR, "cache")
 
 # Article and Journal History directories - they should be different
+# ~~->ArticleHistory:Feature~~
+# ~~->JournalHistory:Feature~~
 ARTICLE_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "article")
 JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
 
-# Where static files are served from - in case we need to serve a file
-# from there ourselves using Flask instead of nginx (e.g. to support a
-# legacy route to that file)
-# Changing this will not change the actual folder that Flask serves
-# static files from.
-# http://flask.pocoo.org/snippets/102/
-STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 
-
-# ===================================
+#################################################
 # Sitemap settings
+# ~~->Sitemap:Feature~~
 
 # approximate rate of change of the Table of Contents for journals
 TOC_CHANGEFREQ = "monthly"
 
-STATIC_PAGES = [
-]
+STATIC_PAGES = []
 
 
-# =====================================
+##################################################
 # News feed settings
+# ~~->News:Feature~~
 
 BLOG_URL = "http://doajournals.wordpress.com/"
 
@@ -866,8 +901,9 @@ FRONT_PAGE_NEWS_ITEMS = 9
 NEWS_PAGE_NEWS_ITEMS = 20
 
 
-# =====================================
+##################################################
 # Edit Lock settings
+# ~~->Lock:Feature~~
 
 # amount of time loading an editable page locks it for, in seconds.
 EDIT_LOCK_TIMEOUT = 1200
@@ -876,8 +912,9 @@ EDIT_LOCK_TIMEOUT = 1200
 BACKGROUND_TASK_LOCK_TIMEOUT = 3600
 
 
-# =====================================
-# Search query shortening settings
+###############################################
+# Bit.ly configuration
+# ~~->Bitly:ExternalService~~
 
 # bit,ly api shortening service
 BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v4/shorten"
@@ -886,7 +923,9 @@ BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v4/shorten"
 # ENTER YOUR OWN TOKEN IN APPROPRIATE .cfg FILE
 BITLY_OAUTH_TOKEN = ""
 
-# =====================================
+###############################################
+# Date handling
+#
 # when dates.format is called without a format argument, what format to use?
 # FIXME: this is actually wrong - should really use the timezone correctly
 DEFAULT_DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
@@ -913,8 +952,10 @@ DATE_FORMATS = [
 # The last_manual_update field was initialised to this value. Used to label as 'never'.
 DEFAULT_TIMESTAMP = "1970-01-01T00:00:00Z"
 
-# ========================================
+#################################################
 # API configuration
+# ~~->API:Feature~~
+# ~~->SearchAPI:Feature~~
 
 # maximum number of records to return per page
 DISCOVERY_MAX_PAGE_SIZE = 100
@@ -922,6 +963,7 @@ DISCOVERY_MAX_PAGE_SIZE = 100
 # maximum number of records to return in total (a request for a page starting beyond this number will fail)
 DISCOVERY_MAX_RECORDS_SIZE = 1000
 
+# ~~->ArticleBibJSON:Model~~
 DISCOVERY_ARTICLE_SEARCH_SUBS = {
     "title" : "bibjson.title",
     "doi" : "bibjson.identifier.id.exact",
@@ -935,6 +977,7 @@ DISCOVERY_ARTICLE_SORT_SUBS = {
     "title" : "index.unpunctitle.exact"
 }
 
+# ~~->JournalBibJSON:Model~~
 DISCOVERY_JOURNAL_SEARCH_SUBS = {
     "title" : "index.title",
     "issn" :  "index.issn.exact",
@@ -964,23 +1007,21 @@ DISCOVERY_APPLICATION_SORT_SUBS = {
 DISCOVERY_BULK_PAGE_SIZE = 1000
 DISCOVERY_RECORDS_PER_FILE = 100000
 
-# =========================================
-# scheduled reports configuration
-REPORTS_BASE_DIR = "/home/cloo/reports/"
-REPORTS_EMAIL_TO = ["feedback@doaj.org"]
 
-
-# ========================================
+######################################################
 # Hotjar configuration
+# ~~->Hotjar:ExternalService~~
 
 # hotjar id - only activate this in production
 HOTJAR_ID = ""
 
 
-# ========================================
+######################################################
 # Google Analytics configuration
 # specify in environment .cfg file - avoids sending live analytics
 # events from test and dev environments
+# ~~->GoogleAnalytics:ExternalService~~
+
 GOOGLE_ANALYTICS_ID = ''
 
 # Where to put the google analytics logs
@@ -992,20 +1033,25 @@ GA_DIMENSIONS = {
 }
 
 # GA for OAI-PMH
+# ~~-> OAIPMH:Feature~~
 GA_CATEGORY_OAI = 'OAI-PMH'
 
 # GA for Atom
+# ~~-> Atom:Feature~~
 GA_CATEGORY_ATOM = 'Atom'
 GA_ACTION_ACTION = 'Feed request'
 
 # GA for JournalCSV
+# ~~-> JournalCSV:Feature~~
 GA_CATEGORY_JOURNALCSV = 'JournalCSV'
 GA_ACTION_JOURNALCSV = 'Download'
 
 # GA for OpenURL
+# ~~->OpenURL:Feature~~
 GA_CATEGORY_OPENURL = 'OpenURL'
 
 # GA for API
+# ~~-> API:Feature~~
 GA_CATEGORY_API = 'API Hit'
 GA_ACTIONS_API = {
     'search_applications': 'Search applications',
@@ -1028,15 +1074,20 @@ GA_ACTIONS_API = {
 
 
 # GA for fixed query widget
+# ~~->FixedQueryWidget:Feature~~
 GA_CATEGORY_FQW = 'FQW'
 GA_ACTION_FQW = 'Hit'
 
-# ========================================
-# Anonymisation configuration
+#####################################################
+# Anonymised data export (for dev) configuration
+# ~~->AnonExport:Feature~~
+
 ANON_SALT = 'changeme'
 
 # ========================================
 # Quick Reject Feature Config
+# ~~->QuickReject:Feature~~
+
 QUICK_REJECT_REASONS = [
     "The journal has not published enough research content to qualify for DOAJ inclusion.",
     "The ISSN is incorrect, provisional or not registered with issn.org.",
@@ -1056,37 +1107,10 @@ QUICK_REJECT_REASONS = [
     "The journal does not employ good publishing practices."
 ]
 
-# ========================================
-# Elastic APM config  (MUST be configured in env file)
-ENABLE_APM = False
-
-ELASTIC_APM = {
-  # Set required service name. Allowed characters:
-  # a-z, A-Z, 0-9, -, _, and space
-  'SERVICE_NAME': '',
-
-  # Use if APM Server requires a token
-  'SECRET_TOKEN': '',
-
-  # Set custom APM Server URL (default: http://localhost:8200)
-  'SERVER_URL': '',
-}
-
-########################################
-## Consent Cookie and other Top-Level dismissable notes
-
-CONSENT_COOKIE_KEY = "doaj-cookie-consent"
-
-# site notes, which can be configured to run any time with any content
-SITE_NOTE_ACTIVE = False
-SITE_NOTE_KEY = "doaj-site-note"
-SITE_NOTE_SLEEP = 259200    # every 3 days
-SITE_NOTE_COOKIE_VALUE = "You have seen our most recent site wide announcement"
-SITE_NOTE_TEMPLATE = "doaj/site_note.html"
-
 
 #############################################
 ## Harvester Configuration
+# ~~->Harvester:Feature~~
 
 ## Configuration options for the DOAJ API Client
 
@@ -1094,16 +1118,18 @@ DOAJ_SEARCH_BASE = "https://doaj.org"
 
 DOAJ_SEARCH_PORT = 80
 
+# ~~->Query:WebRoute~~
 DOAJ_QUERY_ENDPOINT = "query"
-
+# ~~->PublicJournalArticleQuery:Endpoint~~
 DOAJ_SEARCH_TYPE = "journal,article"
 
+# ~~->API:Endpoint~~
 DOAJ_API1_BASE_URL = "https://doaj.org/api/v1/"
 DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
 
 
 ## EPMC Client configuration
-
+# ~~-> EPMC:ExternalService~~
 EPMC_REST_API = "http://www.ebi.ac.uk/europepmc/webservices/rest/"
 EPMC_TARGET_VERSION = "6.5"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
 
@@ -1135,6 +1161,10 @@ HARVESTER_EMAIL_ON_EVENT = False
 HARVESTER_EMAIL_RECIPIENTS = None
 HARVESTER_EMAIL_FROM_ADDRESS = "harvester@doaj.org"
 HARVESTER_EMAIL_SUBJECT_PREFIX = "[harvester] "
+
+#######################################################
+# ReCAPTCHA configuration
+# ~~->ReCAPTCHA:ExternalService
 
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'

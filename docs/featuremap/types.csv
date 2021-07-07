@@ -3,6 +3,7 @@ BackgroundTask
 Blueprint
 Build
 Config
+Content
 Crosswalk
 Data
 DataStore
@@ -15,6 +16,7 @@ Fragment
 Framework
 Library
 Model
+Page
 Process
 Query
 Regex
