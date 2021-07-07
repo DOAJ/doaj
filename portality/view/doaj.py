@@ -178,9 +178,15 @@ def csv_data():
 
 @blueprint.route("/sitemap.xml")
 def sitemap():
-    sitemap_file = models.Cache.get_latest_sitemap()
-    sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
-    return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
+    sitemap_info = models.Cache.get_latest_sitemap()
+    if sitemap_info is None:
+        abort(404)
+    sitemap_url = sitemap_info.get("filename")  # NOTE: due to legacy reasons it's called filename not url
+    if sitemap_url is None:
+        abort(404)
+    if sitemap_url.startswith("/"):
+        sitemap_url = "/store" + sitemap_url
+    return redirect(sitemap_url, code=307)
 
 
 # @blueprint.route("/public-data-dump")
