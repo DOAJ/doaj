@@ -102,7 +102,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
             if articles_arg == "yes":
                 # one with a DOI and no fulltext
                 source = ArticleFixtureFactory.make_article_source(
-                    eissn="0000-0000",
+                    eissn="0000-0001",
                     pissn="0000-0000",
                     doi="10.123/abc/0",
                     fulltext=False
@@ -112,12 +112,12 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                 article.set_id()
                 articles.append(article)
                 if add_journal_info:
-                    journal_specs.append({"title" : "0", "pissn" : "0000-0000", "eissn" : "0000-0000"})
+                    journal_specs.append({"title" : "0", "pissn" : "0000-0000", "eissn" : "0000-0001"})
 
                 # another with a DOI and no fulltext
                 source = ArticleFixtureFactory.make_article_source(
                     eissn="1111-1111",
-                    pissn="1111-1111",
+                    pissn="1111-1112",
                     doi="10.123/abc/1",
                     fulltext=False
                 )
@@ -126,11 +126,11 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                 article.set_id()
                 articles.append(article)
                 if add_journal_info:
-                    journal_specs.append({"title" : "1", "pissn" : "1111-1111", "eissn" : "1111-1111"})
+                    journal_specs.append({"title" : "1", "pissn" : "1111-1112", "eissn" : "1111-1111"})
 
                 # one with a fulltext and no DOI
                 source = ArticleFixtureFactory.make_article_source(
-                    eissn="2222-2222",
+                    eissn="2222-2223",
                     pissn="2222-2222",
                     fulltext="http://example.com/2",
                     doi=False
@@ -140,11 +140,11 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                 article.set_id()
                 articles.append(article)
                 if add_journal_info:
-                    journal_specs.append({"title" : "2", "pissn" : "2222-2222", "eissn" : "2222-2222"})
+                    journal_specs.append({"title" : "2", "pissn" : "2222-2222", "eissn" : "2222-2223"})
 
                 # another one with a fulltext and no DOI
                 source = ArticleFixtureFactory.make_article_source(
-                    eissn="3333-3333",
+                    eissn="3333-3334",
                     pissn="3333-3333",
                     fulltext="http://example.com/3",
                     doi=False
@@ -154,7 +154,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                 article.set_id()
                 articles.append(article)
                 if add_journal_info:
-                    journal_specs.append({"title" : "3", "pissn" : "3333-3333", "eissn" : "3333-3333"})
+                    journal_specs.append({"title" : "3", "pissn" : "3333-3333", "eissn" : "3333-3334"})
 
                 last_issn = "3333-3333"
                 last_doi = "10.123/abc/1"
@@ -164,7 +164,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                 if duplicate_in_batch:
                     # one with a duplicated DOI
                     source = ArticleFixtureFactory.make_article_source(
-                        eissn="4444-4444",
+                        eissn="4444-4445",
                         pissn="4444-4444",
                         doi="10.123/abc/0",
                         fulltext="http://example.com/4"
@@ -174,11 +174,11 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                     article.set_id()
                     articles.append(article)
                     if add_journal_info:
-                        journal_specs.append({"title" : "4", "pissn" : "4444-4444", "eissn" : "4444-4444"})
+                        journal_specs.append({"title" : "4", "pissn" : "4444-4444", "eissn" : "4444-4445"})
 
                     # one with a duplicated Fulltext
                     source = ArticleFixtureFactory.make_article_source(
-                        eissn="5555-5555",
+                        eissn="5555-5556",
                         pissn="5555-5555",
                         doi="10.123/abc/5",
                         fulltext="http://example.com/1"
@@ -188,7 +188,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                     article.set_id()
                     articles.append(article)
                     if add_journal_info:
-                        journal_specs.append({"title" : "5", "pissn" : "5555-5555", "eissn" : "5555-5555"})
+                        journal_specs.append({"title" : "5", "pissn" : "5555-5555", "eissn" : "5555-5556"})
 
         ilo_mock = None
         if account_arg == "owner":

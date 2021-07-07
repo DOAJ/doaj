@@ -6,7 +6,6 @@ from doajtest.mocks.ftp import FTPMockFactory
 from doajtest.mocks.file import FileMockFactory
 from doajtest.mocks.response import ResponseMockFactory
 from doajtest.mocks.xwalk import XwalkMockFactory
-from portality.crosswalks.exceptions import CrosswalkException
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
@@ -21,6 +20,9 @@ from portality.background import BackgroundException
 
 import ftplib, os, requests
 from urllib.parse import urlparse
+
+from portality.ui.messages import Messages
+
 
 class TestIngestArticlesDoajXML(DoajTestCase):
 
@@ -1833,4 +1835,4 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert not os.path.exists(path)
 
         assert file_upload.status == "failed", "expected: failed, received: {}".format(file_upload.status)
-        assert file_upload.error == 'PISSN and EISSN are identical and equal 1234-5678. They must be different', "Expected: 'PISSN and EISSN are identical and equal 1234-5678. They must be different', received: {}".format(file_upload.error)
+        assert file_upload.error == Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, "Expected: '{}', received: {}".format(Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, file_upload.error)

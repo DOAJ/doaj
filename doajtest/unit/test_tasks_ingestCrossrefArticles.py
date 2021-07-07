@@ -24,6 +24,8 @@ import ftplib, os, requests
 from urllib.parse import urlparse
 from lxml import etree
 
+from portality.ui.messages import Messages
+
 
 class TestIngestArticlesCrossrefXML(DoajTestCase):
 
@@ -1852,7 +1854,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert not os.path.exists(path)
 
         assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
-        assert file_upload.error == "Too many ISSNs. Only 2 ISSNs are allowed", "expected error: 'Too many ISSNs. Only 2 ISSNs are allowed', received: {}".format(
+        assert file_upload.error == Messages.EXCEPTION_TOO_MANY_ISSNS, "expected error: {}, received: {}".format(Messages.EXCEPTION_TOO_MANY_ISSNS,
             file_upload.error)
 
     def test_51_same_issns(self):
@@ -1890,5 +1892,5 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert not os.path.exists(path)
 
         assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
-        assert file_upload.error == "PISSN and EISSN are identical and equal 1234-5678. They must be different", "expected error: 'Identical ISSNs. ISSNs provided need to be different', received: {}".format(
+        assert file_upload.error == Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, "expected error: {}, received: {}".format(Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN,
             file_upload.error)
