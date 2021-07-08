@@ -125,7 +125,7 @@ $.extend(true, doaj, {
                     </header>';
                 }
 
-                var frag = titleBarFrag + '\
+                var frag = '<div id="searching-notification"></div>' + titleBarFrag + '\
                     <p id="share_embed"></p>\
                     <h2 id="result-count"></h2>\
                     <div class="row">\
@@ -228,6 +228,50 @@ $.extend(true, doaj, {
     },
 
     renderers : {
+        newSearchingNotificationRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.SearchingNotificationRenderer, params, edges.newRenderer);
+        },
+        SearchingNotificationRenderer: function (params) {
+
+            this.scrollTarget = edges.getParam(params.scrollTarget, "body");
+
+            // namespace to use in the page
+            this.namespace = "doaj-notification";
+
+            this.searching = false;
+
+            this.draw = function () {
+                if (this.component.searching) {
+                    let id = edges.css_id(this.namespace, "loading", this);
+
+                    this.component.edge.context.css("opacity", "0.3");
+                    var frag = `<div id="` + id + `" class='loading overlay'>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <span class='sr-only'>Loading results…</span>
+                      </div>`
+                    this.component.edge.context.before(frag);
+                    let offset = $(this.scrollTarget).offset().top
+                    window.scrollTo(0, offset);
+                } else {
+                    let that = this;
+                    let idSelector = edges.css_id_selector(this.namespace, "loading", this);
+                    this.component.edge.context.animate(
+                        {
+                            opacity: "1",
+                        },
+                        {
+                            duration: 1000,
+                            always: function() {
+                                $(idSelector).remove();
+                            }
+                        }
+                    );
+                }
+            }
+        },
+
         newSubjectBrowser : function(params) {
             return edges.instantiate(doaj.renderers.SubjectBrowser, params, edges.newRenderer);
         },
@@ -2011,10 +2055,6 @@ $.extend(true, doaj, {
         },
         PagerRenderer: function (params) {
 
-            this.scroll = edges.getParam(params.scroll, true);
-
-            this.scrollSelector = edges.getParam(params.scrollSelector, "body");
-
             this.numberFormat = edges.getParam(params.numberFormat, false);
 
             this.namespace = "doaj-pager";
@@ -2072,30 +2112,15 @@ $.extend(true, doaj, {
                 }
             };
 
-            this.doScroll = function () {
-                $(this.scrollSelector).animate({    // note we do not use component.jq, because the scroll target could be outside it
-                    scrollTop: $(this.scrollSelector).offset().top
-                }, 1);
-            };
-
             this.goToFirst = function (element) {
-                if (this.scroll) {
-                    this.doScroll();
-                }
                 this.component.setFrom(1);
             };
 
             this.goToPrev = function (element) {
-                if (this.scroll) {
-                    this.doScroll();
-                }
                 this.component.decrementPage();
             };
 
             this.goToNext = function (element) {
-                if (this.scroll) {
-                    this.doScroll();
-                }
                 this.component.incrementPage();
             };
         },
