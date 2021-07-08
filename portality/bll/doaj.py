@@ -1,3 +1,4 @@
+# ~~DOAJ:Service~~
 class DOAJ(object):
     """
     Primary entry point to the services which back up the DOAJ Business Logic Layer.
@@ -13,7 +14,7 @@ class DOAJ(object):
     @classmethod
     def applicationService(cls):
         """
-        Obtain an instance of the application service
+        Obtain an instance of the application service ~~->Application:Service~~
 
         :return: ApplicationService
         """
@@ -25,7 +26,7 @@ class DOAJ(object):
     @classmethod
     def journalService(cls):
         """
-        Obtain an instance of the journal service
+        Obtain an instance of the journal service ~~->Journal:Service~~
 
         :return: JournalService
         """
@@ -37,7 +38,7 @@ class DOAJ(object):
     @classmethod
     def authorisationService(cls):
         """
-        Obtain an instance of the authorisation service
+        Obtain an instance of the authorisation service ~~->AuthNZ:Service~~
 
         :return: AuthorisationService
         """
@@ -49,7 +50,7 @@ class DOAJ(object):
     @classmethod
     def queryService(cls):
         """
-        Obtain an instance of the query service
+        Obtain an instance of the query service ~~->Query:Service~~
 
         :return: QueryService
         """
@@ -61,7 +62,7 @@ class DOAJ(object):
     @classmethod
     def articleService(cls):
         """
-        Obtain an instance of the article service
+        Obtain an instance of the article service   ~~->Article:Service~~
 
         :return: ArticleService
         """

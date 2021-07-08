@@ -955,7 +955,7 @@ DEFAULT_TIMESTAMP = "1970-01-01T00:00:00Z"
 #################################################
 # API configuration
 # ~~->API:Feature~~
-# ~~->SearchAPI:Feature~~
+# ~~->APISearch:Feature~~
 
 # maximum number of records to return per page
 DISCOVERY_MAX_PAGE_SIZE = 100

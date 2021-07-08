@@ -7,6 +7,9 @@ from datetime import datetime
 
 
 class ArticleService(object):
+    """
+    ~~Article:Service~~
+    """
 
     def batch_create_articles(self, articles, account, duplicate_check=True, merge_duplicate=True,
                               limit_to_account=True, add_journal_info=False):
@@ -14,6 +17,8 @@ class ArticleService(object):
         Create a batch of articles in a single operation.  Articles are either all created/updated or none of them are
 
         This method checks for duplicates within the provided set and within the current database (if you set duplicate_check=True)
+
+        ~~->ArticleBatchCreate:Feature~~
 
         :param articles:  The list of article objects
         :param account:     The account creating the articles
@@ -53,6 +58,7 @@ class ArticleService(object):
 
         for article in articles:
             try:
+                # ~~!ArticleBatchCreate:Feature->ArticleCreate:Feature~~
                 result = self.create_article(article, account,
                                              duplicate_check=duplicate_check,
                                              merge_duplicate=merge_duplicate,
@@ -150,6 +156,8 @@ class ArticleService(object):
         This method will check and merge any duplicates, and report back on successes and failures in a manner consistent with
         batch_create_articles.
 
+        ~~->ArticleCreate:Feature~~
+
         :param article: The article to be created
         :param account:     The account creating the article
         :param duplicate_check:     Whether to check for duplicates in the database
@@ -183,6 +191,7 @@ class ArticleService(object):
 
         is_update = 0
         if duplicate_check:
+            # ~~!ArticleCreate:Feature->ArticleDeduplication:Feature~~
             duplicate = self.get_duplicate(article)
             try:
                 if account.has_role("admin") and update_article_id is not None:     # is update_article_id is None then treat as normal publisher upload
@@ -292,7 +301,7 @@ class ArticleService(object):
         if new_article.id is None:
             return False
 
-        old_art = models.Article.pull(update_id)
+        old_art = models.Article.pull(update_id)    # ~~->Article:Model~~
         old_doi = old_art.get_normalised_doi()
         old_ft_url = old_art.get_normalised_fulltext()
 
@@ -370,6 +379,8 @@ class ArticleService(object):
 
         If the owner id is provided, this will limit the search to duplicates owned by that owner
 
+        ~~->ArticleDeduplication:Feature~~
+
         :param article:
         :param owner:
         :return:
@@ -393,6 +404,8 @@ class ArticleService(object):
         Get all known duplicates of an article
 
         If the owner id is provided, this will limit the search to duplicates owned by that owner
+
+        ~~->ArticleDeduplication:Feature~~
 
         :param article:
         :return:
@@ -427,6 +440,8 @@ class ArticleService(object):
         Identify duplicates, separated by duplication criteria
 
         If the owner id is provided, this will limit the search to duplicates owned by that owner
+
+        ~~->ArticleDeduplication:Feature~~
 
         :param article:
         :return:

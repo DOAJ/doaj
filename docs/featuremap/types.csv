@@ -10,8 +10,10 @@ DataStore
 Documentation
 Endpoint
 Environment
+Exception
 ExternalService
 Feature
+FormContext
 Fragment
 Framework
 Library
@@ -22,6 +24,7 @@ Query
 Regex
 Schema
 Script
+Service
 Technology
 Template
 Test
