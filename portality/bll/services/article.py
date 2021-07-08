@@ -149,14 +149,14 @@ class ArticleService(object):
         eissn = b.get_identifiers("eissn")
 
         if len(pissn) > 1 or len(eissn) > 1:
-            raise exceptions.IngestException(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
 
         pissn = b.get_one_identifier("pissn")
         eissn = b.get_one_identifier("eissn")
 
         #pissn and eissn identical
         if pissn == eissn:
-            raise exceptions.IngestException(message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN)
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN)
 
 
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
