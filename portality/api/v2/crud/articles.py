@@ -81,11 +81,11 @@ class ArticlesCrudApi(CrudApi):
         except ArticleMergeConflict as e:
             raise Api400Error(str(e))
         except ArticleNotAcceptable as e:
-            raise Api400Error("; ".join(e.errors))
+            raise Api400Error(str(e))
         except DuplicateArticleException as e:
             raise Api403Error(str(e))
         except IngestException as e:
-            raise Api400Error(str(e) if str(e) else e.message)
+            raise Api400Error(str(e))
 
 
         # Check we are allowed to create an article for this journal

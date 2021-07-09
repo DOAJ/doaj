@@ -57,8 +57,12 @@ class ArticleNotAcceptable(Exception):
     Exception to raise when an article does not have suitable data to be ingested into DOAJ
     """
     def __init__(self, *args, **kwargs):
-        self.errors = kwargs.get("errors", [])
+        self.message = kwargs.get("message", "")
         super(ArticleNotAcceptable, self).__init__(*args)
+
+    def __str__(self):
+        super(ArticleNotAcceptable, self).__str__()
+        return self.message
 
 class ArticleMergeConflict(Exception):
     """

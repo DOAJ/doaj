@@ -250,7 +250,7 @@ class ArticleService(object):
         doi = bj.get_one_identifier(bj.DOI)
         ft = bj.get_single_url(bj.FULLTEXT)
         if doi is None and ft is None:
-            raise exceptions.ArticleNotAcceptable(errors=[Messages.EXCEPTION_NO_DOI_NO_FULLTEXT])
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_DOI_NO_FULLTEXT)
 
         self._validate_issns(article)
 
