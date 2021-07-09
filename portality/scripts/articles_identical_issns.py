@@ -2,7 +2,6 @@ from portality import models
 from portality.core import es_connection
 from portality.util import ipt_prefix
 import esprit
-import re
 import csv
 
 ALL = {
@@ -23,8 +22,7 @@ if __name__ == "__main__":
     if not args.out:
         print("Please specify an output file path with the -o option")
         parser.print_help()
-        args.out = "out.csv"
-        #exit()
+        exit()
 
     conn = es_connection
 
