@@ -740,7 +740,7 @@ class TestCrudArticle(DoajTestCase):
             ArticlesCrudApi.create(data, account)
 
     def test_17_3_issns(self):
-        """ Check we get an error when article with 2 the same issns is provided. """
+        """ Check we get an error when article has 3 issns. """
 
         # set up all the bits we need
         account = models.Account()
