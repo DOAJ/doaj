@@ -1,16 +1,4 @@
-{% macro value(x) %}
-    {% if x == None or x == "" or x == [] %}
-        <em>[Nothing]</em>
-    {% elif x is string and x.startswith("http") %}
-        <a href="{{ x }}" target="_blank" rel="noopener" style="word-break: break-all">{{ x }}</a>
-    {% elif x == "y" %}
-        Yes
-    {% elif x == "n" %}
-        No
-    {% else %}
-        {{ x }}
-    {% endif %}
-{% endmacro %}
+{% from "application_form/_value.html" import value %}
 
 {% if current_journal %}
     <h2 class="alert">
@@ -27,20 +15,22 @@
         </tr>
         </thead>
         <tbody>
-        {% for k, v in form_diff|dictsort if k != "application_status" %}
-            {% set previous = v['a'] %}
-            {% set new = v['b'] %}
+        {% for f in formulaic_context.list_fields_in_order() %}
+          {% if f.name in form_diff %}
+            {% set previous = form_diff[f.name]['a'] %}
+            {% set new = form_diff[f.name]['b'] %}
             <tr>
                 <td>
-                    <a href="#question-{{ k }}">{{ k }}</a>
+                    <a href="#question-{{ k }}">{{ f.label }}</a>
                 </td>
                 <td>
-                    {{ value(previous) }}
+                    {{ value(previous, f.name, formulaic_context) }}
                 </td>
                 <td>
-                    {{ value(new) }}
+                    {{ value(new, f.name, formulaic_context) }}
                 </td>
             </tr>
+           {% endif %}
         {% endfor %}
         </tbody>
     </table>

@@ -1,4 +1,4 @@
-~~Sitemap:DataStore~~
+~~Sitemap:DataStore->Cache:Feature~~
 
 This directory contains a cache of the sitemaps output by the DOAJ.
 

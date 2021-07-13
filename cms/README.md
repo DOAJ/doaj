@@ -166,7 +166,33 @@ Each static Markdown page includes YAML front matter at the top of the document 
   - whether or not we want a table of contents on the side, for in-page navigation
   - Only applicable to layout type `sidenav`
   - if `false` you can omit this
+- `meta_description`:
+  - A description for the page that will appear in the header metadata in the resulting HTML
+
   
+### Including other templates into the text
+
+If you want to include a template into the page in a way that is not handled by one of the above
+frontmatter directives, then you can also import the template directly at any point.
+
+This is done by wrapping a template import directive in an HTML `<div>` tag (to prevent the markdown
+interpreter from touching it).  This is done as follows.  Ensure that the import directive is formatted
+exactly as specified here.  You should just change the path to the template file (`data/sponsors.html`)
+to the appropriate path for the template you wish to include:
+
+```
+<div>{% include "data/sponsors.html" %}</div>
+```
+
+For example, to import a data template in the middle of some text:
+
+```
+Here is some introductory text about the following data...
+
+<div>{% include "data/sponsors.html" %}</div>
+
+Wasn't that data interesting?
+```
 
 ### Adding new pages
 

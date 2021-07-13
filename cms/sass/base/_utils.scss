@@ -23,6 +23,10 @@
   border: 0;
 }
 
+@mixin box-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 3px 8px;
+}
+
 /// Make element visible or focussable to screen readers only
 .sr-only {
   position: absolute;
@@ -63,16 +67,28 @@
   @include unstyled-list($inline: true);
 }
 
-.bg-black {
+.bg-black {
   background-color: $warm-black;
+  color: $white;
+
+  a {
+    color: $white;
+  }
+
+  .label, .button:hover, .button:active, .button:focus, .stat {
+    color: $light-green;
+    border-color: $light-green;
+  }
 }
 
 .bg-grey {
   background-color: $dark-grey;
+  color: $white;
 }
 
 .bg-white {
-  background-color: $warm-white;
+  background-color: $white;
+  color: $warm-black;
 }
 
 .font-serif {
@@ -130,6 +146,12 @@
 }
 
 .flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.flex-end-col {
   @media (min-width: 769px) {
     display: flex;
     align-items: flex-end;
@@ -166,7 +188,7 @@
     display: block;
     margin: 10px auto;
     height: 30px;
-    stroke: $warm-white;
+    stroke: $white;
   }
 
   + .admin-edit {

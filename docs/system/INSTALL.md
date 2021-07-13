@@ -1,14 +1,21 @@
-# Setting up the software
+# Setting up DOAJ
+
+[comment] <>: (~~Install:Documentation~~)
 
 This installation instruction is for Ubuntu 16.04 and Ubuntu 18.04 users. We recommend running our application on Ubuntu OS.
 
 ## Java 8
+
+[comment] <>: (~~->Java:Technology~~)
 
 Java 8 is required to install correct version of Elasticsearch. On ubuntu it can be download from apt:
 
     sudo apt install openjdk-8-jre
 
 ## Elasticsearch
+
+[comment] <>: (~~->Elasticsearch:Technology~~)
+
 Elasticsearch is the datastore we use. Currently we require version 1.7.
 
 You can download .deb package from [here](https://www.elastic.co/downloads/past-releases/elasticsearch-1-7-0https://www.elastic.co/downloads/past-releases/elasticsearch-1-7-0) and install it by:
@@ -26,6 +33,8 @@ You can check whether its running via `curl localhost:9200` by pointing your bro
 
 ## Redis
 
+[comment] <>: (~~->Redis:Technology~~)
+
 For background tasks, we use `redis`. Run this however you like, just make sure the correct port is configured in app settings and is accessible to the app. E.g. to install in Ubuntu:
 
     sudo apt install redis-server
@@ -34,7 +43,9 @@ For background tasks, we use `redis`. Run this however you like, just make sure 
     # Check redis is running and enabled
     systemctl status redis
 
-#Python and Pip
+# Python and Pip
+
+[comment] <>: (~~->Python:Technology~~)
 
 Install Python 3.7 or more recent. Python 2.x is not supported anymore. You can verify if correct version of python is in use by typing:
 
@@ -86,26 +97,33 @@ It's recommended to run the DOAJ inside a python virtual environment so it doesn
 
 ## Scheduled tasks
 
-The following tasks need to run periodically via `huey`:
+[comment] <>: (~~->Huey:Technology~~)
 
-    portality/scripts/ingestarticles.py
+The following tasks are run periodically via `huey` (see the app settings to configure).  If you wish to run them directly
+the following scripts can be used.
 
-This will ingest all of the latest file uploads and remote URLs provided.  It should be run approximately every hour.
+### Generate the Journal CSV.
+
+If you wish to run this task manually you can use the script:
 
     portality/scripts/journalcsv.py
 
-This will generate the latest version of the csv to serve on request.  It should be run approximately every 30 minutes.
+This will generate the latest version of the csv to serve on request.
 
-    portality/scripts/toc.py
+[comment] <>: (~~->JournalCSV:Script~~)
 
-This will re-generate all of the Table of Contents pages for performance purposes.  This script can take a long time to run (several hours) so should only be run daily at the most.
+### Generate the Sitemap
 
     portality/scripts/sitemap.py
 
-This will generate the latest version of the sitemap to serve on request.  It should be run approximately every 30 minutes.
+This will generate the latest version of the sitemap to serve on request.
+
+[comment] <>: (~~->Sitemap:Script~~)
+
+### Import News Items
 
     portality/scripts/news.py
 
-This will import the latest news from the DOAJ wordpress blog.  It should be run daily.
+This will import the latest news from the DOAJ wordpress blog.
 
-todo: more tasks
+[comment] <>: (~~->News:Script~~)

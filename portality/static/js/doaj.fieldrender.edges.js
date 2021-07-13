@@ -146,7 +146,7 @@ $.extend(true, doaj, {
                                 <h3 class="sr-only">Display options</h3>\
                                 <div class="row">\
                                     <form class="col-sm-6" id="sort_by"></form>\
-                                    <form class="col-sm-6 flex-end" id="rpp"></form>\
+                                    <form class="col-sm-6 flex-end-col" id="rpp"></form>\
                                 </div>\
                             </nav>\
                             <nav class="pagination" id="top-pager"></nav>\
@@ -2110,7 +2110,7 @@ $.extend(true, doaj, {
                 this.doaj_url = params.doaj_url;
             }
             else {
-                this.doaj_url = "https://doaj.org"
+                this.doaj_url = ""
             }
 
             this.actions = edges.getParam(params.actions, []);
@@ -2236,7 +2236,8 @@ $.extend(true, doaj, {
                 var apcs = '<li>';
                 if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
                     apcs += "APCs: ";
-                    for (var i = 0; i < resultobj.bibjson.apc.max.length; i++) {
+                    let length = resultobj.bibjson.apc.max.length;
+                    for (var i = 0; i < length; i++) {
                         apcs += "<strong>";
                         var apcRecord = resultobj.bibjson.apc.max[i];
                         if (apcRecord.hasOwnProperty("price")) {
@@ -2244,6 +2245,9 @@ $.extend(true, doaj, {
                         }
                         if (apcRecord.currency) {
                             apcs += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
+                        }
+                        if (i < length - 1) {
+                            apcs += ', ';
                         }
                         apcs += "</strong>";
                     }
@@ -2287,7 +2291,7 @@ $.extend(true, doaj, {
                     actions += '</ul>';
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
@@ -2475,7 +2479,7 @@ $.extend(true, doaj, {
                     published = 'Published ' + name;
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
@@ -2678,7 +2682,7 @@ $.extend(true, doaj, {
                     </li>';
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-4 search-results__main">\
                         <header>\
@@ -2850,7 +2854,7 @@ $.extend(true, doaj, {
 
 
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-4 search-results__main">\
                         <header>\
@@ -2966,7 +2970,8 @@ $.extend(true, doaj, {
                 var apcs = '<li>';
                 if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
                     apcs += "APCs: ";
-                    for (var i = 0; i < resultobj.bibjson.apc.max.length; i++) {
+                    let length = resultobj.bibjson.apc.max.length;
+                    for (var i = 0; i < length; i++) {
                         apcs += "<strong>";
                         var apcRecord = resultobj.bibjson.apc.max[i];
                         if (apcRecord.hasOwnProperty("price")) {
@@ -2974,6 +2979,9 @@ $.extend(true, doaj, {
                         }
                         if (apcRecord.currency) {
                             apcs += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
+                        }
+                        if (i < length - 1) {
+                            apcs += ', ';
                         }
                         apcs += "</strong>";
                     }
@@ -3014,7 +3022,7 @@ $.extend(true, doaj, {
                     actions += '</ul>';
                 }
 
-                var frag = '<li class="search-results__record">\
+                var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\

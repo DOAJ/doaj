@@ -3,12 +3,19 @@
 .card {
   padding: $spacing-03;
   margin-bottom: $spacing-04;
-  background-color: $fair-pink;
+  background-color: $white;
+  border-radius: $spacing-02;
   @include typescale-06;
+  @include box-shadow;
 
   @media screen and (min-width: 768px) {
     margin-bottom: $spacing-05;
   }
+}
+
+.card__header {
+  margin-bottom: $spacing-04;
+  border-bottom: 1px solid $dark-grey;
 }
 
 .card__desc {

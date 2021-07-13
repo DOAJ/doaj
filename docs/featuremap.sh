@@ -8,7 +8,10 @@
 # git clone git@github.com:CottageLabs/FeatureMap.git
 # cd FeatureMap
 # pip install -r requirements.txt
+#
+# ~~FeatureMap:Script->FeatureMap:Technology~~
 
+echo "Generating FeatureMap"
 # Set up the variables we need for the script
 DOAJ_DOCS="docs/generated"
 BRANCH=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)

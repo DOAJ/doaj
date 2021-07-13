@@ -74,7 +74,6 @@ class Choices(object):
         (NONE, NONE),
         ('Sherpa/Romeo', 'Sherpa/Romeo'),
         ('Dulcinea', 'Dulcinea'),
-        ('Héloïse', 'Héloïse'),
         ('Diadorim', 'Diadorim'),
         (OTHER, OTHER)
     ]

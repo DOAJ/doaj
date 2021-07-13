@@ -1,33 +1,32 @@
 <!--[if IE]>
 <p class="browserupgrade">You are using an outdated browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
 <![endif]-->
-
 <div class="primary-nav" id="primary-nav">
     <div class="container">
-        <div class="row">
-            <div class="col-xs-4 col-sm-6">
+        <div class="row flex-center primary-nav__content">
+            <div class="col-xs-4">
                 <a href="/" class="logo">
                     <h2 class="sr-only">The Directory of Open Access Journals</h2>
                     {% include "includes/svg/logo.svg" %}
                 </a>
             </div>
-            <nav class="col-xs-8 col-sm-6">
+            <nav class="col-xs-8 flex-end">
                 <h2 class="sr-only">Main actions</h2>
                 {% set columns = data.nav.entries|selectattr("primary")|list %}
-                <ul class="nav-bar" role="menubar" id="main_actions">
+                  <ul class="nav-bar" role="menubar" id="main_actions">
                     {% for column in columns %}
                         {% set section_id=column.id %}
                         {% include "includes/header-primary-navigation.html" %}
                     {% endfor %}
 
-                    <li class="nav-bar__link primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0">
-                            <span role="button">
-                                <span data-feather="search" aria-hidden="true"></span>
-                                <span class="sr-only"> Search</span>
-                            </span>
+                    <li class="flex-center primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0" role="button">
+                      <span class="label"> Search</span>
+                      <span data-feather="search" aria-hidden="true"></span>
                     </li>
-
                 </ul>
+                <div class="secondary-nav__menu-toggle" aria-label="Click to open menu" role="button">
+                  <h2 class="label">Menu</h2> <span data-feather="menu" aria-hidden="true"></span>
+                </div>
             </nav>
         </div>
     </div>
@@ -114,35 +113,3 @@
         </ul>
     </div>
 </nav>
-
-{# Flash notifications #}
-{% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-
-        {% set category_url_indicator = '+contains-url' %}
-
-        {% for category, message in messages %}
-            {% set message_has_url = False %}
-            {% if category.endswith(category_url_indicator) %}
-                {% set category = category[:category.rfind(category_url_indicator)] %}
-                {% set message_has_url = True %}
-            {% endif %}
-            {# shift from bs2 to bs3 terminology #}
-            {% if category == "error" %}
-                {% set category = "danger" %}
-            {% endif %}
-            <aside class="container flash_container">
-                <h2 class="sr-only">Notifications</h2>
-                <p class="alert alert--{{category}}">
-                    <span data-feather="alert-octagon" aria-hidden="true"></span>
-                    {% if message_has_url %}
-                        {{ message | safe }}
-                    {% else %}
-                        {{ message }}
-                    {% endif %}
-                    &nbsp;<span class="flash_close alert__close" role="button">(Dismiss)</span>
-                </p>
-            </aside>
-        {% endfor %}
-    {% endif %}
-{% endwith %}

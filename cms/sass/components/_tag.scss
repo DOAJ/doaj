@@ -10,13 +10,13 @@
   padding: $spacing-01 $spacing-03;
   border-radius: 9999px; // hack-y way to create pill shape
   background: $warm-black;
-  color: $warm-white;
+  color: $white;
   text-decoration: none;
   @include typescale-06;
 
   a {
     text-decoration: none;
-    color: $warm-white;
+    color: $white;
 
     &:hover, &:focus, &:active {
       color: $grapefruit;
@@ -31,7 +31,7 @@
     position: relative;
     padding-right: $spacing-01;
     top: 2px;
-    stroke: $warm-white;
+    stroke: $white;
   }
 }
 
@@ -49,16 +49,16 @@
 
   &:hover, &:focus, &:active {
     background-color: $warm-black;
-    color: $warm-white;
+    color: $white;
 
     svg {
-      stroke: $warm-white;
+      stroke: $white;
     }
   }
 }
 
 .tag--secondary {
-  background: $fair-pink;
+  background: $light-grey;
   color: $warm-black;
 
   a, svg {

@@ -12,7 +12,7 @@
   display: block;
   margin-bottom: $spacing-04;
   padding: $spacing-03 0;
-  border-top: 1px dashed $sanguine;
+  border-top: 1px solid $grapefruit;
   text-decoration: none;
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -32,7 +32,7 @@
 }
 
 .title-list__link--highlighted {
-  border-top: 1px dashed $grapefruit;
+  border-top: 1px solid $grapefruit;
 }
 
 .title-list__heading {
