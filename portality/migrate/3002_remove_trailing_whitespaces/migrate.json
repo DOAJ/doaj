@@ -2,7 +2,7 @@
 "types": [
 		{
 			"type" : "article",
-			"init_with_model" : true,
+			"init_with_model" : false,
 			"keepalive" : "20m",
 			"functions" : [
 				"portality.migrate.3002_remove_trailing_whitespaces.operations.remove_trailing_whitespaces"
@@ -10,7 +10,7 @@
 		},
 		{
 			"type": "journal",
-			"init_with_model": true,
+			"init_with_model": false,
 			"keepalive": "20m",
 			"functions" : [
 				"portality.migrate.3002_remove_trailing_whitespaces.operations.remove_trailing_whitespaces"
