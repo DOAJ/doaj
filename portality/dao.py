@@ -266,7 +266,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def pull_by_key(cls, key, value):
         res = cls.query(q={"query": {"term": {key+app.config['FACET_FIELD']: value}}})
-        if res.get('hits', {}).get('total', 0) == 1:
+        if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
             return cls.pull(res['hits']['hits'][0]['_source']['id'])
         else:
             return None
@@ -724,7 +724,9 @@ class DomainObject(UserDict, object):
         return results
 
     @classmethod
-    def all(cls, size=10000000, **kwargs):
+    def all(cls, size=10000, **kwargs):
+        """ This is a shortcut to a match_all query with a large size, to return all records """
+        # FIXME: is this only used in tests? ES now limits size so we can't guarantee ALL without using scroll / scan
         return cls.q2obj(size=size, **kwargs)
 
     @classmethod

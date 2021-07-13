@@ -107,7 +107,7 @@ class OAIPMHRecord(object):
 
         results = self.query(q=q)
 
-        total = results.get("hits", {}).get("total", 0)
+        total = results.get("hits", {}).get("total", {}).get('value', 0)
         return total, [hit.get("_source") for hit in results.get("hits", {}).get("hits", [])]
 
 

@@ -428,7 +428,7 @@ class Journal(JournalLikeObject):
         q = ArticleStatsQuery(self.known_issns())
         data = Article.query(q=q.query())
         hits = data.get("hits", {})
-        total = hits.get("total", 0)
+        total = hits.get("total", {}).get('value', 0)
         latest = None
         if total > 0:
             latest = hits.get("hits", [])[0].get("_source").get("created_date")

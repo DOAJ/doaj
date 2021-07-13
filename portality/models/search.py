@@ -30,7 +30,7 @@ class JournalArticle(DomainObject):
         q = JournalStatsQuery()
         journal_data = Journal.query(q=q.stats)
 
-        stats["journals"] = "{0:,}".format(journal_data.get("hits", {}).get("total", 0))
+        stats["journals"] = "{0:,}".format(journal_data.get("hits", {}).get("total", {}).get('value', 0))
         stats["countries"] = "{0:,}".format(len(journal_data.get("aggregations", {}).get("countries", {}).get("buckets", [])))
 
         apc_buckets = journal_data.get("aggregations", {}).get("apcs", {}).get("buckets", [])
@@ -46,7 +46,7 @@ class JournalArticle(DomainObject):
         # get the article data
         qa = ArticleStatsQuery()
         article_data = Article.query(q=qa.q)
-        stats["abstracts"] = "{0:,}".format(article_data.get("hits", {}).get("total", 0))
+        stats["abstracts"] = "{0:,}".format(article_data.get("hits", {}).get("total", {}).get('value', 0))
 
         # now cache and return
         Cache.cache_site_statistics(stats)

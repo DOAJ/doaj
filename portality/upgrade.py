@@ -52,7 +52,7 @@ def do_upgrade(definition, verbose):
         total = 0
         type_ = ipt_prefix(tdef.get("type"))
         first_page = esprit.raw.search(sconn, type_)
-        max = first_page.json().get("hits", {}).get("total", 0)
+        max = first_page.json().get("hits", {}).get("total", {}).get('value', 0)
         type_start = datetime.now()
 
         default_query={

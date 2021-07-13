@@ -46,7 +46,7 @@ class TestAPIClient(DoajTestCase):
 
         # Check we can retrieve the account by its key
         a1_retrieved = models.Account.pull_by_api_key(a1_key)
-        assert a1 == a1_retrieved
+        assert a1 == a1_retrieved, (a1, a1_retrieved)
 
         # Check that removing the API role means you don't get a key
         a1.remove_role('api')
@@ -68,7 +68,7 @@ class TestAPIClient(DoajTestCase):
         with self.app_test.test_client() as t_client:
             # Check the authorised user can access our function, but the unauthorised one can't.
             response_authorised = t_client.get('/hello?api_key=' + a1_key)
-            assert response_authorised.data == b"hello, world!"
+            assert response_authorised.data == b"hello, world!", response_authorised.data
             assert response_authorised.status_code == 200
 
             response_denied = t_client.get('/hello?api_key=' + a2_key)

@@ -63,7 +63,7 @@ def managing_editor_notifications(emails_dict):
     }
 
     idle_res = models.Suggestion.query(q=age_query)
-    num_idle = idle_res.get('hits').get('total')
+    num_idle = idle_res.get('hits').get('total', {}).get('value', 0)
 
     text = render_template('email/workflow_reminder_fragments/admin_age_frag', num_idle=num_idle, x_weeks=X_WEEKS)
     _add_email_paragraph(emails_dict, MAN_ED_EMAIL, 'Managing Editors', text)
@@ -88,7 +88,7 @@ def managing_editor_notifications(emails_dict):
     ready_url = admin_fv_prefix + Facetview2.url_encode_query(fv_ready)
 
     ready_res = models.Suggestion.query(q=ready_query)
-    num_ready = ready_res.get('hits').get('total')
+    num_ready = ready_res.get('hits').get('total', {}).get('value', 0)
 
     text = render_template('email/workflow_reminder_fragments/admin_ready_frag', num=num_ready, url=ready_url)
     _add_email_paragraph(emails_dict, MAN_ED_EMAIL, 'Managing Editors', text)

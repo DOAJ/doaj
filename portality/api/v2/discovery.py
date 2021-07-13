@@ -253,7 +253,7 @@ class DiscoveryApi(Api):
 
     @classmethod
     def _make_response(cls, endpoint, res, q, page, page_size, sort, obs):
-        total = res.get("hits", {}).get("total", 0)
+        total = res.get("hits", {}).get("total", {}).get('value', 0)
 
         page_count, previous_page, next_page, last_page = cls._calc_pagination(total, page_size, page)
 
