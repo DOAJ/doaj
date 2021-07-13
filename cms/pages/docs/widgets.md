@@ -35,7 +35,7 @@ Copy and paste the code below into your page where you want the widget to be dis
 var QUERY_OPTIONS = {
     query_string : 'medicine',                   // The plain-text query string
     query_field: 'bibjson.title',                // The field we are querying
-    sort_field: 'index.unpunctitle.exact',       // Field to order results by
+    sort: 'created_date',                           // Field to order results by
     sort_direction:  'asc',                      // Direction of sort "asc" | "desc"
     search_operator : 'AND',                     // Which sort operator to use "AND" | "OR"
     search_type: 'journal',                      // Which type to search upon (omit for both) "article" | "journal"
@@ -53,7 +53,7 @@ var QUERY_OPTIONS = {
 var QUERY_OPTIONS = {
     query_string : 'medicine',                   // The plain-text query string
     query_field: 'bibjson.title',                // The field we are querying
-    sort_field: 'index.unpunctitle.exact',       // Field to order results by
+    sort: 'created_date',                      // Field to order results by
     sort_direction:  'asc',                      // Direction of sort "asc" | "desc"
     search_operator : 'AND',                     // Which sort operator to use "AND" | "OR"
     search_type: 'journal',                      // Which type to search upon (omit for both) "article" | "journal"

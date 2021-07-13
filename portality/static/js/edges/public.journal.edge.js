@@ -39,6 +39,11 @@ $.extend(true, doaj, {
             });
 
             var components = [
+                edges.newSearchingNotification({
+                    id: "searching-notification",
+                    finishedEvent: "edges:post-render",
+                    renderer : doaj.renderers.newSearchingNotificationRenderer()
+                }),
                 edges.newFullSearchController({
                     id: "search-input-bar",
                     category: "controller",
@@ -310,8 +315,7 @@ $.extend(true, doaj, {
                     id: "top-pager",
                     category: "top-pager",
                     renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scrollSelector: "#top-pager"
+                        numberFormat: countFormat
                     })
                 }),
 
@@ -326,8 +330,7 @@ $.extend(true, doaj, {
                     id: "bottom-pager",
                     category: "bottom-pager",
                     renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scrollSelector: "#top-pager"    // FIXME: these selectors don't work, why not?
+                        numberFormat: countFormat
                     })
                 })
             ];
@@ -349,9 +352,6 @@ $.extend(true, doaj, {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact us.");
                     },
                     "edges:post-init" : function() {
-                        feather.replace();
-                    },
-                    "edges:post-render" : function() {
                         feather.replace();
                     }
                 }

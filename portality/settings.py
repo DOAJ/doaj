@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "5.0.6"
+DOAJ_VERSION = "5.1.0"
 
 OFFLINE_MODE = False
 
@@ -813,7 +813,7 @@ BLOG_URL = "http://doajournals.wordpress.com/"
 
 BLOG_FEED_URL = "http://doajournals.wordpress.com/feed/atom/"
 
-FRONT_PAGE_NEWS_ITEMS = 9
+FRONT_PAGE_NEWS_ITEMS = 6
 
 NEWS_PAGE_NEWS_ITEMS = 20
 
@@ -1091,4 +1091,3 @@ HARVESTER_EMAIL_SUBJECT_PREFIX = "[harvester] "
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
-

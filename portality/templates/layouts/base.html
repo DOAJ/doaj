@@ -6,40 +6,23 @@
   <meta name="description" content="{% block meta_description %}DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.{% endblock %}">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 
-{# removing this as it doesn't provide correct information, and as DOAJ is not a progressive web app (it won't work offline, for sure)
-I'm not sure of the value of it.  Leaving the code snippet here to remind us #}
-  {# <!-- PWA -->
-  <link rel="manifest" href="/static_content/manifest.json"> #}
-
-  <!-- generics -->
-  <link rel="icon" href="/assets/img/favicon/32.png" sizes="32x32">
-  <link rel="icon" href="/assets/img/favicon/57.png" sizes="57x57">
-  <link rel="icon" href="/assets/img/favicon/76.png" sizes="76x76">
-  <link rel="icon" href="/assets/img/favicon/96.png" sizes="96x96">
-  <link rel="icon" href="/assets/img/favicon/128.png" sizes="128x128">
-  <link rel="icon" href="/assets/img/favicon/192.png" sizes="192x192">
-  <link rel="icon" href="/assets/img/favicon/228.png" sizes="228x228">
-
-  <!-- Android -->
-  <link rel="shortcut icon" sizes="196x196" href="/assets/img/favicon/196.png">
-
-  <!-- iOS -->
-  <link rel="apple-touch-icon" href="/assets/img/favicon/120.png" sizes="120x120">
-  <link rel="apple-touch-icon" href="/assets/img/favicon/152.png" sizes="152x152">
-  <link rel="apple-touch-icon" href="/assets/img/favicon/180.png" sizes="180x180">
-
-  <!-- Windows 8 IE 10-->
-  <meta name="msapplication-TileColor" content="#F8F3EF">
-  <meta name="msapplication-TileImage" content="/img/favicon/144.png">
-
-  <meta name="theme-color" content="#282624">
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon/favicon-16x16.png">
+  <link rel="manifest" href="/assets/img/favicon/site.webmanifest">
+  <link rel="mask-icon" href="/assets/img/favicon/safari-pinned-tab.svg" color="#fd5a3b">
+  <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-config" content="/assets/img/favicon/browserconfig.xml">
+  <meta name="theme-color" content="#ffffff">
 
   <!-- OpenGraph -->
   <meta property="og:url" content="{{ request.url }}">
   <meta property="og:type" content="website">
   <meta property="og:title" content=" Directory of Open Access Journals">
   <meta property="og:description" content="DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.">
-  <meta property="og:image" content="https://doaj.org/static/doaj/images/og/img.png">{# TODO: change to relative paths #}
+  <meta property="og:image" content="{{ base_url }}/assets/img/opengraph/img.png">
 
   <!-- Twitter Meta Tags -->
   <meta name="twitter:card" content="summary_large_image">
@@ -48,7 +31,7 @@ I'm not sure of the value of it.  Leaving the code snippet here to remind us #}
   <meta property="twitter:url" content="https://doaj.org">
   <meta name="twitter:title" content=" Directory of Open Access Journals">
   <meta name="twitter:description" content="DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.">
-  <meta name="twitter:image" content="https://doaj.org/static/doaj/images/og/img.png">{# TODO: change to relative paths #}
+  <meta name="twitter:image" content="{{ base_url }}/assets/img/opengraph/img.png">
 
   {% block extra_meta_tags %}{% endblock %}
 
@@ -76,7 +59,7 @@ I'm not sure of the value of it.  Leaving the code snippet here to remind us #}
   {% block extra_stylesheets %}{% endblock %}
 
   <!-- Main CSS -->
-  <link rel="stylesheet" href="/static/doaj/css/main.css">
+  <link rel="stylesheet" href="/static/doaj/css/main.css?v={{config.get('DOAJ_VERSION')}}">
 
 </head>
 
@@ -88,6 +71,7 @@ I'm not sure of the value of it.  Leaving the code snippet here to remind us #}
 
     <header class="page-header">
         {% include "includes/header.html" %}
+        {% include "includes/_flash_notification.html" %}
         {% block extra_header %}{% endblock %}
     </header>
 

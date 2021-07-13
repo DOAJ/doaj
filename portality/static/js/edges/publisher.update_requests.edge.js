@@ -42,6 +42,12 @@ $.extend(true, doaj, {
             });
 
             var components = [
+                edges.newSearchingNotification({
+                    id: "searching-notification",
+                    finishedEvent: "edges:post-render",
+                    renderer : doaj.renderers.newSearchingNotificationRenderer()
+                }),
+
                 // facets
                 edges.newORTermSelector({
                     id: "application_status",
@@ -92,16 +98,14 @@ $.extend(true, doaj, {
                     id: "top-pager",
                     category: "top-pager",
                     renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scrollSelector: "#top-pager"
+                        numberFormat: countFormat
                     })
                 }),
                 edges.newPager({
                     id: "bottom-pager",
                     category: "bottom-pager",
                     renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scrollSelector: "#top-pager"    // FIXME: these selectors don't work, why not?
+                        numberFormat: countFormat
                     })
                 }),
 
@@ -146,39 +150,10 @@ $.extend(true, doaj, {
                     },
                     "edges:post-init" : function() {
                         feather.replace();
-                    },
-                    "edges:post-render" : function() {
-                        feather.replace();
                     }
                 }
             });
             doaj.publisherUpdatesSearch.activeEdges[selector] = e;
-
-            // $(selector).on("edges:post-render", function () {
-            //     $(".delete_suggestion_link").unbind("click").click(function (event) {
-            //         event.preventDefault();
-            //
-            //         function success_callback(data) {
-            //             alert("The update request was successfully deleted");
-            //             doaj.publisherUpdatesSearch.activeEdges[selector].cycle();
-            //         }
-            //
-            //         function error_callback() {
-            //             alert("There was an error deleting the update request")
-            //         }
-            //
-            //         var c = confirm("Are you really really sure?  You can't undo this operation!");
-            //         if (c) {
-            //             var href = $(this).attr("href");
-            //             $.ajax({
-            //                 type: "DELETE",
-            //                 url: href,
-            //                 success: success_callback,
-            //                 error: error_callback
-            //             })
-            //         }
-            //     });
-            // });
         }
     }
 });
