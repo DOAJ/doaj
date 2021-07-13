@@ -107,6 +107,12 @@ $.extend(true, doaj, {
             });
 
             var components = [
+                edges.newSearchingNotification({
+                    id: "searching-notification",
+                    finishedEvent: "edges:post-render",
+                    renderer : doaj.renderers.newSearchingNotificationRenderer()
+                }),
+
                 // facets
                 edges.newRefiningANDTermSelector({
                     id: "journals_articles",
@@ -314,7 +320,7 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newPagerRenderer({
                         sizeOptions: [10, 25, 50, 100],
                         numberFormat: countFormat,
-                        scrollSelector: "html, body"
+                        scroll: false
                     })
                 }),
                 edges.newPager({
@@ -323,7 +329,7 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newPagerRenderer({
                         sizeOptions: [10, 25, 50, 100],
                         numberFormat: countFormat,
-                        scrollSelector: "html, body"
+                        scroll: false
                     })
                 }),
 
@@ -545,12 +551,6 @@ $.extend(true, doaj, {
                             "F" : "False"
                         }
                     }
-                }),
-
-                // the standard searching notification
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    category: "searching-notification"
                 })
             ];
 
