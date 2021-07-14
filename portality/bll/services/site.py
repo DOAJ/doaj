@@ -97,7 +97,7 @@ class SiteService(object):
                 return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], '%Y%m%d_%H%M'), reverse=True)
             def filter(filename):
                 return filename.startswith("sitemap__")
-            action_register = prune_container(mainStore, container_id, sort, filter=filter, keep=2)
+            action_register += prune_container(mainStore, container_id, sort, filter=filter, keep=2)
 
         # update the ES record to point to the new file
         # ~~->Cache:Feature~~
