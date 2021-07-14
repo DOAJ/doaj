@@ -2,6 +2,9 @@ from portality.core import app
 from portality import models
 from portality.store import StoreFactory, prune_container
 from datetime import datetime
+from portality.lib.argvalidate import argvalidate
+
+from portality.bll import exceptions
 
 from lxml import etree
 import re
@@ -13,6 +16,11 @@ class SiteService(object):
         ~~Sitemap:Feature~~
         :return:
         """
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("csv", [
+            {"arg": prune, "allow_none": False, "arg_name": "prune"}
+        ], exceptions.ArgumentException)
+
         action_register = []
 
         base_url = app.config.get("BASE_URL")

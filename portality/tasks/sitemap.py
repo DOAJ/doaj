@@ -22,8 +22,8 @@ class SitemapBackgroundTask(BackgroundTask):
         job = self.background_job
 
         # ~~-> Sitemap:Feature~~
-        siteService = DOAJ.journalService()
-        url, action_register = siteService.sitemap()
+        siteService = DOAJ.siteService()
+        url, action_register = siteService.sitemap(prune="wibble")
         for ar in action_register:
             job.add_audit_message(ar)
         job.add_audit_message("Sitemap generated; will be served from {y}".format(y=url))
