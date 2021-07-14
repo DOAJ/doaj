@@ -2,7 +2,7 @@
 
 # Conveniently run all of the docs steps sequentially
 
-docs/form.sh;
+docs/forms.sh;
 docs/data_models.sh;
 docs/featuremap.sh;
 docs/coverage.sh;
