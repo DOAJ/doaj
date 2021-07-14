@@ -6,6 +6,10 @@ from portality.view import forms
 
 
 class ArticleFormXWalk(object):
+    """
+    ~~ArticleForm:Crosswalk->Article:Form~~
+    ~~->Article:Model~~
+    """
     format_name = "form"
 
     @classmethod

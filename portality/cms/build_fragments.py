@@ -1,3 +1,4 @@
+# ~~CMSBuildFragments:Script->CMS:Script~~
 import os
 import markdown
 import shutil
@@ -52,6 +53,7 @@ def _swap(old, new):
 
 
 def build(base_path=None):
+    #~~->CMSFragments:Build~~
     base_dir, src_dir, out_dir, tmp_out_dir, fm_file, fm_tmp, error_file = None, None, None, None, None, None, None
     try:
         base_dir, src_dir, out_dir, tmp_out_dir, fm_file, fm_tmp, error_file = _localise_paths(base_path)

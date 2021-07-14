@@ -9,7 +9,9 @@ class JournalXwalkException(Exception):
 
 
 class Journal2QuestionXwalk(object):
-
+    """
+    ~~JournalQuestions:Crosswalk->Journal:Form~~
+    """
     QTUP = [
         ("alternative_title", "Alternative title"),
         ("apc_charges", "APC amount"),
@@ -281,6 +283,7 @@ class Journal2QuestionXwalk(object):
                 return value
 
         # start by converting the object to the forminfo version
+        # ~~->JournalForm:Crosswalk~~
         forminfo = JournalFormXWalk.obj2form(journal)
 
         # Collect the update report

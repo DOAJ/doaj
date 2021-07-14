@@ -8,6 +8,9 @@ from datetime import datetime
 
 
 class DOAJXWalk(object):
+    """
+    ~~DOAJArticleXML:Crosswalk->DOAJArticleXML:Feature~~
+    """
     format_name = "doaj"
     schema_path = app.config.get("SCHEMAS", {}).get("doaj")
 
@@ -18,6 +21,7 @@ class DOAJXWalk(object):
         if self.schema_path is None:
             raise exceptions.IngestException(message="Unable to validate for DOAJXWalk, as schema path is not set in config")
         try:
+            # ~~->DOAJArticleXML:Schema~~
             with open(self.schema_path) as schema_file:
                 schema_doc = etree.parse(schema_file)
 
@@ -113,7 +117,7 @@ class DOAJXWalk(object):
          </keywords>
         </record>
         """
-        article = models.Article()
+        article = models.Article()  # ~~->Article:Model~~
         bibjson = article.bibjson()
 
         # language

@@ -289,8 +289,8 @@ def _load_data(app):
 
 def build_statics(app):
     """
-    ~~CMS:Build->Fragments:Build~~
-    ~~->SASS:Build~~
+    ~~CMS:Build->CMSFragments:Build~~
+    ~~->CMSSASS:Build~~
     :param app:
     :return:
     """

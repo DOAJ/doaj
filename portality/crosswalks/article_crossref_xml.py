@@ -1,5 +1,3 @@
-import os
-
 from portality.core import app
 from lxml import etree
 import re
@@ -12,6 +10,9 @@ NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih
 
 
 class CrossrefXWalk(object):
+    """
+    ~~CrossrefXML:Crosswalk->Crossref:Feature~~
+    """
     format_name = "crossref"
 
     def __init__(self):
@@ -26,6 +27,7 @@ class CrossrefXWalk(object):
         while app.config["CROSSREF_SCHEMA"] is None:
             continue
 
+        # ~~->CrossrefXML:Schema~~
         self.schema = app.config["CROSSREF_SCHEMA"]
 
     def validate_file(self, file_handle):
@@ -158,7 +160,7 @@ Example record:
     </body>
 </doi_batch>
         """
-        article = models.Article()
+        article = models.Article()  # ~~->Article:Model~~
         bibjson = article.bibjson()
 
         # journal title
