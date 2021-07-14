@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "5.0.5"
+DOAJ_VERSION = "5.1.1"
 API_VERSION = "2.0.0"
 
 ######################################
@@ -248,7 +248,7 @@ PASSWORD_RESET_TIMEOUT = 86400
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 #"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
-TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api", "ultra_bulk_delete"]
+TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api", "ultra_bulk_delete", "preservation"]
 
 ROLE_MAP = {
     "editor": [
@@ -896,7 +896,7 @@ BLOG_URL = "http://doajournals.wordpress.com/"
 
 BLOG_FEED_URL = "http://doajournals.wordpress.com/feed/atom/"
 
-FRONT_PAGE_NEWS_ITEMS = 9
+FRONT_PAGE_NEWS_ITEMS = 6
 
 NEWS_PAGE_NEWS_ITEMS = 20
 
@@ -1169,4 +1169,3 @@ HARVESTER_EMAIL_SUBJECT_PREFIX = "[harvester] "
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
-
