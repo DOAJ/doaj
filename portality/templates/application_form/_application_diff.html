@@ -21,6 +21,9 @@
             {% set new = form_diff[f.name]['b'] %}
             <tr>
                 <td>
+                    {% if f.diff_table_context %}
+                        <span class="form__hint" style="display: inline">({{ f.diff_table_context }})</span>
+                    {% endif %}
                     <a href="#question-{{ k }}">{{ f.label }}</a>
                 </td>
                 <td>
