@@ -24,7 +24,7 @@
                     </li>
                 </ul>
                 <div class="secondary-nav__menu-toggle" aria-label="Click to open menu" role="button">
-                  <h2 class="label">Menu</h2> <span data-feather="menu" aria-hidden="true"></span>
+                    <h2 class="label">Menu</h2> <span data-feather="menu" aria-hidden="true"></span>
                 </div>
             </nav>
         </div>
@@ -40,6 +40,7 @@
 {% endif %}
 <nav class="secondary-nav {{ extraClass }}">
     <div class="container">
+        <h2 class="sr-only">Main actions</h2>
         <ul class="nav-bar secondary-nav__menu" role="menu">
 
             {% set columns = data.nav.entries|selectattr("secondary")|list %}
