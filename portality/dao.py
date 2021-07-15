@@ -56,7 +56,7 @@ class DomainObject(UserDict, object):
         t = cls.target_whole_index()
         # fixme: on search, the type is not necessary any more 299 Elasticsearch-7.10.2-747e1cc71def077253878a59143c1f785afa92b9 "[types removal] Specifying types in search requests is deprecated."
         if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-            t += esprit.raw.INDEX_PER_TYPE_SUBSTITUTE + '/'
+            t += app.config.get('INDEX_PER_TYPE_SUBSTITUTE', '_doc') + '/'
         else:
             t += cls.__type__ + '/'
         return t

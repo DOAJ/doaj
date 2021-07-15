@@ -93,6 +93,7 @@ ELASTIC_SEARCH_TEST_DB = "doajtest"
 
 # e.g. host:port/type/doc/id
 ELASTIC_SEARCH_INDEX_PER_TYPE = True
+INDEX_PER_TYPE_SUBSTITUTE = '_doc'      # Migrated from esprit
 ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
