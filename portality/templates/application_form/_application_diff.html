@@ -22,7 +22,7 @@
             <tr>
                 <td>
                     {% if f.diff_table_context %}
-                        <span class="form__hint" style="display: inline">({{ f.diff_table_context }})</span>
+                        <p class="form__hint">{{ f.diff_table_context }} information</p>
                     {% endif %}
                     <a href="#question-{{ k }}">{{ f.label }}</a>
                 </td>
