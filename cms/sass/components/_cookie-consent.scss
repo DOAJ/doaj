@@ -13,16 +13,18 @@
   p, a {
     margin: 0;
     line-height: 1;
-    color: $warm-white;
+    color: $white;
   }
 
   .button {
     display: block;
     color: $warm-black;
+    border-color: $white;
+    background: $white;
 
     &:hover, &:active, &:focus {
-      color: $warm-white;
-      border-color: $warm-white;
+      color: $white;
+      background: $warm-black;
     }
   }
 }

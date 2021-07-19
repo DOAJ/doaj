@@ -63,7 +63,7 @@
   }
 
   strong {
-    background: $fair-pink;
+    background: $light-grey;
   }
 
   // subheadings / filters within filters
@@ -89,7 +89,7 @@
     margin: 0 0 $spacing-03 0;
     padding: $spacing-03;
     border: 1px solid $warm-black;
-    background-color: $fair-pink;
+    background-color: $light-grey;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     @include typescale-06;

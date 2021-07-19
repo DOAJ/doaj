@@ -8,6 +8,7 @@
 # ~~TestCoverage:Script->UnitTests:Test~~
 ###############################################
 
+echo "Running tests for coverage report (this will take a while)"
 # Set up the variables we need for the script
 DOAJ_DOCS="docs/generated"
 BRANCH=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)

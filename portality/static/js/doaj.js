@@ -26,17 +26,17 @@ var doaj = {
         }
 
         // Hide header menu on down scroll; display on scroll up
-        var prevScrollPos = window.pageYOffset;
+        var prevScrollPos = window.pageYOffset,
+            topNav = document.querySelector(".primary-nav");
 
         function hideNav() {
             var currentScrollPos = window.pageYOffset;
 
             if (prevScrollPos > currentScrollPos) {
-                document.getElementById("primary-nav").style.top = "0";
+                topNav.classList.remove("primary-nav--scrolled");
             } else {
-                document.getElementById("primary-nav").style.top = "-50px";
+                topNav.classList.add("primary-nav--scrolled");
             }
-
             prevScrollPos = currentScrollPos;
         }
 
@@ -221,6 +221,29 @@ var doaj = {
          */
         if (!isodate_str) { return "" }
         return isodate_str.replace('T',' ').replace('Z','')
+    },
+
+    scroller : function(selector, notFirstTime, duration, callback) {
+        if (!duration) {
+            duration = 1
+        }
+        if (notFirstTime === undefined) {
+            notFirstTime = true;
+        }
+
+        if (doaj.scroller.hasOwnProperty("doScroll")) {
+            $("html, body").animate(
+                {
+                    scrollTop: $(selector).offset().top
+                },
+                {
+                    duration: duration,
+                    always: callback
+                }
+            );
+        } else {
+            doaj.scroller.doScroll = true;
+        }
     }
 };
 

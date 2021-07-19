@@ -4,7 +4,7 @@
   display: inline-block;
   padding: $spacing-03;
   margin: $spacing-02 0;
-  background-color: $fair-pink;
+  background-color: $light-grey;
   border: 1px solid $warm-black;
   @include typescale-06;
 
@@ -15,10 +15,10 @@
 
   &--message {
     background-color: $warm-black;
-    color: $warm-white;
+    color: $white;
 
     a {
-      color: $warm-white;
+      color: $white;
     }
   }
 

@@ -1,7 +1,7 @@
 /* Statistics */
 
 .stat {
-  border-left: 1px dashed $grapefruit;
+  border-left: 1px solid $grapefruit;
 
   &:first-of-type {
     border-left: 0;
@@ -17,13 +17,12 @@
   display: block;
   font-weight: 600;
   @include font-serif;
-  @include typescale-02;
+  @include typescale-03;
 }
 
 .stat__description {
   display: block;
   text-transform: uppercase;
-  color: $dark-grey;
   line-height: 1.35;
   @include typescale-06;
 }
