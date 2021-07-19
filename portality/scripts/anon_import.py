@@ -46,7 +46,8 @@ def do_import(config):
 
     # remove all the types that we are going to import
     for import_type in list(import_types.keys()):
-        es_connection.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type)
+        if es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type):
+            es_connection.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type)
 
     # re-initialise the index (sorting out mappings, etc)
     print("==Initialising Index for Mappings==")
