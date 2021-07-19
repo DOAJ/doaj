@@ -679,7 +679,7 @@ class FieldDefinitions:
         "name": "copyright_url",
         "label": "Where can we find this information?",
         "input": "text",
-        "diff_table_context": "Copyright",
+        "diff_table_context": "Copyright terms",
         "help": {
             "short_help": "Link to the journal’s copyright terms"
         },
@@ -1295,6 +1295,7 @@ class FieldDefinitions:
         "diff_table_context": "Repository policy",
         "conditional": [{"field": "deposit_policy", "value": "Sherpa/Romeo"},
                         {"field": "deposit_policy", "value": "Dulcinea"},
+                        {"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
