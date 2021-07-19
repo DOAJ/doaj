@@ -110,6 +110,8 @@ entries:
         route: doaj.contact
       - label: T&Cs
         route: doaj.terms
+      - label: Press
+        route: doaj.press
   - id: companies
     entries:
       - label: IS4OA

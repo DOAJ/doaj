@@ -421,6 +421,11 @@ def terms():
     return render_template("layouts/static_page.html", page_frag="/legal/terms.html")
 
 
+@blueprint.route("/press/")
+def press():
+    return render_template("layouts/static_page.html", page_frag="/legal/press.html")
+
+
 @blueprint.route("/support/")
 def support():
     return render_template("layouts/static_page.html", page_frag="/support/index.html")
