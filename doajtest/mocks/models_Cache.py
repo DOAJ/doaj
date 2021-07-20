@@ -22,11 +22,13 @@ class InMemoryCache(object):
 
     @classmethod
     def cache_sitemap(cls, filename):
-        pass
+        cls.__memory__["sitemap"] = {
+            "filename" : filename
+        }
 
     @classmethod
     def get_latest_sitemap(cls):
-        pass
+        return cls.__memory__["sitemap"]
 
     @classmethod
     def cache_public_data_dump(cls, article_url, article_size, journal_url, journal_size):
