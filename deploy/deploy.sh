@@ -47,7 +47,7 @@ fi
 python portality/cms/build_sass.py
 if test -f "cms/error_sass.txt"; then
   echo "ABORT - sass error:"
-  cat cms/error_fragments.txt
+  cat cms/error_sass.txt
   exit 1
 fi
 
