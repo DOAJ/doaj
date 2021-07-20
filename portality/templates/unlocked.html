@@ -1,15 +1,9 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/single_col_page.html" %}
 
 {% block body_class %}unlocked{% endblock %}
+{% block page_title %}Unlocked record{% endblock %}
+{% block title %}This record is now unlocked{% endblock %}
 
-{% block content %}
-<main class="page-content">
-
-    <section class="container">
-        <h1>Record Unlocked</h1>
-        <p>You can now close this tab</p>
-    </section>
-
-</main>
-
+{% block single_col_content %}
+<p class="text-center">You may close this tab safely.</p>
 {% endblock %}
