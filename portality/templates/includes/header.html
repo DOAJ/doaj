@@ -13,20 +13,18 @@
             <nav class="col-xs-8 flex-end">
                 <h2 class="sr-only">Main actions</h2>
                 {% set columns = data.nav.entries|selectattr("primary")|list %}
-                  <ul class="nav-bar">
-
+                  <ul class="nav-bar" role="menubar" id="main_actions">
                     {% for column in columns %}
                         {% set section_id=column.id %}
                         {% include "includes/header-primary-navigation.html" %}
                     {% endfor %}
-
                     <li class="flex-center primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0" role="button">
                       <span class="label"> Search</span>
                       <span data-feather="search" aria-hidden="true"></span>
                     </li>
                 </ul>
                 <div class="secondary-nav__menu-toggle" aria-label="Click to open menu" role="button">
-                  <h2 class="label">Menu</h2> <span data-feather="menu" aria-hidden="true"></span>
+                    <span class="label">Menu</span> <span data-feather="menu" aria-hidden="true"></span>
                 </div>
             </nav>
         </div>
@@ -42,7 +40,8 @@
 {% endif %}
 <nav class="secondary-nav {{ extraClass }}">
     <div class="container">
-        <ul class="nav-bar secondary-nav__menu">
+        <h2 class="sr-only">Secondary actions</h2>
+        <ul class="nav-bar secondary-nav__menu" role="menu">
 
             {% set columns = data.nav.entries|selectattr("secondary")|list %}
             {% for column in columns %}
@@ -52,10 +51,10 @@
 
             {% if not current_user.is_anonymous %}
                 <li class="dropdown">
-                        <span class="dropdown__trigger nav-bar__link" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" tabindex="0">
+                        <a href="" class="dropdown__trigger nav-bar__link" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             My Account
                             <span data-feather="chevron-down" aria-hidden="true"></span>
-                        </span>
+                        </a>
                     <ul class="dropdown__menu" aria-labelledby="menu-account">
                         {% if current_user.has_role("admin") %}
                             <li>
