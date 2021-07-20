@@ -116,7 +116,7 @@ class TestBLLSitemap(DoajTestCase):
                 self.svc.sitemap(prune)
 
                 tempFiles = self.tmpStore.list(self.container_id)
-                assert len(tempFiles) == 0
+                assert len(tempFiles) == 0, "expected 0, received {}".format(len(tempFiles))
         else:
             url, action_register = self.svc.sitemap(prune)
             assert url is not None
@@ -128,12 +128,12 @@ class TestBLLSitemap(DoajTestCase):
 
             filenames = self.localStore.list(self.container_id)
             if prune:
-                assert len(filenames) == 2
+                assert len(filenames) == 2, "expected 0, received {}".format(len(filenames))
                 assert "sitemap__doaj_20180101_0000_utf8.xml" not in filenames
                 assert "sitemap__doaj_20180601_0000_utf8.xml" not in filenames
                 assert "sitemap__doaj_20190101_0000_utf8.xml" in filenames
             else:
-                assert len(filenames) == 1
+                assert len(filenames) == 1, "expected 0, received {}".format(len(filenames))
 
             latest = None
             for fn in filenames:
