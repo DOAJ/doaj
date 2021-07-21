@@ -1,5 +1,4 @@
 /* Utilities */
-
 @mixin unstyled-list($inline: false) {
   padding-left: 0;
   margin: 0 0 $spacing-03 0;
@@ -21,6 +20,10 @@
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+@mixin box-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 3px 8px;
 }
 
 /// Make element visible or focussable to screen readers only
@@ -63,16 +66,28 @@
   @include unstyled-list($inline: true);
 }
 
-.bg-black {
+.bg-black {
   background-color: $warm-black;
+  color: $white;
+
+  a {
+    color: $white;
+  }
+
+  .label, .button:hover, .button:active, .button:focus, .stat {
+    color: $light-green;
+    border-color: $light-green;
+  }
 }
 
 .bg-grey {
   background-color: $dark-grey;
+  color: $white;
 }
 
 .bg-white {
-  background-color: $warm-white;
+  background-color: $white;
+  color: $warm-black;
 }
 
 .font-serif {
@@ -130,6 +145,12 @@
 }
 
 .flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.flex-end-col {
   @media (min-width: 769px) {
     display: flex;
     align-items: flex-end;
@@ -151,6 +172,15 @@
   }
 }
 
+.overlay {
+  position: fixed;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: inherit;
+  z-index: 1000;
+}
+
 // TEMP: admin edit button on static site
 .admin-edit {
   position: fixed;
@@ -166,7 +196,7 @@
     display: block;
     margin: 10px auto;
     height: 30px;
-    stroke: $warm-white;
+    stroke: $white;
   }
 
   + .admin-edit {

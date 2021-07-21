@@ -38,12 +38,16 @@ fi
 # Compile the static pages
 python portality/cms/build_fragments.py
 if test -f "cms/error_fragments.txt"; then
+  echo "ABORT - fragment error:"
+  cat cms/error_fragments.txt
   exit 1
 fi
 
 # compile the sass
 python portality/cms/build_sass.py
 if test -f "cms/error_sass.txt"; then
+  echo "ABORT - sass error:"
+  cat cms/error_sass.txt
   exit 1
 fi
 

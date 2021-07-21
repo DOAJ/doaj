@@ -1,0 +1,94 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "prune",
+      "type": "generated",
+      "values": {
+        "True": {},
+        "False": {},
+        "None": {
+          "constraints": {
+            "tmp_write": {
+              "or": [
+                "success"
+              ]
+            },
+            "main_write": {
+              "or": [
+                "success"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "tmp_write",
+      "type": "generated",
+      "values": {
+        "success": {},
+        "fail": {
+          "constraints": {
+            "main_write": {
+              "or": [
+                "success"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "main_write",
+      "type": "generated",
+      "values": {
+        "success": {},
+        "fail": {}
+      }
+    },
+    {
+      "name": "raises",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "ArgumentException": {
+          "conditions": [
+            {
+              "prune": {
+                "or": [
+                  "None"
+                ]
+              }
+            }
+          ]
+        },
+        "IOError": {
+          "conditions": [
+            {
+              "tmp_write": {
+                "or": [
+                  "fail"
+                ]
+              }
+            },
+            {
+              "main_write": {
+                "or": [
+                  "fail"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "comment",
+      "type": "comment"
+    }
+  ]
+}

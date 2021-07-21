@@ -25,7 +25,7 @@ class ArticlesCrudApi(CrudApi):
         "description": """<div class=\"search-query-docs\">
             Article JSON that you would like to create or update. The contents should comply with the schema displayed
             in the <a href=\"/api/v2/docs#CRUD_Articles_get_api_v2_articles_article_id\"> GET (Retrieve) an article route</a>.
-            Explicit documentation for the structure of this data is also <a href="https://github.com/DOAJ/doaj/blob/master/docs/system/IncomingAPIArticle.md">provided here</a>.
+            Explicit documentation for the structure of this data is also <a href="https://doaj.github.io/doaj-docs/master/data_models/IncomingAPIArticle">provided here</a>.
             Partial updates are not allowed, you have to supply the full JSON.</div>""",
         "required": True,
         "schema": {"type" : "string"},

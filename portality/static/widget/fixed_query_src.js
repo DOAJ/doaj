@@ -110,17 +110,14 @@ $.extend(true, doaj, {
                     id: "top-pager",
                     category: "top-pager",
                     renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scrollSelector: "#top-pager"
+                        numberFormat: countFormat
                     })
                 }),
                 edges.newPager({
                     id: "bottom-pager",
                     category: "bottom-pager",
                     renderer : doaj.renderers.newPagerRenderer({
-                        numberFormat: countFormat,
-                        scrollSelector: "#top-pager"    // FIXME: these selectors don't work, why not?
-                    })
+                        numberFormat: countFormat                    })
                 }),
                 // results display
                 edges.newResultsDisplay({

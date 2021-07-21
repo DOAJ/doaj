@@ -178,9 +178,12 @@ def csv_data():
 
 @blueprint.route("/sitemap.xml")
 def sitemap():
-    sitemap_file = models.Cache.get_latest_sitemap()
-    sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
-    return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
+    sitemap_url = models.Cache.get_latest_sitemap()
+    if sitemap_url is None:
+        abort(404)
+    if sitemap_url.startswith("/"):
+        sitemap_url = "/store" + sitemap_url
+    return redirect(sitemap_url, code=307)
 
 
 # @blueprint.route("/public-data-dump")
@@ -530,6 +533,9 @@ def volunteers():
 def team():
     return render_template("layouts/static_page.html", page_frag="/about/team.html")
 
+@blueprint.route("/preservation/")
+def preservation():
+    return render_template("layouts/static_page.html", page_frag="/preservation/index.html")
 
 # LEGACY ROUTES
 @blueprint.route("/subjects")

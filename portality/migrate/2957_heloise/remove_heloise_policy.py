@@ -1,4 +1,5 @@
 import csv
+from copy import deepcopy
 
 from portality.models import Journal
 from portality.settings import BASE_FILE_PATH
@@ -19,20 +20,21 @@ if __name__ == "__main__":
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
+        writer.writerow(['Journal ID', 'Old Deposit Policy', "New Deposit Policy", "Has Deposit Policy"])
 
-        f = open(BASE_FILE_PATH + "/scripts/resources/journalID-for-heloise-removal.txt")
+        f = open(BASE_FILE_PATH + "/migrate/2957_heloise/journalID-for-heloise-removal.txt")
         ids = f.readlines()
 
         for i in ids:
             j = Journal.pull(i.rstrip('\n'))
-            print(j.bibjson().deposit_policy)
             if j:
                 bib = j.bibjson()
-                deposit_policy = j.bibjson().deposit_policy
+                old_deposit_policy = deepcopy(bib.deposit_policy)
+                deposit_policy = bib.deposit_policy
                 if 'Héloïse' in deposit_policy:
                     deposit_policy.remove('Héloïse')
                 if len(deposit_policy) == 0:
                     bib.has_deposit_policy = False
-                    j.save()
-                    writer.writerow(["Journal {} modified and saved.".format(j.id)])
+                j.save()
+                writer.writerow([j.id, old_deposit_policy, deposit_policy, bib.has_deposit_policy])
         f.close()

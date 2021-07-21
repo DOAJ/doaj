@@ -2,12 +2,12 @@
 
 @mixin font-serif {
   font-family: 'Spectral', serif;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
 }
 
 @mixin font-sans {
   font-family: 'Source Sans Pro', sans-serif;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.015em;
 }
 
 @mixin font-monospace {

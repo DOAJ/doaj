@@ -44,6 +44,12 @@ $.extend(true, doaj, {
             });
 
             var components = [
+                edges.newSearchingNotification({
+                    id: "searching-notification",
+                    finishedEvent: "edges:post-render",
+                    renderer : doaj.renderers.newSearchingNotificationRenderer()
+                }),
+
                 // facets
                 edges.newRefiningANDTermSelector({
                     id: "role",
@@ -89,7 +95,7 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newPagerRenderer({
                         sizeOptions: [25, 50, 100],
                         numberFormat: countFormat,
-                        scrollSelector: "html, body"
+                        scroll: false
                     })
                 }),
                 edges.newPager({
@@ -98,7 +104,7 @@ $.extend(true, doaj, {
                     renderer: edges.bs3.newPagerRenderer({
                         sizeOptions: [25, 50, 100],
                         numberFormat: countFormat,
-                        scrollSelector: "html, body"
+                        scroll: false
                     })
                 }),
 
@@ -164,12 +170,6 @@ $.extend(true, doaj, {
                     fieldDisplays: {
                         "role": "Role"
                     }
-                }),
-
-                // the standard searching notification
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    category: "searching-notification"
                 })
             ];
 
