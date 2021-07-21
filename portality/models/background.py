@@ -87,6 +87,10 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         self._add_to_list_with_struct("audit", obj)
         print(msg)
 
+    @property
+    def pretty_audit(self):
+        audits = self._get_list("audit")
+        return "\n".join(["{t} {m}".format(t=a["timestamp"], m=a["message"]) for a in audits])
 
 class StdOutBackgroundJob(BackgroundJob):
 

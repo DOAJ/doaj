@@ -1,0 +1,14 @@
+field,test_id,prune,tmp_write,main_write,raises,comment
+type,index,generated,generated,generated,conditional,comment
+default,,,,,,
+,,,,,,
+values,,True,success,success,ArgumentException,
+values,,False,fail,fail,IOError,
+values,,None,,,,
+,,,,,,
+constraint prune,,None,success,success,,When prune is None we don't need to try out any other variations as we expect an ArgumentException
+constraint tmp_write,,,fail,success,,"When the tmp write fails, there's no need to test if the main store fails, as the error will be generated before that"
+,,,,,,
+conditional raises,,None,,,ArgumentException,"When prune is None, ArgumentException should be raised"
+conditional raises,,,fail,,IOError,IOError when write to the store fails
+conditional raises,,,,fail,IOError,IOError when write to the store fails
