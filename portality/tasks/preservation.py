@@ -1,22 +1,151 @@
-import bagit
 import csv
+import hashlib
 import json
 import os
+import requests
 import shutil
+import tarfile
+from bagit import make_bag, BagError
 from copy import deepcopy
 from datetime import datetime
 from zipfile import ZipFile
+
+from portality.background import BackgroundTask, BackgroundApi
 from portality.core import app
+from portality.decorators import write_required
 from portality.lib import dates
-from portality.models import Article
+from portality.models import Article, BackgroundJob
 from portality.regex import DOI_COMPILED, HTTP_URL_COMPILED
+from portality.tasks.redis_huey import main_queue, configure
 
 class PreservationException(Exception):
     pass
 
-
 class PreservationStorageException(Exception):
     pass
+
+class ValidationError(Exception):
+    pass
+
+class PreservationBackgroundTask(BackgroundTask):
+
+    __action__ = "preserve"
+
+    @classmethod
+    def prepare(cls, username, **kwargs):
+        """
+        Create necessary directories and save the file.
+        Creates the background job
+        :param username:
+        :param kwargs:
+        :return: background job
+        """
+
+        created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
+        dir_name = username + "-" + created_time
+        local_dir = os.path.join(Preservation.UPLOAD_DIR, dir_name)
+
+        preservation = Preservation(local_dir)
+        preservation.save_file(kwargs.get("upload_file"))
+
+        # prepare a job record
+        job = BackgroundJob()
+        job.user = username
+        job.action = cls.__action__
+
+        params = {}
+        cls.set_param(params, "local_dir", local_dir)
+        job.params = params
+
+        return job
+
+    def run(self):
+
+        job = self.background_job
+
+        params = job.params
+        local_dir = self.get_param(params, "local_dir")
+
+        preserv = Preservation(local_dir)
+        try:
+            preserv.extract_zip_file()
+            preserv.create_package_structure()
+            package = PreservationPackage(preserv.preservation_dir)
+            tar_file = package.create_package()
+            sha256 = package.sha256()
+            response = package.upload_package(sha256)
+
+            self.validate_response(response, tar_file, sha256)
+
+        except PreservationException as p_exp:
+            app.logger.exception("Error at background task")
+        except Exception as exp:
+            app.logger.exception("Error at background task")
+
+    def cleanup(self):
+        """
+        Cleanup any resources
+        :return:
+        """
+        job = self.background_job
+        params = job.params
+        local_dir = self.get_param(params, "local_dir")
+        Preservation.delete_local_directory(local_dir)
+
+    def validate_response(self, response, tar_file, sha256):
+        """
+        Validate the response from server
+        :param response: response object
+        :param tar_file: tar files
+        :param sha256: sha256sum value
+        """
+        if response.status_code == 200:
+            res_json = json.loads(response.text)
+            files = res_json["files"]
+            # Success response
+            # {"files": [{"name": "name_of_tarball.tar.gz",
+            #             "sha256": "decafbad"}]}
+            if files and len(files) > 0:
+                if res_json[0]["name"] == tar_file:
+                    if res_json[0]["sha256"] == sha256:
+                        app.logger.info("Succesfully uploaded")
+            else:
+                # Error response
+                # {"result": "ERROR","manifest_type": "BagIt",
+                #     "manifests": [
+                #         {"id": "033168cd016a49eb8c3097d800f1b85f",
+                #             "result": "SUCCESS"},
+                #         {"id": "00003741594643f4996e2555a01e03c7",
+                #             "result": "ERROR",
+                #             "errors": [
+                #                   "missing_files": [],
+                #                   "mismatch_hashes": [{
+                #                       "file": "path/to/file",
+                #                       "expected": "decafbad",
+                #                       "actual": "deadbeaf"}],
+                #                   "manifest_parsing_errors": [
+                #                   "some weird error"]]}]}
+                result = res_json["result"]
+                if result and result == "ERROR":
+                    app.logger.error("Upload failed due error at IA server side")
+        else:
+            app.logger.error(f"Upload failed {response.text}")
+
+
+    @classmethod
+    def submit(cls, background_job):
+        """Submit Background job"""
+        background_job.save(blocking=True)
+        preserve.schedule(args=(background_job.id,), delay=10)
+
+@main_queue.task(**configure("preserve"))
+@write_required(script=True)
+def preserve(job_id):
+    job = BackgroundJob.pull(job_id)
+    task = PreservationBackgroundTask(job)
+    BackgroundApi.execute(task)
+
+
 
 class CSVReader:
 
@@ -65,16 +194,19 @@ class Preservation:
     # Temp directory
     UPLOAD_DIR = app.config.get("UPLOAD_DIR", ".")
 
-    def __init__(self, owner):
-        self.__created_time = dates.format(datetime.utcnow(),"%Y-%m-%d-%H-%M-%S")
-        self.__dir_name = owner + "-" + self.__created_time
-        self.__local_dir = os.path.join(Preservation.UPLOAD_DIR, self.__dir_name)
+    def __init__(self, local_dir):
+        self.__dir_name = os.path.basename(local_dir)
+        self.__local_dir = local_dir
         self.__preservation_dir = os.path.join(self.__local_dir, self.__dir_name)
         self.__csv_articles_dict = None
 
     @property
     def dir_name(self):
         return self.__dir_name
+
+    @property
+    def preservation_dir(self):
+        return self.__preservation_dir
 
     def disk_space_available(self):
         """
@@ -88,10 +220,8 @@ class Preservation:
 
     def create_local_directories(self):
         """
-        Create a local directories to download the files and
+        Create local directories to download the files and
         to create preservation package
-        :param owner: User who upload files
-        :return:
         """
         try:
             os.mkdir(self.__local_dir)
@@ -99,38 +229,32 @@ class Preservation:
         except OSError as exp:
             raise PreservationStorageException(message="Could not create temp directory", inner=exp)
 
-    def delete_local_directory(self):
+    @classmethod
+    def delete_local_directory(cls, local_dir):
         """Deletes the directory
-        :param dir_name: Name of the directory to delete
-        :return:
         """
-        if os.path.exists(self.__local_dir):
+        if os.path.exists(local_dir):
             try:
-                shutil.rmtree(self.__local_dir)
+                shutil.rmtree(local_dir)
             except Exception as e:
                 raise PreservationStorageException(message="Could not delete Temp directory", inner=e)
 
     def save_file(self, file):
         """
         Save the file on to local directory
-        :param owner: User who upload files
         :param file: File object
-        :return:
         """
-        if self.disk_space_available():
-            self.create_local_directories()
-            file_path = os.path.join(self.__local_dir, Preservation.ARTICLES_ZIP_NAME)
-            try:
-                file.save(file_path)
-            except Exception as e:
-                raise PreservationStorageException(message="Could not save file in Temp directory", inner=e)
-        else:
-            raise PreservationStorageException(message="Not enough disk space to save file")
+        self.create_local_directories()
+        file_path = os.path.join(self.__local_dir, Preservation.ARTICLES_ZIP_NAME)
+        try:
+            file.save(file_path)
+        except Exception as e:
+            raise PreservationStorageException(message="Could not save file in Temp directory", inner=e)
+
 
     def extract_zip_file(self):
         """
         Extracts zip file in the Temp directory
-        :return:
         """
         file_path = os.path.join(self.__local_dir, Preservation.ARTICLES_ZIP_NAME)
 
@@ -147,7 +271,6 @@ class Preservation:
         Retrieve article info for each article.
         Creates preservation directories
 
-        :return:
         """
         for dir, subdirs, files in os.walk(self.__local_dir):
 
@@ -178,17 +301,25 @@ class Preservation:
             article_data = self.get_article(identifiers)
 
             if article_data:
+
                 issn, article_id, metadata_json = self.get_article_info(article_data)
+                try:
+                    package = AtriclePackage()
+                    package.issn = issn
+                    package.article_id = article_id
+                    package.metadata = metadata_json
+                    package.article_dir = dir
+                    package.article_files = files
+                    package.package_dir = self.__preservation_dir
 
-                package = PreservationPackage()
-                package.issn = issn
-                package.article_id = article_id
-                package.metadata = metadata_json
-                package.article_dir = dir
-                package.article_files = files
-                package.package_dir = self.__preservation_dir
+                    package.create_article_bagit_structure()
+                except Exception as exp:
+                    app.logger.exception(f"Error while create article ( {article_id} ) package")
 
-                package.create_article_bagit_structure()
+            else:
+                # log and skip the article if not found
+                app.logger.error(f"Could not retrieve article for indentifier(s) {identifiers}")
+
 
 
     def get_article(self, identifiers):
@@ -206,6 +337,8 @@ class Preservation:
                 article = Article.pull_by_key("bibjson.link.url", identifier)
             if article:
                 return article.data
+            else:
+                return None
 
     def get_article_info(self, article_json):
         """
@@ -215,9 +348,7 @@ class Preservation:
         """
 
         metadata_json = self.get_metadata_json(article_json)
-
         issn = article_json["bibjson"]["journal"]["issns"][0]
-
         article_id = article_json["id"]
 
         return issn, article_id, metadata_json
@@ -235,7 +366,7 @@ class Preservation:
 
         return metadata
 
-class PreservationPackage:
+class AtriclePackage:
 
     def __init__(self):
         self.issn = None
@@ -248,10 +379,11 @@ class PreservationPackage:
     def create_article_bagit_structure(self):
         """
         Create directory structure for packaging
-        Create necessary files
+        Create required additional files
         Create bagit files
-        :return:
         """
+        #  Validate if required data is available
+        self.validate()
 
         journal_dir = os.path.join(self.package_dir, self.issn)
         if not os.path.exists(journal_dir):
@@ -282,7 +414,107 @@ class PreservationPackage:
             with open(os.path.join(metada_dir, "tag.txt"), 'w+') as metadata_file:
                 metadata_file.write(json.dumps(self.article_id, indent=4))
 
-        # Bag the article
-        bagit.make_bag(dest_article_dir, checksums=["sha256"])
+        try:
+            # Bag the article
+            make_bag(dest_article_dir, checksums=["sha256"])
+        except BagError as bagError:
+            app.logger.excception(f"Error while creating Bag for article {self.article_id}")
+            raise PreservationException(message="Error while creating Bag", inner=bagError)
+
+    def validate(self):
+        variables_list = []
+
+        if not self.package_dir:
+            variables_list.append("package_dir")
+        if not self.metadata:
+            variables_list.append("metadata")
+        if not self.article_dir:
+            variables_list.append("article_dir")
+        if not self.article_files or len(self.article_files) == 0:
+            variables_list.append("article_files")
+        if not self.article_id:
+            variables_list.append("article_id")
+        if not self.issn:
+            variables_list.append("issn")
+
+        if len(variables_list) > 0:
+            app.logger.debug(f"Validation Values : package_dir {self.package_dir} "
+                f"metadata {self.metadata} article_dir {self.article_dir} "
+                f"article_files {self.article_files} article_id {self.article_id} issn {self.issn}")
+            raise ValidationError(f"Required fields cannot be empty {variables_list}")
 
 
+class PreservationPackage:
+    """
+    Creates preservation package and upload to Internet Server
+    """
+
+    def __init__(self, directory):
+        self.package_dir = directory
+        self.tar_file = self.package_dir+".tar.gz"
+
+    def create_package(self):
+        """
+        Creates tar file for the package directory
+        :return: tar file name
+        """
+        try:
+            with tarfile.open(self.tar_file, "w:gz") as tar:
+                tar.add(self.package_dir, arcname=os.path.basename(self.package_dir))
+        except Exception as exp:
+            app.logger.exception("Error creating tar file")
+            raise PreservationException(message="Error while creating the tar file", inner=exp)
+
+        return self.tar_file
+
+    def upload_package(self, sha256sum):
+
+        url = app.config.get("PRESERVATION_URL")
+        username = app.config.get("PRESERVATION_USERNAME")
+        password = app.config.get("PRESERVATION_PASSWD")
+        collection = app.config.get("PRESERVATION_COLLECTION")
+
+        file_name = os.path.basename(self.tar_file)
+
+        # payload for upload request
+        payload = {
+            'directories': file_name,
+            'org': 'DOAJ',
+            'client': 'DOAJ_CLI',
+            'username': 'doaj_uploader',
+            'size': '',
+            'organization': '1',
+            'orgname': 'DOAJ',
+            'collection': '2',
+            'collname': collection,
+            'sha256sum': sha256sum
+        }
+        # get the file to upload
+        try:
+            files = {'file_field': (file_name, open(self.tar_file, 'rb'))}
+        except IOError as exp:
+            app.logger.exception("Error opening the tar file")
+            raise PreservationException("Error opening the tar file", inner = exp)
+
+        headers = {}
+
+        try:
+            response = requests.post(url, headers=headers, auth=(username, password), files=files, data=payload)
+        except Exception as exp:
+            app.logger.exception("Error opening the tar file")
+            raise PreservationException("Error Uploading tar file to IA server", inner=exp)
+
+        return response
+
+    def sha256(self):
+        """
+        Creates sha256 hash for the tar file
+        """
+        sha256_hash = hashlib.sha256()
+
+        with open(self.tar_file, "rb") as f:
+            # Read and update hash string value in blocks of 64K
+            for byte_block in iter(lambda: f.read(65536), b""):
+                sha256_hash.update(byte_block)
+
+        return sha256_hash.hexdigest()

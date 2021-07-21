@@ -1,94 +1,125 @@
 import os
+import requests
 from io import BytesIO
+from datetime import datetime
 from unittest.mock import patch
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.preservation import PreservationMock
 from portality.tasks import preservation
 from portality.core import app
+from portality.lib import dates
 from werkzeug.datastructures import FileStorage
 from portality.models.article import Article
 
 
 class TestPreservation(DoajTestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        super(TestPreservation, cls).setUpClass()
-        cls.upload_dir = app.config.get("UPLOAD_DIR", ".")
-        cls.preserve = preservation.Preservation("rama")
-
-    @classmethod
-    def tearDownClass(cls):
-        super(TestPreservation, cls).tearDownClass()
-        cls.preserve.delete_local_directory()
-
     def setUp(self):
         super(TestPreservation, self).setUp()
+        resources = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
+        articles_zip_path = os.path.join(resources, "articles.zip")
+        with open(articles_zip_path, 'rb') as zf:
+            self.zip_file = FileStorage(BytesIO(zf.read()), filename="articles.zip")
+
+        self.upload_dir = app.config.get("UPLOAD_DIR", ".")
+        created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
+        dir_name = "rama" + "-" + created_time
+        self.local_dir = os.path.join(preservation.Preservation.UPLOAD_DIR, dir_name)
+        self.preserve = preservation.Preservation(self.local_dir)
+        self.package = preservation.PreservationPackage(self.preserve.preservation_dir)
 
 
     def tearDown(self):
         super(TestPreservation, self).tearDown()
+        preservation.Preservation.delete_local_directory(self.local_dir)
 
 
     def test_local_directory(self):
 
         #Test creation of local directory
-        TestPreservation.preserve.create_local_directories()
-        assert os.path.isdir(os.path.join(TestPreservation.upload_dir, TestPreservation.preserve.dir_name))
-        assert os.path.isdir(os.path.join(TestPreservation.upload_dir, TestPreservation.preserve.dir_name,
-                                          TestPreservation.preserve.dir_name))
+        #TestPreservation.preserve.create_local_directories()
+        job = preservation.PreservationBackgroundTask.prepare("rama", upload_file=self.zip_file)
+        params = job.params
+        local_dir = params["preserve__local_dir"]
+        dir_name = os.path.basename(local_dir)
+
+        assert os.path.isdir(os.path.join(self.upload_dir, dir_name))
+        assert os.path.isdir(os.path.join(self.upload_dir, dir_name,dir_name))
 
         #Test deletion of local directory
-        TestPreservation.preserve.delete_local_directory()
-        assert not os.path.exists(os.path.join(TestPreservation.upload_dir, TestPreservation.preserve.dir_name))
+        preservation.Preservation.delete_local_directory(local_dir)
+        assert not os.path.exists(os.path.join(self.upload_dir, dir_name))
 
     def mock_pull_by_key(key, value):
         article = Article()
         article.data = PreservationMock.ARTICLE_DATA
         return article
 
+    def mock_requests_post(*args, **kwargs):
+        class MockResponse:
+            def __init__(self, json_data, status_code):
+                self.json_data = json_data
+                self.status_code = status_code
+
+            def json(self):
+                return self.json_data
+
+        if not args[0] == None and kwargs["data"]["org"] == "DOAJ":
+            return MockResponse({
+                      "files": [
+                        {
+                          "name": "name_of_tarball.tar.gz",
+                          "sha256": "decafbad"
+                        }
+                      ]
+                    }, 200)
+
+        return MockResponse(None, 404)
+
     @patch.object(Article, 'pull_by_key', mock_pull_by_key)
+    @patch.object(requests,"post", mock_requests_post)
     def test_preservation(self):
+        self.preserve.save_file(self.zip_file)
 
-        resources = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-        temp_dir = os.path.join(TestPreservation.upload_dir, TestPreservation.preserve.dir_name)
-
-        articles_zip_path = os.path.join(resources,"articles.zip")
-        # Test zip file save
-        with open(articles_zip_path, 'rb') as zf:
-            zip_file = FileStorage(BytesIO(zf.read()), filename="articles.zip")
-            TestPreservation.preserve.save_file(zip_file)
-
-            assert os.path.exists(os.path.join(temp_dir, zip_file.filename))
+        assert os.path.exists(os.path.join(self.local_dir, self.zip_file.filename))
 
         # Test extraction of zip file
-        TestPreservation.preserve.extract_zip_file()
+        self.preserve.extract_zip_file()
 
-        assert os.path.exists(os.path.join(temp_dir, "articles"))
-        assert os.path.isdir(os.path.join(temp_dir, "articles"))
-        assert os.path.isdir(os.path.join(temp_dir, "articles", "article_1"))
-        assert os.path.exists(os.path.join(temp_dir, "articles", "article_1", "identifier.txt"))
+        assert os.path.exists(os.path.join(self.local_dir, "articles"))
+        assert os.path.isdir(os.path.join(self.local_dir, "articles"))
+        assert os.path.isdir(os.path.join(self.local_dir, "articles", "article_1"))
+        assert os.path.exists(os.path.join(self.local_dir, "articles",
+                                           "article_1", "identifier.txt"))
 
-        reader = preservation.CSVReader(os.path.join(temp_dir, "articles", "identifiers.csv"))
+        reader = preservation.CSVReader(os.path.join(self.local_dir,
+                                                     "articles", "identifiers.csv"))
         data = reader.articles_info()
 
         assert "article_1" in data
         assert "article/10.1186/s40478-018-0619-9" in data["article_1"][0]
 
         # Test package structure
-        TestPreservation.preserve.create_package_structure()
-        package_dir = os.path.join(TestPreservation.upload_dir,
-                                        TestPreservation.preserve.dir_name, TestPreservation.preserve.dir_name)
+        self.preserve.create_package_structure()
+        package_dir = os.path.join(self.upload_dir,
+                                   self.preserve.dir_name, self.preserve.dir_name)
         tag_manifest_file = os.path.join(package_dir, "2051-5960", "00003741594643f4996e2555a01e03c7", "tagmanifest-sha256.txt")
         manifest_file = os.path.join(package_dir,"2051-5960", "00003741594643f4996e2555a01e03c7", "manifest-sha256.txt")
         assert os.path.exists(package_dir)
         assert os.path.exists(tag_manifest_file)
         assert os.path.exists(manifest_file)
 
+        # Test creation of tar file
+        self.package.create_package()
+        assert os.path.exists(package_dir + ".tar.gz")
+
+        sha256 = self.package.sha256()
+        response = self.package.upload_package(sha256)
+        assert response.status_code == 200
 
 
     def test_get_article_info(self):
-        issn, article_id, metadata_json = TestPreservation.preserve.get_article_info(PreservationMock.ARTICLE_DATA)
+        issn, article_id, metadata_json = self.preserve.get_article_info(PreservationMock.ARTICLE_DATA)
 
         assert issn == "2051-5960"
         assert article_id == "00003741594643f4996e2555a01e03c7"
