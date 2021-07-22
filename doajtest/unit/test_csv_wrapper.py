@@ -1,7 +1,7 @@
 __author__ = 'steve'
 
 from doajtest.helpers import DoajTestCase
-from lib.clcsv import ClCsv
+from portality.lib.clcsv import ClCsv
 import csv
 import os
 

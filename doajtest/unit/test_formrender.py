@@ -137,46 +137,6 @@ class TestRender(DoajTestCase):
         assert 'name="one"' in html
         assert 'name="two"' in html
 
-    def test_04_application_renderer(self):
-        r = render.ApplicationRenderer()
-        assert len(r.disabled_fields) == 0
-        assert len(r.error_fields) == 0
-        assert len(r.NUMBERING_ORDER) == 6
-        assert len(r.NUMBERING_ORDER) == len(r.ERROR_CHECK_ORDER)
-        assert len(list(r.FIELD_GROUPS.keys())) == 6
-
-        # number the questions
-        r.number_questions()
-
-        # check the numbering is what we'd expect it to be
-        q = 1
-        for g in r.NUMBERING_ORDER:
-            cfg = r.FIELD_GROUPS.get(g)
-            for obj in cfg:
-                field = list(obj.keys())[0]
-                assert obj[field].get("q_num") == str(q), (field, obj[field].get("q_num"), q)
-                q += 1
-        assert q == 59, q # checks that we checked everything (58 questions, plus an extra 1 from the end of the loop)
-
-        # try setting some error fields
-        r.set_error_fields(["publisher", "copyright_url"])
-        assert "publisher" in r.error_fields
-        assert "copyright_url" in r.error_fields
-        assert len(r.error_fields) == 2
-
-        # go and look for the first error (we'd expect it to be "publisher")
-        q = 1
-        for g in r.ERROR_CHECK_ORDER:
-            cfg = r.FIELD_GROUPS.get(g)
-            for obj in cfg:
-                field = list(obj.keys())[0]
-                if field == "publisher":
-                    assert obj[field].get("first_error", False)
-                else:
-                    assert not obj[field].get("first_error", False)
-                q += 1
-        assert q == 59 # makes sure we've checked all the fields (58 questions, plus an extra 1 from the end of the loop)
-
     def test_05_insert_fields(self):
         r = TestRenderer()
         r.insert_field_after(

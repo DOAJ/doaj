@@ -8,9 +8,7 @@ from portality.lib.formulaic import FormProcessor
 from portality.ui.messages import Messages
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
-from portality.formcontext.choices import Choices
 from portality.bll import exceptions
-from portality.forms.application_forms import application_statuses
 
 from flask import url_for, request, has_request_context
 from flask_login import current_user
@@ -144,7 +142,9 @@ class ApplicationProcessor(FormProcessor):
     def _validate_status_change(self, source_status, target_status):
         """ Check whether the editorial pipeline permits a change to the target status for a role.
         Don't run this for admins, since they can change to any role at any time. """
-        choices_for_role = list(sum(application_statuses(None, self._formulaic)))
+        from portality.forms.application_forms import application_statuses
+        choices_for_role = [s.get("value") for s in application_statuses(None, self._formulaic)]
+        # choices_for_role = list(sum(application_statuses(None, self._formulaic), ()))
         # choices_for_role = list(sum(cls.application_status(role), ()))                     # flattens the list of tuples
 
         # Don't allow edits to application when status is beyond this user's permissions in the pipeline
