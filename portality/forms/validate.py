@@ -155,38 +155,6 @@ class ExtraFieldRequiredIf(OptionalIf):
         return self.get_other_field(self.other_field_name, form)
 
 
-class ExclusiveCheckbox(object):
-    """If a checkbox is checked, do not allow any other checkboxes to be checked."""
-    # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
-    # except where it will simplify a 50-field form, k?
-
-    def __init__(self, exclusive_checkbox_value=Choices.NONE, message='When you have selected "{exclusive_checkbox_value}" you are not allowed to tick any other checkboxes.', *args, **kwargs):
-        self.exclusive_checkbox_value = exclusive_checkbox_value
-        self.message = message
-
-    def __call__(self, form, field):
-        detected_exclusive = False
-        detected_others = False
-        for val in field.data:
-            if val == self.exclusive_checkbox_value:
-                detected_exclusive = True
-            else:
-                if val:
-                    detected_others = True
-
-        # if only one of them is true, it doesn't matter
-        # if both are false, no checkboxes have been checked - use a
-        # validators.Required() on the checkboxes field for that
-        # which leaves the case where both are True - and that is what
-        # this validator is all about
-
-        if detected_exclusive and detected_others:
-            raise validators.ValidationError(self.message.format(exclusive_checkbox_value=self.exclusive_checkbox_value))
-            # it won't insert the checkbox value anywhere if
-            # {exclusive_checkbox_value} is not present in the message
-            # passed to the constructor
-
-
 class HTTPURL(validators.Regexp):
     """
     Simple regexp based url validation. Much like the email validator, you
@@ -505,6 +473,7 @@ class NotIf(OnlyIf):
             elif other.data == o_f['value']:
                 # Fail if the other field has the specified value
                 validators.ValidationError(self.message)
+
 
 class NoScriptTag(object):
     """

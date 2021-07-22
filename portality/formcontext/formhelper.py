@@ -36,9 +36,7 @@ class FormHelperBS3(object):
             frag += " row"
         if container_class is not None:
             frag += " " + container_class
-        #if complete_me and (field.flags.required or field.flags.display_required_star) and (field.data is None or field.data == "" or field.data == "None") and not disabled:
         if complete_me:
-            #if not field.validate():
             frag += " complete-me"
         frag += '" id="'
         frag += field.short_name + '-container"'
@@ -146,10 +144,6 @@ class FormHelperBS3(object):
                     render_args[k] = v
             frag += field(**render_args) # FIXME: this is probably going to do some weird stuff
 
-            # FIXME: field.value isn't always set
-            #if field.value in extra_input_fields.keys():
-            #    extra_input_fields[field.value](**{"class" : "extra_input_field"})
-
         if field.errors:
             frag += '<div class="alert alert--danger"><ul>'
             for error in field.errors:
@@ -164,7 +158,6 @@ class FormHelperBS3(object):
 
     def _render_radio(self, field, **kwargs):
         extra_input_fields = kwargs.pop("extra_input_fields", {})
-        # label_width = str(kwargs.get("label_width", 3))
         label_width = "12"
 
         frag = '<label class="radio control-label col-md-' + label_width + '" for="' + field.short_name + '">'
@@ -179,7 +172,6 @@ class FormHelperBS3(object):
 
     def _render_checkbox(self, field, **kwargs):
         extra_input_fields = kwargs.pop("extra_input_fields", {})
-        # label_width = str(kwargs.get("label_width", 3))
 
         frag = "<li>"
         frag += field(**kwargs)

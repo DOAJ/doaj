@@ -14,7 +14,6 @@ from portality.forms import application_processors
 from portality.forms.validate import (
     HTTPURL,
     OptionalIf,
-    ExclusiveCheckbox,
     ExtraFieldRequiredIf,
     MaxLen,
     RegexpOnTagList,
@@ -2463,6 +2462,7 @@ class JournalURLInPublicDOAJBuilder:
     def wtforms(field, settings):
         return JournalURLInPublicDOAJ(message=settings.get("message"))
 
+
 class NoScriptTagBuilder:
     @staticmethod
     def render(settings, html_attrs):
@@ -2474,7 +2474,8 @@ class NoScriptTagBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return NoScriptTag(settings.get("value"))
+        return NoScriptTag(settings.get("message", "No script tags allowed"))
+
 
 class OptionalIfBuilder:
     @staticmethod

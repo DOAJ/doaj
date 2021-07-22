@@ -25,7 +25,7 @@ from portality.ui.messages import Messages
 from portality.formcontext import formcontext
 
 from portality.view.forms import EditorGroupForm, MakeContinuation
-from portality.forms.application_forms import ApplicationFormFactory
+from portality.forms.application_forms import ApplicationFormFactory, application_statuses
 from portality.background import BackgroundSummary
 from portality import constants
 from portality.forms.application_forms import JournalFormFactory
@@ -323,9 +323,10 @@ def journal_continue(journal_id):
 @login_required
 @ssl_required
 def suggestions():
+    fc = ApplicationFormFactory.context("admin")
     return render_template("admin/applications.html",
                            admin_page=True,
-                           application_status_choices=choices.Choices.application_status("admin"))
+                           application_status_choices=application_statuses(None, fc))
 
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
