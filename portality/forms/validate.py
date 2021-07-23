@@ -4,7 +4,6 @@ from wtforms import validators
 from wtforms.compat import string_types
 from typing import List
 
-from portality.formcontext.choices import Choices
 from portality.core import app
 from portality.models import Journal, EditorGroup, Account
 

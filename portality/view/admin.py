@@ -3,33 +3,28 @@ import json
 from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
-
 from werkzeug.datastructures import MultiDict
 
-from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
-from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
-
-from portality.formcontext import choices
-from portality import lock, app_email
-from portality.lib.es_query_http import remove_search_limits
-from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
-from portality.core import app
-from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, article_bulk_delete
-from portality.bll import DOAJ, exceptions
-from portality.lcc import lcc_jstree
-
-# from portality.formcontext import emails
 import portality.notifications.application_emails as emails
-from portality.ui.messages import Messages
-from portality.formcontext import formcontext
-
-from portality.view.forms import EditorGroupForm, MakeContinuation
-from portality.forms.application_forms import ApplicationFormFactory, application_statuses
-from portality.background import BackgroundSummary
 from portality import constants
-from portality.forms.application_forms import JournalFormFactory
+from portality import lock, app_email
+from portality.background import BackgroundSummary
+from portality.bll import DOAJ, exceptions
+from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
+from portality.core import app
 from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.decorators import ssl_required, restrict_to_role, write_required
+from portality.forms.application_forms import ApplicationFormFactory, application_statuses
+from portality.forms.application_forms import JournalFormFactory
+from portality.forms.article_forms import ArticleFormFactory
+from portality.lcc import lcc_jstree
+from portality.lib.es_query_http import remove_search_limits
+from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
+    article_bulk_delete
+from portality.ui.messages import Messages
+from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
+from portality.view.forms import EditorGroupForm, MakeContinuation
 
 blueprint = Blueprint('admin', __name__)
 
@@ -166,13 +161,13 @@ def article_page(article_id):
     if ap is None:
         abort(404)
 
-    fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=current_user)
+    fc = ArticleFormFactory.get_from_context(role="admin", source=ap, user=current_user)
     if request.method == "GET":
         return fc.render_template()
 
     elif request.method == "POST":
         user = current_user._get_current_object()
-        fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=user, form_data=request.form)
+        fc = ArticleFormFactory.get_from_context(role="admin", source=ap, user=user, form_data=request.form)
 
         fc.modify_authors_if_required(request.values)
 

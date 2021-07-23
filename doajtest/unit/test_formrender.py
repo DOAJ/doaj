@@ -1,5 +1,5 @@
 from doajtest.helpers import DoajTestCase
-from portality.formcontext import render, formcontext
+from portality.forms.article_forms import FormContext, Renderer
 from wtforms import Form, StringField, SelectMultipleField, widgets
 
 ################################################################
@@ -10,7 +10,7 @@ class TestForm(Form):
     one = StringField("One")
     two = StringField("Two")
 
-class TestRenderer(render.Renderer):
+class TestRenderer(Renderer):
     def __init__(self):
         super(TestRenderer, self).__init__()
         self.FIELD_GROUPS = {
@@ -20,7 +20,7 @@ class TestRenderer(render.Renderer):
             ]
         }
 
-class TestContext(formcontext.FormContext):
+class TestContext(FormContext):
     def data2form(self):
         self.form = TestForm(formdata=self.form_data)
 
@@ -48,7 +48,7 @@ class ExtraFieldsForm(Form):
         widget=widgets.ListWidget(prefix_label=False)
     )
 
-class ExtraFieldsRenderer(render.Renderer):
+class ExtraFieldsRenderer(Renderer):
     def __init__(self):
         super(ExtraFieldsRenderer, self).__init__()
         self.FIELD_GROUPS = {
@@ -64,7 +64,7 @@ class ExtraFieldsRenderer(render.Renderer):
             ]
         }
 
-class ExtraFieldsContext(formcontext.FormContext):
+class ExtraFieldsContext(FormContext):
     def data2form(self):
         self.form = ExtraFieldsForm(formdata=self.form_data)
 
@@ -86,7 +86,7 @@ class TestRender(DoajTestCase):
     def tearDown(self): pass
 
     def test_01_base_render_init(self):
-        r = render.Renderer()
+        r = Renderer()
         assert len(r.disabled_fields) == 0
         assert len(r.error_fields) == 0
 
