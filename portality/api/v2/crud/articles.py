@@ -1,3 +1,4 @@
+# ~~APICrudArticles:Feature->APICrud:Feature~~
 import json
 
 from portality.api.v2.crud.common import CrudApi
@@ -13,6 +14,9 @@ from copy import deepcopy
 class ArticlesCrudApi(CrudApi):
 
     API_KEY_OPTIONAL = False
+
+    # ~~->Swagger:Feature~~
+    # ~~->API:Documentation~~
     SWAG_TAG = 'CRUD Articles'
     SWAG_ID_PARAM = {
         "description": "<div class=\"search-query-docs\">DOAJ article ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
@@ -74,6 +78,7 @@ class ArticlesCrudApi(CrudApi):
         # convert the data into a suitable article model (raises Api400Error if doesn't conform to struct)
         am = cls.prep_article(data, account)
 
+        # ~~-> Article:Service~~
         articleService = DOAJ.articleService()
         try:
             result = articleService.create_article(am, account, add_journal_info=True)
@@ -99,6 +104,7 @@ class ArticlesCrudApi(CrudApi):
         except dataobj.DataStructureException as e:
             raise Api400Error(str(e))
         except dataobj.ScriptTagFoundException as e:
+            # ~~->Email:ExternalService~~
             email_data = {"article": data, "account": account.__dict__}
             jdata = json.dumps(email_data, indent=4)
             # send warning email about the service tag in article metadata detected
@@ -201,6 +207,7 @@ class ArticlesCrudApi(CrudApi):
             raise Api404Error()
 
         # Check we're allowed to edit this article
+        # ~~-> Article:Service~~
         articleService = DOAJ.articleService()
         if not articleService.is_legitimate_owner(ar, account.id):
             raise Api404Error()  # not found for this account
@@ -259,6 +266,7 @@ class ArticlesCrudApi(CrudApi):
             raise Api404Error()
 
         # Check we're allowed to retrieve this article
+        # ~~-> Article:Service~~
         articleService = DOAJ.articleService()
         if not articleService.is_legitimate_owner(ar, account.id):
             raise Api404Error()  # not found for this account

@@ -1,6 +1,10 @@
 from portality.models import JournalLikeBibJSON
 
 class JCTInProgressXWalk(object):
+    """
+    ~~JCT:Crosswalk->JCT:Feature~~
+    ~~->Application:Model~~
+    """
 
     @classmethod
     def application2jct(cls, application):

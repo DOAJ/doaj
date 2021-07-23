@@ -3,8 +3,8 @@
 
 # ~~DataModels:Script->Forms:Script~~
 # ~~->FieldDescriptions:Documentation~~
-# ~~->Seamless:Technology~~
-# ~~->DataObj:Technology~~
+# ~~->Seamless:Library~~
+# ~~->DataObj:Library~~
 # ~~->Journal:Model~~
 # ~~->Application:Model~~
 # ~~->IncomingArticle:Model~~

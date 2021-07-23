@@ -4,7 +4,9 @@ title: Public data dump
 section: Docs
 toc: true
 sticky_sidenav: true
-featuremap: ~~PublicDataDump:Fragment~~
+featuremap: 
+  - ~~PublicDataDump:Fragment->JournalDataDump:WebRoute~~
+  - ~~->ArticleDataDump:WebRoute~~
 
 ---
 

@@ -11,6 +11,9 @@ from portality.bll.doaj import DOAJ
 from portality.ui.messages import Messages
 
 class ApplicationService(object):
+    """
+    ~~Application:Service->DOAJ:Service~~
+    """
 
     def reject_application(self, application, account, provenance=True, note=None, manual_update=True):
         """
@@ -38,6 +41,7 @@ class ApplicationService(object):
 
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering reject_application")
 
+        # ~~->Journal:Service~~
         journalService = DOAJ.journalService()
 
         # check we're allowed to carry out this action
@@ -82,6 +86,7 @@ class ApplicationService(object):
 
         # record a provenance record that this action took place
         if provenance:
+            # ~~->Provenance:Model~~
             models.Provenance.make(account, constants.PROVENANCE_STATUS_REJECTED, application)
 
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed reject_application")
@@ -273,6 +278,8 @@ class ApplicationService(object):
 
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering update_request_for_journal")
 
+        # ~~-> Journal:Service~~
+        # ~~-> AuthNZ:Service~~
         journalService = DOAJ.journalService()
         authService = DOAJ.authorisationService()
 
@@ -291,7 +298,7 @@ class ApplicationService(object):
 
         # retrieve the latest application attached to this journal
         application_lock = None
-        application = models.Suggestion.find_latest_by_current_journal(journal_id)
+        application = models.Suggestion.find_latest_by_current_journal(journal_id)  # ~~->Application:Model~~
 
         # if no such application exists, create one in memory (this will check that the user is permitted to create one)
         # at the same time, create the lock for the journal.  This will throw an AuthorisedException or a Locked exception
@@ -336,7 +343,7 @@ class ApplicationService(object):
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering application_2_journal")
 
         # create a new blank journal record, which we can build up
-        journal = models.Journal()
+        journal = models.Journal()  # ~~->Journal:Model~~
 
         # first thing is to copy the bibjson as-is wholesale,
         abj = application.bibjson()
@@ -432,6 +439,7 @@ class ApplicationService(object):
         the_lock = None
         if application is not None and lock_application:
             if lock_account is not None:
+                # ~~->Lock:Feature~~
                 the_lock = lock.lock(constants.LOCK_APPLICATION, application_id, lock_account.id, lock_timeout)
             else:
                 raise exceptions.ArgumentException("If you specify lock_application on application retrieval, you must also provide lock_account")
@@ -455,6 +463,8 @@ class ApplicationService(object):
             {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"}
         ], exceptions.ArgumentException)
 
+        # ~~-> Journal:Service~~
+        # ~~-> AuthNZ:Service~~
         journalService = DOAJ.journalService()
         authService = DOAJ.authorisationService()
 
@@ -470,6 +480,7 @@ class ApplicationService(object):
         authService.can_edit_application(account, application)
 
         # attempt to lock the record (this may raise a Locked exception)
+        # ~~-> Lock:Feature~~
         alock = lock.lock(constants.LOCK_APPLICATION, application_id, account.id)
 
         # obtain the current journal, with associated lock

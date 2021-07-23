@@ -2,10 +2,12 @@ from datetime import datetime
 from portality.core import app
 import csv
 from portality.models import Suggestion
-from portality.formcontext.choices import Choices
+from portality.forms.application_forms import ApplicationFormFactory, application_statuses
+
 
 def change_status(ids, new_status):
-    statuses = [x[0] for x in Choices.application_status("admin") if x[0] != ""]
+    fc = ApplicationFormFactory.context("admin")
+    statuses = [x[0] for x in application_statuses(None, fc) if x[0] != ""]
     if new_status not in statuses:
         raise Exception("Must use an allowed status: " + ", ".join(statuses))
 
@@ -13,6 +15,7 @@ def change_status(ids, new_status):
         a = Suggestion.pull(id)
         a.set_application_status(new_status)
         a.save()
+
 
 if __name__ == "__main__":
     print('Starting {0}.'.format(datetime.now()))
