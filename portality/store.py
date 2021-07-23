@@ -275,7 +275,7 @@ def prune_container(storage, container_id, sort, filter=None, keep=1):
 
     if len(filtered) <= keep:
         # action_register.append("Fewer than {x} files in cache, no further action".format(x=keep))
-        return
+        return action_register
 
     filtered_sorted = sort(filtered)
     #action_register.append("Considering files for retention in the following order: " + ", ".join(filtered_sorted))

@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "5.1.1"
+DOAJ_VERSION = "5.1.2"
 API_VERSION = "2.0.0"
 
 ######################################
@@ -86,6 +86,7 @@ READ_ONLY_MODE = False
 
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
+
 
 ###########################################
 # Feature Toggles

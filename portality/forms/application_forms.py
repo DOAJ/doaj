@@ -603,6 +603,7 @@ class FieldDefinitions:
         "name": "license_terms_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "License terms",
         "validate": [
             {"required": {"message": "Enter the URL for the journal’s <strong>license terms</strong> page"}},
             "is_url"
@@ -698,6 +699,7 @@ class FieldDefinitions:
         "name": "copyright_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Copyright terms",
         "help": {
             "short_help": "Link to the journal’s copyright terms"
         },
@@ -782,6 +784,7 @@ class FieldDefinitions:
         "name": "review_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Peer review policy",
         "help": {
             "doaj_criteria": "You must provide a URL",
             "short_help": "Link to the journal’s peer review policy"
@@ -820,6 +823,7 @@ class FieldDefinitions:
     PLAGIARISM_URL = {
         "name": "plagiarism_url",
         "label": "Where can we find this information?",
+        "diff_table_context": "Plagiarism screening",
         "input": "text",
         "conditional": [{"field": "plagiarism_detection", "value": "y"}],
         "help": {
@@ -1024,6 +1028,7 @@ class FieldDefinitions:
     APC_URL = {
         "name": "apc_url",
         "label": "Where can we find this information?",
+        "diff_table_context": "Publication fees",
         "input": "text",
         "help": {
             "short_help": "Link to the page where this is stated. The page "
@@ -1070,6 +1075,7 @@ class FieldDefinitions:
         "name": "waiver_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Publication fee waiver",
         "conditional": [
             {"field": "has_waiver", "value": "y"}
         ],
@@ -1118,6 +1124,7 @@ class FieldDefinitions:
         "name": "other_charges_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Other fees",
         "conditional": [
             {"field": "has_other_charges", "value": "y"}
         ],
@@ -1231,6 +1238,7 @@ class FieldDefinitions:
         "name": "preservation_service_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Archiving policy",
         "help": {
             "short_help": "Link to the preservation and archiving information",
             "doaj_criteria": "You must provide a URL",
@@ -1329,8 +1337,10 @@ class FieldDefinitions:
         "name": "deposit_policy_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Repository policy",
         "conditional": [{"field": "deposit_policy", "value": "Sherpa/Romeo"},
                         {"field": "deposit_policy", "value": "Dulcinea"},
+                        {"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "other"}],
         "help": {

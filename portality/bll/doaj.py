@@ -70,3 +70,12 @@ class DOAJ(object):
         # via this factory to also use the factory to load other services.
         from portality.bll.services import article
         return article.ArticleService()
+
+    @classmethod
+    def siteService(cls):
+        """
+        Obtain an instance of the site service
+        :return:  SiteService
+        """
+        from portality.bll.services import site
+        return site.SiteService()
