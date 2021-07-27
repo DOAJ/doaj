@@ -369,7 +369,8 @@ HUEY_SCHEDULE = {
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
-    "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"}
+    "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"}
 }
 
 HUEY_TASKS = {
@@ -1131,13 +1132,12 @@ DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
 
 ## EPMC Client configuration
 # ~~-> EPMC:ExternalService~~
-EPMC_REST_API = "http://www.ebi.ac.uk/europepmc/webservices/rest/"
+EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
 EPMC_TARGET_VERSION = "6.5"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
 
-# General harvester configuraiton
-
+# General harvester configuration
 HARVESTERS = [
-    "portality.harvester.epmc.epmc_harvester.EPMCHarvester"
+    "portality.tasks.harvester_helpers.epmc.epmc_harvester.EPMCHarvester"
 ]
 
 INITIAL_HARVEST_DATE = "2015-12-01T00:00:00Z"
