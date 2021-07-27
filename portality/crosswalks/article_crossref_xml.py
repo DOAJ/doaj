@@ -306,9 +306,13 @@ Example record:
 ## some convenient utilities
 ###############################################################################
 
-
-def _element(xml, field, namepsace):
-    el = xml.find(field, namepsace)
-    if el is not None and el.text is not None and el.text != "":
-        return el.text.strip()
-    return None
+def _element(xml, field, namespace):
+    el = xml.find(field, namespace)
+    if el is not None:
+        string = etree.tostring(el).decode("utf-8")
+        start = string.index(">") + 1
+        end = string.rindex('</')
+        text = string[start:end]
+        return text if text else None
+    else:
+        return None

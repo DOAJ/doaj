@@ -55,7 +55,6 @@ class ArticleService(object):
         all_unowned = set()
         all_unmatched = set()
 
-
         for article in articles:
             try:
                 # ~~!ArticleBatchCreate:Feature->ArticleCreate:Feature~~
