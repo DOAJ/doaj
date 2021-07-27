@@ -255,13 +255,13 @@ class Journal2QuestionXwalk(object):
             apcs = []
             for apc in x.split('; '):
                 [amt, cur] = apc.split()
-                apcs.append({'apc_max': int(amt), 'apc_currency': cur})
+                apcs.append({'apc_max': round(float(amt)), 'apc_currency': cur})
             return apcs
 
         # Undo the transformations applied to specific fields. TODO: Add these as they are encountered in the wild
         REVERSE_TRANSFORM_MAP = {
             'license': lambda x: [lic.strip() for lic in x.split(',')],
-            'publication_time_weeks': lambda x: int(x),
+            'publication_time_weeks': lambda x: round(float(x)),
             'apc': _y_or_blank,
             'apc_charges': _unfurl_apc,
             'has_waiver': _y_n_or_blank
