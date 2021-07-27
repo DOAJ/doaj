@@ -174,15 +174,39 @@ class Query(object):
         if "query" not in self.q["query"]["filtered"] and current_query is not None:
             self.q["query"]["filtered"]["query"] = current_query
 
-    def add_must(self, filter):
-        self.convert_to_filtered()
-        context = self.q["query"]["filtered"]["filter"]
-        if "bool" not in context:
-            context["bool"] = {}
-        if "must" not in context["bool"]:
-            context["bool"]["must"] = []
+    def convert_to_bool(self):
+        if self.filtered is True:
+            return
 
-        context["bool"]["must"].append(filter)
+        current_query = None
+        if "query" in self.q:
+            current_query = deepcopy(self.q["query"])
+            del self.q["query"]
+            if len(list(current_query.keys())) == 0:
+                current_query = None
+
+        self.filtered = True
+        if "query" not in self.q:
+            self.q["query"] = {}
+        if "bool" not in self.q["query"]:
+            self.q["query"]["bool"] = {}
+
+    def add_must(self, filter):
+        # self.convert_to_filtered()
+        self.convert_to_bool()
+        context = self.q["query"]["bool"]
+        if "must" not in context:
+            context["must"] = []
+
+        context["must"].append(filter)
+
+    def add_must_filter(self, filter):
+        self.convert_to_bool()
+        context = self.q["query"]["bool"]
+        if "filter" not in context:
+            context["filter"] = []
+
+        context["filter"].append(filter)
 
     def clear_match_all(self):
         if "match_all" in self.q["query"]:
