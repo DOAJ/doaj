@@ -1,8 +1,10 @@
 from portality.core import app
 from portality.lib import httputil
 import urllib.request, urllib.parse, urllib.error, string
-from portality.harvester.epmc import models
-from portality.harvester.epmc.queries import QueryBuilder
+
+from portality.settings import BASE_FILE_PATH
+from portality.tasks.harvester_helpers.epmc import models
+from portality.tasks.harvester_helpers.epmc.queries import QueryBuilder
 from datetime import datetime
 import time
 
@@ -58,81 +60,86 @@ class EPMCFullTextException(Exception):
 
 
 class EuropePMC(object):
-    @classmethod
-    def get_by_pmcid(cls, pmcid, cursor=""):
-        return cls.field_search("PMCID", pmcid, cursor=cursor)
 
-    @classmethod
-    def get_by_pmid(cls, pmid, cursor=""):
-        return cls.field_search("EXT_ID", pmid, cursor=cursor)
+    def __init__(self):
+        self.logger = ""
 
-    @classmethod
-    def get_by_doi(cls, doi, cursor=""):
-        return cls.field_search("DOI", doi, cursor=cursor)
+    def get_by_pmcid(self, pmcid, cursor=""):
+        return self.field_search("PMCID", pmcid, cursor=cursor)
 
-    @classmethod
-    def title_exact(cls, title, cursor=""):
-        return cls.field_search("TITLE", title, cursor=cursor)
 
-    @classmethod
-    def title_approximate(cls, title, cursor=""):
+    def get_by_pmid(self, pmid, cursor=""):
+        return self.field_search("EXT_ID", pmid, cursor=cursor)
+
+
+    def get_by_doi(self, doi, cursor=""):
+        return self.field_search("DOI", doi, cursor=cursor)
+
+
+    def title_exact(self, title, cursor=""):
+        return self.field_search("TITLE", title, cursor=cursor)
+
+
+    def title_approximate(self, title, cursor=""):
         nt = to_keywords(title)
-        return cls.field_search("TITLE", nt, fuzzy=True, cursor=cursor)
+        return self.field_search("TITLE", nt, fuzzy=True, cursor=cursor)
 
-    @classmethod
-    def field_search(cls, field, value, fuzzy=False, cursor="", page_size=25):
+
+    def field_search(self, field, value, fuzzy=False, cursor="", page_size=25):
         """
         :return: (results, next_cursor)
         """
         qb = QueryBuilder()
         qb.add_string_field(field, value, fuzzy)
-        return cls.query(qb.to_url_query_param(), cursor=cursor, page_size=page_size)
+        return self.query(qb.to_url_query_param(), cursor=cursor, page_size=page_size)
 
-    @classmethod
-    def field_search_iterator(cls, field, value, fuzzy=False, page_size=25, throttle=None):
+
+    def field_search_iterator(self, field, value, fuzzy=False, page_size=25, throttle=None):
         qb = QueryBuilder()
         qb.add_string_field(field, value, fuzzy)
-        return cls.iterate(qb.to_url_query_param(), page_size=page_size, throttle=throttle)
+        return self.iterate(qb.to_url_query_param(), page_size=page_size, throttle=throttle)
 
-    @classmethod
-    def complex_search(cls, query_builder, cursor="", page_size=25):
+
+    def complex_search(self, query_builder, cursor="", page_size=25):
         """
         :return: (results, next_cursor)
         """
-        return cls.query(query_builder.to_url_query_param(), cursor=cursor, page_size=page_size)
+        return self.query(query_builder.to_url_query_param(), cursor=cursor, page_size=page_size)
 
-    @classmethod
-    def complex_search_iterator(cls, query_builder, page_size=1000, throttle=None):
-        return cls.iterate(query_builder.to_url_query_param(), page_size=page_size, throttle=throttle)
 
-    @classmethod
-    def iterate(cls, query_string, page_size=1000, throttle=None):
+    def complex_search_iterator(self, query_builder, page_size=1000, throttle=None):
+        return self.iterate(query_builder.to_url_query_param(), page_size=page_size, throttle=throttle)
+
+
+    def _write_to_logger(self, msg):
+        self.logger = self.logger + "\n" + msg
+
+
+    def iterate(self, query_string, page_size=1000, throttle=None):
         cursor = ""
         last = None
         while True:
             if last is not None and throttle is not None:
                 diff = (datetime.utcnow() - last).total_seconds()
-                app.logger.debug("Last request at {x}, {y}s ago; throttle {z}s".format(x=last, y=diff, z=throttle))
+                self._write_to_logger("Last request at {x}, {y}s ago; throttle {z}s".format(x=last, y=diff, z=throttle))
                 if diff < throttle:
                     waitfor = throttle - diff
-                    app.logger.debug("Throttling EPMC requests for {x}s".format(x=waitfor))
+                    self._write_to_logger("Throttling EPMC requests for {x}s".format(x=waitfor))
                     time.sleep(waitfor)
-            results, cursor = cls.query(query_string, cursor=cursor, page_size=page_size)
+            results, cursor = self.query(query_string, cursor=cursor, page_size=page_size)
             last = datetime.utcnow()
             if len(results) == 0:
                 break
             for r in results:
                 yield r
 
-    @classmethod
-    def query(cls, query_string, cursor="", page_size=25):
-        """
-        :return: (results, next_cursor)
-        """
+
+    def url_from_query(self, query_string, cursor, page_size):
         quoted = quote(query_string, safe="/")
-        qcursor = quote(str(cursor))
         qsize = quote(str(page_size))
-        if qsize is None or qcursor is None or quoted is None:
+        qcursor = quote(str(cursor))
+
+        if qsize is None or quoted is None or qcursor is None:
             raise EuropePMCException(None, "unable to url escape the string")
 
         url = app.config.get("EPMC_REST_API") + "search?query=" + query_string
@@ -140,7 +147,16 @@ class EuropePMC(object):
 
         if cursor != "":
             url += "&cursorMark=" + qcursor
-        app.logger.debug("Requesting EPMC metadata from " + url)
+
+        return url
+
+
+    def query(self, query_string, cursor="", page_size=25):
+        """
+        :return: (results, next_cursor)
+        """
+        url = self.url_from_query(query_string, cursor, page_size)
+        self._write_to_logger("Requesting EPMC metadata from " + url)
 
         resp = httputil.get(url)
         if resp is None:
@@ -158,10 +174,10 @@ class EuropePMC(object):
         next_cursor_mark = j.get("nextCursorMark", "")
         return results, next_cursor_mark                      # NOTE: previous versions just returned results, not tuple
 
-    @classmethod
-    def fulltext(cls, pmcid):
+
+    def fulltext(self, pmcid):
         url = app.config.get("EPMC_REST_API") + pmcid + "/fullTextXML"
-        app.logger.debug("Searching for Fulltext at " + url)
+        self._write_to_logger("Searching for Fulltext at " + url)
         resp = httputil.get(url)
         if resp is None:
             raise EuropePMCException(message="could not get a response for fulltext from EPMC")
