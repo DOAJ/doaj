@@ -9,6 +9,15 @@ from portality.decorators import write_required
 
 import datetime
 
+
+class BGHarvesterLogger(object):
+    def __init__(self, job):
+        self._job = job
+
+    def log(self, msg):
+        self._job.add_audit_message(msg)
+
+
 class HarvesterBackgroundTask(BackgroundTask):
     mail_prereqs = False
     __action__ = "harvest"
@@ -18,11 +27,11 @@ class HarvesterBackgroundTask(BackgroundTask):
         Execute the task as specified by the background_job
         :return:
         """
+        logger = BGHarvesterLogger(self.background_job)
         accs = list(app.config.get("HARVESTER_API_KEYS", {}).keys())
-        harvester_workflow = workflow.HarvesterWorkflow()
+        harvester_workflow = workflow.HarvesterWorkflow(logger)
         for account_id in accs:
             harvester_workflow.process_account(account_id)
-            self.background_job.add_audit_message(harvester_workflow.logger)
 
         report = Report.write_report()
         app.logger.info(report)

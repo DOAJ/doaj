@@ -1,20 +1,30 @@
 from portality.api.v2 import ArticlesCrudApi
-from portality.api.v2.client import client as doajclient
 from portality.core import app
-from portality.lib import plugin
+from portality.lib import plugin, dates
 from portality.models import Journal, Account
 from portality.models.harvester import HarvesterProgressReport as Report
 from portality.models.harvester import HarvestState
 from portality.lib.dataobj import DataObjException
 
 
+class DefaultLogger(object):
+    def __init__(self):
+        self._log = []
+
+    def log(self, msg):
+        self._log.append({
+            "timestamp": dates.now_with_microseconds(),
+            "message" : msg
+        })
+
+
 class HarvesterWorkflow(object):
 
-    def __init__(self):
-        self.logger = ""
+    def __init__(self, custom_logger=None):
+        self.logger = DefaultLogger() if custom_logger is None else custom_logger
 
     def _write_to_logger(self, msg):
-        self.logger = self.logger + "\n" + msg
+        self.logger.log(msg)
 
     def process_account(self, account_id):
         self._write_to_logger("Harvesting for Account:{x}".format(x=account_id))
@@ -27,11 +37,8 @@ class HarvesterWorkflow(object):
         for issn in issns:
             self.process_issn(account_id, issn)
 
-
     def get_journals_issns(self, account_id):
         return Journal.issns_by_owner(account_id, in_doaj=True)
-
-
 
     def process_issn_states(self, account_id, issns):
         # first check that there are state records for all the provided issns,
@@ -55,7 +62,6 @@ class HarvesterWorkflow(object):
             if hs.issn not in issns and not hs.suspended:
                 hs.suspend()
                 hs.save(blocking=True)
-
 
     def process_issn(self, account_id, issn):
         self._write_to_logger("Processing ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
@@ -98,7 +104,6 @@ class HarvesterWorkflow(object):
             state.save(blocking=True)
             self._write_to_logger("Saved state record for ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
 
-
     def process_article(self, account_id, article):
         self._write_to_logger("Processing Article for Account:{y}".format(y=account_id))
 
@@ -123,7 +128,6 @@ class HarvesterWorkflow(object):
             return False
         self._write_to_logger("Created article in DOAJ for Account:{x} with ID: {y}".format(x=account_id, y=id))
         return True
-
 
     def get_api_key(self, account_id):
         return app.config.get("HARVESTER_API_KEYS", {}).get(account_id)
