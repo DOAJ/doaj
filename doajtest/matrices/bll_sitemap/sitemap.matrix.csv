@@ -1,0 +1,8 @@
+test_id,prune,tmp_write,main_write,raises,comment
+1,True,success,success,,
+2,True,success,fail,IOError,
+3,True,fail,success,IOError,
+4,False,success,success,,
+5,False,success,fail,IOError,
+6,False,fail,success,IOError,
+7,None,success,success,ArgumentException,

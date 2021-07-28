@@ -221,6 +221,29 @@ var doaj = {
          */
         if (!isodate_str) { return "" }
         return isodate_str.replace('T',' ').replace('Z','')
+    },
+
+    scroller : function(selector, notFirstTime, duration, callback) {
+        if (!duration) {
+            duration = 1
+        }
+        if (notFirstTime === undefined) {
+            notFirstTime = true;
+        }
+
+        if (doaj.scroller.hasOwnProperty("doScroll")) {
+            $("html, body").animate(
+                {
+                    scrollTop: $(selector).offset().top
+                },
+                {
+                    duration: duration,
+                    always: callback
+                }
+            );
+        } else {
+            doaj.scroller.doScroll = true;
+        }
     }
 };
 

@@ -1,5 +1,3 @@
-import re
-
 from portality.api.v2.data_objects.common import _check_for_script
 from portality.lib import dataobj, swagger
 from portality import models, regex
@@ -54,6 +52,7 @@ BASE_ARTICLE_STRUCT = {
                     }
                 },
                 # The base struct can't coerce url because we have bad data https://github.com/DOAJ/doajPM/issues/2038
+                # Leaving this here in case we want to reinstate in the future
 #                "link": {
 #                    "fields": {
 #                        "type": {"coerce": "link_type"},
@@ -79,23 +78,9 @@ BASE_ARTICLE_STRUCT = {
                         "country": {"coerce": "unicode"}
                     },
                     "lists": {
-                        # "license": {"contains": "object"},
                         "language": {"coerce": "unicode", "contains": "field"}
-                    },
-                    "structs": {
-                       # We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
-                        # "license": {
-                        #     "fields": {
-                        #         "title": {"coerce": "license"},
-                        #         "type": {"coerce": "license"},
-                        #         "url": {"coerce": "unicode"},
-                        #         "version": {"coerce": "unicode"},
-                        #         "open_access": {"coerce": "bool"},
-                        #     }
-                        # }
                     }
                 },
-
                 "subject": {
                     "fields": {
                         "scheme": {"coerce": "unicode"},
@@ -170,6 +155,9 @@ BASE_ARTICLE_SWAGGER_TRANS["link_content_type"] = {"type": "string", "format": "
 
 
 class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
+    """
+    ~~APIIncomingArticle:Model->DataObj:Library~~
+    """
     def __init__(self, raw=None):
         self._add_struct(BASE_ARTICLE_STRUCT)
         self._add_struct(INCOMING_ARTICLE_REQUIRED)
@@ -284,10 +272,13 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
             return models.Article(**dat)
         else:
             merged = dataobj.merge_outside_construct(self._struct, dat, existing.data)
-            return models.Article(**merged)
+            return models.Article(**merged) #~~->Article:Model~~
 
 
 class OutgoingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
+    """
+    ~~APIOutgoingArticle:Model->DataObj:Library~~
+    """
     def __init__(self, raw=None):
         self._add_struct(BASE_ARTICLE_STRUCT)
         self._add_struct(OUTGOING_ARTICLE_PATCH)
@@ -295,7 +286,7 @@ class OutgoingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
 
     @classmethod
     def from_model(cls, am):
-        assert isinstance(am, models.Article)
+        assert isinstance(am, models.Article)   #~~->Article:Model~~
         dat = deepcopy(am.data)
         # Fix some inconsistencies with the model - start and end pages should be in bibjson
         if "start_page" in dat["bibjson"]:

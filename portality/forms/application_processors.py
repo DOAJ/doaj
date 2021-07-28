@@ -8,15 +8,12 @@ from portality.lib.formulaic import FormProcessor
 from portality.ui.messages import Messages
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
-from portality.formcontext.choices import Choices
 from portality.bll import exceptions
 
 from flask import url_for, request, has_request_context
 from flask_login import current_user
 
 from wtforms import FormField, FieldList
-
-
 
 
 class ApplicationProcessor(FormProcessor):
@@ -141,6 +138,29 @@ class ApplicationProcessor(FormProcessor):
         except AttributeError:
             # this means that the source doesn't know about current_applications, which is fine
             pass
+
+    def _validate_status_change(self, source_status, target_status):
+        """ Check whether the editorial pipeline permits a change to the target status for a role.
+        Don't run this for admins, since they can change to any role at any time. """
+        from portality.forms.application_forms import application_statuses
+        choices_for_role = [s.get("value") for s in application_statuses(None, self._formulaic)]
+        # choices_for_role = list(sum(application_statuses(None, self._formulaic), ()))
+        # choices_for_role = list(sum(cls.application_status(role), ()))                     # flattens the list of tuples
+
+        # Don't allow edits to application when status is beyond this user's permissions in the pipeline
+        if source_status not in choices_for_role:
+            raise Exception(
+                "You don't have permission to edit applications which are in status {0}.".format(source_status))
+
+        # Don't permit changes to status in reverse of the editorial process
+        if choices_for_role.index(target_status) < choices_for_role.index(source_status):
+            # Except that editors can revert 'completed' to 'in progress'
+            if self._formulaic.name == 'editor' and source_status == constants.APPLICATION_STATUS_COMPLETED and target_status == constants.APPLICATION_STATUS_IN_PROGRESS:
+                pass
+            else:
+                raise Exception(
+                    "You are not permitted to revert the application status from {0} to {1}.".format(source_status,
+                                                                                                     target_status))
 
 
 class NewApplication(ApplicationProcessor):
@@ -517,8 +537,9 @@ class EditorApplication(ApplicationProcessor):
         super(EditorApplication, self).finalise()
 
         # Check the status change is valid
+        self._validate_status_change(self.source.application_status, self.target.application_status)
         # TODO: we want to rid ourselves of the Choices module
-        Choices.validate_status_change('editor', self.source.application_status, self.target.application_status)
+        #Choices.validate_status_change('editor', self.source.application_status, self.target.application_status)
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         new_associate_assigned = ApplicationFormXWalk.is_new_editor(self.form, self.source)
@@ -626,7 +647,8 @@ class AssociateApplication(ApplicationProcessor):
         super(AssociateApplication, self).finalise()
 
         # Check the status change is valid
-        Choices.validate_status_change('associate', self.source.application_status, self.target.application_status)
+        self._validate_status_change(self.source.application_status, self.target.application_status)
+        # Choices.validate_status_change('associate', self.source.application_status, self.target.application_status)
 
         # Save the target
         self.target.set_last_manual_update()

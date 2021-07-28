@@ -6,9 +6,12 @@ from copy import deepcopy
 import esprit
 
 class QueryService(object):
-
+    """
+    ~~Query:Service~~
+    """
     def _get_config_for_search(self, domain, index_type, account):
         # load the query route config and the path we are being requested for
+        # ~~-> Query:Config~~
         qrs = app.config.get("QUERY_ROUTE", {})
 
         # get the configuration for this url route
@@ -142,12 +145,16 @@ class QueryService(object):
         limit = cfg.get("limit", None)
         keepalive = cfg.get("keepalive", "1m")
 
+        # ~~->Elasticsearch:Technology~~
         for result in esprit.tasks.scroll(es_connection, ipt_prefix(dao_klass.__type__), q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive, scan=scan):
             res = self._post_filter_search_results(cfg, result, unpacked=True)
             yield res
 
 
 class Query(object):
+    """
+    ~~Query:Query -> Elasticsearch:Technology~~
+    """
     def __init__(self, raw=None, filtered=False):
         self.q = {"query": {"match_all": {}}} if raw is None else raw
         self.filtered = filtered is True or self.q.get("query", {}).get("filtered") is not None
@@ -229,6 +236,7 @@ class Query(object):
 
     def set_sort(self, s):
         self.q["sort"] = s
+
 
 class QueryFilterException(Exception):
     pass

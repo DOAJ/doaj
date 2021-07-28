@@ -3,6 +3,7 @@ import sys, traceback
 class AuthoriseException(Exception):
     """
     Exception to raise if an action is not authorised
+    ~~AuthNZ:Exception->AuthNZ:Feature~~
     """
 
     # standardised reasons why an action might not be allowed
@@ -88,6 +89,9 @@ class DuplicateUpdateRequest(Exception):
 
 
 class IngestException(Exception):
+    """
+    ~~ArticleIngest:Exception->Article:Service~~
+    """
     def __init__(self, *args, **kwargs):
         self.stack = None
         self.message = kwargs.get("message")

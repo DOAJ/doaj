@@ -92,6 +92,9 @@ local_store/main/*
 local_store/tmp/*
 !local_store/tmp/README.md
 
+# Test files and directories that may persist if the test suite fails
+tmp_article_duplicates_*
+
 # Static site / Jekyll / rbenv
 .sass-cache/
 .jekyll-cache/
@@ -114,3 +117,6 @@ cms/fragments*
 !portality/static/doaj/css/*_widget.css
 
 portality/static/widget/fq_widget_build_info.txt
+
+#json for harvester test
+doajtest/unit/resources/harvester_resp_temp.json

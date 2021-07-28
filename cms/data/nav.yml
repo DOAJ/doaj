@@ -7,112 +7,112 @@ entries:
     secondary: true
     entries:
       - label: Journals
-        route: doaj.journals_search
+        route: doaj.journals_search   # ~~->JournalsSearch:WebRoute~~
       - label: Articles
-        route: doaj.articles_search
+        route: doaj.articles_search   # ~~->ArticlesSearch:WebRoute~~
   - id: documentation
     label: Documentation
     footer: true
     secondary: true
     entries:
       - label: API
-        route: doaj.docs
+        route: doaj.docs              # ~~->Documentation:WebRoute~~
       - label: OAI-PMH
-        route: doaj.oai_pmh
+        route: doaj.oai_pmh           # ~~->OAIPMHDocumentation:WebRoute~~
       - label: Widgets
-        route: doaj.widgets
+        route: doaj.widgets           # ~~->Widgets:WebRoute~~
       - label: Public data dump
-        route: doaj.public_data_dump
+        route: doaj.public_data_dump  # ~~->PublicDataDump:WebRoute~~
       - label: OpenURL
-        route: doaj.openurl
+        route: doaj.openurl           # ~~->OpenURLDocumentation:WebRoute~~
       - label: XML
-        route: doaj.xml
+        route: doaj.xml               # ~~->XMLDocumentation:WebRoute~~
       - label: FAQs
-        route: doaj.faq
+        route: doaj.faq               # ~~->FAQ:WebRoute~~
   - id: about
     label: About
     footer: true
     secondary: true
     entries:
       - label: About DOAJ
-        route: doaj.about
+        route: doaj.about             # ~~->About:WebRoute~~
       - label: DOAJ team
-        route: doaj.team
+        route: doaj.team              # ~~->Team:WebRoute~~
       - label: Ambassadors
-        route: doaj.ambassadors
+        route: doaj.ambassadors       # ~~->Ambassadors:WebRoute~~
       - label: Advisory Board & Council
-        route: doaj.abc
+        route: doaj.abc               # ~~->AdvisoryBoardCouncil:WebRoute~~
       - label: Editorial Subcommittee
-        route: doaj.editorial_subcommittee
+        route: doaj.editorial_subcommittee  # ~~->EditorialSubcommittee:WebRoute~~
       - label: Volunteers
-        route: doaj.volunteers
+        route: doaj.volunteers        # ~~->Volunteers:WebRoute~~
       - label: News
-        url: https://blog.doaj.org
+        url: https://blog.doaj.org    # ~~->News:ExternalService~~
   - id: support
     label: Support
     feather: heart
     footer: true
     primary: true
     secondary_mobile: true
-    route: doaj.support
+    route: doaj.support               # ~~->Support:WebRoute~~
     entries:
       - label: Support DOAJ
-        route: doaj.support
+        route: doaj.support           # ~~->Support:WebRoute~~
       - label: Sponsors
-        route: doaj.sponsors
+        route: doaj.sponsors          # ~~->Sponsors:WebRoute~~
       - label: Publisher supporters
-        route: doaj.publisher_supporters
+        route: doaj.publisher_supporters  # ~~->PublisherSupporters:WebRoute~~
       - label: Supporters
-        route: doaj.supporters
+        route: doaj.supporters        # ~~->Supporters:WebRoute~~
   - id: apply
     label: Apply
     footer: true
     primary: true
     secondary_mobile: true
-    route: apply.public_application
+    route: apply.public_application   # ~~->Apply:WebRoute~~
     entries:
       - label: Application Form
-        route: apply.public_application
+        route: apply.public_application   # ~~->Apply:WebRoute~~
       - label: Guide to applying
-        route: doaj.guide
+        route: doaj.guide             # ~~->ApplicationGuide:WebRoute~~
       - label: The DOAJ Seal
-        route: doaj.seal
+        route: doaj.seal              # ~~->Seal:WebRoute~~
       - label: Transparency & best practice
-        route: doaj.transparency
+        route: doaj.transparency      # ~~->Transparency:WebRoute~~
       - label: Why index your journal in DOAJ?
-        route: doaj.why_index
+        route: doaj.why_index         # ~~->WhyIndex:WebRoute~~
   - id: stay_up_to_date
     label: Stay up to date
     footer: true
     entries:
       - label: Twitter
         feather: twitter
-        url: https://twitter.com/DOAJplus
+        url: https://twitter.com/DOAJplus   # ~~->Twitter:ExternalService~~
       - label: Facebook
         feather: facebook
-        url: https://www.facebook.com/DirectoryofOpenAccessJournals/
+        url: https://www.facebook.com/DirectoryofOpenAccessJournals/  # ~~->Facebook:ExternalService~~
       - label: Github
         feather: github
-        url: https://github.com/DOAJ
+        url: https://github.com/DOAJ    # ~~->GitHub:ExternalService~~
       - label: Linkedin
         feather: linkedin
-        url: https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/
+        url: https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/  # ~~->LinkedIn:ExternalService~~
       - label: Atom feed
         feather: rss
-        route: atom.feed
+        route: atom.feed  # ~~->Atom:WebRoute~~
   - id: legal
     entries:
       - label: Accessibility
-        route:  doaj.accessibility
+        route:  doaj.accessibility  # ~~->Accessibility:WebRoute~~
       - label: Privacy
-        route: doaj.privacy
+        route: doaj.privacy         # ~~->Privacy:WebRoute~~
       - label: Contact
-        route: doaj.contact
+        route: doaj.contact         # ~~->Contact:WebRoute~~
       - label: T&Cs
-        route: doaj.terms
+        route: doaj.terms           # ~~->Terms:WebRoute~~
   - id: companies
     entries:
       - label: IS4OA
-        url: https://is4oa.org/
+        url: https://is4oa.org/     # ~~->IS4OA:ExternalService~~
       - label: Cottage Labs
-        url: https://cottagelabs.com
+        url: https://cottagelabs.com  # ~~->CottageLabs:ExternalService~~

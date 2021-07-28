@@ -1,3 +1,5 @@
+import feedparser
+
 from portality import models
 from portality.core import app
 
@@ -5,7 +7,10 @@ from portality.tasks.redis_huey import main_queue, schedule
 from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi
-from portality import blog
+
+class FeedError(Exception):
+    pass
+
 
 class ReadNewsBackgroundTask(BackgroundTask):
 
@@ -16,7 +21,7 @@ class ReadNewsBackgroundTask(BackgroundTask):
         Execute the task as specified by the background_jon
         :return:
         """
-        blog.read_feed()
+        read_feed()
 
     def cleanup(self):
         """
@@ -52,6 +57,45 @@ class ReadNewsBackgroundTask(BackgroundTask):
         background_job.save()
         read_news.schedule(args=(background_job.id,), delay=10)
         # fixme: schedule() could raise a huey.exceptions.HueyException and not reach redis- would that be logged?
+
+
+# TODO factor this into the object above, rather than sitting out here as a function (it was migrated
+# here from another file)
+def read_feed():
+    """~~NewsReader:Feature->News:ExternalService"""
+    feed_url = app.config.get("BLOG_FEED_URL")
+    if feed_url is None:
+        raise FeedError("No BLOG_FEED_URL defined in settings")
+
+    f = feedparser.parse(feed_url)
+    if f.bozo > 0:
+        raise FeedError(f.bozo_exception)
+
+    for e in f.entries:
+        save_entry(e)
+
+def save_entry(entry):
+    news = None
+    existing = models.News.by_remote_id(entry.id)
+    if len(existing) > 1:
+        raise FeedError("There is more than one object with this id in the index: " + entry.id)
+    elif len(existing) == 1:
+        news = existing[0]
+    else:
+        news = models.News()
+
+    alts = [l.get("href") for l in entry.links if l.get("rel") == "alternate"]
+    if len(alts) == 0:
+        raise FeedError("Unable to get url of post from link@rel=alternate")
+
+    news.remote_id = entry.id
+    news.url = alts[0]
+    news.title = entry.title
+    news.updated = entry.updated
+    news.summary = entry.summary
+    news.published = entry.published
+
+    news.save()
 
 
 @main_queue.periodic_task(schedule("read_news"))

@@ -1,24 +1,27 @@
+"""
+~~ApplicationForm:Feature~~
+"""
 from copy import deepcopy
-from portality.lib.formulaic import Formulaic, WTFormsBuilder
 
-from wtforms import StringField, TextAreaField, IntegerField, BooleanField, RadioField, SelectMultipleField, SelectField, \
+from wtforms import StringField, TextAreaField, IntegerField, BooleanField, RadioField, SelectMultipleField, \
+    SelectField, \
     FormField, FieldList, HiddenField
 from wtforms import widgets, validators
 from wtforms.widgets.core import html_params, HTMLString
 
+from portality import constants
 from portality import regex
-from portality.formcontext.fields import TagListField
+from portality.core import app
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
+from portality.datasets import language_options, country_options, currency_options
 from portality.forms import application_processors
+from portality.forms.fields import TagListField
 from portality.forms.validate import (
     HTTPURL,
     OptionalIf,
-    ExclusiveCheckbox,
-    ExtraFieldRequiredIf,
     MaxLen,
     RegexpOnTagList,
-    ReservedUsernames,
     StopWords,
     ISSNInPublicDOAJ,
     JournalURLInPublicDOAJ,
@@ -33,12 +36,9 @@ from portality.forms.validate import (
     CustomRequired,
     OwnerExists, NoScriptTag
 )
-
-from portality.datasets import language_options, country_options, currency_options
-from portality.core import app
-from portality.regex import ISSN, ISSN_COMPILED
-from portality import constants
+from portality.lib.formulaic import Formulaic, WTFormsBuilder
 from portality.models import EditorGroup
+from portality.regex import ISSN, ISSN_COMPILED
 
 # Stop words used in the keywords field
 STOP_WORDS = [
@@ -63,6 +63,7 @@ STOP_WORDS = [
 ########################################################
 
 class FieldDefinitions:
+    # ~~->$ BOAI:FormField~~
     BOAI = {
         "name": "boai",
         "label": "Does the journal adhere to DOAJ’s definition of open access?",
@@ -101,6 +102,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~->$ OAStatementURL:FormField~~
     OA_STATEMENT_URL = {
         "name": "oa_statement_url",
         "label": "The journal website must display its open access statement. Where can we find this information?",
@@ -122,17 +124,18 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Enter the URL for the journal’s Open Access statement page"}},
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~!OAStatementURL:FormField-> TrimWhitespace:FormWidget~~
+            "clickable_url"     # ~~!OAStatementURL:FormField-> ClickableURL:FormWidget~~
         ],
         "attr": {
             "type": "url"
         }
     }
 
+    #~~->Title:FormField~~
     TITLE = {
         "name": "title",
         "label": "Journal title",
@@ -166,6 +169,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~->AlternativeTitle:FormField~~
     ALTERNATIVE_TITLE = {
         "name": "alternative_title",
         "label": "Alternative title (including translation of the title)",
@@ -188,6 +192,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~->JournalURL:FormField~~
     JOURNAL_URL = {
         "name": "journal_url",
         "label": "Link to the journal’s homepage",
@@ -220,6 +225,7 @@ class FieldDefinitions:
         ]
     }
 
+    #~~->PISSN:FormField~~
     PISSN = {
         "name": "pissn",
         "label": "ISSN (print)",
@@ -294,6 +300,7 @@ class FieldDefinitions:
         ]
     }
 
+    #~~->EISSN:FormField~~
     EISSN = {
         "name": "eissn",
         "label": "ISSN (online)",
@@ -373,6 +380,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~->Keywords:FormField~~
     KEYWORDS = {
         "name": "keywords",
         "label": "Up to 6 subject keywords in English",
@@ -403,6 +411,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> Language:FormField~~
     LANGUAGE = {
         "name": "language",
         "label": "Languages in which the journal accepts manuscripts",
@@ -428,6 +437,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> PublisherName:FormField~~
     PUBLISHER_NAME = {
         "name": "publisher_name",
         "label": "Publisher’s name",
@@ -450,6 +460,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~->PublisherCountry:FormField~~
     PUBLISHER_COUNTRY = {
         "name": "publisher_country",
         "label": "Publisher’s country",
@@ -480,6 +491,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~->InstitutionName:FormField~~
     INSTITUTION_NAME = {
         "name": "institution_name",
         "label": "Society or institution’s name",
@@ -499,6 +511,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~->InstitutionCountry:FormField~~
     INSTITUTION_COUNTRY = {
         "name": "institution_country",
         "label": "Society or institution’s country",
@@ -518,6 +531,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> License:FormField~~
     LICENSE = {
         "name": "license",
         "label": "License(s) permitted by the journal",
@@ -564,6 +578,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> LicenseAttributes:FormField~~
     LICENSE_ATTRIBUTES = {
         "name": "license_attributes",
         "label": "Select all the attributes that your license has",
@@ -583,10 +598,12 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> LicenseTermsURL:FormField~~
     LICENSE_TERMS_URL = {
         "name": "license_terms_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "License terms",
         "validate": [
             {"required": {"message": "Enter the URL for the journal’s <strong>license terms</strong> page"}},
             "is_url"
@@ -602,6 +619,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> LicenseDisplay:FormField~~
     LICENSE_DISPLAY = {
         "name": "license_display",
         "label": "Does the journal embed and/or display licensing information in its articles?",
@@ -622,6 +640,7 @@ class FieldDefinitions:
         ]
     }
 
+    #~~-> LicenseDisplayExampleUrl:FormField~~
     LICENSE_DISPLAY_EXAMPLE_URL = {
         "name": "license_display_example_url",
         "label": "Recent article displaying or embedding a license in the full text",
@@ -648,6 +667,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> CopyrightAuthorRetails:FormField~~
     COPYRIGHT_AUTHOR_RETAINS = {
         "name": "copyright_author_retains",
         "label": "For all the licenses you have indicated above, do authors retain the copyright "
@@ -674,10 +694,12 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> CopyrightURL:FormField~~
     COPYRIGHT_URL = {
         "name": "copyright_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Copyright terms",
         "help": {
             "short_help": "Link to the journal’s copyright terms"
         },
@@ -705,6 +727,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~->ReviewProcess:FormField~~
     REVIEW_PROCESS = {
         "name": "review_process",
         "label": "DOAJ only accepts peer-reviewed journals. "
@@ -731,6 +754,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> ReviewProcessOther:FormField~~
     REVIEW_PROCESS_OTHER = {
         "name": "review_process_other",
         "label": "Other peer review",
@@ -755,10 +779,12 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> ReviewURL:FormField~~
     REVIEW_URL = {
         "name": "review_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Peer review policy",
         "help": {
             "doaj_criteria": "You must provide a URL",
             "short_help": "Link to the journal’s peer review policy"
@@ -773,6 +799,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> PlagiarismDetection:FormField~~
     PLAGIARISM_DETECTION = {
         "name": "plagiarism_detection",
         "label": "Does the journal routinely screen article submissions for plagiarism?",
@@ -792,9 +819,11 @@ class FieldDefinitions:
         ]
     }
 
+    #~~-> PlagiarismURL:FormField~~
     PLAGIARISM_URL = {
         "name": "plagiarism_url",
         "label": "Where can we find this information?",
+        "diff_table_context": "Plagiarism screening",
         "input": "text",
         "conditional": [{"field": "plagiarism_detection", "value": "y"}],
         "help": {
@@ -819,6 +848,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> AimsScopeURL:FormField~~
     AIMS_SCOPE_URL = {
         "name": "aims_scope_url",
         "label": "Link to the journal’s <b>Aims & Scope</b>",
@@ -837,6 +867,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> EditorialBoardURL:FormField~~
     EDITORIAL_BOARD_URL = {
         "name": "editorial_board_url",
         "label": "Link to the journal’s <b>Editorial Board</b>",
@@ -855,6 +886,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> AuthorInstructionsURL:FormField~~
     AUTHOR_INSTRUCTIONS_URL = {
         "name": "author_instructions_url",
         "label": "Link to the journal’s <b>Instructions for Authors</b>",
@@ -873,6 +905,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~->PublicationTimeWeeks:FormField~~
     PUBLICATION_TIME_WEEKS = {
         "name": "publication_time_weeks",
         "label": "Average number of <strong>weeks</strong> between article submission & publication",
@@ -891,6 +924,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~->APC:FormField~~
     APC = {
         "name": "apc",
         "label": "Does the journal charge fees for publishing an article (APCs)?",
@@ -911,6 +945,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> APCCharges:FormField~~
     APC_CHARGES = {
         "name": "apc_charges",
         "input": "group",
@@ -939,6 +974,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> APCCurrency:FormField~~
     APC_CURRENCY = {
         "subfield": True,
         "group": "apc_charges",
@@ -965,6 +1001,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> APCMax:FormField~~
     APC_MAX = {
         "subfield": True,
         "group": "apc_charges",
@@ -987,9 +1024,11 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> APCURL:FormField~~
     APC_URL = {
         "name": "apc_url",
         "label": "Where can we find this information?",
+        "diff_table_context": "Publication fees",
         "input": "text",
         "help": {
             "short_help": "Link to the page where this is stated. The page "
@@ -1008,6 +1047,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> HasWaiver:FormField~~
     HAS_WAIVER = {
         "name": "has_waiver",
         "label": "Does the journal provide a waiver or discount "
@@ -1030,10 +1070,12 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> WaiverURL:FormField~~
     WAIVER_URL = {
         "name": "waiver_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Publication fee waiver",
         "conditional": [
             {"field": "has_waiver", "value": "y"}
         ],
@@ -1057,6 +1099,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> HasOtherCharges:FormField~~
     HAS_OTHER_CHARGES = {
         "name": "has_other_charges",
         "label": "Does the journal charge any other fees to authors?",
@@ -1076,10 +1119,12 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> OtherChargesURL:FormField~~
     OTHER_CHARGES_URL = {
         "name": "other_charges_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Other fees",
         "conditional": [
             {"field": "has_other_charges", "value": "y"}
         ],
@@ -1102,6 +1147,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> PreservationService:FormField~~
     PRESERVATION_SERVICE = {
         "name": "preservation_service",
         "label": "Long-term preservation service(s) where the journal is currently archived",
@@ -1132,6 +1178,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> PreservationServiceLibrary:FormField~~
     PRESERVATION_SERVICE_LIBRARY = {
         "name": "preservation_service_library",
         "label": "A national library",
@@ -1164,6 +1211,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~->PreservationServiceOther:FormField~~
     PRESERVATION_SERVICE_OTHER = {
         "name": "preservation_service_other",
         "label": "Other archiving policy:",
@@ -1185,10 +1233,12 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> PreservationServiceURL:FormField~~
     PRESERVATION_SERVICE_URL = {
         "name": "preservation_service_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Archiving policy",
         "help": {
             "short_help": "Link to the preservation and archiving information",
             "doaj_criteria": "You must provide a URL",
@@ -1230,6 +1280,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> DepositPolicy:FormField~~
     DEPOSIT_POLICY = {
         "name": "deposit_policy",
         "label": "Does the journal have a policy allowing authors to deposit versions of their work in an "
@@ -1259,6 +1310,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> DepositPolicyOther:FormField~~
     DEPOSIT_POLICY_OTHER = {
         "name": "deposit_policy_other",
         "label": "Name of other website where policy is registered",
@@ -1280,12 +1332,15 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> DepositPolicyURL:FormField~~
     DEPOSIT_POLICY_URL = {
         "name": "deposit_policy_url",
         "label": "Where can we find this information?",
         "input": "text",
+        "diff_table_context": "Repository policy",
         "conditional": [{"field": "deposit_policy", "value": "Sherpa/Romeo"},
                         {"field": "deposit_policy", "value": "Dulcinea"},
+                        {"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
@@ -1337,6 +1392,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> PersistentIdentifiers:FormField~~
     PERSISTENT_IDENTIFIERS = {
         "name": "persistent_identifiers",
         "label": "Persistent article identifiers used by the journal",
@@ -1361,6 +1417,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> PersistentIdentifiersOther:FormField~~
     PERSISTENT_IDENTIFIERS_OTHER = {
         "name": "persistent_identifiers_other",
         "label": "Other identifier",
@@ -1382,6 +1439,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> Orcids:FormField~~
     ORCID_IDS = {
         "name": "orcid_ids",
         "label": "Does the journal allow for ORCID iDs to be present in article metadata?",
@@ -1409,6 +1467,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> OpenCitations:FormField~~
     OPEN_CITATIONS = {
         "name": "open_citations",
         "label": "Does the journal comply with I4OC standards for open citations?",
@@ -1438,6 +1497,7 @@ class FieldDefinitions:
     #######################################
     ## Ediorial fields
 
+    # ~~-> DOAJSeal:FormField~~
     DOAJ_SEAL = {
         "name": "doaj_seal",
         "label": "The journal has fulfilled all the criteria for the Seal. Award the Seal?",
@@ -1467,6 +1527,7 @@ class FieldDefinitions:
     }
 
     # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
+    # ~~-> QuickReject:FormField~~
     QUICK_REJECT = {
         "name": "quick_reject",
         "label": "Reason for rejection",
@@ -1474,6 +1535,7 @@ class FieldDefinitions:
         "options_fn": "quick_reject"
     }
 
+    # ~~-> QuickRejectDetails:FormField~~
     QUICK_REJECT_DETAILS = {
         "name": "quick_reject_details",
         "label": "Additional info",
@@ -1487,6 +1549,7 @@ class FieldDefinitions:
         ],
     }
 
+    # ~~-> Owner:FormField~~
     OWNER = {
         "name": "owner",
         "label": "DOAJ Account",
@@ -1510,6 +1573,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> ApplicationStatus:FormField~~
     APPLICATION_STATUS = {
         "name": "application_status",
         "label": "Change status",
@@ -1547,6 +1611,7 @@ class FieldDefinitions:
         ]
     }
 
+    # ~~-> EditorGroup:FormField~~
     EDITOR_GROUP = {
         "name": "editor_group",
         "label": "Group",
@@ -1567,6 +1632,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> Editor:FormField~~
     EDITOR = {
         "name": "editor",
         "label": "Individual",
@@ -1581,6 +1647,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> DiscontinuedDate:FormField~~
     DISCONTINUED_DATE = {
         "name": "discontinued_date",
         "label": "Discontinued on",
@@ -1604,6 +1671,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> Continues:FormField~~
     CONTINUES = {
         "name": "continues",
         "label": "Continues an older journal with the ISSN(s)",
@@ -1626,6 +1694,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> ContinuedBy:FormField~~
     CONTINUED_BY = {
         "name": "continued_by",
         "label": "Continued by a newer version of the journal with the ISSN(s)",
@@ -1648,6 +1717,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> Subject:FormField~~
     SUBJECT = {
         "name": "subject",
         "label": "Assign one or a maximum of two subject classifications",
@@ -1684,6 +1754,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> Notes:FormField~~
     NOTES = {
         "name" : "notes",
         "input": "group",
@@ -1714,6 +1785,7 @@ class FieldDefinitions:
         }
     }
 
+    # ~~-> Note:FormField~~
     NOTE = {
         "subfield": True,
         "name": "note",
@@ -1722,6 +1794,7 @@ class FieldDefinitions:
         "disabled": True
     }
 
+    # ~~-> NoteDate:FormField~~
     NOTE_DATE = {
         "subfield": True,
         "name" : "note_date",
@@ -1730,6 +1803,7 @@ class FieldDefinitions:
         "disabled": True
     }
 
+    # ~~-> NoteID:FormField~~
     NOTE_ID = {
         "subfield" : True,
         "name": "note_id",
@@ -1737,6 +1811,7 @@ class FieldDefinitions:
         "input": "hidden"
     }
 
+    # ~~-> OptionalValidation:FormField~~
     OPTIONAL_VALIDATION = {
         "name" : "make_all_fields_optional",
         "label" : "Allow save without validation",
@@ -1747,6 +1822,7 @@ class FieldDefinitions:
     }
 
     # Bulk Edit fields (that couldn't be overriden in the normal way)
+    # ~~-> BulkDOAJSeal:FormField~~
     BULK_DOAJ_SEAL = {
         "name": "change_doaj_seal",
         "label": 'Award the Seal',
@@ -2463,6 +2539,7 @@ class JournalURLInPublicDOAJBuilder:
     def wtforms(field, settings):
         return JournalURLInPublicDOAJ(message=settings.get("message"))
 
+
 class NoScriptTagBuilder:
     @staticmethod
     def render(settings, html_attrs):
@@ -2474,7 +2551,8 @@ class NoScriptTagBuilder:
 
     @staticmethod
     def wtforms(field, settings):
-        return NoScriptTag(settings.get("value"))
+        return NoScriptTag(settings.get("message", "No script tags allowed"))
+
 
 class OptionalIfBuilder:
     @staticmethod

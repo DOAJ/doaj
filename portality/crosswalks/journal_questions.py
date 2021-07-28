@@ -1,15 +1,16 @@
 from copy import deepcopy
 from portality import datasets
-from portality.formcontext import choices
 from portality.crosswalks.journal_form import JournalFormXWalk
-
+from portality.forms.application_forms import ApplicationFormFactory
 
 class JournalXwalkException(Exception):
     pass
 
 
 class Journal2QuestionXwalk(object):
-
+    """
+    ~~JournalQuestions:Crosswalk->Journal:Form~~
+    """
     QTUP = [
         ("alternative_title", "Alternative title"),
         ("apc_charges", "APC amount"),
@@ -131,7 +132,7 @@ class Journal2QuestionXwalk(object):
 
         def license_checkbox(val):
             opts = {}
-            [opts.update({k: v}) for k, v in choices.Choices.licence_checkbox()]
+            [opts.update({k: v}) for k, v in ApplicationFormFactory.choices_for("license_attributes")]
             nv = [opts.get(v) for v in val]
             return ", ".join(nv)
 
@@ -255,13 +256,13 @@ class Journal2QuestionXwalk(object):
             apcs = []
             for apc in x.split('; '):
                 [amt, cur] = apc.split()
-                apcs.append({'apc_max': int(amt), 'apc_currency': cur})
+                apcs.append({'apc_max': round(float(amt)), 'apc_currency': cur})
             return apcs
 
         # Undo the transformations applied to specific fields. TODO: Add these as they are encountered in the wild
         REVERSE_TRANSFORM_MAP = {
             'license': lambda x: [lic.strip() for lic in x.split(',')],
-            'publication_time_weeks': lambda x: int(x),
+            'publication_time_weeks': lambda x: round(float(x)),
             'apc': _y_or_blank,
             'apc_charges': _unfurl_apc,
             'has_waiver': _y_n_or_blank
@@ -281,6 +282,7 @@ class Journal2QuestionXwalk(object):
                 return value
 
         # start by converting the object to the forminfo version
+        # ~~->JournalForm:Crosswalk~~
         forminfo = JournalFormXWalk.obj2form(journal)
 
         # Collect the update report

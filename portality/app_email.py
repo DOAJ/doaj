@@ -1,3 +1,4 @@
+# ~~Email:Library~~
 from flask import render_template, flash
 from flask_mail import Mail, Message, Attachment
 from portality.core import app
@@ -9,18 +10,21 @@ class EmailException(Exception):
     pass
 
 
-def send_contact_form(form):
-    subject = "Message from contact form - " + form.email.data
-    if form.subject.data is not None and form.subject.data != "":
-        subject = "[spam?] " + subject
-    msg = "Message from contact form - " + form.email.data + "\n\n" + form.message.data
-    to = [app.config.get("CONTACT_FORM_ADDRESS")]
-    fro = form.email.data
-    send_mail(to, fro, subject, msg_body=msg)
-
-
 # Flask-Mail version of email service from util.py
 def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, **template_params):
+    """
+    ~~-> Email:ExternalService~~
+    ~~-> FlaskMail:Library~~
+    :param to:
+    :param fro:
+    :param subject:
+    :param template_name:
+    :param bcc:
+    :param files:
+    :param msg_body:
+    :param template_params:
+    :return:
+    """
     bcc = [] if bcc is None else bcc
     files = [] if files is None else files
 

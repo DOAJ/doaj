@@ -3,7 +3,9 @@ from io import IOBase
 
 
 class ClCsv:
-
+    """
+    ~~CLCSV:Library~~
+    """
     def __init__(self, file_path):
         """
         Class to wrap the Python CSV library. Allows reading and writing by column.

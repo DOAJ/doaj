@@ -3,6 +3,10 @@ from portality.core import app
 
 
 class AtomCrosswalk(object):
+    """
+    ~~Atom:Crosswalk->Atom:Feature~~
+    ~~->Journal:Model~~
+    """
     def crosswalk(self, atom_record):
         entry = {}
         b = atom_record.bibjson()

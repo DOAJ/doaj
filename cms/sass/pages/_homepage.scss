@@ -16,6 +16,10 @@
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     color: $warm-black;
+
+    .dropdown__link {
+      color: $white;
+    }
   }
 
   .secondary-nav {
@@ -57,7 +61,7 @@
   .page-content > section {
     padding-top: $spacing-05;
     padding-bottom: $spacing-05;
-    
+
     h2 {
       margin-bottom: $spacing-04;
     }

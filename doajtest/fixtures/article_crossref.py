@@ -110,6 +110,14 @@ class CrossrefArticleFixtureFactory(object):
         return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='3 ISSNs']]")
 
     @classmethod
+    def upload_html_tags_in_text(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='HTML tags in title']]")
+
+    @classmethod
+    def upload_html_tags_in_attrs(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='HTML tags in attribute']]")
+
+    @classmethod
     def upload_the_same_issns(cls):
         return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 The Same ISSNs']]")
 

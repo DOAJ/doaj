@@ -26,17 +26,17 @@ var doaj = {
         }
 
         // Hide header menu on down scroll; display on scroll up
-        var prevScrollPos = window.pageYOffset;
+        var prevScrollPos = window.pageYOffset,
+            topNav = document.querySelector(".primary-nav");
 
         function hideNav() {
             var currentScrollPos = window.pageYOffset;
 
             if (prevScrollPos > currentScrollPos) {
-                document.getElementById("primary-nav").style.top = "0";
+                topNav.classList.remove("primary-nav--scrolled");
             } else {
-                document.getElementById("primary-nav").style.top = "-50px";
+                topNav.classList.add("primary-nav--scrolled");
             }
-
             prevScrollPos = currentScrollPos;
         }
 
@@ -165,6 +165,10 @@ var doaj = {
         var monthnum = date.getUTCMonth();
         var year = date.getUTCFullYear();
 
+        if (isNaN(monthnum) || isNaN(year)) {
+            return "";
+        }
+
         return doaj.monthmap[monthnum] + " " + String(year);
     },
 
@@ -173,6 +177,10 @@ var doaj = {
         var dom = date.getUTCDate();
         var monthnum = date.getUTCMonth();
         var year = date.getUTCFullYear();
+
+        if (isNaN(monthnum) || isNaN(year) || isNaN(dom)) {
+            return "";
+        }
 
         return String(dom) + " " + doaj.monthmap[monthnum] + " " + String(year);
     },
@@ -184,6 +192,10 @@ var doaj = {
         var year = date.getUTCFullYear();
         var hour = date.getUTCHours();
         var minute = date.getUTCMinutes();
+
+        if (isNaN(monthnum) || isNaN(year) || isNaN(dom) || isNaN(hour) || isNaN(minute)) {
+            return "";
+        }
 
         if (String(hour).length === 1) {
             hour = "0" + String(hour);
@@ -209,6 +221,29 @@ var doaj = {
          */
         if (!isodate_str) { return "" }
         return isodate_str.replace('T',' ').replace('Z','')
+    },
+
+    scroller : function(selector, notFirstTime, duration, callback) {
+        if (!duration) {
+            duration = 1
+        }
+        if (notFirstTime === undefined) {
+            notFirstTime = true;
+        }
+
+        if (doaj.scroller.hasOwnProperty("doScroll")) {
+            $("html, body").animate(
+                {
+                    scrollTop: $(selector).offset().top
+                },
+                {
+                    duration: duration,
+                    always: callback
+                }
+            );
+        } else {
+            doaj.scroller.doScroll = true;
+        }
     }
 };
 
@@ -4064,6 +4099,8 @@ $.extend(edges, {
     SearchingNotification: function (params) {
         this.defaultRenderer = params.defaultRenderer || "newSearchingNotificationRenderer";
 
+        this.finishedEvent = edges.getParam(params.finishedEvent, "edges:query-success");
+
         this.searching = false;
 
         this.init = function (edge) {
@@ -4071,7 +4108,7 @@ $.extend(edges, {
             // this.__proto__.init.call(this, edge);
             edge.context.on("edges:pre-query", edges.eventClosure(this, "searchingBegan"));
             edge.context.on("edges:query-fail", edges.eventClosure(this, "searchingFinished"));
-            edge.context.on("edges:query-success", edges.eventClosure(this, "searchingFinished"));
+            edge.context.on(this.finishedEvent, edges.eventClosure(this, "searchingFinished"));
         };
 
         // specifically disable this function
@@ -4387,7 +4424,7 @@ $.extend(true, doaj, {
                     </header>';
                 }
 
-                var frag = titleBarFrag + '\
+                var frag = '<div id="searching-notification"></div>' + titleBarFrag + '\
                     <p id="share_embed"></p>\
                     <h2 id="result-count"></h2>\
                     <div class="row">\
@@ -4490,6 +4527,50 @@ $.extend(true, doaj, {
     },
 
     renderers : {
+        newSearchingNotificationRenderer: function (params) {
+            return edges.instantiate(doaj.renderers.SearchingNotificationRenderer, params, edges.newRenderer);
+        },
+        SearchingNotificationRenderer: function (params) {
+
+            this.scrollTarget = edges.getParam(params.scrollTarget, "body");
+
+            // namespace to use in the page
+            this.namespace = "doaj-notification";
+
+            this.searching = false;
+
+            this.draw = function () {
+                if (this.component.searching) {
+                    let id = edges.css_id(this.namespace, "loading", this);
+
+                    this.component.edge.context.css("opacity", "0.3");
+                    var frag = `<div id="` + id + `" class='loading overlay'>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <span class='sr-only'>Loading results…</span>
+                      </div>`
+                    this.component.edge.context.before(frag);
+                    let offset = $(this.scrollTarget).offset().top
+                    window.scrollTo(0, offset);
+                } else {
+                    let that = this;
+                    let idSelector = edges.css_id_selector(this.namespace, "loading", this);
+                    this.component.edge.context.animate(
+                        {
+                            opacity: "1",
+                        },
+                        {
+                            duration: 1000,
+                            always: function() {
+                                $(idSelector).remove();
+                            }
+                        }
+                    );
+                }
+            }
+        },
+
         newSubjectBrowser : function(params) {
             return edges.instantiate(doaj.renderers.SubjectBrowser, params, edges.newRenderer);
         },
@@ -5436,11 +5517,17 @@ $.extend(true, doaj, {
             // event handlers
 
             this.changeSearchField = function (element) {
-                var val = this.component.jq(element).val();
-                this.component.setSearchField(val, false);
-
+                // find out if there's any search text
                 var textIdSelector = edges.css_id_selector(this.namespace, "text", this);
                 var text = this.component.jq(textIdSelector).val();
+
+                if (text === "") {
+                    return;
+                }
+
+                // if there is search text, then proceed to run the search
+                var val = this.component.jq(element).val();
+                this.component.setSearchField(val, false);
                 this.component.setSearchText(text);
             };
 
@@ -6267,10 +6354,6 @@ $.extend(true, doaj, {
         },
         PagerRenderer: function (params) {
 
-            this.scroll = edges.getParam(params.scroll, true);
-
-            this.scrollSelector = edges.getParam(params.scrollSelector, "body");
-
             this.numberFormat = edges.getParam(params.numberFormat, false);
 
             this.namespace = "doaj-pager";
@@ -6328,30 +6411,15 @@ $.extend(true, doaj, {
                 }
             };
 
-            this.doScroll = function () {
-                $(this.scrollSelector).animate({    // note we do not use component.jq, because the scroll target could be outside it
-                    scrollTop: $(this.scrollSelector).offset().top
-                }, 1);
-            };
-
             this.goToFirst = function (element) {
-                if (this.scroll) {
-                    this.doScroll();
-                }
                 this.component.setFrom(1);
             };
 
             this.goToPrev = function (element) {
-                if (this.scroll) {
-                    this.doScroll();
-                }
                 this.component.decrementPage();
             };
 
             this.goToNext = function (element) {
-                if (this.scroll) {
-                    this.doScroll();
-                }
                 this.component.incrementPage();
             };
         },
@@ -6366,7 +6434,7 @@ $.extend(true, doaj, {
                 this.doaj_url = params.doaj_url;
             }
             else {
-                this.doaj_url = "https://doaj.url"
+                this.doaj_url = ""
             }
 
             this.actions = edges.getParam(params.actions, []);
@@ -6492,7 +6560,8 @@ $.extend(true, doaj, {
                 var apcs = '<li>';
                 if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
                     apcs += "APCs: ";
-                    for (var i = 0; i < resultobj.bibjson.apc.max.length; i++) {
+                    let length = resultobj.bibjson.apc.max.length;
+                    for (var i = 0; i < length; i++) {
                         apcs += "<strong>";
                         var apcRecord = resultobj.bibjson.apc.max[i];
                         if (apcRecord.hasOwnProperty("price")) {
@@ -6500,6 +6569,9 @@ $.extend(true, doaj, {
                         }
                         if (apcRecord.currency) {
                             apcs += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
+                        }
+                        if (i < length - 1) {
+                            apcs += ', ';
                         }
                         apcs += "</strong>";
                     }
@@ -6616,7 +6688,10 @@ $.extend(true, doaj, {
 
                 var date = "";
                 if (resultobj.index.date) {
-                    date = "(" + doaj.humanYearMonth(resultobj.index.date) + ")";
+                    let humanised = doaj.humanYearMonth(resultobj.index.date);
+                    if (humanised) {
+                        date = "(" + humanised + ")";
+                    }
                 }
 
                 var title = "";
@@ -7219,7 +7294,8 @@ $.extend(true, doaj, {
                 var apcs = '<li>';
                 if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
                     apcs += "APCs: ";
-                    for (var i = 0; i < resultobj.bibjson.apc.max.length; i++) {
+                    let length = resultobj.bibjson.apc.max.length;
+                    for (var i = 0; i < length; i++) {
                         apcs += "<strong>";
                         var apcRecord = resultobj.bibjson.apc.max[i];
                         if (apcRecord.hasOwnProperty("price")) {
@@ -7227,6 +7303,9 @@ $.extend(true, doaj, {
                         }
                         if (apcRecord.currency) {
                             apcs += ' (' + edges.escapeHtml(apcRecord.currency) + ')';
+                        }
+                        if (i < length - 1) {
+                            apcs += ', ';
                         }
                         apcs += "</strong>";
                     }
@@ -7975,3 +8054,4 @@ $.extend(true, edges, {
         }
     }
 });
+

@@ -4,7 +4,7 @@ Script which determines which articles have ISSNs which belong to two distinct J
 
 from portality import models
 from portality.core import app
-from portality.clcsv import UnicodeWriter
+from lib.clcsv import UnicodeWriter
 from datetime import datetime
 from portality.lib import dates
 import esprit

@@ -100,7 +100,6 @@ class DOAJv1API(object):
             params["sort"] = sort
 
         url = self.doaj_url("search", type, additional_path=httputil.quote(query_string), params=params)
-        print(url)
 
         resp = httputil.get(url, retry_codes=DOAJ_RETRY_CODES)
         j = resp.json()

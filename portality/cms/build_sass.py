@@ -1,4 +1,8 @@
-""" Build the SASS - main.css and optionally the widgets """
+"""
+Build the SASS - main.css and optionally the widgets
+~~CMSBuildSASS:Script->CMS:Script~~
+~~->SASS:Technology~~
+"""
 
 import sass
 import os
@@ -54,6 +58,7 @@ def _swap(old, new):
 
 
 def build(paths, base_path=None):
+    # ~~->CMSSASS:Build~~
     sass_file, main_file, css_file, css_tmp, map_file, map_tmp, error_file = None, None, None, None, None, None, None
     try:
         sass_file, main_file, css_file, css_tmp, map_file, map_tmp, error_file = _localise_paths(paths, base_path)

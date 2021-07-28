@@ -15,6 +15,9 @@ import re, csv
 
 
 class JournalService(object):
+    """
+    ~~Journal:Service~~
+    """
     def journal_2_application(self, journal, account=None, keep_editors=False):
         """
         Function to convert a given journal into an application object.
@@ -39,6 +42,7 @@ class JournalService(object):
 
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering journal_2_application")
 
+        # ~~-> AuthNZ:Service~~
         authService = DOAJ.authorisationService()
 
         # if an account is specified, check that it is allowed to perform this action
@@ -55,7 +59,7 @@ class JournalService(object):
         bj = journal.bibjson()
         notes = journal.notes
 
-        application = models.Suggestion()
+        application = models.Suggestion()   # ~~-> Application:Model~~
         application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
         application.set_current_journal(journal.id)
         if keep_editors is True:
@@ -103,6 +107,7 @@ class JournalService(object):
         the_lock = None
         if journal is not None and lock_journal:
             if lock_account is not None:
+                # ~~->Lock:Feature~~
                 the_lock = lock.lock(constants.LOCK_JOURNAL, journal_id, lock_account.id, lock_timeout)
             else:
                 raise exceptions.ArgumentException("If you specify lock_journal on journal retrieval, you must also provide lock_account")
@@ -113,6 +118,8 @@ class JournalService(object):
         """
         Generate the Journal CSV
 
+        ~~-> JournalCSV:Feature~~
+
         :param set_cache: whether to update the cache
         :param out_dir: the directory to output the file to.  If set_cache is True, this argument will be overridden by the cache container
         :return: Tuple of (attachment_name, URL)
@@ -122,6 +129,7 @@ class JournalService(object):
             {"arg": prune, "allow_none" : False, "arg_name" : "prune"}
         ], exceptions.ArgumentException)
 
+        # ~~->FileStoreTemp:Feature~~
         filename = 'journalcsv__doaj_' + datetime.strftime(datetime.utcnow(), '%Y%m%d_%H%M') + '_utf8.csv'
         container_id = app.config.get("STORE_CACHE_CONTAINER")
         tmpStore = StoreFactory.tmp()
@@ -135,9 +143,9 @@ class JournalService(object):
             :param file_object: a utf8 encoded file object.
             """
 
+            # ~~!JournalCSV:Feature->Journal:Model~~
             cols = {}
-            for j in models.Journal.all_in_doaj(page_size=100000):                     # 10x how many journals we have right now
-                assert isinstance(j, models.Journal)                                               # for pycharm type inspection
+            for j in models.Journal.all_in_doaj(page_size=100000):                     # FIXME: 10x how many journals we have right now
                 bj = j.bibjson()
                 issn = bj.get_one_identifier(idtype=bj.P_ISSN)
                 if issn is None:
@@ -145,12 +153,14 @@ class JournalService(object):
                 if issn is None:
                     continue
 
+                # ~~!JournalCSV:Feature->JournalQuestions:Crosswalk~~
                 kvs = Journal2QuestionXwalk.journal2question(j)
                 meta_kvs = _get_doaj_meta_kvs(j)
                 article_kvs = _get_article_kvs(j)
                 cols[issn] = kvs + meta_kvs + article_kvs
 
                 # Get the toc URL separately from the meta kvs because it needs to be inserted earlier in the CSV
+                # ~~-> ToC:WebRoute~~
                 toc_kv = _get_doaj_toc_kv(j)
                 cols[issn].insert(2, toc_kv)
 
@@ -194,6 +204,7 @@ class JournalService(object):
         with open(out, 'w', encoding='utf-8') as csvfile:
             _make_journals_csv(csvfile)
 
+        # ~~->FileStore:Feature~~
         mainStore = StoreFactory.get("cache")
         try:
             mainStore.store(container_id, filename, source_path=out)
@@ -211,5 +222,6 @@ class JournalService(object):
             action_register = prune_container(mainStore, container_id, sort, filter=filter, keep=2)
 
         # update the ES record to point to the new file
+        # ~~-> Cache:Model~~
         models.Cache.cache_csv(url)
         return url, action_register

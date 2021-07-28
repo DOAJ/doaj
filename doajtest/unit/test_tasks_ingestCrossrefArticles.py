@@ -1,3 +1,5 @@
+from io import BytesIO
+
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.bll_article import BLLArticleMockFactory
 
@@ -26,6 +28,9 @@ from lxml import etree
 
 from portality.ui.messages import Messages
 
+
+RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
+ARTICLES = os.path.join(RESOURCES, "crossref_article_uploads.xml")
 
 class TestIngestArticlesCrossrefXML(DoajTestCase):
 
@@ -1894,3 +1899,91 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
         assert file_upload.error == Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, "expected error: {}, received: {}".format(Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN,
             file_upload.error)
+
+    def test_52_html_tags_in_title_text(self):
+        NS = {'x': 'http://www.crossref.org/schema/4.4.2'}
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save(blocking=True)
+
+        etree.XMLSchema = self.mock_load_schema
+
+        xpath = "//x:body/x:journal[x:journal_metadata[x:full_title='HTML tags in title']]"
+
+        with open(ARTICLES, "r") as f:
+            data = f.read()
+        new_data = data.replace("{REPLACEME}", "This article has <i>unescaped</i> and &lt;i&gt;escaped&lt;/i&gt; html tags")
+        with open(ARTICLES, "w") as f:
+            f.write(new_data)
+
+        stream = CrossrefArticleFixtureFactory.upload_html_tags_in_text()
+        f = FileMockFactory(stream=stream)
+
+        previous = []
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
+        id = job.params.get("ingest_articles__file_upload_id")
+        self.cleanup_ids.append(id)
+
+        # because file upload gets created and saved by prepare
+        time.sleep(2)
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task.run()
+
+        # because file upload needs to be re-saved
+        time.sleep(2)
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None
+        assert fu.status == "processed", "fu.status expected processed, received: {}".format(fu.status)
+
+        # because file upload needs to be re-saved
+        time.sleep(2)
+
+        found = [a for a in models.Article.find_by_issns(["9876-5432", "1234-5678"])]
+
+        assert len(found) == 1, "expected 1, found: {}".format(len(found))
+        art = found[0]
+        bib = art.bibjson()
+        assert bib.title == "This article has <ns0:i>unescaped</ns0:i> and &lt;i&gt;escaped&lt;/i&gt; html tags", "expected: 'This article has <i>unescaped</i> and &lt;i&gt;unexcaped&lt;/i&gt; html tags', received: {}".format(bib.title)
+
+        with open(ARTICLES, "r") as f:
+            data = f.read()
+        new_data = data.replace("This article has <i>unescaped</i> and &lt;i&gt;escaped&lt;/i&gt; html tags", "{REPLACEME}")
+        with open(ARTICLES, "w") as f:
+            f.write(new_data)
+
+    def test_53_html_tags_in_title_attr(self):
+        file = etree.parse(ARTICLES)
+        root = file.getroot()
+        NS = {'x': 'http://www.crossref.org/schema/4.4.2'}
+        issn = root.xpath("//x:body/x:journal[x:journal_metadata[x:full_title='HTML tags in attribute']]/x:journal_metadata/x:issn", namespaces=NS)[0]
+        old_attr = issn.attrib["media_type"]
+        issn.attrib["media_type"] = "Here is some attribute <i>with unescaped tags </i> in it"
+
+        etree.ElementTree(root).write(ARTICLES, pretty_print=True)
+
+        etree.XMLSchema = self.mock_load_schema
+        handle = CrossrefArticleFixtureFactory.upload_html_tags_in_attrs()
+
+        f = FileMockFactory(stream=handle)
+
+        previous = []
+
+        with self.assertRaises(Exception) as context:
+            id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "crossref", previous)
+
+        self.assertTrue("Failed to upload file: Unable to validate document with identified schema;" in str(context.exception))
+
+        issn.attrib["media_type"] = old_attr
+        etree.ElementTree(root).write(ARTICLES, pretty_print=True)
+

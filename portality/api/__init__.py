@@ -1,3 +1,4 @@
+#~~API:Feature~~
 from portality.api.v2.crud.applications import *
 from portality.api.v2.crud.journals import *
 from portality.api.v2.crud.common import *

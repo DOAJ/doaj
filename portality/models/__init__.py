@@ -21,6 +21,8 @@ from portality.models.cache import Cache
 from portality.models.openurl import OpenURLRequest
 from portality.models.provenance import Provenance
 from portality.models.background import BackgroundJob
+from portality.models.preservation import Preserve
+from portality.models.news import News
 
 import sys
 
