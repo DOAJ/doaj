@@ -15,6 +15,11 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         if "status" not in kwargs:
             kwargs["status"] = "queued"
 
+        # to audosave we need to move the object over to Seamless
+        # self._autosave = False
+        # self._audit_log_increments = 500
+        # self._audit_log_counter = 0
+
         super(BackgroundJob, self).__init__(raw=kwargs)
 
     @classmethod
@@ -25,6 +30,12 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
 
     def mappings(self):
         return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
+
+    # This feature would allow us to flush the audit logs to the index periodically.
+    # We need to switch the object type to Seamless to enable that
+    # def autosave(self, audit_log_increments=500):
+    #     self._audit_log_increments = audit_log_increments
+    #     self._autosave = True
 
     @property
     def user(self):
@@ -94,7 +105,13 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
             timestamp = dates.now_with_microseconds()
         obj = {"message": msg, "timestamp": timestamp}
         self._add_to_list_with_struct("audit", obj)
-        print(msg)
+
+        # This feature would allow us to flush the audit messages to the index periodically
+        # if self._autosave:
+        #     audits = len(self._get_list("audit"))
+        #     if audits > self._audit_log_counter + self._audit_log_increments:
+        #         self.save()
+        #         self._audit_log_counter = audits
 
     @property
     def pretty_audit(self):

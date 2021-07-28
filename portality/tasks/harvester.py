@@ -7,8 +7,6 @@ from portality.models.harvester import HarvesterProgressReport as Report
 from portality.tasks.redis_huey import schedule, long_running
 from portality.decorators import write_required
 
-import datetime
-
 
 class BGHarvesterLogger(object):
     def __init__(self, job):
