@@ -1,5 +1,5 @@
 from portality.core import app
-from portality.lib import dataobj, dates
+from portality.lib import dataobj, dates, es_data_mapping
 from portality import dao
 
 
@@ -22,6 +22,9 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         q = ActiveQuery(task_type)
         actives = cls.q2obj(q=q.query())
         return len(actives) > 0
+
+    def mappings(self):
+        return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
 
     @property
     def user(self):
@@ -134,6 +137,18 @@ BACKGROUND_STRUCT = {
                 "message": {"coerce": "unicode"},
                 "timestamp": {"coerce": "utcdatetimemicros"}
             }
+        }
+    }
+}
+
+MAPPING_OPTS = {
+    "dynamic": None,
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
+    "exceptions": {
+        "audit.message": {
+            "type": "string",
+            "index": "not_analyzed",
+            "include_in_all": False
         }
     }
 }

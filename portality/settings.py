@@ -404,7 +404,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal", # ~~->Journal:Model~~
     "portality.models.Application", # ~~->Application:Model~~
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
-    "portality.models.harvester.HarvestState"   # ~~->HarvestState:Model~~
+    "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
+    "portality.models.background.BackgroundJob" # ~~-> BackgroundJob:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -567,7 +568,7 @@ MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->Editor
 MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
 MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
-MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}    #~~->BackgroundJob:Model~~
+# MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}    #~~->BackgroundJob:Model~~
 
 #########################################
 # Query Routes
