@@ -4,6 +4,9 @@ from portality import dao
 
 
 class BackgroundJob(dataobj.DataObj, dao.DomainObject):
+    """
+    # ~~BackgroundJob:Model~~
+    """
     __type__ = "background_job"
 
     def __init__(self, **kwargs):
@@ -24,11 +27,13 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
 
     @classmethod
     def has_active(cls, task_type):
+        # ~~-> ActiveBackgroundJob:Query~~
         q = ActiveQuery(task_type)
         actives = cls.q2obj(q=q.query())
         return len(actives) > 0
 
     def mappings(self):
+        # ~~-> Elasticsearch:Technology~~
         return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
 
     # This feature would allow us to flush the audit logs to the index periodically.
@@ -130,6 +135,7 @@ class StdOutBackgroundJob(BackgroundJob):
             print(msg)
 
 
+# ~~-> DataObj:Library~~
 BACKGROUND_STRUCT = {
     "fields": {
         "id": {"coerce": "unicode"},
@@ -158,6 +164,7 @@ BACKGROUND_STRUCT = {
     }
 }
 
+# ~~-> Elasticsearch:Technology~~
 MAPPING_OPTS = {
     "dynamic": None,
     "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
@@ -172,6 +179,9 @@ MAPPING_OPTS = {
 
 
 class ActiveQuery(object):
+    """
+    ~~ActiveBackgroundJob:Query->Elasticsearch:Technology~~
+    """
     def __init__(self, task_type, size=1):
         self._task_type = task_type
         self._size = size
