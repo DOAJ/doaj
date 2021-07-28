@@ -27,6 +27,11 @@ class HarvesterBackgroundTask(BackgroundTask):
         Execute the task as specified by the background_job
         :return:
         """
+
+        if not self.only_me():
+            self.background_job.add_audit_message("Another harvester is currently running, skipping this run")
+            return
+
         logger = BGHarvesterLogger(self.background_job)
         accs = list(app.config.get("HARVESTER_API_KEYS", {}).keys())
         harvester_workflow = workflow.HarvesterWorkflow(logger)
@@ -34,19 +39,7 @@ class HarvesterBackgroundTask(BackgroundTask):
             harvester_workflow.process_account(account_id)
 
         report = Report.write_report()
-        app.logger.info(report)
-
-        # If the harvester finishes normally, we can email the report.
-        if self.mail_prereqs:
-            self.mail.send_mail(
-                to=app.config["HARVESTER_EMAIL_RECIPIENTS"],
-                fro=self.fro,
-                subject=self.sub_prefix + "DOAJ Harvester finished at {0}".format(
-                    datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")),
-                msg_body=report
-            )
-
-            return
+        self.background_job.add_audit_message(report)
 
     def cleanup(self):
         """
@@ -65,27 +58,6 @@ class HarvesterBackgroundTask(BackgroundTask):
         :return: a BackgroundJob instance representing this task
         """
 
-        # run_only_once()
-        # initialise_index(app, es_connection)
-        cls.sub_prefix = app.config.get('HARVESTER_EMAIL_SUBJECT_PREFIX', '')
-
-        # Send an email when the harvester starts.
-        cls.mail_prereqs = False
-        cls.fro = app.config.get("HARVESTER_EMAIL_FROM_ADDRESS", 'harvester@doaj.org')
-        if app.config.get("HARVESTER_EMAIL_ON_EVENT", False):
-            to = app.config.get("HARVESTER_EMAIL_RECIPIENTS", None)
-
-            if to is not None:
-                cls.mail_prereqs = True
-                from portality import app_email as mail
-                mail.send_mail(
-                    to=to,
-                    fro=cls.fro,
-                    subject=cls.sub_prefix + "DOAJ Harvester started at {0}".format(
-                        datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")),
-                    msg_body="A new running instance of the harvester has started."
-                )
-
         # first prepare a job record
         job = models.BackgroundJob()
         job.user = username
@@ -103,6 +75,9 @@ class HarvesterBackgroundTask(BackgroundTask):
         background_job.save()
         harvest.schedule(args=(background_job.id,), delay=10)
         # fixme: schedule() could raise a huey.exceptions.HueyException and not reach redis- would that be logged?
+
+    def only_me(self):
+        return not models.BackgroundJob.has_active(self.__action__)
 
 
 @long_running.periodic_task(schedule("harvest"))

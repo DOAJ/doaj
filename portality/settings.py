@@ -1129,7 +1129,6 @@ DOAJ_SEARCH_TYPE = "journal,article"
 DOAJ_API1_BASE_URL = "https://doaj.org/api/v1/"
 DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
 
-
 ## EPMC Client configuration
 # ~~-> EPMC:ExternalService~~
 EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
@@ -1156,12 +1155,6 @@ HARVESTER_RUNNING_PROCTITLE = 'harvester: running'
 
 # Minutes we wait between terminate and kill
 HARVESTER_MAX_WAIT = 10
-
-# Email notifications
-HARVESTER_EMAIL_ON_EVENT = False
-HARVESTER_EMAIL_RECIPIENTS = None
-HARVESTER_EMAIL_FROM_ADDRESS = "harvester@doaj.org"
-HARVESTER_EMAIL_SUBJECT_PREFIX = "[harvester] "
 
 #######################################################
 # ReCAPTCHA configuration

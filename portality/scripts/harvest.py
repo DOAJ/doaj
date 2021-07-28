@@ -10,6 +10,6 @@ if __name__ == "__main__":
 
     user = app.config.get("SYSTEM_USERNAME")
     job = harvester.HarvesterBackgroundTask.prepare(user)
-    job = StdOutBackgroundJob(job)
+    # job = StdOutBackgroundJob(job)
     task = harvester.HarvesterBackgroundTask(job)
     BackgroundApi.execute(task)

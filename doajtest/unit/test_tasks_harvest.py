@@ -40,9 +40,6 @@ class TestHarvester(DoajTestCase):
 
         self.today = datetime.today().strftime('%Y-%m-%d')
         app.config["INITIAL_HARVEST_DATE"] = self.today
-        copyfile(RESOURCES + 'harvester_resp.json', RESOURCES + 'harvester_resp_temp.json')
-        with open(RESOURCES + 'harvester_resp_temp.json') as json_file:
-            articles = json.load(json_file)
 
     def tearDown(self):
         super(TestHarvester, self).tearDown()
@@ -52,7 +49,7 @@ class TestHarvester(DoajTestCase):
     @patch('portality.tasks.harvester_helpers.epmc.client.EuropePMC.query')
     def test_harvest(self, mock_query):
 
-        with open('resources/harvester_resp.json') as json_file:
+        with open(os.path.join(RESOURCES, 'harvester_resp.json')) as json_file:
             articles = json.load(json_file)
 
         articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + self.today + ' sort_date:"y"',
@@ -77,7 +74,7 @@ class TestHarvester(DoajTestCase):
     @patch('portality.lib.httputil.get')
     def test_query(self, mock_get):
 
-        with open('resources/harvester_resp.json') as json_file:
+        with open(os.path.join(RESOURCES, 'harvester_resp.json')) as json_file:
             articles = json.load(json_file)
 
         articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + self.today + ' sort_date:"y"',
@@ -105,6 +102,23 @@ class TestHarvester(DoajTestCase):
         assert isinstance(result[1], EPMCMetadata)
         assert result[1].journal == "My Journal"
 
+    @patch('portality.tasks.harvester_helpers.epmc.client.EuropePMC.query')
+    def test_start_multiple(self, mock_query):
+        # Create a job that appears to be in progress
+        job = HarvesterBackgroundTask.prepare("testuser")
+        job.start()
+        job.save(blocking=True)
+
+        job2 = HarvesterBackgroundTask.prepare("testuser")
+        task = HarvesterBackgroundTask(job2)
+        BackgroundApi.execute(task)
+
+        assert not mock_query.called
+
+        time.sleep(2)
+
+        job3 = models.BackgroundJob.pull(job2.id)
+        assert job3.status == "complete"
 
 
 

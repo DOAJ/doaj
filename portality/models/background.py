@@ -17,6 +17,12 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
 
         super(BackgroundJob, self).__init__(raw=kwargs)
 
+    @classmethod
+    def has_active(cls, task_type):
+        q = ActiveQuery(task_type)
+        actives = cls.q2obj(q=q.query())
+        return len(actives) > 0
+
     @property
     def user(self):
         return self._get_single("user")
@@ -92,6 +98,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         audits = self._get_list("audit")
         return "\n".join(["{t} {m}".format(t=a["timestamp"], m=a["message"]) for a in audits])
 
+
 class StdOutBackgroundJob(BackgroundJob):
 
     def __init__(self, inner):
@@ -130,3 +137,22 @@ BACKGROUND_STRUCT = {
         }
     }
 }
+
+
+class ActiveQuery(object):
+    def __init__(self, task_type, size=1):
+        self._task_type = task_type
+        self._size = size
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"action.exact" : self._task_type}},
+                        {"terms" : {"status.exact" : ["queued", "processing"]}}
+                    ]
+                }
+            },
+            "size" : self._size
+        }
