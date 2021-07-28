@@ -6,6 +6,8 @@ from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
 from datetime import datetime
 
+from portality.ui.messages import Messages
+
 
 class DOAJXWalk(object):
     """
@@ -144,6 +146,11 @@ class DOAJXWalk(object):
         eissn = _element(record, "eissn")
         if eissn is not None:
             bibjson.add_identifier(bibjson.E_ISSN, eissn.upper())
+
+        if pissn is not None and eissn is not None:
+            if pissn.upper() == eissn.upper():
+                raise CrosswalkException(
+                    message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN.format(value=pissn))
 
         # publication date
         pd = _element(record, "publicationDate")

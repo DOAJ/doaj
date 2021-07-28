@@ -146,6 +146,24 @@ class ArticleService(object):
                 raise exceptions.DuplicateArticleException()
         return is_update
 
+    # here we should have the final point of validation for all incoming articles
+    def _validate_issns(self, article):
+        # only 2 issns: one print, one electronic
+        b = article.bibjson()
+        pissn = b.get_identifiers("pissn")
+        eissn = b.get_identifiers("eissn")
+
+        if len(pissn) > 1 or len(eissn) > 1:
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
+
+        pissn = b.get_one_identifier("pissn")
+        eissn = b.get_one_identifier("eissn")
+
+        #pissn and eissn identical
+        if pissn == eissn:
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN)
+
+
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
 
@@ -182,11 +200,17 @@ class ArticleService(object):
 
         # quickly validate that the article is acceptable - it must have a DOI and/or a fulltext
         # this raises an exception if the article is not acceptable, containing all the relevant validation details
-        self.is_acceptable(article)
+
+        try:
+            self.is_acceptable(article)
+        except Exception as e:
+            raise e
 
         has_permissions_result = self.has_permissions(account, article, limit_to_account)
         if isinstance(has_permissions_result,dict):
             return has_permissions_result
+
+
 
         is_update = 0
         if duplicate_check:
@@ -232,14 +256,11 @@ class ArticleService(object):
 
         # do we have a DOI.  If so, no need to go further
         doi = bj.get_one_identifier(bj.DOI)
-        if doi is not None:
-            return
-
         ft = bj.get_single_url(bj.FULLTEXT)
-        if ft is not None:
-            return
+        if doi is None and ft is None:
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_DOI_NO_FULLTEXT)
 
-        raise exceptions.ArticleNotAcceptable(errors=[Messages.EXCEPTION_NO_DOI_NO_FULLTEXT])
+        self._validate_issns(article)
 
     def is_legitimate_owner(self, article, owner):
         """

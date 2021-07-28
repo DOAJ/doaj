@@ -26,6 +26,8 @@ import ftplib, os, requests
 from urllib.parse import urlparse
 from lxml import etree
 
+from portality.ui.messages import Messages
+
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
 ARTICLES = os.path.join(RESOURCES, "crossref_article_uploads.xml")
@@ -1857,10 +1859,48 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         assert not os.path.exists(path)
 
         assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
-        assert file_upload.error == "Too many ISSNs. Only 2 ISSNs are allowed", "expected error: 'Too many ISSNs. Only 2 ISSNs are allowed', received: {}".format(
+        assert file_upload.error == Messages.EXCEPTION_TOO_MANY_ISSNS, "expected error: {}, received: {}".format(Messages.EXCEPTION_TOO_MANY_ISSNS,
             file_upload.error)
 
-    def test_51_html_tags_in_title_text(self):
+    def test_51_same_issns(self):
+        etree.XMLSchema = self.mock_load_schema
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("crossref")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = CrossrefArticleFixtureFactory.upload_the_same_issns()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed", "expected 'failed', received: {}".format(file_upload.status)
+        assert file_upload.error == Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, "expected error: {}, received: {}".format(Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN,
+            file_upload.error)
+
+    def test_52_html_tags_in_title_text(self):
         NS = {'x': 'http://www.crossref.org/schema/4.4.2'}
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1922,7 +1962,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         with open(ARTICLES, "w") as f:
             f.write(new_data)
 
-    def test_52_html_tags_in_title_attr(self):
+    def test_53_html_tags_in_title_attr(self):
         file = etree.parse(ARTICLES)
         root = file.getroot()
         NS = {'x': 'http://www.crossref.org/schema/4.4.2'}

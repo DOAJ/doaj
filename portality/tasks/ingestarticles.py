@@ -1,5 +1,6 @@
 from portality import models
 from portality.core import app
+from portality.crosswalks.exceptions import CrosswalkException
 
 from portality.tasks.redis_huey import main_queue, configure
 from portality.decorators import write_required
@@ -293,7 +294,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 for article in articles:
                     article.set_upload_id(file_upload.id)
                 result = articleService.batch_create_articles(articles, account, add_journal_info=True)
-        except IngestException as e:
+        except (IngestException, CrosswalkException) as e:
             job.add_audit_message("IngestException: {msg}. Inner message: {inner}.  Stack: {x}".format(msg=e.message, inner=e.inner_message, x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
             result = e.result
@@ -326,7 +327,6 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         shared = result.get("shared", [])
         unowned = result.get("unowned", [])
         unmatched = result.get("unmatched", [])
-        ids = [a.id for a in articles]
 
         if success == 0 and fail > 0 and not ingest_exception:
             file_upload.failed("All articles in file failed to import")
@@ -341,7 +341,10 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         job.add_audit_message("Shared ISSNs: " + ", ".join(list(shared)))
         job.add_audit_message("Unowned ISSNs: " + ", ".join(list(unowned)))
         job.add_audit_message("Unmatched ISSNs: " + ", ".join(list(unmatched)))
-        job.add_audit_message("Created/updated articles: " + ", ".join(list(ids)))
+
+        if new:
+            ids = [a.id for a in articles]
+            job.add_audit_message("Created/updated articles: " + ", ".join(list(ids)))
 
         if not ingest_exception:
             try:

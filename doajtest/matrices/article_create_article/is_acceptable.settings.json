@@ -21,6 +21,22 @@
       }
     },
     {
+      "name": "incorrect_issn_count",
+      "type": "generated",
+      "values": {
+        "yes": {},
+        "no": {}
+      }
+    },
+    {
+      "name": "pissn_eissn_match",
+      "type": "generated",
+      "values": {
+        "yes": {},
+        "no": {}
+      }
+    },
+    {
       "name": "is_acceptable",
       "type": "conditional",
       "values": {
@@ -31,12 +47,32 @@
                 "or": [
                   "exists"
                 ]
+              },
+              "incorrect_issn_count": {
+                "or": [
+                  "no"
+                ]
+              },
+              "pissn_eissn_match": {
+                "or": [
+                  "no"
+                ]
               }
             },
             {
               "fulltext_url": {
                 "or": [
                   "exists"
+                ]
+              },
+              "incorrect_issn_count": {
+                "or": [
+                  "no"
+                ]
+              },
+              "pissn_eissn_match": {
+                "or": [
+                  "no"
                 ]
               }
             }
@@ -53,6 +89,20 @@
               "fulltext_url": {
                 "or": [
                   "none"
+                ]
+              }
+            },
+            {
+              "incorrect_issn_count": {
+                "or": [
+                  "yes"
+                ]
+              }
+            },
+            {
+              "pissn_eissn_match": {
+                "or": [
+                  "yes"
                 ]
               }
             }
