@@ -1,4 +1,4 @@
-# ~~APISearch:Feature->API:Feature~~:
+# ~~APISearch:Feature->API:Feature~~
 from portality.api.common import Api
 from portality import util
 from portality.core import app

@@ -96,10 +96,7 @@ class FieldDefinitions:
                 "validate" : [],
                 "disabled": True
             }
-        },
-        "asynchronous_warnings": [
-            {"value_must_be": {"value": "y"}}
-        ]
+        }
     }
 
     # ~~->$ OAStatementURL:FormField~~
@@ -127,15 +124,15 @@ class FieldDefinitions:
             "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",  # ~~!OAStatementURL:FormField-> TrimWhitespace:FormWidget~~
-            "clickable_url"     # ~~!OAStatementURL:FormField-> ClickableURL:FormWidget~~
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url"     # ~~^-> ClickableURL:FormWidget~~
         ],
         "attr": {
             "type": "url"
         }
     }
 
-    #~~->Title:FormField~~
+    #~~->$ Title:FormField~~
     TITLE = {
         "name": "title",
         "label": "Journal title",
@@ -150,11 +147,11 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Enter the journal’s name"}},
-            "no_script_tag"
+            "no_script_tag" # ~~^-> NoScriptTag:FormValidator
         ],
         "widgets": [
-            "trim_whitespace",
-            "full_contents"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "contexts": {
             "editor": {
@@ -169,7 +166,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~->AlternativeTitle:FormField~~
+    # ~~->$ AlternativeTitle:FormField~~
     ALTERNATIVE_TITLE = {
         "name": "alternative_title",
         "label": "Alternative title (including translation of the title)",
@@ -179,11 +176,11 @@ class FieldDefinitions:
             "placeholder": "Ma revue"
         },
         "validate": [
-            "no_script_tag"
+            "no_script_tag" # ~~^-> NoScriptTag:FormValidator
         ],
         "widgets": [
-            "trim_whitespace",
-            {"full_contents" : {"empty_disabled" : "[The journal has no alternative title]"}}
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            {"full_contents" : {"empty_disabled" : "[The journal has no alternative title]"}}   # ~~^->FullContents:FormWidget~~
         ],
         "contexts": {
             "update_request": {
@@ -192,18 +189,18 @@ class FieldDefinitions:
         }
     }
 
-    # ~~->JournalURL:FormField~~
+    # ~~->$ JournalURL:FormField~~
     JOURNAL_URL = {
         "name": "journal_url",
         "label": "Link to the journal’s homepage",
         "input": "text",
         "validate": [
             "required",
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ],
         "help": {
             "placeholder": "https://www.my-journal.com"
@@ -212,20 +209,14 @@ class FieldDefinitions:
             "public" : {
                 "validate": [
                     {"required": {"message": "Enter the URL for the journal’s <strong>homepage</strong>"}},
-                    "is_url",
-                    "journal_url_in_public_doaj"  # Check whether the journal url is already in a public DOAJ record
+                    "is_url",   # ~~^->IsURL:FormValidator~~
+                    "journal_url_in_public_doaj"  # ~~^-> JournalURLInPublicDOAJ:FormValidator~~
                 ],
             }
-        },
-        "asynchronous_warnings": [
-            "journal_url_in_public_doaj",  # Check whether the journal url is already in a public DOAJ record
-            {"rejected_application": {"age": "6 months"}},
-            # check that the journal does not have a rejection less than 6 months ago
-            "active_application"  # Check that the URL is not related to an active application
-        ]
+        }
     }
 
-    #~~->PISSN:FormField~~
+    #~~->$ PISSN:FormField~~
     PISSN = {
         "name": "pissn",
         "label": "ISSN (print)",
@@ -238,25 +229,25 @@ class FieldDefinitions:
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
-            {"optional_if": {"field": "eissn",
+            {"optional_if": {"field": "eissn",  # ~~^-> OptionalIf:FormValidator~~
                              "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
-            {"is_issn": {"message": "This is not a valid ISSN"}},
+            {"is_issn": {"message": "This is not a valid ISSN"}},   # ~~^-> IsISSN:FormValidator~~
             {"different_to": {"field": "eissn", "message": "This field must contain a different value to 'ISSN ("
-                                                           "online)'"}}
+                                                           "online)'"}} # ~~^-> DifferetTo:FormValidator~~
         ],
         "widgets" : [
-            "trim_whitespace",
-            "full_contents"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "contexts": {
             "public" : {
                 "validate": [
-                    {"optional_if": {"field": "eissn",
+                    {"optional_if": {"field": "eissn",  # ~~^-> OptionalIf:FormValidator~~
                                      "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
-                    {"is_issn": {"message": "This is not a valid ISSN"}},
+                    {"is_issn": {"message": "This is not a valid ISSN"}},   # ~~^-> IsISSN:FormValidator~~
                     {"different_to": {"field": "eissn",
                                       "message": "This field must contain a different value to 'ISSN ("
-                                                 "online)'"}},
+                                                 "online)'"}},  # ~~^-> DifferetTo:FormValidator~~
                     "issn_in_public_doaj"
                 ],
             },
@@ -292,15 +283,10 @@ class FieldDefinitions:
             "update_request": {
                 "disabled": True
             }
-        },
-        "asynchronous_warnings": [
-            "issn_in_public_doaj",  # check whether the journal url is already in a public DOAJ record
-            {"rejected_application": {"age": "6 months"}},
-            "active_application"  # Check that the ISSN is not related to an active application
-        ]
+        }
     }
 
-    #~~->EISSN:FormField~~
+    #~~->$ EISSN:FormField~~
     EISSN = {
         "name": "eissn",
         "label": "ISSN (online)",
@@ -313,23 +299,23 @@ class FieldDefinitions:
             "doaj_criteria": "ISSN must be provided"
         },
         "validate": [
-            {"optional_if": {"field": "pissn",
+            {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
                              "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
-            {"is_issn": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "pissn", "message" : "This field must contain a different value to 'ISSN (print)'"}}
+            {"is_issn": {"message": "This is not a valid ISSN"}}, # ~~^-> IsISSN:FormValidator~~
+            {"different_to": {"field": "pissn", "message" : "This field must contain a different value to 'ISSN (print)'"}} # ~~^-> DifferetTo:FormValidator~~
         ],
         "widgets" : [
-            "trim_whitespace",
-            "full_contents"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "contexts": {
             "public" : {
                 "validate" : [
-                    {"optional_if": {"field": "pissn",
+                    {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
                                      "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
-                    {"is_issn": {"message": "This is not a valid ISSN"}},
+                    {"is_issn": {"message": "This is not a valid ISSN"}},   # ~~^-> IsISSN:FormValidator~~
                     {"different_to": {"field": "pissn",
-                                      "message": "This field must contain a different value to 'ISSN (print)'"}},
+                                      "message": "This field must contain a different value to 'ISSN (print)'"}}, # ~~^-> DifferetTo:FormValidator~~
                     "issn_in_public_doaj"
                 ]
             },
@@ -365,22 +351,17 @@ class FieldDefinitions:
             "update_request": {
                 "disabled": True,
                 "validate" : [
-                    {"optional_if": {"field": "pissn",
+                    {"optional_if": {"field": "pissn",  # ~~^-> OptionalIf:FormValidator~~
                                      "message": "You must provide <strong>one or both</strong> of an online ISSN or a print ISSN"}},
-                    {"is_issn": {"message": "This is not a valid ISSN"}},
-                    {"different_to": {"field": "pissn",
+                    {"is_issn": {"message": "This is not a valid ISSN"}},   # ~~^-> IsISSN:FormValidator~~
+                    {"different_to": {"field": "pissn", # ~~^-> DifferetTo:FormValidator~~
                                       "message": "This field must contain a different value to 'ISSN (print)'"}}
                 ]
             }
-        },
-        "asynchronous_warnings": [
-            "issn_in_public_doaj",  # check whether the journal url is already in a public DOAJ record
-            {"rejected_application": {"age": "6 months"}},
-            "active_application"  # Check that the ISSN is not related to an active application
-        ]
+        }
     }
 
-    # ~~->Keywords:FormField~~
+    # ~~->$ Keywords:FormField~~
     KEYWORDS = {
         "name": "keywords",
         "label": "Up to 6 subject keywords in English",
@@ -391,7 +372,7 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Enter at least <strong>one subject keyword</strong> in English"}},
-            {"stop_words": {"disallowed": STOP_WORDS}},
+            {"stop_words": {"disallowed": STOP_WORDS}}, # ~~^->StopWords:FormValidator~~
             {"max_tags": {"max": 6}}
         ],
         "postprocessing": [
@@ -411,7 +392,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> Language:FormField~~
+    # ~~->$ Language:FormField~~
     LANGUAGE = {
         "name": "language",
         "label": "Languages in which the journal accepts manuscripts",
@@ -437,7 +418,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> PublisherName:FormField~~
+    # ~~->$ PublisherName:FormField~~
     PUBLISHER_NAME = {
         "name": "publisher_name",
         "label": "Publisher’s name",
@@ -446,9 +427,9 @@ class FieldDefinitions:
             {"required": {"message": "Enter the name of the journal’s publisher"}}
         ],
         "widgets": [
-            "trim_whitespace",
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             {"autocomplete": {"type" : "journal", "field": "bibjson.publisher.name.exact"}},
-            "full_contents"
+            "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "help": {
             "placeholder": "Type or select the publisher’s name"
@@ -460,7 +441,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~->PublisherCountry:FormField~~
+    # ~~->$ PublisherCountry:FormField~~
     PUBLISHER_COUNTRY = {
         "name": "publisher_country",
         "label": "Publisher’s country",
@@ -491,7 +472,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~->InstitutionName:FormField~~
+    # ~~->$ InstitutionName:FormField~~
     INSTITUTION_NAME = {
         "name": "institution_name",
         "label": "Society or institution’s name",
@@ -505,13 +486,13 @@ class FieldDefinitions:
             "placeholder": "Type or select the society or institution’s name"
         },
         "widgets": [
-            "trim_whitespace",
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}},
-            "full_contents"
+            "full_contents" # ~~^->FullContents:FormWidget~~
         ]
     }
 
-    # ~~->InstitutionCountry:FormField~~
+    # ~~->$ InstitutionCountry:FormField~~
     INSTITUTION_COUNTRY = {
         "name": "institution_country",
         "label": "Society or institution’s country",
@@ -531,7 +512,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> License:FormField~~
+    # ~~->$ License:FormField~~
     LICENSE = {
         "name": "license",
         "label": "License(s) permitted by the journal",
@@ -578,7 +559,7 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~-> LicenseAttributes:FormField~~
+    # ~~->$ LicenseAttributes:FormField~~
     LICENSE_ATTRIBUTES = {
         "name": "license_attributes",
         "label": "Select all the attributes that your license has",
@@ -598,7 +579,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> LicenseTermsURL:FormField~~
+    # ~~->$ LicenseTermsURL:FormField~~
     LICENSE_TERMS_URL = {
         "name": "license_terms_url",
         "label": "Where can we find this information?",
@@ -606,7 +587,7 @@ class FieldDefinitions:
         "diff_table_context": "License terms",
         "validate": [
             {"required": {"message": "Enter the URL for the journal’s <strong>license terms</strong> page"}},
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "help": {
             "short_help": "Link to the page where the license terms are stated on your site.",
@@ -614,12 +595,12 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/about#licensing",
         },
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
-    # ~~-> LicenseDisplay:FormField~~
+    # ~~->$ LicenseDisplay:FormField~~
     LICENSE_DISPLAY = {
         "name": "license_display",
         "label": "Does the journal embed and/or display licensing information in its articles?",
@@ -640,7 +621,7 @@ class FieldDefinitions:
         ]
     }
 
-    #~~-> LicenseDisplayExampleUrl:FormField~~
+    #~~->$ LicenseDisplayExampleUrl:FormField~~
     LICENSE_DISPLAY_EXAMPLE_URL = {
         "name": "license_display_example_url",
         "label": "Recent article displaying or embedding a license in the full text",
@@ -659,15 +640,15 @@ class FieldDefinitions:
                 "message": "Enter the URL for any recent article that displays or embeds a license"
                 }
             },
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
-    # ~~-> CopyrightAuthorRetails:FormField~~
+    # ~~->$ CopyrightAuthorRetails:FormField~~
     COPYRIGHT_AUTHOR_RETAINS = {
         "name": "copyright_author_retains",
         "label": "For all the licenses you have indicated above, do authors retain the copyright "
@@ -688,13 +669,10 @@ class FieldDefinitions:
                           "under any license allowed by the journal "
                           "retain all rights."],
             "seal_criteria": "The author must retain the copyright"
-        },
-        "asynchronous_warnings": [
-            {"required_value": {"value": "y"}}
-        ]
+        }
     }
 
-    # ~~-> CopyrightURL:FormField~~
+    # ~~->$ CopyrightURL:FormField~~
     COPYRIGHT_URL = {
         "name": "copyright_url",
         "label": "Where can we find this information?",
@@ -705,29 +683,29 @@ class FieldDefinitions:
         },
         "placeholder": "https://www.my-journal.com/about#licensing",
         "validate": [
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ],
         "contexts": {
             "public": {
                 "validate": [
                     {"required": {"message": "Enter the URL for the journal’s <strong>copyright terms</strong> page"}},
-                    "is_url"
+                    "is_url"    # ~~^->IsURL:FormValidator~~
                 ]
             },
             "update_request": {
                 "validate": [
                     "required",
-                    "is_url"
+                    "is_url"    # ~~^->IsURL:FormValidator~~
                 ]
             }
         }
     }
 
-    # ~~->ReviewProcess:FormField~~
+    # ~~->$ ReviewProcess:FormField~~
     REVIEW_PROCESS = {
         "name": "review_process",
         "label": "DOAJ only accepts peer-reviewed journals. "
@@ -754,7 +732,7 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~-> ReviewProcessOther:FormField~~
+    # ~~->$ ReviewProcessOther:FormField~~
     REVIEW_PROCESS_OTHER = {
         "name": "review_process_other",
         "label": "Other peer review",
@@ -772,14 +750,14 @@ class FieldDefinitions:
             }
         ],
         "widgets" : [
-            "trim_whitespace",
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
         ]
     }
 
-    # ~~-> ReviewURL:FormField~~
+    # ~~->$ ReviewURL:FormField~~
     REVIEW_URL = {
         "name": "review_url",
         "label": "Where can we find this information?",
@@ -791,15 +769,15 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Enter the URL for the journal’s <strong>peer review policy</strong> page"}},
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
-    # ~~-> PlagiarismDetection:FormField~~
+    # ~~->$ PlagiarismDetection:FormField~~
     PLAGIARISM_DETECTION = {
         "name": "plagiarism_detection",
         "label": "Does the journal routinely screen article submissions for plagiarism?",
@@ -819,7 +797,7 @@ class FieldDefinitions:
         ]
     }
 
-    #~~-> PlagiarismURL:FormField~~
+    #~~->$ PlagiarismURL:FormField~~
     PLAGIARISM_URL = {
         "name": "plagiarism_url",
         "label": "Where can we find this information?",
@@ -840,15 +818,15 @@ class FieldDefinitions:
                 "message": "Enter the URL for the journal’s <strong>plagiarism policy</strong> page"
                 }
             },
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
-    # ~~-> AimsScopeURL:FormField~~
+    # ~~->$ AimsScopeURL:FormField~~
     AIMS_SCOPE_URL = {
         "name": "aims_scope_url",
         "label": "Link to the journal’s <b>Aims & Scope</b>",
@@ -859,15 +837,15 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Enter the URL for the journal’s <strong>Aims & Scope</strong> page"}},
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
-    # ~~-> EditorialBoardURL:FormField~~
+    # ~~->$ EditorialBoardURL:FormField~~
     EDITORIAL_BOARD_URL = {
         "name": "editorial_board_url",
         "label": "Link to the journal’s <b>Editorial Board</b>",
@@ -878,15 +856,15 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Enter the URL for the journal’s <strong>Editorial Board</strong> page"}},
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
-    # ~~-> AuthorInstructionsURL:FormField~~
+    # ~~->$ AuthorInstructionsURL:FormField~~
     AUTHOR_INSTRUCTIONS_URL = {
         "name": "author_instructions_url",
         "label": "Link to the journal’s <b>Instructions for Authors</b>",
@@ -897,15 +875,15 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Enter the URL for the journal’s <strong>Instructions for Authors</strong> page"}},
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
-    # ~~->PublicationTimeWeeks:FormField~~
+    # ~~->$ PublicationTimeWeeks:FormField~~
     PUBLICATION_TIME_WEEKS = {
         "name": "publication_time_weeks",
         "label": "Average number of <strong>weeks</strong> between article submission & publication",
@@ -924,7 +902,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~->APC:FormField~~
+    # ~~->$ APC:FormField~~
     APC = {
         "name": "apc",
         "label": "Does the journal charge fees for publishing an article (APCs)?",
@@ -945,7 +923,7 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~-> APCCharges:FormField~~
+    # ~~->$ APCCharges:FormField~~
     APC_CHARGES = {
         "name": "apc_charges",
         "input": "group",
@@ -974,7 +952,7 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~-> APCCurrency:FormField~~
+    # ~~->$ APCCurrency:FormField~~
     APC_CURRENCY = {
         "subfield": True,
         "group": "apc_charges",
@@ -1001,7 +979,7 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~-> APCMax:FormField~~
+    # ~~->$ APCMax:FormField~~
     APC_MAX = {
         "subfield": True,
         "group": "apc_charges",
@@ -1024,7 +1002,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> APCURL:FormField~~
+    # ~~->$ APCURL:FormField~~
     APC_URL = {
         "name": "apc_url",
         "label": "Where can we find this information?",
@@ -1039,15 +1017,15 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Enter the URL for the journal’s <strong>publication fees</strong> information page"}},
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
-    # ~~-> HasWaiver:FormField~~
+    # ~~->$ HasWaiver:FormField~~
     HAS_WAIVER = {
         "name": "has_waiver",
         "label": "Does the journal provide a waiver or discount "
@@ -1070,7 +1048,7 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~-> WaiverURL:FormField~~
+    # ~~->$ WaiverURL:FormField~~
     WAIVER_URL = {
         "name": "waiver_url",
         "label": "Where can we find this information?",
@@ -1091,15 +1069,15 @@ class FieldDefinitions:
                 "message": "Enter the URL for the journal’s <strong>waiver information</strong> page"
                 }
             },
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
-    # ~~-> HasOtherCharges:FormField~~
+    # ~~->$ HasOtherCharges:FormField~~
     HAS_OTHER_CHARGES = {
         "name": "has_other_charges",
         "label": "Does the journal charge any other fees to authors?",
@@ -1119,7 +1097,7 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~-> OtherChargesURL:FormField~~
+    # ~~->$ OtherChargesURL:FormField~~
     OTHER_CHARGES_URL = {
         "name": "other_charges_url",
         "label": "Where can we find this information?",
@@ -1139,15 +1117,15 @@ class FieldDefinitions:
                 "message": "Enter the URL for the journal’s <strong>fees<strong> information page"
                 }
             },
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
-    # ~~-> PreservationService:FormField~~
+    # ~~->$ PreservationService:FormField~~
     PRESERVATION_SERVICE = {
         "name": "preservation_service",
         "label": "Long-term preservation service(s) where the journal is currently archived",
@@ -1178,7 +1156,7 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~-> PreservationServiceLibrary:FormField~~
+    # ~~->$ PreservationServiceLibrary:FormField~~
     PRESERVATION_SERVICE_LIBRARY = {
         "name": "preservation_service_library",
         "label": "A national library",
@@ -1203,7 +1181,7 @@ class FieldDefinitions:
             {"warn_on_value": {"value": "None"}}
         ],
         "widgets": [
-            "trim_whitespace",
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             "multiple_field"
         ],
         "attr": {
@@ -1211,7 +1189,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~->PreservationServiceOther:FormField~~
+    # ~~->$ PreservationServiceOther:FormField~~
     PRESERVATION_SERVICE_OTHER = {
         "name": "preservation_service_other",
         "label": "Other archiving policy:",
@@ -1229,11 +1207,11 @@ class FieldDefinitions:
             {"warn_on_value": {"value": "None"}}
         ],
         "widgets" : [
-            "trim_whitespace"
+            "trim_whitespace"   # ~~^-> TrimWhitespace:FormWidget~~
         ]
     }
 
-    # ~~-> PreservationServiceURL:FormField~~
+    # ~~->$ PreservationServiceURL:FormField~~
     PRESERVATION_SERVICE_URL = {
         "name": "preservation_service_url",
         "label": "Where can we find this information?",
@@ -1272,15 +1250,15 @@ class FieldDefinitions:
                     ]
                 }
             },
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
-    # ~~-> DepositPolicy:FormField~~
+    # ~~->$ DepositPolicy:FormField~~
     DEPOSIT_POLICY = {
         "name": "deposit_policy",
         "label": "Does the journal have a policy allowing authors to deposit versions of their work in an "
@@ -1310,7 +1288,7 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~-> DepositPolicyOther:FormField~~
+    # ~~->$ DepositPolicyOther:FormField~~
     DEPOSIT_POLICY_OTHER = {
         "name": "deposit_policy_other",
         "label": "Name of other website where policy is registered",
@@ -1328,11 +1306,11 @@ class FieldDefinitions:
             {"warn_on_value": {"value": "None"}}
         ],
         "widgets" : [
-            "trim_whitespace"
+            "trim_whitespace"   # ~~^-> TrimWhitespace:FormWidget~~
         ]
     }
 
-    # ~~-> DepositPolicyURL:FormField~~
+    # ~~->$ DepositPolicyURL:FormField~~
     DEPOSIT_POLICY_URL = {
         "name": "deposit_policy_url",
         "label": "Where can we find this information?",
@@ -1350,11 +1328,11 @@ class FieldDefinitions:
             "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
         "validate": [
-            "is_url"
+            "is_url"    # ~~^->IsURL:FormValidator~~
         ],
         "widgets": [
-            "trim_whitespace",
-            "clickable_url"
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ],
         "contexts" : {
             "public" : {
@@ -1370,7 +1348,7 @@ class FieldDefinitions:
                             ]
                         }
                     },
-                    "is_url"
+                    "is_url"    # ~~^->IsURL:FormValidator~~
                 ]
             },
             "update_request" : {
@@ -1386,13 +1364,13 @@ class FieldDefinitions:
                             ]
                         }
                     },
-                    "is_url"
+                    "is_url"    # ~~^->IsURL:FormValidator~~
                 ]
             }
         }
     }
 
-    # ~~-> PersistentIdentifiers:FormField~~
+    # ~~->$ PersistentIdentifiers:FormField~~
     PERSISTENT_IDENTIFIERS = {
         "name": "persistent_identifiers",
         "label": "Persistent article identifiers used by the journal",
@@ -1417,7 +1395,7 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~-> PersistentIdentifiersOther:FormField~~
+    # ~~->$ PersistentIdentifiersOther:FormField~~
     PERSISTENT_IDENTIFIERS_OTHER = {
         "name": "persistent_identifiers_other",
         "label": "Other identifier",
@@ -1435,11 +1413,11 @@ class FieldDefinitions:
             {"warn_on_value": {"value": "None"}}
         ],
         "widgets" : [
-            "trim_whitespace"
+            "trim_whitespace"   # ~~^-> TrimWhitespace:FormWidget~~
         ]
     }
 
-    # ~~-> Orcids:FormField~~
+    # ~~->$ Orcids:FormField~~
     ORCID_IDS = {
         "name": "orcid_ids",
         "label": "Does the journal allow for ORCID iDs to be present in article metadata?",
@@ -1467,7 +1445,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> OpenCitations:FormField~~
+    # ~~->$ OpenCitations:FormField~~
     OPEN_CITATIONS = {
         "name": "open_citations",
         "label": "Does the journal comply with I4OC standards for open citations?",
@@ -1497,7 +1475,7 @@ class FieldDefinitions:
     #######################################
     ## Ediorial fields
 
-    # ~~-> DOAJSeal:FormField~~
+    # ~~->$ DOAJSeal:FormField~~
     DOAJ_SEAL = {
         "name": "doaj_seal",
         "label": "The journal has fulfilled all the criteria for the Seal. Award the Seal?",
@@ -1527,7 +1505,7 @@ class FieldDefinitions:
     }
 
     # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
-    # ~~-> QuickReject:FormField~~
+    # ~~->$ QuickReject:FormField~~
     QUICK_REJECT = {
         "name": "quick_reject",
         "label": "Reason for rejection",
@@ -1535,7 +1513,7 @@ class FieldDefinitions:
         "options_fn": "quick_reject"
     }
 
-    # ~~-> QuickRejectDetails:FormField~~
+    # ~~->$ QuickRejectDetails:FormField~~
     QUICK_REJECT_DETAILS = {
         "name": "quick_reject_details",
         "label": "Additional info",
@@ -1549,7 +1527,7 @@ class FieldDefinitions:
         ],
     }
 
-    # ~~-> Owner:FormField~~
+    # ~~->$ Owner:FormField~~
     OWNER = {
         "name": "owner",
         "label": "DOAJ Account",
@@ -1573,7 +1551,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> ApplicationStatus:FormField~~
+    # ~~->$ ApplicationStatus:FormField~~
     APPLICATION_STATUS = {
         "name": "application_status",
         "label": "Change status",
@@ -1611,7 +1589,7 @@ class FieldDefinitions:
         ]
     }
 
-    # ~~-> EditorGroup:FormField~~
+    # ~~->$ EditorGroup:FormField~~
     EDITOR_GROUP = {
         "name": "editor_group",
         "label": "Group",
@@ -1632,7 +1610,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> Editor:FormField~~
+    # ~~->$ Editor:FormField~~
     EDITOR = {
         "name": "editor",
         "label": "Individual",
@@ -1647,7 +1625,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> DiscontinuedDate:FormField~~
+    # ~~->$ DiscontinuedDate:FormField~~
     DISCONTINUED_DATE = {
         "name": "discontinued_date",
         "label": "Discontinued on",
@@ -1671,14 +1649,14 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> Continues:FormField~~
+    # ~~->$ Continues:FormField~~
     CONTINUES = {
         "name": "continues",
         "label": "Continues an older journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
-            {"is_issn_list": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "continued_by"}},       # FIXME: as above
+            {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
+            {"different_to": {"field": "continued_by"}},       # ~~^-> DifferetTo:FormValidator~~
             {
                 "not_if" : {
                     "fields" : [{"field" : "discontinued_date"}],
@@ -1694,14 +1672,14 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> ContinuedBy:FormField~~
+    # ~~->$ ContinuedBy:FormField~~
     CONTINUED_BY = {
         "name": "continued_by",
         "label": "Continued by a newer version of the journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
-            {"is_issn_list": {"message": "This is not a valid ISSN"}},
-            {"different_to": {"field": "continues"}},  # FIXME: as above
+            {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
+            {"different_to": {"field": "continues"}}, # ~~^-> DifferetTo:FormValidator~~
             {
                 "not_if": {
                     "fields": [{"field": "discontinued_date"}],
@@ -1717,7 +1695,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> Subject:FormField~~
+    # ~~->$ Subject:FormField~~
     SUBJECT = {
         "name": "subject",
         "label": "Assign one or a maximum of two subject classifications",
@@ -1754,7 +1732,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> Notes:FormField~~
+    # ~~->$ Notes:FormField~~
     NOTES = {
         "name" : "notes",
         "input": "group",
@@ -1785,7 +1763,7 @@ class FieldDefinitions:
         }
     }
 
-    # ~~-> Note:FormField~~
+    # ~~->$ Note:FormField~~
     NOTE = {
         "subfield": True,
         "name": "note",
@@ -1794,7 +1772,7 @@ class FieldDefinitions:
         "disabled": True
     }
 
-    # ~~-> NoteDate:FormField~~
+    # ~~->$ NoteDate:FormField~~
     NOTE_DATE = {
         "subfield": True,
         "name" : "note_date",
@@ -1803,7 +1781,7 @@ class FieldDefinitions:
         "disabled": True
     }
 
-    # ~~-> NoteID:FormField~~
+    # ~~->$ NoteID:FormField~~
     NOTE_ID = {
         "subfield" : True,
         "name": "note_id",
@@ -1811,7 +1789,7 @@ class FieldDefinitions:
         "input": "hidden"
     }
 
-    # ~~-> OptionalValidation:FormField~~
+    # ~~->$ OptionalValidation:FormField~~
     OPTIONAL_VALIDATION = {
         "name" : "make_all_fields_optional",
         "label" : "Allow save without validation",
@@ -1822,7 +1800,7 @@ class FieldDefinitions:
     }
 
     # Bulk Edit fields (that couldn't be overriden in the normal way)
-    # ~~-> BulkDOAJSeal:FormField~~
+    # ~~->$ BulkDOAJSeal:FormField~~
     BULK_DOAJ_SEAL = {
         "name": "change_doaj_seal",
         "label": 'Award the Seal',
@@ -2117,9 +2095,6 @@ class ApplicationContextDefinitions:
             FieldSetDefinitions.ARCHIVING_POLICY["name"],
             FieldSetDefinitions.REPOSITORY_POLICY["name"],
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
-        ],
-        "asynchronous_warnings": [
-            "all_urls_the_same"
         ],
         "templates": {
             "form" : "application_form/public_application.html",
@@ -2465,6 +2440,7 @@ class RequiredBuilder:
 
 
 class IsURLBuilder:
+    # ~~->IsURL:FormValidator~~
     msg = "<p><small>" + "Please enter a valid URL. It should start with http or https" + "</p></small>"
 
     @staticmethod
@@ -2530,6 +2506,7 @@ class ISSNInPublicDOAJBuilder:
 
 
 class JournalURLInPublicDOAJBuilder:
+    # ~~-> JournalURLInPublicDOAJ:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         # FIXME: not yet implemented in the front end, so setting here is speculative
@@ -2541,6 +2518,7 @@ class JournalURLInPublicDOAJBuilder:
 
 
 class NoScriptTagBuilder:
+    # ~~-> NoScriptTag:FormValidator
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-no-script-tag"] = ""
@@ -2555,6 +2533,7 @@ class NoScriptTagBuilder:
 
 
 class OptionalIfBuilder:
+    # ~~-> OptionalIf:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-validate-if-empty"] = "true"
@@ -2567,6 +2546,7 @@ class OptionalIfBuilder:
 
 
 class IsISSNBuilder:
+    # ~~-> IsISSN:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["pattern"] = ISSN
@@ -2589,6 +2569,7 @@ class IsISSNListBuilder:
 
 
 class DifferentToBuilder:
+    # ~~-> DifferetTo:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-different-to"] = settings.get("field")
@@ -2744,7 +2725,7 @@ PYTHON_FUNCTIONS = {
 }
 
 JAVASCRIPT_FUNCTIONS = {
-    "clickable_url": "formulaic.widgets.newClickableUrl",
+    "clickable_url": "formulaic.widgets.newClickableUrl",   # ~~-> ClickableURL:FormWidget~~
     "clickable_owner": "formulaic.widgets.newClickableOwner",
     "select": "formulaic.widgets.newSelect",
     "taglist": "formulaic.widgets.newTagList",
@@ -2753,9 +2734,9 @@ JAVASCRIPT_FUNCTIONS = {
     "infinite_repeat": "formulaic.widgets.newInfiniteRepeat",
     "autocomplete": "formulaic.widgets.newAutocomplete",
     "subject_tree" : "formulaic.widgets.newSubjectTree",
-    "full_contents" : "formulaic.widgets.newFullContents",
+    "full_contents" : "formulaic.widgets.newFullContents",  # ~~^->FullContents:FormWidget~~
     "load_editors" : "formulaic.widgets.newLoadEditors",
-    "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",
+    "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
     "note_modal" : "formulaic.widgets.newNoteModal"
 }
 
