@@ -1116,23 +1116,11 @@ QUICK_REJECT_REASONS = [
 
 ## Configuration options for the DOAJ API Client
 
-DOAJ_SEARCH_BASE = "https://doaj.org"
-
-DOAJ_SEARCH_PORT = 80
-
-# ~~->Query:WebRoute~~
-DOAJ_QUERY_ENDPOINT = "query"
-# ~~->PublicJournalArticleQuery:Endpoint~~
-DOAJ_SEARCH_TYPE = "journal,article"
-
-# ~~->API:Endpoint~~
-DOAJ_API1_BASE_URL = "https://doaj.org/api/v1/"
-DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
-
 ## EPMC Client configuration
 # ~~-> EPMC:ExternalService~~
 EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
 EPMC_TARGET_VERSION = "6.5"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
+EPMC_HARVESTER_THROTTLE = 0.2
 
 # General harvester configuration
 HARVESTERS = [
@@ -1141,20 +1129,9 @@ HARVESTERS = [
 
 INITIAL_HARVEST_DATE = "2015-12-01T00:00:00Z"
 
-# The mapping from account ids to API keys.  MUST NOT be checked into the repo, put these
+# List of account ids to harvest from.  MUST NOT be checked into the repo, put these
 # in the local.cfg instead
-HARVESTER_API_KEYS = {
-
-}
-
-EPMC_HARVESTER_THROTTLE = 0.2
-
-# Process name while harvester is starting, running
-HARVESTER_STARTING_PROCTITLE = 'harvester: starting'
-HARVESTER_RUNNING_PROCTITLE = 'harvester: running'
-
-# Minutes we wait between terminate and kill
-HARVESTER_MAX_WAIT = 10
+HARVEST_ACCOUNTS = []
 
 #######################################################
 # ReCAPTCHA configuration

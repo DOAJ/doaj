@@ -1,5 +1,5 @@
 from portality import models
-from portality.background import BackgroundTask, BackgroundApi
+from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 
 from portality.tasks.harvester_helpers import workflow
 from portality.core import app
@@ -29,11 +29,12 @@ class HarvesterBackgroundTask(BackgroundTask):
         """
 
         if not self.only_me():
-            self.background_job.add_audit_message("Another harvester is currently running, skipping this run")
-            return
+            msg = "Another harvester is currently running, skipping this run"
+            self.background_job.add_audit_message(msg)
+            raise BackgroundException(msg)
 
         logger = BGHarvesterLogger(self.background_job)
-        accs = list(app.config.get("HARVESTER_API_KEYS", {}).keys())
+        accs = app.config.get("HARVEST_ACCOUNTS", [])
         harvester_workflow = workflow.HarvesterWorkflow(logger)
         for account_id in accs:
             harvester_workflow.process_account(account_id)

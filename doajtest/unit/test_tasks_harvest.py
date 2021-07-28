@@ -118,7 +118,7 @@ class TestHarvester(DoajTestCase):
         time.sleep(2)
 
         job3 = models.BackgroundJob.pull(job2.id)
-        assert job3.status == "complete"
+        assert job3.status == "error"
 
 
 
