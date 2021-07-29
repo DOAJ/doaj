@@ -1,3 +1,4 @@
+# ~~APICrudApplications:Feature->APICrud:Feature~~
 import json
 
 from portality.api.v2.crud.common import CrudApi
@@ -19,6 +20,9 @@ from copy import deepcopy
 class ApplicationsCrudApi(CrudApi):
 
     API_KEY_OPTIONAL = False
+
+    # ~~->Swagger:Feature~~
+    # ~~->API:Documentation~~
     SWAG_TAG = 'CRUD Applications'
     SWAG_ID_PARAM = {
         "description": "<div class=\"search-query-docs\">DOAJ application ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
@@ -31,7 +35,7 @@ class ApplicationsCrudApi(CrudApi):
         "description": """<div class=\"search-query-docs\">
             Application JSON that you would like to create or update. The contents should comply with the schema displayed in the
             <a href=\"/api/v1/docs#CRUD_Applications_get_api_v1_application_application_id\"> GET (Retrieve) an application route</a>.
-            Explicit documentation for the structure of this data is also <a href="https://github.com/DOAJ/doaj/blob/master/docs/system/IncomingAPIApplication.md">provided here</a>.
+            Explicit documentation for the structure of this data is also <a href="https://doaj.github.io/doaj-docs/master/data_models/IncomingAPIApplication">provided here</a>.
             Partial updates are not allowed, you have to supply the full JSON.</div>""",
         "required": True,
         "schema": {"type" : "string"},
@@ -58,10 +62,11 @@ class ApplicationsCrudApi(CrudApi):
 
         # first thing to do is a structural validation, but instantiating the data object
         try:
-            ia = IncomingApplication(data)
+            ia = IncomingApplication(data)  # ~~-> APIIncomingApplication:Model~~
         except seamless.SeamlessException as e:
             raise Api400Error(str(e))
         except dataobj.ScriptTagFoundException as e:
+            # ~~->Email:ExternalService~~
             email_data = {"application": data, "account": account.__dict__}
             jdata = json.dumps(email_data, indent=4)
             try:
@@ -95,6 +100,7 @@ class ApplicationsCrudApi(CrudApi):
         # if this is an update request on an existing journal
         if ap.current_journal is not None:
             # DOAJ BLL for this request
+            # ~~->Application:Service~~
             applicationService = DOAJ.applicationService()
 
             # load the update_request application either directly or by crosswalking the journal object
@@ -102,13 +108,16 @@ class ApplicationsCrudApi(CrudApi):
             jlock = None
             alock = None
             try:
+                #~~->UpdateRequest:Feature~~
                 vanilla_ap, jlock, alock = applicationService.update_request_for_journal(ap.current_journal, account=account)
             except AuthoriseException as e:
+                # ~~-> AuthNZ:Feature~~
                 if e.reason == AuthoriseException.WRONG_STATUS:
                     raise Api403Error("The application is no longer in a state in which it can be edited via the API")
                 else:
                     raise Api404Error(str(e))
             except lock.Locked as e:
+                # ~~->Lock:Feature~~
                 raise Api409Error("The application you are requesting an update for is locked for editing by another user")
 
             # if we didn't find an application or journal, 404 the user
@@ -118,6 +127,8 @@ class ApplicationsCrudApi(CrudApi):
                 raise Api404Error(jlock, alock)
 
             # convert the incoming application into the web form
+            # ~~->ApplicationForm:Crosswalk~~
+            # ~~->UpdateRequest:FormContext~~
             form = ApplicationFormXWalk.obj2formdata(ap)
             formulaic_context = ApplicationFormFactory.context("update_request")
             fc = formulaic_context.processor(formdata=form, source=vanilla_ap)
@@ -139,12 +150,14 @@ class ApplicationsCrudApi(CrudApi):
 
         # otherwise, this is a brand-new application
         else:
+            # ~~->ApplicationForm:Crosswalk~~
             form = ApplicationFormXWalk.obj2formdata(ap)
 
             # create a template that will hold all the values we want to persist across the form submission
-            template = models.Application()
+            template = models.Application() # ~~->Application:Model~~
             template.set_owner(account.id)
 
+            # ~~->NewApplication:FormContext~~
             fc = ApplicationFormFactory.context("public")
             processor = fc.processor(form, template)
             if processor.validate():
@@ -188,7 +201,7 @@ class ApplicationsCrudApi(CrudApi):
             raise Api404Error()
 
         # if we get to here we're going to give the user back the application
-        oa = OutgoingApplication.from_model(ap)
+        oa = OutgoingApplication.from_model(ap) # ~~->APIOutgoingApplication:Model~~
         return oa
 
     @classmethod
@@ -213,7 +226,7 @@ class ApplicationsCrudApi(CrudApi):
 
         # next thing to do is a structural validation of the replacement data, by instantiating the object
         try:
-            ia = IncomingApplication(data)
+            ia = IncomingApplication(data)  # ~~->APIIncomingApplication:Model~~
         except seamless.SeamlessException as e:
             raise Api400Error(str(e))
 
@@ -231,6 +244,8 @@ class ApplicationsCrudApi(CrudApi):
         new_ap.bibjson().remove_subjects()
 
         # DOAJ BLL for this request
+        # ~~->Application:Service~~
+        # ~~->AuthNZ:Service~~
         applicationService = DOAJ.applicationService()
         authService = DOAJ.authorisationService()
 
@@ -245,13 +260,16 @@ class ApplicationsCrudApi(CrudApi):
             jlock = None
             alock = None
             try:
+                # ~~->UpdateRequest:Feature~~
                 vanilla_ap, jlock, alock = applicationService.update_request_for_journal(new_ap.current_journal, account=account)
             except AuthoriseException as e:
+                # ~~-> AuthNZ:Feature~~
                 if e.reason == AuthoriseException.WRONG_STATUS:
                     raise Api403Error("The application is no longer in a state in which it can be edited via the API")
                 else:
                     raise Api404Error()
             except lock.Locked as e:
+                # ~~->Lock:Feature~~
                 raise Api409Error("The application is locked for editing by another user - most likely your application is being reviewed by an editor")
 
             # if we didn't find an application or journal, 404 the user
@@ -261,6 +279,8 @@ class ApplicationsCrudApi(CrudApi):
                 raise Api404Error()
 
             # convert the incoming application into the web form
+            # ~~->ApplicationForm:Crosswalk~~
+            # ~~->UpdateRequest:FormContext~~
             form = ApplicationFormXWalk.obj2formdata(new_ap)
             formulaic_context = ApplicationFormFactory.context("update_request")
             fc = formulaic_context.processor(formdata=form, source=vanilla_ap)
@@ -279,6 +299,7 @@ class ApplicationsCrudApi(CrudApi):
                 if alock is not None: alock.delete()
                 raise Api400Error(cls._validation_message(fc))
         else:
+            # ~~-> AuthNZ:Feature~~
             try:
                 authService.can_edit_application(account, ap)
             except AuthoriseException as e:
@@ -288,8 +309,9 @@ class ApplicationsCrudApi(CrudApi):
                     raise Api404Error()
 
             # convert the incoming application into the web form
+            # ~~->ApplicationForm:Crosswalk~~
+            # ~~->NewApplication:FormContext~~
             form = ApplicationFormXWalk.obj2formdata(new_ap)
-
             formulaic_context = ApplicationFormFactory.context("public")
             fc = formulaic_context.processor(form)
 
@@ -320,6 +342,8 @@ class ApplicationsCrudApi(CrudApi):
         if account is None:
             raise Api401Error()
 
+        # ~~->Application:Service~~
+        # ~~->AuthNZ:Service~~
         applicationService = DOAJ.applicationService()
         authService = DOAJ.authorisationService()
 
@@ -366,25 +390,9 @@ class ApplicationsCrudApi(CrudApi):
 
             return report
 
+        # ~~->ApplicationForm:Crosswalk~~
         report = _expand(errors)
         for fieldName, errorMessages in report.items():
             fieldName = ApplicationFormXWalk.formField2objectField(fieldName)
             msg += fieldName + " : " + "; ".join(errorMessages) + "\n"
         return msg
-        """
-        for fieldName, errorMessages in errors.items():
-            if isinstance(errorMessages, dict):
-                for subfield, subMessages in errorMessages.items():
-
-
-            fieldName = ApplicationFormXWalk.formField2objectField(fieldName)
-            reportable = []
-
-            for em in errorMessages:
-                if isinstance(em, list):
-                    em = " ".join(em)
-                reportable.append(em)
-            msg += fieldName + " : " + "; ".join(reportable) + "\n"
-        return msg
-        """
-

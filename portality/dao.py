@@ -25,6 +25,9 @@ class ElasticSearchWriteException(Exception):
 
 
 class DomainObject(UserDict, object):
+    """
+    ~~DomainObject:Model->Elasticsearch:Technology~~
+    """
     __type__ = None                                                       # set the type on the model that inherits this
 
     def __init__(self, **kwargs):
@@ -109,7 +112,14 @@ class DomainObject(UserDict, object):
         return datetime.strptime(self.last_updated, "%Y-%m-%dT%H:%M:%SZ")
 
     def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False):
-
+        """
+        ~~->ReadOnlyMode:Feature~~
+        :param retries:
+        :param back_off_factor:
+        :param differentiate:
+        :param blocking:
+        :return:
+        """
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, save command cannot run")
             return
@@ -207,6 +217,13 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def bulk(cls, bibjson_list, idkey='id', refresh=False):
+        """
+        ~~->ReadOnlyMode:Feature~~
+        :param bibjson_list:
+        :param idkey:
+        :param refresh:
+        :return:
+        """
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, bulk command cannot run")
             return
@@ -222,6 +239,10 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def refresh(cls):
+        """
+        ~~->ReadOnlyMode:Feature~~
+        :return:
+        """
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, refresh command cannot run")
             return
@@ -839,11 +860,13 @@ block_query = {
 
 
 class Facetview2(object):
+    """
+    ~~SearchURLGenerator:Feature->Elasticsearch:Technology~~
+    """
 
-    """
-    {"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"_type":"article"}}]}},"query":{"query_string":{"query":"richard","default_operator":"OR"}}}},"from":0,"size":10}
-    {"query":{"query_string":{"query":"richard","default_operator":"OR"}},"from":0,"size":10}
-    """
+    # Examples of queries
+    # {"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"_type":"article"}}]}},"query":{"query_string":{"query":"richard","default_operator":"OR"}}}},"from":0,"size":10}
+    # {"query":{"query_string":{"query":"richard","default_operator":"OR"}},"from":0,"size":10}
 
     @staticmethod
     def make_term_filter(term, value):

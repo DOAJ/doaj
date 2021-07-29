@@ -1,4 +1,4 @@
-from portality.harvester import workflow
+from portality.tasks.harvester_helpers import workflow
 from portality.core import app, es_connection, initialise_index
 from portality.models.harvester import HarvesterProgressReport as Report
 import flask.logging
@@ -84,8 +84,9 @@ if __name__ == "__main__":
         flask.logging.create_logger(app)
 
     accs = list(app.config.get("HARVESTER_API_KEYS", {}).keys())
+    harvester_workflow = workflow.HarvesterWorkflow()
     for account_id in accs:
-        workflow.HarvesterWorkflow.process_account(account_id)
+        harvester_workflow.process_account(account_id)
 
     report = Report.write_report()
     app.logger.info(report)

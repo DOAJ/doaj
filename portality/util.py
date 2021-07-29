@@ -128,6 +128,7 @@ def batch_up(long_list, batch_size):
 
 def ipt_prefix(type):
     """ For IPT connections, prepend the index prefix to the type so we connect to the right index-per-type index. """
+    # ~~Elasticsearch:Technology~~
     if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
         return app.config['ELASTIC_SEARCH_DB_PREFIX'] + type
     else:
@@ -135,6 +136,11 @@ def ipt_prefix(type):
 
 
 def verify_recaptcha(g_recaptcha_response):
+    """
+    ~~ReCAPTCHA:ExternalService~~
+    :param g_recaptcha_response:
+    :return:
+    """
     with urllib.request.urlopen('https://www.recaptcha.net/recaptcha/api/siteverify?secret=' + app.config.get("RECAPTCHA_SECRET_KEY") + '&response=' + g_recaptcha_response) as url:
         data = json.loads(url.read().decode())
         return data

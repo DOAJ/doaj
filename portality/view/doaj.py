@@ -5,7 +5,6 @@ import urllib.request, urllib.parse, urllib.error
 
 from portality import dao
 from portality import models
-from portality import blog
 from portality.core import app
 from portality.decorators import ssl_required
 from portality.lcc import lcc_jstree
@@ -21,7 +20,7 @@ blueprint = Blueprint('doaj', __name__)
 
 @blueprint.route("/")
 def home():
-    news = blog.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
+    news = models.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     recent_journals = models.Journal.recent(max=16)
     return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
 
@@ -178,9 +177,12 @@ def csv_data():
 
 @blueprint.route("/sitemap.xml")
 def sitemap():
-    sitemap_file = models.Cache.get_latest_sitemap()
-    sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
-    return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
+    sitemap_url = models.Cache.get_latest_sitemap()
+    if sitemap_url is None:
+        abort(404)
+    if sitemap_url.startswith("/"):
+        sitemap_url = "/store" + sitemap_url
+    return redirect(sitemap_url, code=307)
 
 
 # @blueprint.route("/public-data-dump")

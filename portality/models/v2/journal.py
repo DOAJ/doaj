@@ -70,8 +70,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return records
 
     @classmethod
-    def issns_by_owner(cls, owner):
-        q = IssnQuery(owner)
+    def issns_by_owner(cls, owner, in_doaj=None):
+        q = IssnQuery(owner, in_doaj=in_doaj)
         res = cls.query(q=q.query())
         issns = [term.get("term") for term in res.get("facets", {}).get("issns", {}).get("terms", [])]
         return issns
@@ -966,8 +966,25 @@ class JournalURLQuery(object):
 class IssnQuery(object):
     base_query = {
         "query": {
-            "term": {"admin.owner.exact": "<owner id here>"}
-        },
+         "filtered": {
+           "filter": {
+             "bool": {
+               "must": [
+                 {
+                   "term": {
+                     "admin.in_doaj": True
+                   }
+                 }
+               ]
+             }
+           },
+           "query": {
+             "term": {
+               "admin.owner.exact": "<owner id here>"
+             }
+           }
+         }
+       },
         "size": 0,
         "facets": {
             "issns": {
@@ -980,15 +997,20 @@ class IssnQuery(object):
         }
     }
 
-    def __init__(self, owner):
+    def __init__(self, owner, in_doaj=None):
         self._query = deepcopy(self.base_query)
-        self._query["query"]["term"]["admin.owner.exact"] = owner
+        self._query["query"]["filtered"]["query"]["term"]["admin.owner.exact"] = owner
+        if in_doaj:
+            self._query["query"]["filtered"]["filter"]["bool"]["must"][0]["term"]["admin.in_doaj"] = in_doaj
+        else:
+            del self._query["query"]["filtered"]["filter"]
+
 
     def query(self):
         return self._query
 
 
-class OwnerQuery(IssnQuery):
+class OwnerQuery(object):
     """ Query to supply all full journal sources by owner """
     base_query = {
         "query": {
@@ -996,6 +1018,13 @@ class OwnerQuery(IssnQuery):
         },
         "size": 10000,
     }
+
+    def __init__(self, owner):
+        self._query = deepcopy(self.base_query)
+        self._query["query"]["term"]["admin.owner.exact"] = owner
+
+    def query(self):
+        return self._query
 
 
 class PublisherQuery(object):

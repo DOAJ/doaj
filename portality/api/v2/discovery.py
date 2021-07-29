@@ -1,3 +1,4 @@
+# ~~APISearch:Feature->API:Feature~~:
 from portality.api.common import Api
 from portality import util
 from portality.core import app
@@ -109,6 +110,8 @@ def escape(query):
     return query
 
 
+# ~~->Swagger:Feature~~
+# ~~->API:Documentation~~
 DISCOVERY_API_SWAG = {
     'application': json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v2', 'discovery_api_application_swag.json'))),
     'journal': json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v2', 'discovery_api_journal_swag.json'))),
@@ -288,17 +291,18 @@ class DiscoveryApi(Api):
 
         if index_type == 'article':
             endpoint = 'search_articles'
-            klass = models.Article
+            klass = models.Article  # ~~->Article:Model~~
         elif index_type == 'journal':
             endpoint = 'search_journals'
-            klass = models.Journal
+            klass = models.Journal  # ~~->Journal:Model~~
         else:
             endpoint = 'search_applications'
-            klass = models.Suggestion
+            klass = models.Suggestion   #~~->Application:Model~~
 
         raw_query, page, page_size = cls._make_query(q, page, page_size, sort, index_type, False)
 
         # execute the query against the articles
+        # ~~->Query:Service~~
         query_service = DOAJ.queryService()
         res = query_service.search('api_query', index_type, raw_query, account, None)
 
@@ -326,6 +330,10 @@ class DiscoveryApi(Api):
 
 
 class SearchQuery(object):
+    """
+    ~~->Search:Query~~
+    ~~Search:Query->Elasticsearch:Technology~~
+    """
     def __init__(self, qs, fro, psize, sortby=None, sortdir=None):
         self.qs = qs
         self.fro = fro

@@ -40,14 +40,23 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
         is_acceptable = True if is_acceptable_arg == "yes" else False
         doi = "10.1234/article-10" if doi_arg == "exists" else None
         ft = "https://example.com" if ft_arg == "exists" else None
+        incorrect_issn_count = True if kwargs.get("incorrect_issn_count") == "yes" else False
+        pissn_eissn_match = True if kwargs.get("pissn_eissn_match") == "yes" else False
 
-        article_source = ArticleFixtureFactory.make_article_source()
+        if pissn_eissn_match:
+            article_source = ArticleFixtureFactory.make_article_source(pissn="0000-0000", eissn="0000-0000")
+        else:
+            article_source = ArticleFixtureFactory.make_article_source(pissn="0000-0000", eissn="1111-1111")
+
         article = Article(**article_source)
 
         if doi is None:
             article.bibjson().remove_identifiers("doi")
         if ft is None:
             article.bibjson().remove_urls("fulltext")
+
+        if incorrect_issn_count:
+            article.bibjson().get_identifiers().append({'type': 'pissn', 'id': '1234-1234'})
 
         if is_acceptable:
             self.assertIsNone(self.svc.is_acceptable(article))
