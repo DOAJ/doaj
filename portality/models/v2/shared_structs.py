@@ -12,7 +12,7 @@ JOURNAL_BIBJSON = {
                 "discontinued_date" : {"coerce" : "bigenddate"},
                 "publication_time_weeks" : {"coerce" : "integer"},
                 "title" : {"coerce" : "unicode"},
-                "oa_start" : {"coerce" : "bigenddate"}
+                "oa_start" : {"coerce" : "year"}
             },
             "lists" : {
                 "is_replaced_by" : {"coerce" : "issn", "contains" : "field", "set__allow_coerce_failure" : True},

@@ -528,6 +528,10 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
     "bigenddate": {
         "type": "date",
         "format": "dateOptionalTime"
+    },
+    "year": {
+        "type": "date",
+        "format": "year"
     }
 }
 
