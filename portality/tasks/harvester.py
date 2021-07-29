@@ -23,7 +23,6 @@ class HarvesterBackgroundTask(BackgroundTask):
     """
     ~~Harvester:BackgroundTask~~
     """
-    mail_prereqs = False
     __action__ = "harvest"
 
     def run(self):
