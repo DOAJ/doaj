@@ -1,6 +1,7 @@
 """
 ~~ApplicationForm:Feature~~
 """
+import datetime
 from copy import deepcopy
 
 from wtforms import StringField, TextAreaField, IntegerField, BooleanField, RadioField, SelectMultipleField, \
@@ -51,6 +52,7 @@ STOP_WORDS = [
     "multidisciplinary",
     "interdisciplinary",
     "journal",
+    "scholarly journal",
     "scholarly journal",
     "open science",
     "impact factor",
@@ -796,6 +798,17 @@ class FieldDefinitions:
         "widgets": [
             "trim_whitespace",
             "clickable_url"
+        ]
+    }
+
+    # ~~-> OAStart:FormField~~
+    OA_START = {
+        "name": "oa_start",
+        "label": "What is an OA Start date for this journal?",
+        "input": "number",
+        "datatype": "integer",
+        "validate": [
+            {"int_range": {"gte": 1900, "lte": datetime.datetime.now().year}}
         ]
     }
 
@@ -2716,7 +2729,7 @@ PYTHON_FUNCTIONS = {
             "not_if" : NotIfBuildier.render,
             "required_value" : RequiredValueBuilder.render,
             "bigenddate": BigEndDateBuilder.render,
-            "no_script_tag": NoScriptTagBuilder.render
+            "no_script_tag": NoScriptTagBuilder.render,
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -2738,7 +2751,7 @@ PYTHON_FUNCTIONS = {
             "bigenddate": BigEndDateBuilder.wtforms,
             "reserved_usernames" : ReservedUsernamesBuilder.wtforms,
             "owner_exists" : OwnerExistsBuilder.wtforms,
-            "no_script_tag": NoScriptTagBuilder.wtforms
+            "no_script_tag": NoScriptTagBuilder.wtforms,
         }
     }
 }
