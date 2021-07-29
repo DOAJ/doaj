@@ -128,6 +128,3 @@ class HarvesterWorkflow(object):
             return False
         self._write_to_logger("Created article in DOAJ for Account:{x} with ID: {y}".format(x=account_id, y=id))
         return True
-
-    def get_api_key(self, account_id):
-        return app.config.get("HARVESTER_API_KEYS", {}).get(account_id)

@@ -3,7 +3,6 @@ import json
 import os
 import time
 from datetime import datetime
-from shutil import copyfile
 
 from unittest.mock import Mock, patch
 
@@ -16,6 +15,7 @@ from portality.tasks.harvester_helpers.epmc import models as h_models
 from portality.tasks.harvester_helpers.epmc.client import EuropePMC, EuropePMCException
 from portality.tasks.harvester_helpers.epmc.models import EPMCMetadata
 from portality.background import BackgroundApi
+from portality.lib import dates
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources/")
 
@@ -33,21 +33,28 @@ class TestHarvester(DoajTestCase):
         self.publisher.save()
         self.journal.save(blocking=True)
 
-        self.old_harvester_api_keys = app.config.get('HARVESTER_API_KEYS')
+        self.old_harvest_accounts = app.config.get('HARVEST_ACCOUNTS')
         self.old_initial_harvest_date = app.config.get("INITIAL_HARVEST_DATE")
 
-        app.config['HARVESTER_API_KEYS'] = {self.publisher.id: self.publisher.api_key}
+        app.config['HARVEST_ACCOUNTS'] = [self.publisher.id]
 
         self.today = datetime.today().strftime('%Y-%m-%d')
         app.config["INITIAL_HARVEST_DATE"] = self.today
 
     def tearDown(self):
         super(TestHarvester, self).tearDown()
-        app.config['HARVESTER_API_KEYS'] = self.old_harvester_api_keys
+        app.config['HARVEST_ACCOUNTS'] = self.old_harvest_accounts
         app.config["INITIAL_HARVEST_DATE"] = self.old_initial_harvest_date
 
     @patch('portality.tasks.harvester_helpers.epmc.client.EuropePMC.query')
     def test_harvest(self, mock_query):
+        # start by adding a zombie background job to prove that this won't hinder the execution of the
+        # new job
+        zombie = HarvesterBackgroundTask.prepare("testuser")
+        zombie.start()
+        cd = dates.format(dates.before(datetime.utcnow(), app.config.get("HARVESTER_ZOMBIE_AGE") * 2))
+        zombie.set_created(cd)
+        zombie.save(blocking=True)
 
         with open(os.path.join(RESOURCES, 'harvester_resp.json')) as json_file:
             articles = json.load(json_file)
@@ -113,13 +120,9 @@ class TestHarvester(DoajTestCase):
         task = HarvesterBackgroundTask(job2)
         BackgroundApi.execute(task)
 
-        assert not mock_query.called
+        assert not mock_query.called, "mock_query was called when it shouldn't have been"
 
         time.sleep(2)
 
         job3 = models.BackgroundJob.pull(job2.id)
-        assert job3.status == "error"
-
-
-
-
+        assert job3.status == "error", "expected 'error', got '{x}'".format(x=job3.status)

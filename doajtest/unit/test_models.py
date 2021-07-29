@@ -1284,7 +1284,7 @@ class TestModels(DoajTestCase):
         bj = models.BackgroundJob(**source)
         bj.save(blocking=True)
 
-        assert models.BackgroundJob.has_active(source["action"])
+        assert len(models.BackgroundJob.active(source["action"])) == 1, "expected 1 active, got {x}".format(x=len(models.BackgroundJob.active(source["action"])))
 
 
     def test_27_article_journal_sync(self):

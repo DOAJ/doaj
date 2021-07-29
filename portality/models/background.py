@@ -26,11 +26,11 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         super(BackgroundJob, self).__init__(raw=kwargs)
 
     @classmethod
-    def has_active(cls, task_type):
+    def active(cls, task_type, since=None):
         # ~~-> ActiveBackgroundJob:Query~~
-        q = ActiveQuery(task_type)
+        q = ActiveQuery(task_type, since=since)
         actives = cls.q2obj(q=q.query())
-        return len(actives) > 0
+        return actives
 
     def mappings(self):
         # ~~-> Elasticsearch:Technology~~
@@ -182,12 +182,13 @@ class ActiveQuery(object):
     """
     ~~ActiveBackgroundJob:Query->Elasticsearch:Technology~~
     """
-    def __init__(self, task_type, size=1):
+    def __init__(self, task_type, size=2, since=None):
         self._task_type = task_type
         self._size = size
+        self._since = since
 
     def query(self):
-        return {
+        q = {
             "query" : {
                 "bool" : {
                     "must" : [
@@ -198,3 +199,6 @@ class ActiveQuery(object):
             },
             "size" : self._size
         }
+        if self._since:
+            q["query"]["bool"]["must"].append({"range" : {"created_date" : {"gte":  self._since}}})
+        return q

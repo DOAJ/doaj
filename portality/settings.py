@@ -1133,6 +1133,10 @@ INITIAL_HARVEST_DATE = "2015-12-01T00:00:00Z"
 # in the local.cfg instead
 HARVEST_ACCOUNTS = []
 
+# Amount of time a harvester record is allowed to be in "queued" or "processing" state before we
+# assume it's a zombie, and ignore it
+HARVESTER_ZOMBIE_AGE = 604800
+
 #######################################################
 # ReCAPTCHA configuration
 # ~~->ReCAPTCHA:ExternalService

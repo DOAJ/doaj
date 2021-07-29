@@ -6,6 +6,9 @@ from portality.core import app
 from portality.models.harvester import HarvesterProgressReport as Report
 from portality.tasks.redis_huey import schedule, long_running
 from portality.decorators import write_required
+from portality.lib import dates
+
+from datetime import datetime
 
 
 class BGHarvesterLogger(object):
@@ -79,7 +82,14 @@ class HarvesterBackgroundTask(BackgroundTask):
         # fixme: schedule() could raise a huey.exceptions.HueyException and not reach redis- would that be logged?
 
     def only_me(self):
-        return not models.BackgroundJob.has_active(self.__action__)
+        age = app.config.get("HARVESTER_ZOMBIE_AGE")
+        since = dates.format(dates.before(datetime.utcnow(), age))
+        actives = models.BackgroundJob.active(self.__action__, since=since)
+        if self.background_job.id in [a.id for a in actives] and len(actives) == 1:
+            return True
+        if len(actives) == 0:
+            return True
+        return False
 
 
 @long_running.periodic_task(schedule("harvest"))
