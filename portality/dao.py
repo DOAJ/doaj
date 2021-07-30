@@ -210,7 +210,7 @@ class DomainObject(UserDict, object):
         ES.delete(self.index_name(), self.id, doc_type=self.doc_type())
 
     @staticmethod
-    def make_query(recid='', theq=None, should_terms=None, consistent_order=True, **kwargs):
+    def make_query(theq=None, should_terms=None, consistent_order=True, **kwargs):
         """
         Generate a query object based on parameters but don't send to
         backend - return it instead. Must always have the same
@@ -220,8 +220,6 @@ class DomainObject(UserDict, object):
         if theq is None:
             theq = ""
         q = deepcopy(theq)
-        if recid and not recid.endswith('/'):
-            recid += '/'
         if isinstance(q, dict):
             query = q
             if 'bool' not in query['query']:
@@ -315,6 +313,8 @@ class DomainObject(UserDict, object):
         try:
             # out = requests.get(cls.target() + id_)
             out = ES.get(cls.index_name(), id_, doc_type=cls.doc_type())
+        except elasticsearch.NotFoundError:
+            return None
         except elasticsearch.TransportError as e:
             raise Exception("ES returned an error: {x}".format(x=json.dumps(e.info)))
         except Exception as e:
