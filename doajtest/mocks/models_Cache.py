@@ -39,9 +39,6 @@ class InMemoryCache(object):
     def get_public_data_dump(cls):
         return cls.__memory__["public_data_dump"]
 
-    def mark_for_regen(self):
-        pass
-
     def is_stale(self):
         pass
 
