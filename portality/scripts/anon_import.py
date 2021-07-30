@@ -19,6 +19,8 @@ class Resp(object):
 
 def es_bulk(connection, data, type=""):
     try:
+        if not isinstance(data, str):
+            data = data.read()
         res = connection.bulk(data, type, timeout='60s', request_timeout=60)
         return Resp(status_code=200, json=res)
     except Exception as e:
