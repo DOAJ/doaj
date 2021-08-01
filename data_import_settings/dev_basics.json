@@ -2,7 +2,7 @@
 	"elastic_search_host" : null,
 	"elastic_search_db" : null,
 	"confirm" : true,
-	"max_content_length" : 100000000,
+	"max_content_length" : 40000000,
 	"types" : {
 		"account" : {"import" : true, "limit" : -1},
 		"bulk_reapplication" : {"import" : false, "limit" : -1},

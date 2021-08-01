@@ -5,12 +5,10 @@ from datetime import datetime, timedelta
 import time
 import re
 
-from portality.core import app, es_connection
+from portality.core import app, es_connection as ES
 import urllib.parse
 import json
-
-import esprit
-
+import elasticsearch
 
 # All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 # You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
@@ -46,23 +44,38 @@ class DomainObject(UserDict, object):
         # super(DomainObject, self).__init__()
 
     @classmethod
-    def target_whole_index(cls):
-        t = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/') + '/'
+    def index_name(cls):
         if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE'] and cls.__type__ is not None:
-            t += ','.join([app.config['ELASTIC_SEARCH_DB_PREFIX'] + t for t in cls.__type__.split(',')]) + '/'
+            name = ','.join([app.config['ELASTIC_SEARCH_DB_PREFIX'] + t for t in cls.__type__.split(',')])
         else:
-            t += app.config['ELASTIC_SEARCH_DB'] + '/'
-        return t
-            
+            name = app.config['ELASTIC_SEARCH_DB']
+        return name
+
     @classmethod
-    def target(cls):
-        t = cls.target_whole_index()
-        # fixme: on search, the type is not necessary any more 299 Elasticsearch-7.10.2-747e1cc71def077253878a59143c1f785afa92b9 "[types removal] Specifying types in search requests is deprecated."
+    def doc_type(cls):
         if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-            t += app.config.get('INDEX_PER_TYPE_SUBSTITUTE', '_doc') + '/'
+            return None
         else:
-            t += cls.__type__ + '/'
-        return t
+            return cls.__type__
+
+    # @classmethod
+    # def target_whole_index(cls):
+    #     t = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/') + '/'
+    #     if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE'] and cls.__type__ is not None:
+    #         t += ','.join([app.config['ELASTIC_SEARCH_DB_PREFIX'] + t for t in cls.__type__.split(',')]) + '/'
+    #     else:
+    #         t += app.config['ELASTIC_SEARCH_DB'] + '/'
+    #     return t
+    #
+    # @classmethod
+    # def target(cls):
+    #     t = cls.target_whole_index()
+    #     # fixme: on search, the type is not necessary any more 299 Elasticsearch-7.10.2-747e1cc71def077253878a59143c1f785afa92b9 "[types removal] Specifying types in search requests is deprecated."
+    #     if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+    #         t += app.config.get('INDEX_PER_TYPE_SUBSTITUTE', '_doc') + '/'
+    #     else:
+    #         t += cls.__type__ + '/'
+    #     return t
     
     @classmethod
     def makeid(cls):
@@ -145,39 +158,31 @@ class DomainObject(UserDict, object):
             self.data['created_date'] = now
 
         attempt = 0
-        url = self.target() + self.data['id']
         d = json.dumps(self.data)
         r = None
         while attempt <= retries:
             try:
-                r = requests.post(url, data=d, headers=CONTENT_TYPE_JSON)
-                if r.status_code > 400:
-                    raise ElasticSearchWriteException("Error on ES save. Response code {0}".format(r.status_code))
-                else:
-                    break  # everything is OK, so r should now be assigned to the result
+                r = ES.index(self.index_name(), d, doc_type=self.doc_type(), id=self.data.get("id"), headers=CONTENT_TYPE_JSON)
+                break
 
-            except requests.exceptions.ConnectionError:
+            except (elasticsearch.ConnectionError, elasticsearch.ConnectionTimeout):
                 app.logger.exception("Failed to connect to ES")
                 attempt += 1
-            except ElasticSearchWriteException:
-                try:
-                    error_details = r.json()
-                except (ValueError, AttributeError):
-                    error_details = r.text
 
+            except elasticsearch.TransportError as e:
                 # Retries depend on which end the error lies.
-                if 400 <= r.status_code < 500:
+                if 400 <= e.status_code < 500:
                     # Bad request, do not retry as it won't work. Fail with ElasticSearchWriteException.
-                    app.logger.exception("Bad Request to ES, save failed. Details: {0}".format(error_details))
-                    raise
-                elif r.status_code >= 500:
+                    app.logger.exception("Bad Request to ES, save failed. Details: {0}".format(e.error))
+                    raise ElasticSearchWriteException(e.error)
+                elif e.status_code >= 500:
                     # Server error, this could be temporary so we may want to retry
-                    app.logger.exception("Server Error from ES, retrying. Details: {0}".format(error_details))
+                    app.logger.exception("Server Error from ES, retrying. Details: {0}".format(e.error))
                     attempt += 1
-            except Exception:
+            except Exception as e:
                 # if any other exception occurs, make sure it's at least logged.
                 app.logger.exception("Unhandled exception in save method of DAO")
-                raise
+                raise ElasticSearchWriteException(e)
 
             # wait before retrying
             time.sleep((2**attempt) * back_off_factor)
@@ -189,25 +194,16 @@ class DomainObject(UserDict, object):
                     attempts=attempt, id=self.data['id']))
 
         if blocking:
-            q = {
-                "query": {
-                    "term": {"id.exact": self.id}
-                },
-                "fields": [
-                    # TODO: For ES7.10 the default format includes milliseconds, but our timestamps don't.
-                    {"field": "last_updated", "format": "date_time_no_millis"}
-                ],
-                "_source": False,
-            }
+            bq = BlockQuery(self.id)
             while True:
-                res = self.query(q=q, return_raw_resp=True)
-                j = esprit.raw.unpack_result(res)
+                res = self.query(q=bq.query())
+                j = self._unwrap_search_result(res)
                 if len(j) == 0:
                     time.sleep(0.25)
                     continue
                 if len(j) > 1:
                     raise Exception("More than one record with id {x}".format(x=self.id))
-                if j[0].get("last_updated", [])[0] == now:  # NOTE: only works on ES > 1.x
+                if j[0].get("last_updated", [])[0] == now:
                     break
                 else:
                     time.sleep(0.25)
@@ -215,110 +211,25 @@ class DomainObject(UserDict, object):
 
         return r
 
-    @classmethod
-    def bulk(cls, bibjson_list, idkey='id', refresh=False):
-        """
-        ~~->ReadOnlyMode:Feature~~
-        :param bibjson_list:
-        :param idkey:
-        :param refresh:
-        :return:
-        """
+    def delete(self):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, bulk command cannot run")
+            app.logger.warn("System is in READ-ONLY mode, delete command cannot run")
             return
 
-        data = ''
-        for r in bibjson_list:
-            data += json.dumps({'index': {'_id': r[idkey]}}) + '\n'
-            data += json.dumps(r) + '\n'
-        r = requests.post(cls.target() + '_bulk', data=data, headers=CONTENT_TYPE_JSON)
-        if refresh:
-            cls.refresh()
-        return r.json()
+        # r = requests.delete(self.target() + self.id)
+        ES.delete(self.index_name(), self.id, doc_type=self.doc_type())
 
-    @classmethod
-    def refresh(cls):
-        """
-        ~~->ReadOnlyMode:Feature~~
-        :return:
-        """
-        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, refresh command cannot run")
-            return
-
-        r = requests.post(cls.target() + '_refresh',  headers=CONTENT_TYPE_JSON)
-        return r.json()
-
-    @classmethod
-    def pull(cls, id_):
-        """Retrieve object by id."""
-        if id_ is None or id_ == '':
-            return None
-
-        # swallow any network exceptions
-        try:
-            out = requests.get(cls.target() + id_)
-        except Exception as e:
-            return None
-        if out is None:
-            return None
-
-        # allow other exceptions to bubble up, as they may be data structure exceptions we want to know about
-        if out.status_code == 404:
-            return None
-        else:
-            try:
-                rec = out.json()
-            except Exception as e:
-                app.logger.exception("Cannot decode JSON. Object: {}, "
-                                     "Status Code: {}, "
-                                     "Reason: {}, "
-                                     "Exception message: {}"
-                                     .format(out.text,
-                                             out.status_code,
-                                             out.reason,
-                                             str(e)))
-                raise e
-            if "error" in rec and "status" in rec and rec["status"] >= 400:
-                raise Exception("ES returned an error: {x}".format(x=json.dumps(rec)))
-            return cls(**rec)
-
-    @classmethod
-    def pull_by_key(cls, key, value):
-        res = cls.query(q={"query": {"term": {key+app.config['FACET_FIELD']: value}}})
-        if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
-            return cls.pull(res['hits']['hits'][0]['_source']['id'])
-        else:
-            return None
-
-    @classmethod
-    def es_keys(cls, mapping=False, prefix=''):
-        # return a sorted list of all the keys in the index
-        if not mapping:
-            mapping = cls.query(endpoint='_mapping')[cls.__type__]['properties']
-        keys = []
-        for item in mapping:
-            if 'fields' in mapping[item]:
-                for itm in mapping[item]['fields'].keys():
-                    if itm != 'exact' and not itm.startswith('_'):
-                        keys.append(prefix + itm + app.config['FACET_FIELD'])
-            else:
-                keys = keys + cls.es_keys(mapping=mapping[item]['properties'], prefix=prefix+item+'.')
-        keys.sort()
-        return keys
-        
     @staticmethod
-    def make_query(recid='', endpoint='_search', theq='', terms=None, facets=None, should_terms=None, consistent_order=True, **kwargs):
+    def make_query(theq=None, should_terms=None, consistent_order=True, **kwargs):
         """
         Generate a query object based on parameters but don't send to
         backend - return it instead. Must always have the same
         parameters as the query method. See query method for explanation
         of parameters.
         """
+        if theq is None:
+            theq = ""
         q = deepcopy(theq)
-        if recid and not recid.endswith('/'):
-            recid += '/'
         if isinstance(q, dict):
             query = q
             if 'bool' not in query['query']:
@@ -348,28 +259,6 @@ class DomainObject(UserDict, object):
                 }
             }
 
-        if facets:
-            if 'facets' not in query:
-                query['facets'] = {}
-            for k, v in facets.items():
-                query['facets'][k] = {"terms": v}
-
-        if terms:
-            boolean = {'must': []}
-            for term in terms:
-                if not isinstance(terms[term], list):
-                    terms[term] = [terms[term]]
-                for val in terms[term]:
-                    obj = {'term': {}}
-                    obj['term'][term] = val
-                    boolean['must'].append(obj)
-            if q and not isinstance(q, dict):
-                boolean['must'].append({'query_string': {'query': q}})
-            elif q and 'query' in q:
-                boolean['must'].append(query['query'])
-            query['query'] = {'bool': boolean}
-
-        # FIXME: this may only work if a term is also supplied above - code is a bit tricky to read
         if should_terms is not None and len(should_terms) > 0:
             for s in should_terms:
                 if not isinstance(should_terms[s], list):
@@ -391,26 +280,92 @@ class DomainObject(UserDict, object):
         if not sort_specified and consistent_order:
             query['sort'] = [{"id.exact": {"order": "asc"}}]
 
-        # print json.dumps(query)
         return query
 
     @classmethod
-    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, return_raw_resp=False, raise_es_errors=False, **kwargs):
+    def _unwrap_search_result(cls, res):
+        return [i.get("_source") if "_source" in i else i.get("fields") for i in
+                res.get('hits', {}).get('hits', [])]
+
+    @classmethod
+    def bulk(cls, bibjson_list, idkey='id', refresh=False):
+        """
+        ~~->ReadOnlyMode:Feature~~
+        :param bibjson_list:
+        :param idkey:
+        :param refresh:
+        :return:
+        """
+        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
+            app.logger.warn("System is in READ-ONLY mode, bulk command cannot run")
+            return
+
+        data = ''
+        for r in bibjson_list:
+            data += json.dumps({'index': {'_id': r[idkey]}}) + '\n'
+            data += json.dumps(r) + '\n'
+        resp = ES.bulk(data, headers=CONTENT_TYPE_JSON)
+        # r = requests.post(cls.target() + '_bulk', data=data, headers=CONTENT_TYPE_JSON)
+        if refresh:
+            cls.refresh()
+        return resp
+
+    @classmethod
+    def refresh(cls):
+        """
+        ~~->ReadOnlyMode:Feature~~
+        :return:
+        """
+        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
+            app.logger.warn("System is in READ-ONLY mode, refresh command cannot run")
+            return
+
+        # r = requests.post(cls.target() + '_refresh',  headers=CONTENT_TYPE_JSON)
+        # return r.json()
+
+        return ES.refresh(index=cls.index_name())
+
+    @classmethod
+    def pull(cls, id_):
+        """Retrieve object by id."""
+        if id_ is None or id_ == '':
+            return None
+
+        try:
+            # out = requests.get(cls.target() + id_)
+            out = ES.get(cls.index_name(), id_, doc_type=cls.doc_type())
+        except elasticsearch.NotFoundError:
+            return None
+        except elasticsearch.TransportError as e:
+            raise Exception("ES returned an error: {x}".format(x=json.dumps(e.info)))
+        except Exception as e:
+            return None
+        if out is None:
+            return None
+
+        return cls(**out)
+
+    @classmethod
+    def pull_by_key(cls, key, value):
+        res = cls.query(q={"query": {"term": {key+app.config['FACET_FIELD']: value}}})
+        if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
+            return cls.pull(res['hits']['hits'][0]['_source']['id'])
+        else:
+            return None
+
+    @classmethod
+    def query(cls, q=None, **kwargs):
         """Perform a query on backend.
 
-        :param recid: needed if endpoint is about a record, e.g. mlt
-        :param endpoint: default is _search, but could be _mapping, _mlt, _flt etc.
         :param q: maps to query_string parameter if string, or query dict if dict.
-        :param terms: dictionary of terms to filter on. values should be lists. 
-        :param facets: dict of facets to return from the query.
         :param kwargs: any keyword args as per
             http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
         """
-        query = cls.make_query(recid, endpoint, q, terms, facets, **kwargs)
-        return cls.send_query(query, endpoint=endpoint, recid=recid, return_raw_resp=return_raw_resp, raise_es_errors=raise_es_errors)
+        query = cls.make_query(q, **kwargs)
+        return cls.send_query(query)
 
     @classmethod
-    def send_query(cls, qobj, endpoint='_search', recid='', retry=50, return_raw_resp=False, raise_es_errors=False):
+    def send_query(cls, qobj, retry=50):
         """Actually send a query object to the backend."""
         r = None
         count = 0
@@ -418,44 +373,28 @@ class DomainObject(UserDict, object):
         while count < retry:
             count += 1
             try:
-                if endpoint in ['_mapping']:
-                    r = requests.get(cls.target() + recid + endpoint)
-                else:
-                    # ES 7.10 updated target to whole index, since specifying type for search is deprecated
-                    r = requests.post(cls.target_whole_index() + recid + endpoint, data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
+                # ES 7.10 updated target to whole index, since specifying type for search is deprecated
+                # r = requests.post(cls.target_whole_index() + recid + "_search", data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
+                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(), headers=CONTENT_TYPE_JSON)
                 break
             except Exception as e:
                 exception = e
             time.sleep(0.5)
                 
         if r is not None:
-            j = r.json()
-
-            if raise_es_errors:
-                cls.check_es_raw_response(j)
-
-            if return_raw_resp:
-                return r
-
-            return j
+            return r
         if exception is not None:
             raise exception
         raise Exception("Couldn't get the ES query endpoint to respond.  Also, you shouldn't be seeing this.")
 
-    def delete(self):
-        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, delete command cannot run")
-            return
-
-        r = requests.delete(self.target() + self.id)
-    
     @classmethod
     def remove_by_id(cls, id):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, delete_by_id command cannot run")
             return
 
-        r = requests.delete(cls.target() + id)
+        # r = requests.delete(cls.target() + id)
+        ES.delete(cls.index_name(), id)
 
     @classmethod
     def delete_by_query(cls, query):
@@ -463,8 +402,10 @@ class DomainObject(UserDict, object):
             app.logger.warn("System is in READ-ONLY mode, delete_by_query command cannot run")
             return
 
-        r = requests.delete(cls.target() + "_query", data=json.dumps(query))
-        return r
+        #r = requests.delete(cls.target() + "_query", data=json.dumps(query))
+        #return r
+        return ES.delete_by_query(cls.index_name(), json.dumps(query), doc_type=cls.doc_type())
+
 
     @classmethod
     def destroy_index(cls):
@@ -477,26 +418,7 @@ class DomainObject(UserDict, object):
         # else:
         #     return esprit.raw.delete_index(es_connection)
         print('Destroying indexes with prefix ' + app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
-        return es_connection.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
-
-    def update(self, doc):
-        """
-        add the provided doc to the existing object
-        """
-        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, update command cannot run")
-            return
-
-        return requests.post(self.target() + self.id + "/_update", data=json.dumps({"doc": doc}),  headers=CONTENT_TYPE_JSON)
-    
-    @classmethod
-    def delete_all(cls):
-        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, delete_all command cannot run")
-            return
-
-        r = requests.delete(cls.target())
-        r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
+        return ES.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
 
     @classmethod
     def check_es_raw_response(cls, res, extra_trace_info=''):
@@ -600,7 +522,7 @@ class DomainObject(UserDict, object):
     
     @classmethod
     def iterall(cls, page_size=1000, limit=None):
-        return cls.iterate(deepcopy(all_query), page_size, limit)
+        return cls.iterate(MatchAllQuery().query(), page_size, limit)
 
     @classmethod
     def prefix_query(cls, field, prefix, size=5, facet_field=None, analyzed_field=True):
@@ -630,15 +552,8 @@ class DomainObject(UserDict, object):
         if not facet_field.endswith(suffix):
             facet_field = facet_field + suffix
 
-        q = {
-            "query": {"prefix": {query_field: prefix.lower()}},
-            "size": 0,
-            "facets": {
-              field: {"terms": {"field": facet_field, "size": size}}
-            }
-        }
-
-        return cls.send_query(q)
+        q = PrefixAutocompleteQuery(query_field, prefix, field, facet_field, size)
+        return cls.send_query(q.query())
 
     @classmethod
     def wildcard_autocomplete_query(cls, field, substring, before=True, after=True, facet_size=5, facet_field=None):
@@ -681,18 +596,7 @@ class DomainObject(UserDict, object):
             facet_field = facet_field + suffix
 
         # build the query
-        q = {
-            "query": {
-                "wildcard": {filter_field: substring}
-            },
-            "size": 0,
-            "facets": {
-                field: {
-                    "terms": {"field": facet_field, "size": facet_size}
-                }
-            }
-        }
-
+        q = WildcardAutocompleteQuery(filter_field, substring, field, facet_field, facet_size)
         return cls.send_query(q)
 
     @classmethod
@@ -709,7 +613,7 @@ class DomainObject(UserDict, object):
             res = cls.prefix_query(filter_field, substring, size=size, facet_field=facet_field, analyzed_field=analyzed)
 
         result = []
-        for term in res['facets'][filter_field]['terms']:
+        for term in res['aggs'][filter_field]['terms']:
             # keep ordering - it's by count by default, so most frequent
             # terms will now go to the front of the result list
             result.append({"id": term['term'], "text": term['term']})
@@ -727,7 +631,7 @@ class DomainObject(UserDict, object):
             res = cls.prefix_query(field, prefix, size=size)
 
         result = []
-        for term in res['facets'][field]['terms']:
+        for term in res['aggs'][field]['terms']:
             # keep ordering - it's by count by default, so most frequent
             # terms will now go to the front of the result list
             result.append({"id": term['term'], "text": term['term']})
@@ -752,22 +656,26 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def count(cls):
-        return requests.get(cls.target() + '_count').json()['count']
+        res = ES.count(index=cls.index_name(), doc_type=cls.doc_type())
+        return res.get("count")
+        # return requests.get(cls.target() + '_count').json()['count']
 
     @classmethod
     def hit_count(cls, query, **kwargs):
-        res = cls.query(q=query, **kwargs)
+        countable_query = deepcopy(query)
+        if "track_total_hits" not in countable_query:
+            countable_query["track_total_hits"] = True
 
+        res = cls.query(q=countable_query, **kwargs)
         return res.get("hits", {}).get("total", {}).get("value", 0)
 
     @classmethod
     def block(cls, id, last_updated, sleep=0.5, max_retry_seconds=30):
         threshold = datetime.strptime(last_updated, "%Y-%m-%dT%H:%M:%SZ")
-        query = deepcopy(block_query)
-        query["query"]["bool"]["must"][0]["term"]["id.exact"] = id
+        q = BlockQuery(id)
         start_time = datetime.now()
         while True:
-            res = cls.query(q=query)
+            res = cls.query(q=q.query())
             hits = res.get("hits", {}).get("hits", [])
             if len(hits) > 0:
                 obj = hits[0].get("fields")
@@ -790,11 +698,10 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def blockdeleted(cls, id, sleep=0.5, max_retry_seconds=30):
-        query = deepcopy(block_query)
-        query["query"]["bool"]["must"][0]["term"]["id.exact"] = id
+        q = BlockQuery(id)
         start_time = datetime.now()
         while True:
-            res = cls.query(q=query)
+            res = cls.query(q=q.query())
             hits = res.get("hits", {}).get("hits", [])
             if len(hits) == 0:
                 return
@@ -835,24 +742,74 @@ class ESError(Exception):
 # Some useful ES queries
 ########################################################################
 
-all_query = { 
-    "query": {
-        "match_all": {}
-    }
-}
 
-block_query = {
-    "query": {
-        "bool": {
-            "must": [
-                {"term": {"id.exact": "<identifier>"}}
+class MatchAllQuery(object):
+    def query(self):
+        return {
+            "query": {
+                "match_all": {}
+            }
+        }
+
+
+class BlockQuery(object):
+    def __init__(self, id):
+        self._id = id
+
+    def query(self):
+        return {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"id.exact": self._id}}
+                    ]
+                }
+            },
+            "_source" : False,
+            "docvalue_fields": [
+                {"field": "last_updated", "format": "date_time_no_millis"}
             ]
         }
-    },
-    "fields": [
-        {"field": "last_updated", "format": "date_time_no_millis"}
-    ]
-}
+
+
+class PrefixAutocompleteQuery(object):
+    def __init__(self, query_field, prefix, agg_name, agg_field, agg_size):
+        self._query_field = query_field
+        self._prefix = prefix
+        self._agg_name = agg_name
+        self._agg_field = agg_field
+        self._agg_size = agg_size
+
+    def query(self):
+        return {
+            "query": {"prefix": {self._query_field: self._prefix.lower()}},
+            "size": 0,
+            "aggs": {
+                self._agg_name: {"terms": {"field": self._agg_field, "size": self._agg_size}}
+            }
+        }
+
+class WildcardAutocompleteQuery(object):
+    def __init__(self, wildcard_field, wildcard_query, agg_name, agg_field, agg_size):
+        self._wildcard_field = wildcard_field
+        self._wildcard_query = wildcard_query
+        self._agg_name = agg_name
+        self._agg_field = agg_field
+        self._agg_size = agg_size
+
+    def query(self):
+        return {
+            "query": {
+                "wildcard": {self._wildcard_field: self._wildcard_query}
+            },
+            "size": 0,
+            "aggs": {
+                self._agg_name: {
+                    "terms": {"field": self._agg_field, "size": self._agg_size}
+                }
+            }
+        }
+
 
 #########################################################################
 # A query handler that knows how to speak facetview2
@@ -884,8 +841,9 @@ class Facetview2(object):
         if filters is not None:
             if not isinstance(filters, list):
                 filters = [filters]
+            filters.append(query_part)
             bool_part = {"bool": {"must": filters}}
-            query = {"query": {"filtered": {"query": query_part, "filter": bool_part}}}
+            query = {"query": query_part}
 
         if sort_parameter is not None:
             # For facetview we can only have one sort parameter, but ES actually supports lists

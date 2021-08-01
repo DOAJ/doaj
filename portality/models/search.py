@@ -56,6 +56,7 @@ class JournalArticle(DomainObject):
 
 class JournalStatsQuery(object):
     stats = {
+        "track_total_hits" : True,
         "query": {
             "bool": {
                 "must": [
@@ -85,14 +86,10 @@ class JournalStatsQuery(object):
 
 class ArticleStatsQuery(object):
     q = {
+        "track_total_hits" : True,
         "query": {
-            "filtered": {
-                "query": {"match_all": {}},
-                "filter": {
-                    "bool": {
-                        "must": {"term": {"admin.in_doaj": "true"}}
-                    }
-                }
+            "bool": {
+                "must": {"term": {"admin.in_doaj": "true"}}
             }
         },
         "size": 0
