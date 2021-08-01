@@ -808,6 +808,7 @@ class FieldDefinitions:
         "input": "number",
         "datatype": "integer",
         "validate": [
+            {"required": {"message": "Enter the OA start date."}},
             {"int_range": {"gte": 1900, "lte": datetime.datetime.now().year}}
         ]
     }
@@ -2507,13 +2508,22 @@ class IntRangeBuilder:
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-type"] = "digits"
+        default_msg = ""
         if "gte" in settings and "lte" in settings:
             html_attrs["data-parsley-range"] = "[" + str(settings.get("gte")) + ", " + str(settings.get("lte")) + "]"
+            default_msg = "This value should be between " + str(settings.get("gte")) + " and " + str(settings.get("lte"))
         else:
             if "gte" in settings:
                 html_attrs["data-parsley-min"] = settings.get("gte")
+                default_msg = "This value should be bigger than " + str(settings.get("gte"))
             if "lte" in settings:
                 html_attrs["data-parsley-max"] = settings.get("lte")
+                default_msg = "This value should be smaller than " + str(settings.get("gte"))
+        if "message" in settings:
+            html_attrs["data-parsley-range-message"] = "<p><small>" + settings["message"] + "</p></small>"
+        else:
+            html_attrs["data-parsley-range-message"] = "<p><small>" + default_msg + "</p></small>"
+
 
     @staticmethod
     def wtforms(field, settings):
