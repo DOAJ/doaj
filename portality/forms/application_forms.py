@@ -35,7 +35,7 @@ from portality.forms.validate import (
     BigEndDate,
     ReservedUsernames,
     CustomRequired,
-    OwnerExists, NoScriptTag
+    OwnerExists, NoScriptTag, Year
 )
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 from portality.models import EditorGroup
@@ -805,11 +805,10 @@ class FieldDefinitions:
     OA_START = {
         "name": "oa_start",
         "label": "What is an OA Start date for this journal?",
-        "input": "number",
-        "datatype": "integer",
+        "input": "text",
         "validate": [
             {"required": {"message": "Enter the OA start date."}},
-            {"int_range": {"gte": 1900, "lte": datetime.datetime.now().year}}
+            {"year": {"message": "OA Start Date must be a year in a 4 digit format (eg. 1987) and must be bigger than {} but smaller than current year".format(app.config.get('MINIMAL_OA_START_DATE', "1900"))}}
         ]
     }
 
@@ -2713,6 +2712,15 @@ class BigEndDateBuilder:
     def wtforms(field, settings):
         return BigEndDate(settings.get("message"))
 
+class YearBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-year"] = app.config.get('MINIMAL_OA_START_DATE', "1900")
+        html_attrs["data-parsley-year-message"] = "<p><small>" + settings["message"] + "</small></p>"
+
+    def wtforms(field, settings):
+        return Year(settings.get("message"))
+
 
 #########################################################
 # Crosswalks
@@ -2751,6 +2759,7 @@ PYTHON_FUNCTIONS = {
             "required_value" : RequiredValueBuilder.render,
             "bigenddate": BigEndDateBuilder.render,
             "no_script_tag": NoScriptTagBuilder.render,
+            "year": YearBuilder.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -2773,6 +2782,7 @@ PYTHON_FUNCTIONS = {
             "reserved_usernames" : ReservedUsernamesBuilder.wtforms,
             "owner_exists" : OwnerExistsBuilder.wtforms,
             "no_script_tag": NoScriptTagBuilder.wtforms,
+            "year": YearBuilder.wtforms,
         }
     }
 }

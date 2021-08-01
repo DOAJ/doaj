@@ -542,6 +542,19 @@ class BigEndDate(object):
         except Exception:
             raise validators.ValidationError(self.message)
 
+class Year(object):
+    def __init__(self, value, message=None):
+        self.value = value
+        self.message = message or "Date must be a year in 4 digit format (eg. 1987)"
+
+    def __call__(self, form, field):
+        if not field.data:
+            return
+        try:
+            datetime.strptime(field.data, '%Y')
+        except Exception:
+            raise validators.ValidationError(self.message)
+
 
 class CustomRequired(object):
     field_flags = ('required', )
