@@ -343,6 +343,7 @@ class SearchQuery(object):
 
     def query(self):
         q = {
+            "track_total_hits" : True,
             "from": self.fro,
             "size": self.psize
         }

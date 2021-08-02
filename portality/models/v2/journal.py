@@ -896,6 +896,7 @@ class JournalQuery(object):
     wrapper around the kinds of queries we want to do against the journal type
     """
     issn_query = {
+        "track_total_hits": True,
         "query": {
             "bool": {
                 "must": [
@@ -908,6 +909,7 @@ class JournalQuery(object):
     }
 
     all_doaj = {
+        "track_total_hits": True,
         "query": {
             "bool": {
                 "must": [
@@ -948,6 +950,7 @@ class JournalURLQuery(object):
 
     def query(self):
         q = {
+            "track_total_hits": True,
             "query": {
                 "bool": {
                     "must": [
@@ -965,26 +968,15 @@ class JournalURLQuery(object):
 
 class IssnQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query": {
-         "filtered": {
-           "filter": {
-             "bool": {
-               "must": [
-                 {
-                   "term": {
-                     "admin.in_doaj": True
-                   }
-                 }
-               ]
-             }
-           },
-           "query": {
-             "term": {
-               "admin.owner.exact": "<owner id here>"
-             }
-           }
-         }
-       },
+            "bool": {
+                "must": [
+                    {"term": { "admin.in_doaj": True}},
+                    {"term": { "admin.owner.exact": "<owner id here>"}}
+                ]
+            }
+        },
         "size": 0,
         "facets": {
             "issns": {
@@ -999,12 +991,11 @@ class IssnQuery(object):
 
     def __init__(self, owner, in_doaj=None):
         self._query = deepcopy(self.base_query)
-        self._query["query"]["filtered"]["query"]["term"]["admin.owner.exact"] = owner
+        self._query["query"]["bool"]["must"][1]["admin.owner.exact"] = owner
         if in_doaj:
-            self._query["query"]["filtered"]["filter"]["bool"]["must"][0]["term"]["admin.in_doaj"] = in_doaj
+            self._query["query"]["bool"]["must"][0]["term"]["admin.in_doaj"] = in_doaj
         else:
-            del self._query["query"]["filtered"]["filter"]
-
+            del self._query["query"]["bool"]["must"][0]
 
     def query(self):
         return self._query
@@ -1013,6 +1004,7 @@ class IssnQuery(object):
 class OwnerQuery(object):
     """ Query to supply all full journal sources by owner """
     base_query = {
+        "track_total_hits": True,
         "query": {
             "term": {"admin.owner.exact": "<owner id here>"}
         },
@@ -1029,6 +1021,7 @@ class OwnerQuery(object):
 
 class PublisherQuery(object):
     exact_query = {
+        "track_total_hits": True,
         "query": {
             "term": {"bibjson.publisher.name.exact": "<publisher name here>"}
         },
@@ -1036,6 +1029,7 @@ class PublisherQuery(object):
     }
 
     inexact_query = {
+        "track_total_hits": True,
         "query": {
             "term": {"bibjson.publisher.name": "<publisher name here>"}
         },
@@ -1059,6 +1053,7 @@ class PublisherQuery(object):
 
 class TitleQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query": {
             "term": {"index.title.exact": "<title here>"}
         },
@@ -1080,6 +1075,7 @@ class ContinuationQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query": {
                 "bool": {
                     "must": [
@@ -1097,6 +1093,7 @@ class ArticleStatsQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query": {
                 "bool": {
                     "must": [
@@ -1119,6 +1116,7 @@ class RecentJournalsQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query" : {"match_all" : {}},
             "size" : self.max,
             "sort" : [

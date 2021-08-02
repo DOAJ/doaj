@@ -156,30 +156,12 @@ class Query(object):
     ~~Query:Query -> Elasticsearch:Technology~~
     """
     def __init__(self, raw=None, filtered=False):
-        self.q = {"query": {"match_all": {}}} if raw is None else raw
+        self.q = {"track_total_hits" : True, "query": {"match_all": {}}} if raw is None else raw
         self.filtered = filtered is True or self.q.get("query", {}).get("filtered") is not None
-
-    def convert_to_filtered(self):
-        if self.filtered is True:
-            return
-
-        current_query = None
-        if "query" in self.q:
-            current_query = deepcopy(self.q["query"])
-            del self.q["query"]
-            if len(list(current_query.keys())) == 0:
-                current_query = None
-
-        self.filtered = True
-        if "query" not in self.q:
-            self.q["query"] = {}
-        if "filtered" not in self.q["query"]:
-            self.q["query"]["filtered"] = {}
-        if "filter" not in self.q["query"]["filtered"]:
-            self.q["query"]["filtered"]["filter"] = {}
-
-        if "query" not in self.q["query"]["filtered"] and current_query is not None:
-            self.q["query"]["filtered"]["query"] = current_query
+        if self.filtered:
+            # FIXME: this is just to help us catch filtered queries during development.  Once we have them
+            # all, all the filtering logic in this class can come out
+            raise Exception("Filtered queries are no longer supported")
 
     def convert_to_bool(self):
         if self.filtered is True:

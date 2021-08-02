@@ -929,6 +929,7 @@ ARTICLE_BIBJSON_EXTENSION = {
 
 class ArticleQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query" : {
             "filtered": {
                 "filter": {
@@ -964,6 +965,7 @@ class ArticleQuery(object):
     
 class ArticleVolumesQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query" : {
             "filtered": {
                 "filter": {
@@ -994,6 +996,7 @@ class ArticleVolumesQuery(object):
 
 class ArticleVolumesIssuesQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query" : {
             "filtered": {
                 "filter": {
@@ -1031,6 +1034,7 @@ class ArticleVolumesIssuesQuery(object):
 
 class DuplicateArticleQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query": {
             "bool": {
                 "must": []

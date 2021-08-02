@@ -1297,6 +1297,7 @@ class JournalQuery(object):
     wrapper around the kinds of queries we want to do against the journal type
     """
     issn_query = {
+        "track_total_hits" : True,
         "query": {
             "bool": {
                 "must": [
@@ -1309,6 +1310,7 @@ class JournalQuery(object):
     }
 
     all_doaj = {
+        "track_total_hits" : True,
         "query" : {
             "bool" : {
                 "must" : [
@@ -1342,6 +1344,7 @@ class JournalQuery(object):
 
 class IssnQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query" : {
             "term" : { "admin.owner.exact" : "<owner id here>" }
         },
@@ -1366,6 +1369,7 @@ class IssnQuery(object):
 
 class PublisherQuery(object):
     exact_query = {
+        "track_total_hits": True,
         "query" : {
             "term" : {"index.publisher.exact" : "<publisher name here>"}
         },
@@ -1373,6 +1377,7 @@ class PublisherQuery(object):
     }
 
     inexact_query = {
+        "track_total_hits": True,
         "query" : {
             "term" : {"index.publisher" : "<publisher name here>"}
         },
@@ -1395,6 +1400,7 @@ class PublisherQuery(object):
 
 class TitleQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query" : {
             "term" : {"index.title.exact" : "<title here>"}
         },
@@ -1415,6 +1421,7 @@ class ContinuationQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query" : {
                 "bool" : {
                     "must" : [
@@ -1431,6 +1438,7 @@ class ArticleStatsQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query" : {
                 "bool" : {
                     "must" : [

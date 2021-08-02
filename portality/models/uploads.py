@@ -126,6 +126,7 @@ class FileUpload(DomainObject):
 
 class ValidFileQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query": {
             "term": {"status.exact": "validated"}
         },
@@ -143,6 +144,7 @@ class ValidFileQuery(object):
 
 class ExistsFileQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query": {
             "term": {"status.exact": "exists"}
         },
@@ -160,6 +162,7 @@ class ExistsFileQuery(object):
 
 class OwnerFileQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query": {
             "bool": {
                 "must": []

@@ -747,6 +747,7 @@ class ESError(Exception):
 class MatchAllQuery(object):
     def query(self):
         return {
+            "track_total_hits" : True,
             "query": {
                 "match_all": {}
             }
@@ -783,6 +784,7 @@ class PrefixAutocompleteQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query": {"prefix": {self._query_field: self._prefix.lower()}},
             "size": 0,
             "aggs": {
@@ -800,6 +802,7 @@ class WildcardAutocompleteQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query": {
                 "wildcard": {self._wildcard_field: self._wildcard_query}
             },

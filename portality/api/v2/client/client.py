@@ -211,6 +211,7 @@ class IssnQuery(object):
 
     def query(self):
         return {
+            "track_total_hits" : True,
             "query" : {
                 "bool" : {
                     "must" : [
