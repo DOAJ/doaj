@@ -145,7 +145,7 @@ class JournalService(object):
 
             # ~~!JournalCSV:Feature->Journal:Model~~
             cols = {}
-            for j in models.Journal.all_in_doaj(page_size=100000):                     # FIXME: 10x how many journals we have right now
+            for j in models.Journal.all_in_doaj(page_size=10000):     #Fixme: limited by ES, this may not be sufficient
                 bj = j.bibjson()
                 issn = bj.get_one_identifier(idtype=bj.P_ISSN)
                 if issn is None:

@@ -49,7 +49,7 @@ class TestAPIDiscovery(DoajTestCase):
         with self.app_test.test_request_context():
             # 1. a general query that should hit everything (except number 6)
             res = DiscoveryApi.search("journal", None, "Test", 1, 2)
-            assert res.data.get('total', {}).get('value') == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 2
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 2
@@ -57,7 +57,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 2. a specific field query that should hit just one
             res = DiscoveryApi.search("journal", None, "title:\"Test Journal 2\"", 1, 5)
-            assert res.data.get('total', {}).get('value') == 1
+            assert res.data.get('total', 0) == 1, res.data.get('total', 0)
             assert len(res.data.get("results")) == 1
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 5
@@ -153,7 +153,7 @@ class TestAPIDiscovery(DoajTestCase):
         with self.app_test.test_request_context():
             # 1. a general query that should hit everything
             res = DiscoveryApi.search("article", None, "Test", 1, 2)
-            assert res.data.get('total', {}).get('value') == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 2
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 2
@@ -161,7 +161,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 2. a specific field query that should hit just one
             res = DiscoveryApi.search("article", None, "title:\"Test Article 2\"", 1, 5)
-            assert res.data.get('total', {}).get('value') == 1
+            assert res.data.get('total', 0) == 1, res.data.get('total', 0)
             assert len(res.data.get("results")) == 1
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 5
@@ -273,7 +273,7 @@ class TestAPIDiscovery(DoajTestCase):
         with self._make_and_push_test_context(acc=acc):
             # 1. a general query that should hit everything
             res = DiscoveryApi.search("application", acc, "Test", 1, 2)
-            assert res.data.get('total', {}).get('value') == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 2
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 2
@@ -281,7 +281,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 2. a specific field query that should hit just one
             res = DiscoveryApi.search("application", acc, "title:\"Test Suggestion 2\"", 1, 5)
-            assert res.data.get('total', {}).get('value') == 1
+            assert res.data.get('total', 0) == 1, res.data.get('total', 0)
             assert len(res.data.get("results")) == 1
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 5
@@ -433,7 +433,7 @@ class TestAPIDiscovery(DoajTestCase):
         with self.app_test.test_request_context():
             # check that the first page still works
             res = DiscoveryApi.search("journal", None, "*", 1, 5)
-            assert res.data.get('total', {}).get('value') == 10
+            assert res.data.get('total', 0) == 10
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 5

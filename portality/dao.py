@@ -278,7 +278,8 @@ class DomainObject(UserDict, object):
             sort_specified = True
 
         if not sort_specified and consistent_order:
-            query['sort'] = [{"id.exact": {"order": "asc"}}]
+            # FIXME: review this - where is default sort necessary, and why do we want this in ID order?
+            query['sort'] = [{"id.exact": {"order": "asc", "unmapped_type": "keyword"}}]
 
         return query
 

@@ -1,3 +1,5 @@
+import time
+
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.models import Article, Account, Journal
@@ -73,6 +75,7 @@ class TestAdminEditMetadata(DoajTestCase):
 
         # Submit the form
         self.admin_post_article_metadata_form(source)
+        time.sleep(1)
 
         # Retrieve the result
         a = Article.pull(self.a.id)

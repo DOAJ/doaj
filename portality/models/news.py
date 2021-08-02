@@ -69,7 +69,7 @@ class NewsQuery(object):
         self.size = size
 
     def query(self):
-        q = {"query" : {}, "size" : self.size, "sort" : {"published" : {"order" : "desc"}}}
+        q = {"query": {}, "size": self.size, "sort": {"published": {"order": "desc", "unmapped_type": "date"}}}
         if self.remote_id is not None:
             rt = deepcopy(self._remote_term)
             rt["term"]["remote_id.exact"] = self.remote_id

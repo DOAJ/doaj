@@ -84,7 +84,7 @@ class TestCrudReturnValues(DoajTestCase):
             updated_data = deepcopy(user_data)
             updated_data['bibjson']['title'] = 'This is a new title for this application'
             response = t_client.put('/api/v2/applications/{0}?api_key={1}'.format(new_app_id, self.api_key), data=json.dumps(updated_data))
-            assert response.status_code == 204          # 204 "No Content"
+            assert response.status_code == 204, response.status_code          # 204 "No Content"
             assert response.mimetype == 'application/json'
 
             response = t_client.get('/api/v2/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))

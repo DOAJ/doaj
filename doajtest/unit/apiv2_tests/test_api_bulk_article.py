@@ -89,8 +89,8 @@ class TestBulkArticle(DoajTestCase):
 
         time.sleep(0.6)
 
-        with self.assertRaises(ESMappingMissingError):
-            all_articles = models.Article.all()
+        # Since the upload was rejected, we should have no articles in the index
+        assert len(models.Article.all()) == 0, len(models.Article.all())
 
     def test_03_create_articles_fail(self):
         # if the account is dud

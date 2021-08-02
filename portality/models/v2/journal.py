@@ -952,7 +952,7 @@ class JournalURLQuery(object):
                 "bool": {
                     "must": [
                         {
-                            "terms": {"bibjson.ref.journal.exact": self.url}
+                            "match": {"bibjson.ref.journal.exact": self.url}
                         }
                     ]
                 }
