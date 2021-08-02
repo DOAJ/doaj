@@ -131,24 +131,7 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
-                edges.newRefiningANDTermSelector({
-                    id: "in_doaj",
-                    category: "facet",
-                    field: "admin.in_doaj",
-                    display: "In DOAJ?",
-                    deactivateThreshold: 1,
-                    valueMap : {
-                        "T" : "True",
-                        "F" : "False"
-                    },
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
+                doaj.facets.inDOAJ(),
                 edges.newRefiningANDTermSelector({
                     id: "author_pays",
                     category: "facet",

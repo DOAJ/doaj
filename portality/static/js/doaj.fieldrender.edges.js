@@ -1,4 +1,27 @@
 $.extend(true, doaj, {
+    facets : {
+        inDOAJ : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "in_doaj",
+                category: "facet",
+                field: "admin.in_doaj",
+                display: "In DOAJ?",
+                deactivateThreshold: 1,
+                valueMap : {
+                    1 : "True",
+                    0 : "False"
+                },
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        }
+    },
+
     valueMaps : {
         // This must be updated in line with the list in formcontext/choices.py
         applicationStatus : {
@@ -42,7 +65,11 @@ $.extend(true, doaj, {
                 }
                 return code;
             }
-        }
+        },
+
+        countFormat : edges.numFormat({
+            thousandsSeparator: ","
+        })
     },
 
     components : {
