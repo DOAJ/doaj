@@ -3,7 +3,6 @@ from portality.api.v2 import ArticlesBulkApi, Api401Error, Api400Error
 from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 from copy import deepcopy
-from portality.dao import ESMappingMissingError
 from flask import url_for
 import json
 import time
@@ -12,6 +11,13 @@ class TestBulkArticle(DoajTestCase):
 
     def setUp(self):
         super(TestBulkArticle, self).setUp()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
     def tearDown(self):
         super(TestBulkArticle, self).tearDown()

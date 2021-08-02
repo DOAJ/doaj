@@ -57,25 +57,6 @@ class DomainObject(UserDict, object):
             return None
         else:
             return cls.__type__
-
-    # @classmethod
-    # def target_whole_index(cls):
-    #     t = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/') + '/'
-    #     if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE'] and cls.__type__ is not None:
-    #         t += ','.join([app.config['ELASTIC_SEARCH_DB_PREFIX'] + t for t in cls.__type__.split(',')]) + '/'
-    #     else:
-    #         t += app.config['ELASTIC_SEARCH_DB'] + '/'
-    #     return t
-    #
-    # @classmethod
-    # def target(cls):
-    #     t = cls.target_whole_index()
-    #     # fixme: on search, the type is not necessary any more 299 Elasticsearch-7.10.2-747e1cc71def077253878a59143c1f785afa92b9 "[types removal] Specifying types in search requests is deprecated."
-    #     if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-    #         t += app.config.get('INDEX_PER_TYPE_SUBSTITUTE', '_doc') + '/'
-    #     else:
-    #         t += cls.__type__ + '/'
-    #     return t
     
     @classmethod
     def makeid(cls):
@@ -136,6 +117,9 @@ class DomainObject(UserDict, object):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, save command cannot run")
             return
+
+        if retries > app.config.get("ES_RETRY_HARD_LIMIT", 1000):   # an arbitrary large number
+            retries = app.config.get("ES_RETRY_HARD_LIMIT")
 
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
@@ -368,6 +352,10 @@ class DomainObject(UserDict, object):
     @classmethod
     def send_query(cls, qobj, retry=50):
         """Actually send a query object to the backend."""
+
+        if retry > app.config.get("ES_RETRY_HARD_LIMIT", 1000) + 1:   # an arbitrary large number
+            retry = app.config.get("ES_RETRY_HARD_LIMIT") + 1
+
         r = None
         count = 0
         exception = None
@@ -379,7 +367,7 @@ class DomainObject(UserDict, object):
                 r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(), headers=CONTENT_TYPE_JSON)
                 break
             except Exception as e:
-                exception = e
+                exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
             time.sleep(0.5)
                 
         if r is not None:
@@ -395,7 +383,10 @@ class DomainObject(UserDict, object):
             return
 
         # r = requests.delete(cls.target() + id)
-        ES.delete(cls.index_name(), id)
+        try:
+            ES.delete(cls.index_name(), id)
+        except elasticsearch.NotFoundError:
+            return
 
     @classmethod
     def delete_by_query(cls, query):

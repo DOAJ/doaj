@@ -210,8 +210,6 @@ class ArticleService(object):
         if isinstance(has_permissions_result,dict):
             return has_permissions_result
 
-
-
         is_update = 0
         if duplicate_check:
             # ~~!ArticleCreate:Feature->ArticleDeduplication:Feature~~

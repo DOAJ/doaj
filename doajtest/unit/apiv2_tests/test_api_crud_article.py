@@ -15,6 +15,13 @@ class TestCrudArticle(DoajTestCase):
     def setUp(self):
         super(TestCrudArticle, self).setUp()
 
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
+
     def tearDown(self):
         super(TestCrudArticle, self).tearDown()
 
