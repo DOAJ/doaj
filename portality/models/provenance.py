@@ -119,8 +119,9 @@ class Provenance(dataobj.DataObj, DomainObject):
     @classmethod
     def get_latest_by_resource_id(cls, resource_id):
         q = ResourceIDQuery(resource_id)
-        resp = cls.query(q=q.query())
-        obs = [hit.get("_source") for hit in resp.get("hits", {}).get("hits", [])]
+        # resp = cls.query(q=q.query())
+        # obs = [hit.get("_source") for hit in resp.get("hits", {}).get("hits", [])]
+        obs = cls.q2obj(q=q.query())
         if len(obs) == 0:
             return None
         return Provenance(**obs[0])

@@ -487,6 +487,8 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def iterate(cls, q, page_size=1000, limit=None, wrap=True):
+        # FIXME: Due to stricter limits in ES on size, this MUST be re-implemented as scroll
+        # Result window is too large, from + size must be less than or equal to: [10000] but was [20000]
         theq = deepcopy(q)
         theq["size"] = page_size
         theq["from"] = 0
@@ -643,6 +645,10 @@ class DomainObject(UserDict, object):
         extra_trace_info = ''
         if 'q' in kwargs:
             extra_trace_info = "\nQuery sent to ES (before manipulation in DomainObject.query):\n{}\n".format(json.dumps(kwargs['q'], indent=2))
+
+        # Short-circuit the query (and its retries) by checking whether there's a doc count first
+        if cls.count() == 0:
+            return []
 
         res = cls.query(**kwargs)
         rs = cls.handle_es_raw_response(res, wrap=True, extra_trace_info=extra_trace_info)

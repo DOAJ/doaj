@@ -56,8 +56,9 @@ class Article(DomainObject):
                                     should_match=should_match,
                                     size=size)
 
-        res = cls.query(q=q.query())
-        return [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+        # res = cls.query(q=q.query())
+        # return [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+        return cls.q2obj(q=q.query())
 
     @classmethod
     def list_volumes(cls, issns):
