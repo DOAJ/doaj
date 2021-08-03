@@ -324,7 +324,7 @@ class DomainObject(UserDict, object):
         # r = requests.post(cls.target() + '_refresh',  headers=CONTENT_TYPE_JSON)
         # return r.json()
 
-        return ES.refresh(index=cls.index_name())
+        return ES.indices.refresh(index=cls.index_name())
 
     @classmethod
     def pull(cls, id_):
