@@ -73,7 +73,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def issns_by_owner(cls, owner, in_doaj=None):
         q = IssnQuery(owner, in_doaj=in_doaj)
         res = cls.query(q=q.query())
-        issns = [term.get("term") for term in res.get("facets", {}).get("issns", {}).get("terms", [])]
+        issns = [term.get("key") for term in res.get("aggregations", {}).get("issns", {}).get("buckets", [])]
         return issns
 
     @classmethod
@@ -966,39 +966,34 @@ class JournalURLQuery(object):
             q["query"]["bool"]["must"].append({"term": {"admin.in_doaj": self.in_doaj}})
         return q
 
+
 class IssnQuery(object):
-    base_query = {
-        "track_total_hits": True,
-        "query": {
-            "bool": {
-                "must": [
-                    {"term": { "admin.in_doaj": True}},
-                    {"term": { "admin.owner.exact": "<owner id here>"}}
-                ]
-            }
-        },
-        "size": 0,
-        "facets": {
-            "issns": {
-                "terms": {
-                    "field": "index.issn.exact",
-                    "size": 10000,
-                    "order": "term"
+    def __init__(self, owner, in_doaj=None):
+        self._owner = owner
+        self._in_doaj = in_doaj
+
+    def query(self):
+        musts = [{"term": { "admin.owner.exact": self._owner}}]
+        if self._in_doaj is not None:
+            musts.append({"term": { "admin.in_doaj": self._in_doaj}})
+        return {
+            "track_total_hits": True,
+            "query": {
+                "bool": {
+                    "must": musts
+                }
+            },
+            "size": 0,
+            "aggs": {
+                "issns": {
+                    "terms": {
+                        "field": "index.issn.exact",
+                        "size": 10000,
+                        "order": { "_key": "asc" }
+                    }
                 }
             }
         }
-    }
-
-    def __init__(self, owner, in_doaj=None):
-        self._query = deepcopy(self.base_query)
-        self._query["query"]["bool"]["must"][1]["admin.owner.exact"] = owner
-        if in_doaj:
-            self._query["query"]["bool"]["must"][0]["term"]["admin.in_doaj"] = in_doaj
-        else:
-            del self._query["query"]["bool"]["must"][0]
-
-    def query(self):
-        return self._query
 
 
 class OwnerQuery(object):

@@ -322,7 +322,7 @@ def add_fqw_facets(results, unpacked=False):
         }
     }
 
-    results["facets"] = facets
+    results["aggregations"] = facets
     return results
 
 def fqw_back_compat(results, unpacked=False):

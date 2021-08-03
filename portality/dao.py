@@ -605,10 +605,10 @@ class DomainObject(UserDict, object):
             res = cls.prefix_query(filter_field, substring, size=size, facet_field=facet_field, analyzed_field=analyzed)
 
         result = []
-        for term in res['aggs'][filter_field]['terms']:
+        for term in res['aggregations'][filter_field]['buckets']:
             # keep ordering - it's by count by default, so most frequent
             # terms will now go to the front of the result list
-            result.append({"id": term['term'], "text": term['term']})
+            result.append({"id": term['key'], "text": term['key']})
         return result
 
     @classmethod
@@ -623,10 +623,10 @@ class DomainObject(UserDict, object):
             res = cls.prefix_query(field, prefix, size=size)
 
         result = []
-        for term in res['aggs'][field]['terms']:
+        for term in res['aggregations'][field]['buckets']:
             # keep ordering - it's by count by default, so most frequent
             # terms will now go to the front of the result list
-            result.append({"id": term['term'], "text": term['term']})
+            result.append({"id": term['key'], "text": term['key']})
         return result
 
     @classmethod

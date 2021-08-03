@@ -63,13 +63,13 @@ class Article(DomainObject):
     def list_volumes(cls, issns):
         q = ArticleVolumesQuery(issns)
         result = cls.query(q=q.query())
-        return _human_sort([t.get("term") for t in result.get("facets", {}).get("vols", {}).get("terms", [])])
+        return _human_sort([t.get("key") for t in result.get("aggregations", {}).get("vols", {}).get("buckets", [])])
 
     @classmethod
     def list_volume_issues(cls, issns, volume):
         q = ArticleVolumesIssuesQuery(issns, volume)
         result = cls.query(q=q.query())
-        return _human_sort([t.get("term") for t in result.get("facets", {}).get("issues", {}).get("terms", [])])
+        return _human_sort([t.get("key") for t in result.get("aggregations", {}).get("issues", {}).get("buckets", [])])
 
     @classmethod
     def get_by_volume(cls, issns, volume):
@@ -974,11 +974,11 @@ class ArticleVolumesQuery(object):
             }
         },
         "size" : 0,
-        "facets" : {
+        "aggs" : {
             "vols" : {
                 "terms" : {
                     "field" : "bibjson.journal.volume.exact",
-                    "order": "reverse_term",
+                    "order": {"_key" : "desc"},
                     "size" : 1000
                 }
             }
@@ -1010,11 +1010,11 @@ class ArticleVolumesIssuesQuery(object):
             }
         },
         "size" : 0,
-        "facets" : {
+        "aggs" : {
             "issues" : {
                 "terms" : {
                     "field" : "bibjson.journal.number.exact",
-                    "order": "reverse_term",
+                    "order": {"_key", "desc"},
                     "size" : 1000
                 }
             }

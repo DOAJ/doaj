@@ -31,7 +31,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     def issns_by_owner(cls, owner):
         q = IssnQuery(owner)
         res = cls.query(q=q.query())
-        issns = [term.get("term") for term in res.get("facets", {}).get("issns", {}).get("terms", [])]
+        issns = [term.get("keys") for term in res.get("aggregations", {}).get("issns", {}).get("buckets", [])]
         return issns
 
     @classmethod
@@ -1349,12 +1349,12 @@ class IssnQuery(object):
             "term" : { "admin.owner.exact" : "<owner id here>" }
         },
         "size" : 0,
-        "facets" : {
+        "aggs" : {
             "issns" : {
                 "terms" : {
                     "field" : "index.issn.exact",
                     "size" : 10000,
-                    "order" : "term"
+                    "order" : {"_key" : "asc"}
                 }
             }
         }
