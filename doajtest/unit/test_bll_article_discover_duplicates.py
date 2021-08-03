@@ -107,6 +107,13 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
                 article.save(blocking=True)
                 article_ids.append(article.id)
                 aids_block.append((article.id, article.last_updated))
+        else:
+            # push an article to initialise the mappings
+            source = ArticleFixtureFactory.make_article_source()
+            article = Article(**source)
+            article.save(blocking=True)
+            article.delete()
+            Article.blockdeleted(article.id)
 
         # generate our incoming article
         article = None
