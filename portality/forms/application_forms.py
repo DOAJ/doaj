@@ -1860,6 +1860,8 @@ class FieldSetDefinitions:
         "fields": [
             FieldDefinitions.BOAI["name"],
             FieldDefinitions.OA_STATEMENT_URL["name"],
+            # to be added when ready for the public view - remove from the other places then
+            # FieldDefinitions.OA_START["name"]
         ]
     }
 
