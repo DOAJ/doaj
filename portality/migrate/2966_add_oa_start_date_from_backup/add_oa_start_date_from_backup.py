@@ -13,10 +13,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.out:
-        args.out = "out.txt"
-        # print("Please specify an output file path with the -o option")
-        # parser.print_help()
-        # exit()
+        print("Please specify an output file path with the -o option")
+        parser.print_help()
+        exit()
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
