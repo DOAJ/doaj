@@ -76,7 +76,10 @@ class EditorGroupQuery(object):
         self.name = name
 
     def query(self):
-        q = {"query": {"term": {"name.exact": self.name}}}
+        q = {
+            "track_total_hits" : True,
+            "query": {"term": {"name.exact": self.name}}
+        }
         return q
 
 
@@ -86,7 +89,10 @@ class EditorGroupMemberQuery(object):
         self.associate = associate
 
     def query(self):
-        q = {"query": {"bool": {"should": []}}}
+        q = {
+            "track_total_hits": True,
+            "query": {"bool": {"should": []}}
+        }
         if self.editor is not None:
             et = {"term": {"editor.exact": self.editor}}
             q["query"]["bool"]["should"].append(et)

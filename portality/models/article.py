@@ -64,13 +64,13 @@ class Article(DomainObject):
     def list_volumes(cls, issns):
         q = ArticleVolumesQuery(issns)
         result = cls.query(q=q.query())
-        return _human_sort([t.get("term") for t in result.get("facets", {}).get("vols", {}).get("terms", [])])
+        return _human_sort([t.get("key") for t in result.get("aggregations", {}).get("vols", {}).get("buckets", [])])
 
     @classmethod
     def list_volume_issues(cls, issns, volume):
         q = ArticleVolumesIssuesQuery(issns, volume)
         result = cls.query(q=q.query())
-        return _human_sort([t.get("term") for t in result.get("facets", {}).get("issues", {}).get("terms", [])])
+        return _human_sort([t.get("key") for t in result.get("aggregations", {}).get("issues", {}).get("buckets", [])])
 
     @classmethod
     def get_by_volume(cls, issns, volume):
@@ -930,6 +930,7 @@ ARTICLE_BIBJSON_EXTENSION = {
 
 class ArticleQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query" : {
             "filtered": {
                 "filter": {
@@ -965,6 +966,7 @@ class ArticleQuery(object):
     
 class ArticleVolumesQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query" : {
             "filtered": {
                 "filter": {
@@ -973,11 +975,11 @@ class ArticleVolumesQuery(object):
             }
         },
         "size" : 0,
-        "facets" : {
+        "aggs" : {
             "vols" : {
                 "terms" : {
                     "field" : "bibjson.journal.volume.exact",
-                    "order": "reverse_term",
+                    "order": {"_key" : "desc"},
                     "size" : 1000
                 }
             }
@@ -995,6 +997,7 @@ class ArticleVolumesQuery(object):
 
 class ArticleVolumesIssuesQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query" : {
             "filtered": {
                 "filter": {
@@ -1008,11 +1011,11 @@ class ArticleVolumesIssuesQuery(object):
             }
         },
         "size" : 0,
-        "facets" : {
+        "aggs" : {
             "issues" : {
                 "terms" : {
                     "field" : "bibjson.journal.number.exact",
-                    "order": "reverse_term",
+                    "order": {"_key", "desc"},
                     "size" : 1000
                 }
             }
@@ -1032,6 +1035,7 @@ class ArticleVolumesIssuesQuery(object):
 
 class DuplicateArticleQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query": {
             "bool": {
                 "must": []

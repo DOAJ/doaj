@@ -26,11 +26,11 @@ class OAIPMHRecord(object):
             }
         },
         "size": 0,
-        "facets": {
+        "aggs": {
             "sets": {
                 "terms": {
                     "field": "index.schema_subject.exact",
-                    "order": "term",
+                    "order": {"_key" : "asc"},
                     "size": 100000
                 }
             }
@@ -63,7 +63,7 @@ class OAIPMHRecord(object):
 
     def list_sets(self):
         result = self.query(q=self.sets)
-        sets = [t.get("term") for t in result.get("facets", {}).get("sets", {}).get("terms", [])]
+        sets = [t.get("key") for t in result.get("aggregations", {}).get("sets", {}).get("buckets", [])]
         return sets
 
     def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_after=None):

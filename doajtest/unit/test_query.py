@@ -121,16 +121,6 @@ class TestQuery(DoajTestCase):
 
     def test_02_query_gen(self):
         q = Query()
-        assert q.as_dict() == {"query": {"match_all": {}}}, q.as_dict()
-        q.convert_to_filtered()
-        assert q.as_dict() == {'query': {'filtered': {'filter': {}, 'query': {'match_all': {}}}}}, q.as_dict()
-
-        q = Query(filtered=True)
-        assert q.as_dict() == {"query": {"match_all": {}}}, q.as_dict()
-        q.convert_to_filtered()
-        assert q.as_dict() == {"query": {"match_all": {}}}  # unchanged due to filtered=True asserting it's already filtered
-
-        q = Query()
         q.add_must({"term": {"admin.in_doaj": True}})
         assert q.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}}, 'query': {'match_all': {}}}}}, q.as_dict()
 

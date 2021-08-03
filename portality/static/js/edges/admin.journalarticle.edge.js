@@ -5,7 +5,7 @@ $.extend(true, doaj, {
 
         journalSelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type.exact"}));
                 // var type = doaj.currentFVOptions.active_filters._type;
                 if (type && type.length > 0) {
                     type = type[0];
@@ -22,7 +22,7 @@ $.extend(true, doaj, {
 
         anySelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type.exact"}));
                 if (!type || type.length === 0) {
                     return {
                         valid: false,
@@ -35,7 +35,7 @@ $.extend(true, doaj, {
 
         typeSelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type.exact"}));
                 if (type && type.length > 0) {
                     return type[0].value;
                 }
@@ -117,7 +117,7 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "journals_articles",
                     category: "facet",
-                    field: "es_type",
+                    field: "es_type.exact",
                     display: "Journals vs Articles",
                     valueMap : {
                         "journal" : "Journals",
@@ -131,24 +131,7 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
-                edges.newRefiningANDTermSelector({
-                    id: "in_doaj",
-                    category: "facet",
-                    field: "admin.in_doaj",
-                    display: "In DOAJ?",
-                    deactivateThreshold: 1,
-                    valueMap : {
-                        "T" : "True",
-                        "F" : "False"
-                    },
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
+                doaj.facets.inDOAJ(),
                 edges.newRefiningANDTermSelector({
                     id: "author_pays",
                     category: "facet",
@@ -529,7 +512,7 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "es_type": "Showing",
+                        "es_type.exact": "Showing",
                         "admin.in_doaj" : "In DOAJ?",
                         "index.language.exact" : "Journal Language",
                         "bibjson.publisher.name.exact" : "Publisher",
@@ -542,7 +525,7 @@ $.extend(true, doaj, {
                         "index.has_apc.exact" : "Publication charges?"
                     },
                     valueMaps : {
-                        "es_type" : {
+                        "es_type.exact" : {
                             "journal" : "Journals",
                             "article" : "Articles"
                         },

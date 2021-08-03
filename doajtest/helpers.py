@@ -29,11 +29,16 @@ class DoajTestCase(TestCase):
         app.config["STORE_LOCAL_DIR"] = paths.rel2abs(__file__, "..", "tmp", "store", "main")
         app.config["STORE_TMP_DIR"] = paths.rel2abs(__file__, "..", "tmp", "store", "tmp")
 
+        self._es_retry_hard_limit = app.config.get("ES_RETRY_HARD_LIMIT")
+        app.config["ES_RETRY_HARD_LIMIT"] = 0
+
     def tearDown(self):
         self.destroy_index()
         for f in self.list_today_article_history_files() + self.list_today_journal_history_files():
             os.remove(f)
         shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
+
+        app.config["ES_RETRY_HARD_LIMIT"] = self._es_retry_hard_limit
 
     def list_today_article_history_files(self):
         return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))

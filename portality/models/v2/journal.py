@@ -73,7 +73,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def issns_by_owner(cls, owner, in_doaj=None):
         q = IssnQuery(owner, in_doaj=in_doaj)
         res = cls.query(q=q.query())
-        issns = [term.get("term") for term in res.get("facets", {}).get("issns", {}).get("terms", [])]
+        issns = [term.get("key") for term in res.get("aggregations", {}).get("issns", {}).get("buckets", [])]
         return issns
 
     @classmethod
@@ -896,6 +896,7 @@ class JournalQuery(object):
     wrapper around the kinds of queries we want to do against the journal type
     """
     issn_query = {
+        "track_total_hits": True,
         "query": {
             "bool": {
                 "must": [
@@ -908,6 +909,7 @@ class JournalQuery(object):
     }
 
     all_doaj = {
+        "track_total_hits": True,
         "query": {
             "bool": {
                 "must": [
@@ -948,6 +950,7 @@ class JournalURLQuery(object):
 
     def query(self):
         q = {
+            "track_total_hits": True,
             "query": {
                 "bool": {
                     "must": [
@@ -963,56 +966,40 @@ class JournalURLQuery(object):
             q["query"]["bool"]["must"].append({"term": {"admin.in_doaj": self.in_doaj}})
         return q
 
+
 class IssnQuery(object):
-    base_query = {
-        "query": {
-         "filtered": {
-           "filter": {
-             "bool": {
-               "must": [
-                 {
-                   "term": {
-                     "admin.in_doaj": True
-                   }
-                 }
-               ]
-             }
-           },
-           "query": {
-             "term": {
-               "admin.owner.exact": "<owner id here>"
-             }
-           }
-         }
-       },
-        "size": 0,
-        "facets": {
-            "issns": {
-                "terms": {
-                    "field": "index.issn.exact",
-                    "size": 10000,
-                    "order": "term"
+    def __init__(self, owner, in_doaj=None):
+        self._owner = owner
+        self._in_doaj = in_doaj
+
+    def query(self):
+        musts = [{"term": { "admin.owner.exact": self._owner}}]
+        if self._in_doaj is not None:
+            musts.append({"term": { "admin.in_doaj": self._in_doaj}})
+        return {
+            "track_total_hits": True,
+            "query": {
+                "bool": {
+                    "must": musts
+                }
+            },
+            "size": 0,
+            "aggs": {
+                "issns": {
+                    "terms": {
+                        "field": "index.issn.exact",
+                        "size": 10000,
+                        "order": { "_key": "asc" }
+                    }
                 }
             }
         }
-    }
-
-    def __init__(self, owner, in_doaj=None):
-        self._query = deepcopy(self.base_query)
-        self._query["query"]["filtered"]["query"]["term"]["admin.owner.exact"] = owner
-        if in_doaj:
-            self._query["query"]["filtered"]["filter"]["bool"]["must"][0]["term"]["admin.in_doaj"] = in_doaj
-        else:
-            del self._query["query"]["filtered"]["filter"]
-
-
-    def query(self):
-        return self._query
 
 
 class OwnerQuery(object):
     """ Query to supply all full journal sources by owner """
     base_query = {
+        "track_total_hits": True,
         "query": {
             "term": {"admin.owner.exact": "<owner id here>"}
         },
@@ -1029,6 +1016,7 @@ class OwnerQuery(object):
 
 class PublisherQuery(object):
     exact_query = {
+        "track_total_hits": True,
         "query": {
             "term": {"bibjson.publisher.name.exact": "<publisher name here>"}
         },
@@ -1036,6 +1024,7 @@ class PublisherQuery(object):
     }
 
     inexact_query = {
+        "track_total_hits": True,
         "query": {
             "term": {"bibjson.publisher.name": "<publisher name here>"}
         },
@@ -1059,6 +1048,7 @@ class PublisherQuery(object):
 
 class TitleQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query": {
             "term": {"index.title.exact": "<title here>"}
         },
@@ -1080,6 +1070,7 @@ class ContinuationQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query": {
                 "bool": {
                     "must": [
@@ -1097,6 +1088,7 @@ class ArticleStatsQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query": {
                 "bool": {
                     "must": [
@@ -1119,6 +1111,7 @@ class RecentJournalsQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query" : {"match_all" : {}},
             "size" : self.max,
             "sort" : [

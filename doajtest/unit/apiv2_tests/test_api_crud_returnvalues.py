@@ -3,7 +3,6 @@ from portality import models
 from doajtest.fixtures import ApplicationFixtureFactory, ArticleFixtureFactory, JournalFixtureFactory
 from copy import deepcopy
 import json
-import time
 
 
 class TestCrudReturnValues(DoajTestCase):
@@ -18,7 +17,13 @@ class TestCrudReturnValues(DoajTestCase):
         self.api_key = account.api_key
         self.account = account
         account.save()
-        time.sleep(1)
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
     def tearDown(self):
         super(TestCrudReturnValues, self).tearDown()
