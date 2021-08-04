@@ -6,16 +6,13 @@ from portality.util import ipt_prefix
 
 EMPTY_ISSN = {
 "query": {
-        "filtered": {
+        "bool": {
             "filter": {
                 "bool": {
                     "must": {
                         "term": {"admin.in_doaj": "true"}
                     }
                 }
-            },
-            "query": {
-                "match_all": {}
             }
         }
     }

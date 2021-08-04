@@ -3,23 +3,19 @@ from portality.core import app
 import esprit
 import csv
 
-
 SAGE_JOURNALS_IN_DOAJ = {
-     "query":{
-    "filtered":{
-        "filter":{
-            "bool":{
-                "must":[
-                    {"term":{"index.publisher.exact":"SAGE Publishing"}},
-                    {"term" : {"admin.in_doaj" : True}}
-                 ]
-             }
-         },
-         "query":{
-            "match_all":{}
+    "query": {
+        "bool": {
+            "filter": {
+                "bool": {
+                    "must": [
+                        {"term": {"index.publisher.exact": "SAGE Publishing"}},
+                        {"term": {"admin.in_doaj": True}}
+                    ]
+                }
+            }
         }
     }
-}
 }
 
 if __name__ == "__main__":

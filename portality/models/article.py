@@ -932,12 +932,8 @@ class ArticleQuery(object):
     base_query = {
         "track_total_hits" : True,
         "query" : {
-            "filtered": {
-                "filter": {
-                    "bool" : {
-                        "must" : []
-                    }
-                }
+            "bool" : {
+                "must" : []
             }
         }
     }
@@ -955,12 +951,12 @@ class ArticleQuery(object):
         if self.issns is not None:
             iq = deepcopy(self._issn_terms)
             iq["terms"]["index.issn.exact"] = self.issns
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(iq)
+            q["query"]["bool"]["must"].append(iq)
 
         if self.volume is not None:
             vq = deepcopy(self._volume_term)
             vq["term"]["bibjson.journal.volume.exact"] = self.volume
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
+            q["query"]["bool"]["must"].append(vq)
 
         return q
     
@@ -968,7 +964,7 @@ class ArticleVolumesQuery(object):
     base_query = {
         "track_total_hits": True,
         "query" : {
-            "filtered": {
+            "bool": {
                 "filter": {
                     "terms" : {"index.issn.exact" : ["<list of issns here>"]}
                 }
@@ -991,7 +987,7 @@ class ArticleVolumesQuery(object):
 
     def query(self):
         q = deepcopy(self.base_query)
-        q["query"]["filtered"]["filter"]["terms"]["index.issn.exact"] = self.issns
+        q["query"]["bool"]["filter"]["terms"]["index.issn.exact"] = self.issns
         return q
 
 
@@ -999,7 +995,7 @@ class ArticleVolumesIssuesQuery(object):
     base_query = {
         "track_total_hits": True,
         "query" : {
-            "filtered": {
+            "bool": {
                 "filter": {
                     "bool": {
                         "must": [
@@ -1028,8 +1024,8 @@ class ArticleVolumesIssuesQuery(object):
 
     def query(self):
         q = deepcopy(self.base_query)
-        q["query"]["filtered"]["filter"]["bool"]["must"][0]["terms"]["index.issn.exact"] = self.issns
-        q["query"]["filtered"]["filter"]["bool"]["must"][1]["term"]["bibjson.journal.volume.exact"] = self.volume
+        q["query"]["bool"]["filter"]["bool"]["must"][0]["terms"]["index.issn.exact"] = self.issns
+        q["query"]["bool"]["filter"]["bool"]["must"][1]["term"]["bibjson.journal.volume.exact"] = self.volume
         return q
 
 

@@ -20,8 +20,8 @@ from portality.lib import dates
 
 LAST_MANUAL_UPDATE_BETWEEN = {
     "query": {
-        "filtered": {
-            "query": {"range": {"last_manual_update": {"gte": "", "lte": ""}}},
+        "bool": {
+            "must": {"range": {"last_manual_update": {"gte": "", "lte": ""}}},
             "filter": {
                 "bool": {
                     "must": {"term": {"in_doaj": "true"}}
