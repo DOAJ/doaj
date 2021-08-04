@@ -125,7 +125,7 @@ HUEY_SCHEDULE = {
 
 HUEY_TASKS = {
     "ingest_articles": {"retries": 10, "retry_delay": 15},
-    "preserve": {"retries": 1, "retry_delay": 15}
+    "preserve": {"retries": 0, "retry_delay": 15}
 }
 
 # PyCharm debug settings

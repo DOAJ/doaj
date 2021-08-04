@@ -27,6 +27,7 @@ class TestPreservation(DoajTestCase):
         self.local_dir = os.path.join(preservation.Preservation.UPLOAD_DIR, dir_name)
         self.preserve = preservation.Preservation(self.local_dir)
         self.package = preservation.PreservationPackage(self.preserve.preservation_dir)
+        self.local_dir = os.path.join(self.local_dir,"tmp")
 
 
     def tearDown(self):

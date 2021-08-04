@@ -30,6 +30,7 @@ from portality import models
 from portality.lib import dates
 
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask
+from portality.tasks.preservation import PreservationBackgroundTask
 from portality.tasks.suggestion_bulk_edit import SuggestionBulkEditBackgroundTask
 from portality.tasks.sitemap import SitemapBackgroundTask
 from portality.tasks.read_news import ReadNewsBackgroundTask
@@ -42,6 +43,7 @@ from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
 
 
 HANDLERS = {
+    'preserve':PreservationBackgroundTask,
     'ingest_articles': IngestArticlesBackgroundTask,
     'suggestion_bulk_edit': SuggestionBulkEditBackgroundTask,
     'sitemap': SitemapBackgroundTask,

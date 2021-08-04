@@ -23,6 +23,14 @@ class Preserve(DomainObject):
         return self.data.get("owner")
 
     @property
+    def background_task_id(self):
+        return self.data.get("background_task_id")
+
+    @status.setter
+    def background_task_id(self, value):
+        self.data["background_task_id"] = value
+
+    @property
     def created_timestamp(self):
         if "created_date" not in self.data:
             return None
