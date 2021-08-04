@@ -552,7 +552,7 @@ DEFAULT_DYNAMIC_MAPPING = {
                     "fields": {
                         "exact": {
                             "type": "keyword",
-                            "normalizer": "lowercase"
+                            #"normalizer": "lowercase"
                         }
                     }
                 }
