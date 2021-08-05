@@ -31,7 +31,7 @@ def managing_editor_notifications(emails_dict):
 
     age_query = {
         "query": {
-            "filtered": {
+            "bool": {
                 "filter": {
                     "bool": {
                         "must": {
@@ -53,9 +53,6 @@ def managing_editor_notifications(emails_dict):
                         },
                         "should": status_filters
                     }
-                },
-                "query": {
-                    "match_all": {}
                 }
             }
         },
@@ -73,11 +70,8 @@ def managing_editor_notifications(emails_dict):
 
     ready_query = {
         "query": {
-            "filtered": {
-                "filter": ready_filter,
-                "query": {
-                    "match_all": {}
-                }
+            "bool": {
+                "filter": ready_filter
             }
         },
         "size": 0
@@ -111,7 +105,7 @@ def editor_notifications(emails_dict, limit=None):
     # First note - how many applications in editor's group have no associate editor assigned.
     ed_app_query = {
         "query": {
-            "filtered": {
+            "bool": {
                 "filter": {
                     "bool": {
                         "must": {
@@ -124,9 +118,6 @@ def editor_notifications(emails_dict, limit=None):
                         },
                         "should": status_filters
                     }
-                },
-                "query": {
-                    "match_all": {}
                 }
             }
         },
@@ -135,7 +126,7 @@ def editor_notifications(emails_dict, limit=None):
             "ed_group_counts": {
                 "terms": {
                     "field": "admin.editor_group.exact",
-                    "size": 0
+                    "size": 0           # FIXME: size 0 not supported
                 }
             }
         }
@@ -171,7 +162,7 @@ def editor_notifications(emails_dict, limit=None):
 
     ed_age_query = {
         "query": {
-            "filtered": {
+            "bool": {
                 "filter": {
                     "bool": {
                         "must": {
@@ -258,7 +249,7 @@ def associate_editor_notifications(emails_dict, limit=None):
 
     assoc_age_query = {
         "query": {
-            "filtered": {
+            "bool": {
                 "filter": {
                     "bool": {
                         "must": {
@@ -271,9 +262,6 @@ def associate_editor_notifications(emails_dict, limit=None):
                         },
                         "should": status_filters
                     }
-                },
-                "query": {
-                    "match_all": {}
                 }
             }
         },
@@ -282,7 +270,7 @@ def associate_editor_notifications(emails_dict, limit=None):
             "assoc_ed": {
                 "terms": {
                     "field": "admin.editor.exact",
-                    "size": 0
+                    "size": 0                           # FIXME: size
                 },
                 "aggregations": {
                     "older_weeks": {

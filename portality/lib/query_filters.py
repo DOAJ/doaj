@@ -79,6 +79,7 @@ def strip_facets(q):
 
 
 def es_type_fix(q):
+    # FIXME: document this and will need attention for ES 7 upgrade
     ctx = q.as_dict()
     if "query" not in ctx:
         return q

@@ -7,12 +7,9 @@ import csv
 
 INVALID_URLS = {
     "query": {
-        "filtered": {
+        "bool": {
             "filter": {
                 "exists": {"field": "index.fulltext"}
-            },
-            "query": {
-                "match_all": {}
             }
         }
     },

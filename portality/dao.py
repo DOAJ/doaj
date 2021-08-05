@@ -308,7 +308,7 @@ class DomainObject(UserDict, object):
         # r = requests.post(cls.target() + '_refresh',  headers=CONTENT_TYPE_JSON)
         # return r.json()
 
-        return ES.refresh(index=cls.index_name())
+        return ES.indices.refresh(index=cls.index_name())
 
     @classmethod
     def pull(cls, id_):
@@ -478,6 +478,8 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def iterate(cls, q, page_size=1000, limit=None, wrap=True):
+        # FIXME: Due to stricter limits in ES on size, this MUST be re-implemented as scroll
+        # Result window is too large, from + size must be less than or equal to: [10000] but was [20000]
         theq = deepcopy(q)
         theq["size"] = page_size
         theq["from"] = 0

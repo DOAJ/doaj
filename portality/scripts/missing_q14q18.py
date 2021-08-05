@@ -2,8 +2,7 @@ from portality.lib import report_to_csv
 
 QUERY = {
     "query": {
-        "filtered" : {
-            "query" : {"match_all" : {}},
+        "bool" : {
             "filter" : {
                 "bool" : {
                     "should" : [

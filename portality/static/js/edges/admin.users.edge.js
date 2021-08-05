@@ -15,13 +15,12 @@ $.extend(true, doaj, {
         userJournalsLink : function (val, resultobj, renderer) {
             var q = {
                 "query":{
-                    "filtered":{
-                        "filter":{
-                            "bool":{
-                                "must":[{"term":{"admin.owner.exact":resultobj.id}}]
+                    "bool": {
+                        "filter": {
+                            "bool": {
+                                "must": [{"term": {"admin.owner.exact": resultobj.id}}]
                             }
-                        },
-                        "query":{"match_all":{}}
+                        }
                     }
                 }
             };

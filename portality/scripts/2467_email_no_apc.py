@@ -5,7 +5,7 @@ import csv
 
 NO_APC = {
     "query": {
-        "filtered": {
+        "bool": {
             "filter": {
                 "bool": {
                     "must": {
@@ -13,7 +13,7 @@ NO_APC = {
                     }
                 }
             },
-            "query": {
+            "must": {
                 "term": {"index.has_apc.exact": "No"}
             }
         }
