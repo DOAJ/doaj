@@ -591,7 +591,7 @@ class DomainObject(UserDict, object):
 
         # build the query
         q = WildcardAutocompleteQuery(filter_field, substring, field, facet_field, facet_size)
-        return cls.send_query(q)
+        return cls.send_query(q.query())
 
     @classmethod
     def advanced_autocomplete(cls, filter_field, facet_field, substring, size=5, prefix_only=True):

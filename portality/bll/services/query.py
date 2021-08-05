@@ -204,6 +204,14 @@ class Query(object):
 
         context["filter"].append(filter)
 
+    def add_must_not(self, filter):
+        self.convert_to_bool()
+        context = self.q["query"]["bool"]
+        if "must_not" not in context:
+            context["must_not"] = []
+
+        context["must_not"].append(filter)
+
     def clear_match_all(self):
         if "match_all" in self.q["query"]:
             del self.q["query"]["match_all"]

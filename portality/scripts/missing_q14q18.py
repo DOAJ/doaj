@@ -1,5 +1,8 @@
 from portality.lib import report_to_csv
 
+
+# FIXME: this query will no longer work, as the `missing` filter is no longer present.
+# I have not updated the script, because it looks to be obsolete, and should probably be removed
 QUERY = {
     "query": {
         "bool" : {
