@@ -1,4 +1,3 @@
-from datetime import datetime
 from copy import deepcopy
 from portality.models import Journal, Article
 
@@ -51,7 +50,7 @@ class OAIPMHRecord(object):
 
     set_limit = {"term" : { "index.schema_subject.exact" : "<set name>" }}
     range_limit = { "range" : { "last_updated" : {"gte" : "<from date>", "lte" : "<until date>"} } }
-    created_sort = [{"last_updated" : {"order" : "desc"}}, {"id" : "desc"}]
+    created_sort = [{"last_updated" : {"order" : "desc"}}, {"id.exact" : "desc"}]
 
     def earliest_datestamp(self):
         result = self.query(q=self.earliest)
