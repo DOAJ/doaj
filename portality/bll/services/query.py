@@ -169,16 +169,23 @@ class Query(object):
 
         current_query = None
         if "query" in self.q:
+            if "bool" in self.q["query"]:
+                return
             current_query = deepcopy(self.q["query"])
             del self.q["query"]
             if len(list(current_query.keys())) == 0:
                 current_query = None
 
-        self.filtered = True
         if "query" not in self.q:
             self.q["query"] = {}
         if "bool" not in self.q["query"]:
             self.q["query"]["bool"] = {}
+
+        if current_query is not None:
+            if "must" not in self.q["query"]["bool"]:
+                self.q["query"]["bool"]["must"] = []
+
+            self.q["query"]["bool"]["must"].append(current_query)
 
     def add_must(self, filter):
         # self.convert_to_filtered()
@@ -231,11 +238,11 @@ class Query(object):
     def add_include(self, fields):
         if "_source" not in self.q:
             self.q["_source"] = {}
-        if "include" not in self.q["_source"]:
-            self.q["_source"]["include"] = []
+        if "includes" not in self.q["_source"]:
+            self.q["_source"]["includes"] = []
         if not isinstance(fields, list):
             fields = [fields]
-        self.q["_source"]["include"] = list(set(self.q["_source"]["include"] + fields))
+        self.q["_source"]["includes"] = list(set(self.q["_source"]["includes"] + fields))
 
     def sort(self):
         return self.q.get("sort")
