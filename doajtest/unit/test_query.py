@@ -122,7 +122,7 @@ class TestQuery(DoajTestCase):
     def test_02_query_gen(self):
         q = Query()
         q.add_must({"term": {"admin.in_doaj": True}})
-        assert q.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}}, 'query': {'match_all': {}}}}}, q.as_dict()
+        assert q.as_dict() == {'query': {'bool': {'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}}, 'query': {'match_all': {}}}}}, q.as_dict()
 
         q = Query()
         q.clear_match_all()
@@ -185,7 +185,7 @@ class TestQuery(DoajTestCase):
 
         assert q.as_dict() == {"query": {"match_all": {}}}, q.as_dict()
         qsvc._pre_filter_search_query(cfg, q)
-        assert q.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}}}}}, q.as_dict()
+        assert q.as_dict() == {'query': {'bool': {'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}}}}}, q.as_dict()
 
     def test_05_post_filter_search_results(self):
         # The config above says that the public_result_filter should run on the results. That should delete admin.publisher_record_id.
@@ -256,7 +256,7 @@ class TestQuery(DoajTestCase):
         # assert q.as_dict() == {"query": {"match_all": {}}}, q.as_dict()
         query = qsvc._get_query(cfg, raw_query)
         expected_result = {'query':
-                    {'filtered': {
+                    {'bool': {
                         'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}},
                         'query': {'query_string': {'query': '*', 'default_operator': 'AND'}}}
                     },

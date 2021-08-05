@@ -34,23 +34,21 @@ def managing_editor_notifications(emails_dict):
             "bool": {
                 "filter": {
                     "bool": {
-                        "must": {
-                            "and": [
-                                {
-                                    "range": {
-                                        "last_manual_update": {
-                                            #"gte": "1970-01-01T00:00:00Z",          # Newer than 'Never' (implicit)
-                                            "lte": newest_date_stamp                 # Older than X_WEEKS
-                                        }
-                                    }
-                                },
-                                {
-                                    "exists": {
-                                        "field": "admin.editor"
+                        "must": [
+                            {
+                                "range": {
+                                    "last_manual_update": {
+                                        #"gte": "1970-01-01T00:00:00Z",          # Newer than 'Never' (implicit)
+                                        "lte": newest_date_stamp                 # Older than X_WEEKS
                                     }
                                 }
-                            ]
-                        },
+                            },
+                            {
+                                "exists": {
+                                    "field": "admin.editor"
+                                }
+                            }
+                        ],
                         "should": status_filters
                     }
                 }
@@ -126,7 +124,7 @@ def editor_notifications(emails_dict, limit=None):
             "ed_group_counts": {
                 "terms": {
                     "field": "admin.editor_group.exact",
-                    "size": 0           # FIXME: size 0 not supported
+                    #"size": 0           # FIXME: size 0 not supported
                 }
             }
         }
@@ -165,28 +163,23 @@ def editor_notifications(emails_dict, limit=None):
             "bool": {
                 "filter": {
                     "bool": {
-                        "must": {
-                            "and": [
-                                {
-                                    "range": {
-                                        "last_manual_update": {
-                                            #"gte": "1970-01-01T00:00:00Z",          # Newer than 'Never' (implicit)
-                                            "lte": newest_date_stamp                 # Older than X_WEEKS
-                                        }
-                                    }
-                                },
-                                {
-                                    "exists": {
-                                        "field": "admin.editor"
+                        "must": [
+                            {
+                                "range": {
+                                    "last_manual_update": {
+                                        #"gte": "1970-01-01T00:00:00Z",          # Newer than 'Never' (implicit)
+                                        "lte": newest_date_stamp                 # Older than X_WEEKS
                                     }
                                 }
-                            ]
-                        },
+                            },
+                            {
+                                "exists": {
+                                    "field": "admin.editor"
+                                }
+                            }
+                        ],
                         "should": status_filters
                     }
-                },
-                "query": {
-                    "match_all": {}
                 }
             }
         },
@@ -195,7 +188,7 @@ def editor_notifications(emails_dict, limit=None):
             "ed_group_counts": {
                 "terms": {
                     "field": "admin.editor_group.exact",
-                    "size": 0
+                    #"size": 0           # fixme: size 0 not supported es7
                 }
             }
         }
@@ -270,7 +263,7 @@ def associate_editor_notifications(emails_dict, limit=None):
             "assoc_ed": {
                 "terms": {
                     "field": "admin.editor.exact",
-                    "size": 0                           # FIXME: size
+                    #"size": 0                           # FIXME: size can't be zero in ex 7
                 },
                 "aggregations": {
                     "older_weeks": {

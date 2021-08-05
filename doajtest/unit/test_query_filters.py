@@ -21,20 +21,20 @@ class TestQueryFilters(DoajTestCase):
 
     def test_01_only_in_doaj(self):
         newq = query_filters.only_in_doaj(self.q)
-        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}}}}}, newq.as_dict()
+        assert newq.as_dict() == {'query': {'bool': {'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}}}}}, newq.as_dict()
 
     def test_02_owner(self):
         acc = models.Account(**AccountFixtureFactory.make_publisher_source())
         self._make_and_push_test_context(acc=acc)
         newq = query_filters.owner(self.q)
-        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{'term': {'admin.owner.exact': acc.id}}]}}}}}, newq.as_dict()
+        assert newq.as_dict() == {'query': {'bool': {'filter': {'bool': {'must': [{'term': {'admin.owner.exact': acc.id}}]}}}}}, newq.as_dict()
 
     def test_03_update_request(self):
         old_update_request_show_oldest = self.app_test.config.get('UPDATE_REQUEST_SHOW_OLDEST')
         self.app_test.config['UPDATE_REQUEST_SHOW_OLDEST'] = '2018-05-03'
 
         newq = query_filters.update_request(self.q)
-        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{"range" : {"created_date" : {"gte" : '2018-05-03'}}}, {"exists" : {"field" : "admin.current_journal"}}]}}}}}, newq.as_dict()
+        assert newq.as_dict() == {'query': {'bool': {'filter': {'bool': {'must': [{"range" : {"created_date" : {"gte" : '2018-05-03'}}}, {"exists" : {"field" : "admin.current_journal"}}]}}}}}, newq.as_dict()
 
         self.app_test.config['UPDATE_REQUEST_SHOW_OLDEST'] = old_update_request_show_oldest
 
@@ -42,13 +42,13 @@ class TestQueryFilters(DoajTestCase):
         acc = models.Account(**AccountFixtureFactory.make_assed1_source())
         self._make_and_push_test_context(acc=acc)
         newq = query_filters.associate(self.q)
-        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{'term': {'admin.editor.exact': acc.id}}]}}}}}, newq.as_dict()
+        assert newq.as_dict() == {'query': {'bool': {'filter': {'bool': {'must': [{'term': {'admin.editor.exact': acc.id}}]}}}}}, newq.as_dict()
 
     def test_05_editor(self):
         eg = EditorGroupFixtureFactory.setup_editor_group_with_editors()
         self._make_and_push_test_context(acc=models.Account.pull('eddie'))
         newq = query_filters.editor(self.q)
-        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{'terms': {'admin.editor_group.exact': [eg.name]}}]}}}}}, newq.as_dict()
+        assert newq.as_dict() == {'query': {'bool': {'filter': {'bool': {'must': [{'terms': {'admin.editor_group.exact': [eg.name]}}]}}}}}, newq.as_dict()
 
     def test_06_public_result_filter(self):
         res = {
