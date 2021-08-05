@@ -1386,7 +1386,7 @@ class TestModels(DoajTestCase):
         bj = journal.bibjson()
         bj.add_identifier(bj.P_ISSN, "1111-1111")
         stats = journal.article_stats()
-        assert stats.get("total", {}).get('value') == 2
+        assert stats.get("total", 0) == 2
         assert stats.get("latest") == "2019-01-02T00:00:00Z"
 
     def test_31_cache(self):

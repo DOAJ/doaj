@@ -14,7 +14,7 @@ import elasticsearch
 # You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
 
 
-ES_MAPPING_MISSING_REGEX = re.compile(r'.*No mapping found for \[[a-zA-Z0-9-_]+?\] in order to sort on.*', re.DOTALL)
+ES_MAPPING_MISSING_REGEX = re.compile(r'.*No mapping found for \[[a-zA-Z0-9-_\.]+?\] in order to sort on.*', re.DOTALL)
 CONTENT_TYPE_JSON = {'Content-Type': 'application/json'}
 
 
@@ -119,7 +119,7 @@ class DomainObject(UserDict, object):
             return
 
         if retries > app.config.get("ES_RETRY_HARD_LIMIT", 1000):   # an arbitrary large number
-            retries = app.config.get("ES_RETRY_HARD_LIMIT")
+            retries = app.config.get("ES_RETRY_HARD_LIMIT", 1000)
 
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
@@ -201,7 +201,10 @@ class DomainObject(UserDict, object):
             return
 
         # r = requests.delete(self.target() + self.id)
-        ES.delete(self.index_name(), self.id, doc_type=self.doc_type())
+        try:
+            ES.delete(self.index_name(), self.id, doc_type=self.doc_type())
+        except elasticsearch.NotFoundError:
+            pass    # This is to preserve the old behaviour
 
     @staticmethod
     def make_query(theq=None, should_terms=None, consistent_order=True, **kwargs):
@@ -354,7 +357,7 @@ class DomainObject(UserDict, object):
         """Actually send a query object to the backend."""
 
         if retry > app.config.get("ES_RETRY_HARD_LIMIT", 1000) + 1:   # an arbitrary large number
-            retry = app.config.get("ES_RETRY_HARD_LIMIT") + 1
+            retry = app.config.get("ES_RETRY_HARD_LIMIT", 1000) + 1
 
         r = None
         count = 0
@@ -368,6 +371,8 @@ class DomainObject(UserDict, object):
                 break
             except Exception as e:
                 exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
+                if isinstance(exception, ESMappingMissingError):
+                    raise exception
             time.sleep(0.5)
                 
         if r is not None:

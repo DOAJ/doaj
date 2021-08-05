@@ -37,9 +37,11 @@ class TestCrosswalks(DoajTestCase):
     def setUp(self):
         self.old_lookup_code = lcc.lookup_code
         lcc.lookup_code = mock_lookup_code
+        super(TestCrosswalks, self).setUp()
 
     def tearDown(self):
         lcc.lookup_code = self.old_lookup_code
+        super(TestCrosswalks, self).tearDown()
 
     def test_01_journal_form2obj(self):
         pc = ApplicationFormFactory.context("admin")

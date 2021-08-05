@@ -304,12 +304,12 @@ class DiscoveryApi(Api):
         # execute the query against the articles
         # ~~->Query:Service~~
         query_service = DOAJ.queryService()
-        res = query_service.search('api_query', index_type, raw_query, account, None)
-
-        # check to see if there was a search error
-        if res.get("error") is not None:
+        try:
+            res = query_service.search('api_query', index_type, raw_query, account, None)
+        except Exception as e:
             magic = uuid.uuid1()
-            app.logger.error(u"Error executing discovery query search for {i}: {x} (ref: {y})".format(i=index_type, x=res.get("error"), y=magic))
+            msg = e.error if hasattr(e, "error") else e.message if hasattr(e, "message") else str(e)
+            app.logger.error(u"Error executing discovery query search for {i}: {x} (ref: {y})".format(i=index_type, x=msg, y=magic))
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
         obs = [klass(**raw) for raw in esprit.raw.unpack_json_result(res)]

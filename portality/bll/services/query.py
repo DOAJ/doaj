@@ -3,7 +3,9 @@ from portality.util import ipt_prefix
 from portality.bll import exceptions
 from portality.lib import plugin
 from copy import deepcopy
+
 import esprit
+
 
 class QueryService(object):
     """
@@ -193,7 +195,6 @@ class Query(object):
         context = self.q["query"]["bool"]
         if "must" not in context:
             context["must"] = []
-
         context["must"].append(filter)
 
     def add_must_filter(self, filter):
