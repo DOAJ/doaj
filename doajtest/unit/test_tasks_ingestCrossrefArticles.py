@@ -1,11 +1,10 @@
-from io import BytesIO
-
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.bll_article import BLLArticleMockFactory
 
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
+from doajtest.fixtures.article import ArticleFixtureFactory
 from doajtest.mocks.file import FileMockFactory
 from doajtest.mocks.response import ResponseMockFactory
 from doajtest.mocks.ftp import FTPMockFactory
@@ -620,12 +619,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
+        j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         job = models.BackgroundJob()
 
@@ -724,12 +730,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
+        j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         f = FileMockFactory(stream=handle)
@@ -763,12 +776,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
+        j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         url = "http://valid"
 
@@ -798,12 +818,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
+        j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         f = FileMockFactory(stream=handle)
@@ -974,12 +1001,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
-        j.save(blocking=True)
+        j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
@@ -1022,11 +1056,17 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         bj.add_identifier(bj.E_ISSN, "9876-5432")
         j.save()
 
-
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         f = FileMockFactory(stream=handle)
@@ -1070,7 +1110,14 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         f = FileMockFactory(stream=handle)
@@ -1280,7 +1327,14 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
@@ -1371,7 +1425,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0
 
-    def test_crossref_43_duplication(self):
+    def test_43_duplication(self):
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
@@ -1383,7 +1437,14 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         # make both handles, as we want as little gap as possible between requests in a moment
         handle1 = CrossrefArticleFixtureFactory.upload_2_issns_correct()
@@ -1422,7 +1483,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 1, "found: {}".format(len(found))
 
-    def test_crossref_44_journal_1_article_1_superlong_noclip(self):
+    def test_44_journal_1_article_1_superlong_noclip(self):
         etree.XMLSchema = self.mock_load_schema
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
@@ -1437,7 +1498,14 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_superlong_should_not_clip()
         f = FileMockFactory(stream=handle)
@@ -1483,12 +1551,19 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
+        j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_superlong_should_clip()
         f = FileMockFactory(stream=handle)
@@ -1589,7 +1664,14 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner1")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
@@ -1704,7 +1786,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         assert file_upload.status == "failed"
 
-    def test_determine_issns_types(self):
+    def test_49_1_determine_issns_types(self):
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
         j.set_owner("testowner")
@@ -1716,7 +1798,14 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         job = models.BackgroundJob()
 
@@ -1906,14 +1995,21 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
         account.set_id("testowner")
-        account.save(blocking=True)
+        account.save()
 
         j = models.Journal()
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
-        j.save(blocking=True)
+        j.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         etree.XMLSchema = self.mock_load_schema
 
