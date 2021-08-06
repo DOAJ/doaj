@@ -3,42 +3,86 @@ from flask_login import login_user
 from unittest import TestCase
 from portality import core, dao
 from portality.app import app
-from doajtest.bootstrap import prepare_for_test
+from portality.tasks.redis_huey import main_queue, long_running
 import dictdiffer
 from datetime import datetime
 from glob import glob
 import os, csv, shutil
 from portality.lib import paths
+import functools
+import time
 
-prepare_for_test()
+
+def patch_config(inst, properties):
+    originals = {}
+    for k, v in properties.items():
+        originals[k] = inst.config.get(k)
+        inst.config[k] = v
+    return originals
+
+
+def with_es(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        obj = WithES(func)
+        return obj.__call__(*args, **kwargs)
+    return wrapper
+
+
+class WithES:
+    def __init__(self, func):
+        self.func = func
+
+    def __call__(self, *args, **kwargs):
+        self.setUp()
+        resp = self.func(*args, **kwargs)
+        self.tearDown()
+        return resp
+
+    def setUp(self):
+        core.initialise_index(app, core.es_connection)
+
+    def tearDown(self):
+        dao.DomainObject.destroy_index()
 
 
 class DoajTestCase(TestCase):
     app_test = app
+    originals = {}
 
-    def init_index(self):
-        core.initialise_index(self.app_test, core.es_connection)
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.originals = patch_config(app, {
+            "STORE_IMPL" : "portality.store.StoreLocal",
+            "STORE_LOCAL" : paths.rel2abs(__file__, "..", "tmp", "store", "main"),
+            "STORE_TMP_DIR" : paths.rel2abs(__file__, "..", "tmp", "store", "tmp"),
+            "ES_RETRY_HARD_LIMIT" : 0,
+            "ELASTIC_SEARCH_DB" : app.config.get('ELASTIC_SEARCH_TEST_DB'),
+            'ELASTIC_SEARCH_DB_PREFIX' : core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX'],
+            "FEATURES" : app.config['VALID_FEATURES'],
+            'ENABLE_EMAIL' : False,
+            "FAKER_SEED" : 1
+        })
 
-    def destroy_index(self):
+        main_queue.always_eager = True
+        long_running.always_eager = True
+
+        # if a test on a previous run has totally failed and tearDownClass has not run, then make sure the index is gone first
         dao.DomainObject.destroy_index()
+        # time.sleep(1) # I don't know why we slept here, but not in tearDown, so I have removed it
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        patch_config(app, cls.originals)
+        cls.originals = {}
 
     def setUp(self):
-        self.init_index()
-
-        app.config["STORE_IMPL"] = "portality.store.StoreLocal"
-        app.config["STORE_LOCAL_DIR"] = paths.rel2abs(__file__, "..", "tmp", "store", "main")
-        app.config["STORE_TMP_DIR"] = paths.rel2abs(__file__, "..", "tmp", "store", "tmp")
-
-        self._es_retry_hard_limit = app.config.get("ES_RETRY_HARD_LIMIT")
-        app.config["ES_RETRY_HARD_LIMIT"] = 0
+        pass
 
     def tearDown(self):
-        self.destroy_index()
         for f in self.list_today_article_history_files() + self.list_today_journal_history_files():
             os.remove(f)
         shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
-
-        app.config["ES_RETRY_HARD_LIMIT"] = self._es_retry_hard_limit
 
     def list_today_article_history_files(self):
         return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
@@ -50,7 +94,7 @@ class DoajTestCase(TestCase):
         ctx = self.app_test.test_request_context(path)
         ctx.push()
         if acc is not None:
-            acc.save(blocking=True)
+            # acc.save(blocking=True)
             login_user(acc)
 
         return ctx
@@ -95,6 +139,7 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
         print('Unchanged :: keys which are the same in {d1} and {d2} and whose values are also the same'.format(d1=d1_label, d2=d2_label))
         print(differ.unchanged())
 
+
 def load_from_matrix(filename, test_ids):
     if test_ids is None:
         test_ids = []
@@ -107,6 +152,7 @@ def load_from_matrix(filename, test_ids):
                 row[0] = "row_id_" + row[0]
                 cases.append(tuple(row))
         return cases
+
 
 def deep_sort(obj):
     """
