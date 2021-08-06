@@ -41,7 +41,7 @@ def update_request(q):
 
 def not_update_request(q):
     q.clear_match_all()
-    q.add_must_filter({"missing" : {"field" : "admin.current_journal"}})
+    q.add_must_not({"exists" : {"field" : "admin.current_journal"}})
     return q
 
 

@@ -122,19 +122,29 @@ class TestQuery(DoajTestCase):
     def test_02_query_gen(self):
         q = Query()
         q.add_must({"term": {"admin.in_doaj": True}})
-        assert q.as_dict() == {'query': {'bool': {'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}}, 'query': {'match_all': {}}}}}, q.as_dict()
+        assert q.as_dict() == {
+            'track_total_hits' : True,
+            'query': {
+                'bool': {
+                    'must': [
+                        {"match_all" : {}},
+                        {'term': {'admin.in_doaj': True}}
+                    ]
+                }
+            }
+        },q.as_dict()
 
         q = Query()
         q.clear_match_all()
-        assert q.as_dict() == {'query': {}}, q.as_dict()
+        assert q.as_dict() == {'track_total_hits' : True, 'query': {}}, q.as_dict()
 
         q = Query()
         q.add_include("last_updated")
-        assert q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["last_updated"]}}, q.as_dict()
+        assert q.as_dict() == {'track_total_hits' : True, "query": {"match_all": {}},"_source": {"includes": ["last_updated"]}}, q.as_dict()
 
         q = Query()
         q.add_include(["last_updated", "id"])
-        assert q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["id", "last_updated"]}} or q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["last_updated", "id"]}}, q.as_dict()
+        assert q.as_dict() == {'track_total_hits' : True, "query": {"match_all": {}},"_source": {"includes": ["last_updated", "id"]}} or q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["last_updated", "id"]}}, q.as_dict()
 
 
     def test_03_query_svc_get_config(self):
@@ -183,9 +193,18 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
         cfg = qsvc._get_config_for_search('query', 'article', account=None)
 
-        assert q.as_dict() == {"query": {"match_all": {}}}, q.as_dict()
+        assert q.as_dict() == {"track_total_hits" : True, "query": {"match_all": {}}}, q.as_dict()
         qsvc._pre_filter_search_query(cfg, q)
-        assert q.as_dict() == {'query': {'bool': {'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}}}}}, q.as_dict()
+        assert q.as_dict() == {
+            "track_total_hits": True,
+            'query': {
+                'bool': {
+                    'filter': [
+                        {'term': {'admin.in_doaj': True}}
+                    ]
+                }
+            }
+        }, q.as_dict()
 
     def test_05_post_filter_search_results(self):
         # The config above says that the public_result_filter should run on the results. That should delete admin.publisher_record_id.
@@ -255,13 +274,20 @@ class TestQuery(DoajTestCase):
 
         # assert q.as_dict() == {"query": {"match_all": {}}}, q.as_dict()
         query = qsvc._get_query(cfg, raw_query)
-        expected_result = {'query':
-                    {'bool': {
-                        'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}},
-                        'query': {'query_string': {'query': '*', 'default_operator': 'AND'}}}
-                    },
-                    '_source': {'include': ['last_updated', 'admin.ticked', 'created_date', 'admin.seal', 'id', 'bibjson']},
-                    'from': 0, 'size': 100}
+        expected_result = {
+            'query': {
+                'bool': {
+                    'must': [
+                        {'query_string': {'query': '*', 'default_operator': 'AND'}}
+                    ],
+                    "filter" : [
+                        {'term': {'admin.in_doaj': True}}
+                    ]
+                }
+            },
+            '_source': {'includes': ['last_updated', 'admin.ticked', 'created_date', 'admin.seal', 'id', 'bibjson']},
+            'from': 0, 'size': 100
+        }
         q_but_source = without_keys(query.as_dict(), ['_source'])
         r_but_source = without_keys(expected_result, ['_source'])
         query_sorted = deep_sort(query.as_dict())
@@ -289,7 +315,7 @@ class TestQuery(DoajTestCase):
         articles[-1].save(blocking=True)
 
         res = qsvc.search('query', 'article', {"query": {"match_all": {}}}, account=None, additional_parameters={})
-        assert res['hits']['total'] == 3, res['hits']['total']
+        assert res['hits']['total']["value"] == 3, res['hits']['total']["value"]
 
         for hit in res['hits']['hits']:
             am = models.Article(**hit)

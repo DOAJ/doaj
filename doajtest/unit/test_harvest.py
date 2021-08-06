@@ -8,9 +8,7 @@ from shutil import copyfile
 from unittest.mock import Mock, patch
 
 from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory
-from doajtest.fixtures.harvester import HarvestStateFactory, EPMCFixtureFactory
 from doajtest.helpers import DoajTestCase
-from portality.api.v2.client.client import DOAJv1API
 from portality.core import app
 from portality.tasks.harvester import HarvesterBackgroundTask
 from portality import models
@@ -20,6 +18,7 @@ from portality.tasks.harvester_helpers.epmc.models import EPMCMetadata
 from portality.background import BackgroundApi
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources/")
+
 
 class TestHarvester(DoajTestCase):
 
@@ -32,11 +31,17 @@ class TestHarvester(DoajTestCase):
         self.publisher.generate_api_key()
 
         self.publisher.save()
-        self.journal.save(blocking=True)
+        self.journal.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
         self.old_harvester_api_keys = app.config.get('HARVESTER_API_KEYS')
         self.old_initial_harvest_date = app.config.get("INITIAL_HARVEST_DATE")
-
 
         app.config['HARVESTER_API_KEYS'] = {self.publisher.id: self.publisher.api_key}
 
