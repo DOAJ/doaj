@@ -1,4 +1,4 @@
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, with_es
 from portality import models
 from doajtest.fixtures import ApplicationFixtureFactory, ArticleFixtureFactory, JournalFixtureFactory
 from copy import deepcopy
@@ -7,28 +7,9 @@ import json
 
 class TestCrudReturnValues(DoajTestCase):
 
-    def setUp(self):
-        super(TestCrudReturnValues, self).setUp()
-
-        account = models.Account.make_account(email="test@test.com", username="test", name="Tester",
-                                              roles=["publisher", "api"],
-                                              associated_journal_ids=['abcdefghijk_journal'])
-        account.set_password('password123')
-        self.api_key = account.api_key
-        self.account = account
-        account.save()
-
-        # push an article to initialise the mappings
-        source = ArticleFixtureFactory.make_article_source()
-        article = models.Article(**source)
-        article.save(blocking=True)
-        article.delete()
-        models.Article.blockdeleted(article.id)
-
-    def tearDown(self):
-        super(TestCrudReturnValues, self).tearDown()
-
+    @with_es(indices=[models.Account.__type__])
     def test_01_all_crud(self):
+        self.make_account()
 
         # we should get a JSON 404 if we try to hit a nonexistent endpoint
         with self.app_test.test_client() as t_client:
@@ -56,7 +37,11 @@ class TestCrudReturnValues(DoajTestCase):
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
+    @with_es(indices=[models.Account.__type__, models.Application.__type__, models.Journal.__type__, models.Article.__type__,
+                      models.Lock.__type__, models.News.__type__])
     def test_02_applications_crud(self):
+        self.make_account()
+
         # add some data to the index with a Create
         user_data = ApplicationFixtureFactory.incoming_application()
         del user_data["admin"]["current_journal"]
@@ -111,7 +96,12 @@ class TestCrudReturnValues(DoajTestCase):
 
             self.logout(t_client)
 
+    @with_es(indices=[models.Account.__type__, models.Application.__type__, models.Journal.__type__, models.Article.__type__,
+                      models.Lock.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_03_articles_crud(self):
+        self.make_account()
+
         # add some data to the index with a Create
         user_data = ArticleFixtureFactory.make_article_source()
 
@@ -168,7 +158,12 @@ class TestCrudReturnValues(DoajTestCase):
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
+    @with_es(indices=[models.Account.__type__, models.Journal.__type__, models.Article.__type__,
+                      models.Lock.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_04_article_structure_exceptions(self):
+        self.make_account()
+
         # add some data to the index with a Create
         user_data = ArticleFixtureFactory.make_article_source()
 
@@ -211,3 +206,12 @@ class TestCrudReturnValues(DoajTestCase):
     @staticmethod
     def logout(app):
         return app.get('/account/logout', follow_redirects=True)
+
+    def make_account(self):
+        account = models.Account.make_account(email="test@test.com", username="test", name="Tester",
+                                              roles=["publisher", "api"],
+                                              associated_journal_ids=['abcdefghijk_journal'])
+        account.set_password('password123')
+        self.api_key = account.api_key
+        self.account = account
+        account.save(blocking=True)

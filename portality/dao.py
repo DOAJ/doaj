@@ -673,6 +673,9 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def block(cls, id, last_updated, sleep=0.5, max_retry_seconds=30):
+        if app.config.get("ES_BLOCK_WAIT_OVERRIDE") is not None:
+            sleep = app.config["ES_BLOCK_WAIT_OVERRIDE"]
+
         threshold = datetime.strptime(last_updated, "%Y-%m-%dT%H:%M:%SZ")
         q = BlockQuery(id)
         start_time = datetime.now()
@@ -700,6 +703,9 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def blockdeleted(cls, id, sleep=0.5, max_retry_seconds=30):
+        if app.config.get("ES_BLOCK_WAIT_OVERRIDE") is not None:
+            sleep = app.config["ES_BLOCK_WAIT_OVERRIDE"]
+
         q = BlockQuery(id)
         start_time = datetime.now()
         while True:

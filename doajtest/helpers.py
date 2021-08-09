@@ -20,11 +20,11 @@ def patch_config(inst, properties):
     return originals
 
 
-def with_es(_func=None, *, indices=None):
+def with_es(_func=None, *, indices=None, warm_mappings=None):
     def with_es_decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
-            obj = WithES(func, indices)
+            obj = WithES(func, indices, warm_mappings)
             return obj.__call__(*args, **kwargs)
 
         return wrapper
@@ -34,19 +34,12 @@ def with_es(_func=None, *, indices=None):
     else:
         return with_es_decorator(_func)
 
-#
-# def with_es(func):
-#     @functools.wraps(func)
-#     def wrapper(*args, **kwargs):
-#         obj = WithES(func)
-#         return obj.__call__(*args, **kwargs)
-#     return wrapper
-
-
 class WithES:
-    def __init__(self, func, indices=None):
+
+    def __init__(self, func, indices=None, warm_mappings=None):
         self.func = func
         self.indices = indices
+        self.warm_mappings = warm_mappings if warm_mappings is not None else []
 
     def __call__(self, *args, **kwargs):
         self.setUp()
@@ -55,10 +48,29 @@ class WithES:
         return resp
 
     def setUp(self):
-        core.initialise_index(app, core.es_connection, only_mappings=self.indices)
+        only_mappings = None
+        if self.indices is not None and self.indices != "all":
+            only_mappings = self.indices
+        core.initialise_index(app, core.es_connection, only_mappings=only_mappings)
+        for im in self.warm_mappings:
+            if im == "article":
+                self.warmArticle()
+            # add more types if they are necessary
 
     def tearDown(self):
         dao.DomainObject.destroy_index()
+
+    def warmArticle(self):
+        # push an article to initialise the mappings
+        from doajtest.fixtures import ArticleFixtureFactory
+        from portality.models import Article
+        source = ArticleFixtureFactory.make_article_source()
+        article = Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        Article.blockdeleted(article.id)
+
+
 
 
 class DoajTestCase(TestCase):
