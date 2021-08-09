@@ -672,11 +672,10 @@ class DomainObject(UserDict, object):
         return res.get("hits", {}).get("total", {}).get("value", 0)
 
     @classmethod
-    def block(cls, id, last_updated, sleep=0.5, max_retry_seconds=30):
+    def block(cls, id, last_updated=None, sleep=0.5, max_retry_seconds=30):
         if app.config.get("ES_BLOCK_WAIT_OVERRIDE") is not None:
             sleep = app.config["ES_BLOCK_WAIT_OVERRIDE"]
 
-        threshold = datetime.strptime(last_updated, "%Y-%m-%dT%H:%M:%SZ")
         q = BlockQuery(id)
         start_time = datetime.now()
         while True:
@@ -684,12 +683,16 @@ class DomainObject(UserDict, object):
             hits = res.get("hits", {}).get("hits", [])
             if len(hits) > 0:
                 obj = hits[0].get("fields")
-                if "last_updated" in obj:
-                    lu = obj["last_updated"]
-                    if len(lu) > 0:
-                        lud = datetime.strptime(lu[0], "%Y-%m-%dT%H:%M:%SZ")
-                        if lud >= threshold:
-                            return
+                if last_updated is not None:
+                    if "last_updated" in obj:
+                        lu = obj["last_updated"]
+                        if len(lu) > 0:
+                            threshold = datetime.strptime(last_updated, "%Y-%m-%dT%H:%M:%SZ")
+                            lud = datetime.strptime(lu[0], "%Y-%m-%dT%H:%M:%SZ")
+                            if lud >= threshold:
+                                return
+                else:
+                    return
             else:
                 if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
                     raise BlockTimeOutException("Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
