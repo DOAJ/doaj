@@ -274,8 +274,7 @@ class FormulaicContext(object):
                 if field.group_subfields():
                     for sf in field.group_subfields():
                         fieldlist.append(sf)
-                else:
-                    fieldlist.append(field)
+                fieldlist.append(field)
         return fieldlist
 
     def make_wtform_class(self, fields):
