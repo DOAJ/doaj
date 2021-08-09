@@ -71,6 +71,33 @@ class WithES:
         Article.blockdeleted(article.id)
 
 
+CREATED_INDICES = []
+
+
+def create_index(index_type):
+    if index_type in CREATED_INDICES:
+        return
+    core.initialise_index(app, core.es_connection, only_mappings=[index_type])
+    CREATED_INDICES.append(index_type)
+
+
+def dao_proxy(dao_method, type="class"):
+
+    if type == "class":
+        @classmethod
+        @functools.wraps(dao_method)
+        def proxy_method(cls, *args, **kwargs):
+            create_index(cls.__type__)
+            return dao_method.__func__(cls, *args, **kwargs)
+        return proxy_method
+
+    else:
+        @functools.wraps(dao_method)
+        def proxy_method(self, *args, **kwargs):
+            create_index(self.__type__)
+            return dao_method(self, *args, **kwargs)
+
+        return proxy_method
 
 
 class DoajTestCase(TestCase):
@@ -95,6 +122,18 @@ class DoajTestCase(TestCase):
         main_queue.always_eager = True
         long_running.always_eager = True
 
+        dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
+        dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
+        dao.DomainObject.bulk = dao_proxy(dao.DomainObject.bulk)
+        dao.DomainObject.refresh = dao_proxy(dao.DomainObject.refresh)
+        dao.DomainObject.pull = dao_proxy(dao.DomainObject.pull)
+        dao.DomainObject.pull_by_key = dao_proxy(dao.DomainObject.pull_by_key)
+        dao.DomainObject.send_query = dao_proxy(dao.DomainObject.send_query)
+        dao.DomainObject.remove_by_id = dao_proxy(dao.DomainObject.remove_by_id)
+        dao.DomainObject.delete_by_query = dao_proxy(dao.DomainObject.delete_by_query)
+        dao.DomainObject.iterate = dao_proxy(dao.DomainObject.iterate)
+        dao.DomainObject.count = dao_proxy(dao.DomainObject.count)
+
         # if a test on a previous run has totally failed and tearDownClass has not run, then make sure the index is gone first
         dao.DomainObject.destroy_index()
         # time.sleep(1) # I don't know why we slept here, but not in tearDown, so I have removed it
@@ -112,6 +151,11 @@ class DoajTestCase(TestCase):
             os.remove(f)
         shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
 
+        global CREATED_INDICES
+        if len(CREATED_INDICES) > 0:
+            dao.DomainObject.destroy_index()
+            CREATED_INDICES = []
+
     def list_today_article_history_files(self):
         return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
 
@@ -122,7 +166,7 @@ class DoajTestCase(TestCase):
         ctx = self.app_test.test_request_context(path)
         ctx.push()
         if acc is not None:
-            # acc.save(blocking=True)
+            acc.save(blocking=True)
             login_user(acc)
 
         return ctx
