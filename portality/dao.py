@@ -105,7 +105,7 @@ class DomainObject(UserDict, object):
     def last_updated_timestamp(self):
         return datetime.strptime(self.last_updated, "%Y-%m-%dT%H:%M:%SZ")
 
-    def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False):
+    def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False, block_wait=0.25):
         """
         ~~->ReadOnlyMode:Feature~~
         :param retries:
@@ -120,6 +120,9 @@ class DomainObject(UserDict, object):
 
         if retries > app.config.get("ES_RETRY_HARD_LIMIT", 1000):   # an arbitrary large number
             retries = app.config.get("ES_RETRY_HARD_LIMIT", 1000)
+
+        if app.config.get("ES_BLOCK_WAIT_OVERRIDE") is not None:
+            block_wait = app.config["ES_BLOCK_WAIT_OVERRIDE"]
 
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
@@ -183,14 +186,14 @@ class DomainObject(UserDict, object):
                 res = self.query(q=bq.query())
                 j = self._unwrap_search_result(res)
                 if len(j) == 0:
-                    time.sleep(0.25)
+                    time.sleep(block_wait)
                     continue
                 if len(j) > 1:
                     raise Exception("More than one record with id {x}".format(x=self.id))
                 if j[0].get("last_updated", [])[0] == now:
                     break
                 else:
-                    time.sleep(0.25)
+                    time.sleep(block_wait)
                     continue
 
         return r

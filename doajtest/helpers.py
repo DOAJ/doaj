@@ -10,7 +10,6 @@ from glob import glob
 import os, csv, shutil
 from portality.lib import paths
 import functools
-import time
 
 
 def patch_config(inst, properties):
@@ -21,17 +20,33 @@ def patch_config(inst, properties):
     return originals
 
 
-def with_es(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        obj = WithES(func)
-        return obj.__call__(*args, **kwargs)
-    return wrapper
+def with_es(_func=None, *, indices=None):
+    def with_es_decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            obj = WithES(func, indices)
+            return obj.__call__(*args, **kwargs)
+
+        return wrapper
+
+    if _func is None:
+        return with_es_decorator
+    else:
+        return with_es_decorator(_func)
+
+#
+# def with_es(func):
+#     @functools.wraps(func)
+#     def wrapper(*args, **kwargs):
+#         obj = WithES(func)
+#         return obj.__call__(*args, **kwargs)
+#     return wrapper
 
 
 class WithES:
-    def __init__(self, func):
+    def __init__(self, func, indices=None):
         self.func = func
+        self.indices = indices
 
     def __call__(self, *args, **kwargs):
         self.setUp()
@@ -40,7 +55,7 @@ class WithES:
         return resp
 
     def setUp(self):
-        core.initialise_index(app, core.es_connection)
+        core.initialise_index(app, core.es_connection, only_mappings=self.indices)
 
     def tearDown(self):
         dao.DomainObject.destroy_index()
@@ -57,6 +72,7 @@ class DoajTestCase(TestCase):
             "STORE_LOCAL" : paths.rel2abs(__file__, "..", "tmp", "store", "main"),
             "STORE_TMP_DIR" : paths.rel2abs(__file__, "..", "tmp", "store", "tmp"),
             "ES_RETRY_HARD_LIMIT" : 0,
+            "ES_BLOCK_WAIT_OVERRIDE" : 0.1,
             "ELASTIC_SEARCH_DB" : app.config.get('ELASTIC_SEARCH_TEST_DB'),
             'ELASTIC_SEARCH_DB_PREFIX' : core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX'],
             "FEATURES" : app.config['VALID_FEATURES'],
