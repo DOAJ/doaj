@@ -48,69 +48,62 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
         # Scroll though all articles in the index
         i = 0
-        for a in esprit.tasks.scroll(conn, ipt_prefix('article'), q={"query": {"match_all": {}}, "sort": ["_doc"]}, page_size=100, keepalive='5m'):
-            try:
-                article_model = models.Article(_source=a)
+        for article_model in models.Article.iterate(q={"query": {"match_all": {}}, "sort": ["_doc"]}, page_size=100, wrap=True, keepalive='5m'):
 
-                # for debugging, just print out the progress
-                i += 1
-                print(i, article_model.id, len(list(journal_cache.keys())), len(write_batch), len(delete_batch))
+            # for debugging, just print out the progress
+            i += 1
+            print(i, article_model.id, len(list(journal_cache.keys())), len(write_batch), len(delete_batch))
 
-                # Try to find journal in our cache
-                bibjson = article_model.bibjson()
-                allissns = bibjson.issns()
+            # Try to find journal in our cache
+            bibjson = article_model.bibjson()
+            allissns = bibjson.issns()
 
-                cache_miss = False
-                possibles = {}
-                for issn in allissns:
-                    if issn in journal_cache:
-                        inst = models.Journal(**journal_cache[issn])
-                        possibles[inst.id] = inst
-                    else:
-                        cache_miss = True
-                assoc_journal = None
-                if len(list(possibles.keys())) > 0:
-                    assoc_journal = self._get_best_journal(list(possibles.values()))
-
-                # Cache miss; ask the article model to try to find its journal
-                if assoc_journal is None or cache_miss:
-                    journals = models.Journal.find_by_issn(allissns)
-                    if len(journals) > 0:
-                        assoc_journal = self._get_best_journal(journals)
-
-                # By the time we get to here, we still might not have a Journal, but we tried.
-                if assoc_journal is not None:
-                    # Update the article's metadata, including in_doaj status
-                    reg = models.Journal()
-                    reg.set_id(assoc_journal.id)
-                    changed = article_model.add_journal_metadata(assoc_journal, reg)
-
-                    # cache the minified journal register
-                    for issn in reg.bibjson().issns():
-                        if issn not in journal_cache:
-                            journal_cache[issn] = reg.data
-
-                    if not changed:
-                        same_count += 1
-                        if prep_all:                    # This gets done below, but can override to prep unchanged ones here
-                            article_model.prep()
-                            write_batch.append(article_model.data)
-                    else:
-                        updated_count += 1
-                        if write_changes:
-                            article_model.prep()
-                            write_batch.append(article_model.data)
-
+            cache_miss = False
+            possibles = {}
+            for issn in allissns:
+                if issn in journal_cache:
+                    inst = models.Journal(**journal_cache[issn])
+                    possibles[inst.id] = inst
                 else:
-                    # This article's Journal is no-more, or has evaded us; we delete the article.
-                    deleted_count += 1
-                    if write_changes:
-                        delete_batch.add(article_model.id)
+                    cache_miss = True
+            assoc_journal = None
+            if len(list(possibles.keys())) > 0:
+                assoc_journal = self._get_best_journal(list(possibles.values()))
 
-            except ValueError:
-                # Failed to create model (this shouldn't happen!)
-                failed_articles.append(json.dumps(a))
-                continue
+            # Cache miss; ask the article model to try to find its journal
+            if assoc_journal is None or cache_miss:
+                journals = models.Journal.find_by_issn(allissns)
+                if len(journals) > 0:
+                    assoc_journal = self._get_best_journal(journals)
+
+            # By the time we get to here, we still might not have a Journal, but we tried.
+            if assoc_journal is not None:
+                # Update the article's metadata, including in_doaj status
+                reg = models.Journal()
+                reg.set_id(assoc_journal.id)
+                changed = article_model.add_journal_metadata(assoc_journal, reg)
+
+                # cache the minified journal register
+                for issn in reg.bibjson().issns():
+                    if issn not in journal_cache:
+                        journal_cache[issn] = reg.data
+
+                if not changed:
+                    same_count += 1
+                    if prep_all:                    # This gets done below, but can override to prep unchanged ones here
+                        article_model.prep()
+                        write_batch.append(article_model.data)
+                else:
+                    updated_count += 1
+                    if write_changes:
+                        article_model.prep()
+                        write_batch.append(article_model.data)
+
+            else:
+                # This article's Journal is no-more, or has evaded us; we delete the article.
+                deleted_count += 1
+                if write_changes:
+                    delete_batch.add(article_model.id)
 
             # When we have reached the batch limit, do some writing or deleting
             if len(write_batch) >= batch_size:

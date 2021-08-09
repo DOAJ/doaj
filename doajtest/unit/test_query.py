@@ -321,7 +321,6 @@ class TestQuery(DoajTestCase):
             am = models.Article(**hit)
             assert am.publisher_record_id() is None, am.publisher_record_id()
 
-
     def test_10_scroll(self):
         # Just bringing it all together. Make 4 articles: 3 in DOAJ, 1 not in DOAJ
         # We then expect pre-filters to run on the query, ensuring we only get the 3 in DOAJ articles.

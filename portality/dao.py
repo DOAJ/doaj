@@ -22,6 +22,18 @@ class ElasticSearchWriteException(Exception):
     pass
 
 
+class ScrollException(Exception):
+    pass
+
+
+class ScrollInitialiseException(ScrollException):
+    pass
+
+
+class ScrollTimeoutException(ScrollException):
+    pass
+
+
 class DomainObject(UserDict, object):
     """
     ~~DomainObject:Model->Elasticsearch:Technology~~
@@ -353,8 +365,10 @@ class DomainObject(UserDict, object):
         return cls.send_query(query)
 
     @classmethod
-    def send_query(cls, qobj, retry=50):
-        """Actually send a query object to the backend."""
+    def send_query(cls, qobj, retry=50, **kwargs):
+        """Actually send a query object to the backend.
+        :param kwargs are passed directly to Elasticsearch search() function
+        """
 
         if retry > app.config.get("ES_RETRY_HARD_LIMIT", 1000) + 1:   # an arbitrary large number
             retry = app.config.get("ES_RETRY_HARD_LIMIT", 1000) + 1
@@ -367,7 +381,7 @@ class DomainObject(UserDict, object):
             try:
                 # ES 7.10 updated target to whole index, since specifying type for search is deprecated
                 # r = requests.post(cls.target_whole_index() + recid + "_search", data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
-                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(), headers=CONTENT_TYPE_JSON)
+                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(), headers=CONTENT_TYPE_JSON, **kwargs)
                 break
             except Exception as e:
                 exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
@@ -482,46 +496,98 @@ class DomainObject(UserDict, object):
         return rs
 
     @classmethod
-    def iterate(cls, q, page_size=1000, limit=None, wrap=True):
-        # FIXME: Due to stricter limits in ES on size, this MUST be re-implemented as scroll
-        # Result window is too large, from + size must be less than or equal to: [10000] but was [20000]
-        theq = deepcopy(q)
+    def iterate(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True, keepalive: str = '1m'):
+        """ Provide an iterable of all items in a model, use
+        :param q: The query to scroll results on
+        :param page_size: limited by ElasticSearch, check settings to override
+        :param limit: Limit the number of results returned (e.g. to take a slice)
+        :param wrap: Whether to return the results in raw json or wrapped as an object
+        :param keepalive: scroll timeout
+        """
+        theq = {"query": {"match_all": {}}} if q is None else deepcopy(q)
         theq["size"] = page_size
         theq["from"] = 0
-        if "sort" not in theq:             # to ensure complete coverage on a changing index, sort by id is our best bet
-            theq["sort"] = [{"_id": {"order": "asc"}}]
+        if "sort" not in theq:
+            # This gives the same performance enhancement as scan, use it by default. This is the order of indexing like sort by ID
+            theq["sort"] = ["_doc"]
+
+        # Initialise the scroll
+        try:
+            res = cls.send_query(theq, scroll=keepalive)
+        except Exception as e:
+            raise ScrollInitialiseException("Unable to initialise scroll - could be your mappings are broken", e)
+
+        # unpack scroll response
+        scroll_id = res.get('_scroll_id')
+        total_results = res.get('hits', {}).get('total', {}).get('value')
+
+        # Supply the first set of results
         counter = 0
-        while True:
-            # apply the limit
-            if limit is not None and counter >= limit:
-                break
-            
-            res = cls.query(q=theq)
-            rs = cls.handle_es_raw_response(
+        for r in cls.handle_es_raw_response(
                 res,
                 wrap=wrap,
                 extra_trace_info=
-                    "\nQuery sent to ES:\n{q}\n"
+                    "\nScroll initialised:\n{q}\n"
                     "\n\nPage #{counter} of the ES response with size {page_size}."
-                    .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)
-            )
+                    .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
 
-            if len(rs) == 0:
+            # apply the limit
+            if limit is not None and counter >= int(limit):
                 break
-            for r in rs:
-                # apply the limit (again)
-                if limit is not None and counter >= limit:
+            counter += 1
+            if wrap:
+                yield cls(**r)
+            else:
+                yield r
+
+        # Continue to scroll through the rest of the results
+        while True:
+            # apply the limit
+            if limit is not None and counter >= int(limit):
+                break
+
+            # if we consumed all the results we were expecting, we can just stop here
+            if counter >= total_results:
+                break
+
+            # get the next page and check that we haven't timed out
+            try:
+                res = ES.scroll(scroll_id=scroll_id, scroll=keepalive)
+            except elasticsearch.exceptions.NotFoundError as e:
+                raise ScrollTimeoutException(
+                    "Scroll timed out; {status} - {message}".format(status=e.status_code, message=e.info))
+            except Exception as e:
+                # if any other exception occurs, make sure it's at least logged.
+                app.logger.exception("Unhandled exception in scroll method of DAO")
+                raise ScrollException(e)
+
+            # if we didn't get any results back, this means we're at the end
+            if len(res.get('hits', {}).get('hits')) == 0:
+                break
+
+            for r in cls.handle_es_raw_response(
+                    res,
+                    wrap=wrap,
+                    extra_trace_info=
+                    "\nScroll:\n{q}\n"
+                    "\n\nPage #{counter} of the ES response with size {page_size}."
+                            .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+
+                # apply the limit
+                if limit is not None and counter >= int(limit):
                     break
                 counter += 1
                 if wrap:
                     yield cls(**r)
                 else:
                     yield r
-            theq["from"] += page_size   
     
     @classmethod
     def iterall(cls, page_size=1000, limit=None):
         return cls.iterate(MatchAllQuery().query(), page_size, limit)
+
+    # an alias for the iterate function    # todo: is this a Bad Idea?
+    scroll = iterate
 
     @classmethod
     def prefix_query(cls, field, prefix, size=5, facet_field=None, analyzed_field=True):

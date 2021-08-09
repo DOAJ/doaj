@@ -148,7 +148,7 @@ class QueryService(object):
         keepalive = cfg.get("keepalive", "1m")
 
         # ~~->Elasticsearch:Technology~~
-        for result in esprit.tasks.scroll(es_connection, ipt_prefix(dao_klass.__type__), q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive, scan=scan):
+        for result in dao_klass.iterate(q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive):
             res = self._post_filter_search_results(cfg, result, unpacked=True)
             yield res
 
