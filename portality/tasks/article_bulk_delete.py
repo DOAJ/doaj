@@ -79,7 +79,7 @@ class ArticleBulkDeleteBackgroundTask(AdminBackgroundTask):
     def estimate_delete_counts(cls, selection_query):
         q = deepcopy(selection_query)
         res = models.Article.query(q=q)
-        return res['hits']['total']
+        return res['hits']['total']['value']
 
     @classmethod
     def resolve_selection_query(cls, selection_query):

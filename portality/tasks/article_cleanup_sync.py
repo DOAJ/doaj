@@ -5,17 +5,13 @@ For each article in the DOAJ index:
     * Applies the journal's information to the article metadata as needed
 """
 
-import esprit
-import json
-
 from datetime import datetime
 
 from portality import models
-from portality.core import app, es_connection
+from portality.core import app
 from portality.tasks.redis_huey import long_running, schedule
 from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
-from portality.util import ipt_prefix
 
 
 class ArticleCleanupSyncBackgroundTask(BackgroundTask):
@@ -42,9 +38,6 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         updated_count = 0
         same_count = 0
         deleted_count = 0
-
-        # Connection to the ES index, imported from the main app configuration
-        conn = es_connection
 
         # Scroll though all articles in the index
         i = 0
@@ -113,7 +106,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
             if len(delete_batch) >= batch_size:
                 job.add_audit_message("Deleting {x} articles".format(x=len(delete_batch)))
-                esprit.raw.bulk_delete(conn, ipt_prefix('article'), delete_batch)
+                models.Article.bulk_delete(delete_batch)
                 delete_batch.clear()
 
         # Finish the last part-batches of writes or deletes
@@ -122,7 +115,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
             models.Article.bulk(write_batch)
         if len(delete_batch) > 0:
             job.add_audit_message("Deleting {x} articles".format(x=len(delete_batch)))
-            esprit.raw.bulk_delete(conn, ipt_prefix('article'), delete_batch)
+            models.Article.bulk_delete(delete_batch)
             delete_batch.clear()
 
         if write_changes:

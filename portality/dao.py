@@ -288,7 +288,11 @@ class DomainObject(UserDict, object):
                 res.get('hits', {}).get('hits', [])]
 
     @classmethod
-    def bulk(cls, bibjson_list, idkey='id', refresh=False):
+    def bulk_delete(cls, id_list, idkey='id', refresh=False):
+        return cls.bulk(bibjson_list=[{'id': i} for i in id_list], idkey=idkey, refresh=refresh, action='delete')
+
+    @classmethod
+    def bulk(cls, bibjson_list, idkey='id', refresh=False, action='index'):
         """
         ~~->ReadOnlyMode:Feature~~
         :param bibjson_list:
@@ -300,14 +304,15 @@ class DomainObject(UserDict, object):
             app.logger.warn("System is in READ-ONLY mode, bulk command cannot run")
             return
 
+        if action not in ['index', 'update', 'delete']:
+            raise Exception("Unrecognised bulk action '{0}'".format(action))
+
         data = ''
         for r in bibjson_list:
-            data += json.dumps({'index': {'_id': r[idkey]}}) + '\n'
-            data += json.dumps(r) + '\n'
-        resp = ES.bulk(data, headers=CONTENT_TYPE_JSON)
-        # r = requests.post(cls.target() + '_bulk', data=data, headers=CONTENT_TYPE_JSON)
-        if refresh:
-            cls.refresh()
+            data += json.dumps({action: {'_id': r[idkey]}}) + '\n'
+            if action != 'delete':
+                data += json.dumps(r) + '\n'
+        resp = ES.bulk(body=data, index=cls.index_name(), doc_type=cls.doc_type(), refresh=refresh)
         return resp
 
     @classmethod
