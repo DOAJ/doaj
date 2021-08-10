@@ -1,4 +1,4 @@
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, with_es
 from portality.api.v2 import ArticlesBulkApi, Api401Error, Api400Error
 from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
@@ -7,21 +7,17 @@ from flask import url_for
 import json
 import time
 
+
 class TestBulkArticle(DoajTestCase):
 
     def setUp(self):
         super(TestBulkArticle, self).setUp()
 
-        # push an article to initialise the mappings
-        source = ArticleFixtureFactory.make_article_source()
-        article = models.Article(**source)
-        article.save(blocking=True)
-        article.delete()
-        models.Article.blockdeleted(article.id)
-
     def tearDown(self):
         super(TestBulkArticle, self).tearDown()
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_01_create_articles_success(self):
         def find_dict_in_list(lst, key, value):
             for i, dic in enumerate(lst):
@@ -73,6 +69,7 @@ class TestBulkArticle(DoajTestCase):
             s = models.Article.pull(_id)
             assert s is not None
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__])
     def test_02_create_duplicate_articles(self):
         # set up all the bits we need - 10 articles
         data = ArticleFixtureFactory.make_incoming_api_article()
@@ -98,6 +95,7 @@ class TestBulkArticle(DoajTestCase):
         # Since the upload was rejected, we should have no articles in the index
         assert len(models.Article.all()) == 0, len(models.Article.all())
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__])
     def test_03_create_articles_fail(self):
         # if the account is dud
         with self.assertRaises(Api401Error):
@@ -126,6 +124,8 @@ class TestBulkArticle(DoajTestCase):
         _all = [x for x in models.Article.iterall()]
         assert len(_all) == 0
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_04_delete_article_success(self):
         # set up all the bits we need
         dataset = []
@@ -163,6 +163,8 @@ class TestBulkArticle(DoajTestCase):
             ap = models.Article.pull(_id)
             assert ap is not None
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_05_delete_articles_fail(self):
         # set up all the bits we need
         dataset = []
@@ -213,6 +215,8 @@ class TestBulkArticle(DoajTestCase):
         with self.assertRaises(Api400Error):
             ArticlesBulkApi.delete(ids, article_owner)
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__, models.Account.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_06_test_via_endpoint(self):
         """ Use a request context to test the API via the route """
 
@@ -290,7 +294,8 @@ class TestBulkArticle(DoajTestCase):
                                        data=json.dumps([first_art['id']]))
                 assert resp.status_code == 400
 
-
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__, models.Account.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_07_no_redirects(self):
         """ v1 answers directly without redirect https://github.com/DOAJ/doajPM/issues/2664 """
         # TODO: this is a copy of the test above, with v1 instead of v2. If redirects are reinstated, uncomment above

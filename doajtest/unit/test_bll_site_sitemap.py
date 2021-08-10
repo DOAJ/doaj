@@ -2,7 +2,7 @@ from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
 from doajtest.fixtures import JournalFixtureFactory
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, patch_config
 from portality.bll import DOAJ
 from portality.bll import exceptions
 from portality import models
@@ -12,7 +12,6 @@ from doajtest.mocks.store import StoreMockFactory
 from doajtest.mocks.models_Cache import ModelCacheMockFactory
 from portality import store
 from io import StringIO
-import os, shutil
 from lxml import etree
 
 
@@ -33,16 +32,9 @@ class TestBLLSitemap(DoajTestCase):
         super(TestBLLSitemap, self).setUp()
         self.svc = DOAJ.siteService()
 
-        self.store_tmp_dir = app.config["STORE_TMP_DIR"]
-        app.config["STORE_TMP_DIR"] = os.path.join("test_store", "tmp")
-        self.store_local_dir = app.config["STORE_LOCAL_DIR"]
-        app.config["STORE_LOCAL_DIR"] = os.path.join("test_store", "main")
-
         self.localStore = store.StoreLocal(None)
         self.tmpStore = store.TempStore()
         self.container_id = app.config.get("STORE_CACHE_CONTAINER")
-        self.store_tmp_impl = app.config["STORE_TMP_IMPL"]
-        self.store_impl = app.config["STORE_IMPL"]
 
         self.cache = models.cache.Cache
         models.cache.Cache = ModelCacheMockFactory.in_memory()
@@ -58,10 +50,6 @@ class TestBLLSitemap(DoajTestCase):
         ]
 
     def tearDown(self):
-        app.config["STORE_TMP_IMPL"] = self.store_tmp_impl
-        app.config["STORE_IMPL"] = self.store_impl
-        if os.path.exists("test_store"):
-            shutil.rmtree("test_store")
         self.localStore.delete_container(self.container_id)
         self.tmpStore.delete_container(self.container_id)
 
@@ -87,11 +75,12 @@ class TestBLLSitemap(DoajTestCase):
         raises = EXCEPTIONS.get(raises_arg)
         prune = True if prune_arg == "True" else False if prune_arg == "False" else None
 
+        original_configs = {}
         if tmp_write_arg == "fail":
-            app.config["STORE_TMP_IMPL"] = StoreMockFactory.no_writes_classpath()
+            original_configs.update(patch_config(app, {"STORE_TMP_IMPL": StoreMockFactory.no_writes_classpath()}))
 
         if main_write_arg == "fail":
-            app.config["STORE_IMPL"] = StoreMockFactory.no_writes_classpath()
+            original_configs.update(patch_config(app, {"STORE_IMPL": StoreMockFactory.no_writes_classpath()}))
 
         journals = []
         for s in JournalFixtureFactory.make_many_journal_sources(count=10, in_doaj=True):
@@ -180,6 +169,7 @@ class TestBLLSitemap(DoajTestCase):
             list(set(statics))
             assert len(statics) == len(app.config["STATIC_PAGES"])
 
-
+        # Tear down
+        patch_config(app, original_configs)
 
 

@@ -3,42 +3,158 @@ from flask_login import login_user
 from unittest import TestCase
 from portality import core, dao
 from portality.app import app
-from doajtest.bootstrap import prepare_for_test
+from portality.tasks.redis_huey import main_queue, long_running
 import dictdiffer
 from datetime import datetime
 from glob import glob
 import os, csv, shutil
 from portality.lib import paths
+import functools
 
-prepare_for_test()
+
+def patch_config(inst, properties):
+    originals = {}
+    for k, v in properties.items():
+        originals[k] = inst.config.get(k)
+        inst.config[k] = v
+    return originals
+
+
+def with_es(_func=None, *, indices=None, warm_mappings=None):
+    def with_es_decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            obj = WithES(func, indices, warm_mappings)
+            return obj.__call__(*args, **kwargs)
+
+        return wrapper
+
+    if _func is None:
+        return with_es_decorator
+    else:
+        return with_es_decorator(_func)
+
+class WithES:
+
+    def __init__(self, func, indices=None, warm_mappings=None):
+        self.func = func
+        self.indices = indices
+        self.warm_mappings = warm_mappings if warm_mappings is not None else []
+
+    def __call__(self, *args, **kwargs):
+        self.setUp()
+        resp = self.func(*args, **kwargs)
+        self.tearDown()
+        return resp
+
+    def setUp(self):
+        only_mappings = None
+        if self.indices is not None and self.indices != "all":
+            only_mappings = self.indices
+        core.initialise_index(app, core.es_connection, only_mappings=only_mappings)
+        for im in self.warm_mappings:
+            if im == "article":
+                self.warmArticle()
+            # add more types if they are necessary
+
+    def tearDown(self):
+        dao.DomainObject.destroy_index()
+
+    def warmArticle(self):
+        # push an article to initialise the mappings
+        from doajtest.fixtures import ArticleFixtureFactory
+        from portality.models import Article
+        source = ArticleFixtureFactory.make_article_source()
+        article = Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        Article.blockdeleted(article.id)
+
+
+CREATED_INDICES = []
+
+
+def create_index(index_type):
+    if index_type in CREATED_INDICES:
+        return
+    core.initialise_index(app, core.es_connection, only_mappings=[index_type])
+    CREATED_INDICES.append(index_type)
+
+
+def dao_proxy(dao_method, type="class"):
+
+    if type == "class":
+        @classmethod
+        @functools.wraps(dao_method)
+        def proxy_method(cls, *args, **kwargs):
+            create_index(cls.__type__)
+            return dao_method.__func__(cls, *args, **kwargs)
+        return proxy_method
+
+    else:
+        @functools.wraps(dao_method)
+        def proxy_method(self, *args, **kwargs):
+            create_index(self.__type__)
+            return dao_method(self, *args, **kwargs)
+
+        return proxy_method
 
 
 class DoajTestCase(TestCase):
     app_test = app
+    originals = {}
 
-    def init_index(self):
-        core.initialise_index(self.app_test, core.es_connection)
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.originals = patch_config(app, {
+            "STORE_IMPL" : "portality.store.StoreLocal",
+            "STORE_LOCAL" : paths.rel2abs(__file__, "..", "tmp", "store", "main"),
+            "STORE_TMP_DIR" : paths.rel2abs(__file__, "..", "tmp", "store", "tmp"),
+            "ES_RETRY_HARD_LIMIT" : 0,
+            "ES_BLOCK_WAIT_OVERRIDE" : 0.1,
+            "ELASTIC_SEARCH_DB" : app.config.get('ELASTIC_SEARCH_TEST_DB'),
+            'ELASTIC_SEARCH_DB_PREFIX' : core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX'],
+            "FEATURES" : app.config['VALID_FEATURES'],
+            'ENABLE_EMAIL' : False,
+            "FAKER_SEED" : 1
+        })
 
-    def destroy_index(self):
+        main_queue.always_eager = True
+        long_running.always_eager = True
+
+        dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
+        dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
+        dao.DomainObject.bulk = dao_proxy(dao.DomainObject.bulk)
+        dao.DomainObject.refresh = dao_proxy(dao.DomainObject.refresh)
+        dao.DomainObject.pull = dao_proxy(dao.DomainObject.pull)
+        dao.DomainObject.pull_by_key = dao_proxy(dao.DomainObject.pull_by_key)
+        dao.DomainObject.send_query = dao_proxy(dao.DomainObject.send_query)
+        dao.DomainObject.remove_by_id = dao_proxy(dao.DomainObject.remove_by_id)
+        dao.DomainObject.delete_by_query = dao_proxy(dao.DomainObject.delete_by_query)
+        dao.DomainObject.iterate = dao_proxy(dao.DomainObject.iterate)
+        dao.DomainObject.count = dao_proxy(dao.DomainObject.count)
+
+        # if a test on a previous run has totally failed and tearDownClass has not run, then make sure the index is gone first
         dao.DomainObject.destroy_index()
+        # time.sleep(1) # I don't know why we slept here, but not in tearDown, so I have removed it
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        patch_config(app, cls.originals)
+        cls.originals = {}
 
     def setUp(self):
-        self.init_index()
-
-        app.config["STORE_IMPL"] = "portality.store.StoreLocal"
-        app.config["STORE_LOCAL_DIR"] = paths.rel2abs(__file__, "..", "tmp", "store", "main")
-        app.config["STORE_TMP_DIR"] = paths.rel2abs(__file__, "..", "tmp", "store", "tmp")
-
-        self._es_retry_hard_limit = app.config.get("ES_RETRY_HARD_LIMIT")
-        app.config["ES_RETRY_HARD_LIMIT"] = 0
+        pass
 
     def tearDown(self):
-        self.destroy_index()
         for f in self.list_today_article_history_files() + self.list_today_journal_history_files():
             os.remove(f)
         shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
 
-        app.config["ES_RETRY_HARD_LIMIT"] = self._es_retry_hard_limit
+        global CREATED_INDICES
+        if len(CREATED_INDICES) > 0:
+            dao.DomainObject.destroy_index()
+            CREATED_INDICES = []
 
     def list_today_article_history_files(self):
         return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
@@ -95,6 +211,7 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
         print('Unchanged :: keys which are the same in {d1} and {d2} and whose values are also the same'.format(d1=d1_label, d2=d2_label))
         print(differ.unchanged())
 
+
 def load_from_matrix(filename, test_ids):
     if test_ids is None:
         test_ids = []
@@ -107,6 +224,7 @@ def load_from_matrix(filename, test_ids):
                 row[0] = "row_id_" + row[0]
                 cases.append(tuple(row))
         return cases
+
 
 def deep_sort(obj):
     """

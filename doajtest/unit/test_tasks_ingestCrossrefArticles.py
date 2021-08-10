@@ -1840,15 +1840,15 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
             job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref", upload_file=f)
             id = job.params.get("ingest_articles__file_upload_id")
             self.cleanup_ids.append(id)
-
+            models.FileUpload.block(id)
             # because file upload gets created and saved by prepare
-            time.sleep(2)
+            # time.sleep(2)
 
             task = ingestarticles.IngestArticlesBackgroundTask(job)
             task.run()
 
             # because file upload needs to be re-saved
-            time.sleep(2)
+            # time.sleep(2)
 
             fu = models.FileUpload.pull(id)
 

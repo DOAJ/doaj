@@ -207,7 +207,7 @@ def put_mappings(conn, mappings):
             print("ES Type + Mapping already exists in index {0} for {1}".format(altered_key, key))
 
 
-def initialise_index(app, conn):
+def initialise_index(app, conn, only_mappings=None):
     """
     ~~InitialiseIndex:Framework->Elasticsearch:Technology~~
     :param app:
@@ -224,6 +224,9 @@ def initialise_index(app, conn):
 
     # get the app mappings
     mappings = es_data_mapping.get_mappings(app)
+
+    if only_mappings is not None:
+        mappings = {key:value for (key, value) in mappings.items() if key in only_mappings}
 
     # Send the mappings to ES
     put_mappings(conn, mappings)

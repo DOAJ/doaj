@@ -2,7 +2,9 @@ from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.api.v2 import DiscoveryApi, DiscoveryException
 from portality.api.common import generate_link_headers
+from portality.lib import dates
 import time
+from datetime import datetime
 from flask import url_for
 
 class TestAPIDiscovery(DoajTestCase):
@@ -235,15 +237,12 @@ class TestAPIDiscovery(DoajTestCase):
             assert res.data.get('total', 0) == 1
 
     def test_03_applications(self):
-        # create an account that will own the suggestions
-        acc = models.Account()
-        acc.set_id("owner")
-        acc.save()
-
         # populate the index with some suggestions owned by this owner
+        now = datetime.utcnow()
         for i in range(5):
             a = models.Suggestion()
             a.set_owner("owner")
+            a.set_created(dates.format(dates.after(now, i)))
             bj = a.bibjson()
             bj.title = "Test Suggestion {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
@@ -252,12 +251,13 @@ class TestAPIDiscovery(DoajTestCase):
             a.save()
 
             # make sure the last updated dates are suitably different
-            time.sleep(1)
+            # time.sleep(1)
 
         # populte the index with some which are not owned by this owner
         for i in range(5):
             a = models.Suggestion()
             a.set_owner("stranger")
+            a.set_created(dates.format(dates.after(now, i + 5)))
             bj = a.bibjson()
             bj.title = "Test Suggestion {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
@@ -265,9 +265,12 @@ class TestAPIDiscovery(DoajTestCase):
             a.save()
 
             # make sure the last updated dates are suitably different
-            time.sleep(1)
+            # time.sleep(1)
 
-        time.sleep(1)
+        # create an account that will own the suggestions
+        acc = models.Account()
+        acc.set_id("owner")
+        acc.save(blocking=True)
 
         # now run some queries
         with self._make_and_push_test_context(acc=acc):
