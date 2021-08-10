@@ -34,7 +34,7 @@ class TestAPIClient(DoajTestCase):
         # put debug back on
         cls.app_test.debug = True
 
-    @with_es(indices=[models.Account.__type__])
+    #@with_es(indices=[models.Account.__type__])
     def test_01_api_role(self):
         """test the new roles added for the API"""
         a1 = models.Account.make_account(email="a1@example.com", username="a1_user", name="a1_name",
@@ -53,7 +53,7 @@ class TestAPIClient(DoajTestCase):
         a1.remove_role('api')
         assert a1.api_key is None
 
-    @with_es(indices=[models.Account.__type__])
+    #@with_es(indices=[models.Account.__type__])
     def test_02_api_required_decorator(self):
         """test the api_key_required decorator"""
         a1 = models.Account.make_account(email="a1@example.com", username="a1_user", name="a1_name",
@@ -76,7 +76,7 @@ class TestAPIClient(DoajTestCase):
             response_denied = t_client.get('/hello?api_key=' + a2_key)
             assert response_denied.status_code == 401
 
-    @with_es(indices=[models.Account.__type__, models.Journal.__type__, models.Article.__type__])
+    #@with_es(indices=[models.Account.__type__, models.Journal.__type__, models.Article.__type__])
     def test_03_api_optional_decorator(self):
         """test the api_key_optional decorator"""
         a1 = models.Account.make_account(email="a1@example.com", username="a1_user", name="a1_name",

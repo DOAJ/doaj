@@ -5,7 +5,7 @@ from doajtest.helpers import DoajTestCase
 from portality.models import Article, Account, Journal
 from flask import url_for
 from doajtest.unit.resources.articles_metadata_form import ArticleMetadataFactory
-from flask_login import login_user
+
 
 class TestAdminEditMetadata(DoajTestCase):
 
