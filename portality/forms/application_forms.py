@@ -1860,8 +1860,7 @@ class FieldSetDefinitions:
         "fields": [
             FieldDefinitions.BOAI["name"],
             FieldDefinitions.OA_STATEMENT_URL["name"],
-            # to be added when ready for the public view - remove from the other places then
-            # FieldDefinitions.OA_START["name"]
+            FieldDefinitions.OA_START["name"]
         ]
     }
 
@@ -2014,14 +2013,6 @@ class FieldSetDefinitions:
             FieldDefinitions.PERSISTENT_IDENTIFIERS_OTHER["name"],
             FieldDefinitions.ORCID_IDS["name"],
             FieldDefinitions.OPEN_CITATIONS["name"]
-        ]
-    }
-
-    OA_START = {
-        "name": "oa_start",
-        "label": "OA Start Date",
-        "fields": [
-            FieldDefinitions.OA_START["name"]
         ]
     }
 
@@ -2182,7 +2173,6 @@ class ApplicationContextDefinitions:
     EDITOR["fieldsets"] += [
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
-        FieldSetDefinitions.OA_START["name"],
         FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
     ]
@@ -2197,7 +2187,6 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.REASSIGN["name"],
         FieldSetDefinitions.STATUS["name"],
         FieldSetDefinitions.REVIEWERS["name"],
-        FieldSetDefinitions.OA_START["name"],
         FieldSetDefinitions.CONTINUATIONS["name"],
         FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
@@ -2252,7 +2241,6 @@ class JournalContextDefinitions:
     EDITOR = deepcopy(ASSOCIATE)
     EDITOR["name"] = "editor"
     EDITOR["fieldsets"] += [
-        FieldSetDefinitions.OA_START["name"],
         FieldSetDefinitions.REVIEWERS["name"]
     ]
     EDITOR["processor"] = application_processors.EditorJournalReview
