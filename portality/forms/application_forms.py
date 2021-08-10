@@ -804,7 +804,7 @@ class FieldDefinitions:
     # ~~-> OAStart:FormField~~
     OA_START = {
         "name": "oa_start",
-        "label": "What is an OA Start date for this journal?",
+        "label": "In what year did the journal start to publish all content under an Open Access business model?",
         "input": "text",
         "validate": [
             {"required": {"message": "Enter the OA start date."}},

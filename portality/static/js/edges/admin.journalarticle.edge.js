@@ -220,20 +220,6 @@ $.extend(true, doaj, {
                     })
                 }),
                 edges.newRefiningANDTermSelector({
-                    id: "oa_start",
-                    category: "facet",
-                    field: "bibjson.oa_start",
-                    display: "OA Start Date",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
-                edges.newRefiningANDTermSelector({
                     id: "country_publisher",
                     category: "facet",
                     field: "index.country.exact",
@@ -401,12 +387,6 @@ $.extend(true, doaj, {
                                 {
                                     "pre": "<strong>Journal Language</strong>: ",
                                     "field": "bibjson.language"
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>Journal OA Start Date</strong>: ",
-                                    "field": "bibjson.oa_start"
                                 }
                             ],
                             // Articles

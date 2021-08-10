@@ -290,20 +290,6 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
-                edges.newRefiningANDTermSelector({
-                    id: "oa_start",
-                    category: "facet",
-                    field: "bibjson.oa_start",
-                    display: "OA Start Date",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
                 edges.newDateHistogramSelector({
                     id: "discontinued_date",
                     category: "facet",
@@ -480,12 +466,6 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>OA Start Date</strong>: ",
-                                    "field": "bibjson.oa_start"
-                                }
-                            ],
-                            [
-                                {
                                     valueFunction: doaj.adminJournalsSearch.relatedApplications
                                 }
                             ],
@@ -523,8 +503,7 @@ $.extend(true, doaj, {
                         "index.country.exact" : "Country of publisher",
                         "index.continued.exact" : "Continued",
                         "bibjson.discontinued_date" : "Discontinued Year",
-                        "index.has_apc.exact" : "Publication charges?",
-                        "bibjson.oa_start.exact" : "OA Start Date?"
+                        "index.has_apc.exact" : "Publication charges?"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
