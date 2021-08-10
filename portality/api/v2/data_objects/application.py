@@ -82,6 +82,7 @@ INCOMING_APPLICATION_REQUIREMENTS = {
                 "publication_time_weeks",
                 "publisher",
                 "ref",
+                "oa_start",
                 "other_charges",
                 "waiver",
                 "title"
