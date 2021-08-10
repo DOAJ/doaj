@@ -238,20 +238,6 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
-                edges.newRefiningANDTermSelector({
-                    id: "oa_start",
-                    category: "facet",
-                    field: "bibjson.oa_start",
-                    display: "OA Start Date",
-                    deactivateThreshold : 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
 
                 // configure the search controller
                 edges.newFullSearchController({
@@ -395,12 +381,6 @@ $.extend(true, doaj, {
                                 {
                                     "pre": "<strong>Journal License</strong>: ",
                                     valueFunction: doaj.fieldRender.journalLicense
-                                }
-                            ],
-                            [
-                                {
-                                    "pre": "<strong>OA Start</strong>: ",
-                                    "field": "bibjson.oa_start"
                                 }
                             ],
                             [
