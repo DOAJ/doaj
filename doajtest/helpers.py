@@ -107,16 +107,16 @@ class DoajTestCase(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.originals = patch_config(app, {
-            "STORE_IMPL" : "portality.store.StoreLocal",
-            "STORE_LOCAL" : paths.rel2abs(__file__, "..", "tmp", "store", "main"),
-            "STORE_TMP_DIR" : paths.rel2abs(__file__, "..", "tmp", "store", "tmp"),
-            "ES_RETRY_HARD_LIMIT" : 0,
-            "ES_BLOCK_WAIT_OVERRIDE" : 0.1,
-            "ELASTIC_SEARCH_DB" : app.config.get('ELASTIC_SEARCH_TEST_DB'),
-            'ELASTIC_SEARCH_DB_PREFIX' : core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX'],
-            "FEATURES" : app.config['VALID_FEATURES'],
-            'ENABLE_EMAIL' : False,
-            "FAKER_SEED" : 1
+            "STORE_IMPL": "portality.store.StoreLocal",
+            "STORE_LOCAL": paths.rel2abs(__file__, "..", "tmp", "store", "main"),
+            "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp"),
+            "ES_RETRY_HARD_LIMIT": 0,
+            "ES_BLOCK_WAIT_OVERRIDE": 0.1,
+            "ELASTIC_SEARCH_DB": app.config.get('ELASTIC_SEARCH_TEST_DB'),
+            'ELASTIC_SEARCH_DB_PREFIX': core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX'] + cls.__name__.lower() + '-',
+            "FEATURES": app.config['VALID_FEATURES'],
+            'ENABLE_EMAIL': False,
+            "FAKER_SEED": 1
         })
 
         main_queue.always_eager = True
