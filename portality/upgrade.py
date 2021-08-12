@@ -1,12 +1,11 @@
 """
 ~~Migrations:Framework~~
+# FIXME: this script requires more work if it's to be used for specified source and target clusters
 """
-import json, os, esprit, dictdiffer
+import json, os, dictdiffer
 from datetime import datetime, timedelta
 from copy import deepcopy
 from collections import OrderedDict
-from portality.core import app, create_es_connection
-from portality.util import ipt_prefix
 from portality import models
 from portality.lib import plugin
 from portality.lib.dataobj import DataStructureException
@@ -30,22 +29,6 @@ class UpgradeTask(object):
 def do_upgrade(definition, verbose):
     # get the source and target es definitions
     # ~~->Elasticsearch:Technology~~
-    source = definition.get("source")
-    target = definition.get("target")
-
-    if source is None:
-        sconn = create_es_connection(app)
-    else:
-        sconn = esprit.raw.Connection(source.get("host"), source.get("index"))
-
-    if target is None:
-        tconn = create_es_connection(app)
-    else:
-        tconn = esprit.raw.Connection(target.get("host"), target.get("index"))
-
-    if verbose:
-        print("Source", source)
-        print("Target", target)
 
     # get the defined batch size
     batch_size = definition.get("batch", 500)
@@ -54,19 +37,19 @@ def do_upgrade(definition, verbose):
         print("Upgrading", tdef.get("type"))
         batch = []
         total = 0
-        type_ = ipt_prefix(tdef.get("type"))
-        first_page = esprit.raw.search(sconn, type_)
-        max = first_page.json().get("hits", {}).get("total", {}).get('value', 0)
         type_start = datetime.now()
 
-        default_query={
+        default_query = {
             "query": {"match_all": {}}
         }
 
+        # learn what kind of model we've got
+        model_class = MODELS.get(tdef.get("type"))
+        max = model_class.count()
+
+        # Iterate through all of the records in the model class
         try:
-            for result in esprit.tasks.scroll(sconn, type_, q=tdef.get("query", default_query), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), scan=True):
-                # learn what kind of model we've got
-                model_class = MODELS.get(tdef.get("type"))
+            for result in model_class.iterate(q=tdef.get("query", default_query), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), wrap=False):
 
                 original = deepcopy(result)
                 if tdef.get("init_with_model", True):
@@ -105,7 +88,6 @@ def do_upgrade(definition, verbose):
                 data = _diff(original, data)
                 if "id" not in data:
                     data["id"] = _id
-                data = {"doc" : data}
 
                 batch.append(data)
                 if verbose:
@@ -115,7 +97,7 @@ def do_upgrade(definition, verbose):
                 if len(batch) >= batch_size:
                     total += len(batch)
                     print(datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
-                    esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=type_, bulk_type="update")
+                    model_class.bulk(batch, action="update")
                     batch = []
                     # do some timing predictions
                     batch_tick = datetime.now()
@@ -124,19 +106,19 @@ def do_upgrade(definition, verbose):
                     estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
                     estimated_finish = batch_tick + timedelta(seconds=estimated_seconds_remaining)
                     print('Estimated finish time for this type {0}.'.format(estimated_finish))
-        except esprit.tasks.ScrollTimeoutException:
+        except model_class.ScrollTimeoutException:
             # Try to write the part-batch to index
             if len(batch) > 0:
                 total += len(batch)
                 print(datetime.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
-                esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=type_, bulk_type="update")
+                model_class.bulk(batch, action="update")
                 batch = []
 
         # Write the last part-batch to index
         if len(batch) > 0:
             total += len(batch)
             print(datetime.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
-            esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=type_, bulk_type="update")
+            model_class.bulk(batch, action="update")
 
 
 def _diff(original, current):

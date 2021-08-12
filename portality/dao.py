@@ -4,6 +4,7 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 import time
 import re
+from typing import List
 
 from portality.core import app, es_connection as ES
 import urllib.parse
@@ -31,6 +32,10 @@ class ScrollInitialiseException(ScrollException):
 
 
 class ScrollTimeoutException(ScrollException):
+    pass
+
+
+class BulkException(Exception):
     pass
 
 
@@ -295,14 +300,14 @@ class DomainObject(UserDict, object):
         return cls.bulk(bibjson_list=[{'id': i} for i in id_list], idkey=idkey, refresh=refresh, action='delete')
 
     @classmethod
-    def bulk(cls, bibjson_list, idkey='id', refresh=False, action='index'):
+    def bulk(cls, documents: List[dict], idkey='id', refresh=False, action='index', **kwargs):
         """
-        ~~->ReadOnlyMode:Feature~~
-        :param bibjson_list:
-        :param idkey:
-        :param refresh:
-        :return:
+        :param documents: a list of objects to perform bulk actions on (list of dicts)
+        :param idkey: The path to extract an ID from the object, e.g. 'id', 'identifiers.id'
+        :param refresh: Refresh the index in each operation (make immediately available for search) - expensive!
+        :param kwargs: kwargs are passed into the bulk instruction for each record
         """
+        # ~~->ReadOnlyMode:Feature~~
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, bulk command cannot run")
             return
@@ -311,12 +316,37 @@ class DomainObject(UserDict, object):
             raise Exception("Unrecognised bulk action '{0}'".format(action))
 
         data = ''
-        for r in bibjson_list:
-            data += json.dumps({action: {'_id': r[idkey]}}) + '\n'
-            if action != 'delete':
-                data += json.dumps(r) + '\n'
+        for d in documents:
+            data += cls.to_bulk_single_rec(d, idkey=idkey, action=action, **kwargs)
         resp = ES.bulk(body=data, index=cls.index_name(), doc_type=cls.doc_type(), refresh=refresh)
         return resp
+
+    @staticmethod
+    def to_bulk_single_rec(record, idkey="id", action="index", **kwargs):
+        """ Adapted from esprit. Create a bulk instruction from a single record. """
+        data = ''
+        idpath = idkey.split(".")
+
+        # traverse down the object in search of the supplied ID key
+        context = record
+        for pathseg in idpath:
+            if pathseg in context:
+                context = context[pathseg]
+            else:
+                raise BulkException(
+                    "'{0}' not available in record to generate bulk _id: {1}".format(idkey, json.dumps(record)))
+
+        datadict = {action: {'_id': context}}
+        datadict[action].update(kwargs)
+
+        data += json.dumps(datadict) + '\n'
+        if action != 'delete':
+            # Wrap the record in doc only if necessary
+            if record.get('doc') and len(record.keys()) == 1:
+                data += json.dumps(record)
+            else:
+                data += json.dumps({'doc': record}) + '\n'
+        return data
 
     @classmethod
     def refresh(cls):
