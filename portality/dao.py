@@ -297,7 +297,7 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def bulk_delete(cls, id_list, idkey='id', refresh=False):
-        return cls.bulk(bibjson_list=[{'id': i} for i in id_list], idkey=idkey, refresh=refresh, action='delete')
+        return cls.bulk(documents=[{'id': i} for i in id_list], idkey=idkey, refresh=refresh, action='delete')
 
     @classmethod
     def bulk(cls, documents: List[dict], idkey='id', refresh=False, action='index', **kwargs):
