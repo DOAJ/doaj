@@ -516,11 +516,11 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
     },
     "utcdatetimemicros": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
     },
     "utcdatetime": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
     },
     "bool": {
         "type": "boolean"
@@ -530,7 +530,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
     },
     "bigenddate": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
     }
 }
 
