@@ -101,7 +101,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
             # When we have reached the batch limit, do some writing or deleting
             if len(write_batch) >= batch_size:
                 job.add_audit_message("Writing {x} articles".format(x=len(write_batch)))
-                models.Article.bulk(write_batch)
+                models.Article.bulk(documents=write_batch)
                 write_batch = []
 
             if len(delete_batch) >= batch_size:
@@ -112,7 +112,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         # Finish the last part-batches of writes or deletes
         if len(write_batch) > 0:
             job.add_audit_message("Writing {x} articles".format(x=len(write_batch)))
-            models.Article.bulk(write_batch)
+            models.Article.bulk(documents=write_batch)
         if len(delete_batch) > 0:
             job.add_audit_message("Deleting {x} articles".format(x=len(delete_batch)))
             models.Article.bulk_delete(delete_batch)

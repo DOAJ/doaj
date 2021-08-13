@@ -340,12 +340,15 @@ class DomainObject(UserDict, object):
         datadict[action].update(kwargs)
 
         data += json.dumps(datadict) + '\n'
-        if action != 'delete':
-            # Wrap the record in doc only if necessary
-            if record.get('doc') and len(record.keys()) == 1:
-                data += json.dumps(record)
-            else:
-                data += json.dumps({'doc': record}) + '\n'
+
+        if action == 'delete':
+            return data
+
+        # For update, we wrap the document in {doc: document} if not already supplied
+        if action == 'update' and not (record.get('doc') and len(record.keys()) == 1):
+            data += json.dumps({'doc': record}) + '\n'
+        else:
+            data += json.dumps(record) + '\n'
         return data
 
     @classmethod
