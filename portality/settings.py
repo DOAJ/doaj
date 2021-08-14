@@ -404,7 +404,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal", # ~~->Journal:Model~~
     "portality.models.Application", # ~~->Application:Model~~
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
-    "portality.models.harvester.HarvestState"   # ~~->HarvestState:Model~~
+    "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
+    "portality.models.background.BackgroundJob" # ~~-> BackgroundJob:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -567,7 +568,6 @@ MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->Editor
 MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
 MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
-MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}    #~~->BackgroundJob:Model~~
 
 #########################################
 # Query Routes
@@ -1116,24 +1116,11 @@ QUICK_REJECT_REASONS = [
 
 ## Configuration options for the DOAJ API Client
 
-DOAJ_SEARCH_BASE = "https://doaj.org"
-
-DOAJ_SEARCH_PORT = 80
-
-# ~~->Query:WebRoute~~
-DOAJ_QUERY_ENDPOINT = "query"
-# ~~->PublicJournalArticleQuery:Endpoint~~
-DOAJ_SEARCH_TYPE = "journal,article"
-
-# ~~->API:Endpoint~~
-DOAJ_API1_BASE_URL = "https://doaj.org/api/v1/"
-DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
-
-
 ## EPMC Client configuration
 # ~~-> EPMC:ExternalService~~
 EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
 EPMC_TARGET_VERSION = "6.5"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
+EPMC_HARVESTER_THROTTLE = 0.2
 
 # General harvester configuration
 HARVESTERS = [
@@ -1142,26 +1129,13 @@ HARVESTERS = [
 
 INITIAL_HARVEST_DATE = "2015-12-01T00:00:00Z"
 
-# The mapping from account ids to API keys.  MUST NOT be checked into the repo, put these
+# List of account ids to harvest from.  MUST NOT be checked into the repo, put these
 # in the local.cfg instead
-HARVESTER_API_KEYS = {
+HARVEST_ACCOUNTS = []
 
-}
-
-EPMC_HARVESTER_THROTTLE = 0.2
-
-# Process name while harvester is starting, running
-HARVESTER_STARTING_PROCTITLE = 'harvester: starting'
-HARVESTER_RUNNING_PROCTITLE = 'harvester: running'
-
-# Minutes we wait between terminate and kill
-HARVESTER_MAX_WAIT = 10
-
-# Email notifications
-HARVESTER_EMAIL_ON_EVENT = False
-HARVESTER_EMAIL_RECIPIENTS = None
-HARVESTER_EMAIL_FROM_ADDRESS = "harvester@doaj.org"
-HARVESTER_EMAIL_SUBJECT_PREFIX = "[harvester] "
+# Amount of time a harvester record is allowed to be in "queued" or "processing" state before we
+# assume it's a zombie, and ignore it
+HARVESTER_ZOMBIE_AGE = 604800
 
 #######################################################
 # ReCAPTCHA configuration
