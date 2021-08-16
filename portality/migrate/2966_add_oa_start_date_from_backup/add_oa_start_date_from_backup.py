@@ -17,10 +17,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.data:
-        #print("Please specify a csv data file path with the -d option")
-        #parser.print_help()
-        #exit()
-        args.data = BASE_FILE_PATH + "/migrate/2966_add_oa_start_date_from_backup/oa_start_out.csv"
+        print("Please specify a csv data file path with the -d option")
+        parser.print_help()
+        exit()
+        #args.data = BASE_FILE_PATH + "/migrate/2966_add_oa_start_date_from_backup/oa_start_out.csv"
 
     try:
         f = open(args.data)
