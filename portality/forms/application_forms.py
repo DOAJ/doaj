@@ -53,7 +53,6 @@ STOP_WORDS = [
     "interdisciplinary",
     "journal",
     "scholarly journal",
-    "scholarly journal",
     "open science",
     "impact factor",
     "scholarly",
@@ -1950,7 +1949,7 @@ class FieldSetDefinitions:
             FieldDefinitions.AIMS_SCOPE_URL["name"],
             FieldDefinitions.EDITORIAL_BOARD_URL["name"],
             FieldDefinitions.AUTHOR_INSTRUCTIONS_URL["name"],
-            FieldDefinitions.PUBLICATION_TIME_WEEKS["name"],
+            FieldDefinitions.PUBLICATION_TIME_WEEKS["name"]
         ]
     }
 
@@ -1962,7 +1961,7 @@ class FieldSetDefinitions:
             FieldDefinitions.APC_CHARGES["name"],
             FieldDefinitions.APC_CURRENCY["name"],
             FieldDefinitions.APC_MAX["name"],
-            FieldDefinitions.APC_URL["name"],
+            FieldDefinitions.APC_URL["name"]
         ]
     }
 
@@ -1971,7 +1970,7 @@ class FieldSetDefinitions:
         "label": "Publication fee waivers",
         "fields": [
             FieldDefinitions.HAS_WAIVER["name"],
-            FieldDefinitions.WAIVER_URL["name"],
+            FieldDefinitions.WAIVER_URL["name"]
         ]
     }
 
@@ -2508,11 +2507,7 @@ class IntRangeBuilder:
             if "lte" in settings:
                 html_attrs["data-parsley-max"] = settings.get("lte")
                 default_msg = "This value should be smaller than " + str(settings.get("gte"))
-        if "message" in settings:
-            html_attrs["data-parsley-range-message"] = "<p><small>" + settings["message"] + "</p></small>"
-        else:
-            html_attrs["data-parsley-range-message"] = "<p><small>" + default_msg + "</p></small>"
-
+        html_attrs["data-parsley-range-message"] = "<p><small>" + settings.get("message", default_msg) + "</p></small>"
 
     @staticmethod
     def wtforms(field, settings):
