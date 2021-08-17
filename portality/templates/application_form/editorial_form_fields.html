@@ -11,21 +11,6 @@
     <button class="button button--primary" type="button" id="open_withdraw_reinstate" data-toggle="modal" data-target="#modal-withdraw_reinstate">{{ withdraw_reinstate }}</button>
 {% endif %}
 
-{% set fs = formulaic_context.fieldset("oa_start") %}
-{% if fs %}
-<fieldset>
-    <h3 style="margin: 0 0 .75rem 0;">{{ fs.label }}</h3>
-    <div class="row">
-    {% for f in fs.fields() %}
-        <div class="col-xs-6">
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        </div>
-    {% endfor %}
-    </div>
-</fieldset>
-{% endif %}
-
 {% set fs = formulaic_context.fieldset("reviewers") %}
 {% if fs %}
 <fieldset>
