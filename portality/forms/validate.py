@@ -257,21 +257,6 @@ class ThisOrThat(MultiFieldValidator):
             raise validators.ValidationError(self.message)
 
 
-class DifferentThen(MultiFieldValidator):
-    def __init__(self, other_field_name, message=None, *args, **kwargs):
-        self.message = message
-        super(DifferentThen, self).__init__(other_field_name, *args, **kwargs)
-
-    def __call__(self, form, field):
-        other_field = self.get_other_field(self.other_field_name, form)
-        this = bool(field.data)
-        that = bool(other_field.data)
-        if field.data == other_field.data:
-            if not self.message:
-                self.message = "Value of " + field.label.text + " must be different then value of " + other_field.label.text
-            raise validators.ValidationError(self.message)
-
-
 class ReservedUsernames(object):
     """
     A username validator. When applied to fields containing usernames it prevents

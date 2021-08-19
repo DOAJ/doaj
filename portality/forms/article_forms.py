@@ -12,7 +12,7 @@ from portality.bll import DOAJ
 from portality.core import app
 from portality.crosswalks.article_form import ArticleFormXWalk
 from portality.forms.fields import DOAJSelectField, TagListField
-from portality.forms.validate import OptionalIf, ThisOrThat, NoScriptTag, DifferentThen
+from portality.forms.validate import OptionalIf, ThisOrThat, NoScriptTag, DifferentTo
 from portality.ui.messages import Messages
 
 
@@ -539,8 +539,8 @@ class ArticleForm(Form):
     fulltext = StringField("Full-text URL", [OptionalIf("doi", "You must provide the Full-Text URL or the DOI"), validators.URL()])
     publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
     publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
-    pissn = DOAJSelectField("Print", [ThisOrThat("eissn", "Either this field or Online ISSN is required"), DifferentThen("pissn", message=IDENTICAL_ISSNS_ERROR)], choices=[]) # choices set at construction
-    eissn = DOAJSelectField("Online", [ThisOrThat("pissn", "Either this field or Print ISSN is required"), DifferentThen("pissn", message=IDENTICAL_ISSNS_ERROR)], choices=[]) # choices set at construction
+    pissn = DOAJSelectField("Print", [ThisOrThat("eissn", "Either this field or Online ISSN is required"), DifferentTo("eissn", message=IDENTICAL_ISSNS_ERROR)], choices=[]) # choices set at construction
+    eissn = DOAJSelectField("Online", [ThisOrThat("pissn", "Either this field or Print ISSN is required"), DifferentTo("pissn", message=IDENTICAL_ISSNS_ERROR)], choices=[]) # choices set at construction
 
     volume = StringField("Volume", [validators.Optional(), NoScriptTag()])
     number = StringField("Issue", [validators.Optional(), NoScriptTag()])
