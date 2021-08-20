@@ -384,14 +384,6 @@ ass_ed:
   country: USA
   language: English
 
-- name: Enes Sukic
-  area: Science
-  year_since:
-  city: Novi Pazar
-  country: Serbia
-  language: Bosnian, Serbian, English, Turkish
-  photo: "enes sukic.jpg"
-
 - name: Eva Höglund
   area: Social Sciences
   year_since:
