@@ -979,6 +979,7 @@ ass_ed:
   city: Rome
   country: Italy
   language: Italian, English
+  photo: "sofiaf.jpg"
 
 - name: Soon Kim
   area:
