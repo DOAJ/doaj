@@ -598,6 +598,7 @@ ass_ed:
   city: Adiyaman
   country: Turkey
   language: Turkish, English
+  photo: "kamil.jpg"
 
 - name: Karima Akool Al-Sahili
   area: Medicine
@@ -759,7 +760,7 @@ ass_ed:
   area: Humanities and Social Sciences
   year_since:
   city:
-  country: Spain
+  country: New Jersey, USA
   language: Spanish, English
   photo: "MiltonRamirez.jpg"
 
