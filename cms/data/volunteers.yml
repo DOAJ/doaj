@@ -36,15 +36,6 @@ ed:
   country: Finland
   language: Finnish, English
 
-
-- name: Emilie Champagne
-  area: Science
-  year_since:
-  city: Québec
-  country: Canada
-  language: French, English
-  featured: true
-
 - name: Fei Yu
   area: Librarianship, Scholarly Publishing, Data Management
   year_since:
@@ -131,12 +122,6 @@ ed:
   country: Tunisia
   language: Arabic, French, English
 
-- name: Xiaotian Chen
-  area: Librarianship
-  year_since:
-  city:
-  country: China
-  language: Chinese, English
 
 ## All associate editors
 
@@ -413,15 +398,6 @@ ass_ed:
   city: Turku
   country: Finland
   language: Finnish, English
-
-- name: Faith Oronga Amatika-Omondi
-  area: Librarianship
-  year_since:
-  city:
-  country: Kenya
-  language: English
-  photo: "oronga.jpg"
-
 
 - name: Francesca Soldati
   area: Science
