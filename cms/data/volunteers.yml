@@ -100,6 +100,15 @@ ed:
   city: Tabriz
   country: Iran
   language: Persian, English, Azeri
+  
+  
+- name: Sandra Aceng
+  area: Humanities, Social Sciences
+  year_since:
+  city: Kampala
+  country: Uganda
+  language: English, Luo
+  photo: "aceng.jpg"
 
 - name: S.Suharto
   area: Humanities, Social Sciences
