@@ -569,11 +569,12 @@ ass_ed:
 
 
 - name: Juliana Soares Lima
-  area:
+  area: Librarianship and information science
   year_since:
   city:
-  country:
+  country: Brazil
   language: Portuguese, English
+  photo: "jlima.jpg"
 
 - name: Jussi Mannisto
   area:
@@ -962,11 +963,12 @@ ass_ed:
   language: German, English
 
 - name: Soeharto Fisika
-  area: Humanities
+  area: Science education, psychology and social science
   year_since:
   city:
   country: Indonesia
   language: Indonesian, English
+  photo: "soeharto.jpg"
 
 - name: Sofia Fagiolo
   area: Librarianship
