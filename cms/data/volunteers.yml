@@ -696,6 +696,15 @@ ass_ed:
   city: V.N Gaia
   country: Portugal
   language: Portuguese, Spanish, English
+  
+  
+- name: Marie-Eve Dugas
+  area: Humanities, Social Sciences
+  year_since:
+  city: 
+  country:
+  language: French, English
+  
 
 - name: Mario Alejandro Marín
   area:
