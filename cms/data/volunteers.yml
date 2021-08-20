@@ -532,11 +532,12 @@ ass_ed:
   language: English
 
 - name: João Sousa
-  area:
+  area: Social Sciences
   year_since:
   city:
-  country:
+  country: Angola
   language: Portuguese, English
+  photo: "sousa.jpg"
 
 - name: Johanna Glader
   area:
