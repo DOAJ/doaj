@@ -9,6 +9,12 @@ updates from a mis-shapen CSV file.
 
 NOTE: depending on which fields are required, we may need to add new value transformations in the xwalk from
       CSV columns questions back to the form. See portality/crosswalks/journal_questions.py
+
+Usage: e.g. for a dry-run first with a malformed CSV
+DOAJENV=production python -u journals_update_via_csv.py -i <input_csv_path.csv> -o <output_report_path.csv> -s -f -d > <output_log_path.txt>
+
+Check the report for errors and the output for expected changes, then run without -d to apply the updates
+
 """
 
 import csv, time

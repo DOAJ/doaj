@@ -260,11 +260,21 @@ class Journal2QuestionXwalk(object):
 
         # Undo the transformations applied to specific fields. TODO: Add these as they are encountered in the wild
         REVERSE_TRANSFORM_MAP = {
+            'keywords': lambda x: [kwd.strip() for kwd in x.split(',')],
+            'publisher_country': datasets.get_country_code,
+            'institution_country': datasets.get_country_code,
             'license': lambda x: [lic.strip() for lic in x.split(',')],
+            'license_display': _y_or_blank,
+            'plagiarism_detection': _y_n_or_blank,
             'publication_time_weeks': lambda x: round(float(x)),
             'apc': _y_or_blank,
             'apc_charges': _unfurl_apc,
-            'has_waiver': _y_n_or_blank
+            'has_waiver': _y_n_or_blank,
+            'deposit_policy': lambda x: [pol.strip() for pol in x.split(',')],
+            'preservation_service': lambda x: [pres.strip() for pres in x.split(',')],
+            'orcid_ids': _y_n_or_blank,
+            'open_citations': _y_n_or_blank,
+
             # Country names to codes for institution, publisher
         }
 
@@ -283,10 +293,17 @@ class Journal2QuestionXwalk(object):
         # start by converting the object to the forminfo version
         forminfo = JournalFormXWalk.obj2form(journal)
 
+        # Get the CSV output this journal currently produces so that we can skip over unchanged fields
+        current_csv = {x: y for (x, y) in cls.journal2question(journal)}
+
         # Collect the update report
         updates = []
 
         for k, v in questions.items():
+            # To save us writing all of the reverse transforms, we can skip this question entirely if unchanged from current journal
+            if k in current_csv and current_csv[k] == v:
+                continue
+
             # Only deal with a question if there's a value - TODO: what does this mean for yes_no_or_blank?
             if len(v.strip()) > 0:
                 # Get the question key from the CSV column header
