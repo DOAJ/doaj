@@ -16,7 +16,7 @@ from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.datasets import language_options, country_options, currency_options
 from portality.forms import application_processors
-from portality.forms.fields import TagListField
+from portality.forms.fields import TagListField, NestedFormField, UnconstrainedRadioField
 from portality.forms.validate import (
     HTTPURL,
     OptionalIf,
@@ -1819,6 +1819,7 @@ class FieldDefinitions:
 ##########################################################
 
 class FieldSetDefinitions:
+    #~~->$ BasicCompliance:FieldSet~~
     BASIC_COMPLIANCE = {
         "name": "basic_compliance",
         "label": "Open access compliance",
@@ -1828,6 +1829,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ AboutJournal:FieldSet~~
     ABOUT_THE_JOURNAL = {
         "name": "about_the_journal",
         "label": "About the journal",
@@ -1842,6 +1844,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Publisher:FieldSet~~
     PUBLISHER = {
         "name": "publisher",
         "label": "Publisher",
@@ -1851,6 +1854,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Institution:FieldSet~~
     SOCIETY_OR_INSTITUTION = {
         "name": "society_or_institution",
         "label": "Society or institution, if applicable",
@@ -1860,6 +1864,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Licensing:FieldSet~~
     LICENSING = {
         "name": "licensing",
         "label": "Licensing",
@@ -1870,6 +1875,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ EmbeddedLicense:FieldSet~~
     EMBEDDED_LICENSING = {
         "name": "embedded_licensing",
         "label": "Embedded licenses",
@@ -1879,6 +1885,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Copyright:FieldSet~~
     COPYRIGHT = {
         "name": "copyright",
         "label": "Copyright",
@@ -1888,6 +1895,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ PeerReview:FieldSet~~
     PEER_REVIEW = {
         "name": "peer_review",
         "label": "Peer review",
@@ -1898,6 +1906,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Plagiarism:FieldSet~~
     PLAGIARISM = {
         "name": "plagiarism",
         "label": "Plagiarism",
@@ -1907,6 +1916,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Editorial:FieldSet~~
     EDITORIAL = {
         "name": "editorial",
         "label": "Editorial",
@@ -1918,6 +1928,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ APC:FieldSet~~
     APC = {
         "name": "apc",
         "label": "Publication fees",
@@ -1930,6 +1941,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Waivers:FieldSet~~
     APC_WAIVERS = {
         "name": "apc_waivers",
         "label": "Publication fee waivers",
@@ -1939,6 +1951,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ OtherFees:FieldSet~~
     OTHER_FEES = {
         "name": "other_fees",
         "label": "Other fees",
@@ -1948,6 +1961,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ ArchivingPolicy:FieldSet~~
     ARCHIVING_POLICY = {
         "name": "archiving_policy",
         "label": "Archiving policy",
@@ -1959,6 +1973,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ RepositoryPolicy:FieldSet~~
     REPOSITORY_POLICY = {
         "name": "deposit_policy",
         "label": "Repository policy",
@@ -1969,6 +1984,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ UniqueIdentifiers:FieldSet~~
     UNIQUE_IDENTIFIERS = {
         "name": "unique_identifiers",
         "label": "Unique identifiers & structured data",
@@ -1980,6 +1996,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Seal:FieldSet~~
     SEAL = {
         "name": "seal",
         "label": "Award the seal",
@@ -1988,6 +2005,8 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ QuickReject:FieldSet~~
+    # ~~^-> QuickReject:Feature~~
     QUICK_REJECT = {
         "name": "quick_reject",
         "label": "Quick reject",
@@ -1997,6 +2016,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Reassign:FieldSet~~
     REASSIGN = {
         "name": "reassign",
         "label": "Re-assign publisher account",
@@ -2005,6 +2025,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Status:FieldSet~~
     STATUS = {
         "name": "status",
         "label": "Status",
@@ -2013,6 +2034,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Reviewers:FieldSet~~
     REVIEWERS = {
         "name": "reviewers",
         "label": "Assign for review",
@@ -2022,6 +2044,8 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Continuations:FieldSet~~
+    # ~~^-> Continuations:Feature~~
     CONTINUATIONS = {
         "name": "continuations",
         "label": "Continuations",
@@ -2032,6 +2056,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Subject:FieldSet~~
     SUBJECT = {
         "name": "subject",
         "label": "Subject classification",
@@ -2040,6 +2065,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ Notes:FieldSet~~
     NOTES = {
         "name": "notes",
         "label": "Notes",
@@ -2051,6 +2077,7 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ OptionalValidation:FieldSet~~
     OPTIONAL_VALIDATION = {
         "name": "optional_validation",
         "label": "Allow save without validation",
@@ -2059,6 +2086,8 @@ class FieldSetDefinitions:
         ]
     }
 
+    # ~~->$ BulkEdit:FieldSet~~
+    # ~~^-> BulkEdit:Feature~~
     BULK_EDIT = {
         "name" : "bulk_edit",
         "label" : "Bulk edit",
@@ -2076,6 +2105,9 @@ class FieldSetDefinitions:
 ###########################################################
 
 class ApplicationContextDefinitions:
+    #~~->$ NewApplication:FormContext~~
+    #~~^-> ApplicationForm:Crosswalk~~
+    #~~^-> NewApplication:FormProcessor~~
     PUBLIC = {
         "name": "public",
         "fieldsets": [
@@ -2099,8 +2131,7 @@ class ApplicationContextDefinitions:
         "templates": {
             "form" : "application_form/public_application.html",
             "default_field" : "application_form/_field.html",
-            "default_group" : "application_form/_group.html"#,
-            #"default_list" : "application_form/_list.html"
+            "default_group" : "application_form/_group.html"
         },
         "crosswalks": {
             "obj2form": ApplicationFormXWalk.obj2form,
@@ -2109,16 +2140,24 @@ class ApplicationContextDefinitions:
         "processor": application_processors.NewApplication,
     }
 
+    # ~~->$ UpdateRequest:FormContext~~
+    # ~~^-> NewApplication:FormContext~~
+    # ~~^-> UpdateRequest:FormProcessor~~
     UPDATE = deepcopy(PUBLIC)
     UPDATE["name"] = "update_request"
     UPDATE["processor"] = application_processors.PublisherUpdateRequest
     UPDATE["templates"]["form"] = "application_form/publisher_update_request.html"
 
+    # ~~->$ ReadOnlyApplication:FormContext~~
+    # ~~^-> NewApplication:FormContext~~
     READ_ONLY = deepcopy(PUBLIC)
     READ_ONLY["name"] = "application_read_only"
     READ_ONLY["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
     READ_ONLY["templates"]["form"] = "application_form/readonly_application.html"
 
+    # ~~->$ AssociateEditorApplication:FormContext~~
+    # ~~^-> NewApplication:FormContext~~
+    # ~~^-> AssociateEditorApplication:FormProcessor~~
     ASSOCIATE = deepcopy(PUBLIC)
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["fieldsets"] += [
@@ -2129,6 +2168,9 @@ class ApplicationContextDefinitions:
     ASSOCIATE["processor"] = application_processors.AssociateApplication
     ASSOCIATE["templates"]["form"] = "application_form/assed_application.html"
 
+    # ~~->$ EditorApplication:FormContext~~
+    # ~~^-> NewApplication:FormContext~~
+    # ~~^-> EditorApplication:FormProcessor~~
     EDITOR = deepcopy(PUBLIC)
     EDITOR["name"] = "editor"
     EDITOR["fieldsets"] += [
@@ -2140,6 +2182,9 @@ class ApplicationContextDefinitions:
     EDITOR["processor"] = application_processors.EditorApplication
     EDITOR["templates"]["form"] = "application_form/editor_application.html"
 
+    # ~~->$ ManEdApplication:FormContext~~
+    # ~~^-> NewApplication:FormContext~~
+    # ~~^-> ManEdApplication:FormProcessor~~
     MANED = deepcopy(PUBLIC)
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
@@ -2157,6 +2202,9 @@ class ApplicationContextDefinitions:
 
 
 class JournalContextDefinitions:
+    # ~~->$ ReadOnlyJournal:FormContext~~
+    # ~~^-> JournalForm:Crosswalk~~
+    # ~~^-> ReadOnlyJournal:FormProcessor~~
     READ_ONLY = {
         "name": "readonly",
         "fieldsets": [
@@ -2180,8 +2228,7 @@ class JournalContextDefinitions:
         "templates": {
             "form" : "application_form/readonly_journal.html",
             "default_field" : "application_form/_field.html",
-            "default_group" : "application_form/_group.html"#,
-            #"default_list" : "application_form/_list.html"
+            "default_group" : "application_form/_group.html"
         },
         "crosswalks": {
             "obj2form": JournalFormXWalk.obj2form,
@@ -2190,6 +2237,9 @@ class JournalContextDefinitions:
         "processor": application_processors.ReadOnlyJournal
     }
 
+    # ~~->$ AssEditorJournal:FormContext~~
+    # ~~^-> ReadOnlyJournal:FormContext~~
+    # ~~^-> AssEdJournal:FormProcessor~~
     ASSOCIATE = deepcopy(READ_ONLY)
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.SUBJECT["name"],
@@ -2199,6 +2249,9 @@ class JournalContextDefinitions:
     ASSOCIATE["processor"] = application_processors.AssEdJournalReview
     ASSOCIATE["templates"]["form"] = "application_form/assed_journal.html"
 
+    # ~~->$ EditorJournal:FormContext~~
+    # ~~^-> AssEdJournal:FormContext~~
+    # ~~^-> EditorJournal:FormProcessor~~
     EDITOR = deepcopy(ASSOCIATE)
     EDITOR["name"] = "editor"
     EDITOR["fieldsets"] += [
@@ -2207,6 +2260,9 @@ class JournalContextDefinitions:
     EDITOR["processor"] = application_processors.EditorJournalReview
     EDITOR["templates"]["form"] = "application_form/editor_journal.html"
 
+    # ~~->$ ManEdJournal:FormContext~~
+    # ~~^-> EditorJournal:FormContext~~
+    # ~~^-> ManEdJournal:FormProcessor~~
     MANED = deepcopy(EDITOR)
     MANED["name"] = "admin"
     MANED["fieldsets"] += [
@@ -2218,6 +2274,9 @@ class JournalContextDefinitions:
     MANED["processor"] = application_processors.ManEdJournalReview
     MANED["templates"]["form"] = "application_form/maned_journal.html"
 
+    # ~~->$ BulkEditJournal:FormContext~~
+    # ~~^-> JournalForm:Crosswalk~~
+    # ~~^-> ManEdJournal:FormProcessor~~
     BULK_EDIT = {
         "name" : "bulk_edit",
         "fieldsets" : [
@@ -2226,8 +2285,7 @@ class JournalContextDefinitions:
         "templates": {
             "form" : "application_form/maned_journal_bulk_edit.html",
             "default_field" : "application_form/_field.html",
-            "default_group" : "application_form/_group.html"#,
-            #"default_list" : "application_form/_list.html"
+            "default_group" : "application_form/_group.html"
         },
         "crosswalks": {
             "obj2form": JournalFormXWalk.obj2form,
@@ -2235,8 +2293,6 @@ class JournalContextDefinitions:
         },
         "processor": application_processors.ManEdBulkEdit
     }
-
-
 
 #######################################################
 # Gather all of our form information in one place
@@ -2274,6 +2330,7 @@ JOURNAL_FORMS = {
 #######################################################
 
 def iso_country_list(field, formualic_context_name):
+    #~~-> Countries:Data~~
     cl = [{"display" : " ", "value" : ""}]
     for v, d in country_options:
         cl.append({"display": d, "value": v})
@@ -2281,6 +2338,7 @@ def iso_country_list(field, formualic_context_name):
 
 
 def iso_language_list(field, formulaic_context_name):
+    # ~~-> Languages:Data~~
     cl = [{"display" : " ", "value" : ""}]
     for v, d in language_options:
         cl.append({"display": d, "value": v})
@@ -2288,6 +2346,7 @@ def iso_language_list(field, formulaic_context_name):
 
 
 def iso_currency_list(field, formulaic_context_name):
+    # ~~-> Currencies:Data~~
     cl = [{"display" : " ", "value" : ""}]
     quick_pick = []
     for v, d in currency_options:
@@ -2300,10 +2359,12 @@ def iso_currency_list(field, formulaic_context_name):
 
 
 def quick_reject(field, formulaic_context_name):
-   return [{"display": "Other", "value" : ""}] + [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
+    # ~~-> QuickReject:Feature~~
+    return [{"display": "Other", "value" : ""}] + [{'display': v, 'value': v} for v in app.config.get('QUICK_REJECT_REASONS', [])]
 
 
 def application_statuses(field, formulaic_context):
+    # ~~->$ ApplicationStatus:Workflow~~
     _application_status_base = [  # This is all the Associate Editor sees
         ('', ' '),
         (constants.APPLICATION_STATUS_PENDING, 'Pending'),
@@ -2342,7 +2403,10 @@ def application_statuses(field, formulaic_context):
 
 
 def editor_choices(field, formulaic_context):
-    """Set the editor field choices from a given editor group name"""
+    """
+    Set the editor field choices from a given editor group name
+    ~~->EditorGroup:Model~~
+    """
     egf = formulaic_context.get("editor_group")
     wtf = egf.wtfield
     if wtf is None:
@@ -2376,6 +2440,7 @@ def application_status_disabled(field, formulaic_context):
 #######################################################
 
 def merge_disabled_notes(notes_group, original_form):
+    # ~~->Notes:Feature~~
     merged = []
     wtf = notes_group.wtfield
     for entry in wtf.entries:
@@ -2405,6 +2470,9 @@ def merge_disabled_notes(notes_group, original_form):
 #######################################################
 
 class ReservedUsernamesBuilder:
+    """
+    ~~->$ ReservedUsernames:FormValidator~~
+    """
     @staticmethod
     def render(settings, html_attrs):
         return
@@ -2415,6 +2483,9 @@ class ReservedUsernamesBuilder:
 
 
 class OwnerExistsBuilder:
+    """
+    ~~->$ OwnerExists:FormValidator~~
+    """
     @staticmethod
     def render(settings, html_attrs):
         return
@@ -2425,6 +2496,9 @@ class OwnerExistsBuilder:
 
 
 class RequiredBuilder:
+    """
+    ~~->$ Required:FormValidator~~
+    """
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["required"] = ""
@@ -2440,7 +2514,7 @@ class RequiredBuilder:
 
 
 class IsURLBuilder:
-    # ~~->IsURL:FormValidator~~
+    # ~~->$ IsURL:FormValidator~~
     msg = "<p><small>" + "Please enter a valid URL. It should start with http or https" + "</p></small>"
 
     @staticmethod
@@ -2456,6 +2530,10 @@ class IsURLBuilder:
 
 
 class IntRangeBuilder:
+    """
+    ~~->$ IntRange:FormValidator~~
+    ~~^-> NumberRange:FormValidator~~
+    """
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-type"] = "digits"
@@ -2480,6 +2558,9 @@ class IntRangeBuilder:
 
 
 class MaxTagsBuilder:
+    """
+    ~~->$ MaxLen:FormValidator~~
+    """
     @staticmethod
     def wtforms(field, settings):
         max = settings.get("max")
@@ -2488,6 +2569,9 @@ class MaxTagsBuilder:
 
 
 class StopWordsBuilder:
+    """
+    ~~->$ StopWords:FormValidator~~
+    """
     @staticmethod
     def wtforms(field, settings):
         stopwords = settings.get("disallowed", [])
@@ -2495,6 +2579,9 @@ class StopWordsBuilder:
 
 
 class ISSNInPublicDOAJBuilder:
+    """
+    ~~->$ ISSNInPublicDOAJ:FormValidator~~
+    """
     @staticmethod
     def render(settings, html_attrs):
         # FIXME: not yet implemented in the front end, so setting here is speculative
@@ -2506,7 +2593,7 @@ class ISSNInPublicDOAJBuilder:
 
 
 class JournalURLInPublicDOAJBuilder:
-    # ~~-> JournalURLInPublicDOAJ:FormValidator~~
+    # ~~->$ JournalURLInPublicDOAJ:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         # FIXME: not yet implemented in the front end, so setting here is speculative
@@ -2518,7 +2605,7 @@ class JournalURLInPublicDOAJBuilder:
 
 
 class NoScriptTagBuilder:
-    # ~~-> NoScriptTag:FormValidator
+    # ~~->$ NoScriptTag:FormValidator
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-no-script-tag"] = ""
@@ -2533,7 +2620,7 @@ class NoScriptTagBuilder:
 
 
 class OptionalIfBuilder:
-    # ~~-> OptionalIf:FormValidator~~
+    # ~~->$ OptionalIf:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-validate-if-empty"] = "true"
@@ -2546,7 +2633,7 @@ class OptionalIfBuilder:
 
 
 class IsISSNBuilder:
-    # ~~-> IsISSN:FormValidator~~
+    # ~~->$ IsISSN:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["pattern"] = ISSN
@@ -2559,6 +2646,7 @@ class IsISSNBuilder:
 
 
 class IsISSNListBuilder:
+    # ~~->$ IsISSNList:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-entry-pattern"] = ISSN
@@ -2569,7 +2657,7 @@ class IsISSNListBuilder:
 
 
 class DifferentToBuilder:
-    # ~~-> DifferetTo:FormValidator~~
+    # ~~->$ DifferetTo:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-different-to"] = settings.get("field")
@@ -2580,6 +2668,7 @@ class DifferentToBuilder:
 
 
 class RequiredIfBuilder:
+    # ~~->$ RequiredIf:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         val = settings.get("value")
@@ -2600,6 +2689,7 @@ class RequiredIfBuilder:
 
 
 class OnlyIfBuilder:
+    # ~~->$ OnlyIf:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-only-if"] = ",".join([f["field"] for f in settings.get("fields", [])])
@@ -2618,6 +2708,7 @@ class OnlyIfBuilder:
 
 
 class NotIfBuildier:
+    # ~~->$ NotIf:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-not-if"] = ",".join([f.get("field") for f in settings.get("fields", [])])
@@ -2630,6 +2721,7 @@ class NotIfBuildier:
 
 
 class GroupMemberBuilder:
+    # ~~->$ GroupMember:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         # FIXME: front end validator for this does not yet exist (do we have an existing one from formcontext?)
@@ -2641,6 +2733,7 @@ class GroupMemberBuilder:
 
 
 class RequiredValueBuilder:
+    # ~~->$ RequiredValue:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-requiredvalue"] = settings.get("value")
@@ -2651,6 +2744,7 @@ class RequiredValueBuilder:
 
 
 class BigEndDateBuilder:
+    # ~~->$ BigEndDate:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-pattern"] = "\d{4}-\d{2}-\d{2}"
@@ -2726,24 +2820,23 @@ PYTHON_FUNCTIONS = {
 
 JAVASCRIPT_FUNCTIONS = {
     "clickable_url": "formulaic.widgets.newClickableUrl",   # ~~-> ClickableURL:FormWidget~~
-    "clickable_owner": "formulaic.widgets.newClickableOwner",
-    "select": "formulaic.widgets.newSelect",
-    "taglist": "formulaic.widgets.newTagList",
-    "tagentry" : "formulaic.widgets.newTagEntry",
-    "multiple_field": "formulaic.widgets.newMultipleField",
-    "infinite_repeat": "formulaic.widgets.newInfiniteRepeat",
-    "autocomplete": "formulaic.widgets.newAutocomplete",
-    "subject_tree" : "formulaic.widgets.newSubjectTree",
+    "clickable_owner": "formulaic.widgets.newClickableOwner",   # ~~-> ClickableOwner:FormWidget~~
+    "select": "formulaic.widgets.newSelect",    # ~~-> SelectBox:FormWidget~~
+    "taglist": "formulaic.widgets.newTagList",  # ~~-> TagList:FormWidget~~
+    "tagentry" : "formulaic.widgets.newTagEntry",   # ~~-> TagEntry:FormWidget~~
+    "multiple_field": "formulaic.widgets.newMultipleField", # ~~-> MultiField:FormWidget~~
+    "infinite_repeat": "formulaic.widgets.newInfiniteRepeat", # ~~-> InfiniteRepeat:FormWidget~~
+    "autocomplete": "formulaic.widgets.newAutocomplete",    # ~~-> Autocomplete:FormWidget~~
+    "subject_tree" : "formulaic.widgets.newSubjectTree",    # ~~-> SubjectTree:FormWidget~~
     "full_contents" : "formulaic.widgets.newFullContents",  # ~~^->FullContents:FormWidget~~
-    "load_editors" : "formulaic.widgets.newLoadEditors",
+    "load_editors" : "formulaic.widgets.newLoadEditors",    # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
-    "note_modal" : "formulaic.widgets.newNoteModal"
+    "note_modal" : "formulaic.widgets.newNoteModal" # ~~-> NoteModal:FormWidget~~
 }
 
 
 ##############################################################
-# Additional WTForms bits, that will probably need to be
-# moved out to the correct modules before wrapping up
+# A couple of convenient widgets for WTForms rendering
 ##############################################################
 
 class NumberWidget(widgets.Input):
@@ -2782,30 +2875,6 @@ class ListWidgetWithSubfields(object):
 
         html.append('</%s>' % self.html_tag)
         return HTMLString(''.join(html))
-
-
-class NestedFormField(FormField):
-    def validate(self, form, extra_validators=tuple()):
-        self.form.meta.parent_form = form
-        return super().validate(form, extra_validators)
-
-
-class UnconstrainedRadioField(RadioField):
-    def pre_validate(self, form):
-        return
-
-    def process_data(self, value):
-        if value:
-            super(UnconstrainedRadioField, self).process_data(value)
-        else:
-            self.data = None
-
-    # def process_formdata(self, valuelist):
-    #     if valuelist:
-    #         try:
-    #             self.data = self.coerce(valuelist[0])
-    #         except ValueError:
-    #             raise ValueError(self.gettext('Invalid Choice: could not coerce'))
 
 ##########################################################
 # Mapping from configurations to WTForms builders
