@@ -1029,7 +1029,14 @@ ass_ed:
   city: Istanbul
   country: Turkey
   language: Turkish, English
-
+  
+- name: Weldy St-Fleur
+  area: Social Sciences
+  year_since:
+  city: São Paulo
+  country: Brazil
+  language: Portuguese, English
+  photo: "weldy.JPEG"
 
 - name: Weronika Kortas
   area: Humanities, Social Sciences
