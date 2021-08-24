@@ -238,6 +238,14 @@ ass_ed:
   city: Samarinda
   country: Indonesia
   language: Indonesian, English
+  
+- name: Azhar Aziz Lubis
+  area: Social Sciences
+  year_since:
+  city: Bengkulu
+  country: Indonesia
+  language: Indonesian, English
+  photo: "azhar.jpg"
 
 
 - name: Barbara Łuszczek
