@@ -50,7 +50,7 @@ class PreservationBackgroundTask(BackgroundTask):
         """
 
         created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
-        dir_name = "rama-2021-07-28-13-05-27" #username + "-" + created_time
+        dir_name = username + "-" + created_time
         local_dir = os.path.join(Preservation.UPLOAD_DIR, dir_name)
         file = kwargs.get("upload_file")
 
