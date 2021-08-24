@@ -2,8 +2,9 @@ from portality.dao import DomainObject
 from datetime import datetime
 
 
-class Preserve(DomainObject):
-    """Model class for preservation feature"""
+class PreservationState(DomainObject):
+    """~~Preservation:Model~~
+    Model class for preservation feature"""
     __type__ = "preserve"
 
     @property
@@ -26,7 +27,7 @@ class Preserve(DomainObject):
     def background_task_id(self):
         return self.data.get("background_task_id")
 
-    @status.setter
+    @background_task_id.setter
     def background_task_id(self, value):
         self.data["background_task_id"] = value
 

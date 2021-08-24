@@ -242,24 +242,24 @@ def preservation():
         resp = make_response(redirect(url_for("publisher.preservation")))
 
         # create model object to store status details
-        preserve_model = models.Preserve()
-        preserve_model.set_id()
-        preserve_model.initiated(current_user.id, f.filename)
-        app.logger.debug(f"Preservation model created with id {preserve_model.id}")
+        preservation_model = models.PreservationState()
+        preservation_model.set_id()
+        preservation_model.initiated(current_user.id, f.filename)
+        app.logger.debug(f"Preservation model created with id {preservation_model.id}")
 
         if f is None or f.filename == "":
             error_str = "No file provided to upload"
             flash(error_str, "error")
-            preserve_model.failed(error_str)
-            preserve_model.save()
+            preservation_model.failed(error_str)
+            preservation_model.save()
             return resp
 
-        preserve_model.validated()
-        preserve_model.save()
+        preservation_model.validated()
+        preservation_model.save()
 
         try:
             job = PreservationBackgroundTask.prepare(current_user.id, upload_file=f)
-            PreservationBackgroundTask.set_param(job.params, "model_id", preserve_model.id)
+            PreservationBackgroundTask.set_param(job.params, "model_id", preservation_model.id)
             PreservationBackgroundTask.submit(job)
 
             flash("File uploaded and waiting to be processed.", "success")
@@ -270,8 +270,8 @@ def preservation():
             try:
                 uid = str(uuid.uuid1())
                 flash("An error has occurred and your preservation upload may not have succeeded. Please report the issue with the ID " + uid)
-                preserve_model.failed(str(exp) + " Issue id : " + uid)
-                preserve_model.save()
+                preservation_model.failed(str(exp) + " Issue id : " + uid)
+                preservation_model.save()
                 app.logger.exception('Preservation upload error. ' + uid)
                 if job:
                     background_task = PreservationBackgroundTask(job)

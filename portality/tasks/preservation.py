@@ -15,26 +15,33 @@ from portality.background import BackgroundTask, BackgroundApi
 from portality.core import app
 from portality.decorators import write_required
 from portality.lib import dates
-from portality.models import Article, BackgroundJob, Preserve
+from portality.models import Article, BackgroundJob, PreservationState
 from portality.regex import DOI_COMPILED, HTTP_URL_COMPILED
 from portality.tasks.redis_huey import main_queue, configure
 
+
 class PreservationException(Exception):
+    """~~PreservationException:Exception~~"""
     pass
+
 
 class PreservationStorageException(Exception):
     pass
 
+
 class ValidationError(Exception):
     pass
 
+
 class PreservationBackgroundTask(BackgroundTask):
+    """~~PreservationBackground:Feature~~"""
 
     __action__ = "preserve"
 
     @classmethod
     def prepare(cls, username, **kwargs):
         """
+        ~~->Prepare:Feature~~
         Create necessary directories and save the file.
         Creates the background job
         :param username:
@@ -43,13 +50,14 @@ class PreservationBackgroundTask(BackgroundTask):
         """
 
         created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
-        dir_name = username + "-" + created_time
+        dir_name = "rama-2021-07-28-13-05-27" #username + "-" + created_time
         local_dir = os.path.join(Preservation.UPLOAD_DIR, dir_name)
         file = kwargs.get("upload_file")
 
         preservation = Preservation(local_dir)
         preservation.save_file(file)
 
+        # ~~-> BackgroundJob:Feature~~
         # prepare a job record
         job = BackgroundJob()
         job.user = username
@@ -71,11 +79,12 @@ class PreservationBackgroundTask(BackgroundTask):
         app.logger.debug(f"Local dir {local_dir}")
         app.logger.debug(f"model_id {model_id}")
 
-        preserve_model = Preserve.pull(model_id)
+        preserve_model = PreservationState.pull(model_id)
         preserve_model.background_task_id = job.id
         preserve_model.pending()
         preserve_model.save()
 
+        # ~~-> Preservation:Feature~~
         preserv = Preservation(local_dir)
         try:
             job.add_audit_message("Extract zip file")
@@ -86,6 +95,7 @@ class PreservationBackgroundTask(BackgroundTask):
             preserv.create_package_structure()
             app.logger.debug("Created package structure")
 
+            # ~~-> PreservationPackage:Feature~~
             package = PreservationPackage(preserv.preservation_dir)
             job.add_audit_message("Create preservation package")
             tar_file = package.create_package()
@@ -102,13 +112,14 @@ class PreservationBackgroundTask(BackgroundTask):
             self.validate_response(response, tar_file, sha256, preserve_model)
 
         except (PreservationException, Exception) as exp:
+            # ~~-> PreservationException:Exception~~
             preserve_model.failed(str(exp))
             preserve_model.save()
             app.logger.exception("Error at background task")
             raise
 
     def cleanup(self):
-        """
+        """~~-> Cleanup:Feature~~
         Cleanup any resources
         :return:
         """
@@ -118,11 +129,12 @@ class PreservationBackgroundTask(BackgroundTask):
         Preservation.delete_local_directory(local_dir)
 
     def validate_response(self, response, tar_file, sha256, model):
-        """
+        """~~-> ValidateResponse:Feature~~
         Validate the response from server
         :param response: response object
         :param tar_file: tar file name
         :param sha256: sha256sum value
+        :param model: model object to update status
         """
         if response.status_code == 200:
             res_json = json.loads(response.text)
@@ -148,7 +160,6 @@ class PreservationBackgroundTask(BackgroundTask):
                         model.failed("shasum in response doesn't match")
                 else:
                     model.failed("tar filename in response doesn't match")
-                model.save()
 
             else:
                 # Error response
@@ -169,9 +180,13 @@ class PreservationBackgroundTask(BackgroundTask):
                 result = res_json["result"]
                 if result and result == "ERROR":
                     error_str = "Upload failed due error at IA server side"
-                    app.logger.error(error_str)
-                    model.failed(error_str)
-                    model.save()
+                else:
+                    error_str = "Unknown Error: Not a valid response"
+
+                app.logger.error(error_str)
+                model.failed(error_str)
+
+            model.save()
         else:
             app.logger.error(f"Upload failed {response.text}")
             model.failed(response.text)
@@ -180,13 +195,15 @@ class PreservationBackgroundTask(BackgroundTask):
 
     @classmethod
     def submit(cls, background_job):
-        """Submit Background job"""
+        """~~-> SubmitJob:Feature~~
+        Submit Background job"""
         background_job.save(blocking=True)
         preserve.schedule(args=(background_job.id,), delay=10)
 
 @main_queue.task(**configure("preserve"))
 @write_required(script=True)
 def preserve(job_id):
+    """~~-> CreateBackgroundTask:Feature"""
     job = BackgroundJob.pull(job_id)
     task = PreservationBackgroundTask(job)
     BackgroundApi.execute(task)
@@ -194,6 +211,7 @@ def preserve(job_id):
 
 
 class CSVReader:
+    """~~CSVReader:Feature~~"""
 
     # column names for csv file.
     # Given more identifiers just to handle any mistakes by user like empty identifiers
@@ -230,6 +248,7 @@ class CSVReader:
 
 
 class Preservation:
+    """~~Preservation:Feature~~"""
 
     # Zip file name to download the zip file to temp directory
     ARTICLES_ZIP_NAME = "articles.zip"
@@ -265,7 +284,7 @@ class Preservation:
         return True
 
     def create_local_directories(self):
-        """
+        """~~-> CreateDirectories:Feature~~
         Create local directories to download the files and
         to create preservation package
         """
@@ -277,7 +296,8 @@ class Preservation:
 
     @classmethod
     def delete_local_directory(cls, local_dir):
-        """Deletes the directory
+        """~~-> DeleteDirectories:Feature~~
+        Deletes the directory
         """
         if os.path.exists(local_dir):
             try:
@@ -286,7 +306,7 @@ class Preservation:
                 raise PreservationStorageException("Could not delete Temp directory")
 
     def save_file(self, file):
-        """
+        """~~-> SaveFile:Feature~~
         Save the file on to local directory
         :param file: File object
         """
@@ -299,7 +319,7 @@ class Preservation:
 
 
     def extract_zip_file(self):
-        """
+        """~~-> ExctractZipFile:Feature~~
         Extracts zip file in the Temp directory
         """
         file_path = os.path.join(self.__local_dir, Preservation.ARTICLES_ZIP_NAME)
@@ -311,7 +331,8 @@ class Preservation:
             raise PreservationException(f"Could not find zip file at Temp directory {file_path}")
 
     def create_package_structure(self):
-        """ Create preservation package
+        """ ~~-> CreatePackageStructure:Feature~~
+        Create preservation package
 
         Iterates through the sub directories.
         Retrieve article info for each article.
@@ -326,6 +347,7 @@ class Preservation:
 
             if Preservation.IDENTIFIERS_CSV in files:
                 # Get articles info from csv file
+                # ~~-> CSVReader:Feature~~
                 csv_reader = CSVReader(os.path.join(dir, Preservation.IDENTIFIERS_CSV))
                 self.__csv_articles_dict = csv_reader.articles_info()
             self.__process_article(dir, files)
@@ -350,6 +372,7 @@ class Preservation:
 
                 issn, article_id, metadata_json = self.get_article_info(article_data)
                 try:
+                    # ~~-> ArticlePackage:Feature~~
                     package = AtriclePackage()
                     package.issn = issn
                     package.article_id = article_id
@@ -413,6 +436,7 @@ class Preservation:
         return metadata
 
 class AtriclePackage:
+    """ ~~ArticlePackage:Feature~~"""
 
     def __init__(self):
         self.issn = None
@@ -491,7 +515,7 @@ class AtriclePackage:
 
 
 class PreservationPackage:
-    """
+    """~~PreservationPackage:Feature~~
     Creates preservation package and upload to Internet Server
     """
 
@@ -538,18 +562,14 @@ class PreservationPackage:
             'sha256sum': sha256sum
         }
         app.logger.info(payload)
-        # get the file to upload
-        try:
-            files = {'file_field': (file_name, open(self.tar_file, 'rb'))}
-        except IOError as exp:
-            app.logger.exception("Error opening the tar file")
-            raise PreservationException("Error opening the tar file")
 
         headers = {}
-
+        # get the file to upload
         try:
-            response = requests.post(url, headers=headers, auth=(username, password), files=files, data=payload)
-        except Exception as exp:
+            with open(self.tar_file, "rb") as f:
+                files = {'file_field': (file_name, f)}
+                response = requests.post(url, headers=headers, auth=(username, password), files=files, data=payload)
+        except (IOError,Exception) as exp:
             app.logger.exception("Error opening the tar file")
             raise PreservationException("Error Uploading tar file to IA server")
 
