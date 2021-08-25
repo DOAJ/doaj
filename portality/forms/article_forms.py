@@ -21,6 +21,9 @@ from portality.ui.messages import Messages
 
 
 class FormContext(object):
+    """
+    ~~FormContext:FormContext->Formulaic:Library~~
+    """
     def __init__(self, form_data=None, source=None, formulaic_context=None):
         # initialise our core properties
         self._source = source
@@ -221,6 +224,9 @@ class FormContext(object):
 
 
 class Renderer(object):
+    """
+    ~~FormContextRenderer:FormContext->FormHelper:FormContext~~
+    """
     def __init__(self):
         self.FIELD_GROUPS = {}
         self.fh = FormHelperBS3()
@@ -314,7 +320,10 @@ class Renderer(object):
 
 
 class FormHelperBS3(object):
-
+    """
+    ~~FormHelper:FormContext->Bootstrap3:Technology~~
+    ~~->WTForms:Library~~
+    """
     def render_field(self, field, **kwargs):
         # begin the frag
         frag = ""
@@ -500,6 +509,7 @@ class FormHelperBS3(object):
 
 #########################################
 # Form definition
+# ~~Article:Form~~
 
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
@@ -515,7 +525,9 @@ INITIAL_AUTHOR_FIELDS = 3
 
 def choices_for_article_issns(user, article_id=None):
     if "admin" in user.role and article_id is not None:
+        # ~~->Article:Model~~
         a = models.Article.pull(article_id)
+        # ~~->Journal:Model~~
         issns = models.Journal.issns_by_owner(a.get_owner())
     else:
         issns = models.Journal.issns_by_owner(user.id)
@@ -524,6 +536,9 @@ def choices_for_article_issns(user, article_id=None):
 
 
 class AuthorForm(Form):
+    """
+    ~~->$ Author:Form~~
+    """
     name = StringField("Name", [validators.Optional(),NoScriptTag()])
     affiliation = StringField("Affiliation", [validators.Optional(), NoScriptTag()])
     orcid_id = StringField("ORCID iD", [validators.Optional(), validators.Regexp(regex=regex.ORCID_COMPILED, message=ORCID_ERROR)])
@@ -562,6 +577,10 @@ class ArticleForm(Form):
 # Formcontexts and factory
 
 class ArticleFormFactory(object):
+    """
+    ~~ArticleForm:Factory->AdminArticleMetadata:FormContext~~
+    ~~->PublisherArticleMetadata:FormContext~~
+    """
     @classmethod
     def get_from_context(cls, role, source=None, form_data=None, user=None):
         if role == "admin":
@@ -571,6 +590,11 @@ class ArticleFormFactory(object):
 
 
 class MetadataForm(FormContext):
+    """
+    ~~ArticleMetadata:FormContext->Article:Form~~
+    ~~->ArticleForm:Crosswalk~~
+    ~~->Article:Service~~
+    """
 
     def __init__(self, source, form_data, user):
         self.user = user
@@ -665,7 +689,9 @@ class MetadataForm(FormContext):
 
 
 class PublisherMetadataForm(MetadataForm):
-
+    """
+    ~~PublisherArticleMetadata:FormContext->ArticleMetadata:FormContext~~
+    """
     def __init__(self, source, form_data, user):
         super(PublisherMetadataForm, self).__init__(source=source, form_data=form_data, user=user)
 
@@ -680,7 +706,9 @@ class PublisherMetadataForm(MetadataForm):
 
 
 class AdminMetadataArticleForm(MetadataForm):
-
+    """
+    ~~AdminArticleMetadata:FormContext->ArticleMetadata:FormContext~~
+    """
     def __init__(self, source, form_data, user):
         super(AdminMetadataArticleForm, self).__init__(source=source, form_data=form_data, user=user)
 
