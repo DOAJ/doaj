@@ -1,3 +1,4 @@
+# ~~APIBulkApplications:Feature->APIBulk:Feature~~
 from portality.api.v2.crud.common import CrudApi
 from portality.api.common import Api404Error, Api400Error, Api403Error
 from portality.api.v2.crud import ApplicationsCrudApi
@@ -6,6 +7,9 @@ from copy import deepcopy
 class ApplicationsBulkApi(CrudApi):
 
     API_KEY_OPTIONAL = False
+
+    # ~~->Swagger:Feature~~
+    # ~~->API:Documentation~~
     SWAG_TAG = 'Bulk API'
     SWAG_DELETE_PARAM = {
         "description": "<div class=\"search-query-docs\">List of DOAJ application IDs to be deleted. You must own all of the ids, and they must all not have entered the DOAJ workflow yet, or none of them will be processed.e.g. [4cf8b72139a749c88d043129f00e1b07, 8e896b60-35f1-4cd3-b3f9-07f7f29d8a98].</div>",
@@ -34,6 +38,7 @@ class ApplicationsBulkApi(CrudApi):
     def create(cls, applications, account):
         # we run through create twice, once as a dry-run and the second time
         # as the real deal
+        # ~~->APICrudApplications:Feature~~
         for a in applications:
             ApplicationsCrudApi.create(a, account, dry_run=True)
 
@@ -56,6 +61,7 @@ class ApplicationsBulkApi(CrudApi):
     def delete(cls, application_ids, account):
         # we run through delete twice, once as a dry-run and the second time
         # as the real deal
+        # ~~->APICrudApplications:Feature~~
         for id in application_ids:
             try:
                 ApplicationsCrudApi.delete(id, account, dry_run=True)

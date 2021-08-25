@@ -11,7 +11,10 @@ from portality.models.harvester import HarvesterProgressReport as Report
 
 
 def swag(swag_summary, swag_spec):
-    """ Decorator for API functions, adding swagger info to the swagger spec."""
+    """
+    ~~Swagger:Feature~~
+    Decorator for API functions, adding swagger info to the swagger spec.
+    """
     def decorator(f):
         f.summary = swag_summary
         f.swag = swag_spec
@@ -22,7 +25,10 @@ def swag(swag_summary, swag_spec):
 
 
 def api_key_required(fn):
-    """ Decorator for API functions, requiring a valid key to find a user """
+    """
+    ~~APIKey:Feature~~
+    Decorator for API functions, requiring a valid key to find a user
+    """
     @wraps(fn)
     def decorated_view(*args, **kwargs):
         api_key = request.values.get("api_key", None)
@@ -38,7 +44,10 @@ def api_key_required(fn):
 
 
 def api_key_optional(fn):
-    """ Decorator for API functions, requiring a valid key to find a user if a key is provided. OK if none provided. """
+    """
+    ~~APIKey:Feature~~
+    Decorator for API functions, requiring a valid key to find a user if a key is provided. OK if none provided.
+    """
     @wraps(fn)
     def decorated_view(*args, **kwargs):
         api_key = request.values.get("api_key", None)
@@ -57,7 +66,10 @@ def api_key_optional(fn):
 
 
 def ssl_required(fn):
-    """ Decorator for when a view f() should be served only over SSL """
+    """
+    ~~SSLRequired:Feature~~
+    Decorator for when a view f() should be served only over SSL
+    """
     @wraps(fn)
     def decorated_view(*args, **kwargs):
         if app.config.get("SSL"):
@@ -72,6 +84,11 @@ def ssl_required(fn):
 
 
 def restrict_to_role(role):
+    """
+    ~~Authorisation:Feature~~
+    :param role:
+    :return:
+    """
     if current_user.is_anonymous:
         flash('You are trying to access a protected area. Please log in first.', 'error')
         return redirect(url_for('account.login', next=request.url))
@@ -82,6 +99,12 @@ def restrict_to_role(role):
 
 
 def write_required(script=False, api=False):
+    """
+    ~~ReadOnlyMode:Feature~~
+    :param script:
+    :param api:
+    :return:
+    """
     def decorator(fn):
         @wraps(fn)
         def decorated_view(*args, **kwargs):
@@ -113,10 +136,14 @@ def _term_handler(signum, frame):
 
 
 def capture_sigterm(fn):
+    """
+    ~~CaptureSigterm:Feature~~
+    Decorator which allows graceful exit on SIGTERM
+    """
+
     # Register the SIGTERM handler to raise an exception, allowing graceful exit.
     signal.signal(signal.SIGTERM, _term_handler)
 
-    """ Decorator which allows graceful exit on SIGTERM """
     @wraps(fn)
     def decorated_fn(*args, **kwargs):
         try:

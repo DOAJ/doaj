@@ -27,7 +27,10 @@ JOURNAL_STRUCT = {
 
 
 class OutgoingJournal(OutgoingCommonJournalApplication):
-
+    """
+    ~~APIOutgoingJournal:Model->APIOutgoingCommonJournalApplication:Model~~
+    ~~->Journal:Model~~
+    """
     __SEAMLESS_COERCE__ = COERCE_MAP
     __SEAMLESS_STRUCT__ = [
         JOURNAL_STRUCT,

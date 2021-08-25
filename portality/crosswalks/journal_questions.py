@@ -1,15 +1,16 @@
 from copy import deepcopy
 from portality import datasets
-from portality.formcontext import choices
 from portality.crosswalks.journal_form import JournalFormXWalk
-
+from portality.forms.application_forms import ApplicationFormFactory
 
 class JournalXwalkException(Exception):
     pass
 
 
 class Journal2QuestionXwalk(object):
-
+    """
+    ~~JournalQuestions:Crosswalk->Journal:Form~~
+    """
     QTUP = [
         ("alternative_title", "Alternative title"),
         ("apc_charges", "APC amount"),
@@ -131,7 +132,7 @@ class Journal2QuestionXwalk(object):
 
         def license_checkbox(val):
             opts = {}
-            [opts.update({k: v}) for k, v in choices.Choices.licence_checkbox()]
+            [opts.update({k: v}) for k, v in ApplicationFormFactory.choices_for("license_attributes")]
             nv = [opts.get(v) for v in val]
             return ", ".join(nv)
 
@@ -281,6 +282,7 @@ class Journal2QuestionXwalk(object):
                 return value
 
         # start by converting the object to the forminfo version
+        # ~~->JournalForm:Crosswalk~~
         forminfo = JournalFormXWalk.obj2form(journal)
 
         # Collect the update report

@@ -1,9 +1,9 @@
 """ Gather and test DOAJ regexes here """
 
 from doajtest.helpers import DoajTestCase
-from portality.view.forms import ISSN_REGEX
-from portality.formcontext.forms import DOI_REGEX
 from doajtest.fixtures import dois, issns
+
+from portality.regex import DOI_COMPILED, ISSN_COMPILED
 
 import re
 
@@ -18,7 +18,7 @@ class TestRegexes(DoajTestCase):
 
     def test_01_DOI_regex(self):
         """ Check that the DOI regex (used for validating forms) accepts what we expect. """
-        doi_regex = re.compile(DOI_REGEX)
+        doi_regex = DOI_COMPILED
 
         # DOI regex should match our list of valid DOIs
         for d in dois.DOI_LIST:
@@ -34,7 +34,7 @@ class TestRegexes(DoajTestCase):
 
     def test_02_ISSN_regex(self):
         """ Check that the ISSN regex performs correctly. """
-        issn_regex = re.compile(ISSN_REGEX)
+        issn_regex = ISSN_COMPILED
 
         for i in issns.ISSN_LIST:
             assert issn_regex.match(i), i

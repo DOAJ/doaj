@@ -7,6 +7,9 @@ from datetime import datetime
 
 
 class ArticleService(object):
+    """
+    ~~Article:Service~~
+    """
 
     def batch_create_articles(self, articles, account, duplicate_check=True, merge_duplicate=True,
                               limit_to_account=True, add_journal_info=False):
@@ -14,6 +17,8 @@ class ArticleService(object):
         Create a batch of articles in a single operation.  Articles are either all created/updated or none of them are
 
         This method checks for duplicates within the provided set and within the current database (if you set duplicate_check=True)
+
+        ~~->ArticleBatchCreate:Feature~~
 
         :param articles:  The list of article objects
         :param account:     The account creating the articles
@@ -50,9 +55,9 @@ class ArticleService(object):
         all_unowned = set()
         all_unmatched = set()
 
-
         for article in articles:
             try:
+                # ~~!ArticleBatchCreate:Feature->ArticleCreate:Feature~~
                 result = self.create_article(article, account,
                                              duplicate_check=duplicate_check,
                                              merge_duplicate=merge_duplicate,
@@ -141,6 +146,24 @@ class ArticleService(object):
                 raise exceptions.DuplicateArticleException()
         return is_update
 
+    # here we should have the final point of validation for all incoming articles
+    def _validate_issns(self, article):
+        # only 2 issns: one print, one electronic
+        b = article.bibjson()
+        pissn = b.get_identifiers("pissn")
+        eissn = b.get_identifiers("eissn")
+
+        if len(pissn) > 1 or len(eissn) > 1:
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
+
+        pissn = b.get_one_identifier("pissn")
+        eissn = b.get_one_identifier("eissn")
+
+        #pissn and eissn identical
+        if pissn == eissn:
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN)
+
+
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
 
@@ -149,6 +172,8 @@ class ArticleService(object):
 
         This method will check and merge any duplicates, and report back on successes and failures in a manner consistent with
         batch_create_articles.
+
+        ~~->ArticleCreate:Feature~~
 
         :param article: The article to be created
         :param account:     The account creating the article
@@ -175,14 +200,21 @@ class ArticleService(object):
 
         # quickly validate that the article is acceptable - it must have a DOI and/or a fulltext
         # this raises an exception if the article is not acceptable, containing all the relevant validation details
-        self.is_acceptable(article)
+
+        try:
+            self.is_acceptable(article)
+        except Exception as e:
+            raise e
 
         has_permissions_result = self.has_permissions(account, article, limit_to_account)
         if isinstance(has_permissions_result,dict):
             return has_permissions_result
 
+
+
         is_update = 0
         if duplicate_check:
+            # ~~!ArticleCreate:Feature->ArticleDeduplication:Feature~~
             duplicate = self.get_duplicate(article)
             try:
                 if account.has_role("admin") and update_article_id is not None:     # is update_article_id is None then treat as normal publisher upload
@@ -224,14 +256,11 @@ class ArticleService(object):
 
         # do we have a DOI.  If so, no need to go further
         doi = bj.get_one_identifier(bj.DOI)
-        if doi is not None:
-            return
-
         ft = bj.get_single_url(bj.FULLTEXT)
-        if ft is not None:
-            return
+        if doi is None and ft is None:
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_DOI_NO_FULLTEXT)
 
-        raise exceptions.ArticleNotAcceptable(errors=[Messages.EXCEPTION_NO_DOI_NO_FULLTEXT])
+        self._validate_issns(article)
 
     def is_legitimate_owner(self, article, owner):
         """
@@ -292,7 +321,7 @@ class ArticleService(object):
         if new_article.id is None:
             return False
 
-        old_art = models.Article.pull(update_id)
+        old_art = models.Article.pull(update_id)    # ~~->Article:Model~~
         old_doi = old_art.get_normalised_doi()
         old_ft_url = old_art.get_normalised_fulltext()
 
@@ -370,6 +399,8 @@ class ArticleService(object):
 
         If the owner id is provided, this will limit the search to duplicates owned by that owner
 
+        ~~->ArticleDeduplication:Feature~~
+
         :param article:
         :param owner:
         :return:
@@ -393,6 +424,8 @@ class ArticleService(object):
         Get all known duplicates of an article
 
         If the owner id is provided, this will limit the search to duplicates owned by that owner
+
+        ~~->ArticleDeduplication:Feature~~
 
         :param article:
         :return:
@@ -427,6 +460,8 @@ class ArticleService(object):
         Identify duplicates, separated by duplication criteria
 
         If the owner id is provided, this will limit the search to duplicates owned by that owner
+
+        ~~->ArticleDeduplication:Feature~~
 
         :param article:
         :return:

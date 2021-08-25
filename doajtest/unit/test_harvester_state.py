@@ -5,7 +5,7 @@ Unit tests for the Harvest State mechanics
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures.harvester import HarvestStateFactory
 from portality.models import harvester as models
-from portality.harvester import workflow
+from portality.tasks.harvester_helpers import workflow
 from portality.core import app
 from portality.lib import plugin, dates
 
@@ -111,7 +111,7 @@ class TestState(DoajTestCase):
         hs.issn = "4444-4444"
         hs.save(blocking=True)
 
-        workflow.HarvesterWorkflow.process_issn_states("abcdefg", issns)
+        workflow.HarvesterWorkflow().process_issn_states("abcdefg", issns)
 
         hs1 = models.HarvestState.find_by_issn("abcdefg", "1111-1111")
         assert hs1 is not None

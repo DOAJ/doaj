@@ -4,7 +4,7 @@ Unit tests for the EPMC plugin
 
 from unittest import TestCase
 from doajtest.fixtures.harvester import EPMCFixtureFactory
-from portality.harvester.epmc.epmc_harvester import EPMCHarvester
+from portality.tasks.harvester_helpers.epmc.epmc_harvester import EPMCHarvester
 from portality.lib.dataobj import DataObjException
 
 class TestEPMC(TestCase):

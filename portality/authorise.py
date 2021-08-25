@@ -1,6 +1,9 @@
 from portality.core import app
 
 class Authorise(object):
+    """
+    ~~AuthNZ:Feature~~
+    """
     @classmethod
     def has_role(cls, role, reference):
         ultra = False
