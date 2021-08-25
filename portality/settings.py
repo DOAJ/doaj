@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "5.1.2"
+DOAJ_VERSION = "5.1.3"
 API_VERSION = "2.0.0"
 
 ######################################
@@ -358,6 +358,9 @@ HUEY_REDIS_HOST = os.getenv('HUEY_REDIS_HOST', '127.0.0.1')
 HUEY_REDIS_PORT = os.getenv('HUEY_REDIS_PORT', 6379)
 HUEY_EAGER = False
 
+# Crontab for never running a job - February 31st (use to disable tasks)
+CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
+
 #  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
 HUEY_SCHEDULE = {
     "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
@@ -370,7 +373,7 @@ HUEY_SCHEDULE = {
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"}
+    "harvest": CRON_NEVER  # {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"}   # issue 3037
 }
 
 HUEY_TASKS = {
