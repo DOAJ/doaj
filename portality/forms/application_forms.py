@@ -2657,7 +2657,7 @@ class IsISSNListBuilder:
 
 
 class DifferentToBuilder:
-    # ~~->$ DifferetTo:FormValidator~~
+    # ~~->$ DifferentTo:FormValidator~~
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-different-to"] = settings.get("field")
