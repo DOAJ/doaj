@@ -161,6 +161,13 @@ class JournalService(object):
         return url, action_register
 
     def admin_csv(self, file_path, account_sub_length=8):
+        """
+        ~~AdminJournalCSV:Feature->JournalCSV:Feature~~
+        
+        :param file_path:
+        :param account_sub_length:
+        :return:
+        """
         # create a closure for substituting owners for consistently used random strings
         unmap = {}
 
