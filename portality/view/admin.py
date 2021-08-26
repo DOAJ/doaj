@@ -5,6 +5,7 @@ from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 
+from portality import dao
 import portality.models as models
 import portality.notifications.application_emails as emails
 from portality import constants
@@ -187,6 +188,7 @@ def article_page(article_id):
 @ssl_required
 @write_required()
 def journal_page(journal_id):
+    # ~~JournalForm:Page~~
     auth_svc = DOAJ.authorisationService()
     journal_svc = DOAJ.journalService()
 
@@ -210,8 +212,11 @@ def journal_page(journal_id):
         job = None
         job_id = request.values.get("job")
         if job_id is not None and job_id != "":
+            # ~~-> BackroundJobs:Model~~
             job = models.BackgroundJob.pull(job_id)
-            flash("Job to withdraw/reinstate journal has been submitted")
+            # ~~-> BackgroundJobs:Page~~
+            url = url_for("admin.background_jobs_search") + "?source=" + dao.Facetview2.url_encode_query(dao.Facetview2.make_query(job_id))
+            Messages.flash_with_url(Messages.ADMIN__WITHDRAW_REINSTATE.format(url=url), "success")
         fc.processor(source=journal)
         return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree)
 
