@@ -263,7 +263,9 @@ We are always looking for volunteers to translate our criteria. If you would lik
 
 We have our criteria in:
 
-- [Chinese (application form only)](https://zenodo.org/record/4350096)
+- [Chinese (application form)](https://zenodo.org/record/4350096)
+- [Chinese](https://zenodo.org/record/4633341)
+- [Danish](https://drive.google.com/file/d/1Cqkfn7ThtCbnAhUEbkemXyYvhf-6R1o4/view?usp=sharing)
 - Finnish
 - [French (Canadian)](https://drive.google.com/drive/folders/1-9FraAimhA9Ks64tvKE_W4wsQ8LNob9a?usp=sharing)
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
