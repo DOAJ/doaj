@@ -394,7 +394,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # We expect 1 email to be sent:
         #   * to the publisher, informing them of the journal's acceptance
-        publisher_template = 'publisher_application_accepted.txt'
+        publisher_template = 'publisher_application_accepted.jinja2'
         publisher_to = re.escape(owner.email)
         publisher_subject = 'journal accepted'
 

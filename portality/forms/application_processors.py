@@ -332,7 +332,7 @@ class AdminApplication(ApplicationProcessor):
 
                 # for all acceptances, send an email to the owner of the journal
                 if email_alert:
-                    self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
+                    self._send_application_approved_email(self.target, j, owner, self.source.current_journal is not None)
             except AttributeError:
                 raise Exception("Account {owner} does not exist".format(owner=j.owner))
             except app_email.EmailException:
@@ -441,42 +441,45 @@ class AdminApplication(ApplicationProcessor):
                     self.add_alert('Sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
                     app.logger.exception('Error sending ready status email to managing editors - ' + magic)
 
-    def _send_application_approved_email(self, journal_title, publisher_name, email, update_request=False):
+    def _send_application_approved_email(self, application, journal, owner, update_request=False):
         """Email the publisher when an application is accepted (it's here because it's too troublesome to factor out)"""
         url_root = request.url_root
         if url_root.endswith("/"):
             url_root = url_root[:-1]
 
-        to = [email]
+        to = [owner.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
         if update_request:
             subject = app.config.get("SERVICE_NAME", "") + " - update request accepted"
         else:
             subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
-        publisher_name = publisher_name if publisher_name is not None else "Journal Owner"
+        # publisher_name = publisher_name if publisher_name is not None else "Journal Owner"
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                msg = Messages.SENT_ACCEPTED_APPLICATION_EMAIL.format(email=email)
-                template = "email/publisher_application_accepted.txt"
+                msg = Messages.SENT_ACCEPTED_APPLICATION_EMAIL.format(email=owner.email)
+                template = "email/publisher_application_accepted.jinja2"
                 if update_request:
-                    msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=email)
+                    msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=owner.email)
                     template = "email/publisher_update_request_accepted.txt"
-                jn = journal_title
+                # jn = journal_title
 
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
                                     template_name=template,
-                                    journal_title=jn,
-                                    publisher_name=publisher_name,
+                                    owner=owner,
+                                    journal=journal,
+                                    application=application,
+                                    # journal_title=jn,
+                                    # publisher_name=publisher_name,
                                     url_root=url_root
                 )
                 self.add_alert(msg)
             else:
-                msg = Messages.NOT_SENT_ACCEPTED_APPLICATION_EMAIL.format(email=email)
+                msg = Messages.NOT_SENT_ACCEPTED_APPLICATION_EMAIL.format(email=owner.email)
                 if update_request:
-                    msg = Messages.NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=email)
+                    msg = Messages.NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=owner.email)
                 self.add_alert(msg)
         except Exception as e:
             magic = str(uuid.uuid1())

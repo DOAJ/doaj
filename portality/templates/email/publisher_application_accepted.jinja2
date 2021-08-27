@@ -1,19 +1,31 @@
-{% if publisher_name %}
-Dear {{ publisher_name }},
-{% endif %}
+{#
+~~PublisherApplicationAccepted:Email~~
+~~-> Journal:Model ~~
+~~-> Application:Model~~
+~~-> Account:Model~~
+~~-> ArticleXMLUpload:Feature~~
+~~-> ArticleMetadata:Form~~
+~~-> APIv2:Feature~~
+#}
 
-An application was submitted for the journal {{ journal_title }} and this has been accepted into DOAJ.
+{% set publisher_name = owner.name %}
+{% set bibjson = journal.bibjson() %}
 
-You may access the journal via your Publisher Area: {{ url_root }}/publisher/ using your DOAJ username and password. The Journal Contact does not get an account to access the journal.
+Dear {% if publisher_name %}{{ publisher_name }}{% else %}Journal Owner{% endif %},
+
+An application was submitted for the journal {{ bibjson.title }} on {{ application.date_applied }} and this has been accepted into DOAJ.
+
+You may access the journal via your Publisher Area: {{ url_root }}/{{ url_for("publisher.index") }} using your DOAJ username and password. The Journal Contact does not get an account to access the journal.
 
 If you do not have a DOAJ account already, a separate email will be sent to you with login details. If you do not receive this email then please contact us: {{ url_root }}/contact .)
 
 To increase the visibility, impact, distribution and usage* of your journal content, we urge you to upload the article metadata for this journal as soon as possible. You may do this from the Publisher Area in three ways:
 
-1) Upload Article XML: {{ url_root }}/publisher/uploadfile
-2) Enter Article Metadata: {{ url_root }}/publisher/metadata
-3) Use our API: {{ url_root }}/api/v1/docs
-For help on how to do this read https://doaj.org/publishers#upload and https://doaj.org/features#xml_upload
+1) Upload Article XML: {{ url_root }}/{{ url_for("publisher.upload_file") }}
+2) Enter Article Metadata: {{ url_root }}/{{ url_for("publisher.metadata") }}
+3) Use our API: {{ url_root }}/{{ url_for("api_v2.docs") }} 
+
+For help on how to do this read {{ url_root }}/{{ url_for("publisher.index", anchor="upload") }} and {{ url_root }}/{{ url_for("doaj.features", anchor="xml_upload") }}
 
 We are absolutely delighted to welcome this journal into DOAJ and look forward to seeing the article metadata soon. Please don't hesitate to contact us if you have any questions.
 
