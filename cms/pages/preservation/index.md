@@ -28,9 +28,9 @@ Starting with a list of diamond open access (i.e. non-APC charging) journals fro
 
 ### For publishers
 We hope that many open access publishers, whose journals are not currently archived, will want to take part. The criteria for eligibility for Phase One are:
-- Your journal must be indexed in DOAJ
-- Your journal may not charge any fees of any kind
-- Your journal is not already archived in a preservation service
+ - Your journal must be indexed in DOAJ
+ - Your journal may not charge any fees of any kind
+ - Your journal is not already archived in a preservation service
 
 Towards the end of 2021, DOAJ will send an email to the DOAJ account holders of a subset of the journals that meet the criteria above. The email will invite you to answer a survey. The survey will determine which archiving options are best suited to your journal.
 
