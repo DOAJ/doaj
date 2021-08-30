@@ -212,7 +212,7 @@ def journal_page(journal_id):
         job = None
         job_id = request.values.get("job")
         if job_id is not None and job_id != "":
-            # ~~-> BackroundJobs:Model~~
+            # ~~-> BackgroundJobs:Model~~
             job = models.BackgroundJob.pull(job_id)
             # ~~-> BackgroundJobs:Page~~
             url = url_for("admin.background_jobs_search") + "?source=" + dao.Facetview2.url_encode_query(dao.Facetview2.make_query(job_id))
