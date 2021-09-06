@@ -6,8 +6,13 @@ from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
 from datetime import datetime
 
+from portality.ui.messages import Messages
+
 
 class DOAJXWalk(object):
+    """
+    ~~DOAJArticleXML:Crosswalk->DOAJArticleXML:Feature~~
+    """
     format_name = "doaj"
     schema_path = app.config.get("SCHEMAS", {}).get("doaj")
 
@@ -18,6 +23,7 @@ class DOAJXWalk(object):
         if self.schema_path is None:
             raise exceptions.IngestException(message="Unable to validate for DOAJXWalk, as schema path is not set in config")
         try:
+            # ~~->DOAJArticleXML:Schema~~
             with open(self.schema_path) as schema_file:
                 schema_doc = etree.parse(schema_file)
 
@@ -113,7 +119,7 @@ class DOAJXWalk(object):
          </keywords>
         </record>
         """
-        article = models.Article()
+        article = models.Article()  # ~~->Article:Model~~
         bibjson = article.bibjson()
 
         # language
@@ -140,6 +146,11 @@ class DOAJXWalk(object):
         eissn = _element(record, "eissn")
         if eissn is not None:
             bibjson.add_identifier(bibjson.E_ISSN, eissn.upper())
+
+        if pissn is not None and eissn is not None:
+            if pissn.upper() == eissn.upper():
+                raise CrosswalkException(
+                    message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN.format(value=pissn))
 
         # publication date
         pd = _element(record, "publicationDate")

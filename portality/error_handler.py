@@ -42,6 +42,12 @@ class TlsSMTPHandler(logging.handlers.SMTPHandler):
 
 
 def setup_error_logging(app):
+    """
+    ~~ErrorHandler:Feature->Logging:Library~~
+    ~~->Email:ExternalService~~
+    :param app:
+    :return:
+    """
     # Custom logging WILL BE IGNORED by Flask if app.debug == True -
     # even if you remove the condition below.
     if app.debug:

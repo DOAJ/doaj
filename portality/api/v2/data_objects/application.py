@@ -109,6 +109,9 @@ INCOMING_APPLICATION_REQUIREMENTS = {
 
 
 class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
+    """
+    ~~APIIncomingApplication:Model->Seamless:Library~~
+    """
     __type__ = "application"
     __SEAMLESS_COERCE__ = COERCE_MAP
     __SEAMLESS_STRUCT__ = [
@@ -346,7 +349,10 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
 
 
 class OutgoingApplication(OutgoingCommonJournalApplication):
-
+    """
+    ~~APIOutgoingApplication:Model->APIOutgoingCommonJournalApplication:Model~~
+    ~~->Seamless:Library~~
+    """
     __SEAMLESS_COERCE__ = COERCE_MAP
     __SEAMLESS_STRUCT__ = [
         OUTGOING_APPLICATION_STRUCT,

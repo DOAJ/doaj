@@ -5,6 +5,10 @@ from portality.forms.utils import expanded2compact
 from werkzeug import MultiDict
 
 class JournalGenericXWalk(object):
+    """
+    ~~Journal:Crosswalk->Journal:Form~~
+    ~~->Journal:Model~~
+    """
     @classmethod
     def forminfo2multidict(cls, forminfo):
         formdata = expanded2compact(forminfo,

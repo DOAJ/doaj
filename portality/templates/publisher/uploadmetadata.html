@@ -106,9 +106,9 @@
             {% if file.error %}
                 {{file.error}}
                 {% if file.error == "One or more articles failed to ingest; entire batch ingest halted" %}
-                    <a target="_blank" href="{{ url_for('publisher.help') }}">(what does this mean?)</a><br>
+                    <a target="_blank" href="{{ url_for('publisher.help') }}#explanations">(what does this mean?)</a><br>
                 {% else %}
-                    <a target="_blank" href="{{ url_for('publisher.help') }}">(what does this mean?)</a><br>
+                    <a target="_blank" href="{{ url_for('publisher.help') }}#explanations">(what does this mean?)</a><br>
                 {% endif %}
             {% else %}
                 {% if file.status == "partial" or file.status == "processed" %}

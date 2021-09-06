@@ -36,15 +36,6 @@ ed:
   country: Finland
   language: Finnish, English
 
-
-- name: Emilie Champagne
-  area: Science
-  year_since:
-  city: Québec
-  country: Canada
-  language: French, English
-  featured: true
-
 - name: Fei Yu
   area: Librarianship, Scholarly Publishing, Data Management
   year_since:
@@ -100,6 +91,15 @@ ed:
   city: Tabriz
   country: Iran
   language: Persian, English, Azeri
+  
+  
+- name: Sandra Aceng
+  area: Humanities, Social Sciences
+  year_since:
+  city: Kampala
+  country: Uganda
+  language: English, Luo
+  photo: "aceng.jpg"
 
 - name: S.Suharto
   area: Humanities, Social Sciences
@@ -122,12 +122,6 @@ ed:
   country: Tunisia
   language: Arabic, French, English
 
-- name: Xiaotian Chen
-  area: Librarianship
-  year_since:
-  city:
-  country: China
-  language: Chinese, English
 
 ## All associate editors
 
@@ -390,29 +384,12 @@ ass_ed:
   country: USA
   language: English
 
-- name: Enes Sukic
-  area: Science
-  year_since:
-  city: Novi Pazar
-  country: Serbia
-  language: Bosnian, Serbian, English, Turkish
-  photo: "enes sukic.jpg"
-
 - name: Eva Höglund
   area: Social Sciences
   year_since:
   city: Turku
   country: Finland
   language: Finnish, English
-
-- name: Faith Oronga Amatika-Omondi
-  area: Librarianship
-  year_since:
-  city:
-  country: Kenya
-  language: English
-  photo: "oronga.jpg"
-
 
 - name: Francesca Soldati
   area: Science
@@ -523,11 +500,12 @@ ass_ed:
   language: English
 
 - name: João Sousa
-  area:
+  area: Social Sciences
   year_since:
   city:
-  country:
+  country: Angola
   language: Portuguese, English
+  photo: "sousa.JPG"
 
 - name: Johanna Glader
   area:
@@ -560,11 +538,12 @@ ass_ed:
 
 
 - name: Juliana Soares Lima
-  area:
+  area: Librarianship and information science
   year_since:
   city:
-  country:
+  country: Brazil
   language: Portuguese, English
+  photo: "jlima.jpg"
 
 - name: Jussi Mannisto
   area:
@@ -587,6 +566,7 @@ ass_ed:
   city: Adiyaman
   country: Turkey
   language: Turkish, English
+  photo: "kamil.jpg"
 
 - name: Karima Akool Al-Sahili
   area: Medicine
@@ -696,6 +676,15 @@ ass_ed:
   city: V.N Gaia
   country: Portugal
   language: Portuguese, Spanish, English
+  
+  
+- name: Marie-Eve Dugas
+  area: Humanities, Social Sciences
+  year_since:
+  city: 
+  country:
+  language: French, English
+  
 
 - name: Mario Alejandro Marín
   area:
@@ -739,7 +728,7 @@ ass_ed:
   area: Humanities and Social Sciences
   year_since:
   city:
-  country: Spain
+  country: New Jersey, USA
   language: Spanish, English
   photo: "MiltonRamirez.jpg"
 
@@ -796,11 +785,12 @@ ass_ed:
   photo: "pablohernandez.jpg"
 
 - name: Paula Carina de Araújo
-  area: Librarianship
+  area: Library and Information Science
   year_since:
   city:
   country: Brazil
   language: Portuguese, English
+  photo: "paulacarina.JPG"
 
 - name: Princess Uju E. Nwafor-Orizu
   area: Medicine
@@ -867,6 +857,7 @@ ass_ed:
   city: Philadelphia, PA
   country: USA
   language: English
+  photo: "rjames.png"
 
 - name: Riitta Koikkalainen
   area: Philosophy, Sociology, and Cultural Studies
@@ -943,11 +934,12 @@ ass_ed:
   language: German, English
 
 - name: Soeharto Fisika
-  area: Humanities
+  area: Science education, psychology and social science
   year_since:
   city:
   country: Indonesia
   language: Indonesian, English
+  photo: "soeharto.jpg"
 
 - name: Sofia Fagiolo
   area: Librarianship
@@ -955,6 +947,7 @@ ass_ed:
   city: Rome
   country: Italy
   language: Italian, English
+  photo: "sofiaf.jpg"
 
 - name: Soon Kim
   area:
@@ -971,7 +964,7 @@ ass_ed:
   language: English, Japanese
 
 - name: Souleymane Sogoba
-  area: Statistics
+  area: Information and Communication Sciences
   year_since:
   city: Bamako
   country: Mali

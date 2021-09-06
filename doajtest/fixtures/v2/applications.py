@@ -3,13 +3,11 @@ from datetime import datetime
 
 import rstr
 
-from portality import constants
+from portality import constants, regex
 from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED
-from doajtest.fixtures.v2.journals import JOURNAL_SOURCE, JOURNAL_FORM_EXPANDED, JOURNAL_FORM
-from portality.formcontext import forms
+from doajtest.fixtures.v2.journals import JOURNAL_FORM_EXPANDED, JOURNAL_FORM
 from portality.lib import dates
 from portality.models.v2.application import Application
-from portality.forms.utils import expanded2compact
 
 class ApplicationFixtureFactory(object):
     @staticmethod
@@ -35,8 +33,8 @@ class ApplicationFixtureFactory(object):
             if fakemonth > 9:
                 fakemonth = 9
             template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
-            template["bibjson"]["pissn"] = rstr.xeger(forms.ISSN_REGEX)
-            template["bibjson"]["eissn"] = rstr.xeger(forms.ISSN_REGEX)
+            template["bibjson"]["pissn"] = rstr.xeger(regex.ISSN_COMPILED)
+            template["bibjson"]["eissn"] = rstr.xeger(regex.ISSN_COMPILED)
             template['bibjson']['title'] = 'Test Title {}'.format(i)
             application_sources.append(deepcopy(template))
             template["admin"]["current_journal"] = '123456789'

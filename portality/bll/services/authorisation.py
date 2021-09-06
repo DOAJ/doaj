@@ -4,6 +4,9 @@ from portality.bll import exceptions
 
 
 class AuthorisationService(object):
+    """
+    ~~AuthNZ:Service->AuthNZ:Feature~~
+    """
     def can_create_update_request(self, account, journal):
         """
         Is the given account allowed to create an update request from the given journal
@@ -76,7 +79,6 @@ class AuthorisationService(object):
         else:
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
 
-        return False
 
     def can_view_application(self, account, application):
         """
@@ -125,7 +127,7 @@ class AuthorisationService(object):
             passed = True
 
         # now check whether the user is the editor of the editor group
-        eg = models.EditorGroup.pull_by_key("name", journal.editor_group)
+        eg = models.EditorGroup.pull_by_key("name", journal.editor_group)   # ~~->EditorGroup:Model~~
         if eg is not None and eg.editor == account.id:
             passed = True
 
