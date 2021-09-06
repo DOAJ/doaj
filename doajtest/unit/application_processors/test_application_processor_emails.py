@@ -386,7 +386,6 @@ class TestApplicationReviewEmails(DoajTestCase):
         # Refresh the application form
         fc = ApplicationFormFactory.context("admin")
         processor = fc.processor(source=ready_application)
-        #fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
         processor.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
         processor.finalise(acc)
