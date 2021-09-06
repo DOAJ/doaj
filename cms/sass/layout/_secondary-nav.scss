@@ -25,7 +25,7 @@
 
   .secondary-nav > .container {
     z-index: 3000;
-    position: fixed;
+    position: absolute;
     width: 100%;
     background-color: $light-grey;
   }

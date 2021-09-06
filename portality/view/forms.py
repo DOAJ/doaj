@@ -9,8 +9,7 @@ import re
 from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, HiddenField
 
-import regex
-from portality import models
+from portality import regex, models
 from portality.forms.validate import OptionalIf, MaxLen
 
 

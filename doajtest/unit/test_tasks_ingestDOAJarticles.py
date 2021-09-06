@@ -21,6 +21,9 @@ from portality.background import BackgroundException
 import ftplib, os, requests
 from urllib.parse import urlparse
 
+from portality.ui.messages import Messages
+
+
 class TestIngestArticlesDoajXML(DoajTestCase):
 
     @classmethod
@@ -1798,3 +1801,38 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # and placed into the failed dir
         fad = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
         assert os.path.exists(fad)
+
+    def test_59_same_issns(self):
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("doaj")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = DoajXmlArticleFixtureFactory.upload_the_same_issns()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed", "expected: failed, received: {}".format(file_upload.status)
+        assert file_upload.error == Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, "Expected: '{}', received: {}".format(Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, file_upload.error)

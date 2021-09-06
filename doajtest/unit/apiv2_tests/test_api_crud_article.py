@@ -721,3 +721,38 @@ class TestCrudArticle(DoajTestCase):
                 resp = t_client.delete(url_for('api_v1.delete_article', article_id=created_json['id'],
                                             api_key=article_owner.api_key))
                 assert resp.status_code == 204
+
+    def test_16_the_same_issns(self):
+        """ Check we get an error when article with 2 the same issns is provided. """
+
+        # set up all the bits we need
+        account = models.Account()
+        account.set_id('test')
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save(blocking=True)
+
+        data = ArticleFixtureFactory.make_article_source(pissn="1234-5678", eissn="1234-5678")
+
+        with self.assertRaises(Api400Error):
+            ArticlesCrudApi.create(data, account)
+
+    def test_17_3_issns(self):
+        """ Check we get an error when article has 3 issns. """
+
+        # set up all the bits we need
+        account = models.Account()
+        account.set_id('test')
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save(blocking=True)
+
+        data = ArticleFixtureFactory.make_article_source(pissn="0000-0000", eissn="1234-5678")
+        data["bibjson"]["identifier"].append({'type': 'pissn', 'id': '1234-5678'})
+
+        with self.assertRaises(Api400Error):
+            ArticlesCrudApi.create(data, account)

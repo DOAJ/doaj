@@ -88,3 +88,7 @@ class DoajXmlArticleFixtureFactory(object):
     @classmethod
     def invalid_orcid_id(cls):
         return cls._response_from_xpath("//record[journalTitle='With invalid orcid_id']")
+
+    @classmethod
+    def upload_the_same_issns(cls):
+        return cls._response_from_xpath("//record[journalTitle='2 The Same ISSNs']")
