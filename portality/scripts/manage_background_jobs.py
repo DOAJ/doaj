@@ -13,18 +13,10 @@ One of -r, -c is required. -r requeues jobs, -c cancels them.
 -f : 1970-01-01T00:00:00Z
 -t : the current timestamp
 
-Currently this script supports re-queuing the following background job types:
+This script supports managing the following background job types listed in HANDLERS; if you need to re-queue any other
+kind of job, you need to add it there.
 
-ingest_articles
-suggestion_bulk_edit
-sitemap
-read_news
-journal_csv
-public_data_dump
-
-If you need to re-queue any other kind of job, you need to add it here.
-
-FIXME: this should be a script calling functionality inside a business logic layer with a fuller understanding of jobs.
+TODO: this should be a script calling functionality inside a business logic layer with a fuller understanding of jobs.
 """
 from portality import models
 from portality.lib import dates
@@ -39,19 +31,21 @@ from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask
 from portality.tasks.check_latest_es_backup import CheckLatestESBackupBackgroundTask
 from portality.tasks.prune_es_backups import PruneESBackupsBackgroundTask
 from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
+from portality.tasks.harvester import HarvesterBackgroundTask
 
-
+# dict of {task_name: task_class} so we can interact with the jobs
 HANDLERS = {
-    'ingest_articles': IngestArticlesBackgroundTask,
-    'suggestion_bulk_edit': SuggestionBulkEditBackgroundTask,
-    'sitemap': SitemapBackgroundTask,
-    'read_news': ReadNewsBackgroundTask,
-    'journal_csv': JournalCSVBackgroundTask,
-    'article_cleanup_sync':ArticleCleanupSyncBackgroundTask,
-    'set_in_doaj': SetInDOAJBackgroundTask,
-    'check_latest_es_backup': CheckLatestESBackupBackgroundTask,
-    'prune_es_backups': PruneESBackupsBackgroundTask,
-    'public_data_dump': PublicDataDumpBackgroundTask,
+    IngestArticlesBackgroundTask.__action__: IngestArticlesBackgroundTask,
+    SuggestionBulkEditBackgroundTask.__action__: SuggestionBulkEditBackgroundTask,
+    SitemapBackgroundTask.__action__: SitemapBackgroundTask,
+    ReadNewsBackgroundTask.__action__: ReadNewsBackgroundTask,
+    JournalCSVBackgroundTask.__action__: JournalCSVBackgroundTask,
+    ArticleCleanupSyncBackgroundTask.__action__: ArticleCleanupSyncBackgroundTask,
+    SetInDOAJBackgroundTask.__action__: SetInDOAJBackgroundTask,
+    CheckLatestESBackupBackgroundTask.__action__: CheckLatestESBackupBackgroundTask,
+    PruneESBackupsBackgroundTask.__action__: PruneESBackupsBackgroundTask,
+    PublicDataDumpBackgroundTask.__action__: PublicDataDumpBackgroundTask,
+    HarvesterBackgroundTask.__action__: HarvesterBackgroundTask,
 }
 
 

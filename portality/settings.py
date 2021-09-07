@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "5.1.2"
+DOAJ_VERSION = "5.1.4"
 API_VERSION = "2.0.0"
 
 ######################################
@@ -361,6 +361,9 @@ HUEY_REDIS_HOST = os.getenv('HUEY_REDIS_HOST', '127.0.0.1')
 HUEY_REDIS_PORT = os.getenv('HUEY_REDIS_PORT', 6379)
 HUEY_EAGER = False
 
+# Crontab for never running a job - February 31st (use to disable tasks)
+CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
+
 #  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
 HUEY_SCHEDULE = {
     "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
@@ -373,7 +376,7 @@ HUEY_SCHEDULE = {
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"}
+    "harvest": CRON_NEVER  # {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"}   # issue 3037
 }
 
 HUEY_TASKS = {
@@ -407,7 +410,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal", # ~~->Journal:Model~~
     "portality.models.Application", # ~~->Application:Model~~
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
-    "portality.models.harvester.HarvestState"   # ~~->HarvestState:Model~~
+    "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
+    "portality.models.background.BackgroundJob" # ~~-> BackgroundJob:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -573,15 +577,14 @@ MAPPINGS = {
         'settings': DEFAULT_INDEX_SETTINGS
     }
 }
-MAPPINGS['article'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}         #~~->Article:Model~~
-MAPPINGS['upload'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}          #~~->Upload:Model~~
-MAPPINGS['cache'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}           #~~->Cache:Model~~
-MAPPINGS['lcc'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}             #~~->LCC:Model~~
-MAPPINGS['editor_group'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}    #~~->EditorGroup:Model~~
-MAPPINGS['news'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}            #~~->News:Model~~
-MAPPINGS['lock'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}            #~~->Lock:Model~~
-MAPPINGS['provenance'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}      #~~->Provenance:Model~~
-MAPPINGS['background_job'] = {'mappings': DEFAULT_DYNAMIC_MAPPING, 'settings': DEFAULT_INDEX_SETTINGS}  #~~->BackgroundJob:Model~~
+MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}  #~~->Article:Model~~
+MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING} #~~->Upload:Model~~
+MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING} #~~->Cache:Model~~
+MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}  #~~->LCC:Model~~
+MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->EditorGroup:Model~~
+MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
+MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
+MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
 
 #########################################
 # Query Routes
@@ -1130,24 +1133,11 @@ QUICK_REJECT_REASONS = [
 
 ## Configuration options for the DOAJ API Client
 
-DOAJ_SEARCH_BASE = "https://doaj.org"
-
-DOAJ_SEARCH_PORT = 80
-
-# ~~->Query:WebRoute~~
-DOAJ_QUERY_ENDPOINT = "query"
-# ~~->PublicJournalArticleQuery:Endpoint~~
-DOAJ_SEARCH_TYPE = "journal,article"
-
-# ~~->API:Endpoint~~
-DOAJ_API1_BASE_URL = "https://doaj.org/api/v1/"
-DOAJ_API2_BASE_URL = "https://doaj.org/api/v2/"
-
-
 ## EPMC Client configuration
 # ~~-> EPMC:ExternalService~~
 EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
 EPMC_TARGET_VERSION = "6.5"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
+EPMC_HARVESTER_THROTTLE = 0.2
 
 # General harvester configuration
 HARVESTERS = [
@@ -1156,26 +1146,13 @@ HARVESTERS = [
 
 INITIAL_HARVEST_DATE = "2015-12-01T00:00:00Z"
 
-# The mapping from account ids to API keys.  MUST NOT be checked into the repo, put these
+# List of account ids to harvest from.  MUST NOT be checked into the repo, put these
 # in the local.cfg instead
-HARVESTER_API_KEYS = {
+HARVEST_ACCOUNTS = []
 
-}
-
-EPMC_HARVESTER_THROTTLE = 0.2
-
-# Process name while harvester is starting, running
-HARVESTER_STARTING_PROCTITLE = 'harvester: starting'
-HARVESTER_RUNNING_PROCTITLE = 'harvester: running'
-
-# Minutes we wait between terminate and kill
-HARVESTER_MAX_WAIT = 10
-
-# Email notifications
-HARVESTER_EMAIL_ON_EVENT = False
-HARVESTER_EMAIL_RECIPIENTS = None
-HARVESTER_EMAIL_FROM_ADDRESS = "harvester@doaj.org"
-HARVESTER_EMAIL_SUBJECT_PREFIX = "[harvester] "
+# Amount of time a harvester record is allowed to be in "queued" or "processing" state before we
+# assume it's a zombie, and ignore it
+HARVESTER_ZOMBIE_AGE = 604800
 
 #######################################################
 # ReCAPTCHA configuration
