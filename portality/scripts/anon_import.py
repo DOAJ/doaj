@@ -5,7 +5,7 @@ Configure the target index in your *.cfg override file
 For now, this import script requires the same index pattern (prefix, 'types', index-per-type setting) as the exporter.
 """
 
-import esprit, json, gzip, shutil
+import esprit, json, gzip, shutil, elasticsearch
 from portality.core import app, es_connection, initialise_index
 from portality.store import StoreFactory
 from portality.util import ipt_prefix
@@ -48,8 +48,11 @@ def do_import(config):
 
     # remove all the types that we are going to import
     for import_type in list(import_types.keys()):
-        if es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type):
-            es_connection.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type)
+        try:
+            if es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type):
+                es_connection.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type)
+        except elasticsearch.exceptions.NotFoundError:
+            pass
 
     # re-initialise the index (sorting out mappings, etc)
     print("==Initialising Index for Mappings==")
