@@ -8,6 +8,13 @@
   <header class="col-md-4">
     <h2>Upload preservation file</h2>
 
+    <div class="alert">
+      <ul>
+        <li>Know all about preservation <a href="/preservation">here</a></li>
+        <li>Check help documentation for creating preservation package <a href="{{ url_for('publisher.help') }}#preservation">here</a></li>
+        <li> <a href="/static/doaj/preservation_example.zip">Download </a>example zip file</li>
+      </ul>
+    </div>
   </header>
 
   <form id="upload_form" class="col-md-8 form form--compact" method="POST" action="/publisher/preservation" enctype="multipart/form-data">
@@ -24,5 +31,87 @@
 </div>
 
 <hr>
+
+{% if previous|length > 0 %}
+<h2>History of uploads (showing last {{previous|length}})</h2>
+
+<table id="previous_files" style="width: 100%; table-layout:fixed" class="tablesorter">
+    <thead>
+        <tr>
+            <th style="width: 17%">Upload Date</th>
+            <th style="width: 20%">Filename</th>
+            <th style="width: 15%">Upload Status</th>
+            <th style="width: 36%">Notes</th>
+        </tr>
+    </thead>
+{% for file in previous %}
+    <tr>
+        <td>{{ file.created_timestamp | utc_timestamp("%d %b %Y %H:%M:%S %Z") }}</td>
+        <td style="word-wrap: break-word">
+            {{file.filename}}
+        </td>
+        <td>
+            {% if file.status == "initiated" %}
+                <span style="color: #000066">initiated</span>
+            {% elif file.status == "validated" %}
+                <span style="color: #000066">pending</span>
+            {% elif file.status == "pending" %}
+                <span style="color: #000066">pending</span>
+            {% elif file.status == "failed" %}
+                <span style="color: #660000"><span data-feather="alert-octagon" aria-hidden="true"></span>processing failed</span>
+            {% elif file.status == "uploaded" %}
+                <span style="color: #006600"><span data-feather="thumbs-up" aria-hidden="true"></span>successfully processed</span>
+            {% endif %}
+        </td>
+        <td style="word-wrap:break-word">
+            {% if file.error %}
+                {{file.error}}
+            {% else %}
+                {% if file.status == "uploaded" %}
+                    uploaded to archive server
+                {% endif %}
+                {% if file.status == "initiated" or file.status == "pending" %}
+                    upload to archive server is in process
+                {% endif %}
+            {% endif %}
+            {%  if file.error_details %}
+                <div id="details_{{ file.id }}" style="display:none">
+                    {% if file.error_details %}
+                        {{ file.error_details }}
+                    {% endif %}
+                </div>
+                <a href="#" class="show_error_details" data-id="{{ file.id }}">(show error details)</a>
+            {% endif %}
+        </td>
+    </tr>
+{% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+$(document).ready(function() {
+
+document.getElementById("crossref-alert").style.display = "none";
+
+    function load_errors_and_previous_files(){
+        $("#previous_files").tablesorter();
+
+        $(".show_error_details").click(function (event) {
+            event.preventDefault();
+            var id = $(this).attr("data-id");
+            $("#details_" + id).slideToggle();
+            if ($(this).html() === "(show error details)") {
+                $(this).html("(hide error details)");
+            } else {
+                $(this).html("(show error details)");
+            }
+        })
+    }
+
+})
+</script>
 
 {% endblock %}

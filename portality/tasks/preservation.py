@@ -480,9 +480,9 @@ class AtriclePackage:
             with open(os.path.join(metada_dir, "metadata.json"), 'w+') as metadata_file:
                 metadata_file.write(json.dumps(self.metadata, indent=4))
 
-            # Create a tag file with uuid of the article
-            with open(os.path.join(metada_dir, "tag.txt"), 'w+') as metadata_file:
-                metadata_file.write(json.dumps(self.article_id, indent=4))
+            # Create a identifier file with uuid of the article
+            with open(os.path.join(metada_dir, "identifier.txt"), 'w+') as metadata_file:
+                metadata_file.write(self.article_id)
 
             try:
                 # Bag the article

@@ -232,8 +232,10 @@ def preservation():
        This feature is available for the users who has 'preservation' role.
     """
 
+    previous = models.PreservationState.by_owner(current_user.id)
+
     if request.method == "GET":
-        return render_template('publisher/preservation.html')
+        return render_template('publisher/preservation.html', previous=previous)
 
     if request.method == "POST":
 
@@ -256,6 +258,8 @@ def preservation():
 
         preservation_model.validated()
         preservation_model.save()
+
+        previous.insert(0, preservation_model)
 
         try:
             job = PreservationBackgroundTask.prepare(current_user.id, upload_file=f)
