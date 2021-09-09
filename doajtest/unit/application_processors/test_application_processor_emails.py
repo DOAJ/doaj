@@ -103,7 +103,7 @@ class TestPublicApplicationEmails(DoajTestCase):
 
         # We expect one email sent:
         #   * to the applicant, informing them the application was received
-        public_template = re.escape('publisher_application_received.txt')
+        public_template = re.escape('publisher_application_received.jinja2')
         public_to = re.escape(account.email)
         public_subject = "Directory of Open Access Journals - your application to DOAJ has been received"
         public_email_matched = re.search(email_log_regex % (public_template, public_to, public_subject),
@@ -299,7 +299,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         re.DOTALL)
         assert bool(assEd_email_matched)
 
-        publisher_template = 'publisher_application_editor_assigned.txt'
+        publisher_template = 'publisher_application_editor_assigned.jinja2'
         publisher_to = re.escape(owner.email)
         publisher_subject = 'your application has been assigned an editor for review'
 
@@ -483,7 +483,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         re.DOTALL)
         assert bool(assEd_email_matched)
 
-        publisher_template = 'publisher_application_editor_assigned.txt'
+        publisher_template = 'publisher_application_editor_assigned.jinja2'
         publisher_to = re.escape(owner.email)
         publisher_subject = 'your application has been assigned an editor for review'
 
@@ -600,7 +600,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # We expect one email to be sent here:
         #   * to the publisher, notifying that an editor is viewing their application
-        publisher_template = re.escape('publisher_application_inprogress.txt')
+        publisher_template = re.escape('publisher_application_inprogress.jinja2')
         publisher_to = re.escape(owner.email)
         publisher_subject = 'your application is under review'
 
@@ -816,7 +816,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
                                         re.DOTALL)
         assert bool(assEd_email_matched)
 
-        publisher_template = 'publisher_update_request_editor_assigned.txt'
+        publisher_template = 'publisher_update_request_editor_assigned.jinja2'
         publisher_to = re.escape(owner.email)
         publisher_subject = 'your update request has been assigned an editor for review'
 
@@ -1000,7 +1000,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
                                         re.DOTALL)
         assert bool(assEd_email_matched)
 
-        publisher_template = 'publisher_update_request_editor_assigned.txt'
+        publisher_template = 'publisher_update_request_editor_assigned.jinja2'
         publisher_to = re.escape(owner.email)
         publisher_subject = 'your update request has been assigned an editor for review'
 
@@ -1116,7 +1116,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email to be sent here:
         #   * to the publisher, notifying that an editor is viewing their application
-        publisher_template = re.escape('publisher_update_request_inprogress.txt')
+        publisher_template = re.escape('publisher_update_request_inprogress.jinja2')
         publisher_to = re.escape(owner.email)
         publisher_subject = 'your update request is under review'
 

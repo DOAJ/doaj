@@ -99,6 +99,7 @@ def send_publisher_update_request_editor_assigned_email(application):
     owner = models.Account.pull(application.owner)
     send_list = [
         {
+            "owner" : owner,
             "name" : owner.name,
             "email" : owner.email,
             "sent_alert" : Messages.SENT_PUBLISHER_ASSIGNED_EMAIL,
@@ -116,9 +117,11 @@ def send_publisher_update_request_editor_assigned_email(application):
             app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/publisher_update_request_editor_assigned.txt",
-                            application_title=application.bibjson().title,
-                            publisher_name=instructions["name"])
+                            template_name="email/publisher_update_request_editor_assigned.jinja2",
+                            owner=instructions["owner"],
+                            application=application)
+                            # application_title=application.bibjson().title,
+                            # publisher_name=instructions["name"])
             alerts.append(instructions["sent_alert"])
         except app_email.EmailException:
             alerts.append(instructions["not_sent_alert"])
@@ -135,6 +138,7 @@ def send_publisher_application_editor_assigned_email(application):
     if owner is not None:
         send_list.append(
             {
+                "owner" : owner,
                 "name" : owner.name,
                 "email" : owner.email,
                 "sent_alert" : Messages.SENT_PUBLISHER_ASSIGNED_EMAIL,
@@ -152,9 +156,9 @@ def send_publisher_application_editor_assigned_email(application):
             app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/publisher_application_editor_assigned.txt",
-                            application_title=application.bibjson().title,
-                            publisher_name=instructions["name"])
+                            template_name="email/publisher_application_editor_assigned.jinja2",
+                            application=application,
+                            owner=instructions["owner"])
             alerts.append(instructions["sent_alert"])
         except app_email.EmailException:
             alerts.append(instructions["not_sent_alert"])
@@ -251,11 +255,12 @@ def send_editor_completed_email(application):
 
 def send_publisher_update_request_inprogress_email(application):
     """Tell the publisher the UR is underway"""
-    journal_title = application.bibjson().title
+    # journal_title = application.bibjson().title
 
     owner = models.Account.pull(application.owner)
     send_list = [
         {
+            "owner" : owner,
             "name" : owner.name,
             "email" : owner.email,
             "sent_alert" : Messages.SENT_PUBLISHER_IN_PROGRESS_EMAIL,
@@ -273,9 +278,11 @@ def send_publisher_update_request_inprogress_email(application):
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
-                                template_name="email/publisher_update_request_inprogress.txt",
-                                publisher_name=instructions["name"],
-                                journal_title=journal_title)
+                                template_name="email/publisher_update_request_inprogress.jinja2",
+                                owner=instructions["owner"],
+                                application=application)
+                                # publisher_name=instructions["name"],
+                                # journal_title=journal_title)
             alerts.append(instructions["sent_alert"])
         except app_email.EmailException:
             alerts.append(instructions["not_sent_alert"])
@@ -284,7 +291,7 @@ def send_publisher_update_request_inprogress_email(application):
 
 def send_publisher_application_inprogress_email(application):
     """Tell the publisher the application is underway"""
-    journal_title = application.bibjson().title
+    # journal_title = application.bibjson().title
 
     send_list = []
 
@@ -292,6 +299,7 @@ def send_publisher_application_inprogress_email(application):
     if owner is not None:
         send_list.append(
             {
+                "owner" : owner,
                 "name" : owner.name,
                 "email" : owner.email,
                 "sent_alert" : Messages.SENT_PUBLISHER_IN_PROGRESS_EMAIL,
@@ -309,9 +317,11 @@ def send_publisher_application_inprogress_email(application):
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
-                                template_name="email/publisher_application_inprogress.txt",
-                                publisher_name=instructions["name"],
-                                journal_title=journal_title)
+                                template_name="email/publisher_application_inprogress.jinja2",
+                                owner=instructions["owner"],
+                                application=application)
+                                # publisher_name=instructions["name"],
+                                # journal_title=journal_title)
             alerts.append(instructions["sent_alert"])
         except app_email.EmailException:
             alerts.append(instructions["not_sent_alert"])
@@ -329,10 +339,12 @@ def send_received_email(application):
     app_email.send_mail(to=to,
                         fro=fro,
                         subject=subject,
-                        template_name="email/publisher_application_received.txt",
-                        publisher_name=owner.name,
-                        title=application.bibjson().title,
-                        url=application.bibjson().get_single_url(urltype="homepage"))
+                        template_name="email/publisher_application_received.jinja2",
+                        owner=owner,
+                        application=application)
+                        # publisher_name=owner.name,
+                        # title=application.bibjson().title,
+                        # url=application.bibjson().get_single_url(urltype="homepage"))
 
 
 def send_publisher_update_request_revisions_required(application):
@@ -362,13 +374,14 @@ def send_publisher_update_request_revisions_required(application):
 def send_publisher_reject_email(application, note=None, update_request=False):
     """Tell the publisher their application was rejected"""
     journal_title = application.bibjson().title
-    date_applied = dates.reformat(application.suggested_on, out_format='%Y-%m-%d')
+    # date_applied = dates.reformat(application.suggested_on, out_format='%Y-%m-%d')
 
     send_instructions = []
 
     owner = models.Account.pull(application.owner)
     if owner is not None:
         send_instructions.append({
+            "owner" : owner,
             "name" : owner.name,
             "email" : owner.email,
             "type" : "owner"
@@ -397,10 +410,12 @@ def send_publisher_reject_email(application, note=None, update_request=False):
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
-                                template_name="email/publisher_application_rejected.txt",
-                                publisher_name=instructions["name"],
-                                journal_title=journal_title,
-                                date_applied=date_applied,
+                                template_name="email/publisher_application_rejected.jinja2",
+                                owner=instructions["owner"],
+                                application=application,
+                                # publisher_name=instructions["name"],
+                                # journal_title=journal_title,
+                                # date_applied=date_applied,
                                 note=note)
 
     return send_instructions

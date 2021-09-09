@@ -461,7 +461,7 @@ class AdminApplication(ApplicationProcessor):
                 template = "email/publisher_application_accepted.jinja2"
                 if update_request:
                     msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=owner.email)
-                    template = "email/publisher_update_request_accepted.txt"
+                    template = "email/publisher_update_request_accepted.jinja2"
                 # jn = journal_title
 
                 app_email.send_mail(to=to,
@@ -470,11 +470,7 @@ class AdminApplication(ApplicationProcessor):
                                     template_name=template,
                                     owner=owner,
                                     journal=journal,
-                                    application=application,
-                                    # journal_title=jn,
-                                    # publisher_name=publisher_name,
-                                    url_root=url_root
-                )
+                                    application=application)
                 self.add_alert(msg)
             else:
                 msg = Messages.NOT_SENT_ACCEPTED_APPLICATION_EMAIL.format(email=owner.email)

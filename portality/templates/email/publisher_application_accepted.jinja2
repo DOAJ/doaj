@@ -6,12 +6,14 @@
 ~~-> ArticleXMLUpload:Feature~~
 ~~-> ArticleMetadata:Form~~
 ~~-> APIv2:Feature~~
+~~-> PublisherDashboard:Page~~
 ~~-> PublisherHelp:Page~~
 ~~-> DOAJXML:Page~~
 #}
 
 {% set publisher_name = owner.name %}
 {% set bibjson = journal.bibjson() %}
+{% set url_root = config.get("BASE_URL") %}
 
 Dear {% if publisher_name %}{{ publisher_name }}{% else %}Journal Owner{% endif %},
 
