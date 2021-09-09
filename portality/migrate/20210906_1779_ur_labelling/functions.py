@@ -52,7 +52,7 @@ def detect_application_type(application):
 
             # do a check to make sure that any rejected application that's registered as the current
             # application for a journal is fixed
-            if application.application_status == constants.APPLICATION_STATUS_ACCEPTED and current_application == application.id:
+            if application.application_status == constants.APPLICATION_STATUS_REJECTED and current_application == application.id:
                 print("fixed erroneous current_application for update request", application.id, journal.id)
                 journal.remove_current_application()
                 journal.save()
