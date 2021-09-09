@@ -421,9 +421,9 @@ def terms():
     return render_template("layouts/static_page.html", page_frag="/legal/terms.html")
 
 
-@blueprint.route("/press/")
-def press():
-    return render_template("layouts/static_page.html", page_frag="/legal/press.html")
+@blueprint.route("/media/")
+def media():
+    return render_template("layouts/static_page.html", page_frag="/legal/media.html")
 
 
 @blueprint.route("/support/")
