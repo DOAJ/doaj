@@ -43,6 +43,9 @@ class OAI_Crosswalk(object):
 
 
 class OAI_DC(OAI_Crosswalk):
+    """
+    ~~OAIDC:Crosswalk->OAIPMH:Feature~~
+    """
     OAIDC_NAMESPACE = "http://www.openarchives.org/OAI/2.0/oai_dc/"
     OAIDC = "{%s}" % OAIDC_NAMESPACE
 
@@ -86,6 +89,10 @@ class OAI_DC(OAI_Crosswalk):
 
 
 class OAI_DC_Article(OAI_DC):
+    """
+    ~~OAIArticleXML:Crosswalk->OAIPMH:Feature~~
+    ~~->OAIDC:Crosswalk~~
+    """
     def crosswalk(self, record):
         bibjson = record.bibjson()
 
@@ -214,6 +221,10 @@ class OAI_DC_Article(OAI_DC):
 
 
 class OAI_DC_Journal(OAI_DC):
+    """
+    ~~OAIJournalXML:Crosswalk->OAIPMH:Feature~~
+    ~~->OAIDC:Crosswalk~~
+    """
     def crosswalk(self, record):
         bibjson = record.bibjson()
 
@@ -289,6 +300,10 @@ class OAI_DC_Journal(OAI_DC):
 
 
 class OAI_DOAJ_Article(OAI_Crosswalk):
+    """
+    ~~OAIDOAJArticleXML:Crosswalk->OAIPMH:Feature~~
+    ~~->DOAJArticleXML:Schema~~
+    """
     OAI_DOAJ_NAMESPACE = "http://doaj.org/features/oai_doaj/1.0/"
     OAI_DOAJ = "{%s}" % OAI_DOAJ_NAMESPACE
 

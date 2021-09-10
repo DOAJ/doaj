@@ -1,5 +1,4 @@
 import csv
-from portality import clcsv
 
 IN = "/home/richard/tmp/article_duplicates_2018-05-22/duplicate_articles_global_2018-05-22.csv"
 

@@ -3,33 +3,29 @@ import json
 from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
-
 from werkzeug.datastructures import MultiDict
 
-from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
-from portality.decorators import ssl_required, restrict_to_role, write_required
+from portality import dao
 import portality.models as models
-
-from portality.formcontext import choices
-from portality import lock, app_email
-from portality.lib.es_query_http import remove_search_limits
-from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
-from portality.core import app
-from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, article_bulk_delete
-from portality.bll import DOAJ, exceptions
-from portality.lcc import lcc_jstree
-
-# from portality.formcontext import emails
 import portality.notifications.application_emails as emails
-from portality.ui.messages import Messages
-from portality.formcontext import formcontext
-
-from portality.view.forms import EditorGroupForm, MakeContinuation
-from portality.forms.application_forms import ApplicationFormFactory
-from portality.background import BackgroundSummary
 from portality import constants
-from portality.forms.application_forms import JournalFormFactory
+from portality import lock, app_email
+from portality.background import BackgroundSummary
+from portality.bll import DOAJ, exceptions
+from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
+from portality.core import app
 from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.decorators import ssl_required, restrict_to_role, write_required
+from portality.forms.application_forms import ApplicationFormFactory, application_statuses
+from portality.forms.application_forms import JournalFormFactory
+from portality.forms.article_forms import ArticleFormFactory
+from portality.lcc import lcc_jstree
+from portality.lib.es_query_http import remove_search_limits
+from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
+    article_bulk_delete
+from portality.ui.messages import Messages
+from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
+from portality.view.forms import EditorGroupForm, MakeContinuation
 
 blueprint = Blueprint('admin', __name__)
 
@@ -166,13 +162,13 @@ def article_page(article_id):
     if ap is None:
         abort(404)
 
-    fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=current_user)
+    fc = ArticleFormFactory.get_from_context(role="admin", source=ap, user=current_user)
     if request.method == "GET":
         return fc.render_template()
 
     elif request.method == "POST":
         user = current_user._get_current_object()
-        fc = formcontext.ArticleFormFactory.get_from_context(role="admin", source=ap, user=user, form_data=request.form)
+        fc = ArticleFormFactory.get_from_context(role="admin", source=ap, user=user, form_data=request.form)
 
         fc.modify_authors_if_required(request.values)
 
@@ -192,6 +188,7 @@ def article_page(article_id):
 @ssl_required
 @write_required()
 def journal_page(journal_id):
+    # ~~JournalForm:Page~~
     auth_svc = DOAJ.authorisationService()
     journal_svc = DOAJ.journalService()
 
@@ -215,8 +212,11 @@ def journal_page(journal_id):
         job = None
         job_id = request.values.get("job")
         if job_id is not None and job_id != "":
+            # ~~-> BackgroundJobs:Model~~
             job = models.BackgroundJob.pull(job_id)
-            flash("Job to withdraw/reinstate journal has been submitted")
+            # ~~-> BackgroundJobs:Page~~
+            url = url_for("admin.background_jobs_search") + "?source=" + dao.Facetview2.url_encode_query(dao.Facetview2.make_query(job_id))
+            Messages.flash_with_url(Messages.ADMIN__WITHDRAW_REINSTATE.format(url=url), "success")
         fc.processor(source=journal)
         return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree)
 
@@ -323,9 +323,10 @@ def journal_continue(journal_id):
 @login_required
 @ssl_required
 def suggestions():
+    fc = ApplicationFormFactory.context("admin")
     return render_template("admin/applications.html",
                            admin_page=True,
-                           application_status_choices=choices.Choices.application_status("admin"))
+                           application_status_choices=application_statuses(None, fc))
 
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
