@@ -23,7 +23,7 @@ def send_admin_ready_email(application, editor_id):
     app_email.send_mail(to=to,
                         fro=fro,
                         subject=subject,
-                        template_name="email/admin_application_ready.txt",
+                        template_name="email/admin_application_ready.jinja2",
                         application_title=journal_name,
                         editor=editor_id,
                         url_for_application=url_for_application)
@@ -32,10 +32,10 @@ def send_admin_ready_email(application, editor_id):
 def send_editor_group_email(obj):
     """ Send an email to the editor of a group """
     if type(obj) is models.Suggestion:
-        template = "email/editor_application_assigned_group.txt"
+        template = "email/editor_application_assigned_group.jinja2"
         subject = app.config.get("SERVICE_NAME", "") + " - new application assigned to your group"
     elif type(obj) is models.Journal:
-        template = "email/editor_journal_assigned_group.txt"
+        template = "email/editor_journal_assigned_group.jinja2"
         subject = app.config.get("SERVICE_NAME", "") + " - new journal assigned to your group"
     else:
         app.logger.error("Attempted to send editor group email for something that's not an Application or Journal")
@@ -62,10 +62,10 @@ def send_editor_group_email(obj):
 def send_assoc_editor_email(obj):
     """ Inform an associate editor that a journal or application has been assigned to them """
     if type(obj) is models.Suggestion:
-        template = "email/assoc_editor_application_assigned.txt"
+        template = "email/assoc_editor_application_assigned.jinja2"
         subject = app.config.get("SERVICE_NAME", "") + " - new application assigned to you"
     elif type(obj) is models.Journal:
-        template = "email/assoc_editor_journal_assigned.txt"
+        template = "email/assoc_editor_journal_assigned.jinja2"
         subject = app.config.get("SERVICE_NAME", "") + " - new journal assigned to you"
     else:
         app.logger.error("Attempted to send email to editors for something that's not an Application or Journal")
@@ -192,7 +192,7 @@ def send_editor_inprogress_email(application):
     app_email.send_mail(to=to,
                         fro=fro,
                         subject=subject,
-                        template_name="email/editor_application_inprogress.txt",
+                        template_name="email/editor_application_inprogress.jinja2",
                         editor=editor_id,
                         application_title=journal_name,
                         url_for_application=url_for_application)
@@ -216,7 +216,7 @@ def send_assoc_editor_inprogress_email(application):
     app_email.send_mail(to=to,
                         fro=fro,
                         subject=subject,
-                        template_name="email/assoc_editor_application_inprogress.txt",
+                        template_name="email/assoc_editor_application_inprogress.jinja2",
                         assoc_editor=assoc_editor.id,
                         application_title=journal_name,
                         url_for_application=url_for_application)
@@ -247,7 +247,7 @@ def send_editor_completed_email(application):
     app_email.send_mail(to=to,
                         fro=fro,
                         subject=subject,
-                        template_name="email/editor_application_completed.txt",
+                        template_name="email/editor_application_completed.jinja2",
                         editor=editor_id,
                         associate_editor=assoc_id,
                         application_title=journal_name,
@@ -438,7 +438,7 @@ def send_account_created_email(account):
     app_email.send_mail(to=to,
                         fro=fro,
                         subject=subject,
-                        template_name="email/account_created.txt",
+                        template_name="email/account_created.jinja2",
                         reset_url=reset_url,
                         email=account.email,
                         timeout_days=password_create_timeout_days,
@@ -456,7 +456,7 @@ def send_account_password_reset_email(account):
     app_email.send_mail(to=to,
                         fro=fro,
                         subject=subject,
-                        template_name="email/account_password_reset.txt",
+                        template_name="email/account_password_reset.jinja2",
                         email=account.email,
                         reset_url=reset_url,
                         forgot_pw_url=url_for('account.forgot', _external=True)

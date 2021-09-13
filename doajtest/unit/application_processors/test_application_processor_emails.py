@@ -192,7 +192,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from ready back to in progress.
         #   * to the associate editor, informing them the same
-        editor_template = re.escape('editor_application_inprogress.txt')
+        editor_template = re.escape('editor_application_inprogress.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "Application reverted to 'In Progress' by Managing Editor"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -200,7 +200,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                          re.DOTALL)
         assert bool(editor_email_matched)
 
-        assoc_editor_template = re.escape('assoc_editor_application_inprogress.txt')
+        assoc_editor_template = re.escape('assoc_editor_application_inprogress.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
         assoc_editor_subject = "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
@@ -243,7 +243,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from completed back to in progress.
         #   * to the associate editor, informing them the same
-        editor_template = re.escape('editor_application_inprogress.txt')
+        editor_template = re.escape('editor_application_inprogress.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "Application reverted to 'In Progress' by Managing Editor"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -251,7 +251,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                          re.DOTALL)
         assert bool(editor_email_matched)
 
-        assoc_editor_template = re.escape('assoc_editor_application_inprogress.txt')
+        assoc_editor_template = re.escape('assoc_editor_application_inprogress.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
         assoc_editor_subject = "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(
@@ -290,7 +290,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # We expect 2 emails to be sent:
         #   * to the AssEd who's been assigned,
         #   * and to the publisher informing them there's an editor assigned.
-        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_template = 'assoc_editor_application_assigned.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
         assEd_subject = 'new application assigned to you'
 
@@ -331,7 +331,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # We expect 2 emails to be sent:
         #   * to the editor of the assigned group,
         #   * to the AssEd who's been assigned
-        editor_template = re.escape('editor_application_assigned_group.txt')
+        editor_template = re.escape('editor_application_assigned_group.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = 'new application assigned to your group'
 
@@ -340,7 +340,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                          re.DOTALL)
         assert bool(editor_email_matched)
 
-        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_template = 'assoc_editor_application_assigned.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
         assEd_subject = 'new application assigned to you'
 
@@ -368,7 +368,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # We expect one email to be sent here:
         #   * to the ManEds, saying an application is ready
-        manEd_template = 'admin_application_ready.txt'
+        manEd_template = 'admin_application_ready.jinja2'
         manEd_to = re.escape(self.app_test.config.get('MANAGING_EDITOR_EMAIL'))
         manEd_subject = 'application ready'
 
@@ -439,7 +439,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # We expect one email to be sent here:
         #   * to the ManEds, saying an application is ready
-        manEd_template = 'admin_application_ready.txt'
+        manEd_template = 'admin_application_ready.jinja2'
         manEd_to = re.escape(self.app_test.config.get('MANAGING_EDITOR_EMAIL'))
         manEd_subject = 'application ready'
 
@@ -474,7 +474,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # We expect 2 emails to be sent:
         #   * to the AssEd who's been assigned,
         #   * and to the publisher informing them there's an editor assigned.
-        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_template = 'assoc_editor_application_assigned.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
         assEd_subject = 'new application assigned to you'
 
@@ -512,7 +512,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # We expect 1 email to be sent:
         #   * to the AssEd who's been assigned,
-        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_template = 'assoc_editor_application_assigned.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_2').email)
         assEd_subject = 'new application assigned to you'
 
@@ -553,7 +553,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # We expect one email to be sent:
         #   * to the associate editor, informing them the application has been bounced back to in progress.
-        assoc_editor_template = re.escape('assoc_editor_application_inprogress.txt')
+        assoc_editor_template = re.escape('assoc_editor_application_inprogress.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
         assoc_editor_subject = "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(
@@ -622,7 +622,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # We expect one email sent:
         #   * to the editor, informing them an application has been completed by an Associate Editor
-        editor_template = re.escape('editor_application_completed.txt')
+        editor_template = re.escape('editor_application_completed.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "application marked 'completed'"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -712,7 +712,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from ready back to in progress.
         #   * to the associate editor, informing them the same
-        editor_template = re.escape('editor_application_inprogress.txt')
+        editor_template = re.escape('editor_application_inprogress.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "Application reverted to 'In Progress' by Managing Editor"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -720,7 +720,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
                                          re.DOTALL)
         assert bool(editor_email_matched)
 
-        assoc_editor_template = re.escape('assoc_editor_application_inprogress.txt')
+        assoc_editor_template = re.escape('assoc_editor_application_inprogress.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
         assoc_editor_subject = "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
@@ -763,7 +763,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from completed back to in progress.
         #   * to the associate editor, informing them the same
-        editor_template = re.escape('editor_application_inprogress.txt')
+        editor_template = re.escape('editor_application_inprogress.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "Application reverted to 'In Progress' by Managing Editor"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -771,7 +771,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
                                          re.DOTALL)
         assert bool(editor_email_matched)
 
-        assoc_editor_template = re.escape('assoc_editor_application_inprogress.txt')
+        assoc_editor_template = re.escape('assoc_editor_application_inprogress.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
         assoc_editor_subject = "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(
@@ -807,7 +807,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect 2 emails to be sent:
         #   * to the AssEd who's been assigned,
         #   * and to the publisher informing them there's an editor assigned.
-        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_template = 'assoc_editor_application_assigned.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
         assEd_subject = 'new application assigned to you'
 
@@ -848,7 +848,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect 2 emails to be sent:
         #   * to the editor of the assigned group,
         #   * to the AssEd who's been assigned
-        editor_template = re.escape('editor_application_assigned_group.txt')
+        editor_template = re.escape('editor_application_assigned_group.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = 'new application assigned to your group'
 
@@ -857,7 +857,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
                                          re.DOTALL)
         assert bool(editor_email_matched)
 
-        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_template = 'assoc_editor_application_assigned.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
         assEd_subject = 'new application assigned to you'
 
@@ -885,7 +885,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email to be sent here:
         #   * to the ManEds, saying an application is ready
-        manEd_template = 'admin_application_ready.txt'
+        manEd_template = 'admin_application_ready.jinja2'
         manEd_to = re.escape(self.app_test.config.get('MANAGING_EDITOR_EMAIL'))
         manEd_subject = 'application ready'
 
@@ -957,7 +957,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email to be sent here:
         #   * to the ManEds, saying an application is ready
-        manEd_template = 'admin_application_ready.txt'
+        manEd_template = 'admin_application_ready.jinja2'
         manEd_to = re.escape(self.app_test.config.get('MANAGING_EDITOR_EMAIL'))
         manEd_subject = 'application ready'
 
@@ -991,7 +991,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect 2 emails to be sent:
         #   * to the AssEd who's been assigned,
         #   * and to the publisher informing them there's an editor assigned.
-        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_template = 'assoc_editor_application_assigned.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
         assEd_subject = 'new application assigned to you'
 
@@ -1029,7 +1029,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect 1 email to be sent:
         #   * to the AssEd who's been assigned,
-        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_template = 'assoc_editor_application_assigned.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_2').email)
         assEd_subject = 'new application assigned to you'
 
@@ -1070,7 +1070,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email to be sent:
         #   * to the associate editor, informing them the application has been bounced back to in progress.
-        assoc_editor_template = re.escape('assoc_editor_application_inprogress.txt')
+        assoc_editor_template = re.escape('assoc_editor_application_inprogress.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
         assoc_editor_subject = "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(
@@ -1137,7 +1137,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email sent:
         #   * to the editor, informing them an application has been completed by an Associate Editor
-        editor_template = re.escape('editor_application_completed.txt')
+        editor_template = re.escape('editor_application_completed.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "application marked 'completed'"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -1206,7 +1206,7 @@ class TestJournalReviewEmails(DoajTestCase):
         # We expect 2 emails to be sent:
         #   * to the editor of the assigned group,
         #   * to the AssEd who's been assigned,
-        editor_template = re.escape('editor_journal_assigned_group.txt')
+        editor_template = re.escape('editor_journal_assigned_group.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = 'new journal assigned to your group'
 
@@ -1215,7 +1215,7 @@ class TestJournalReviewEmails(DoajTestCase):
                                          re.DOTALL)
         assert bool(editor_email_matched)
 
-        assEd_template = 'assoc_editor_journal_assigned.txt'
+        assEd_template = 'assoc_editor_journal_assigned.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
         assEd_subject = 'new journal assigned to you'
 
@@ -1255,7 +1255,7 @@ class TestJournalReviewEmails(DoajTestCase):
 
         # We expect 1 email to be sent:
         #   * to the AssEd who's been assigned
-        assEd_template = 'assoc_editor_journal_assigned.txt'
+        assEd_template = 'assoc_editor_journal_assigned.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_2').email)
         assEd_subject = 'new journal assigned to you'
 
