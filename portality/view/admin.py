@@ -20,7 +20,7 @@ from portality.forms.application_forms import ApplicationFormFactory, applicatio
 from portality.forms.application_forms import JournalFormFactory
 from portality.forms.article_forms import ArticleFormFactory
 from portality.lcc import lcc_jstree
-from portality.lib.es_query_http import remove_search_limits
+from portality.lib.query_filters import remove_search_limits
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
     article_bulk_delete
 from portality.ui.messages import Messages

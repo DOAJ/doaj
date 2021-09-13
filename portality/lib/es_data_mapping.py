@@ -1,6 +1,10 @@
 # -*- coding: UTF-8 -*-
 """ Create mappings from models """
 
+# ~~ESMappings:Library->Elasticsearch:Technology~~
+# ~~->Seamless:Library~~
+# ~~->DataObj:Library~~
+
 from portality.lib import plugin
 
 
