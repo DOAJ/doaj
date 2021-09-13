@@ -41,6 +41,7 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--skip-strict", help="Skip strict checking of CSV structure (JournalCSV headings check)", action='store_true')
     parser.add_argument("-d", "--dry-run", help="Run this script without actually making index changes", action='store_true')
     parser.add_argument("-f", "--force", help="Force update despite failed validation", action='store_true')
+    parser.add_argument("-m", "--manual-review", help="Don't finalise the update requests, instead leave open for manual review.", action='store_true')
     args = parser.parse_args()
 
     # Disable app emails so this doesn't spam users
@@ -121,20 +122,22 @@ if __name__ == "__main__":
                             if not args.dry_run:
                                 # Save the update request
                                 fc.finalise(email_alert=False)
+                                print('Update request created.')
 
-                                # This is the update request, in 'update request' state
-                                update_req_for_review = fc.target
+                                if not args.manual_review:
+                                    # This is the update request, in 'update request' state
+                                    update_req_for_review = fc.target
 
-                                # Create an Admin update request review form - portality.forms.application_processors.AdminApplication
-                                formulaic_context2 = ApplicationFormFactory.context("admin")
-                                fc2 = formulaic_context2.processor(
-                                    source=update_req_for_review
-                                )
+                                    # Create an Admin update request review form - portality.forms.application_processors.AdminApplication
+                                    formulaic_context2 = ApplicationFormFactory.context("admin")
+                                    fc2 = formulaic_context2.processor(
+                                        source=update_req_for_review
+                                    )
 
-                                # Accept the update request, and finalise to complete the changes
-                                fc2.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
-                                fc2.finalise(sys_acc, email_alert=False)
-                                print('Journal has been updated.')
+                                    # Accept the update request, and finalise to complete the changes
+                                    fc2.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
+                                    fc2.finalise(sys_acc, email_alert=False)
+                                    print('Automatic review. Journal has been updated.')
                         except Exception as e:
                             writer.writerow([j.id, ' | '.join(updates), 'COULD NOT FINALISE - ' + str(e)])
                             print('Failed to finalise: {1}'.format(j.id, str(e)))
