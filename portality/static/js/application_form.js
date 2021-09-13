@@ -51,6 +51,7 @@ doaj.af.BaseApplicationForm = class {
         this.parsley = this.form.parsley();
         this.context = this.form.attr("data-context");
         this.sections = $(".form-section");
+        this.changed = false;
 
         this.editSectionsFromReview = true;
 
@@ -70,10 +71,23 @@ doaj.af.BaseApplicationForm = class {
 
         let submitSelector = this.jq("#submitBtn");
         edges.on(submitSelector, "click", this, "submitapplication");
+
+        // bind some event handlers that register when the form has changed in a meaningful
+        // way, and then a beforeunload event to warn the user
+        this.jq("input, select").bind("change", () => this.changed = true);
+        this.jq("button").bind("click", () => this.changed = true);
+        $(window).bind("beforeunload", (event) => this.beforeUnload(event));
     }
 
     jq(selector) {
         return $(selector, this.form);
+    }
+
+    beforeUnload(event) {
+        if (!this.changed) {
+            event.cancel();
+        }
+        return "Any unsaved changes may be lost"
     }
 
     prepareReview() {
@@ -171,6 +185,10 @@ doaj.af.BaseApplicationForm = class {
         this.form.parsley();
         this.form.submit();
     };
+
+    warnIfUnsaved() {
+
+    }
 };
 
 doaj.af.newTabbedApplicationForm = function(params) {
