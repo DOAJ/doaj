@@ -777,7 +777,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
             self.add_alert("Unable to locate account for specified owner")
             return
 
-        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
+        # journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
 
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
@@ -788,10 +788,11 @@ class PublisherUpdateRequest(ApplicationProcessor):
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
-                                    template_name="email/publisher_update_request_received.txt",
-                                    journal_name=journal_name,
-                                    username=self.target.owner
-                )
+                                    template_name="email/publisher_update_request_received.jinja2",
+                                    application=self.target,
+                                    owner=acc)
+                                    # journal_name=journal_name,
+                                    # username=self.target.owner)
                 self.add_alert('A confirmation email has been sent to ' + acc.email + '.')
         except app_email.EmailException as e:
             magic = str(uuid.uuid1())

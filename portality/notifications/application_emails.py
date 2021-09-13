@@ -366,9 +366,11 @@ def send_publisher_update_request_revisions_required(application):
     app_email.send_mail(to=to,
                         fro=fro,
                         subject=subject,
-                        template_name="email/publisher_update_request_revisions.txt",
-                        publisher_name=publisher_name,
-                        journal_title=journal_title)
+                        template_name="email/publisher_update_request_revisions.jinja2",
+                        application=application,
+                        owner=owner)
+                        # publisher_name=publisher_name,
+                        # journal_title=journal_title)
 
 
 def send_publisher_reject_email(application, note=None, update_request=False):
@@ -402,9 +404,9 @@ def send_publisher_reject_email(application, note=None, update_request=False):
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
-                                template_name="email/publisher_update_request_rejected.txt",
-                                publisher_name=instructions["name"],
-                                journal_title=journal_title,
+                                template_name="email/publisher_update_request_rejected.jinja2",
+                                owner=instructions["owner"],
+                                application=application,
                                 note=note)
         else:
             app_email.send_mail(to=to,

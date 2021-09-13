@@ -1,0 +1,23 @@
+{#
+~~PublisherUpdateRequestReceived:Email~~
+~~-> Application:Model~~
+~~-> Account:Model~~
+#}
+
+{% set publisher_name = owner.name %}
+{% set bibjson = application.bibjson() %}
+{% set url_root = config.get("BASE_URL") %}
+
+{% if publisher_name %}Dear {{ publisher_name }},{% endif %}
+
+"{{bibjson.title}}"
+
+Thank you for submitting an update to your journal on {{ application.date_applied|human_date }}. This has been safely received. A Managing Editor will start to review it soon. In the meantime, your original journal record is still visible in DOAJ and you may continue to upload article metadata to us.
+
+Please save this email as a record of when you submitted your update. Before you contact us requesting a status update, please check your Spam folder to ensure that a member of our editorial team has not already contacted you.
+
+Yours faithfully,
+
+The DOAJ Editorial Team
+
+**This is an automated message.**
