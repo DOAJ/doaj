@@ -8,7 +8,6 @@ from portality import models
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
 from portality.decorators import ssl_required, restrict_to_role, write_required
-from portality.formcontext import formcontext
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 from portality.tasks.preservation import PreservationBackgroundTask, PreservationStorageException, PreservationException
@@ -17,6 +16,7 @@ from portality import lock
 from portality.models import DraftApplication
 from portality.lcc import lcc_jstree
 from portality.models import Article
+from portality.forms.article_forms import ArticleFormFactory
 
 from huey.exceptions import TaskException
 
@@ -294,14 +294,14 @@ def metadata():
     user = current_user._get_current_object()
     # if this is a get request, give the blank form - there is no edit feature
     if request.method == "GET":
-        fc = formcontext.ArticleFormFactory.get_from_context(user=user, role="publisher")
+        fc = ArticleFormFactory.get_from_context(user=user, role="publisher")
         return fc.render_template()
 
     # if this is a post request, a form button has been hit and we need to do
     # a bunch of work
     elif request.method == "POST":
 
-        fc = formcontext.ArticleFormFactory.get_from_context(role="publisher", user=user,
+        fc = ArticleFormFactory.get_from_context(role="publisher", user=user,
                                                              form_data=request.form)
         # first we need to do any server-side form modifications which
         # the user might request by pressing the add/remove authors buttons

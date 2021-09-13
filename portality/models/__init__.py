@@ -22,6 +22,7 @@ from portality.models.openurl import OpenURLRequest
 from portality.models.provenance import Provenance
 from portality.models.background import BackgroundJob
 from portality.models.preservation import PreservationState
+from portality.models.news import News
 
 import sys
 

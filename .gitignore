@@ -118,5 +118,8 @@ cms/fragments*
 
 portality/static/widget/fq_widget_build_info.txt
 
+#json for harvester test
+doajtest/unit/resources/harvester_resp_temp.json
+
 # Ignore mac related files
 .DS_Store

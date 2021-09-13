@@ -1,5 +1,4 @@
 import json, os, csv
-from portality import clcsv
 
 # DATE = "2018-05-10"
 DATE=None

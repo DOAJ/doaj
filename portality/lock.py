@@ -1,14 +1,20 @@
+"""
+~~Lock:Feature~~
+"""
 from portality import models
 from portality.core import app
 from portality.dao import ESMappingMissingError
+
 
 class Locked(Exception):
     def __init__(self, message, lock):
         self.message = message
         self.lock = lock
 
+
 def lock(type, id, username, timeout=None, blocking=False):
     """
+    ~~->Lock:Model~~
     Obtain a lock on the object for the given username.  If unable to obtain
     a lock, raise an exception
     """
@@ -50,6 +56,7 @@ def lock(type, id, username, timeout=None, blocking=False):
     # shouldn't ever get here - if we do something is bust
     raise Locked("Unable to resolve lock state", None)
 
+
 def unlock(type, id, username):
     l = _retrieve_latest_with_cleanup(type, id)
 
@@ -61,6 +68,7 @@ def unlock(type, id, username):
         return True
 
     return False
+
 
 def has_lock(type, id, username):
     l = _retrieve_latest_with_cleanup(type, id)
@@ -75,6 +83,7 @@ def has_lock(type, id, username):
         return True
 
     return False
+
 
 def batch_lock(type, ids, username, timeout=None):
     """
@@ -110,6 +119,7 @@ def batch_lock(type, ids, username, timeout=None):
 
     return locks
 
+
 def batch_unlock(type, ids, username):
     """
     Calls unlock on all resources.  Unlock may fail on one or more resources
@@ -131,7 +141,14 @@ def batch_unlock(type, ids, username):
 
     return {"success": success, "fail" : fail}
 
+
 def _retrieve_latest_with_cleanup(type, id):
+    """
+    ~~->Lock:Query~~
+    :param type:
+    :param id:
+    :return:
+    """
     # query for any locks on this id.  There is a chance there's more than one, if two locks
     # are created at the same time
     l = None
@@ -153,7 +170,11 @@ def _retrieve_latest_with_cleanup(type, id):
 
     return l
 
+
 class LockQuery(object):
+    """
+    ~~Lock:Query->Elasticsearch:Technology~~
+    """
     def __init__(self, type, about):
         self.about = about
         self.type = type
