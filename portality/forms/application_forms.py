@@ -804,11 +804,17 @@ class FieldDefinitions:
     OA_START = {
         "name": "oa_start",
         "label": "When did the journal start to publish all content using an open license?",
-        "input": "text",
+        "input": "number",
+        "datatype": "integer",
         "validate": [
             {"required": {"message": "Enter the Year (YYYY)."}},
-            {"year": {"message": "OA Start Date must be a year in a 4 digit format (eg. 1987) and must be bigger than {} but smaller than current year".format(app.config.get('MINIMAL_OA_START_DATE', "1900"))}}
-        ]
+            {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": datetime.datetime.now().year}},
+            {"year": {"message": "OA Start Date must be a year in a 4 digit format (eg. 1987) and must be bigger than {} but smaller than current year".format(app.config.get('MINIMAL_OA_START_DATE', 1900))}}
+        ],
+        "attr": {
+            "min": app.config.get('MINIMAL_OA_START_DATE', 1900),
+            "max": datetime.datetime.now().year
+        }
     }
 
     # ~~-> PlagiarismDetection:FormField~~
@@ -2700,7 +2706,7 @@ class BigEndDateBuilder:
 class YearBuilder:
     @staticmethod
     def render(settings, html_attrs):
-        html_attrs["data-parsley-year"] = app.config.get('MINIMAL_OA_START_DATE', "1900")
+        html_attrs["data-parsley-year"] = app.config.get('MINIMAL_OA_START_DATE', 1900)
         html_attrs["data-parsley-year-message"] = "<p><small>" + settings["message"] + "</small></p>"
 
     def wtforms(field, settings):

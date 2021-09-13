@@ -1113,7 +1113,7 @@ QUICK_REJECT_REASONS = [
     "The journal does not employ good publishing practices."
 ]
 
-MINIMAL_OA_START_DATE = "1900"
+MINIMAL_OA_START_DATE = 1900
 
 
 #############################################
