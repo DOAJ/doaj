@@ -238,6 +238,14 @@ ass_ed:
   city: Samarinda
   country: Indonesia
   language: Indonesian, English
+  
+- name: Azhar Aziz Lubis
+  area: Social Sciences
+  year_since:
+  city: Bengkulu
+  country: Indonesia
+  language: Indonesian, English
+  photo: "azhar.jpg"
 
 
 - name: Barbara Łuszczek
@@ -679,10 +687,10 @@ ass_ed:
   
   
 - name: Marie-Eve Dugas
-  area: Humanities, Social Sciences
+  area: Library Science, Social Sciences
   year_since:
-  city: 
-  country:
+  city: Montréal
+  country: Canada
   language: French, English
   
 
@@ -908,8 +916,8 @@ ass_ed:
   area: Librarianship
   year_since:
   city: Tabriz
-  country: Azerbaijan
-  language: Azerbaijani, English
+  country: Iran
+  language: Persian, Azari, Turkish, English
 
 - name: Sara Ricetto
   area: Humanities
@@ -1021,7 +1029,14 @@ ass_ed:
   city: Istanbul
   country: Turkey
   language: Turkish, English
-
+  
+- name: Weldy St-Fleur
+  area: Social Sciences
+  year_since:
+  city: São Paulo
+  country: Brazil
+  language: Portuguese, English
+  photo: "weldy.JPEG"
 
 - name: Weronika Kortas
   area: Humanities, Social Sciences
