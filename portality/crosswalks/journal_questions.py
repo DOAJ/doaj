@@ -3,6 +3,7 @@ from portality import datasets
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.forms.application_forms import ApplicationFormFactory
 
+
 class JournalXwalkException(Exception):
     pass
 
@@ -105,6 +106,9 @@ class Journal2QuestionXwalk(object):
 
     @classmethod
     def journal2question(cls, journal):
+        """
+        Convert the journal data to key value pairs for use in the Journal CSV
+        """
 
         def yes_no_or_blank(val):
             return "Yes" if val in [True, "True", "Yes", "true", "yes", "y"] else "No" if val is not None else ""

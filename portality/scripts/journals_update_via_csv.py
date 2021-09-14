@@ -1,4 +1,5 @@
 """
+~~ JournalUpdateByCSV:Script ~~
 Update journals via CSV for issue e.g. https://github.com/DOAJ/doajPM/issues/2708
 twinned with journals_in_doaj_by_account.py
 
@@ -14,7 +15,6 @@ Usage: e.g. for a dry-run first with a malformed CSV
 DOAJENV=production python -u journals_update_via_csv.py -i <input_csv_path.csv> -o <output_report_path.csv> -s -f -d > <output_log_path.txt>
 
 Check the report for errors and the output for expected changes, then run without -d to apply the updates
-
 """
 
 import csv, time
@@ -27,7 +27,7 @@ from doajtest.fixtures import JournalFixtureFactory
 from portality.forms.application_forms import ApplicationFormFactory
 
 from portality.bll import DOAJ
-from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
+from portality.bll.exceptions import AuthoriseException
 
 SYSTEM_ACCOUNT = {
     "email": "steve@cottagelabs.com",
@@ -81,12 +81,14 @@ if __name__ == "__main__":
                 print("\nCSV structure check passed.\n")
             print('\nContinuing to update records...\n')
 
+            # ~~ ->$JournalUpdateByCSV:Feature ~~
             for row in reader:
                 # Pull by ID
                 j = Journal.pull(row['ID'])
                 if j is not None:
                     print('\n' + j.id)
                     # Load remaining rows into application form as an update
+                    # ~~ ^->JournalQuestions:Crosswalk ~~
                     update_form, updates = journal_questions.Journal2QuestionXwalk.question2form(j, row)
                     if len(updates) > 0:
                         [print(upd) for upd in updates]
@@ -96,6 +98,7 @@ if __name__ == "__main__":
                         jlock = None
                         alock = None
                         try:
+                            # ~~ ^->UpdateRequest:Feature ~~
                             update_req, jlock, alock = DOAJ.applicationService().update_request_for_journal(j.id, account=j.owner_account)
                         except AuthoriseException as e:
                             print('Could not create update request: {0}'.format(e.reason))
@@ -107,6 +110,7 @@ if __name__ == "__main__":
                             continue
 
                         # validate update_form - portality.forms.application_processors.PublisherUpdateRequest
+                        # ~~ ^->UpdateRequest:FormContext ~~
                         formulaic_context = ApplicationFormFactory.context("update_request")
                         fc = formulaic_context.processor(
                             formdata=update_form,
@@ -135,6 +139,7 @@ if __name__ == "__main__":
                                     update_req_for_review = fc.target
 
                                     # Create an Admin update request review form - portality.forms.application_processors.AdminApplication
+                                    # ~~ ^->ManEdApplication:FormContext ~~
                                     formulaic_context2 = ApplicationFormFactory.context("admin")
                                     fc2 = formulaic_context2.processor(
                                         source=update_req_for_review
