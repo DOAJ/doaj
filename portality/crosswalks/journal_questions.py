@@ -251,6 +251,15 @@ class Journal2QuestionXwalk(object):
             """ Undoing yes_no_or_blank() to 'y' or 'n' ONLY """
             return 'y' if x == 'Yes' else 'n' if x != '' else None
 
+        def _comma_to_list(x):
+            """ Comma separated string to list of stripped items """
+            return [_.strip() for _ in x.split(',')]
+
+        def _lang_codes(x):
+            """ Get the uppercase 2-char language string for each comma separated language name"""
+            langs = [datasets.language_for(_) for _ in _comma_to_list(x)]
+            return [l.alpha_2.upper() for l in langs if l is not None]
+
         def _unfurl_apc(x):
             """ Allow an APC update by splitting the APC string from the spreadsheet """
             apcs = []
@@ -261,22 +270,26 @@ class Journal2QuestionXwalk(object):
 
         # Undo the transformations applied to specific fields. TODO: Add these as they are encountered in the wild
         REVERSE_TRANSFORM_MAP = {
-            'keywords': lambda x: [kwd.strip() for kwd in x.split(',')],
+            'keywords': _comma_to_list,
+            'language': _lang_codes,
             'publisher_country': datasets.get_country_code,
             'institution_country': datasets.get_country_code,
-            'license': lambda x: [lic.strip() for lic in x.split(',')],
+            'license': _comma_to_list,
             'license_display': _y_or_blank,
+            'copyright_author_retains': _y_n_or_blank,
+            'review_process': _comma_to_list,
             'plagiarism_detection': _y_n_or_blank,
             'publication_time_weeks': lambda x: round(float(x)),
             'apc': _y_or_blank,
             'apc_charges': _unfurl_apc,
             'has_waiver': _y_n_or_blank,
-            'deposit_policy': lambda x: [pol.strip() for pol in x.split(',')],
-            'preservation_service': lambda x: [pres.strip() for pres in x.split(',')],
+            'has_other_charges': _y_n_or_blank,
+            'deposit_policy': _comma_to_list,
+            'preservation_service': _comma_to_list,
+            'persistent_identifiers': _comma_to_list,
             'orcid_ids': _y_n_or_blank,
             'open_citations': _y_n_or_blank,
-
-            # Country names to codes for institution, publisher
+            'boai': _y_or_blank,
         }
 
         def csv2formval(key, value):
