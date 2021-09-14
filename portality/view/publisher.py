@@ -2,6 +2,7 @@ from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, flash
 from flask_login import current_user, login_required
 
+from portality.app_email import EmailException
 from portality.core import app
 from portality import models
 from portality.bll import DOAJ
@@ -9,10 +10,12 @@ from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, D
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
+from portality.tasks.preservation import PreservationBackgroundTask, PreservationStorageException, PreservationException
 from portality.ui.messages import Messages
 from portality import lock
 from portality.models import DraftApplication
 from portality.lcc import lcc_jstree
+from portality.models import Article
 from portality.forms.article_forms import ArticleFormFactory
 
 from huey.exceptions import TaskException
@@ -219,6 +222,69 @@ def upload_file():
 
     flash("No file or URL provided", "error")
     return resp
+
+@blueprint.route("/preservation", methods=["GET", "POST"])
+@login_required
+@ssl_required
+@write_required()
+def preservation():
+    """Upload articles on Internet Servers for archiving.
+       This feature is available for the users who has 'preservation' role.
+    """
+
+    previous = models.PreservationState.by_owner(current_user.id)
+
+    if request.method == "GET":
+        return render_template('publisher/preservation.html', previous=previous)
+
+    if request.method == "POST":
+
+        f = request.files.get("file")
+        app.logger.info(f"Preservation file {f.filename}")
+        resp = make_response(redirect(url_for("publisher.preservation")))
+
+        # create model object to store status details
+        preservation_model = models.PreservationState()
+        preservation_model.set_id()
+        preservation_model.initiated(current_user.id, f.filename)
+        app.logger.debug(f"Preservation model created with id {preservation_model.id}")
+
+        if f is None or f.filename == "":
+            error_str = "No file provided to upload"
+            flash(error_str, "error")
+            preservation_model.failed(error_str)
+            preservation_model.save()
+            return resp
+
+        preservation_model.validated()
+        preservation_model.save()
+
+        previous.insert(0, preservation_model)
+
+        try:
+            job = PreservationBackgroundTask.prepare(current_user.id, upload_file=f)
+            PreservationBackgroundTask.set_param(job.params, "model_id", preservation_model.id)
+            PreservationBackgroundTask.submit(job)
+
+            flash("File uploaded and waiting to be processed.", "success")
+
+        except EmailException:
+            app.logger.exception('Error sending  email' )
+        except (PreservationStorageException, PreservationException, Exception) as exp:
+            try:
+                uid = str(uuid.uuid1())
+                flash("An error has occurred and your preservation upload may not have succeeded. Please report the issue with the ID " + uid)
+                preservation_model.failed(str(exp) + " Issue id : " + uid)
+                preservation_model.save()
+                app.logger.exception('Preservation upload error. ' + uid)
+                if job:
+                    background_task = PreservationBackgroundTask(job)
+                    background_task.cleanup()
+            except Exception:
+                app.logger.exception('Unknown error.')
+        return resp
+
+
 
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required

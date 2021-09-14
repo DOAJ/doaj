@@ -377,7 +377,8 @@ HUEY_SCHEDULE = {
 }
 
 HUEY_TASKS = {
-    "ingest_articles": {"retries": 10, "retry_delay": 15}
+    "ingest_articles": {"retries": 10, "retry_delay": 15},
+    "preserve": {"retries": 0, "retry_delay": 15}
 }
 
 ####################################
@@ -1147,3 +1148,12 @@ HARVESTER_ZOMBIE_AGE = 604800
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+
+#######################################################
+# Preservation configuration
+# ~~->Preservation:Feature
+PRESERVATION_URL = "http://PresevatinURL"
+PRESERVATION_USERNAME = "user_name"
+PRESERVATION_PASSWD = "password"
+PRESERVATION_COLLECTION = "Collection Name"
+PRESERVATION_COLLECTION_ID = "Collection Id"

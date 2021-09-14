@@ -1,9 +1,11 @@
 from portality.dao import DomainObject
 from datetime import datetime
+from copy import deepcopy
 
 
-class Preserve(DomainObject):
-    """Model class for preservation feature"""
+class PreservationState(DomainObject):
+    """~~Preservation:Model~~
+    Model class for preservation feature"""
     __type__ = "preserve"
 
     @property
@@ -21,6 +23,14 @@ class Preserve(DomainObject):
     @property
     def owner(self):
         return self.data.get("owner")
+
+    @property
+    def background_task_id(self):
+        return self.data.get("background_task_id")
+
+    @background_task_id.setter
+    def background_task_id(self, value):
+        self.data["background_task_id"] = value
 
     @property
     def created_timestamp(self):
@@ -55,3 +65,33 @@ class Preserve(DomainObject):
         self.data["error"] = message
         if details is not None:
             self.data["error_details"] = details
+
+    @classmethod
+    def by_owner(cls, owner, size=10):
+        q = OwnerFileQuery(owner)
+        res = cls.query(q=q.query())
+        rs = [PreservationState(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
+        return rs
+
+
+class OwnerFileQuery(object):
+    base_query = {
+        "query": {
+            "bool": {
+                "must": []
+            }
+        },
+        "sort": [
+            {"created_date": "desc"}
+        ],
+        "size": 10
+    }
+
+    def __init__(self, owner, size=10):
+        self._query = deepcopy(self.base_query)
+        owner_term = {"match": {"owner": owner}}
+        self._query["query"]["bool"]["must"].append(owner_term)
+        self._query["size"] = size
+
+    def query(self):
+        return self._query

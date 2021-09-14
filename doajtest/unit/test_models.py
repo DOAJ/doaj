@@ -1517,7 +1517,7 @@ class TestModels(DoajTestCase):
 # '''
 
     def test_34_preserve(self):
-        model = models.Preserve()
+        model = models.PreservationState()
         model.set_id("1234")
         model.set_created("2021-06-10T00:00:00Z")
         model.initiated("rama", "test_article.zip")
