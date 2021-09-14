@@ -259,9 +259,9 @@ We expect the members of our Team, our volunteers and our Ambassadors to always 
 
 ## In other languages
 
-We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](mailto:feedback@doaj.org).
+We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](mailto:helpdesk@doaj.org).
 
-We have our criteria in:
+Our criteria are in:
 
 - [Chinese (application form)](https://zenodo.org/record/4350096)
 - [Chinese](https://zenodo.org/record/4633341)
@@ -271,5 +271,3 @@ We have our criteria in:
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
 - [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
 - [Spanish](https://docs.google.com/document/d/1PN0droGJiuLzQSQA4VLLjd3ykSaFoc5RMsAFlexOuXA/edit?usp=sharing)
-
-We hope more languages will follow soon.
