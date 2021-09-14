@@ -1,3 +1,4 @@
+#~~API:Feature~~
 import json, uuid
 from portality.core import app
 from flask import request
@@ -12,6 +13,8 @@ CREATED_TEMPLATE = {"status": {"type": "string"}, "id": {"type": "string"}, "loc
 
 
 class Api(object):
+    # ~~->Swagger:Feature~~
+    # ~~->API:Documentation~~
     SWAG_TEMPLATE = {
         "description" : "",
         "responses": {},
@@ -72,6 +75,7 @@ class Api(object):
 
     @classmethod
     def _add_api_key(cls, template, optional=False):
+        # ~~->APIKey:Feature~~
         api_key_param = deepcopy(cls.SWAG_API_KEY_REQ_PARAM)
         if optional:
             api_key_param['required'] = False

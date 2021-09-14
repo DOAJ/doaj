@@ -1,17 +1,15 @@
-from portality.core import app
-import feedparser
 from portality.dao import DomainObject as DomainObject
 from copy import deepcopy
 from datetime import datetime
 
-class FeedError(Exception):
-    pass
 
 class News(DomainObject):
+    """~~News:Model~~"""
     __type__ = "news"
 
     @classmethod
     def by_remote_id(cls, remote_id):
+        # ~~->News:Query~~
         q = NewsQuery(remote_id)
         es_result = cls.query(q=q.query())
         records = [News(**r.get("_source")) for r in es_result.get("hits", {}).get("hits", [])]
@@ -61,7 +59,9 @@ class News(DomainObject):
         except:
             return self.published
 
+
 class NewsQuery(object):
+    """~~News:Query->Elasticsearch:Technology~~"""
     _remote_term =  { "term" : { "remote_id.exact" : "<remote id>" } }
 
     def __init__(self, remote_id=None, size=5):
@@ -77,38 +77,3 @@ class NewsQuery(object):
         else:
             q["query"]["match_all"] = {}
         return q
-
-def read_feed():
-    feed_url = app.config.get("BLOG_FEED_URL")
-    if feed_url is None:
-        raise FeedError("No BLOG_FEED_URL defined in settings")
-
-    f = feedparser.parse(feed_url)
-    if f.bozo > 0:
-        raise FeedError(f.bozo_exception)
-
-    for e in f.entries:
-        save_entry(e)
-
-def save_entry(entry):
-    news = None
-    existing = News.by_remote_id(entry.id)
-    if len(existing) > 1:
-        raise FeedError("There is more than one object with this id in the index: " + entry.id)
-    elif len(existing) == 1:
-        news = existing[0]
-    else:
-        news = News()
-
-    alts = [l.get("href") for l in entry.links if l.get("rel") == "alternate"]
-    if len(alts) == 0:
-        raise FeedError("Unable to get url of post from link@rel=alternate")
-
-    news.remote_id = entry.id
-    news.url = alts[0]
-    news.title = entry.title
-    news.updated = entry.updated
-    news.summary = entry.summary
-    news.published = entry.published
-
-    news.save()

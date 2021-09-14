@@ -1,7 +1,7 @@
 # coding=UTF-8
 
 from copy import deepcopy
-from portality.harvester.epmc import models
+from portality.tasks.harvester_helpers.epmc import models
 
 
 class EPMCFixtureFactory(object):

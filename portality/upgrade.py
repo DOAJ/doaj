@@ -1,3 +1,6 @@
+"""
+~~Migrations:Framework~~
+"""
 import json, os, esprit, dictdiffer
 from datetime import datetime, timedelta
 from copy import deepcopy
@@ -10,11 +13,11 @@ from portality.lib.dataobj import DataStructureException
 from portality.lib.seamless import SeamlessException
 
 MODELS = {
-    "journal": models.Journal,
-    "article": models.Article,
-    "suggestion": models.Suggestion,
+    "journal": models.Journal,  #~~->Journal:Model~~
+    "article": models.Article,  #~~->Article:Model~~
+    "suggestion": models.Suggestion,    #~~->Application:Model~~
     "application": models.Application,
-    "account": models.Account
+    "account": models.Account   #~~->Account:Model~~
 }
 
 
@@ -26,6 +29,7 @@ class UpgradeTask(object):
 
 def do_upgrade(definition, verbose):
     # get the source and target es definitions
+    # ~~->Elasticsearch:Technology~~
     source = definition.get("source")
     target = definition.get("target")
 
@@ -160,6 +164,7 @@ def _diff(original, current):
 
 
 if __name__ == "__main__":
+    # ~~->Migrate:Script~~
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--upgrade", help="path to upgrade definition")

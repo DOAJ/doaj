@@ -6,7 +6,7 @@ https://github.com/DOAJ/doajPM/issues/2337
 """
 
 from portality.models import Journal
-from portality.clcsv import ClCsv
+from lib.clcsv import ClCsv
 from copy import deepcopy
 
 

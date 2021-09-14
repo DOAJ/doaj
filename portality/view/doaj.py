@@ -5,7 +5,6 @@ import urllib.request, urllib.parse, urllib.error
 
 from portality import dao
 from portality import models
-from portality import blog
 from portality.core import app
 from portality.decorators import ssl_required
 from portality.lcc import lcc_jstree
@@ -21,7 +20,7 @@ blueprint = Blueprint('doaj', __name__)
 
 @blueprint.route("/")
 def home():
-    news = blog.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
+    news = models.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     recent_journals = models.Journal.recent(max=16)
     return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
 
