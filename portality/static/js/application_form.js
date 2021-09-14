@@ -51,7 +51,9 @@ doaj.af.BaseApplicationForm = class {
         this.parsley = this.form.parsley();
         this.context = this.form.attr("data-context");
         this.sections = $(".form-section");
+
         this.changed = false;
+        this.submitting = false;
 
         this.editSectionsFromReview = true;
 
@@ -84,7 +86,7 @@ doaj.af.BaseApplicationForm = class {
     }
 
     beforeUnload(event) {
-        if (!this.changed) {
+        if (!this.changed || this.submitting) {
             event.cancel();
         }
         return "Any unsaved changes may be lost"
@@ -182,13 +184,15 @@ doaj.af.BaseApplicationForm = class {
     }
 
     submitapplication() {
-        this.form.parsley();
+        this.submitting = true;
+        this.parsley = this.form.parsley();
+        this.parsley.whenValidate().done(() => {
+            // do nothing
+        }).fail(() => {
+            this.submitting = false;
+        });
         this.form.submit();
     };
-
-    warnIfUnsaved() {
-
-    }
 };
 
 doaj.af.newTabbedApplicationForm = function(params) {
@@ -587,14 +591,15 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     }
 
     submitapplication() {
+        this.submitting = true;
         if (this.setAllFieldsOptionalIfAppropriate()) {
             this.form.parsley().destroy();
         } else {
             this.form.parsley().whenValidate().done(() => {
                 this.jq("#cannot-submit-invalid-fields").hide();
-
             }).fail(() => {
                 this.jq("#cannot-submit-invalid-fields").show();
+                this.submitting = false;
             });
         }
         this.form.submit();
