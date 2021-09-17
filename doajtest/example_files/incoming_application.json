@@ -1,8 +1,4 @@
 {
-	"id": "ignore_me",
-	"created_date": "2001-01-01T00:00:00Z",
-	"last_updated": "2001-01-01T00:00:00Z",
-
 	"bibjson": {
 		"alternative_title": "Alternative Title",
 		"apc": {
@@ -51,7 +47,7 @@
 			"SA": "False",
 			"url": "http://licence.url"
 		}],
-		"oa_start": "2021",
+		"oa_start": 2021,
 		"other_charges": {
 			"has_other_charges": "True",
 			"url": "http://other.charges"
@@ -101,7 +97,7 @@
 			"url": "http://waiver.policy"
 		}
 	},
-	"admin": {
-		"current_journal": "00023bea7c1444e9aa224df27beff895"
-	}
+  	"admin" : {
+            "current_journal" : "0000ca40e1ac4cdcbf09be63c8fc25a2"
+        }
 }
