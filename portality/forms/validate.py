@@ -550,10 +550,7 @@ class Year(object):
     def __call__(self, form, field):
         if not field.data:
             return
-        try:
-            datetime.strptime(field.data, '%Y')
-        except Exception:
-            raise validators.ValidationError(self.message)
+        return 1900 <= field.data & field.data >= datetime.now().year
 
 
 class CustomRequired(object):

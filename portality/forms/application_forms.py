@@ -809,7 +809,7 @@ class FieldDefinitions:
         "validate": [
             {"required": {"message": "Enter the Year (YYYY)."}},
             {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": datetime.datetime.now().year}},
-            {"year": {"message": "OA Start Date must be a year in a 4 digit format (eg. 1987) and must be bigger than {} but smaller than current year".format(app.config.get('MINIMAL_OA_START_DATE', 1900))}}
+            {"year": {"message": "OA Start Date must be a year in a 4 digit format (eg. 1987) and must be greater than {}".format(app.config.get('MINIMAL_OA_START_DATE', 1900))}}
         ],
         "attr": {
             "min": app.config.get('MINIMAL_OA_START_DATE', 1900),
