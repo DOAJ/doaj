@@ -89,8 +89,8 @@ class ApplicationProcessor(FormProcessor):
                         else:
                             sub.data = sub.default
                 else:
-                    field.data = field.default
                     self.form.resettedFields.append({"name": field.name, "data": field.data, "default": field.default})
+                    field.data = field.default
 
     def _merge_notes_forward(self, allow_delete=False):
         if self.source is None:
