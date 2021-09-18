@@ -78,6 +78,8 @@ class ApplicationProcessor(FormProcessor):
 
     def resetDefaults(self, form):
         self.form.resettedFields = []
+        def _values_to_reset(f):
+            return (f.data != "") and (f.data != None) and (f.data != f.default)
         for field in form:
             if field.errors:
                 if isinstance(field, FormField):
@@ -86,9 +88,9 @@ class ApplicationProcessor(FormProcessor):
                     for sub in field:
                         if isinstance(sub, FormField):
                             self.resetDefaults(sub)
-                        else:
+                        elif _values_to_reset(sub):
                             sub.data = sub.default
-                else:
+                elif _values_to_reset(field):
                     self.form.resettedFields.append({"name": field.name, "data": field.data, "default": field.default})
                     field.data = field.default
 

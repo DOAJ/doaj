@@ -359,11 +359,11 @@ def application(application_id):
         if processor.validate():
             try:
                 processor.finalise(current_user._get_current_object())
-                if (processor.form.resettedFields):
-                    text = "Some fields has been resetted due to invalid value:"
-                    for f in processor.form.resettedFields:
-                        text += "<br>field: {}, invalid value: {}, new value: {}".format(f["name"], f["data"], f["default"])
-                    flash(text, 'info')
+                # if (processor.form.resettedFields):
+                #     text = "Some fields has been resetted due to invalid value:"
+                #     for f in processor.form.resettedFields:
+                #         text += "<br>field: {}, invalid value: {}, new value: {}".format(f["name"], f["data"], f["default"])
+                #     flash(text, 'info')
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
