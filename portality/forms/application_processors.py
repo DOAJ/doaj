@@ -77,6 +77,7 @@ class ApplicationProcessor(FormProcessor):
             self.target.set_in_doaj(self.source.is_in_doaj())
 
     def resetDefaults(self, form):
+        self.form.resettedFields = []
         for field in form:
             if field.errors:
                 if isinstance(field, FormField):
@@ -89,6 +90,7 @@ class ApplicationProcessor(FormProcessor):
                             sub.data = sub.default
                 else:
                     field.data = field.default
+                    self.form.resettedFields.append({"name": field.name, "data": field.data, "default": field.default})
 
     def _merge_notes_forward(self, allow_delete=False):
         if self.source is None:
