@@ -76,6 +76,20 @@ class ApplicationProcessor(FormProcessor):
         if isinstance(self.source, models.Journal):
             self.target.set_in_doaj(self.source.is_in_doaj())
 
+    def resetDefaults(self, form):
+        for field in form:
+            if field.errors:
+                if isinstance(field, FormField):
+                    self.resetDefaults(field.form)
+                elif isinstance(field, FieldList):
+                    for sub in field:
+                        if isinstance(sub, FormField):
+                            self.resetDefaults(sub)
+                        else:
+                            sub.data = sub.default
+                else:
+                    field.data = field.default
+
     def _merge_notes_forward(self, allow_delete=False):
         if self.source is None:
             raise Exception("Cannot carry data from a non-existent source")
@@ -188,23 +202,9 @@ class NewApplication(ApplicationProcessor):
         #if not valid:
         #    return None
 
-        def _resetDefaults(form):
-            for field in form:
-                if field.errors:
-                    if isinstance(field, FormField):
-                        _resetDefaults(field.form)
-                    elif isinstance(field, FieldList):
-                        for sub in field:
-                            if isinstance(sub, FormField):
-                                _resetDefaults(sub)
-                            else:
-                                sub.data = sub.default
-                    else:
-                        field.data = field.default
-
         # if not valid, then remove all fields which have validation errors
         if not valid:
-            _resetDefaults(self.form)
+            self.resetDefaults(self.form)
 
         self.form2target()
         draft_application = models.DraftApplication(**self.target.data)
