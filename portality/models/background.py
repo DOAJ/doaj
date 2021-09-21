@@ -1,8 +1,12 @@
-from portality.lib import dataobj, dates
+from portality.core import app
+from portality.lib import dataobj, dates, es_data_mapping
 from portality import dao
 
 
 class BackgroundJob(dataobj.DataObj, dao.DomainObject):
+    """
+    # ~~BackgroundJob:Model~~
+    """
     __type__ = "background_job"
 
     def __init__(self, **kwargs):
@@ -14,7 +18,29 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         if "status" not in kwargs:
             kwargs["status"] = "queued"
 
+        # to audosave we need to move the object over to Seamless
+        # self._autosave = False
+        # self._audit_log_increments = 500
+        # self._audit_log_counter = 0
+
         super(BackgroundJob, self).__init__(raw=kwargs)
+
+    @classmethod
+    def active(cls, task_type, since=None):
+        # ~~-> ActiveBackgroundJob:Query~~
+        q = ActiveQuery(task_type, since=since)
+        actives = cls.q2obj(q=q.query())
+        return actives
+
+    def mappings(self):
+        # ~~-> Elasticsearch:Technology~~
+        return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
+
+    # This feature would allow us to flush the audit logs to the index periodically.
+    # We need to switch the object type to Seamless to enable that
+    # def autosave(self, audit_log_increments=500):
+    #     self._audit_log_increments = audit_log_increments
+    #     self._autosave = True
 
     @property
     def user(self):
@@ -85,6 +111,18 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         obj = {"message": msg, "timestamp": timestamp}
         self._add_to_list_with_struct("audit", obj)
 
+        # This feature would allow us to flush the audit messages to the index periodically
+        # if self._autosave:
+        #     audits = len(self._get_list("audit"))
+        #     if audits > self._audit_log_counter + self._audit_log_increments:
+        #         self.save()
+        #         self._audit_log_counter = audits
+
+    @property
+    def pretty_audit(self):
+        audits = self._get_list("audit")
+        return "\n".join(["{t} {m}".format(t=a["timestamp"], m=a["message"]) for a in audits])
+
 
 class StdOutBackgroundJob(BackgroundJob):
 
@@ -93,9 +131,11 @@ class StdOutBackgroundJob(BackgroundJob):
 
     def add_audit_message(self, msg, timestamp=None):
         super(StdOutBackgroundJob, self).add_audit_message(msg, timestamp)
-        print(msg)
+        if app.config.get("DOAJENV") == 'dev':
+            print(msg)
 
 
+# ~~-> DataObj:Library~~
 BACKGROUND_STRUCT = {
     "fields": {
         "id": {"coerce": "unicode"},
@@ -123,3 +163,42 @@ BACKGROUND_STRUCT = {
         }
     }
 }
+
+# ~~-> Elasticsearch:Technology~~
+MAPPING_OPTS = {
+    "dynamic": None,
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
+    "exceptions": {
+        "audit.message": {
+            "type": "string",
+            "index": "not_analyzed",
+            "include_in_all": False
+        }
+    }
+}
+
+
+class ActiveQuery(object):
+    """
+    ~~ActiveBackgroundJob:Query->Elasticsearch:Technology~~
+    """
+    def __init__(self, task_type, size=2, since=None):
+        self._task_type = task_type
+        self._size = size
+        self._since = since
+
+    def query(self):
+        q = {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"action.exact" : self._task_type}},
+                        {"terms" : {"status.exact" : ["queued", "processing"]}}
+                    ]
+                }
+            },
+            "size" : self._size
+        }
+        if self._since:
+            q["query"]["bool"]["must"].append({"range" : {"created_date" : {"gte":  self._since}}})
+        return q

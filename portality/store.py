@@ -31,7 +31,9 @@ class StoreFactory(object):
         return sm()
 
 class Store(object):
-
+    """
+    ~~FileStore:Feature~~
+    """
     def __init__(self, scope):
         pass
 
@@ -60,6 +62,8 @@ class Store(object):
 class StoreS3(Store):
     """
     Primitive local storage system.  Use this for testing in place of remote store
+    ~~->FileStoreS3:Feature~~
+    ~~!FileStoreS3:Feature->S3:Technology~~
     """
     def __init__(self, scope):
         cfg = app.config.get("STORE_S3_SCOPES", {}).get(scope)
@@ -161,6 +165,9 @@ class StoreS3(Store):
 
 
 class StoreLocal(Store):
+    """
+    ~~->FileStoreLocal:Feature~~
+    """
     def __init__(self, scope):
         self.dir = app.config.get("STORE_LOCAL_DIR")
         if self.dir is None:
@@ -228,6 +235,9 @@ class StoreLocal(Store):
 
 
 class TempStore(StoreLocal):
+    """
+    ~~->FileStoreTemp:Feature~~
+    """
     def __init__(self):
         self.dir = app.config.get("STORE_TMP_DIR")
         if self.dir is None:
@@ -265,7 +275,7 @@ def prune_container(storage, container_id, sort, filter=None, keep=1):
 
     if len(filtered) <= keep:
         # action_register.append("Fewer than {x} files in cache, no further action".format(x=keep))
-        return
+        return action_register
 
     filtered_sorted = sort(filtered)
     #action_register.append("Considering files for retention in the following order: " + ", ".join(filtered_sorted))

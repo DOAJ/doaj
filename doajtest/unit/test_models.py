@@ -305,7 +305,7 @@ class TestModels(DoajTestCase):
         d = s.__seamless__.data
         assert 'index' in d, d
         assert 'application_type' in d['index'], d['index']
-        assert d['index']['application_type'] == constants.APPLICATION_TYPE_UPDATE_REQUEST
+        assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_UPDATE_REQUEST_UNFINISHED
 
         s.remove_current_journal()
         assert s.current_journal is None
@@ -313,12 +313,12 @@ class TestModels(DoajTestCase):
         d = s.__seamless__.data
         assert 'index' in d, d
         assert 'application_type' in d['index'], d['index']
-        assert d['index']['application_type'] == constants.APPLICATION_TYPE_FINISHED
+        assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_NEW_APPLICATION_FINISHED
 
         s.set_application_status(constants.APPLICATION_STATUS_PENDING)
         s.prep()
         d = s.__seamless__.data
-        assert d['index']['application_type'] == constants.APPLICATION_TYPE_NEW_APPLICATION
+        assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_NEW_APPLICATION_UNFINISHED
 
         s.save()
 
@@ -1264,9 +1264,7 @@ class TestModels(DoajTestCase):
     def test_26_background_job(self):
         source = BackgroundFixtureFactory.example()
         bj = models.BackgroundJob(**source)
-        bj.save()
-
-        time.sleep(2)
+        bj.save(blocking=True)
 
         retrieved = models.BackgroundJob.pull(bj.id)
         assert retrieved is not None
@@ -1280,6 +1278,14 @@ class TestModels(DoajTestCase):
 
         bj.add_audit_message("message")
         assert len(bj.audit) == 2
+
+    def test_26a_background_job_active(self):
+        source = BackgroundFixtureFactory.example()
+        bj = models.BackgroundJob(**source)
+        bj.save(blocking=True)
+
+        assert len(models.BackgroundJob.active(source["action"])) == 1, "expected 1 active, got {x}".format(x=len(models.BackgroundJob.active(source["action"])))
+
 
     def test_27_article_journal_sync(self):
         j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))

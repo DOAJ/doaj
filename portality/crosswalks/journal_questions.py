@@ -1,7 +1,7 @@
 from copy import deepcopy
 from portality import datasets
-from portality.formcontext import choices
 from portality.crosswalks.journal_form import JournalFormXWalk
+from portality.forms.application_forms import ApplicationFormFactory
 
 
 class JournalXwalkException(Exception):
@@ -9,7 +9,9 @@ class JournalXwalkException(Exception):
 
 
 class Journal2QuestionXwalk(object):
-
+    """
+    ~~JournalQuestions:Crosswalk->Journal:Form~~
+    """
     QTUP = [
         ("alternative_title", "Alternative title"),
         ("apc_charges", "APC amount"),
@@ -104,6 +106,9 @@ class Journal2QuestionXwalk(object):
 
     @classmethod
     def journal2question(cls, journal):
+        """
+        Convert the journal data to key value pairs for use in the Journal CSV
+        """
 
         def yes_no_or_blank(val):
             return "Yes" if val in [True, "True", "Yes", "true", "yes", "y"] else "No" if val is not None else ""
@@ -131,7 +136,7 @@ class Journal2QuestionXwalk(object):
 
         def license_checkbox(val):
             opts = {}
-            [opts.update({k: v}) for k, v in choices.Choices.licence_checkbox()]
+            [opts.update({k: v}) for k, v in ApplicationFormFactory.choices_for("license_attributes")]
             nv = [opts.get(v) for v in val]
             return ", ".join(nv)
 
@@ -250,22 +255,45 @@ class Journal2QuestionXwalk(object):
             """ Undoing yes_no_or_blank() to 'y' or 'n' ONLY """
             return 'y' if x == 'Yes' else 'n' if x != '' else None
 
+        def _comma_to_list(x):
+            """ Comma separated string to list of stripped items """
+            return [_.strip() for _ in x.split(',')]
+
+        def _lang_codes(x):
+            """ Get the uppercase 2-char language string for each comma separated language name"""
+            langs = [datasets.language_for(_) for _ in _comma_to_list(x)]
+            return [l.alpha_2.upper() for l in langs if l is not None]
+
         def _unfurl_apc(x):
             """ Allow an APC update by splitting the APC string from the spreadsheet """
             apcs = []
             for apc in x.split('; '):
                 [amt, cur] = apc.split()
-                apcs.append({'apc_max': int(amt), 'apc_currency': cur})
+                apcs.append({'apc_max': round(float(amt)), 'apc_currency': cur})
             return apcs
 
         # Undo the transformations applied to specific fields. TODO: Add these as they are encountered in the wild
         REVERSE_TRANSFORM_MAP = {
-            'license': lambda x: [lic.strip() for lic in x.split(',')],
-            'publication_time_weeks': lambda x: int(x),
+            'keywords': _comma_to_list,
+            'language': _lang_codes,
+            'publisher_country': datasets.get_country_code,
+            'institution_country': datasets.get_country_code,
+            'license': _comma_to_list,
+            'license_display': _y_or_blank,
+            'copyright_author_retains': _y_n_or_blank,
+            'review_process': _comma_to_list,
+            'plagiarism_detection': _y_n_or_blank,
+            'publication_time_weeks': lambda x: round(float(x)),
             'apc': _y_or_blank,
             'apc_charges': _unfurl_apc,
-            'has_waiver': _y_n_or_blank
-            # Country names to codes for institution, publisher
+            'has_waiver': _y_n_or_blank,
+            'has_other_charges': _y_n_or_blank,
+            'deposit_policy': _comma_to_list,
+            'preservation_service': _comma_to_list,
+            'persistent_identifiers': _comma_to_list,
+            'orcid_ids': _y_n_or_blank,
+            'open_citations': _y_n_or_blank,
+            'boai': _y_or_blank,
         }
 
         def csv2formval(key, value):
@@ -281,12 +309,20 @@ class Journal2QuestionXwalk(object):
                 return value
 
         # start by converting the object to the forminfo version
+        # ~~->JournalForm:Crosswalk~~
         forminfo = JournalFormXWalk.obj2form(journal)
+
+        # Get the CSV output this journal currently produces so that we can skip over unchanged fields
+        current_csv = {x: y for (x, y) in cls.journal2question(journal)}
 
         # Collect the update report
         updates = []
 
         for k, v in questions.items():
+            # To save us writing all of the reverse transforms, we can skip this question entirely if unchanged from current journal
+            if k in current_csv and current_csv[k] == v:
+                continue
+
             # Only deal with a question if there's a value - TODO: what does this mean for yes_no_or_blank?
             if len(v.strip()) > 0:
                 # Get the question key from the CSV column header

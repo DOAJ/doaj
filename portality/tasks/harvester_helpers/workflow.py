@@ -1,36 +1,46 @@
-from portality.api.v2.client import client as doajclient
+from portality.api.v2 import ArticlesCrudApi
 from portality.core import app
-from portality.lib import plugin
-from portality.decorators import capture_sigterm
+from portality.lib import plugin, dates
+from portality.models import Journal, Account
 from portality.models.harvester import HarvesterProgressReport as Report
 from portality.models.harvester import HarvestState
 from portality.lib.dataobj import DataObjException
 
 
+class DefaultLogger(object):
+    def __init__(self):
+        self._log = []
+
+    def log(self, msg):
+        self._log.append({
+            "timestamp": dates.now_with_microseconds(),
+            "message" : msg
+        })
+
+
 class HarvesterWorkflow(object):
 
-    @classmethod
-    @capture_sigterm
-    def process_account(cls, account_id):
-        app.logger.info("Harvesting for Account:{x}".format(x=account_id))
+    def __init__(self, custom_logger=None):
+        self.logger = DefaultLogger() if custom_logger is None else custom_logger
 
-        doaj = doajclient.DOAJv1API()
-        gen = doaj.field_search_iterator("journals", "username", account_id)
-        issns = []
-        for journal in gen:
-            issns += journal.all_issns()
-        issns = list(set(issns))
+    def _write_to_logger(self, msg):
+        self.logger.log(msg)
 
-        app.logger.info("Account:{x} has {y} issns to harvest for: {z}".format(x=account_id, y=len(issns), z=",".join(issns)))
+    def process_account(self, account_id):
+        self._write_to_logger("Harvesting for Account:{x}".format(x=account_id))
+        issns = self.get_journals_issns(account_id)
+        self._write_to_logger("Account:{x} has {y} issns to harvest for: {z}".format(x=account_id, y=len(issns), z=",".join(issns)))
 
         # now update the issn states
-        HarvesterWorkflow.process_issn_states(account_id, issns)
+        self.process_issn_states(account_id, issns)
 
         for issn in issns:
-            HarvesterWorkflow.process_issn(account_id, issn)
+            self.process_issn(account_id, issn)
 
-    @classmethod
-    def process_issn_states(cls, account_id, issns):
+    def get_journals_issns(self, account_id):
+        return Journal.issns_by_owner(account_id, in_doaj=True)
+
+    def process_issn_states(self, account_id, issns):
         # first check that there are state records for all the provided issns,
         # and that if they were deactivated they are now reactivated
         for issn in issns:
@@ -53,10 +63,8 @@ class HarvesterWorkflow(object):
                 hs.suspend()
                 hs.save(blocking=True)
 
-    @classmethod
-    @capture_sigterm
-    def process_issn(cls, account_id, issn):
-        app.logger.info("Processing ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
+    def process_issn(self, account_id, issn):
+        self._write_to_logger("Processing ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
 
         state = HarvestState.find_by_issn(account_id, issn)
         # if this issn is suspended, don't process it
@@ -73,19 +81,20 @@ class HarvesterWorkflow(object):
                 lh = state.get_last_harvest(p_name)
                 if lh is None:
                     lh = app.config.get("INITIAL_HARVEST_DATE")
-                app.logger.info("Processing ISSN:{x} for Account:{y} with Plugin:{z} Since:{a}".format(y=account_id, x=issn, z=p_name, a=lh))
                 Report.set_start_by_issn(p_name, issn, lh)
 
                 for article, lhd in p.iterate(issn, lh):
-                    saved = HarvesterWorkflow.process_article(account_id, article)
+                    saved = self.process_article(account_id, article)
                     Report.increment_articles_processed(p_name)
 
                     # if the above worked, then we can update the harvest state
                     if saved:
                         state.set_harvested(p_name, lhd)
                         Report.increment_articles_saved_successfully(p_name)
+
+                self._write_to_logger(p.logger)
         except Exception:
-            app.logger.info("Exception Processing ISSN:{x} for Account:{y} ".format(y=account_id, x=issn))
+            self._write_to_logger("Exception Processing ISSN:{x} for Account:{y} ".format(y=account_id, x=issn))
             raise
         finally:
             # once we've finished working with this issn, we should update the state
@@ -93,36 +102,29 @@ class HarvesterWorkflow(object):
             # to record where we got to, without having to do a save after each article
             # create
             state.save(blocking=True)
-            app.logger.info("Saved state record for ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
+            self._write_to_logger("Saved state record for ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
 
-    @classmethod
-    def process_article(cls, account_id, article):
-        app.logger.info("Processing Article for Account:{y}".format(y=account_id))
+    def process_article(self, account_id, article):
+        self._write_to_logger("Processing Article for Account:{y}".format(y=account_id))
 
         try:
             article.is_api_valid()
         except DataObjException as e:
-            app.logger.info("Article for Account:{y} was not API valid ... skipping".format(y=account_id))
+            self._write_to_logger("Article for Account:{y} was not API valid ... skipping".format(y=account_id))
             Report.record_error((article.get_identifier("doi") or "< DOI MISSING >") + " - " + str(e))
             return False
 
         # FIXME: in production, we will need a way to get the account_id's api_key
         # but in this version we just need to have a list of the api keys that we're
         # working with
-        api_key = HarvesterWorkflow.get_api_key(account_id)
-        doaj = doajclient.DOAJv1API(api_key=api_key)
-
         # if this throws an exception other than DOAJ complaint, allow the harvester to die, because it is either
         # systemic or the doaj is down.
+        acc = Account.pull(account_id)
         try:
-            id, loc = doaj.create_article(article)
-        except doajclient.DOAJException as e:
-            app.logger.info("Article caused DOAJException: {m} ... skipping".format(m=str(e)))
-            Report.record_error((article.get_identifier("doi") or "< DOI MISSING >") + " - " + str(e))
+            id = ArticlesCrudApi.create(article.data, acc).id
+        except Exception as e:
+            self._write_to_logger("Article caused DOAJException: {m} ... skipping".format(m=e))
+            Report.record_error((article.get_identifier("doi") or "< DOI MISSING >"))
             return False
-        app.logger.info("Created article in DOAJ for Account:{x} with ID: {y}".format(x=account_id, y=id))
+        self._write_to_logger("Created article in DOAJ for Account:{x} with ID: {y}".format(x=account_id, y=id))
         return True
-
-    @classmethod
-    def get_api_key(cls, account_id):
-        return app.config.get("HARVESTER_API_KEYS", {}).get(account_id)

@@ -5,7 +5,6 @@ from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, diff_dicts
 from portality.crosswalks.article_doaj_xml import DOAJXWalk
 from portality.crosswalks.article_crossref_xml import CrossrefXWalk
-from portality.formcontext import forms
 
 from portality import models
 from werkzeug.datastructures import MultiDict

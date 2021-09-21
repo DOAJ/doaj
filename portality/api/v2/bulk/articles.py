@@ -1,3 +1,4 @@
+# ~~APIBulkArticles:Feature->APIBulk:Feature~~
 from portality.api.common import Api, Api404Error, Api400Error, Api403Error, Api401Error
 from portality.api.v2.crud import ArticlesCrudApi
 
@@ -10,6 +11,8 @@ from copy import deepcopy
 
 class ArticlesBulkApi(Api):
 
+    #~~->Swagger:Feature~~
+    # ~~->API:Documentation~~
     SWAG_TAG = 'Bulk API'
 
     @classmethod
@@ -45,8 +48,10 @@ class ArticlesBulkApi(Api):
         # convert the data into a suitable article models
         articles = [ArticlesCrudApi.prep_article(data, account) for data in articles]
 
+        # ~~->Article:Service~~
         articleService = DOAJ.articleService()
         try:
+            # ~~->BatchCreateArticles:Feature~~
             result = articleService.batch_create_articles(articles, account, add_journal_info=True)
             return [a.id for a in articles]
         except exceptions.IngestException as e:
@@ -75,6 +80,7 @@ class ArticlesBulkApi(Api):
     def delete(cls, article_ids, account):
         # we run through delete twice, once as a dry-run and the second time
         # as the real deal
+        # ~~->APICrudArticles:Feature~~
         for id in article_ids:
             try:
                 ArticlesCrudApi.delete(id, account, dry_run=True)

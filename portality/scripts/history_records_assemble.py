@@ -1,5 +1,4 @@
 import os, shutil, tarfile, json, csv
-from portality import clcsv
 
 # I have not included jsondiff in the requiremets for the app, as I don't think that we'll stick
 # with this long-term, as there is a more standard specification out there, and for some reason this

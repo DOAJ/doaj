@@ -1,9 +1,17 @@
+"""
+~~DataSets:Data~~
+"""
+
 import pycountry
 from collections import OrderedDict
 
 
 def _generate_country_options():
-    """Gather the countries with 2-character codes"""
+    """
+    ~~->Countries:Data~~
+    ~~!Countries:Data->PyCountry:Technology~~
+    Gather the countries with 2-character codes
+    """
     country_options_ = [('', '')]
 
     for co in sorted(pycountry.countries, key=lambda x: x.name):
@@ -15,6 +23,11 @@ def _generate_country_options():
 
 
 def _generate_currency_options():
+    """
+    ~~->Currencies:Data~~
+    ~~!Currencies:Data->PyCountry:Technology~~
+    :return:
+    """
     currency_options_ = [(CURRENCY_DEFAULT, CURRENCY_DEFAULT)]
 
     for cu in sorted(pycountry.currencies, key=lambda x: x.name):
@@ -27,7 +40,11 @@ def _generate_currency_options():
 
 
 def _generate_language_options():
-    """ Gather the languages with 2-character codes (ISO 639-2b) """
+    """
+    ~~->Languages:Data~~
+    ~~!Languages:Data->PyCountry:Technology~~
+    Gather the languages with 2-character codes (ISO 639-2b)
+    """
     language_options_ = [('', '')]
     for l in sorted(pycountry.languages, key=lambda x: x.name):
         try:
@@ -39,7 +56,10 @@ def _generate_language_options():
 
 
 def _generate_license_options():
-    """ Licenses and their rights """
+    """
+    ~~->Licences:Data~~
+    Licenses and their rights
+    """
     licenses_ = {
         # The titles and types are made to match the current values of journals in the DOAJ.
         # DOAJ currently assumes type and title are the same.

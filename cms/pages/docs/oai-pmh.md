@@ -4,7 +4,10 @@ title: OAI-PMH
 section: Docs
 toc: true
 sticky_sidenav: true
-featuremap: ~~OAI:Fragment~~
+featuremap: 
+ - ~~OAIPMH:Fragment->OAIPMH:WebRoute~~
+ - ~~->OAIArticleXML:Crosswalk~~
+ - ~~->OAIJournalXML:Crosswalk~~
 
 ---
 

@@ -1,5 +1,3 @@
-import os
-
 from portality.core import app
 from lxml import etree
 import re
@@ -12,6 +10,9 @@ NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih
 
 
 class CrossrefXWalk(object):
+    """
+    ~~CrossrefXML:Crosswalk->Crossref:Feature~~
+    """
     format_name = "crossref"
 
     def __init__(self):
@@ -26,6 +27,7 @@ class CrossrefXWalk(object):
         while app.config["CROSSREF_SCHEMA"] is None:
             continue
 
+        # ~~->CrossrefXML:Schema~~
         self.schema = app.config["CROSSREF_SCHEMA"]
 
     def validate_file(self, file_handle):
@@ -158,7 +160,7 @@ Example record:
     </body>
 </doi_batch>
         """
-        article = models.Article()
+        article = models.Article()  # ~~->Article:Model~~
         bibjson = article.bibjson()
 
         # journal title
@@ -192,6 +194,11 @@ Example record:
                 # if both issns have the same type - raise the exception
                 if attrs[0] != 0 and attrs[0] == attrs[1]:
                     raise CrosswalkException(message=Messages.EXCEPTION_ISSNS_OF_THE_SAME_TYPE.format(type=issns[1].attrib["media_type"]))
+
+                #if both issns have the same value - raise the exception
+                if issns[0].text.upper() == issns[1].text.upper():
+                    raise CrosswalkException(
+                        message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN.format(value=issns[0].text.upper()))
 
                 if bool(attrs[0]) != bool(attrs[1]):
                     if attrs[0] != 0:
@@ -304,9 +311,13 @@ Example record:
 ## some convenient utilities
 ###############################################################################
 
-
-def _element(xml, field, namepsace):
-    el = xml.find(field, namepsace)
-    if el is not None and el.text is not None and el.text != "":
-        return el.text.strip()
-    return None
+def _element(xml, field, namespace):
+    el = xml.find(field, namespace)
+    if el is not None:
+        string = etree.tostring(el).decode("utf-8")
+        start = string.index(">") + 1
+        end = string.rindex('</')
+        text = string[start:end]
+        return text if text else None
+    else:
+        return None

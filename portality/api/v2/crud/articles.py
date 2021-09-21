@@ -1,3 +1,4 @@
+# ~~APICrudArticles:Feature->APICrud:Feature~~
 import json
 
 from portality.api.v2.crud.common import CrudApi
@@ -7,12 +8,16 @@ from portality.core import app
 from portality.lib import dataobj
 from portality import models, app_email
 from portality.bll.doaj import DOAJ
-from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, DuplicateArticleException
+from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, DuplicateArticleException, \
+    IngestException
 from copy import deepcopy
 
 class ArticlesCrudApi(CrudApi):
 
     API_KEY_OPTIONAL = False
+
+    # ~~->Swagger:Feature~~
+    # ~~->API:Documentation~~
     SWAG_TAG = 'CRUD Articles'
     SWAG_ID_PARAM = {
         "description": "<div class=\"search-query-docs\">DOAJ article ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
@@ -25,7 +30,7 @@ class ArticlesCrudApi(CrudApi):
         "description": """<div class=\"search-query-docs\">
             Article JSON that you would like to create or update. The contents should comply with the schema displayed
             in the <a href=\"/api/v2/docs#CRUD_Articles_get_api_v2_articles_article_id\"> GET (Retrieve) an article route</a>.
-            Explicit documentation for the structure of this data is also <a href="https://github.com/DOAJ/doaj/blob/master/docs/system/IncomingAPIArticle.md">provided here</a>.
+            Explicit documentation for the structure of this data is also <a href="https://doaj.github.io/doaj-docs/master/data_models/IncomingAPIArticle">provided here</a>.
             Partial updates are not allowed, you have to supply the full JSON.</div>""",
         "required": True,
         "schema": {"type" : "string"},
@@ -74,15 +79,19 @@ class ArticlesCrudApi(CrudApi):
         # convert the data into a suitable article model (raises Api400Error if doesn't conform to struct)
         am = cls.prep_article(data, account)
 
+        # ~~-> Article:Service~~
         articleService = DOAJ.articleService()
         try:
             result = articleService.create_article(am, account, add_journal_info=True)
         except ArticleMergeConflict as e:
             raise Api400Error(str(e))
         except ArticleNotAcceptable as e:
-            raise Api400Error("; ".join(e.errors))
+            raise Api400Error(str(e))
         except DuplicateArticleException as e:
             raise Api403Error(str(e))
+        except IngestException as e:
+            raise Api400Error(str(e))
+
 
         # Check we are allowed to create an article for this journal
         if result.get("fail", 0) == 1:
@@ -99,6 +108,7 @@ class ArticlesCrudApi(CrudApi):
         except dataobj.DataStructureException as e:
             raise Api400Error(str(e))
         except dataobj.ScriptTagFoundException as e:
+            # ~~->Email:ExternalService~~
             email_data = {"article": data, "account": account.__dict__}
             jdata = json.dumps(email_data, indent=4)
             # send warning email about the service tag in article metadata detected
@@ -201,6 +211,7 @@ class ArticlesCrudApi(CrudApi):
             raise Api404Error()
 
         # Check we're allowed to edit this article
+        # ~~-> Article:Service~~
         articleService = DOAJ.articleService()
         if not articleService.is_legitimate_owner(ar, account.id):
             raise Api404Error()  # not found for this account
@@ -259,6 +270,7 @@ class ArticlesCrudApi(CrudApi):
             raise Api404Error()
 
         # Check we're allowed to retrieve this article
+        # ~~-> Article:Service~~
         articleService = DOAJ.articleService()
         if not articleService.is_legitimate_owner(ar, account.id):
             raise Api404Error()  # not found for this account

@@ -21,7 +21,10 @@
             {% set new = form_diff[f.name]['b'] %}
             <tr>
                 <td>
-                    <a href="#question-{{ k }}">{{ f.label }}</a>
+                    {% if f.diff_table_context %}
+                        <p>{{ f.diff_table_context }} information</p>
+                    {% endif %}
+                    <a href="#question-{{ f.name }}">{{ f.label }}</a>
                 </td>
                 <td>
                     {{ value(previous, f.name, formulaic_context) }}
