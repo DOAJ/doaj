@@ -806,6 +806,11 @@ class FieldDefinitions:
         "label": "When did the journal start to publish all content using an open license?",
         "input": "number",
         "datatype": "integer",
+        "help": {
+            "long_help": ["Please enter the year that the journal started to publish all content as true open access, according to DOAJ's <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/' target='_blank' rel='nofollow'>definition</a>.",
+            "For journals that have flipped to open access, enter the year that the journal flipped, not the original launch date of the journal.",
+            "For journals that have made digitised backfiles freely available, enter the year that the journal started publishing as a fully open access title, not the date of the earliest free content."]
+        },
         "validate": [
             {"required": {"message": "Enter the Year (YYYY)."}},
             {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": datetime.datetime.now().year}},
