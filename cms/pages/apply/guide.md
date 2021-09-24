@@ -137,7 +137,7 @@ The following information must be available online, and easily accessible from t
     - Reuse rights of the archive material (all rights reserved or open license)
    - For a journal to be included in DOAJ, all content published after it has flipped must be completely open access.
 - ### Mirror journals
-   - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, peer review processes and policies and an editorial board with at least 50% of the same members. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
+   - A mirror journal is a fully open access version of an existing subscription journal, with the same aims and scope, peer review processes and policies and an editorial board with at least 50% of the same members. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
 - ### Book review journals
    - Journals consisting only of book reviews will not be accepted. 
   
