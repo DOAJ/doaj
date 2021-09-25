@@ -1,16 +1,28 @@
 from portality import models
-from portality.background import BackgroundTask, BackgroundApi
+from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 
 from portality.tasks.harvester_helpers import workflow
 from portality.core import app
 from portality.models.harvester import HarvesterProgressReport as Report
 from portality.tasks.redis_huey import schedule, long_running
 from portality.decorators import write_required
+from portality.lib import dates
 
-import datetime
+from datetime import datetime
+
+
+class BGHarvesterLogger(object):
+    def __init__(self, job):
+        self._job = job
+
+    def log(self, msg):
+        self._job.add_audit_message(msg)
+
 
 class HarvesterBackgroundTask(BackgroundTask):
-    mail_prereqs = False
+    """
+    ~~Harvester:BackgroundTask~~
+    """
     __action__ = "harvest"
 
     def run(self):
@@ -18,26 +30,20 @@ class HarvesterBackgroundTask(BackgroundTask):
         Execute the task as specified by the background_job
         :return:
         """
-        accs = list(app.config.get("HARVESTER_API_KEYS", {}).keys())
-        harvester_workflow = workflow.HarvesterWorkflow()
+
+        if not self.only_me():
+            msg = "Another harvester is currently running, skipping this run"
+            self.background_job.add_audit_message(msg)
+            raise BackgroundException(msg)
+
+        logger = BGHarvesterLogger(self.background_job)
+        accs = app.config.get("HARVEST_ACCOUNTS", [])
+        harvester_workflow = workflow.HarvesterWorkflow(logger)
         for account_id in accs:
             harvester_workflow.process_account(account_id)
-            self.background_job.add_audit_message(harvester_workflow.logger)
 
         report = Report.write_report()
-        app.logger.info(report)
-
-        # If the harvester finishes normally, we can email the report.
-        if self.mail_prereqs:
-            self.mail.send_mail(
-                to=app.config["HARVESTER_EMAIL_RECIPIENTS"],
-                fro=self.fro,
-                subject=self.sub_prefix + "DOAJ Harvester finished at {0}".format(
-                    datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")),
-                msg_body=report
-            )
-
-            return
+        self.background_job.add_audit_message(report)
 
     def cleanup(self):
         """
@@ -56,27 +62,6 @@ class HarvesterBackgroundTask(BackgroundTask):
         :return: a BackgroundJob instance representing this task
         """
 
-        # run_only_once()
-        # initialise_index(app, es_connection)
-        cls.sub_prefix = app.config.get('HARVESTER_EMAIL_SUBJECT_PREFIX', '')
-
-        # Send an email when the harvester starts.
-        cls.mail_prereqs = False
-        cls.fro = app.config.get("HARVESTER_EMAIL_FROM_ADDRESS", 'harvester@doaj.org')
-        if app.config.get("HARVESTER_EMAIL_ON_EVENT", False):
-            to = app.config.get("HARVESTER_EMAIL_RECIPIENTS", None)
-
-            if to is not None:
-                cls.mail_prereqs = True
-                from portality import app_email as mail
-                mail.send_mail(
-                    to=to,
-                    fro=cls.fro,
-                    subject=cls.sub_prefix + "DOAJ Harvester started at {0}".format(
-                        datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")),
-                    msg_body="A new running instance of the harvester has started."
-                )
-
         # first prepare a job record
         job = models.BackgroundJob()
         job.user = username
@@ -94,6 +79,16 @@ class HarvesterBackgroundTask(BackgroundTask):
         background_job.save()
         harvest.schedule(args=(background_job.id,), delay=10)
         # fixme: schedule() could raise a huey.exceptions.HueyException and not reach redis- would that be logged?
+
+    def only_me(self):
+        age = app.config.get("HARVESTER_ZOMBIE_AGE")
+        since = dates.format(dates.before(datetime.utcnow(), age))
+        actives = models.BackgroundJob.active(self.__action__, since=since)
+        if self.background_job.id in [a.id for a in actives] and len(actives) == 1:
+            return True
+        if len(actives) == 0:
+            return True
+        return False
 
 
 @long_running.periodic_task(schedule("harvest"))

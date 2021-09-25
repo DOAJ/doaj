@@ -137,7 +137,7 @@ The following information must be available online, and easily accessible from t
     - Reuse rights of the archive material (all rights reserved or open license)
    - For a journal to be included in DOAJ, all content published after it has flipped must be completely open access.
 - ### Mirror journals
-   - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, and peer review processes and policies. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
+   - A mirror journal is a fully open access version of an existing subscription journal, with the same editorial board, aims and scope, peer review processes and policies and an editorial board with at least 50% of the same members. The journal may have a similar name as the subscription title, but it must have a different ISSN. DOAJ will currently accept mirror journals if they meet the usual basic criteria for inclusion.
 - ### Book review journals
    - Journals consisting only of book reviews will not be accepted. 
   
@@ -263,7 +263,9 @@ We are always looking for volunteers to translate our criteria. If you would lik
 
 We have our criteria in:
 
-- [Chinese (application form only)](https://zenodo.org/record/4350096)
+- [Chinese (application form)](https://zenodo.org/record/4350096)
+- [Chinese](https://zenodo.org/record/4633341)
+- [Danish](https://drive.google.com/file/d/1Cqkfn7ThtCbnAhUEbkemXyYvhf-6R1o4/view?usp=sharing)
 - Finnish
 - [French (Canadian)](https://drive.google.com/drive/folders/1-9FraAimhA9Ks64tvKE_W4wsQ8LNob9a?usp=sharing)
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
