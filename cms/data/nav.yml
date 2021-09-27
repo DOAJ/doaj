@@ -111,7 +111,7 @@ entries:
       - label: T&Cs
         route: doaj.terms           # ~~->Terms:WebRoute~~
       - label: Media
-        route: doaj.media
+        route: doaj.media           # ~~-> Media:WebRoute~~
   - id: companies
     entries:
       - label: IS4OA
