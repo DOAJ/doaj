@@ -29,16 +29,16 @@ Starting with a list of diamond open access (i.e. non-APC charging) journals fro
 
 ### For publishers
 We hope that many open access publishers, whose journals are not currently archived, will want to take part. The criteria for eligibility for Phase One are:
-- Your journal must be indexed in DOAJ
-- Your journal may not charge any fees of any kind
-- Your journal is not already archived in a preservation service
+ - Your journal must be indexed in DOAJ
+ - Your journal may not charge any fees of any kind
+ - Your journal is not already archived in a preservation service
 
 Towards the end of 2021, DOAJ will send an email to the DOAJ account holders of a subset of the journals that meet the criteria above. The email will invite you to answer a survey. The survey will determine which archiving options are best suited to your journal.
 
 #### Archiving options
-1. *Route One*: if your journal is on OJS, you will be asked if you want to enroll or make your journal eligible for the PKP Preservation Network
-2. *Route Two*: if you are able to export article metadata and full text, you will be asked if you want to sign up for one of the services that do long-term digital preservation. (The agencies in this category for Phase One are CLOCKSS and Internet Archive.)
-3. *Route Three*: if you are not able to or do not want to export article metadata and full text, your journal website details will be provided to the Internet Archive for inclusion in best-effort automated web harvesting.
+1. *Route One*: if your journal is on OJS, you will be encouraged to enroll in, or make your journal eligible for, the PKP Preservation Network
+2. *Route Two*: if you have the ability to export and ZIP full text, you may choose to sign up for one of the services that do long-term digital preservation. (The agencies in this category for Phase One are CLOCKSS and Internet Archive.)
+3. *Route Three*: if you are not able to or do not want to export article metadata and full text, your journal website details will be provided to the Internet Archive for inclusion in best-effort, automated web harvesting.
 
 #### More copies, better preservation
 It is always safer for a journal’s content to be archived in more than one place and, ideally, in at least three. To make this easy for smaller publishers, journals opting for Route 2 will automatically have their content preserved via Route 3. Future phases of the project will add the possibility for Route 1 journals to take part in other routes too.
