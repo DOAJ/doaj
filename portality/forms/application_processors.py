@@ -489,12 +489,12 @@ class AdminApplication(ApplicationProcessor):
 
     def validate(self):
         _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']
+        self.pre_validate()
         # make use of the ability to disable validation, otherwise, let it run
         valid = super(AdminApplication, self).validate()
 
         if self.form is not None:
             if self.form.application_status.data in _statuses_not_requiring_validation and not valid:
-                #self.pre_validate()
                 self.resetDefaults(self.form)
                 return True
 
