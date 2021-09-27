@@ -3,7 +3,7 @@ layout: sidenav
 title: Media
 toc: true
 sticky_sidenav: true
-featuremap: ~~Terms:Fragment~~
+featuremap: ~~Media:Fragment~~
 ---
 
 The Directory of Open Access Journals is the definitive place for anyone in the world to find peer-reviewed, open access journals. It is the only open access directory which is community-driven, not-for-profit and provides all of its main services, online, for free.
