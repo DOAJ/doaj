@@ -112,21 +112,23 @@ You can disable these cookies at any time by using the privacy settings in your 
 
 ### 4) How we store personal data
 
-#### 4a Journal applications
+#### 4a In journal applications
 
 The journal applications are held in a database in the DOAJ Admin system which is accessible only by the DOAJ Team, the DOAJ Ambassadors, the DOAJ Volunteers (collectively **the DOAJ representatives**) and our technical partners in site development and hosting, [Cottage Labs](https://cottagelabs.com). Different groups within the DOAJ representatives have varying levels of access to the database. The main reason and objective for accessing the database is to process journal applications. 
 
-#### 4b Journal records
+#### 4b In journal records
 Journal names and other journal details are searchable and displayed on our website; journal contact details are never displayed publicly and are not searchable.
 
-#### 4c User accounts
+#### 4c In user accounts
 User details (name, email address) are stored in a separate database, the User database, within the DOAJ Admin system. Sometimes, the DOAJ Team and, very rarely, Cottage Labs, will access user accounts to make updates, reset passwords, reset an API key or delete the user account entirely. Neither DOAJ representatives or Cottage Labs have access to users' passwords which are encrypted. All personal data is encrypted when it is imported into the DOAJ test site or onto a developer's machine for development or testing.
 
-#### 4b Volunteer applications
+#### 4d In our Mailchimp account
+Sometimes we export email addresses from our system into our Mailchimp account. The protection of your personal data in Mailchimp is covered by Mailchimp's '[Privacy for Contacts](https://mailchimp.com/legal/privacy/#3._Privacy_for_Contacts)' policy.
 
+#### 4e In volunteer applications
 Volunteer applications are collected in a Google Sheet and are stored securely in the DOAJ's Google workspace. The Sheet is only accessible by the DOAJ Team (5 DOAJ managers and 6 DOAJ managing editors).
 
-#### 4c DOAJ team
+#### 4f As the DOAJ team
 
 The DOAJ User database contains the personal information of all users of the DOAJ Admin system. This includes the DOAJ Team. The DOAJ Team's personal data is also stored in your contracts and role profiles on the Google Drive. DOAJ Team's banking details are held by the Managing Director to make payments.
 
