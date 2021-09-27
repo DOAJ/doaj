@@ -3,12 +3,9 @@
 ~~-> Journal:Model ~~
 ~~-> Application:Model~~
 ~~-> Account:Model~~
-~~-> ArticleXMLUpload:Feature~~
-~~-> ArticleMetadata:Form~~
-~~-> APIv2:Feature~~
-~~-> PublisherDashboard:Page~~
-~~-> PublisherHelp:Page~~
-~~-> DOAJXML:Page~~
+~~-> FAQ:Page~~
+~~-> PublisherJournals:Page~~
+~~-> Helpdesk:Contact~~
 #}
 
 {% set publisher_name = owner.name %}
@@ -17,29 +14,19 @@
 
 Dear {% if publisher_name %}{{ publisher_name }}{% else %}Journal Owner{% endif %},
 
-An application was submitted for the journal "{{ bibjson.title }}" on {{ application.date_applied|human_date }} and this has been accepted into DOAJ.
+The application submitted for "{{ bibjson.title }}" on {{ application.date_applied|human_date }} has been accepted for inclusion in DOAJ.
 
-You may access the journal via your Publisher Area: {{ url_root }}{{ url_for("publisher.index") }} using your DOAJ username and password.
+You may access the journal record from your Publisher dashboard: {{ url_root }}{{ url_for("publisher.journals") }} using your DOAJ username and password.
 
-If you do not have a DOAJ account already, a separate email will be sent to you with login details. If you do not receive this email then please contact us: {{ url_root }}/contact
+If there are changes or updates to the information about your journal at any time after it has been accepted, please submit an Update Request from your Publisher dashboard promptly. Please be aware that failure to do this may result in removal of your journal from DOAJ.
 
-To increase the visibility, impact, distribution and usage* of your journal content, we urge you to upload the article metadata for this journal as soon as possible. You may do this from the Publisher Area in three ways:
+How to submit an Update Request: {{ url_root }}{{ url_for("doaj.faq") }}#how-do-i-update-the-information-about-my-journal
 
-1) Upload Article XML: {{ url_root }}{{ url_for("publisher.upload_file") }}
-2) Enter Article Metadata: {{ url_root }}{{ url_for("publisher.metadata") }}
-3) Use our API: {{ url_root }}{{ url_for("api_v2.docs") }}
+To increase the visibility, impact, distribution and usage of your journal content, we encourage you to upload article metadata for this journal to DOAJ as soon as possible.
 
-For help on how to do this read {{ url_root }}{{ url_for("publisher.help") }} and {{ url_root }}{{ url_for("doaj.xml") }}
+How to upload article metadata:
+{{ url_root }}{{ url_for("doaj.faq") }}#how-do-i-upload-article-metadata
 
-We are absolutely delighted to welcome this journal into DOAJ and look forward to seeing the article metadata soon. Please don't hesitate to contact us if you have any questions.
+We are delighted to welcome this journal into DOAJ. Please contact us at helpdesk@doaj.org if you have any questions.
 
 The DOAJ Team
-
-*Benefits of supplying DOAJ with metadata:
-
-- Our statistics show more than 900 000 page views and 300 000 unique visitors a month to DOAJ from all over the world.
-- Many aggregators, databases, libraries, publishers and search portals collect our free metadata and include it in their products. Examples are Scopus, Serial Solutions and EBSCO.
-- DOAJ is OAI compliant and once an article is in DOAJ, it is automatically harvestable.
-- DOAJ is OpenURL compliant and once an article is in DOAJ, it is automatically linkable.
-- Over 95% of the DOAJ Publisher community said that DOAJ is important for increasing their journal's visibility
-- DOAJ is often cited as a source of quality, open access journals in research and scholarly publishing circles.
