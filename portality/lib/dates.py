@@ -1,4 +1,4 @@
-# ~~-> Dates:Library~~
+# ~~ Dates:Library~~
 
 from portality.core import app
 

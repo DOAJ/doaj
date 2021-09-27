@@ -4,6 +4,7 @@ title: Project JASPER
 section: digital preservation
 toc: true
 sticky_sidenav: true
+featuremap: ~~Preservation:Fragment~~
 ---
 
 ## Open access journals must be preserved forever

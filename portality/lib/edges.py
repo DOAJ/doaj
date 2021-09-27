@@ -1,6 +1,6 @@
 # ~~EdgesIntegration:Library~~
 # ~~-> Edges:Technology~~
-# ~~-> Elasticsearch: Technology~~
+# ~~-> Elasticsearch:Technology~~
 
 from urllib import parse
 import json
