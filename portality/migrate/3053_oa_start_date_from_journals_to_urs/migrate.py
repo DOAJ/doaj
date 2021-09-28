@@ -11,6 +11,7 @@ import esprit
 from portality.core import es_connection
 from portality.util import ipt_prefix
 from portality import models
+from datetime import datetime
 
 JOURNALS_WITH_OA_START_DATE = {
     "query": {
@@ -31,19 +32,22 @@ JOURNALS_WITH_OA_START_DATE = {
 
 if __name__ == "__main__":
 
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--out", help="output file path")
-    args = parser.parse_args()
-
-    if not args.out:
-        print("Please specify an output file path with the -o option")
-        parser.print_help()
-        exit()
+    # import argparse
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("-o", "--out", help="output file path")
+    # args = parser.parse_args()
+    #
+    # if not args.out:
+    #     print("Please specify an output file path with the -o option")
+    #     parser.print_help()
+    #     exit()
 
     conn = es_connection
 
-    with open(args.out, "w", encoding="utf-8") as f:
+    batch = []
+    batch_size = 1000
+
+    with open("out.csv", "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID", "OA Start Date", "Current Application ID", "Application found"])
 
@@ -60,11 +64,26 @@ if __name__ == "__main__":
                     application_found = False
                     urb = ur.bibjson()
                     urb.oa_start = bibjson.oa_start
-                    ur.save()
 
-                try:
-                    writer.writerow(
-                        [journal.id, bibjson.oa_start, journal.current_application, application_found])
-                except AttributeError:
-                    print("Error reading attributes for journal {0}".format(j['id']))
+                    try:
+                        writer.writerow(
+                            [journal.id, bibjson.oa_start, journal.current_application, application_found])
+                    except AttributeError:
+                        print("Error reading attributes for journal {0}".format(j['id']))
+
+                    batch.append({'doc': ur.data})
+
+                    if len(batch) >= batch_size:
+                        print('{0}, writing {1} to {2}'.format(datetime.now(), len(batch), ipt_prefix('journal')))
+                        r = esprit.raw.bulk(es_connection, batch, idkey="id", type_=ipt_prefix("application"),
+                                            bulk_type="update")
+                        assert r.status_code == 200, r.json()
+                        batch = []
+
+        if len(batch) > 0:
+            print('{0}, final result set / writing {1} to {2}'.format(datetime.now(), len(batch),
+                                                                      ipt_prefix('journal')))
+            r = esprit.raw.bulk(es_connection, batch, idkey="id", type_=ipt_prefix("application"),
+                                bulk_type="update")
+            assert r.status_code == 200, r.json()
 
