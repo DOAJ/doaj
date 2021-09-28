@@ -1,6 +1,19 @@
 from flask_login import current_user
 from portality.core import app
 from portality import models
+from copy import deepcopy
+
+# General utilities
+###################
+
+
+def remove_fields(query: dict, fields_to_remove: list):
+    q = deepcopy(query)
+    for del_attr in fields_to_remove:
+        if del_attr in q:
+            del q[del_attr]
+    return q
+
 
 # query sanitisers
 ##################
@@ -19,6 +32,8 @@ def public_query_validator(q):
 # query filters
 ###############
 
+def remove_search_limits(query: dict):
+    return remove_fields(query, ['size', 'from'])
 
 def only_in_doaj(q):
     q.clear_match_all()
@@ -324,6 +339,7 @@ def add_fqw_facets(results, unpacked=False):
 
     results["facets"] = facets
     return results
+
 
 def fqw_back_compat(results, unpacked=False):
     if unpacked:
