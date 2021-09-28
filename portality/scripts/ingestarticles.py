@@ -17,7 +17,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     with open(args.file, "rb") as f:
-        fs = FileStorage(f, "testing.xml")
+        fs = FileStorage(f, "placeholder.xml")  # fake filename required to build the FIleStorage object
         job = IngestArticlesBackgroundTask.prepare(args.username, upload_file=fs, schema=args.schema)
         job = StdOutBackgroundJob(job)
         task = IngestArticlesBackgroundTask(job)
