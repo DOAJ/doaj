@@ -425,6 +425,9 @@ def terms():
 
 @blueprint.route("/media/")
 def media():
+    """
+    ~~Media:WebRoute~~
+    """
     return render_template("layouts/static_page.html", page_frag="/legal/media.html")
 
 
