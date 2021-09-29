@@ -72,13 +72,6 @@ class ApplicationProcessor(FormProcessor):
             # this means that the source doesn't know about related_applications, which is fine
             pass
 
-        try:
-            if self.source.application_type:
-                self.target.application_type = self.source.application_type
-        except AttributeError:
-            # this means that the source doesn't know about related_journals, which is fine
-            pass
-
         # if the source is a journal, we need to carry the in_doaj flag
         if isinstance(self.source, models.Journal):
             self.target.set_in_doaj(self.source.is_in_doaj())
