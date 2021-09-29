@@ -110,6 +110,5 @@ COERCE_MAP = {
     "isolang_2letter": to_isolang(output_format="alpha2"),
     "country_code": to_country_code,
     "currency_code": to_currency_code,
-    "issn" : to_issn,
-    "year" : date_str(out_format="%Y")
+    "issn" : to_issn
 }
