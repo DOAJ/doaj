@@ -550,7 +550,7 @@ class Year(object):
     def __call__(self, form, field):
         if not field.data:
             return
-        return 1900 <= field.data & field.data >= datetime.now().year
+        return app.config.get('MINIMAL_OA_START_DATE', 1900) <= field.data <= datetime.now().year
 
 
 class CustomRequired(object):
