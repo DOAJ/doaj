@@ -1,5 +1,7 @@
 ## Kibana machine scripts
 
+<!-- ~~Kibana:Documentation->Kibana:Technology~~ -->
+
 These files run on the doaj-kibana machine - we prune the indexes regularly via cron to keep
 enough disk space free, and when the disk is full, we need to re-open the indexes.
 
