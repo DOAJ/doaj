@@ -10,7 +10,7 @@
 {% set diff_table = false %}
 {% set quick_reject = false %}
 
-{% block page_title %}{% if obj.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST %}Update Request{% else %}Application{% endif %}: {{ obj.bibjson().title }}{% endblock %}
+{% block page_title %}Application: {{ obj.bibjson().title }}{% endblock %}
 
 {% block editor_content scoped %}
 <body id="apply">
