@@ -1,9 +1,8 @@
 """
-This script can be run to generate a CSV output of accounts which do not have their passwords set, along
-with some useful account information, and possible explanations for the lack of password
+This script finds all journals with existing oa_start date and populates related update requests with the data.
 
 ```
-python accounts_with_missing_passwords.py -o accounts.csv
+python migrate.py -o out.csv
 ```
 """
 import csv
