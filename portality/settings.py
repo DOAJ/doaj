@@ -10,7 +10,7 @@ from portality.lib import paths
 # ~~->API:Feature~~
 
 DOAJ_VERSION = "5.1.5"
-API_VERSION = "3.0.0-beta"
+API_VERSION = "3.0.0"
 
 ######################################
 # Deployment configuration
