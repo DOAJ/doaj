@@ -46,9 +46,14 @@ class PreservationState(DomainObject):
     def error_details(self):
         return self.data.get("error_details")
 
+    @property
+    def articles_info(self):
+        return self.data.get("articles_info", {})
+
     def initiated(self, owner, filename, status="initiated"):
         self.data["filename"] = filename
         self.data["owner"] = owner
+        self.data["articles_info"] = {}
         self.status = status
 
     def validated(self):
@@ -65,6 +70,29 @@ class PreservationState(DomainObject):
         self.data["error"] = message
         if details is not None:
             self.data["error_details"] = details
+
+    def partial(self):
+        self.status = "partial"
+
+    def successful_articles(self, articles_list):
+        if articles_list is not None and len(articles_list) > 0:
+            self.data["articles_info"]["successful_articles"] = ", ".join(articles_list)
+
+    def unowned_articles(self, articles_list):
+        if articles_list is not None and len(articles_list) > 0:
+            self.data["articles_info"]["unowned_articles"] = ", ".join(articles_list)
+
+    def no_identifier_articles(self, articles_list):
+        if articles_list is not None and len(articles_list) > 0:
+            self.data["articles_info"]["no_identifier_articles"] = ", ".join(articles_list)
+
+    def unbagged_articles(self, articles_list):
+        if articles_list is not None and len(articles_list) > 0:
+            self.data["articles_info"]["unbagged_articles"] = ", ".join(articles_list)
+
+    def not_found_articles(self, articles_list):
+        if articles_list is not None and len(articles_list) > 0:
+            self.data["articles_info"]["not_found_articles"] = ", ".join(articles_list)
 
     @classmethod
     def by_owner(cls, owner, size=10):
