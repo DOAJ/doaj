@@ -18,8 +18,8 @@ Questions? [Email us](mailto:preservation@doaj.org).
 
 _*References_
 
-1. M. Laakso, M. Matthias, N. Jahn. _Open is not forever: A study of vanished open access journals_. Journal of the Association for Information Science and Technology, Feb. 2021. https://doi.org/10.1002/asi.24460
-2. J. Bosman et al. _OA Diamond Journals Study_. https://zenodo.org/record/4558704
+1. M. Laakso, M. Matthias, N. Jahn. _Open is not forever: A study of vanished open access journals_. Journal of the Association for Information Science and Technology, Feb. 2021. [https://doi.org/10.1002/asi.24460](https://doi.org/10.1002/asi.24460)
+2. J. Bosman et al. _OA Diamond Journals Study_. [https://zenodo.org/record/4558704](https://zenodo.org/record/4558704)
 
 ## Phase One
 Phase One of Project JASPER is a pilot project between CLOCKSS, DOAJ, Internet Archive, Keepers Registry and PKP. It is a scoping exercise to find a solution that will reduce the number of unarchived open access journals. 
