@@ -1,6 +1,7 @@
 """
 ~~ApplicationForm:Feature~~
 """
+import datetime
 from copy import deepcopy
 
 from wtforms import StringField, TextAreaField, IntegerField, BooleanField, RadioField, SelectMultipleField, \
@@ -34,7 +35,7 @@ from portality.forms.validate import (
     BigEndDate,
     ReservedUsernames,
     CustomRequired,
-    OwnerExists, NoScriptTag
+    OwnerExists, NoScriptTag, Year
 )
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 from portality.models import EditorGroup
@@ -775,6 +776,28 @@ class FieldDefinitions:
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
+    }
+
+    # ~~->$ OAStart:FormField~~
+    OA_START = {
+        "name": "oa_start",
+        "label": "When did the journal start to publish all content using an open license?",
+        "input": "number",
+        "datatype": "integer",
+        "help": {
+            "long_help": ["Please enter the year that the journal started to publish all content as true open access, according to DOAJ's <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/' target='_blank' rel='nofollow'>definition</a>.",
+            "For journals that have flipped to open access, enter the year that the journal flipped, not the original launch date of the journal.",
+            "For journals that have made digitised backfiles freely available, enter the year that the journal started publishing as a fully open access title, not the date of the earliest free content."]
+        },
+        "validate": [
+            {"required": {"message": "Enter the Year (YYYY)."}},
+            {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": datetime.datetime.utcnow().year}},
+            {"year": {"message": "OA Start Date must be a year in a 4 digit format (eg. 1987) and must be greater than {}".format(app.config.get('MINIMAL_OA_START_DATE', 1900))}}
+        ],
+        "attr": {
+            "min": app.config.get('MINIMAL_OA_START_DATE', 1900),
+            "max": datetime.datetime.utcnow().year
+        }
     }
 
     # ~~->$ PlagiarismDetection:FormField~~
@@ -1825,7 +1848,8 @@ class FieldSetDefinitions:
         "label": "Open access compliance",
         "fields": [
             FieldDefinitions.BOAI["name"],
-            FieldDefinitions.OA_STATEMENT_URL["name"]
+            FieldDefinitions.OA_STATEMENT_URL["name"],
+            FieldDefinitions.OA_START["name"]
         ]
     }
 
@@ -1937,7 +1961,7 @@ class FieldSetDefinitions:
             FieldDefinitions.APC_CHARGES["name"],
             FieldDefinitions.APC_CURRENCY["name"],
             FieldDefinitions.APC_MAX["name"],
-            FieldDefinitions.APC_URL["name"],
+            FieldDefinitions.APC_URL["name"]
         ]
     }
 
@@ -1947,7 +1971,7 @@ class FieldSetDefinitions:
         "label": "Publication fee waivers",
         "fields": [
             FieldDefinitions.HAS_WAIVER["name"],
-            FieldDefinitions.WAIVER_URL["name"],
+            FieldDefinitions.WAIVER_URL["name"]
         ]
     }
 
@@ -2537,13 +2561,18 @@ class IntRangeBuilder:
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-type"] = "digits"
+        default_msg = ""
         if "gte" in settings and "lte" in settings:
             html_attrs["data-parsley-range"] = "[" + str(settings.get("gte")) + ", " + str(settings.get("lte")) + "]"
+            default_msg = "This value should be between " + str(settings.get("gte")) + " and " + str(settings.get("lte"))
         else:
             if "gte" in settings:
                 html_attrs["data-parsley-min"] = settings.get("gte")
+                default_msg = "This value should be bigger than " + str(settings.get("gte"))
             if "lte" in settings:
                 html_attrs["data-parsley-max"] = settings.get("lte")
+                default_msg = "This value should be smaller than " + str(settings.get("gte"))
+        html_attrs["data-parsley-range-message"] = "<p><small>" + settings.get("message", default_msg) + "</p></small>"
 
     @staticmethod
     def wtforms(field, settings):
@@ -2754,6 +2783,15 @@ class BigEndDateBuilder:
     def wtforms(field, settings):
         return BigEndDate(settings.get("message"))
 
+class YearBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-year"] = app.config.get('MINIMAL_OA_START_DATE', 1900)
+        html_attrs["data-parsley-year-message"] = "<p><small>" + settings["message"] + "</small></p>"
+
+    def wtforms(field, settings):
+        return Year(settings.get("message"))
+
 
 #########################################################
 # Crosswalks
@@ -2791,7 +2829,8 @@ PYTHON_FUNCTIONS = {
             "not_if" : NotIfBuildier.render,
             "required_value" : RequiredValueBuilder.render,
             "bigenddate": BigEndDateBuilder.render,
-            "no_script_tag": NoScriptTagBuilder.render
+            "no_script_tag": NoScriptTagBuilder.render,
+            "year": YearBuilder.render
         },
         "wtforms": {
             "required": RequiredBuilder.wtforms,
@@ -2813,7 +2852,8 @@ PYTHON_FUNCTIONS = {
             "bigenddate": BigEndDateBuilder.wtforms,
             "reserved_usernames" : ReservedUsernamesBuilder.wtforms,
             "owner_exists" : OwnerExistsBuilder.wtforms,
-            "no_script_tag": NoScriptTagBuilder.wtforms
+            "no_script_tag": NoScriptTagBuilder.wtforms,
+            "year": YearBuilder.wtforms,
         }
     }
 }

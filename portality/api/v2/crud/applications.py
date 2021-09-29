@@ -371,7 +371,7 @@ class ApplicationsCrudApi(CrudApi):
     @classmethod
     def _validation_message(cls, fc):
         errors = fc.errors
-        msg = "The following validation errors were received:\n"
+        msg = "The following validation errors were received: "
 
         def _expand(errors):
             report = {}
@@ -394,5 +394,5 @@ class ApplicationsCrudApi(CrudApi):
         report = _expand(errors)
         for fieldName, errorMessages in report.items():
             fieldName = ApplicationFormXWalk.formField2objectField(fieldName)
-            msg += fieldName + " : " + "; ".join(errorMessages) + "\n"
+            msg += fieldName + " : " + "; ".join(errorMessages)
         return msg

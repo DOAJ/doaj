@@ -10,7 +10,7 @@ from portality.lib import paths
 # ~~->API:Feature~~
 
 DOAJ_VERSION = "5.1.5"
-API_VERSION = "2.0.0"
+API_VERSION = "3.0.0"
 
 ######################################
 # Deployment configuration
@@ -532,6 +532,10 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
     "bigenddate": {
         "type": "date",
         "format": "dateOptionalTime"
+    },
+    "year": {
+        "type": "date",
+        "format": "year"
     }
 }
 
@@ -1111,6 +1115,8 @@ QUICK_REJECT_REASONS = [
     "The journal makes a false claim to be indexed in DOAJ or other databases or displays non-standard Impact Factors.",
     "The journal does not employ good publishing practices."
 ]
+
+MINIMAL_OA_START_DATE = 1900
 
 
 #############################################

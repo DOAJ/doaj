@@ -76,6 +76,24 @@ class ApplicationProcessor(FormProcessor):
         if isinstance(self.source, models.Journal):
             self.target.set_in_doaj(self.source.is_in_doaj())
 
+    def resetDefaults(self, form):
+        # self.form.resettedFields = []
+        def _values_to_reset(f):
+            return (f.data != "") and (f.data != None) and (f.data != f.default)
+        for field in form:
+            if field.errors:
+                if isinstance(field, FormField):
+                    self.resetDefaults(field.form)
+                elif isinstance(field, FieldList):
+                    for sub in field:
+                        if isinstance(sub, FormField):
+                            self.resetDefaults(sub)
+                        elif _values_to_reset(sub):
+                            sub.data = sub.default
+                elif _values_to_reset(field):
+                    # self.form.resettedFields.append({"name": field.name, "data": field.data, "default": field.default})
+                    field.data = field.default
+
     def _merge_notes_forward(self, allow_delete=False):
         if self.source is None:
             raise Exception("Cannot carry data from a non-existent source")
@@ -190,23 +208,9 @@ class NewApplication(ApplicationProcessor):
         #if not valid:
         #    return None
 
-        def _resetDefaults(form):
-            for field in form:
-                if field.errors:
-                    if isinstance(field, FormField):
-                        _resetDefaults(field.form)
-                    elif isinstance(field, FieldList):
-                        for sub in field:
-                            if isinstance(sub, FormField):
-                                _resetDefaults(sub)
-                            else:
-                                sub.data = sub.default
-                    else:
-                        field.data = field.default
-
         # if not valid, then remove all fields which have validation errors
         if not valid:
-            _resetDefaults(self.form)
+            self.resetDefaults(self.form)
 
         self.form2target()
         # ~~-> DraftApplication:Model~~
@@ -498,13 +502,16 @@ class AdminApplication(ApplicationProcessor):
 
     def validate(self):
         _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']
+        self.pre_validate()
         # make use of the ability to disable validation, otherwise, let it run
+        valid = super(AdminApplication, self).validate()
+
         if self.form is not None:
-            if self.form.application_status.data in _statuses_not_requiring_validation:
-                self.pre_validate()
+            if self.form.application_status.data in _statuses_not_requiring_validation and not valid:
+                self.resetDefaults(self.form)
                 return True
 
-        return super(AdminApplication, self).validate()
+        return valid
 
 
 class EditorApplication(ApplicationProcessor):
