@@ -27,11 +27,11 @@ Phase One of Project JASPER is a pilot project between CLOCKSS, DOAJ, Internet A
 Starting with a list of diamond open access (i.e. non-APC charging) journals from DOAJ, the five partners are working together to produce an open and sustainable process that will facilitate the archiving of more journals. The process will be open to a diverse community of archiving services, notably those participating in the Keepers Registry. Other “Keepers” and other preservation repositories will be invited to join at a later stage once design, implementation, and testing are complete.
 
 JASPER’s aim is to get more journals archived by establishing a simple process: 
- - work out which archiving option might be the best fit for the publisher, 
- - establish the level where the amount of effort is manageable by the publisher. This is based on the following factors:
-   - platform
-   - ability to send article metadata to DOAJ
-   - ability to export and zip full text, images etc easily
+- work out which archiving option might be the best fit for the publisher, 
+- establish the level where the amount of effort is manageable by the publisher. This is based on the following factors:
+  - platform
+  - ability to send article metadata to DOAJ
+  - ability to export and zip full text, images etc easily
 - provide the journal’s representatives with the correct information to make archiving happen.
 
 The premise of the JASPER process is that all journals are different, with different needs, different priorities and different resources. The workflow needs to offer viable alternatives to journals so that they engage with one or more archiving services that meet their requirements and capacities. 
