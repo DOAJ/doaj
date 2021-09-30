@@ -1,23 +1,25 @@
 import csv
 import hashlib
 import json
-import logging
 import os
 import requests
 import shutil
 import tarfile
+from typing import List
 from bagit import make_bag, BagError
 from copy import deepcopy
 from datetime import datetime
 from zipfile import ZipFile
+from pathlib import Path
 
 from portality.background import BackgroundTask, BackgroundApi
 from portality.core import app
 from portality.decorators import write_required
 from portality.lib import dates
-from portality.models import Article, BackgroundJob, PreservationState
+from portality.models import Account, Article, BackgroundJob, PreservationState
 from portality.regex import DOI_COMPILED, HTTP_URL_COMPILED
 from portality.tasks.redis_huey import main_queue, configure
+from portality.bll import DOAJ
 
 
 class PreservationException(Exception):
@@ -33,6 +35,149 @@ class ValidationError(Exception):
     pass
 
 
+class ArticlePackage:
+    """ ~~ArticlePackage:Feature~~"""
+
+    def __init__(self, article_dir, files):
+        self.issn = None
+        self.article_id = None
+        self.metadata = None
+        self.article_dir = article_dir
+        self.article_files = files
+        self.package_dir = None
+        self.has_error = False
+        self.error_details = None
+
+    def create_article_bagit_structure(self):
+        """ ~~-> BagIt:Library~~
+        Create directory structure for packaging
+        Create required additional files
+        Create bagit files
+        """
+        #  Validate if required data is available
+        self.validate()
+
+        journal_dir = os.path.join(self.package_dir, self.issn)
+        if not os.path.exists(journal_dir):
+            os.mkdir(journal_dir)
+
+        dest_article_dir = os.path.join(journal_dir, self.article_id)
+        if not os.path.exists(dest_article_dir):
+            # Create article directory
+            os.mkdir(dest_article_dir)
+
+            # Create metadata directory
+            metada_dir = os.path.join(dest_article_dir, "metadata")
+            if not os.path.exists(metada_dir):
+                os.mkdir(metada_dir)
+
+            # Copy the files from user uploaded directory to the package
+            for file in self.article_files:
+                if not file == Preservation.IDENTIFIER_FILE:
+                    src = os.path.join(self.article_dir, file)
+                    dest = os.path.join(dest_article_dir, file)
+                    shutil.copy(src, dest)
+
+            # Create metadata file with article information
+            with open(os.path.join(metada_dir, "metadata.json"), 'w+') as metadata_file:
+                metadata_file.write(json.dumps(self.metadata, indent=4))
+
+            # Create a identifier file with uuid of the article
+            with open(os.path.join(metada_dir, "identifier.txt"), 'w+') as metadata_file:
+                metadata_file.write(self.article_id)
+
+            try:
+                # Bag the article
+                make_bag(dest_article_dir, checksums=["sha256"])
+            except BagError:
+                app.logger.excception(f"Error while creating Bag for article {self.article_id}")
+                raise PreservationException("Error while creating Bag")
+
+    def validate(self):
+        variables_list = []
+
+        if not self.package_dir:
+            variables_list.append("package_dir")
+        if not self.metadata:
+            variables_list.append("metadata")
+        if not self.article_dir:
+            variables_list.append("article_dir")
+        if not self.article_files or len(self.article_files) == 0:
+            variables_list.append("article_files")
+        if not self.article_id:
+            variables_list.append("article_id")
+        if not self.issn:
+            variables_list.append("issn")
+
+        if len(variables_list) > 0:
+            app.logger.debug(f"Validation Values : package_dir {self.package_dir} "
+                             f"metadata {self.metadata} article_dir {self.article_dir} "
+                             f"article_files {self.article_files} article_id {self.article_id} issn {self.issn}")
+            raise ValidationError(f"Required fields cannot be empty {variables_list}")
+
+
+class ArticlesList:
+    """This class contains different types of lists depending on the article state"""
+    def __init__(self):
+        self.__successful_articles = []
+        self.__unowned_articles = []
+        self.__no_identifier_articles = []
+        self.__unbagged_articles = []
+        self.__not_found_articles = []
+        self.has_errors = False
+
+    def add_successful_article(self, article: ArticlePackage):
+        self.__successful_articles.append(os.path.basename(article.article_dir))
+
+    def add_unowned_articles(self, article: ArticlePackage):
+        self.has_errors = True
+        self.__unowned_articles.append(os.path.basename(article.article_dir))
+
+    def add_no_identifier_articles(self, article: ArticlePackage):
+        self.has_errors = True
+        self.__no_identifier_articles.append(os.path.basename(article.article_dir))
+
+    def add_unbagged_articles(self, article: ArticlePackage):
+        self.has_errors = True
+        self.__unbagged_articles.append(os.path.basename(article.article_dir))
+
+    def add_not_found_articles(self, article: ArticlePackage):
+        self.has_errors = True
+        self.__not_found_articles.append(os.path.basename(article.article_dir))
+
+    def successful_articles(self):
+        return self.__successful_articles
+
+    def unowned_articles(self):
+        return self.__unowned_articles
+
+    def no_identifier_articles(self):
+        return self.__no_identifier_articles
+
+    def unbagged_articles(self):
+        return self.__unbagged_articles
+
+    def not_found_articles(self):
+        return self.__not_found_articles
+
+    def get_count(self):
+        return len(self.__successful_articles) + \
+               len(self.__unowned_articles) + \
+               len(self.__no_identifier_articles) +\
+               len(self.__unbagged_articles) +\
+               len(self.__not_found_articles)
+
+    def is_partial_success(self):
+        if len(self.__successful_articles) > 0 and \
+                (len(self.__unbagged_articles) > 0 or
+                len(self.__unowned_articles) > 0 or
+                len(self.__not_found_articles) > 0 or
+                len(self.__no_identifier_articles)):
+            return True
+
+        return False
+
+
 class PreservationBackgroundTask(BackgroundTask):
     """~~PreservationBackground:Feature~~"""
 
@@ -41,7 +186,6 @@ class PreservationBackgroundTask(BackgroundTask):
     @classmethod
     def prepare(cls, username, **kwargs):
         """
-        ~~->Prepare:Feature~~
         Create necessary directories and save the file.
         Creates the background job
         :param username:
@@ -54,10 +198,9 @@ class PreservationBackgroundTask(BackgroundTask):
         local_dir = os.path.join(Preservation.UPLOAD_DIR, dir_name)
         file = kwargs.get("upload_file")
 
-        preservation = Preservation(local_dir)
+        preservation = Preservation(local_dir, username)
         preservation.save_file(file)
 
-        # ~~-> BackgroundJob:Feature~~
         # prepare a job record
         job = BackgroundJob()
         job.user = username
@@ -85,31 +228,47 @@ class PreservationBackgroundTask(BackgroundTask):
         preserve_model.save()
 
         # ~~-> Preservation:Feature~~
-        preserv = Preservation(local_dir)
+        preserv = Preservation(local_dir, job.user)
+        preserv.upload_filename = preserve_model.filename
         try:
             job.add_audit_message("Extract zip file")
             preserv.extract_zip_file()
             app.logger.debug("Extracted zip file")
 
             job.add_audit_message("Create Package structure")
-            preserv.create_package_structure()
+            articles_list = preserv.create_package_structure()
+            self.save_articles_list(articles_list, preserve_model)
             app.logger.debug("Created package structure")
 
-            # ~~-> PreservationPackage:Feature~~
-            package = PreservationPackage(preserv.preservation_dir)
-            job.add_audit_message("Create preservation package")
-            tar_file = package.create_package()
-            app.logger.debug(f"Created tar file {tar_file}")
+            if len(articles_list.successful_articles()) > 0:
+                package = PreservationPackage(preserv.preservation_dir)
+                job.add_audit_message("Create preservation package")
+                tar_file = package.create_package()
+                app.logger.debug(f"Created tar file {tar_file}")
 
-            job.add_audit_message("Create shasum")
-            sha256 = package.sha256()
+                job.add_audit_message("Create shasum")
+                sha256 = package.sha256()
 
-            job.add_audit_message("Upload package")
-            response = package.upload_package(sha256)
-            app.logger.debug(f"Uploaded. Response{response.text}")
+                job.add_audit_message("Upload package")
+                response = package.upload_package(sha256)
+                app.logger.debug(f"Uploaded. Response{response.text}")
 
-            job.add_audit_message("Validate response")
-            self.validate_response(response, tar_file, sha256, preserve_model)
+                job.add_audit_message("Validate response")
+                self.validate_response(response, tar_file, sha256, preserve_model)
+
+                # Check if the only few articles are successful
+                if articles_list.is_partial_success():
+                    preserve_model.partial()
+                    preserve_model.save()
+            else:
+                # Check if any articles available
+                if articles_list.get_count() == 0:
+                    preserve_model.failed(FailedReasons.no_article_found)
+                    preserve_model.save()
+                # All the articles available are invalid
+                else:
+                    preserve_model.failed(FailedReasons.no_valid_article_available)
+                    preserve_model.save()
 
         except (PreservationException, Exception) as exp:
             # ~~-> PreservationException:Exception~~
@@ -118,8 +277,26 @@ class PreservationBackgroundTask(BackgroundTask):
             app.logger.exception("Error at background task")
             raise
 
+    def save_articles_list(self, articles_list: ArticlesList, model: PreservationState):
+        """
+        Saves articles info to the model
+        :param articles_list: articles list
+        :param model: model object
+        """
+        if len(articles_list.successful_articles()) > 0:
+            model.successful_articles(articles_list.successful_articles())
+        if len(articles_list.not_found_articles()) > 0:
+            model.not_found_articles(articles_list.not_found_articles())
+        if len(articles_list.no_identifier_articles()) > 0:
+            model.no_identifier_articles(articles_list.no_identifier_articles())
+        if len(articles_list.unowned_articles()) > 0:
+            model.unowned_articles(articles_list.unowned_articles())
+        if len(articles_list.unbagged_articles()) > 0:
+            model.unbagged_articles(articles_list.unbagged_articles())
+        model.save()
+
     def cleanup(self):
-        """~~-> Cleanup:Feature~~
+        """
         Cleanup any resources
         :return:
         """
@@ -129,7 +306,7 @@ class PreservationBackgroundTask(BackgroundTask):
         Preservation.delete_local_directory(local_dir)
 
     def validate_response(self, response, tar_file, sha256, model):
-        """~~-> ValidateResponse:Feature~~
+        """
         Validate the response from server
         :param response: response object
         :param tar_file: tar file name
@@ -144,6 +321,8 @@ class PreservationBackgroundTask(BackgroundTask):
             #             "sha256": "decafbad"}]}
             if files:
                 # Check if the response is type dict or list
+                res_filename = None
+                res_shasum = None
                 if isinstance(files, dict):
                     res_filename = files["name"]
                     res_shasum = files["sha256"]
@@ -154,12 +333,12 @@ class PreservationBackgroundTask(BackgroundTask):
 
                 if res_filename and res_filename == tar_file:
                     if res_shasum and res_shasum == sha256:
-                        app.logger.info("succesfully uploaded")
+                        app.logger.info("successfully uploaded")
                         model.uploaded_to_ia()
                     else:
-                        model.failed("shasum in response doesn't match")
+                        model.failed(FailedReasons.checksum_doesnot_match)
                 else:
-                    model.failed("tar filename in response doesn't match")
+                    model.failed(FailedReasons.tar_filename_doesnot_match)
 
             else:
                 # Error response
@@ -179,9 +358,9 @@ class PreservationBackgroundTask(BackgroundTask):
                 #                   "some weird error"]]}]}
                 result = res_json["result"]
                 if result and result == "ERROR":
-                    error_str = "Upload failed due error at IA server side"
+                    error_str = FailedReasons.error_response
                 else:
-                    error_str = "Unknown Error: Not a valid response"
+                    error_str = FailedReasons.unknown_error_response
 
                 app.logger.error(error_str)
                 model.failed(error_str)
@@ -192,22 +371,21 @@ class PreservationBackgroundTask(BackgroundTask):
             model.failed(response.text)
             model.save()
 
-
     @classmethod
     def submit(cls, background_job):
-        """~~-> SubmitJob:Feature~~
+        """
         Submit Background job"""
         background_job.save(blocking=True)
         preserve.schedule(args=(background_job.id,), delay=10)
 
+
 @main_queue.task(**configure("preserve"))
 @write_required(script=True)
 def preserve(job_id):
-    """~~-> CreateBackgroundTask:Feature"""
+    """~~-> PreservationBackgroundTask:Queue"""
     job = BackgroundJob.pull(job_id)
     task = PreservationBackgroundTask(job)
     BackgroundApi.execute(task)
-
 
 
 class CSVReader:
@@ -217,7 +395,7 @@ class CSVReader:
     # Given more identifiers just to handle any mistakes by user like empty identifiers
     # Max expected identifier are 2 (Full Text URL, DOI) in any order
     FIELD_DIR = "dir_name"
-    FIELDS = (FIELD_DIR,"id_1","id_2","id_3","id_4")
+    FIELDS = (FIELD_DIR, "id_1", "id_2", "id_3", "id_4")
 
     def __init__(self, csv_file):
         self.__csv_file = csv_file
@@ -254,16 +432,18 @@ class Preservation:
     ARTICLES_ZIP_NAME = "articles.zip"
     # Identifier file name
     IDENTIFIER_FILE = "identifier.txt"
-    # CSV file foor identifiers
+    # CSV file for identifiers
     IDENTIFIERS_CSV = "identifiers.csv"
     # Temp directory
     UPLOAD_DIR = app.config.get("UPLOAD_DIR", ".")
 
-    def __init__(self, local_dir):
+    def __init__(self, local_dir, owner):
         self.__dir_name = os.path.basename(local_dir)
         self.__local_dir = os.path.join(local_dir, "tmp")
         self.__preservation_dir = os.path.join(local_dir, self.__dir_name)
         self.__csv_articles_dict = None
+        self.__owner = owner
+        self.upload_filename = None
 
     @property
     def dir_name(self):
@@ -273,40 +453,30 @@ class Preservation:
     def preservation_dir(self):
         return self.__preservation_dir
 
-    def disk_space_available(self):
-        """
-        Check if there is enough disk space to save file
-        :param file_size:
-        :return: True or False
-        """
-        stats = shutil.disk_usage(Preservation.UPLOAD_DIR)
-        # TODO implement storage availability check
-        return True
-
     def create_local_directories(self):
-        """~~-> CreateDirectories:Feature~~
+        """
         Create local directories to download the files and
         to create preservation package
         """
         try:
             os.makedirs(self.__local_dir, exist_ok=True)
             os.makedirs(self.__preservation_dir, exist_ok=True)
-        except OSError as exp:
+        except OSError:
             raise PreservationStorageException("Could not create temp directory")
 
     @classmethod
     def delete_local_directory(cls, local_dir):
-        """~~-> DeleteDirectories:Feature~~
+        """
         Deletes the directory
         """
         if os.path.exists(local_dir):
             try:
                 shutil.rmtree(local_dir)
-            except Exception as e:
+            except Exception:
                 raise PreservationStorageException("Could not delete Temp directory")
 
     def save_file(self, file):
-        """~~-> SaveFile:Feature~~
+        """
         Save the file on to local directory
         :param file: File object
         """
@@ -314,12 +484,11 @@ class Preservation:
         file_path = os.path.join(self.__local_dir, Preservation.ARTICLES_ZIP_NAME)
         try:
             file.save(file_path)
-        except Exception as e:
+        except Exception:
             raise PreservationStorageException("Could not save file in Temp directory")
 
-
     def extract_zip_file(self):
-        """~~-> ExctractZipFile:Feature~~
+        """
         Extracts zip file in the Temp directory
         """
         file_path = os.path.join(self.__local_dir, Preservation.ARTICLES_ZIP_NAME)
@@ -330,8 +499,8 @@ class Preservation:
         else:
             raise PreservationException(f"Could not find zip file at Temp directory {file_path}")
 
-    def create_package_structure(self):
-        """ ~~-> CreatePackageStructure:Feature~~
+    def create_package_structure(self) -> ArticlesList:
+        """
         Create preservation package
 
         Iterates through the sub directories.
@@ -339,27 +508,32 @@ class Preservation:
         Creates preservation directories
 
         """
+        articles_list = ArticlesList()
+
         for dir, subdirs, files in os.walk(self.__local_dir):
 
-            app.logger.debug("Directory : " + dir )
-            app.logger.debug("Sub Directories : " + str(subdirs) )
-            app.logger.debug("Files : " + str(files) )
+            app.logger.debug("Directory : " + dir)
+            app.logger.debug("Sub Directories : " + str(subdirs))
+            app.logger.debug("Files : " + str(files))
 
             if Preservation.IDENTIFIERS_CSV in files:
                 # Get articles info from csv file
                 # ~~-> CSVReader:Feature~~
                 csv_reader = CSVReader(os.path.join(dir, Preservation.IDENTIFIERS_CSV))
                 self.__csv_articles_dict = csv_reader.articles_info()
-            self.__process_article(dir, files)
+            self.__process_article(dir, files, articles_list)
 
-    def __process_article(self, dir, files):
+        return articles_list
+
+    def __process_article(self, dir_path, files, articles_list):
 
         identifiers = None
-        dir_name = os.path.basename(dir)
+        dir_name = os.path.basename(dir_path)
+        package = ArticlePackage(dir_path, files)
 
         # check if identifier file exist
         if Preservation.IDENTIFIER_FILE in files:
-            with open(os.path.join(dir, Preservation.IDENTIFIER_FILE)) as file:
+            with open(os.path.join(dir_path, Preservation.IDENTIFIER_FILE)) as file:
                 identifiers = file.read().splitlines()
         elif self.__csv_articles_dict:
             if dir_name in self.__csv_articles_dict:
@@ -370,26 +544,46 @@ class Preservation:
 
             if article_data:
 
-                issn, article_id, metadata_json = self.get_article_info(article_data)
-                try:
-                    # ~~-> ArticlePackage:Feature~~
-                    package = AtriclePackage()
-                    package.issn = issn
-                    package.article_id = article_id
-                    package.metadata = metadata_json
-                    package.article_dir = dir
-                    package.article_files = files
-                    package.package_dir = self.__preservation_dir
+                if not self.owner_of_article(article_data):
+                    articles_list.add_unowned_articles(package)
 
-                    package.create_article_bagit_structure()
-                except Exception as exp:
-                    app.logger.exception(f"Error while create article ( {article_id} ) package")
+                else:
+                    issn, article_id, metadata_json = self.get_article_info(article_data)
+                    try:
+                        package = ArticlePackage(dir_path, files)
+                        package.issn = issn
+                        package.article_id = article_id
+                        package.metadata = metadata_json
+                        package.package_dir = self.__preservation_dir
+
+                        package.create_article_bagit_structure()
+
+                        articles_list.add_successful_article(package)
+                    except Exception:
+                        articles_list.add_unbagged_articles(package)
+                        app.logger.exception(f"Error while create article ( {article_id} ) package")
 
             else:
-                # log and skip the article if not found
-                app.logger.error(f"Could not retrieve article for indentifier(s) {identifiers}")
+                # skip the article if not found
+                app.logger.error(f"Could not retrieve article for identifier(s) {identifiers}")
+                articles_list.add_not_found_articles(package)
 
+        else:
+            if self.upload_filename:
+                filename = Path(self.upload_filename).stem
+                if filename in os.path.dirname(dir_path):
+                    articles_list.add_no_identifier_articles(package)
 
+    def owner_of_article(self, article):
+        """
+        Checks if the article is owned by the user
+        :param article:
+        :return:
+        """
+        articleService = DOAJ.articleService()
+        account = Account.pull(self.__owner)
+        is_owner = articleService.has_permissions(account, article, True)
+        return is_owner
 
     def get_article(self, identifiers):
         """
@@ -435,84 +629,6 @@ class Preservation:
 
         return metadata
 
-class AtriclePackage:
-    """ ~~ArticlePackage:Feature~~"""
-
-    def __init__(self):
-        self.issn = None
-        self.article_id = None
-        self.metadata = None
-        self.article_dir = None
-        self.article_files = None
-        self.package_dir = None
-
-    def create_article_bagit_structure(self):
-        """
-        Create directory structure for packaging
-        Create required additional files
-        Create bagit files
-        """
-        #  Validate if required data is available
-        self.validate()
-
-        journal_dir = os.path.join(self.package_dir, self.issn)
-        if not os.path.exists(journal_dir):
-            os.mkdir(journal_dir)
-
-        dest_article_dir = os.path.join(journal_dir, self.article_id)
-        if not os.path.exists(dest_article_dir):
-            # Create article directory
-            os.mkdir(dest_article_dir)
-
-            # Create metadata directory
-            metada_dir = os.path.join(dest_article_dir, "metadata")
-            if not os.path.exists(metada_dir):
-                os.mkdir(metada_dir)
-
-            # Copy the files from user uploaded directory to the package
-            for file in self.article_files:
-                if not file == Preservation.IDENTIFIER_FILE:
-                    src = os.path.join(self.article_dir, file)
-                    dest = os.path.join(dest_article_dir,file)
-                    shutil.copy(src,dest)
-
-            # Create metadata file with article information
-            with open(os.path.join(metada_dir, "metadata.json"), 'w+') as metadata_file:
-                metadata_file.write(json.dumps(self.metadata, indent=4))
-
-            # Create a identifier file with uuid of the article
-            with open(os.path.join(metada_dir, "identifier.txt"), 'w+') as metadata_file:
-                metadata_file.write(self.article_id)
-
-            try:
-                # Bag the article
-                make_bag(dest_article_dir, checksums=["sha256"])
-            except BagError as bagError:
-                app.logger.excception(f"Error while creating Bag for article {self.article_id}")
-                raise PreservationException("Error while creating Bag")
-
-    def validate(self):
-        variables_list = []
-
-        if not self.package_dir:
-            variables_list.append("package_dir")
-        if not self.metadata:
-            variables_list.append("metadata")
-        if not self.article_dir:
-            variables_list.append("article_dir")
-        if not self.article_files or len(self.article_files) == 0:
-            variables_list.append("article_files")
-        if not self.article_id:
-            variables_list.append("article_id")
-        if not self.issn:
-            variables_list.append("issn")
-
-        if len(variables_list) > 0:
-            app.logger.debug(f"Validation Values : package_dir {self.package_dir} "
-                f"metadata {self.metadata} article_dir {self.article_dir} "
-                f"article_files {self.article_files} article_id {self.article_id} issn {self.issn}")
-            raise ValidationError(f"Required fields cannot be empty {variables_list}")
-
 
 class PreservationPackage:
     """~~PreservationPackage:Feature~~
@@ -521,7 +637,7 @@ class PreservationPackage:
 
     def __init__(self, directory):
         self.package_dir = directory
-        self.tar_file = self.package_dir+".tar.gz"
+        self.tar_file = self.package_dir + ".tar.gz"
         self.tar_file_name = os.path.basename(self.tar_file)
 
     def create_package(self):
@@ -569,7 +685,7 @@ class PreservationPackage:
             with open(self.tar_file, "rb") as f:
                 files = {'file_field': (file_name, f)}
                 response = requests.post(url, headers=headers, auth=(username, password), files=files, data=payload)
-        except (IOError,Exception) as exp:
+        except (IOError, Exception) as exp:
             app.logger.exception("Error opening the tar file")
             raise PreservationException("Error Uploading tar file to IA server")
 
@@ -587,3 +703,20 @@ class PreservationPackage:
                 sha256_hash.update(byte_block)
 
         return sha256_hash.hexdigest()
+
+
+class FailedReasons:
+    no_identifier = "no_identifier"
+    unknown = "unknown"
+    checksum_doesnot_match = "checksum_doesnot_match"
+    no_article_found = "no_article_found"
+    no_valid_article_available = "no_valid_article_available"
+    tar_filename_doesnot_match = "response_tar_filename_doesnot_match"
+    error_response = "error_response"
+    unknown_error_response = "unknown_error_response"
+
+
+
+
+
+

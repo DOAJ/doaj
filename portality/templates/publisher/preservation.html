@@ -10,9 +10,9 @@
 
     <div class="alert">
       <ul>
-        <li>Know all about preservation <a href="/preservation">here</a></li>
-        <li>Check help documentation for creating preservation package <a href="{{ url_for('publisher.help') }}#preservation">here</a></li>
-        <li> <a href="/static/doaj/preservation_example.zip">Download </a>example zip file</li>
+        <li><a href="/preservation">Click here to learn all about preservation</a></li>
+        <li><a href="{{ url_for('publisher.help') }}#preservation">Click here to go to help documentation</a></li>
+        <li><a href="/static/doaj/preservation_example.zip">Download example zip file</a></li>
       </ul>
     </div>
   </header>
@@ -41,7 +41,7 @@
             <th style="width: 17%">Upload Date</th>
             <th style="width: 20%">Filename</th>
             <th style="width: 15%">Upload Status</th>
-            <th style="width: 36%">Notes</th>
+            <th style="width: 48%">Notes</th>
         </tr>
     </thead>
 {% for file in previous %}
@@ -61,27 +61,68 @@
                 <span style="color: #660000"><span data-feather="alert-octagon" aria-hidden="true"></span>processing failed</span>
             {% elif file.status == "uploaded" %}
                 <span style="color: #006600"><span data-feather="thumbs-up" aria-hidden="true"></span>successfully processed</span>
+            {% elif file.status == "partial" %}
+                <span style="color: #ff3300"><span data-feather="alert-triangle" aria-hidden="true"></span>partial success</span>
             {% endif %}
         </td>
         <td style="word-wrap:break-word">
-            {% if file.error %}
-                {{file.error}}
+            {% if file.status == "failed" %}
+                {% if file.error == "no_identifier" %}
+                    No identifiers available for articles
+                {% elif file.error == "checksum_doesnot_match" %}
+                    Checksum does not match with the response checksum value
+                {% elif file.error == "no_article_found" %}
+                    No articles found found in the package. Invalid package uploaded.
+                {% elif file.error == "no_valid_article_available" %}
+                    No articles available in the package
+                {% elif file.error == "response_tar_filename_doesnot_match" %}
+                    Response tar filename does not match with the tar file uploaded to Internet Server
+                {% elif file.error == "error_response" %}
+                    Error in response from the server
+                {% elif file.error == "unknown" %}
+                    Upload failed due to unknown reasons
+                {% elif file.error == "unknown_error_response" %}
+                    Unknown error from the server
+                {% else %}
+                    {{ file.error }}
+                {% endif %}
             {% else %}
                 {% if file.status == "uploaded" %}
-                    uploaded to archive server
-                {% endif %}
-                {% if file.status == "initiated" or file.status == "pending" %}
-                    upload to archive server is in process
+                    Uploaded articles to archive server
+                {% elif file.status == "initiated" or file.status == "pending" %}
+                    Upload to archive server is in process
+                {% elif file.status == "partial" %}
+                    Articles uploaded to archive server. Some articles are not  uploaded due to errors
                 {% endif %}
             {% endif %}
-            {%  if file.error_details %}
-                <div id="details_{{ file.id }}" style="display:none">
-                    {% if file.error_details %}
-                        {{ file.error_details }}
+            {% if file.status == "uploaded" or file.status == "partial" and file.articles_info %}
+            <div id="details_{{ file.id }}" style="display:none">
+
+                    {% if file.articles_info.successful_articles %}
+                        <h4>Successful articles</h4>
+                        <p>{{file.articles_info.successful_articles}}</p>
                     {% endif %}
-                </div>
-                <a href="#" class="show_error_details" data-id="{{ file.id }}">(show error details)</a>
+                    {% if file.articles_info.unowned_articles %}
+                        <h4>Unowned articles</h4>
+                        <p>{{file.articles_info.unowned_articles}}</p>
+                    {% endif %}
+                    {% if file.articles_info.no_identifier_articles %}
+                        <h4>Articles that does not have identifiers</h4>
+                        <p>{{file.articles_info.no_identifier_articles}}</p>
+                    {% endif %}
+                    {% if file.articles_info.unbagged_articles %}
+                        <h4>Articles that does not have bags created for tar file</h4>
+                        <p>{{file.articles_info.unbagged_articles}}</p>
+                    {% endif %}
+                    {% if file.articles_info.not_found_articles %}
+                        <h4>Articles that are not found in the system</h4>
+                        <p>{{file.articles_info.not_found_articles}}</p>
+                    {% endif %}
+
+            </div>
+            <a href="#" class="show_error_details" data-id="{{ file.id }}">(show details)</a>
             {% endif %}
+
         </td>
     </tr>
 {% endfor %}
@@ -94,22 +135,18 @@
 <script type="text/javascript">
 $(document).ready(function() {
 
-document.getElementById("crossref-alert").style.display = "none";
+    $("#previous_files").tablesorter();
 
-    function load_errors_and_previous_files(){
-        $("#previous_files").tablesorter();
-
-        $(".show_error_details").click(function (event) {
-            event.preventDefault();
-            var id = $(this).attr("data-id");
-            $("#details_" + id).slideToggle();
-            if ($(this).html() === "(show error details)") {
-                $(this).html("(hide error details)");
-            } else {
-                $(this).html("(show error details)");
-            }
-        })
-    }
+    $(".show_error_details").click(function (event) {
+        event.preventDefault();
+        var id = $(this).attr("data-id");
+        $("#details_" + id).slideToggle();
+        if ($(this).html() === "(show details)") {
+            $(this).html("(hide details)");
+        } else {
+            $(this).html("(show details)");
+        }
+    })
 
 })
 </script>
