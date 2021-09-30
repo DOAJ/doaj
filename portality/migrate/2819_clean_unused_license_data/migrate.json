@@ -1,0 +1,12 @@
+{
+	"types": [
+		{
+			"type": "article",
+			"init_with_model": true,
+			"keepalive": "1m",
+			"functions" : [
+				"portality.migrate.2819_clean_usused_license_data.operations.clean"
+			]
+		}
+	]
+}
