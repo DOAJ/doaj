@@ -1,5 +1,3 @@
-from portality.core import app
-
 def argvalidate(caller_name, args_and_rules, exception):
     for anr in args_and_rules:
         arg = anr.get("arg")

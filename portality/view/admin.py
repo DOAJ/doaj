@@ -20,7 +20,7 @@ from portality.forms.application_forms import ApplicationFormFactory, applicatio
 from portality.forms.application_forms import JournalFormFactory
 from portality.forms.article_forms import ArticleFormFactory
 from portality.lcc import lcc_jstree
-from portality.lib.es_query_http import remove_search_limits
+from portality.lib.query_filters import remove_search_limits
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
     article_bulk_delete
 from portality.ui.messages import Messages
@@ -356,23 +356,32 @@ def application(application_id):
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
 
     if request.method == "GET":
+        try:
+            posted = True if request.args["posted"] == "True" else False
+        except:
+            posted = False
         fc.processor(source=ap)
-        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
+        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree, posted=posted)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
         if processor.validate():
             try:
                 processor.finalise(current_user._get_current_object())
+                # if (processor.form.resettedFields):
+                #     text = "Some fields has been resetted due to invalid value:"
+                #     for f in processor.form.resettedFields:
+                #         text += "<br>field: {}, invalid value: {}, new value: {}".format(f["name"], f["data"], f["default"])
+                #     flash(text, 'info')
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
+                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done', posted=True))
             except Exception as e:
                 flash(str(e))
-                return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
+                return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit', posted=True))
         else:
-            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree, posted=True)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])
