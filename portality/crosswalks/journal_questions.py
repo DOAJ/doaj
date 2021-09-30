@@ -39,7 +39,7 @@ class Journal2QuestionXwalk(object):
         ("license", "Journal license"),
         ("license_terms_url", "URL for license terms"),
         ("oa_statement_url", "URL for journal's Open Access statement"),
-        ("oa_start", "When did the journal start to publish all content using an open license?"),
+        #("oa_start", "When did the journal start to publish all content using an open license?"),
         ("journal_url", "Journal URL"),
         ("aims_scope_url", "URL for journal's aims & scope"),
         ("editorial_board_url", "URL for the Editorial Board page"),
@@ -161,7 +161,7 @@ class Journal2QuestionXwalk(object):
         # About
         kvs.append((cls.q("title"), forminfo.get("title")))
         kvs.append((cls.q("journal_url"), forminfo.get("journal_url")))
-        kvs.append((cls.q("oa_start"), forminfo.get("oa_start")))
+        #kvs.append((cls.q("oa_start"), forminfo.get("oa_start")))
         kvs.append((cls.q("alternative_title"), forminfo.get("alternative_title")))
         kvs.append((cls.q("pissn"), forminfo.get("pissn")))
         kvs.append((cls.q("eissn"), forminfo.get("eissn")))
