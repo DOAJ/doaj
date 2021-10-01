@@ -23,9 +23,10 @@ class TestPreservation(DoajTestCase):
 
         self.upload_dir = app.config.get("UPLOAD_DIR", ".")
         created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
-        dir_name = "rama" + "-" + created_time
+        owner = "rama"
+        dir_name = owner + "-" + created_time
         self.local_dir = os.path.join(preservation.Preservation.UPLOAD_DIR, dir_name)
-        self.preserve = preservation.Preservation(self.local_dir)
+        self.preserve = preservation.Preservation(self.local_dir, owner)
         self.package = preservation.PreservationPackage(self.preserve.preservation_dir)
         self.local_dir = os.path.join(self.local_dir,"tmp")
 
@@ -77,8 +78,12 @@ class TestPreservation(DoajTestCase):
 
         return MockResponse(None, 404)
 
+    def mock_owner_of_article(*args, **kwargs):
+        return True
+
     @patch.object(Article, 'pull_by_key', mock_pull_by_key)
     @patch.object(requests,"post", mock_requests_post)
+    @patch.object(preservation.Preservation, 'owner_of_article', mock_owner_of_article)
     def test_preservation(self):
         self.preserve.save_file(self.zip_file)
 
