@@ -124,6 +124,16 @@
                 </li>
                 {%- endif %}
 
+                {%- set oa_start = journal.has_oa_start_date() -%}
+                {% if oa_start %}
+                    <li class="tag tag--featured">
+                        <a href="https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/">
+                            <span data-feather="unlock" aria-hidden="true"></span>
+                            Open access from {{ oa_start }}
+                        </a>
+                    </li>
+                {%- endif %}
+
                 {% if bibjson.journal_url %}
                 <li class="tag">
                     <a href="{{ bibjson.journal_url }}" target="_blank" rel="noopener">
