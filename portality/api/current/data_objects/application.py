@@ -1,12 +1,12 @@
 import uuid
 from datetime import datetime
 
-from portality.api.v2.data_objects.common import _check_for_script
+from portality.api.current.data_objects.common import _check_for_script
 from portality.lib import swagger, seamless, coerce, dates, dataobj
 from portality import models
 from copy import deepcopy
 
-from portality.api.v2.data_objects.common_journal_application import OutgoingCommonJournalApplication, _SHARED_STRUCT
+from portality.api.current.data_objects.common_journal_application import OutgoingCommonJournalApplication, _SHARED_STRUCT
 
 # both incoming and outgoing applications share this struct
 # "required" fields are only put on incoming applications

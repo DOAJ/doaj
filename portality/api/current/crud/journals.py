@@ -1,7 +1,7 @@
 # ~~APICrudJournals:Feature->APICrud:Feature~~
 from portality import models
-from portality.api.v2.crud.common import CrudApi
-from portality.api.v2.data_objects.journal import OutgoingJournal, JOURNAL_STRUCT
+from portality.api.current.crud.common import CrudApi
+from portality.api.current.data_objects.journal import OutgoingJournal, JOURNAL_STRUCT
 from portality.api.common import Api400Error, Api401Error, Api404Error
 
 from copy import deepcopy

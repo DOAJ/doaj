@@ -4,8 +4,8 @@ from datetime import datetime
 from flask import url_for
 from doajtest.helpers import DoajTestCase
 from portality.lib.dataobj import DataStructureException, ScriptTagFoundException
-from portality.api.v2.data_objects.article import IncomingArticleDO, OutgoingArticleDO
-from portality.api.v2 import ArticlesCrudApi, Api401Error, Api400Error, Api404Error
+from portality.api.current.data_objects.article import IncomingArticleDO, OutgoingArticleDO
+from portality.api.current import ArticlesCrudApi, Api401Error, Api400Error, Api404Error
 from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 

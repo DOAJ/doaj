@@ -1,6 +1,6 @@
 from portality import models
 
-from portality.api.v2.data_objects.common_journal_application import OutgoingCommonJournalApplication, _SHARED_STRUCT
+from portality.api.current.data_objects.common_journal_application import OutgoingCommonJournalApplication, _SHARED_STRUCT
 
 # we only have outgoing journals for the moment
 from portality.lib.coerce import COERCE_MAP

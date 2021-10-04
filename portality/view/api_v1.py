@@ -1,6 +1,6 @@
 from flask import Blueprint, url_for, redirect, request
 
-from portality.api.v2 import Api400Error
+from portality.api.current import Api400Error
 from portality.view import api_v2
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional, swag, write_required

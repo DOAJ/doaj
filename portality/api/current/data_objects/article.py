@@ -1,4 +1,4 @@
-from portality.api.v2.data_objects.common import _check_for_script
+from portality.api.current.data_objects.common import _check_for_script
 from portality.lib import dataobj, swagger
 from portality import models, regex
 from portality.ui.messages import Messages

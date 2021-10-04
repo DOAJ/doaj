@@ -1,7 +1,7 @@
 # ~~APIBulkApplications:Feature->APIBulk:Feature~~
-from portality.api.v2.crud.common import CrudApi
+from portality.api.current.crud.common import CrudApi
 from portality.api.common import Api404Error, Api400Error, Api403Error
-from portality.api.v2.crud import ApplicationsCrudApi
+from portality.api.current.crud import ApplicationsCrudApi
 from copy import deepcopy
 
 class ApplicationsBulkApi(CrudApi):

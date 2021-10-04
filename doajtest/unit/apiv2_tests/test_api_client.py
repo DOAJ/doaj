@@ -4,7 +4,7 @@ Unit tests for the DOAJ client
 
 from unittest import TestCase
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
-from portality.api.v2.client import models
+from portality.api.current.client import models
 from portality.lib import dataobj
 
 

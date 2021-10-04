@@ -3,9 +3,9 @@ from flask_login import current_user
 
 from flask_swagger import swagger
 
-from portality.api.v2 import DiscoveryApi, DiscoveryException
-from portality.api.v2 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi, ApplicationsBulkApi, ArticlesBulkApi
-from portality.api.v2 import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error, created, no_content, bulk_created
+from portality.api.current import DiscoveryApi, DiscoveryException
+from portality.api.current import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi, ApplicationsBulkApi, ArticlesBulkApi
+from portality.api.current import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error, created, no_content, bulk_created
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional, swag, write_required
 from portality.lib import analytics

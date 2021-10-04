@@ -1,9 +1,9 @@
 # ~~APICrudApplications:Feature->APICrud:Feature~~
 import json
 
-from portality.api.v2.crud.common import CrudApi
+from portality.api.current.crud.common import CrudApi
 from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Error, Api409Error
-from portality.api.v2.data_objects.application import IncomingApplication, OutgoingApplication
+from portality.api.current.data_objects.application import IncomingApplication, OutgoingApplication
 from portality.core import app
 from portality.lib import seamless, dataobj
 from portality import models, app_email

@@ -5,7 +5,7 @@ from portality import constants
 from doajtest.fixtures import ApplicationFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.api.v2 import ApplicationsBulkApi
+from portality.api.current import ApplicationsBulkApi
 from portality.api import Api401Error, Api400Error
 
 

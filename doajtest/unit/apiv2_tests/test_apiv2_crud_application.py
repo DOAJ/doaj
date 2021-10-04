@@ -5,8 +5,8 @@ from doajtest.fixtures.v2 import ApplicationFixtureFactory, JournalFixtureFactor
 from doajtest.fixtures import AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.api.common import Api401Error, Api400Error, Api404Error, Api403Error
-from portality.api.v2.crud.applications import ApplicationsCrudApi
-from portality.api.v2.data_objects.application import IncomingApplication, OutgoingApplication
+from portality.api.current.crud.applications import ApplicationsCrudApi
+from portality.api.current.data_objects.application import IncomingApplication, OutgoingApplication
 from portality.lib.dataobj import ScriptTagFoundException
 from portality.lib.seamless import SeamlessException
 from portality.forms.application_processors import ApplicationProcessor

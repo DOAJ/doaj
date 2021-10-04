@@ -1,6 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.api.v2 import DiscoveryApi, DiscoveryException
+from portality.api.current import DiscoveryApi, DiscoveryException
 from portality.api.common import generate_link_headers
 import time
 from flask import url_for
@@ -452,7 +452,7 @@ class TestAPIDiscovery(DoajTestCase):
                     raise
 
     def test_07_query_escaper(self):
-        from portality.api.v2.discovery import escape
+        from portality.api.current.discovery import escape
 
         test_tuples = [
             ('issn:1111-2222 AND publisher:cheese/biscuits', 'issn:1111-2222 AND publisher:cheese\\/biscuits'),

@@ -1,5 +1,5 @@
-from portality.api.v2.data_objects.journal import OutgoingJournal
-from portality.api.v2.data_objects.article import IncomingArticleDO
+from portality.api.current.data_objects.journal import OutgoingJournal
+from portality.api.current.data_objects.article import IncomingArticleDO
 
 
 class Journal(OutgoingJournal):

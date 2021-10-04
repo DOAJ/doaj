@@ -1,6 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from portality.lib import dataobj
-from portality.api.v2.data_objects.journal import OutgoingJournal
+from portality.api.current.data_objects.journal import OutgoingJournal
 from portality import models
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
 from portality.lib.seamless import SeamlessData, SeamlessMixin
