@@ -35,7 +35,7 @@
 {% if previous|length > 0 %}
 <h2>History of uploads (showing last {{previous|length}})</h2>
 
-<table id="previous_files" style="width: 100%; table-layout:fixed" class="tablesorter">
+<table id="previous_files" class="file_history tablesorter">
     <thead>
         <tr>
             <th style="width: 17%">Upload Date</th>
@@ -47,25 +47,25 @@
 {% for file in previous %}
     <tr>
         <td>{{ file.created_timestamp | utc_timestamp("%d %b %Y %H:%M:%S %Z") }}</td>
-        <td style="word-wrap: break-word">
+        <td class="long_content">
             {{file.filename}}
         </td>
         <td>
             {% if file.status == "initiated" %}
-                <span style="color: #000066">initiated</span>
+                <span class="file_status--initial">initiated</span>
             {% elif file.status == "validated" %}
-                <span style="color: #000066">pending</span>
+                <span class="file_status--initial">validated</span>
             {% elif file.status == "pending" %}
-                <span style="color: #000066">pending</span>
+                <span class="file_status--initial">pending</span>
             {% elif file.status == "failed" %}
-                <span style="color: #660000"><span data-feather="alert-octagon" aria-hidden="true"></span>processing failed</span>
+                <span class="file_status--error"><span data-feather="alert-octagon" aria-hidden="true"></span> processing failed</span>
             {% elif file.status == "uploaded" %}
-                <span style="color: #006600"><span data-feather="thumbs-up" aria-hidden="true"></span>successfully processed</span>
+                <span class="file_status--success"><span data-feather="thumbs-up" aria-hidden="true"></span> successfully processed</span>
             {% elif file.status == "partial" %}
-                <span style="color: #ff3300"><span data-feather="alert-triangle" aria-hidden="true"></span>partial success</span>
+                <span class="file_status--warning"><span data-feather="alert-triangle" aria-hidden="true"></span> partial success</span>
             {% endif %}
         </td>
-        <td style="word-wrap:break-word">
+        <td class="long_content">
             {% if file.status == "failed" %}
                 {% if file.error == "no_identifier" %}
                     No identifiers available for articles
@@ -99,23 +99,23 @@
             <div id="details_{{ file.id }}" style="display:none">
 
                     {% if file.articles_info.successful_articles %}
-                        <h4>Successful articles</h4>
+                       <strong>Successful articles: </strong>
                         <p>{{file.articles_info.successful_articles}}</p>
                     {% endif %}
                     {% if file.articles_info.unowned_articles %}
-                        <h4>Unowned articles</h4>
+                        <strong>Unowned articles</strong>
                         <p>{{file.articles_info.unowned_articles}}</p>
                     {% endif %}
                     {% if file.articles_info.no_identifier_articles %}
-                        <h4>Articles that does not have identifiers</h4>
+                        <strong>Articles that does not have identifiers</strong>
                         <p>{{file.articles_info.no_identifier_articles}}</p>
                     {% endif %}
                     {% if file.articles_info.unbagged_articles %}
-                        <h4>Articles that does not have bags created for tar file</h4>
+                        <strong>Articles that does not have bags created for tar file</strong>
                         <p>{{file.articles_info.unbagged_articles}}</p>
                     {% endif %}
                     {% if file.articles_info.not_found_articles %}
-                        <h4>Articles that are not found in the system</h4>
+                        <strong>Articles that are not found in the system</strong>
                         <p>{{file.articles_info.not_found_articles}}</p>
                     {% endif %}
 

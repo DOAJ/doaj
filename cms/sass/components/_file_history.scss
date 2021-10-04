@@ -1,0 +1,20 @@
+.file_history {
+
+    table-layout:fixed;
+    width: 100%;
+
+    .file_status {
+        &--error {
+            color: $sanguine;
+        }
+        &--initial {
+            color: $dark-grey;
+        }
+        &--success {
+            color: $dark-green;
+        }
+        &--warning {
+            color: $grapefruit;
+        }
+    }
+}
