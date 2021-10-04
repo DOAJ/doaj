@@ -76,6 +76,24 @@ class ApplicationProcessor(FormProcessor):
         if isinstance(self.source, models.Journal):
             self.target.set_in_doaj(self.source.is_in_doaj())
 
+    def resetDefaults(self, form):
+        # self.form.resettedFields = []
+        def _values_to_reset(f):
+            return (f.data != "") and (f.data != None) and (f.data != f.default)
+        for field in form:
+            if field.errors:
+                if isinstance(field, FormField):
+                    self.resetDefaults(field.form)
+                elif isinstance(field, FieldList):
+                    for sub in field:
+                        if isinstance(sub, FormField):
+                            self.resetDefaults(sub)
+                        elif _values_to_reset(sub):
+                            sub.data = sub.default
+                elif _values_to_reset(field):
+                    # self.form.resettedFields.append({"name": field.name, "data": field.data, "default": field.default})
+                    field.data = field.default
+
     def _merge_notes_forward(self, allow_delete=False):
         if self.source is None:
             raise Exception("Cannot carry data from a non-existent source")
@@ -173,6 +191,8 @@ class NewApplication(ApplicationProcessor):
     any form fields other than the essential journal bibliographic, application bibliographc and contact information
     for the suggester.  On submission, it will set the status to "pending" and the item will be available for review
     by the editors
+
+    ~~NewApplication:FormProcessor~~
     """
 
     ############################################################
@@ -188,25 +208,12 @@ class NewApplication(ApplicationProcessor):
         #if not valid:
         #    return None
 
-        def _resetDefaults(form):
-            for field in form:
-                if field.errors:
-                    if isinstance(field, FormField):
-                        _resetDefaults(field.form)
-                    elif isinstance(field, FieldList):
-                        for sub in field:
-                            if isinstance(sub, FormField):
-                                _resetDefaults(sub)
-                            else:
-                                sub.data = sub.default
-                    else:
-                        field.data = field.default
-
         # if not valid, then remove all fields which have validation errors
         if not valid:
-            _resetDefaults(self.form)
+            self.resetDefaults(self.form)
 
         self.form2target()
+        # ~~-> DraftApplication:Model~~
         draft_application = models.DraftApplication(**self.target.data)
         if id is not None:
             draft_application.set_id(id)
@@ -227,6 +234,7 @@ class NewApplication(ApplicationProcessor):
         self.target.set_last_manual_update()
 
         if id:
+            # ~~-> Application:Model~~
             replacing = models.Application.pull(id)
             if replacing is None:
                 self.target.set_id(id)
@@ -255,6 +263,8 @@ class AdminApplication(ApplicationProcessor):
     Managing Editor's Application Review form.  Should be used in a context where the form warrants full
     admin priviledges.  It will permit conversion of applications to journals, and assignment of owner account
     as well as assignment to editorial group.
+
+    ~~ManEdApplication:FormProcessor~~
     """
 
     def pre_validate(self):
@@ -292,13 +302,16 @@ class AdminApplication(ApplicationProcessor):
 
         # TODO: should these be a BLL feature?
         # If we have changed the editors assigned to this application, let them know.
+        # ~~-> ApplicationForm:Crosswalk~~
         is_editor_group_changed = ApplicationFormXWalk.is_new_editor_group(self.form, self.source)
         is_associate_editor_changed = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # record the event in the provenance tracker
+        # ~~-> Provenance:Model~~
         models.Provenance.make(account, "edit", self.target)
 
         # delayed import of the DOAJ BLL
+        # ~~->Application:Service~~
         from portality.bll.doaj import DOAJ
         applicationService = DOAJ.applicationService()
 
@@ -323,6 +336,7 @@ class AdminApplication(ApplicationProcessor):
 
             # Add the journal to the account and send the notification email
             try:
+                # ~~-> Account:Model~~
                 owner = models.Account.pull(j.owner)
                 self.add_alert('Associating the journal with account {username}.'.format(username=owner.id))
                 owner.add_journal(j.id)
@@ -349,6 +363,7 @@ class AdminApplication(ApplicationProcessor):
 
             # if this was an update request, send an email to the owner
             if is_update_request and email_alert:
+                # ~~-> Email:Notifications~~
                 sent = False
                 send_report = []
                 try:
@@ -368,6 +383,7 @@ class AdminApplication(ApplicationProcessor):
             self.target.save()
 
         if email_alert:
+            # ~~-> Email:Notifications~~
             # if revisions were requested, email the publisher
             if self.source.application_status != constants.APPLICATION_STATUS_REVISIONS_REQUIRED and self.target.application_status == constants.APPLICATION_STATUS_REVISIONS_REQUIRED:
                 try:
@@ -443,6 +459,7 @@ class AdminApplication(ApplicationProcessor):
 
     def _send_application_approved_email(self, application, journal, owner, update_request=False):
         """Email the publisher when an application is accepted (it's here because it's too troublesome to factor out)"""
+        # ~~-> Email:Library~~
         url_root = request.url_root
         if url_root.endswith("/"):
             url_root = url_root[:-1]
@@ -482,13 +499,16 @@ class AdminApplication(ApplicationProcessor):
 
     def validate(self):
         _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']
+        self.pre_validate()
         # make use of the ability to disable validation, otherwise, let it run
+        valid = super(AdminApplication, self).validate()
+
         if self.form is not None:
-            if self.form.application_status.data in _statuses_not_requiring_validation:
-                self.pre_validate()
+            if self.form.application_status.data in _statuses_not_requiring_validation and not valid:
+                self.resetDefaults(self.form)
                 return True
 
-        return super(AdminApplication, self).validate()
+        return valid
 
 
 class EditorApplication(ApplicationProcessor):
@@ -497,6 +517,8 @@ class EditorApplication(ApplicationProcessor):
     is accessing an application.  This prevents re-assignment of Editorial group, but permits assignment of associate
     editor.  It also permits change in application state, except to "accepted"; therefore this form context cannot
     be used to create journals from applications. Deleting notes is not allowed, but adding is.
+
+    ~~EditorApplication:FormProcessor~~
     """
 
     def pre_validate(self):
@@ -535,10 +557,8 @@ class EditorApplication(ApplicationProcessor):
 
         # Check the status change is valid
         self._validate_status_change(self.source.application_status, self.target.application_status)
-        # TODO: we want to rid ourselves of the Choices module
-        #Choices.validate_status_change('editor', self.source.application_status, self.target.application_status)
 
-        # FIXME: may want to factor this out of the suggestionformxwalk
+        # ~~-> ApplicationForm:Crosswalk~~
         new_associate_assigned = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
@@ -546,9 +566,11 @@ class EditorApplication(ApplicationProcessor):
         self.target.save()
 
         # record the event in the provenance tracker
+        # ~~-> Procenance:Model~~
         models.Provenance.make(current_user, "edit", self.target)
 
         # if we need to email the associate because they have just been assigned, handle that here.
+        # ~~-> Email:Notifications~~
         if new_associate_assigned:
             try:
                 self.add_alert("New editor assigned - email with confirmation has been sent")
@@ -588,16 +610,19 @@ class EditorApplication(ApplicationProcessor):
         # email managing editors if the application was newly set to 'ready'
         if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
             # Tell the ManEds who has made the status change - the editor in charge of the group
+            # ~~-> EditorGroup:Model~~
             editor_group_name = self.target.editor_group
             editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
             editor_group = models.EditorGroup.pull(editor_group_id)
             editor_acc = editor_group.get_editor_account()
 
             # record the event in the provenance tracker
+            # ~~-> Provenance:Model~~
             models.Provenance.make(current_user, "status:ready", self.target)
 
             editor_id = editor_acc.id
             try:
+                # ~~-> Email:Notifications~~
                 emails.send_admin_ready_email(self.target, editor_id=editor_id)
                 self.add_alert('A confirmation email has been sent to the Managing Editors.')
             except app_email.EmailException:
@@ -613,6 +638,8 @@ class AssociateApplication(ApplicationProcessor):
        needs to access an application for review. This editor cannot change the editorial group or the assigned editor.
        They also cannot change the owner of the application. They cannot set an application to "Accepted" so this form can't
        be used to create a journal from an application. They cannot delete, only add notes.
+
+       ~~AssEdApplication:FormProcessor~~
        """
 
     def pre_validate(self):
@@ -652,11 +679,13 @@ class AssociateApplication(ApplicationProcessor):
         self.target.save()
 
         # record the event in the provenance tracker
+        # ~~-> Provenance:Model~~
         models.Provenance.make(current_user, "edit", self.target)
 
         # inform publisher if this was set to 'in progress' from 'pending'
         if self.source.application_status == constants.APPLICATION_STATUS_PENDING and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                # ~~-> Email:Notifications~~
                 is_update_request = self.target.current_journal is not None
                 if is_update_request:
                     alerts = emails.send_publisher_update_request_inprogress_email(self.target)
@@ -670,9 +699,11 @@ class AssociateApplication(ApplicationProcessor):
         # inform editor if this was newly set to 'completed'
         if self.source.application_status != constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_COMPLETED:
             # record the event in the provenance tracker
+            # ~~-> Procenance:Model~~
             models.Provenance.make(current_user, "status:completed", self.target)
 
             try:
+                # ~~-> Email:Notifications~~
                 emails.send_editor_completed_email(self.target)
                 self.add_alert('A confirmation email has been sent to notify the editor of the change in status.')
             except app_email.EmailException:
@@ -683,26 +714,15 @@ class AssociateApplication(ApplicationProcessor):
 
 
 class PublisherUpdateRequest(ApplicationProcessor):
+    """
+    ~~PublisherUpdateRequest:FormProcessor~~
+    """
 
     def pre_validate(self):
         if self.source is None:
             raise Exception("You cannot validate a form from a non-existent source")
 
         super(ApplicationProcessor, self).pre_validate()
-
-        # no longer required, handled by call to superclass pre_validate
-        # carry forward the disabled fields
-        #bj = self.source.bibjson()
-        #self.form.title.data = bj.title
-        #self.form.alternative_title.data = bj.alternative_title
-
-        #pissn = bj.pissn
-        #if pissn == "": pissn = None
-        #self.form.pissn.data = pissn
-
-        #eissn = bj.eissn
-        #if eissn == "": eissn = None
-        #self.form.eissn.data = eissn
 
     def patch_target(self):
         if self.source is None:
@@ -739,6 +759,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
                 raise Exception("Save on application failed")
 
         # obtain the related journal, and attach the current application id to it
+        # ~~-> Journal:Service~~
         journal_id = self.target.current_journal
         from portality.bll.doaj import DOAJ
         journalService = DOAJ.journalService()
@@ -756,6 +777,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
         # email the publisher to tell them we received their update request
         if email_alert:
             try:
+                # ~~-> Email:Notifications~~
                 self._send_received_email()
             except app_email.EmailException as e:
                 self.add_alert("We were unable to send you an email confirmation - possible problem with your email address")
@@ -770,11 +792,13 @@ class PublisherUpdateRequest(ApplicationProcessor):
         self.target.set_seal(self.source.has_seal())
 
     def _send_received_email(self):
+        # ~~-> Account:Model~~
         acc = models.Account.pull(self.target.owner)
         if acc is None:
             self.add_alert("Unable to locate account for specified owner")
             return
 
+        # ~~-> Email:Library~~
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
         subject = app.config.get("SERVICE_NAME","") + " - update request received"
@@ -799,6 +823,8 @@ class PublisherUpdateRequestReadOnly(ApplicationProcessor):
     """
     Read Only Application form for publishers. Nothing can be changed. Useful to show publishers what they
     currently have submitted for review
+
+    ~~PublisherUpdateRequestReadOnly:FormProcessor~~
     """
 
     def finalise(self):
@@ -813,6 +839,8 @@ class ManEdJournalReview(ApplicationProcessor):
     """
     Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
     admin privileges.  It will permit doing every action.
+
+    ~~ManEdJournal:FormProcessor~~
     """
     def patch_target(self):
         if self.source is None:
@@ -835,8 +863,8 @@ class ManEdJournalReview(ApplicationProcessor):
         # if we are allowed to finalise, kick this up to the superclass
         super(ManEdJournalReview, self).finalise()
 
-        # FIXME: may want to factor this out of the suggestionformxwalk
         # If we have changed the editors assinged to this application, let them know.
+        # ~~-> JournalForm:Crosswalk~~
         is_editor_group_changed = JournalFormXWalk.is_new_editor_group(self.form, self.source)
         is_associate_editor_changed = JournalFormXWalk.is_new_editor(self.form, self.source)
 
@@ -845,6 +873,7 @@ class ManEdJournalReview(ApplicationProcessor):
         self.target.save()
 
         # if we need to email the editor and/or the associate, handle those here
+        # ~~-> Email:Notifications~~
         if is_editor_group_changed:
             try:
                 emails.send_editor_group_email(self.target)
@@ -873,6 +902,8 @@ class EditorJournalReview(ApplicationProcessor):
     Editors Journal Review form.  This should be used in a context where an editor who owns an editorial group
     is accessing a journal.  This prevents re-assignment of Editorial group, but permits assignment of associate
     editor.
+
+    ~~EditorJournal:FormProcessor~~
     """
 
     def patch_target(self):
@@ -900,6 +931,7 @@ class EditorJournalReview(ApplicationProcessor):
         # if we are allowed to finalise, kick this up to the superclass
         super(EditorJournalReview, self).finalise()
 
+        # ~~-> ApplicationForm:Crosswalk~~
         email_associate = ApplicationFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
@@ -908,6 +940,7 @@ class EditorJournalReview(ApplicationProcessor):
 
         # if we need to email the associate, handle that here.
         if email_associate:
+            # ~~-> Email:Notifications~~
             try:
                 emails.send_assoc_editor_email(self.target)
             except app_email.EmailException:
@@ -920,6 +953,8 @@ class AssEdJournalReview(ApplicationProcessor):
     Associate Editors Journal Review form. This is to be used in a context where an associate editor (fewest rights)
     needs to access a journal for review. This editor cannot change the editorial group or the assigned editor.
     They also cannot change the owner of the journal. They cannot delete, only add notes.
+
+    ~~AssEdJournal:FormProcessor~~
     """
 
     def patch_target(self):
@@ -949,6 +984,8 @@ class ReadOnlyJournal(ApplicationProcessor):
     """
     Read Only Journal form. Nothing can be changed. Useful for reviewing a journal and an application
     (or update request) side by side in 2 browser windows or tabs.
+
+    ~~ReadOnlyJournal:FormProcessor~~
     """
     def form2target(self):
         pass  # you can't edit objects using this form
@@ -964,5 +1001,7 @@ class ManEdBulkEdit(ApplicationProcessor):
     """
     Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
     admin privileges.  It will permit doing every action.
+
+    ~~ManEdBulkJournal:FormProcessor~~
     """
     pass

@@ -3,6 +3,7 @@ from portality import datasets
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.forms.application_forms import ApplicationFormFactory
 
+
 class JournalXwalkException(Exception):
     pass
 
@@ -38,6 +39,7 @@ class Journal2QuestionXwalk(object):
         ("license", "Journal license"),
         ("license_terms_url", "URL for license terms"),
         ("oa_statement_url", "URL for journal's Open Access statement"),
+        #("oa_start", "When did the journal start to publish all content using an open license?"),
         ("journal_url", "Journal URL"),
         ("aims_scope_url", "URL for journal's aims & scope"),
         ("editorial_board_url", "URL for the Editorial Board page"),
@@ -105,6 +107,9 @@ class Journal2QuestionXwalk(object):
 
     @classmethod
     def journal2question(cls, journal):
+        """
+        Convert the journal data to key value pairs for use in the Journal CSV
+        """
 
         def yes_no_or_blank(val):
             return "Yes" if val in [True, "True", "Yes", "true", "yes", "y"] else "No" if val is not None else ""
@@ -156,6 +161,7 @@ class Journal2QuestionXwalk(object):
         # About
         kvs.append((cls.q("title"), forminfo.get("title")))
         kvs.append((cls.q("journal_url"), forminfo.get("journal_url")))
+        #kvs.append((cls.q("oa_start"), forminfo.get("oa_start")))
         kvs.append((cls.q("alternative_title"), forminfo.get("alternative_title")))
         kvs.append((cls.q("pissn"), forminfo.get("pissn")))
         kvs.append((cls.q("eissn"), forminfo.get("eissn")))
@@ -251,6 +257,15 @@ class Journal2QuestionXwalk(object):
             """ Undoing yes_no_or_blank() to 'y' or 'n' ONLY """
             return 'y' if x == 'Yes' else 'n' if x != '' else None
 
+        def _comma_to_list(x):
+            """ Comma separated string to list of stripped items """
+            return [_.strip() for _ in x.split(',')]
+
+        def _lang_codes(x):
+            """ Get the uppercase 2-char language string for each comma separated language name"""
+            langs = [datasets.language_for(_) for _ in _comma_to_list(x)]
+            return [l.alpha_2.upper() for l in langs if l is not None]
+
         def _unfurl_apc(x):
             """ Allow an APC update by splitting the APC string from the spreadsheet """
             apcs = []
@@ -261,12 +276,26 @@ class Journal2QuestionXwalk(object):
 
         # Undo the transformations applied to specific fields. TODO: Add these as they are encountered in the wild
         REVERSE_TRANSFORM_MAP = {
-            'license': lambda x: [lic.strip() for lic in x.split(',')],
+            'keywords': _comma_to_list,
+            'language': _lang_codes,
+            'publisher_country': datasets.get_country_code,
+            'institution_country': datasets.get_country_code,
+            'license': _comma_to_list,
+            'license_display': _y_or_blank,
+            'copyright_author_retains': _y_n_or_blank,
+            'review_process': _comma_to_list,
+            'plagiarism_detection': _y_n_or_blank,
             'publication_time_weeks': lambda x: round(float(x)),
             'apc': _y_or_blank,
             'apc_charges': _unfurl_apc,
-            'has_waiver': _y_n_or_blank
-            # Country names to codes for institution, publisher
+            'has_waiver': _y_n_or_blank,
+            'has_other_charges': _y_n_or_blank,
+            'deposit_policy': _comma_to_list,
+            'preservation_service': _comma_to_list,
+            'persistent_identifiers': _comma_to_list,
+            'orcid_ids': _y_n_or_blank,
+            'open_citations': _y_n_or_blank,
+            'boai': _y_or_blank,
         }
 
         def csv2formval(key, value):
@@ -285,10 +314,17 @@ class Journal2QuestionXwalk(object):
         # ~~->JournalForm:Crosswalk~~
         forminfo = JournalFormXWalk.obj2form(journal)
 
+        # Get the CSV output this journal currently produces so that we can skip over unchanged fields
+        current_csv = {x: y for (x, y) in cls.journal2question(journal)}
+
         # Collect the update report
         updates = []
 
         for k, v in questions.items():
+            # To save us writing all of the reverse transforms, we can skip this question entirely if unchanged from current journal
+            if k in current_csv and current_csv[k] == v:
+                continue
+
             # Only deal with a question if there's a value - TODO: what does this mean for yes_no_or_blank?
             if len(v.strip()) > 0:
                 # Get the question key from the CSV column header

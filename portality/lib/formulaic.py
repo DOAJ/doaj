@@ -1,3 +1,5 @@
+# ~~Formulaic:Library~~
+
 """
 EXAMPLE = {
     "contexts" : {
@@ -218,6 +220,7 @@ class Formulaic(object):
         return opt_fn(field_def, formulaic_context)
 
 
+# ~~->$ FormulaicContext:Feature~~
 class FormulaicContext(object):
     def __init__(self, name, definition, parent: Formulaic):
         self._name = name
@@ -271,14 +274,14 @@ class FormulaicContext(object):
         fieldlist = []
         for fs in self.fieldsets():
             for field in fs.fields():
+                fieldlist.append(field)
                 if field.group_subfields():
                     for sf in field.group_subfields():
                         fieldlist.append(sf)
-                else:
-                    fieldlist.append(field)
         return fieldlist
 
     def make_wtform_class(self, fields):
+        # ~~^-> WTForms:Library~~
         class TempForm(Form):
             pass
 
@@ -385,16 +388,19 @@ class FormulaicContext(object):
         return json.dumps(self._definition)
 
     def render_template(self, **kwargs):
+        # ~~^-> Jinja2:Technology~~
         template = self._definition.get("templates", {}).get("form")
         return render_template(template, formulaic_context=self, **kwargs)
 
     def processor(self, formdata=None, source=None):
+        # ~~^-> FormProcessor:Feature~~
         klazz = self._definition.get("processor")
         if isinstance(klazz, str):
             klazz = plugin.load_class(klazz)
         return klazz(formdata=formdata, source=source, parent=self)
 
     def obj2form(self, obj):
+        # ~~^-> Crosswalk:Feature~~
         xwalk_fn = self._definition.get("crosswalks", {}).get("obj2form")
         if xwalk_fn is None:
             return None
@@ -404,6 +410,7 @@ class FormulaicContext(object):
         return self.wtform(data=data)
 
     def form2obj(self):
+        # ~~^-> Crosswalk:Feature~~
         xwalk_fn = self._definition.get("crosswalks", {}).get("form2obj")
         if xwalk_fn is None:
             return None
@@ -458,7 +465,7 @@ class FormulaicContext(object):
                             _make_row(i, fs, field, sf, writer)
                             i += 1
 
-
+# ~~->$ FormulaicFieldset:Feature~~
 class FormulaicFieldset(object):
     def __init__(self, definition, parent):
         self._definition = definition
@@ -502,7 +509,7 @@ class FormulaicFieldset(object):
 
         raise AttributeError('{name} is not set'.format(name=name))
 
-
+# ~~->$ FormulaicField:Feature~~
 class FormulaicField(object):
     def __init__(self, definition, parent):
         self._definition = definition
@@ -674,6 +681,7 @@ class FormulaicField(object):
         return False
 
     def render_form_control(self, custom_args=None, wtfinst=None):
+        # ~~-> WTForms:Library~~
         kwargs = deepcopy(self._definition.get("attr", {}))
         if "placeholder" in self._definition.get("help", {}):
             kwargs["placeholder"] = self._definition["help"]["placeholder"]
@@ -774,7 +782,7 @@ class FormulaicField(object):
 
         return choices
 
-
+# ~~->$ FormProcessor:Feature~~
 class FormProcessor(object):
     def __init__(self, formdata=None, source=None, parent: FormulaicContext=None):
         # initialise our core properties

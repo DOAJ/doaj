@@ -13,4 +13,7 @@ class OutgoingCommonJournalApplication(SeamlessMixin, swagger.SwaggerSupport):
     @classmethod
     def from_model(cls, journal_or_app):
         d = deepcopy(journal_or_app.data)
+        # Prevent the field from appearing in the outgoing API models
+        if d["bibjson"]["oa_start"]:
+            del d["bibjson"]["oa_start"]
         return cls(d)

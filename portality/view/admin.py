@@ -5,6 +5,7 @@ from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 
+from portality import dao
 import portality.models as models
 import portality.notifications.application_emails as emails
 from portality import constants
@@ -19,7 +20,7 @@ from portality.forms.application_forms import ApplicationFormFactory, applicatio
 from portality.forms.application_forms import JournalFormFactory
 from portality.forms.article_forms import ArticleFormFactory
 from portality.lcc import lcc_jstree
-from portality.lib.es_query_http import remove_search_limits
+from portality.lib.query_filters import remove_search_limits
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
     article_bulk_delete
 from portality.ui.messages import Messages
@@ -187,6 +188,7 @@ def article_page(article_id):
 @ssl_required
 @write_required()
 def journal_page(journal_id):
+    # ~~JournalForm:Page~~
     auth_svc = DOAJ.authorisationService()
     journal_svc = DOAJ.journalService()
 
@@ -210,8 +212,11 @@ def journal_page(journal_id):
         job = None
         job_id = request.values.get("job")
         if job_id is not None and job_id != "":
+            # ~~-> BackgroundJobs:Model~~
             job = models.BackgroundJob.pull(job_id)
-            flash("Job to withdraw/reinstate journal has been submitted")
+            # ~~-> BackgroundJobs:Page~~
+            url = url_for("admin.background_jobs_search") + "?source=" + dao.Facetview2.url_encode_query(dao.Facetview2.make_query(job_id))
+            Messages.flash_with_url(Messages.ADMIN__WITHDRAW_REINSTATE.format(url=url), "success")
         fc.processor(source=journal)
         return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree)
 
@@ -351,23 +356,32 @@ def application(application_id):
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
 
     if request.method == "GET":
+        try:
+            posted = True if request.args["posted"] == "True" else False
+        except:
+            posted = False
         fc.processor(source=ap)
-        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
+        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree, posted=posted)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
         if processor.validate():
             try:
                 processor.finalise(current_user._get_current_object())
+                # if (processor.form.resettedFields):
+                #     text = "Some fields has been resetted due to invalid value:"
+                #     for f in processor.form.resettedFields:
+                #         text += "<br>field: {}, invalid value: {}, new value: {}".format(f["name"], f["data"], f["default"])
+                #     flash(text, 'info')
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done'))
+                return redirect(url_for("admin.application", application_id=ap.id, _anchor='done', posted=True))
             except Exception as e:
                 flash(str(e))
-                return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
+                return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit', posted=True))
         else:
-            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree, posted=True)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])

@@ -21,7 +21,7 @@
                     {% if message_has_url %}
                         {{ message | safe }}
                     {% else %}
-                        {{ message }}
+                        {{ message | safe }}
                     {% endif %}
                     &nbsp;<span class="flash_close alert__close" role="button">(Dismiss)</span>
                 </p>

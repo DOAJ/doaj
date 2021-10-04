@@ -4,11 +4,11 @@ Script which determines which articles have ISSNs which belong to two distinct J
 
 from portality import models
 from portality.core import app
-from lib.clcsv import UnicodeWriter
 from datetime import datetime
 from portality.lib import dates
 import esprit
 import codecs
+import csv
 
 
 IN_DOAJ = {
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.out:
-        print "Please specify an output file path with the -o option"
+        print("Please specify an output file path with the -o option")
         parser.print_help()
         exit()
 
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     total = models.Article.count()
 
     with codecs.open(args.out, "wb", "utf-8") as f:
-        writer = UnicodeWriter(f)
+        writer = csv.writer(f)
         writer.writerow(["Count", "Article ID", "Article ISSNs", "Match On", "Journal ID", "Journal ISSNs", "Journal In DOAJ?"])
 
         counter = 1

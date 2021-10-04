@@ -71,6 +71,7 @@ JOURNAL_LIKE_BIBJSON = {
             "url": "http://licence.url"
         }
     ],
+    "oa_start": 2012,
     "other_charges": {
         "has_other_charges" : True,
         "url": "http://other.charges"
@@ -150,6 +151,7 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "license": ["Publisher's own license"],
     "license_terms_url" : "http://licence.url",
     "oa_statement_url" : "http://oa.statement",
+    "oa_start":2012,
     "journal_url" : "http://journal.url",
     "aims_scope_url" : "http://aims.scope",
     "editorial_board_url" : "http://editorial.board",

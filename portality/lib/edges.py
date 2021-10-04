@@ -1,3 +1,7 @@
+# ~~EdgesIntegration:Library~~
+# ~~-> Edges:Technology~~
+# ~~-> Elasticsearch:Technology~~
+
 from urllib import parse
 import json
 
@@ -8,11 +12,11 @@ def make_url_query(**params):
 
 
 def make_query(**params):
-    gsq = GeneralSearchQery(**params)
+    gsq = GeneralSearchQuery(**params)
     return gsq.query()
 
 
-class GeneralSearchQery(object):
+class GeneralSearchQuery(object):
     def __init__(self, terms=None, query_string=None):
         self.terms = None if terms is None else terms if isinstance(terms, list) else [terms]
         self.query_string = query_string

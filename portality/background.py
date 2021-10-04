@@ -34,7 +34,7 @@ class BackgroundApi(object):
     @classmethod
     def execute(self, background_task):
         # ~~->BackgroundTask:Process~~
-        # ~~->BagroundJob:Model~~
+        # ~~->BackgroundJob:Model~~
         job = background_task.background_job
         ctx = None
         acc = None

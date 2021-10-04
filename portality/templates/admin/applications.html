@@ -24,7 +24,7 @@
         <div class="multiformbox-container form__question" style="display: none" id="application_status-container">
             <select id="application_status" name="application_status">
                 {% for choice in application_status_choices %}
-                    <option value="{{ choice[0] }}">{{ choice[1] }}</option>
+                    <option value="{{ choice.value }}">{{ choice.display }}</option>
                 {% endfor %}
             </select>
         </div>

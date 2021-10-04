@@ -1,12 +1,15 @@
+# ~~Coerce:Library~~
 from portality.lib import dates
 from datetime import date, datetime
 from portality.lib import seamless
 from portality.datasets import get_country_code, get_currency_code
 
+
 def to_datestamp(in_format=None):
     def stampify(val):
         return dates.parse(val, format=in_format)
     return stampify
+
 
 def date_str(in_format=None, out_format=None):
     def datify(val):
@@ -19,6 +22,7 @@ def date_str(in_format=None, out_format=None):
 
     return datify
 
+
 def to_isolang(output_format=None):
     """
     :param output_format: format from input source to putput.  Must be one of:
@@ -28,7 +32,7 @@ def to_isolang(output_format=None):
         * name
         * fr
     Can be a list in order of preference, too
-    fixme: we could make these pycountry's keys, removing the need for so many transformations and intermediate steps
+    ~~-> Languages:Data~~
     :return:
     """
     # delayed import, since we may not always want to load the whole dataset for a dataobj
@@ -54,7 +58,13 @@ def to_isolang(output_format=None):
 
     return isolang
 
+
 def to_currency_code(val):
+    """
+    ~~-> Currencies:Data~~
+    :param val:
+    :return:
+    """
     if val is None:
         return None
     nv = get_currency_code(val)
@@ -63,7 +73,13 @@ def to_currency_code(val):
     uc = seamless.to_utf8_unicode
     return uc(nv)
 
+
 def to_country_code(val):
+    """
+    ~~-> Countries:Data~~
+    :param val:
+    :return:
+    """
     if val is None:
         return None
     nv = get_country_code(val, fail_if_not_found=True)
@@ -71,6 +87,7 @@ def to_country_code(val):
         raise ValueError("Unable to convert {x} to a valid country code".format(x=val))
     uc = seamless.to_utf8_unicode
     return uc(nv)
+
 
 def to_issn(issn):
     if len(issn) > 9 or issn == '':
@@ -94,6 +111,7 @@ def to_issn(issn):
             return issn[:4] + "-" + issn[4:]
 
 
+# ~~-> Seamless:Library~~
 COERCE_MAP = {
     "unicode": seamless.to_utf8_unicode,
     "unicode_upper" : seamless.to_unicode_upper,
