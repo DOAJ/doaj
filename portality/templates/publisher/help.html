@@ -235,4 +235,28 @@
   </tbody>
 </table>
 
+<h2 id="preservation">Preserve articles</h2>
+
+<p>Articles can be preserved on Internet Archive Servers. Publisher has to request to enable this feature.</p>
+<p>Once the publisher is authorised for this feature, <code>Preservation</code> link is visible on Publisher Dashboard</p>
+
+<p>Steps to preserve articles : </p>
+<ol>
+  <li>Create Package: Create a package with following structure </br>
+    <code>
+      \-journal directory</br>
+        &nbsp;\-article1 directory</br>
+          &nbsp;&nbsp;\-article</br>
+        &nbsp;\-article2 directory</br>
+          &nbsp;&nbsp;\-article</br>
+          &nbsp;&nbsp;\-identifier.txt</br>
+        &nbsp;\-identifiers.csv</br>
+    </code>
+  </li>
+  <li>Article URL or DOI must be mentioned either in identifier.txt or indentifiers.csv</li>
+  <li>identifier.txt file is located under article directory.</li>
+  <li>identifiers.csv file is located under journal directory. This file may contain all articles identifiers. More than one identifier (both URL and DOI) can be mentioned for a article.</li>
+  <li>Create a zip file of the directory (journal directory) and upload in the Preservation section.</li>
+  <li>The zip file willl be processed internally and uploads to Internet Archive servers.</li>
+</ol>
 {% endblock %}

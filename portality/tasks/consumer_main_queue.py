@@ -17,6 +17,7 @@ from portality.tasks.sitemap import scheduled_sitemap, generate_sitemap
 from portality.tasks.journal_bulk_edit import journal_bulk_edit
 from portality.tasks.suggestion_bulk_edit import suggestion_bulk_edit
 from portality.tasks.ingestarticles import ingest_articles
+from portality.tasks.preservation import preserve
 from portality.tasks.journal_csv import scheduled_journal_csv, journal_csv
 from portality.tasks.read_news import scheduled_read_news, read_news
 from portality.tasks.journal_bulk_delete import journal_bulk_delete

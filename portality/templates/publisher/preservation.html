@@ -1,0 +1,154 @@
+{% extends "publisher/publisher_base.html" %}
+
+{% block page_title %}Upload article XML{% endblock %}
+
+{% block publisher_content %}
+
+<div class="row">
+  <header class="col-md-4">
+    <h2>Upload preservation file</h2>
+
+    <div class="alert">
+      <ul>
+        <li><a href="/preservation">Click here to learn all about preservation</a></li>
+        <li><a href="{{ url_for('publisher.help') }}#preservation">Click here to go to help documentation</a></li>
+        <li><a href="/static/doaj/preservation_example.zip">Download example zip file</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <form id="upload_form" class="col-md-8 form form--compact" method="POST" action="/publisher/preservation" enctype="multipart/form-data">
+    <fieldset>
+      <h3 class="form__header">Preservation File</h3>
+      <div class="form__question">
+        <label for="upload-xml-file">Select a file</label>
+        <input type="file" id="upload-xml-file" name="file">
+        <p><small>Must be less than 50Mb.</small></p>
+      </div>
+    </fieldset>
+    <button type="submit" id="preservation" class="button button--primary">Upload</button>
+  </form>
+</div>
+
+<hr>
+
+{% if previous|length > 0 %}
+<h2>History of uploads (showing last {{previous|length}})</h2>
+
+<table id="previous_files" style="width: 100%; table-layout:fixed" class="tablesorter">
+    <thead>
+        <tr>
+            <th style="width: 17%">Upload Date</th>
+            <th style="width: 20%">Filename</th>
+            <th style="width: 15%">Upload Status</th>
+            <th style="width: 48%">Notes</th>
+        </tr>
+    </thead>
+{% for file in previous %}
+    <tr>
+        <td>{{ file.created_timestamp | utc_timestamp("%d %b %Y %H:%M:%S %Z") }}</td>
+        <td style="word-wrap: break-word">
+            {{file.filename}}
+        </td>
+        <td>
+            {% if file.status == "initiated" %}
+                <span style="color: #000066">initiated</span>
+            {% elif file.status == "validated" %}
+                <span style="color: #000066">pending</span>
+            {% elif file.status == "pending" %}
+                <span style="color: #000066">pending</span>
+            {% elif file.status == "failed" %}
+                <span style="color: #660000"><span data-feather="alert-octagon" aria-hidden="true"></span>processing failed</span>
+            {% elif file.status == "uploaded" %}
+                <span style="color: #006600"><span data-feather="thumbs-up" aria-hidden="true"></span>successfully processed</span>
+            {% elif file.status == "partial" %}
+                <span style="color: #ff3300"><span data-feather="alert-triangle" aria-hidden="true"></span>partial success</span>
+            {% endif %}
+        </td>
+        <td style="word-wrap:break-word">
+            {% if file.status == "failed" %}
+                {% if file.error == "no_identifier" %}
+                    No identifiers available for articles
+                {% elif file.error == "checksum_doesnot_match" %}
+                    Checksum does not match with the response checksum value
+                {% elif file.error == "no_article_found" %}
+                    No articles found found in the package. Invalid package uploaded.
+                {% elif file.error == "no_valid_article_available" %}
+                    No articles available in the package
+                {% elif file.error == "response_tar_filename_doesnot_match" %}
+                    Response tar filename does not match with the tar file uploaded to Internet Server
+                {% elif file.error == "error_response" %}
+                    Error in response from the server
+                {% elif file.error == "unknown" %}
+                    Upload failed due to unknown reasons
+                {% elif file.error == "unknown_error_response" %}
+                    Unknown error from the server
+                {% else %}
+                    {{ file.error }}
+                {% endif %}
+            {% else %}
+                {% if file.status == "uploaded" %}
+                    Uploaded articles to archive server
+                {% elif file.status == "initiated" or file.status == "pending" %}
+                    Upload to archive server is in process
+                {% elif file.status == "partial" %}
+                    Articles uploaded to archive server. Some articles are not  uploaded due to errors
+                {% endif %}
+            {% endif %}
+            {% if file.status == "uploaded" or file.status == "partial" and file.articles_info %}
+            <div id="details_{{ file.id }}" style="display:none">
+
+                    {% if file.articles_info.successful_articles %}
+                        <h4>Successful articles</h4>
+                        <p>{{file.articles_info.successful_articles}}</p>
+                    {% endif %}
+                    {% if file.articles_info.unowned_articles %}
+                        <h4>Unowned articles</h4>
+                        <p>{{file.articles_info.unowned_articles}}</p>
+                    {% endif %}
+                    {% if file.articles_info.no_identifier_articles %}
+                        <h4>Articles that does not have identifiers</h4>
+                        <p>{{file.articles_info.no_identifier_articles}}</p>
+                    {% endif %}
+                    {% if file.articles_info.unbagged_articles %}
+                        <h4>Articles that does not have bags created for tar file</h4>
+                        <p>{{file.articles_info.unbagged_articles}}</p>
+                    {% endif %}
+                    {% if file.articles_info.not_found_articles %}
+                        <h4>Articles that are not found in the system</h4>
+                        <p>{{file.articles_info.not_found_articles}}</p>
+                    {% endif %}
+
+            </div>
+            <a href="#" class="show_error_details" data-id="{{ file.id }}">(show details)</a>
+            {% endif %}
+
+        </td>
+    </tr>
+{% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $("#previous_files").tablesorter();
+
+    $(".show_error_details").click(function (event) {
+        event.preventDefault();
+        var id = $(this).attr("data-id");
+        $("#details_" + id).slideToggle();
+        if ($(this).html() === "(show details)") {
+            $(this).html("(hide details)");
+        } else {
+            $(this).html("(show details)");
+        }
+    })
+
+})
+</script>
+
+{% endblock %}
