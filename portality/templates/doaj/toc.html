@@ -124,16 +124,6 @@
                 </li>
                 {%- endif %}
 
-                {%- set oa_start = journal.has_oa_start_date() -%}
-                {% if oa_start %}
-                    <li class="tag tag--featured">
-                        <a href="https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/">
-                            <span data-feather="unlock" aria-hidden="true"></span>
-                            Open access from {{ oa_start }}
-                        </a>
-                    </li>
-                {%- endif %}
-
                 {% if bibjson.journal_url %}
                 <li class="tag">
                     <a href="{{ bibjson.journal_url }}" target="_blank" rel="noopener">
@@ -252,7 +242,6 @@
                                         {% endif %}
                                     </ul>
 
-
                                     {% if bibjson.plagiarism_detection %}
                                         <p>
                                             &rarr; This journal <a href="{{bibjson.plagiarism_url}}" target="_blank" rel="noopener noreferrer">checks for plagiarism</a>.
@@ -276,6 +265,13 @@
                             <article class="card card--with-icon">
                                 <span data-feather="unlock" aria-hidden="true"></span>
                                 <div>
+                                    {%- set oa_start = journal.has_oa_start_date() -%}
+                                    {% if oa_start %}
+                                        <p>
+                                            This journal began publishing in <strong>open access in {{ oa_start }}</strong>.
+                                            <a href="https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span><span class="sr-only">What does DOAJ define as Open Accesss?</span></a>
+                                        </p>
+                                    {%- endif %}
                                     {% if bibjson.licenses %}
                                         <p>This journal uses
                                             {% for license in bibjson.licenses %}
