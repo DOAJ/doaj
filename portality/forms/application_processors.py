@@ -453,7 +453,6 @@ class AdminApplication(ApplicationProcessor):
             subject = app.config.get("SERVICE_NAME", "") + " - update request accepted"
         else:
             subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
-        # publisher_name = publisher_name if publisher_name is not None else "Journal Owner"
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
@@ -462,7 +461,6 @@ class AdminApplication(ApplicationProcessor):
                 if update_request:
                     msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=owner.email)
                     template = "email/publisher_update_request_accepted.jinja2"
-                # jn = journal_title
 
                 app_email.send_mail(to=to,
                                     fro=fro,
@@ -777,8 +775,6 @@ class PublisherUpdateRequest(ApplicationProcessor):
             self.add_alert("Unable to locate account for specified owner")
             return
 
-        # journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
-
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
         subject = app.config.get("SERVICE_NAME","") + " - update request received"
@@ -791,8 +787,6 @@ class PublisherUpdateRequest(ApplicationProcessor):
                                     template_name="email/publisher_update_request_received.jinja2",
                                     application=self.target,
                                     owner=acc)
-                                    # journal_name=journal_name,
-                                    # username=self.target.owner)
                 self.add_alert('A confirmation email has been sent to ' + acc.email + '.')
         except app_email.EmailException as e:
             magic = str(uuid.uuid1())
