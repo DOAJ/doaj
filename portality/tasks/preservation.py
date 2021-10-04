@@ -124,6 +124,7 @@ class ArticlesList:
         self.__no_identifier_articles = []
         self.__unbagged_articles = []
         self.__not_found_articles = []
+        self.__no_files_articles = []
         self.has_errors = False
 
     def add_successful_article(self, article: ArticlePackage):
@@ -145,6 +146,9 @@ class ArticlesList:
         self.has_errors = True
         self.__not_found_articles.append(os.path.basename(article.article_dir))
 
+    def add_no_files_articles(self, article: ArticlePackage):
+        self.__no_files_articles.append(os.path.basename(article.article_dir))
+
     def successful_articles(self):
         return self.__successful_articles
 
@@ -160,19 +164,24 @@ class ArticlesList:
     def not_found_articles(self):
         return self.__not_found_articles
 
+    def no_files_articles(self):
+        return self.__no_files_articles
+
     def get_count(self):
         return len(self.__successful_articles) + \
                len(self.__unowned_articles) + \
                len(self.__no_identifier_articles) +\
                len(self.__unbagged_articles) +\
-               len(self.__not_found_articles)
+               len(self.__not_found_articles) + \
+               len(self.__no_files_articles)
 
     def is_partial_success(self):
         if len(self.__successful_articles) > 0 and \
                 (len(self.__unbagged_articles) > 0 or
                 len(self.__unowned_articles) > 0 or
                 len(self.__not_found_articles) > 0 or
-                len(self.__no_identifier_articles)):
+                len(self.__no_identifier_articles) > 0 or
+                len(self.__no_files_articles)):
             return True
 
         return False
@@ -293,6 +302,8 @@ class PreservationBackgroundTask(BackgroundTask):
             model.unowned_articles(articles_list.unowned_articles())
         if len(articles_list.unbagged_articles()) > 0:
             model.unbagged_articles(articles_list.unbagged_articles())
+        if len(articles_list.no_files_articles()) > 0:
+            model.no_files_articles(articles_list.no_files_articles())
         model.save()
 
     def cleanup(self):
@@ -531,6 +542,10 @@ class Preservation:
         dir_name = os.path.basename(dir_path)
         package = ArticlePackage(dir_path, files)
 
+        if not self.__has_article_files(files):
+            articles_list.add_no_files_articles(package)
+            return
+
         # check if identifier file exist
         if Preservation.IDENTIFIER_FILE in files:
             with open(os.path.join(dir_path, Preservation.IDENTIFIER_FILE)) as file:
@@ -573,6 +588,24 @@ class Preservation:
                 filename = Path(self.upload_filename).stem
                 if filename in os.path.dirname(dir_path):
                     articles_list.add_no_identifier_articles(package)
+
+    def __has_article_files(self, files):
+        """
+        Checks if any article files available
+        :param files:
+        :return: True if files available otherwise returns False
+        """
+        no_of_files = len(files)
+        if Preservation.IDENTIFIER_FILE in files:
+            if no_of_files > 1:
+                return True
+            else:
+                return False
+        else:
+            if no_of_files > 0:
+                return True
+            else:
+                return False
 
     def owner_of_article(self, article):
         """

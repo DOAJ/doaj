@@ -94,6 +94,10 @@ class PreservationState(DomainObject):
         if articles_list is not None and len(articles_list) > 0:
             self.data["articles_info"]["not_found_articles"] = ", ".join(articles_list)
 
+    def no_files_articles(self, articles_list):
+        if articles_list is not None and len(articles_list) > 0:
+            self.data["articles_info"]["no_files_articles"] = ", ".join(articles_list)
+
     @classmethod
     def by_owner(cls, owner, size=10):
         q = OwnerFileQuery(owner)

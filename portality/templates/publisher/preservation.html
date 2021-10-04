@@ -72,7 +72,7 @@
                 {% elif file.error == "checksum_doesnot_match" %}
                     Checksum does not match with the response checksum value
                 {% elif file.error == "no_article_found" %}
-                    No articles found found in the package. Invalid package uploaded.
+                    No articles found in the package. Invalid package uploaded.
                 {% elif file.error == "no_valid_article_available" %}
                     No articles available in the package
                 {% elif file.error == "response_tar_filename_doesnot_match" %}
@@ -117,6 +117,10 @@
                     {% if file.articles_info.not_found_articles %}
                         <h4>Articles that are not found in the system</h4>
                         <p>{{file.articles_info.not_found_articles}}</p>
+                    {% endif %}
+                    {% if file.articles_info.no_files_articles %}
+                        <h4>Articles that does not have files to upload</h4>
+                        <p>{{file.articles_info.no_files_articles}}</p>
                     {% endif %}
 
             </div>
