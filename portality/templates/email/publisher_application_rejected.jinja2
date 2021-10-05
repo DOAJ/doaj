@@ -1,0 +1,28 @@
+{#
+~~PublisherApplicationRejected:Email~~
+~~-> Application:Model~~
+~~-> Account:Model~~
+~~-> ApplicationGuide:Page~~
+#}
+
+{% set publisher_name = owner.name %}
+{% set bibjson = application.bibjson() %}
+{% set url_root = config.get("BASE_URL") %}
+
+{% if publisher_name %}Dear {{ publisher_name }},{% endif %}
+
+The application which you submitted for "{{ bibjson.title }}" on {{ application.date_applied|human_date }} has been rejected as the journal does not meet our basic criteria ({{ url_root}}{{ url_for("doaj.guide") }}).
+
+{% if note %}
+Reason for rejection:
+---------------------
+{{ note }}
+{% endif %}
+
+You may submit a new application 6 months after the date of this email unless advised otherwise by a member of the DOAJ Editorial Team. Before you apply again, make any necessary changes to ensure your journal adheres to our criteria: {{ url_root}}{{ url_for("doaj.guide") }}.
+
+Yours faithfully
+
+DOAJ Editorial Team
+
+**This is an automated message. Please do not reply to this message.**
