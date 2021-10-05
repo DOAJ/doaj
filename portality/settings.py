@@ -1128,7 +1128,7 @@ MINIMAL_OA_START_DATE = 1900
 ## EPMC Client configuration
 # ~~-> EPMC:ExternalService~~
 EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
-EPMC_TARGET_VERSION = "6.5"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
+EPMC_TARGET_VERSION = "6.6"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
 EPMC_HARVESTER_THROTTLE = 0.2
 
 # General harvester configuration
