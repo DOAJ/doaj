@@ -572,6 +572,7 @@ MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->Editor
 MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
 MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
+MAPPINGS['preserve'] = {'preserve': DEFAULT_DYNAMIC_MAPPING}    #~~->Preservation:Model~~
 
 #########################################
 # Query Routes
