@@ -84,7 +84,7 @@ class BackgroundApi(object):
         # ~~->SearchURLGenerator:Feature
         if acc is not None:
             if acc.email is not None and acc.has_role("admin"):
-                template = "email/admin_background_job_finished.txt"
+                template = "email/admin_background_job_finished.jinja2"
                 subject = app.config.get("SERVICE_NAME", "") + " - background job finished"
 
                 url_root = app.config.get("BASE_URL")

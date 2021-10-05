@@ -1,0 +1,20 @@
+{#
+~~PublisherUpdateRequestInProgress:Email~~
+~~-> Application:Model~~
+~~-> Account:Model~~
+~~-> Volunteers:Page~~
+#}
+
+{% set publisher_name = owner.name %}
+{% set bibjson = application.bibjson() %}
+{% set url_root = config.get("BASE_URL") %}
+
+{% if publisher_name %}Dear {{ publisher_name }},{% endif %}
+
+The update for "{{ bibjson.title }}" submitted on {{ application.date_applied|human_date }} is now being reviewed.
+
+A member of the DOAJ Editorial team may contact you by email with questions. These emails can end up in your Spam folder so please check your Spam folder regularly.
+
+The DOAJ Team
+
+**This is an automated message.**
