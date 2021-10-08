@@ -62,8 +62,8 @@ if 'api1' in app.config['FEATURES']:
 if 'api2' in app.config['FEATURES']:
     app.register_blueprint(api_v2, url_prefix='/api/v2') # ~~-> APIv2:Blueprint~~
 if 'api3' in app.config['FEATURES']:
-    app.register_blueprint(api_v3, url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
     app.register_blueprint(api_v3, url_prefix='/api') # ~~-> APIv3:Blueprint~~
+    app.register_blueprint(api_v3, url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
 app.register_blueprint(status, url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~

@@ -34,7 +34,7 @@ class ApplicationsCrudApi(CrudApi):
     SWAG_APPLICATION_BODY_PARAM = {
         "description": """<div class=\"search-query-docs\">
             Application JSON that you would like to create or update. The contents should comply with the schema displayed in the
-            <a href=\"/api/v1/docs#CRUD_Applications_get_api_v1_application_application_id\"> GET (Retrieve) an application route</a>.
+            <a href=\"/api/docs#CRUD_Applications_get_api_application_application_id\"> GET (Retrieve) an application route</a>.
             Explicit documentation for the structure of this data is also <a href="https://doaj.github.io/doaj-docs/master/data_models/IncomingAPIApplication">provided here</a>.
             Partial updates are not allowed, you have to supply the full JSON.</div>""",
         "required": True,
