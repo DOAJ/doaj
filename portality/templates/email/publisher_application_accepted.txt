@@ -12,7 +12,7 @@ To increase the visibility, impact, distribution and usage* of your journal cont
 
 1) Upload Article XML: {{ url_root }}/publisher/uploadfile
 2) Enter Article Metadata: {{ url_root }}/publisher/metadata
-3) Use our API: {{ url_root }}/api/v1/docs
+3) Use our API: {{ url_root }}/api/docs
 For help on how to do this read https://doaj.org/publishers#upload and https://doaj.org/features#xml_upload
 
 We are absolutely delighted to welcome this journal into DOAJ and look forward to seeing the article metadata soon. Please don't hesitate to contact us if you have any questions.
