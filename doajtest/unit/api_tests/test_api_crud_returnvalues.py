@@ -25,7 +25,6 @@ class TestCrudReturnValues(DoajTestCase):
 
     def test_01_all_crud(self):
 
-
         with self.app_test.test_client() as t_client:
             for route in ['', '/v1', '/v2', '/v3']:
                 # we should get a JSON 404 if we try to hit a nonexistent endpoint

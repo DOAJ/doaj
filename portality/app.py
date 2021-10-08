@@ -315,8 +315,9 @@ def standard_authentication():
 # Register configured API versions
 # ~~-> APIv1:Blueprint~~
 # ~~-> APIv2:Blueprint~~
+# ~~-> APIv3:Blueprint~~
 features = app.config.get('FEATURES', [])
-if 'api1' in features or 'api2' in features:
+if 'api1' in features or 'api2' in features or 'api3' in features:
     @app.route('/api/')
     def api_directory():
         vers = []
@@ -341,6 +342,17 @@ if 'api1' in features or 'api2' in features:
                                         _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
                     'note': 'Second version of the DOAJ API',
                     'docs_url': url_for('api_v2.docs', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
+                }
+            )
+        if 'api3' in features:
+            vers.append(
+                {
+                    'version': '3.0.0',
+                    'base_url': url_for('api_v3.api_spec', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
+                    'note': 'Third version of the DOAJ API',
+                    'docs_url': url_for('api_v3.docs', _external=True,
                                         _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
                 }
             )

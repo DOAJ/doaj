@@ -44,6 +44,8 @@ def api_spec():
     swag['info']['title'] = ""
     swag['info']['version'] = API_VERSION_NUMBER
 
+    # Strip out the duplicate versioned route from the swagger so we only show latest as /api/
+    [swag['paths'].pop(p) for p in list(swag['paths'].keys()) if p.startswith('/api/v3/')]
     return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
 
 
