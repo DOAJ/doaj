@@ -108,11 +108,11 @@ sort=bibjson.title:desc
     <p>If you wish to submit an application which is intended to provide updated information for an existing Journal you
     have in DOAJ, then you can submit an Update Request.</p>
 
-    <p>An Update Request can be created by sending a new application record via the <a href="/api/v3/docs#!/CRUD_Applications/post_api_v2_applications">Application CRUD</a> endpoint, and including
+    <p>An Update Request can be created by sending a new application record via the <a href="/api/docs#!/CRUD_Applications/post_api_applications">Application CRUD</a> endpoint, and including
     the identifier of the Journal it replaces in the "admin.current_journal" field:</p>
 
 <pre>
-    POST /api/v3/applications?api_key=?????
+    POST /api/applications?api_key=?????
 
     {
         "admin" : {
