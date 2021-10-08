@@ -42,6 +42,8 @@ if 'api1' in app.config['FEATURES']:
     from portality.view.api_v1 import blueprint as api_v1
 if 'api2' in app.config['FEATURES']:
     from portality.view.api_v2 import blueprint as api_v2
+if 'api3' in app.config['FEATURES']:
+    from portality.view.api_v3 import blueprint as api_v3
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 
@@ -59,6 +61,9 @@ if 'api1' in app.config['FEATURES']:
     app.register_blueprint(api_v1, url_prefix='/api/v1') # ~~-> APIv1:Blueprint~~
 if 'api2' in app.config['FEATURES']:
     app.register_blueprint(api_v2, url_prefix='/api/v2') # ~~-> APIv2:Blueprint~~
+if 'api3' in app.config['FEATURES']:
+    app.register_blueprint(api_v3, url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
+    app.register_blueprint(api_v3, url_prefix='/api') # ~~-> APIv3:Blueprint~~
 app.register_blueprint(status, url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~

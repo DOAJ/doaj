@@ -108,11 +108,11 @@ sort=bibjson.title:desc
     <p>If you wish to submit an application which is intended to provide updated information for an existing Journal you
     have in DOAJ, then you can submit an Update Request.</p>
 
-    <p>An Update Request can be created by sending a new application record via the <a href="/api/v2/docs#!/CRUD_Applications/post_api_v2_applications">Application CRUD</a> endpoint, and including
+    <p>An Update Request can be created by sending a new application record via the <a href="/api/v3/docs#!/CRUD_Applications/post_api_v2_applications">Application CRUD</a> endpoint, and including
     the identifier of the Journal it replaces in the "admin.current_journal" field:</p>
 
 <pre>
-    POST /api/v2/applications?api_key=?????
+    POST /api/v3/applications?api_key=?????
 
     {
         "admin" : {
@@ -161,7 +161,7 @@ There is a rate limit of two requests per second on all API routes. ‘Bursts' a
 </p>
 
 <h4>When making a POST request, do we need to include any of the fields in the admin hash (e.g. in_doaj or upload_id)?</h4>
-<p>In applications, only the contact subfield is required in the admin section. The full list is handled in our <a href="https://github.com/DOAJ/doaj/blob/3cd64db18d7fc9d51dfdea8a27cc068491c5600b/portality/api/v2/data_objects/application.py#L63">validation structure</a>.</p>
+<p>In applications, only the contact subfield is required in the admin section. The full list is handled in our <a href="https://github.com/DOAJ/doaj/blob/3cd64db18d7fc9d51dfdea8a27cc068491c5600b/portality/api/v3/data_objects/application.py#L63">validation structure</a>.</p>
 
 <h4>Should language and country be spelled out or use codes?</h4>
 <p>Using the correct <a href="https://www.iso.org/iso-3166-country-codes.html">ISO-3166 two-character code</a> is the most robust route. The incoming data is passed to our <a href="https://github.com/DOAJ/doaj/blob/3cd64db18d7fc9d51dfdea8a27cc068491c5600b/portality/datasets.py#L108">get_country_code() function</a> which looks up from that list, so a name will also work.</p>
@@ -176,4 +176,4 @@ There is a rate limit of two requests per second on all API routes. ‘Bursts' a
 <p>We expect one of ["PDF", "HTML", "ePUB", "XML"]</p>
 
 <h4>Are start_page and end_page required?</h4>
-<p>In articles these fields are not required. <a href="https://github.com/DOAJ/doaj/blob/3cd64db18d7fc9d51dfdea8a27cc068491c5600b/portality/api/v2/data_objects/article.py#L109">See this list for required fields in article uploads</a>.</p>
+<p>In articles these fields are not required. <a href="https://github.com/DOAJ/doaj/blob/3cd64db18d7fc9d51dfdea8a27cc068491c5600b/portality/api/v3/data_objects/article.py#L109">See this list for required fields in article uploads</a>.</p>

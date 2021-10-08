@@ -96,8 +96,8 @@ OFFLINE_MODE = False
 
 # List the features we want to be active (API v1 remains with redirects to v2 features)
 # ~~->API:Feature~~
-FEATURES = ['api1', 'api2']
-VALID_FEATURES = ['api1', 'api2']
+FEATURES = ['api1', 'api2', 'api3']
+VALID_FEATURES = ['api1', 'api2', 'api3']
 
 ########################################
 # File Path and URL Path settings
@@ -117,9 +117,10 @@ else:
     BASE_DOMAIN = BASE_URL
 
 # ~~->API:Feature~~
-BASE_API_URL = "https://doaj.org/api/v2/"
+BASE_API_URL = "https://doaj.org/api/v3/"
 API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
 API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
+API3_BLUEPRINT_NAME = "api_v3"  # change if upgrading API to new version and creating new view for that
 
 # URL used for the journal ToC URL in the journal CSV export
 # NOTE: must be the correct route as configured in view/doaj.py

@@ -178,7 +178,7 @@ class TestBulkApplication(DoajTestCase):
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 # Create some new applications
-                resp = t_client.post(url_for('api_v2.bulk_application_create', api_key=account.api_key),
+                resp = t_client.post(url_for('api_v3.bulk_application_create', api_key=account.api_key),
                                      data=json.dumps(dataset))
                 assert resp.status_code == 201, resp.status_code
                 reply = json.loads(resp.data.decode("utf-8"))
@@ -191,13 +191,13 @@ class TestBulkApplication(DoajTestCase):
 
                 # Bulk delete
                 all_but_one = [new_art['id'] for new_art in reply]
-                resp = t_client.delete(url_for('api_v2.bulk_application_delete', api_key=account.api_key),
+                resp = t_client.delete(url_for('api_v3.bulk_application_delete', api_key=account.api_key),
                                        data=json.dumps(all_but_one))
                 assert resp.status_code == 204
                 time.sleep(1)
                 # we should have deleted all but one of the applications.
                 assert len(models.Suggestion.all()) == 1
                 # And our other user isn't allowed to delete the remaining one.
-                resp = t_client.delete(url_for('api_v2.bulk_application_delete', api_key=somebody_else.api_key),
+                resp = t_client.delete(url_for('api_v3.bulk_application_delete', api_key=somebody_else.api_key),
                                        data=json.dumps([first_apl['id']]))
                 assert resp.status_code == 400

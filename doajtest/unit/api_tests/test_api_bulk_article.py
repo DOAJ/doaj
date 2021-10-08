@@ -249,7 +249,7 @@ class TestBulkArticle(DoajTestCase):
 
                 # Bulk create
                 # The wrong owner can't create articles
-                resp = t_client.post(url_for('api_v2.bulk_article_create', api_key=somebody_else.api_key),
+                resp = t_client.post(url_for('api_v3.bulk_article_create', api_key=somebody_else.api_key),
                                      data=json.dumps(dataset))
                 assert resp.status_code == 400, resp.status_code
 
@@ -260,7 +260,7 @@ class TestBulkArticle(DoajTestCase):
                 # assert resp.status_code == 301, resp.status_code
 
                 # But the correct owner can create articles
-                resp = t_client.post(url_for('api_v2.bulk_article_create', api_key=article_owner.api_key),
+                resp = t_client.post(url_for('api_v3.bulk_article_create', api_key=article_owner.api_key),
                                      data=json.dumps(dataset))
                 assert resp.status_code == 201
                 reply = json.loads(resp.data.decode("utf-8"))
@@ -273,21 +273,21 @@ class TestBulkArticle(DoajTestCase):
 
                 # Bulk delete
                 all_but_one = [new_art['id'] for new_art in reply]
-                resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=article_owner.api_key),
+                resp = t_client.delete(url_for('api_v3.bulk_article_delete', api_key=article_owner.api_key),
                                        data=json.dumps(all_but_one))
                 assert resp.status_code == 204
                 time.sleep(1)
                 # we should have deleted all but one of the articles.
                 assert len(models.Article.all()) == 1
                 # And our other user isn't allowed to delete the remaining one.
-                resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=somebody_else.api_key),
+                resp = t_client.delete(url_for('api_v3.bulk_article_delete', api_key=somebody_else.api_key),
                                        data=json.dumps([first_art['id']]))
                 assert resp.status_code == 400
 
 
-    def test_07_no_redirects(self):
+    def test_07_v1_no_redirects(self):
         """ v1 answers directly without redirect https://github.com/DOAJ/doajPM/issues/2664 """
-        # TODO: this is a copy of the test above, with v1 instead of v2. If redirects are reinstated, uncomment above
+        # TODO: this is a copy of the test above, with v1 instead of current. If redirects are reinstated, uncomment above
         
         # set up all the bits we need
         dataset = []
@@ -354,5 +354,77 @@ class TestBulkArticle(DoajTestCase):
                 assert len(models.Article.all()) == 1
                 # And our other user isn't allowed to delete the remaining one.
                 resp = t_client.delete(url_for('api_v1.bulk_article_delete', api_key=somebody_else.api_key),
+                                       data=json.dumps([first_art['id']]))
+                assert resp.status_code == 400
+
+    def test_08_v2_no_redirects(self):
+        """ v2, like v1 answers directly without redirect https://github.com/DOAJ/doajPM/issues/2664 """
+        # TODO: this is a copy of the test above, with v2 instead of current. If redirects are reinstated, uncomment in test 6
+
+        # set up all the bits we need
+        dataset = []
+        for i in range(10):
+            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i),
+                                                                   fulltext="http://example.com/" + str(i))
+            dataset.append(data)
+
+        # create the main account we're going to work as
+        article_owner = models.Account()
+        article_owner.set_id("test")
+        article_owner.set_name("Tester")
+        article_owner.set_email("test@test.com")
+        article_owner.generate_api_key()
+        article_owner.add_role('publisher')
+        article_owner.add_role('api')
+        article_owner.save(blocking=True)
+
+        # Add another user who doesn't own these articles
+        somebody_else = models.Account()
+        somebody_else.set_id("somebody_else")
+        somebody_else.set_name("Somebody Else")
+        somebody_else.set_email("somebodyelse@test.com")
+        somebody_else.generate_api_key()
+        somebody_else.add_role('publisher')
+        somebody_else.add_role('api')
+        somebody_else.save(blocking=True)
+
+        assert article_owner.api_key != somebody_else.api_key
+
+        # add a journal to the article owner account to create that link between account and articles
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(article_owner.id)
+        journal.save(blocking=True)
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                # Bulk create
+                # The wrong owner can't create articles
+                resp = t_client.post(url_for('api_v2.bulk_article_create', api_key=somebody_else.api_key),
+                                     data=json.dumps(dataset))
+                assert resp.status_code == 400, resp.status_code
+
+                # Bulk create
+                # But the correct owner can create articles
+                resp = t_client.post(url_for('api_v2.bulk_article_create', api_key=article_owner.api_key),
+                                     data=json.dumps(dataset))
+                assert resp.status_code == 201
+                reply = json.loads(resp.data.decode("utf-8"))
+                assert len(reply) == len(dataset)
+                first_art = reply.pop()
+                assert first_art['status'] == 'created'
+                # Check we actually created new records
+                time.sleep(1)
+                assert len(models.Article.all()) == len(dataset)
+
+                # Bulk delete
+                all_but_one = [new_art['id'] for new_art in reply]
+                resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=article_owner.api_key),
+                                       data=json.dumps(all_but_one))
+                assert resp.status_code == 204
+                time.sleep(1)
+                # we should have deleted all but one of the articles.
+                assert len(models.Article.all()) == 1
+                # And our other user isn't allowed to delete the remaining one.
+                resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=somebody_else.api_key),
                                        data=json.dumps([first_art['id']]))
                 assert resp.status_code == 400

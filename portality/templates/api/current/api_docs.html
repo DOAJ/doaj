@@ -50,11 +50,11 @@
                 <section class="page-content">
                     <p class="label">Docs</p>
                     <h1>API </h1>
-                    {% include "api/v2/swagger_description.html" %}
+                    {% include "api/current/swagger_description.html" %}
                     <div id="swagger-section" class="swagger-section">
                         <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
                     </div>
-                    {% include "api/v2/extra_docs.html" %}
+                    {% include "api/current/extra_docs.html" %}
                 </section>
             </div>
         </div>
@@ -77,7 +77,7 @@
 
 <script type="text/javascript">
     $(function () {
-      var url = current_scheme + '//' + current_domain + "/api/v2/swagger.json";
+      var url = current_scheme + '//' + current_domain + "/api/v3/swagger.json";
       console.log(url);
       window.swaggerUi = new SwaggerUi({
         url: url,

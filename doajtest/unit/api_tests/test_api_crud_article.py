@@ -595,7 +595,7 @@ class TestCrudArticle(DoajTestCase):
 
                 # CREATE
                 # The wrong owner can't create articles
-                resp = t_client.post(url_for('api_v2.create_article', api_key=somebody_else.api_key),
+                resp = t_client.post(url_for('api_v3.create_article', api_key=somebody_else.api_key),
                                      data=json.dumps(data))
                 assert resp.status_code == 403, resp.status_code
 
@@ -603,17 +603,17 @@ class TestCrudArticle(DoajTestCase):
                 # resp = t_client.post(url_for('api_v1.create_article', api_key=article_owner.api_key),
                 #                      data=json.dumps(data))
                 # assert resp.status_code == 301, resp.status_code
-                # assert resp.location == url_for('api_v2.create_article', api_key=article_owner.api_key, _external=True)
+                # assert resp.location == url_for('api_v3.create_article', api_key=article_owner.api_key, _external=True)
 
                 # But the correct owner can create articles
-                resp = t_client.post(url_for('api_v2.create_article', api_key=article_owner.api_key),
+                resp = t_client.post(url_for('api_v3.create_article', api_key=article_owner.api_key),
                                      data=json.dumps(data))
                 assert resp.status_code == 201
                 created_json = resp.json
                 assert created_json['status'] == 'created'
 
                 # Except when it's bad JSON
-                resp = t_client.post(url_for('api_v2.create_article', api_key=article_owner.api_key),
+                resp = t_client.post(url_for('api_v3.create_article', api_key=article_owner.api_key),
                                      data=", ... ?@ cool.")
                 assert resp.status_code == 400
 
@@ -622,10 +622,10 @@ class TestCrudArticle(DoajTestCase):
                 # resp = t_client.get(url_for('api_v1.retrieve_article', article_id=created_json['id'],
                 #                             api_key=article_owner.api_key))
                 # assert resp.status_code == 301, resp.status_code
-                # assert resp.location == url_for('api_v2.retrieve_article', article_id=created_json['id'],
+                # assert resp.location == url_for('api_v3.retrieve_article', article_id=created_json['id'],
                 #                                 api_key=article_owner.api_key, _external=True)
                 # from v2
-                resp = t_client.get(url_for('api_v2.retrieve_article', article_id=created_json['id'],
+                resp = t_client.get(url_for('api_v3.retrieve_article', article_id=created_json['id'],
                                              api_key=article_owner.api_key))
                 assert resp.status_code == 200, resp.status_code
 
@@ -635,11 +635,11 @@ class TestCrudArticle(DoajTestCase):
                 # resp = t_client.put(url_for('api_v1.update_article', article_id=created_json['id'],
                 #                             api_key=article_owner.api_key), data=json.dumps(data))
                 # assert resp.status_code == 301
-                # assert resp.location == url_for('api_v2.update_article', article_id=created_json['id'],
+                # assert resp.location == url_for('api_v3.update_article', article_id=created_json['id'],
                 #                                 api_key=article_owner.api_key, _external=True)
 
                 # via v2
-                resp = t_client.put(url_for('api_v2.update_article', article_id=created_json['id'],
+                resp = t_client.put(url_for('api_v3.update_article', article_id=created_json['id'],
                                             api_key=article_owner.api_key), data=json.dumps(data))
                 assert resp.status_code == 204
 
@@ -648,10 +648,10 @@ class TestCrudArticle(DoajTestCase):
                 # resp = t_client.delete(url_for('api_v1.delete_article', article_id=created_json['id'],
                 #                             api_key=article_owner.api_key))
                 # assert resp.status_code == 301, resp.status_code
-                # assert resp.location == url_for('api_v2.delete_article', article_id=created_json['id'],
+                # assert resp.location == url_for('api_v3.delete_article', article_id=created_json['id'],
                 #                                 api_key=article_owner.api_key, _external=True)
                 # via v2
-                resp = t_client.delete(url_for('api_v2.delete_article', article_id=created_json['id'],
+                resp = t_client.delete(url_for('api_v3.delete_article', article_id=created_json['id'],
                                             api_key=article_owner.api_key))
                 assert resp.status_code == 204
 
@@ -722,7 +722,73 @@ class TestCrudArticle(DoajTestCase):
                                             api_key=article_owner.api_key))
                 assert resp.status_code == 204
 
-    def test_16_the_same_issns(self):
+    def test_16_no_redirects(self):
+        """ v2, like v1 answers directly without redirect https://github.com/DOAJ/doajPM/issues/2664 """
+        # TODO: this is a copy of the test above, with v2 instead of current. If redirects are reinstated, uncomment in test 14
+
+        # create the main account we're going to work as
+        article_owner = models.Account()
+        article_owner.set_id("test")
+        article_owner.set_name("Tester")
+        article_owner.set_email("test@test.com")
+        article_owner.generate_api_key()
+        article_owner.add_role('publisher')
+        article_owner.add_role('api')
+        article_owner.save(blocking=True)
+
+        # Add another user who doesn't own these articles
+        somebody_else = models.Account()
+        somebody_else.set_id("somebody_else")
+        somebody_else.set_name("Somebody Else")
+        somebody_else.set_email("somebodyelse@test.com")
+        somebody_else.generate_api_key()
+        somebody_else.add_role('publisher')
+        somebody_else.add_role('api')
+        somebody_else.save(blocking=True)
+
+        # add a journal to the article owner account to create that link between account and articles
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(article_owner.id)
+        journal.save(blocking=True)
+
+        data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/x", fulltext="http://example.com/x")
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                # CREATE
+                # The wrong owner can't create articles
+                resp = t_client.post(url_for('api_v2.create_article', api_key=somebody_else.api_key),
+                                     data=json.dumps(data))
+                assert resp.status_code == 403, resp.status_code
+
+                # But the correct owner can create articles
+                resp = t_client.post(url_for('api_v2.create_article', api_key=article_owner.api_key),
+                                     data=json.dumps(data))
+                assert resp.status_code == 201
+                created_json = resp.json
+                assert created_json['status'] == 'created'
+
+                # Except when it's bad JSON
+                resp = t_client.post(url_for('api_v2.create_article', api_key=article_owner.api_key),
+                                     data=", ... ?@ cool.")
+                assert resp.status_code == 400
+
+                # RETRIEVE
+                resp = t_client.get(url_for('api_v2.retrieve_article', article_id=created_json['id'],
+                                            api_key=article_owner.api_key))
+                assert resp.status_code == 200, resp.status_code
+
+                # UPDATE
+                resp = t_client.put(url_for('api_v2.update_article', article_id=created_json['id'],
+                                            api_key=article_owner.api_key), data=json.dumps(data))
+                assert resp.status_code == 204
+
+                # DELETE
+                resp = t_client.delete(url_for('api_v2.delete_article', article_id=created_json['id'],
+                                               api_key=article_owner.api_key))
+                assert resp.status_code == 204
+
+    def test_17_the_same_issns(self):
         """ Check we get an error when article with 2 the same issns is provided. """
 
         # set up all the bits we need
@@ -739,7 +805,7 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(Api400Error):
             ArticlesCrudApi.create(data, account)
 
-    def test_17_3_issns(self):
+    def test_18_3_issns(self):
         """ Check we get an error when article has 3 issns. """
 
         # set up all the bits we need
