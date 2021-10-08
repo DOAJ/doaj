@@ -111,7 +111,9 @@ def bulk_article_delete():
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('retrieve_journal', 'Retrieve journal'),
                           record_value_of_which_arg='journal_id')
 def retrieve_journal(journal_id):
-    raise Api400Error(API_UNSUPPORTED_ERROR)
+    # Redirects are disabled https://github.com/DOAJ/doajPM/issues/2664
+    # return redirect(url_for('api_v3.retrieve_journal', journal_id=journal_id))
+    return api_v3.retrieve_journal(journal_id)
 
 
 @blueprint.route("/bulk/applications", methods=["POST"])
@@ -169,11 +171,15 @@ def delete_application(application_id):
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('search_applications', 'Search applications'),
                           record_value_of_which_arg='search_query')
 def search_applications(search_query):
-    raise Api400Error(API_UNSUPPORTED_ERROR)
+    # Redirects are disabled https://github.com/DOAJ/doajPM/issues/2664
+    # return redirect(url_for('api_v3.search_applications', search_query=search_query))
+    return api_v3.search_applications(search_query)
 
 
 @blueprint.route('/search/journals/<path:search_query>')
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('search_journals', 'Search journals'),
                           record_value_of_which_arg='search_query')
 def search_journals(search_query):
-    raise Api400Error(API_UNSUPPORTED_ERROR)
+    # Redirects are disabled https://github.com/DOAJ/doajPM/issues/2664
+    # return redirect(url_for('api_v3.search_journals', search_query=search_query))
+    return api_v3.search_journals(search_query)
