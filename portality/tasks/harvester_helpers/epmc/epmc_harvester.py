@@ -7,14 +7,25 @@ from datetime import datetime
 import time
 
 
+class DefaultLogger():
+    def __init__(self):
+        self._log = []
+
+    def log(self, msg):
+        self._log.append({
+            "timestamp": dates.now_with_microseconds(),
+            "message" : msg
+        })
+
+
 class EPMCHarvester(HarvesterPlugin):
 
-    def __init__(self):
-        self.logger = ""
+    def __init__(self, logger=None):
+        self.logger = DefaultLogger() if logger is None else logger
         super(EPMCHarvester, self).__init__()
 
     def _write_to_logger(self, msg):
-        self.logger = self.logger + "\n" + msg
+        self.logger.log(msg)
 
     def get_name(self):
         return "epmc"
@@ -52,7 +63,7 @@ class EPMCHarvester(HarvesterPlugin):
             # build the query for the oa articles in that issn for the specified day (note we don't use the range, as the granularity in EPMC means we'd double count
             # note that we use date_sort=True as a weak proxy for ordering by updated date (it actually orders by publication date, which may be partially the same as updated date)
             query = queries.oa_issn_updated(issn, fr, date_sort=True)
-            epmc = client.EuropePMC()
+            epmc = client.EuropePMC(self.logger)
             for record in epmc.complex_search_iterator(query, throttle=throttle):   # also throttle paging requests
                 article = self.crosswalk(record)
                 yield article, fr
