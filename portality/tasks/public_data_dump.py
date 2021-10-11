@@ -8,7 +8,7 @@ from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.store import StoreFactory
-from portality.api.v2 import DiscoveryApi
+from portality.api.current import DiscoveryApi
 
 import os, tarfile, json
 
