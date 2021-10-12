@@ -16,21 +16,24 @@
     <li><a href="{{ url_for('publisher.metadata') }}">entering the metadata manually</a>.</li>
   </ol>
 
+  <p>There are instructions and FAQs on how to send JSON using our API on our <a href="{{ url_for('doaj.docs') }}">API documentation page</a>.</p>
+
   <p>There are instructions on how to prepare and upload your XML file on our <a href="{{ url_for('doaj.xml') }}">XML documentation page</a>.</p>
 
 <h2 id="explanations">Failed XML uploads explained</h2>
 
-<p>This section explains the error messages that you may see when you upload article XML to DOAJ. Depending on the message in the 'Notes' column of your <a href="{{ url_for('publisher.upload_file') }}"><em>History of uploads</em></a> table, you may be able to correct your XML.</p>
+<p>This section explains the error messages that you may see when you upload article XML. Use the message in the 'Notes' column of your <a href="{{ url_for('publisher.upload_file') }}"><em>History of uploads</em></a> table to correct your XML.</p>
 
-<p>If you cannot correct the XML successfully, please <a href="https://github.com/DOAJ/doaj/issues/new/choose" target="_blank" rel="noopener">submit a bug report</a> or <a href="{{ url_for('doaj.contact') }}">contact us</a> with the following details:</p>
+<p>If you cannot get the XML to upload, please <a href="https://github.com/DOAJ/doaj/issues/new/choose" target="_blank" rel="noopener">submit a bug report</a> or <a href="{{ url_for('doaj.contact') }}">contact us</a> with the following details:</p>
 
 <ul>
   <li>The time of the file upload</li>
+  <li>Whether the error happened once or repeatedly</li>
   <li>Whether you are uploading DOAJ or Crossref XML</li>
   <li>Whether you are uploading a file or uploading from a link</li>
-  <li>The exact error message as it appears in the “Notes” column, including the text in the 'What does this mean?' section</li>
+  <li>The exact error message as it appears in the “Notes” column, including the detail under the 'show error details' link</li>
   <li>A screenshot of the error messsage</li>
-  <li>Your publisher account ID or the account ID you are logged in with</li>
+  <li>The DOAJ account ID that you are logged in with</li>
   <li>The file(s) you had problems with</li>
 </ul>
 
