@@ -109,6 +109,8 @@ class Application(JournalLikeObject):
         return self.__seamless__.get_single("admin.current_journal")
 
     def set_current_journal(self, journal_id):
+        # anything that has a current journal is, by definition, an update request
+        self.set_is_update_request(True)
         self.__seamless__.set_with_struct("admin.current_journal", journal_id)
 
     def remove_current_journal(self):
