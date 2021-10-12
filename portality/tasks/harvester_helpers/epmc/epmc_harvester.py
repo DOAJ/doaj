@@ -1,7 +1,7 @@
 from portality.models.harvester import HarvesterPlugin
 from portality.tasks.harvester_helpers.epmc import client, queries
 from portality.lib import dates
-from portality.api.v2.client import models as doaj
+from portality.api.current.client import models as doaj
 from portality.core import app
 from datetime import datetime
 import time
