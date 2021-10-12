@@ -1,4 +1,4 @@
-from portality.api.v2 import ArticlesCrudApi
+from portality.api.current import ArticlesCrudApi
 from portality.core import app
 from portality.lib import plugin, dates
 from portality.models import Journal, Account
