@@ -912,7 +912,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect 1 email to be sent:
         #   * to the publisher, informing them of the journal's acceptance
         #   * to the journal contact, informing them of the journal's acceptance
-        publisher_template = 'publisher_update_request_accepted.txt'
+        publisher_template = 'publisher_update_request_accepted.jinja2'
         publisher_to = re.escape(owner.email)
         publisher_subject = 'update request accepted'
 
