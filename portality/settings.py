@@ -577,14 +577,23 @@ MAPPINGS = {
         'settings': DEFAULT_INDEX_SETTINGS
     }
 }
-MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}  #~~->Article:Model~~
-MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING} #~~->Upload:Model~~
-MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING} #~~->Cache:Model~~
-MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}  #~~->LCC:Model~~
-MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->EditorGroup:Model~~
-MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
-MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
-MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
+# MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}  #~~->Article:Model~~
+# MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING} #~~->Upload:Model~~
+# MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING} #~~->Cache:Model~~
+# MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}  #~~->LCC:Model~~
+# MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->EditorGroup:Model~~
+# MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
+# MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
+# MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
+
+MAPPINGS['article'] = MAPPINGS["account"]  #~~->Article:Model~~
+MAPPINGS['upload'] = MAPPINGS["account"] #~~->Upload:Model~~
+MAPPINGS['cache'] = MAPPINGS["account"] #~~->Cache:Model~~
+MAPPINGS['lcc'] = MAPPINGS["account"]  #~~->LCC:Model~~
+MAPPINGS['editor_group'] = MAPPINGS["account"] #~~->EditorGroup:Model~~
+MAPPINGS['news'] = MAPPINGS["account"]    #~~->News:Model~~
+MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
+MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
 
 #########################################
 # Query Routes
