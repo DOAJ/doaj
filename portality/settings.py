@@ -94,7 +94,7 @@ SCRIPTS_READ_ONLY_MODE = False
 # ~~->OfflineMode:Feature~~
 OFFLINE_MODE = False
 
-# List the features we want to be active (API v1 remains with redirects to v2 features)
+# List the features we want to be active (API v1 and v2 remain with redirects to v3)
 # ~~->API:Feature~~
 FEATURES = ['api1', 'api2', 'api3']
 VALID_FEATURES = ['api1', 'api2', 'api3']
