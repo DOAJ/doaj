@@ -22,17 +22,17 @@
             </select>
             <button id="bulk-submit" class="button multiformbox-submit input-group__input" disabled="disabled">Submit</button>
         </div>
-        <div class="multiformbox-container" style="display: none" id="application_status-container">
+        <div class="multiformbox-container form__question" style="display: none" id="application_status-container">
             <select id="application_status" name="application_status">
                 {% for choice in application_status_choices %}
                     <option value="{{ choice.value }}">{{ choice.display }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="multiformbox-container" style="display: none" id="editor_group-container">
+        <div class="multiformbox-container form__question" style="display: none" id="editor_group-container">
             <input id="editor_group" name="editor_group" type="text" value="">
         </div>
-        <div class="multiformbox-container" style="display: none" id="note-container">
+        <div class="multiformbox-container form__question" style="display: none" id="note-container">
             <textarea id="note" name="note" placeholder="Type note here…"></textarea>
         </div>
       </form>
