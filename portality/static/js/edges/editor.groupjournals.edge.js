@@ -382,8 +382,8 @@ $.extend(true, doaj, {
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
-                            "T" : "True",
-                            "F" : "False"
+                            true : "True",
+                            false : "False"
                         }
                     }
                 })

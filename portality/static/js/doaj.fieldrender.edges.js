@@ -9,7 +9,17 @@ $.extend(true, doaj, {
                 deactivateThreshold: 1,
                 valueMap : {
                     1 : "True",
-                    0 : "False"
+                    0 : "False",
+                    true: "True",
+                    false: "False"
+                },
+                parseSelectedValueString: function(val) {
+                    // this is needed because ES7 doesn't understand "1" or `1` to be `true`, so
+                    // we convert the string value of the aggregation back to a boolean
+                    return val === "1"
+                },
+                filterToAggValue : function(val) {
+                    return val === true ? 1 : 0;
                 },
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,

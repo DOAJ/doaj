@@ -530,8 +530,8 @@ $.extend(true, doaj, {
                             "article" : "Articles"
                         },
                         "admin.in_doaj" : {
-                            "T" : "True",
-                            "F" : "False"
+                            true : "True",
+                            false : "False"
                         }
                     }
                 })
