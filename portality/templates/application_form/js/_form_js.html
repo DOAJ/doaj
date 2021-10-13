@@ -29,11 +29,6 @@
             {% if form_diff %}
                 formDiff: {{ form_diff|tojson }},
             {% endif %}
-            {% if posted == True %}
-                posted: true
-            {% else %}
-                posted: false
-            {% endif %}
             });
         {% endif %}
     });
