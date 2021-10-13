@@ -423,6 +423,14 @@ def terms():
     return render_template("layouts/static_page.html", page_frag="/legal/terms.html")
 
 
+@blueprint.route("/media/")
+def media():
+    """
+    ~~Media:WebRoute~~
+    """
+    return render_template("layouts/static_page.html", page_frag="/legal/media.html")
+
+
 @blueprint.route("/support/")
 def support():
     return render_template("layouts/static_page.html", page_frag="/support/index.html")
@@ -475,7 +483,7 @@ def oai_pmh():
 
 @blueprint.route('/docs/api/')
 def docs():
-    return redirect(url_for('api_v2.docs'))
+    return redirect(url_for('api_v3.docs'))
 
 
 @blueprint.route("/docs/xml/")

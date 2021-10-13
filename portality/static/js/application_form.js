@@ -462,7 +462,13 @@ doaj.af.newEditorialApplicationForm = function(params) {
 doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     constructor(params) {
         super(params);
-
+        this.form.posted = edges.getParam(params.posted, false)
+        if (this.form.posted){
+            this.parsley.destroy();
+            this.form.attr("data-parsley-focus", "first")
+            this.parsley = this.form.parsley();
+            this.parsley.validate();
+        }
         this.statusesNotRequiringValidation = ['rejected', 'pending', 'in progress', 'on hold'];
 
         this.formDiff = edges.getParam(params.formDiff, false);
@@ -916,6 +922,20 @@ window.Parsley.addValidator("noScriptTag", {
     priority: 300
     }
 )
+
+window.Parsley.addValidator("year", {
+    validateString : function(value, requirement, parsleyInstance) {
+        if (!parseInt(value)){
+            return false;
+        }
+        let y = parseInt(value)
+        return (y >= requirement && y <= new Date().getFullYear())
+    },
+    messages: {
+        en: '<p><small>This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year<p><small>'
+    },
+    priority: 22
+});
 
 
 ///////////////////////////////////////////////////////////////

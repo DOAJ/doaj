@@ -305,20 +305,21 @@ class TestModels(DoajTestCase):
         d = s.__seamless__.data
         assert 'index' in d, d
         assert 'application_type' in d['index'], d['index']
-        assert d['index']['application_type'] == constants.APPLICATION_TYPE_UPDATE_REQUEST
+        assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_UPDATE_REQUEST_FINISHED
 
         s.remove_current_journal()
         assert s.current_journal is None
+        s.set_is_update_request(False)
         s.prep()
         d = s.__seamless__.data
         assert 'index' in d, d
         assert 'application_type' in d['index'], d['index']
-        assert d['index']['application_type'] == constants.APPLICATION_TYPE_FINISHED
+        assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_NEW_APPLICATION_FINISHED
 
         s.set_application_status(constants.APPLICATION_STATUS_PENDING)
         s.prep()
         d = s.__seamless__.data
-        assert d['index']['application_type'] == constants.APPLICATION_TYPE_NEW_APPLICATION
+        assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_NEW_APPLICATION_UNFINISHED
 
         s.save()
 

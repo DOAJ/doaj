@@ -3265,33 +3265,38 @@ $.extend(true, doaj, {
         },
 
         authorPays : function(val, resultobj, renderer) {
-            var field = "";
-            if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
-                field += 'Has charges';
-            } else if (edges.hasProp(resultobj, "bibjson.other_charges.has_other_charges") && resultobj.bibjson.other_charges.has_other_charges) {
-                field += 'Has charges';
-            }
-            if (field === "") {
-                field = 'No charges';
-            }
-
-            var urls = [];
-            if (edges.hasProp(resultobj, "bibjson.apc.url")) {
-                urls.push(resultobj.bibjson.apc.url);
-            }
-            if (edges.hasProp(resultobj, "bibjson.has_other_charges.url")) {
-                urls.push(resultobj.bibjson.has_other_charges.url)
-            }
-
-            if (urls.length > 0) {
-                field += ' (see ';
-                for (var i = 0; i < urls.length; i++) {
-                    field += '<a href="' + urls[i] + '">' + urls[i] + '</a>';
+            if (resultobj.es_type === "journal") {
+                var field = "";
+                if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
+                    field += 'Has charges';
+                } else if (edges.hasProp(resultobj, "bibjson.other_charges.has_other_charges") && resultobj.bibjson.other_charges.has_other_charges) {
+                    field += 'Has charges';
                 }
-                field += ')';
-            }
+                if (field === "") {
+                    field = 'No charges';
+                }
 
-            return field ? field : false;
+                var urls = [];
+                if (edges.hasProp(resultobj, "bibjson.apc.url")) {
+                    urls.push(resultobj.bibjson.apc.url);
+                }
+                if (edges.hasProp(resultobj, "bibjson.has_other_charges.url")) {
+                    urls.push(resultobj.bibjson.has_other_charges.url)
+                }
+
+                if (urls.length > 0) {
+                    field += ' (see ';
+                    for (var i = 0; i < urls.length; i++) {
+                        field += '<a href="' + urls[i] + '">' + urls[i] + '</a>';
+                    }
+                    field += ')';
+                }
+
+                return field ? field : false;
+            }
+            else {
+                return false;
+            }
         },
 
         abstract : function (val, resultobj, renderer) {
@@ -3465,13 +3470,18 @@ $.extend(true, doaj, {
                 if (resultobj.es_type === "application") {
                     // determine the link name
                     var linkName = "Review application";
-                    if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
-                        linkName = "View finished application";
-                        if (resultobj.admin.related_journal) {
-                            linkName = "View finished update";
+                    if (resultobj.admin.application_type === "new_application") {
+                        if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
+                            linkName = "View new application (finished)"
+                        } else {
+                            linkName = "Review new application"
                         }
-                    } else if (resultobj.admin.current_journal) {
-                        linkName = "Review update";
+                    } else {
+                        if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
+                            linkName = "View update (finished)"
+                        } else {
+                            linkName = "Review update"
+                        }
                     }
 
                     var result = '<p><a class="edit_suggestion_link button" href="';

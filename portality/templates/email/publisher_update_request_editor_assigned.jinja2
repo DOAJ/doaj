@@ -1,0 +1,19 @@
+{#
+~~PublisherUpdateRequestEditorAssigned:Email~~
+~~-> Application:Model~~
+~~-> Account:Model~~
+#}
+
+{% set publisher_name = owner.name %}
+{% set bibjson = application.bibjson() %}
+{% set url_root = config.get("BASE_URL") %}
+
+{% if publisher_name %}Dear {{ publisher_name }},{% endif %}
+
+The update you submitted for "{{ bibjson.title }}" on {{ application.date_applied|human_date }} has been assigned to a Managing Editor for review.
+
+Thank you for helping to keep the DOAJ database up-to-date.
+
+The DOAJ Team
+
+**This is an automated message.**

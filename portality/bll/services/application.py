@@ -306,6 +306,7 @@ class ApplicationService(object):
         if application is None:
             app.logger.info("No existing update request for journal {x}; creating one".format(x=journal.id))
             application = journalService.journal_2_application(journal, account=account)
+            application.set_is_update_request(True)
             if account is not None:
                 journal_lock = lock.lock("journal", journal_id, account.id)
 

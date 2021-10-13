@@ -2,12 +2,22 @@ from portality.core import app
 from portality.lib import httputil
 import urllib.request, urllib.parse, urllib.error, string
 
-from portality.settings import BASE_FILE_PATH
+from portality.lib import dates
 from portality.tasks.harvester_helpers.epmc import models
 from portality.tasks.harvester_helpers.epmc.queries import QueryBuilder
 from datetime import datetime
 import time
 
+
+class DefaultLogger():
+    def __init__(self):
+        self._log = []
+
+    def log(self, msg):
+        self._log.append({
+            "timestamp": dates.now_with_microseconds(),
+            "message" : msg
+        })
 
 def quote(s, **kwargs):
     try:
@@ -61,29 +71,24 @@ class EPMCFullTextException(Exception):
 
 class EuropePMC(object):
 
-    def __init__(self):
-        self.logger = ""
+    def __init__(self, logger=None):
+        self.logger = DefaultLogger() if logger is None else logger
 
     def get_by_pmcid(self, pmcid, cursor=""):
         return self.field_search("PMCID", pmcid, cursor=cursor)
 
-
     def get_by_pmid(self, pmid, cursor=""):
         return self.field_search("EXT_ID", pmid, cursor=cursor)
-
 
     def get_by_doi(self, doi, cursor=""):
         return self.field_search("DOI", doi, cursor=cursor)
 
-
     def title_exact(self, title, cursor=""):
         return self.field_search("TITLE", title, cursor=cursor)
-
 
     def title_approximate(self, title, cursor=""):
         nt = to_keywords(title)
         return self.field_search("TITLE", nt, fuzzy=True, cursor=cursor)
-
 
     def field_search(self, field, value, fuzzy=False, cursor="", page_size=25):
         """
@@ -93,12 +98,10 @@ class EuropePMC(object):
         qb.add_string_field(field, value, fuzzy)
         return self.query(qb.to_url_query_param(), cursor=cursor, page_size=page_size)
 
-
     def field_search_iterator(self, field, value, fuzzy=False, page_size=25, throttle=None):
         qb = QueryBuilder()
         qb.add_string_field(field, value, fuzzy)
         return self.iterate(qb.to_url_query_param(), page_size=page_size, throttle=throttle)
-
 
     def complex_search(self, query_builder, cursor="", page_size=25):
         """
@@ -106,14 +109,11 @@ class EuropePMC(object):
         """
         return self.query(query_builder.to_url_query_param(), cursor=cursor, page_size=page_size)
 
-
     def complex_search_iterator(self, query_builder, page_size=1000, throttle=None):
         return self.iterate(query_builder.to_url_query_param(), page_size=page_size, throttle=throttle)
 
-
     def _write_to_logger(self, msg):
-        self.logger = self.logger + "\n" + msg
-
+        self.logger.log(msg)
 
     def iterate(self, query_string, page_size=1000, throttle=None):
         cursor = ""
@@ -126,13 +126,18 @@ class EuropePMC(object):
                     waitfor = throttle - diff
                     self._write_to_logger("Throttling EPMC requests for {x}s".format(x=waitfor))
                     time.sleep(waitfor)
+            # FIXME: note for the future: EMPC have also added a `nextPageUrl` field, which does the same as
+            # our `url_from_query` method, and we may want to transition to using that going forward.  But for now
+            # the method that we use is still supported
             results, cursor = self.query(query_string, cursor=cursor, page_size=page_size)
             last = datetime.utcnow()
             if len(results) == 0:
                 break
             for r in results:
                 yield r
-
+            # we break on the empty cursor at the end, because we want to process any results first
+            if cursor is None or cursor == "":
+                break
 
     def url_from_query(self, query_string, cursor, page_size):
         quoted = quote(query_string, safe="/")
@@ -149,7 +154,6 @@ class EuropePMC(object):
             url += "&cursorMark=" + qcursor
 
         return url
-
 
     def query(self, query_string, cursor="", page_size=25):
         """
@@ -172,8 +176,7 @@ class EuropePMC(object):
 
         results = [models.EPMCMetadata(r) for r in j.get("resultList", {}).get("result", [])]
         next_cursor_mark = j.get("nextCursorMark", "")
-        return results, next_cursor_mark                      # NOTE: previous versions just returned results, not tuple
-
+        return results, next_cursor_mark
 
     def fulltext(self, pmcid):
         url = app.config.get("EPMC_REST_API") + pmcid + "/fullTextXML"

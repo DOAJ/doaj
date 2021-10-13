@@ -314,7 +314,11 @@ Example record:
 def _element(xml, field, namespace):
     el = xml.find(field, namespace)
     if el is not None:
-        string = etree.tostring(el).decode("utf-8")
+        # this converts the entire element to a string, so that we can handle the possibility of
+        # embedded html tags, etc.
+        # etree.tostring doesn't actually produce a string, but a byte array, so we must specify
+        # the encoding and THEN also decode it using that same encoding to get an actual string
+        string = etree.tostring(el, encoding="utf-8").decode("utf-8")
         start = string.index(">") + 1
         end = string.rindex('</')
         text = string[start:end]
