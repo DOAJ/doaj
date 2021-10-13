@@ -440,13 +440,6 @@ doaj.af.newEditorialApplicationForm = function(params) {
 doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     constructor(params) {
         super(params);
-        this.form.posted = edges.getParam(params.posted, false)
-        if (this.form.posted){
-            this.parsley.destroy();
-            this.form.attr("data-parsley-focus", "first")
-            this.parsley = this.form.parsley();
-            this.parsley.validate();
-        }
         this.statusesNotRequiringValidation = ['rejected', 'pending', 'in progress', 'on hold'];
 
         this.formDiff = edges.getParam(params.formDiff, false);
@@ -583,6 +576,10 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
 
             }).fail(() => {
                 this.jq("#cannot-submit-invalid-fields").show();
+                this.parsley.destroy();
+                this.form.attr("data-parsley-focus", "first")
+                this.parsley = this.form.parsley();
+                this.parsley.validate();
             });
         }
         this.form.submit();
