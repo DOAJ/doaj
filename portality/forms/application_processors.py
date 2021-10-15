@@ -525,7 +525,7 @@ class EditorApplication(ApplicationProcessor):
     """
 
     def validate(self):
-        _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']
+        _statuses_not_requiring_validation = ['pending', 'in progress']
         self.pre_validate()
         # make use of the ability to disable validation, otherwise, let it run
         valid = super(EditorApplication, self).validate()
