@@ -528,6 +528,19 @@ class EditorApplication(ApplicationProcessor):
     ~~EditorApplication:FormProcessor~~
     """
 
+    def validate(self):
+        _statuses_not_requiring_validation = ['pending', 'in progress']
+        self.pre_validate()
+        # make use of the ability to disable validation, otherwise, let it run
+        valid = super(EditorApplication, self).validate()
+
+        if self.form is not None:
+            if self.form.application_status.data in _statuses_not_requiring_validation and not valid:
+                self.resetDefaults(self.form)
+                return True
+
+        return valid
+
     def pre_validate(self):
         # Call to super sets all the basic disabled fields
         super(EditorApplication, self).pre_validate()
