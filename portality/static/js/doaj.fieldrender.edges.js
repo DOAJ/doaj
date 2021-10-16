@@ -3467,9 +3467,9 @@ $.extend(true, doaj, {
                     var linkName = "Review application";
                     if (resultobj.admin.application_type === "new_application") {
                         if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
-                            linkName = "View new application (finished)"
+                            linkName = "View application (finished)"
                         } else {
-                            linkName = "Review new application"
+                            linkName = "Review application"
                         }
                     } else {
                         if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
