@@ -1,3 +1,4 @@
+{# ~~AdminArticleMetadata:Page~~ #}
 {% extends "admin/admin_base.html" %}
 
 {% block page_title %}{{ form_context.source.bibjson().title }} &ndash; Article metadata{% endblock %}
@@ -40,4 +41,11 @@
 
 {% block extra_js_bottom %}
 <script type="text/javascript" src="/static/js/article_metadata_form.js"></script>
+<script type="text/javascript" src="/static/js/dontleave.js"></script>
+<script type="text/javascript">
+    {# ~~->DontLeave:Feature~~ #}
+    jQuery(document).ready(function($) {
+        doaj.dontleave.init({containerSelector: "#article_metadata_form"});
+    });
+</script>
 {% endblock %}
