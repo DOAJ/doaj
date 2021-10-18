@@ -54,9 +54,9 @@
             {% if file.status == "initiated" %}
                 <span class="file_status--initial">initiated</span>
             {% elif file.status == "validated" %}
-                <span class="file_status--initial">pending</span>
+                <span class="file_status--initial">processing</span>
             {% elif file.status == "pending" %}
-                <span class="file_status--initial">pending</span>
+                <span class="file_status--initial">processing</span>
             {% elif file.status == "failed" %}
                 <span class="file_status--error"><span data-feather="alert-octagon" aria-hidden="true"></span> processing failed</span>
             {% elif file.status == "uploaded" %}
