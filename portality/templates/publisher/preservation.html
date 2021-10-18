@@ -111,7 +111,7 @@ journal directory
                 {% elif file.error == "no_article_found" %}
                     No articles found in the package. Invalid package uploaded.
                 {% elif file.error == "no_valid_article_available" %}
-                    None or some of the full-text URLs do not match article metadata already loaded to DOAJ
+                    None or some of the full-text URLs do not match article metadata already added to DOAJ
                 {% elif file.error == "response_tar_filename_doesnot_match" %}
                     Response filename does not match with the file uploaded to Archive Server
                 {% elif file.error == "error_response" %}
@@ -152,35 +152,34 @@ journal directory
                           <th><code>No identifiers available for articles</code></th>
                           <td>No identifier file(s) provided in the package</td>
                           <td>
-                            Provide identifier file(s) as mentioned above
+                            Provide identifier file(s) for your articles in an <code>identifiers.txt</code> or <code>identifiers.csv</code> file.
                           </td>
                         </tr>
                         {% elif file.error == "checksum_doesnot_match" %}
                         <tr>
                           <th><code>Checksum does not match with the response checksum value</code></th>
                           <td>Checksum of the package uploaded and response checksum from archive server does not match</td>
-                          <td>There could an issue while creating the package or at the archive server. Contact DOAJ team</td>
+                          <td>There could an issue while creating the package or at the archive server. <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Checksum%20does%20not%20match%20with%20the%20response%20checksum%20value">Contact the DOAJ team</a></td>
                         </tr>
                         {% elif file.error == "no_article_found" %}
                         <tr>
                           <th><code>No articles found in the package. Invalid package uploaded</code></th>
-                          <td>Directory might be created properly but not files related to the articles present in the directories.<br/>
+                          <td>The package might have been created correctly but files related to the articles could not be found.<br/>
                             There could be identifier files but no other files.
                           </td>
-                          <td>Make sure that articles are provided to upload </td>
+                          <td>Make sure that all articles are included in their corresponding folder.</td>
                         </tr>
                         {% elif file.error == "no_valid_article_available" %}
                         <tr>
-                          <th><code>None or some of the full-text URLs do not match article metadata already loaded to DOAJ</code></th>
-                          <td>System could not find the articles with the given full-text URLs</td>
-                          <td>Articles that are uploaded to DOAJ can only be processed<br/>
-                            Add valid identifiers for articles
+                          <th><code>None or some of the full-text URLs do not match article metadata already added to DOAJ</code></th>
+                          <td>We could not find the articles with the given full-text URLs. Only articles that have been uploaded to DOAJ can be processed.</td>
+                          <td>Add valid identifiers for articles or ensure that the articles are already included in DOAJ.
                           </td>
                         </tr>
                         {% elif file.error == "response_tar_filename_doesnot_match" %}
                         <tr>
                           <th><code>Response filename does not match with the file uploaded to Archive Server</code></th>
-                          <td>The file that has been uploaded to Archive server does not  match with the reponse filename from server</td>
+                          <td>The file that has been uploaded to Archive server does not match with the reponse filename from server</td>
                           <td><a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Response%20filename%20does%20not%20match%20with%20the%20file%20uploaded%20to%20Archive%20Server">Contact the DOAJ team</a></td>
                         </tr>
                         {% elif file.error == "error_response" %}
