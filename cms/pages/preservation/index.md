@@ -1,7 +1,6 @@
 ---
 layout: sidenav
 title: Project JASPER
-section: digital preservation
 toc: true
 sticky_sidenav: true
 featuremap: ~~Preservation:Fragment~~
@@ -11,7 +10,7 @@ featuremap: ~~Preservation:Fragment~~
 
 Project JASPER (JournAlS are Preserved forevER) is an initiative to preserve open access journals. It was launched on [World Preservation Day 2020](https://www.dpconline.org/events/world-digital-preservation-day) and is in response to research* that shows that online journals—both open and closed access journals—can just disappear from the internet. This happens because of a lack of awareness amongst smaller publishers around the need for long-term digital preservation and/or the resources to enroll a journal in a long-term digital preservation scheme.
 
-Long-term archiving of research resources is of paramount importance for scholarship. Authors want to ensure their contributions to the scholarly record will be permanent. Scholars must be able to access all of the published research in their fields, both now and long into the future. 
+Long-term archiving of research resources is of paramount importance for scholarship. Authors want to ensure their contributions to the scholarly record will be permanent. Scholars must be able to access all of the published research in their fields, both now and long into the future.
 
 As a scholarly community, we are pledged to eliminate the possibility that high-value resources can disappear*. Project JASPER aims to close the gap in preservation coverage that currently exists among open access journals.
 
@@ -23,7 +22,7 @@ _*References_
 2. J. Bosman et al. _OA Diamond Journals Study_. https://zenodo.org/record/4558704
 
 ## Phase One
-Phase One of Project JASPER is a pilot project between CLOCKSS, DOAJ, Internet Archive, Keepers Registry and PKP. It is a scoping exercise aiming to find a solution that will reduce the number of unarchived open access journals. 
+Phase One of Project JASPER is a pilot project between CLOCKSS, DOAJ, Internet Archive, Keepers Registry and PKP. It is a scoping exercise aiming to find a solution that will reduce the number of unarchived open access journals.
 
 Starting with a list of diamond open access (i.e. non-APC charging) journals from DOAJ, the five partners are working together to produce an open and sustainable process that will facilitate the archiving of more journals. The process will be open to a diverse community of archiving services, notably those participating in the Keepers Registry. Other “Keepers” and other preservation repositories will be invited to join at a later stage once design, implementation, and testing are complete.
 
@@ -57,13 +56,13 @@ Long-term preservation is a profoundly important mission for libraries, universi
 [CLOCKSS](https://clockss.org/) is entrusted with the long-term preservation of more than 46 million journal articles and 260,000 scholarly books and is a collaboration of the world’s leading academic publishers and research libraries. CLOCKSS operates [12 archive nodes](https://clockss.org/archive-nodes/) at leading academic institutions worldwide. This secure, robust, and decentralized infrastructure can withstand threats from technological, economic, environmental, and political failures. A destructive event in one location doesn’t jeopardize the survival of preserved digital content because the 11 other locations serve as mirror sites to back-up and repair the disrupted location’s archive. Content is triggered from our dark archive if it disappears from the web. To date 64 titles have been triggered and all are made available open access.
 
 ### DOAJ
-DOAJ is the largest, most diverse, free directory of open access journals in the world. DOAJ's mission is to increase the visibility, accessibility, reputation, usage and impact of quality, peer-reviewed, open access scholarly research journals globally, regardless of discipline, geography or language. By assisting journals to become archived in long-term digital preservation schemes, DOAJ fulfils its mission by ensuring accessibility, visibility and usage of these crucial scholarly records. 
+DOAJ is the largest, most diverse, free directory of open access journals in the world. DOAJ's mission is to increase the visibility, accessibility, reputation, usage and impact of quality, peer-reviewed, open access scholarly research journals globally, regardless of discipline, geography or language. By assisting journals to become archived in long-term digital preservation schemes, DOAJ fulfils its mission by ensuring accessibility, visibility and usage of these crucial scholarly records.
 
 ### Internet Archive
-[Internet Archive](https://archive.org/) is a non-profit digital library with the mission of “Universal Access to All Knowledge.” Since 1996, it has worked with over 1,000 universities, libraries, archives, governments, non-profits, and other memory and social good organizations for preservation and access to the cultural and scholarly record in digital form. It owns and operates its own non-profit data centers, stewards over 50 petabytes of archived data, and provides open-source tools and services for digitization, web archiving, digital preservation, web, and data services, including the [Wayback Machine](https://web.archive.org/) and [IA Scholar](https://scholar.archive.org/). 
+[Internet Archive](https://archive.org/) is a non-profit digital library with the mission of “Universal Access to All Knowledge.” Since 1996, it has worked with over 1,000 universities, libraries, archives, governments, non-profits, and other memory and social good organizations for preservation and access to the cultural and scholarly record in digital form. It owns and operates its own non-profit data centers, stewards over 50 petabytes of archived data, and provides open-source tools and services for digitization, web archiving, digital preservation, web, and data services, including the [Wayback Machine](https://web.archive.org/) and [IA Scholar](https://scholar.archive.org/).
 
 ### Keepers Registry
-[Keepers Registry](https://keepers.issn.org) is the global monitor on the archiving arrangements for continuing resources managed by the ISSN International Centre and fuelled by reports from contributing archiving agencies. 
+[Keepers Registry](https://keepers.issn.org) is the global monitor on the archiving arrangements for continuing resources managed by the ISSN International Centre and fuelled by reports from contributing archiving agencies.
 
 ### PKP
-The [Public Knowledge Project](https://pkp.sfu.ca/) (PKP) is a multi-university initiative developing (free) open-source software and conducting research to improve the quality and reach of scholarly publishing. As part of its mandate to make knowledge public, PKP understands that preserving and maintaining long-term access to published content is of utmost importance. To support this, PKP has launched a [Preservation Network](https://pkp.sfu.ca/pkp-pn/), a freely available private LOCKSS network for any OJS user meeting certain technical criteria, and welcomes the opportunity to participate in Project JASPER with our colleagues at DOAJ, Keepers Registry, Internet Archive and CLOCKSS. 
+The [Public Knowledge Project](https://pkp.sfu.ca/) (PKP) is a multi-university initiative developing (free) open-source software and conducting research to improve the quality and reach of scholarly publishing. As part of its mandate to make knowledge public, PKP understands that preserving and maintaining long-term access to published content is of utmost importance. To support this, PKP has launched a [Preservation Network](https://pkp.sfu.ca/pkp-pn/), a freely available private LOCKSS network for any OJS user meeting certain technical criteria, and welcomes the opportunity to participate in Project JASPER with our colleagues at DOAJ, Keepers Registry, Internet Archive and CLOCKSS.
