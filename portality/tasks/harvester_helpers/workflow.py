@@ -1,4 +1,4 @@
-from portality.api.v2 import ArticlesCrudApi
+from portality.api.current import ArticlesCrudApi
 from portality.core import app
 from portality.lib import plugin, dates
 from portality.models import Journal, Account
@@ -76,7 +76,7 @@ class HarvesterWorkflow(object):
             # get all the plugins that we need to run
             harvesters = app.config.get("HARVESTERS", [])
             for h in harvesters:
-                p = plugin.load_class(h)()
+                p = plugin.load_class(h)(self.logger)
                 p_name = p.get_name()
                 lh = state.get_last_harvest(p_name)
                 if lh is None:
@@ -91,8 +91,6 @@ class HarvesterWorkflow(object):
                     if saved:
                         state.set_harvested(p_name, lhd)
                         Report.increment_articles_saved_successfully(p_name)
-
-                self._write_to_logger(p.logger)
         except Exception:
             self._write_to_logger("Exception Processing ISSN:{x} for Account:{y} ".format(y=account_id, x=issn))
             raise

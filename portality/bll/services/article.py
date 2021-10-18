@@ -116,7 +116,7 @@ class ArticleService(object):
         if duplicate is not None:
             if duplicate.id != update_article_id:
                 # it means that doi or ft url has been changed so that it duplicates existing article
-                raise exceptions.DuplicateArticleException()
+                raise exceptions.DuplicateArticleException(Messages.EXCEPTION_IDENTIFIER_CHANGE_CLASH)
             elif merge_duplicate:
                 is_update += 1
                 article.merge(duplicate)
@@ -138,12 +138,12 @@ class ArticleService(object):
             if isinstance(has_permissions_result, bool) and has_permissions_result == True:
                 doi_or_ft_updated = self._doi_or_fulltext_updated(article, duplicate.id)
                 if doi_or_ft_updated or not merge_duplicate:
-                    raise exceptions.DuplicateArticleException()
+                    raise exceptions.DuplicateArticleException(Messages.EXCEPTION_IDENTIFIER_CHANGE)
                 else:
                     is_update += 1
                     article.merge(duplicate)
             else:
-                raise exceptions.DuplicateArticleException()
+                raise exceptions.DuplicateArticleException(Messages.EXCEPTION_DUPLICATE_NO_PERMISSION)
         return is_update
 
     # here we should have the final point of validation for all incoming articles

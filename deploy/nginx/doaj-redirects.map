@@ -7,7 +7,6 @@ default "";
 /rights /apply/guide/#licensing;
 /oainfo /apply/transparency;
 /bestpractice /apply/transparency;
-/api/v1/docs /docs/api;
 /features /docs/oai-pmh;
 /widgets /docs/widgets;
 /public-data-dump /docs/public-data-dump;

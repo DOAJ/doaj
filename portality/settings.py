@@ -9,8 +9,8 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "5.1.5"
-API_VERSION = "2.0.0"
+DOAJ_VERSION = "5.2.3"
+API_VERSION = "3.0.0"
 
 ######################################
 # Deployment configuration
@@ -94,10 +94,10 @@ SCRIPTS_READ_ONLY_MODE = False
 # ~~->OfflineMode:Feature~~
 OFFLINE_MODE = False
 
-# List the features we want to be active (API v1 remains with redirects to v2 features)
+# List the features we want to be active (API v1 and v2 remain with redirects to v3)
 # ~~->API:Feature~~
-FEATURES = ['api1', 'api2']
-VALID_FEATURES = ['api1', 'api2']
+FEATURES = ['api1', 'api2', 'api3']
+VALID_FEATURES = ['api1', 'api2', 'api3']
 
 ########################################
 # File Path and URL Path settings
@@ -117,9 +117,8 @@ else:
     BASE_DOMAIN = BASE_URL
 
 # ~~->API:Feature~~
-BASE_API_URL = "https://doaj.org/api/v2/"
-API1_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
-API2_BLUEPRINT_NAME = "api_v2"  # change if upgrading API to new version and creating new view for that
+BASE_API_URL = "https://doaj.org/api/"
+API_CURRENT_BLUEPRINT_NAME = "api_v3"  # change if upgrading API to new version and creating new view
 
 # URL used for the journal ToC URL in the journal CSV export
 # NOTE: must be the correct route as configured in view/doaj.py
@@ -533,6 +532,10 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
     "bigenddate": {
         "type": "date",
         "format": "dateOptionalTime"
+    },
+    "year": {
+        "type": "date",
+        "format": "year"
     }
 }
 
@@ -1114,6 +1117,8 @@ QUICK_REJECT_REASONS = [
     "The journal does not employ good publishing practices."
 ]
 
+MINIMAL_OA_START_DATE = 1900
+
 
 #############################################
 ## Harvester Configuration
@@ -1124,7 +1129,7 @@ QUICK_REJECT_REASONS = [
 ## EPMC Client configuration
 # ~~-> EPMC:ExternalService~~
 EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
-EPMC_TARGET_VERSION = "6.5"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
+EPMC_TARGET_VERSION = "6.6"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
 EPMC_HARVESTER_THROTTLE = 0.2
 
 # General harvester configuration

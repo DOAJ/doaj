@@ -77,6 +77,18 @@ class JournalLikeBibJSON(SeamlessMixin):
         self.__seamless__.delete("pissn")
 
     @property
+    def oa_start(self):
+        return self.__seamless__.get_single("oa_start")
+
+    @oa_start.setter
+    def oa_start(self, val):
+        self.__seamless__.set_with_struct("oa_start", val)
+
+    @oa_start.deleter
+    def oa_start(self):
+        self.__seamless__.delete("oa_start")
+
+    @property
     def publication_time_weeks(self):
         return self.__seamless__.get_single("publication_time_weeks")
 
