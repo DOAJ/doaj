@@ -12,7 +12,7 @@
     (urs, "My update requests"),
     (xml, "Upload article XML"),
     (metadata, "Enter article metadata"),
-    (preservation, "Preservation"),
+    (preservation, "Upload preservation file"),
     (help, "Help"),
     ]
 %}
@@ -25,11 +25,10 @@
                     {% continue %}
                 {% endif %}
                 {% set selected = url == request.path %}
-                <li class="tabs__item" {% if not selected %}role="presentation"{% endif %}>
+                <li class="type-06 tabs__item" {% if not selected %}role="presentation"{% endif %}>
                     <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}">{{ label }}</a>
                 </li>
             {% endfor %}
         </ul>
     </nav>
 </div>
-
