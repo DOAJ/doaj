@@ -1,33 +1,71 @@
 {% extends "publisher/publisher_base.html" %}
 
-{% block page_title %}Upload article XML{% endblock %}
+{% block page_title %}Upload preservation file{% endblock %}
 
 {% block publisher_content %}
 
 <div class="row">
   <header class="col-md-4">
     <h2>Upload preservation file</h2>
-
-    <div class="alert">
-      <ul>
-        <li><a href="{{ url_for('publisher.help') }}#preservation">Help and guidance on uploading content</a></li>
-        <li><a href="/static/doaj/preservation_example.zip">Download an example package</a></li>
-        <li><a href="/preservation">Read about Project JASPER</a></li>
-      </ul>
-    </div>
+    <p>Project JASPER (JournAlS are Preserved forevER) is an initiative to preserve open access journals. Articles can be preserved via DOAJ if your journal has been pre-approved to use this feature and you see the <em>Preservation</em> tab on your Publisher Dashboard. This is where you can upload your journal’s preservation file as part of the project. <a href="/preservation">Read more about Project JASPER</a></p>
   </header>
 
-  <form id="upload_form" class="col-md-8 form form--compact" method="POST" action="/publisher/preservation" enctype="multipart/form-data">
-    <fieldset>
-      <h3 class="form__header">Zipped package</h3>
-      <div class="form__question">
-        <label for="upload-xml-file">Select a file</label>
-        <input type="file" id="upload-xml-file" name="file">
-        <p><small>Must be less than 50Mb.</small></p>
+  <div class="col-md-8">
+    <h3>Guidance before uploading your file</h3>
+
+    <span class="button" type="button" data-toggle="collapse" data-target="#help-preservation" aria-expanded="false" aria-controls="help-preservation">
+      Help on uploading your file
+      <span data-feather="plus" aria-hidden="true"></span>
+    </span>
+
+    <a href="/static/doaj/preservation_example.zip" class="button">Download an example package</a>
+
+    <div class="collapse" id="help-preservation">
+      <p>You must do the following to get your journal's content preserved:
+        <ol>
+          <li>You collect the content into a package consisting of folders and files</li>
+          <li>You zip the package</li>
+          <li>You <a href="/publisher/preservation">upload the zipped package</a></li>
+          <li>Check that the file uploaded correctly in the 'History of Uploads' section</li>
+          <li>Max upload size supported is 50Mb</li>
+        </ol>
+
+        <p>The package must have the following structure:</p>
+        <pre>
+journal directory
+|
+|-- article1 directory
+|  |
+|  |-- article
+|  |
+|  `-- identifier.txt
+|
+|-- article2 directory
+|  |
+|  |-- article
+|  |
+|  `-- identifier.txt
+|
+`-- identifiers.csv
+        </pre>
+        <p>Each package must contain a list of the articles' identifiers. The file can be a <code>.txt</code> file (<code>identifiers.txt</code>) or a .csv. (<code>identifiers.csv</code>). The identifier can be the URL of the full text of the article, or the article's DOI. Here is <a href="https://docs.google.com/document/d/1eu9LJhMtrFIPKZoyXMY3tLKGDnhwb9AAdwNu9pqlxvw/edit?usp=sharing" target="_blank" rel="noopener">help on how to create the identifiers file plus an example file</a>. <code>identifier.txt</code> file is located under article directory. <code>identifiers.csv</code> file is located under journal directory. This file may contain all articles identifiers. More than one identifier (both URL and DOI) can be mentioned for a article.</p>
+
+        <p>Create a zip file of the package and upload it to the form on this page. Feedback about whether the upload has been successful or not is provided at the bottom of that page. </p>
+
+        <p>After the content has been uploaded successfully, you will only notified with status message <em>successfully processed</em>.</p>
       </div>
-    </fieldset>
-    <button type="submit" id="preservation" class="button button--primary">Upload</button>
-  </form>
+      <form id="upload_form" class="form form--compact" method="POST" action="/publisher/preservation" enctype="multipart/form-data">
+        <fieldset>
+          <h3 class="form__header">Zipped file uploader</h3>
+          <div class="form__question">
+            <label for="upload-xml-file">Select your preservation file in <code>.zip</code> format</label>
+            <input type="file" id="upload-xml-file" name="file">
+            <p><small>Must be less than 50Mb.</small></p>
+          </div>
+        </fieldset>
+        <button type="submit" id="preservation" class="button button--primary">Upload</button>
+      </form>
+  </div>
 </div>
 
 <hr>
@@ -58,7 +96,7 @@
             {% elif file.status == "pending" %}
                 <span class="file_status--initial">processing</span>
             {% elif file.status == "failed" %}
-                <span class="file_status--error"><span data-feather="alert-octagon" aria-hidden="true"></span> processing failed</span>
+                <span class="file_status--error"><span data-feather="alert-octagon" aria-hidden="true"></span> processing failed (<strong data-toggle="modal" data-target="#modal-failed-upload" role="button">why?</strong>)</span>
             {% elif file.status == "uploaded" %}
                 <span class="file_status--success"><span data-feather="thumbs-up" aria-hidden="true"></span> successfully processed</span>
             {% elif file.status == "partial" %}
@@ -86,13 +124,102 @@
                 {% else %}
                     {{ file.error }}
                 {% endif %}
+
+                {# Explanation of file upload failures - table in a modal #}
+                <h2 id="preservation_explanations"></h2>
+                <div class="modal" id="modal-failed-upload" tabindex="-1" role="dialog" aria-labelledby="modalLabel-example">
+                  <div class="modal__dialog" role="document" style="width: 75vw">
+                    <h3 class="modal__title" id="modalLabel-example">
+                      “Why did my file upload fail?”
+                    </h3>
+                    <p>This section explains the error messages that you may see when you upload zipped file. Depending on the message in the 'Notes' column of your <em>History of uploads</em> table, you may be able to correct your zipped file.</p>
+                    <table class="type-06">
+                      <thead>
+                        <tr>
+                          <th style="width: 30%;">
+                            Error message
+                          </th>
+                          <th style="width: 35%;">
+                            Reason
+                          </th>
+                          <th style="width: 35%;">
+                            Resolution
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% if file.error == "no_identifier" %}
+                        <tr>
+                          <th><code>No identifiers available for articles</code></th>
+                          <td>No identifier file(s) provided in the package</td>
+                          <td>
+                            Provide identifier file(s) as mentioned above
+                          </td>
+                        </tr>
+                        {% elif file.error == "checksum_doesnot_match" %}
+                        <tr>
+                          <th><code>Checksum does not match with the response checksum value</code></th>
+                          <td>Checksum of the package uploaded and response checksum from archive server does not match</td>
+                          <td>There could an issue while creating the package or at the archive server. Contact DOAJ team to rectify the issue</td>
+                        </tr>
+                        {% elif file.error == "no_article_found" %}
+                        <tr>
+                          <th><code>No articles found in the package. Invalid package uploaded</code></th>
+                          <td>Directory might be created properly but not files related to the articles present in the directories.<br/>
+                            There could be identifier files but no other files.
+                          </td>
+                          <td>Make sure that articles are provided to upload </td>
+                        </tr>
+                        {% elif file.error == "no_valid_article_available" %}
+                        <tr>
+                          <th><code>None or some of the full-text URLs do not match article metadata already loaded to DOAJ</code></th>
+                          <td>System could not find the articles with the given full-text URLs</td>
+                          <td>Articles that are uploaded to DOAJ can only be processed<br/>
+                            Add valid identifiers for articles
+                          </td>
+                        </tr>
+                        {% elif file.error == "response_tar_filename_doesnot_match" %}
+                        <tr>
+                          <th><code>Response filename does not match with the file uploaded to Archive Server</code></th>
+                          <td>The file that has been uploaded to Archive server does not  match with the reponse filename from server</td>
+                          <td><a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Response%20filename%20does%20not%20match%20with%20the%20file%20uploaded%20to%20Archive%20Server">Contact the DOAJ team</a> to rectify the issue</td>
+                        </tr>
+                        {% elif file.error == "error_response" %}
+                        <tr>
+                          <th><code>Error in response from the server</code></th>
+                          <td>Error occured while uploading to Archive server</td>
+                          <td><a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Error%20in%20response%20from%20the%20server">Contact the DOAJ team</a> to rectify the issue</td>
+                        </tr>
+                        {% elif file.error == "unknown" %}
+                        <tr>
+                          <th><code>Upload failed due to unknown reasons</code></th>
+                          <td>Upload failure due to unknown reasons</td>
+                          <td><a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Upload%20failed%20due%20to%20unknown%20reasons">Contact the DOAJ team</a> to rectify the issue</td>
+                        </tr>
+                        {% elif file.error == "unknown_error_response" %}
+                        <tr>
+                          <th><code>Unknown error from the server</code></th>
+                          <td>Unknown error response received from Archive server</td>
+                          <td><a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Unknown%20error%20from%20the%20server">Contact the DOAJ team</a> to rectify the issue</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                          <th><code>{{ file.error }}</code></th>
+                          <td>N/A</td>
+                          <td><a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20{{ file.error }}">Contact the DOAJ team</a> to rectify the issue</td>
+                        </tr>
+                        {% endif %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
             {% else %}
                 {% if file.status == "uploaded" %}
                     Uploaded articles to archive server
                 {% elif file.status == "initiated" or file.status == "pending" %}
                     Upload to archive server is in process
                 {% elif file.status == "partial" %}
-                    Articles uploaded to archive server. Some articles are not  uploaded due to errors
+                    Articles uploaded to archive server. Some articles are not uploaded due to errors
                 {% endif %}
             {% endif %}
             {% if file.status == "uploaded" or file.status == "partial" and file.articles_info %}
