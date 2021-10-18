@@ -54,9 +54,9 @@
             {% if file.status == "initiated" %}
                 <span class="file_status--initial">initiated</span>
             {% elif file.status == "validated" %}
-                <span class="file_status--initial">validated</span>
+                <span class="file_status--initial">processing</span>
             {% elif file.status == "pending" %}
-                <span class="file_status--initial">pending</span>
+                <span class="file_status--initial">processing</span>
             {% elif file.status == "failed" %}
                 <span class="file_status--error"><span data-feather="alert-octagon" aria-hidden="true"></span> processing failed</span>
             {% elif file.status == "uploaded" %}
@@ -74,9 +74,9 @@
                 {% elif file.error == "no_article_found" %}
                     No articles found in the package. Invalid package uploaded.
                 {% elif file.error == "no_valid_article_available" %}
-                    No articles available in the package
+                    None or some of the full-text URLs do not match article metadata already loaded to DOAJ
                 {% elif file.error == "response_tar_filename_doesnot_match" %}
-                    Response tar filename does not match with the tar file uploaded to Internet Server
+                    Response filename does not match with the file uploaded to Archive Server
                 {% elif file.error == "error_response" %}
                     Error in response from the server
                 {% elif file.error == "unknown" %}

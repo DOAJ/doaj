@@ -270,14 +270,16 @@ class PreservationBackgroundTask(BackgroundTask):
                     preserve_model.partial()
                     preserve_model.save()
             else:
-                # Check if any articles available
-                if articles_list.get_count() == 0:
-                    preserve_model.failed(FailedReasons.no_article_found)
-                    preserve_model.save()
-                # All the articles available are invalid
-                else:
-                    preserve_model.failed(FailedReasons.no_valid_article_available)
-                    preserve_model.save()
+                # If no previous errors found, check other failure reasons
+                if not preserve_model.error:
+                    # Check if any articles available
+                    if articles_list.get_count() == 0:
+                        preserve_model.failed(FailedReasons.no_article_found)
+                        preserve_model.save()
+                    # All the articles available are invalid
+                    else:
+                        preserve_model.failed(FailedReasons.no_valid_article_available)
+                        preserve_model.save()
 
         except (PreservationException, Exception) as exp:
             # ~~-> PreservationException:Exception~~
@@ -298,6 +300,8 @@ class PreservationBackgroundTask(BackgroundTask):
             model.not_found_articles(articles_list.not_found_articles())
         if len(articles_list.no_identifier_articles()) > 0:
             model.no_identifier_articles(articles_list.no_identifier_articles())
+            if len(articles_list.no_identifier_articles()) == articles_list.get_count():
+                model.failed(FailedReasons.no_identifier)
         if len(articles_list.unowned_articles()) > 0:
             model.unowned_articles(articles_list.unowned_articles())
         if len(articles_list.unbagged_articles()) > 0:
@@ -523,16 +527,23 @@ class Preservation:
 
         for dir, subdirs, files in os.walk(self.__local_dir):
 
+            if dir == self.__local_dir:
+                continue
+
             app.logger.debug("Directory : " + dir)
             app.logger.debug("Sub Directories : " + str(subdirs))
             app.logger.debug("Files : " + str(files))
 
-            if Preservation.IDENTIFIERS_CSV in files:
-                # Get articles info from csv file
-                # ~~-> CSVReader:Feature~~
-                csv_reader = CSVReader(os.path.join(dir, Preservation.IDENTIFIERS_CSV))
-                self.__csv_articles_dict = csv_reader.articles_info()
-            self.__process_article(dir, files, articles_list)
+            # Fetch identifiers at the root directory
+            if os.path.dirname(dir) == self.__local_dir:
+                if Preservation.IDENTIFIERS_CSV in files:
+                    # Get articles info from csv file
+                    # ~~-> CSVReader:Feature~~
+                    csv_reader = CSVReader(os.path.join(dir, Preservation.IDENTIFIERS_CSV))
+                    self.__csv_articles_dict = csv_reader.articles_info()
+            # process only the directories that has articles
+            else:
+                self.__process_article(dir, files, articles_list)
 
         return articles_list
 
@@ -542,9 +553,10 @@ class Preservation:
         dir_name = os.path.basename(dir_path)
         package = ArticlePackage(dir_path, files)
 
-        if not self.__has_article_files(files):
-            articles_list.add_no_files_articles(package)
-            return
+        if not os.path.dirname(dir_path) == self.__local_dir:
+            if not self.__has_article_files(files):
+                articles_list.add_no_files_articles(package)
+                return
 
         # check if identifier file exist
         if Preservation.IDENTIFIER_FILE in files:
@@ -584,10 +596,8 @@ class Preservation:
                 articles_list.add_not_found_articles(package)
 
         else:
-            if self.upload_filename:
-                filename = Path(self.upload_filename).stem
-                if filename in os.path.dirname(dir_path):
-                    articles_list.add_no_identifier_articles(package)
+            # did not find any identifier for article
+            articles_list.add_no_identifier_articles(package)
 
     def __has_article_files(self, files):
         """
