@@ -278,10 +278,13 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         }
         this.updateStepIndicator();
 
+        // note that we use `this.currentTab` as the below code is going to
+        // execute asynchronously, and we want to make sure that it shows
+        // the actual correct tab
         $('html').animate({
             scrollTop: 0
         }, 500, () => {
-            $(this.tabs[n]).show();
+            $(this.tabs[this.currentTab]).show();
             $(".nextBtn").blur()
         })
     };
@@ -650,6 +653,8 @@ doaj.af.ReadOnlyApplicationForm = class extends doaj.af.TabbedApplicationForm {
         super(params);
         this.editSectionsFromReview = false;
         this.showTab(this.tabs.length - 1);
+        $(".prevBtn").hide();
+        $(".af-pager").hide();
     }
 };
 
