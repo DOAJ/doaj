@@ -7,7 +7,7 @@
 <div class="row">
   <header class="col-md-4">
     <h2>Upload preservation file</h2>
-    <p>Project JASPER (JournAlS are Preserved forevER) is an initiative to preserve open access journals. Articles can be preserved via DOAJ if your journal has been pre-approved to use this feature and you see the <em>Preservation</em> tab on your Publisher Dashboard. This is where you can upload your journal’s preservation file as part of the project. <a href="/preservation">Read more about Project JASPER</a></p>
+    <p class="alert">Project JASPER (JournAlS are Preserved forevER) is an initiative to preserve open access journals. Articles can be preserved via DOAJ if your journal has been pre-approved to use this feature and you see the <em>Preservation</em> tab on your Publisher Dashboard. This is where you can upload your journal’s preservation file as part of the project. <a href="/preservation">Read more about Project JASPER</a></p>
   </header>
 
   <div class="col-md-8">
@@ -58,7 +58,7 @@ journal directory
           <h3 class="form__header">Zipped file uploader</h3>
           <div class="form__question">
             <label for="upload-xml-file">Select your preservation file in <code>.zip</code> format</label>
-            <input type="file" id="upload-xml-file" name="file" accept=".zip">
+            <input type="file" id="upload-xml-file" name="file" accept=".zip" required>
             <p><small>Must be less than 50Mb.</small></p>
           </div>
         </fieldset>
@@ -244,7 +244,7 @@ journal directory
                         <p>{{file.articles_info.not_found_articles}}</p>
                     {% endif %}
                     {% if file.articles_info.no_files_articles %}
-                        <strong>Articles that do not have files to upload<strong>
+                        <strong>Articles that do not have files to upload</strong>
                         <p>{{file.articles_info.no_files_articles}}</p>
                     {% endif %}
 
