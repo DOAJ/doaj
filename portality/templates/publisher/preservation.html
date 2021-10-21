@@ -98,9 +98,9 @@ journal directory
             {% elif file.status == "failed" %}
                 <span class="file_status--error"><span data-feather="alert-octagon" aria-hidden="true"></span> <br/>Processing failed</span>
             {% elif file.status == "uploaded" %}
-                <span class="file_status--success"><span data-feather="thumbs-up" aria-hidden="true"></span> Successfully processed</span>
+                <span class="file_status--success"><span data-feather="thumbs-up" aria-hidden="true"></span> <br/>Successfully processed</span>
             {% elif file.status == "partial" %}
-                <span class="file_status--warning"><span data-feather="alert-triangle" aria-hidden="true"></span> Partial success</span>
+                <span class="file_status--warning"><span data-feather="alert-triangle" aria-hidden="true"></span> <br/>Partial success</span>
             {% endif %}
         </td>
         <td class="long_content">
