@@ -115,7 +115,7 @@ journal directory
                     <p><strong class="label label--secondary">Why did it fail?</strong> No articles found. The package might have been created correctly but the articles’ full-text files could not be found.</p>
                     <p><strong class="label label--tertiary">How to fix it:</strong> Make sure that all articles are included in their corresponding folder.</p>
                 {% elif file.error == "no_valid_article_available" %}
-                    <p><strong class="label label--secondary">Why did it fail?</strong> We could not find the articles with the given full-text URLs. Only articles that have been uploaded to DOAJ can be processed.</p>
+                    <p><strong class="label label--secondary">Why did it fail?</strong> We could not find the articles with the given full-text URLs. Only articles that have been uploaded to DOAJ can be processed. You may be trying to upload articles for a journal which is not indexed in DOAJ.</p>
                     <p><strong class="label label--tertiary">How to fix it:</strong> Add valid identifiers for articles or ensure that the articles are already included in DOAJ. You can also check with <a href="{{ url_for('doaj.articles_search') }}">DOAJ’s search tool</a> whether or not these articles have been indexed.</p>
                 {% elif file.error == "response_tar_filename_doesnot_match" %}
                     <p><strong class="label label--secondary">Why did it fail?</strong> The file that has been uploaded to the archive server does not match with the reponse filename from the server.</p>
