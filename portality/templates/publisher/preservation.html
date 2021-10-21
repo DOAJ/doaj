@@ -144,32 +144,30 @@ journal directory
             {% endif %}
             {% if file.status == "uploaded" or file.status == "partial" and file.articles_info %}
             <div id="details_{{ file.id }}" style="display:none">
-
-                    {% if file.articles_info.successful_articles %}
-                       <strong>Successful articles: </strong>
-                        <p>{{file.articles_info.successful_articles}}</p>
-                    {% endif %}
-                    {% if file.articles_info.unowned_articles %}
-                        <strong>Unowned articles</strong>
-                        <p>{{file.articles_info.unowned_articles}}</p>
-                    {% endif %}
-                    {% if file.articles_info.no_identifier_articles %}
-                        <strong>Articles that do not have identifiers</strong>
-                        <p>{{file.articles_info.no_identifier_articles}}</p>
-                    {% endif %}
-                    {% if file.articles_info.unbagged_articles %}
-                        <strong>Articles that do not have bags created for tar file</strong>
-                        <p>{{file.articles_info.unbagged_articles}}</p>
-                    {% endif %}
-                    {% if file.articles_info.not_found_articles %}
-                        <strong>Articles that are not found in the system</strong>
-                        <p>{{file.articles_info.not_found_articles}}</p>
-                    {% endif %}
-                    {% if file.articles_info.no_files_articles %}
-                        <strong>Articles that do not have files to upload</strong>
-                        <p>{{file.articles_info.no_files_articles}}</p>
-                    {% endif %}
-
+              {% if file.articles_info.successful_articles %}
+                <p><strong class="label label--secondary">Successful articles</strong></p>
+                <p>{{file.articles_info.successful_articles}}</p>
+              {% endif %}
+              {% if file.articles_info.unowned_articles %}
+                <p><strong class="label label--secondary">Unowned articles</strong></p>
+                <p>{{file.articles_info.unowned_articles}}</p>
+              {% endif %}
+              {% if file.articles_info.no_identifier_articles %}
+                <p><strong class="label label--secondary">Articles that do not have identifiers</strong></p>
+                <p>{{file.articles_info.no_identifier_articles}}</p>
+              {% endif %}
+              {% if file.articles_info.unbagged_articles %}
+                <p><strong class="label label--secondary">Articles that do not have bags created for tar file</strong></p>
+                <p>{{file.articles_info.unbagged_articles}}</p>
+              {% endif %}
+              {% if file.articles_info.not_found_articles %}
+                <p><strong class="label label--secondary">Articles that are not found in the system</strong></p>
+                <p>{{file.articles_info.not_found_articles}}</p>
+              {% endif %}
+              {% if file.articles_info.no_files_articles %}
+                <p><strong class="label label--secondary">Articles that do not have files to upload</strong></p>
+                <p>{{file.articles_info.no_files_articles}}</p>
+              {% endif %}
             </div>
             <a href="#" class="show_error_details" data-id="{{ file.id }}">(show details)</a>
             {% endif %}
