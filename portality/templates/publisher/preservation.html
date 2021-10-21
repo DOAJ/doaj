@@ -90,135 +90,56 @@ journal directory
         </td>
         <td>
             {% if file.status == "initiated" %}
-                <span class="file_status--initial">initiated</span>
+                <span class="file_status--initial">Initiated</span>
             {% elif file.status == "validated" %}
-                <span class="file_status--initial">processing</span>
+                <span class="file_status--initial">Processing</span>
             {% elif file.status == "pending" %}
-                <span class="file_status--initial">processing</span>
+                <span class="file_status--initial">Processing</span>
             {% elif file.status == "failed" %}
-                <span class="file_status--error"><span data-feather="alert-octagon" aria-hidden="true"></span> processing failed (<strong data-toggle="modal" data-target="#modal-failed-upload" role="button">why?</strong>)</span>
+                <span class="file_status--error"><span data-feather="alert-octagon" aria-hidden="true"></span> <br/>Processing failed</span>
             {% elif file.status == "uploaded" %}
-                <span class="file_status--success"><span data-feather="thumbs-up" aria-hidden="true"></span> successfully processed</span>
+                <span class="file_status--success"><span data-feather="thumbs-up" aria-hidden="true"></span> Successfully processed</span>
             {% elif file.status == "partial" %}
-                <span class="file_status--warning"><span data-feather="alert-triangle" aria-hidden="true"></span> partial success</span>
+                <span class="file_status--warning"><span data-feather="alert-triangle" aria-hidden="true"></span> Partial success</span>
             {% endif %}
         </td>
         <td class="long_content">
             {% if file.status == "failed" %}
                 {% if file.error == "no_identifier" %}
-                    No identifiers available for articles
+                    <p><strong class="label label--secondary">Why did it fail?</strong> No identifier file(s) for articles provided in the package.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> Provide identifier file(s) for your articles in an <code>identifiers.txt</code> or <code>identifiers.csv</code> file. See the example file or read <em>Guidance before uploading your file</em>.</p>
                 {% elif file.error == "checksum_doesnot_match" %}
-                    Checksum does not match with the response checksum value
+                    <p><strong class="label label--secondary">Why did it fail?</strong> Checksum of the package uploaded and response checksum from archive server do not match.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> There could an issue while creating the package or at the archive server. <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Checksum%20does%20not%20match">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% elif file.error == "no_article_found" %}
-                    No articles found in the package. Invalid package uploaded.
+                    <p><strong class="label label--secondary">Why did it fail?</strong> No articles found. The package might have been created correctly but the articles’ full-text files could not be found.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> Make sure that all articles are included in their corresponding folder.</p>
                 {% elif file.error == "no_valid_article_available" %}
-                    None or some of the full-text URLs do not match article metadata already added to DOAJ
+                    <p><strong class="label label--secondary">Why did it fail?</strong> We could not find the articles with the given full-text URLs. Only articles that have been uploaded to DOAJ can be processed.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> Add valid identifiers for articles or ensure that the articles are already included in DOAJ. You can also check with <a href="{{ url_for('doaj.articles_search') }}">DOAJ’s search tool</a> whether or not these articles have been indexed.</p>
                 {% elif file.error == "response_tar_filename_doesnot_match" %}
-                    Response filename does not match with the file uploaded to Archive Server
+                    <p><strong class="label label--secondary">Why did it fail?</strong> The file that has been uploaded to the archive server does not match with the reponse filename from the server.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Response%20filename%20does%20not%20match%20with%20the%20file%20uploaded%20to%20the%20archive%20Server">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% elif file.error == "error_response" %}
-                    Error in response from the server
+                    <p><strong class="label label--secondary">Why did it fail?</strong> Error occured while uploading to the archive server.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Error%20in%20response%20from%20the%20server">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% elif file.error == "unknown" %}
-                    Upload failed due to unknown reasons
+                    <p><strong class="label label--secondary">Why did it fail?</strong> Upload failed due to unknown reasons</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Upload%20failed%20due%20to%20unknown%20reasons">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% elif file.error == "unknown_error_response" %}
-                    Unknown error from the server
+                    <p><<strong class="label label--secondary">Why did it fail?</strong> Unknown error from the server</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Unknown%20error%20from%20the%20server">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% else %}
-                    {{ file.error }}
+                    <p><strong class="label label--secondary">Why did it fail?</strong> {{ file.error }}.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20{{ file.error }}">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% endif %}
-
-                {# Explanation of file upload failures - table in a modal #}
-                <h2 id="preservation_explanations"></h2>
-                <div class="modal" id="modal-failed-upload" tabindex="-1" role="dialog" aria-labelledby="modal-failed-upload-label">
-                  <div class="modal__dialog" role="document" style="width: 75vw">
-                    <h3 class="modal__title" id="modal-failed-upload-label">
-                      “Why did my file upload fail?”
-                    </h3>
-                    <p>This section explains the error messages that you may see when you upload zipped file. Depending on the message in the 'Notes' column of your <em>History of uploads</em> table, you may be able to correct your zipped file.</p>
-                    <table class="type-06">
-                      <thead>
-                        <tr>
-                          <th style="width: 30%;">
-                            Error message
-                          </th>
-                          <th style="width: 35%;">
-                            Reason
-                          </th>
-                          <th style="width: 35%;">
-                            Resolution
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% if file.error == "no_identifier" %}
-                        <tr>
-                          <th><code>No identifiers available for articles</code></th>
-                          <td>No identifier file(s) provided in the package</td>
-                          <td>
-                            Provide identifier file(s) for your articles in an <code>identifiers.txt</code> or <code>identifiers.csv</code> file.
-                          </td>
-                        </tr>
-                        {% elif file.error == "checksum_doesnot_match" %}
-                        <tr>
-                          <th><code>Checksum does not match with the response checksum value</code></th>
-                          <td>Checksum of the package uploaded and response checksum from archive server does not match</td>
-                          <td>There could an issue while creating the package or at the archive server. <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Checksum%20does%20not%20match%20with%20the%20response%20checksum%20value">Contact the DOAJ team</a></td>
-                        </tr>
-                        {% elif file.error == "no_article_found" %}
-                        <tr>
-                          <th><code>No articles found in the package. Invalid package uploaded</code></th>
-                          <td>The package might have been created correctly but files related to the articles could not be found.<br/>
-                            There could be identifier files but no other files.
-                          </td>
-                          <td>Make sure that all articles are included in their corresponding folder.</td>
-                        </tr>
-                        {% elif file.error == "no_valid_article_available" %}
-                        <tr>
-                          <th><code>None or some of the full-text URLs do not match article metadata already added to DOAJ</code></th>
-                          <td>We could not find the articles with the given full-text URLs. Only articles that have been uploaded to DOAJ can be processed.</td>
-                          <td>Add valid identifiers for articles or ensure that the articles are already included in DOAJ.
-                          </td>
-                        </tr>
-                        {% elif file.error == "response_tar_filename_doesnot_match" %}
-                        <tr>
-                          <th><code>Response filename does not match with the file uploaded to Archive Server</code></th>
-                          <td>The file that has been uploaded to Archive server does not match with the reponse filename from server</td>
-                          <td><a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Response%20filename%20does%20not%20match%20with%20the%20file%20uploaded%20to%20Archive%20Server">Contact the DOAJ team</a></td>
-                        </tr>
-                        {% elif file.error == "error_response" %}
-                        <tr>
-                          <th><code>Error in response from the server</code></th>
-                          <td>Error occured while uploading to Archive server</td>
-                          <td><a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Error%20in%20response%20from%20the%20server">Contact the DOAJ team</a></td>
-                        </tr>
-                        {% elif file.error == "unknown" %}
-                        <tr>
-                          <th><code>Upload failed due to unknown reasons</code></th>
-                          <td>Upload failure due to unknown reasons</td>
-                          <td><a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Upload%20failed%20due%20to%20unknown%20reasons">Contact the DOAJ team</a></td>
-                        </tr>
-                        {% elif file.error == "unknown_error_response" %}
-                        <tr>
-                          <th><code>Unknown error from the server</code></th>
-                          <td>Unknown error response received from Archive server</td>
-                          <td><a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Unknown%20error%20from%20the%20server">Contact the DOAJ team</a></td>
-                        </tr>
-                        {% else %}
-                        <tr>
-                          <th><code>{{ file.error }}</code></th>
-                          <td>N/A</td>
-                          <td><a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20{{ file.error }}">Contact the DOAJ team</a></td>
-                        </tr>
-                        {% endif %}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
             {% else %}
                 {% if file.status == "uploaded" %}
                     Uploaded articles to archive server
                 {% elif file.status == "initiated" or file.status == "pending" %}
                     Upload to archive server is in process
                 {% elif file.status == "partial" %}
-                    Articles uploaded to archive server. Some articles are not uploaded due to errors
+                    Articles uploaded to archive server. Some articles are not uploaded due to errors.
                 {% endif %}
             {% endif %}
             {% if file.status == "uploaded" or file.status == "partial" and file.articles_info %}
