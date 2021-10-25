@@ -476,6 +476,11 @@ def why_index():
     return render_template("layouts/static_page.html", page_frag="/apply/why-index.html")
 
 
+@blueprint.route("/apply/preservation/")
+def preservation():
+    return render_template("layouts/static_page.html", page_frag="/apply/preservation.html")
+
+
 @blueprint.route("/docs/oai-pmh/")
 def oai_pmh():
     return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh.html")
@@ -539,10 +544,6 @@ def volunteers():
 @blueprint.route("/about/team/")
 def team():
     return render_template("layouts/static_page.html", page_frag="/about/team.html")
-
-@blueprint.route("/preservation/")
-def preservation():
-    return render_template("layouts/static_page.html", page_frag="/preservation/index.html")
 
 # LEGACY ROUTES
 @blueprint.route("/subjects")

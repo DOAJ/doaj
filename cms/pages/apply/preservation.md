@@ -1,6 +1,7 @@
 ---
 layout: sidenav
 title: Project JASPER
+section: Apply
 toc: true
 sticky_sidenav: true
 featuremap: ~~Preservation:Fragment~~
@@ -16,28 +17,30 @@ As a scholarly community, we are pledged to eliminate the possibility that high-
 
 Questions? [Email us](mailto:preservation@doaj.org).
 
-_*References_
+#### References
 
 1. M. Laakso, M. Matthias, N. Jahn. _Open is not forever: A study of vanished open access journals_. Journal of the Association for Information Science and Technology, Feb. 2021. [https://doi.org/10.1002/asi.24460](https://doi.org/10.1002/asi.24460)
 2. J. Bosman et al. _OA Diamond Journals Study_. [https://zenodo.org/record/4558704](https://zenodo.org/record/4558704)
 
 ## Phase One
+
 Phase One of Project JASPER is a pilot project between CLOCKSS, DOAJ, Internet Archive, Keepers Registry and PKP. It is a scoping exercise aiming to find a solution that will reduce the number of unarchived open access journals.
 
 Starting with a list of diamond open access (i.e. non-APC charging) journals from DOAJ, the five partners are working together to produce an open and sustainable process that will facilitate the archiving of more journals. The process will be open to a diverse community of archiving services, notably those participating in the Keepers Registry. Other “Keepers” and other preservation repositories will be invited to join at a later stage once design, implementation, and testing are complete.
 
 JASPER’s aim is to get more journals archived by establishing a simple process:
 
-- work out which archiving option might be the best fit for the publisher, 
+- work out which archiving option might be the best fit for the publisher,
 - establish the level where the amount of effort is manageable by the publisher. This is based on the following factors:
   - platform
   - ability to send article metadata to DOAJ
   - ability to export and zip full text, images etc easily
 - provide the journal’s representatives with the correct information to make archiving happen.
 
-The premise of the JASPER process is that all journals are different, with different needs, different priorities and different resources. The workflow needs to offer viable alternatives to journals so that they engage with one or more archiving services that meet their requirements and capacities. 
+The premise of the JASPER process is that all journals are different, with different needs, different priorities and different resources. The workflow needs to offer viable alternatives to journals so that they engage with one or more archiving services that meet their requirements and capacities.
 
 ### For publishers
+
 We hope that many open access publishers, whose journals are not currently archived, will want to take part. The criteria for eligibility for Phase One are:
 
 - Your journal must be indexed in DOAJ
@@ -47,34 +50,43 @@ We hope that many open access publishers, whose journals are not currently archi
 Towards the end of 2021, DOAJ will send an email to the DOAJ account holders of a subset of the journals that meet the criteria above. The email will invite you to answer a survey. The survey will determine which archiving options are best suited to your journal.
 
 #### Archiving options
+
 1. *The OJS route*: OJS journals can use the PKP PN preservation service which is built on LOCKSS software. You need to enable a plugin in the journal's dashboard and agree to some simple terms. However, your journal must be on the right version of the OJS software to take part. JASPER makes sure that the journals get the guidance they need to upgrade and become compliant.  PKP is taking a more active role in supporting publishers to upgrade to recent versions of OJS. To help make this happen, they are updating their documentation and guidance. JASPER makes sure that the journals get the guidance they need to upgrade and become compliant.
 2. *The upload route*: journals can indicate in DOAJ that they wish to export their content, we then match the full text with article metadata and send everything to a folder. From this single location archiving agencies, such as CLOCKSS and Internet Archive (and, later, other “Keepers”) can collect the content. CLOCKSS is a dark archive for journals where the content is ingested and preserved, minimising format redundancy and preventing digital decay. It is built over LOCKSS software developed by Stanford University and is community-owned and governed. Internet Archive is a non-profit digital library and archive that operates its own data centers and provides archiving services to over a thousand libraries worldwide. Its IA Scholar service preserves and provides perpetual access to tens of millions of web-published open scholarly outputs.
 3. *The web-crawing route*: if you are not able to or do not want to export article metadata and full text, your journal website details will be provided to the Internet Archive for inclusion in best-effort, automated web harvesting.
 
 #### More copies, better preservation
+
 It is always safer for a journal’s content to be archived in more than one place and, ideally, in at least three. To make this easy for smaller publishers, journals opting for Route 2 will automatically have their content preserved via Route 3. Future phases of the project will add the possibility for Route 1 journals to take part in other routes too.
 
 ### For the Keepers
+
 There are often costs associated with adding new journals to a preservation service. JASPER aims to significantly reduce these costs by using DOAJ as a common interface to the thousands of journals indexed in it. By delivering content to an FTP server hosted by Internet Archive, content deliveries are unified into a single format and available from a single location.
 
 Phase One will design, implement and test this process, supported by money or services donated by the five project partners. Once the process has been tested for workflow efficiencies, capacity and usability, and the project is secured with sustainable funding, the process will be opened up to more Keepers.
 
 ### For libraries and universities
+
 Long-term preservation is a profoundly important mission for libraries, universities, and other memory organisations. By supporting DOAJ, the archiving services participating in this project, and in Keepers, you are helping us preserve valuable scholarly content for the long-term and in a very cost-effective way. Thank you for your continuing support!
 
 ## About the project partners
 
 ### CLOCKSS
+
 [CLOCKSS](https://clockss.org/) is entrusted with the long-term preservation of more than 46 million journal articles and 260,000 scholarly books and is a collaboration of the world’s leading academic publishers and research libraries. CLOCKSS operates [12 archive nodes](https://clockss.org/archive-nodes/) at leading academic institutions worldwide. This secure, robust, and decentralized infrastructure can withstand threats from technological, economic, environmental, and political failures. A destructive event in one location doesn’t jeopardize the survival of preserved digital content because the 11 other locations serve as mirror sites to back-up and repair the disrupted location’s archive. Content is triggered from our dark archive if it disappears from the web. To date 64 titles have been triggered and all are made available open access.
 
 ### DOAJ
+
 DOAJ is the largest, most diverse, free directory of open access journals in the world. DOAJ's mission is to increase the visibility, accessibility, reputation, usage and impact of quality, peer-reviewed, open access scholarly research journals globally, regardless of discipline, geography or language. By assisting journals to become archived in long-term digital preservation schemes, DOAJ fulfils its mission by ensuring accessibility, visibility and usage of these crucial scholarly records.
 
 ### Internet Archive
+
 [Internet Archive](https://archive.org/) is a non-profit digital library with the mission of “Universal Access to All Knowledge.” Since 1996, it has worked with over 1,000 universities, libraries, archives, governments, non-profits, and other memory and social good organizations for preservation and access to the cultural and scholarly record in digital form. It owns and operates its own non-profit data centers, stewards over 50 petabytes of archived data, and provides open-source tools and services for digitization, web archiving, digital preservation, web, and data services, including the [Wayback Machine](https://web.archive.org/) and [IA Scholar](https://scholar.archive.org/).
 
 ### Keepers Registry
+
 [Keepers Registry](https://keepers.issn.org) is the global monitor on the archiving arrangements for continuing resources managed by the ISSN International Centre and fuelled by reports from contributing archiving agencies.
 
 ### PKP
+
 The [Public Knowledge Project](https://pkp.sfu.ca/) (PKP) is a multi-university initiative developing (free) open-source software and conducting research to improve the quality and reach of scholarly publishing. As part of its mandate to make knowledge public, PKP understands that preserving and maintaining long-term access to published content is of utmost importance. To support this, PKP has launched a [Preservation Network](https://pkp.sfu.ca/pkp-pn/), a freely available private LOCKSS network for any OJS user meeting certain technical criteria, and welcomes the opportunity to participate in Project JASPER with our colleagues at DOAJ, Keepers Registry, Internet Archive and CLOCKSS.
