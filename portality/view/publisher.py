@@ -10,7 +10,7 @@ from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, D
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
-from portality.tasks.preservation import PreservationBackgroundTask, PreservationStorageException, PreservationException
+from portality.tasks.preservation import *
 from portality.ui.messages import Messages
 from portality import lock
 from portality.models import DraftApplication
@@ -247,6 +247,9 @@ def preservation():
         preservation_model = models.PreservationState()
         preservation_model.set_id()
         preservation_model.initiated(current_user.id, f.filename)
+
+        previous.insert(0, preservation_model)
+
         app.logger.debug(f"Preservation model created with id {preservation_model.id}")
 
         if f is None or f.filename == "":
@@ -259,31 +262,45 @@ def preservation():
         preservation_model.validated()
         preservation_model.save()
 
-        previous.insert(0, preservation_model)
+        # check if collection has been assigned for the user
+        # collection must be in the format {"user_id1",["collection_name1","collection_id1"],
+        #                                     "user_id2",["collection_name2","collection_id2"]}
+        collection_available = True
+        collection_dict = app.config.get("PRESERVATION_COLLECTION")
+        if collection_dict and not current_user.id in collection_dict:
+            collection_available = False
+        elif collection_dict:
+            params = collection_dict[current_user.id]
+            if not len(params) == 2:
+                collection_available = False
 
-        try:
-            job = PreservationBackgroundTask.prepare(current_user.id, upload_file=f)
-            PreservationBackgroundTask.set_param(job.params, "model_id", preservation_model.id)
-            PreservationBackgroundTask.submit(job)
+        if not collection_available:
+            preservation_model.failed(FailedReasons.collection_not_available)
+            preservation_model.save()
 
-            flash("File uploaded and waiting to be processed.", "success")
-
-        except EmailException:
-            app.logger.exception('Error sending  email' )
-        except (PreservationStorageException, PreservationException, Exception) as exp:
+        else:
             try:
-                uid = str(uuid.uuid1())
-                flash("An error has occurred and your preservation upload may not have succeeded. Please report the issue with the ID " + uid)
-                preservation_model.failed(str(exp) + " Issue id : " + uid)
-                preservation_model.save()
-                app.logger.exception('Preservation upload error. ' + uid)
-                if job:
-                    background_task = PreservationBackgroundTask(job)
-                    background_task.cleanup()
-            except Exception:
-                app.logger.exception('Unknown error.')
-        return resp
+                job = PreservationBackgroundTask.prepare(current_user.id, upload_file=f)
+                PreservationBackgroundTask.set_param(job.params, "model_id", preservation_model.id)
+                PreservationBackgroundTask.submit(job)
 
+                flash("File uploaded and waiting to be processed.", "success")
+
+            except EmailException:
+                app.logger.exception('Error sending  email' )
+            except (PreservationStorageException, PreservationException, Exception) as exp:
+                try:
+                    uid = str(uuid.uuid1())
+                    flash("An error has occurred and your preservation upload may not have succeeded. Please report the issue with the ID " + uid)
+                    preservation_model.failed(str(exp) + " Issue id : " + uid)
+                    preservation_model.save()
+                    app.logger.exception('Preservation upload error. ' + uid)
+                    if job:
+                        background_task = PreservationBackgroundTask(job)
+                        background_task.cleanup()
+                except Exception:
+                    app.logger.exception('Unknown error.')
+        return resp
 
 
 @blueprint.route("/metadata", methods=["GET", "POST"])

@@ -250,7 +250,7 @@ class PreservationBackgroundTask(BackgroundTask):
             app.logger.debug("Created package structure")
 
             if len(articles_list.successful_articles()) > 0:
-                package = PreservationPackage(preserv.preservation_dir)
+                package = PreservationPackage(preserv.preservation_dir, job.user)
                 job.add_audit_message("Create preservation package")
                 tar_file = package.create_package()
                 app.logger.debug(f"Created tar file {tar_file}")
@@ -427,7 +427,7 @@ class CSVReader:
         """
         data = {}
 
-        with open(self.__csv_file, 'r') as file:
+        with open(self.__csv_file, mode='r', encoding='utf-8-sig') as file:
             reader = csv.DictReader(file, CSVReader.FIELDS)
             for row in reader:
                 dir_name = row[CSVReader.FIELD_DIR]
@@ -678,10 +678,11 @@ class PreservationPackage:
     Creates preservation package and upload to Internet Server
     """
 
-    def __init__(self, directory):
+    def __init__(self, directory, owner):
         self.package_dir = directory
         self.tar_file = self.package_dir + ".tar.gz"
         self.tar_file_name = os.path.basename(self.tar_file)
+        self.__owner = owner
 
     def create_package(self):
         """
@@ -702,8 +703,10 @@ class PreservationPackage:
         url = app.config.get("PRESERVATION_URL")
         username = app.config.get("PRESERVATION_USERNAME")
         password = app.config.get("PRESERVATION_PASSWD")
-        collection = app.config.get("PRESERVATION_COLLECTION")
-        collection_id = app.config.get("PRESERVATION_COLLECTION_ID")
+        collection_dict = app.config.get("PRESERVATION_COLLECTION")
+        params = collection_dict[self.__owner]
+        collection = params[0]
+        collection_id = params[1]
 
         file_name = os.path.basename(self.tar_file)
 
@@ -757,3 +760,4 @@ class FailedReasons:
     tar_filename_doesnot_match = "response_tar_filename_doesnot_match"
     error_response = "error_response"
     unknown_error_response = "unknown_error_response"
+    collection_not_available = "collection_not_available"
