@@ -120,7 +120,10 @@ journal directory
                 {% elif file.error == "response_tar_filename_doesnot_match" %}
                     <p><strong class="label label--secondary">Why did it fail?</strong> The file that has been uploaded to the archive server does not match with the reponse filename from the server.</p>
                     <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Response%20filename%20does%20not%20match%20with%20the%20file%20uploaded%20to%20the%20archive%20Server">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
-                {% elif file.error == "error_response" %}
+            {% elif file.error == "collection_not_available" %}
+                    <p><strong class="label label--secondary">Why did it fail?</strong> User's Collection details not available or invalid</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Collection%20details%20not%20available%20or%20invalid">Contact the DOAJ team</a> and include your user id.</p>
+            {% elif file.error == "error_response" %}
                     <p><strong class="label label--secondary">Why did it fail?</strong> Error occured while uploading to the archive server.</p>
                     <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Error%20in%20response%20from%20the%20server">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% elif file.error == "unknown" %}

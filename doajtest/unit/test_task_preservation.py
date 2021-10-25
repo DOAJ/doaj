@@ -27,14 +27,15 @@ class TestPreservation(DoajTestCase):
         dir_name = owner + "-" + created_time
         self.local_dir = os.path.join(preservation.Preservation.UPLOAD_DIR, dir_name)
         self.preserve = preservation.Preservation(self.local_dir, owner)
-        self.package = preservation.PreservationPackage(self.preserve.preservation_dir)
+        self.package = preservation.PreservationPackage(self.preserve.preservation_dir, owner)
         self.local_dir = os.path.join(self.local_dir,"tmp")
-
+        self.preservation_collection = app.config.get("PRESERVATION_COLLECTION")
+        app.config["PRESERVATION_COLLECTION"] = {"rama":["test","2"]}
 
     def tearDown(self):
         super(TestPreservation, self).tearDown()
         preservation.Preservation.delete_local_directory(self.local_dir)
-
+        app.config["PRESERVATION_COLLECTION"] = self.preservation_collection
 
     def test_local_directory(self):
 
