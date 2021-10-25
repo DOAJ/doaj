@@ -160,7 +160,7 @@ class JournalService(object):
         models.Cache.cache_csv(url)
         return url, action_register
 
-    def admin_csv(self, file_path, account_sub_length=8):
+    def admin_csv(self, file_path, account_sub_length=8, obscure_accounts="true"):
         """
         ~~AdminJournalCSV:Feature->JournalCSV:Feature~~
         
@@ -171,18 +171,21 @@ class JournalService(object):
         # create a closure for substituting owners for consistently used random strings
         unmap = {}
 
-        def obscured_usernames(j):
+        def usernames(j):
             o = j.owner
-            sub = None
-            if o in unmap:
-                sub = unmap[o]
+            if (obscure_accounts == "true"):
+                sub = None
+                if o in unmap:
+                    sub = unmap[o]
+                else:
+                    sub = "".join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in range(account_sub_length))
+                    unmap[o] = sub
+                return [("Owner", sub)]
             else:
-                sub = "".join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in range(account_sub_length))
-                unmap[o] = sub
-            return [("Owner", sub)]
+                return [("Owner", o)]
 
         with open(file_path, "w", encoding="utf-8") as f:
-            self._make_journals_csv(f, obscured_usernames)
+            self._make_journals_csv(f, usernames)
 
     def _make_journals_csv(self, file_object, additional_columns=None):
         """
@@ -202,7 +205,8 @@ class JournalService(object):
                 ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
                 # ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
                 ("Added on Date", journal.created_date),
-                ("Last updated Date", journal.last_manual_update)
+                ("Last updated Date", journal.last_manual_update),
+                ("OA Start Date", journal.bibjson().oa_start)
             ]
             return kvs
 
