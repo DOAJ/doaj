@@ -21,9 +21,10 @@
     <a href="/static/doaj/preservation_example.zip" class="button">Download an example package</a>
 
     <div class="collapse" id="help-preservation">
-      <p>To get your journal's content preserved, you need to:
+      <p>To get your journal's content preserved:
         <ol>
           <li>Only the full text of articles whose metadata is already uploaded to DOAJ can be sent to us. Check that your article metadata appears in DOAJ first.</li>
+          <li>Only articles for journals indexed in DOAJ can be uploaded.
           <li>Collect the full texts into a package consisting of folders and files.</li>
           <li>Compress the package into a ZIP file.</li>
           <li>Upload the zipped package (on this page).</li>
@@ -37,22 +38,18 @@ journal directory
 |-- article1 directory
 |  |
 |  |-- article
-|  |
-|  `-- identifier.txt
 |
 |-- article2 directory
 |  |
 |  |-- article
-|  |
-|  `-- identifier.txt
 |
-`-- identifiers.csv
+|-- identifiers.csv
         </pre>
-        <p>Each package must contain a list of the articles' identifiers. The file can be a <code>.txt</code> file (<code>identifiers.txt</code>) or a .csv. (<code>identifiers.csv</code>). The identifier can be the URL of the full text of the article, or the article's DOI. Here is <a href="https://docs.google.com/document/d/1eu9LJhMtrFIPKZoyXMY3tLKGDnhwb9AAdwNu9pqlxvw/edit?usp=sharing" target="_blank" rel="noopener">help on how to create the identifiers file plus an example file</a>. <code>identifier.txt</code> file is located under article directory. <code>identifiers.csv</code> file is located under journal directory. This file may contain all articles identifiers. More than one identifier (both URL and DOI) can be mentioned for a article.</p>
+        <p>Each package must contain a list of the articles' identifiers. The identifier can be the URL of the full text of the article, or the article's DOI, or both. The file can be a <code>.txt</code> file (<code>identifiers.txt</code>) or a .csv. (<code>identifiers.csv</code>).  Here is <a href="https://docs.google.com/document/d/1eu9LJhMtrFIPKZoyXMY3tLKGDnhwb9AAdwNu9pqlxvw/edit?usp=sharing" target="_blank" rel="noopener">detailed help on how to create the identifiers file</a>.</p>
 
-        <p>Create a zip file of the package and upload it to the form on this page. Feedback about whether the upload has been successful or not is provided at the bottom of that page. </p>
+        <p>Create a zip file of the package and upload it on this page. Feedback about whether the upload has been successful or not is provided at the bottom of that page. </p>
 
-        <p>After the content has been uploaded successfully, you will only notified with status message <em>successfully processed</em>.</p>
+        <p>If the content uploads successfully, you will see the status message <em>successfully processed</em>.</p>
       </div>
       <form id="upload_form" class="form form--compact" method="POST" action="/publisher/preservation" enctype="multipart/form-data">
         <fieldset>
@@ -110,31 +107,31 @@ journal directory
                     <p><strong class="label label--tertiary">How to fix it:</strong> Provide identifier file(s) for your articles in an <code>identifiers.txt</code> or <code>identifiers.csv</code> file. See the example file or read <em>Guidance before uploading your file</em>.</p>
                 {% elif file.error == "checksum_doesnot_match" %}
                     <p><strong class="label label--secondary">Why did it fail?</strong> Checksum of the package uploaded and response checksum from archive server do not match.</p>
-                    <p><strong class="label label--tertiary">How to fix it:</strong> There could an issue while creating the package or at the archive server. <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Checksum%20does%20not%20match">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> There could an issue while creating the package or at the archive server. <a href="mailto:helpdesk@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Checksum%20does%20not%20match">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% elif file.error == "no_article_found" %}
                     <p><strong class="label label--secondary">Why did it fail?</strong> No articles found. The package might have been created correctly but the articles’ full-text files could not be found.</p>
                     <p><strong class="label label--tertiary">How to fix it:</strong> Make sure that all articles are included in their corresponding folder.</p>
                 {% elif file.error == "no_valid_article_available" %}
-                    <p><strong class="label label--secondary">Why did it fail?</strong> We could not find the articles with the given full-text URLs. Only articles that have been uploaded to DOAJ can be processed. You may be trying to upload articles for a journal which is not indexed in DOAJ.</p>
-                    <p><strong class="label label--tertiary">How to fix it:</strong> Add valid identifiers for articles or ensure that the articles are already included in DOAJ. You can also check with <a href="{{ url_for('doaj.articles_search') }}">DOAJ’s search tool</a> whether or not these articles have been indexed.</p>
+                    <p><strong class="label label--secondary">Why did it fail?</strong> We could not find the articles with the given full-text URLs. Only articles whose metadata is already uploaded to DOAJ can be processed. Also, check that the journal appears on the 'My journals' tab. You can only upload full text for journals that appear there.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> Add valid identifiers for articles or ensure that the articles are already included in DOAJ. You can also check with <a href="{{ url_for('doaj.articles_search') }}">DOAJ's search tool</a> whether or not these articles have been indexed.</p>
                 {% elif file.error == "response_tar_filename_doesnot_match" %}
-                    <p><strong class="label label--secondary">Why did it fail?</strong> The file that has been uploaded to the archive server does not match with the reponse filename from the server.</p>
-                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Response%20filename%20does%20not%20match%20with%20the%20file%20uploaded%20to%20the%20archive%20Server">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
+                    <p><strong class="label label--secondary">Why did it fail?</strong> The file that has been uploaded to the archive server does not match with the response filename from the server.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:helpdesk@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Response%20filename%20does%20not%20match%20with%20the%20file%20uploaded%20to%20the%20archive%20Server">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
             {% elif file.error == "collection_not_available" %}
                     <p><strong class="label label--secondary">Why did it fail?</strong> User's Collection details not available or invalid</p>
-                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Collection%20details%20not%20available%20or%20invalid">Contact the DOAJ team</a> and include your user id.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:helpdesk@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Collection%20details%20not%20available%20or%20invalid">Contact the DOAJ team</a> and include your user id.</p>
             {% elif file.error == "error_response" %}
                     <p><strong class="label label--secondary">Why did it fail?</strong> Error occured while uploading to the archive server.</p>
-                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Error%20in%20response%20from%20the%20server">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:helpdesk@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Error%20in%20response%20from%20the%20server">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% elif file.error == "unknown" %}
                     <p><strong class="label label--secondary">Why did it fail?</strong> Upload failed due to unknown reasons</p>
-                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Upload%20failed%20due%20to%20unknown%20reasons">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:helpdesk@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Upload%20failed%20due%20to%20unknown%20reasons">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% elif file.error == "unknown_error_response" %}
                     <p><<strong class="label label--secondary">Why did it fail?</strong> Unknown error from the server</p>
-                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Unknown%20error%20from%20the%20server">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:helpdesk@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20Unknown%20error%20from%20the%20server">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% else %}
                     <p><strong class="label label--secondary">Why did it fail?</strong> {{ file.error }}.</p>
-                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:feedback@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20{{ file.error }}">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
+                    <p><strong class="label label--tertiary">How to fix it:</strong> <a href="mailto:helpdesk@doaj.org?subject=Preservation%20file%20upload%20error&body=Error%20name:%20{{ file.error }}">Contact the DOAJ team</a> and attach the zipped package to your message.</p>
                 {% endif %}
             {% else %}
                 {% if file.status == "uploaded" %}
