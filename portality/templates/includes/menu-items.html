@@ -7,9 +7,12 @@
             {% set url = url_for(entry.route) %}
             {% set urlAttrs = "" %}
         {% endif %}
-        <a {{ urlAttrs }} href="{{ url }}">
+
+        <a {{ urlAttrs }} href="{{ url }}"{% if entry.modal %} data-toggle="modal" data-target="#modal-{{ entry.modal }}" role="button"{% endif %}>
             {% if entry.feather %}
-            <span aria-hidden="true" data-feather="{{ entry.feather }}"></span>
+              <span aria-hidden="true" data-feather="{{ entry.feather }}"></span>
+            {% elif entry.include %}
+              {% include entry.include %}
             {% endif %}
             {{ entry.label }}
         </a>
