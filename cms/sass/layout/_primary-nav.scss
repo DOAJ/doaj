@@ -36,18 +36,6 @@
     }
   }
 
-  &--scrolled {
-    top: -75px;
-
-    a,
-    .secondary-nav__menu-toggle,
-    .nav-bar__link,
-    .label {
-      color: $warm-black;
-      stroke: $warm-black;
-    }
-  }
-
   .dropdown__trigger {
     line-height: 75px;
   }
@@ -59,6 +47,24 @@
 
   .primary-nav__item_desktop, .primary-nav__search {
     margin-left: $spacing-04;
+  }
+
+  &--scrolled {
+    height: 50px;
+
+    .logo, .logo svg {
+      padding: 0;
+      height: 20px;
+      line-height: 1;
+    }
+
+    .nav-bar {
+      height: 50px;
+    }
+
+    .dropdown__trigger {
+      line-height: 50px;
+    }
   }
 
   @media (max-width: 768px) {
