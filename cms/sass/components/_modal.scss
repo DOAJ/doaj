@@ -21,6 +21,10 @@
   -webkit-overflow-scrolling: touch;
   outline: 0;
 
+  input, select, textarea {
+    width: 100%;
+  }
+
   &.fade .modal__dialog {
     -webkit-transform: translate(0, -25%);
     -ms-transform: translate(0, -25%);
@@ -84,7 +88,7 @@
 
 @media (min-width: 768px) {
   .modal__dialog {
-    width: 600px;
+    width: 60vw;
     margin: 30px auto;
   }
 }
