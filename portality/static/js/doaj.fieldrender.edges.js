@@ -3470,13 +3470,18 @@ $.extend(true, doaj, {
                 if (resultobj.es_type === "application") {
                     // determine the link name
                     var linkName = "Review application";
-                    if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
-                        linkName = "View finished application";
-                        if (resultobj.admin.related_journal) {
-                            linkName = "View finished update";
+                    if (resultobj.admin.application_type === "new_application") {
+                        if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
+                            linkName = "View application (finished)"
+                        } else {
+                            linkName = "Review application"
                         }
-                    } else if (resultobj.admin.current_journal) {
-                        linkName = "Review update";
+                    } else {
+                        if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
+                            linkName = "View update (finished)"
+                        } else {
+                            linkName = "Review update"
+                        }
                     }
 
                     var result = '<p><a class="edit_suggestion_link button" href="';

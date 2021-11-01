@@ -1,0 +1,19 @@
+{#
+~~PublisherUpdateRequestRevisionsRequired:Email~~
+~~-> Application:Model~~
+~~-> Account:Model~~
+#}
+
+{% set publisher_name = owner.name %}
+{% set bibjson = application.bibjson() %}
+{% set url_root = config.get("BASE_URL") %}
+
+{% if publisher_name %}Dear {{ publisher_name }},{% endif %}
+
+The update which you submitted for "{{ bibjson.title }}" on {{ application.date_applied|human_date }} requires some revisions before it can be accepted. The Managing Editor reviewing your update will contact you to explain the changes that are needed.
+
+Thank you,
+
+The DOAJ Team
+
+**This is an automated message.**

@@ -3,7 +3,7 @@ import sys
 
 setup(
     name='doaj',
-    version='5.2.3',
+    version='5.2.4',
     packages=find_packages(),
     install_requires=[
         "Werkzeug==0.16.0",
@@ -46,7 +46,8 @@ setup(
         "libsass==0.20.1",
         "markdown-link-attr-modifier==0.2.0",
         "mdx_truly_sane_lists==1.2",
-        "markdown-full-yaml-metadata==2.0.1"
+        "markdown-full-yaml-metadata==2.0.1",
+        "bagit==1.8.1"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     url='http://cottagelabs.com/',
     author='Cottage Labs',

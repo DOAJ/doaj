@@ -65,6 +65,10 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
             with app.test_request_context():
                 plaintext_body = render_template(template_name, **template_params)
 
+    # strip all the leading and trailing whitespace from the body, which the templates
+    # leave lying around
+    plaintext_body = plaintext_body.strip()
+
     # create a message
     msg = Message(subject=subject,
                   recipients=to,

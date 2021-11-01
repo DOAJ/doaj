@@ -13,18 +13,16 @@ new ones as required too.
 import os, sys
 import tzlocal
 import pytz
-import yaml
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, send_from_directory
 from flask_login import login_user, current_user
 
 from datetime import datetime
-from collections import OrderedDict
 
 import portality.models as models
 from portality.core import app, es_connection, initialise_index
 from portality import settings
-from portality.lib import edges
+from portality.lib import edges, dates
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -210,6 +208,11 @@ def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
     tt = ld.utctimetuple()
     utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
     return utcdt.strftime(string_format)
+
+
+@app.template_filter("human_date")
+def human_date(stamp, string_format="%d %B %Y"):
+    return dates.reformat(stamp, out_format=string_format)
 
 
 @app.template_filter('doi_url')
