@@ -20,6 +20,7 @@ DEBUG = False
 PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
+CMS_BUILD_ASSETS_ON_STARTUP = False
 
 ####################################
 # Debug Mode
