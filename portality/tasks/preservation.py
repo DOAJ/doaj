@@ -567,11 +567,12 @@ class Preservation:
                 identifiers = self.__csv_articles_dict[dir_name]
 
         if identifiers:
-            article_data = self.get_article(identifiers)
+            article = self.get_article(identifiers)
 
-            if article_data:
+            if article:
+                article_data = article.data
 
-                if not self.owner_of_article(article_data):
+                if not self.owner_of_article(article):
                     articles_list.add_unowned_articles(package)
 
                 else:
@@ -633,7 +634,7 @@ class Preservation:
         Checks if the identifier is doi or full text
         Pulls article related to the identifier
         :param identifiers:
-        :return: article dict
+        :return: article
         """
         article = None
         for identifier in identifiers:
@@ -642,7 +643,7 @@ class Preservation:
             elif HTTP_URL_COMPILED.match(identifier):
                 article = Article.pull_by_key("bibjson.link.url", identifier)
             if article:
-                return article.data
+                return article
             else:
                 return None
 
