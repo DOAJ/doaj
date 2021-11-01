@@ -160,12 +160,13 @@ class JournalService(object):
         models.Cache.cache_csv(url)
         return url, action_register
 
-    def admin_csv(self, file_path, account_sub_length=8, obscure_accounts="true"):
+    def admin_csv(self, file_path, account_sub_length=8, obscure_accounts=True):
         """
         ~~AdminJournalCSV:Feature->JournalCSV:Feature~~
         
         :param file_path:
         :param account_sub_length:
+        :param obscure_accounts:
         :return:
         """
         # create a closure for substituting owners for consistently used random strings
@@ -173,7 +174,7 @@ class JournalService(object):
 
         def usernames(j):
             o = j.owner
-            if (obscure_accounts == "true"):
+            if obscure_accounts:
                 sub = None
                 if o in unmap:
                     sub = unmap[o]
