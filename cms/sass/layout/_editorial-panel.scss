@@ -1,6 +1,10 @@
 .editorial-panel {
   margin-top: 0;
 
+  hr {
+    margin: $spacing-02;
+  }
+
   @media (min-width: 992px) {
     position: -webkit-sticky;
     position: sticky;
@@ -12,7 +16,6 @@
 
       select, textarea, input {
         display: block;
-        width: 100%;
       }
     }
   }
