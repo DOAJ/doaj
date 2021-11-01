@@ -376,7 +376,8 @@ HUEY_SCHEDULE = {
 }
 
 HUEY_TASKS = {
-    "ingest_articles": {"retries": 10, "retry_delay": 15}
+    "ingest_articles": {"retries": 10, "retry_delay": 15},
+    "preserve": {"retries": 0, "retry_delay": 15}
 }
 
 ####################################
@@ -574,6 +575,7 @@ MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->Editor
 MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
 MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
+MAPPINGS['preserve'] = {'preserve': DEFAULT_DYNAMIC_MAPPING}    #~~->Preservation:Model~~
 
 #########################################
 # Query Routes
@@ -1152,3 +1154,11 @@ HARVESTER_ZOMBIE_AGE = 604800
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+
+#######################################################
+# Preservation configuration
+# ~~->Preservation:Feature
+PRESERVATION_URL = "http://PresevatinURL"
+PRESERVATION_USERNAME = "user_name"
+PRESERVATION_PASSWD = "password"
+PRESERVATION_COLLECTION = {}

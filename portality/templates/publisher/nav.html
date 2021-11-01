@@ -3,6 +3,7 @@
 {% set urs = url_for('publisher.updates_in_progress') %}
 {% set xml = url_for('publisher.upload_file') %}
 {% set metadata = url_for('publisher.metadata') %}
+{% set preservation = url_for('publisher.preservation') %}
 {% set help = url_for('publisher.help') %}
 
 {% set tabs = [
@@ -11,6 +12,7 @@
     (urs, "My update requests"),
     (xml, "Upload article XML"),
     (metadata, "Enter article metadata"),
+    (preservation, "Upload preservation file"),
     (help, "Help"),
     ]
 %}
@@ -19,12 +21,14 @@
     <nav class="tabs__menu">
         <ul class="tabs__list" role="tablist">
             {% for url, label in tabs %}
+                {% if label == "Preservation" and not current_user.has_role("preservation") %}
+                    {% continue %}
+                {% endif %}
                 {% set selected = url == request.path %}
-                <li class="tabs__item" {% if not selected %}role="presentation"{% endif %}>
+                <li class="type-06 tabs__item" {% if not selected %}role="presentation"{% endif %}>
                     <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}">{{ label }}</a>
                 </li>
             {% endfor %}
         </ul>
     </nav>
 </div>
-

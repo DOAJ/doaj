@@ -1,7 +1,6 @@
 ---
 layout: sidenav
 title: Project JASPER
-section: digital preservation
 toc: true
 sticky_sidenav: true
 featuremap: ~~Preservation:Fragment~~
