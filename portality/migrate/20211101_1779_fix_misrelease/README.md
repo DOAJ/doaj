@@ -4,4 +4,4 @@ Save (and re-generate index) for Applications created during the window where we
 
 Run
 
-    python portality/upgrade.py -u portality/migrate/1779_fix_misrelease/migrate.json
+    python portality/upgrade.py -u portality/migrate/20211101_1779_fix_misrelease/migrate.json
