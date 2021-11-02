@@ -13,19 +13,19 @@
     <h2 class="label">Bulk edit records</h2>
     <div class="row">
       <form class="col-md-6 form form--compact" id="journal_bulk_form">
-          <div id="bulk_action-container">
-              <select class="multiformbox-selector form__question" id="bulk_action" name="bulk_action">
-                  <option selected value="">Select action…</option>
-                  <option value="withdraw">Withdraw from DOAJ</option>
-                  <option value="reinstate">Reinstate into DOAJ</option>
-                  <option value="edit_metadata">Journal: edit metadata…</option>
-                  <option value="editor_group">Journal: Assign to editor group…</option>
-                  <option value="note">Journal: Add a note…</option>
-
-                  {%  if current_user.has_role("ultra_bulk_delete") %}
-                  <option value="delete">Delete records</option>
-                  {%  endif %}
-              </select>
+            <div id="bulk_action-container" class="input-group">
+                <select class="multiformbox-selector input-group__input" id="bulk_action" name="bulk_action">
+                    <option selected value="">Select action…</option>
+                    <option value="withdraw">Withdraw from DOAJ</option>
+                    <option value="reinstate">Reinstate into DOAJ</option>
+                    <option value="edit_metadata">Journal: edit metadata…</option>
+                    <option value="editor_group">Journal: Assign to editor group…</option>
+                    <option value="note">Journal: Add a note…</option>
+                    {%  if current_user.has_role("ultra_bulk_delete") %}
+                    <option value="delete">Delete records</option>
+                    {%  endif %}
+                </select>
+            <button id="bulk-submit" class="multiformbox-submit button input-group__input" disabled="disabled">Submit</button>
           </div>
           <div id="bulk_help-container">
               <p id="any_type_error" class="alert multiformbox-error" style="display: none">You need to select an option in the <em>Journals vs. Articles</em> facet to use this option.</p>
@@ -44,7 +44,6 @@
               {{ edit_form }}
               {% endautoescape %}
           </div>
-          <button id="bulk-submit" class="multiformbox-submit button" disabled="disabled">Submit</button>
       </form>
     </div>
 </div>
