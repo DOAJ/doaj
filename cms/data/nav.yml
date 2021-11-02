@@ -100,7 +100,9 @@ entries:
       - label: WeChat
         include: "includes/svg/wechat.svg"
         url: '#'
-        modal: wechat
+        modal:
+          id: wechat
+          include: "includes/_wechat_modal.html"
       - label: Atom feed
         feather: rss
         route: atom.feed  # ~~->Atom:WebRoute~~

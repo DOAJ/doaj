@@ -1,0 +1,9 @@
+{% set columns = data.nav.entries|selectattr("footer")|list %}
+{% for column in columns %}
+    {% set selected_nav = data.nav.entries|selectattr("id", "equalto", column.id)|first %}
+    {% for entry in selected_nav.entries %}
+        {% if entry.modal %}
+            {% include entry.modal.include %}
+        {% endif %}
+    {% endfor %}
+{% endfor %}
