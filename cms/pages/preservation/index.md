@@ -8,6 +8,8 @@ sticky_sidenav: true
 
 ## Open access journals must be preserved forever
 
+[This page is available in Spanish](https://docs.google.com/document/d/1dCxZYO0HDmFWMyazbkayZJtpCYkO9AIf0xqw-z55rU0/edit?usp=sharing).
+
 Project JASPER (JournAlS are Preserved forevER) is an initiative to preserve open access journals. It was launched on [World Preservation Day 2020](https://www.dpconline.org/events/world-digital-preservation-day) and is in response to research* that shows that online journals—both open and closed access journals—can just disappear from the internet. This happens because of a lack of awareness amongst smaller publishers around the need for long-term digital preservation and/or the resources to enroll a journal in a long-term digital preservation scheme.
 
 Long-term archiving of research resources is of paramount importance for scholarship. Authors want to ensure their contributions to the scholarly record will be permanent. Scholars must be able to access all of the published research in their fields, both now and long into the future. 
