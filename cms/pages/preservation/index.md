@@ -1,12 +1,15 @@
 ---
 layout: sidenav
 title: Project JASPER
+section: digital preservation
 toc: true
 sticky_sidenav: true
 featuremap: ~~Preservation:Fragment~~
 ---
 
 ## Open access journals must be preserved forever
+
+[Esta página está disponible en Español](https://docs.google.com/document/d/1dCxZYO0HDmFWMyazbkayZJtpCYkO9AIf0xqw-z55rU0/edit?usp=sharing).
 
 <img style="float: left; height: 100px; width: auto; margin: .5em 1em .5em 0;" src="/assets/img/jasper/logo.png"> Project JASPER (JournAlS are Preserved forevER) is an initiative to preserve open access journals. It was launched on [World Preservation Day 2020](https://www.dpconline.org/events/world-digital-preservation-day) and is in response to research* that shows that online journals—both open and closed access journals—can just disappear from the internet. This happens because of a lack of awareness amongst smaller publishers around the need for long-term digital preservation and/or the resources to enroll a journal in a long-term digital preservation scheme.
 
@@ -47,8 +50,10 @@ We hope that many open access publishers, whose journals are not currently archi
 Towards the end of 2021, DOAJ will send an email to the DOAJ account holders of a subset of the journals that meet the criteria above. The email will invite you to answer a survey. The survey will determine which archiving options are best suited to your journal.
 
 #### Archiving options
-1. *The OJS route*: OJS journals can use the PKP PN preservation service which is built on LOCKSS software. You need to enable a plugin in the journal's dashboard and agree to some simple terms. However, your journal must be on the right version of the OJS software to take part. JASPER makes sure that the journals get the guidance they need to upgrade and become compliant.  PKP is taking a more active role in supporting publishers to upgrade to recent versions of OJS. To help make this happen, they are updating their documentation and guidance. JASPER makes sure that the journals get the guidance they need to upgrade and become compliant.
+1. *The OJS route*: OJS journals can use the PKP PN preservation service which is built on LOCKSS software. You need to enable a plugin in the journal's dashboard and agree to some simple terms. However, your journal must be on the right version of the OJS software to take part. JASPER makes sure that the journals get the guidance they need to upgrade and become compliant.  PKP is taking a more active role in supporting publishers to upgrade to recent versions of OJS. To help make this happen, they are updating their documentation and guidance.
+
 2. *The upload route*: journals can indicate in DOAJ that they wish to export their content, we then match the full text with article metadata and send everything to a folder. From this single location archiving agencies, such as CLOCKSS and Internet Archive (and, later, other “Keepers”) can collect the content. CLOCKSS is a dark archive for journals where the content is ingested and preserved, minimising format redundancy and preventing digital decay. It is built over LOCKSS software developed by Stanford University and is community-owned and governed. Internet Archive is a non-profit digital library and archive that operates its own data centers and provides archiving services to over a thousand libraries worldwide. Its IA Scholar service preserves and provides perpetual access to tens of millions of web-published open scholarly outputs.
+
 3. *The web-crawing route*: if you are not able to or do not want to export article metadata and full text, your journal website details will be provided to the Internet Archive for inclusion in best-effort, automated web harvesting.
 
 #### More copies, better preservation
