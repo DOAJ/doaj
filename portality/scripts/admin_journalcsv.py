@@ -17,7 +17,6 @@ if __name__ == "__main__":
 
     # ~~-> Journal:Service~~
     journalService = DOAJ.journalService()
-    cols = ["oa_start"]
     journalService.admin_csv(file_path=args.out, obscure_accounts=args.do_not_obscure_accs)
 
 

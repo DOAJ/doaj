@@ -175,7 +175,6 @@ class JournalService(object):
         def usernames(j):
             o = j.owner
             if obscure_accounts:
-                sub = None
                 if o in unmap:
                     sub = unmap[o]
                 else:
