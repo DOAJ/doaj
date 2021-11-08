@@ -1,0 +1,13 @@
+{
+    "batch" : 10000,
+	"types": [
+		{
+			"type" : "application",
+			"init_with_model" : true,
+			"keepalive" : "10m",
+			"functions" : [
+				"portality.migrate.20210906_1779_ur_labelling.functions.detect_application_type"
+			]
+		}
+	]
+}

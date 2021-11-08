@@ -72,6 +72,13 @@ class ApplicationProcessor(FormProcessor):
             # this means that the source doesn't know about related_applications, which is fine
             pass
 
+        try:
+            if self.source.application_type:
+                self.target.application_type = self.source.application_type
+        except AttributeError:
+            # this means that the source doesn't know about related_journals, which is fine
+            pass
+
         # if the source is a journal, we need to carry the in_doaj flag
         if isinstance(self.source, models.Journal):
             self.target.set_in_doaj(self.source.is_in_doaj())
@@ -346,7 +353,7 @@ class AdminApplication(ApplicationProcessor):
 
                 # for all acceptances, send an email to the owner of the journal
                 if email_alert:
-                    self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
+                    self._send_application_approved_email(self.target, j, owner, self.source.current_journal is not None)
             except AttributeError:
                 raise Exception("Account {owner} does not exist".format(owner=j.owner))
             except app_email.EmailException:
@@ -457,43 +464,40 @@ class AdminApplication(ApplicationProcessor):
                     self.add_alert('Sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
                     app.logger.exception('Error sending ready status email to managing editors - ' + magic)
 
-    def _send_application_approved_email(self, journal_title, publisher_name, email, update_request=False):
+    def _send_application_approved_email(self, application, journal, owner, update_request=False):
         """Email the publisher when an application is accepted (it's here because it's too troublesome to factor out)"""
         # ~~-> Email:Library~~
         url_root = request.url_root
         if url_root.endswith("/"):
             url_root = url_root[:-1]
 
-        to = [email]
+        to = [owner.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
         if update_request:
             subject = app.config.get("SERVICE_NAME", "") + " - update request accepted"
         else:
             subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
-        publisher_name = publisher_name if publisher_name is not None else "Journal Owner"
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                msg = Messages.SENT_ACCEPTED_APPLICATION_EMAIL.format(email=email)
-                template = "email/publisher_application_accepted.txt"
+                msg = Messages.SENT_ACCEPTED_APPLICATION_EMAIL.format(email=owner.email)
+                template = "email/publisher_application_accepted.jinja2"
                 if update_request:
-                    msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=email)
-                    template = "email/publisher_update_request_accepted.txt"
-                jn = journal_title
+                    msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=owner.email)
+                    template = "email/publisher_update_request_accepted.jinja2"
 
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
                                     template_name=template,
-                                    journal_title=jn,
-                                    publisher_name=publisher_name,
-                                    url_root=url_root
-                )
+                                    owner=owner,
+                                    journal=journal,
+                                    application=application)
                 self.add_alert(msg)
             else:
-                msg = Messages.NOT_SENT_ACCEPTED_APPLICATION_EMAIL.format(email=email)
+                msg = Messages.NOT_SENT_ACCEPTED_APPLICATION_EMAIL.format(email=owner.email)
                 if update_request:
-                    msg = Messages.NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=email)
+                    msg = Messages.NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=owner.email)
                 self.add_alert(msg)
         except Exception as e:
             magic = str(uuid.uuid1())
@@ -814,8 +818,6 @@ class PublisherUpdateRequest(ApplicationProcessor):
             self.add_alert("Unable to locate account for specified owner")
             return
 
-        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
-
         # ~~-> Email:Library~~
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
@@ -826,10 +828,9 @@ class PublisherUpdateRequest(ApplicationProcessor):
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
-                                    template_name="email/publisher_update_request_received.txt",
-                                    journal_name=journal_name,
-                                    username=self.target.owner
-                )
+                                    template_name="email/publisher_update_request_received.jinja2",
+                                    application=self.target,
+                                    owner=acc)
                 self.add_alert('A confirmation email has been sent to ' + acc.email + '.')
         except app_email.EmailException as e:
             magic = str(uuid.uuid1())
