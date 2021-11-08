@@ -185,8 +185,12 @@ class JournalService(object):
             else:
                 return [("Owner", o)]
 
+        def oa_start(j):
+            oa = j.bibjson().oa_start
+            return [("OA Start", oa)]
+
         with open(file_path, "w", encoding="utf-8") as f:
-            self._make_journals_csv(f, usernames)
+            self._make_journals_csv(f, [usernames, oa_start])
 
     def _make_journals_csv(self, file_object, additional_columns=None):
         """
@@ -206,8 +210,7 @@ class JournalService(object):
                 ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
                 # ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
                 ("Added on Date", journal.created_date),
-                ("Last updated Date", journal.last_manual_update),
-                ("OA Start Date", journal.bibjson().oa_start)
+                ("Last updated Date", journal.last_manual_update)
             ]
             return kvs
 
@@ -238,7 +241,8 @@ class JournalService(object):
             article_kvs = _get_article_kvs(j)
             additionals = []
             if additional_columns is not None:
-                additionals = additional_columns(j)
+                for col in additional_columns:
+                    additionals += col(j)
             cols[issn] = kvs + meta_kvs + article_kvs + additionals
 
             # Get the toc URL separately from the meta kvs because it needs to be inserted earlier in the CSV
@@ -254,6 +258,7 @@ class JournalService(object):
             if qs is None:
                 qs = [q for q, _ in cols[i]]
                 csvwriter.writerow(qs)
+                print(qs)
             vs = [v for _, v in cols[i]]
             csvwriter.writerow(vs)
 
