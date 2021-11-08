@@ -166,6 +166,10 @@ table {
     &:first-child {
       padding-left: 0;
     }
+
+    &.long_content {
+      word-wrap: break-word;
+    }
   }
 
   th {
