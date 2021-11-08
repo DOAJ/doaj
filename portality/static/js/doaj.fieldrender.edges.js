@@ -235,6 +235,8 @@ $.extend(true, doaj, {
 
             this.scrollTarget = edges.getParam(params.scrollTarget, "body");
 
+            this.scrollOnSearch = edges.getParam(params.scrollOnSearch, false);
+
             // namespace to use in the page
             this.namespace = "doaj-notification";
 
@@ -252,8 +254,11 @@ $.extend(true, doaj, {
                         <span class='sr-only'>Loading results…</span>
                       </div>`
                     this.component.edge.context.before(frag);
-                    let offset = $(this.scrollTarget).offset().top
-                    window.scrollTo(0, offset);
+
+                    if (this.scrollOnSearch) {
+                        let offset = $(this.scrollTarget).offset().top
+                        window.scrollTo(0, offset);
+                    }
                 } else {
                     let that = this;
                     let idSelector = edges.css_id_selector(this.namespace, "loading", this);
