@@ -68,8 +68,6 @@ class EPMCHarvester(HarvesterPlugin):
                 article = self.crosswalk(record)
                 yield article, fr
 
-            self._write_to_logger(epmc.logger)
-
             last = datetime.utcnow()
 
     def crosswalk(self, record):
@@ -134,4 +132,3 @@ class EPMCHarvester(HarvesterPlugin):
             article.add_author(name=n)
 
         return article
-

@@ -153,19 +153,28 @@ class Application(JournalLikeObject):
     def _generate_index(self):
         super(Application, self)._generate_index()
 
-        index_record_type = None
-        if self.application_type == constants.APPLICATION_TYPE_NEW_APPLICATION:
-            if self.application_status in [constants.APPLICATION_STATUS_REJECTED, constants.APPLICATION_STATUS_ACCEPTED]:
-                index_record_type = constants.INDEX_RECORD_TYPE_NEW_APPLICATION_FINISHED
-            else:
-                index_record_type = constants.INDEX_RECORD_TYPE_NEW_APPLICATION_UNFINISHED
-        elif self.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
-            if self.application_status in [constants.APPLICATION_STATUS_REJECTED, constants.APPLICATION_STATUS_ACCEPTED]:
-                index_record_type = constants.INDEX_RECORD_TYPE_UPDATE_REQUEST_FINISHED
-            else:
-                index_record_type = constants.INDEX_RECORD_TYPE_UPDATE_REQUEST_UNFINISHED
-        if index_record_type is not None:
-            self.__seamless__.set_with_struct("index.application_type", index_record_type)
+        # index_record_type = None
+        # if self.application_type == constants.APPLICATION_TYPE_NEW_APPLICATION:
+        #     if self.application_status in [constants.APPLICATION_STATUS_REJECTED, constants.APPLICATION_STATUS_ACCEPTED]:
+        #         index_record_type = constants.INDEX_RECORD_TYPE_NEW_APPLICATION_FINISHED
+        #     else:
+        #         index_record_type = constants.INDEX_RECORD_TYPE_NEW_APPLICATION_UNFINISHED
+        # elif self.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
+        #     if self.application_status in [constants.APPLICATION_STATUS_REJECTED, constants.APPLICATION_STATUS_ACCEPTED]:
+        #         index_record_type = constants.INDEX_RECORD_TYPE_UPDATE_REQUEST_FINISHED
+        #     else:
+        #         index_record_type = constants.INDEX_RECORD_TYPE_UPDATE_REQUEST_UNFINISHED
+        # if index_record_type is not None:
+        #     self.__seamless__.set_with_struct("index.application_type", index_record_type)
+
+        # FIXME: Temporary partial reversion of an indexing change
+        if self.current_journal is not None:
+            self.__seamless__.set_with_struct("index.application_type", "update request")
+        elif self.application_status in [constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED]:
+            self.__seamless__.set_with_struct("index.application_type", "finished application/update")
+        else:
+            self.__seamless__.set_with_struct("index.application_type", "new application")
+
 
     def prep(self, is_update=True):
         self._generate_index()

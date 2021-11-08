@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "5.2.2"
+DOAJ_VERSION = "5.2.6"
 API_VERSION = "3.0.0"
 
 ######################################
@@ -20,6 +20,7 @@ DEBUG = False
 PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
+CMS_BUILD_ASSETS_ON_STARTUP = False
 
 ####################################
 # Debug Mode
@@ -372,11 +373,12 @@ HUEY_SCHEDULE = {
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "harvest": CRON_NEVER  # {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"}   # issue 3037
+    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"}
 }
 
 HUEY_TASKS = {
-    "ingest_articles": {"retries": 10, "retry_delay": 15}
+    "ingest_articles": {"retries": 10, "retry_delay": 15},
+    "preserve": {"retries": 0, "retry_delay": 15}
 }
 
 ####################################
@@ -574,6 +576,7 @@ MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->Editor
 MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
 MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
+MAPPINGS['preserve'] = {'preserve': DEFAULT_DYNAMIC_MAPPING}    #~~->Preservation:Model~~
 
 #########################################
 # Query Routes
@@ -1152,3 +1155,11 @@ HARVESTER_ZOMBIE_AGE = 604800
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+
+#######################################################
+# Preservation configuration
+# ~~->Preservation:Feature
+PRESERVATION_URL = "http://PresevatinURL"
+PRESERVATION_USERNAME = "user_name"
+PRESERVATION_PASSWD = "password"
+PRESERVATION_COLLECTION = {}

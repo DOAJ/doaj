@@ -160,29 +160,36 @@ class JournalService(object):
         models.Cache.cache_csv(url)
         return url, action_register
 
-    def admin_csv(self, file_path, account_sub_length=8):
+    def admin_csv(self, file_path, account_sub_length=8, obscure_accounts=True):
         """
         ~~AdminJournalCSV:Feature->JournalCSV:Feature~~
         
         :param file_path:
         :param account_sub_length:
+        :param obscure_accounts:
         :return:
         """
         # create a closure for substituting owners for consistently used random strings
         unmap = {}
 
-        def obscured_usernames(j):
+        def usernames(j):
             o = j.owner
-            sub = None
-            if o in unmap:
-                sub = unmap[o]
+            if obscure_accounts:
+                if o in unmap:
+                    sub = unmap[o]
+                else:
+                    sub = "".join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in range(account_sub_length))
+                    unmap[o] = sub
+                return [("Owner", sub)]
             else:
-                sub = "".join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in range(account_sub_length))
-                unmap[o] = sub
-            return [("Owner", sub)]
+                return [("Owner", o)]
+
+        def oa_start(j):
+            oa = j.bibjson().oa_start
+            return [("OA Start", oa)]
 
         with open(file_path, "w", encoding="utf-8") as f:
-            self._make_journals_csv(f, obscured_usernames)
+            self._make_journals_csv(f, [usernames, oa_start])
 
     def _make_journals_csv(self, file_object, additional_columns=None):
         """
@@ -233,7 +240,8 @@ class JournalService(object):
             article_kvs = _get_article_kvs(j)
             additionals = []
             if additional_columns is not None:
-                additionals = additional_columns(j)
+                for col in additional_columns:
+                    additionals += col(j)
             cols[issn] = kvs + meta_kvs + article_kvs + additionals
 
             # Get the toc URL separately from the meta kvs because it needs to be inserted earlier in the CSV

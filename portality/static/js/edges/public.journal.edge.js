@@ -42,7 +42,9 @@ $.extend(true, doaj, {
                 edges.newSearchingNotification({
                     id: "searching-notification",
                     finishedEvent: "edges:post-render",
-                    renderer : doaj.renderers.newSearchingNotificationRenderer()
+                    renderer : doaj.renderers.newSearchingNotificationRenderer({
+                        scrollOnSearch: true
+                    })
                 }),
                 edges.newFullSearchController({
                     id: "search-input-bar",

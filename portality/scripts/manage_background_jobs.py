@@ -22,6 +22,7 @@ from portality import models
 from portality.lib import dates
 
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask
+from portality.tasks.preservation import PreservationBackgroundTask
 from portality.tasks.suggestion_bulk_edit import SuggestionBulkEditBackgroundTask
 from portality.tasks.sitemap import SitemapBackgroundTask
 from portality.tasks.read_news import ReadNewsBackgroundTask
@@ -35,6 +36,7 @@ from portality.tasks.harvester import HarvesterBackgroundTask
 
 # dict of {task_name: task_class} so we can interact with the jobs
 HANDLERS = {
+    PreservationBackgroundTask.__action__:PreservationBackgroundTask,
     IngestArticlesBackgroundTask.__action__: IngestArticlesBackgroundTask,
     SuggestionBulkEditBackgroundTask.__action__: SuggestionBulkEditBackgroundTask,
     SitemapBackgroundTask.__action__: SitemapBackgroundTask,
