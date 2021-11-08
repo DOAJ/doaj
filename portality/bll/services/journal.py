@@ -258,7 +258,6 @@ class JournalService(object):
             if qs is None:
                 qs = [q for q, _ in cols[i]]
                 csvwriter.writerow(qs)
-                print(qs)
             vs = [v for _, v in cols[i]]
             csvwriter.writerow(vs)
 
