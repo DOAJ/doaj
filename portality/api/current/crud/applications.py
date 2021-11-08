@@ -78,7 +78,7 @@ class ApplicationsCrudApi(CrudApi):
                 app_email.send_mail(to=to,
                                      fro=fro,
                                      subject=subject,
-                                     template_name="email/script_tag_detected",
+                                     template_name="email/script_tag_detected.jinja2",
                                      es_type=es_type,
                                      data=jdata)
             except app_email.EmailException:

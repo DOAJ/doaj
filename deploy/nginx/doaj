@@ -42,6 +42,10 @@ upstream doaj_apps {
 upstream doaj_bg_apps {
     server 10.131.56.133:5050;
 }
+upstream doaj_apps_failover {
+    server 10.131.100.180:5050;
+    server 10.131.56.133:5050 backup;
+}
 upstream doaj_index {
     server 10.131.99.251:9200;
 }
@@ -95,7 +99,7 @@ server {
             return 403;
         }
         limit_req zone=api burst=8 nodelay;
-        proxy_pass http://doaj_apps;
+        proxy_pass http://doaj_apps_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -106,7 +110,7 @@ server {
     location /search {
         if ($block_ua) {return 403;}
         limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_apps;
+        proxy_pass http://doaj_apps_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -117,7 +121,7 @@ server {
     location /query {
         if ($block_ua) {return 403;}
         limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_apps;
+        proxy_pass http://doaj_apps_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -216,7 +220,7 @@ server {
     
     location / {
         limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_apps;
+        proxy_pass http://doaj_apps_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;

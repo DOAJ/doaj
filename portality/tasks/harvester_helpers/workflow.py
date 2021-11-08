@@ -14,7 +14,7 @@ class DefaultLogger(object):
     def log(self, msg):
         self._log.append({
             "timestamp": dates.now_with_microseconds(),
-            "message" : msg
+            "message": msg
         })
 
 
@@ -103,8 +103,6 @@ class HarvesterWorkflow(object):
             self._write_to_logger("Saved state record for ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
 
     def process_article(self, account_id, article):
-        self._write_to_logger("Processing Article for Account:{y}".format(y=account_id))
-
         try:
             article.is_api_valid()
         except DataObjException as e:
@@ -112,11 +110,6 @@ class HarvesterWorkflow(object):
             Report.record_error((article.get_identifier("doi") or "< DOI MISSING >") + " - " + str(e))
             return False
 
-        # FIXME: in production, we will need a way to get the account_id's api_key
-        # but in this version we just need to have a list of the api keys that we're
-        # working with
-        # if this throws an exception other than DOAJ complaint, allow the harvester to die, because it is either
-        # systemic or the doaj is down.
         acc = Account.pull(account_id)
         try:
             id = ArticlesCrudApi.create(article.data, acc).id

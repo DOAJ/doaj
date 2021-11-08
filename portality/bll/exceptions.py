@@ -1,4 +1,4 @@
-import sys, traceback
+import sys, traceback, json
 
 class AuthoriseException(Exception):
     """
@@ -116,3 +116,20 @@ class IngestException(Exception):
 
     def trace(self):
         return self.stack
+
+    def __str__(self):
+        repr = "Ingest Exception: "
+        if self.message:
+            repr += self.message
+        if self.inner_message:
+            repr += " - " + self.inner_message
+        if self.result:
+            repr += " (" + json.dumps(self.result, cls=SetEncoder) + ")"
+        return repr
+
+
+class SetEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)

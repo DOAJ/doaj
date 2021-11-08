@@ -1,0 +1,32 @@
+{#
+~~PublisherApplicationAccepted:Email~~
+~~-> Journal:Model ~~
+~~-> Application:Model~~
+~~-> Account:Model~~
+~~-> FAQ:Page~~
+~~-> PublisherJournals:Page~~
+~~-> Helpdesk:Contact~~
+#}
+
+{% set publisher_name = owner.name %}
+{% set bibjson = journal.bibjson() %}
+{% set url_root = config.get("BASE_URL") %}
+
+Dear {% if publisher_name %}{{ publisher_name }}{% else %}Journal Owner{% endif %},
+
+The application submitted for "{{ bibjson.title }}" on {{ application.date_applied|human_date }} has been accepted for inclusion in DOAJ.
+
+You may access the journal record from your Publisher dashboard: {{ url_root }}{{ url_for("publisher.journals") }} using your DOAJ username and password.
+
+If there are changes or updates to the information about your journal at any time after it has been accepted, please submit an Update Request from your Publisher dashboard promptly. Please be aware that failure to do this may result in removal of your journal from DOAJ.
+
+How to submit an Update Request: {{ url_root }}{{ url_for("doaj.faq") }}#how-do-i-update-the-information-about-my-journal
+
+To increase the visibility, impact, distribution and usage of your journal content, we encourage you to upload article metadata for this journal to DOAJ as soon as possible.
+
+How to upload article metadata:
+{{ url_root }}{{ url_for("doaj.faq") }}#how-do-i-upload-article-metadata
+
+We are delighted to welcome this journal into DOAJ. Please contact us at helpdesk@doaj.org if you have any questions.
+
+The DOAJ Team

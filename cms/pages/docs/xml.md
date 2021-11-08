@@ -41,7 +41,7 @@ Here is a table of each element in the DOAJ XML file. It shows you whether or no
 | **Title**          | Required, 1 or more                                                         |
 | Authors            | Optional                                                                    |
 | ORCID iD           | Optional, max. 1                                                            |
-| Affiliations       | Optional                                                                    |
+| Affiliations       | Optional                                                            |
 | Abstracts          | Optional                                                                    |
 | **Full-text URL**  | Required, only 1                                                            |
 | Keywords           | Optional                                                                    |
@@ -74,13 +74,10 @@ The example file below contains only one record.
       <author>
         <name>Nathalia Cardoso de Azevedo</name>
         <affiliationId>1</affiliationId>
-        <affiliationId>2</affiliationId>
-        <affiliationId>3</affiliationId>
         <orcid_id>https://orcid.org/0000-0002-7868-417X</orcid_id>
       </author>
       <author>
         <name>Sergio Fernando Tavares</name>
-        <affiliationId>1</affiliationId>
         <affiliationId>2</affiliationId>
         <orcid_id>https://orcid.org/0000-0001-6492-7911</orcid_id>
       </author>
@@ -88,10 +85,9 @@ The example file below contains only one record.
     <affiliationsList>
       <affiliationName affiliationId="1">University of A</affiliationName>
       <affiliationName affiliationId="2">University of B</affiliationName>
-      <affiliationName affiliationId="3">University of C</affiliationName>
     </affiliationsList>
     <abstract language="eng">The catalytic formation of ammonia from hydrogen and atmospheric nitrogen under conditions of high temperature and high pressure.</abstract>
-    <fullTextUrl format="pdf">http://www.science.org/articles/HaberBosch.pdf</fullTextUrl>
+    <fullTextUrl format="pdf">https://www.science.org/articles/HaberBosch.pdf</fullTextUrl>
     <keywords language="eng">
       <keyword>garden</keyword>
       <keyword>rose</keyword>
@@ -107,9 +103,9 @@ The example file below contains only one record.
 | `record`            | Represents a single record.                                                                                                                                                                                           |
 | `language`          | The language tag content must conform to the ISO 639-2b standard. [Find the correct language code](https://en.wikipedia.org/wiki/List_of_ISO_639-2_codes).                                                            |
 | `issn`  <br>`eissn` |                                                                                                                                                                                                                       |
-| `title language=""` | If the title occurs in more than one language, then you may include those in your XML. However, we can only display one language. The title tag’s language attribute must be set according to the ISO 639-2b standard. |
+| `title language=""` | If the title occurs in more than one language, then you may include those in your XML. However, we can only display one language. The title tag’s language attribute must be set according to the ISO 639-2b standard.|
 | `name`              | The author name should be formatted First Name, Middle Name, Last Name                                                                                                                                                |
-| `affiliationId`     | Note that the `affiliationId` numbers denote the affiliations in the `affiliationslist` further down.                                                                                                               |
+| `affiliationId`     | Note that the `affiliationId` numbers denote the affiliations in the `affiliationslist` further down. We only support one affiliation. Others will be ignored.                                                        |
 
 
 ---
