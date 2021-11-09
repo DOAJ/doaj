@@ -1,5 +1,6 @@
 /** base namespace for all DOAJ-specific functions */
 var doaj = {
+    scrollPosition: 100,
     init : function() {
         // Use Feather icons
         feather.replace();
@@ -18,7 +19,7 @@ var doaj = {
 
         function displayOnScroll() {
             if (topBtn && topNav) {
-                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                if (document.body.scrollTop > doaj.scrollPosition || document.documentElement.scrollTop > doaj.scrollPosition) {
                     topBtn.style.display = "flex";
                     topNav.classList.add("primary-nav--scrolled");
                 } else {
