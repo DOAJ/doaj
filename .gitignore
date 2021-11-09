@@ -117,3 +117,6 @@ cms/fragments*
 !portality/static/doaj/css/*_widget.css
 
 portality/static/widget/fq_widget_build_info.txt
+
+#json for harvester test
+doajtest/unit/resources/harvester_resp_temp.json

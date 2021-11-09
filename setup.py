@@ -3,7 +3,7 @@ import sys
 
 setup(
     name='doaj',
-    version='5.1.1',
+    version='5.2.6',
     packages=find_packages(),
     install_requires=[
         "Werkzeug==0.16.0",
@@ -40,13 +40,14 @@ setup(
         "gunicorn==19.9.0",
         "elastic-apm==5.2.2",
         "parameterized==0.7.0",
-        "awscli==1.16.269",
-        "boto3==1.10.5",
+        "awscli==1.20.50 ",
+        "boto3==1.18.50",
         "Flask-DebugToolbar==0.10.1",
         "libsass==0.20.1",
         "markdown-link-attr-modifier==0.2.0",
         "mdx_truly_sane_lists==1.2",
-        "markdown-full-yaml-metadata==2.0.1"
+        "markdown-full-yaml-metadata==2.0.1",
+        "bagit==1.8.1"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     url='http://cottagelabs.com/',
     author='Cottage Labs',

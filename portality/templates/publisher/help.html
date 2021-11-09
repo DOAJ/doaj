@@ -16,20 +16,25 @@
     <li><a href="{{ url_for('publisher.metadata') }}">entering the metadata manually</a>.</li>
   </ol>
 
+  <p>There are instructions and FAQs on how to send JSON using our API on our <a href="{{ url_for('doaj.docs') }}">API documentation page</a>.</p>
+
   <p>There are instructions on how to prepare and upload your XML file on our <a href="{{ url_for('doaj.xml') }}">XML documentation page</a>.</p>
 
-<h2>Failed XML uploads explained</h2>
+<h2 id="explanations">Failed XML uploads explained</h2>
 
-<p>This section describes the possible error messages that you may see when you upload an article XML file to DOAJ. Depending on the message in the “Notes” column of your <a href="{{ url_for('publisher.upload_file') }}"><em>History of uploads</em></a> table, some corrective actions may be available to you.</p>
+<p>This section explains the error messages that you may see when you upload article XML. Use the message in the 'Notes' column of your <a href="{{ url_for('publisher.upload_file') }}"><em>History of uploads</em></a> table to correct your XML.</p>
 
-<p>In cases where there is no action to be taken, or the suggested actions have not successfully resolved the issues, please <a href="https://github.com/DOAJ/doaj/issues/new/choose" target="_blank" rel="noopener">submit a bug report</a> or <a href="{{ url_for('doaj.contact') }}">contact us</a> with the following details:</p>
+<p>If you cannot get the XML to upload, please <a href="https://github.com/DOAJ/doaj/issues/new/choose" target="_blank" rel="noopener">submit a bug report</a> or <a href="{{ url_for('doaj.contact') }}">contact us</a> with the following details:</p>
 
 <ul>
   <li>The time of the file upload</li>
-  <li>The exact error message as it appears in the “Notes” column</li>
-  <li>Your publisher account username</li>
-  <li>A copy of the file you had problems with</li>
-  <li>A screenshot of your File upload area</li>
+  <li>Whether the error happened once or repeatedly</li>
+  <li>Whether you are uploading DOAJ or Crossref XML</li>
+  <li>Whether you are uploading a file or uploading from a link</li>
+  <li>The exact error message as it appears in the “Notes” column, including the detail under the 'show error details' link</li>
+  <li>A screenshot of the error message</li>
+  <li>The DOAJ account ID that you are logged in with</li>
+  <li>The file(s) you had problems with</li>
 </ul>
 
 <table>
@@ -197,6 +202,8 @@
         Note that it is also possible that if an article has more than one ISSN (i.e. an E-ISSN and a P-ISSN), that those ISSNs could match more than one Journal (one ISSN matching one journal, the other ISSN matching another). If both matched journals are owned by your account, this will not stop the article from being imported, but if one of the matched journals is owned by a different account this will cause the import of the article to fail.<br/>
         <br/>
         A journal may have two ISSNs: an ISSN for the print version and an ISSN for the electronic version. Sometimes the ISSNs of the journal have changed.
+        <br/>
+        The print and online ISSNs you have supplied are identical. If you supply 2 ISSNs they must be different: an ISSN for the print version and an ISSN for the electronic version.
       </td>
       <td>
         Check that all the Article ISSNs in the file are correct<br/>
@@ -230,5 +237,4 @@
     </tr>
   </tbody>
 </table>
-
 {% endblock %}

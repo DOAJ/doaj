@@ -4,7 +4,6 @@ from wtforms import validators
 from wtforms.compat import string_types
 from typing import List
 
-from portality.formcontext.choices import Choices
 from portality.core import app
 from portality.models import Journal, EditorGroup, Account
 
@@ -41,6 +40,8 @@ class DataOptional(object):
     it checks the .data parameter not the .raw_data parameter, which allows us
     to check coerced fields correctly.
 
+    ~~DataOptional:FormValidator~~
+
     :param strip_whitespace:
         If True (the default) also stop the validation chain on input which
         consists of only whitespace.
@@ -62,6 +63,7 @@ class DataOptional(object):
 class OptionalIf(DataOptional, MultiFieldValidator):
     # A validator which makes a field optional if another field is set
     # and has a truthy value.
+    # ~~OptionalIf:FormValidator~~
 
     def __init__(self, other_field_name, message=None, optvals=None, *args, **kwargs):
         self.other_field_name = other_field_name
@@ -111,87 +113,13 @@ class OptionalIf(DataOptional, MultiFieldValidator):
         raise validators.StopValidation()
 
 
-class ExtraFieldRequiredIf(OptionalIf):
-    """ Another field is required if this field has a certain value,
-    but must be empty for all other values of this field. """
-
-    # A radio button has a related text field - we've got to:
-    # a/ require a value in the text input if the related radio
-    # button is checked.
-    # b/ raise an error if there is text present but the related radio
-    # button is not checked (people are far less likely to type text in
-    # by accident compared to forgetting to click on a button, so we
-    # cannot just ignore the text they've typed in).
-
-    # All of this holds for a checkbox with a related text field too.
-
-    def __init__(self, extra_field_name, reqval,
-            message_empty='You have selected "{reqval}" but have not provided any details.',
-            message_full='You have not selected "{reqval}" but have provided further details.',
-            *args, **kwargs):
-        self.extra_field_name = extra_field_name
-        self.reqval = reqval
-        self.message_empty = message_empty
-        self.message_full = message_full
-        super(ExtraFieldRequiredIf, self).__init__(extra_field_name, *args, **kwargs)
-
-    def __call__(self, form, field):
-        extra_field = self.get_extra_field(form)
-
-        # case A - this field is checked, but there's no data in
-        # the extra field
-        if self.reqval in field.data: # works both if this field is a list (checkbox fields) and a string (radio or other fields)
-            if not extra_field.data:
-                raise validators.ValidationError(self.message_empty.format(reqval=self.reqval))
-
-        # case B - the this field is not checked, but there is data in
-        # the extra field
-        if self.reqval not in field.data: # works both if this field is a list (checkbox fields) and a string (radio or other fields)
-            if extra_field.data:
-                raise validators.ValidationError(self.message_full.format(reqval=self.reqval))
-
-    def get_extra_field(self, form):
-        """Alias get_other_field from the superclass to make its purpose clearer for this class."""
-        return self.get_other_field(self.other_field_name, form)
-
-
-class ExclusiveCheckbox(object):
-    """If a checkbox is checked, do not allow any other checkboxes to be checked."""
-    # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
-    # except where it will simplify a 50-field form, k?
-
-    def __init__(self, exclusive_checkbox_value=Choices.NONE, message='When you have selected "{exclusive_checkbox_value}" you are not allowed to tick any other checkboxes.', *args, **kwargs):
-        self.exclusive_checkbox_value = exclusive_checkbox_value
-        self.message = message
-
-    def __call__(self, form, field):
-        detected_exclusive = False
-        detected_others = False
-        for val in field.data:
-            if val == self.exclusive_checkbox_value:
-                detected_exclusive = True
-            else:
-                if val:
-                    detected_others = True
-
-        # if only one of them is true, it doesn't matter
-        # if both are false, no checkboxes have been checked - use a
-        # validators.Required() on the checkboxes field for that
-        # which leaves the case where both are True - and that is what
-        # this validator is all about
-
-        if detected_exclusive and detected_others:
-            raise validators.ValidationError(self.message.format(exclusive_checkbox_value=self.exclusive_checkbox_value))
-            # it won't insert the checkbox value anywhere if
-            # {exclusive_checkbox_value} is not present in the message
-            # passed to the constructor
-
-
 class HTTPURL(validators.Regexp):
     """
     Simple regexp based url validation. Much like the email validator, you
     probably want to validate the url later by other means if the url must
     resolve.
+
+    ~~HTTPURL:FormValidator~~
 
     :param require_tld:
         If true, then the domain-name portion of the URL must contain a .tld
@@ -218,6 +146,8 @@ class MaxLen(object):
 
     Use {max_len} in your custom message to insert the maximum length you've
     specified into the message.
+
+    ~~MaxLen:FormValidator~~
     """
 
     def __init__(self, max_len, message='Maximum {max_len}.', *args, **kwargs):
@@ -232,6 +162,8 @@ class MaxLen(object):
 class RequiredIfRole(validators.DataRequired):
     """
     Makes a field required, if the user has the specified role
+
+    ~~RequiredIfRole:FormValidator~~
     """
 
     def __init__(self, role, *args, **kwargs):
@@ -246,6 +178,8 @@ class RequiredIfRole(validators.DataRequired):
 class RegexpOnTagList(object):
     """
     Validates the field against a user provided regexp.
+
+    ~~RegexpOnTagList:FormValidator~~
 
     :param regex:
         The regular expression string to use. Can also be a compiled regular
@@ -276,6 +210,9 @@ class RegexpOnTagList(object):
 
 
 class ThisOrThat(MultiFieldValidator):
+    """
+    ~~ThisOrThat:FormValidator~~
+    """
     def __init__(self, other_field_name, message=None, *args, **kwargs):
         self.message = message
         super(ThisOrThat, self).__init__(other_field_name, *args, **kwargs)
@@ -294,6 +231,8 @@ class ReservedUsernames(object):
     """
     A username validator. When applied to fields containing usernames it prevents
     their use if they are reserved.
+
+    ~~ReservedUsernames:FormValidator~~
     """
     def __init__(self, message='The "{reserved}" user is reserved. Please choose a different username.', *args, **kwargs):
         self.message = message
@@ -317,6 +256,8 @@ class OwnerExists(object):
     """
     A username validator. When applied to fields containing usernames it ensures that the username
     exists
+
+    ~~OwnerExists:FormValidator~~
     """
     def __init__(self, message='The "{reserved}" user does not exist. Please choose an existing username, or create a new account first.', *args, **kwargs):
         self.message = message
@@ -341,6 +282,9 @@ class OwnerExists(object):
 
 
 class ISSNInPublicDOAJ(object):
+    """
+    ~~ISSNInPublicDOAJ:FormValidator~~
+    """
     def __init__(self, message=None):
         if not message:
             message = "This ISSN already appears in the public DOAJ database"
@@ -354,6 +298,9 @@ class ISSNInPublicDOAJ(object):
 
 
 class JournalURLInPublicDOAJ(object):
+    """
+    ~~JournalURLInPublicDOAJ:FormValidator~~
+    """
     def __init__(self, message=None):
         if not message:
             message = "This Journal URL already appears in the public DOAJ database"
@@ -367,6 +314,9 @@ class JournalURLInPublicDOAJ(object):
 
 
 class StopWords(object):
+    """
+    ~~StopWords:FormValidator~~
+    """
     def __init__(self, stopwords, message=None):
         self.stopwords = stopwords
         if not message:
@@ -380,6 +330,9 @@ class StopWords(object):
 
 
 class DifferentTo(MultiFieldValidator):
+    """
+    ~~DifferentTo:FormValidator~~
+    """
     def __init__(self, other_field_name, ignore_empty=True, message=None):
         super(DifferentTo, self).__init__(other_field_name)
         self.ignore_empty = ignore_empty
@@ -399,6 +352,8 @@ class DifferentTo(MultiFieldValidator):
 class RequiredIfOtherValue(MultiFieldValidator):
     """
     Makes a field required, if the user has selected a specific value in another field
+
+    ~~RequiredIfOtherValue:FormValidator~~
     """
 
     def __init__(self, other_field_name, other_value, message=None, *args, **kwargs):
@@ -444,7 +399,10 @@ class RequiredIfOtherValue(MultiFieldValidator):
 
 
 class OnlyIf(MultiFieldValidator):
-    """ Field only validates if other fields have specific values (or are truthy)"""
+    """
+    Field only validates if other fields have specific values (or are truthy)
+    ~~OnlyIf:FormValidator~~
+    """
     def __init__(self, other_fields: List[dict], ignore_empty=True, message=None, *args, **kwargs):
         self.other_fields = other_fields
         self.ignore_empty = ignore_empty
@@ -489,7 +447,10 @@ class OnlyIf(MultiFieldValidator):
 
 
 class NotIf(OnlyIf):
-    """ Field only validates if other fields DO NOT have specific values (or are truthy)"""
+    """
+    Field only validates if other fields DO NOT have specific values (or are truthy)
+    ~~NotIf:FormValidator~~
+    """
 
     def __call__(self, form, field):
         others = self.get_other_fields(form)
@@ -506,9 +467,11 @@ class NotIf(OnlyIf):
                 # Fail if the other field has the specified value
                 validators.ValidationError(self.message)
 
+
 class NoScriptTag(object):
     """
     Checks that a field does not contain a script html tag
+    ~~NoScriptTag:FormValidator~~
     """
 
     def __init__(self, message=None):
@@ -522,7 +485,10 @@ class NoScriptTag(object):
 
 
 class GroupMember(MultiFieldValidator):
-    """ Validation passes when a field's value is a member of the specified group """
+    """
+    Validation passes when a field's value is a member of the specified group
+    ~~GroupMember:FormValidator~~
+    """
     # Fixme: should / can this be generalised to any group vs specific to editor groups?
 
     def __init__(self, group_field_name, *args, **kwargs):
@@ -549,6 +515,7 @@ class GroupMember(MultiFieldValidator):
 class RequiredValue(object):
     """
     Checks that a field contains a required value
+    ~~RequiredValue:FormValidator~~
     """
     def __init__(self, value, message=None):
         self.value = value
@@ -562,6 +529,9 @@ class RequiredValue(object):
 
 
 class BigEndDate(object):
+    """
+    ~~BigEndDate:FormValidator~~
+    """
     def __init__(self, value, message=None):
         self.value = value
         self.message = message or "Date must be a big-end formatted date (e.g. 2020-11-23)"
@@ -574,8 +544,21 @@ class BigEndDate(object):
         except Exception:
             raise validators.ValidationError(self.message)
 
+class Year(object):
+    def __init__(self, value, message=None):
+        self.value = value
+        self.message = message or "Date must be a year in 4 digit format (eg. 1987)"
+
+    def __call__(self, form, field):
+        if not field.data:
+            return
+        return app.config.get('MINIMAL_OA_START_DATE', 1900) <= field.data <= datetime.now().year
+
 
 class CustomRequired(object):
+    """
+    ~~CustomRequired:FormValidator~~
+    """
     field_flags = ('required', )
 
     def __init__(self, message=None):
@@ -593,6 +576,9 @@ class CustomRequired(object):
 
 
 class EmailAvailable(object):
+    """
+    ~~EmailAvailable:FormValidator~~
+    """
     def __init__(self, message=None):
         if not message:
             message = "Email address is already in use"
@@ -606,6 +592,9 @@ class EmailAvailable(object):
 
 
 class IdAvailable(object):
+    """
+    ~~IdAvailable:FormValidator~~
+    """
     def __init__(self, message=None):
         if not message:
             message = "Account ID already in use"
@@ -624,6 +613,8 @@ class IgnoreUnchanged(object):
 
     If input is the same as before, also removes prior errors (such as processing errors)
     from the field.
+
+    ~~IgnoreUnchanged:FormValidator~~
 
     """
     field_flags = ('optional', )

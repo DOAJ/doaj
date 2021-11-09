@@ -5,6 +5,10 @@ from portality.forms.utils import expanded2compact
 from werkzeug import MultiDict
 
 class JournalGenericXWalk(object):
+    """
+    ~~Journal:Crosswalk->Journal:Form~~
+    ~~->Journal:Model~~
+    """
     @classmethod
     def forminfo2multidict(cls, forminfo):
         formdata = expanded2compact(forminfo,
@@ -172,6 +176,9 @@ class JournalGenericXWalk(object):
 
         if form.boai.data:
             bibjson.boai = form.boai.data == "y"
+
+        if form.oa_start.data:
+            bibjson.oa_start = form.oa_start.data
 
         if form.oa_statement_url.data:
             bibjson.oa_statement_url = form.oa_statement_url.data
@@ -368,6 +375,8 @@ class JournalGenericXWalk(object):
         if bibjson.boai is not None:
             forminfo["boai"] = 'y' if bibjson.boai else 'n'
         forminfo["license_terms_url"] = bibjson.license_terms_url
+        if bibjson.oa_start:
+            forminfo["oa_start"] = bibjson.oa_start
         forminfo["oa_statement_url"] = bibjson.oa_statement_url
         forminfo["journal_url"] = bibjson.journal_url
         forminfo["aims_scope_url"] = bibjson.aims_scope_url

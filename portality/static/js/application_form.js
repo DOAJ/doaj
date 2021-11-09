@@ -278,10 +278,13 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
         }
         this.updateStepIndicator();
 
+        // note that we use `this.currentTab` as the below code is going to
+        // execute asynchronously, and we want to make sure that it shows
+        // the actual correct tab
         $('html').animate({
             scrollTop: 0
         }, 500, () => {
-            $(this.tabs[n]).show();
+            $(this.tabs[this.currentTab]).show();
             $(".nextBtn").blur()
         })
     };
@@ -425,7 +428,7 @@ doaj.af.TabbedApplicationForm = class extends doaj.af.BaseApplicationForm {
     };
 
     manage_review_checkboxes() {
-        if (this.jq("#reviewed").is(":checked")) {
+        if (this.jq("#reviewed").is(":checked") & this.parsley.validationResult) {
             this.jq("#submitBtn").show().removeAttr("disabled");
         } else {
             this.jq("#submitBtn").show().attr("disabled", "disabled");
@@ -440,7 +443,6 @@ doaj.af.newEditorialApplicationForm = function(params) {
 doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     constructor(params) {
         super(params);
-
         this.statusesNotRequiringValidation = ['rejected', 'pending', 'in progress', 'on hold'];
 
         this.formDiff = edges.getParam(params.formDiff, false);
@@ -577,6 +579,10 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
 
             }).fail(() => {
                 this.jq("#cannot-submit-invalid-fields").show();
+                this.parsley.destroy();
+                this.form.attr("data-parsley-focus", "first")
+                this.parsley = this.form.parsley();
+                this.parsley.validate();
             });
         }
         this.form.submit();
@@ -647,6 +653,8 @@ doaj.af.ReadOnlyApplicationForm = class extends doaj.af.TabbedApplicationForm {
         super(params);
         this.editSectionsFromReview = false;
         this.showTab(this.tabs.length - 1);
+        $(".prevBtn").hide();
+        $(".af-pager").hide();
     }
 };
 
@@ -893,6 +901,20 @@ window.Parsley.addValidator("noScriptTag", {
     priority: 300
     }
 )
+
+window.Parsley.addValidator("year", {
+    validateString : function(value, requirement, parsleyInstance) {
+        if (!parseInt(value)){
+            return false;
+        }
+        let y = parseInt(value)
+        return (y >= requirement && y <= new Date().getFullYear())
+    },
+    messages: {
+        en: '<p><small>This field is required, must be a year in 4 digit format (eg. 1987) and needs to get value bigger than 1900 and smaller than current year<p><small>'
+    },
+    priority: 22
+});
 
 
 ///////////////////////////////////////////////////////////////

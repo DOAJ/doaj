@@ -123,52 +123,13 @@ $(document).ready(function() {
     $("#keywords").select2({
         multiple: true,
         minimumInputLength: 1,
-        //ajax: ajax,
-        //createSearchChoice: csc,
-        //initSelection: initSel,
         allowClear: false,
         tags: [],
         tokenSeparators: [','],
-        //maximumSelectionSize: 6,
         width: 'resolve'
     })
 
-
-//     var ajax = {
-//                     url: window.location.protocol + "//" + document.location.host + "/autocomplete/article/bibjson.keywords",
-//                     dataType: 'json',
-//                     data: function (term, page) {
-//                         return {
-//                             q: term
-//                         };
-//                     },
-//                     results: function (data, page) {
-//                         return {results: data["suggestions"]};
-//                     }
-//                 };
-//
-//                 var csc = function (term) {
-//                     return {id: $.trim(term), text: $.trim(term)};
-//                 }
-//
-//
-//                 var initSel = function (element, callback) {
-//                     var data = {id: element.val(), text: element.val()};
-//                     callback(data);
-//                 };
-//
-//                 // apply the create search choice
-//                 $("#keywords").select2({
-//                     multiple: true,
-//                     minimumInputLength: 1,
-//                     ajax: ajax,
-//                     createSearchChoice: csc,
-//                     initSelection: initSel,
-//                     allowClear: false,
-//                     tags: true,
-//                     tokenSeparators: [','],
-//                     maximumSelectionSize: 6,
-//                     width: 'resolve'
-//                 });
-//
+    $("#article_metadata_form").on("submit", function(event) {
+        $("button[type=submit]").prop("disabled", true);
+    })
  })

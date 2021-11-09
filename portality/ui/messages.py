@@ -58,9 +58,13 @@ class Messages(object):
     EXCEPTION_NO_CONTRIBUTORS_FOUND = "No contributors found."
     EXCEPTION_NO_CONTRIBUTORS_EXPLANATION = "DOAJ requires at least one author for each article."
 
-    EXCEPTION_TOO_MANY_ISSNS = "Too many ISSNs. Only 2 ISSNs are allowed"
+    EXCEPTION_TOO_MANY_ISSNS = "Too many ISSNs. Only 2 ISSNs are allowed: one Print ISSN and one Online ISSN."
     EXCEPTION_ISSNS_OF_THE_SAME_TYPE = "Both ISSNs have the same type: {type}"
+    EXCEPTION_IDENTICAL_PISSN_AND_EISSN = "The Print and Online ISSNs supplied are identical. If you supply 2 ISSNs they must be different."
 
+    EXCEPTION_IDENTIFIER_CHANGE_CLASH = "DOI or Fulltext URL has been changed to match another article that already exists in DOAJ"
+    EXCEPTION_IDENTIFIER_CHANGE = "DOI or Fulltext URL have been changed.  This operation is not permitted, please contact an administrator for help."
+    EXCEPTION_DUPLICATE_NO_PERMISSION = "You do not have the permissions to carry out the requested change"
 
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
@@ -81,7 +85,7 @@ class Messages(object):
     BLL__UNREJECT_APPLICATION__JOURNAL_MISSING = "Journal {jid} related to application {id} does not exist"
     BLL__UNREJECT_APPLICATION__SAVE_FAIL = "Save on {obj} {id} in unreject_application failed"
 
-
+    ADMIN__WITHDRAW_REINSTATE = "<a href='{url}'>Job to withdraw/reinstate journal has been submitted</a>"
 
     @classmethod
     def flash(cls, tup):

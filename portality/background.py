@@ -27,15 +27,21 @@ class BackgroundSummary(object):
         }
 
 class BackgroundApi(object):
+    """
+    ~~BackgroundTasks:Feature~~
+    """
 
     @classmethod
     def execute(self, background_task):
+        # ~~->BackgroundTask:Process~~
+        # ~~->BackgroundJob:Model~~
         job = background_task.background_job
         ctx = None
         acc = None
         if job.user is not None:
             ctx = app.test_request_context("/")
             ctx.push()
+            # ~~-> Account:Model~~
             acc = models.Account.pull(job.user)     # FIXME: what happens when this is the "system" user
             if acc is not None:
                 login_user(acc)
@@ -74,9 +80,11 @@ class BackgroundApi(object):
         job.save()
 
         # send a confirmation email to the user if the account exists
+        # ~~->Email:Library~~
+        # ~~->SearchURLGenerator:Feature
         if acc is not None:
             if acc.email is not None and acc.has_role("admin"):
-                template = "email/admin_background_job_finished.txt"
+                template = "email/admin_background_job_finished.jinja2"
                 subject = app.config.get("SERVICE_NAME", "") + " - background job finished"
 
                 url_root = app.config.get("BASE_URL")
@@ -108,6 +116,7 @@ class BackgroundTask(object):
     - cleanup
     - prepare (class method)
 
+    ~~BackgroundTask:Process~~
     """
 
     __action__ = None
@@ -170,8 +179,10 @@ class BackgroundTask(object):
 
 
 class AdminBackgroundTask(BackgroundTask):
+    """~~AdminBackgroundTask:Process->BackgroundTask:Process~~"""
     @classmethod
     def check_admin_privilege(cls, username):
+        # ~~->Account:Model~~
         a = models.Account.pull(username)
         if a is None:
             # very unlikely, as they would have had to log in to get to here..

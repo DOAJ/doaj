@@ -5,7 +5,7 @@
 {% include "_edges_common_css.html" %}
 
 {% block admin_content %}
-<h1>List of users</h1>
+<h1 class="sr-only">List of users</h1>
 
 {% if current_user.has_role("create_user") %}<p><a href="/account/register" class="button button--secondary">create new user</a></p>{% endif %}
 

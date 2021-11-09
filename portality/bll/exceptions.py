@@ -1,8 +1,9 @@
-import sys, traceback
+import sys, traceback, json
 
 class AuthoriseException(Exception):
     """
     Exception to raise if an action is not authorised
+    ~~AuthNZ:Exception->AuthNZ:Feature~~
     """
 
     # standardised reasons why an action might not be allowed
@@ -57,8 +58,12 @@ class ArticleNotAcceptable(Exception):
     Exception to raise when an article does not have suitable data to be ingested into DOAJ
     """
     def __init__(self, *args, **kwargs):
-        self.errors = kwargs.get("errors", [])
+        self.message = kwargs.get("message", "")
         super(ArticleNotAcceptable, self).__init__(*args)
+
+    def __str__(self):
+        super(ArticleNotAcceptable, self).__str__()
+        return self.message
 
 class ArticleMergeConflict(Exception):
     """
@@ -84,6 +89,9 @@ class DuplicateUpdateRequest(Exception):
 
 
 class IngestException(Exception):
+    """
+    ~~ArticleIngest:Exception->Article:Service~~
+    """
     def __init__(self, *args, **kwargs):
         self.stack = None
         self.message = kwargs.get("message")
@@ -108,3 +116,20 @@ class IngestException(Exception):
 
     def trace(self):
         return self.stack
+
+    def __str__(self):
+        repr = "Ingest Exception: "
+        if self.message:
+            repr += self.message
+        if self.inner_message:
+            repr += " - " + self.inner_message
+        if self.result:
+            repr += " (" + json.dumps(self.result, cls=SetEncoder) + ")"
+        return repr
+
+
+class SetEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)

@@ -3,7 +3,10 @@ from portality.crosswalks.journal_form import JournalGenericXWalk, JournalFormXW
 
 
 class ApplicationFormXWalk(JournalGenericXWalk):
-
+    """
+    ~~ApplicationForm:Crosswalk->Application:Model~~
+    ~~->Application:Form~~
+    """
     _formFields2objectFields = {
         "alternative_title" : "bibjson.alternative_title",
         "apc_charges.apc_max" : "bibjson.apc.max.price",
@@ -33,6 +36,7 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         "boai" : "bibjson.boai",
         "license" : "bibjson.license.type",
         "license_terms_url" : "bibjson.license.url",
+        "oa_start": "bibjson.oa_start",
         "oa_statement_url" : "bibjson.ref.oa_statement",
         "journal_url" : "bibjson.ref.journal",
         "aims_scope_url" : "bibjson.ref.aims_scope",
@@ -105,6 +109,13 @@ class ApplicationFormXWalk(JournalGenericXWalk):
 
     @classmethod
     def update_request_diff(cls, source):
+        """
+        ~~->Journal:Model~~
+        ~~->JournalForm:Crosswalk~~
+        ~~->UpdateRequest:Feature~~
+        :param source:
+        :return:
+        """
         diff = None
         cj = None
 

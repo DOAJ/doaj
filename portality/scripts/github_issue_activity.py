@@ -1,3 +1,15 @@
+"""
+This script exports all your activity from the DOAJ code and PM issue trackers
+
+Example:
+
+python github_issue_activity.py -u [username] -p [passcode] -s 2021-05-10T00:00:00Z -f 2021-07-15T00:00:00Z -o activity.csv
+
+If you want to see your commit history in a similarly useful form, you can use:
+
+git log --pretty=format:'"%ad","%d","%B"' --date=short --reverse --all --since=[date] --author="[name]"
+
+"""
 import requests
 from requests.auth import HTTPBasicAuth
 from datetime import datetime

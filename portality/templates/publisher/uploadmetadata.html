@@ -58,7 +58,7 @@
 {% if previous|length > 0 %}
 <h2>History of uploads (showing last {{previous|length}})</h2>
 
-<table id="previous_files" style="width: 100%; table-layout:fixed" class="tablesorter">
+<table id="previous_files" class="file_history tablesorter">
     <thead>
         <tr>
             <th style="width: 17%">Upload Date</th>
@@ -71,7 +71,7 @@
 {% for file in previous %}
     <tr>
         <td>{{ file.created_timestamp | utc_timestamp("%d %b %Y %H:%M:%S %Z") }}</td>
-        <td style="word-wrap: break-word">
+        <td class="long_content">
             {% if file.filename.startswith("http") %}
                 <a href="{{file.filename}}">{{file.filename}}</a>
             {% else %}
@@ -89,26 +89,26 @@
         </td>
         <td>
             {% if file.status == "incoming" %}
-                <span style="color: #000066">in submission</span>
+                <span class="file_status--initial">in submission</span>
             {% elif file.status == "validated" %}
-                <span style="color: #000066">pending</span>
+                <span class="file_status--initial">pending</span>
             {% elif file.status == "exists" %}
-                <span style="color: #000066">pending</span>
+                <span class="file_status--initial">pending</span>
             {% elif file.status == "failed" %}
-                <span style="color: #660000"><span data-feather="alert-octagon" aria-hidden="true"></span>processing failed</span>
+                <span class="file_status--error"><span data-feather="alert-octagon" aria-hidden="true"></span> processing failed</span>
             {% elif file.status == "processed" %}
-                <span style="color: #006600"><span data-feather="thumbs-up" aria-hidden="true"></span>successfully processed</span>
+                <span class="file_status--success"><span data-feather="thumbs-up" aria-hidden="true"></span> successfully processed</span>
             {% elif file.status == "partial" %}
-                <span style="color: #ff3300"><span data-feather="alert-triangle" aria-hidden="true"></span>partial success</span>
+                <span class="file_status--warning"><span data-feather="alert-triangle" aria-hidden="true"></span> partial success</span>
             {% endif %}
         </td>
-        <td style="word-wrap:break-word">
+        <td class="long_content">
             {% if file.error %}
                 {{file.error}}
                 {% if file.error == "One or more articles failed to ingest; entire batch ingest halted" %}
-                    <a target="_blank" href="{{ url_for('publisher.help') }}">(what does this mean?)</a><br>
+                    <a target="_blank" href="{{ url_for('publisher.help') }}#explanations">(what does this mean?)</a><br>
                 {% else %}
-                    <a target="_blank" href="{{ url_for('publisher.help') }}">(what does this mean?)</a><br>
+                    <a target="_blank" href="{{ url_for('publisher.help') }}#explanations">(what does this mean?)</a><br>
                 {% endif %}
             {% else %}
                 {% if file.status == "partial" or file.status == "processed" %}
