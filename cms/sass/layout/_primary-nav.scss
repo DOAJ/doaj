@@ -7,7 +7,7 @@
   z-index: 3000;
   height: 75px;
   background-color: $warm-black;
-  transition: top 0.3s;
+  transition: height 0.3s ease-out;
   text-transform: uppercase;
   font-weight: 600;
   color: $white;
@@ -50,7 +50,7 @@
   }
 
   &--scrolled {
-    height: 50px;
+    height: 40px;
 
     .logo, .logo svg {
       padding: 0;
@@ -59,11 +59,11 @@
     }
 
     .nav-bar {
-      height: 50px;
+      height: 40px
     }
 
     .dropdown__trigger {
-      line-height: 50px;
+      line-height: 40px;
     }
   }
 
