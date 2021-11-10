@@ -748,6 +748,15 @@ ass_ed:
   city: Surabaya
   country: Indonesia
   language: Indonesian, English
+ 
+- name: Nataliia Kaliuzhna
+  area: Library and Information Science
+  year_since:
+  city: Kyiv
+  country: Ukraine
+  language: Ukranian, Russian, English, Polish
+  photo: "Nataliia.jpg"
+ 
 
 - name: Nathalia Avila
   area:
