@@ -748,6 +748,7 @@ ass_ed:
   city: Surabaya
   country: Indonesia
   language: Indonesian, English
+  
  
 - name: Nataliia Kaliuzhna
   area: Library and Information Science
@@ -764,6 +765,14 @@ ass_ed:
   city:
   country:
   language: Spanish, English
+  
+- name: Natia Gabedava
+  area: Humanities, Education
+  year_since:
+  city: Tbilisi
+  country: Georgia
+  language: Georgian, English
+  photo: "NatiaGabedava.jpg"
 
 - name: Nour El Houda Belhamel
   area: Science, Technology, Medicine
