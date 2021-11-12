@@ -53,6 +53,7 @@ $.extend(true, doaj, {
                         {'display':'Title','field':'bibjson.title'},
                         {'display':'Abstract','field':'bibjson.abstract'},
                         {'display':'Keywords','field':'bibjson.keywords'},
+                        {'display':'Subject','field':'index.classification'},
                         {'display':'Author','field':'bibjson.author.name'},
                         {'display':'ORCID','field':'bibjson.author.orcid_id'},
                         {'display':'DOI', 'field' : 'bibjson.identifier.id'},
