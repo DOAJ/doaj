@@ -59,6 +59,14 @@ ed:
   city: Padang, West Sumatra
   country: Indonesia
   language: Indonesian, English
+  
+  
+- name: Juyeon Park
+  area: Librarianship
+  year_since:
+  city: Seoul
+  country: Korea
+  language: Korean, English
 
 - name: Lut Tamam
   area: Medicine
