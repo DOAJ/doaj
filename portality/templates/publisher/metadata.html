@@ -1,3 +1,4 @@
+{# ~~PublisherArticleMetadata:Page~~ #}
 {% extends "publisher/publisher_base.html" %}
 
 {% block page_title %}Enter article metadata{% endblock %}
@@ -24,4 +25,11 @@
 
 {% block extra_js_bottom %}
     <script type="text/javascript" src="/static/js/article_metadata_form.js"></script>
+    <script type="text/javascript" src="/static/js/dontleave.js"></script>
+    <script type="text/javascript">
+    {# ~~->DontLeave:Feature~~ #}
+    jQuery(document).ready(function($) {
+        doaj.dontleave.init({containerSelector: "#article_metadata_form"});
+    });
+    </script>
 {% endblock %}
