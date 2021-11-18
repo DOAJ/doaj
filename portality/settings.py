@@ -163,6 +163,7 @@ STORE_TMP_WRITE_BUFFER_SIZE = 16777216
 STORE_ANON_DATA_CONTAINER = "doaj-anon-data-placeholder"
 STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
+STORE_HARVESTER_CONTAINER = "doaj-harvester"
 
 # S3 credentials for relevant scopes
 # ~~->S3:Technology~~
