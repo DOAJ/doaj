@@ -59,6 +59,14 @@ ed:
   city: Padang, West Sumatra
   country: Indonesia
   language: Indonesian, English
+  
+  
+- name: Juyeon Park
+  area: Librarianship
+  year_since:
+  city: Seoul
+  country: Korea
+  language: Korean, English
 
 - name: Lut Tamam
   area: Medicine
@@ -269,6 +277,15 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
+- name: Cara Forster
+  area: Health Sciences and Library Science
+  year_since:
+  city: Germantown, Maryland
+  country: USA
+  language: English, American Sign Language
+  photo: "cara.jpg"
+
+
 - name: Carlos Alegre
   area: Social Sciences
   year_since:
@@ -342,13 +359,6 @@ ass_ed:
   city:
   country: Indonesia
   language: Indonesian, English
-
-- name: Driselda Sánchez Aguirre
-  area: Social Sciences
-  year_since:
-  city: Querétaro
-  country: Mexico
-  language: Spanish, English
 
 - name: Dwi Fajar Saputra
   area: Librarianship
@@ -746,6 +756,16 @@ ass_ed:
   city: Surabaya
   country: Indonesia
   language: Indonesian, English
+  
+ 
+- name: Nataliia Kaliuzhna
+  area: Library and Information Science
+  year_since:
+  city: Kyiv
+  country: Ukraine
+  language: Ukranian, Russian, English, Polish
+  photo: "Nataliia.jpg"
+ 
 
 - name: Nathalia Avila
   area:
@@ -753,6 +773,14 @@ ass_ed:
   city:
   country:
   language: Spanish, English
+  
+- name: Natia Gabedava
+  area: Humanities, Education
+  year_since:
+  city: Tbilisi
+  country: Georgia
+  language: Georgian, English
+  photo: "NatiaGabedava.jpg"
 
 - name: Nour El Houda Belhamel
   area: Science, Technology, Medicine

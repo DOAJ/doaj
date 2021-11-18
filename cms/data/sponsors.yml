@@ -140,6 +140,10 @@ bronze:
   url: https://www.mdpi.com/
   logo: mdpi.svg
 
+- name: OASPA
+  url: https://oaspa.org/
+  logo: oaspa.png
+
 - name: OCLC
   url: https://www.oclc.org/
   logo: oclc.svg

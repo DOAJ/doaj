@@ -7,29 +7,14 @@
             {% set url = url_for(entry.route) %}
             {% set urlAttrs = "" %}
         {% endif %}
-        <a {{ urlAttrs }} href="{{ url }}">
+
+        <a {{ urlAttrs }} href="{{ url }}"{% if entry.modal %} data-toggle="modal" data-target="#modal-{{ entry.modal.id }}" role="button"{% endif %}>
             {% if entry.feather %}
-            <span aria-hidden="true" data-feather="{{ entry.feather }}"></span>
+              <span aria-hidden="true" data-feather="{{ entry.feather }}"></span>
+            {% elif entry.include %}
+              {% include entry.include %}
             {% endif %}
             {{ entry.label }}
         </a>
     </li>
 {% endfor %}
-
-{#
-{% capture section_name %}{{ include.section }}{% endcapture %}
-{% assign section = site[section_name] | sort: 'order' %}
-{% for page in section %}
-{% if page.fragment != true and page.order %}
-<li>
-  <a href="{{ page.url }}"{% if include.header %} class="dropdown__link"{% endif %}>
-    {% if include.short_title %}
-    {{ page.short_title }}
-    {% else %}
-    {{ page.title }}
-    {% endif %}
-  </a>
-</li>
-{% endif %}
-{% endfor %}
-#}
