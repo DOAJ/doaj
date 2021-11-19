@@ -460,6 +460,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             event.preventDefault();
             let id = $(this).attr("data-id");
             let type = $(this).attr("data-type");
+            that.submitting = true;
             that.unlock({type : type, id : id})
         });
 
@@ -472,7 +473,12 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         // bind some event handlers that register when the form has changed in a meaningful
         // way, and then a beforeunload event to warn the user
         this.jq("input, select").bind("change", () => this.changed = true);
-        this.jq("button").bind("click", () => this.changed = true);
+        this.jq("button").bind("click", (event) => {
+            // ignore any "view note" modal close button hits
+            if (!$(event.currentTarget).hasClass("formulaic-notemodal-close")) {   // FIXME: I don't love this, it feels brittle, but I don't have a better solution
+                this.changed = true
+            }
+        });
         $(window).bind("beforeunload", (event) => this.beforeUnload(event));
 
         // do a pre-validation to highlight any fields that require attention
@@ -689,11 +695,13 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
             $("#modal-quick_reject").show();
         });
 
+        let that = this;
         $("#submit_quick_reject").on("click", function(event) {
             if ($("#quick_reject").val() === "" && $("#quick_reject_details").val() === "") {
                 alert("When selecting 'Other' as a reason for rejection, you must provide additional information");
                 event.preventDefault();
             }
+            that.submitting = true;
         });
     };
 };
