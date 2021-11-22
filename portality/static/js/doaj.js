@@ -1,5 +1,6 @@
 /** base namespace for all DOAJ-specific functions */
 var doaj = {
+    scrollPosition: 100,
     init : function() {
         // Use Feather icons
         feather.replace();
@@ -12,38 +13,25 @@ var doaj = {
             nav.classList.toggle("secondary-nav__menu-toggle--active");
         }, false);
 
-        // Display back-to-top button on scroll
-        var topBtn = document.getElementById("top");
+        // On scroll, display back-to-top button & add class to header primary menu
+        var topBtn = document.getElementById("top"),
+            topNav = document.querySelector(".primary-nav");
 
-        function displayTopBtn() {
-            if (topBtn) {
-                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        function displayOnScroll() {
+            if (topBtn && topNav) {
+                if (document.body.scrollTop > doaj.scrollPosition || document.documentElement.scrollTop > doaj.scrollPosition) {
                     topBtn.style.display = "flex";
+                    topNav.classList.add("primary-nav--scrolled");
                 } else {
                     topBtn.style.display = "none";
+                    topNav.classList.remove("primary-nav--scrolled");
                 }
             }
         }
 
-        // Hide header menu on down scroll; display on scroll up
-        var prevScrollPos = window.pageYOffset,
-            topNav = document.querySelector(".primary-nav");
-
-        function hideNav() {
-            var currentScrollPos = window.pageYOffset;
-
-            if (prevScrollPos > currentScrollPos) {
-                topNav.classList.remove("primary-nav--scrolled");
-            } else {
-                topNav.classList.add("primary-nav--scrolled");
-            }
-            prevScrollPos = currentScrollPos;
-        }
-
-        window.onscroll = function() {
-            displayTopBtn();
-            hideNav();
-        };
+        window.addEventListener("scroll", function() {
+          displayOnScroll();
+        });
 
         // Tabs
         jQuery (function($) {

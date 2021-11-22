@@ -97,6 +97,12 @@ entries:
       - label: Linkedin
         feather: linkedin
         url: https://www.linkedin.com/company/directory-of-open-access-journals-doaj-/  # ~~->LinkedIn:ExternalService~~
+      - label: WeChat
+        include: "includes/svg/wechat.svg"
+        url: '#'
+        modal:
+          id: wechat
+          include: "includes/_wechat_modal.html"
       - label: Atom feed
         feather: rss
         route: atom.feed  # ~~->Atom:WebRoute~~

@@ -1,0 +1,25 @@
+{
+	"batch" : 100,
+	"types": [
+		{
+			"type" : "application",
+			"scroll_size" : 1000,
+			"keepalive" : "5m",
+			"init_with_model" : true,
+			"query" : {
+				"query": {
+					"filtered": {
+						"query": {"match_all": {}},
+						"filter": {
+							"bool": {
+								"must": [
+									{"range": {"last_updated": {"gte": "2021-11-01T15:00:00Z", "lte": "2021-11-01T21:00:00Z"}}}
+								]
+							}
+						}
+					}
+				}
+			}
+		}
+	]
+}

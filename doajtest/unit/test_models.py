@@ -305,7 +305,9 @@ class TestModels(DoajTestCase):
         d = s.__seamless__.data
         assert 'index' in d, d
         assert 'application_type' in d['index'], d['index']
-        assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_UPDATE_REQUEST_FINISHED
+        # assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_UPDATE_REQUEST_FINISHED
+        # FIXME: temporary partial reversion for 1779
+        assert d['index']['application_type'] == "update request"
 
         s.remove_current_journal()
         assert s.current_journal is None
@@ -314,12 +316,16 @@ class TestModels(DoajTestCase):
         d = s.__seamless__.data
         assert 'index' in d, d
         assert 'application_type' in d['index'], d['index']
-        assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_NEW_APPLICATION_FINISHED
+        # assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_NEW_APPLICATION_FINISHED
+        # FIXME: temporary partial reversion for 1779
+        assert d['index']['application_type'] == "finished application/update"
 
         s.set_application_status(constants.APPLICATION_STATUS_PENDING)
         s.prep()
         d = s.__seamless__.data
-        assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_NEW_APPLICATION_UNFINISHED
+        # assert d['index']['application_type'] == constants.INDEX_RECORD_TYPE_NEW_APPLICATION_UNFINISHED
+        # FIXME: temporary partial reversion for 1779
+        assert d['index']['application_type'] == "new application"
 
         s.save()
 

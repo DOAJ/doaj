@@ -31,7 +31,10 @@ def query(path=None):
         q = request.json
     # if there is a source param, load the json from it
     elif 'source' in request.values:
-        q = json.loads(urllib.parse.unquote(request.values['source']))
+        try:
+            q = json.loads(urllib.parse.unquote(request.values['source']))
+        except ValueError:
+            abort(400)
 
     try:
         account = None
