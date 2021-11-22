@@ -20,7 +20,7 @@ from portality.forms.application_forms import ApplicationFormFactory, applicatio
 from portality.forms.application_forms import JournalFormFactory
 from portality.forms.article_forms import ArticleFormFactory
 from portality.lcc import lcc_jstree
-from portality.lib.es_query_http import remove_search_limits
+from portality.lib.query_filters import remove_search_limits
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
     article_bulk_delete
 from portality.ui.messages import Messages
@@ -364,6 +364,11 @@ def application(application_id):
         if processor.validate():
             try:
                 processor.finalise(current_user._get_current_object())
+                # if (processor.form.resettedFields):
+                #     text = "Some fields has been resetted due to invalid value:"
+                #     for f in processor.form.resettedFields:
+                #         text += "<br>field: {}, invalid value: {}, new value: {}".format(f["name"], f["data"], f["default"])
+                #     flash(text, 'info')
                 flash('Application updated.', 'success')
                 for a in processor.alert:
                     flash_with_url(a, "success")

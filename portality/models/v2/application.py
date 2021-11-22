@@ -19,7 +19,14 @@ APPLICATION_STRUCT = {
                 "current_journal" : {"coerce" : "unicode"},
                 "related_journal" : {"coerce" : "unicode"},
                 "application_status" : {"coerce" : "unicode"},
-                "date_applied" : {"coerce" : "utcdatetime"}
+                "date_applied" : {"coerce" : "utcdatetime"},
+                "application_type" : {
+                    "coerce" : "unicode",
+                    "allowed_values" : [
+                        constants.APPLICATION_TYPE_NEW_APPLICATION,
+                        constants.APPLICATION_TYPE_UPDATE_REQUEST
+                    ]
+                }
             }
         },
         "index" : {
@@ -46,6 +53,11 @@ class Application(JournalLikeObject):
         if "_source" in kwargs:
             kwargs = kwargs["_source"]
         super(Application, self).__init__(raw=kwargs)
+        if self.application_type is None:
+            if self.current_journal:
+                self.set_is_update_request(True)
+            else:
+                self.set_is_update_request(False)
 
     @classmethod
     def get_by_owner(cls, owner):
@@ -81,10 +93,24 @@ class Application(JournalLikeObject):
         return es_data_mapping.create_mapping(self.__seamless_struct__.raw, MAPPING_OPTS)
 
     @property
+    def application_type(self):
+        return self.__seamless__.get_single("admin.application_type")
+
+    @application_type.setter
+    def application_type(self, val):
+        self.__seamless__.set_with_struct("admin.application_type", val)
+
+    def set_is_update_request(self, val):
+        application_type = constants.APPLICATION_TYPE_UPDATE_REQUEST if val is True else constants.APPLICATION_TYPE_NEW_APPLICATION
+        self.application_type = application_type
+
+    @property
     def current_journal(self):
         return self.__seamless__.get_single("admin.current_journal")
 
     def set_current_journal(self, journal_id):
+        # anything that has a current journal is, by definition, an update request
+        self.set_is_update_request(True)
         self.__seamless__.set_with_struct("admin.current_journal", journal_id)
 
     def remove_current_journal(self):
@@ -127,12 +153,28 @@ class Application(JournalLikeObject):
     def _generate_index(self):
         super(Application, self)._generate_index()
 
+        # index_record_type = None
+        # if self.application_type == constants.APPLICATION_TYPE_NEW_APPLICATION:
+        #     if self.application_status in [constants.APPLICATION_STATUS_REJECTED, constants.APPLICATION_STATUS_ACCEPTED]:
+        #         index_record_type = constants.INDEX_RECORD_TYPE_NEW_APPLICATION_FINISHED
+        #     else:
+        #         index_record_type = constants.INDEX_RECORD_TYPE_NEW_APPLICATION_UNFINISHED
+        # elif self.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
+        #     if self.application_status in [constants.APPLICATION_STATUS_REJECTED, constants.APPLICATION_STATUS_ACCEPTED]:
+        #         index_record_type = constants.INDEX_RECORD_TYPE_UPDATE_REQUEST_FINISHED
+        #     else:
+        #         index_record_type = constants.INDEX_RECORD_TYPE_UPDATE_REQUEST_UNFINISHED
+        # if index_record_type is not None:
+        #     self.__seamless__.set_with_struct("index.application_type", index_record_type)
+
+        # FIXME: Temporary partial reversion of an indexing change
         if self.current_journal is not None:
-            self.__seamless__.set_with_struct("index.application_type", constants.APPLICATION_TYPE_UPDATE_REQUEST)
+            self.__seamless__.set_with_struct("index.application_type", "update request")
         elif self.application_status in [constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED]:
-            self.__seamless__.set_with_struct("index.application_type", constants.APPLICATION_TYPE_FINISHED)
+            self.__seamless__.set_with_struct("index.application_type", "finished application/update")
         else:
-            self.__seamless__.set_with_struct("index.application_type", constants.APPLICATION_TYPE_NEW_APPLICATION)
+            self.__seamless__.set_with_struct("index.application_type", "new application")
+
 
     def prep(self, is_update=True):
         self._generate_index()

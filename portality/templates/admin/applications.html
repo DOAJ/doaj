@@ -5,21 +5,22 @@
 {% block page_title %}Applications & update requests{% endblock %}
 
 {% block admin_content %}
-<h1>Applications & update requests</h1>
+<h1 class="sr-only">Applications & update requests</h1>
 
 <div class="bulk-action-feedback alert alert-success" style="display: none"></div>
 
 <div id="admin-bulk-box">
-    <h2>Bulk edit records</h2>
+    <h2 class="label">Bulk edit records</h2>
     <div class="row">
       <form class="col-md-6 form form--compact" id="suggestion_bulk_form">
-        <div id="bulk_action-container">
-            <select class="multiformbox-selector form__question" id="bulk_action" name="bulk_action" style="width: 250px;">
+        <div id="bulk_action-container" class="input-group">
+            <select class="multiformbox-selector input-group__input" id="bulk_action" name="bulk_action">
                 <option selected value="">Select action…</option>
                 <option value="application_status">Change status</option>
                 <option value="editor_group">Assign to editor group</option>
                 <option value="note">Add a note</option>
             </select>
+            <button id="bulk-submit" class="button multiformbox-submit input-group__input" disabled="disabled">Submit</button>
         </div>
         <div class="multiformbox-container form__question" style="display: none" id="application_status-container">
             <select id="application_status" name="application_status">
@@ -34,7 +35,6 @@
         <div class="multiformbox-container form__question" style="display: none" id="note-container">
             <textarea id="note" name="note" placeholder="Type note here…"></textarea>
         </div>
-        <button id="bulk-submit" class="button multiformbox-submit" disabled="disabled">Submit</button>
       </form>
   </div>
 </div>

@@ -59,6 +59,10 @@ silver:
   url: https://www.karger.com/
   logo: karger.png
   
+- name: KeAi
+  url: http://www.keaipublishing.com/en/
+  logo: keai.png
+  
 - name: National Library of Sweden
   url: https://www.kb.se/
   logo: kbse.svg
@@ -135,6 +139,10 @@ bronze:
 - name: MDPI
   url: https://www.mdpi.com/
   logo: mdpi.svg
+
+- name: OASPA
+  url: https://oaspa.org/
+  logo: oaspa.png
 
 - name: OCLC
   url: https://www.oclc.org/

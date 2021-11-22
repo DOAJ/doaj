@@ -13,18 +13,16 @@ new ones as required too.
 import os, sys
 import tzlocal
 import pytz
-import yaml
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, send_from_directory
 from flask_login import login_user, current_user
 
 from datetime import datetime
-from collections import OrderedDict
 
 import portality.models as models
 from portality.core import app, es_connection, initialise_index
 from portality import settings
-from portality.lib import edges
+from portality.lib import edges, dates
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -42,6 +40,8 @@ if 'api1' in app.config['FEATURES']:
     from portality.view.api_v1 import blueprint as api_v1
 if 'api2' in app.config['FEATURES']:
     from portality.view.api_v2 import blueprint as api_v2
+if 'api3' in app.config['FEATURES']:
+    from portality.view.api_v3 import blueprint as api_v3
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 
@@ -59,6 +59,9 @@ if 'api1' in app.config['FEATURES']:
     app.register_blueprint(api_v1, url_prefix='/api/v1') # ~~-> APIv1:Blueprint~~
 if 'api2' in app.config['FEATURES']:
     app.register_blueprint(api_v2, url_prefix='/api/v2') # ~~-> APIv2:Blueprint~~
+if 'api3' in app.config['FEATURES']:
+    app.register_blueprint(api_v3, url_prefix='/api') # ~~-> APIv3:Blueprint~~
+    app.register_blueprint(api_v3, url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
 app.register_blueprint(status, url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
@@ -207,6 +210,11 @@ def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
     return utcdt.strftime(string_format)
 
 
+@app.template_filter("human_date")
+def human_date(stamp, string_format="%d %B %Y"):
+    return dates.reformat(stamp, out_format=string_format)
+
+
 @app.template_filter('doi_url')
 def doi_url(doi):
     """
@@ -310,8 +318,9 @@ def standard_authentication():
 # Register configured API versions
 # ~~-> APIv1:Blueprint~~
 # ~~-> APIv2:Blueprint~~
+# ~~-> APIv3:Blueprint~~
 features = app.config.get('FEATURES', [])
-if 'api1' in features or 'api2' in features:
+if 'api1' in features or 'api2' in features or 'api3' in features:
     @app.route('/api/')
     def api_directory():
         vers = []
@@ -336,6 +345,17 @@ if 'api1' in features or 'api2' in features:
                                         _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
                     'note': 'Second version of the DOAJ API',
                     'docs_url': url_for('api_v2.docs', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
+                }
+            )
+        if 'api3' in features:
+            vers.append(
+                {
+                    'version': '3.0.0',
+                    'base_url': url_for('api_v3.api_spec', _external=True,
+                                        _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
+                    'note': 'Third version of the DOAJ API',
+                    'docs_url': url_for('api_v3.docs', _external=True,
                                         _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
                 }
             )

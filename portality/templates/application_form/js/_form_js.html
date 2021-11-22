@@ -27,7 +27,7 @@
         {% else %}
             doaj.af.active = doaj.af.applicationFormFactory({
             {% if form_diff %}
-                formDiff: {{ form_diff|tojson }}
+                formDiff: {{ form_diff|tojson }},
             {% endif %}
             });
         {% endif %}

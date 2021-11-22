@@ -1,4 +1,4 @@
-from wtforms import Field, SelectField
+from wtforms import Field, SelectField, FormField, RadioField
 from wtforms import widgets
 
 
@@ -28,3 +28,20 @@ class TagListField(Field):
                 self.data += [c for c in [x.strip() for x in v.split(",") if x]]
         else:
             self.data = []
+
+
+class NestedFormField(FormField):
+    def validate(self, form, extra_validators=tuple()):
+        self.form.meta.parent_form = form
+        return super().validate(form, extra_validators)
+
+
+class UnconstrainedRadioField(RadioField):
+    def pre_validate(self, form):
+        return
+
+    def process_data(self, value):
+        if value:
+            super(UnconstrainedRadioField, self).process_data(value)
+        else:
+            self.data = None

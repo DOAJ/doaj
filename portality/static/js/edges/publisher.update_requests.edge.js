@@ -45,7 +45,9 @@ $.extend(true, doaj, {
                 edges.newSearchingNotification({
                     id: "searching-notification",
                     finishedEvent: "edges:post-render",
-                    renderer : doaj.renderers.newSearchingNotificationRenderer()
+                    renderer : doaj.renderers.newSearchingNotificationRenderer({
+                        scrollOnSearch: true
+                    })
                 }),
 
                 // facets

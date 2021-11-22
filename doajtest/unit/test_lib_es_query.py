@@ -1,5 +1,5 @@
 from unittest import TestCase
-import portality.lib.es_query_http as es_query_lib
+import portality.lib.query_filters as es_query_lib
 
 
 class TestLibESQuery(TestCase):

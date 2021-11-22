@@ -314,7 +314,7 @@ def build_statics(app):
     :param app:
     :return:
     """
-    if not app.config.get("DEBUG", False):
+    if not app.config.get("CMS_BUILD_ASSETS_ON_STARTUP", False):
         return
     from portality.cms import build_fragments, build_sass
 
