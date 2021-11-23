@@ -180,6 +180,11 @@ STORE_S3_SCOPES = {
     "public_data_dump" : {
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    },
+    # Used to store harvester run logs to S3
+    "harvester" : {
+        "aws_access_key_id" : "put this in your dev/test/production.cfg",
+        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }
 }
 
