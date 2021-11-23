@@ -224,15 +224,15 @@ class JournalService(object):
             ]
             return kvs
 
-            # ~~!JournalCSV:Feature->Journal:Model~~
-            cols = {}
-            for j in models.Journal.all_in_doaj(page_size=1000):     #Fixme: limited by ES, this may not be sufficient
-                bj = j.bibjson()
-                issn = bj.get_one_identifier(idtype=bj.P_ISSN)
-                if issn is None:
-                    issn = bj.get_one_identifier(idtype=bj.E_ISSN)
-                if issn is None:
-                    continue
+        # ~~!JournalCSV:Feature->Journal:Model~~
+        cols = {}
+        for j in models.Journal.all_in_doaj(page_size=1000):     #Fixme: limited by ES, this may not be sufficient
+            bj = j.bibjson()
+            issn = bj.get_one_identifier(idtype=bj.P_ISSN)
+            if issn is None:
+                issn = bj.get_one_identifier(idtype=bj.E_ISSN)
+            if issn is None:
+                continue
 
             # ~~!JournalCSV:Feature->JournalQuestions:Crosswalk~~
             kvs = Journal2QuestionXwalk.journal2question(j)
