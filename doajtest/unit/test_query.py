@@ -144,7 +144,7 @@ class TestQuery(DoajTestCase):
 
         q = Query()
         q.add_include(["last_updated", "id"])
-        assert q.as_dict() == {'track_total_hits' : True, "query": {"match_all": {}},"_source": {"includes": ["last_updated", "id"]}} or q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["last_updated", "id"]}}, q.as_dict()
+        assert sorted(q.as_dict()) == sorted({'track_total_hits' : True, "query": {"match_all": {}},"_source": {"includes": ["last_updated", "id"]}}) or sorted(q.as_dict()) == sorted({"query": {"match_all": {}},"_source": {"include": ["last_updated", "id"]}}), sorted(q.as_dict())
 
 
     def test_03_query_svc_get_config(self):
