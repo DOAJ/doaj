@@ -49,8 +49,8 @@ setup(
         "mdx_truly_sane_lists==1.2",
         "markdown-full-yaml-metadata==2.0.1",
         "bagit==1.8.1",
-        "pytest"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
+    extras_require={"test": ["pytest", "pytest-xdist", "selenium"]},
     url='http://cottagelabs.com/',
     author='Cottage Labs',
     author_email='us@cottagelabs.com',
