@@ -7,6 +7,7 @@ from portality.models.harvester import HarvesterProgressReport as Report
 from portality.tasks.redis_huey import schedule, long_running
 from portality.decorators import write_required
 from portality.lib import dates
+from portality.store import StoreFactory
 
 from datetime import datetime
 
@@ -15,8 +16,28 @@ class BGHarvesterLogger(object):
     def __init__(self, job):
         self._job = job
 
+        self._logFile = "harvest-" + job.id + ".log"
+        tempStore = StoreFactory.tmp()
+        self._tempFile = tempStore.path(app.config.get("STORE_HARVESTER_CONTAINER"), self._logFile, create_container=True, must_exist=False)
+        self._job.add_audit_message("Audit messages for this run will be stored in file {x}".format(x=self._tempFile))
+        self._job.save()
+
+        self._fh = open(self._tempFile, "w")
+
     def log(self, msg):
-        self._job.add_audit_message(msg)
+        # self._job.add_audit_message(msg)
+        self._fh.write("[{d}] {m}\n".format(d=dates.now(), m=msg))
+
+    def close(self):
+        self._fh.close()
+
+        mainStore = StoreFactory.get("harvester")
+        mainStore.store(app.config.get("STORE_HARVESTER_CONTAINER"), self._logFile, source_path=self._tempFile)
+        url = mainStore.url(app.config.get("STORE_HARVESTER_CONTAINER"), self._logFile)
+        self._job.add_audit_message("Audit messages file moved to {x}".format(x=url))
+
+        tempStore = StoreFactory.tmp()
+        tempStore.delete_file(app.config.get("STORE_HARVESTER_CONTAINER"), self._logFile)
 
 
 class HarvesterBackgroundTask(BackgroundTask):
@@ -43,7 +64,10 @@ class HarvesterBackgroundTask(BackgroundTask):
             harvester_workflow.process_account(account_id)
 
         report = Report.write_report()
-        self.background_job.add_audit_message(report)
+        logger.log(report)
+        logger.close()
+
+        # self.background_job.add_audit_message(report)
 
     def cleanup(self):
         """
