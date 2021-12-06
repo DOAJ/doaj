@@ -67,7 +67,7 @@ if __name__ == "__main__":
                          "Country",
                          "Publisher"])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=LAST_MANUAL_UPDATE_BETWEEN, limit=800, keepalive='5m'):
+        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=LAST_MANUAL_UPDATE_BETWEEN, keepalive='5m'):
             journal = models.Journal(_source=j)
             bibjson = journal.bibjson()
             index = j["index"]
