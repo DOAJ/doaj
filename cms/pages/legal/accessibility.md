@@ -64,7 +64,7 @@ DOAJ is committed to making its website accessible, in accordance with the Publi
 
 ### Compliance status
 
-This website is partially compliant with the [Web Content Accessibility Guidelines version 2.1 AA standard](https://www.w3.org/TR/WCAG21/), due to the non-compliances listed below.
+This website is partially compliant with the [Web Content Accessibility Guidelines version 2.1 AA standard](https://www.w3.org/TR/WCAG21/) subject to the non-compliances listed below.
 
 ## Non-accessible content
 
