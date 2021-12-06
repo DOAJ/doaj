@@ -39,8 +39,7 @@ We are continuing to update this document as we find accessibility issues or as 
 
 If you need information on this website in a different format like accessible PDF, large print, easy read, audio recording or braille:
 
-- **Email** [feedback@doaj.org](mailto:feedback@doaj.org)  
-- **Call** [+44(0) 20 7097 8565](tel:+442070978565)
+- **Email** [helpdesk@doaj.org](mailto:helpdesk@doaj.org)  
 
 We’ll consider your request and get back to you in 5 working days.
 
