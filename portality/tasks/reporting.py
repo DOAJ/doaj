@@ -7,7 +7,7 @@ from portality.background import BackgroundApi, BackgroundTask
 from portality.tasks.redis_huey import main_queue, schedule
 from portality.app_email import email_archive
 from portality.decorators import write_required
-from portality.dao import ESMappingMissingError
+from portality.dao import ESMappingMissingError, ScrollInitialiseException
 
 import os, shutil, csv
 
@@ -25,7 +25,7 @@ def provenance_reports(fr, to, outdir):
         for prov in models.Provenance.iterate(q.query()):
             for filt in pipeline:
                 filt.count(prov)
-    except ESMappingMissingError:
+    except (ESMappingMissingError, ScrollInitialiseException):
         return None
 
     outfiles = []
@@ -297,7 +297,7 @@ class ContentByDate(object):
                 "years": {
                     "date_histogram": {
                         "field": "created_date",
-                        "interval": "year"
+                        "calendar_interval": "year"
                     },
                     "aggs": {
                         "countries": {

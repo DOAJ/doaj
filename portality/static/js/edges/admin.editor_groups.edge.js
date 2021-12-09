@@ -57,20 +57,20 @@ $.extend(true, doaj, {
                 }),
 
                 // facets
-                edges.newRefiningANDTermSelector({
-                    id: "name_keywords",
-                    category: "facet",
-                    field: "name",
-                    display: "Name Keywords",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: true,
-                        togglable: false,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
+                // edges.newRefiningANDTermSelector({
+                //     id: "name_keywords",
+                //     category: "facet",
+                //     field: "name.exact",
+                //     display: "Name",
+                //     deactivateThreshold: 1,
+                //     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                //         controls: true,
+                //         open: true,
+                //         togglable: false,
+                //         countFormat: countFormat,
+                //         hideInactive: true
+                //     })
+                // }),
 
                 // configure the search controller
                 edges.newFullSearchController({
@@ -161,7 +161,7 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "name": "Name Keywords"
+                        "name.exact": "Name"
                     }
                 })
             ];

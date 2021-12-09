@@ -13,8 +13,8 @@
                     {% endif %}
 
                     {% if current_user.has_role("admin_journals") %}
-                        {% set Q1 = '{"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
-                        {% set Q2 = '"}}]}},"query":{"match_all":{}}}}}' %}
+                        {% set Q1 = '{"query":{"bool":{"filter":{"term":{"admin.owner.exact":"' %}
+                        {% set Q2 = '"}}}}}' %}
                         <p class="label"><a href="/admin/?source={{Q1}}{{account.id}}{{Q2}}">&larr; View this user’s journals</a></p>
                     {% endif %}
 

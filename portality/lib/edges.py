@@ -33,13 +33,13 @@ class GeneralSearchQuery(object):
 
         if len(musts) > 0:
             query = {
-                "filtered" : {
+                "bool" : {
                     "filter" : {
                         "bool": {
                             "must": musts
                         }
                     },
-                    "query" : query
+                    "must" : query
                 }
             }
 

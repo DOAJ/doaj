@@ -4,25 +4,19 @@ Delete all non-editorial user accounts not assigned to a journal or application
 python accounts_delete_pub_no_journal_or_application.py [-r deletion_report.csv]
 """
 
-import esprit
 import csv
-from portality.core import app
 from portality import models
-from portality.util import ipt_prefix
-from portality.core import es_connection
 
 # set of roles to exclude from the deletes
 EXCLUDED_ROLES = {'associate_editor', 'editor', 'admin', 'ultra_bulk_delete', 'jct_inprogress'}
 
 
-def accounts_with_no_journals_or_applications(conn, csvwriter=None):
+def accounts_with_no_journals_or_applications(csvwriter=None):
     """ Scroll through all accounts, return those with no journal unless they have excluded roles
-    :param conn: An Elasticsearch connection
     :param csvwriter: A CSV writer to output the accounts to
     """
     gathered_account_ids = []
-    for acc in esprit.tasks.scroll(conn, ipt_prefix('account'), page_size=100, keepalive='1m'):
-        account = models.Account(**acc)
+    for account in models.Account.iterate():
         if set(account.role).intersection(EXCLUDED_ROLES):
             continue
 
@@ -45,10 +39,6 @@ def accounts_with_no_journals_or_applications(conn, csvwriter=None):
     return gathered_account_ids
 
 
-def delete_accounts_by_id(conn, id_list):
-    esprit.raw.bulk_delete(conn, ipt_prefix('account'), id_list)
-
-
 if __name__ == "__main__":
 
     import argparse
@@ -56,9 +46,6 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--report", help="report accounts to CSV (specify filename)")
     parser.add_argument("-i", "--instructions", help="CSV of accounts to delete, ID must be first column")
     args = parser.parse_args()
-
-    # conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-    conn = es_connection
 
     if args.report and args.instructions:
         print("\nPlease provide EITHER -r or -i arguments with CSV filenames.")
@@ -71,7 +58,7 @@ if __name__ == "__main__":
             writer = csv.writer(f)
             writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Roles"])
 
-            accounts_to_delete = accounts_with_no_journals_or_applications(conn, writer)
+            accounts_to_delete = accounts_with_no_journals_or_applications(writer)
 
         print("Done!")
         exit()
@@ -91,7 +78,7 @@ if __name__ == "__main__":
         if resp.lower() == 'y':
             # Run the function to remove the field
             print("Deleting accounts... \n")
-            delete_accounts_by_id(conn, accounts_to_delete)
+            models.Account.bulk_delete(accounts_to_delete)
             print("Done")
         else:
             print("Better safe than sorry, exiting.")

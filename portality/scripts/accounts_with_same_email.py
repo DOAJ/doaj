@@ -13,10 +13,7 @@ from portality import models
 
 HAS_EMAIL = {
     "query": {
-        "filtered": {
-            "query": {
-                "match_all": {}
-            },
+        "bool": {
             "filter": {
                 "exists": {"field": "email"}
             }

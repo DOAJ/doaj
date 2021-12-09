@@ -1,9 +1,12 @@
 from portality.lib import report_to_csv
+from portality.models import Journal
 
+
+# FIXME: this query will no longer work, as the `missing` filter is no longer present.
+# I have not updated the script, because it looks to be obsolete, and should probably be removed
 QUERY = {
     "query": {
-        "filtered" : {
-            "query" : {"match_all" : {}},
+        "bool" : {
             "filter" : {
                 "bool" : {
                     "should" : [
@@ -28,6 +31,7 @@ def output_map(record):
         "Q18" : str(record.get("bibjson", {}).get("submission_charges_url") is not None)
     }
 
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -38,5 +42,5 @@ if __name__ == "__main__":
         print("You must provide an output file with -o")
         exit(0)
 
-    gen = report_to_csv.query_result_generator(QUERY, "journal")
+    gen = report_to_csv.query_result_generator(QUERY, model=Journal, wrap=False)
     report_to_csv.report_to_csv(gen, HEADERS, output_map, args.out)

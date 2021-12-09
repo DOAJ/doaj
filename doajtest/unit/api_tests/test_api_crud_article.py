@@ -2,7 +2,7 @@ import time
 import json
 from datetime import datetime
 from flask import url_for
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, with_es
 from portality.lib.dataobj import DataStructureException, ScriptTagFoundException
 from portality.api.current.data_objects.article import IncomingArticleDO, OutgoingArticleDO
 from portality.api.current import ArticlesCrudApi, Api401Error, Api400Error, Api404Error
@@ -103,6 +103,8 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__, models.Account.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_02_create_article_success(self):
         # set up all the bits we need
         data = ArticleFixtureFactory.make_incoming_api_article()
@@ -140,8 +142,7 @@ class TestCrudArticle(DoajTestCase):
         )
         journal.bibjson().country = "US"
         journal.bibjson().set_language(["EN", "FR"])
-        journal.save()
-        time.sleep(1)
+        journal.save(blocking=True)
 
         # call create on the object (which will save it to the index)
         a = ArticlesCrudApi.create(data, account)
@@ -162,11 +163,13 @@ class TestCrudArticle(DoajTestCase):
         assert a.bibjson().journal_language == ["EN", "FR"]
         assert a.bibjson().journal_country == "US"
 
-        time.sleep(1)
+        # time.sleep(1)
 
         am = models.Article.pull(a.id)
         assert am is not None
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__, models.Account.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_03_create_article_fail(self):
         # if the account is dud
         with self.assertRaises(Api401Error):
@@ -242,6 +245,7 @@ class TestCrudArticle(DoajTestCase):
         assert oa.data.get("index") is None
         assert oa.data.get("history") is None
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__])
     def test_06_retrieve_article_success(self):
         # set up all the bits we need
         # add a journal to the account
@@ -252,12 +256,10 @@ class TestCrudArticle(DoajTestCase):
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.set_owner(account.id)
         journal.save()
-        time.sleep(1)
 
         data = ArticleFixtureFactory.make_article_source()
         ap = models.Article(**data)
-        ap.save()
-        time.sleep(1)
+        ap.save(blocking=True)
 
         # call retrieve on the object with a valid user
         a = ArticlesCrudApi.retrieve(ap.id, account)
@@ -286,6 +288,7 @@ class TestCrudArticle(DoajTestCase):
         assert a.bibjson.journal.language == ["EN", "FR"]
         assert a.bibjson.journal.country == "US"
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__])
     def test_07_retrieve_article_fail(self):
         # set up all the bits we need
         # add a journal to the account
@@ -296,13 +299,11 @@ class TestCrudArticle(DoajTestCase):
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.set_owner(account.id)
         journal.save()
-        time.sleep(1)
 
         data = ArticleFixtureFactory.make_article_source()
         data['admin']['in_doaj'] = False
         ap = models.Article(**data)
-        ap.save()
-        time.sleep(1)
+        ap.save(blocking=True)
 
         # should fail when no user and in_doaj is False
         with self.assertRaises(Api401Error):
@@ -320,6 +321,8 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(Api404Error):
             a = ArticlesCrudApi.retrieve("ijsidfawefwefw", account)
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_08_update_article_success(self):
         # set up all the bits we need
         account = models.Account()
@@ -340,8 +343,7 @@ class TestCrudArticle(DoajTestCase):
         )
         journal.bibjson().country = "US"
         journal.bibjson().set_language(["EN", "FR"])
-        journal.save()
-        time.sleep(1)
+        journal.save(blocking=True)
 
         data = ArticleFixtureFactory.make_incoming_api_article()
 
@@ -405,6 +407,8 @@ class TestCrudArticle(DoajTestCase):
         assert updated.bibjson().journal_language == ["EN", "FR"]
         assert updated.bibjson().journal_country == "US"
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_09_update_article_fail(self):
         # set up all the bits we need
         account = models.Account()
@@ -413,8 +417,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_email("test@test.com")
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.set_owner(account.id)
-        journal.save()
-        time.sleep(1)
+        journal.save(blocking=True)
 
         data = ArticleFixtureFactory.make_article_source()
 
@@ -422,7 +425,7 @@ class TestCrudArticle(DoajTestCase):
         a = ArticlesCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(1)
+        # time.sleep(1)
 
         # get a copy of the newly created version for use in assertions later
         created = models.Article.pull(a.id)
@@ -447,6 +450,8 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(Api404Error):
             ArticlesCrudApi.update("adfasdfhwefwef", data, account)
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_10_delete_article_success(self):
         # set up all the bits we need
         account = models.Account()
@@ -455,8 +460,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_email("test@test.com")
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.set_owner(account.id)
-        journal.save()
-        time.sleep(1)
+        journal.save(blocking=True)
 
         data = ArticleFixtureFactory.make_article_source()
 
@@ -475,6 +479,8 @@ class TestCrudArticle(DoajTestCase):
         ap = models.Article.pull(a.id)
         assert ap is None
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_11_delete_article_fail(self):
         # set up all the bits we need
         account = models.Account()
@@ -483,8 +489,7 @@ class TestCrudArticle(DoajTestCase):
         account.set_email("test@test.com")
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.set_owner(account.id)
-        journal.save()
-        time.sleep(1)
+        journal.save(blocking=True)
 
         data = ArticleFixtureFactory.make_article_source()
 
@@ -510,6 +515,8 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(Api404Error):
             ArticlesCrudApi.delete("adfasdfhwefwef", account)
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_12_too_many_keywords(self):
         """ Check we get an error when we supply too many keywords to the API. """
 
@@ -560,6 +567,8 @@ class TestCrudArticle(DoajTestCase):
         assert len(bibjson["link"]) == links_nr-1
         assert len(bibjson["keywords"]) == keywords_nr-1
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__, models.Account.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_14_test_via_endpoint(self):
         """ Use a request context to test the API via the route """
 
@@ -655,6 +664,8 @@ class TestCrudArticle(DoajTestCase):
                                             api_key=article_owner.api_key))
                 assert resp.status_code == 204
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__, models.Account.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_15_no_redirects(self):
         """ v1 answers directly without redirect https://github.com/DOAJ/doajPM/issues/2664 """
         # TODO: this is a copy of the test above, with v1 instead of v2. If redirects are reinstated, uncomment above
@@ -722,6 +733,8 @@ class TestCrudArticle(DoajTestCase):
                                             api_key=article_owner.api_key))
                 assert resp.status_code == 204
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__, models.Account.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_16_no_redirects(self):
         """ v2, like v1 answers directly without redirect https://github.com/DOAJ/doajPM/issues/2664 """
         # TODO: this is a copy of the test above, with v2 instead of current. If redirects are reinstated, uncomment in test 14
@@ -788,6 +801,9 @@ class TestCrudArticle(DoajTestCase):
                                                api_key=article_owner.api_key))
                 assert resp.status_code == 204
 
+
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_17_the_same_issns(self):
         """ Check we get an error when article with 2 the same issns is provided. """
 
@@ -805,6 +821,8 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(Api400Error):
             ArticlesCrudApi.create(data, account)
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_18_3_issns(self):
         """ Check we get an error when article has 3 issns. """
 

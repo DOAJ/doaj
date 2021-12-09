@@ -48,16 +48,16 @@ class TestSearchBox(DoajTestCase):
                 assert resp.location == url_for('doaj.journals_search', _external=True), resp.location
 
                 # A legacy /search?source=...journal... also goes to the journal search page
-                resp = t.get('/search?source={"query": {"filtered": {"filter": {"bool": {"must": [{"term": {"_type": "journal"}}]}}, "query": {"match_all": {}}}}}')
+                resp = t.get('/search?source={"query": {"bool": {"filter": {"bool": {"must": [{"term": {"_type": "journal"}}]}}}}}')
                 assert resp.status_code == 301, resp.status_code
                 assert resp.location == url_for('doaj.journals_search', _external=True), resp.location
 
                 # A legacy /search?source=...article... goes to the article search page
-                resp = t.get('/search?source={"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"_type":"article"}}]}},"query":{"match_all":{}}}}}')
+                resp = t.get('/search?source={"query":{"bool":{"filter":{"bool":{"must":[{"term":{"_type":"article"}}]}}}}}')
                 assert resp.status_code == 301, resp.status_code
                 assert resp.location == url_for('doaj.articles_search', _external=True), resp.location
 
                 # Even if there's whitespace in the query
-                resp = t.get('/search?source={"query": {"filtered": {"filter": {"bool": {"must": [{"term": {"_type": "article"}}]}}, "query": {"match_all": {}}}}}')
+                resp = t.get('/search?source={"query": {"bool": {"filter": {"bool": {"must": [{"term": {"_type": "article"}}]}}}}}')
                 assert resp.status_code == 301, resp.status_code
                 assert resp.location == url_for('doaj.articles_search', _external=True), resp.location

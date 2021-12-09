@@ -52,7 +52,7 @@ class Account(DomainObject, UserMixin):
         if email is None:
             return None
         res = cls.query(q='email:"' + email + '"')
-        if res.get('hits', {}).get('total', 0) == 1:
+        if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
             acc = cls(**res['hits']['hits'][0]['_source'])
             if acc.email == email:                # Only return the account if it was an exact match with supplied email
                 return acc
@@ -63,7 +63,7 @@ class Account(DomainObject, UserMixin):
         if email is None:
             return None
         res = cls.query(q='email:"' + email + '"')
-        return res.get('hits', {}).get('total', 0) > 0
+        return res.get('hits', {}).get('total', {}).get('value', 0) > 0
 
     @classmethod
     def get_by_reset_token(cls, reset_token, not_expired=True):
@@ -221,7 +221,7 @@ class Account(DomainObject, UserMixin):
     def pull_by_api_key(cls, key):
         """Find a user by their API key - only succeed if they currently have API access."""
         res = cls.query(q='api_key.exact:"' + key + '"')
-        if res.get('hits', {}).get('total', 0) == 1:
+        if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
             usr = cls(**res['hits']['hits'][0]['_source'])
             if usr.has_role('api'):
                 return usr

@@ -1,9 +1,11 @@
+import time
+
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.models import Article, Account, Journal
 from flask import url_for
 from doajtest.unit.resources.articles_metadata_form import ArticleMetadataFactory
-from flask_login import login_user
+
 
 class TestAdminEditMetadata(DoajTestCase):
 
@@ -73,6 +75,7 @@ class TestAdminEditMetadata(DoajTestCase):
 
         # Submit the form
         self.admin_post_article_metadata_form(source)
+        time.sleep(1)
 
         # Retrieve the result
         a = Article.pull(self.a.id)

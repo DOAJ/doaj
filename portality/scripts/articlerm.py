@@ -93,7 +93,7 @@ if __name__ == "__main__":
             del query['sort']
 
         res = models.Article.query(q=query)
-        total = res.get("hits", {}).get("total")
+        total = res.get("hits", {}).get("total", {}).get('value', 0)
 
         # NOTE: if you have paging, like from: and size: in a query, the
         # hits['total'] will show you all results that match the query,

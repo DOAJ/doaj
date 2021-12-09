@@ -79,6 +79,18 @@ class TestBLLAcceptApplication(DoajTestCase):
 
         save = bool(randint(0,1))
 
+        if result_provenance == "no":
+            # warm the provenance index, so that there is a mapping present
+            p = Provenance(**{
+                "user" : "placeholder",
+                "roles" : ["publisher"],
+                "type" : "application",
+                "action" : "edit",
+                "resource_id" : "12345",
+                "editor_group" : ["testgroup"]
+            })
+            p.save(blocking=True)
+
         ###########################################################
         # Execution
 

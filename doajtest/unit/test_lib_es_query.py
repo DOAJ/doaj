@@ -9,12 +9,9 @@ class TestLibESQuery(TestCase):
 
         self.test_query = {
             "query": {
-                "filtered": {
-                    "filter": {
-                        "missing": {"field": "bibjson.title"}
-                    },
-                    "query": {
-                        "match_all": {}
+                "bool": {
+                    "must_not": {
+                        "exists": {"field": "bibjson.title"}
                     }
                 }
             },
@@ -39,12 +36,9 @@ class TestLibESQuery(TestCase):
 
         assert no_agg == {
             "query": {
-                "filtered": {
-                    "filter": {
-                        "missing": {"field": "bibjson.title"}
-                    },
-                    "query": {
-                        "match_all": {}
+                "bool": {
+                    "must_not": {
+                        "exists": {"field": "bibjson.title"}
                     }
                 }
             },
@@ -65,12 +59,9 @@ class TestLibESQuery(TestCase):
 
         assert no_size == {
             "query": {
-                "filtered": {
-                    "filter": {
-                        "missing": {"field": "bibjson.title"}
-                    },
-                    "query": {
-                        "match_all": {}
+                "bool": {
+                    "must_not": {
+                        "exists": {"field": "bibjson.title"}
                     }
                 }
             },

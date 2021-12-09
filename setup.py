@@ -20,7 +20,8 @@ setup(
         "tzlocal==2.0.0",
         "pytz==2019.3",
         "pycountry==19.8.18",
-        "esprit==0.1.0",
+        "esprit==0.1.0",   # legacy for scripts etc (phasing out)
+        "elasticsearch==7.13.0",
         "nose==1.3.7",
         "Unidecode==1.1.1",
         "Flask-Swagger==0.2.13",
@@ -47,8 +48,9 @@ setup(
         "markdown-link-attr-modifier==0.2.0",
         "mdx_truly_sane_lists==1.2",
         "markdown-full-yaml-metadata==2.0.1",
-        "bagit==1.8.1"
+        "bagit==1.8.1",
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
+    extras_require={"test": ["pytest", "pytest-xdist", "selenium"]},
     url='http://cottagelabs.com/',
     author='Cottage Labs',
     author_email='us@cottagelabs.com',

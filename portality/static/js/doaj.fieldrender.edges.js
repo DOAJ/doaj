@@ -1,4 +1,37 @@
 $.extend(true, doaj, {
+    facets : {
+        inDOAJ : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "in_doaj",
+                category: "facet",
+                field: "admin.in_doaj",
+                display: "In DOAJ?",
+                deactivateThreshold: 1,
+                valueMap : {
+                    1 : "True",
+                    0 : "False",
+                    true: "True",
+                    false: "False"
+                },
+                parseSelectedValueString: function(val) {
+                    // this is needed because ES7 doesn't understand "1" or `1` to be `true`, so
+                    // we convert the string value of the aggregation back to a boolean
+                    return val === "1"
+                },
+                filterToAggValue : function(val) {
+                    return val === true ? 1 : 0;
+                },
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        }
+    },
+
     valueMaps : {
         // This must be updated in line with the list in formcontext/choices.py
         applicationStatus : {
@@ -42,7 +75,11 @@ $.extend(true, doaj, {
                 }
                 return code;
             }
-        }
+        },
+
+        countFormat : edges.numFormat({
+            thousandsSeparator: ","
+        })
     },
 
     components : {
