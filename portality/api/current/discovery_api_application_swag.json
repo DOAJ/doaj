@@ -264,7 +264,7 @@
     },
     "parameters": [
         {
-            "description": "<div class=\"search-query-docs\"> Go to the top right of the page and click your username. If you have generated an API key already, it will appear under your name. If not, click the Generate API Key button. Accounts are not available to the public. <a href=\"#intro_auth\">More details</a></div>",
+            "description": "<div class=\"search-query-docs\">Go to 'MY ACCOUNT' and 'Settings' to find your API key. If there is no key, click 'Generate a new API key'. If you do not see that button, contact us.",
             "required": true,
             "type": "string",
             "name": "api_key",
