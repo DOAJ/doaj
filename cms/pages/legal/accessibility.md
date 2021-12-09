@@ -39,24 +39,22 @@ We are continuing to update this document as we find accessibility issues or as 
 
 If you need information on this website in a different format like accessible PDF, large print, easy read, audio recording or braille:
 
-- **Email** [feedback@doaj.org](mailto:feedback@doaj.org)  
-- **Call** [+44(0) 20 7097 8565](tel:+442070978565)
+- **Email** [helpdesk@doaj.org](mailto:helpdesk@doaj.org)  
 
-We’ll consider your request and get back to you in 5 working days.
+We'll consider your request and get back to you in 5 working days. Unfortunately, DOAJ doesn't have an organisational telephone number. 
 
 If you cannot view the map or the embedded spreadsheet on our [_Supporters_](/support/supporters) page, and have a specific question about either of those, call or email us.
 
 ## Reporting accessibility problems with this website
 
-We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page or think we’re not meeting accessibility requirements, you can do any of the following:
+We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page or think we're not meeting accessibility requirements, you can do either of the following:
 
 - Submit a [GitHub issue](https://github.com/DOAJ/doaj/issues/new/choose)
-- **Email** Dom Mitchell, DOAJ Operations Manager, [dom@doaj.org](mailto:dom@doaj.org)  
-- **Call** Dom Mitchell, [+44(0) 20 7097 8565](tel:+442070978565)
+- **Email** Dom Mitchell, DOAJ Operations Manager, [dom@doaj.org](mailto:dom@doaj.org)
 
 ## Enforcement procedure
 
-The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the ‘accessibility regulations’). If you’re not happy with how we respond to your complaint, contact the Equality Advisory and Support Service (EASS).
+The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the 'accessibility regulations'). If you're not happy with how we respond to your complaint, contact the Equality Advisory and Support Service (EASS).
 
 ---
 
@@ -66,7 +64,7 @@ DOAJ is committed to making its website accessible, in accordance with the Publi
 
 ### Compliance status
 
-This website is partially compliant with the [Web Content Accessibility Guidelines version 2.1 AA standard](https://www.w3.org/TR/WCAG21/), due to the non-compliances listed below.
+This website is partially compliant with the [Web Content Accessibility Guidelines version 2.1 AA standard](https://www.w3.org/TR/WCAG21/) subject to the non-compliances listed below.
 
 ## Non-accessible content
 
@@ -81,16 +79,16 @@ We plan to fix these issues to meet accessibility standards by February 2021.
 
 ### Disproportionate burden
 
-- Navigation and accessing information: it’s not always possible to change the device orientation from horizontal to vertical without making it more difficult to view the content. This fails WCAG Success Criterion 1.3.4 (Orientation).
-- Navigation and accessing information: there’s no way to skip the repeated content in the page header (for example, a ‘skip to main content’ option).
+- Navigation and accessing information: it's not always possible to change the device orientation from horizontal to vertical without making it more difficult to view the content. This fails WCAG Success Criterion 1.3.4 (Orientation).
+- Navigation and accessing information: there's no way to skip the repeated content in the page header (for example, a 'skip to main content' option).
 
 ### Content that’s not within the scope of the accessibility regulations
 
-- PDFs and other documents: we have PDFs that were published in older blog posts but are not essential to our services (searching the database and applying to the database). The accessibility regulations [do not require us to fix PDFs or other documents published before 23 September 2018](https://www.legislation.gov.uk/uksi/2018/952/regulation/4/made) if they’re not essential to providing our services. Any new PDFs or Word documents we publish will meet accessibility standards.
+- PDFs and other documents: we have PDFs that were published in older blog posts but are not essential to our services (searching the database and applying to the database). The accessibility regulations [do not require us to fix PDFs or other documents published before 23 September 2018](https://www.legislation.gov.uk/uksi/2018/952/regulation/4/made) if they're not essential to providing our services. Any new PDFs or Word documents we publish will meet accessibility standards.
 
 
 ### Preparation of this accessibility statement
 
-This statement was prepared on **28 May 2020**. It was last reviewed on **24 November 2020**.
+This statement was prepared on **28 May 2020**. It was last reviewed on **06 December 2021**.
 
 This website was last tested on **24 November 2020**. Testing was carried out by the DOAJ team.
