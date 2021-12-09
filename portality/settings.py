@@ -166,6 +166,7 @@ STORE_TMP_WRITE_BUFFER_SIZE = 16777216
 STORE_ANON_DATA_CONTAINER = "doaj-anon-data-placeholder"
 STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
+STORE_HARVESTER_CONTAINER = "doaj-harvester"
 
 # S3 credentials for relevant scopes
 # ~~->S3:Technology~~
@@ -180,6 +181,11 @@ STORE_S3_SCOPES = {
     },
     # Used by the api_export script to dump data from the api
     "public_data_dump" : {
+        "aws_access_key_id" : "put this in your dev/test/production.cfg",
+        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    },
+    # Used to store harvester run logs to S3
+    "harvester" : {
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }

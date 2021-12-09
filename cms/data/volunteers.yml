@@ -796,6 +796,14 @@ ass_ed:
   city: Kyiv
   country: Ukraine
   language: Ukrainian, Russian, English, Polish
+  
+- name: Olena Zimba
+  area: Medicine, Science Communication
+  year_since:
+  city: Lviv
+  country: Ukraine
+  language: Ukrainian, Russian, English
+  photo: "OlenaZimba.jpg"
 
 - name: Olga Kirillova
   area:
