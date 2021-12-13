@@ -193,6 +193,7 @@ class ISSNQuery(object):
 
     def query(self):
         return {
+            "track_total_hits" : True,
             "query" : {
                 "bool" : {
                     "must" : [
@@ -209,6 +210,7 @@ class AccountQuery(object):
 
     def query(self):
         return {
+            "track_total_hits" : True,
             "query" : {
                 "bool" : {
                     "must" : [

@@ -15,13 +15,12 @@ $.extend(true, doaj, {
         userJournalsLink : function (val, resultobj, renderer) {
             var q = {
                 "query":{
-                    "filtered":{
-                        "filter":{
-                            "bool":{
-                                "must":[{"term":{"admin.owner.exact":resultobj.id}}]
+                    "bool": {
+                        "filter": {
+                            "bool": {
+                                "must": [{"term": {"admin.owner.exact": resultobj.id}}]
                             }
-                        },
-                        "query":{"match_all":{}}
+                        }
                     }
                 }
             };
@@ -54,7 +53,7 @@ $.extend(true, doaj, {
                 edges.newRefiningANDTermSelector({
                     id: "role",
                     category: "facet",
-                    field: "role",
+                    field: "role.exact",
                     display: "Role",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
@@ -168,7 +167,7 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "role": "Role"
+                        "role.exact": "Role"
                     }
                 })
             ];

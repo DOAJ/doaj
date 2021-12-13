@@ -1,7 +1,6 @@
-import time
 from flask import Response
 
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, with_es
 from portality import models
 from portality.core import load_account_for_login_manager
 from portality.decorators import api_key_required, api_key_optional
@@ -10,6 +9,8 @@ from portality.decorators import api_key_required, api_key_optional
 class TestAPIClient(DoajTestCase):
     @classmethod
     def setUpClass(cls):
+        super(TestAPIClient, cls).setUpClass()
+
         # Turn off debug so we're allowed to add these routes after the app has been used in other tests
         cls.app_test.debug = False
 
@@ -28,12 +29,12 @@ class TestAPIClient(DoajTestCase):
         cls.app_test.testing = True
         cls.app_test.login_manager.user_loader(load_account_for_login_manager)
 
-    def setUp(self):
-        super(TestAPIClient, self).setUp()
+    @classmethod
+    def tearDownClass(cls) -> None:
+        # put debug back on
+        cls.app_test.debug = True
 
-    def tearDown(self):
-        super(TestAPIClient, self).tearDown()
-
+    #@with_es(indices=[models.Account.__type__])
     def test_01_api_role(self):
         """test the new roles added for the API"""
         a1 = models.Account.make_account(email="a1@example.com", username="a1_user", name="a1_name",
@@ -46,18 +47,19 @@ class TestAPIClient(DoajTestCase):
 
         # Check we can retrieve the account by its key
         a1_retrieved = models.Account.pull_by_api_key(a1_key)
-        assert a1 == a1_retrieved
+        assert a1 == a1_retrieved, (a1, a1_retrieved)
 
         # Check that removing the API role means you don't get a key
         a1.remove_role('api')
         assert a1.api_key is None
 
+    #@with_es(indices=[models.Account.__type__])
     def test_02_api_required_decorator(self):
         """test the api_key_required decorator"""
         a1 = models.Account.make_account(email="a1@example.com", username="a1_user", name="a1_name",
                                          roles=["user", "api"], associated_journal_ids=[])
         a1_key = a1.api_key
-        a1.save(blocking=True)               # a1 has api access
+        a1.save()               # a1 has api access
 
         a2 = models.Account.make_account(email="a2@example.com", username="a2_user", name="a2_name",
                                          roles=["user", "api"], associated_journal_ids=[])
@@ -68,18 +70,19 @@ class TestAPIClient(DoajTestCase):
         with self.app_test.test_client() as t_client:
             # Check the authorised user can access our function, but the unauthorised one can't.
             response_authorised = t_client.get('/hello?api_key=' + a1_key)
-            assert response_authorised.data == b"hello, world!"
+            assert response_authorised.data == b"hello, world!", response_authorised.data
             assert response_authorised.status_code == 200
 
             response_denied = t_client.get('/hello?api_key=' + a2_key)
             assert response_denied.status_code == 401
 
+    #@with_es(indices=[models.Account.__type__, models.Journal.__type__, models.Article.__type__])
     def test_03_api_optional_decorator(self):
         """test the api_key_optional decorator"""
         a1 = models.Account.make_account(email="a1@example.com", username="a1_user", name="a1_name",
                                          roles=["user", "api"], associated_journal_ids=[])
         a1_key = a1.api_key
-        a1.save(blocking=True)               # a1 has api access
+        a1.save()               # a1 has api access
 
         a2 = models.Account.make_account(email="a2@example.com", username="a2_user", name="a2_name",
                                          roles=["user", "api"], associated_journal_ids=[])

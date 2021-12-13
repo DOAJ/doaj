@@ -108,10 +108,10 @@ class OpenURLRequest(object):
         if results is None:
             return None
 
-        if results.get('hits', {}).get('total', 0) == 0:
+        if results.get('hits', {}).get('total', {}).get('value', 0) == 0:
             # No results found for query, retry
             results = self.fallthrough_retry()
-            if results is None or results.get('hits', {}).get('total', 0) == 0:
+            if results is None or results.get('hits', {}).get('total', {}).get('value', 0) == 0:
                 # This time we've definitely failed
                 return None
 

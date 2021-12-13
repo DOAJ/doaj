@@ -170,9 +170,9 @@ MAPPING_OPTS = {
     "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
     "exceptions": {
         "audit.message": {
-            "type": "string",
-            "index": "not_analyzed",
-            "include_in_all": False
+            "type": "text",
+            "index": False,
+            # "include_in_all": False        # Removed in es6 fixme: do we need to look at copy_to for the mapping?
         }
     }
 }

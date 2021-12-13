@@ -1,29 +1,15 @@
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, with_es
 from portality import models
 from doajtest.fixtures import ApplicationFixtureFactory, ArticleFixtureFactory, JournalFixtureFactory
 from copy import deepcopy
 import json
-import time
 
 
 class TestCrudReturnValues(DoajTestCase):
 
-    def setUp(self):
-        super(TestCrudReturnValues, self).setUp()
-
-        account = models.Account.make_account(email="test@test.com", username="test", name="Tester",
-                                              roles=["publisher", "api"],
-                                              associated_journal_ids=['abcdefghijk_journal'])
-        account.set_password('password123')
-        self.api_key = account.api_key
-        self.account = account
-        account.save()
-        time.sleep(1)
-
-    def tearDown(self):
-        super(TestCrudReturnValues, self).tearDown()
-
+    @with_es(indices=[models.Account.__type__])
     def test_01_all_crud(self):
+        self.make_account()
 
         with self.app_test.test_client() as t_client:
             for route in ['', '/v1', '/v2', '/v3']:
@@ -57,7 +43,11 @@ class TestCrudReturnValues(DoajTestCase):
                 assert response.status_code < 400
                 assert response.mimetype == 'application/json'
 
+    @with_es(indices=[models.Account.__type__, models.Application.__type__, models.Journal.__type__, models.Article.__type__,
+                      models.Lock.__type__, models.News.__type__])
     def test_02_applications_crud(self):
+        self.make_account()
+
         # add some data to the index with a Create
         user_data = ApplicationFixtureFactory.incoming_application()
         del user_data["admin"]["current_journal"]
@@ -90,7 +80,7 @@ class TestCrudReturnValues(DoajTestCase):
             updated_data = deepcopy(user_data)
             updated_data['bibjson']['title'] = 'This is a new title for this application'
             response = t_client.put('/api/applications/{0}?api_key={1}'.format(new_app_id, self.api_key), data=json.dumps(updated_data))
-            assert response.status_code == 204          # 204 "No Content"
+            assert response.status_code == 204, response.status_code          # 204 "No Content"
             assert response.mimetype == 'application/json'
 
             response = t_client.get('/api/applications/{0}?api_key={1}'.format(new_app_id, self.api_key))
@@ -112,7 +102,12 @@ class TestCrudReturnValues(DoajTestCase):
 
             self.logout(t_client)
 
+    @with_es(indices=[models.Account.__type__, models.Application.__type__, models.Journal.__type__, models.Article.__type__,
+                      models.Lock.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_03_articles_crud(self):
+        self.make_account()
+
         # add some data to the index with a Create
         user_data = ArticleFixtureFactory.make_article_source()
 
@@ -169,7 +164,12 @@ class TestCrudReturnValues(DoajTestCase):
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
 
+    @with_es(indices=[models.Account.__type__, models.Journal.__type__, models.Article.__type__,
+                      models.Lock.__type__],
+             warm_mappings=[models.Article.__type__])
     def test_04_article_structure_exceptions(self):
+        self.make_account()
+
         # add some data to the index with a Create
         user_data = ArticleFixtureFactory.make_article_source()
 
@@ -212,3 +212,12 @@ class TestCrudReturnValues(DoajTestCase):
     @staticmethod
     def logout(app):
         return app.get('/account/logout', follow_redirects=True)
+
+    def make_account(self):
+        account = models.Account.make_account(email="test@test.com", username="test", name="Tester",
+                                              roles=["publisher", "api"],
+                                              associated_journal_ids=['abcdefghijk_journal'])
+        account.set_password('password123')
+        self.api_key = account.api_key
+        self.account = account
+        account.save(blocking=True)

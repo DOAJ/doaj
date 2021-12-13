@@ -33,14 +33,16 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
         egs = EditorGroupFixtureFactory.make_editor_group_source("1234567890", "0987654321")
         egm = models.EditorGroup(**egs)
-        egm.save(blocking=True)
+        egm.save()
 
         self.journals = []
         for j_src in JournalFixtureFactory.make_many_journal_sources(count=TEST_JOURNAL_COUNT):
             self.journals.append(models.Journal(**j_src))
             self.journals[-1].set_editor_group("1234567890")
             self.journals[-1].set_editor("0987654321")
-            self.journals[-1].save(blocking=True)
+            self.journals[-1].save()
+
+        models.Journal.blockall([(j.id, None) for j in self.journals])
 
         self.forbidden_accounts = [
             AccountFixtureFactory.make_editor_source()['id'],
@@ -162,11 +164,11 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
     def test_05_edit_metadata(self):
         """Bulk assign an editor group to a bunch of journals using a background task"""
-        new_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors(group_name='Test Editor Group')
-
         acc = models.Account()
         acc.set_id("test1")
-        acc.save(blocking=True)
+        acc.save()
+
+        new_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors(group_name='Test Editor Group')
 
         # test dry run
         summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},

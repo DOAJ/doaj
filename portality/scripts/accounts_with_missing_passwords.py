@@ -14,12 +14,9 @@ from portality import models
 
 MISSING_PASSWORD = {
     "query": {
-        "filtered": {
-            "query": {
-                "match_all": {}
-            },
-            "filter": {
-                "missing": {"field": "password"}
+        "bool": {
+            "must_not": {
+                "exists": {"field": "password"}
             }
         }
     }

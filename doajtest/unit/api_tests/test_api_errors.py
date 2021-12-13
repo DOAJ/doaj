@@ -1,16 +1,11 @@
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, with_es
 from portality import models
 import time
 
 
 class TestApiErrors(DoajTestCase):
 
-    def setUp(self):
-        super(TestApiErrors, self).setUp()
-
-    def tearDown(self):
-        super(TestApiErrors, self).tearDown()
-
+    @with_es(indices=[models.Journal.__type__, models.Article.__type__])    # purely for site_statistics on error page
     def test_01_api_404(self):
         with self.app_test.test_client() as t_client:
             # On API blueprint, check we get an HTML doc page but a json 404
@@ -31,6 +26,7 @@ class TestApiErrors(DoajTestCase):
             assert response.status_code == 404
             assert response.mimetype == 'text/html'
 
+    @with_es(indices=[models.Journal.__type__])
     def test_02_api_400(self):
 
         with self.app_test.test_client() as t_client:
@@ -45,12 +41,13 @@ class TestApiErrors(DoajTestCase):
             # check the error string has appeared in the response
             assert b"Page number was not an integer" in response.data
 
+    @with_es(indices=[models.Application.__type__, models.Account.__type__])
     def test_03_api_401(self):
         # make a user account for the authorisation test
         a1 = models.Account.make_account(email="a1@example.com", username="a1_user", name="a1_name",
                                          roles=["user", "api"], associated_journal_ids=[])
         a1_key = a1.api_key
-        a1.save()               # a1 has api access
+        a1.save(blocking=True)               # a1 has api access
 
         # populate the index with an application owned by this owner
         a = models.Suggestion()
@@ -60,9 +57,7 @@ class TestApiErrors(DoajTestCase):
         bj.add_identifier(bj.P_ISSN, "0000-0000")
         bj.publisher = "Test Publisher"
         bj.add_url("http://homepage.com", "homepage")
-        a.save()
-
-        time.sleep(1)
+        a.save(blocking=True)
 
         with self.app_test.test_client() as t_client:
             # a successful authenticated query, giving the right result

@@ -1,4 +1,4 @@
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, with_es
 from doajtest.fixtures.accounts import AccountFixtureFactory
 from portality import models
 from portality.lib import paths
@@ -19,6 +19,7 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
         if os.path.exists(self.tmp_dir):
             shutil.rmtree(self.tmp_dir)
 
+    @with_es(indices=[models.Account.__type__], warm_mappings=[models.Account.__type__])
     def test_01_publishers_with_consent(self):
         # output file to save csv
         output_file = os.path.join(self.tmp_dir, 'accounts.csv')

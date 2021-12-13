@@ -4,10 +4,8 @@ from portality.core import es_connection
 from portality.util import ipt_prefix
 
 
-def query_result_generator(query, type, page_size=1000, keepalive="1m", wrap=None):
-    for result in esprit.tasks.scroll(es_connection, ipt_prefix(type), q=query, page_size=page_size, keepalive=keepalive):
-        if wrap is not None:
-            result = wrap(result)
+def query_result_generator(query, model, page_size=1000, keepalive="1m", wrap=False):
+    for result in model.iterate(q=query, page_size=page_size, keepalive=keepalive, wrap=wrap):
         yield result
 
 

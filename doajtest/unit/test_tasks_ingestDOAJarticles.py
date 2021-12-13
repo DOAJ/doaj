@@ -9,6 +9,7 @@ from doajtest.mocks.xwalk import XwalkMockFactory
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.accounts import AccountFixtureFactory
+from doajtest.fixtures.article import ArticleFixtureFactory
 import time
 from portality.crosswalks import article_doaj_xml
 from portality.bll.services import article as articleSvc
@@ -59,6 +60,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.schema = etree.XMLSchema(schema_doc)
 
         etree.XMLSchema = self.mock_load_schema
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
 
     def tearDown(self):
         super(TestIngestArticlesDoajXML, self).tearDown()

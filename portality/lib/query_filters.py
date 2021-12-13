@@ -37,32 +37,32 @@ def remove_search_limits(query: dict):
 
 def only_in_doaj(q):
     q.clear_match_all()
-    q.add_must({"term" : {"admin.in_doaj" : True}})
+    q.add_must_filter({"term": {"admin.in_doaj": True}})
     return q
 
 
 def owner(q):
     q.clear_match_all()
-    q.add_must({"term" : {"admin.owner.exact" : current_user.id}})
+    q.add_must_filter({"term" : {"admin.owner.exact" : current_user.id}})
     return q
 
 
 def update_request(q):
     q.clear_match_all()
-    q.add_must({"range" : {"created_date" : {"gte" : app.config.get("UPDATE_REQUEST_SHOW_OLDEST")}}})
-    q.add_must({"exists" : {"field" : "admin.current_journal"}})
+    q.add_must_filter({"range" : {"created_date" : {"gte" : app.config.get("UPDATE_REQUEST_SHOW_OLDEST")}}})
+    q.add_must_filter({"exists" : {"field" : "admin.current_journal"}})
     return q
 
 
 def not_update_request(q):
     q.clear_match_all()
-    q.add_must({"missing" : {"field" : "admin.current_journal"}})
+    q.add_must_not({"exists" : {"field" : "admin.current_journal"}})
     return q
 
 
 def associate(q):
     q.clear_match_all()
-    q.add_must({"term" : {"admin.editor.exact" : current_user.id}})
+    q.add_must_filter({"term" : {"admin.editor.exact" : current_user.id}})
     return q
 
 
@@ -94,6 +94,7 @@ def strip_facets(q):
 
 
 def es_type_fix(q):
+    # FIXME: document this and will need attention for ES 7 upgrade
     ctx = q.as_dict()
     if "query" not in ctx:
         return q
@@ -290,14 +291,14 @@ def add_fqw_facets(results, unpacked=False):
             "terms": []
         },
         "bibjson.editorial_review.process.exact": {
-            "_type": "terms",
+            "_type": "match",
             "missing": 0,
             "total": 0,
             "other": 0,
             "terms": []
         },
         "index.language.exact": {
-            "_type": "terms",
+            "_type": "match",
             "missing": 0,
             "total": 0,
             "other": 0,
@@ -337,7 +338,7 @@ def add_fqw_facets(results, unpacked=False):
         }
     }
 
-    results["facets"] = facets
+    results["aggregations"] = facets
     return results
 
 

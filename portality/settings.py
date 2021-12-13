@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "5.2.9"
+DOAJ_VERSION = "6.0.0"
 API_VERSION = "3.0.0"
 
 ######################################
@@ -38,8 +38,10 @@ DEBUG_TB_INTERCEPT_REDIRECTS = False
 # Elasticsearch configuration
 #~~->Elasticsearch:Technology
 
-# elasticsearch settings
+# elasticsearch settings # TODO: changing from single host / esprit to multi host on ES & correct the default
 ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://localhost:9200') # remember the http:// or https://
+ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}, {'host': 'localhost', 'port': 9201}]
+ELASTIC_SEARCH_VERIFY_CERTS = True  # Verify the SSL certificate of the ES host.  Set to False in dev.cfg to avoid having to configure your local certificates
 
 # 2 sets of elasticsearch DB settings - index-per-project and index-per-type. Keep both for now so we can migrate.
 # e.g. host:port/index/type/id
@@ -48,6 +50,7 @@ ELASTIC_SEARCH_TEST_DB = "doajtest"
 
 # e.g. host:port/type/doc/id
 ELASTIC_SEARCH_INDEX_PER_TYPE = True
+INDEX_PER_TYPE_SUBSTITUTE = '_doc'      # Migrated from esprit
 ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
@@ -423,112 +426,112 @@ ELASTIC_SEARCH_MAPPINGS = [
 # ~~->Seamless:Library~~
 DATAOBJ_TO_MAPPING_DEFAULTS = {
     "unicode": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "str": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "unicode_upper": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "unicode_lower": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "isolang": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "isolang_2letter": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "country_code": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "currency_code": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "issn": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "url": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "utcdatetimemicros": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
     },
     "utcdatetime": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
     },
     "bool": {
         "type": "boolean"
@@ -538,7 +541,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
     },
     "bigenddate": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
     },
     "year": {
         "type": "date",
@@ -546,18 +549,26 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
     }
 }
 
+# TODO: we may want a big-type and little-type setting
+DEFAULT_INDEX_SETTINGS = \
+    {
+        'number_of_shards': 4,
+        'number_of_replicas': 1
+    }
+
 
 DEFAULT_DYNAMIC_MAPPING = {
-    "dynamic_templates": [
+    'dynamic_templates': [
         {
-            "default": {
-                "match": "*",
+            "strings": {
                 "match_mapping_type": "string",
                 "mapping": {
-                    "type": "multi_field",
+                    "type": "text",
                     "fields": {
-                        "{name}": {"type": "{dynamic_type}", "index": "analyzed", "store": "no"},
-                        "exact": {"type": "{dynamic_type}", "index": "not_analyzed", "store": "yes"}
+                        "exact": {
+                            "type": "keyword",
+                            #"normalizer": "lowercase"
+                        }
                     }
                 }
             }
@@ -568,21 +579,34 @@ DEFAULT_DYNAMIC_MAPPING = {
 # LEGACY MAPPINGS
 # a dict of the ES mappings. identify by name, and include name as first object name
 # and identifier for how non-analyzed fields for faceting are differentiated in the mappings
-
 MAPPINGS = {
-    'account': {
-        'account': DEFAULT_DYNAMIC_MAPPING  #~~->Account:Model~~
+    'account': {  #~~->Account:Model~~
+        # 'aliases': {
+        #     'account': {}
+        # },
+        'mappings': DEFAULT_DYNAMIC_MAPPING,
+        'settings': DEFAULT_INDEX_SETTINGS
     }
 }
-MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}  #~~->Article:Model~~
-MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING} #~~->Upload:Model~~
-MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING} #~~->Cache:Model~~
-MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}  #~~->LCC:Model~~
-MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->EditorGroup:Model~~
-MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
-MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
-MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
-MAPPINGS['preserve'] = {'preserve': DEFAULT_DYNAMIC_MAPPING}    #~~->Preservation:Model~~
+# MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}  #~~->Article:Model~~
+# MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING} #~~->Upload:Model~~
+# MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING} #~~->Cache:Model~~
+# MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}  #~~->LCC:Model~~
+# MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->EditorGroup:Model~~
+# MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
+# MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
+# MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
+# MAPPINGS['preserve'] = {'preserve': DEFAULT_DYNAMIC_MAPPING}    #~~->Preservation:Model~~
+
+MAPPINGS['article'] = MAPPINGS["account"]  #~~->Article:Model~~
+MAPPINGS['upload'] = MAPPINGS["account"] #~~->Upload:Model~~
+MAPPINGS['cache'] = MAPPINGS["account"] #~~->Cache:Model~~
+MAPPINGS['lcc'] = MAPPINGS["account"]  #~~->LCC:Model~~
+MAPPINGS['editor_group'] = MAPPINGS["account"] #~~->EditorGroup:Model~~
+MAPPINGS['news'] = MAPPINGS["account"]    #~~->News:Model~~
+MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
+MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
+MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
 
 #########################################
 # Query Routes
