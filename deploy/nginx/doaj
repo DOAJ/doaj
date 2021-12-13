@@ -37,17 +37,18 @@ map $http_user_agent $block_ua {
 }
 
 upstream doaj_apps {
-    server 10.131.100.180:5050;
+    server 10.131.191.139:5050;
 }
 upstream doaj_bg_apps {
     server 10.131.56.133:5050;
 }
 upstream doaj_apps_failover {
-    server 10.131.100.180:5050;
+    server 10.131.191.139:5050;
     server 10.131.56.133:5050 backup;
 }
 upstream doaj_index {
-    server 10.131.99.251:9200;
+    server 10.131.191.132:9200;
+    server 10.131.191.133:9200;
 }
 
 # Redirect map for legacy page routes https://github.com/DOAJ/doajPM/issues/2398

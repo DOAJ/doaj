@@ -1,7 +1,7 @@
 """ Stream all records from an ES 1.7 cluster to a new ES 7.10 cluster """
 
 import elasticsearch
-import esprit.raw
+import esprit
 from datetime import datetime, timedelta
 from portality.core import app, initialise_index
 from portality.dao import DomainObject
