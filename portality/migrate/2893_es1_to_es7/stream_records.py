@@ -6,14 +6,12 @@ from datetime import datetime, timedelta
 from portality.core import app, initialise_index
 from portality.dao import DomainObject
 
-# Source                app.config['ELASTICSEARCH_HOSTS']doaj-new-index-1                         doaj-new-index-2
+# Source                doaj-new-index-1                         doaj-new-index-2
 ES_1_HOSTS = [{'host': '10.131.99.251', 'port': 9200}, {'host': '10.131.35.67', 'port': 9200}]
-ES_1_HOSTS = [{'host': 'localhost', 'port': 9200}, {'host': '10.131.35.67', 'port': 9200}]
 es1 = esprit.raw.Connection(host=ES_1_HOSTS[0]['host'], port=ES_1_HOSTS[0]['port'], index='')
 
 # Destination           doaj-index-1                              doaj-index-2
-#ES_7_HOSTS = [{'host': '10.131.191.132', 'port': 9200}, {'host': '10.131.191.133', 'port': 9200}]
-ES_7_HOSTS = [{'host': 'localhost', 'port': 9201}, {'host': 'localhost', 'port': 9202}]
+ES_7_HOSTS = [{'host': '10.131.191.132', 'port': 9200}, {'host': '10.131.191.133', 'port': 9200}]
 es7 = elasticsearch.Elasticsearch(ES_7_HOSTS, verify_certs=False)
 
 # Indexes to copy across
