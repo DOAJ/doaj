@@ -9,6 +9,7 @@
   list-style: none;
   height: 75px;
   font-size: smaller;
+  transition: height 0.3s ease-out;
 
   .feather {
     margin: 0 $spacing-01;

@@ -56,20 +56,21 @@ class Article(DomainObject):
                                     should_match=should_match,
                                     size=size)
 
-        res = cls.query(q=q.query())
-        return [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+        # res = cls.query(q=q.query())
+        # return [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+        return cls.q2obj(q=q.query())
 
     @classmethod
     def list_volumes(cls, issns):
         q = ArticleVolumesQuery(issns)
         result = cls.query(q=q.query())
-        return _human_sort([t.get("term") for t in result.get("facets", {}).get("vols", {}).get("terms", [])])
+        return _human_sort([t.get("key") for t in result.get("aggregations", {}).get("vols", {}).get("buckets", [])])
 
     @classmethod
     def list_volume_issues(cls, issns, volume):
         q = ArticleVolumesIssuesQuery(issns, volume)
         result = cls.query(q=q.query())
-        return _human_sort([t.get("term") for t in result.get("facets", {}).get("issues", {}).get("terms", [])])
+        return _human_sort([t.get("key") for t in result.get("aggregations", {}).get("issues", {}).get("buckets", [])])
 
     @classmethod
     def get_by_volume(cls, issns, volume):
@@ -929,13 +930,10 @@ ARTICLE_BIBJSON_EXTENSION = {
 
 class ArticleQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query" : {
-            "filtered": {
-                "filter": {
-                    "bool" : {
-                        "must" : []
-                    }
-                }
+            "bool" : {
+                "must" : []
             }
         }
     }
@@ -953,30 +951,31 @@ class ArticleQuery(object):
         if self.issns is not None:
             iq = deepcopy(self._issn_terms)
             iq["terms"]["index.issn.exact"] = self.issns
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(iq)
+            q["query"]["bool"]["must"].append(iq)
 
         if self.volume is not None:
             vq = deepcopy(self._volume_term)
             vq["term"]["bibjson.journal.volume.exact"] = self.volume
-            q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
+            q["query"]["bool"]["must"].append(vq)
 
         return q
     
 class ArticleVolumesQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query" : {
-            "filtered": {
+            "bool": {
                 "filter": {
                     "terms" : {"index.issn.exact" : ["<list of issns here>"]}
                 }
             }
         },
         "size" : 0,
-        "facets" : {
+        "aggs" : {
             "vols" : {
                 "terms" : {
                     "field" : "bibjson.journal.volume.exact",
-                    "order": "reverse_term",
+                    "order": {"_key" : "desc"},
                     "size" : 1000
                 }
             }
@@ -988,14 +987,15 @@ class ArticleVolumesQuery(object):
 
     def query(self):
         q = deepcopy(self.base_query)
-        q["query"]["filtered"]["filter"]["terms"]["index.issn.exact"] = self.issns
+        q["query"]["bool"]["filter"]["terms"]["index.issn.exact"] = self.issns
         return q
 
 
 class ArticleVolumesIssuesQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query" : {
-            "filtered": {
+            "bool": {
                 "filter": {
                     "bool": {
                         "must": [
@@ -1007,11 +1007,11 @@ class ArticleVolumesIssuesQuery(object):
             }
         },
         "size" : 0,
-        "facets" : {
+        "aggs" : {
             "issues" : {
                 "terms" : {
                     "field" : "bibjson.journal.number.exact",
-                    "order": "reverse_term",
+                    "order": {"_key", "desc"},
                     "size" : 1000
                 }
             }
@@ -1024,13 +1024,14 @@ class ArticleVolumesIssuesQuery(object):
 
     def query(self):
         q = deepcopy(self.base_query)
-        q["query"]["filtered"]["filter"]["bool"]["must"][0]["terms"]["index.issn.exact"] = self.issns
-        q["query"]["filtered"]["filter"]["bool"]["must"][1]["term"]["bibjson.journal.volume.exact"] = self.volume
+        q["query"]["bool"]["filter"]["bool"]["must"][0]["terms"]["index.issn.exact"] = self.issns
+        q["query"]["bool"]["filter"]["bool"]["must"][1]["term"]["bibjson.journal.volume.exact"] = self.volume
         return q
 
 
 class DuplicateArticleQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query": {
             "bool": {
                 "must": []

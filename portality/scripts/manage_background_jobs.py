@@ -98,6 +98,7 @@ class JobsQuery(object):
 
     def query(self):
         q = {
+            "track_total_hits": True,
             "query": {
                 "bool": {
                     "must": [

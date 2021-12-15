@@ -2,7 +2,9 @@ from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.api.current import DiscoveryApi, DiscoveryException
 from portality.api.common import generate_link_headers
+from portality.lib import dates
 import time
+from datetime import datetime
 from flask import url_for
 
 class TestAPIDiscovery(DoajTestCase):
@@ -49,7 +51,7 @@ class TestAPIDiscovery(DoajTestCase):
         with self.app_test.test_request_context():
             # 1. a general query that should hit everything (except number 6)
             res = DiscoveryApi.search("journal", None, "Test", 1, 2)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 2
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 2
@@ -57,7 +59,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 2. a specific field query that should hit just one
             res = DiscoveryApi.search("journal", None, "title:\"Test Journal 2\"", 1, 5)
-            assert res.data.get("total") == 1
+            assert res.data.get('total', 0) == 1, res.data.get('total', 0)
             assert len(res.data.get("results")) == 1
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 5
@@ -65,7 +67,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 3.paging out of range of results
             res = DiscoveryApi.search("journal", None, "Test", 2, 10)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 0
             assert res.data.get("page") == 2
             assert res.data.get("pageSize") == 10
@@ -73,7 +75,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 4. paging outside the allowed bounds (lower)
             res = DiscoveryApi.search("journal", None, "Test", 0, 0)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 10
@@ -81,7 +83,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 5. page size above upper limit
             res = DiscoveryApi.search("journal", None, "Test", 1, 100000)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 100
@@ -97,7 +99,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 8. sort on a specific field, expect a default to "asc"
             res = DiscoveryApi.search("journal", None, "Test", 1, 10, "created_date")
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 10
@@ -107,7 +109,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 9. sort on a specific field in a specified direction
             res = DiscoveryApi.search("journal", None, "Test", 1, 10, "created_date:desc")
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 10
@@ -125,10 +127,10 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 12. with a forward slash, with and without escaping (note that we have to escape the : as it has meaning for lucene)
             res = DiscoveryApi.search("journal", None, '"http\://homepage.com/1"', 1, 10)
-            assert res.data.get("total") == 1
+            assert res.data.get('total', 0) == 1
 
             res = DiscoveryApi.search("journal", None, '"http\:\/\/homepage.com\/1"', 1, 10)
-            assert res.data.get("total") == 1
+            assert res.data.get('total', 0) == 1
 
     def test_02_articles(self):
         # populate the index with some articles
@@ -153,7 +155,7 @@ class TestAPIDiscovery(DoajTestCase):
         with self.app_test.test_request_context():
             # 1. a general query that should hit everything
             res = DiscoveryApi.search("article", None, "Test", 1, 2)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 2
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 2
@@ -161,7 +163,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 2. a specific field query that should hit just one
             res = DiscoveryApi.search("article", None, "title:\"Test Article 2\"", 1, 5)
-            assert res.data.get("total") == 1
+            assert res.data.get('total', 0) == 1, res.data.get('total', 0)
             assert len(res.data.get("results")) == 1
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 5
@@ -169,7 +171,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 3.paging out of range of results
             res = DiscoveryApi.search("article", None, "Test", 2, 10)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 0
             assert res.data.get("page") == 2
             assert res.data.get("pageSize") == 10
@@ -177,7 +179,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 4. paging outside the allowed bounds (lower)
             res = DiscoveryApi.search("article", None, "Test", 0, 0)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 10
@@ -185,7 +187,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 5. page size above upper limit
             res = DiscoveryApi.search("article", None, "Test", 1, 100000)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 100
@@ -201,7 +203,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 8. sort on a specific field, expect a default to "asc"
             res = DiscoveryApi.search("article", None, "Test", 1, 10, "created_date")
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 10
@@ -211,7 +213,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 9. sort on a specific field in a specified direction
             res = DiscoveryApi.search("article", None, "Test", 1, 10, "created_date:desc")
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 10
@@ -229,21 +231,18 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 12. with a forward slash, with and without escaping
             res = DiscoveryApi.search("article", None, '"10.test/1"', 1, 10)
-            assert res.data.get("total") == 1
+            assert res.data.get('total', 0) == 1
 
             res = DiscoveryApi.search("article", None, '"10.test\/1"', 1, 10)
-            assert res.data.get("total") == 1
+            assert res.data.get('total', 0) == 1
 
     def test_03_applications(self):
-        # create an account that will own the suggestions
-        acc = models.Account()
-        acc.set_id("owner")
-        acc.save()
-
         # populate the index with some suggestions owned by this owner
+        now = datetime.utcnow()
         for i in range(5):
             a = models.Suggestion()
             a.set_owner("owner")
+            a.set_created(dates.format(dates.after(now, i)))
             bj = a.bibjson()
             bj.title = "Test Suggestion {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
@@ -252,12 +251,13 @@ class TestAPIDiscovery(DoajTestCase):
             a.save()
 
             # make sure the last updated dates are suitably different
-            time.sleep(1)
+            # time.sleep(1)
 
         # populte the index with some which are not owned by this owner
         for i in range(5):
             a = models.Suggestion()
             a.set_owner("stranger")
+            a.set_created(dates.format(dates.after(now, i + 5)))
             bj = a.bibjson()
             bj.title = "Test Suggestion {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
@@ -265,15 +265,18 @@ class TestAPIDiscovery(DoajTestCase):
             a.save()
 
             # make sure the last updated dates are suitably different
-            time.sleep(1)
+            # time.sleep(1)
 
-        time.sleep(1)
+        # create an account that will own the suggestions
+        acc = models.Account()
+        acc.set_id("owner")
+        acc.save(blocking=True)
 
         # now run some queries
         with self._make_and_push_test_context(acc=acc):
             # 1. a general query that should hit everything
             res = DiscoveryApi.search("application", acc, "Test", 1, 2)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 2
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 2
@@ -281,7 +284,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 2. a specific field query that should hit just one
             res = DiscoveryApi.search("application", acc, "title:\"Test Suggestion 2\"", 1, 5)
-            assert res.data.get("total") == 1
+            assert res.data.get('total', 0) == 1, res.data.get('total', 0)
             assert len(res.data.get("results")) == 1
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 5
@@ -289,7 +292,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 3.paging out of range of results
             res = DiscoveryApi.search("application", acc, "Test", 2, 10)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 0
             assert res.data.get("page") == 2
             assert res.data.get("pageSize") == 10
@@ -297,7 +300,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 4. paging outside the allowed bounds (lower)
             res = DiscoveryApi.search("application", acc, "Test", 0, 0)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 10
@@ -305,7 +308,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 5. page size above upper limit
             res = DiscoveryApi.search("application", acc, "Test", 1, 100000)
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 100
@@ -321,7 +324,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 8. sort on a specific field, expect a default to "asc"
             res = DiscoveryApi.search("application", acc, "Test", 1, 10, "created_date")
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 10
@@ -331,7 +334,7 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 9. sort on a specific field in a specified direction
             res = DiscoveryApi.search("application", acc, "Test", 1, 10, "created_date:desc")
-            assert res.data.get("total") == 5
+            assert res.data.get('total', 0) == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 10
@@ -349,17 +352,17 @@ class TestAPIDiscovery(DoajTestCase):
 
             # 12. with a forward slash, with and without escaping (note that we have to escape the : as it has meaning for lucene)
             res = DiscoveryApi.search("application", acc, '"http\://homepage.com/1"', 1, 10)
-            assert res.data.get("total") == 1
+            assert res.data.get('total', 0) == 1
 
             res = DiscoveryApi.search("application", acc, '"http\:\/\/homepage.com\/1"', 1, 10)
-            assert res.data.get("total") == 1
+            assert res.data.get('total', 0) == 1
 
         # 13. A search with an account that isn't either of the ones in the dataset
         other = models.Account()
         other.set_id("other")
         with self._make_and_push_test_context(acc=other):
             res = DiscoveryApi.search("application", other, "Test", 1, 10, "created_date:desc")
-            assert res.data.get("total") == 0
+            assert res.data.get('total', 0) == 0
 
     def test_04_paging_for_link_headers(self):
         # calc_pagination takes total, page_size, requested_page
@@ -433,7 +436,7 @@ class TestAPIDiscovery(DoajTestCase):
         with self.app_test.test_request_context():
             # check that the first page still works
             res = DiscoveryApi.search("journal", None, "*", 1, 5)
-            assert res.data.get("total") == 10
+            assert res.data.get('total', 0) == 10
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
             assert res.data.get("pageSize") == 5

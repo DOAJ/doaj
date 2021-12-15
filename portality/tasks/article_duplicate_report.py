@@ -5,7 +5,6 @@ from portality.app_email import email_archive
 
 from portality.background import BackgroundTask, BackgroundApi
 
-import esprit
 import os
 import shutil
 import json
@@ -16,7 +15,6 @@ from portality.lib import dates
 from portality.core import app, es_connection
 from portality.bll.doaj import DOAJ
 from portality.bll import exceptions
-from portality.util import ipt_prefix
 
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
@@ -173,7 +171,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         }
 
         count = 0
-        for a in esprit.tasks.scroll(connection, ipt_prefix('article'), q=scroll_query, page_size=1000, keepalive='1m'):
+        for a in models.Article.iterate(q=scroll_query, page_size=1000, keepalive='1m'):
             row = [
                 a['id'],
                 a['created_date'],

@@ -81,9 +81,6 @@ class Cache(DomainObject):
     def get_public_data_dump(cls):
         return cls.pull("public_data_dump")
 
-    def mark_for_regen(self):
-        self.update({"regen" : True})
-
     def is_stale(self):
         if not self.last_updated:
             lu = '1970-01-01T00:00:00Z'

@@ -12,20 +12,14 @@ class JournalQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query": {
-                "filtered": {
-                    "filter": {
-                        "bool": {
-                            "must": [
-                                {"term": {"admin.owner.exact": self.owner}},
-                                {"term": {"admin.in_doaj": True}}
-                             ]
-                         }
-                    },
-                    "query": {
-                        "match_all": {}
-                    }
-                }
+                "bool": {
+                    "must": [
+                        {"term": {"admin.owner.exact": self.owner}},
+                        {"term": {"admin.in_doaj": True}}
+                     ]
+                 }
             }
         }
 

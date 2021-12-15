@@ -168,7 +168,7 @@ doaj.af.BaseApplicationForm = class {
     }
 
     submitapplication() {
-        this.form.parsley();
+        this.parsley = this.form.parsley();
         this.form.submit();
     };
 };
@@ -443,9 +443,13 @@ doaj.af.newEditorialApplicationForm = function(params) {
 doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     constructor(params) {
         super(params);
+
         this.statusesNotRequiringValidation = ['rejected', 'pending', 'in progress', 'on hold'];
 
         this.formDiff = edges.getParam(params.formDiff, false);
+
+        this.changed = false;
+        this.submitting = false;
 
         this.sections.each((idx, sec) => {
             $(sec).show();
@@ -456,6 +460,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             event.preventDefault();
             let id = $(this).attr("data-id");
             let type = $(this).attr("data-type");
+            that.submitting = true;
             that.unlock({type : type, id : id})
         });
 
@@ -465,8 +470,26 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             this._generate_values_preview();
         });
 
+        // bind some event handlers that register when the form has changed in a meaningful
+        // way, and then a beforeunload event to warn the user
+        this.jq("input, select").bind("change", () => this.changed = true);
+        this.jq("button").bind("click", (event) => {
+            // ignore any "view note" modal close button hits
+            if (!$(event.currentTarget).hasClass("formulaic-notemodal-close")) {   // FIXME: I don't love this, it feels brittle, but I don't have a better solution
+                this.changed = true
+            }
+        });
+        $(window).bind("beforeunload", (event) => this.beforeUnload(event));
+
         // do a pre-validation to highlight any fields that require attention
         this.parsley.validate();
+    }
+
+    beforeUnload(event) {
+        if (!this.changed || this.submitting) {
+            event.cancel();
+        }
+        return "Any unsaved changes may be lost"
     }
 
     displayableDiffValue(was) {
@@ -571,18 +594,19 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     }
 
     submitapplication() {
+        this.submitting = true;
         if (this.setAllFieldsOptionalIfAppropriate()) {
             this.form.parsley().destroy();
         } else {
             this.form.parsley().whenValidate().done(() => {
                 this.jq("#cannot-submit-invalid-fields").hide();
-
             }).fail(() => {
                 this.jq("#cannot-submit-invalid-fields").show();
                 this.parsley.destroy();
                 this.form.attr("data-parsley-focus", "first")
                 this.parsley = this.form.parsley();
                 this.parsley.validate();
+                this.submitting = false;
             });
         }
         this.form.submit();
@@ -671,11 +695,13 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
             $("#modal-quick_reject").show();
         });
 
+        let that = this;
         $("#submit_quick_reject").on("click", function(event) {
             if ($("#quick_reject").val() === "" && $("#quick_reject_details").val() === "") {
                 alert("When selecting 'Other' as a reason for rejection, you must provide additional information");
                 event.preventDefault();
             }
+            that.submitting = true;
         });
     };
 };
@@ -979,7 +1005,7 @@ window.Parsley.addValidator("type", {
                     return false;
                 // Be careful of rounding errors by using integers.
                 var toInt = f => Math.round(f * Math.pow(10, decimals));
-                if ((toInt(nb) - toInt(base)) % toInt(step) != 0)
+                if ((toInt(nb) - toInt(base)) % toInt(step) !== 0)
                     return false;
             }
         }

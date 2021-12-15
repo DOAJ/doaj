@@ -14,16 +14,14 @@ from portality import models
 
 MISSING_API_ROLE = {
     "query": {
-        "filtered": {
-            "query": {
+        "bool": {
+            "must": {
                 "term": {
                     "role.exact": "publisher"
                 }
             },
-            "filter": {
-                "not": {
-                    "term": {"role.exact": "api"}
-                }
+            "must_not": {
+                "term": {"role.exact": "api"}
             }
         }
     }

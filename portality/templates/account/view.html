@@ -1,3 +1,4 @@
+{# ~~Account:Page~~ #}
 {% extends "layouts/base.html" %}
 
 {% block page_title %}My account{% endblock %}
@@ -12,8 +13,8 @@
                     {% endif %}
 
                     {% if current_user.has_role("admin_journals") %}
-                        {% set Q1 = '{"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
-                        {% set Q2 = '"}}]}},"query":{"match_all":{}}}}}' %}
+                        {% set Q1 = '{"query":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
+                        {% set Q2 = '"}}]}}}' %}
                         <p class="label"><a href="/admin/?source={{Q1}}{{account.id}}{{Q2}}">&larr; View this user’s journals</a></p>
                     {% endif %}
 
@@ -108,6 +109,8 @@
 
 {% block extra_js_bottom %}
 
+<script type="text/javascript" src="/static/js/dontleave.js"></script>
+
 <script type="text/javascript">
 jQuery(document).ready(function($) {
     // Populate select2 role picker
@@ -127,6 +130,10 @@ jQuery(document).ready(function($) {
             }
         });
     {% endif %}
+
+    {# ~~->DontLeave:Feature~~ #}
+    // initialise the leave with unsaved changed warning
+    doaj.dontleave.init({containerSelector: "#edit_user"});
 });
 </script>
 

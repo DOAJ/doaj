@@ -232,16 +232,16 @@ MAPPING_OPTS = {
     "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
     "exceptions": {
         "admin.notes.note": {
-                    "type": "string",
-                    "index": "not_analyzed",
-                    "include_in_all": False
+            "type": "text",
+            "index": False,
+            #"include_in_all": False        # Removed in es6 fixme: do we need to look at copy_to for the mapping?
         }
     }
 }
 
 
 class SuggestionQuery(object):
-    _base_query = { "query" : { "bool" : {"must" : []}}}
+    _base_query = {"track_total_hits" : True, "query" : { "bool" : {"must" : []}}}
     _email_term = {"term" : {"admin.applicant.email.exact" : "<email address>"}}
     _status_terms = {"terms" : {"admin.application_status.exact" : ["<list of statuses>"]}}
     _owner_term = {"term" : {"admin.owner.exact" : "<the owner id>"}}
@@ -273,6 +273,7 @@ class SuggestionQuery(object):
 
 class OwnerStatusQuery(object):
     base_query = {
+        "track_total_hits": True,
         "query" : {
             "bool" : {
                 "must" : []
@@ -303,6 +304,7 @@ class StatusQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query" : {
                 "bool" : {
                     "must" : [
@@ -320,6 +322,7 @@ class CurrentJournalQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query" : {
                 "bool" : {
                     "must" : [
@@ -341,6 +344,7 @@ class RelatedJournalQuery(object):
 
     def query(self):
         return {
+            "track_total_hits": True,
             "query" : {
                 "bool" : {
                     "must" : [

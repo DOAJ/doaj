@@ -249,7 +249,7 @@ def status():
             res['stable'] = error_means_unstable
         emsg = 'Found {0} background jobs in error status in the last {1} seconds'.format(error_count, error_seconds)
         if len(error_ignore) != 0:
-            emsg += '. Ignoring ' + ', '.join(error_ignore) + ' which reduced the error count from ' + str(rer.get('hits', {}).get('total', 0))
+            emsg += '. Ignoring ' + ', '.join(error_ignore) + ' which reduced the error count from ' + str(rer.get('hits', {}).get('total', {}).get('value', 0))
         res['background']['info'].append(emsg)
     except:
         res['background']['status'] = 'Unstable'

@@ -3,7 +3,9 @@ from portality.util import ipt_prefix
 from portality.bll import exceptions
 from portality.lib import plugin
 from copy import deepcopy
+
 import esprit
+
 
 class QueryService(object):
     """
@@ -146,7 +148,7 @@ class QueryService(object):
         keepalive = cfg.get("keepalive", "1m")
 
         # ~~->Elasticsearch:Technology~~
-        for result in esprit.tasks.scroll(es_connection, ipt_prefix(dao_klass.__type__), q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive, scan=scan):
+        for result in dao_klass.iterate(q=query.as_dict(), page_size=page_size, limit=limit, wrap=False, keepalive=keepalive):
             res = self._post_filter_search_results(cfg, result, unpacked=True)
             yield res
 
@@ -156,40 +158,60 @@ class Query(object):
     ~~Query:Query -> Elasticsearch:Technology~~
     """
     def __init__(self, raw=None, filtered=False):
-        self.q = {"query": {"match_all": {}}} if raw is None else raw
+        self.q = {"track_total_hits" : True, "query": {"match_all": {}}} if raw is None else raw
         self.filtered = filtered is True or self.q.get("query", {}).get("filtered") is not None
+        if self.filtered:
+            # FIXME: this is just to help us catch filtered queries during development.  Once we have them
+            # all, all the filtering logic in this class can come out
+            raise Exception("Filtered queries are no longer supported")
 
-    def convert_to_filtered(self):
+    def convert_to_bool(self):
         if self.filtered is True:
             return
 
         current_query = None
         if "query" in self.q:
+            if "bool" in self.q["query"]:
+                return
             current_query = deepcopy(self.q["query"])
             del self.q["query"]
             if len(list(current_query.keys())) == 0:
                 current_query = None
 
-        self.filtered = True
         if "query" not in self.q:
             self.q["query"] = {}
-        if "filtered" not in self.q["query"]:
-            self.q["query"]["filtered"] = {}
-        if "filter" not in self.q["query"]["filtered"]:
-            self.q["query"]["filtered"]["filter"] = {}
+        if "bool" not in self.q["query"]:
+            self.q["query"]["bool"] = {}
 
-        if "query" not in self.q["query"]["filtered"] and current_query is not None:
-            self.q["query"]["filtered"]["query"] = current_query
+        if current_query is not None:
+            if "must" not in self.q["query"]["bool"]:
+                self.q["query"]["bool"]["must"] = []
+
+            self.q["query"]["bool"]["must"].append(current_query)
 
     def add_must(self, filter):
-        self.convert_to_filtered()
-        context = self.q["query"]["filtered"]["filter"]
-        if "bool" not in context:
-            context["bool"] = {}
-        if "must" not in context["bool"]:
-            context["bool"]["must"] = []
+        # self.convert_to_filtered()
+        self.convert_to_bool()
+        context = self.q["query"]["bool"]
+        if "must" not in context:
+            context["must"] = []
+        context["must"].append(filter)
 
-        context["bool"]["must"].append(filter)
+    def add_must_filter(self, filter):
+        self.convert_to_bool()
+        context = self.q["query"]["bool"]
+        if "filter" not in context:
+            context["filter"] = []
+
+        context["filter"].append(filter)
+
+    def add_must_not(self, filter):
+        self.convert_to_bool()
+        context = self.q["query"]["bool"]
+        if "must_not" not in context:
+            context["must_not"] = []
+
+        context["must_not"].append(filter)
 
     def clear_match_all(self):
         if "match_all" in self.q["query"]:
@@ -225,11 +247,11 @@ class Query(object):
     def add_include(self, fields):
         if "_source" not in self.q:
             self.q["_source"] = {}
-        if "include" not in self.q["_source"]:
-            self.q["_source"]["include"] = []
+        if "includes" not in self.q["_source"]:
+            self.q["_source"]["includes"] = []
         if not isinstance(fields, list):
             fields = [fields]
-        self.q["_source"]["include"] = list(set(self.q["_source"]["include"] + fields))
+        self.q["_source"]["includes"] = list(set(self.q["_source"]["includes"] + fields))
 
     def sort(self):
         return self.q.get("sort")

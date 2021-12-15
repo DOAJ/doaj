@@ -2,18 +2,13 @@
 Unit tests for the DOAJ client
 """
 
-from unittest import TestCase
+from doajtest.helpers import DoajTestCase
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
 from portality.api.current.client import models
 from portality.lib import dataobj
 
 
-class TestDOAJ(TestCase):
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
+class TestDOAJ(DoajTestCase):
 
     def test_01_journal_issns(self):
         source = JournalFixtureFactory.make_journal_source()

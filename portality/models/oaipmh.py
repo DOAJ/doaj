@@ -1,4 +1,3 @@
-from datetime import datetime
 from copy import deepcopy
 from portality.models import Journal, Article
 
@@ -26,11 +25,11 @@ class OAIPMHRecord(object):
             }
         },
         "size": 0,
-        "facets": {
+        "aggs": {
             "sets": {
                 "terms": {
                     "field": "index.schema_subject.exact",
-                    "order": "term",
+                    "order": {"_key" : "asc"},
                     "size": 100000
                 }
             }
@@ -51,7 +50,7 @@ class OAIPMHRecord(object):
 
     set_limit = {"term" : { "index.schema_subject.exact" : "<set name>" }}
     range_limit = { "range" : { "last_updated" : {"gte" : "<from date>", "lte" : "<until date>"} } }
-    created_sort = [{"last_updated" : {"order" : "desc"}}, {"id" : "desc"}]
+    created_sort = [{"last_updated" : {"order" : "desc"}}, {"id.exact" : "desc"}]
 
     def earliest_datestamp(self):
         result = self.query(q=self.earliest)
@@ -63,7 +62,7 @@ class OAIPMHRecord(object):
 
     def list_sets(self):
         result = self.query(q=self.sets)
-        sets = [t.get("term") for t in result.get("facets", {}).get("sets", {}).get("terms", [])]
+        sets = [t.get("key") for t in result.get("aggregations", {}).get("sets", {}).get("buckets", [])]
         return sets
 
     def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_after=None):
@@ -107,7 +106,7 @@ class OAIPMHRecord(object):
 
         results = self.query(q=q)
 
-        total = results.get("hits", {}).get("total", 0)
+        total = results.get("hits", {}).get("total", {}).get('value', 0)
         return total, [hit.get("_source") for hit in results.get("hits", {}).get("hits", [])]
 
 
