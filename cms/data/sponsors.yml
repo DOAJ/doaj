@@ -92,6 +92,10 @@ bronze:
   url: https://journals.aps.org/
   logo: aps.svg
 
+- name: ARPHA Publishing Platform
+  url: https://arphahub.com/
+  logo: arpha.png
+
 - name: Cambridge University Press
   url: https://www.cambridge.org/
   logo: cambridge.svg
@@ -147,10 +151,6 @@ bronze:
 - name: OCLC
   url: https://www.oclc.org/
   logo: oclc.svg
-
-- name: Pensoft
-  url: https://pensoft.net/
-  logo: pensoft.svg
 
 - name: PLOS
   url: https://plos.org/
