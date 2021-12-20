@@ -2352,6 +2352,14 @@ $.extend(true, doaj, {
                 var actions = "";
                 if (this.actions.length > 0) {
                     actions = '<h4 class="label">Actions</h4><ul class="tags">';
+                    // Add Display Seal as an action
+                    if (edges.objVal("admin.seal", resultobj, false)) {
+                      actions += '<li class="tag">\
+                                    <a data-toggle="modal" data-target="#modal-embed-seal" tabindex="0" role="button">\
+                                      Display Seal\
+                                    </a>\
+                                  </li>'
+                    }
                     for (var i = 0; i < this.actions.length; i++) {
                         var act = this.actions[i];
                         var actSettings = act(resultobj);
@@ -2362,6 +2370,19 @@ $.extend(true, doaj, {
                         }
                     }
                     actions += '</ul>';
+                }
+
+                // Display linked Seal HTML snippet for journals that have been awarded
+                var seal_modal = "";
+                if (edges.objVal("admin.seal", resultobj, false)) {
+                  seal_modal += '<section class="modal in" id="modal-embed-seal" tabindex="-1" role="dialog" style="display: none;"> \
+                      <div class="modal__dialog" role="document">\
+                          <h2 class="modal__title">Embed the Seal on your website</h2>\
+                          <p>Simply copy and paste this snippet on your website:</p> \
+                          <p><code>&lt;a href="https://doaj.org/toc/' + issn + '" target="_blank" style="display: block; width: 150px; height: auto;"&gt;&lt;img src="/static/doaj/images/logo/seal.png"/&gt;&lt;/a&gt;</code></p>\
+                          <button class="button" data-dismiss="modal" class="modal__close">Close</button>\
+                      </div>\
+                  </section>'
                 }
 
                 var frag = '<li class="card search-results__record">\
@@ -2424,7 +2445,7 @@ $.extend(true, doaj, {
                             ' + licenses + '\
                           </li>\
                         </ul>\
-                        ' + actions + '\
+                        ' + actions + seal_modal + '\
                       </aside>\
                     </article>\
                   </li>';
