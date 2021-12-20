@@ -34,7 +34,8 @@ class AgeQuery(object):
                             }
                         }
                     ],
-                    "should": self._status_filters
+                    "should": self._status_filters,
+                    "minimum_should_match": 1
                 }
             },
             "size": 0,
@@ -74,7 +75,8 @@ class EdAppQuery(object):
                                     "field": "admin.editor"
                                 }
                             },
-                            "should": self._status_filters
+                            "should": self._status_filters,
+                            "minimum_should_match": 1
                         }
                     }
                 }
@@ -115,7 +117,8 @@ class EdAgeQuery(object):
                             }
                         }
                     ],
-                    "should": self._status_filters
+                    "should": self._status_filters,
+                    "minimum_should_match": 1
                 }
             },
             "size": 0,
