@@ -2380,7 +2380,7 @@ $.extend(true, doaj, {
                           <h2 class="modal__title">Embed the Seal on your website</h2>\
                           <p>Simply copy and paste this snippet on your website:</p> \
                           <p><code>&lt;a href="https://doaj.org/toc/' + issn + '" target="_blank" style="display: block; width: 150px; height: auto;"&gt;&lt;img src="/static/doaj/images/logo/seal.png"/&gt;&lt;/a&gt;</code></p>\
-                          <button class="button" data-dismiss="modal" class="modal__close">Close</button>\
+                          <button class="button" data-dismiss="modal" class="modal__close no-margins">Close</button>\
                       </div>\
                   </section>'
                 }
