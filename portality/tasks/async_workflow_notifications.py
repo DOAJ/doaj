@@ -147,7 +147,8 @@ class AssEdAgeQuery(object):
                             }
                         }
                     },
-                    "should": self._status_filters
+                    "should": self._status_filters,
+                    "minimum_should_match" : 1
                 }
             },
             "size": 0,
