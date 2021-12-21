@@ -8,6 +8,7 @@ from portality import models
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
 from portality.decorators import ssl_required, restrict_to_role, write_required
+from portality.dao import ESMappingMissingError
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 from portality.tasks.preservation import *
@@ -232,7 +233,12 @@ def preservation():
        This feature is available for the users who has 'preservation' role.
     """
 
-    previous = models.PreservationState.by_owner(current_user.id)
+    try:
+        previous = []
+        previous = models.PreservationState.by_owner(current_user.id)
+    # handle exception if there are no records available
+    except ESMappingMissingError:
+        pass
 
     if request.method == "GET":
         return render_template('publisher/preservation.html', previous=previous)
@@ -275,6 +281,9 @@ def preservation():
                 collection_available = False
 
         if not collection_available:
+            flash(
+                "Does not have Collection details associated with your user id. Cannot process upload. Contact the DOAJ team.",
+                "error")
             preservation_model.failed(FailedReasons.collection_not_available)
             preservation_model.save()
 
