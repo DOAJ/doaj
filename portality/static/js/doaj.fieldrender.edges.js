@@ -2336,7 +2336,7 @@ $.extend(true, doaj, {
                         var lic = resultobj.bibjson.license[i];
                         var license_url = lic.url || terms_url;
                         licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + edges.escapeHtml(lic.type) + '</a>';
-                        if (i != (resultobj.bibjson.license.length-1)) {
+                        if (i !== (resultobj.bibjson.license.length-1)) {
                             licenses += ', ';
                         }
                     }
@@ -2350,39 +2350,29 @@ $.extend(true, doaj, {
                 }
 
                 var actions = "";
+                var modals = "";
                 if (this.actions.length > 0) {
                     actions = '<h4 class="label">Actions</h4><ul class="tags">';
-                    // Add Display Seal as an action
-                    if (edges.objVal("admin.seal", resultobj, false)) {
-                      actions += '<li class="tag">\
-                                    <a data-toggle="modal" data-target="#modal-embed-seal" tabindex="0" role="button">\
-                                      Display Seal\
-                                    </a>\
-                                  </li>'
-                    }
                     for (var i = 0; i < this.actions.length; i++) {
                         var act = this.actions[i];
                         var actSettings = act(resultobj);
                         if (actSettings) {
+                            let data = "";
+                            if (actSettings.data) {
+                                let dataAttrs = Object.keys(actSettings.data);
+                                for(let j = 0; j < dataAttrs.length; j++) {
+                                    data += " data-" + dataAttrs[j] + "=" + actSettings.data[dataAttrs[j]];
+                                }
+                            }
                             actions += '<li class="tag">\
-                                <a href="' + actSettings.link + '">' + actSettings.label + '</a>\
+                                <a href="' + actSettings.link + '" tabindex="0" role="button" ' + data + '>' + actSettings.label + '</a>\
                             </li>';
+                            if (actSettings.modal) {
+                                modals += actSettings.modal
+                            }
                         }
                     }
                     actions += '</ul>';
-                }
-
-                // Display linked Seal HTML snippet for journals that have been awarded
-                var seal_modal = "";
-                if (edges.objVal("admin.seal", resultobj, false)) {
-                  seal_modal += '<section class="modal in" id="modal-embed-seal" tabindex="-1" role="dialog" style="display: none;"> \
-                      <div class="modal__dialog" role="document">\
-                          <h2 class="modal__title">Embed the Seal on your website</h2>\
-                          <p>Simply copy and paste this snippet on your website:</p> \
-                          <p><code>&lt;a href="https://doaj.org/toc/' + issn + '" target="_blank" style="display: block; width: 150px; height: auto;"&gt;&lt;img src="/static/doaj/images/logo/seal.png"/&gt;&lt;/a&gt;</code></p>\
-                          <button class="button" data-dismiss="modal" class="modal__close no-margins">Close</button>\
-                      </div>\
-                  </section>'
                 }
 
                 var frag = '<li class="card search-results__record">\
@@ -2445,7 +2435,7 @@ $.extend(true, doaj, {
                             ' + licenses + '\
                           </li>\
                         </ul>\
-                        ' + actions + seal_modal + '\
+                        ' + actions + modals + '\
                       </aside>\
                     </article>\
                   </li>';

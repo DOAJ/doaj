@@ -22,6 +22,40 @@ $.extend(true, doaj, {
             return result;
         },
 
+        shareSealLogo: function(resultobj) {
+            // Add Display Seal as an action
+            if (!edges.objVal("admin.seal", resultobj, false)) {
+                return false;
+            }
+            let result = {
+                label: "Display Seal",
+                link: "#",
+                data: {
+                    toggle: "modal",
+                    target: "#modal-embed-seal"
+                }
+            }
+
+            var issn = resultobj.bibjson.pissn;
+            if (!issn) {
+                issn = resultobj.bibjson.eissn;
+            }
+            if (issn) {
+                issn = edges.escapeHtml(issn);
+            }
+
+            result.modal = '<section class="modal in" id="modal-embed-seal" tabindex="-1" role="dialog" style="display: none;"> \
+                    <div class="modal__dialog" role="document">\
+                        <h2 class="modal__title">Embed the Seal on your website</h2>\
+                        <p>Simply copy and paste this snippet on your website:</p> \
+                        <p><code>&lt;a href="https://doaj.org/toc/' + issn + '" target="_blank" style="display: block; width: 150px; height: auto;"&gt;&lt;img src="/static/doaj/images/logo/seal.png"/&gt;&lt;/a&gt;</code></p>\
+                        <button class="button" data-dismiss="modal" class="modal__close no-margins">Close</button>\
+                    </div>\
+                </section>';
+
+            return result;
+        },
+
         init : function(params) {
             if (!params) { params = {} }
 
@@ -182,7 +216,8 @@ $.extend(true, doaj, {
                     category: "results",
                     renderer : doaj.renderers.newPublicSearchResultRenderer({
                         actions: [
-                            doaj.publisherJournalsSearch.makeUpdateRequest
+                            doaj.publisherJournalsSearch.makeUpdateRequest,
+                            doaj.publisherJournalsSearch.shareSealLogo
                         ]
                     })
                 }),
