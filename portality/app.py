@@ -400,4 +400,4 @@ if __name__ == "__main__":
         import pydevd
         pydevd.settrace(app.config.get('DEBUG_PYCHARM_SERVER', 'localhost'), port=app.config.get('DEBUG_PYCHARM_PORT', 6000), stdoutToServer=True, stderrToServer=True)
 
-    app.run(host=app.config['HOST'], debug=app.config['DEBUG'], port=app.config['PORT'], ssl_context='adhoc')
+    app.run(host=app.config['HOST'], debug=app.config['DEBUG'], port=app.config['PORT'])
