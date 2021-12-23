@@ -93,7 +93,7 @@ The following information must be available online, and easily accessible from t
   - The type and details of the peer review process must be stated clearly on the website.
 - Use of a plagiarism checking service is recommended, but not required for inclusion in DOAJ.
 - Endogeny should be minimised.
-  - The proportion of published papers where at least one of the authors is an editor, editorial board member or reviewer, or affiliated to the journal's institution must not exceed 20%, based on the research content of the latest two issues.
+  - The proportion of published papers where at least one of the authors is an editor, editorial board member or reviewer must not exceed 20% based on the research content of the latest two issues.
 
 ---
 
