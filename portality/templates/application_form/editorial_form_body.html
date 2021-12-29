@@ -1,3 +1,10 @@
+{% if current_journal is none or not current_journal.is_in_doaj() %}
+<h2 class="alert">
+    <span data-feather="alert-triangle" aria-hidden="true"></span>
+        Journal has been withdrawn or deleted. This update request cannot be accepted.
+</h2>
+{% endif %}
+
 <h1>{{ obj.bibjson().title }}</h1>
 {% include "application_form/_edit_status.html" %}
 {% include "application_form/_backend_validation.html" %}
