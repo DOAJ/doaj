@@ -476,7 +476,10 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         this.jq("button").bind("click", (event) => {
             // ignore any "view note" modal close button hits
             if (!$(event.currentTarget).hasClass("formulaic-notemodal-close")) {   // FIXME: I don't love this, it feels brittle, but I don't have a better solution
-                this.changed = true
+                this.changed = true;
+            }
+            if ($(event.currentTarget).attr("id") === "open_withdraw_reinstate") {
+                this.submitting = true;
             }
         });
         $(window).bind("beforeunload", (event) => this.beforeUnload(event));
@@ -691,6 +694,7 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
         super(params);
 
         $("#open_quick_reject").on("click", (e) => {
+            console.log("click open");
             e.preventDefault();
             $("#modal-quick_reject").show();
         });
