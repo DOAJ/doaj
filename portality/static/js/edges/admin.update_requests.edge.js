@@ -53,23 +53,6 @@ $.extend(true, doaj, {
                     finishedEvent: "edges:post-render",
                     renderer : doaj.renderers.newSearchingNotificationRenderer()
                 }),
-
-                // facets
-                edges.newRefiningANDTermSelector({
-                    id: "application_status",
-                    category: "facet",
-                    field: "admin.application_status.exact",
-                    display: "Application Status",
-                    deactivateThreshold : 1,
-                    valueFunction : doaj.adminApplicationsSearch.adminStatusMap,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
                 edges.newRefiningANDTermSelector({
                     id: "has_editor_group",
                     category: "facet",
