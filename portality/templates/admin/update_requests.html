@@ -5,42 +5,8 @@
 {% block page_title %}Update requests{% endblock %}
 
 {% block admin_content %}
-<h1 class="sr-only">Update requests</h1>
-
-<div class="bulk-action-feedback alert alert-success" style="display: none"></div>
-
-<div id="admin-bulk-box">
-    <h2 class="label">Bulk edit records</h2>
-    <div class="row">
-      <form class="col-md-6 form form--compact" id="suggestion_bulk_form">
-        <div id="bulk_action-container" class="input-group">
-            <select class="multiformbox-selector input-group__input" id="bulk_action" name="bulk_action">
-                <option selected value="">Select action…</option>
-                <option value="application_status">Change status</option>
-                <option value="editor_group">Assign to editor group</option>
-                <option value="note">Add a note</option>
-            </select>
-            <button id="bulk-submit" class="button multiformbox-submit input-group__input" disabled="disabled">Submit</button>
-        </div>
-        <div class="multiformbox-container form__question" style="display: none" id="application_status-container">
-            <select id="application_status" name="application_status">
-                {% for choice in application_status_choices %}
-                    <option value="{{ choice.value }}">{{ choice.display }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="multiformbox-container form__question" style="display: none" id="editor_group-container">
-            <input id="editor_group" name="editor_group" type="text" value="">
-        </div>
-        <div class="multiformbox-container form__question" style="display: none" id="note-container">
-            <textarea id="note" name="note" placeholder="Type note here…"></textarea>
-        </div>
-      </form>
-  </div>
-</div>
-
-<div id="admin_applications"></div>
-
+    <h1 class="sr-only">Update requests</h1>
+    {% include "admin/_applications_and_update_requests_common.html" %}
 {% endblock %}
 
 {% block extra_js_bottom %}
@@ -56,8 +22,6 @@
     });
     </script>
 
-    {% include "_edges_common_js.html" %}
-    <script type="text/javascript" src="/static/js/multiformbox.js?v={{config.get('DOAJ_VERSION')}}"></script>
-    <script type="text/javascript" src="/static/js/edges/admin.update_requests.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    {% include "admin/_applications_and_update_requests_common_js.html" %}
 
 {% endblock %}
