@@ -489,6 +489,8 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
     }
 
     beforeUnload(event) {
+        // This solution will withdraw the journal without the warning even if there are some changes that are not saved.
+        // should that if condition be changed to AND: if (!this.changed && this.submitting)
         if (!this.changed || this.submitting) {
             event.cancel();
         }
