@@ -59,7 +59,7 @@ $.extend(true, doaj, {
                     id: "application_status",
                     category: "facet",
                     field: "admin.application_status.exact",
-                    display: "Application Status",
+                    display: "Status",
                     deactivateThreshold : 1,
                     valueFunction : doaj.adminApplicationsSearch.adminStatusMap,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
