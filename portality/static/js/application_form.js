@@ -690,6 +690,10 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
     constructor(params) {
         super(params);
 
+        if (params.withdrawn === "true") {
+            $("#application_status option[value='accepted']").hide();
+        }
+
         $("#open_quick_reject").on("click", (e) => {
             e.preventDefault();
             $("#modal-quick_reject").show();
@@ -703,6 +707,9 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
             }
             that.submitting = true;
         });
+
+
+
     };
 };
 

@@ -29,6 +29,9 @@
             {% if form_diff %}
                 formDiff: {{ form_diff|tojson }},
             {% endif %}
+            {% if current_journal and not current_journal.is_in_doaj() %}
+                withdrawn: "true"
+            {% endif %}
             });
         {% endif %}
     });
