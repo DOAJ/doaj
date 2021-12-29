@@ -54,6 +54,21 @@ $.extend(true, doaj, {
                     renderer : doaj.renderers.newSearchingNotificationRenderer()
                 }),
                 edges.newRefiningANDTermSelector({
+                    id: "application_status",
+                    category: "facet",
+                    field: "admin.application_status.exact",
+                    display: "Application Status",
+                    deactivateThreshold : 1,
+                    valueFunction : doaj.adminApplicationsSearch.adminStatusMap,
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: false,
+                        togglable: true,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+                edges.newRefiningANDTermSelector({
                     id: "has_editor_group",
                     category: "facet",
                     field: "index.has_editor_group.exact",
