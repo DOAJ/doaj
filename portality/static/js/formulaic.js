@@ -1383,7 +1383,8 @@ var formulaic = {
                 var viewClass = edges.css_classes(this.ns, "view");
                 var closeClass = edges.css_classes(this.ns, "close");
 
-                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
+                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']").find("textarea");
+
                 for (var i = 0; i < this.divs.length; i++) {
                     var container = $(this.divs[i]);
                     var modalId = "modal-" + this.fieldDef["name"] + "-" + i;
@@ -1391,7 +1392,7 @@ var formulaic = {
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
                     var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
 
-                    container.append(`<div><a href="#" class="` + viewClass + `">view note</a>
+                    $(`<div><a href="#" class="` + viewClass + `">view note</a>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                             <div class="modal__dialog" role="document">
                                 <p class="label">NOTE</p>
@@ -1403,7 +1404,21 @@ var formulaic = {
                             </div>
                         </div>
                         </div>
-                    `);
+                    `).insertAfter(container);
+
+                    // container.append(`<div><a href="#" class="` + viewClass + `">view note</a>
+                    //     <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
+                    //         <div class="modal__dialog" role="document">
+                    //             <p class="label">NOTE</p>
+                    //             <h3 class="modal__title">
+                    //                 ` + date.val() + `
+                    //             </h3>
+                    //             ` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `
+                    //             <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
+                    //         </div>
+                    //     </div>
+                    //     </div>
+                    // `);
                 }
 
                 var viewSelector = edges.css_class_selector(this.ns, "view");
