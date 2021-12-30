@@ -1382,7 +1382,7 @@ var formulaic = {
             this.init = function() {
                 var viewClass = edges.css_classes(this.ns, "view");
                 var closeClass = edges.css_classes(this.ns, "close");
-
+                var viewDivClass = edges.css_classes(this.ns, "viewDiv")
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']").find("textarea");
 
                 for (var i = 0; i < this.divs.length; i++) {
@@ -1392,7 +1392,7 @@ var formulaic = {
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
                     var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
 
-                    $(`<div><a href="#" class="` + viewClass + `">view note</a>
+                    $(`<div style="margin-top: -0.75rem"><a href="#" class="` + viewClass + `">view note</a>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                             <div class="modal__dialog" role="document">
                                 <p class="label">NOTE</p>
