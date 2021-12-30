@@ -1405,20 +1405,6 @@ var formulaic = {
                         </div>
                         </div>
                     `).insertAfter(container);
-
-                    // container.append(`<div><a href="#" class="` + viewClass + `">view note</a>
-                    //     <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
-                    //         <div class="modal__dialog" role="document">
-                    //             <p class="label">NOTE</p>
-                    //             <h3 class="modal__title">
-                    //                 ` + date.val() + `
-                    //             </h3>
-                    //             ` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `
-                    //             <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
-                    //         </div>
-                    //     </div>
-                    //     </div>
-                    // `);
                 }
 
                 var viewSelector = edges.css_class_selector(this.ns, "view");
