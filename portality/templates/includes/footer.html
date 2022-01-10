@@ -15,8 +15,15 @@
                 Legal &amp; admin
             </h2>
             <div>
+                <a href="/" class="logo">
+                    <h2 class="sr-only">The Directory of Open Access Journals</h2>
+                    {% include "includes/svg/logo.svg" %}
+                    <span class="logo__tagline">
+                      Open. <br/>Global. <br/>Trusted.
+                    </span>
+                </a>
                 <p>
-                    © DOAJ 2020 default by all rights reserved <a href="{{ url_for('doaj.terms') }}" style="text-decoration: underline;">unless otherwise specified</a>.
+                    © DOAJ 2022 default by all rights reserved <a href="{{ url_for('doaj.terms') }}" style="text-decoration: underline;">unless otherwise specified</a>.
                 </p>
 
                 {% set section_id = "legal" %}
@@ -25,7 +32,7 @@
                 {% set section_id = "companies" %}
                 <ul>{% include "includes/menu-items.html" %}</ul>
             </div>
-            <div>
+            <div class="page-footer__licensing">
                 <p>
                     <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank" title="See license summary">
                         {% include "includes/svg/cc.svg" %}
