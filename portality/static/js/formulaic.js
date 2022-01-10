@@ -1445,7 +1445,7 @@ var formulaic = {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 for (var i = 0 ; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 1rem 1rem 0;">Remove</button>'));
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 0 1rem 0; border: 0; float: right;">Remove</button>'));
                     feather.replace();
                 }
 

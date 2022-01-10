@@ -1,8 +1,10 @@
 .editorial-panel {
   margin-top: 0;
 
-  select, textarea, input {
-    width: 100%;
+  .form__question {
+    select, textarea, input {
+      width: 100%;
+    }
   }
 
   @media (min-width: 992px) {
@@ -13,10 +15,6 @@
     &__content {
       max-height: 70vh;
       overflow-y: scroll;
-    }
-
-    select, textarea, input, label, p {
-      width: 20vw;
     }
   }
 }
