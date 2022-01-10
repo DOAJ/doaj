@@ -81,6 +81,9 @@ entries:
         route: doaj.transparency      # ~~->Transparency:WebRoute~~
       - label: Why index your journal in DOAJ?
         route: doaj.why_index         # ~~->WhyIndex:WebRoute~~
+      # Uncomment once this page is ready to be published
+      #- label: Publisher respinsibilities
+      #  route: doaj.publisher_responsibilities         # ~~->PublisherResponsibilities:WebRoute~~
   - id: stay_up_to_date
     label: Stay up to date
     footer: true
