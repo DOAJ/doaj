@@ -4,10 +4,21 @@
   display: block;
   padding-top: 10px;
   padding-bottom: 10px;
-  height: 50px;
+  height: 55px;
   transition: height 0.3s ease-out;
 
   svg {
     height: 30px;
+  }
+}
+
+.logo__tagline {
+  display: inline-block;
+  margin-left: $spacing-02;
+  font-size: 12px;
+  line-height: 1;
+
+  @media (max-width: 768px) {
+    display: none;
   }
 }
