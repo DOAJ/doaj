@@ -476,6 +476,11 @@ def why_index():
     return render_template("layouts/static_page.html", page_frag="/apply/why-index.html")
 
 
+@blueprint.route("/apply/publisher-responsibilities/")
+def publisher_responsibilities():
+    return render_template("layouts/static_page.html", page_frag="/apply/publisher-responsibilities.html")
+
+
 @blueprint.route("/apply/copyright-and-licensing/")
 def copyright_and_licensing():
     return render_template("layouts/static_page.html", page_frag="/apply/copyright-and-licensing.html")
