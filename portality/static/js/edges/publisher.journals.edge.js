@@ -28,7 +28,7 @@ $.extend(true, doaj, {
                 return false;
             }
             let result = {
-                label: "Display Seal",
+                label: "Download the Seal",
                 link: "#",
                 data: {
                     toggle: "modal",
@@ -46,9 +46,9 @@ $.extend(true, doaj, {
 
             result.modal = '<section class="modal in" id="modal-embed-seal" tabindex="-1" role="dialog" style="display: none;"> \
                     <div class="modal__dialog" role="document">\
-                        <h2 class="modal__title">Embed the Seal on your website</h2>\
-                        <p>Simply copy and paste this snippet on your website:</p> \
-                        <p><code>&lt;a href="https://doaj.org/toc/' + issn + '" target="_blank" style="display: block; width: 150px; height: auto;"&gt;&lt;img src="/static/doaj/images/logo/seal.png"/&gt;&lt;/a&gt;</code></p>\
+                        <h2 class="modal__title">Download the Seal</h2>\
+                        <p>Copy and paste this HTML to display your DOAJ Seal on your website:</p> \
+                        <p><code>&lt;a href="https://doaj.org/toc/' + issn + '" target="_blank" style="display: block; width: 150px; height: auto;"&gt;&lt;img src="https://doaj.org/static/doaj/images/logo/seal.png"/&gt;&lt;/a&gt;</code></p>\
                         <button class="button" data-dismiss="modal" class="modal__close no-margins">Close</button>\
                     </div>\
                 </section>';
