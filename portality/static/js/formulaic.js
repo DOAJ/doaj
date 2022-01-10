@@ -1382,11 +1382,10 @@ var formulaic = {
             this.init = function() {
                 var viewClass = edges.css_classes(this.ns, "view");
                 var closeClass = edges.css_classes(this.ns, "close");
-                var viewDivClass = edges.css_classes(this.ns, "viewDiv")
-                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']").find("textarea");
+                var textarea = $("div[name='" + this.fieldDef["name"] + "__group']").find("textarea");
 
-                for (var i = 0; i < this.divs.length; i++) {
-                    var container = $(this.divs[i]);
+                for (var i = 0; i < textarea.length; i++) {
+                    var container = $(textarea[i]);
                     var modalId = "modal-" + this.fieldDef["name"] + "-" + i;
 
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
