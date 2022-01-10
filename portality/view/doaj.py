@@ -481,6 +481,11 @@ def publisher_responsibilities():
     return render_template("layouts/static_page.html", page_frag="/apply/publisher-responsibilities.html")
 
 
+@blueprint.route("/apply/copyright-and-licensing/")
+def copyright_and_licensing():
+    return render_template("layouts/static_page.html", page_frag="/apply/copyright-and-licensing.html")
+
+
 @blueprint.route("/docs/oai-pmh/")
 def oai_pmh():
     return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh.html")
