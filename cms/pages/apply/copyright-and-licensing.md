@@ -25,8 +25,8 @@ DOAJ recommends that journals allow authors to retain the copyright of their pap
 
 Even when the author retains copyright, restrictions may sometimes be imposed by the publisher:
 
- - The publisher requires exclusive publishing rights. The author no longer holds the copyright without restrictions.
- - The publisher requires a transfer of commercial rights or an exclusive license of commercial rights. The author no longer retains copyright without restrictions.
+ - The publisher requires exclusive publishing rights. This means that the author no longer holds the copyright without restrictions.
+ - The publisher requires a transfer or exclusive license of commercial rights. The author no longer retains copyright without restrictions.
 
 ## Understanding author rights
 
