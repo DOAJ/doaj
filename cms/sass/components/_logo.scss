@@ -15,8 +15,10 @@
 
 .logo__tagline {
   margin-left: $spacing-03;
-  font-size: 16px;
+  font-size: 17px;
+  font-weight: 600;
   line-height: 1.15;
+  text-transform: uppercase;
 
   @media (max-width: 768px) {
     display: none;
