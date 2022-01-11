@@ -28,7 +28,7 @@ Even when the author retains copyright, restrictions may sometimes be imposed by
  - The publisher requires exclusive publishing rights. The author no longer holds the copyright without restrictions.
  - The publisher requires a transfer of commercial rights or an exclusive license of commercial rights. The author no longer retains copyright without restrictions.
 
-## Author rights
+## Understanding author rights
 
 The terms of the Creative Commons (or other) license do not apply to the copyright holder. Therefore it is important to understand that:
 
