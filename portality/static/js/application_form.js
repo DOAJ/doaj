@@ -690,7 +690,7 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
     constructor(params) {
         super(params);
 
-        if (params.withdrawn === "true") {
+        if (params.withdrawn) {
             $("#application_status option[value='accepted']").hide();
         }
 

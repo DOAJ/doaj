@@ -29,8 +29,8 @@
             {% if form_diff %}
                 formDiff: {{ form_diff|tojson }},
             {% endif %}
-            {% if obj.application_status == "update_request" and (not current_journal or not current_journal.is_in_doaj()) %}
-                withdrawn: "true"
+            {% if obj.admin.current_journal is not None and (not current_journal or not current_journal.is_in_doaj()) %}
+                withdrawn: True
             {% endif %}
             });
         {% endif %}
