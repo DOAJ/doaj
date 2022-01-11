@@ -8,39 +8,34 @@ featuremap: ~~CopyrightAndLicensing:Fragment~~
 
 ---
 
-Lorem ipsum dolor sit amet.
-
-## First heading
-
-More content here.
-
-### Subheading
-
-Some more content here.
 
 ## Licensing
 
-We recommend that you use Creative Commons licenses to show your readers how the published content can be used. In some cases, we will accept a publisher's own license if it is broadly equivalent to one of the Creative Commons licenses.
+DOAJ recommends the use of Creative Commons licenses to inform your readers how published content can be used. We do not specify which license should be used. You may select the Creative Commons license that best meets the needs of the journal, or give authors the option to choose a license for their paper. 
 
-You may not add to or adapt the terms of a Creative Commons license. For example, you cannot display on your website: ‘[Other conditions] will apply and prevail over all conflicting provisions of the [open access] license’ model. Creative Commons states clearly that '[For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply](https://creativecommons.org/licenses/by-sa/4.0/legalcode)'.
+You may not add to or adapt the terms of a Creative Commons license. This means you cannot impose restrictions on authors or users that conflict with the provisions of the license. Creative Commons states clearly that '[For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply](https://creativecommons.org/licenses/by-sa/4.0/legalcode)'.
+
+In some cases, we will accept a publisher's own license if it is broadly equivalent to one of the Creative Commons licenses.
 
 ## Copyright
 
-We recommend that journals allow authors to retain the copyright of their papers without restrictions. Authors may grant the publisher non-exclusive publishing rights to publish the articles. Granting the publisher the right of first publishing also qualifies as unrestricted copyright (because there is no restriction imposed by the publisher on the author's copyright).
+The initial copyright of a paper is held by the authors (or their employer, in some instances). When publishing that paper the copyright may remain held by the author, or can be licensed or transferred to the publisher.
 
-Restrictions are sometimes imposed by the publisher even though the author retains copyright:
+We recommend that journals allow authors to retain the copyright of their papers without restrictions. Authors will then grant the publisher the right of first publication, and other non-exclusive publishing rights.
+
+Even when the author retains copyright, restrictions may sometimes be imposed by the publisher:
 
  - The publisher requires exclusive publishing rights. The author no longer holds the copyright without restrictions.
- - The publisher requires a transfer of commercial rights or an exclusive grant of commercial rights. The author no longer retains copyright without restrictions.
+ - The publisher requires a transfer of commercial rights or an exclusive license of commercial rights. The author no longer retains copyright without restrictions.
 
-## The difficult bits about licensing and copyright together
+## Author rights
 
-The terms of the user license do not apply to the copyright holder. Therefore:
+The terms of the Creative Commons (or other) license do not apply to the copyright holder. Therefore it is important to understand that:
 
- - when copyright is retained by the author without restrictions, the license applies to the readers and the publisher.
- - when copyright is transferred to the publisher, the license applies to the readers and the author(s).
- - when the author retains copyright but commercial rights are transferred to the publisher and a non-commercial license is used, the license applies to the reader and the author.
- - when the author retains copyright but exclusive publishing rights are granted to the publisher, this is equivalent to the transfer of commercial rights to the publisher.
+ - when copyright is retained by the author without restrictions, the license applies to the readers and the publisher, but not to the author who can use their work in any way they choose.
+ - when copyright is transferred to the publisher, the license applies to the readers and the author.
+ - when the author retains copyright but grants exclusive publishing rights to the publisher, the license applies to the readers and the author.
+ - when the author retains copyright but transfers or grants exclusive commercial rights to the publisher and a non-commercial license is used, the license applies to the readers and the author.
 
 ## Fair use
 
