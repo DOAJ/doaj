@@ -302,11 +302,13 @@ class AdminApplication(ApplicationProcessor):
         if self.source is None:
             raise Exception("You cannot edit a not-existent application")
         if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
-            raise Exception("You cannot edit applications which have been accepted into DOAJ.")
-        if self.form.application_status.data == "accepted" and (
-                self.source.current_journal is None or not models.Journal.pull(
-            self.source.current_journal).is_in_doaj()):
-            raise Exception("This journal has been withdrawn or deleted, update request cannot be accepted.")
+            if self.source.current_journal is not None:
+                j = models.Journal.pull(self.source.current_journal)
+                if j is None or not j.is_in_doaj():
+                    raise Exception(Messages.EXCEPTION_EDITING_WITHDRAWN_OR_DELETED_JOURNAL)
+
+            else:
+                raise Exception(Messages.EXCEPTION_EDITING_ACCEPTED_JOURNAL)
 
         # if we are allowed to finalise, kick this up to the superclass
         super(AdminApplication, self).finalise()
