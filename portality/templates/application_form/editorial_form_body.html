@@ -1,7 +1,8 @@
-{% if obj.admin.current_journal is not None and (not current_journal or not current_journal.is_in_doaj()) %}<h2 class="alert">
-    <span data-feather="alert-triangle" aria-hidden="true"></span>
+{% if obj.admin.current_journal is not None and (not current_journal or not current_journal.is_in_doaj()) %}
+    <h2 class="alert">
+        <span data-feather="alert-triangle" aria-hidden="true"></span>
         Journal has been withdrawn or deleted. This update request cannot be accepted.
-</h2>
+    </h2>
 {% endif %}
 
 <h1>{{ obj.bibjson().title }}</h1>
