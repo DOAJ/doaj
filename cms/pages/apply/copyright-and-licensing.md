@@ -21,7 +21,7 @@ In some cases, we will accept a publisher's own license if it is broadly equival
 
 The initial copyright of a paper is held by the authors (or their employer, in some instances). When publishing that paper the copyright may remain held by the author, or can be licensed or transferred to the publisher.
 
-We recommend that journals allow authors to retain the copyright of their papers without restrictions. Authors will then grant the publisher the right of first publication, and other non-exclusive publishing rights.
+DOAJ recommends that journals allow authors to retain the copyright of their papers without restrictions. Authors will then grant the publisher the right of first publication, and other non-exclusive publishing rights.
 
 Even when the author retains copyright, restrictions may sometimes be imposed by the publisher:
 
