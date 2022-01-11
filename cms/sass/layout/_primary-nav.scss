@@ -5,7 +5,7 @@
   top: 0;
   width: 100vw;
   z-index: 3000;
-  height: 75px;
+  height: 90px;
   background-color: $warm-black;
   transition: height 0.3s ease-out;
   text-transform: uppercase;
@@ -37,7 +37,7 @@
   }
 
   .dropdown__trigger {
-    line-height: 75px;
+    line-height: 90px;
   }
 
   .dropdown__menu {
