@@ -707,9 +707,6 @@ doaj.af.ManEdApplicationForm = class extends doaj.af.EditorialApplicationForm {
             }
             that.submitting = true;
         });
-
-
-
     };
 };
 

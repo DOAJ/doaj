@@ -517,7 +517,6 @@ class AdminApplication(ApplicationProcessor):
         valid = super(AdminApplication, self).validate()
 
         if self.form is not None:
-
             if self.form.application_status.data in _statuses_not_requiring_validation and not valid:
                 self.resetDefaults(self.form)
                 return True
