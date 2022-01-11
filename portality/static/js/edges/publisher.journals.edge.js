@@ -32,7 +32,7 @@ $.extend(true, doaj, {
                 link: "#",
                 data: {
                     toggle: "modal",
-                    target: "#modal-embed-seal"
+                    target: "#modal-embed-seal-" + resultobj.id
                 }
             }
 
@@ -44,7 +44,7 @@ $.extend(true, doaj, {
                 issn = edges.escapeHtml(issn);
             }
 
-            result.modal = '<section class="modal in" id="modal-embed-seal" tabindex="-1" role="dialog" style="display: none;"> \
+            result.modal = '<section class="modal in" id="modal-embed-seal-' + resultobj.id + '" tabindex="-1" role="dialog" style="display: none;"> \
                     <div class="modal__dialog" role="document">\
                         <h2 class="modal__title">Download the Seal</h2>\
                         <p>Copy and paste this HTML to display the DOAJ Seal on your website:</p> \
