@@ -11,7 +11,7 @@ featuremap: ~~CopyrightAndLicensing:Fragment~~
 
 ## Licensing
 
-DOAJ recommends the use of Creative Commons licenses to inform your readers how published content can be used. We do not specify which license should be used. You may select the Creative Commons license that best meets the needs of the journal, or give authors the option to choose a license for their paper. 
+DOAJ recommends the use of '[Creative Commons](https://creativecommons.org/share-your-work/)' licenses to inform your readers how published content can be used. We do not specify which license should be used. You may select the Creative Commons license that best meets the needs of the journal, or give authors the option to choose a license for their paper. 
 
 You may not add to or adapt the terms of a Creative Commons license. This means you cannot impose restrictions on authors or users that conflict with the provisions of the license. Creative Commons states clearly that '[For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply](https://creativecommons.org/licenses/by-sa/4.0/legalcode)'.
 
