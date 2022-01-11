@@ -29,7 +29,7 @@
             {% if form_diff %}
                 formDiff: {{ form_diff|tojson }},
             {% endif %}
-            {% if obj.admin.current_journal is not None and (not current_journal or not current_journal.is_in_doaj()) %}
+            {% if obj.admin.current_journal is not none and (not current_journal or not current_journal.is_in_doaj()) %}
                 withdrawn: True
             {% endif %}
             });

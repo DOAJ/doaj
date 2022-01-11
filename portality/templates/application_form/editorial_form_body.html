@@ -1,4 +1,4 @@
-{% if obj.admin.current_journal is not None and (not current_journal or not current_journal.is_in_doaj()) %}
+{% if obj.admin.current_journal is not none and (not current_journal or not current_journal.is_in_doaj()) %}
     <h2 class="alert">
         <span data-feather="alert-triangle" aria-hidden="true"></span>
         Journal has been withdrawn or deleted. This update request cannot be accepted.
