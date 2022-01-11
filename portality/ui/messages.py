@@ -70,6 +70,7 @@ class Messages(object):
 
     EXCEPTION_EDITING_ACCEPTED_JOURNAL = "You cannot edit applications which have been accepted into DOAJ.";
     EXCEPTION_EDITING_WITHDRAWN_OR_DELETED_JOURNAL = "This journal has been withdrawn or deleted, update request cannot be accepted."
+    EXCEPTION_EDITING_NON_EXISTING_APPLICATION = "You cannot edit a not-existent application"
 
 
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.
