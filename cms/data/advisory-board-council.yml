@@ -14,12 +14,6 @@ board:
   coi:
     2019: https://drive.google.com/file/d/1FHkg6seMBKTDwlO6XbRr0iEjlKjwMUV2/view?usp=sharing
 
-- name: Jan Erik Frantsvåg
-  institution: University of Tromsø – The Arctic University of Norway
-  country: Norway
-  coi:
-    2019: https://drive.google.com/file/d/1gTTSF-zPnKJrSFEXLi_g1xCh54b4RgVh/view?usp=sharing
-
 - name: Leslie Chan
   institution: University of Toronto
   country: Canada
@@ -35,12 +29,6 @@ board:
   country: United Kingdom
   coi:
     2019: https://drive.google.com/file/d/1rSCL0KHewtg6626kf2_YB-0i18IxcoiN/view?usp=sharing
-
-- name: Monica Roos
-  institution: NSD – Norwegian Centre for  Research Data
-  country: Norway
-  coi:
-    2021: https://drive.google.com/file/d/1o9979yl5onq5oY2i5tCDsIU9yCFOIC6z/view?usp=sharing
 
 - name: Solange Maria Dos Santos
   institution: SciELO
@@ -69,12 +57,6 @@ council:
   coi:
     2019: https://drive.google.com/file/d/1KLdiHr_iKgeh6rvSstsP_sgVYIa1GyvK/view?usp=sharing
 
-- name: Donna McRostie
-  institution: University of Melbourne
-  country: Australia
-  coi:
-    2019: https://drive.google.com/file/d/1Qb6awjQhQ8Lx7U1Ww6nP7t51JYBO19LC/view?usp=sharing
-
 - name: Dora Elvira García-González
   institution: Tecnológico de Monterrey
   country: Mexico
@@ -87,12 +69,6 @@ council:
   coi:
     2019: https://drive.google.com/file/d/1ehhPw3sBU-wey2i4YCcD2LQMUilmTz8l/view?usp=sharing
 
-- name: Gail McMillan
-  institution: Virginia Tech and University Libraries
-  country: United States
-  coi:
-    2019: https://drive.google.com/file/d/1HQX00Ire15yzOoklIikfeTXVTMwG0HGo/view?usp=sharing
-
 - name: Karen Rowlett
   institution: University of Reading
   country: United Kingdom
@@ -104,12 +80,6 @@ council:
   country: United States
   coi:
     2019: https://drive.google.com/file/d/1Rs7hX092q-jdlLXAtNyMJ20Ut8elNXHS/view?usp=sharing
-
-- name: Piero Grandesso
-  institution: University of Bologna
-  country: Italy
-  coi:
-    2019: https://drive.google.com/file/d/1B0t-J7pZJrCtA6uWGLtQdXq3mcO5CqBZ/view?usp=sharing
 
 - name: Rainer Rees-Mertins
   institution: Swiss Federal Institute of Technology Zurich
@@ -129,16 +99,8 @@ council:
   coi:
     2019: https://drive.google.com/file/d/1fnMmSYPnsU9ElbBx3PCCy-s00N0ZEYUM/view?usp=sharing
 
-- name: Suzanne Kemperman
-  institution: OCLC
-  country: United States
-  coi:
-    2019: https://drive.google.com/file/d/1hEBsRxlVWHSnEVDEe9fr1m0VFqAUo65K/view?usp=sharing
-    
 - name: Titia van der Werf-Davelaar
   institution: OCLC
   country: The Netherlands
   coi:
     2021: https://drive.google.com/file/d/1x0DIz2DUKygRSlVEy0GNqKGh6BB0pXKf/view?usp=sharing
- 
- 
