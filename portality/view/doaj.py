@@ -397,6 +397,10 @@ def article_page(identifier=None):
 # The various static endpoints
 ###############################################################
 
+@blueprint.route("/dashboard/")
+def dashboard():
+    return render_template("layouts/dashboard.html")
+
 
 @blueprint.route("/googlebdb21861de30fe30.html")
 def google_webmaster_tools():

@@ -1,0 +1,228 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<header>
+  <h2>DOAJ Dashboard</h2>
+  <nav>
+    <ul>
+      <li>
+        <span>Notifications</span>
+        <ul>
+          <li>
+            <a href="">
+              <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+              <time datetime="2021-07-17">2 hours ago</time>
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+              <time datetime="2021-07-17">2 hours ago</time>
+            </a>
+          </li>
+          <li>
+            <a href="">
+              <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+              <time datetime="2021-07-17">2 hours ago</time>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">Settings</a>
+      </li>
+    </ul>
+  </nav>
+
+  <dl>
+    <dt>
+      Managing Editor of
+    </dt>
+    <dd>
+      <ul>
+        <li>
+          <a href="#">GERMAN 1</a>
+        </li>
+        <li>
+          <a href="#">ITALIAN 1</a>
+        </li>
+        <li>
+          <a href="#">POLISH 1</a>
+        </li>
+      </ul>
+    </dd>
+    /
+    <dt>
+      Username
+    </dt>
+    <dd>
+      <a href="#">GERMAN 1</a>
+    </dd>
+  </dl>
+</header>
+
+<nav>
+  <ol>
+    <li>
+      <a href="#">Tasks</a>
+    </li>
+    <li>
+      <a href="#">Update requests</a>
+    </li>
+    <li>
+      <a href="#">Applications</a>
+    </li>
+    <li>
+      <a href="#">Journals</a>
+    </li>
+    <li>
+      <a href="#">Articles</a>
+    </li>
+    <li>
+      <a href="#">Teams</a>
+    </li>
+    <li>
+      <a href="#">Background jobs</a>
+    </li>
+  </ol>
+</nav>
+
+<main>
+
+  <h1>Hi, Ilaria!</h1>
+
+  <section>
+    <h2>Here’s what’s on your to-do list:</h2>
+    <ol>
+      <li>
+        <article>
+          <time datetime="2021-07-17">17 Jul 2021</time>
+          <p>Assign <strong>pending application</strong></p>
+          <h3>
+            <a href="#">Internationale Zeitschrift für Kulturkomparatistik</a>
+          </h3>
+          <dl>
+            <dt>Team</dt>
+            <dd><a href="#">German 1</a></dd>
+          </dl>
+        </article>
+      </li>
+      <li>
+        <article>
+          <time datetime="2021-07-17">17 Jul 2021</time>
+          <p>Assign <strong>pending application</strong></p>
+          <h3>
+            <a href="#">Internationale Zeitschrift für Kulturkomparatistik</a>
+          </h3>
+          <dl>
+            <dt>Team</dt>
+            <dd><a href="#">German 1</a></dd>
+          </dl>
+        </article>
+      </li>
+      <li>
+        <article>
+          <time datetime="2021-07-17">17 Jul 2021</time>
+          <p>Assign <strong>pending application</strong></p>
+          <h3>
+            <a href="#">Internationale Zeitschrift für Kulturkomparatistik</a>
+          </h3>
+          <dl>
+            <dt>Team</dt>
+            <dd><a href="#">German 1</a></dd>
+          </dl>
+        </article>
+      </li>
+    </ol>
+    <footer>
+      <a href="#">See all tasks</a>
+    </footer>
+  </section>
+
+  <section>
+    <h2>Activity</h2>
+
+    <div class="tabs">
+      <nav role="tablist" aria-label="Activity by team">
+        <button role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" tabindex="0">
+          German 1
+        </button>
+        <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" tabindex="-1">
+          Italian 1
+        </button>
+        <button role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" tabindex="-1">
+          Polish 1
+        </button>
+      </nav>
+
+      <article id="panel-1" role="tabpanel" tabindex="0" aria-labelledby="tab-1">
+        <h3>
+          German 1’s applications
+          <span>29 <span>applications</span></span>
+        </h3>
+
+        <h4>Ongoing applications by associate editor (pending, in progress, completed, ready).</h4>
+        <ul>
+          <li>
+            <a href="#">ilaria <em>(you)</em></a>
+            <a href="#">4 <span>applications</span></a>
+          </li>
+          <li>
+            <a href="#">galimberti</a>
+            <a href="#">12 <span>applications</span></a>
+          </li>
+          <li>
+            <a href="#">sricetto</a>
+            <a href="#">9 <span>applications</span></a>
+          </li>
+          <li>
+            <a href="#">fsoldati</a>
+            <a href="#">2 <span>applications</span></a>
+          </li>
+          <li>
+            <a href="#">unassigned</a>
+            <a href="#">5 <span>applications</span></a>
+          </li>
+        </ul>
+
+        <h4>By status</h4>
+        <ul>
+          <li>
+            <a href="#">
+              <span>Pending <span>8</span></span>
+              <span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span>In progress <span>4</span></span>
+              <span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span>Completed <span>1</span></span>
+              <span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span>Ready <span>9</span></span>
+              <span></span>
+            </a>
+          </li>
+        </ul>
+      </article>
+
+      <article id="panel-2" role="tabpanel" tabindex="0" aria-labelledby="tab-2" hidden>
+
+      </article>
+
+      <article id="panel-3" role="tabpanel" tabindex="0" aria-labelledby="tab-3" hidden>
+
+      </article>
+    </div>
+
+  </section>
+</main>
+{% endblock %}
