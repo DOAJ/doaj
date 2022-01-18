@@ -1,10 +1,10 @@
-<h2 id="search_api">Search API</h2>
+<h2 id="search_api"><a name="search-api"></a>Search API</h2>
 
     <h3 id="query_syntax">Query string syntax</h3>
-    <p>If you'd like to do more complex queries than simple words or phrases, reading <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax" target="_blank">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax</a> should prove very useful. The datastore that backs DOAJ is Elasticsearch and knowing more about its query syntax will let you send more advanced queries to DOAJ. <strong>This is not a prerequisite for using the DOAJ API - in the sections below, we provide instructions for the most common use cases.</strong> Please do email us if you think what you have achieved with the API would be useful to others and would like to add an example to the API documentation below.</p>
+    <p>If you'd like to do more complex queries than simple words or phrases, read <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax" target="_blank">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax</a>. The DOAJ database is built on Elasticsearch and knowing more about its query syntax will let you send more advanced queries. (This is not a prerequisite for using the DOAJ API - in the sections below, we provide instructions for the most common use cases.) If you think that what you have achieved with the API would be useful for others to know and would like us to add an example to this documentation, submit it to <a href="https://groups.google.com/g/doaj-public-api">our API group</a>.</p>
 
     <!--<h3 id="default_query_operator">Default handling of phrases</h3>
-    <p>When searching for e.g. "understanding shadows in 3D scenes", DOAJ's web interface will return articles and journals which have metadata that contains *all* of the words "understanding", "shadows", "in" (may be ignored), "3D" and "scenes". In technical terms, the default query operator is <strong>AND</strong>. You can override it by sending us a query such as "understanding OR shadows". We find that the results returned by AND queries are much more relevant when looking for specific topics, where OR queries are best for exploring what is available, e.g. based loosely on the interests of your users.</p>
+    <p>The default query operator is <strong>AND</strong>. That means that if you search for a phrase, e.g. "understanding shadows in 3D scenes", DOAJ's search engine will return articles and journals which have metadata that contains *all* of the words "understanding", "shadows", "3D" and "scenes" ("in" may be ignored).  You can override AND by sending us a query such as "understanding OR shadows". We find that the results returned by AND queries are much more relevant when looking for specific topics, where OR queries are best for exploring what is available, e.g. based loosely on the interests of your users.</p>
     -->
     <h3 id="specific_field_search">Searching inside a specific field</h3>
 
@@ -19,7 +19,7 @@
 
 
     <h3 id="special_characters">Special characters</h3>
-    <p>All forward slash <code>/</code> characters will be automatically escaped for you unless you escape them yourself. This means any forward slashes <code>/</code> will become <code>\/</code> which ends up encoded as <code>%5C/</code> in a URL since a "naked" backslash <code>\</code> is not allowed in a URL. So you can search for a DOI by giving the articles endpoint either of the following queries (they will give you the same results):
+    <p>All forward slash <code>/</code> characters will be automatically escaped for you unless you escape them yourself. This means any forward slashes <code>/</code> will become <code>\/</code> which ends up encoded as <code>%5C/</code> in a URL. A"naked" backslash <code>\</code> is not allowed in a URL. You can search for a DOI by giving the articles endpoint either of the following queries (they will give you the same results):
 
 <pre>
 doi:10.3389/fpsyg.2013.00479
@@ -49,7 +49,7 @@ doi:10.3389%5C/fpsyg.2013.00479
         <ul>
             <li>title - search within the article title</li>
             <li>doi - the article's doi</li>
-            <li>issn - the article's journal's issn</li>
+            <li>issn - the article's journal's ISSN</li>
             <li>publisher - the article's journal's publisher (not exact match)</li>
             <li>abstract - search within the article abstract</li>
         </ul>
@@ -97,7 +97,7 @@ sort=bibjson.title:desc
     <h2 id="crud_api">CRUD API</h2>
     <h3 id="creating_articles">Creating articles</h3>
     <p>Documentation for the structure of the JSON documents that you can send to our API
-        is <a href="https://doaj.github.io/doaj-docs/master/data_models/IncomingAPIArticle">hosted on our github</a>.</p>
+        is <a href="https://doaj.github.io/doaj-docs/master/data_models/IncomingAPIArticle">hosted on our Github repository</a>.</p>
 
     <p>If you try to create an article with a DOI or a full-text URL as another one of the articles associated with your account,
         then the system will detect this as a duplicate. It will overwrite the old article we have with the new data you're supplying
@@ -140,31 +140,24 @@ sort=bibjson.title:desc
     administrator at DOAJ picks it up for review.  Once it is picked up for review, attempts to update or delete the Update Request will
     be rejected by the API with a 403 (Forbidden).</p>
 
-<h2>API FAQs</h2>
-<h4>Is there an upload limit for uploading articles, or a rate limit?</h4>
-<p>There is no limit set on how many articles you can upload to the DOAJ.</p>
+<!--API FAQs-->
 
-<p>There are two ways to upload articles to DOAJ:
-<ol>
-    <li>One by one via the Article CRUD API</li>
-    <ul>
-        <li>This allows one article at a time but it should be possible to upload 1-2 per second or more if you have multiple IP addresses sending them at once.</li>
-    </ul>
-    <li>In batches using the Article Bulk API (only for authenticated users)</li>
-    <ul>
-        <li>There are no limits to how many articles are uploaded in a batch.</li>
-        <li>There is a maximum upload size of 50MB so keep batch sizes in the region of 100-1000 articles.</li>
-        <li>Processing happens synchronously so you may encounter a timeout based on how long the articles take to process in our system. The timeout is set very high: our server has 10 minutes to respond before the web server closes the connection. Your client may drop the connection sooner, however. Keep the batch sizes small to help mitigate this.</li>
-    </ul>
-</ol>
-There is a rate limit of two requests per second on all API routes. ‘Bursts' are permitted, which means up to five requests per user are queued by the system and are fulfilled in turn so long as they average out to two requests per second overall.
-</p>
+<h2><a name="api-faq"></a>API FAQs</h2>
+<h4>Is there an upload limit for uploading articles, or a rate limit?</h4>
+<p>No, there is no limit set on how many articles you can upload, but we do have a rate limit. See below.</p>
+
+    <p>There are two ways to upload articles to DOAJ:</p>
+        <ol>
+            <li><b>One by one via the Article CRUD API</b>. This allows one article at a time but it should be possible to upload 1-2 per second, or more if you have multiple IP addresses sending them at once.</li>
+            <li><b>In batches using the Article Bulk API</b> (only for authenticated users). There are no limits to how many articles are uploaded in a batch. There is a maximum upload size of 50MB per batch. Processing happens synchronously so you may encounter a timeout based on how long the articles take to process in our system. The timeout is set very high: our server has 10 minutes to respond before the web server closes the connection. Your client may drop the connection sooner, however. Keep the batch sizes small to help mitigate this.</li>
+        </ol>
+    <p>There is <b>a rate limit</b> of two requests per second on all API routes. "Bursts" are permitted, which means up to five requests per user are queued by the system and are fulfilled in turn so long as they average out to two requests per second overall.</p>
 
 <h4>When making a POST request, do we need to include any of the fields in the admin hash (e.g. in_doaj or upload_id)?</h4>
 <p>In applications, only the contact subfield is required in the admin section. The full list is handled in our <a href="https://github.com/DOAJ/doaj/blob/f96ae3fb0c262b8c45dabd1fd5449ecf60cf6595/portality/api/current/data_objects/application.py#L64">validation structure</a>.</p>
 
-<h4>Should language and country be spelled out or use codes?</h4>
-<p>Using the correct <a href="https://www.iso.org/iso-3166-country-codes.html">ISO-3166 two-character code</a> is the most robust route. The incoming data is passed to our <a href="https://github.com/DOAJ/doaj/blob/f96ae3fb0c262b8c45dabd1fd5449ecf60cf6595/portality/datasets.py#L128">get_country_code() function</a> which looks up from that list, so a name will also work.</p>
+<h4>Should language and country be spelled out or can I use codes?</h4>
+<p>You can use either but using the correct <a href="https://www.iso.org/iso-3166-country-codes.html">ISO-3166 two-character code</a> is the most robust route. The incoming data is passed to our <a href="https://github.com/DOAJ/doaj/blob/f96ae3fb0c262b8c45dabd1fd5449ecf60cf6595/portality/datasets.py#L128">get_country_code() function</a> which looks up from that list so a name will also work.</p>
 
 <h4>Do we need the last_updated or created_date to be included?</h4>
 <p>No, these fields are generated by the system and will be ignored if included.</p>

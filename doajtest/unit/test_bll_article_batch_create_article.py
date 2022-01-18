@@ -261,5 +261,4 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
 
             else:
                 # there's nothing in the article index
-                with self.assertRaises(ESMappingMissingError):
-                    Article.all()
+                assert len(Article.all()) == 0, len(Article.all())

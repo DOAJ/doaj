@@ -2,6 +2,7 @@ from doajtest.helpers import DoajTestCase
 from portality.store import StoreFactory
 from io import StringIO, BytesIO
 
+
 class SludgePump(object):
     def __init__(self, size, format="bytes"):
         self._size = size
@@ -22,13 +23,8 @@ class SludgePump(object):
                 return "x" * total
             return ""
 
+
 class TestStore(DoajTestCase):
-
-    def setUp(self):
-        super(TestStore, self).setUp()
-
-    def tearDown(self):
-        super(TestStore, self).tearDown()
 
     def test_01_local(self):
         local = StoreFactory.get(None)

@@ -15,9 +15,7 @@ class TestOpenURL(DoajTestCase):
     @classmethod
     def setUpClass(cls):
         app.testing = True
-
-    def setUp(self):
-        super(TestOpenURL, self).setUp()
+        super(TestOpenURL, cls).setUpClass()
 
     def test_01_openurl_no_atrrs(self):
         """ Check we get the correct response from the OpenURL endpoints"""

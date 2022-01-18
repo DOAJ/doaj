@@ -15,7 +15,7 @@ $.extend(true, doaj, {
                     query.setSortBy(es.newSort(params.sortFilter));
                 }
                 if(params.hasOwnProperty(`es_type`)) {
-                    query.addMust(es.newTermFilter({field: "es_type", value: params.es_type}));
+                    query.addMust(es.newTermFilter({field: "es_type.exact", value: params.es_type}));
                 }
             }
             return query;

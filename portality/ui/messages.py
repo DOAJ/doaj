@@ -5,10 +5,11 @@ class Messages(object):
     ADMIN__QUICK_REJECT__NO_OWNER = """There is no user attached to this application. 
         <a href="https://testdoaj.cottagelabs.com/account/register" target="_blank">Assign a user account first</a>."""
 
-    APPLICATION_UPDATE_SUBMITTED_FLASH = ("""
+    PUBLISHER_APPLICATION_UPDATE_SUBMITTED_FLASH = ("""
         Your update request has been submitted. You may make further changes until the DOAJ Editorial Team picks it up
         for review. Click the 'Edit' button to make further changes, or 'Delete' to cancel the request.
         """, 'success')
+    PUBLISHER_UPLOAD_ERROR = ("An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the ID", 'error')
 
     ARTICLE_METADATA_SUBMITTED_FLASH = ("<a href='{url}' target='_blank'>Article created/updated</a>", "success")
     ARTICLE_METADATA_MERGE_CONFLICT = ("""Article could not be submitted, as it matches more than one existing article.

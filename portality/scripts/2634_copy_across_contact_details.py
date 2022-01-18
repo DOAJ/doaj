@@ -24,7 +24,7 @@ from portality import models
 
 IN_STATUSES = {
     "query": {
-        "filtered": {
+        "bool": {
             "filter": {
                 "bool": {
                     "should": [
@@ -45,9 +45,6 @@ IN_STATUSES = {
                         }
                     ]
                 }
-            },
-            "query": {
-                "match_all": {}
             }
         }
     }

@@ -1,40 +1,100 @@
 from copy import deepcopy
 
+from flask_login import login_user
+
 from doajtest.fixtures import AccountFixtureFactory, EditorGroupFixtureFactory, ApplicationFixtureFactory
 from doajtest.helpers import DoajTestCase
-
+from unittest import TestSuite
 from portality import models
-from portality import constants
 from portality.lib import query_filters
 from portality.bll.services.query import Query
 
+from portality.app import app
 
-class TestQueryFilters(DoajTestCase):
+
+class TestQueryFiltersES(DoajTestCase):
+    def setUp(self):
+        self.q = Query()
+        super(TestQueryFiltersES, self).setUp()
+
+    def tearDown(self):
+        super(TestQueryFiltersES, self).tearDown()
+
+    def test_05_editor(self):
+        eg = EditorGroupFixtureFactory.setup_editor_group_with_editors()
+        self._make_and_push_test_context(acc=models.Account.pull('eddie'))
+        newq = query_filters.editor(self.q)
+        assert newq.as_dict() == {
+            "track_total_hits" : True,
+            'query': {
+                'bool': {
+                    'must': [{'terms': {'admin.editor_group.exact': [eg.name]}}]
+                }
+            }
+        }, newq.as_dict()
+
+
+class TestQueryFilters(TestSuite):
+    app_test = app
 
     def setUp(self):
         self.q = Query()
-        assert self.q.as_dict() == {"query": {"match_all": {}}}, self.q.as_dict()
-        super(TestQueryFilters, self).setUp()
+        assert self.q.as_dict() == {"track_total_hits" : True, "query": {"match_all": {}}}, self.q.as_dict()
+        #super(TestQueryFilters, self).setUp()
 
-    def tearDown(self):
-        super(TestQueryFilters, self).tearDown()
+    # def tearDown(self):
+    #     super(TestQueryFilters, self).tearDown()
+
+    def _make_and_push_test_context(self, path="/", acc=None):
+        ctx = self.app_test.test_request_context(path)
+        ctx.push()
+        if acc is not None:
+            login_user(acc)
+
+        return ctx
 
     def test_01_only_in_doaj(self):
         newq = query_filters.only_in_doaj(self.q)
-        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}}}}}, newq.as_dict()
+        assert newq.as_dict() == {
+            "track_total_hits" : True,
+            'query': {
+                'bool': {
+                    'filter': [
+                        {'term': {'admin.in_doaj': True}}
+                    ]
+                }
+            }
+        }, newq.as_dict()
 
     def test_02_owner(self):
         acc = models.Account(**AccountFixtureFactory.make_publisher_source())
         self._make_and_push_test_context(acc=acc)
         newq = query_filters.owner(self.q)
-        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{'term': {'admin.owner.exact': acc.id}}]}}}}}, newq.as_dict()
+        assert newq.as_dict() == {
+            "track_total_hits" : True,
+            'query': {
+                'bool': {
+                    'filter': [{'term': {'admin.owner.exact': acc.id}}]
+                }
+            }
+        }, newq.as_dict()
 
     def test_03_update_request(self):
         old_update_request_show_oldest = self.app_test.config.get('UPDATE_REQUEST_SHOW_OLDEST')
         self.app_test.config['UPDATE_REQUEST_SHOW_OLDEST'] = '2018-05-03'
 
         newq = query_filters.update_request(self.q)
-        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{"range" : {"created_date" : {"gte" : '2018-05-03'}}}, {"exists" : {"field" : "admin.current_journal"}}]}}}}}, newq.as_dict()
+        assert newq.as_dict() == {
+            "track_total_hits" : True,
+            'query': {
+                'bool': {
+                    'filter': [
+                        {"range" : {"created_date" : {"gte" : '2018-05-03'}}},
+                        {"exists" : {"field" : "admin.current_journal"}}
+                    ]
+                }
+            }
+        }, newq.as_dict()
 
         self.app_test.config['UPDATE_REQUEST_SHOW_OLDEST'] = old_update_request_show_oldest
 
@@ -42,13 +102,14 @@ class TestQueryFilters(DoajTestCase):
         acc = models.Account(**AccountFixtureFactory.make_assed1_source())
         self._make_and_push_test_context(acc=acc)
         newq = query_filters.associate(self.q)
-        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{'term': {'admin.editor.exact': acc.id}}]}}}}}, newq.as_dict()
-
-    def test_05_editor(self):
-        eg = EditorGroupFixtureFactory.setup_editor_group_with_editors()
-        self._make_and_push_test_context(acc=models.Account.pull('eddie'))
-        newq = query_filters.editor(self.q)
-        assert newq.as_dict() == {'query': {'filtered': {'filter': {'bool': {'must': [{'terms': {'admin.editor_group.exact': [eg.name]}}]}}}}}, newq.as_dict()
+        assert newq.as_dict() == {
+            "track_total_hits" : True,
+            'query': {
+                'bool': {
+                    'filter': [{'term': {'admin.editor.exact': acc.id}}]
+                }
+            }
+        }, newq.as_dict()
 
     def test_06_public_result_filter(self):
         res = {
@@ -206,11 +267,11 @@ class TestQueryFilters(DoajTestCase):
     def test_12_private_source(self):
         newq = query_filters.private_source(self.q)
         fields = ["admin.application_status", "admin.ticked", "admin.seal", "last_updated", "created_date", "id", "bibjson"]
-        assert len(newq.as_dict()["_source"]["include"]) == len(fields), newq.as_dict()
-        assert sorted(newq.as_dict()["_source"]["include"]) == sorted(fields), newq.as_dict()
+        assert len(newq.as_dict()["_source"]["includes"]) == len(fields), newq.as_dict()
+        assert sorted(newq.as_dict()["_source"]["includes"]) == sorted(fields), newq.as_dict()
 
     def test_13_public_source(self):
         newq = query_filters.public_source(self.q)
         fields = ["admin.ticked", "admin.seal", "last_updated", "created_date", "id", "bibjson"]
-        assert len(newq.as_dict()["_source"]["include"]) == len(fields), newq.as_dict()
-        assert sorted(newq.as_dict()["_source"]["include"]) == sorted(fields), newq.as_dict()
+        assert len(newq.as_dict()["_source"]["includes"]) == len(fields), newq.as_dict()
+        assert sorted(newq.as_dict()["_source"]["includes"]) == sorted(fields), newq.as_dict()

@@ -7,7 +7,7 @@ python accounts_with_marketing_consent.py -o accounts.csv
 """
 
 from portality.lib import report_to_csv
-from portality import models
+from portality.models import Account
 
 WITH_CONSENT = {
     "query": {
@@ -34,7 +34,7 @@ def output_map(acc):
 
 
 def publishers_with_consent(outfile):
-    gen = report_to_csv.query_result_generator(WITH_CONSENT, "account", wrap=lambda x: models.Account(**x))
+    gen = report_to_csv.query_result_generator(WITH_CONSENT, Account, wrap=True)
     report_to_csv.report_to_csv(gen, HEADERS, output_map, outfile)
 
 

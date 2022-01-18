@@ -20,8 +20,8 @@ from portality.lib import dates
 
 LAST_MANUAL_UPDATE_BETWEEN = {
     "query": {
-        "filtered": {
-            "query": {"range": {"last_manual_update": {"gte": "", "lte": ""}}},
+        "bool": {
+            "must": {"range": {"last_manual_update": {"gte": "", "lte": ""}}},
             "filter": {
                 "bool": {
                     "must": {"term": {"in_doaj": "true"}}
@@ -51,8 +51,8 @@ if __name__ == "__main__":
     conn = es_connection
 
     # Populate our query
-    LAST_MANUAL_UPDATE_BETWEEN['query']['filtered']['query']['range']['last_manual_update']["gte"] = args.start_date
-    LAST_MANUAL_UPDATE_BETWEEN['query']['filtered']['query']['range']['last_manual_update']["lte"] = args.end_date
+    LAST_MANUAL_UPDATE_BETWEEN['query']['bool']['must']['range']['last_manual_update']["gte"] = args.start_date
+    LAST_MANUAL_UPDATE_BETWEEN['query']['bool']['must']['range']['last_manual_update']["lte"] = args.end_date
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -67,7 +67,7 @@ if __name__ == "__main__":
                          "Country",
                          "Publisher"])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=LAST_MANUAL_UPDATE_BETWEEN, limit=800, keepalive='5m'):
+        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=LAST_MANUAL_UPDATE_BETWEEN, keepalive='5m'):
             journal = models.Journal(_source=j)
             bibjson = journal.bibjson()
             index = j["index"]

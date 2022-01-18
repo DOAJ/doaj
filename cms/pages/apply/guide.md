@@ -93,7 +93,7 @@ The following information must be available online, and easily accessible from t
   - The type and details of the peer review process must be stated clearly on the website.
 - Use of a plagiarism checking service is recommended, but not required for inclusion in DOAJ.
 - Endogeny should be minimised.
-  - The proportion of published papers where at least one of the authors is an editor, editorial board member or reviewer, or affiliated to the journal's institution must not exceed 20%, based on the research content of the latest two issues.
+  - The proportion of published papers where at least one of the authors is an editor, editorial board member or reviewer must not exceed 20% based on the research content of the latest two issues.
 
 ---
 
@@ -156,23 +156,26 @@ You may not add to or adapt the terms of a Creative Commons license. For example
 We recommend that journals allow authors to retain the copyright of their papers without restrictions. Authors may grant the publisher non-exclusive publishing rights to publish the articles. Granting the publisher the right of first publishing also qualifies as unrestricted copyright (because there is no restriction imposed by the publisher on the author's copyright).
 
 Restrictions are sometimes imposed by the publisher even though the author retains copyright:
-- The publisher requires exclusive publishing rights. The author no longer holds the copyright without restrictions.
-- The publisher requires a transfer of commercial rights or an exclusive grant of commercial rights. The author no longer retains copyright without restrictions.
+
+ - The publisher requires exclusive publishing rights. The author no longer holds the copyright without restrictions.
+ - The publisher requires a transfer of commercial rights or an exclusive grant of commercial rights. The author no longer retains copyright without restrictions.
 
 ### The difficult bits about licensing and copyright together
 
 The terms of the user license do not apply to the copyright holder. Therefore:
-- when copyright is retained by the author without restrictions, the license applies to the readers and the publisher.
-- when copyright is transferred to the publisher, the license applies to the readers and the author(s).
-- when the author retains copyright but commercial rights are transferred to the publisher and a non-commercial license is used, the license applies to the reader and the author.
-- when the author retains copyright but exclusive publishing rights are granted to the publisher, this is equivalent to the transfer of commercial rights to the publisher.
+
+ - when copyright is retained by the author without restrictions, the license applies to the readers and the publisher.
+ - when copyright is transferred to the publisher, the license applies to the readers and the author(s).
+ - when the author retains copyright but commercial rights are transferred to the publisher and a non-commercial license is used, the license applies to the reader and the author.
+ - when the author retains copyright but exclusive publishing rights are granted to the publisher, this is equivalent to the transfer of commercial rights to the publisher.
 
 ### Fair use
 
 An open access journal cannot restrict the rights of the author to fair use only. This is not open access and we will not accept a journal with these restrictions. A common example of fair use is when a journal allows authors to only retain the rights to:
-- use the substance of the article in future works, including lectures and books;
-- reproduce the article for one's own purposes, provided that copies are not offered for sale;
-- self-archive the article.
+
+ - use the substance of the article in future works, including lectures and books;
+ - reproduce the article for one's own purposes, provided that copies are not offered for sale;
+ - self-archive the article.
 
 ### Further reading
 
@@ -219,6 +222,7 @@ Please ensure that, if you do apply again after the exclusion period, the journa
 You may submit an appeal if your journal has been removed from DOAJ, or your application has been rejected and no new application is allowed for at least a year. Send an email to the [DOAJ Appeals Committee](mailto:appeals@doaj.org).
 
 The appeal should contain the following information:
+
 - Journal title
 - Journal ISSN
 - Reason for appeal
@@ -249,6 +253,7 @@ Update requests are reviewed by the DOAJ editorial team for accuracy and we aim 
 ## Zero tolerance policy
 
 We expect the members of our Team, our volunteers and our Ambassadors to always be treated courteously and with respect for the work they are doing. They should not be subject to abusive behaviour in any form, which includes:
+
 - rude, disrespectful and offensive behaviour, including derogatory remarks or anything which amounts to verbal or emotional abuse in person or in communications
 - sexually inappropriate comments or behaviour
 - racist and discriminatory abuse
@@ -272,3 +277,4 @@ Our criteria are in:
 - [Slovak](https://drive.google.com/drive/folders/1vLMMUq0_F3vedYSTT_IWhSvNIVlHU73L?usp=sharing)
 - [Spanish](https://docs.google.com/document/d/1PN0droGJiuLzQSQA4VLLjd3ykSaFoc5RMsAFlexOuXA/edit?usp=sharing)
 - [Turkish](https://docs.google.com/document/d/1phq4wUlmt2nsg-XNuuYIP3DCxQqf62n6/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
+- [Arabic](https://drive.google.com/file/d/1UrY8p8KV4hBaYlYuyH1MGUOsHhEABtSE/view?usp=sharing)

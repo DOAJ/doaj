@@ -13,7 +13,7 @@ BUILD="fq_widget_build_info.txt"
 # combine all the dependencies into a single file in the right order (without jquery)
 cat ../js/doaj.js <(echo) \
     public_search_config.js <(echo) \
-    ../vendor/edges/src/es.js <(echo) \
+    ../vendor/edges/src/es7x.js <(echo) \
     ../vendor/edges/src/edges.js <(echo) \
     ../vendor/edges/src/components/search.js <(echo) \
     ../js/doaj.fieldrender.edges.js <(echo) \

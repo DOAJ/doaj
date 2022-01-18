@@ -53,10 +53,7 @@ class Api(object):
                                                                      "contains bad data"}
 
     SWAG_API_KEY_REQ_PARAM = {
-        "description": "<div class=\"search-query-docs\"> Go to the top right of the page and click your username. If "
-                       "you have generated an API key already, it will appear under your name. If not, "
-                       "click the Generate API Key button. Accounts are not available to the public. <a "
-                       "href=\"#intro_auth\">More details</a></div>",
+        "description": "<div class=\"search-query-docs\">Go to 'MY ACCOUNT' and 'Settings' to find your API key. If there is no key, click 'Generate a new API key'. If you do not see that button, contact us.",
         "required": True,
         "type": "string",
         "name": "api_key",
@@ -82,10 +79,7 @@ class Api(object):
             api_key_param['description'] = "<div class=\"search-query-docs\"><em>Note this parameter is optional for " \
                                            "this route - you could, but don't have to supply a key. Doing so grants " \
                                            "you access to records of yours that are not public, in addition to all " \
-                                           "public records.</em> Go to the top right of the page and click your " \
-                                           "username. If you have generated an API key already, it will appear under " \
-                                           "your name. If not, click the Generate API Key button. Accounts are not " \
-                                           "available to the public. <a href=\"#intro_auth\">More details</a></div> "
+                                           "public records.</em> Go to 'MY ACCOUNT' and 'Settings' to find your API key. If there is no key, click 'Generate a new API key'. If you do not see that button, contact us."
         template["parameters"].insert(0, api_key_param)
         return template
 
@@ -204,10 +198,10 @@ def generate_link_headers(metadata):
 
     links = []
     for k, v in link_metadata.items():
-        links.append(Link(v, rel=k))  # e.g. Link("http://example.com/foo", rel="next")
+        links.append(Link(v, rel=k))  # e.g. Link("https://example.com/foo", rel="next")
 
     return str(LinkHeader(links))  # RFC compliant headers e.g.
-       # <http://example.com/foo>; rel=next, <http://example.com/bar>; rel=last
+       # <https://example.com/foo>; rel=next, <https://example.com/bar>; rel=last
 
 
 def respond(data, status, metadata=None):

@@ -14,8 +14,7 @@ upstream doaj_static {
 }
 
 upstream doaj_index {
-    server 10.131.191.132:9200;
-    server 10.131.191.133:9200;
+    server localhost:9200;
 }
 
 # Redirect map for legacy page routes https://github.com/DOAJ/doajPM/issues/2398

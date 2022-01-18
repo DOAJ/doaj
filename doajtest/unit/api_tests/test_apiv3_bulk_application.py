@@ -3,7 +3,7 @@ import json
 from flask import url_for
 from portality import constants
 from doajtest.fixtures import ApplicationFixtureFactory
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, with_es
 from portality import models
 from portality.api.current import ApplicationsBulkApi
 from portality.api import Api401Error, Api400Error
@@ -11,12 +11,7 @@ from portality.api import Api401Error, Api400Error
 
 class TestBulkApplication(DoajTestCase):
 
-    def setUp(self):
-        super(TestBulkApplication, self).setUp()
-
-    def tearDown(self):
-        super(TestBulkApplication, self).tearDown()
-
+    @with_es(indices=[models.Application.__type__, models.Journal.__type__])
     def test_01_create_applications_success(self):
         # set up all the bits we need - 10 applications
         data = ApplicationFixtureFactory.incoming_application()
@@ -43,6 +38,7 @@ class TestBulkApplication(DoajTestCase):
             s = models.Suggestion.pull(_id)
             assert s is not None
 
+    @with_es(indices=[models.Application.__type__, models.Journal.__type__])
     def test_02_create_applications_fail(self):
         # if the account is dud
         with self.assertRaises(Api401Error):
@@ -68,6 +64,7 @@ class TestBulkApplication(DoajTestCase):
         _all = [x for x in models.Suggestion.iterall()]
         assert len(_all) == 0
 
+    @with_es(indices=[models.Application.__type__, models.Journal.__type__, models.Lock.__type__])
     def test_03_delete_application_success(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
@@ -101,6 +98,7 @@ class TestBulkApplication(DoajTestCase):
             ap = models.Suggestion.pull(_id)
             assert ap is not None
 
+    @with_es(indices=[models.Application.__type__, models.Journal.__type__])
     def test_04_delete_applications_fail(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
@@ -145,6 +143,7 @@ class TestBulkApplication(DoajTestCase):
         with self.assertRaises(Api400Error):
             ApplicationsBulkApi.delete(ids, account)
 
+    @with_es(indices=[models.Application.__type__, models.Journal.__type__, models.Account.__type__, models.Lock.__type__])
     def test_05_test_via_endpoint(self):
         """ Use a request context to test the API via the route """
 
@@ -161,7 +160,7 @@ class TestBulkApplication(DoajTestCase):
         account.generate_api_key()
         account.add_role('publisher')
         account.add_role('api')
-        account.save(blocking=True)
+        account.save()
 
         # Add another user who doesn't own these articles
         somebody_else = models.Account()

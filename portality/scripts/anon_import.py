@@ -5,10 +5,26 @@ Configure the target index in your *.cfg override file
 For now, this import script requires the same index pattern (prefix, 'types', index-per-type setting) as the exporter.
 """
 
-import esprit, json, gzip, shutil
+import esprit, json, gzip, shutil, elasticsearch
 from portality.core import app, es_connection, initialise_index
 from portality.store import StoreFactory
 from portality.util import ipt_prefix
+
+
+# FIXME: monkey patch for esprit.bulk (but esprit's chunking is handy)
+class Resp(object):
+    def __init__(self, **kwargs):
+        [setattr(self, k, v) for k, v in kwargs.items()]
+
+
+def es_bulk(connection, data, type=""):
+    try:
+        if not isinstance(data, str):
+            data = data.read()
+        res = connection.bulk(data, type, timeout='60s', request_timeout=60)
+        return Resp(status_code=200, json=res)
+    except Exception as e:
+        return Resp(status_code=500, text=str(e))
 
 
 def do_import(config):
@@ -32,10 +48,11 @@ def do_import(config):
 
     # remove all the types that we are going to import
     for import_type in list(import_types.keys()):
-        if es_connection.index_per_type:
-            esprit.raw.delete_index(es_connection, ipt_prefix(import_type))
-        else:
-            esprit.raw.delete(es_connection, import_type)
+        try:
+            if es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type):
+                es_connection.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + import_type)
+        except elasticsearch.exceptions.NotFoundError:
+            pass
 
     # re-initialise the index (sorting out mappings, etc)
     print("==Initialising Index for Mappings==")
@@ -98,4 +115,9 @@ if __name__ == '__main__':
     with open(args.config, "r", encoding="utf-8") as f:
         config = json.loads(f.read())
 
+    # FIXME: monkey patch for esprit raw_bulk
+    unwanted_primate = esprit.raw.raw_bulk
+    esprit.raw.raw_bulk = es_bulk
+
     do_import(config)
+    esprit.raw.raw_bulk = unwanted_primate
