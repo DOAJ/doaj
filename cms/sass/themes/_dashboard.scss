@@ -46,8 +46,10 @@
 
   .vertical-nav {
     position: fixed;
+    z-index: 1;
     top: 75px;
     width: 75px;
+    height: 100%;
     background-color: $light-grey;
   }
 
