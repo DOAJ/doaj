@@ -1,0 +1,53 @@
+/* Common styles for Admin/ManEd, Ed, and Associate Ed dashboards */
+
+.dashboard {
+
+  .primary-nav {
+
+    .logo {
+      display: block;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      width: 75px;
+      height: 100%;
+
+      svg {
+        display: block;
+        margin: 0 auto;
+        height: 35px;
+      }
+    }
+  }
+
+  .secondary-nav {
+    margin-left: 75px;
+    padding-left: $spacing-04;
+    padding-right: $spacing-04;
+    font-size: smaller;
+
+    dl, dt, dd {
+      display: inline-block;
+    }
+  }
+
+  .vertical-nav {
+    position: fixed;
+    top: 75px;
+    width: 75px;
+    background-color: $light-grey;
+  }
+
+  .vertical-nav__link {
+    height: 75px;
+    width: 100%;
+
+    &[aria-selected=true] {
+      background-color: $dark-grey;
+      color: $white;
+    }
+  }
+
+  main {
+    margin-left: 75px;
+  }
+}
