@@ -3,6 +3,20 @@
 .dashboard {
 
   .primary-nav {
+    li {
+      margin-right: $spacing-04;
+
+      .tag {
+        margin: 0;
+        padding: $spacing-02;
+      }
+
+      svg {
+        display: block;
+        padding: 0;
+        top: 0;
+      }
+    }
 
     .logo {
       display: block;
@@ -42,12 +56,38 @@
     width: 100%;
 
     &[aria-selected=true] {
-      background-color: $dark-grey;
+      background-color: $warm-black;
       color: $white;
     }
   }
 
+  .vertical-nav__link-label {
+    display: none;
+    position: absolute;
+    padding: 0 $spacing-03;
+    line-height: 75px;
+    left: 75px;
+    height: 75px;
+    width: max-content;
+    background-color: $dark-grey;
+    color: $white;
+  }
+
+  .vertical-nav__link:hover {
+    background-color: $dark-grey;
+    color: $white;
+
+    .vertical-nav__link-label {
+      display: block;
+    }
+  }
+
+  .progress-bar {
+
+  }
+
   main {
     margin-left: 75px;
+    padding: $spacing-04;
   }
 }
