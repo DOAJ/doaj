@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from copy import deepcopy
 from collections import OrderedDict
 from portality import models
+from portality.dao import ScrollTimeoutException
 from portality.lib import plugin
 from portality.lib.dataobj import DataStructureException
 from portality.lib.seamless import SeamlessException
@@ -106,7 +107,7 @@ def do_upgrade(definition, verbose):
                     estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
                     estimated_finish = batch_tick + timedelta(seconds=estimated_seconds_remaining)
                     print('Estimated finish time for this type {0}.'.format(estimated_finish))
-        except model_class.ScrollTimeoutException:
+        except ScrollTimeoutException:
             # Try to write the part-batch to index
             if len(batch) > 0:
                 total += len(batch)
