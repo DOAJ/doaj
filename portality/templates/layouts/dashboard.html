@@ -6,55 +6,34 @@
   <h1>Hi, Ilaria!</h1>
 
   <section>
-    <h2>Here’s what’s on your to-do list:</h2>
+    <h2 class="label">Here’s what’s on your to-do list:</h2>
     <ol class="unstyled-list">
-      <li>
-        <article>
-          <time datetime="2021-07-17">17 Jul 2021</time>
-          <p>Assign <strong>pending application</strong></p>
-          <h3>
-            <a href="#">Internationale Zeitschrift für Kulturkomparatistik</a>
-          </h3>
-          <dl>
-            <dt>Team</dt>
-            <dd><a href="#">German 1</a></dd>
-          </dl>
-        </article>
-      </li>
-      <li>
-        <article>
-          <time datetime="2021-07-17">17 Jul 2021</time>
-          <p>Assign <strong>pending application</strong></p>
-          <h3>
-            <a href="#">Internationale Zeitschrift für Kulturkomparatistik</a>
-          </h3>
-          <dl>
-            <dt>Team</dt>
-            <dd><a href="#">German 1</a></dd>
-          </dl>
-        </article>
-      </li>
-      <li>
-        <article>
-          <time datetime="2021-07-17">17 Jul 2021</time>
-          <p>Assign <strong>pending application</strong></p>
-          <h3>
-            <a href="#">Internationale Zeitschrift für Kulturkomparatistik</a>
-          </h3>
-          <dl>
-            <dt>Team</dt>
-            <dd><a href="#">German 1</a></dd>
-          </dl>
+      {# TODO display real tasks / to-do items #}
+      <li class="card card--compact">
+        <article class="row">
+          <time datetime="2021-07-17" class="col-xs-1 card__">17 Jul 2021</time>
+          <div class="col-xs-11 flex-space-between">
+            <header>
+              <p class="label label--secondary">Assign <strong>pending application</strong></p>
+              <h3>
+                <a href="#">Internationale Zeitschrift für Kulturkomparatistik</a>
+              </h3>
+            </header>
+            <dl class="no-margins flex-end-col">
+              <dt class="sr-only">Team</dt>
+              <dd><a href="#" class="tag">German 1</a></dd>
+            </dl>
+          </div>
         </article>
       </li>
     </ol>
-    <footer>
+    <footer class="card card--compact flex-center">
       <a href="#">See all tasks</a>
     </footer>
   </section>
 
   <section>
-    <h2>Activity</h2>
+    <h2 class="label">Activity</h2>
 
     <div class="tabs">
       <nav role="tablist" aria-label="Activity by team">
@@ -71,36 +50,36 @@
 
       <article id="panel-1" role="tabpanel" tabindex="0" aria-labelledby="tab-1">
         <h3>
-          German 1’s applications
-          <span>29 <span>applications</span></span>
+          German 1’s ongoing applications
+          <a href="#" class="tag tag--secondary">29 <span class="sr-only">applications</span></a>
         </h3>
 
-        <h4>Ongoing applications by associate editor (pending, in progress, completed, ready).</h4>
-        <ul class="unstyled-list">
+        <h4 class="label label--tertiary">By associate editor</h4>
+        <ul class="inlined-list type-06">
           <li>
-            <a href="#">ilaria <em>(you)</em></a>
-            <a href="#">4 <span>applications</span></a>
+            <a href="#" class="label tag">ilaria <em>(you)</em></a>
+            <a href="#" class="tag tag--secondary">4 <span class="sr-only">applications</span></a>
           </li>
           <li>
-            <a href="#">galimberti</a>
-            <a href="#">12 <span>applications</span></a>
+            <a href="#" class="label tag">galimberti</a>
+            <a href="#" class="tag tag--secondary">12 <span class="sr-only">applications</span></a>
           </li>
           <li>
-            <a href="#">sricetto</a>
-            <a href="#">9 <span>applications</span></a>
+            <a href="#" class="label tag">sricetto</a>
+            <a href="#" class="tag tag--secondary">9 <span class="sr-only">applications</span></a>
           </li>
           <li>
-            <a href="#">fsoldati</a>
-            <a href="#">2 <span>applications</span></a>
+            <a href="#" class="label tag">fsoldati</a>
+            <a href="#" class="tag tag--secondary">2 <span class="sr-only">applications</span></a>
           </li>
           <li>
-            <a href="#">unassigned</a>
-            <a href="#">5 <span>applications</span></a>
+            <a href="#" class="label tag tag--featured">unassigned</a>
+            <a href="#" class="tag tag--secondary">5 <span class="sr-only">applications</span></a>
           </li>
         </ul>
 
-        <h4>By status</h4>
-        <ul class="unstyled-list">
+        <h4 class="label label--tertiary">By status</h4>
+        <ul class="inlined-list progress-bar">
           <li>
             <a href="#">
               <span>Pending <span>8</span></span>

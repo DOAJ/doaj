@@ -1,4 +1,4 @@
-{% set tasks = url_for("admin.index") %}
+{% set tasks = url_for("doaj.dashboard") %}
 {% set journals = url_for("admin.index") %}
 {% set applications = url_for("admin.suggestions") %}
 {% set users = url_for("account.index") %}
@@ -36,8 +36,8 @@
     {% set selected = url == request.path %}
       <li>
         <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}" class="flex-center vertical-nav__link ">
-          <span class="sr-only">{{ label }}</span>
-          <span data-feather="book-open" aria-hidden="true"></span>
+          <span data-feather="file" aria-hidden="true"></span>
+          <span class="vertical-nav__link-label">{{ label }}</span>
         </a>
       </li>
     {% endfor %}
