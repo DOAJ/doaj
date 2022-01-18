@@ -1,4 +1,4 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/base_dashboard.html" %}
 
 {% block page_title %}Admin dashboard{% endblock %}
 
@@ -7,15 +7,14 @@
 {% endblock %}
 
 {% block content %}
-<main class="container">
+<!-- <main class="container">
   <h2>Admin dashboard</h2>
-  {% include 'admin/nav.html' %}
 
   <section class="page-content">
     {% block admin_content %}
     {% endblock %}
   </section>
-</main>
+</main> -->
 
 {% include "includes/_hotjar.html" %}
 {% endblock %}
