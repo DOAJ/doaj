@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block page_title %}Directory of Open Access Journals{% endblock %} – DOAJ</title>
+    <meta name="description" content="{% block meta_description %}DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.{% endblock %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/assets/img/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/assets/img/favicon/safari-pinned-tab.svg" color="#fd5a3b">
+    <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="/assets/img/favicon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- OpenGraph -->
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content=" Directory of Open Access Journals">
+    <meta property="og:description" content="DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.">
+    <meta property="og:image" content="{{ base_url }}/assets/img/opengraph/img.png">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="doaj.org">
+    <meta property="twitter:creator" content="@DOAJplus">
+    <meta property="twitter:url" content="https://doaj.org">
+    <meta name="twitter:title" content=" Directory of Open Access Journals">
+    <meta name="twitter:description" content="DOAJ is a community-curated online directory that indexes and provides access to high quality, open access, peer-reviewed journals.">
+    <meta name="twitter:image" content="{{ base_url }}/assets/img/opengraph/img.png">
+
+    {% block extra_meta_tags %}{% endblock %}
+
+    <!-- Faster Google font loading from https://csswizardry.com/2020/05/the-fastest-google-fonts/ -->
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin />
+
+    <link rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" />
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap"
+          media="print" onload="this.media='all'" />
+
+    <noscript>
+      <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" />
+    </noscript>
+
+    <link rel="stylesheet" type="text/css" href="/static/vendor/select2-3.5.4/select2.css">
+
+    {# Page-specific styles  todo: select2 could possibly go here #}
+    {% block extra_stylesheets %}{% endblock %}
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/static/doaj/css/main.css?v={{config.get('DOAJ_VERSION')}}">
+
+  </head>
+
+  {% if not request.cookies.get(config.get("CONSENT_COOKIE_KEY")) %}
+      {% include "doaj/cookie_consent.html" %}
+  {% endif %}
+
+  <body class="dashboard {% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
+
+    {# global site note #}
+    {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
+        {% include config.get("SITE_NOTE_TEMPLATE") %}
+    {% endif %}
+
+    <header>
+      {% include "includes/_flash_notification.html" %}
+
+      <h2 class="sr-only">DOAJ Dashboard</h2>
+
+      <nav class="primary-nav flex-space-between" id="primary-nav">
+        <a href="" class="logo">
+          {% include "includes/svg/doaj-icon.svg" %}
+        </a>
+        <ul class="inlined-list flex-center">
+          <li class="dropdown">
+            <span class="dropdown__trigger" role="button" aria-haspopup="true" aria-expanded="false">
+              <span class="sr-only">Notifications</span>
+              <span data-feather="bell" aria-hidden="true"></span>
+            </span>
+            <ul class="dropdown__menu">
+              {# TODO display last 10 event notifications here #}
+              <li>
+                <a href="#" class="dropdown__link">
+                  <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+                  <time datetime="2021-07-17">2 hours ago</time>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="dropdown__link">
+                  <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+                  <time datetime="2021-07-17">2 hours ago</time>
+                </a>
+              </li>
+              <li>
+                <a href="#" class="dropdown__link">
+                  <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+                  <time datetime="2021-07-17">2 hours ago</time>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="{{ url_for('account.username', username=current_user.id) }}">
+              <span class="sr-only">Profile</span>
+              <span data-feather="smile" aria-hidden="true"></span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <nav class="secondary-nav">
+        {# TODO display correct identification data here #}
+        <dl>
+          <dt>
+            Managing Editor of&nbsp;&nbsp;
+          </dt>
+          <dd>
+            <ul class="inlined-list tags">
+              <li class="tag tag--secondary">
+                <a href="#">GERMAN 1</a>
+              </li>
+              <li class="tag tag--secondary">
+                <a href="#">ITALIAN 1</a>
+              </li>
+              <li class="tag tag--secondary">
+                <a href="#">POLISH 1</a>
+              </li>
+            </ul>
+          </dd>
+          &nbsp;/&nbsp;&nbsp;
+          <dt>
+            Username&nbsp;&nbsp;
+          </dt>
+          <dd>
+            <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
+          </dd>
+        </dl>
+      </nav>
+
+      {% block extra_header %}{% endblock %}
+    </header>
+
+    {% include 'admin/nav.html' %}
+
+    {% block main_panel %}
+        {% block content %}{% endblock %}
+    {% endblock %}
+
+    {% include '_js_includes.html' %}
+
+    {% block extra_js_bottom %}{% endblock extra_js_bottom %}
+
+    {% if not request.cookies.get("doaj-consent") %}
+      <script type="text/javascript">
+      jQuery(document).ready(function() {
+          $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
+          $(".site-note-dismiss").on("click", dissmissSiteNote);
+      });
+      </script>
+    {% endif %}
+
+</body>
+</html>

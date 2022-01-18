@@ -1,3 +1,4 @@
+{% set tasks = url_for("admin.index") %}
 {% set journals = url_for("admin.index") %}
 {% set applications = url_for("admin.suggestions") %}
 {% set users = url_for("account.index") %}
@@ -6,8 +7,10 @@
 {% set bg = url_for("admin.background_jobs_search") %}
 
 {% set tabs = [
+    (tasks, "Tasks"),
     (journals, "Journals"),
-    (applications, "Applications/update requests"),
+    (update_requests, "Update Requests"),
+    (applications, "Applications"),
     (users, "Users"),
     (site_search, "Journals & articles"),
     (editor_groups, "Editor groups"),
@@ -15,15 +18,54 @@
     ]
 %}
 
-<div class="tabs">
-    <nav class="tabs__menu">
-        <ul class="tabs__list" role="tablist">
-            {% for url, label in tabs %}
-                {% set selected = url == request.path %}
-                <li class="tabs__item" {% if not selected %}role="presentation"{% endif %}>
-                    <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}">{{ label }}</a>
-                </li>
-            {% endfor %}
-        </ul>
-    </nav>
-</div>
+{% set icons = [
+    (tasks, "check-circle"),
+    (journals, "book-open"),
+    (update_requests, "refresh-cw"),
+    (applications, "file-text"),
+    (users, "users"),
+    (site_search, "Journals & articles"),
+    (editor_groups, "Editor groups"),
+    (bg, "tool")
+  ]
+%}
+
+<nav class="vertical-nav">
+  <ol class="unstyled-list" role="tablist">
+    {% for url, label in tabs %}
+    {% set selected = url == request.path %}
+      <li>
+        <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}" class="flex-center vertical-nav__link ">
+          <span class="sr-only">{{ label }}</span>
+          <span data-feather="book-open" aria-hidden="true"></span>
+        </a>
+      </li>
+    {% endfor %}
+  </ol>
+</nav>
+
+<!-- <nav>
+  <ol class="unstyled-list">
+    <li>
+      <a href="#">Tasks</a>
+    </li>
+    <li>
+      <a href="#">Update requests</a>
+    </li>
+    <li>
+      <a href="#">Applications</a>
+    </li>
+    <li>
+      <a href="#">Journals</a>
+    </li>
+    <li>
+      <a href="#">Articles</a>
+    </li>
+    <li>
+      <a href="#">Teams</a>
+    </li>
+    <li>
+      <a href="#">Background jobs</a>
+    </li>
+  </ol>
+</nav> -->

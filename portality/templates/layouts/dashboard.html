@@ -1,99 +1,13 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/base_dashboard.html" %}
 
 {% block content %}
-<header>
-  <h2>DOAJ Dashboard</h2>
-  <nav>
-    <ul>
-      <li>
-        <span>Notifications</span>
-        <ul>
-          <li>
-            <a href="">
-              <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-              <time datetime="2021-07-17">2 hours ago</time>
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-              <time datetime="2021-07-17">2 hours ago</time>
-            </a>
-          </li>
-          <li>
-            <a href="">
-              <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-              <time datetime="2021-07-17">2 hours ago</time>
-            </a>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="#">Settings</a>
-      </li>
-    </ul>
-  </nav>
-
-  <dl>
-    <dt>
-      Managing Editor of
-    </dt>
-    <dd>
-      <ul>
-        <li>
-          <a href="#">GERMAN 1</a>
-        </li>
-        <li>
-          <a href="#">ITALIAN 1</a>
-        </li>
-        <li>
-          <a href="#">POLISH 1</a>
-        </li>
-      </ul>
-    </dd>
-    /
-    <dt>
-      Username
-    </dt>
-    <dd>
-      <a href="#">GERMAN 1</a>
-    </dd>
-  </dl>
-</header>
-
-<nav>
-  <ol>
-    <li>
-      <a href="#">Tasks</a>
-    </li>
-    <li>
-      <a href="#">Update requests</a>
-    </li>
-    <li>
-      <a href="#">Applications</a>
-    </li>
-    <li>
-      <a href="#">Journals</a>
-    </li>
-    <li>
-      <a href="#">Articles</a>
-    </li>
-    <li>
-      <a href="#">Teams</a>
-    </li>
-    <li>
-      <a href="#">Background jobs</a>
-    </li>
-  </ol>
-</nav>
-
 <main>
 
   <h1>Hi, Ilaria!</h1>
 
   <section>
     <h2>Here’s what’s on your to-do list:</h2>
-    <ol>
+    <ol class="unstyled-list">
       <li>
         <article>
           <time datetime="2021-07-17">17 Jul 2021</time>
@@ -162,7 +76,7 @@
         </h3>
 
         <h4>Ongoing applications by associate editor (pending, in progress, completed, ready).</h4>
-        <ul>
+        <ul class="unstyled-list">
           <li>
             <a href="#">ilaria <em>(you)</em></a>
             <a href="#">4 <span>applications</span></a>
@@ -186,7 +100,7 @@
         </ul>
 
         <h4>By status</h4>
-        <ul>
+        <ul class="unstyled-list">
           <li>
             <a href="#">
               <span>Pending <span>8</span></span>
