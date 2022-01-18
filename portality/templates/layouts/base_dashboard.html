@@ -80,7 +80,7 @@
       <h2 class="sr-only">DOAJ Dashboard</h2>
 
       <nav class="primary-nav flex-space-between" id="primary-nav">
-        <a href="" class="logo">
+        <a href="{{ url_for('doaj.dashboard') }}" class="logo">
           {% include "includes/svg/doaj-icon.svg" %}
         </a>
         <ul class="inlined-list flex-center">
@@ -128,14 +128,15 @@
           </dt>
           <dd>
             <ul class="inlined-list tags">
+              {# TODO find a better way to link to predefined queries #}
               <li class="tag tag--secondary">
-                <a href="#">GERMAN 1</a>
+                <a href="{{ url_for('admin.index') }}?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22admin.editor_group.exact%22%3A%22German1%22%7D%7D%5D%7D%7D%2C%22track_total_hits%22%3Atrue%7D">GERMAN 1</a>
               </li>
               <li class="tag tag--secondary">
-                <a href="#">ITALIAN 1</a>
+                <a href="{{ url_for('admin.index') }}?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22admin.editor_group.exact%22%3A%22Italian1%22%7D%7D%5D%7D%7D%2C%22track_total_hits%22%3Atrue%7D">ITALIAN 1</a>
               </li>
               <li class="tag tag--secondary">
-                <a href="#">POLISH 1</a>
+                <a href="{{ url_for('admin.index') }}?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22admin.editor_group.exact%22%3A%22Polish1%22%7D%7D%5D%7D%7D%2C%22track_total_hits%22%3Atrue%7D">POLISH 1</a>
               </li>
             </ul>
           </dd>
