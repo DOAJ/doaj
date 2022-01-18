@@ -1148,6 +1148,7 @@ QUICK_REJECT_REASONS = [
     "The journal's copyright policy is not available or unclear.",
     "The journal's licensing policy is not available or unclear.",
     "The information about the journal is in different languages.",
+    "The information about the journal is not the same in all languages.",
     "The journal makes a false claim to be indexed in DOAJ or other databases or displays non-standard Impact Factors.",
     "The journal does not employ good publishing practices."
 ]
