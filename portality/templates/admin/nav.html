@@ -1,4 +1,3 @@
-{% set tasks = url_for("admin.index") %}
 {% set journals = url_for("admin.index") %}
 {% set applications = url_for("admin.suggestions") %}
 {% set users = url_for("account.index") %}
@@ -8,12 +7,12 @@
 
 {% set tabs = [
     (tasks, "Tasks"),
-    (journals, "Journals"),
     (update_requests, "Update Requests"),
     (applications, "Applications"),
+    (journals, "Journals"),
+    (articles, "Articles"),
+    (editor_groups, "Teams"),
     (users, "Users"),
-    (site_search, "Journals & articles"),
-    (editor_groups, "Editor groups"),
     (bg, "Background jobs")
     ]
 %}
@@ -36,6 +35,7 @@
     {% set selected = url == request.path %}
       <li>
         <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}" class="flex-center vertical-nav__link ">
+          {# TODO: display correct icons #}
           <span data-feather="file" aria-hidden="true"></span>
           <span class="vertical-nav__link-label">{{ label }}</span>
         </a>
@@ -43,29 +43,3 @@
     {% endfor %}
   </ol>
 </nav>
-
-<!-- <nav>
-  <ol class="unstyled-list">
-    <li>
-      <a href="#">Tasks</a>
-    </li>
-    <li>
-      <a href="#">Update requests</a>
-    </li>
-    <li>
-      <a href="#">Applications</a>
-    </li>
-    <li>
-      <a href="#">Journals</a>
-    </li>
-    <li>
-      <a href="#">Articles</a>
-    </li>
-    <li>
-      <a href="#">Teams</a>
-    </li>
-    <li>
-      <a href="#">Background jobs</a>
-    </li>
-  </ol>
-</nav> -->
