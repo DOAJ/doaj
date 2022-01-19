@@ -16,17 +16,23 @@ DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scho
 
 ## Our mission
 
-DOAJ's mission is to increase the visibility, accessibility, reputation, usage and impact of quality, peer-reviewed, open access scholarly research journals globally, regardless of discipline, geography or language. DOAJ will work with editors, publishers and journal owners to help them understand the value of best practice publishing and standards and to apply those to their own operations. DOAJ is committed to being 100% independent and maintaining its primary services and metadata as free to use or reuse for everyone.
+DOAJ's mission is to increase the visibility, accessibility, reputation, usage and impact of quality, peer-reviewed, open access scholarly research journals globally, regardless of discipline, geography or language. 
+
+DOAJ will work with editors, publishers and journal owners to help them understand the value of best practice publishing and standards and to apply those to their own operations. 
+
+DOAJ is committed to being 100% independent and maintaining its primary services and metadata as free to use or reuse for everyone.
 
 ## Constitution
 
-DOAJ is an independent, non-profit organisation managed by [Infrastructure Services for Open Access C.I.C.](https://is4oa.org/) (IS4OA), a  [community interest company](https://en.wikipedia.org/wiki/Community_interest_company) based in the United Kingdom and Denmark. DOAJ relies entirely on the voluntary donations of its supporters. Neither DOAJ or IS4OA receive grants or funding from any other source.
+DOAJ is an independent, non-profit organisation managed by [Infrastructure Services for Open Access C.I.C.](https://is4oa.org/) (IS4OA), a  [community interest company](https://en.wikipedia.org/wiki/Community_interest_company) registered in the United Kingdom and with a branch in Denmark. 
+
+DOAJ relies entirely on the voluntary donations of its supporters. Neither DOAJ or IS4OA receive grants or funding from any other source.
 
 DOAJ has an [Advisory Board and Council](/about/advisory-board-council), the members of which carry out their duties voluntarily.
 
-DOAJ has the support of over 100 voluntary editorial staff who help us to review applications for journals to be indexed. All volunteers are bound by an agreement and must declare any conflicts of interest.
+The work done by the [DOAJ Team](/about/team/) is supported by over 100 voluntary editorial staff who help us to review applications. All volunteers are bound by an agreement and must declare any conflicts of interest.
 
-DOAJ has a global network of Ambassadors who promote open access and best practice in their regions. Our Ambassadors are also bound by an agreement and must declare all conflicts of interest.
+DOAJ also has a global network of Ambassadors who promote open access and best practice in their regions. Our Ambassadors are bound by an agreement and must declare all conflicts of interest.
 
 ## Partnerships and collaborations
 
