@@ -84,7 +84,7 @@ We plan to fix these issues to meet accessibility standards by January 2021.
 
 ### Content that’s not within the scope of the accessibility regulations
 
-- PDFs and other documents: we have PDFs that were published in older blog posts but are not essential to our services (searching the database and applying to the database). The accessibility regulations [do not require us to fix PDFs or other documents published before 23 September 2018](https://www.legislation.gov.uk/uksi/2018/952/regulation/4/made) if they're not essential to providing our services. Any new PDFs or Word documents we publish will meet accessibility standards.
+- PDFs and other documents: we have PDFs that were published in older blog posts but are not essential to our services (searching the index and applying to the index). The accessibility regulations [do not require us to fix PDFs or other documents published before 23 September 2018](https://www.legislation.gov.uk/uksi/2018/952/regulation/4/made) if they're not essential to providing our services. Any new PDFs or Word documents we publish will meet accessibility standards.
 
 
 ### Preparation of this accessibility statement
