@@ -271,7 +271,7 @@ Our criteria are in:
 - [Arabic](https://drive.google.com/file/d/1UrY8p8KV4hBaYlYuyH1MGUOsHhEABtSE/view?usp=sharing)
 - [Chinese (application form)](https://zenodo.org/record/4350096)
 - [Chinese](https://zenodo.org/record/4633341)
-- [Danish](https://drive.google.com/file/d/1Cqkfn7ThtCbnAhUEbkemXyYvhf-6R1o4/view?usp=sharing)
+- [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
 - [Finnish](https://docs.google.com/document/d/1BLuaFerSw0G4L2GCVcGeu3rB7SXT7fWL0px26ME9jo0/edit?usp=sharing)
 - [French (Canadian)](https://drive.google.com/drive/folders/1-9FraAimhA9Ks64tvKE_W4wsQ8LNob9a?usp=sharing)
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
