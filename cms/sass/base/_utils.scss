@@ -158,6 +158,11 @@
   }
 }
 
+.flex-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
 .no-margins {
   margin: 0;
 }
