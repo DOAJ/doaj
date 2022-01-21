@@ -1,8 +1,7 @@
-from flask import Blueprint, request, flash, abort, make_response
-from flask import render_template, redirect, url_for
+from flask import Blueprint
+from flask import render_template
 from flask_login import current_user, login_required
-from werkzeug.datastructures import MultiDict
-from portality.decorators import ssl_required, restrict_to_role, write_required
+from portality.decorators import ssl_required
 from portality.bll import DOAJ
 
 # ~~Dashboard:Blueprint~~
@@ -15,5 +14,5 @@ blueprint = Blueprint('dashboard', __name__)
 def top_todo():
     # ~~-> Todo:Service~~
     svc = DOAJ.todoService()
-    todos = svc.top_todo(current_user._get_current_object())
+    todos = svc.top_todo(current_user._get_current_object(), size=100)  # FIXME: 100 is probably too large, just using that to get a good view of the data during dev
     return render_template('dashboard/top.html', todos=todos)

@@ -8,7 +8,7 @@ class TodoService(object):
     ~~Todo:Service->DOAJ:Service~~
     """
 
-    def top_todo(self, account, size=100):
+    def top_todo(self, account, size=25):
         """
         Returns the top number of todo items for a given user
 

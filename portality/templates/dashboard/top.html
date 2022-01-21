@@ -21,7 +21,7 @@
                                 <td>{{ todo.date }}</td>
                                 <td>{{ todo.action_id|join(", ") }}</td>
                                 <td>{{ todo.boost }}</td>
-                                <td>{{ todo.title }}</td>
+                                <td><a href="{{ url_for("admin.application", application_id=todo.object_id) }}">{{ todo.title }}</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>
