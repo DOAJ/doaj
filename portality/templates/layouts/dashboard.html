@@ -73,18 +73,18 @@
 
     <div class="tabs">
       <nav role="tablist" aria-label="Activity by team">
-        <button role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" tabindex="0">
+        <button role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" tabindex="0" class="tag tag--secondary">
           German 1
         </button>
-        <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" tabindex="-1">
+        <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" tabindex="-1" class="tag tag--secondary">
           Italian 1
         </button>
-        <button role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" tabindex="-1">
+        <button role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" tabindex="-1" class="tag tag--secondary">
           Polish 1
         </button>
       </nav>
 
-      <article id="panel-1" role="tabpanel" tabindex="0" aria-labelledby="tab-1">
+      <article id="panel-1" role="tabpanel" tabindex="0" aria-labelledby="tab-1" class="card">
         <h3>
           German 1’s ongoing applications
           <a href="#" class="tag tag--secondary">29 <span class="sr-only">applications</span></a>
@@ -113,6 +113,8 @@
             <a href="#" class="tag tag--secondary">5 <span class="sr-only">applications</span></a>
           </li>
         </ul>
+
+        <hr/>
 
         <h4 class="label label--tertiary">By status</h4>
         <ul class="inlined-list progress-bar">
