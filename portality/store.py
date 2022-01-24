@@ -3,6 +3,7 @@ from portality.lib import plugin
 
 import os, shutil, boto3
 from urllib.parse import quote_plus
+from boto3.s3.transfer import TransferConfig
 
 class StoreException(Exception):
     pass
@@ -67,6 +68,7 @@ class StoreS3(Store):
     """
     def __init__(self, scope):
         cfg = app.config.get("STORE_S3_SCOPES", {}).get(scope)
+        multipart_threshold = app.config.get("STORE_S3_MULTIPART_THRESHOLD", 5 * 1024**3)
         access_key = cfg.get("aws_access_key_id")
         secret = cfg.get("aws_secret_access_key")
         if access_key is None or secret is None:
@@ -77,14 +79,15 @@ class StoreS3(Store):
             aws_access_key_id=access_key,
             aws_secret_access_key=secret
         )
+        self.config = TransferConfig(multipart_threshold=multipart_threshold)
 
     def store(self, container_id, target_name, source_path=None, source_stream=None):
         # Note that this assumes the container (bucket) exists
         if source_path is not None:
             with open(source_path, "rb") as f:
-                self.client.put_object(Bucket=container_id, Body=f, Key=target_name)
+                self.client.upload_fileobj(f, Bucket=container_id, Key=target_name, Config=self.config)
         elif source_stream is not None:
-            self.client.put_object(Bucket=container_id, Body=source_stream, Key=target_name)
+            self.client.upload_fileobj(source_stream, Bucket=container_id, Key=target_name, Config=self.config)
 
     def exists(self, container_id):
         pass

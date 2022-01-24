@@ -191,6 +191,8 @@ STORE_S3_SCOPES = {
     }
 }
 
+STORE_S3_MULTIPART_THRESHOLD = 5 * 1024**3   # 5GB
+
 ####################################
 # CMS configuration
 
