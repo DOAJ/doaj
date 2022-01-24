@@ -65,4 +65,9 @@
     color: $warm-black;
     stroke: $warm-black;
   }
+
+  &[aria-selected=true] {
+    background-color: $dark-grey;
+    color: $white;
+  }
 }
