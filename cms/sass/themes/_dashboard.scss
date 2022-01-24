@@ -48,9 +48,10 @@
     position: fixed;
     z-index: 1;
     top: 75px;
+    bottom: 0;
     width: 75px;
-    height: 100%;
     background-color: $light-grey;
+    overflow-y: scroll;
   }
 
   .vertical-nav__link {
