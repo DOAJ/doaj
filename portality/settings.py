@@ -686,14 +686,14 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "admin",
             "query_filters" : ["not_update_request"],
-            "dao" : "portality.models.Suggestion"    # ~~->Application:Model~~
+            "dao" : "portality.models.Application"    # ~~->Application:Model~~
         },
         # ~~->AdminUpdateRequestQuery:Endpoint~~
         "update_requests": {
             "auth": True,
             "role": "admin",
             "query_filters" : ["update_request"],
-            "dao": "portality.models.Suggestion"  # ~~->Application:Model~~
+            "dao": "portality.models.Application"  # ~~->Application:Model~~
         },
         # ~~->AdminEditorGroupQuery:Endpoint~~
         "editor,group" : {
