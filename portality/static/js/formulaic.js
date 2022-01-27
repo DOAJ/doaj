@@ -1391,14 +1391,14 @@ var formulaic = {
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
                     var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
 
-                    $(`<button class="button ` + viewClass + `" style="margin: 0 1rem 1rem 0;">View note</button>
+                    $(`<button class="button ` + viewClass + `" style="margin: 0 1rem 1rem 0;">View note<span data-feather="eye" aria-hidden="true"/></button>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                             <div class="modal__dialog" role="document">
-                                <p class="label">NOTE</p>
+                                <p class="label">Note</p>
                                 <h3 class="modal__title">
                                     ` + date.val() + `
                                 </h3>
-                                ` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `
+                                <p>` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `</p>
                                 <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
                             </div>
                         </div>
@@ -1444,7 +1444,7 @@ var formulaic = {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 for (var i = 0 ; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 0 1rem 0; border: 0; float: right;">Remove</button>'));
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 0 1rem 0; border: 0; float: right;">Remove<span data-feather="x" aria-hidden="true"/></button>'));
                     feather.replace();
                 }
 
