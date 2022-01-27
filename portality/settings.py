@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.0.1"
+DOAJ_VERSION = "6.0.3"
 API_VERSION = "3.0.0"
 
 ######################################
@@ -190,6 +190,8 @@ STORE_S3_SCOPES = {
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }
 }
+
+STORE_S3_MULTIPART_THRESHOLD = 5 * 1024**3   # 5GB
 
 ####################################
 # CMS configuration

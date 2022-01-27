@@ -11,6 +11,7 @@ from portality.dao import ScrollTimeoutException
 from portality.lib import plugin
 from portality.lib.dataobj import DataStructureException
 from portality.lib.seamless import SeamlessException
+from portality.dao import ScrollTimeoutException
 
 MODELS = {
     "journal": models.Journal,  #~~->Journal:Model~~
@@ -47,6 +48,7 @@ def do_upgrade(definition, verbose):
         # learn what kind of model we've got
         model_class = MODELS.get(tdef.get("type"))
         max = model_class.count()
+        action = tdef.get("action","update")
 
         # Iterate through all of the records in the model class
         try:
@@ -86,7 +88,8 @@ def do_upgrade(definition, verbose):
                     _id = result.id
 
                 # add the data to the batch
-                data = _diff(original, data)
+                if action == 'update':
+                    data = _diff(original, data)
                 if "id" not in data:
                     data["id"] = _id
 
@@ -98,7 +101,7 @@ def do_upgrade(definition, verbose):
                 if len(batch) >= batch_size:
                     total += len(batch)
                     print(datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
-                    model_class.bulk(batch, action="update")
+                    model_class.bulk(batch, action=action)
                     batch = []
                     # do some timing predictions
                     batch_tick = datetime.now()
