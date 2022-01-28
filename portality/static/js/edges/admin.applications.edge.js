@@ -212,7 +212,7 @@ $.extend(true, doaj, {
             });
             doaj.adminApplicationsSearch.activeEdges[selector] = e;
 
-            doaj.multiFormBox.active = doaj.bulk.applicationMultiFormBox();
+            doaj.multiFormBox.active = doaj.bulk.applicationMultiFormBox(e);
             $(selector).on("edges:pre-render", function() {
                 doaj.multiFormBox.active.validate();
             });

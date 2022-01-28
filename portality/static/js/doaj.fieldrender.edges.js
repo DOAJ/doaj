@@ -3822,9 +3822,9 @@ $.extend(true, doaj, {
     },
 
     bulk : {
-        applicationMultiFormBox : function() {
+        applicationMultiFormBox : function(edge_instance) {
             return doaj.multiFormBox.newMultiFormBox({
-                edge : e,
+                edge : edge_instance,
                 selector: "#admin-bulk-box",
                 bindings : {
                     editor_group : function(context) {
