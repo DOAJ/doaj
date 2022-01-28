@@ -1,0 +1,145 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "account",
+      "type": "generated",
+      "values": {
+        "none": {
+          "constraints": {
+            "size": {
+              "or": [
+                "25"
+              ]
+            }
+          }
+        },
+        "no_role": {},
+        "admin": {},
+        "editor": {},
+        "assed": {}
+      }
+    },
+    {
+      "name": "size",
+      "type": "generated",
+      "values": {
+        "0": {},
+        "25": {}
+      }
+    },
+    {
+      "name": "raises",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "ArgumentException": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_maned_stalled",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              },
+              "size": {
+                "nor": [
+                  "0"
+                ]
+              }
+            }
+          ]
+        },
+        "0": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              },
+              "size": {
+                "or": [
+                  "0"
+                ]
+              }
+            },
+            {
+              "account": {
+                "nor": [
+                  "admin"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_maned_follow_up_old",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "2": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              },
+              "size": {
+                "nor": [
+                  "0"
+                ]
+              }
+            }
+          ]
+        },
+        "0": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "admin"
+                ]
+              },
+              "size": {
+                "or": [
+                  "0"
+                ]
+              }
+            },
+            {
+              "account": {
+                "nor": [
+                  "admin"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+field,test_id,account,size,raises,todo_maned_stalled,todo_maned_follow_up_old
+type,index,generated,generated,conditional,conditional,conditional
+default,,,,,,
+,,,,,,
+values,,none,0,ArgumentException,,
+values,,no_role,25,,,
+values,,admin,,,,
+values,,editor,,,,
+values,,assed,,,,
+,,,,,,
+constraint account,,none,25,,,
+,,,,,,
+conditional raises,,none,,ArgumentException,,
+,,,,,,
+conditional todo_maned_stalled,,admin,!0,,1,
+conditional todo_maned_stalled,,admin,0,,0,
+conditional todo_maned_stalled,,!admin,,,0,
+,,,,,,
+conditional todo_maned_follow_up_old,,admin,!0,,,2
+conditional todo_maned_follow_up_old,,admin,0,,,0
+conditional todo_maned_follow_up_old,,!admin,,,,0

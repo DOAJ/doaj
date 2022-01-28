@@ -1,0 +1,10 @@
+test_id,account,size,raises,todo_maned_stalled,todo_maned_follow_up_old
+1,none,25,ArgumentException,0,0
+2,no_role,0,,0,0
+3,no_role,25,,0,0
+4,admin,0,,0,0
+5,admin,25,,1,2
+6,editor,0,,0,0
+7,editor,25,,0,0
+8,assed,0,,0,0
+9,assed,25,,0,0
