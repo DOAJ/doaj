@@ -101,7 +101,7 @@ def do_upgrade(definition, verbose):
                 if len(batch) >= batch_size:
                     total += len(batch)
                     print(datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
-                    model_class.bulk(batch, action=action)
+                    model_class.bulk(batch, action=action, req_timeout=120)
                     batch = []
                     # do some timing predictions
                     batch_tick = datetime.now()
@@ -115,14 +115,14 @@ def do_upgrade(definition, verbose):
             if len(batch) > 0:
                 total += len(batch)
                 print(datetime.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
-                model_class.bulk(batch, action="update")
+                model_class.bulk(batch, action=action, req_timeout=120)
                 batch = []
 
         # Write the last part-batch to index
         if len(batch) > 0:
             total += len(batch)
             print(datetime.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
-            model_class.bulk(batch, action="update")
+            model_class.bulk(batch, action=action, req_timeout=120)
 
 
 def _diff(original, current):
