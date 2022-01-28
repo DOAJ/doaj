@@ -34,6 +34,9 @@ class TodoService(object):
             groups = [g for g in models.EditorGroup.groups_by_editor(account.id)]
             if len(groups) > 0:
                 queries.append(TodoRules.editor_stalled(groups, size))
+                queries.append(TodoRules.editor_follow_up_old(groups, size))
+                queries.append(TodoRules.editor_completed(groups, size))
+                queries.append(TodoRules.editor_assign_pending(groups, size))
 
         todos = []
         for aid, q, sort, boost in queries:
@@ -155,13 +158,63 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_READY
+                    constants.APPLICATION_STATUS_COMPLETED
                 ])
             ],
             sort="last_manual_update",
             size=size
         )
-        return constants.TODO_EDITOR_STALLED, stalled, False
+        return constants.TODO_EDITOR_STALLED, stalled, "last_manual_update", False
+
+    @classmethod
+    def editor_follow_up_old(cls, groups, size):
+        follow_up_old = TodoQuery(
+            musts=[
+                TodoQuery.cd_older_than(8),
+                TodoQuery.editor_groups(groups)
+            ],
+            must_nots=[
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_COMPLETED
+                ])
+            ],
+            sort="created_date",
+            size=size
+        )
+        return constants.TODO_EDITOR_FOLLOW_UP_OLD, follow_up_old, "created_date", False
+
+    @classmethod
+    def editor_completed(cls, groups, size):
+        completed = TodoQuery(
+            musts=[
+                TodoQuery.status([constants.APPLICATION_STATUS_COMPLETED]),
+                TodoQuery.editor_groups(groups)
+            ],
+            sort="last_manual_update",
+            size=size
+        )
+        return constants.TODO_EDITOR_COMPLETED, completed, "last_manual_update", True
+
+    @classmethod
+    def editor_assign_pending(cls, groups, size):
+        assign_pending = TodoQuery(
+            musts=[
+                TodoQuery.editor_groups(groups)
+            ],
+            must_nots=[
+                TodoQuery.exists("admin.editor"),
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_COMPLETED
+                ])
+            ],
+            sort="created_date",
+            size=size
+        )
+        return constants.TODO_EDITOR_ASSIGN_PENDING, assign_pending, "created_date", False
 
 
 class TodoQuery(object):
