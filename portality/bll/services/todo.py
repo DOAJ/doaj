@@ -30,11 +30,11 @@ class TodoService(object):
             queries.append(TodoRules.maned_assign_pending(size))
 
         todos = []
-        for aid, q, boost in queries:
+        for aid, q, sort, boost in queries:
             applications = models.Application.object_query(q=q.query())
             for ap in applications:
                 todos.append({
-                    "date": ap.last_manual_update_timestamp,
+                    "date": ap.last_manual_update_timestamp if sort == "last_manual_update" else ap.created_timestamp,
                     "action_id" : [aid],
                     "title" : ap.bibjson().title,
                     "object_id" : ap.id,
@@ -83,7 +83,7 @@ class TodoRules(object):
             sort="last_manual_update",
             size=size
         )
-        return constants.TODO_MANED_STALLED, stalled, False
+        return constants.TODO_MANED_STALLED, stalled, "last_manual_update", False
 
     @classmethod
     def maned_follow_up_old(cls, size):
@@ -97,7 +97,7 @@ class TodoRules(object):
             sort="created_date",
             size=size
         )
-        return constants.TODO_MANED_FOLLOW_UP_OLD, follow_up_old, False
+        return constants.TODO_MANED_FOLLOW_UP_OLD, follow_up_old, "created_date", False
 
     @classmethod
     def maned_ready(cls, size):
@@ -108,7 +108,7 @@ class TodoRules(object):
             sort="last_manual_update",
             size=size
         )
-        return constants.TODO_MANED_READY, ready, True
+        return constants.TODO_MANED_READY, ready, "last_manual_update", True
 
     @classmethod
     def maned_completed(cls, size):
@@ -120,7 +120,7 @@ class TodoRules(object):
             sort="last_manual_update",
             size=size
         )
-        return constants.TODO_MANED_COMPLETED, completed, False
+        return constants.TODO_MANED_COMPLETED, completed, "last_manual_update", False
 
     @classmethod
     def maned_assign_pending(cls, size):
@@ -136,7 +136,7 @@ class TodoRules(object):
             sort="created_date",
             size=size
         )
-        return constants.TODO_MANED_ASSIGN_PENDING, assign_pending, False
+        return constants.TODO_MANED_ASSIGN_PENDING, assign_pending, "last_manual_update", False
 
 
 class TodoQuery(object):
