@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask import render_template
 from flask_login import current_user, login_required
-from portality.decorators import ssl_required
+from portality.decorators import ssl_required, restrict_to_role
 from portality.bll import DOAJ
 
 # ~~Dashboard:Blueprint~~

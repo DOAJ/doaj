@@ -13,6 +13,7 @@ class TodoService(object):
         Returns the top number of todo items for a given user
 
         :param account:
+        :param size:
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing
@@ -29,12 +30,17 @@ class TodoService(object):
             queries.append(TodoRules.maned_completed(size))
             queries.append(TodoRules.maned_assign_pending(size))
 
+        if account.has_role("editor"):
+            groups = [g for g in models.EditorGroup.groups_by_editor(account.id)]
+            if len(groups) > 0:
+                queries.append(TodoRules.editor_stalled(groups, size))
+
         todos = []
         for aid, q, boost in queries:
             applications = models.Application.object_query(q=q.query())
             for ap in applications:
                 todos.append({
-                    "date": ap.last_manual_update_timestamp,
+                    "date": ap.last_manual_update_timestamp,    # FIXME: this is wrong, we need to put a fix in the maned branch
                     "action_id" : [aid],
                     "title" : ap.bibjson().title,
                     "object_id" : ap.id,
@@ -138,6 +144,25 @@ class TodoRules(object):
         )
         return constants.TODO_MANED_ASSIGN_PENDING, assign_pending, False
 
+    @classmethod
+    def editor_stalled(cls, groups, size):
+        stalled = TodoQuery(
+            musts=[
+                TodoQuery.lmu_older_than(6),
+                TodoQuery.editor_groups(groups)
+            ],
+            must_nots=[
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_READY
+                ])
+            ],
+            sort="last_manual_update",
+            size=size
+        )
+        return constants.TODO_EDITOR_STALLED, stalled, False
+
 
 class TodoQuery(object):
     """
@@ -202,5 +227,14 @@ class TodoQuery(object):
         return {
             "exists" : {
                 "field" : field
+            }
+        }
+
+    @classmethod
+    def editor_groups(cls, groups):
+        gids = [g.name for g in groups]
+        return {
+            "terms" : {
+                "admin.editor_group.exact" : gids
             }
         }
