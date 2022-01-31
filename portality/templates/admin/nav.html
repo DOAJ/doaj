@@ -6,40 +6,24 @@
 {% set bg = url_for("admin.background_jobs_search") %}
 
 {% set tabs = [
-    (tasks, "Tasks"),
-    (update_requests, "Update Requests"),
-    (applications, "Applications"),
     (journals, "Journals"),
-    (articles, "Articles"),
-    (editor_groups, "Teams"),
+    (applications, "Applications/update requests"),
     (users, "Users"),
+    (site_search, "Journals & articles"),
+    (editor_groups, "Editor groups"),
     (bg, "Background jobs")
     ]
 %}
 
-{% set icons = [
-    (tasks, "check-circle"),
-    (journals, "book-open"),
-    (update_requests, "refresh-cw"),
-    (applications, "file-text"),
-    (users, "users"),
-    (site_search, "Journals & articles"),
-    (editor_groups, "Editor groups"),
-    (bg, "tool")
-  ]
-%}
-
-<nav class="vertical-nav">
-  <ol class="unstyled-list" role="tablist">
-    {% for url, label in tabs %}
-    {% set selected = url == request.path %}
-      <li>
-        <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}" class="flex-center vertical-nav__link ">
-          {# TODO: display correct icons #}
-          <span data-feather="file" aria-hidden="true"></span>
-          <span class="vertical-nav__link-label">{{ label }}</span>
-        </a>
-      </li>
-    {% endfor %}
-  </ol>
-</nav>
+<div class="tabs">
+    <nav class="tabs__menu">
+        <ul class="tabs__list" role="tablist">
+            {% for url, label in tabs %}
+                {% set selected = url == request.path %}
+                <li class="tabs__item" {% if not selected %}role="presentation"{% endif %}>
+                    <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}">{{ label }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+</div>
