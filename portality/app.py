@@ -44,6 +44,7 @@ if 'api3' in app.config['FEATURES']:
     from portality.view.api_v3 import blueprint as api_v3
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
+from portality.view.dashboard import blueprint as dashboard
 
 app.register_blueprint(account, url_prefix='/account') #~~->Account:Blueprint~~
 app.register_blueprint(admin, url_prefix='/admin') #~~-> Admin:Blueprint~~
@@ -66,6 +67,7 @@ app.register_blueprint(status, url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
 app.register_blueprint(jct, url_prefix="/jct") # ~~-> JCT:Blueprint~~
+app.register_blueprint(dashboard, url_prefix="/dashboard") #~~-> Dashboard:Blueprint~~
 
 app.register_blueprint(oaipmh) # ~~-> OAIPMH:Blueprint~~
 app.register_blueprint(openurl) # ~~-> OpenURL:Blueprint~~

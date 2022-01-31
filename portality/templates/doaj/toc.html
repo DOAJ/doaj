@@ -169,42 +169,37 @@
                                         <p>Information on publication charges not available for this journal.</p>
 
                                     {% else %}
-                                        <p>
-                                            {# APCs #}
-                                            {% if bibjson.apc %}
-                                                The highest fee charged by this journal is <strong class="label label--large">{{ bibjson.apc[0].get("price", "price unknown") }} {{ bibjson.apc[0].get("currency", " currency unknown") }}</strong> as {% if bibjson.apc_url%}<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">{% endif %}publication fees{% if bibjson.apc_url%}</a>{% endif %} (article processing charges or APCs)
-                                                {%- if bibjson.has_other_charges %}
-                                                    and there are
-                                                    {% if bibjson.other_charges_url %}
-                                                        <a href="{{ bibjson.other_charges_url }}" target="_blank" rel="noopener">other charges</a>
-                                                    {%- else %}
-                                                        other charges
-                                                    {%- endif -%}
-                                                 {% endif -%}
-                                                .
-                                            {% else %}
-                                                There are <strong class="label label--large">no publication fees</strong> (<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">article processing charges or APCs</a>) to publish with this journal
-                                                {%- if bibjson.has_other_charges %}
-                                                    but there are
-                                                    {% if bibjson.other_charges_url %}
-                                                        <a href="{{ bibjson.other_charges_url }}" target="_blank" rel="noopener">other charges</a>
-                                                    {% else %}
-                                                        other charges
-                                                    {% endif %}
-                                                {% endif -%}
-                                                .
-                                            {% endif %}
-                                        </p>
-
-                                        {% if bibjson.apc|length > 1 %}
-                                            <p>The highest publication fee in other currencies is:</p>
-                                            <ul>
+                                        {# APCs #}
+                                        {% if bibjson.apc %}
+                                            <p>The journal charges up to:</p>
+                                            <ul class="unstyled-list">
                                             {% for apc in bibjson.apc %}
-                                                {% if not loop.first %}
-                                                    <li>{{ apc.get("price") }} {{ apc.get("currency") }}</li>
-                                                {% endif %}
+                                                <li>
+                                                  <strong class="label label--large">{{ apc.get("price", "price unknown") }} {{ apc.get("currency", " currency unknown") }}</strong>
+                                                </li>
                                             {% endfor %}
                                             </ul>
+                                            <p>as {% if bibjson.apc_url%}<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">{% endif %}publication fees{% if bibjson.apc_url%}</a>{% endif %} (article processing charges or APCs)
+                                            {%- if bibjson.has_other_charges %}
+                                                and there are
+                                                {% if bibjson.other_charges_url %}
+                                                    <a href="{{ bibjson.other_charges_url }}" target="_blank" rel="noopener">other charges</a>
+                                                {%- else %}
+                                                    other charges
+                                                {%- endif -%}
+                                             {% endif -%}
+                                            .</p>
+                                        {% else %}
+                                            <p>There are <strong class="label label--large">no publication fees</strong> (<a href="{{ bibjson.apc_url }}" target="_blank" rel="noopener">article processing charges or APCs</a>) to publish with this journal
+                                            {%- if bibjson.has_other_charges %}
+                                                but there are
+                                                {% if bibjson.other_charges_url %}
+                                                    <a href="{{ bibjson.other_charges_url }}" target="_blank" rel="noopener">other charges</a>
+                                                {% else %}
+                                                    other charges
+                                                {% endif %}
+                                            {% endif -%}
+                                            .</p>
                                         {% endif %}
 
                                         {# Waivers #}

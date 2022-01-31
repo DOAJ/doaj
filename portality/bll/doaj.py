@@ -79,3 +79,12 @@ class DOAJ(object):
         """
         from portality.bll.services import site
         return site.SiteService()
+
+    @classmethod
+    def todoService(cls):
+        """
+        Obtain an instance of the todo service
+        :return:  SiteService
+        """
+        from portality.bll.services import todo
+        return todo.TodoService()

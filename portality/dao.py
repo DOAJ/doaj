@@ -395,6 +395,11 @@ class DomainObject(UserDict, object):
             return None
 
     @classmethod
+    def object_query(cls, q=None, **kwargs):
+        result = cls.query(q, **kwargs)
+        return [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+
+    @classmethod
     def query(cls, q=None, **kwargs):
         """Perform a query on backend.
 
