@@ -397,7 +397,7 @@ def article_page(identifier=None):
 # The various static endpoints
 ###############################################################
 
-@blueprint.route("/dashboard/")
+@blueprint.route("/dashboard-ui/")
 def dashboard():
     return render_template("layouts/dashboard.html")
 
