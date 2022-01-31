@@ -2,7 +2,7 @@
 from flask import url_for
 import json
 
-from portality import models, app_email
+from portality import models, app_email, constants
 from portality.core import app
 from portality.dao import Facetview2
 from portality.ui.messages import Messages
@@ -14,7 +14,10 @@ def send_admin_ready_email(application, editor_id):
     url_root = app.config.get("BASE_URL")
     query_for_id = Facetview2.make_query(query_string=application.id)
     string_id_query = json.dumps(query_for_id).replace(' ', '')       # Avoid '+' being added to URLs by removing spaces
-    url_for_application = url_root + url_for("admin.suggestions", source=string_id_query)
+    if application.application_type == constants.APPLICATION_TYPE_NEW_APPLICATION:
+        url_for_application = url_root + url_for("admin.suggestions", source=string_id_query)
+    else:
+        url_for_application = url_root + url_for("admin.update_requests", source=string_id_query)
 
     # This is to the managing editor email list
     to = [app.config.get('MANAGING_EDITOR_EMAIL', 'managing-editors@doaj.org')]
