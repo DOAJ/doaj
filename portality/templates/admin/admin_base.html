@@ -1,4 +1,4 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/public_base.html" %}
 
 {% block page_title %}Admin dashboard{% endblock %}
 
@@ -9,6 +9,7 @@
 {% block content %}
 <main class="container">
   <h2>Admin dashboard</h2>
+  {% include 'editor/nav.html' %}
 
   <section class="page-content">
     {% block admin_content %}
