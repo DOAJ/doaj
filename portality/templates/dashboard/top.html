@@ -1,32 +1,135 @@
-{% extends "layouts/base.html" %}
+{% extends "layouts/dashboard.html" %}
 
 {% block content %}
-    <main class="page-content">
-        <div class="container">
-            <div class="row">
-                <h1>Hi, {{ current_user.name }}</h1>
-                <p>Here's whats on your to-do list:</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <td>Date</td>
-                            <td>Action</td>
-                            <td>Priority</td>
-                            <td>Title</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for todo in todos %}
-                            <tr>
-                                <td>{{ todo.date }}</td>
-                                <td>{{ todo.action_id|join(", ") }}</td>
-                                <td>{{ todo.boost }}</td>
-                                <td><a href="{{ url_for("admin.application", application_id=todo.object_id) }}">{{ todo.title }}</a></td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
+<main>
+
+  <h1>Hi, {{ current_user.name }}!</h1>
+
+  <section>
+    <h2 class="label">Here’s what’s on your to-do list:</h2>
+    <ol class="unstyled-list">
+      {% for todo in todos %}
+      {# TODO only show tasks for this user’s groups #}
+      {# TODO integrated priority in list display
+      {{ todo.boost }}
+       #}
+      <li class="card card--compact">
+        <article class="row">
+          <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="col-xs-1 label label--secondary">{{ todo.date.strftime('%d %b %Y') }}</time>
+          <div class="col-xs-11 flex-space-between">
+            <header>
+              {# TODO display one TODO per action #}
+              {# TODO display full names of action #}
+              <p class="label label--secondary">{{ todo.action_id|join(", ") }}</p>
+              <h3>
+                <a href="{{ url_for('admin.application', application_id=todo.object_id) }}">{{ todo.title }}</a>
+              </h3>
+            </header>
+            <dl class="no-margins flex-end-col">
+              {# TODO display associated editor group for the application #}
+              <dt class="sr-only">Team</dt>
+              <dd><a href="#" class="tag">German 1</a></dd>
+            </dl>
+          </div>
+        </article>
+      </li>
+      {% endfor %}
+    </ol>
+    {# TODO to be displayed once we implement page listing out all tasks
+    <footer class="card card--compact flex-center">
+      <a href="#">See all tasks</a>
+    </footer>
+    #}
+  </section>
+
+  {# TODO get activity data as part of E7 and E8
+  <section>
+    <h2 class="label">Activity</h2>
+
+    <div class="tabs">
+      <nav role="tablist" aria-label="Activity by team">
+        <button role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" tabindex="0" class="tag tag--secondary">
+          German 1
+        </button>
+        <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" tabindex="-1" class="tag tag--secondary">
+          Italian 1
+        </button>
+        <button role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" tabindex="-1" class="tag tag--secondary">
+          Polish 1
+        </button>
+      </nav>
+
+      <article id="panel-1" role="tabpanel" tabindex="0" aria-labelledby="tab-1" class="card">
+        <h3>
+          German 1’s ongoing applications
+          <a href="#" class="tag tag--secondary">29 <span class="sr-only">applications</span></a>
+        </h3>
+
+        <h4 class="label label--tertiary">By associate editor</h4>
+        <ul class="inlined-list type-06">
+          <li>
+            <a href="#" class="label tag">ilaria <em>(you)</em></a>
+            <a href="#" class="tag tag--secondary">4 <span class="sr-only">applications</span></a>
+          </li>
+          <li>
+            <a href="#" class="label tag">galimberti</a>
+            <a href="#" class="tag tag--secondary">12 <span class="sr-only">applications</span></a>
+          </li>
+          <li>
+            <a href="#" class="label tag">sricetto</a>
+            <a href="#" class="tag tag--secondary">9 <span class="sr-only">applications</span></a>
+          </li>
+          <li>
+            <a href="#" class="label tag">fsoldati</a>
+            <a href="#" class="tag tag--secondary">2 <span class="sr-only">applications</span></a>
+          </li>
+          <li>
+            <a href="#" class="label tag tag--featured">unassigned</a>
+            <a href="#" class="tag tag--secondary">5 <span class="sr-only">applications</span></a>
+          </li>
+        </ul>
+
+        <hr/>
+
+        <h4 class="label label--tertiary">By status</h4>
+        <ul class="inlined-list progress-bar">
+          <li>
+            <a href="#">
+              <span>Pending <span>8</span></span>
+              <span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span>In progress <span>4</span></span>
+              <span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span>Completed <span>1</span></span>
+              <span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span>Ready <span>9</span></span>
+              <span></span>
+            </a>
+          </li>
+        </ul>
+      </article>
+
+      <article id="panel-2" role="tabpanel" tabindex="0" aria-labelledby="tab-2" hidden>
+
+      </article>
+
+      <article id="panel-3" role="tabpanel" tabindex="0" aria-labelledby="tab-3" hidden>
+
+      </article>
+    </div>
+
+  </section>
+  #}
+</main>
 {% endblock %}
