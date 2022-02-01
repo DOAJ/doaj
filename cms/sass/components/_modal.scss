@@ -11,15 +11,21 @@
 
 .modal {
   position: fixed;
-  top: 90px;
+  top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 1050;
+  padding-top: 100px;
   display: none;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
   outline: 0;
+  background-color: rgba($warm-black, 0.5);
+
+  input, select, textarea {
+    width: 100%;
+  }
 
   &.fade .modal__dialog {
     -webkit-transform: translate(0, -25%);
@@ -84,7 +90,7 @@
 
 @media (min-width: 768px) {
   .modal__dialog {
-    width: 600px;
+    width: 60vw;
     margin: 30px auto;
   }
 }
