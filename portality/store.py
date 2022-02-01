@@ -79,7 +79,7 @@ class StoreS3(Store):
             aws_access_key_id=access_key,
             aws_secret_access_key=secret
         )
-        self.config = TransferConfig(multipart_threshold=multipart_threshold)
+        self.config = TransferConfig(multipart_threshold=multipart_threshold, use_threads=False)
 
     def store(self, container_id, target_name, source_path=None, source_stream=None):
         # Note that this assumes the container (bucket) exists
