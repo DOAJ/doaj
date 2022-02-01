@@ -34,6 +34,10 @@
     @include typescale-05;
   }
 
+  button {
+    margin-bottom: $spacing-03;
+  }
+
   input, select, textarea, .select2-container {
     margin-bottom: $spacing-03;
     width: 75%;
@@ -97,6 +101,10 @@
     font-size: 1em;
   }
 
+  button {
+    margin: $spacing-02 0;
+  }
+
   .form__header {
     margin: $spacing-03 0;
     font-size: 1em;
@@ -105,6 +113,12 @@
 
   .form__question {
     margin: 0 0 $spacing-03 0;
+
+    input, select, textarea, .select2-container {
+      margin-bottom: $spacing-02;
+      width: 100%;
+      font-size: 1em;
+    }
 
     input[type="checkbox"]+label,
     input[type="radio"]+label {

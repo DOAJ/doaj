@@ -2336,7 +2336,7 @@ $.extend(true, doaj, {
                         var lic = resultobj.bibjson.license[i];
                         var license_url = lic.url || terms_url;
                         licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + edges.escapeHtml(lic.type) + '</a>';
-                        if (i != (resultobj.bibjson.license.length-1)) {
+                        if (i !== (resultobj.bibjson.license.length-1)) {
                             licenses += ', ';
                         }
                     }
@@ -2350,15 +2350,26 @@ $.extend(true, doaj, {
                 }
 
                 var actions = "";
+                var modals = "";
                 if (this.actions.length > 0) {
                     actions = '<h4 class="label">Actions</h4><ul class="tags">';
                     for (var i = 0; i < this.actions.length; i++) {
                         var act = this.actions[i];
                         var actSettings = act(resultobj);
                         if (actSettings) {
+                            let data = "";
+                            if (actSettings.data) {
+                                let dataAttrs = Object.keys(actSettings.data);
+                                for(let j = 0; j < dataAttrs.length; j++) {
+                                    data += " data-" + dataAttrs[j] + "=" + actSettings.data[dataAttrs[j]];
+                                }
+                            }
                             actions += '<li class="tag">\
-                                <a href="' + actSettings.link + '">' + actSettings.label + '</a>\
+                                <a href="' + actSettings.link + '" tabindex="0" role="button" ' + data + '>' + actSettings.label + '</a>\
                             </li>';
+                            if (actSettings.modal) {
+                                modals += actSettings.modal
+                            }
                         }
                     }
                     actions += '</ul>';
@@ -2424,7 +2435,7 @@ $.extend(true, doaj, {
                             ' + licenses + '\
                           </li>\
                         </ul>\
-                        ' + actions + '\
+                        ' + actions + modals + '\
                       </aside>\
                     </article>\
                   </li>';

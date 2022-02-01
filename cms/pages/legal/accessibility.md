@@ -75,7 +75,7 @@ The content listed below is non-accessible for the following reasons.
 - Some images may not have a text alternative, so people using a screen reader cannot access the information. This fails WCAG 2.1 Success Criterion 1.1.1 (Non-text content).
 - Some form fields may be missing a label identifying the purpose of its corresponding field. This fails WCAG Success Criterion 1.3.5 (Identify Input Purpose).
 
-We plan to fix these issues to meet accessibility standards by February 2021.
+We plan to fix these issues to meet accessibility standards by January 2021.
 
 ### Disproportionate burden
 
@@ -84,11 +84,15 @@ We plan to fix these issues to meet accessibility standards by February 2021.
 
 ### Content that’s not within the scope of the accessibility regulations
 
-- PDFs and other documents: we have PDFs that were published in older blog posts but are not essential to our services (searching the database and applying to the database). The accessibility regulations [do not require us to fix PDFs or other documents published before 23 September 2018](https://www.legislation.gov.uk/uksi/2018/952/regulation/4/made) if they're not essential to providing our services. Any new PDFs or Word documents we publish will meet accessibility standards.
+- PDFs and other documents: we have PDFs that were published in older blog posts but are not essential to our services (searching the index and applying to the index). The accessibility regulations [do not require us to fix PDFs or other documents published before 23 September 2018](https://www.legislation.gov.uk/uksi/2018/952/regulation/4/made) if they're not essential to providing our services. Any new PDFs or Word documents we publish will meet accessibility standards.
 
 
 ### Preparation of this accessibility statement
 
-This statement was prepared on **28 May 2020**. It was last reviewed on **06 December 2021**.
+This statement was prepared on **28 May 2020**. It was last reviewed on **20 December 2021**.
 
 This website was last tested on **24 November 2020**. Testing was carried out by the DOAJ team.
+
+#### Changes to this document 
+
+- 20 Dec 2021: updated target date to meet accessibility standards to Jan 2021. 
