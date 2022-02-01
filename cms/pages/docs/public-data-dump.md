@@ -16,7 +16,7 @@ Full data-dumps of the entire journal and article metadata are generated weekly.
 
 [Download the journal metadata](/public-data-dump/journal) (4.4Mb, licensed under a [Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) license](https://creativecommons.org/licenses/by-sa/4.0/))
 
-[Download the article metadata](/public-data-dump/article) (3.5Gb, copyrights and related rights for article metadata waived via [CC0 1.0 Universal (CC0) Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/))
+[Download the article metadata](/public-data-dump/article) (5.5Gb, copyrights and related rights for article metadata waived via [CC0 1.0 Universal (CC0) Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/))
 
 Each file is a `tar.gz`.
 
