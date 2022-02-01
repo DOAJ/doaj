@@ -18,13 +18,13 @@
         {% include "includes/svg/doaj-icon.svg" %}
       </a>
       <ul class="inlined-list flex-center">
+        {# TODO display last 10 event notifications here
         <li class="dropdown">
           <span class="dropdown__trigger tag tag--secondary" role="button" aria-haspopup="true" aria-expanded="false">
             <span class="sr-only">Notifications</span>
             <span data-feather="bell" aria-hidden="true"></span>
           </span>
           <ul class="dropdown__menu">
-            {# TODO display last 10 event notifications here #}
             <li>
               <a href="#" class="dropdown__link">
                 <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
@@ -44,7 +44,7 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> #}
         <li>
           <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag tag--secondary">
             <span class="sr-only">Profile</span>
