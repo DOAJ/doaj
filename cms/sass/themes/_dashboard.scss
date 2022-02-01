@@ -45,13 +45,20 @@
   }
 
   .vertical-nav {
-    position: fixed;
+    position: absolute;
     z-index: 1;
     top: 75px;
-    bottom: 0;
+    left: 0;
     width: 75px;
     background-color: $light-grey;
     overflow-y: scroll;
+
+    > ol {
+      position: fixed;
+      width: 75px;
+      top: 75px;
+      bottom: 0;
+    }
   }
 
   .vertical-nav__link {
