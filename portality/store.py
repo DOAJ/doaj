@@ -79,6 +79,7 @@ class StoreS3(Store):
             aws_access_key_id=access_key,
             aws_secret_access_key=secret
         )
+        # NOTE: we disabled use_threads due to the background server failing to execute the public_data_dump task.
         self.config = TransferConfig(multipart_threshold=multipart_threshold, use_threads=False)
 
     def store(self, container_id, target_name, source_path=None, source_stream=None):
