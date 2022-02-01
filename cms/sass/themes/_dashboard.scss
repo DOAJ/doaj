@@ -50,7 +50,6 @@
     top: 75px;
     left: 0;
     width: 75px;
-    background-color: $light-grey;
     overflow-y: scroll;
 
     > ol {
@@ -58,6 +57,7 @@
       width: 75px;
       top: 75px;
       bottom: 0;
+      background-color: $light-grey;
     }
   }
 
