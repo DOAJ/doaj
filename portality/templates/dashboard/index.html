@@ -20,7 +20,7 @@
             <header>
               {# TODO display one TODO per action #}
               {# TODO display full names of action #}
-              <p class="label label--secondary">{{ todo.action_id[0] }}</p>
+              <p class="label label--secondary">{{ todo.action_id[0] | safe }}</p>
               <h3>
                 <a href="{{ url_for('admin.application', application_id=todo.object_id) }}">{{ todo.title }}</a>
               </h3>
