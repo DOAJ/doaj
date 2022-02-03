@@ -123,7 +123,7 @@ def status():
         es = requests.get(es_addr + '/_stats').json()
         res['index'] = { 'cluster': {}, 'shards': { 'total': es['_shards']['total'], 'successful': es['_shards']['successful'] }, 'indices': {} }
         for k, v in es['indices'].items():
-            res['index']['indices'][k] = { 'docs': v['docs']['num_docs'], 'size': int(math.ceil(v['index']['primary_size_in_bytes']) / 1024 / 1024) }
+            res['index']['indices'][k] = { 'docs': v['primaries']['docs']['count'], 'size': int(math.ceil(v['primaries']['store']['size_in_bytes']) / 1024 / 1024) }
         try:
             ces = requests.get(es_addr + '/_cluster/health')
             res['index']['cluster'] = ces.json()
