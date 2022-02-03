@@ -162,13 +162,6 @@ ass_ed:
   country: USA
   language: English
 
-- name: Amir Aidun
-  area: Science
-  year_since:
-  city: Tehran
-  country: Iran
-  language: Farsi, English
-
 - name: Ana Fresco-Santalla
   area: Humanities
   year_since:
@@ -238,7 +231,6 @@ ass_ed:
   city: Turku
   country: Finland
   language: English, Finnish
-
 
 - name: Arbain Arbain
   area: Humanities
@@ -324,13 +316,6 @@ ass_ed:
   language: Indonesian, English
   photo: "sagala.jpg"
 
-- name: Daria Chrześcijańska
-  area: Technology
-  year_since:
-  city: Toruń
-  country: Poland
-  language: Polish, English
-
 - name: Débora Domingo-Calabuig
   area: Science, Technology
   year_since:
@@ -367,13 +352,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Eeva Henrikssson
-  area: Social Sciences
-  year_since:
-  city: Helsinki
-  country: Finland
-  language: Finnish, English
-
 - name: Eko Pramudya Laksana
   area: Social Sciences
   year_since:
@@ -381,12 +359,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Elisangela Gisele do Carmo
-  area: Gerontology
-  year_since:
-  city: Rio Claro-São Paulo
-  country: Brazil
-  language: Portuguese, English
 
 - name: Elli Papadopoulou
   area: Librarianship
@@ -422,20 +394,6 @@ ass_ed:
   city: Bologna
   country: Italy
   language: Italian, English
-
-- name: Gerald Langhanke
-  area: Science, Technology
-  year_since:
-  city: Darmstadt
-  country: Germany
-  language: German, Swedish, English
-
-- name: Gertrud Pluskwik
-  area: Librarianship
-  year_since:
-  city: Basel
-  country: Switzerland
-  language: German, English
 
 - name: Hanae Lrhoul
   area: Librarianship
@@ -480,14 +438,6 @@ ass_ed:
   city: Valencia
   country: Spain
   language: Spanish, English
-
-- name: Jacinto Dávila
-  area: Technology
-  year_since:
-  city: Mérida
-  country: Venezuela
-  language: Spanish, English
-  photo: "JacintoDavila.png"
 
 - name: Jamila Jaber
   area: Library and Information Science
@@ -887,13 +837,6 @@ ass_ed:
   city: New Brunswick, NJ
   country: USA
   language: English
-
-- name: Ricardo Alejandro Fagoaga Hernández
-  area: History
-  year_since:
-  city: Ciudad de Mexico
-  country: Mexico
-  language: Spanish, English
 
 - name: Richard James
   area: Medicine
