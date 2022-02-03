@@ -74,7 +74,7 @@ class DOAJ(object):
     @classmethod
     def siteService(cls):
         """
-        Obtain an instance of the site service
+        Obtain an instance of the site service  ~~->Site:Service~~
         :return:  SiteService
         """
         from portality.bll.services import site
@@ -83,7 +83,7 @@ class DOAJ(object):
     @classmethod
     def todoService(cls):
         """
-        Obtain an instance of the todo service
+        Obtain an instance of the todo service  ~~->Todo:Service~~
         :return:  SiteService
         """
         from portality.bll.services import todo
