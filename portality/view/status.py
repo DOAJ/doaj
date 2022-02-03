@@ -110,7 +110,7 @@ def status():
     for eddr in app.config['ELASTICSEARCH_HOSTS']:
         es_addr = f'http://{eddr["host"]}:{eddr["port"]}'
         r = requests.get(es_addr)
-        res['ping']['indices'][eddr] = r.status_code
+        res['ping']['indices'][es_addr] = r.status_code
         res['stable'] = r.status_code == 200
         if r.status_code != 200:
             res['stable'] = False
