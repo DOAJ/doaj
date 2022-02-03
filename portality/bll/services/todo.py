@@ -201,15 +201,11 @@ class TodoRules(object):
     def editor_assign_pending(cls, groups, size):
         assign_pending = TodoQuery(
             musts=[
-                TodoQuery.editor_groups(groups)
+                TodoQuery.editor_groups(groups),
+                TodoQuery.status([constants.APPLICATION_STATUS_PENDING])
             ],
             must_nots=[
-                TodoQuery.exists("admin.editor"),
-                TodoQuery.status([
-                    constants.APPLICATION_STATUS_ACCEPTED,
-                    constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_COMPLETED
-                ])
+                TodoQuery.exists("admin.editor")
             ],
             sort="created_date",
             size=size
