@@ -120,7 +120,7 @@ def status():
         
     # query ES for cluster health and nodes up (uses second ES host in config)
     try:
-        es = requests.get(es_addr + '/_status').json()
+        es = requests.get(es_addr + '/_stats').json()
         res['index'] = { 'cluster': {}, 'shards': { 'total': es['_shards']['total'], 'successful': es['_shards']['successful'] }, 'indices': {} }
         for k, v in es['indices'].items():
             res['index']['indices'][k] = { 'docs': v['docs']['num_docs'], 'size': int(math.ceil(v['index']['primary_size_in_bytes']) / 1024 / 1024) }
