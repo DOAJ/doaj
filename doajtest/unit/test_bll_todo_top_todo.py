@@ -36,72 +36,38 @@ class TestBLLTopTodo(DoajTestCase):
 
         account_arg = kwargs.get("account")
         size_arg = kwargs.get("size")
-        todo_maned_stalled_arg = kwargs.get("todo_maned_stalled")
-        todo_maned_follow_up_old_arg = kwargs.get("todo_maned_follow_up_old")
         raises_arg = kwargs.get("raises")
+
+        categories = [
+            "todo_maned_stalled",
+            "todo_maned_follow_up_old"
+        ]
+
+        category_args = {cat : int(kwargs.get(cat)) for cat in categories}
 
         ###############################################
         ## set up
 
         apps = []
+        w = 7*24*60*60
 
         # an application stalled for more than 8 weeks
-        source = ApplicationFixtureFactory.make_application_source()
-        ap = models.Application(**source)
-        ap.set_id("maned_stalled__maned_old")
-        ap.set_last_manual_update(dates.before(datetime.utcnow(), 10*7*24*60*60))   # 10 weeks ago
-        ap.set_created(dates.before(datetime.utcnow(), 10*7*24*60*60))  # 10 weeks ago
-        ap.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
-        ap.save()
-        apps.append(ap)
+        self.build_application("maned_stalled__maned_old", 10*w, 10*w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
 
         # an application that is not stalled
-        source = ApplicationFixtureFactory.make_application_source()
-        ap = models.Application(**source)
-        ap.set_id("unstalled")
-        ap.set_last_manual_update(dates.before(datetime.utcnow(), 2 * 7 * 24 * 60 * 60))  # 2 weeks ago
-        ap.set_created(dates.before(datetime.utcnow(), 2 * 7 * 24 * 60 * 60))  # 2 weeks ago
-        ap.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
-        ap.save()
-        apps.append(ap)
+        self.build_application("unstalled", 2*w, 2*w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
 
         # an application that is old but rejected
-        source = ApplicationFixtureFactory.make_application_source()
-        ap = models.Application(**source)
-        ap.set_id("rejected")
-        ap.set_last_manual_update(dates.before(datetime.utcnow(), 11*7*24*60*60))   # 11 weeks ago
-        ap.set_application_status(constants.APPLICATION_STATUS_REJECTED)
-        ap.save()
-        apps.append(ap)
+        self.build_application("rejected", 11 * w, 11 * w, constants.APPLICATION_STATUS_REJECTED, apps)
 
         # an application that was created over 10 weeks ago (but updated recently)
-        source = ApplicationFixtureFactory.make_application_source()
-        ap = models.Application(**source)
-        ap.set_id("maned_old")
-        ap.set_last_manual_update(dates.before(datetime.utcnow(), 2 * 7 * 24 * 60 * 60))  # 2 weeks ago
-        ap.set_created(dates.before(datetime.utcnow(), 11 * 7 * 24 * 60 * 60))  # 11 weeks ago
-        ap.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
-        ap.save()
-        apps.append(ap)
+        self.build_application("maned_old", 2 * w, 11 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
 
         # an application that was created recently
-        source = ApplicationFixtureFactory.make_application_source()
-        ap = models.Application(**source)
-        ap.set_id("not_old")
-        ap.set_last_manual_update(dates.before(datetime.utcnow(), 2 * 7 * 24 * 60 * 60))  # 2 weeks ago
-        ap.set_created(dates.before(datetime.utcnow(), 2 * 7 * 24 * 60 * 60))  # 2 weeks ago
-        ap.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
-        ap.save()
-        apps.append(ap)
+        self.build_application("not_old", 2 * w, 2 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
 
         # an application that was created over 10 weeks ago and is accepted
-        source = ApplicationFixtureFactory.make_application_source()
-        ap = models.Application(**source)
-        ap.set_id("accepted")
-        ap.set_created(dates.before(datetime.utcnow(), 12 * 7 * 24 * 60 * 60))  # 12 weeks ago
-        ap.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
-        ap.save()
-        apps.append(ap)
+        self.build_application("accepted", 12 * w, 12 * w, constants.APPLICATION_STATUS_ACCEPTED, apps)
 
         models.Application.blockall([(ap.id, ap.last_updated) for ap in apps])
 
@@ -141,8 +107,21 @@ class TestBLLTopTodo(DoajTestCase):
                         actions[aid] = 0
                     actions[aid] += 1
 
-            todo_maned_stalled_expected = int(todo_maned_stalled_arg)
-            assert actions.get(constants.TODO_MANED_STALLED, 0) == todo_maned_stalled_expected
+            for k, v in category_args:
+                assert actions.get(k, 0) == v
 
-            todo_maned_follow_up_old_expected = int(todo_maned_follow_up_old_arg)
-            assert actions.get(constants.TODO_MANED_FOLLOW_UP_OLD, 0) == todo_maned_follow_up_old_expected
+            # todo_maned_stalled_expected = int(todo_maned_stalled_arg)
+            # assert actions.get(constants.TODO_MANED_STALLED, 0) == todo_maned_stalled_expected
+            #
+            # todo_maned_follow_up_old_expected = int(todo_maned_follow_up_old_arg)
+            # assert actions.get(constants.TODO_MANED_FOLLOW_UP_OLD, 0) == todo_maned_follow_up_old_expected
+
+    def build_application(self, id, lmu_diff, cd_diff, status, app_registry):
+        source = ApplicationFixtureFactory.make_application_source()
+        ap = models.Application(**source)
+        ap.set_id(id)
+        ap.set_last_manual_update(dates.before(datetime.utcnow(), lmu_diff))  # 10 weeks ago
+        ap.set_created(dates.before(datetime.utcnow(), cd_diff))  # 10 weeks ago
+        ap.set_application_status(status)
+        ap.save()
+        app_registry.append(ap)
