@@ -6,7 +6,6 @@ from flask_login import current_user
 from portality import util
 from portality.bll.doaj import DOAJ
 from portality.bll import exceptions
-from portality.core import app  # FIXME: logging only - remove after debug
 
 blueprint = Blueprint('query', __name__)
 
@@ -42,14 +41,12 @@ def query(path=None):
         if current_user is not None and not current_user.is_anonymous:
             account = current_user._get_current_object()
         queryService = DOAJ.queryService()
-        app.logger.debug(json.dumps(q, indent=2))
         res = queryService.search(domain, index_type, q, account, request.values)
     except exceptions.AuthoriseException as e:
         abort(403)
     except exceptions.NoSuchObjectException as e:
         abort(404)
 
-    app.logger.debug(json.dumps(res, indent=2))
     resp = make_response(json.dumps(res))
     resp.mimetype = "application/json"
     return resp
