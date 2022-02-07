@@ -27,19 +27,15 @@ class GeneralSearchQuery(object):
             for term in self.terms:
                 musts.append({"terms" : term})
 
-        query = {"match_all" : {}}
         if self.query_string is not None:
-            query = {"query_string" : {"default_operator" : "AND", "query" : self.query_string}}
+            qs = {"query_string" : {"default_operator" : "AND", "query" : self.query_string}}
+            musts.append(qs)
 
+        query = {"match_all": {}}
         if len(musts) > 0:
             query = {
                 "bool" : {
-                    "filter" : {
-                        "bool": {
-                            "must": musts
-                        }
-                    },
-                    "must" : query
+                    "must": musts
                 }
             }
 
