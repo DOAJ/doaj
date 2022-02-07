@@ -1,24 +1,24 @@
 {% extends "layouts/base.html" %}
 
 {% block base_content %}
-<body class="dashboard {% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
+    <body class="dashboard {% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
 
-  {# global site note #}
-  {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
-  {% include config.get("SITE_NOTE_TEMPLATE") %}
-  {% endif %}
+    {# global site note #}
+    {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
+        {% include config.get("SITE_NOTE_TEMPLATE") %}
+    {% endif %}
 
-  <header>
-    {% include "includes/_flash_notification.html" %}
+    <header>
+        {% include "includes/_flash_notification.html" %}
 
-    <h2 class="sr-only">DOAJ Dashboard</h2>
+        <h2 class="sr-only">DOAJ Dashboard</h2>
 
-    <nav class="primary-nav flex-space-between" id="primary-nav">
-      <a href="/dashboard/" class="logo">
-        {% include "includes/svg/doaj-icon.svg" %}
-      </a>
-      <ul class="inlined-list flex-center">
-        {# TODO display last 10 event notifications here
+        <nav class="primary-nav flex-space-between" id="primary-nav">
+            <a href="/dashboard/" class="logo">
+                {% include "includes/svg/doaj-icon.svg" %}
+            </a>
+            <ul class="inlined-list flex-center">
+                {# TODO display last 10 event notifications here
         <li class="dropdown">
           <span class="dropdown__trigger tag tag--secondary" role="button" aria-haspopup="true" aria-expanded="false">
             <span class="sr-only">Notifications</span>
@@ -45,68 +45,64 @@
             </li>
           </ul>
         </li> #}
-        <li>
-          <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag tag--secondary">
-            <span class="sr-only">Profile</span>
-            <span data-feather="smile" aria-hidden="true"></span>
-          </a>
-        </li>
-      </ul>
-    </nav>
+                <li>
+                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag tag--secondary">
+                        <span class="sr-only">Profile</span>
+                        <span data-feather="smile" aria-hidden="true"></span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-    <nav class="secondary-nav">
+        <nav class="secondary-nav">
 
-      <dl>
-          {# TODO display correct identification data here
-        <dt>
-          Managing Editor of&nbsp;&nbsp;
-        </dt>
-        <dd>
-          <ul class="inlined-list tags">
-            {# TODO find a better way to link to predefined queries
-            <li class="tag tag--secondary">
-              <a href="{{ url_for('admin.index') }}?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22admin.editor_group.exact%22%3A%22German1%22%7D%7D%5D%7D%7D%2C%22track_total_hits%22%3Atrue%7D">GERMAN 1</a>
-            </li>
-            <li class="tag tag--secondary">
-              <a href="{{ url_for('admin.index') }}?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22admin.editor_group.exact%22%3A%22Italian1%22%7D%7D%5D%7D%7D%2C%22track_total_hits%22%3Atrue%7D">ITALIAN 1</a>
-            </li>
-            <li class="tag tag--secondary">
-              <a href="{{ url_for('admin.index') }}?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22admin.editor_group.exact%22%3A%22Polish1%22%7D%7D%5D%7D%7D%2C%22track_total_hits%22%3Atrue%7D">POLISH 1</a>
-            </li>
-          </ul>
-        </dd>
-        &nbsp;/&nbsp;&nbsp;
-        #}
-        <dt>
-          Username&nbsp;&nbsp;
-        </dt>
-        <dd>
-          <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
-        </dd>
-      </dl>
-    </nav>
+            <dl>
+                {% if maned_of and maned_of|length > 0 %}
+                    <dt>
+                        Managing Editor of&nbsp;&nbsp;
+                    </dt>
+                    <dd>
+                        <ul class="inlined-list tags">
+                            {% for eg in maned_of %}
+                                <li class="tag tag--secondary">
+                                    {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
+                                    <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">{{ eg.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </dd>
+                    &nbsp;/&nbsp;&nbsp;
+                {% endif %}
+                <dt>
+                    Username&nbsp;&nbsp;
+                </dt>
+                <dd>
+                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
+                </dd>
+            </dl>
+        </nav>
 
-    {% block extra_header %}{% endblock %}
-  </header>
+        {% block extra_header %}{% endblock %}
+    </header>
 
-  {% include 'dashboard/nav.html' %}
+    {% include 'dashboard/nav.html' %}
 
-  {% block main_panel %}
-  {% block content %}{% endblock %}
-  {% endblock %}
+    {% block main_panel %}
+        {% block content %}{% endblock %}
+    {% endblock %}
 
-  {% include '_js_includes.html' %}
+    {% include '_js_includes.html' %}
 
-  {% block extra_js_bottom %}{% endblock extra_js_bottom %}
+    {% block extra_js_bottom %}{% endblock extra_js_bottom %}
 
-  {% if not request.cookies.get("doaj-consent") %}
-  <script type="text/javascript">
-  jQuery(document).ready(function() {
-    $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
-    $(".site-note-dismiss").on("click", dissmissSiteNote);
-  });
-  </script>
-  {% endif %}
+    {% if not request.cookies.get("doaj-consent") %}
+        <script type="text/javascript">
+            jQuery(document).ready(function() {
+                $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
+                $(".site-note-dismiss").on("click", dissmissSiteNote);
+            });
+        </script>
+    {% endif %}
 
-</body>
+    </body>
 {% endblock %}
