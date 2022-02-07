@@ -16,4 +16,4 @@ def top_todo():
     svc = DOAJ.todoService()
     todos = svc.top_todo(current_user._get_current_object(), size=100)  # FIXME: 100 is probably too large, just using that to get a good view of the data during dev
     # ~~-> Dashboard:Page~~
-    return render_template('dashboard/top.html', todos=todos)
+    return render_template('dashboard/index.html', todos=todos)

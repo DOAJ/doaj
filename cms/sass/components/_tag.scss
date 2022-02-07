@@ -37,7 +37,7 @@
 
 .tag--featured {
   background: $grapefruit;
-  color: $warm-black;
+  color: $white;
 
   svg {
     stroke: $warm-black;
@@ -64,5 +64,10 @@
   a, svg {
     color: $warm-black;
     stroke: $warm-black;
+  }
+
+  &[aria-selected=true] {
+    background-color: $dark-grey;
+    color: $white;
   }
 }

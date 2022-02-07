@@ -1,0 +1,103 @@
+/* Common styles for Admin/ManEd, Ed, and Associate Ed dashboards */
+
+.dashboard {
+
+  .primary-nav {
+    li {
+      margin-right: $spacing-04;
+
+      .tag {
+        margin: 0;
+        padding: $spacing-02;
+      }
+
+      svg {
+        display: block;
+        padding: 0;
+        top: 0;
+      }
+    }
+
+    .logo {
+      display: block;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      width: 75px;
+      height: 100%;
+
+      svg {
+        display: block;
+        margin: 0 auto;
+        height: 35px;
+      }
+    }
+  }
+
+  .secondary-nav {
+    margin-left: 75px;
+    padding-left: $spacing-04;
+    padding-right: $spacing-04;
+    font-size: smaller;
+
+    dl, dt, dd {
+      display: inline-block;
+    }
+  }
+
+  .vertical-nav {
+    position: absolute;
+    z-index: 1;
+    top: 75px;
+    left: 0;
+    width: 75px;
+    overflow-y: scroll;
+
+    > ol {
+      position: fixed;
+      width: 75px;
+      top: 75px;
+      bottom: 0;
+      background-color: $light-grey;
+    }
+  }
+
+  .vertical-nav__link {
+    height: 75px;
+    width: 100%;
+
+    &[aria-selected=true] {
+      background-color: $warm-black;
+      color: $white;
+    }
+  }
+
+  .vertical-nav__link-label {
+    display: none;
+    position: absolute;
+    padding: 0 $spacing-03;
+    line-height: 75px;
+    left: 75px;
+    height: 75px;
+    width: max-content;
+    background-color: $dark-grey;
+    color: $white;
+  }
+
+  .vertical-nav__link:hover {
+    background-color: $dark-grey;
+    color: $white;
+
+    .vertical-nav__link-label {
+      display: block;
+    }
+  }
+
+  .progress-bar {
+
+  }
+
+  main {
+    margin-left: 75px;
+    padding: $spacing-04;
+  }
+}
