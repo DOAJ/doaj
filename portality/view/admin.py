@@ -492,6 +492,7 @@ def editor_group(group_id=None):
             eg = models.EditorGroup.pull(group_id)
             form.group_id.data = eg.id
             form.name.data = eg.name
+            form.maned.data = eg.maned
             form.editor.data = eg.editor
             form.associates.data = ",".join(eg.associates)
         return render_template("admin/editor_group.html", admin_page=True, form=form)
@@ -547,6 +548,7 @@ def editor_group(group_id=None):
                         ae.save()
 
             eg.set_name(form.name.data)
+            eg.set_maned(form.maned.data)
             eg.set_editor(form.editor.data)
             if associates is not None:
                 eg.set_associates(associates)
