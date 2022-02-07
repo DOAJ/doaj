@@ -1,5 +1,5 @@
 {% extends "layouts/dashboard_base.html" %}
-
+{# ~~Dashboard:Page~~ #}
 {% set TODOS = {
         constants.TODO_MANED_STALLED: "Chase <strong>stalled</strong> application",
         constants.TODO_MANED_FOLLOW_UP_OLD: "Follow up with <strong>old<strong> application",
@@ -15,7 +15,7 @@
   <h1>Hi, {{ current_user.name }}!</h1>
 
   <section>
-    <h2 class="label">Here’s what’s on your to-do list:</h2>
+    <h2 class="label">Here are your priorities:</h2>
     <ol class="unstyled-list">
       {% for todo in todos %}
       {# TODO only show tasks for this user’s groups #}
