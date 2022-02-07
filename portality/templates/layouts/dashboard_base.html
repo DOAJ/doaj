@@ -55,14 +55,15 @@
     </nav>
 
     <nav class="secondary-nav">
-      {# TODO display correct identification data here #}
+
       <dl>
+          {# TODO display correct identification data here
         <dt>
           Managing Editor of&nbsp;&nbsp;
         </dt>
         <dd>
           <ul class="inlined-list tags">
-            {# TODO find a better way to link to predefined queries #}
+            {# TODO find a better way to link to predefined queries
             <li class="tag tag--secondary">
               <a href="{{ url_for('admin.index') }}?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22admin.editor_group.exact%22%3A%22German1%22%7D%7D%5D%7D%7D%2C%22track_total_hits%22%3Atrue%7D">GERMAN 1</a>
             </li>
@@ -75,6 +76,7 @@
           </ul>
         </dd>
         &nbsp;/&nbsp;&nbsp;
+        #}
         <dt>
           Username&nbsp;&nbsp;
         </dt>

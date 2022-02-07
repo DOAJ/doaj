@@ -27,15 +27,12 @@
           <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="col-xs-1 label label--secondary font-mono">{{ todo.date.strftime('%d %b %Y') }}</time>
           <div class="col-xs-11 flex-space-between">
             <header>
-              {# TODO display one TODO per action #}
-              {# TODO display full names of action #}
               <p class="label label--secondary">{{ TODOS[todo.action_id[0]] | safe }}</p>
               <h3>
                 <a href="{{ url_for('admin.application', application_id=todo.object_id) }}">{{ todo.title }}</a>
               </h3>
             </header>
             <dl class="no-margins flex-end-col">
-              {# TODO display associated editor group for the application #}
               <dt class="sr-only">Team</dt>
               <dd><a href="#" class="tag">{{ todo.object.editor_group }}</a></dd>
             </dl>
