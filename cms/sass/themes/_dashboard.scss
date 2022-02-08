@@ -39,8 +39,9 @@
     padding-right: $spacing-04;
     font-size: smaller;
 
-    dl, dt, dd {
+    dt, dd {
       display: inline-block;
+      margin-top: $spacing-04;
     }
   }
 
