@@ -30,7 +30,7 @@
                 formDiff: {{ form_diff|tojson }},
             {% endif %}
             {% if obj.admin.current_journal is not none and (not current_journal or not current_journal.is_in_doaj()) %}
-                withdrawn: True
+                withdrawn: true
             {% endif %}
             });
         {% endif %}
