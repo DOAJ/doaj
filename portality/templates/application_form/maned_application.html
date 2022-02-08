@@ -14,7 +14,7 @@
 
 {% block content scoped %}
 <body id="apply">
-    <main class="container page-content">
+    <main class="page-content">
         {% include "application_form/editorial_form_body.html" %}
 
     {% if obj.application_status not in ["accepted", "rejected"] %}
@@ -25,7 +25,7 @@
                     “{{ fs.label | safe }}”
                 </h3>
             <p>{{ obj.id }}</p>
-                <form method="post" data-id="{{ obj.id }}" action="{{ url_for('admin.application_quick_reject', application_id=obj.id) }}" id="application_quick_reject_form">
+                <form class="form form--compact" method="post" data-id="{{ obj.id }}" action="{{ url_for('admin.application_quick_reject', application_id=obj.id) }}" id="application_quick_reject_form">
                     {% for f in fs.fields() %}
                         {% set field_template = f.template %}
                         {%  include field_template %}

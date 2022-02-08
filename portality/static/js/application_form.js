@@ -475,8 +475,26 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
         this.jq("input, select").bind("change", () => this.changed = true);
         this.jq("button").bind("click", (event) => {
             // ignore any "view note" modal close button hits
-            if (!$(event.currentTarget).hasClass("formulaic-notemodal-close")) {   // FIXME: I don't love this, it feels brittle, but I don't have a better solution
-                this.changed = true
+            // FIXME: I don't love this, it feels brittle, but I don't have a better solution
+            let exceptClasses = ["formulaic-notemodal-close"];
+            let exceptIds = ["open_withdraw_reinstate"];
+            let excepted = false;
+            for (let i = 0; i < exceptClasses.length; i++) {
+                if ($(event.currentTarget).hasClass(exceptClasses[i])) {
+                    excepted = true;
+                    break;
+                }
+            }
+            if (!excepted) {
+                for (let i = 0; i < exceptIds.length; i++) {
+                    if ($(event.currentTarget).attr("id") === exceptIds[i]) {
+                        excepted = true;
+                        break;
+                    }
+                }
+            }
+            if (!excepted) {
+                this.changed = true;
             }
         });
         $(window).bind("beforeunload", (event) => this.beforeUnload(event));

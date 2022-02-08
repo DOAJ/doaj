@@ -300,11 +300,12 @@ class DomainObject(UserDict, object):
         return cls.bulk(documents=[{'id': i} for i in id_list], idkey=idkey, refresh=refresh, action='delete')
 
     @classmethod
-    def bulk(cls, documents: List[dict], idkey='id', refresh=False, action='index', **kwargs):
+    def bulk(cls, documents: List[dict], idkey='id', refresh=False, action='index', req_timeout=10, **kwargs):
         """
         :param documents: a list of objects to perform bulk actions on (list of dicts)
         :param idkey: The path to extract an ID from the object, e.g. 'id', 'identifiers.id'
         :param refresh: Refresh the index in each operation (make immediately available for search) - expensive!
+        :param req_timeout: Request timeout for bulk operation
         :param kwargs: kwargs are passed into the bulk instruction for each record
         """
         # ~~->ReadOnlyMode:Feature~~
@@ -318,7 +319,8 @@ class DomainObject(UserDict, object):
         data = ''
         for d in documents:
             data += cls.to_bulk_single_rec(d, idkey=idkey, action=action, **kwargs)
-        resp = ES.bulk(body=data, index=cls.index_name(), doc_type=cls.doc_type(), refresh=refresh)
+        resp = ES.bulk(body=data, index=cls.index_name(), doc_type=cls.doc_type(), refresh=refresh,
+                       request_timeout=req_timeout)
         return resp
 
     @staticmethod
