@@ -2,6 +2,10 @@
 
 .tags {
   @include unstyled-list($inline: true);
+
+  li:last-child a {
+    margin-right: 0;
+  }
 }
 
 .tag {
