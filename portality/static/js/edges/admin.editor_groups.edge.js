@@ -22,8 +22,7 @@ $.extend(true, doaj, {
             var result = '<a class="edit_editor_group_link button" href="';
             result += doaj.adminEditorGroupSearchConfig.editorGroupEditUrl;
             result += resultobj['id'];
-            result += '" target="_blank"';
-            result += '>Edit this group</a>';
+            result += '">Edit this group</a>';
             return result;
         },
 
@@ -31,8 +30,7 @@ $.extend(true, doaj, {
             var result = '<br/><a class="delete_editor_group_link button" href="';
             result += doaj.adminEditorGroupSearchConfig.editorGroupEditUrl;
             result += resultobj['id'];
-            result += '" target="_blank"';
-            result += '>Delete this group</a>';
+            result += '">Delete this group</a>';
             return result;
         },
 

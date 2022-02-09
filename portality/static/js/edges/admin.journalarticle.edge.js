@@ -55,8 +55,7 @@ $.extend(true, doaj, {
                 result += '<a class="delete_article_link button" href="';
                 result += "/admin/delete/article/";
                 result += resultobj['id'];
-                result += '" target="_blank"';
-                result += '>Delete this article</a>';
+                result += '">Delete this article</a>';
                 return result;
             }
             return false;
@@ -67,8 +66,7 @@ $.extend(true, doaj, {
                 var result = '<a class="edit_article_link button" href="';
                 result += doaj.adminJournalArticleSearchConfig.articleEditUrl;
                 result += resultobj['id'];
-                result += '" target="_blank"';
-                result += '>Edit this article</a>';
+                result += '">Edit this article</a>';
                 return result;
             }
             return false;
@@ -82,8 +80,7 @@ $.extend(true, doaj, {
                 var result = '<a class="edit_journal_link button" href="';
                 result += doaj.adminJournalArticleSearchConfig.journalEditUrl;
                 result += resultobj['id'];
-                result += '" target="_blank"';
-                result += '>Edit this journal</a>';
+                result += '">Edit this journal</a>';
                 return result;
             }
             return false;
