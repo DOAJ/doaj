@@ -97,6 +97,31 @@
 
   }
 
+  .todo-list__item {
+    border-left: 10px solid;
+
+    h3 {
+      margin-bottom: 0;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    svg {
+      padding: 0;
+    }
+
+    .tag {
+      margin-bottom: 0;
+    }
+
+    &:hover {
+      background-color: $light-grey;
+    }
+
+  }
+
   main {
     margin-left: 75px;
     padding: $spacing-04;
