@@ -25,16 +25,16 @@ class GeneralSearchQuery(object):
         musts = []
         if self.terms is not None:
             for term in self.terms:
-                musts.append({"terms" : term})
+                musts.append({"term": term})
 
         if self.query_string is not None:
-            qs = {"query_string" : {"default_operator" : "AND", "query" : self.query_string}}
+            qs = {"query_string": {"default_operator": "AND", "query": self.query_string}}
             musts.append(qs)
 
         query = {"match_all": {}}
         if len(musts) > 0:
             query = {
-                "bool" : {
+                "bool": {
                     "must": musts
                 }
             }

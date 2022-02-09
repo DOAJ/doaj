@@ -393,7 +393,7 @@
                                     {% if bibjson.publisher_name %}
                                         <dt>Publisher</dt>
                                         <dd>
-                                            {% set source = search_query_source(terms=[{"bibjson.publisher.name.exact": [bibjson.publisher_name]}]) %}
+                                            {% set source = search_query_source(terms=[{"bibjson.publisher.name.exact": bibjson.publisher_name}]) %}
                                             <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source={{ source }}">{{bibjson.publisher_name}}</a>{% if bibjson.publisher_country %}, {{bibjson.publisher_country_name()}}{% endif %}
                                         </dd>
                                     {% endif %}
@@ -416,7 +416,7 @@
                                     {% for path, code in bibjson.lcc_paths_and_codes() %}
                                         {% if loop.index0 == 0 %}<dt>LCC subjects <a href="https://www.loc.gov/catdir/cpso/lcco/" target="_blank" rel="noopener"><span data-feather="help-circle" aria-hidden="true"></span><span class="sr-only">Look up the Library of Congress Classification Outline</span></a></dt>{% endif %}
                                         <dd>
-                                            {% set source = search_query_source(terms=[{"index.schema_codes_tree.exact": [code]}]) %}
+                                            {% set source = search_query_source(terms=[{"index.schema_codes_tree.exact": code}]) %}
                                              <a href="{{ url_for('doaj.journals_search') }}?ref=toc&source={{ source }}">
                                                 {{ path }}
                                             </a>
