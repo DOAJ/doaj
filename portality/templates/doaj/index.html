@@ -48,7 +48,7 @@
                     <span class="stat__description">countries represented</span>
                 </p>
                 <p class="col-md-2 stat">
-                    {% set source = search_query_source(terms=[{"bibjson.apc.has_apc":False},{"bibjson.other_charges.has_other_charges":False}]) %}
+                    {% set source = search_query_source(term=[{"bibjson.apc.has_apc":False},{"bibjson.other_charges.has_other_charges":False}]) %}
                     <a href='{{ url_for('doaj.journals_search') }}?source={{ source }}'>
                         <span class="stat__number">{{ statistics.no_apc }}</span>
                         <span class="stat__description">journals without APC<span style="text-transform: lowercase;">s</span></span>

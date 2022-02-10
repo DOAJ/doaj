@@ -17,15 +17,20 @@ def make_query(**params):
 
 
 class GeneralSearchQuery(object):
-    def __init__(self, terms=None, query_string=None):
+    def __init__(self, term=None, terms=None, query_string=None):
         self.terms = None if terms is None else terms if isinstance(terms, list) else [terms]
+        self.term = None if term is None else term
         self.query_string = query_string
 
     def query(self):
         musts = []
         if self.terms is not None:
             for term in self.terms:
-                musts.append({"term": term})
+                musts.append({"terms" : term})
+
+        if self.term is not None:
+            for term in self.term:
+                musts.append({"term" : term})
 
         if self.query_string is not None:
             qs = {"query_string": {"default_operator": "AND", "query": self.query_string}}
