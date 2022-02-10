@@ -1,15 +1,33 @@
 {% extends "layouts/dashboard_base.html" %}
 {# ~~Dashboard:Page~~ #}
 {% set TODOS = {
-        constants.TODO_MANED_STALLED: "Chase a <strong>stalled</strong> application",
-        constants.TODO_MANED_FOLLOW_UP_OLD: "Follow up with an <strong>old<strong> application",
-        constants.TODO_MANED_READY: "Make a decision on a <strong>ready<strong> application",
-        constants.TODO_MANED_COMPLETED: "Review a <strong>completed<strong> application",
-        constants.TODO_MANED_ASSIGN_PENDING: "Assign a <strong>pending<strong> application"
+        constants.TODO_MANED_STALLED: {
+            "text" : "Chase a <strong>stalled</strong> application",
+            "colour" : "var(--salmon)",
+            "feather": "coffee"
+        },
+        constants.TODO_MANED_FOLLOW_UP_OLD: {
+            "text": "Follow up with an <strong>old<strong> application",
+            "colour" : "var(--sanguine)",
+            "feather": "clock"
+        },
+        constants.TODO_MANED_READY: {
+            "text" : "Make a decision on a <strong>ready<strong> application",
+            "colour" : "var(--dark-green)",
+            "feather": "thumbs-up"
+        },
+        constants.TODO_MANED_COMPLETED: {
+            "text" : "Review a <strong>completed<strong> application",
+            "colour" : "var(--mid-green)",
+            "feather": "check-circle"
+        },
+        constants.TODO_MANED_ASSIGN_PENDING: {
+            "text" : "Assign a <strong>pending<strong> application",
+            "colour" : "var(--yellow)",
+            "feather": "inbox"
+        }
     }
 %}
-
-
 
 {% block content %}
 <main>
@@ -27,20 +45,7 @@
       <li
         class="card card--compact todo-list__item"
         data-app-url="{{ app_url }}"
-        {# TODO there’s probably a better way to do this... #}
-        style="border-color:
-        {% if todo.action_id[0] == 'todo_maned_follow_up_old' %}
-        var(--sanguine);
-        {% elif todo.action_id[0] == 'todo_maned_stalled' %}
-        var(--salmon);
-        {% elif todo.action_id[0] == 'todo_maned_assign_pending' %}
-        var(--yellow);
-        {% elif todo.action_id[0] == 'todo_maned_completed' %}
-        var(--mid-green);
-        {% elif todo.action_id[0] == 'todo_maned_ready' %}
-        var(--dark-green);
-        {% endif %}
-        ;"
+        style="border-color: {{ TODOS[todo.action_id[0]].colour }};"
       >
         <article class="row">
           <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="col-xs-1 label label--secondary font-mono">
@@ -50,7 +55,7 @@
           </time>
           <div class="col-xs-11 flex-space-between">
             <header>
-              <p class="label label--secondary">{{ TODOS[todo.action_id[0]] | safe }}</p>
+              <p class="label label--secondary">{{ TODOS[todo.action_id[0]].text | safe }}</p>
               <h3>
                 <a href="{{ app_url }}" class="font-serif type-04">{{ todo.title }}</a>
               </h3>
@@ -62,31 +67,9 @@
                 <a
                   href="#"
                   class="tag"
-                  style="background-color:
-                  {% if todo.action_id[0] == 'todo_maned_follow_up_old' %}
-                  var(--sanguine);
-                  {% elif todo.action_id[0] == 'todo_maned_stalled' %}
-                  var(--salmon);
-                  {% elif todo.action_id[0] == 'todo_maned_assign_pending' %}
-                  var(--yellow);
-                  {% elif todo.action_id[0] == 'todo_maned_completed' %}
-                  var(--mid-green);
-                  {% elif todo.action_id[0] == 'todo_maned_ready' %}
-                  var(--dark-green);
-                  {% endif %}
-                  ;"
+                  style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
                 >
-                  {% if todo.action_id[0] == 'todo_maned_stalled' %}
-                    <span data-feather="coffee" aria-hidden="true"></span>
-                  {% elif todo.action_id[0] == 'todo_maned_follow_up_old' %}
-                    <span data-feather="clock" aria-hidden="true"></span>
-                  {% elif todo.action_id[0] == 'todo_maned_ready' %}
-                    <span data-feather="thumbs-up" aria-hidden="true"></span>
-                  {% elif todo.action_id[0] == 'todo_maned_completed' %}
-                    <span data-feather="check-circle" aria-hidden="true"></span>
-                  {% elif todo.action_id[0] == 'todo_maned_assign_pending' %}
-                    <span data-feather="inbox" aria-hidden="true"></span>
-                  {% endif %}
+                <span data-feather="{{ TODOS[todo.action_id[0]].feather | safe }}" aria-hidden="true"></span>
                 </a>
               </li>
             </ul>
