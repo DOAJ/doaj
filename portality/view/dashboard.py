@@ -16,7 +16,7 @@ blueprint = Blueprint('dashboard', __name__)
 def top_todo():
     # ~~-> Todo:Service~~
     svc = DOAJ.todoService()
-    todos = svc.top_todo(current_user._get_current_object(), size=100)  # FIXME: 100 is probably too large, just using that to get a good view of the data during dev
+    todos = svc.top_todo(current_user._get_current_object(), size=5)  # FIXME: 5 is just to shrink the page section down to make it easier to work on the activity area underneath
 
     # ~~-> EditorGroup:Model ~~
     egs = []

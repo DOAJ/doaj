@@ -8,6 +8,30 @@ class TodoService(object):
     ~~Todo:Service->DOAJ:Service~~
     """
 
+    def group_stats(self, group_id):
+        eg = models.EditorGroup.pull(group_id)
+        stats = {"editor_group" : eg.data}
+
+        q = GroupStatsQuery(eg.name)
+        resp = models.Application.query(q=q.query())
+
+        stats["total"] = resp.get("hits", {}).get("total", {}).get("value", 0)
+
+        assigned = 0
+        stats["by_editor"] = {}
+        for bucket in resp.get("aggregations", {}).get("editor", {}).get("buckets", []):
+            stats["by_editor"][bucket["key"]] = bucket["doc_count"]
+            assigned += bucket["doc_count"]
+
+        stats["unassigned"] = stats["total"] - assigned
+
+        stats["by_status"] = {}
+        for bucket in resp.get("aggregations", {}).get("status", {}).get("buckets", []):
+            stats["by_status"][bucket["key"]] = bucket["doc_count"]
+
+        return stats
+
+
     def top_todo(self, account, size=25):
         """
         Returns the top number of todo items for a given user
@@ -202,5 +226,42 @@ class TodoQuery(object):
         return {
             "exists" : {
                 "field" : field
+            }
+        }
+
+
+class GroupStatsQuery():
+    def __init__(self, group_name, editor_count=10):
+        self.group_name = group_name
+        self.editor_count = editor_count
+
+    def query(self):
+        return {
+            "track_total_hits" : True,
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "term": {
+                                "admin.editor_group.exact": self.group_name
+                            }
+                        }
+                    ]
+                }
+            },
+            "size" : 0,
+            "aggs" : {
+                "editor" : {
+                    "terms" : {
+                        "field" : "admin.editor.exact",
+                        "size" : self.editor_count
+                    }
+                },
+                "status" : {
+                    "terms" : {
+                        "field" : "admin.application_status.exact",
+                        "size" : len(constants.APPLICATION_STATUSES_ALL)
+                    }
+                }
             }
         }
