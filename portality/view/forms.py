@@ -64,6 +64,9 @@ class NotRole(object):
 
 
 class MustHaveRole(object):
+    """
+    ~~MustHaveRole:Validator~~
+    """
     def __init__(self, role, *args, **kwargs):
         self.role = role
 
@@ -86,6 +89,9 @@ class MustHaveRole(object):
 
 
 class EditorGroupForm(Form):
+    """
+    ~~EditorGroup:Form~~
+    """
     group_id = HiddenField("Group ID", [validators.Optional()])
     name = StringField("Group Name", [validators.DataRequired(), UniqueGroupName()])
     maned = StringField("Managing Editor", [validators.Optional(), MustHaveRole("admin")])

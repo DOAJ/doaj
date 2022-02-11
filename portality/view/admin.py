@@ -27,6 +27,7 @@ from portality.ui.messages import Messages
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.view.forms import EditorGroupForm, MakeContinuation
 
+# ~~Admin:Blueprint~~
 blueprint = Blueprint('admin', __name__)
 
 
@@ -486,6 +487,7 @@ def editor_group(group_id=None):
     if not current_user.has_role("modify_editor_groups"):
         abort(401)
 
+    # ~~->EditorGroup:Form~~
     if request.method == "GET":
         form = EditorGroupForm()
         if group_id is not None:

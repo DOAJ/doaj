@@ -3,6 +3,9 @@ from portality.models import Account
 
 
 class EditorGroup(DomainObject):
+    """
+    ~~EditorGroup:Model~~
+    """
     __type__ = "editor_group"
 
     @classmethod
@@ -17,6 +20,7 @@ class EditorGroup(DomainObject):
 
     @classmethod
     def groups_by_maned(cls, maned):
+        # ~~-> EditorGroupMember:Query~~
         q = EditorGroupMemberQuery(maned=maned)
         _iter = cls.iterate(q.query(), page_size=100)
         return _iter
@@ -100,6 +104,9 @@ class EditorGroupQuery(object):
 
 
 class EditorGroupMemberQuery(object):
+    """
+    ~~EditorGroupMember:Query->Elasticsearch:Technology~~
+    """
     def __init__(self, editor=None, associate=None, maned=None):
         self.editor = editor
         self.associate = associate
