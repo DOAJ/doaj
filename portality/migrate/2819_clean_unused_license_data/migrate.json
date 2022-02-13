@@ -6,7 +6,15 @@
 			"keepalive": "1m",
 			"functions" : [
 				"portality.migrate.2819_clean_unused_license_data.operations.clean"
-			]
+			],
+			"query": {
+				  "query": {
+					"exists": {
+					  "field": "bibjson.journal.license"
+					}
+				  }
+				},
+			"action": "index"
 		}
 	]
 }
