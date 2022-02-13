@@ -34,7 +34,7 @@
   <h1>Hi, {{ current_user.name }}!</h1>
 
   <section>
-    <h2 class="type-04">Here are your priorities:</h2>
+    <h2 class="type-04">Here are your priorities ({{ todos|length }}):</h2>
     <ol class="unstyled-list todo-list">
       {% for todo in todos %}
       {# TODO only show tasks for this user’s groups #}
