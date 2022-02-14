@@ -129,5 +129,10 @@
   main {
     margin-left: 75px;
     padding: $spacing-04;
+
+    @media screen and (min-width: 1480px) {
+      margin-right: 75px;
+      width: auto;
+    }
   }
 }
