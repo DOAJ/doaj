@@ -19,7 +19,7 @@ $.extend(true, doaj, {
 
                 if (status === "update_request" || status === "revisions_required") {
                     result.link = doaj.publisherUpdatesSearchConfig.journalUpdateUrl + resultobj.admin.current_journal;
-                    if (resultobj.admin.current_journal !== none && resultobj.admin.current_journal.is_in_doaj()){
+                    if (resultobj.admin.current_journal !== null && resultobj.admin.current_journal.is_in_doaj()){
                         result.label = '<span data-feather="edit-3" aria-hidden="true"></span><span>Edit</span>';
                     }
                 }
