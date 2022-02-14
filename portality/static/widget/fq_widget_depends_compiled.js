@@ -6675,9 +6675,9 @@ $.extend(true, doaj, {
                         this.currentQueryString = qs.queryString || "";
                     }
                 }
-                var frag = "<li class='alert'><p>You searched for <i>";
+                var frag = "<li class='alert'><p>You searched for ‘<i>";
                 frag += edges.escapeHtml(this.currentQueryString);
-                frag += "</i> and we found no results.</p>";
+                frag += "</i>’ and we found no results.</p>";
                 frag += "<p>Please check the following:</p><ul>";
                 frag += "<li>Check the spelling and make sure that there are no missing characters.</li>";
                 frag += "<li>Use fewer words in your search to make the search less specific.</li>";
