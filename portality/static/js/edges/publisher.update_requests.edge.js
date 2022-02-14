@@ -19,9 +19,7 @@ $.extend(true, doaj, {
 
                 if (status === "update_request" || status === "revisions_required") {
                     result.link = doaj.publisherUpdatesSearchConfig.journalUpdateUrl + resultobj.admin.current_journal;
-                    if (resultobj.admin.current_journal !== null && resultobj.admin.current_journal.is_in_doaj()){
-                        result.label = '<span data-feather="edit-3" aria-hidden="true"></span><span>Edit</span>';
-                    }
+                    result.label = '<span data-feather="edit-3" aria-hidden="true"></span><span>Edit</span>';
                 }
                 return result;
             }
@@ -30,7 +28,7 @@ $.extend(true, doaj, {
 
         init : function(params) {
             if (!params) {
-                params = {}
+                params = {};
             }
 
             var current_domain = document.location.host;
