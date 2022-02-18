@@ -1,0 +1,9 @@
+{
+	"elastic_search_host" : null,
+	"elastic_search_db" : null,
+	"confirm" : true,
+	"max_content_length" : 40000000,
+	"types" : {
+		"editor_group" : {"import" : true, "limit" : -1}
+	}
+}

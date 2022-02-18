@@ -107,11 +107,10 @@ def status():
     #res['notes'].append(memory_note)
     
     # check that all necessary ES nodes can actually be pinged from this machine
-    for eddr in [app.config['ELASTIC_SEARCH_HOST']] if isinstance(app.config['ELASTIC_SEARCH_HOST'], str) else app.config['ELASTIC_SEARCH_HOST']:
-        if not eddr.startswith('http'): eddr = 'http://' + eddr
-        if not eddr.endswith(':9200'): eddr += ':9200'
-        r = requests.get(eddr)
-        res['ping']['indices'][eddr] = r.status_code
+    for eddr in app.config['ELASTICSEARCH_HOSTS']:
+        es_addr = f'http://{eddr["host"]}:{eddr["port"]}'
+        r = requests.get(es_addr)
+        res['ping']['indices'][es_addr] = r.status_code
         res['stable'] = r.status_code == 200
         if r.status_code != 200:
             res['stable'] = False
@@ -119,15 +118,12 @@ def status():
             es_note = str(es_unreachable) + ' INDEXES UNREACHABLE'
     res['notes'].append(es_note)
         
-    # query ES for cluster health and nodes up
-    es_addr = str(app.config['ELASTIC_SEARCH_HOST'][0] if not isinstance(app.config['ELASTIC_SEARCH_HOST'], str) else app.config['ELASTIC_SEARCH_HOST']).rstrip('/')
-    if not es_addr.startswith('http'): es_addr = 'http://' + es_addr
-    if not es_addr.endswith(':9200'): es_addr += ':9200'
+    # query ES for cluster health and nodes up (uses second ES host in config)
     try:
-        es = requests.get(es_addr + '/_status').json()
+        es = requests.get(es_addr + '/_stats').json()
         res['index'] = { 'cluster': {}, 'shards': { 'total': es['_shards']['total'], 'successful': es['_shards']['successful'] }, 'indices': {} }
         for k, v in es['indices'].items():
-            res['index']['indices'][k] = { 'docs': v['docs']['num_docs'], 'size': int(math.ceil(v['index']['primary_size_in_bytes']) / 1024 / 1024) }
+            res['index']['indices'][k] = { 'docs': v['primaries']['docs']['count'], 'size': int(math.ceil(v['primaries']['store']['size_in_bytes']) / 1024 / 1024) }
         try:
             ces = requests.get(es_addr + '/_cluster/health')
             res['index']['cluster'] = ces.json()
@@ -256,11 +252,8 @@ def status():
         res['background']['info'].append('Error when trying to check background jobs for errors')
         res['stable'] = False
 
-
     resp = make_response(json.dumps(res))
     resp.mimetype = "application/json"
     return resp
 
-
 #{"query": {"bool": {"must": [{"term":{"status":"complete"}}]}}, "size": 10000, "sort": {"created_date": {"order": "desc"}}, "fields": "id"}
-

@@ -1382,28 +1382,28 @@ var formulaic = {
             this.init = function() {
                 var viewClass = edges.css_classes(this.ns, "view");
                 var closeClass = edges.css_classes(this.ns, "close");
+                var textarea = $("div[name='" + this.fieldDef["name"] + "__group']").find("textarea");
 
-                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
-                for (var i = 0; i < this.divs.length; i++) {
-                    var container = $(this.divs[i]);
+                for (var i = 0; i < textarea.length; i++) {
+                    var container = $(textarea[i]);
                     var modalId = "modal-" + this.fieldDef["name"] + "-" + i;
 
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
                     var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
 
-                    container.append(`<div><a href="#" class="` + viewClass + `">view note</a>
+                    $(`<button class="button ` + viewClass + `" style="margin: 0 1rem 1rem 0;">View note<span data-feather="eye" aria-hidden="true"/></button>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                             <div class="modal__dialog" role="document">
-                                <p class="label">NOTE</p>
+                                <p class="label">Note</p>
                                 <h3 class="modal__title">
                                     ` + date.val() + `
                                 </h3>
-                                ` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `
+                                <p>` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `</p>
                                 <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
                             </div>
                         </div>
                         </div>
-                    `);
+                    `).insertAfter(container);
                 }
 
                 var viewSelector = edges.css_class_selector(this.ns, "view");
@@ -1444,7 +1444,7 @@ var formulaic = {
                 this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
                 for (var i = 0 ; i < this.divs.length; i++) {
                     var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
+                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 0 1rem 0; border: 0; float: right;">Remove<span data-feather="x" aria-hidden="true"/></button>'));
                     feather.replace();
                 }
 
@@ -1566,7 +1566,7 @@ var formulaic = {
                     let f = this.fields[idx];
                     let s2_input = $($(f).select2());
                     $(f).on("focus", formulaic.widgets._select2_shift_focus);
-                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
+                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button">Remove</button> <span data-feather="x" aria-hidden="true"/>'));
                     if (idx !== 0) {
                         s2_input.attr("required", false);
                         s2_input.attr("data-parsley-validate-if-empty", "true");
@@ -1625,7 +1625,7 @@ var formulaic = {
                 for (var idx = 0; idx < this.fields.length; idx++) {
                     let f = this.fields[idx];
                     let jqf = $(f);
-                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
+                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
                     if (idx !== 0) {
                         jqf.attr("required", false);
                         jqf.attr("data-parsley-validate-if-empty", "true");
@@ -1702,7 +1702,7 @@ var formulaic = {
 
                 for (var idx = 0; idx < this.divs.length; idx++) {
                     let div = $(this.divs[idx]);
-                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button"><span data-feather="x" aria-hidden="true"/> Remove</button>'));
+                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
 
                     if (idx !== 0) {
                         let inputs = div.find(":input");
