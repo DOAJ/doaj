@@ -308,14 +308,6 @@ ass_ed:
   country: Cuba
   language: English, French
 
-- name: Danner Sagala
-  area: Science
-  year_since:
-  city: Bengkulu
-  country: Indonesia
-  language: Indonesian, English
-  photo: "sagala.jpg"
-
 - name: Débora Domingo-Calabuig
   area: Science, Technology
   year_since:
@@ -660,14 +652,6 @@ ass_ed:
   city:
   country:
   language: Spanish, English
-
-- name: Maryam Jamilah
-  area: Social Sciences
-  year_since:
-  city: Padang
-  country: Indonesia
-  language:
-  photo: "jamilah.jpg"
 
 - name: Melih Sever
   area: Social Sciences
