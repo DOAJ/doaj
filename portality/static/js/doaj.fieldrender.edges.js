@@ -29,6 +29,200 @@ $.extend(true, doaj, {
                     hideInactive: true
                 })
             })
+        },
+
+        applicationStatus : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "application_status",
+                category: "facet",
+                field: "admin.application_status.exact",
+                display: "Status",
+                deactivateThreshold: 1,
+                valueFunction: doaj.valueMaps.adminStatusMap,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        hasEditorGroup : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "has_editor_group",
+                category: "facet",
+                field: "index.has_editor_group.exact",
+                display: "Has Editor Group?",
+                deactivateThreshold : 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        hasEditor : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "has_editor",
+                category: "facet",
+                field: "index.has_editor.exact",
+                display: "Has Associate Editor?",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        editorGroup : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "editor_group",
+                category: "facet",
+                field: "admin.editor_group.exact",
+                display: "Editor Group",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        editor : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "editor",
+                category: "facet",
+                field: "admin.editor.exact",
+                display: "Editor",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        hasAPC : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "author_pays",
+                category: "facet",
+                field: "index.has_apc.exact",
+                display: "Publication charges?",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        classification : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "classification",
+                category: "facet",
+                field: "index.classification.exact",
+                display: "Classification",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        language : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "language",
+                category: "facet",
+                field: "index.language.exact",
+                display: "Journal Language",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        countryPublisher : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "country_publisher",
+                category: "facet",
+                field: "index.country.exact",
+                display: "Country of publisher",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        subject : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "subject",
+                category: "facet",
+                field: "index.subject.exact",
+                display: "Subject",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        publisher : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "publisher",
+                category: "facet",
+                field: "bibjson.publisher.name.exact",
+                display: "Publisher",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        journalLicence : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "journal_license",
+                category: "facet",
+                field: "index.license.exact",
+                display: "Journal License",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
         }
     },
 
@@ -44,6 +238,13 @@ $.extend(true, doaj, {
             'ready' : 'Ready',
             'rejected' : 'Rejected',
             'accepted' : 'Accepted'
+        },
+
+        adminStatusMap: function(value) {
+            if (doaj.valueMaps.applicationStatus.hasOwnProperty(value)) {
+                return doaj.valueMaps.applicationStatus[value];
+            }
+            return value;
         },
 
         displayYearPeriod : function(params) {
@@ -79,10 +280,31 @@ $.extend(true, doaj, {
 
         countFormat : edges.numFormat({
             thousandsSeparator: ","
-        })
+        }),
     },
 
     components : {
+        pager : function(id, category) {
+            return edges.newPager({
+                id: id,
+                category: category,
+                renderer: edges.bs3.newPagerRenderer({
+                    sizeOptions: [10, 25, 50, 100],
+                    numberFormat: doaj.valueMaps.countFormat,
+                    scroll: false
+                })
+            })
+        },
+
+        searchingNotification : function() {
+            return edges.newSearchingNotification({
+                id: "searching-notification",
+                category: "searching-notification",
+                finishedEvent: "edges:post-render",
+                renderer : doaj.renderers.newSearchingNotificationRenderer()
+            })
+        },
+
         subjectBrowser : function(params) {
             var tree = params.tree;
             var hideEmpty = edges.getParam(params.hideEmpty, false);
@@ -133,7 +355,7 @@ $.extend(true, doaj, {
                     showCounts: false
                 })
             })
-        },
+        }
     },
 
     templates : {
@@ -3590,6 +3812,71 @@ $.extend(true, doaj, {
                 return false;
             }
         },
+    },
+
+    bulk : {
+        applicationMultiFormBox : function(edge_instance) {
+            return doaj.multiFormBox.newMultiFormBox({
+                edge : edge_instance,
+                selector: "#admin-bulk-box",
+                bindings : {
+                    editor_group : function(context) {
+                        autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
+                    }
+                },
+                validators : {
+                    application_status : function(context) {
+                        var val = context.find("#application_status").val();
+                        if (val === "") {
+                            return {valid: false};
+                        }
+                        return {valid: true};
+                    },
+                    editor_group : function(context) {
+                        var val = context.find("#editor_group").val();
+                        if (val === "") {
+                            return {valid: false};
+                        }
+                        return {valid: true};
+                    },
+                    note : function(context) {
+                        var val = context.find("#note").val();
+                        if (val === "") {
+                            return {valid: false};
+                        }
+                        return {valid: true};
+                    }
+                },
+                submit : {
+                    note : {
+                        data: function(context) {
+                            return {
+                                note: $('#note', context).val()
+                            };
+                        }
+                    },
+                    editor_group : {
+                        data : function(context) {
+                            return {
+                                editor_group: $('#editor_group', context).val()
+                            };
+                        }
+                    },
+                    application_status : {
+                        data : function(context) {
+                            return {
+                                application_status: $('#application_status', context).val()
+                            };
+                        }
+                    }
+                },
+                urls : {
+                    note : "/admin/applications/bulk/add_note",
+                    editor_group : "/admin/applications/bulk/assign_editor_group",
+                    application_status : "/admin/applications/bulk/change_status"
+                }
+            });
+        }
     }
 
 });

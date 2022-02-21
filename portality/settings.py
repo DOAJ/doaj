@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.0.2"
+DOAJ_VERSION = "6.0.4"
 API_VERSION = "3.0.0"
 
 ######################################
@@ -190,6 +190,8 @@ STORE_S3_SCOPES = {
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }
 }
+
+STORE_S3_MULTIPART_THRESHOLD = 5 * 1024**3   # 5GB
 
 ####################################
 # CMS configuration
@@ -683,7 +685,15 @@ QUERY_ROUTE = {
         "suggestion" : {
             "auth" : True,
             "role" : "admin",
-            "dao" : "portality.models.Suggestion"    # ~~->Application:Model~~
+            "query_filters" : ["not_update_request"],
+            "dao" : "portality.models.Application"    # ~~->Application:Model~~
+        },
+        # ~~->AdminUpdateRequestQuery:Endpoint~~
+        "update_requests": {
+            "auth": True,
+            "role": "admin",
+            "query_filters" : ["update_request"],
+            "dao": "portality.models.Application"  # ~~->Application:Model~~
         },
         # ~~->AdminEditorGroupQuery:Endpoint~~
         "editor,group" : {
