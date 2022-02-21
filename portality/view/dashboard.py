@@ -18,10 +18,5 @@ def top_todo():
     svc = DOAJ.todoService()
     todos = svc.top_todo(current_user._get_current_object(), size=5)  # FIXME: 5 is just to shrink the page section down to make it easier to work on the activity area underneath
 
-    # ~~-> EditorGroup:Model ~~
-    egs = []
-    if current_user.has_role("admin"):
-        egs = [e for e in models.EditorGroup.groups_by_maned(current_user.id)]
-
     # ~~-> Dashboard:Page~~
-    return render_template('dashboard/index.html', todos=todos, maned_of=egs)
+    return render_template('dashboard/index.html', todos=todos)

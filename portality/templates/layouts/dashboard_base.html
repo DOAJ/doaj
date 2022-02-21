@@ -57,13 +57,14 @@
         <nav class="secondary-nav">
 
             <dl>
-                {% if maned_of and maned_of|length > 0 %}
+                {% set managed_groups = maned_of() %}
+                {% if managed_groups and managed_groups|length > 0 %}
                     <dt>
                         Managing Editor of&nbsp;&nbsp;
                     </dt>
                     <dd>
                         <ul class="inlined-list tags">
-                            {% for eg in maned_of %}
+                            {% for eg in managed_groups %}
                                 <li class="tag tag--secondary">
                                     {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
                                     <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">{{ eg.name }}</a>
