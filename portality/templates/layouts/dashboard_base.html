@@ -1,5 +1,8 @@
 {% extends "layouts/base.html" %}
 
+{# we're potentially going need this in a few places in inherited files, so lets just put it here #}
+{% set managed_groups = maned_of() %}
+
 {% block base_content %}
     <body class="dashboard {% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
 
@@ -57,7 +60,6 @@
         <nav class="secondary-nav">
 
             <dl>
-                {% set managed_groups = maned_of() %}
                 {% if managed_groups and managed_groups|length > 0 %}
                     <dt>
                         Managing Editor of&nbsp;&nbsp;

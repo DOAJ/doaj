@@ -234,6 +234,46 @@ var doaj = {
         } else {
             doaj.scroller.doScroll = true;
         }
+    },
+
+    searchQuerySource : function (params) {
+        let terms = params.terms;
+        let term = params.term;
+        let queryString = params.queryString;
+
+        let musts = [];
+        if (terms) {
+            for (let term of terms) {
+                musts.push({"terms" : term})
+            }
+        }
+
+        if (term) {
+            for (let t of term) {
+                musts.push({"term" : t});
+            }
+        }
+
+        if (queryString) {
+            musts.push({
+                "query_string" : {
+                    "default_operator" : "AND",
+                    "query" : queryString
+                }
+            })
+        }
+
+        let query = {"match_all": {}}
+        if (musts.length > 0) {
+            query = {
+                "bool" : {
+                    "must" : musts
+                }
+            }
+        }
+
+        let source = JSON.stringify({"query" : query})
+        return encodeURIComponent(source)
     }
 };
 

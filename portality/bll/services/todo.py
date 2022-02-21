@@ -12,6 +12,14 @@ class TodoService(object):
         eg = models.EditorGroup.pull(group_id)
         stats = {"editor_group" : eg.data}
 
+        stats["editors"] = {}
+        editors = [eg.editor] + eg.associates
+        for editor in editors:
+            acc = models.Account.pull(editor)
+            stats["editors"][editor] = {
+                    "email" : acc.email
+                }
+
         q = GroupStatsQuery(eg.name)
         resp = models.Application.query(q=q.query())
 
@@ -244,6 +252,16 @@ class GroupStatsQuery():
                         {
                             "term": {
                                 "admin.editor_group.exact": self.group_name
+                            }
+                        }
+                    ],
+                    "must_not" : [
+                        {
+                            "terms" : {
+                                "admin.application_status.exact" : [
+                                    constants.APPLICATION_STATUS_ACCEPTED,
+                                    constants.APPLICATION_STATUS_REJECTED
+                                ]
                             }
                         }
                     ]
