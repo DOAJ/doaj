@@ -57,12 +57,12 @@
             <header>
               <p class="label label--secondary">{{ TODOS[todo.action_id[0]].text | safe }}</p>
               <h3>
-                <a href="{{ app_url }}" class="font-serif type-04">{{ todo.title }}</a>
+                <a href="{{ app_url }}" class="font-serif type-04" target="_blank">{{ todo.title }}</a>
               </h3>
             </header>
             <ul class="unstyled-list no-margins flex-end tags">
               {# TODO link to search results for this editor group #}
-              <li><a href="#" class="tag tag--secondary">{{ todo.object.editor_group }}</a></li>
+              <li><a href="#" class="tag tag--secondary" target="_blank">{{ todo.object.editor_group }}</a></li>
               <li>
                 <a
                   href="#"
