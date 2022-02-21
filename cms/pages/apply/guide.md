@@ -7,8 +7,8 @@ sticky_sidenav: true
 featuremap: ~~GuideToApplying:Fragment~~
 
 ---
-~~Version 1.0 (November 1.0)~~
-Version: 1.1 (December 2021 - a clarification to endogney criterion)
+<s>Version 1.0 (November 1.0)</s><br>
+Version: 1.1 (December 2021 - a clarification to endogeny criterion)
 
 Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them. A [PDF version of the application form](/static/doaj/docs/2021-02-17-DOAJQuestions.pdf) is available for reference only.
 
