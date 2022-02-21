@@ -12,17 +12,17 @@
             "feather": "clock"
         },
         constants.TODO_MANED_READY: {
-            "text" : "Make a decision on a <strong>ready</strong> application",
+            "text" : "<strong>Ready</strong>",
             "colour" : "var(--dark-green)",
             "feather": "thumbs-up"
         },
         constants.TODO_MANED_COMPLETED: {
-            "text" : "Review a <strong>completed</strong> application",
+            "text" : "<strong>Completed</strong>",
             "colour" : "var(--mid-green)",
             "feather": "check-circle"
         },
         constants.TODO_MANED_ASSIGN_PENDING: {
-            "text" : "Assign a <strong>pending</strong> application",
+            "text" : "<strong>Pending</strong> application",
             "colour" : "var(--yellow)",
             "feather": "inbox"
         }
@@ -68,6 +68,7 @@
                   href="#"
                   class="tag"
                   style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
+                  target="_blank"
                 >
                 <span data-feather="{{ TODOS[todo.action_id[0]].feather | safe }}" aria-hidden="true"></span>
                 </a>
