@@ -297,6 +297,17 @@ def search_query_source_wrapper():
     return dict(search_query_source=search_query_source)
 
 
+@app.context_processor
+def maned_of_wrapper():
+    def maned_of():
+        # ~~-> EditorGroup:Model ~~
+        egs = []
+        if current_user.has_role("admin"):
+            egs = [e for e in models.EditorGroup.groups_by_maned(current_user.id)]
+        return egs
+    return dict(maned_of=maned_of)
+
+
 # ~~-> Account:Model~~
 # ~~-> AuthNZ:Feature~~
 @app.before_request

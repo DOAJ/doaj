@@ -18,10 +18,5 @@ def top_todo():
     svc = DOAJ.todoService()
     todos = svc.top_todo(current_user._get_current_object(), size=100)  # FIXME: 100 is probably too large, just using that to get a good view of the data during dev
 
-    # ~~-> EditorGroup:Model ~~
-    egs = []
-    if current_user.has_role("admin"):
-        egs = [e for e in models.EditorGroup.groups_by_maned(current_user.id)]
-
     # ~~-> Dashboard:Page~~
-    return render_template('dashboard/index.html', todos=todos, maned_of=egs)
+    return render_template('dashboard/index.html', todos=todos)
