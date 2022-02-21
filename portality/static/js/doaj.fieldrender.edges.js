@@ -3552,7 +3552,8 @@ $.extend(true, doaj, {
                     var result = '<p><a class="edit_suggestion_link button" href="';
                     result += params.editUrl;
                     result += resultobj['id'];
-                    result += '">' + linkName + '</a></p>';
+                    result += '" target="_blank"';
+                    result += '>' + linkName + '</a></p>';
                     return result;
                 }
                 return false;
@@ -3565,7 +3566,8 @@ $.extend(true, doaj, {
                     var result = '<br/><p><a class="readonly_journal_link button" href="';
                     result += params.readOnlyJournalUrl;
                     result += resultobj.admin.current_journal;
-                    result += '">View journal being updated</a></p>';
+                    result += '" target="_blank"';
+                    result += '>View journal being updated</a></p>';
                     return result;
                 }
                 return false;
@@ -3581,7 +3583,8 @@ $.extend(true, doaj, {
                     var result = '<p><a class="edit_journal_link button button--secondary" href="';
                     result += params.editUrl;
                     result += resultobj['id'];
-                    result += '">Edit this journal</a></p>';
+                    result += '" target="_blank"';
+                    result += '>Edit this journal</a></p>';
                     return result;
                 }
                 return false;

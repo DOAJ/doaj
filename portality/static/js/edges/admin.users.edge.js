@@ -7,7 +7,8 @@ $.extend(true, doaj, {
             var result = '<a class="edit_user_link button" href="';
             result += doaj.userSearchConfig.userEditUrl;
             result += resultobj['id'];
-            result += '">Edit this user</a>';
+            result += '" target="_blank"';
+            result += '>Edit this user</a>';
             return result;
         },
 
