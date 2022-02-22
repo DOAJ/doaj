@@ -2198,12 +2198,13 @@ $.extend(true, doaj, {
                 var frag = "<li class='alert'><p>You searched for ‘<i>";
                 frag += edges.escapeHtml(this.currentQueryString);
                 frag += "</i>’ and we found no results.</p>";
-                frag += "<p>Please check the following:</p><ul>";
-                frag += "<li>Check the spelling and make sure that there are no missing characters.</li>";
-                frag += "<li>Use fewer words in your search to make the search less specific.</li>";
-                frag += "<li>Try removing some of the filters you have set.</li>";
-                frag += "<li>Retry your search in English as much of the index uses English terms.</li>";
-                frag += "</ul></li>";
+                frag += "<p>Please try the following:</p><ul>\
+                    <li>Check the spelling and make sure that there are no missing characters.</li>\
+                    <li>Use fewer words in your search to make the search less specific.</li>\
+                    <li>Remove some of the filters you have set.</li>\
+                    <li>Do your search again in English as much of the index uses English terms.</li>\
+                    </ul></li>\
+                ";
 
                 if (this.component.results === false) {
                     frag = "";
