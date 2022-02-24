@@ -55,6 +55,7 @@ When the author retains copyright, transfers or grants exclusive commercial righ
 **An open access journal cannot restrict the rights of the author to fair use only.** This is not open access and we do not accept journals with these restrictions. 
  
 An author cannot be restricted to fair use when:
+
  	- they are the copyright holder
  	- the publisher has copyright transferred to them, and the work is licensed with a CC license. The terms of the license apply to the author as well as other users.
 
