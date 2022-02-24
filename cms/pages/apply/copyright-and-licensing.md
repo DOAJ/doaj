@@ -35,20 +35,20 @@ Therefore it is important to understand that:
 
 When the author retains copyright without restrictions:
  
- 	- the license applies to the readers and the publisher 
- 	- the license does not apply to the author
+	- the license applies to the readers and the publisher 
+	- the license does not apply to the author
  	
 When the publisher has copyright transferred to them:
  
- 	- the license applies to the readers and the author
+ - the license applies to the readers and the author
  	
 When the author retains copyright and grants exclusive publishing rights to the publisher:
  
- 	- the license applies to the readers and the author
+ - the license applies to the readers and the author
  	
 When the author retains copyright, transfers or grants exclusive commercial rights to the publisher, and a non-commercial license is used:
  
- 	- the license applies to the readers and the author
+ - the license applies to the readers and the author
  
 ## Fair use
  
@@ -56,8 +56,8 @@ When the author retains copyright, transfers or grants exclusive commercial righ
  
 An author cannot be restricted to fair use when:
 
- 	- they are the copyright holder
- 	- the publisher has copyright transferred to them, and the work is licensed with a CC license. The terms of the license apply to the author as well as other users.
+ - they are the copyright holder
+ - the publisher has copyright transferred to them, and the work is licensed with a CC license. The terms of the license apply to the author as well as other users.
 
 Common incorrect restrictions of fair use are when a signed publishing agreement states that the author is only allowed to use the work in the classroom, or on a personal website, or place a copy in university repository.
 
