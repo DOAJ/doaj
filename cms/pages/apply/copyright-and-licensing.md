@@ -34,9 +34,9 @@ In some cases, we will accept a publisher's own license if it is broadly equival
 Therefore it is important to understand that:
 
 When the author retains copyright without restrictions:
- 
-	- the license applies to the readers and the publisher 
-	- the license does not apply to the author
+
+ - the license applies to the readers and the publisher 
+ - the license does not apply to the author
  	
 When the publisher has copyright transferred to them:
  
