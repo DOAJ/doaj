@@ -396,13 +396,6 @@ ass_ed:
   language: Indonesian, English
   photo: "handoko.jpg"
 
-- name: Haydar Oruç
-  area: Humanities
-  year_since:
-  city: Sakarya
-  country: Turkey
-  language: Turkish, English
-
 - name: Hyun Jung Yi
   area:
   year_since:
@@ -913,13 +906,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Taner Kemal Erdağ
-  area: Medicine
-  year_since:
-  city: Ízmir
-  country: Turkey
-  language: Turkish, English
-
 - name: Teodor Mihaela
   area: Humanities, Social Sciences
   year_since:
@@ -941,20 +927,12 @@ ass_ed:
   country: Italy
   language: Italian, English
 
-
 - name: Umar Khasan
   area: Social Sciences
   year_since:
   city: Bangkalan
   country: Indonesia
-  language: Indonesian, English
-
-- name: Volkan Demir
-  area: Science
-  year_since:
-  city: Istanbul
-  country: Turkey
-  language: Turkish, English
+  language: Indonesian, English  
   
 - name: Weldy St-Fleur
   area: Social Sciences
