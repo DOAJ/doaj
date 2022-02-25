@@ -461,13 +461,6 @@ ass_ed:
   language: Portuguese, English
   photo: "sousa.JPG"
 
-- name: Johanna Glader
-  area:
-  year_since:
-  city:
-  country:
-  language: English
-
 - name: JooYeun Son
   area:
   year_since:
@@ -498,14 +491,6 @@ ass_ed:
   country: Brazil
   language: Portuguese, English
   photo: "jlima.jpg"
-
-- name: Jussi Mannisto
-  area:
-  year_since:
-  city:
-  country:
-  language: English
-
 
 - name: JuYeon Park
   area:
@@ -551,13 +536,6 @@ ass_ed:
   city: Charlottetown
   country: Canada
   language: English
-
-- name: Leena Huovinen
-  area: Humanities and Social Sciences
-  year_since:
-  city:
-  country: Finland
-  language: Finnish, English
 
 - name: Lena Lönngren
   area:
@@ -823,15 +801,6 @@ ass_ed:
   country: USA
   language: English
   photo: "rjames.png"
-
-- name: Riitta Koikkalainen
-  area: Philosophy, Sociology, and Cultural Studies
-  year_since:
-  city: Helsinki
-  country: Finland
-  language: Finnish, English
-  photo: "riitta.jpg"
-
 
 - name: Roberto Sarmiento
   area: Engineering
