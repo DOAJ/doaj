@@ -1,3 +1,5 @@
+# FIXME: this has been speedily upgraded following ES upgrade, will need another pass to strip out esprit fully. (SE 2022-02-25)
+
 import esprit, os, shutil, gzip, uuid
 from portality import models
 from portality.core import app, es_connection
@@ -31,9 +33,9 @@ def _reset_password(record):
     record.set_password(uuid.uuid4().hex)
     return record
 
+
 # transform functions - return the JSON data source since
 # esprit doesn't understand our model classes
-
 def anonymise_account(record):
     try:
         a = models.Account(**record)
@@ -123,24 +125,30 @@ if __name__ == '__main__':
     if args.clean:
         mainStore.delete_container(container)
 
-    if es_connection.index_per_type:
-        doaj_types = filter(lambda x: x.startswith(app.config['ELASTIC_SEARCH_DB_PREFIX']), esprit.raw.list_indexes(es_connection))
+    if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+        doaj_types = es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
         type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types]
         print(type_list)
     else:
-        type_list = esprit.raw.list_types(connection=es_connection)
+        #type_list = esprit.raw.list_types(connection=es_connection)
+        print("FIXME: shared index has been stripped out, use only with index per type")
+        exit(1)
+
+    esprit.raw.INDEX_PER_TYPE_SUBSTITUTE = app.config.get('INDEX_PER_TYPE_SUBSTITUTE', '_doc')          # fixme, this is gum and tape.
+    conn = esprit.raw.Connection(app.config.get("ELASTIC_SEARCH_HOST"), index='')
 
     for type_ in type_list:
         filename = type_ + ".bulk"
         output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
         print((dates.now() + " " + type_ + " => " + output_file + ".*"))
+        iter_q = {"query": {"match_all": {}}, "sort": [{"_id": {"order": "asc"}}]}
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
-            filenames = esprit.tasks.dump(es_connection, ipt_prefix(type_), limit=limit, transform=transform,
+            filenames = esprit.tasks.dump(conn, ipt_prefix(type_), q=iter_q, limit=limit, transform=transform,
                                           out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
                                           es_bulk_fields=["_id"])
         else:
-            filenames = esprit.tasks.dump(es_connection, ipt_prefix(type_), limit=limit,
+            filenames = esprit.tasks.dump(conn, ipt_prefix(type_), q=iter_q, limit=limit,
                                           out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
                                           es_bulk_fields=["_id"])
 
