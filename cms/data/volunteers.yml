@@ -29,12 +29,6 @@ ed:
   language: English
 
 
-- name: Eeva Savolainen
-  area: Library and Information Studies
-  year_since:
-  city: Espoo
-  country: Finland
-  language: Finnish, English
 
 - name: Fei Yu
   area: Librarianship, Scholarly Publishing, Data Management
@@ -300,6 +294,14 @@ ass_ed:
   country: Nigeria
   language: English, French
   photo: "aleru.jpg"
+  
+- name: Danner Sagala
+  area: Agricultural Sciences
+  year_since:
+  city: Bengkulu
+  country: Indonesia
+  language: Indonesian, English
+  photo:
 
 - name: Dania Deroy Dominguez
   area: Social Sciences
@@ -402,13 +404,6 @@ ass_ed:
   language: Indonesian, English
   photo: "handoko.jpg"
 
-- name: Haydar Oruç
-  area: Humanities
-  year_since:
-  city: Sakarya
-  country: Turkey
-  language: Turkish, English
-
 - name: Hyun Jung Yi
   area:
   year_since:
@@ -467,13 +462,6 @@ ass_ed:
   language: Portuguese, English
   photo: "sousa.JPG"
 
-- name: Johanna Glader
-  area:
-  year_since:
-  city:
-  country:
-  language: English
-
 - name: JooYeun Son
   area:
   year_since:
@@ -504,14 +492,6 @@ ass_ed:
   country: Brazil
   language: Portuguese, English
   photo: "jlima.jpg"
-
-- name: Jussi Mannisto
-  area:
-  year_since:
-  city:
-  country:
-  language: English
-
 
 - name: JuYeon Park
   area:
@@ -557,13 +537,6 @@ ass_ed:
   city: Charlottetown
   country: Canada
   language: English
-
-- name: Leena Huovinen
-  area: Humanities and Social Sciences
-  year_since:
-  city:
-  country: Finland
-  language: Finnish, English
 
 - name: Lena Lönngren
   area:
@@ -830,15 +803,6 @@ ass_ed:
   language: English
   photo: "rjames.png"
 
-- name: Riitta Koikkalainen
-  area: Philosophy, Sociology, and Cultural Studies
-  year_since:
-  city: Helsinki
-  country: Finland
-  language: Finnish, English
-  photo: "riitta.jpg"
-
-
 - name: Roberto Sarmiento
   area: Engineering
   year_since:
@@ -950,13 +914,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Taner Kemal Erdağ
-  area: Medicine
-  year_since:
-  city: Ízmir
-  country: Turkey
-  language: Turkish, English
-
 - name: Teodor Mihaela
   area: Humanities, Social Sciences
   year_since:
@@ -978,20 +935,12 @@ ass_ed:
   country: Italy
   language: Italian, English
 
-
 - name: Umar Khasan
   area: Social Sciences
   year_since:
   city: Bangkalan
   country: Indonesia
-  language: Indonesian, English
-
-- name: Volkan Demir
-  area: Science
-  year_since:
-  city: Istanbul
-  country: Turkey
-  language: Turkish, English
+  language: Indonesian, English  
   
 - name: Weldy St-Fleur
   area: Social Sciences
