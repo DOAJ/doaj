@@ -294,6 +294,14 @@ ass_ed:
   country: Nigeria
   language: English, French
   photo: "aleru.jpg"
+  
+- name: Danner Sagala
+  area: Agricultural Sciences
+  year_since:
+  city: Bengkulu
+  country: Indonesia
+  language: Indonesian, English
+  photo:
 
 - name: Dania Deroy Dominguez
   area: Social Sciences
