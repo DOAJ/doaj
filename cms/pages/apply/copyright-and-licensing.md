@@ -19,6 +19,10 @@ Even when the author retains copyright, restrictions may sometimes be imposed by
  - The publisher requires exclusive publishing rights. This means that the author no longer holds copyright without restrictions.
  - The publisher requires a transfer or exclusive license of commercial rights. This means the author no longer holds copyright without restrictions.
 
+Copyright terms must not contradict the licensing terms or the terms of the open access policy.
+
+“All rights reserved” is never appropriate for open access content. "Fair use" is not open access and we do not accept journals with these restrictions. 
+
 ## Licensing
 
 DOAJ recommends the use of [Creative Commons](https://creativecommons.org/share-your-work/) licenses to inform readers how published content can be used. We do not specify which license should be used. You may [select the Creative Commons license](https://creativecommons.org/choose/) that best meets the needs of the journal, or give authors the option to choose a license for their paper. 
@@ -33,34 +37,16 @@ In some cases, we will accept a publisher's own license if it is broadly equival
 
 Therefore it is important to understand that:
 
-When the author retains copyright without restrictions:
+The license applies to the readers and the author when:
 
- - the license applies to the readers and the publisher 
- - the license does not apply to the author
- 	
-When the publisher has copyright transferred to them:
- 
- - the license applies to the readers and the author
- 	
-When the author retains copyright and grants exclusive publishing rights to the publisher:
- 
- - the license applies to the readers and the author
- 	
-When the author retains copyright, transfers or grants exclusive commercial rights to the publisher, and a non-commercial license is used:
- 
- - the license applies to the readers and the author
- 
-## Fair use
- 
-**An open access journal cannot restrict the rights of the author to fair use only.** This is not open access and we do not accept journals with these restrictions. 
- 
-An author cannot be restricted to fair use when:
+- copyright has been transferred to the publisher
+- the author retains copyright and grants exclusive publishing rights to the publisher
+- the author retains copyright, transfers or grants exclusive commercial rights to the publisher, and a non-commercial license is used
 
- - they are the copyright holder
- - the publisher has copyright transferred to them, and the work is licensed with a CC license. The terms of the license apply to the author as well as other users.
+The license applies to the readers and the publisher when
 
-Common incorrect restrictions of fair use are when a signed publishing agreement states that the author is only allowed to use the work in the classroom, or on a personal website, or place a copy in university repository.
+- the author retains copyright without restrictions
 
 ## Further reading
 
-Further reading and examples are [available on our blog](https://blog.doaj.org/?s=copyright+and+licensing+-+part).
+Further reading and more examples are [available as a downloadable presentation](https://drive.google.com/drive/folders/190BgMV0ImGk-gUpHu5ai_R-uvO8NDAB8?usp=sharing).
