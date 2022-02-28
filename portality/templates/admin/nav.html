@@ -1,5 +1,6 @@
 {% set journals = url_for("admin.index") %}
 {% set applications = url_for("admin.suggestions") %}
+{% set update_requests = url_for("admin.update_requests") %}
 {% set users = url_for("account.index") %}
 {% set site_search = url_for("admin.admin_site_search") %}
 {% set editor_groups = url_for("admin.editor_group_search") %}
@@ -7,7 +8,8 @@
 
 {% set tabs = [
     (journals, "Journals"),
-    (applications, "Applications/update requests"),
+    (applications, "Applications"),
+    (update_requests, "Update Requests"),
     (users, "Users"),
     (site_search, "Journals & articles"),
     (editor_groups, "Editor groups"),

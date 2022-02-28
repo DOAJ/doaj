@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from copy import deepcopy
 from collections import OrderedDict
 from portality import models
+from portality.dao import ScrollTimeoutException
 from portality.lib import plugin
 from portality.lib.dataobj import DataStructureException
 from portality.lib.seamless import SeamlessException
