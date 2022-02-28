@@ -21,7 +21,9 @@ Even when the author retains copyright, restrictions may sometimes be imposed by
 
 Copyright terms must not contradict the licensing terms or the terms of the open access policy.
 
-“All rights reserved” is never appropriate for open access content. "Fair use" is not open access and we do not accept journals with these restrictions. 
+“All rights reserved” is never appropriate for open access content.
+
+"Fair use" is not open access and we do not accept journals with these restrictions. 
 
 ## Licensing
 
