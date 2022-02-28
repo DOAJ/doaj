@@ -1,4 +1,5 @@
 from flask_login import current_user
+from portality.bll import exceptions
 from portality.dao import DomainObject
 from portality.core import app
 from portality.models.v2.bibjson import JournalLikeBibJSON
@@ -822,6 +823,8 @@ class Journal(JournalLikeObject):
         if self.current_application:
             from portality.models.v2.application import Application
             ca = Application.pull(self.current_application)
+            if ca is None:
+                raise exceptions.IllegalStatusException(message="Data mismatch: current application of this journal does not exist")
             ca.add_note("Update request was automatically rejected because the associated journal was withdrawn or "
                         "deleted.")
             ca.save()
