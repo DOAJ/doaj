@@ -37,15 +37,13 @@ In some cases, we will accept a publisher's own license if it is broadly equival
 
 **The terms of the Creative Commons (or other) license do not apply to the copyright holder.**
 
-Therefore it is important to understand that:
-
-The license applies to the readers and the author when:
+Therefore the license applies to the readers and the author when:
 
 - copyright has been transferred to the publisher
 - the author retains copyright and grants exclusive publishing rights to the publisher
 - the author retains copyright, transfers or grants exclusive commercial rights to the publisher, and a non-commercial license is used
 
-The license applies to the readers and the publisher when
+And therefore the license applies to the readers and the publisher when
 
 - the author retains copyright without restrictions
 
