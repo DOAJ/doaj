@@ -7,9 +7,6 @@ sticky_sidenav: true
 featuremap: ~~GuideToApplying:Fragment~~
 
 ---
-<s>Version 1.0 (November 1.0)</s><br>
-*Version: 1.1 (December 2021 - a clarification to endogeny criterion)*
-
 Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them. A [PDF version of the application form](/static/doaj/docs/2021-02-17-DOAJQuestions.pdf) is available for reference only.
 
 ## Basic criteria for inclusion
@@ -269,3 +266,11 @@ Our criteria are in:
 - [Spanish](https://docs.google.com/document/d/1PN0droGJiuLzQSQA4VLLjd3ykSaFoc5RMsAFlexOuXA/edit?usp=sharing)
 - [Turkish](https://docs.google.com/document/d/1phq4wUlmt2nsg-XNuuYIP3DCxQqf62n6/edit?usp=sharing&ouid=103701399945762093209&rtpof=true&sd=true)
 
+---
+
+## Change  log
+
+This is Version 1.1 of the Guide to applying.
+
+*Version: 1.1 (December 2021 - a clarification to endogeny criterion)*<br>
+<s>Version 1.0 (November 1.0)</s>
