@@ -18,7 +18,7 @@
 
 {% block publisher_content scoped %}
 
-    {% if obj["es_type"] == "application" and not obj.current_journal %}
+    {% if obj["es_type"] == "application" and and obj.application_type == "update_request" not obj.current_journal %}
         <h2 class="alert">
             <span data-feather="alert-triangle" aria-hidden="true"></span>
             Journal has been withdrawn or deleted. This update request was automatically rejected.
