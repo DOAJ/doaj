@@ -1,14 +1,14 @@
-{% if obj["es_type"] == "application" and (not current_journal or not current_journal.is_in_doaj()) %}
+<h1>{{ obj.bibjson().title }}</h1>
+{% include "application_form/_edit_status.html" %}
+{% include "application_form/_backend_validation.html" %}
+{% include "application_form/_contact.html" %}
+
+{% if obj["es_type"] == "application" and not obj.current_journal %}
     <h2 class="alert">
         <span data-feather="alert-triangle" aria-hidden="true"></span>
         Journal has been withdrawn or deleted. This update request was automatically rejected.
     </h2>
 {% endif %}
-
-<h1>{{ obj.bibjson().title }}</h1>
-{% include "application_form/_edit_status.html" %}
-{% include "application_form/_backend_validation.html" %}
-{% include "application_form/_contact.html" %}
 
 <form id="{{ form_id }}"
       data-context="{{ formulaic_context.name }}"

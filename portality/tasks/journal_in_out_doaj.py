@@ -61,6 +61,7 @@ class SetInDOAJBackgroundTask(BackgroundTask):
             j.set_in_doaj(in_doaj)
             j.save()
             j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
+            j.reject_update_requests()
             job.add_audit_message("Journal {x} set in_doaj to {y}, and all associated articles".format(x=journal_id, y=str(in_doaj)))
 
     def cleanup(self):

@@ -1,3 +1,4 @@
+from flask_login import current_user
 from portality.dao import DomainObject
 from portality.core import app
 from portality.models.v2.bibjson import JournalLikeBibJSON
@@ -816,6 +817,18 @@ class Journal(JournalLikeObject):
         for article in self.all_articles():
             article.set_in_doaj(self.is_in_doaj())
             article.save()
+
+    def reject_update_requests(self):
+        if self.current_application:
+            from portality.models.v2.application import Application
+            ca = Application.pull(self.current_application)
+            ca.add_note("Update request was automatically rejected because the associated journal was withdrawn or "
+                        "deleted.")
+            ca.save()
+            from portality.bll.doaj import DOAJ
+            svc = DOAJ.applicationService()
+            svc.reject_application(ca, current_user._get_current_object())
+
 
     def prep(self, is_update=True):
         self._ensure_in_doaj()
