@@ -34,6 +34,17 @@ The work done by the [DOAJ Team](/about/team/) is supported by over 100 voluntar
 
 DOAJ also has a global network of Ambassadors who promote open access and best practice in their regions. Our Ambassadors are bound by an agreement and must declare all conflicts of interest.
 
+## Zero tolerance policy
+
+We expect the members of our Team, our volunteers and our Ambassadors to always be treated courteously and with respect for the work they are doing. They should not be subject to abusive behaviour in any form, which includes:
+
+- rude, disrespectful and offensive behaviour, including derogatory remarks or anything which amounts to verbal or emotional abuse in person or in communications
+- sexually inappropriate comments or behaviour
+- racist and discriminatory abuse
+- threats of physical violence
+- aggressive and violent behaviour
+
+
 ## Partnerships and collaborations
 
 DOAJ partners with many organisations. The nature of the partnerships vary and may include membership, contracts for work, exchanges of information or services, initiative signatories, or access to information resources that assist DOAJ with our application review process.
