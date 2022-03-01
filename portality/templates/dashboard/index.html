@@ -1,41 +1,79 @@
 {% extends "layouts/dashboard_base.html" %}
 {# ~~Dashboard:Page~~ #}
 {% set TODOS = {
-        constants.TODO_MANED_STALLED: "Chase <strong>stalled</strong> application",
-        constants.TODO_MANED_FOLLOW_UP_OLD: "Follow up with <strong>old<strong> application",
-        constants.TODO_MANED_READY: "Make a decision on <strong>ready<strong> application",
-        constants.TODO_MANED_COMPLETED: "Review <strong>completed<strong> application",
-        constants.TODO_MANED_ASSIGN_PENDING: "Assign <strong>pending<strong> application"
+        constants.TODO_MANED_STALLED: {
+            "text" : "Chase a <strong>stalled</strong> application",
+            "colour" : "var(--salmon)",
+            "feather": "coffee"
+        },
+        constants.TODO_MANED_FOLLOW_UP_OLD: {
+            "text": "Follow up with an <strong>old</strong> application",
+            "colour" : "var(--sanguine)",
+            "feather": "clock"
+        },
+        constants.TODO_MANED_READY: {
+            "text" : "<strong>Ready</strong>",
+            "colour" : "var(--dark-green)",
+            "feather": "thumbs-up"
+        },
+        constants.TODO_MANED_COMPLETED: {
+            "text" : "<strong>Completed</strong>",
+            "colour" : "var(--mid-green)",
+            "feather": "check-circle"
+        },
+        constants.TODO_MANED_ASSIGN_PENDING: {
+            "text" : "<strong>Pending</strong> application",
+            "colour" : "var(--yellow)",
+            "feather": "inbox"
+        }
     }
 %}
 
 {% block content %}
 <main>
-
   <h1>Hi, {{ current_user.name }}!</h1>
 
   <section>
-    <h2 class="label">Here are your priorities:</h2>
-    <ol class="unstyled-list">
+    <h2 class="type-04">Here are your priorities ({{ todos|length }}):</h2>
+    <ol class="unstyled-list todo-list">
       {% for todo in todos %}
       {# TODO only show tasks for this user’s groups #}
       {# TODO integrated priority in list display
       {{ todo.boost }}
        #}
-      <li class="card card--compact">
+       {% set app_url =  url_for('admin.application', application_id=todo.object_id) %}
+      <li
+        class="card card--compact todo-list__item"
+        data-app-url="{{ app_url }}"
+        style="border-color: {{ TODOS[todo.action_id[0]].colour }};"
+      >
         <article class="row">
-          <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="col-xs-1 label label--secondary font-mono">{{ todo.date.strftime('%d %b %Y') }}</time>
+          <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="col-xs-1 label label--secondary font-mono">
+            <span style="font-size: 27px;">{{ todo.date.strftime('%d') }}</span><br>
+            <span style="font-size: 18.55px;">{{ todo.date.strftime('%b') }}</span><br>
+            <span style="font-size: 14.35px;">{{ todo.date.strftime('%Y') }}</span>
+          </time>
           <div class="col-xs-11 flex-space-between">
             <header>
-              <p class="label label--secondary">{{ TODOS[todo.action_id[0]] | safe }}</p>
+              <p class="label label--secondary">{{ TODOS[todo.action_id[0]].text | safe }}</p>
               <h3>
-                <a href="{{ url_for('admin.application', application_id=todo.object_id) }}">{{ todo.title }}</a>
+                <a href="{{ app_url }}" class="font-serif type-04" target="_blank">{{ todo.title }}</a>
               </h3>
             </header>
-            <dl class="no-margins flex-end-col">
-              <dt class="sr-only">Team</dt>
-              <dd><a href="#" class="tag">{{ todo.object.editor_group }}</a></dd>
-            </dl>
+            <ul class="unstyled-list no-margins flex-end tags">
+              {# TODO link to search results for this editor group #}
+              <li><a href="#" class="tag tag--secondary" target="_blank">{{ todo.object.editor_group }}</a></li>
+              <li>
+                <a
+                  href="#"
+                  class="tag"
+                  style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
+                  target="_blank"
+                >
+                <span data-feather="{{ TODOS[todo.action_id[0]].feather | safe }}" aria-hidden="true"></span>
+                </a>
+              </li>
+            </ul>
           </div>
         </article>
       </li>
@@ -129,7 +167,7 @@
       <article id="panel-2" role="tabpanel" tabindex="0" aria-labelledby="tab-2" hidden>
 
       </article>
-
+nxnxxxxxc
       <article id="panel-3" role="tabpanel" tabindex="0" aria-labelledby="tab-3" hidden>
 
       </article>

@@ -2,6 +2,10 @@
 
 .dashboard {
 
+  h1 {
+    margin: 0;
+  }
+
   .primary-nav {
     li {
       margin-right: $spacing-04;
@@ -39,8 +43,9 @@
     padding-right: $spacing-04;
     font-size: smaller;
 
-    dl, dt, dd {
+    dt, dd {
       display: inline-block;
+      margin-top: $spacing-04;
     }
   }
 
@@ -96,8 +101,38 @@
 
   }
 
+  .todo-list__item {
+    border-left: 10px solid;
+
+    h3 {
+      margin-bottom: 0;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    svg {
+      padding: 0;
+    }
+
+    .tag {
+      margin-bottom: 0;
+    }
+
+    &:hover {
+      background-color: $light-grey;
+    }
+
+  }
+
   main {
     margin-left: 75px;
     padding: $spacing-04;
+
+    @media screen and (min-width: 1480px) {
+      margin-right: 75px;
+      width: auto;
+    }
   }
 }
