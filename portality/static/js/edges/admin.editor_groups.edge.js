@@ -57,20 +57,20 @@ $.extend(true, doaj, {
                 }),
 
                 // facets
-                // edges.newRefiningANDTermSelector({
-                //     id: "name_keywords",
-                //     category: "facet",
-                //     field: "name.exact",
-                //     display: "Name",
-                //     deactivateThreshold: 1,
-                //     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                //         controls: true,
-                //         open: true,
-                //         togglable: false,
-                //         countFormat: countFormat,
-                //         hideInactive: true
-                //     })
-                // }),
+                edges.newRefiningANDTermSelector({
+                    id: "maned",
+                    category: "facet",
+                    field: "maned.exact",
+                    display: "Managing Editor",
+                    deactivateThreshold: 1,
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: true,
+                        togglable: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
 
                 // configure the search controller
                 edges.newFullSearchController({
@@ -79,11 +79,13 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Created Date','field':'created_date'},
                         {'display':'Last Modified Date','field':'last_updated'},
+                        {'display':'Managing Editor ID','field':'maned'},
                         {'display':'Editor ID','field':'editor'},
                         {'display':'Group Name','field':'name.exact'}
                     ],
                     fieldOptions: [
                         {'display':'Group Name','field':'name'},
+                        {'display':'Managing Editor ID','field':'maned'},
                         {'display':'Editor ID','field':'editor'},
                         {'display':'Associate Editor ID','field':'associate'}
                     ],
@@ -142,6 +144,17 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "valueFunction" : doaj.adminEditorGroupSearch.linkedAssociates
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": 'Managing Editor: <a href="/account/',
+                                    "field": "maned",
+                                    "post" : '">'
+                                },
+                                {
+                                    "field": "maned",
+                                    "post" : "</a>"
                                 }
                             ],
                             [

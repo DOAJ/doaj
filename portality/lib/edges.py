@@ -17,6 +17,7 @@ def make_query(**params):
 
 
 class GeneralSearchQuery(object):
+    # ~~-> Edges:Query~~
     def __init__(self, terms=None, query_string=None):
         self.terms = None if terms is None else terms if isinstance(terms, list) else [terms]
         self.query_string = query_string
@@ -27,19 +28,15 @@ class GeneralSearchQuery(object):
             for term in self.terms:
                 musts.append({"terms" : term})
 
-        query = {"match_all" : {}}
         if self.query_string is not None:
-            query = {"query_string" : {"default_operator" : "AND", "query" : self.query_string}}
+            qs = {"query_string" : {"default_operator" : "AND", "query" : self.query_string}}
+            musts.append(qs)
 
+        query = {"match_all": {}}
         if len(musts) > 0:
             query = {
                 "bool" : {
-                    "filter" : {
-                        "bool": {
-                            "must": musts
-                        }
-                    },
-                    "must" : query
+                    "must": musts
                 }
             }
 

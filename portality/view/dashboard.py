@@ -1,6 +1,8 @@
 from flask import Blueprint
 from flask import render_template
 from flask_login import current_user, login_required
+
+from portality import models
 from portality.decorators import ssl_required
 from portality.bll import DOAJ
 
@@ -15,5 +17,6 @@ def top_todo():
     # ~~-> Todo:Service~~
     svc = DOAJ.todoService()
     todos = svc.top_todo(current_user._get_current_object(), size=100)  # FIXME: 100 is probably too large, just using that to get a good view of the data during dev
+
     # ~~-> Dashboard:Page~~
     return render_template('dashboard/index.html', todos=todos)
