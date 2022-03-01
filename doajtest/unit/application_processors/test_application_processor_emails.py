@@ -686,6 +686,12 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # an email is sent to the editor and assigned associate editor
         ready_application = models.Suggestion(**UPDATE_REQUEST_SOURCE_TEST_1)
         ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
+        jid = ready_application.current_journal
+        journal_source = JOURNAL_SOURCE_TEST_1
+        journal_source["id"] = jid
+        journal_source['admin']["in_doaj"] = True
+        current_journal = models.Journal(**journal_source)
+        current_journal.save()
 
         owner = models.Account()
         owner.set_id(ready_application.owner)
