@@ -380,7 +380,7 @@ class DomainObject(UserDict, object):
         except elasticsearch.NotFoundError:
             return None
         except elasticsearch.TransportError as e:
-            raise Exception("ES returned an error: {x}".format(x=json.dumps(e.info)))
+            raise Exception("ES returned an error: {x}".format(x=e.info))
         except Exception as e:
             return None
         if out is None:

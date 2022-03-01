@@ -2417,9 +2417,16 @@ $.extend(true, doaj, {
                         this.currentQueryString = qs.queryString || "";
                     }
                 }
-                var frag = "<li class='alert'><p>You searched for <i>'";
+                var frag = "<li class='alert'><p>You searched for ‘<i>";
                 frag += edges.escapeHtml(this.currentQueryString);
-                frag +="'</i> and we found no results.</p><p>Search terms must be in <strong>English</strong>.</p> <p>Try removing some of the filters you have set, modifying the text in the search box, or using less specific search terms.</p></li>";;
+                frag += "</i>’ and we found no results.</p>";
+                frag += "<p>Please try the following:</p><ul>\
+                    <li>Check the spelling and make sure that there are no missing characters.</li>\
+                    <li>Use fewer words in your search to make the search less specific.</li>\
+                    <li>Remove some of the filters you have set.</li>\
+                    <li>Do your search again in English as much of the index uses English terms.</li>\
+                    </ul></li>\
+                ";
 
                 if (this.component.results === false) {
                     frag = "";
