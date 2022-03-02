@@ -2,10 +2,10 @@
 
 {% include "_edges_common_css.html" %}
 
-{% block page_title %}Applications{% endblock %}
+{% block page_title %}Update requests{% endblock %}
 
 {% block admin_content %}
-    <h1 class="sr-only">Applications</h1>
+    <h1 class="sr-only">Update requests</h1>
     {% include "admin/_applications_and_update_requests_common.html" %}
 {% endblock %}
 
@@ -17,12 +17,12 @@
             applicationEditUrl : "{{ url_for('admin.application', application_id='') }}",
             journalsUrl : "{{ url_for('admin.index') }}",
             readOnlyJournalUrl: "{{ url_for('doaj.journal_readonly', journal_id="") }}",
-            searchPath : '/admin_query/suggestion/_search'
+            searchPath : '/admin_query/update_requests/_search'
         }
     });
     </script>
 
     {% include "admin/_applications_and_update_requests_common_js.html" %}
-    <script type="text/javascript" src="/static/js/edges/admin.applications.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript" src="/static/js/edges/admin.update_requests.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endblock %}
