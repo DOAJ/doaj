@@ -62,7 +62,7 @@
             </header>
             <ul class="unstyled-list no-margins flex-end tags">
               {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [todo.object.editor_group]}]) %}
-              <li><a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="tag tag--secondary">{{ todo.object.editor_group }}</a></li>
+              <li><a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="label tag tag--secondary">{{ todo.object.editor_group }}</a></li>
               <li>
                 {# TODO link to search results for this kind of task, across all editor groups #}
                 <a
