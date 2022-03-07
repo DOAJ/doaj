@@ -44,7 +44,7 @@
 <nav class="secondary-nav {{ extraClass }}">
     <div class="container">
         <h2 class="sr-only">Secondary actions</h2>
-        <ul class="nav-bar secondary-nav__menu" role="menu">
+        <ul class="nav-bar secondary-nav__menu" role="menubar">
 
             {% set columns = data.nav.entries|selectattr("secondary")|list %}
             {% for column in columns %}
@@ -53,35 +53,35 @@
             {% endfor %}
 
             {% if not current_user.is_anonymous %}
-                <li class="dropdown">
-                        <a href="" class="dropdown__trigger nav-bar__link" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <li class="dropdown" role="none">
+                        <a href="" class="dropdown__trigger nav-bar__link" id="menu-account" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" role="menuitem">
                             My Account
                             <span data-feather="chevron-down" aria-hidden="true"></span>
                         </a>
-                    <ul class="dropdown__menu" aria-labelledby="menu-account">
+                    <ul class="dropdown__menu" aria-labelledby="menu-account" role="menu">
                         {% if current_user.has_role("admin") %}
-                            <li>
-                                <a href="{{ url_for('admin.index') }}" class="dropdown__link">
+                            <li role="none">
+                                <a href="{{ url_for('admin.index') }}" class="dropdown__link" role="menuitem">
                                     Admin
                                 </a>
                             </li>
                         {% endif %}
                         {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
-                            <li>
-                                <a href="{{ url_for('editor.index') }}" class="dropdown__link">
+                            <li role="none">
+                                <a href="{{ url_for('editor.index') }}" class="dropdown__link" role="menuitem">
                                     Editor
                                 </a>
                             </li>
                         {% endif %}
                         {% if current_user.has_role("publisher") %}
-                            <li>
-                                <a href="{{ url_for('publisher.index') }}" class="dropdown__link">
+                            <li role="none">
+                                <a href="{{ url_for('publisher.index') }}" class="dropdown__link" role="menuitem">
                                     Publisher
                                 </a>
                             </li>
                         {% endif %}
-                        <li>
-                            <a href="{{ url_for('account.username', username=current_user.id) }}" class="dropdown__link">
+                        <li role="none">
+                            <a href="{{ url_for('account.username', username=current_user.id) }}" class="dropdown__link" role="menuitem">
                                 Settings
                             </a>
                         </li>
@@ -96,14 +96,14 @@
                 {% include "includes/header-secondary-navigation.html" %}
             {% endfor %}
 
-            <li class="secondary-nav__login">
+            <li class="secondary-nav__login" role="none">
                 {% if current_user.is_anonymous %}
-                    <a href="{{ url_for('account.login') }}" class="nav-bar__link">
+                    <a href="{{ url_for('account.login') }}" class="nav-bar__link" role="menuitem">
                         Login
                         <span data-feather="log-in" aria-hidden="true"></span>
                     </a>
                 {% else %}
-                    <a href="{{ url_for('account.logout') }}" class="nav-bar__link">
+                    <a href="{{ url_for('account.logout') }}" class="nav-bar__link" role="menuitem">
                         Logout
                         <span data-feather="log-out" aria-hidden="true"></span>
                     </a>
