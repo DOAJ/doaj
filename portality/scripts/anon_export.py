@@ -1,13 +1,15 @@
-# FIXME: this has been speedily upgraded following ES upgrade, will need another pass to strip out esprit fully. (SE 2022-02-25)
+import os, shutil, gzip, uuid
 
-import esprit, os, shutil, gzip, uuid
-from portality import models
+from portality import models, dao
 from portality.core import app, es_connection
 from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.lib import dates
 from portality.store import StoreFactory
-from portality.util import ipt_prefix
+
+tmpStore = StoreFactory.tmp()
+mainStore = StoreFactory.get("anon_data")
+container = app.config.get("STORE_ANON_DATA_CONTAINER")
 
 
 def _anonymise_email(record):
@@ -104,6 +106,36 @@ def _copy_on_complete(path):
     tmpStore.delete_file(container, zipped_name)
 
 
+def anon_export(clean=False, limit=None, batch_size=100000):
+
+    if clean:
+        mainStore.delete_container(container)
+
+    doaj_types = es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
+    type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types]
+
+    for type_ in type_list:
+        filename = type_ + ".bulk"
+        output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
+        print((dates.now() + " " + type_ + " => " + output_file + ".*"))
+        iter_q = {"query": {"match_all": {}}, "sort": [{"_id": {"order": "asc"}}]}
+        transform = None
+        if type_ in anonymisation_procedures:
+            transform = anonymisation_procedures[type_]
+
+        model = models.lookup_models_by_type(type_, dao.DomainObject)
+        if not model:
+            raise Exception("unable to locate model for " + type_)
+
+        # Use the model's dump method to write out this type to file
+        _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
+                       out_rollover_callback=_copy_on_complete, es_bulk_fields=["_id"], scroll_keepalive='3m')
+
+        print((dates.now() + " done\n"))
+
+    tmpStore.delete_container(container)
+
+
 if __name__ == '__main__':
 
     import argparse
@@ -118,40 +150,4 @@ if __name__ == '__main__':
     else:
         limit = None
 
-    tmpStore = StoreFactory.tmp()
-    mainStore = StoreFactory.get("anon_data")
-    container = app.config.get("STORE_ANON_DATA_CONTAINER")
-
-    if args.clean:
-        mainStore.delete_container(container)
-
-    if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-        doaj_types = es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
-        type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types]
-        print(type_list)
-    else:
-        #type_list = esprit.raw.list_types(connection=es_connection)
-        print("FIXME: shared index has been stripped out, use only with index per type")
-        exit(1)
-
-    esprit.raw.INDEX_PER_TYPE_SUBSTITUTE = app.config.get('INDEX_PER_TYPE_SUBSTITUTE', '_doc')          # fixme, this is gum and tape.
-    conn = esprit.raw.Connection(app.config.get("ELASTIC_SEARCH_HOST"), index='')
-
-    for type_ in type_list:
-        filename = type_ + ".bulk"
-        output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
-        print((dates.now() + " " + type_ + " => " + output_file + ".*"))
-        iter_q = {"query": {"match_all": {}}, "sort": [{"_id": {"order": "asc"}}]}
-        if type_ in anonymisation_procedures:
-            transform = anonymisation_procedures[type_]
-            filenames = esprit.tasks.dump(conn, ipt_prefix(type_), q=iter_q, limit=limit, transform=transform,
-                                          out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
-                                          es_bulk_fields=["_id"])
-        else:
-            filenames = esprit.tasks.dump(conn, ipt_prefix(type_), q=iter_q, limit=limit,
-                                          out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
-                                          es_bulk_fields=["_id"])
-
-        print((dates.now() + " done\n"))
-
-    tmpStore.delete_container(container)
+    anon_export(args.clean, limit, args.batch)
