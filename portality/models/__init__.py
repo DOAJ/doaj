@@ -23,6 +23,7 @@ from portality.models.provenance import Provenance
 from portality.models.background import BackgroundJob
 from portality.models.preservation import PreservationState
 from portality.models.news import News
+from portality.models.harvester import HarvestState
 
 import sys
 
@@ -35,6 +36,16 @@ def lookup_model(name='', capitalize=True, split_on="_"):
         return getattr(sys.modules[__name__], name)
     except:
         return None
+
+
+def lookup_models_by_type(name, parent):
+    import inspect
+    current_module = sys.modules[__name__]
+    for classname, obj in inspect.getmembers(current_module):
+        if not inspect.isclass(obj): continue
+        if not issubclass(obj, parent): continue
+        if obj.__type__ == name: return obj
+
 
 ############################################################################
 # Generic/Utility classes and functions
