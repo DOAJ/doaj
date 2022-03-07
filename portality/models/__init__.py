@@ -1,3 +1,4 @@
+from typing import Any
 # import the versioned objects, so that the current version is the default one
 from portality.models.v2 import shared_structs
 from portality.models.v2.bibjson import JournalLikeBibJSON
@@ -27,6 +28,7 @@ from portality.models.harvester import HarvestState
 
 import sys
 
+
 def lookup_model(name='', capitalize=True, split_on="_"):
     parts = name.split(split_on)
     if capitalize:
@@ -38,13 +40,17 @@ def lookup_model(name='', capitalize=True, split_on="_"):
         return None
 
 
-def lookup_models_by_type(name, parent):
+def lookup_models_by_type(name: str, parent: Any):
+    """ Inspect this (models) module, retrieve model for given type """
     import inspect
     current_module = sys.modules[__name__]
     for classname, obj in inspect.getmembers(current_module):
-        if not inspect.isclass(obj): continue
-        if not issubclass(obj, parent): continue
-        if obj.__type__ == name: return obj
+        if not inspect.isclass(obj):
+            continue
+        if not issubclass(obj, parent):
+            continue
+        if obj.__type__ == name:
+            return obj
 
 
 ############################################################################

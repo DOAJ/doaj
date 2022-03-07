@@ -1,6 +1,4 @@
-# FIXME: this has been speedily upgraded following ES upgrade, will need another pass to strip out esprit fully. (SE 2022-02-25)
-
-import os, shutil, gzip, uuid, json
+import os, shutil, gzip, uuid
 
 from portality import models, dao
 from portality.core import app, es_connection
@@ -8,12 +6,11 @@ from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.lib import dates
 from portality.store import StoreFactory
-from portality.util import ipt_prefix
-import sys
 
 tmpStore = StoreFactory.tmp()
 mainStore = StoreFactory.get("anon_data")
 container = app.config.get("STORE_ANON_DATA_CONTAINER")
+
 
 def _anonymise_email(record):
     record.set_email(anon_email(record.email))
@@ -109,70 +106,6 @@ def _copy_on_complete(path):
     tmpStore.delete_file(container, zipped_name)
 
 
-def dump(type, q=None, page_size=1000, limit=None,
-         out=None, out_template=None, out_batch_sizes=100000, out_rollover_callback=None,
-         transform=None,
-         es_bulk_format=True, idkey='id', es_bulk_fields=None):
-
-    q = q if q is not None else {"query": {"match_all": {}}}
-
-    filenames = []
-    n = 1
-    current_file = None
-    if out_template is not None:
-        current_file = out_template + "." + str(n)
-        filenames.append(current_file)
-    if out is None and current_file is not None:
-        out = open(current_file, "w")
-    else:
-        out = sys.stdout
-
-    model = models.lookup_models_by_type(type, dao.DomainObject)
-    if not model:
-        raise Exception("unable to locate model for " + type)
-
-    count = 0
-    for record in model.scroll(q, page_size=page_size, limit=limit, wrap=False):
-        if transform is not None:
-            record = transform(record)
-
-        if es_bulk_format:
-            kwargs = {}
-            if es_bulk_fields is None:
-                es_bulk_fields = ["_id", "_index", "_type"]
-            for key in es_bulk_fields:
-                if key == "_id":
-                    kwargs["idkey"] = idkey
-                if key == "_index":
-                    kwargs["index"] = model.index_name()
-                if key == "_type":
-                    kwargs["type_"] = type
-            data = model.to_bulk_single_rec(record, **kwargs)
-        else:
-            data = json.dumps(record) + "\n"
-
-        out.write(data)
-        if out_template is not None:
-            count += 1
-            if count > out_batch_sizes:
-                out.close()
-                if out_rollover_callback is not None:
-                    out_rollover_callback(current_file)
-
-                count = 0
-                n += 1
-                current_file = out_template + "." + str(n)
-                filenames.append(current_file)
-                out = open(current_file, "w")
-
-    if out_template is not None:
-        out.close()
-    if out_rollover_callback is not None:
-        out_rollover_callback(current_file)
-
-    return filenames
-
-
 def anon_export(clean=False, limit=None, batch_size=100000):
 
     if clean:
@@ -180,18 +113,6 @@ def anon_export(clean=False, limit=None, batch_size=100000):
 
     doaj_types = es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
     type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types]
-
-    # if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-    #     doaj_types = es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
-    #     type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types]
-    #     print(type_list)
-    # else:
-    #     #type_list = esprit.raw.list_types(connection=es_connection)
-    #     print("FIXME: shared index has been stripped out, use only with index per type")
-    #     exit(1)
-    #
-    # esprit.raw.INDEX_PER_TYPE_SUBSTITUTE = app.config.get('INDEX_PER_TYPE_SUBSTITUTE', '_doc')          # fixme, this is gum and tape.
-    # conn = esprit.raw.Connection(app.config.get("ELASTIC_SEARCH_HOST"), index='')
 
     for type_ in type_list:
         filename = type_ + ".bulk"
@@ -201,11 +122,14 @@ def anon_export(clean=False, limit=None, batch_size=100000):
         transform = None
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
-            # filenames = esprit.tasks.dump(conn, ipt_prefix(type_), q=iter_q, limit=limit, transform=transform,
-            #                               out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
-            #                               es_bulk_fields=["_id"])
-        filenames = dump(type_, q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size, out_rollover_callback=_copy_on_complete,
-                    es_bulk_fields=["_id"])
+
+        model = models.lookup_models_by_type(type_, dao.DomainObject)
+        if not model:
+            raise Exception("unable to locate model for " + type_)
+
+        # Use the model's dump method to write out this type to file
+        _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
+                       out_rollover_callback=_copy_on_complete, es_bulk_fields=["_id"], scroll_keepalive='3m')
 
         print((dates.now() + " done\n"))
 
@@ -227,4 +151,3 @@ if __name__ == '__main__':
         limit = None
 
     anon_export(args.clean, limit, args.batch)
-
