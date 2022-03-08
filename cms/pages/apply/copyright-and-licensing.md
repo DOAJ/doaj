@@ -8,6 +8,15 @@ featuremap: ~~CopyrightAndLicensing:Fragment~~
 
 ---
 
+## Licensing
+
+DOAJ recommends the use of [Creative Commons](https://creativecommons.org/share-your-work/) licenses to inform readers how published content can be used. We do not specify which license should be used. You may [select the Creative Commons license](https://creativecommons.org/choose/) that best meets the needs of the journal, or give authors the option to choose a license for their paper. 
+
+You may not add to or adapt the terms of a Creative Commons license. This means you cannot impose restrictions on authors or users that conflict with the provisions of the license. Creative Commons licenses [state clearly](https://creativecommons.org/licenses/by-sa/4.0/legalcode) that "For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply".
+
+In some cases, we will accept a publisher's own license if it is broadly equivalent to one of the Creative Commons licenses.
+
+
 ## Copyright
 
 The initial copyright of a paper is held by the authors (or their employer, in some instances). When publishing that paper the copyright may continue to be held by the author, or can be licensed or transferred to the publisher.
@@ -25,13 +34,6 @@ Copyright terms must not contradict the licensing terms or the terms of the open
 
 "Fair use" is not open access and we do not accept journals with these restrictions. 
 
-## Licensing
-
-DOAJ recommends the use of [Creative Commons](https://creativecommons.org/share-your-work/) licenses to inform readers how published content can be used. We do not specify which license should be used. You may [select the Creative Commons license](https://creativecommons.org/choose/) that best meets the needs of the journal, or give authors the option to choose a license for their paper. 
-
-You may not add to or adapt the terms of a Creative Commons license. This means you cannot impose restrictions on authors or users that conflict with the provisions of the license. Creative Commons licenses [state clearly](https://creativecommons.org/licenses/by-sa/4.0/legalcode) that "For the avoidance of doubt, where Exceptions and Limitations apply to Your use, this Public License does not apply".
-
-In some cases, we will accept a publisher's own license if it is broadly equivalent to one of the Creative Commons licenses.
 
 ## Understanding author rights
 
