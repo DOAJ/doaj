@@ -2,22 +2,22 @@
 {# ~~Dashboard:Page~~ #}
 {% set TODOS = {
         constants.TODO_MANED_STALLED: {
-            "text" : "Chase a <strong>stalled</strong> application",
+            "text" : "<strong>Stalled</strong> application",
             "colour" : "var(--salmon)",
             "feather": "coffee"
         },
         constants.TODO_MANED_FOLLOW_UP_OLD: {
-            "text": "Follow up with an <strong>old</strong> application",
+            "text": "<strong>Old</strong> application",
             "colour" : "var(--sanguine)",
             "feather": "clock"
         },
         constants.TODO_MANED_READY: {
-            "text" : "<strong>Ready</strong>",
+            "text" : "<strong>Ready</strong> application",
             "colour" : "var(--dark-green)",
             "feather": "thumbs-up"
         },
         constants.TODO_MANED_COMPLETED: {
-            "text" : "<strong>Completed</strong>",
+            "text" : "<strong>Completed</strong> application",
             "colour" : "var(--mid-green)",
             "feather": "check-circle"
         },
@@ -57,18 +57,18 @@
             <header>
               <p class="label label--secondary">{{ TODOS[todo.action_id[0]].text | safe }}</p>
               <h3>
-                <a href="{{ app_url }}" class="font-serif type-04" target="_blank">{{ todo.title }}</a>
+                <a href="{{ app_url }}" class="font-serif type-05" target="_blank">{{ todo.title }}</a>
               </h3>
             </header>
             <ul class="unstyled-list no-margins flex-end tags">
-              {# TODO link to search results for this editor group #}
-              <li><a href="#" class="tag tag--secondary" target="_blank">{{ todo.object.editor_group }}</a></li>
+              {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [todo.object.editor_group]}]) %}
+              <li><a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="label tag tag--secondary">{{ todo.object.editor_group }}</a></li>
               <li>
+                {# TODO link to search results for this kind of task, across all editor groups #}
                 <a
                   href="#"
                   class="tag"
                   style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
-                  target="_blank"
                 >
                 <span data-feather="{{ TODOS[todo.action_id[0]].feather | safe }}" aria-hidden="true"></span>
                 </a>
