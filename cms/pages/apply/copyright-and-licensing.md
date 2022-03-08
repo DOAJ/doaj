@@ -1,6 +1,6 @@
 ---
 layout: sidenav
-title: Copyright & licensing
+title: Licensing & copyright
 section: Apply
 toc: true
 sticky_sidenav: true
