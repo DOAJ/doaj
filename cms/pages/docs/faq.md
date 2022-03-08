@@ -41,7 +41,7 @@ featuremap: ~~FAQ:Fragment~~
 
 ## How do I report a bug or ask for technical help?
 
-  If you are a registered GitHub user, or you don’t mind becoming one, you can [log a GitHub issue](https://github.com/DOAJ/doaj/issues/new/choose) directly in our repository. Alternatively, you can send the information we ask for below to [our helpdesk](mailto:feedback@doaj.org).
+  If you are a registered GitHub user, or you don’t mind becoming one, you can [log a GitHub issue](https://github.com/DOAJ/doaj/issues/new/choose) directly in our repository. Alternatively, you can send the information we ask for below to [our helpdesk](mailto:helpdesk@doaj.org).
 
  When you report a bug, please include the following information. (You may not be able to provide every detail but fill in as many as you can.)
 

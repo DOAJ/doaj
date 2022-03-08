@@ -472,7 +472,7 @@ class AdminApplication(ApplicationProcessor):
             url_root = url_root[:-1]
 
         to = [owner.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
         if update_request:
             subject = app.config.get("SERVICE_NAME", "") + " - update request accepted"
         else:
@@ -820,7 +820,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # ~~-> Email:Library~~
         to = [acc.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
         subject = app.config.get("SERVICE_NAME","") + " - update request received"
 
         try:

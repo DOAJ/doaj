@@ -1,0 +1,26 @@
+/* Logo */
+
+.logo {
+  display: flex;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  height: 100%;
+  max-height: 90px;
+  transition: height 0.3s ease-out;
+
+  svg {
+    height: 60px;
+  }
+}
+
+.logo__tagline {
+  margin-left: $spacing-03;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.15;
+  text-transform: uppercase;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}

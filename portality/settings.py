@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.0.4"
+DOAJ_VERSION = "6.1.0"
 API_VERSION = "3.0.0"
 
 ######################################
@@ -21,6 +21,10 @@ PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 CMS_BUILD_ASSETS_ON_STARTUP = False
+# Cookies security
+SESSION_COOKIE_SAMESITE='Strict'
+SESSION_COOKIE_SECURE=True
+REMEMBER_COOKIE_SECURE = True
 
 ####################################
 # Debug Mode
@@ -311,9 +315,9 @@ ADMINS = ["steve@cottagelabs.com", "mark@cottagelabs.com"]
 
 MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
 CONTACT_FORM_ADDRESS = "feedback+contactform@doaj.org"
-SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS = ["feedback@doaj.org"]
+SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS = ["helpdesk@doaj.org"]
 
-SYSTEM_EMAIL_FROM = 'feedback@doaj.org'
+SYSTEM_EMAIL_FROM = 'helpdesk@doaj.org'
 CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the future
 
 # Error logging via email
@@ -324,7 +328,7 @@ ERROR_MAIL_USERNAME = None
 ERROR_MAIL_PASSWORD = None
 
 # Reports email recipient
-REPORTS_EMAIL_TO = ["feedback@doaj.org"]
+REPORTS_EMAIL_TO = ["helpdesk@doaj.org"]
 
 ########################################
 # workflow email notification settings
@@ -685,7 +689,15 @@ QUERY_ROUTE = {
         "suggestion" : {
             "auth" : True,
             "role" : "admin",
-            "dao" : "portality.models.Suggestion"    # ~~->Application:Model~~
+            "query_filters" : ["not_update_request"],
+            "dao" : "portality.models.Application"    # ~~->Application:Model~~
+        },
+        # ~~->AdminUpdateRequestQuery:Endpoint~~
+        "update_requests": {
+            "auth": True,
+            "role": "admin",
+            "query_filters" : ["update_request"],
+            "dao": "portality.models.Application"  # ~~->Application:Model~~
         },
         # ~~->AdminEditorGroupQuery:Endpoint~~
         "editor,group" : {
