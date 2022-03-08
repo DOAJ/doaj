@@ -35,9 +35,9 @@ Copyright terms must not contradict the licensing terms or the terms of the open
 "Fair use" is not open access and we do not accept journals with these restrictions. 
 
 
-## Understanding author rights
+## Author rights
 
-**The terms of the Creative Commons (or other) license do not apply to the copyright holder.**
+**The terms of the Creative Commons (or other) license do not apply to the copyright holder.** This means that when the author retains copyright without restrictions, the license applies to the readers and the publisher.
 
 Therefore the license applies to the readers and the author when:
 
@@ -45,9 +45,6 @@ Therefore the license applies to the readers and the author when:
 - the author retains copyright and grants exclusive publishing rights to the publisher
 - the author retains copyright, transfers or grants exclusive commercial rights to the publisher, and a non-commercial license is used
 
-And therefore the license applies to the readers and the publisher when
-
-- the author retains copyright without restrictions
 
 ## Further reading
 
