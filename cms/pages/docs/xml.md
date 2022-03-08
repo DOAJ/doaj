@@ -112,7 +112,7 @@ The example file below contains only one record.
 
 ## The doajArticles.xsd schema file
 
-The [doajArticles.xsd](http://doaj.org/static/doaj/doajArticles.xsd) file specifies what may or may not be uploaded to the database.
+The [doajArticles.xsd](http://doaj.org/static/doaj/doajArticles.xsd) file specifies what may or may not be uploaded to the index.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>

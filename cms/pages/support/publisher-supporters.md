@@ -15,7 +15,7 @@ Supporting us is a way for publishers to show their commitment, not only to open
 
 We offer a variety of options so that publishers can choose the level of support that they are most comfortable with. The list below shows suggested contributions based on business size but publishers can offer any amount of their choosing.
 
-It is possible to choose a discounted 3-year sustaining contribution, based on the rates below, or a single annual ammount. To do that, [contact us](mailto:feedback@doaj.org) stating the name of your organisation as we will be happy to help.
+It is possible to choose a discounted 3-year sustaining contribution, based on the rates below, or a single annual ammount. To do that, [contact us](mailto:helpdesk@doaj.org) stating the name of your organisation as we will be happy to help.
 
 {:.tabular-list}
 - Publishing more than **2,000** articles/year
