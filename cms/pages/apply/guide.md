@@ -103,7 +103,7 @@ The following information must be available online, and easily accessible from t
 - If Creative Commons licensing is not used, similar terms and conditions should be applied.
   - Extra care must be taken to state these terms clearly.
 - It is recommended that licensing information is displayed or embedded in full text articles, but this is not required for inclusion in DOAJ.
-- [Further reading](/apply/copyright-and-licensing/) is available.
+- [More about licensing](/apply/copyright-and-licensing/) is available.
 
 ---
 
@@ -112,7 +112,7 @@ The following information must be available online, and easily accessible from t
 - The copyright terms applied to the published content must be clearly stated and separate from the copyright terms applied to the website.
 - Copyright terms must not contradict the licensing terms or the terms of the open access policy.
   - “All rights reserved” is never appropriate for open access content.
-- [Further reading](/apply/copyright-and-licensing/) is available.
+- [More about copyright](/apply/copyright-and-licensing/) is available.
 
 ---
 
