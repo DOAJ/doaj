@@ -115,6 +115,11 @@ def anon_export(clean=False, limit=None, batch_size=100000):
     type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types]
 
     for type_ in type_list:
+        model = models.lookup_models_by_type(type_, dao.DomainObject)
+        if not model:
+            print("unable to locate model for " + type_)
+            continue
+
         filename = type_ + ".bulk"
         output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
         print((dates.now() + " " + type_ + " => " + output_file + ".*"))
@@ -122,10 +127,6 @@ def anon_export(clean=False, limit=None, batch_size=100000):
         transform = None
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
-
-        model = models.lookup_models_by_type(type_, dao.DomainObject)
-        if not model:
-            raise Exception("unable to locate model for " + type_)
 
         # Use the model's dump method to write out this type to file
         _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
