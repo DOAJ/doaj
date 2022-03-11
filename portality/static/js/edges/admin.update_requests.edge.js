@@ -39,6 +39,7 @@ $.extend(true, doaj, {
                 doaj.components.searchingNotification(),
 
                 // facets
+                doaj.facets.openOrClosed(),
                 doaj.facets.applicationStatus(),
                 doaj.facets.hasEditorGroup(),
                 doaj.facets.hasEditor(),
