@@ -16,6 +16,26 @@ $.extend(true, doaj, {
                 doaj.components.searchingNotification(),
 
                 // facets
+                edges.newRefiningANDTermSelector({
+                    id: "application_type",
+                    category: "facet",
+                    field: "index.application_type.exact",
+                    display: "Open or Closed",
+                    deactivateThreshold : 1,
+                    orderDir: "asc",
+                    valueMap : {
+                        "finished application/update": "Closed",
+                        "new application": "Open"
+                    },
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: false,
+                        togglable: true,
+                        countFormat: doaj.valueMaps.countFormat,
+                        hideInactive: true
+                    })
+                }),
+
                 doaj.facets.applicationStatus(),
                 doaj.facets.hasEditorGroup(),
                 doaj.facets.hasEditor(),
