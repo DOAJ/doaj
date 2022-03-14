@@ -34,6 +34,17 @@ The work done by the [DOAJ Team](/about/team/) is supported by over 100 voluntar
 
 DOAJ also has a global network of Ambassadors who promote open access and best practice in their regions. Our Ambassadors are bound by an agreement and must declare all conflicts of interest.
 
+## Zero tolerance policy
+
+We expect the members of our Team, our volunteers and our Ambassadors to always be treated courteously and with respect for the work they are doing. They should not be subject to abusive behaviour in any form, which includes:
+
+- rude, disrespectful and offensive behaviour, including derogatory remarks or anything which amounts to verbal or emotional abuse in person or in communications
+- sexually inappropriate comments or behaviour
+- racist and discriminatory abuse
+- threats of physical violence
+- aggressive and violent behaviour
+
+
 ## Partnerships and collaborations
 
 DOAJ partners with many organisations. The nature of the partnerships vary and may include membership, contracts for work, exchanges of information or services, initiative signatories, or access to information resources that assist DOAJ with our application review process.
@@ -44,8 +55,6 @@ DOAJ partners with many organisations. The nature of the partnerships vary and m
 + [COPE](https://publicationethics.org/)
   {:.stretch-list__item} 
 + [Cottage Labs LLP](https://cottagelabs.com/)
-  {:.stretch-list__item} 
-+ [Érudit](https://www.erudit.org/en/)
   {:.stretch-list__item} 
 + [Federation of Finnish Learned Societies](https://tsv.fi/en)
   {:.stretch-list__item} 
@@ -65,8 +74,15 @@ DOAJ partners with many organisations. The nature of the partnerships vary and m
   {:.stretch-list__item} 
 + [SciELO](https://scielo.org/en/)
   {:.stretch-list__item} 
-+ [Think. Check. Submit.](https://thinkchecksubmit.org/)
-  {:.stretch-list__item} 
+
+
+## Think. Check. Submit.
+DOAJ is a proud founder of [Think. Check. Submit.](https://thinkchecksubmit.org/) as well as a contributing organisation and long-standing committee member.
+
+Established in 2015, Think. Check. Submit. was developed with the support of an international coalition of organisations from across scholarly communications in response to discussions about predatory publishing and amid a growing number of new and unfamiliar publishing options available for researchers.
+
+Think. Check. Submit. provides tools and practical resources to educate researchers, promote integrity, and build trust in credible research and publications. Separate checklists for [journals](https://thinkchecksubmit.org/journals/) and [books](https://thinkchecksubmit.org/books-and-chapters/) are available to guide researchers through the key criteria for selecting where to publish their research and are also invaluable to scholarly communications professionals who are advising researchers about these issues.  [Translations of the checklists](https://thinkchecksubmit.org/translations/) are also available in a number of languages.
+
 
 ## Diversity
 

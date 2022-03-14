@@ -475,6 +475,16 @@ def transparency():
 def why_index():
     return render_template("layouts/static_page.html", page_frag="/apply/why-index.html")
 
+# TODO: Uncomment when ready for public access  - S.E. 2022-03-14
+# @blueprint.route("/apply/publisher-responsibilities/")
+# def publisher_responsibilities():
+#     return render_template("layouts/static_page.html", page_frag="/apply/publisher-responsibilities.html")
+
+
+@blueprint.route("/apply/copyright-and-licensing/")
+def copyright_and_licensing():
+    return render_template("layouts/static_page.html", page_frag="/apply/copyright-and-licensing.html")
+
 
 @blueprint.route("/docs/oai-pmh/")
 def oai_pmh():
