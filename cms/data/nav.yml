@@ -81,6 +81,11 @@ entries:
         route: doaj.transparency      # ~~->Transparency:WebRoute~~
       - label: Why index your journal in DOAJ?
         route: doaj.why_index         # ~~->WhyIndex:WebRoute~~
+      - label: Licensing & copyright
+        route: doaj.copyright_and_licensing         # ~~->CopyrightAndLicensing:WebRoute~~
+      # Uncomment once this page is ready to be published
+      #- label: Publisher responsibilities
+      #  route: doaj.publisher_responsibilities         # ~~->PublisherResponsibilities:WebRoute~~
   - id: stay_up_to_date
     label: Stay up to date
     footer: true
