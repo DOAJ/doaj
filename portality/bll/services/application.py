@@ -1,5 +1,6 @@
 import logging
 
+from flask_login import current_user
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
 from portality import models
@@ -250,6 +251,17 @@ class ApplicationService(object):
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed accept_application")
 
         return j
+
+    def reject_update_request_of_journal(self, journal_id):
+        ur, jlock, alock = self.update_request_for_journal(journal_id)
+        if ur:
+            ur.add_note("Update request was automatically rejected because the associated journal was withdrawn or "
+                            "deleted.")
+            ur.save()
+            self.reject_application(ur, current_user._get_current_object())
+            return ur.id
+        else:
+            return None
 
     def update_request_for_journal(self, journal_id, account=None, lock_timeout=None):
         """

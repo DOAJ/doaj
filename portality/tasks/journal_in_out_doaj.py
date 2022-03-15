@@ -1,5 +1,6 @@
 from flask_login import current_user
 from portality import models, lock
+from portality.bll import DOAJ
 from portality.core import app
 
 from portality.tasks.redis_huey import main_queue
@@ -57,13 +58,15 @@ class SetInDOAJBackgroundTask(BackgroundTask):
             j = models.Journal.pull(journal_id)
             if j is None:
                 raise RuntimeError("Journal with id {} does not exist".format(journal_id))
+            if not in_doaj:
+                job.add_audit_message("Rejecting all associated update requests")
+                svc = DOAJ.applicationService()
+                ur = svc.reject_update_request_of_journal(j.id)
+                job.add_audit_message("Update request {x} automatically rejected".format(x=ur))
             j.bibjson().active = in_doaj
             j.set_in_doaj(in_doaj)
             j.save()
             j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
-            if not in_doaj:
-                job.add_audit_message("Rejecting all associated update requests")
-                j.reject_update_requests()
             job.add_audit_message("Journal {x} set in_doaj to {y}, and all associated articles".format(x=journal_id, y=str(in_doaj)))
 
     def cleanup(self):
