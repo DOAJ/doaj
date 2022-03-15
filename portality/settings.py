@@ -84,6 +84,17 @@ ELASTIC_APM = {
 }
 
 ###########################################
+# Event handler
+
+# use this to queue events asynchronously through kafka
+EVENT_SEND_FUNCTION = "portality.events.kafka.send_event"
+# use this one to bypass kafka and process events immediately/synchronously
+# EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
+
+KAFKA_BROKER = "kafka://localhost:9092"
+KAFKA_EVENTS_TOPIC = "events"
+
+###########################################
 # Read Only Mode
 #
 # Use these options to place the application into READ ONLY mode

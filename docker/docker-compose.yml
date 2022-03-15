@@ -9,6 +9,30 @@ services:
     volumes:
       - doaj_redis_data:/data
 
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: 'bitnami/kafka:latest'
+    environment:
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT,INTERNAL:PLAINTEXT
+      - KAFKA_CFG_LISTENERS=CLIENT://:9103,EXTERNAL://:9092,INTERNAL://:19092,
+      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9103,EXTERNAL://localhost:9092,,INTERNAL://kafka:19092
+      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+    depends_on:
+      - zookeeper
+    healthcheck:
+      test: [ "CMD", "kafka-topics.sh", "--list", "--zookeeper", "zookeeper:2181" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
 
 volumes:
     doaj_redis_data: {}

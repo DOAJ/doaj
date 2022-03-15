@@ -79,3 +79,12 @@ class DOAJ(object):
         """
         from portality.bll.services import site
         return site.SiteService()
+
+    @classmethod
+    def eventsService(cls):
+        """
+        Obtain an instance of the events service
+        :return:  SiteService
+        """
+        from portality.bll.services import events
+        return events.EventsService()

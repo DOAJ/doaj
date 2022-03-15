@@ -25,6 +25,7 @@ from portality.models.background import BackgroundJob
 from portality.models.preservation import PreservationState
 from portality.models.news import News
 from portality.models.harvester import HarvestState
+from portality.models.event import Event
 
 import sys
 
