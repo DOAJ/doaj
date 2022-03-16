@@ -35,7 +35,7 @@ def change_in_doaj(journal_ids, in_doaj_new_val, **kwargs):
 
 
 class SetInDOAJBackgroundTask(BackgroundTask):
-
+    # ~~SetInDOAJBackgroundTask:Process->BackgroundTask:Process~~
     __action__ = "set_in_doaj"
 
     def run(self):
@@ -54,12 +54,13 @@ class SetInDOAJBackgroundTask(BackgroundTask):
 
         for journal_id in journal_ids:
             job.add_audit_message("Setting in_doaj to {x} for journal {y}".format(x=str(in_doaj), y=journal_id))
-
+            # ~~->Journal:Model~~
             j = models.Journal.pull(journal_id)
             if j is None:
                 raise RuntimeError("Journal with id {} does not exist".format(journal_id))
             if not in_doaj:
                 job.add_audit_message("Rejecting all associated update requests")
+                # ~~->Application:Service~~
                 svc = DOAJ.applicationService()
                 ur = svc.reject_update_request_of_journal(j.id)
                 job.add_audit_message("Update request {x} automatically rejected".format(x=ur))
