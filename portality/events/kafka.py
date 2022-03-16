@@ -1,14 +1,14 @@
 import faust
 import asyncio
 
-from portality.core import app
+from portality.core import app as doajapp
 from portality.bll import DOAJ
 
-broker = app.config.get("KAFKA_BROKER")
-topic_name = app.config.get("KAFKA_EVENTS_TOPIC")
+broker = doajapp.config.get("KAFKA_BROKER")
+topic_name = doajapp.config.get("KAFKA_EVENTS_TOPIC")
 
-handler = faust.App('events', broker=broker, value_serializer='json')
-topic = handler.topic(topic_name)
+app = faust.App('events', broker=broker, value_serializer='json')
+topic = app.topic(topic_name)
 
 
 def send_event(event):
@@ -17,7 +17,7 @@ def send_event(event):
     r = loop.run_until_complete(t)
 
 
-@handler.agent(topic)
+@app.agent(topic)
 async def handle_event(stream):
     svc = DOAJ.eventsService()
     async for event in stream:
@@ -25,4 +25,4 @@ async def handle_event(stream):
 
 
 if __name__ == '__main__':
-    handler.main()
+    app.main()
