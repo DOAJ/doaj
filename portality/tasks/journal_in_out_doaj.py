@@ -56,13 +56,15 @@ class SetInDOAJBackgroundTask(BackgroundTask):
             job.add_audit_message("Setting in_doaj to {x} for journal {y}".format(x=str(in_doaj), y=journal_id))
             # ~~->Journal:Model~~
             j = models.Journal.pull(journal_id)
+            # ~~->Account:Model~~
+            account = models.Account.pull(job.user)
             if j is None:
                 raise RuntimeError("Journal with id {} does not exist".format(journal_id))
             if not in_doaj:
                 job.add_audit_message("Rejecting all associated update requests")
                 # ~~->Application:Service~~
                 svc = DOAJ.applicationService()
-                ur = svc.reject_update_request_of_journal(j.id, job.user)
+                ur = svc.reject_update_request_of_journal(j.id, account)
                 job.add_audit_message("Update request {x} automatically rejected".format(x=ur))
             j.bibjson().active = in_doaj
             j.set_in_doaj(in_doaj)
