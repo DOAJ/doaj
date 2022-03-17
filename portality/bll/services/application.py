@@ -252,14 +252,22 @@ class ApplicationService(object):
 
         return j
 
-    def reject_update_request_of_journal(self, journal_id):
-        ur, jlock, alock = self.update_request_for_journal(journal_id)
+    def reject_update_request_of_journal(self, journal_id, account):
+        """
+            Rejects update request associated with journal
+
+            :param journal_id:
+            :param account:
+            :return: Journal object
+        """
+        # ~~->Journal:Model~~
+        ur = models.Journal.pull(journal_id)
         if ur:
             ur.add_note("Update request was automatically rejected because the associated journal was withdrawn or "
                             "deleted.")
             ur.save()
-            self.reject_application(ur, current_user._get_current_object())
-            return ur.id
+            self.reject_application(ur, account)
+            return ur
         else:
             return None
 
