@@ -1,6 +1,5 @@
 import logging
 
-from flask_login import current_user
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
 from portality import models
