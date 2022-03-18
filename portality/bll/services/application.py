@@ -261,10 +261,8 @@ class ApplicationService(object):
         """
         ur = models.Suggestion.find_latest_by_current_journal(journal_id)  # ~~->Application:Model~~
         if ur:
-            ur.add_note("Update request was automatically rejected because the associated journal was withdrawn or "
+            self.reject_application(ur, account, note="Update request was automatically rejected because the associated journal was withdrawn or "
                             "deleted.")
-            ur.save()
-            self.reject_application(ur, account)
             return ur
         else:
             return None
