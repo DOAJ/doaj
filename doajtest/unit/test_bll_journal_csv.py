@@ -18,12 +18,12 @@ import csv
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_journal_csv"), "journal_csv", "test_id",
-                               {"test_id" : []})
+                               {"test_id": []})
 
 
 EXCEPTIONS = {
-    "ArgumentException" : exceptions.ArgumentException,
-    "IOError" : IOError
+    "ArgumentException": exceptions.ArgumentException,
+    "IOError": IOError
 }
 
 
@@ -75,10 +75,10 @@ class TestBLLJournalCSV(DoajTestCase):
 
         original_configs = {}
         if tmp_write_arg == "fail":
-            original_configs.update(patch_config(app, {"STORE_TMP_IMPL" : StoreMockFactory.no_writes_classpath()}))
+            original_configs.update(patch_config(app, {"STORE_TMP_IMPL": StoreMockFactory.no_writes_classpath()}))
 
         if main_write_arg == "fail":
-            original_configs.update(patch_config(app, {"STORE_IMPL" : StoreMockFactory.no_writes_classpath()}))
+            original_configs.update(patch_config(app, {"STORE_IMPL": StoreMockFactory.no_writes_classpath()}))
 
         journals = []
         if journal_count > 0:
@@ -93,7 +93,7 @@ class TestBLLJournalCSV(DoajTestCase):
             issns = journal.bibjson().issns()
             source1 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=False)
             articles.append(models.Article(**source1))
-            comparisons[issns[0]] = {"issns" : issns, "article_count": 0, "article_latest" : ""}
+            comparisons[issns[0]] = {"issns": issns, "article_count": 0, "article_latest" : ""}
             if i < journals_with_articles_count:
                 source2 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
                 article2 = models.Article(**source2)
@@ -190,11 +190,11 @@ class TestBLLJournalCSV(DoajTestCase):
 
                 for i in range(1, len(rows)):
                     row = rows[i]
-                    alt_title = row[3]
-                    issn = row[4]
-                    eissn = row[5]
-                    article_count = int(row[51])
-                    article_latest = row[52]
+                    alt_title = row[4]
+                    issn = row[5]
+                    eissn = row[6]
+                    article_count = int(row[52])
+                    article_latest = row[53]
 
                     assert alt_title == "Заглавие на журнала"
                     assert issn in comparisons[issn]["issns"]
