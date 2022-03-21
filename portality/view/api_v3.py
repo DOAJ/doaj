@@ -13,7 +13,7 @@ import json
 
 blueprint = Blueprint('api_v3', __name__)
 
-API_VERSION_NUMBER = '3.0.0'
+API_VERSION_NUMBER = '3.0.1'  # OA start added 2022-03-21
 
 # Google Analytics category for API events
 GA_CATEGORY = app.config.get('GA_CATEGORY_API', 'API Hit')

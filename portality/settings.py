@@ -9,8 +9,8 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.1.0"
-API_VERSION = "3.0.0"
+DOAJ_VERSION = "6.1.3"
+API_VERSION = "3.0.1"
 
 ######################################
 # Deployment configuration
@@ -21,6 +21,10 @@ PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 CMS_BUILD_ASSETS_ON_STARTUP = False
+# Cookies security
+SESSION_COOKIE_SAMESITE='Strict'
+SESSION_COOKIE_SECURE=True
+REMEMBER_COOKIE_SECURE = True
 
 ####################################
 # Debug Mode
