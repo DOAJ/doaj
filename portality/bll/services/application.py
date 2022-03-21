@@ -261,7 +261,7 @@ class ApplicationService(object):
         """
         ur = models.Application.find_latest_by_current_journal(journal_id)  # ~~->Application:Model~~
         if ur:
-            self.reject_application(ur, account, note=Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST)
+            self.reject_application(ur, account, note=Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_NOTE)
             return ur
         else:
             return None
