@@ -164,7 +164,7 @@ CSV_HEADERS = [
 JOURNAL_QUESTION_ANSWERS = [
     'The Title',
     'http://journal.url',
-#    '2012',
+    '2012',
     'Alternative Title',
     '1234-5678',
     '9876-5432',
