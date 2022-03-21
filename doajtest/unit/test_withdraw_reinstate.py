@@ -31,9 +31,10 @@ class TestWithdrawReinstate(DoajTestCase):
                                               roles=["admin", "api"])
         account.set_password('password123')
         account.save(blocking=True)
+        return account
 
     def test_01_withdraw_task(self):
-        self.make_account()
+        account = self.make_account()
         sources = JournalFixtureFactory.make_many_journal_sources(10, in_doaj=True)
         ids = []
         articles = []
@@ -55,11 +56,8 @@ class TestWithdrawReinstate(DoajTestCase):
 
         time.sleep(2)
 
-        with self.app_test.test_client() as t_client:
-            resp = self.login(t_client, "admin", "password123")
-            job = SetInDOAJBackgroundTask.prepare("admin", journal_ids=ids, in_doaj=False)
-            SetInDOAJBackgroundTask.submit(job)
-            self.logout(t_client)
+        job = SetInDOAJBackgroundTask.prepare(account.id, journal_ids=ids, in_doaj=False)
+        SetInDOAJBackgroundTask.submit(job)
 
         time.sleep(2)
 
@@ -126,12 +124,7 @@ class TestWithdrawReinstate(DoajTestCase):
 
         time.sleep(2)
 
-        with self.app_test.test_client() as t_client:
-            resp = self.login(t_client, "admin", "password123")
-            change_in_doaj(ids, False)
-
-            time.sleep(2)
-            self.logout(t_client)
+        change_in_doaj(ids, False)
 
         for id in ids:
             j = models.Journal.pull(id)
@@ -167,11 +160,7 @@ class TestWithdrawReinstate(DoajTestCase):
 
         time.sleep(2)
 
-        with self.app_test.test_client() as t_client:
-            resp = self.login(t_client, "admin", "password123")
-            change_in_doaj(ids, True)
-            self.logout(t_client)
-            time.sleep(2)
+        change_in_doaj(ids, True)
 
         for id in ids:
             j = models.Journal.pull(id)
@@ -184,7 +173,7 @@ class TestWithdrawReinstate(DoajTestCase):
         ctx.pop()
 
     def test_05_withdraw_with_ur(self):
-        self.make_account()
+        account = self.make_account()
 
         UPDATE_REQUEST_SOURCE = ApplicationFixtureFactory.make_update_request_source()
         JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
@@ -198,13 +187,8 @@ class TestWithdrawReinstate(DoajTestCase):
 
         time.sleep(2)
 
-        with self.app_test.test_client() as t_client:
-            resp = self.login(t_client, "admin", "password123")
-
-            job = SetInDOAJBackgroundTask.prepare("admin", journal_ids=[j.id], in_doaj=False)
-            SetInDOAJBackgroundTask.submit(job)
-
-            self.logout(t_client)
+        job = SetInDOAJBackgroundTask.prepare(account.id, journal_ids=[j.id], in_doaj=False)
+        SetInDOAJBackgroundTask.submit(job)
 
         time.sleep(2)
 

@@ -3127,7 +3127,7 @@ $.extend(true, doaj, {
                 }
 
                 var status = "";
-                if (resultobj.admin.current_journal === null || !resultobj.admin.current_journal.in_doaj){
+                if (!resultobj.admin.current_journal || !resultobj.admin.current_journal.in_doaj){
                     status = "You cannot edit or submit an update for this journal as it has been withdrawn from DOAJ."
                 }
                 if (edges.hasProp(resultobj, "admin.application_status")) {

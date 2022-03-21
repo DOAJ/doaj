@@ -80,7 +80,7 @@ class ApplicationService(object):
         if manual_update:
             application.set_last_manual_update()
 
-        saved = application.save()
+        saved = application.save(blocking=True)
         if saved is None:
             raise exceptions.SaveException("Save on application in reject_application failed")
 
@@ -250,6 +250,36 @@ class ApplicationService(object):
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed accept_application")
 
         return j
+
+    def reject_update_request_of_journal(self, journal_id, account):
+        """
+            Rejects update request associated with journal
+
+            :param journal_id:
+            :param account:
+            :return: Journal object
+        """
+        ur = models.Application.find_latest_by_current_journal(journal_id)  # ~~->Application:Model~~
+        if ur:
+            self.reject_application(ur, account, note=Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_NOTE)
+            return ur
+        else:
+            return None
+
+    def reject_update_request_of_journals(self, ids, account):
+        """
+            Rejects update request associated with journal
+
+            :param ids:
+            :param account:
+            :return: Journal object
+        """
+        ur_ids = []
+        for journal_id in ids:
+            ur = self.reject_update_request_of_journal(journal_id, account)
+            if ur:
+                ur_ids.append(ur.id)
+        return ur_ids
 
     def update_request_for_journal(self, journal_id, account=None, lock_timeout=None):
         """
