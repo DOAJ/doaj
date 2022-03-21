@@ -1,5 +1,3 @@
-from flask_login import current_user
-from portality.bll import exceptions
 from portality.dao import DomainObject
 from portality.core import app
 from portality.models.v2.bibjson import JournalLikeBibJSON

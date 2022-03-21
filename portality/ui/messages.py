@@ -94,6 +94,8 @@ class Messages(object):
 
     ADMIN__WITHDRAW_REINSTATE = "<a href='{url}'>Job to withdraw/reinstate journal has been submitted</a>"
 
+    AUTOMATICALLY_REJECTED_UPDATE_REQUEST = "Update request was automatically rejected because the associated journal was withdrawn or deleted."
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):

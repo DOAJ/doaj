@@ -259,10 +259,9 @@ class ApplicationService(object):
             :param account:
             :return: Journal object
         """
-        ur = models.Suggestion.find_latest_by_current_journal(journal_id)  # ~~->Application:Model~~
+        ur = models.Application.find_latest_by_current_journal(journal_id)  # ~~->Application:Model~~
         if ur:
-            self.reject_application(ur, account, note="Update request was automatically rejected because the associated journal was withdrawn or "
-                            "deleted.")
+            self.reject_application(ur, account, note=Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST)
             return ur
         else:
             return None

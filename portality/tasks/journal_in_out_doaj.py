@@ -65,7 +65,13 @@ class SetInDOAJBackgroundTask(BackgroundTask):
                 # ~~->Application:Service~~
                 svc = DOAJ.applicationService()
                 ur = svc.reject_update_request_of_journal(j.id, account)
-                job.add_audit_message("Update request {x} automatically rejected".format(x=ur))
+                if ur:
+                    job.add_audit_message("Update request {x} automatically rejected".format(x=ur))
+
+                else:
+                    job.add_audit_message("This journal has no update requests.")
+
+
             j.bibjson().active = in_doaj
             j.set_in_doaj(in_doaj)
             j.save()
