@@ -4,12 +4,14 @@ import json
 from flask_login import current_user
 
 from portality import models, lock
+from portality.bll import DOAJ
 from portality.core import app
 
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
+from portality.ui.messages import Messages
 
 
 def journal_bulk_delete_manage(selection_query, dry_run=True):
@@ -59,12 +61,22 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         # repeat the estimations and log what they were at the time the job ran, in addition to what the user saw
         # when requesting the job in journal_bulk_delete_manage
         estimates = self.estimate_delete_counts(json.loads(job.reference['selection_query']))
-        job.add_audit_message("About to delete an estimated {} journals with {} articles associated with their ISSNs."
-                              .format(estimates['journals-to-be-deleted'], estimates['articles-to-be-deleted']))
+        job.add_audit_message(Messages.BULK_JOURNAL_DELETE.format(journal_no=estimates['journals-to-be-deleted'], article_no=estimates['articles-to-be-deleted']))
+
+        # Rejecting associated update request
+        # ~~->Account:Model~~
+        account = models.Account.pull(job.user)
+        # ~~->Application:Service~~
+        svc = DOAJ.applicationService()
+        urs_ids = svc.reject_update_request_of_journals(ids, account)
+        if len(urs_ids) > 0:
+            job.add_audit_message(Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID.format(urid=urs_ids))
+        else:
+            job.add_audit_message(Messages.NO_UPDATE_REQUESTS)
 
         journal_delete_q_by_ids = models.Journal.make_query(should_terms={'_id': ids}, consistent_order=False)
         models.Journal.delete_selected(query=journal_delete_q_by_ids, articles=True, snapshot_journals=True, snapshot_articles=True)
-        job.add_audit_message("Deleted {} journals and all articles associated with their ISSNs.".format(len(ids)))
+        job.add_audit_message(Messages.BULK_JOURNAL_DELETE_COMPLETED.format(journal_no=len(ids)))
 
     def cleanup(self):
         """

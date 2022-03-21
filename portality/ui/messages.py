@@ -96,7 +96,10 @@ class Messages(object):
 
     AUTOMATICALLY_REJECTED_UPDATE_REQUEST_NOTE = "Update request was automatically rejected because the associated journal was withdrawn or deleted."
     AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID = "Update request {urid} automatically rejected"
-    NO_UPDATE_REQUESTS = "This journal has no update requests."
+    NO_UPDATE_REQUESTS = "No update requests found."
+
+    BULK_JOURNAL_DELETE = "About to delete an estimated {journal_no} journals with {article_no} articles associated with their ISSNs. Existing update requests will be automatically rejected."
+    BULK_JOURNAL_DELETE_COMPLETED = "Deleted {journal_no} journals and all articles associated with their ISSNs."
 
     @classmethod
     def flash(cls, tup):

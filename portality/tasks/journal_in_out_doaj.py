@@ -64,13 +64,12 @@ class SetInDOAJBackgroundTask(BackgroundTask):
             if j is None:
                 raise RuntimeError("Journal with id {} does not exist".format(journal_id))
             if not in_doaj:
-                job.add_audit_message("Rejecting all associated update requests")
+                # Rejecting associated update request
                 # ~~->Application:Service~~
                 svc = DOAJ.applicationService()
                 ur = svc.reject_update_request_of_journal(j.id, account)
                 if ur:
                     job.add_audit_message(Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID.format(x=ur))
-
                 else:
                     job.add_audit_message(Messages.NO_UPDATE_REQUESTS)
 

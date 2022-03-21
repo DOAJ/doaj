@@ -266,6 +266,21 @@ class ApplicationService(object):
         else:
             return None
 
+    def reject_update_request_of_journals(self, ids, account):
+        """
+            Rejects update request associated with journal
+
+            :param ids:
+            :param account:
+            :return: Journal object
+        """
+        ur_ids = []
+        for journal_id in ids:
+            ur = self.reject_update_request_of_journal(journal_id, account)
+            if ur:
+                ur_ids.append(ur.id)
+        return ur_ids
+
     def update_request_for_journal(self, journal_id, account=None, lock_timeout=None):
         """
         Obtain an update request application object for the journal with the given journal_id
