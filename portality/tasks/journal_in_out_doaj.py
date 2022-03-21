@@ -10,6 +10,9 @@ from portality.background import BackgroundTask, BackgroundApi, BackgroundSummar
 
 import json
 
+from portality.ui.messages import Messages
+
+
 def change_by_query(query, in_doaj_new_val, dry_run=True):
     ids = []
     sane = {}
@@ -66,10 +69,10 @@ class SetInDOAJBackgroundTask(BackgroundTask):
                 svc = DOAJ.applicationService()
                 ur = svc.reject_update_request_of_journal(j.id, account)
                 if ur:
-                    job.add_audit_message("Update request {x} automatically rejected".format(x=ur))
+                    job.add_audit_message(Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID.format(x=ur))
 
                 else:
-                    job.add_audit_message("This journal has no update requests.")
+                    job.add_audit_message(Messages.NO_UPDATE_REQUESTS)
 
 
             j.bibjson().active = in_doaj

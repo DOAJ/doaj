@@ -94,7 +94,9 @@ class Messages(object):
 
     ADMIN__WITHDRAW_REINSTATE = "<a href='{url}'>Job to withdraw/reinstate journal has been submitted</a>"
 
-    AUTOMATICALLY_REJECTED_UPDATE_REQUEST = "Update request was automatically rejected because the associated journal was withdrawn or deleted."
+    AUTOMATICALLY_REJECTED_UPDATE_REQUEST_NOTE = "Update request was automatically rejected because the associated journal was withdrawn or deleted."
+    AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID = "Update request {urid} automatically rejected"
+    NO_UPDATE_REQUESTS = "This journal has no update requests."
 
     @classmethod
     def flash(cls, tup):
