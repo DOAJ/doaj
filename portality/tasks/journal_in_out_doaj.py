@@ -69,7 +69,7 @@ class SetInDOAJBackgroundTask(BackgroundTask):
                 svc = DOAJ.applicationService()
                 ur = svc.reject_update_request_of_journal(j.id, account)
                 if ur:
-                    job.add_audit_message(Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID.format(x=ur))
+                    job.add_audit_message(Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID.format(urid=ur))
                 else:
                     job.add_audit_message(Messages.NO_UPDATE_REQUESTS)
 
