@@ -80,7 +80,7 @@ class ApplicationService(object):
         if manual_update:
             application.set_last_manual_update()
 
-        saved = application.save(blocking=True)
+        saved = application.save()
         if saved is None:
             raise exceptions.SaveException("Save on application in reject_application failed")
 

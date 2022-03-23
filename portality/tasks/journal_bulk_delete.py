@@ -64,15 +64,19 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         job.add_audit_message(Messages.BULK_JOURNAL_DELETE.format(journal_no=estimates['journals-to-be-deleted'], article_no=estimates['articles-to-be-deleted']))
 
         # Rejecting associated update request
+        # (we do this after deleting the journal, so that the journal is not updated by the rejection method)
         # ~~->Account:Model~~
         account = models.Account.pull(job.user)
         # ~~->Application:Service~~
         svc = DOAJ.applicationService()
+        date_after = datetime.utcnow()
         urs_ids = svc.reject_update_request_of_journals(ids, account)
         if len(urs_ids) > 0:
             job.add_audit_message(Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID.format(urid=urs_ids))
         else:
             job.add_audit_message(Messages.NO_UPDATE_REQUESTS)
+
+        models.Application.blockall([(urid, date_after) for urid in urs_ids])
 
         journal_delete_q_by_ids = models.Journal.make_query(should_terms={'_id': ids}, consistent_order=False)
         models.Journal.delete_selected(query=journal_delete_q_by_ids, articles=True, snapshot_journals=True, snapshot_articles=True)
