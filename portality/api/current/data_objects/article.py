@@ -260,16 +260,15 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
             dat["bibjson"]["end_page"] = dat["bibjson"]["journal"]["end_page"]
             del dat["bibjson"]["journal"]["end_page"]
 
-        # clear out fields that we don't accept via the API from "admin" field
-        if "admin" in dat:
-            if "in_doaj" in dat["admin"]:
-                del dat["admin"]["in_doaj"]
-            if "seal" in dat["admin"]:
-                del dat["admin"]["seal"]
-            if "upload_id" in dat["admin"]:
-                del dat["admin"]["upload_id"]
-            if "es_type" in dat["admin"]:
-                del dat["admin"]["es_type"]
+        # clear out fields that we don't accept via the API
+        if "admin" in dat and "in_doaj" in dat["admin"]:
+            del dat["admin"]["in_doaj"]
+        if "admin" in dat and "seal" in dat["admin"]:
+            del dat["admin"]["seal"]
+        if "admin" in dat and "upload_id" in dat["admin"]:
+            del dat["admin"]["upload_id"]
+        if "es_type" in dat:
+            del dat["es_type"]
 
         if existing is None:
             return models.Article(**dat)
