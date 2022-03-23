@@ -10,7 +10,7 @@ from portality.app import app
 
 class AccountCreatedEmail(EventConsumer):
     def consumes(self, event):
-        return event.id == constants.EVENT_ACCOUNT_CREATED
+        return event.id == constants.EVENT_ACCOUNT_CREATED and event.context.get("account") is not None
 
     def consume(self, event):
         context = event.context
@@ -19,14 +19,12 @@ class AccountCreatedEmail(EventConsumer):
         self._send_account_created_email(acc)
 
     def _send_account_created_email(self, account: models.Account):
-        ctx = app.test_request_context("/")
-        ctx.push()
+        with app.test_request_context("/"):
+            forgot_pw_url = url_for('account.forgot', _external=True)
+            reset_url = forgot_pw_url
 
-        forgot_pw_url = url_for('account.forgot', _external=True)
-        reset_url = forgot_pw_url
-
-        if account.reset_token is not None:
-            reset_url = url_for('account.reset', reset_token=account.reset_token, _external=True)
+            if account.reset_token is not None:
+                reset_url = url_for('account.reset', reset_token=account.reset_token, _external=True)
 
         password_create_timeout_seconds = int(
             app.config.get("PASSWORD_CREATE_TIMEOUT", app.config.get('PASSWORD_RESET_TIMEOUT', 86400) * 14))
