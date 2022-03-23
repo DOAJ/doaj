@@ -93,6 +93,7 @@ EVENT_SEND_FUNCTION = "portality.events.kafka.send_event"
 
 KAFKA_BROKER = "kafka://localhost:9092"
 KAFKA_EVENTS_TOPIC = "events"
+KAFKA_BOOTSTRAP_SERVER = "localhost:9092"
 
 ###########################################
 # Read Only Mode
