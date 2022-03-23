@@ -11,10 +11,9 @@ from portality.app import app
 class AccountCreatedEmail(EventConsumer):
     def consumes(self, event):
         return event.id == constants.EVENT_ACCOUNT_CREATED and event.context.get("account") is not None
-        # return event['id'] == constants.EVENT_ACCOUNT_CREATED
 
     def consume(self, event):
-        context = event['context']
+        context = event.context
         acc_id = context.get("account")
         acc = models.Account.pull(acc_id)
         self._send_account_created_email(acc)

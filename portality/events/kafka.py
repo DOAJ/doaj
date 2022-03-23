@@ -4,6 +4,7 @@ from kafka import KafkaProducer
 
 from portality.core import app as doajapp
 from portality.bll import DOAJ
+from portality.models import Event
 
 broker = doajapp.config.get("KAFKA_BROKER")
 topic_name = doajapp.config.get("KAFKA_EVENTS_TOPIC")
@@ -24,7 +25,7 @@ def send_event(event):
 async def handle_event(stream):
     svc = DOAJ.eventsService()
     async for event in stream:
-        await svc.consume(json.loads(event))
+        await svc.consume(Event(raw=json.loads(event)))
 
 
 if __name__ == '__main__':
