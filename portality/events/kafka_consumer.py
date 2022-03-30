@@ -13,9 +13,10 @@ topic = app.topic(topic_name)
 
 @app.agent(topic)
 async def handle_event(stream):
-    svc = DOAJ.eventsService()
-    async for event in stream:
-        svc.consume(Event(raw=json.loads(event)))
+    with doajapp.test_request_context("/"):
+        svc = DOAJ.eventsService()
+        async for event in stream:
+            svc.consume(Event(raw=json.loads(event)))
 
 
 if __name__ == '__main__':
