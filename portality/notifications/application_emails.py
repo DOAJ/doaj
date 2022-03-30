@@ -200,30 +200,6 @@ def send_editor_inprogress_email(application):
                         url_for_application=url_for_application)
 
 
-def send_assoc_editor_inprogress_email(application):
-    """ Inform the associate editor assigned to application that the status has been reverted by an Ed or ManEd """
-    journal_name = application.bibjson().title
-    url_root = app.config.get("BASE_URL")
-    query_for_id = Facetview2.make_query(query_string=application.id)
-    string_id_query = json.dumps(query_for_id).replace(' ', '')       # Avoid '+' being added to URLs by removing spaces
-    url_for_application = url_root + url_for("editor.associate_suggestions", source=string_id_query)
-
-    # This is to the associate editor assigned to this application
-    assoc_editor = models.Account.pull(application.editor)
-    to = [assoc_editor.email]
-
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-    subject = app.config.get("SERVICE_NAME", "") + " - an application assigned to you has not passed review."
-
-    app_email.send_mail(to=to,
-                        fro=fro,
-                        subject=subject,
-                        template_name="email/assoc_editor_application_inprogress.jinja2",
-                        assoc_editor=assoc_editor.id,
-                        application_title=journal_name,
-                        url_for_application=url_for_application)
-
-
 def send_editor_completed_email(application):
     """ inform the editor in charge of an application that it has been completed by an associate editor """
     journal_name = application.bibjson().title

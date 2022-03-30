@@ -3,7 +3,7 @@ import json
 
 
 class Event(object):
-    def __init__(self, id=None, who=None, raw=None, **kwargs):
+    def __init__(self, id=None, who=None, context=None, raw=None):
         if raw is not None:
             self.data = raw
         else:
@@ -14,8 +14,8 @@ class Event(object):
                 self.id = id
             if who is not None:
                 self.who = who
-            if kwargs:
-                self.set_context(**kwargs)
+            if context:
+                self.set_context(**context)
 
     @property
     def id(self):

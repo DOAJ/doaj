@@ -1,0 +1,15 @@
+{%- if user and user.name %}
+Dear {{ user.name }},
+{% endif -%}
+
+{{ message }}
+
+{% if action %}
+To take action based on this notification, follow this link: {{ action }}
+{% endif %}
+
+
+- The DOAJ Team
+
+***
+This is an automated message. Please do not reply to this email.

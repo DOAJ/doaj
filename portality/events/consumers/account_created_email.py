@@ -4,27 +4,30 @@ from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import app_email
 from portality import models
-
-from portality.app import app
+from portality.core import app
 
 
 class AccountCreatedEmail(EventConsumer):
-    def consumes(self, event):
+    ID = "account:created:email"
+
+    @classmethod
+    def consumes(cls, event):
         return event.id == constants.EVENT_ACCOUNT_CREATED and event.context.get("account") is not None
 
-    def consume(self, event):
+    @classmethod
+    def consume(cls, event):
         context = event.context
         acc_id = context.get("account")
         acc = models.Account.pull(acc_id)
-        self._send_account_created_email(acc)
+        cls._send_account_created_email(acc)
 
-    def _send_account_created_email(self, account: models.Account):
-        with app.test_request_context("/"):
-            forgot_pw_url = url_for('account.forgot', _external=True)
-            reset_url = forgot_pw_url
+    @classmethod
+    def _send_account_created_email(cls, account: models.Account):
+        forgot_pw_url = url_for('account.forgot', _external=True)
+        reset_url = forgot_pw_url
 
-            if account.reset_token is not None:
-                reset_url = url_for('account.reset', reset_token=account.reset_token, _external=True)
+        if account.reset_token is not None:
+            reset_url = url_for('account.reset', reset_token=account.reset_token, _external=True)
 
         password_create_timeout_seconds = int(
             app.config.get("PASSWORD_CREATE_TIMEOUT", app.config.get('PASSWORD_RESET_TIMEOUT', 86400) * 14))

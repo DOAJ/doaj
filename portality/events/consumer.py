@@ -1,6 +1,8 @@
 class EventConsumer(object):
-    def consumes(self, event):
+    @classmethod
+    def consumes(cls, event):
         raise NotImplementedError()
 
-    def consume(self, event):
+    @classmethod
+    def consume(cls, event):
         raise NotImplementedError()

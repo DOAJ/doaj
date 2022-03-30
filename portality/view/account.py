@@ -6,11 +6,13 @@ from flask_login import login_user, logout_user, current_user, login_required
 from wtforms import StringField, HiddenField, PasswordField, validators, Form
 
 from portality import util
+from portality import constants
 from portality.core import app
 from portality.decorators import ssl_required, write_required
-from portality.models import Account
+from portality.models import Account, Event
 from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
 from portality.notifications.application_emails import send_account_created_email, send_account_password_reset_email
+from portality.bll import DOAJ
 
 blueprint = Blueprint('account', __name__)
 
@@ -324,13 +326,16 @@ def register():
 
     form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
     if request.method == 'POST' and form.validate():
-        recap_data = util.verify_recaptcha(form.recaptcha_value.data)
+        # recap_data = util.verify_recaptcha(form.recaptcha_value.data)
+        recap_data = {"success": True}
         if recap_data["success"]:
             account = Account.make_account(email=form.email.data, username=form.identifier.data, name=form.name.data,
                                            roles=[r.strip() for r in form.roles.data.split(',')])
             account.save()
 
-            send_account_created_email(account)
+            event_svc = DOAJ.eventsService()
+            event_svc.trigger(Event(constants.EVENT_ACCOUNT_CREATED, context={"account" : account.id}))
+            # send_account_created_email(account)
 
             if app.config.get('DEBUG', False):
                 util.flash_with_url('Debug mode - url for verify is <a href={0}>{0}</a>'.format(url_for('account.reset', reset_token=account.reset_token)))

@@ -1,0 +1,66 @@
+from portality.dao import DomainObject
+from portality.lib import dates
+
+
+class Notification(DomainObject):
+    """~~Notification:Model->DomainObject:Model~~"""
+    __type__ = "notification"
+
+    def __init__(self, raw=None, **kwargs):
+        self.data = raw if raw is not None else {}
+        super(Notification, self).__init__(**kwargs)
+
+    @property
+    def who(self):
+        return self.data.get("who")
+
+    @who.setter
+    def who(self, account_id):
+        self.data["who"] = account_id
+
+    @property
+    def message(self):
+        return self.data.get("message")
+
+    @message.setter
+    def message(self, message):
+        self.data["message"] = message
+
+    @property
+    def seen_date(self):
+        return self.data.get("seen_date")
+
+    @seen_date.setter
+    def seen_date(self, date):
+        self.data["seen_date"] = date
+
+    def is_seen(self):
+        return "seen_date" in self.data
+
+    def set_seen(self):
+        self.seen_date = dates.now()
+
+    @property
+    def action(self):
+        return self.data.get("action")
+
+    @action.setter
+    def action(self, action_url):
+        self.data["action"] = action_url
+
+    @property
+    def classification(self):
+        return self.data.get("classification")
+
+    @classification.setter
+    def classification(self, classification):
+        self.data["classification"] = classification
+
+    @property
+    def created_by(self):
+        return self.data.get("created_by")
+
+    @created_by.setter
+    def created_by(self, consumer_id):
+        self.data["created_by"] = consumer_id
+

@@ -87,7 +87,7 @@ ELASTIC_APM = {
 # Event handler
 
 # use this to queue events asynchronously through kafka
-EVENT_SEND_FUNCTION = "portality.events.kafka.send_event"
+EVENT_SEND_FUNCTION = "portality.events.kafka_producer.send_event"
 # use this one to bypass kafka and process events immediately/synchronously
 # EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
 
@@ -625,6 +625,7 @@ MAPPINGS['news'] = MAPPINGS["account"]    #~~->News:Model~~
 MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
 MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
 MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
+MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
 
 #########################################
 # Query Routes

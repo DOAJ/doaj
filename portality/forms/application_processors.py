@@ -9,6 +9,7 @@ from portality.ui.messages import Messages
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll import exceptions
+from portality.bll.doaj import DOAJ
 
 from flask import url_for, request, has_request_context
 from flask_login import current_user
@@ -317,9 +318,7 @@ class AdminApplication(ApplicationProcessor):
         # ~~-> Provenance:Model~~
         models.Provenance.make(account, "edit", self.target)
 
-        # delayed import of the DOAJ BLL
         # ~~->Application:Service~~
-        from portality.bll.doaj import DOAJ
         applicationService = DOAJ.applicationService()
 
         # if the application is already rejected, and we are moving it back into a non-rejected status
@@ -390,6 +389,15 @@ class AdminApplication(ApplicationProcessor):
             self.target.save()
 
         if email_alert:
+            # trigger a status change event
+            if self.source.application_status != self.target.application_status:
+                eventsSvc = DOAJ.eventsService()
+                eventsSvc.trigger(models.Event("application:status", account.id, {
+                    "application" : self.target.id,
+                    "old_status" : self.source.application_status,
+                    "new_status" : self.target.application_status
+                }))
+
             # ~~-> Email:Notifications~~
             # if revisions were requested, email the publisher
             if self.source.application_status != constants.APPLICATION_STATUS_REVISIONS_REQUIRED and self.target.application_status == constants.APPLICATION_STATUS_REVISIONS_REQUIRED:
@@ -440,17 +448,9 @@ class AdminApplication(ApplicationProcessor):
                     app.logger.exception('Error sending review failed email to editor - ' + magic)
 
                 # Then the associate
-                try:
-                    emails.send_assoc_editor_inprogress_email(self.target)
-                    self.add_alert('An email has been sent to notify the assigned associate editor of the change in status.')
-                except AttributeError:
-                    magic = str(uuid.uuid1())
-                    self.add_alert('Couldn\'t find a recipient for this email - check an associate editor is assigned. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                    app.logger.exception('No associate editor recipient for failed review email - ' + magic)
-                except app_email.EmailException:
-                    magic = str(uuid.uuid1())
-                    self.add_alert('Sending the failed review email to associate editor didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                    app.logger.exception('Error sending review failed email to associate editor - ' + magic)
+                if self.target.editor:
+                    self.add_alert('The associate editor has been notified of the change in status.')
+
 
             # email other managing editors if this was newly set to 'ready'
             if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
@@ -587,7 +587,15 @@ class EditorApplication(ApplicationProcessor):
 
         # record the event in the provenance tracker
         # ~~-> Procenance:Model~~
-        models.Provenance.make(current_user, "edit", self.target)
+        models.Provenance.make(current_user, "edit", self.target)   # FIXME: shouldn't really use current_user here
+
+        # trigger a status change event
+        eventsSvc = DOAJ.eventsService()
+        eventsSvc.trigger(models.Event("application:status", current_user.id, {
+            "application": self.target.id,
+            "old_status": self.source.application_status,
+            "new_status": self.target.application_status
+        }))
 
         # if we need to email the associate because they have just been assigned, handle that here.
         # ~~-> Email:Notifications~~
@@ -612,20 +620,8 @@ class EditorApplication(ApplicationProcessor):
 
         # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
         if self.source.application_status == constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
-            try:
-                emails.send_assoc_editor_inprogress_email(self.target)
-                self.add_alert(
-                    'An email has been sent to notify the assigned associate editor of the change in status.')
-            except AttributeError as e:
-                magic = str(uuid.uuid1())
-                self.add_alert(
-                    'Couldn\'t find a recipient for this email - check an associate editor is assigned. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                app.logger.exception('No associate editor recipient for failed review email - ' + magic)
-            except app_email.EmailException:
-                magic = str(uuid.uuid1())
-                self.add_alert(
-                    'Sending the failed review email to associate editor didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                app.logger.exception('Error sending failed review email to associate editor - ' + magic)
+            if self.target.editor:
+                self.add_alert('The associate editor has been notified of the change in status.')
 
         # email managing editors if the application was newly set to 'ready'
         if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
