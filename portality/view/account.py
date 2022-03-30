@@ -326,8 +326,10 @@ def register():
 
     form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
     if request.method == 'POST' and form.validate():
-        # recap_data = util.verify_recaptcha(form.recaptcha_value.data)
-        recap_data = {"success": True}
+        if app.config.get("RECAPTCHA_ENABLE"):
+            recap_data = util.verify_recaptcha(form.recaptcha_value.data)
+        else:
+            recap_data = {"success": True}
         if recap_data["success"]:
             account = Account.make_account(email=form.email.data, username=form.identifier.data, name=form.name.data,
                                            roles=[r.strip() for r in form.roles.data.split(',')])
