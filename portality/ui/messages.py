@@ -88,13 +88,7 @@ class Messages(object):
 
     ADMIN__WITHDRAW_REINSTATE = "<a href='{url}'>Job to withdraw/reinstate journal has been submitted</a>"
 
-
-    NOTIFY__APPLICATION_ASSED_INPROGESS = "The application for **{application_title}** has not passed review by an Editor or Managing Editor and has been assigned back to you with questions or changes."
-
     NOTIFY__DEFAULT_EMAIL_SUBJECT = "You have a new notification"
-    NOTIFY__CONSUMER_EMAIL_SUBJECTS = {
-        "application:assed:inprogress:notify" : "an application assigned to you has not passed review."
-    }
 
     @classmethod
     def flash(cls, tup):

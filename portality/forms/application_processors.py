@@ -392,7 +392,7 @@ class AdminApplication(ApplicationProcessor):
             # trigger a status change event
             if self.source.application_status != self.target.application_status:
                 eventsSvc = DOAJ.eventsService()
-                eventsSvc.trigger(models.Event("application:status", account.id, {
+                eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, account.id, {
                     "application" : self.target.id,
                     "old_status" : self.source.application_status,
                     "new_status" : self.target.application_status
@@ -591,7 +591,7 @@ class EditorApplication(ApplicationProcessor):
 
         # trigger a status change event
         eventsSvc = DOAJ.eventsService()
-        eventsSvc.trigger(models.Event("application:status", current_user.id, {
+        eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, current_user.id, {
             "application": self.target.id,
             "old_status": self.source.application_status,
             "new_status": self.target.application_status

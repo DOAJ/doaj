@@ -4,9 +4,9 @@ Dear {{ user.name }},
 
 {{ message }}
 
-{% if action %}
-To take action based on this notification, follow this link: {{ action }}
-{% endif %}
+{%- if action %}
+To take action based on this notification, follow this link: {{ url_root }}{{ action }}
+{% endif -%}
 
 
 - The DOAJ Team

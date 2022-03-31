@@ -12,14 +12,15 @@ class NotificationsService(object):
 
         # now send an email to the notification target
         acc = models.Account.pull(notification.who)
-        to = [acc.email]
+        if acc is None:
+            return
 
+        if acc.email is None:
+            return
+
+        to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-        subject = app.config.get("SERVICE_NAME", "") + " - " + \
-                  Messages.NOTIFY__CONSUMER_EMAIL_SUBJECTS.get(
-                      notification.created_by,
-                      Messages.NOTIFY__DEFAULT_EMAIL_SUBJECT
-                  )
+        subject = app.config.get("SERVICE_NAME", "") + " - " + self.email_subject(notification.created_by)
 
         app_email.send_mail(to=to,
                             fro=fro,
@@ -27,4 +28,11 @@ class NotificationsService(object):
                             template_name="email/notification_email.jinja2",
                             user=acc,
                             message=notification.message,
-                            action=notification.action)
+                            action=notification.action,
+                            url_root=app.config.get("BASE_URL"))
+
+    def message(self, message_id):
+        return app.jinja_env.globals["data"]["notifications"].get(message_id, {}).get("message")
+
+    def email_subject(self, message_id):
+        return app.jinja_env.globals["data"]["notifications"].get(message_id, {}).get("email_subject", Messages.NOTIFY__DEFAULT_EMAIL_SUBJECT)

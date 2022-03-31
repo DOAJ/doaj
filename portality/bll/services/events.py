@@ -4,6 +4,7 @@ from portality.lib import plugin
 from portality.events.consumers.account_created_email import AccountCreatedEmail
 from portality.events.consumers.application_assed_inprogress_notify import ApplicationAssedInprogressNotify
 
+
 class EventsService(object):
     EVENT_CONSUMERS = [
         AccountCreatedEmail,

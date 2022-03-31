@@ -19,6 +19,8 @@ class AccountCreatedEmail(EventConsumer):
         context = event.context
         acc_id = context.get("account")
         acc = models.Account.pull(acc_id)
+        if acc is None:
+            return
         cls._send_account_created_email(acc)
 
     @classmethod

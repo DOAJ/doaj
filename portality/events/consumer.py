@@ -1,4 +1,7 @@
 class EventConsumer(object):
+    # subclass must provide an ID
+    ID = None
+
     @classmethod
     def consumes(cls, event):
         raise NotImplementedError()
