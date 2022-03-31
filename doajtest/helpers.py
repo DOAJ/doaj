@@ -116,7 +116,8 @@ class DoajTestCase(TestCase):
             'ELASTIC_SEARCH_DB_PREFIX': core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX'] + cls.__name__.lower() + '-',
             "FEATURES": app.config['VALID_FEATURES'],
             'ENABLE_EMAIL': False,
-            "FAKER_SEED": 1
+            "FAKER_SEED": 1,
+            "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event"
         })
 
         main_queue.always_eager = True

@@ -41,6 +41,13 @@ class NoSuchObjectException(Exception):
     """
     pass
 
+class NoSuchPropertyException(Exception):
+    """
+    Exception to raise if an object does not have a property that was required of it
+    to complete the operation
+    """
+    pass
+
 class ConfigurationException(Exception):
     """
     Exception to raise when our own configuration is broken

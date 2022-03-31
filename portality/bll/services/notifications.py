@@ -3,6 +3,7 @@ from portality import models
 from portality.core import app
 from portality import app_email
 from portality.ui.messages import Messages
+from portality.bll.exceptions import NoSuchObjectException, NoSuchPropertyException
 
 
 class NotificationsService(object):
@@ -13,10 +14,10 @@ class NotificationsService(object):
         # now send an email to the notification target
         acc = models.Account.pull(notification.who)
         if acc is None:
-            return
+            raise NoSuchObjectException(Messages.EXCEPTION_NOTIFICATION_NO_ACCOUNT.format(x=notification.who))
 
         if acc.email is None:
-            return
+            raise NoSuchPropertyException(Messages.EXCEPTION_NOTIFICATION_NO_EMAIL.format(x=notification.who))
 
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
@@ -30,6 +31,8 @@ class NotificationsService(object):
                             message=notification.message,
                             action=notification.action,
                             url_root=app.config.get("BASE_URL"))
+
+        return notification
 
     def message(self, message_id):
         return app.jinja_env.globals["data"]["notifications"].get(message_id, {}).get("message")

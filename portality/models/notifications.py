@@ -6,8 +6,7 @@ class Notification(DomainObject):
     """~~Notification:Model->DomainObject:Model~~"""
     __type__ = "notification"
 
-    def __init__(self, raw=None, **kwargs):
-        self.data = raw if raw is not None else {}
+    def __init__(self, **kwargs):
         super(Notification, self).__init__(**kwargs)
 
     @property

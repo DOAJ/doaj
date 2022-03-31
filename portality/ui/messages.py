@@ -67,6 +67,9 @@ class Messages(object):
     EXCEPTION_IDENTIFIER_CHANGE = "DOI or Fulltext URL have been changed.  This operation is not permitted, please contact an administrator for help."
     EXCEPTION_DUPLICATE_NO_PERMISSION = "You do not have the permissions to carry out the requested change"
 
+    EXCEPTION_NOTIFICATION_NO_ACCOUNT = "Account with id {x} not found"
+    EXCEPTION_NOTIFICATION_NO_EMAIL = "Account with id {x} does not have an email address"
+
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
     {data_dump_url}. You can also harvest from our OAI-PMH endpoints; articles: {oai_article_url}, journals: {oai_journal_url}"""

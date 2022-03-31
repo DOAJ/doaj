@@ -42,3 +42,7 @@ class Event(object):
 
     def serialise(self):
         return json.dumps(self.data)
+
+    @property
+    def when(self):
+        return self.data.get("when")
