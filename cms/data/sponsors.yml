@@ -2,10 +2,6 @@
 # ~~Sponsors:Data~~
 
 gold:
-- name: JMIR Publications
-  url: http://jmirpublications.com/
-  logo: jmir.svg
-
 - name: PeerJ
   url: https://peerj.org/
   logo: peerj.svg
@@ -17,6 +13,7 @@ gold:
 - name: Georg Thieme Verlag KG
   url: https://www.thieme.com/
   logo: thieme.svg
+
 
 silver:
 - name: American Chemical Society
@@ -51,6 +48,10 @@ silver:
   url: https://www.ebsco.com/
   logo: ebsco.svg
 
+- name: eLife
+  url: https://elifesciences.org/
+  logo: elife.svg
+
 - name: Federation of Finnish Learned Societies
   url: https://tsv.fi/en/frontpage
   logo: tsv.png
@@ -59,10 +60,10 @@ silver:
   url: https://www.frontiersin.org/
   logo: frontiers.svg
 
-- name: Karger
-  url: https://www.karger.com/
-  logo: karger.png
-  
+- name: JMIR Publications
+  url: http://jmirpublications.com/
+  logo: jmir.svg
+
 - name: KeAi
   url: http://www.keaipublishing.com/en/
   logo: keai.png
@@ -122,10 +123,6 @@ bronze:
   url: https://www.edpsciences.org/
   logo: edp.svg
 
-- name: eLife
-  url: https://elifesciences.org/
-  logo: elife.svg
-
 - name: Emerald Publishing
   url: https://emeraldpublishing.com/
   logo: emerald.svg
@@ -145,6 +142,10 @@ bronze:
 - name: ISSN
   url: https://www.issn.org/
   logo: issn.svg
+ 
+- name: Karger
+  url: https://www.karger.com/
+  logo: karger.png
 
 - name: Lund University
   url: https://www.lunduniversity.lu.se/
@@ -169,15 +170,7 @@ bronze:
 - name: SciELO
   url: https://www.scielo.br/
   logo: scielo.svg
-
-- name: Springer Nature
-  url: https://www.springernature.com/gp/group/aboutus
-  logo: springer.svg
   
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg  
-
-- name: Wiley
-  url: https://wiley.com/
-  logo: wiley.svg
