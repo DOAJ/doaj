@@ -1,5 +1,6 @@
 from flask_login import current_user
 from portality import models, lock
+from portality.bll import DOAJ
 from portality.core import app
 
 from portality.tasks.redis_huey import main_queue
@@ -8,6 +9,9 @@ from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi, BackgroundSummary
 
 import json
+
+from portality.ui.messages import Messages
+
 
 def change_by_query(query, in_doaj_new_val, dry_run=True):
     ids = []
@@ -34,7 +38,7 @@ def change_in_doaj(journal_ids, in_doaj_new_val, **kwargs):
 
 
 class SetInDOAJBackgroundTask(BackgroundTask):
-
+    # ~~SetInDOAJBackgroundTask:Process->BackgroundTask:Process~~
     __action__ = "set_in_doaj"
 
     def run(self):
@@ -53,10 +57,23 @@ class SetInDOAJBackgroundTask(BackgroundTask):
 
         for journal_id in journal_ids:
             job.add_audit_message("Setting in_doaj to {x} for journal {y}".format(x=str(in_doaj), y=journal_id))
-
+            # ~~->Journal:Model~~
             j = models.Journal.pull(journal_id)
+            # ~~->Account:Model~~
+            account = models.Account.pull(job.user)
             if j is None:
                 raise RuntimeError("Journal with id {} does not exist".format(journal_id))
+            if not in_doaj:
+                # Rejecting associated update request
+                # ~~->Application:Service~~
+                svc = DOAJ.applicationService()
+                ur = svc.reject_update_request_of_journal(j.id, account)
+                if ur:
+                    job.add_audit_message(Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID.format(urid=ur))
+                else:
+                    job.add_audit_message(Messages.NO_UPDATE_REQUESTS)
+
+
             j.bibjson().active = in_doaj
             j.set_in_doaj(in_doaj)
             j.save()
