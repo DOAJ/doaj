@@ -35,7 +35,7 @@ class Event(object):
 
     @property
     def context(self):
-        return self.data.get("context")
+        return self.data.get("context", {})
 
     def set_context(self, **kwargs):
         self.data["context"] = kwargs

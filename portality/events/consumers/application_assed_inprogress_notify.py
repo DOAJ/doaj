@@ -23,6 +23,8 @@ class ApplicationAssedInprogressNotify(EventConsumer):
         if app_id is None:
             return
         application = models.Application.pull(app_id)
+        if application is None:
+            return
         if not application.editor:
             return
 

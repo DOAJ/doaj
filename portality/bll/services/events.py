@@ -3,12 +3,13 @@ from portality.lib import plugin
 
 from portality.events.consumers.account_created_email import AccountCreatedEmail
 from portality.events.consumers.application_assed_inprogress_notify import ApplicationAssedInprogressNotify
-
+from portality.events.consumers.application_assed_assigned_notify import ApplicationAssedAssignedNotify
 
 class EventsService(object):
     EVENT_CONSUMERS = [
         AccountCreatedEmail,
-        ApplicationAssedInprogressNotify
+        ApplicationAssedInprogressNotify,
+        ApplicationAssedAssignedNotify
     ]
 
     def __init__(self):

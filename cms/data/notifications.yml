@@ -4,3 +4,9 @@ application:assed:inprogress:notify:
     Managing Editor and has been assigned back to you with questions or changes."
   email_subject:
     "an application assigned to you has not passed review."
+application:assed:assigned:notify:
+  message:
+    "An application, or update request for the journal \"{journal_title}\" has been assigned
+    to you by the Editor of your Group \"{group_name}\". Please start work on this within 10 days."
+  email_subject:
+    "new application assigned to you"
