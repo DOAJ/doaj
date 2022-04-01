@@ -76,8 +76,11 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
             job.add_audit_message(Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID.format(urid=urs_ids))
         else:
             job.add_audit_message(Messages.NO_UPDATE_REQUESTS)
-
-        models.Application.blockall([(urid, date_after) for urid in urs_ids])
+        blocklist = []
+        for urid in urs_ids:
+            ur = models.Application.pull(urid)
+            blocklist.append((urid, ur.last_updated))
+        models.Application.blockall(blocklist)
 
         journal_delete_q_by_ids = models.Journal.make_query(should_terms={'_id': ids}, consistent_order=False)
         models.Journal.delete_selected(query=journal_delete_q_by_ids, articles=True, snapshot_journals=True, snapshot_articles=True)
