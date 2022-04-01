@@ -27,6 +27,10 @@ silver:
   url: https://www.apa.org/pubs
   logo: apa.png
 
+- name: AOSIS
+  url: https://aosis.co.za/
+  logo: aosis.png
+
 - name: Cappelen Damm Akademisk
   url: https://www.cappelendammundervisning.no/
   logo: CDA.jpg
@@ -63,6 +67,10 @@ silver:
   url: http://www.keaipublishing.com/en/
   logo: keai.png
   
+- name: MDPI
+  url: https://www.mdpi.com/
+  logo: mdpi.svg  
+  
 - name: National Library of Sweden
   url: https://www.kb.se/
   logo: kbse.svg
@@ -82,10 +90,12 @@ silver:
 - name: Swedish Research Council
   url: https://vr.se/english.html
   logo: vr.svg
+  
+- name: Taylor & Francis Group
+  url: https://www.taylorandfrancisgroup.com/
+  logo: tf.svg  
 
-- name: Ubiquity Press
-  url: https://www.ubiquitypress.com/
-  logo: ubiquity.svg
+
 
 bronze:
 - name: Physical Review Journals
@@ -140,10 +150,6 @@ bronze:
   url: https://www.lunduniversity.lu.se/
   logo: lu.png
 
-- name: MDPI
-  url: https://www.mdpi.com/
-  logo: mdpi.svg
-
 - name: OASPA
   url: https://oaspa.org/
   logo: oaspa.png
@@ -167,10 +173,10 @@ bronze:
 - name: Springer Nature
   url: https://www.springernature.com/gp/group/aboutus
   logo: springer.svg
-
-- name: Taylor & Francis Group
-  url: https://www.taylorandfrancisgroup.com/
-  logo: tf.svg
+  
+- name: Ubiquity Press
+  url: https://www.ubiquitypress.com/
+  logo: ubiquity.svg  
 
 - name: Wiley
   url: https://wiley.com/
