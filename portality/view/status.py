@@ -109,10 +109,14 @@ def status():
     # check that all necessary ES nodes can actually be pinged from this machine
     for eddr in app.config['ELASTICSEARCH_HOSTS']:
         es_addr = f'http://{eddr["host"]}:{eddr["port"]}'
-        r = requests.get(es_addr)
-        res['ping']['indices'][es_addr] = r.status_code
-        res['stable'] = r.status_code == 200
-        if r.status_code != 200:
+        try:
+            r = requests.get(es_addr, timeout=3)
+            res['ping']['indices'][es_addr] = r.status_code
+            res['stable'] = r.status_code == 200
+
+            if r.status_code != 200:
+                raise Exception('ES is not OK - status is {}'.format(r.status_code))
+        except Exception as e:
             res['stable'] = False
             es_unreachable += 1
             es_note = str(es_unreachable) + ' INDEXES UNREACHABLE'
