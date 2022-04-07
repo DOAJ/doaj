@@ -2,6 +2,12 @@
 # ~~AdvisoryBoardCouncil:Data~~
 
 board:
+- name: Andreas Ferus
+  institution: Academy of Fine Arts Vienna
+  country: Austria
+  coi:
+    2022: https://drive.google.com/file/d/1gnyyJTzD98fuBs7cVaeWpDerGfPR8CHl/view?usp=sharing
+
 - name: Anja Oberländer
   institution: University of Konstanz
   country: Germany
@@ -13,6 +19,12 @@ board:
   country: United States
   coi:
     2019: https://drive.google.com/file/d/1FHkg6seMBKTDwlO6XbRr0iEjlKjwMUV2/view?usp=sharing
+ 
+ - name: Karen Hytteballe Ibanez
+  institution: NORA at Technical University of Denmark, representing the Danish Ministry of Higher Education and Science
+  country: Denmark
+  coi:
+    2022: https://drive.google.com/file/d/1hq4ZVzBsBZvJNw3It44S36T2ZHNpLw8W/view?usp=sharing
 
 - name: Leslie Chan
   institution: University of Toronto
@@ -30,6 +42,12 @@ board:
   coi:
     2019: https://drive.google.com/file/d/1rSCL0KHewtg6626kf2_YB-0i18IxcoiN/view?usp=sharing
 
+- name: Pierre De Villiers
+  institution: AOSIS
+  country: South Africa
+  coi:
+    2022: https://drive.google.com/file/d/1Gb4yxUmeI8EW0uF3J8XFD49e8lwIjTx1/view?usp=sharing
+
 - name: Solange Maria Dos Santos
   institution: SciELO
   country: Brazil
@@ -41,6 +59,12 @@ board:
   country: United Kingdom
   coi:
     2019: https://drive.google.com/file/d/1JxIGgxW03CAHyVepbQyOin9unhbrQAif/view?usp=sharing
+
+- name: Xenia Rueda
+  institution: National Autonomous University of Mexico
+  country: Mexico
+  coi:
+    2022: https://drive.google.com/file/d/1wY208VRF128QGg-sAn-gikUID1z_SSC1/view?usp=sharing
 
 # List of council members
 
