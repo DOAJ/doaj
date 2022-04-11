@@ -46,19 +46,19 @@
           </ul>
         </li> #}
         <li class="flex-center">
-          <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag tag--secondary">
+          <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">
             <span class="sr-only">Profile</span>
             <span data-feather="smile" aria-hidden="true"></span>
           </a>
         </li>
         <li class="flex-center">
-          <a href="/" class="tag tag--secondary">
+          <a href="/" class="tag">
             <span class="sr-only">Home</span>
             <span data-feather="home" aria-hidden="true"></span>
           </a>
         </li>
         <li class="flex-center">
-          <a href="{{ url_for('account.logout') }}" class="tag tag--secondary">
+          <a href="{{ url_for('account.logout') }}" class="tag">
             <span class="sr-only">Log out</span>
             <span data-feather="log-out" aria-hidden="true"></span>
           </a>
