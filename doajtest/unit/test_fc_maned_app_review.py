@@ -83,7 +83,13 @@ class TestManEdAppReview(DoajTestCase):
 
         # we start by constructing it from source
         formulaic_context = ApplicationFormFactory.context("admin")
-        fc = formulaic_context.processor(source=models.Application(**APPLICATION_SOURCE))
+        app = models.Application(**APPLICATION_SOURCE)
+        jid = app.current_journal
+        JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        JOURNAL_SOURCE["id"] = jid
+        current_journal = models.Journal(**JOURNAL_SOURCE)
+        current_journal.save()
+        fc = formulaic_context.processor(source=app)
         assert isinstance(fc, AdminApplication)
         assert fc.form is not None
         assert fc.source is not None
@@ -143,7 +149,7 @@ class TestManEdAppReview(DoajTestCase):
         owner.save(blocking=True)
 
         # There needs to be an existing journal in the index for this test to work
-        jsource = JournalFixtureFactory.make_journal_source()
+        jsource = JournalFixtureFactory.make_journal_source(in_doaj=True)
         del jsource["admin"]["related_applications"]
         extant_j = models.Journal(**jsource)
         assert extant_j.last_update_request is None
@@ -240,8 +246,15 @@ class TestManEdAppReview(DoajTestCase):
 
         # construct it from form data (with a known source)
         formulaic_context = ApplicationFormFactory.context("admin")
+        app = models.Application(**ApplicationFixtureFactory.make_application_source())
+        jid = app.current_journal
+        JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        JOURNAL_SOURCE["id"] = jid
+        current_journal = models.Journal(**JOURNAL_SOURCE)
+        current_journal.save()
+
         fc = formulaic_context.processor(
-            source=models.Application(**ApplicationFixtureFactory.make_application_source()),
+            source=app,
             formdata=MultiDict(APPLICATION_FORM)
         )
 
@@ -276,9 +289,16 @@ class TestManEdAppReview(DoajTestCase):
         source["application_status"] = constants.APPLICATION_STATUS_ACCEPTED
         fd = MultiDict(source)
 
+        app = models.Application(**APPLICATION_SOURCE)
+        jid = app.current_journal
+        JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        JOURNAL_SOURCE["id"] = jid
+        current_journal = models.Journal(**JOURNAL_SOURCE)
+        current_journal.save()
+
         formulaic_context = ApplicationFormFactory.context("admin")
         fc = formulaic_context.processor(
-            source=models.Application(**APPLICATION_SOURCE),
+            source=app,
             formdata=fd
         )
 
@@ -312,8 +332,14 @@ class TestManEdAppReview(DoajTestCase):
         form_source["application_status"] = constants.APPLICATION_STATUS_REJECTED
         fd = MultiDict(form_source)
         formulaic_context = ApplicationFormFactory.context("admin")
+        app = models.Application(**APPLICATION_SOURCE)
+        jid = app.current_journal
+        JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        JOURNAL_SOURCE["id"] = jid
+        current_journal = models.Journal(**JOURNAL_SOURCE)
+        current_journal.save()
         fc = formulaic_context.processor(
-            source=models.Application(**APPLICATION_SOURCE),
+            source=app,
             formdata=fd
         )
 
@@ -354,8 +380,16 @@ class TestManEdAppReview(DoajTestCase):
 
         # Construct the formcontext from form data (with a known source)
         formulaic_context = ApplicationFormFactory.context("admin")
+
+        app = models.Application(**accepted_source)
+        jid = app.current_journal
+        CURRENT_JOURNAL = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        CURRENT_JOURNAL["id"] = jid
+        current_journal = models.Journal(**CURRENT_JOURNAL)
+        current_journal.save()
+
         fc = formulaic_context.processor(
-            source=models.Application(**accepted_source),
+            source=app,
             formdata=MultiDict(completed_form)
         )
 
