@@ -1,9 +1,0 @@
-{
-"types": [
-		{
-			"type" : "article",
-			"init_with_model" : true,
-			"keepalive" : "20m"
-		}
-]
-}

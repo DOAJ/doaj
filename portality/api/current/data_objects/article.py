@@ -267,8 +267,6 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
             del dat["admin"]["seal"]
         if "admin" in dat and "upload_id" in dat["admin"]:
             del dat["admin"]["upload_id"]
-        if "es_type" in dat:
-            del dat["es_type"]
 
         if existing is None:
             return models.Article(**dat)

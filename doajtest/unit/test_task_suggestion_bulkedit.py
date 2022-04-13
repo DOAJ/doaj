@@ -5,8 +5,7 @@ import json
 from flask_login import logout_user
 
 from portality import constants
-from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory, \
-    JournalFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.background import BackgroundException
@@ -35,13 +34,7 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
 
         self.suggestions = []
         for app_src in ApplicationFixtureFactory.make_many_application_sources(count=TEST_SUGGESTION_COUNT):
-            app = models.Suggestion(**app_src)
-            jid = app.current_journal
-            JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
-            JOURNAL_SOURCE["id"] = jid
-            current_journal = models.Journal(**JOURNAL_SOURCE)
-            current_journal.save()
-            self.suggestions.append(app)
+            self.suggestions.append(models.Suggestion(**app_src))
             self.suggestions[-1].set_editor_group("1234567890")
             # self.suggestions[-1].set_editor("0987654321")
             self.suggestions[-1].remove_editor()
