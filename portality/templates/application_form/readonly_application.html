@@ -17,33 +17,25 @@
 {% block page_title %}(Read-only) {{ obj.bibjson().title }}{% endblock %}
 
 {% block publisher_content scoped %}
-
-    {% if obj["es_type"] == "application" and obj.application_type == "update_request" and not obj.current_journal %}
-        <h2 class="alert">
-            <span data-feather="alert-triangle" aria-hidden="true"></span>
-            Journal has been withdrawn or deleted. This update request was automatically rejected.
-        </h2>
-    {% endif %}
-
-    <body id="apply">
+<body id="apply">
     <main class="container">
         <div class="row">
             <div class="col-md-8">
                 <section class="page-content">
                     <form id="{{ form_id }}"
-                          data-context = "{{ formulaic_context.name }}"
-                          class="application_form"
-                          novalidate
-                          action="{{ form_action }}"
-                          method="post"
-                          data-formulaic-after="{{ formulaic_after }}">
+                      data-context = "{{ formulaic_context.name }}"
+                      class="application_form"
+                      novalidate
+                      action="{{ form_action }}"
+                      method="post"
+                      data-formulaic-after="{{ formulaic_after }}">
 
                         {% include "application_form/_fieldsets.html" %}
 
-                        <div class="tab form-section">
-                            {% include "application_form/07-review/index.html" %}
-                        </div>
-                    </form>
+                    <div class="tab form-section">
+                        {% include "application_form/07-review/index.html" %}
+                    </div>
+                </form>
                 </section>
             </div>
 
@@ -54,7 +46,7 @@
             </div>
         </div>
     </main>
-    </body>
+ </body>
 {% endblock %}
 
 {% block extra_js_bottom scoped %}

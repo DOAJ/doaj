@@ -147,7 +147,8 @@ class DomainObject(UserDict, object):
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
 
-        self.data['es_type'] = self.__type__
+        if 'es_type' not in self.data and self.__type__ is not None:
+            self.data['es_type'] = self.__type__
 
         now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         if (blocking or differentiate) and "last_updated" in self.data:
