@@ -820,7 +820,6 @@ class Journal(JournalLikeObject):
             article.set_in_doaj(self.is_in_doaj())
             article.save()
 
-
     def prep(self, is_update=True):
         self._ensure_in_doaj()
         self.calculate_tick()

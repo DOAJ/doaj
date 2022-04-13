@@ -121,8 +121,6 @@ class TestCrudArticle(DoajTestCase):
         ]
         data['bibjson']['journal']['language'] = ["ES", "These aren't even", "lang codes"]
         data['bibjson']['journal']['country'] = "This better not work"
-        # invalid es_type provided by the user - should be ignored and added the correct one
-        data["es_type"] = "some stupid string"
 
         account = models.Account()
         account.set_id("test")
@@ -151,7 +149,6 @@ class TestCrudArticle(DoajTestCase):
 
         # check that it got created with the right properties
         assert isinstance(a, models.Article)
-        assert a.data["es_type"] == "article"
         assert a.id != "abcdefghijk_article"
         assert a.created_date != "2000-01-01T00:00:00Z"
         assert a.last_updated != "2000-01-01T00:00:00Z"
