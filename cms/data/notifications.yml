@@ -10,3 +10,9 @@ application:assed:assigned:notify:
     to you by the Editor of your Group \"{group_name}\". Please start work on this within 10 days."
   email_subject:
     "new application assigned to you"
+bg:job_finished:notify:
+  message:
+    "Your background job {job_id} for \"{action}\" has finished with status \"{status}\"
+    You can see the record of your job and its status in the background jobs interface here:"
+  email_subject:
+    "background job finished"
