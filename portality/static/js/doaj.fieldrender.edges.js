@@ -31,6 +31,29 @@ $.extend(true, doaj, {
             })
         },
 
+        openOrClosed: function() {
+            return edges.newRefiningANDTermSelector({
+                id: "application_type",
+                category: "facet",
+                field: "index.application_type.exact",
+                display: "Open or Closed",
+                deactivateThreshold : 1,
+                orderDir: "asc",
+                valueMap : {
+                    "finished application/update": "Closed",
+                    "update request": "Open",
+                    "new application": "Open"
+                },
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+
         applicationStatus : function() {
             return edges.newRefiningANDTermSelector({
                 id: "application_status",

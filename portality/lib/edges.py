@@ -17,6 +17,7 @@ def make_query(**params):
 
 
 class GeneralSearchQuery(object):
+    # ~~-> Edges:Query~~
     def __init__(self, term=None, terms=None, query_string=None):
         self.terms = None if terms is None else terms if isinstance(terms, list) else [terms]
         self.term = None if term is None else term

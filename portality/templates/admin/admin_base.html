@@ -1,6 +1,4 @@
-{% extends "layouts/base.html" %}
-
-{% block page_title %}Admin dashboard{% endblock %}
+{% extends "layouts/dashboard_base.html" %}
 
 {% block extra_stylesheets %}
 <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
@@ -8,8 +6,7 @@
 
 {% block content %}
 <main class="container">
-  <h2>Admin dashboard</h2>
-  {% include 'admin/nav.html' %}
+  <h1>{% block page_title %}{% endblock %}</h1>
 
   <section class="page-content">
     {% block admin_content %}

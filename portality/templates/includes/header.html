@@ -61,6 +61,13 @@
                     <ul class="dropdown__menu" aria-labelledby="menu-account">
                         {% if current_user.has_role("admin") %}
                             <li>
+                                <a href="{{ url_for('dashboard.top_todo') }}" class="dropdown__link">
+                                    Dashboard
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if current_user.has_role("admin") %}
+                            <li>
                                 <a href="{{ url_for('admin.index') }}" class="dropdown__link">
                                     Admin
                                 </a>
