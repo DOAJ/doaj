@@ -58,44 +58,49 @@
           </a>
         </li>
       </ul>
-    </nav>
-
-    <nav class="secondary-nav align-right">
-
-            <dl>
-                {% set managed_groups = maned_of() %}
-                {% if managed_groups and managed_groups|length > 0 %}
-                    <dt>
-                        Managing Editor of&nbsp;&nbsp;
-                    </dt>
-                    <dd>
-                        <ul class="inlined-list tags">
-                            {% for eg in managed_groups %}
-                                <li class="tag tag--secondary">
-                                    {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
-                                    <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">{{ eg.name }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </dd>
-                    &nbsp;/&nbsp;&nbsp;
-                {% endif %}
-                <dt>
-                    Username&nbsp;&nbsp;
-                </dt>
-                <dd>
-                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
-                </dd>
-            </dl>
-        </nav>
-
-        {% block extra_header %}{% endblock %}
+      {% block extra_header %}{% endblock %}
     </header>
 
     {% include 'dashboard/nav.html' %}
 
     {% block main_panel %}
-        {% block content %}{% endblock %}
+    <main>
+      <header class="main-header">
+        <div class="row">
+          <h1 class="col-md-6">
+            {% block page_title %}Hi, {{ current_user.name }}!{% endblock %}
+          </h1>
+          <nav class="col-md-6 align-right">
+            <dl>
+              {% set managed_groups = maned_of() %}
+              {% if managed_groups and managed_groups|length > 0 %}
+              <dt>
+                Managing Editor of&nbsp;&nbsp;
+              </dt>
+              <dd>
+                <ul class="inlined-list tags">
+                  {% for eg in managed_groups %}
+                  <li class="tag tag--secondary">
+                    {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
+                    <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">{{ eg.name }}</a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </dd>
+              &nbsp;/&nbsp;&nbsp;
+              {% endif %}
+              <dt>
+                Username&nbsp;&nbsp;
+              </dt>
+              <dd>
+                <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
+              </dd>
+            </dl>
+          </nav>
+        </div>
+      </header>
+      {% block content %}{% endblock %}
+    </main>
     {% endblock %}
 
     {% include '_js_includes.html' %}

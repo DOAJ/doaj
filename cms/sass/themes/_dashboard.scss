@@ -39,15 +39,13 @@
     }
   }
 
-  .secondary-nav {
-    margin-left: 75px;
-    padding-left: $spacing-04;
-    padding-right: $spacing-04;
+  .main-header {
+    margin-top: 75px;
     font-size: smaller;
 
     dt, dd {
+      margin-top: 0;
       display: inline-block;
-      margin-top: $spacing-04;
     }
   }
 
@@ -103,10 +101,37 @@
 
   }
 
+  .todo-list {
+    padding: 0;
+    display: grid;
+    grid-auto-rows: 1fr;
+    list-style: none;
+    font-size: smaller;
+
+    @media screen and (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      grid-column-gap: $spacing-02;
+      grid-row-gap: $spacing-02;
+    }
+
+    @media screen and (max-width: 1279px) and (min-width: 769px) {
+      grid-template-columns: repeat(3, 1fr);
+      grid-column-gap: $spacing-03;
+      grid-row-gap: $spacing-03;
+    }
+
+    @media screen and (min-width: 1280px) {
+      grid-template-columns: repeat(4, 1fr);
+      grid-column-gap: $spacing-04;
+      grid-row-gap: $spacing-04;
+    }
+  }
+
   .todo-list__item {
-    border-left: 10px solid;
+    display: flex;
 
     h3 {
+      margin-top: $spacing-01;
       margin-bottom: 0;
     }
 
@@ -116,6 +141,13 @@
 
     svg {
       padding: 0;
+    }
+
+    .card {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      border-left: 10px solid;
     }
 
     .tag {

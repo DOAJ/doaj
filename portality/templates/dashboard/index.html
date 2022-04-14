@@ -30,12 +30,9 @@
 %}
 
 {% block content %}
-<main>
-  <h1>Hi, {{ current_user.name }}!</h1>
-
   <section>
     <h2 class="type-04">Here are your priorities:</h2>
-    <ol class="unstyled-list todo-list">
+    <ol class="todo-list">
       {% for todo in todos %}
       {# TODO only show tasks for this user’s groups #}
       {# TODO integrated priority in list display
@@ -43,36 +40,35 @@
        #}
        {% set app_url =  url_for('admin.application', application_id=todo.object_id) %}
       <li
-        class="card card--compact todo-list__item"
+      class="todo-list__item"
         data-app-url="{{ app_url }}"
-        style="border-color: {{ TODOS[todo.action_id[0]].colour }};"
       >
-        <article class="row">
-          <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="col-xs-1 label label--secondary font-mono">
-            <span style="font-size: 27px;">{{ todo.date.strftime('%d') }}</span><br>
-            <span style="font-size: 18.55px;">{{ todo.date.strftime('%b') }}</span><br>
-            <span style="font-size: 14.35px;">{{ todo.date.strftime('%Y') }}</span>
-          </time>
-          <div class="col-xs-11 flex-space-between">
+        <article class="card card--compact" style="border-color: {{ TODOS[todo.action_id[0]].colour }};">
+          <div class="flex-space-between flex-col">
+            <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="label label--secondary font-mono">
+              <span style="font-size: 22px;">{{ todo.date.strftime('%d') }}</span><br>
+              <span style="font-size: 13.55px;">{{ todo.date.strftime('%b') }}</span><br>
+              <span style="font-size: 9.35px;">{{ todo.date.strftime('%Y') }}</span>
+              {# TODO link to search results for this kind of task, across all editor groups #}
+            </time><br/>
+            <a
+              href="#"
+              class="tag"
+              style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
+            >
+            <span data-feather="{{ TODOS[todo.action_id[0]].feather | safe }}" aria-hidden="true"></span>
+            </a>
+          </div>
+          <div style="margin-left: .5em;" class="flex-space-between flex-col">
             <header>
               <p class="label label--secondary">{{ TODOS[todo.action_id[0]].text | safe }}</p>
               <h3>
-                <a href="{{ app_url }}" class="font-serif type-05" target="_blank">{{ todo.title }}</a>
+                <a href="{{ app_url }}" class="font-serif type-06" target="_blank" title="{{ todo.title }}">{{ todo.title | truncate(35, True) }}</a>
               </h3>
             </header>
-            <ul class="unstyled-list no-margins flex-end tags">
+            <ul class="unstyled-list tags">
               {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [todo.object.editor_group]}]) %}
               <li><a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="label tag tag--secondary">{{ todo.object.editor_group }}</a></li>
-              <li>
-                {# TODO link to search results for this kind of task, across all editor groups #}
-                <a
-                  href="#"
-                  class="tag"
-                  style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
-                >
-                <span data-feather="{{ TODOS[todo.action_id[0]].feather | safe }}" aria-hidden="true"></span>
-                </a>
-              </li>
             </ul>
           </div>
         </article>
@@ -175,5 +171,4 @@ nxnxxxxxc
 
   </section>
   #}
-</main>
 {% endblock %}
