@@ -47,14 +47,7 @@
         </li> #}
         <li class="flex-center">
           <a href="/" class="tag">
-            <span class="sr-only">Home</span>
-            <span data-feather="home" aria-hidden="true"></span>
-          </a>
-        </li>
-        <li class="flex-center">
-          <a href="{{ url_for('account.logout') }}" class="tag">
-            <span class="sr-only">Log out</span>
-            <span data-feather="log-out" aria-hidden="true"></span>
+            <span>DOAJ home</span>
           </a>
         </li>
       </ul>
@@ -71,31 +64,40 @@
             {% block page_title %}Hi, {{ current_user.name }}!{% endblock %}
           </h1>
           <nav class="col-md-6 align-right">
-            <dl>
-              {% set managed_groups = maned_of() %}
-              {% if managed_groups and managed_groups|length > 0 %}
-              <dt>
-                Managing Editor of&nbsp;&nbsp;
-              </dt>
-              <dd>
-                <ul class="inlined-list tags">
-                  {% for eg in managed_groups %}
-                  <li class="tag tag--secondary">
-                    {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
-                    <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">{{ eg.name }}</a>
-                  </li>
-                  {% endfor %}
-                </ul>
-              </dd>
-              &nbsp;/&nbsp;&nbsp;
-              {% endif %}
-              <dt>
-                Username&nbsp;&nbsp;
-              </dt>
-              <dd>
-                <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
-              </dd>
-            </dl>
+            <ul class="inlined-list">
+              <li>
+                {% set managed_groups = maned_of() %}
+                {% if managed_groups and managed_groups|length > 0 %}
+                <dl>
+                  <dt>
+                    Managing Editor of&nbsp;&nbsp;
+                  </dt>
+                  <dd>
+                    <ul class="inlined-list tags">
+                      {% for eg in managed_groups %}
+                      <li class="tag tag--secondary">
+                        {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
+                        <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">{{ eg.name }}</a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </dd>
+                  {% endif %}
+                  <dt>
+                    Username&nbsp;&nbsp;
+                  </dt>
+                  <dd>
+                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
+                  </dd>
+                </dl>
+              </li>
+              <li class="flex-center">
+                <a href="{{ url_for('account.logout') }}" class="tag tag--secondary">
+                  <span><strong>Log out</strong></span>
+                  <span data-feather="log-out" aria-hidden="true"></span>
+                </a>
+              </li>
+            </ul>
           </nav>
         </div>
       </header>
