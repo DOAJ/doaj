@@ -46,8 +46,13 @@
           </ul>
         </li> #}
         <li class="flex-center">
+          <a href="/dashboard" class="tag">
+            <small><span>My TODO list</span></small>
+          </a>
+        </li>
+        <li class="flex-center">
           <a href="/" class="tag">
-            <span>DOAJ home</span>
+            <small><span>DOAJ home</span></small>
           </a>
         </li>
       </ul>
@@ -59,11 +64,11 @@
     {% block main_panel %}
     <main>
       <header class="main-header">
-        <div class="row">
-          <h1 class="col-md-6">
+        <div class="flex-space-between">
+          <h1>
             {% block page_title %}Hi, {{ current_user.name }}!{% endblock %}
           </h1>
-          <nav class="col-md-6 align-right">
+          <nav class="align-right">
             <ul class="inlined-list">
               <li>
                 {% set managed_groups = maned_of() %}
@@ -91,17 +96,18 @@
                   </dd>
                 </dl>
               </li>
-              <li class="flex-center">
-                <a href="{{ url_for('account.logout') }}" class="tag tag--secondary">
-                  <span><strong>Log out</strong></span>
-                  <span data-feather="log-out" aria-hidden="true"></span>
-                </a>
-              </li>
             </ul>
           </nav>
         </div>
       </header>
       {% block content %}{% endblock %}
+
+      <span class="flex-end">
+        <a href="{{ url_for('account.logout') }}" class="tag tag--secondary">
+          <span><strong>Log out</strong></span>
+          <span data-feather="log-out" aria-hidden="true"></span>
+        </a>
+      </span>
     </main>
     {% endblock %}
 
