@@ -1208,3 +1208,7 @@ PRESERVATION_URL = "http://PresevatinURL"
 PRESERVATION_USERNAME = "user_name"
 PRESERVATION_PASSWD = "password"
 PRESERVATION_COLLECTION = {}
+
+########################################
+# Set todo list size
+TODO_LIST_SIZE = 50
