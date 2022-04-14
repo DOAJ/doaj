@@ -91,10 +91,6 @@
     }
   }
 
-  .progress-bar {
-
-  }
-
   .todo-list {
     padding: 0;
     display: grid;
@@ -105,19 +101,16 @@
     @media screen and (max-width: 768px) {
       grid-template-columns: repeat(2, 1fr);
       grid-column-gap: $spacing-02;
-      grid-row-gap: $spacing-02;
     }
 
     @media screen and (max-width: 1279px) and (min-width: 769px) {
       grid-template-columns: repeat(3, 1fr);
       grid-column-gap: $spacing-03;
-      grid-row-gap: $spacing-03;
     }
 
     @media screen and (min-width: 1280px) {
       grid-template-columns: repeat(4, 1fr);
       grid-column-gap: $spacing-04;
-      grid-row-gap: $spacing-04;
     }
   }
 
@@ -140,16 +133,16 @@
     .card {
       display: flex;
       width: 100%;
-      height: 100%;
+      height: auto;
       border-left: 10px solid;
+
+      &:hover {
+        background-color: $light-grey;
+      }
     }
 
     .tag {
       margin-bottom: 0;
-    }
-
-    &:hover {
-      background-color: $light-grey;
     }
 
   }
