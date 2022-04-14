@@ -13,6 +13,10 @@ h2, h3, h4, h5, h6 {
   margin: $spacing-04 0 $spacing-03 0;
   line-height: 1.05;
   font-weight: 400;
+
+  &:first-child {
+    margin-top: 0;
+  }
 }
 
 h1 {
