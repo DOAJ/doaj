@@ -10,3 +10,8 @@ application:assed:assigned:notify:
     to you by the Editor of your Group \"{group_name}\". Please start work on this within 10 days."
   email_subject:
     "new application assigned to you"
+application:maned:ready:notify:
+  message:
+    "The application for \"{application_title}\" has been marked 'Ready' by {editor}. Please review it as soon as possible."
+  email_subject:
+    "application ready"

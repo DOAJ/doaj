@@ -8,30 +8,6 @@ from portality.dao import Facetview2
 from portality.ui.messages import Messages
 from portality.lib import dates
 
-def send_admin_ready_email(application, editor_id):
-    """ send email to the managing editors when an application is ready """
-    journal_name = application.bibjson().title
-    url_root = app.config.get("BASE_URL")
-    query_for_id = Facetview2.make_query(query_string=application.id)
-    string_id_query = json.dumps(query_for_id).replace(' ', '')       # Avoid '+' being added to URLs by removing spaces
-    if application.application_type == constants.APPLICATION_TYPE_NEW_APPLICATION:
-        url_for_application = url_root + url_for("admin.suggestions", source=string_id_query)
-    else:
-        url_for_application = url_root + url_for("admin.update_requests", source=string_id_query)
-
-    # This is to the managing editor email list
-    to = [app.config.get('MANAGING_EDITOR_EMAIL', 'managing-editors@doaj.org')]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-    subject = app.config.get("SERVICE_NAME", "") + " - application ready"
-
-    app_email.send_mail(to=to,
-                        fro=fro,
-                        subject=subject,
-                        template_name="email/admin_application_ready.jinja2",
-                        application_title=journal_name,
-                        editor=editor_id,
-                        url_for_application=url_for_application)
-
 
 def send_editor_group_email(obj):
     """ Send an email to the editor of a group """

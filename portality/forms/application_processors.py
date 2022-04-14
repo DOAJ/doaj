@@ -458,15 +458,8 @@ class AdminApplication(ApplicationProcessor):
 
             # email other managing editors if this was newly set to 'ready'
             if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
+                self.add_alert('A notification has been sent to the Managing Editors.')
                 # this template requires who made the change, say it was an Admin
-                ed_id = 'an administrator'
-                try:
-                    emails.send_admin_ready_email(self.target, editor_id=ed_id)
-                    self.add_alert('A confirmation email has been sent to the Managing Editors.')
-                except app_email.EmailException:
-                    magic = str(uuid.uuid1())
-                    self.add_alert('Sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                    app.logger.exception('Error sending ready status email to managing editors - ' + magic)
 
     def _send_application_approved_email(self, application, journal, owner, update_request=False):
         """Email the publisher when an application is accepted (it's here because it's too troublesome to factor out)"""
@@ -595,11 +588,12 @@ class EditorApplication(ApplicationProcessor):
 
         # trigger a status change event
         eventsSvc = DOAJ.eventsService()
-        eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, current_user.id, {
-            "application": self.target.id,
-            "old_status": self.source.application_status,
-            "new_status": self.target.application_status
-        }))
+        if self.source.application_status != self.target.application_status:
+            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, current_user.id, {
+                "application": self.target.id,
+                "old_status": self.source.application_status,
+                "new_status": self.target.application_status
+            }))
 
         # if we need to email the associate because they have just been assigned, handle that here.
         # ~~-> Email:Notifications~~
@@ -644,16 +638,7 @@ class EditorApplication(ApplicationProcessor):
             # ~~-> Provenance:Model~~
             models.Provenance.make(current_user, "status:ready", self.target)
 
-            editor_id = editor_acc.id
-            try:
-                # ~~-> Email:Notifications~~
-                emails.send_admin_ready_email(self.target, editor_id=editor_id)
-                self.add_alert('A confirmation email has been sent to the Managing Editors.')
-            except app_email.EmailException:
-                magic = str(uuid.uuid1())
-                self.add_alert(
-                    'Sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                app.logger.exception('Error sending ready status email to managing editors - ' + magic)
+            self.add_alert('A notification has been sent to the Managing Editors.')
 
 
 class AssociateApplication(ApplicationProcessor):
