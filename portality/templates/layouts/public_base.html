@@ -1,0 +1,38 @@
+{% extends "layouts/base.html" %}
+
+{% block base_content %}
+<body class="{% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
+
+    <header class="page-header">
+        {% include "includes/header.html" %}
+        {% include "includes/_flash_notification.html" %}
+        {% block extra_header %}{% endblock %}
+    </header>
+
+    {% include "includes/_quick_search_modal.html" %}
+
+    {# global site note #}
+    {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
+        {% include config.get("SITE_NOTE_TEMPLATE") %}
+    {% endif %}
+
+    {% block main_panel %}
+        {% block content %}{% endblock %}
+    {% endblock %}
+
+    {% include "includes/footer.html" %}
+
+    {% include '_js_includes.html' %}
+
+    {% block extra_js_bottom %}{% endblock extra_js_bottom %}
+
+    {% if not request.cookies.get("doaj-consent") %}
+      <script type="text/javascript">
+      jQuery(document).ready(function() {
+          $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
+          $(".site-note-dismiss").on("click", dissmissSiteNote);
+      });
+      </script>
+    {% endif %}
+</body>
+{% endblock %}
