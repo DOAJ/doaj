@@ -28,7 +28,7 @@ $.extend(true, doaj, {
 
         init : function(params) {
             if (!params) {
-                params = {}
+                params = {};
             }
 
             var current_domain = document.location.host;
