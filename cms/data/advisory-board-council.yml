@@ -69,7 +69,7 @@ board:
 # List of council members
 
 council:
-- name: Arianna Becerril García (Nov 2019)
+- name: Arianna Becerril García
   institution: Autonomous University of the State of Mexico, Redalyc, AmeliCA
   country: Mexico
   coi:
@@ -80,6 +80,12 @@ council:
   country: Denmark
   coi:
     2019: https://drive.google.com/file/d/1KLdiHr_iKgeh6rvSstsP_sgVYIa1GyvK/view?usp=sharing
+
+- name: Christine Davidian
+  institution: Rowan University Libraries
+  country: USA
+  coi:
+    2022: https://drive.google.com/file/d/1lh_5UBCdeLMhCE55CyzWg0wPHHWw-uuq/view?usp=sharing
 
 - name: Dora Elvira García-González
   institution: Tecnológico de Monterrey
@@ -93,15 +99,39 @@ council:
   coi:
     2019: https://drive.google.com/file/d/1ehhPw3sBU-wey2i4YCcD2LQMUilmTz8l/view?usp=sharing
 
+- name: Hans de Jonge
+  institution: Dutch Research Council (NWO)
+  country: The Netherlands
+  coi:
+    2022: https://drive.google.com/file/d/1G-F1iEp0pT_t5ro_djxTMjUqbPvqed8U/view?usp=sharing
+
+- name: Iryna Kuchma
+  institution: EIFL
+  country: Ukraine
+  coi:
+    2022:
+
 - name: Karen Rowlett
   institution: University of Reading
   country: United Kingdom
   coi:
     2019: https://drive.google.com/file/d/1AzMj698GNGuqjCKSKQayq_dfYb3PLqbu/view?usp=sharing
+ 
+ - name: Mahrya Burnett
+  institution: University of Iowa Libraries
+  country: USA
+  coi:
+    2022: https://drive.google.com/file/d/1mtnV6QMQqsgorsCSFeU2KSmL3WGYi3NA/view?usp=sharing
+
+- name: Matthew Day
+  institution: Cambridge University Press
+  country: United Kingdom
+  coi:
+    2022:
 
 - name: Perry Collins
   institution: University of Florida Libraries
-  country: United States
+  country: USA
   coi:
     2019: https://drive.google.com/file/d/1Rs7hX092q-jdlLXAtNyMJ20Ut8elNXHS/view?usp=sharing
 
