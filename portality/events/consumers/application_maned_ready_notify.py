@@ -4,7 +4,7 @@ from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
 from portality.lib import edges
-from portality.bll import DOAJ
+from portality.bll import DOAJ, exceptions
 
 
 class ApplicationManedReadyNotify(EventConsumer):
@@ -24,7 +24,7 @@ class ApplicationManedReadyNotify(EventConsumer):
             return
         application = models.Application.pull(app_id)
         if application is None:
-            return
+            raise exceptions.NoSuchObjectException("Unable to locate application with id {x}".format(x=app_id))
 
         if not application.editor_group:
             return
@@ -33,15 +33,15 @@ class ApplicationManedReadyNotify(EventConsumer):
         if application.editor:
             editor = application.editor
 
-        eg = models.EditorGroup.pull(application.editor_group)
-        managing_editor = eg.maned()
+        eg = models.EditorGroup.pull_by_key("name", application.editor_group)
+        managing_editor = eg.maned
         if not managing_editor:
             return
 
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
-        notification.who = managing_editor.id
+        notification.who = managing_editor
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
         notification.message = svc.message(cls.ID).format(
