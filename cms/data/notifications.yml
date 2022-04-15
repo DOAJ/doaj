@@ -16,3 +16,8 @@ bg:job_finished:notify:
     You can see the record of your job and its status in the background jobs interface here:"
   email_subject:
     "background job finished"
+application:maned:ready:notify:
+  message:
+    "The application for \"{application_title}\" has been marked 'Ready' by {editor}. Please review it as soon as possible."
+  email_subject:
+    "application ready"

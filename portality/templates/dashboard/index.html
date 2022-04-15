@@ -1,0 +1,179 @@
+{% extends "layouts/dashboard_base.html" %}
+{# ~~Dashboard:Page~~ #}
+{% set TODOS = {
+        constants.TODO_MANED_STALLED: {
+            "text" : "<strong>Stalled</strong> application",
+            "colour" : "var(--salmon)",
+            "feather": "coffee"
+        },
+        constants.TODO_MANED_FOLLOW_UP_OLD: {
+            "text": "<strong>Old</strong> application",
+            "colour" : "var(--sanguine)",
+            "feather": "clock"
+        },
+        constants.TODO_MANED_READY: {
+            "text" : "<strong>Ready</strong> application",
+            "colour" : "var(--dark-green)",
+            "feather": "thumbs-up"
+        },
+        constants.TODO_MANED_COMPLETED: {
+            "text" : "<strong>Completed</strong> application",
+            "colour" : "var(--mid-green)",
+            "feather": "check-circle"
+        },
+        constants.TODO_MANED_ASSIGN_PENDING: {
+            "text" : "<strong>Pending</strong> application",
+            "colour" : "var(--yellow)",
+            "feather": "inbox"
+        }
+    }
+%}
+
+{% block content %}
+<main>
+  <h1>Hi, {{ current_user.name }}!</h1>
+
+  <section>
+    <h2 class="type-04">Here are your priorities:</h2>
+    <ol class="unstyled-list todo-list">
+      {% for todo in todos %}
+      {# TODO only show tasks for this user’s groups #}
+      {# TODO integrated priority in list display
+      {{ todo.boost }}
+       #}
+       {% set app_url =  url_for('admin.application', application_id=todo.object_id) %}
+      <li
+        class="card card--compact todo-list__item"
+        data-app-url="{{ app_url }}"
+        style="border-color: {{ TODOS[todo.action_id[0]].colour }};"
+      >
+        <article class="row">
+          <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="col-xs-1 label label--secondary font-mono">
+            <span style="font-size: 27px;">{{ todo.date.strftime('%d') }}</span><br>
+            <span style="font-size: 18.55px;">{{ todo.date.strftime('%b') }}</span><br>
+            <span style="font-size: 14.35px;">{{ todo.date.strftime('%Y') }}</span>
+          </time>
+          <div class="col-xs-11 flex-space-between">
+            <header>
+              <p class="label label--secondary">{{ TODOS[todo.action_id[0]].text | safe }}</p>
+              <h3>
+                <a href="{{ app_url }}" class="font-serif type-05" target="_blank">{{ todo.title }}</a>
+              </h3>
+            </header>
+            <ul class="unstyled-list no-margins flex-end tags">
+              {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [todo.object.editor_group]}]) %}
+              <li><a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="label tag tag--secondary">{{ todo.object.editor_group }}</a></li>
+              <li>
+                {# TODO link to search results for this kind of task, across all editor groups #}
+                <a
+                  href="#"
+                  class="tag"
+                  style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
+                >
+                <span data-feather="{{ TODOS[todo.action_id[0]].feather | safe }}" aria-hidden="true"></span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </article>
+      </li>
+      {% endfor %}
+    </ol>
+    {# TODO to be displayed once we implement page listing out all tasks
+    <footer class="card card--compact flex-center">
+      <a href="#">See all tasks</a>
+    </footer>
+    #}
+  </section>
+
+  {# TODO get activity data as part of E7 and E8
+  <section>
+    <h2 class="label">Activity</h2>
+
+    <div class="tabs">
+      <nav role="tablist" aria-label="Activity by team">
+        <button role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" tabindex="0" class="tag tag--secondary">
+          German 1
+        </button>
+        <button role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" tabindex="-1" class="tag tag--secondary">
+          Italian 1
+        </button>
+        <button role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" tabindex="-1" class="tag tag--secondary">
+          Polish 1
+        </button>
+      </nav>
+
+      <article id="panel-1" role="tabpanel" tabindex="0" aria-labelledby="tab-1" class="card">
+        <h3>
+          German 1’s ongoing applications
+          <a href="#" class="tag tag--secondary">29 <span class="sr-only">applications</span></a>
+        </h3>
+
+        <h4 class="label label--tertiary">By associate editor</h4>
+        <ul class="inlined-list type-06">
+          <li>
+            <a href="#" class="label tag">ilaria <em>(you)</em></a>
+            <a href="#" class="tag tag--secondary">4 <span class="sr-only">applications</span></a>
+          </li>
+          <li>
+            <a href="#" class="label tag">galimberti</a>
+            <a href="#" class="tag tag--secondary">12 <span class="sr-only">applications</span></a>
+          </li>
+          <li>
+            <a href="#" class="label tag">sricetto</a>
+            <a href="#" class="tag tag--secondary">9 <span class="sr-only">applications</span></a>
+          </li>
+          <li>
+            <a href="#" class="label tag">fsoldati</a>
+            <a href="#" class="tag tag--secondary">2 <span class="sr-only">applications</span></a>
+          </li>
+          <li>
+            <a href="#" class="label tag tag--featured">unassigned</a>
+            <a href="#" class="tag tag--secondary">5 <span class="sr-only">applications</span></a>
+          </li>
+        </ul>
+
+        <hr/>
+
+        <h4 class="label label--tertiary">By status</h4>
+        <ul class="inlined-list progress-bar">
+          <li>
+            <a href="#">
+              <span>Pending <span>8</span></span>
+              <span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span>In progress <span>4</span></span>
+              <span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span>Completed <span>1</span></span>
+              <span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <span>Ready <span>9</span></span>
+              <span></span>
+            </a>
+          </li>
+        </ul>
+      </article>
+
+      <article id="panel-2" role="tabpanel" tabindex="0" aria-labelledby="tab-2" hidden>
+
+      </article>
+nxnxxxxxc
+      <article id="panel-3" role="tabpanel" tabindex="0" aria-labelledby="tab-3" hidden>
+
+      </article>
+    </div>
+
+  </section>
+  #}
+</main>
+{% endblock %}

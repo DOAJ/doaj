@@ -167,7 +167,8 @@ class Application(JournalLikeObject):
         # if index_record_type is not None:
         #     self.__seamless__.set_with_struct("index.application_type", index_record_type)
 
-        # FIXME: Temporary partial reversion of an indexing change
+        # FIXME: Temporary partial reversion of an indexing change (this index.application_type data is still being used
+        # in applications search)
         if self.current_journal is not None:
             self.__seamless__.set_with_struct("index.application_type", "update request")
         elif self.application_status in [constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED]:

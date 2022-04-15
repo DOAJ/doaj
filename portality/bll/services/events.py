@@ -5,6 +5,8 @@ from portality.events.consumers.account_created_email import AccountCreatedEmail
 from portality.events.consumers.application_assed_inprogress_notify import ApplicationAssedInprogressNotify
 from portality.events.consumers.application_assed_assigned_notify import ApplicationAssedAssignedNotify
 from portality.events.consumers.bg_job_finished_notify import BGJobFinishedNotify
+from portality.events.consumers.application_maned_ready_notify import ApplicationManedReadyNotify
+
 
 class EventsService(object):
     EVENT_CONSUMERS = [
@@ -12,6 +14,7 @@ class EventsService(object):
         ApplicationAssedInprogressNotify,
         ApplicationAssedAssignedNotify,
         BGJobFinishedNotify,
+        ApplicationManedReadyNotify
     ]
 
     def __init__(self):
