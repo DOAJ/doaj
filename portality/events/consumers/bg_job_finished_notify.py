@@ -35,8 +35,8 @@ class BGJobFinishedNotify(EventConsumer):
 
         svc = DOAJ.notificationsService()
 
-        query = Facetview2.make_query(job.id)
-        url = "admin/background_jobs?source=" + Facetview2.url_encode_query(query)
+        string_id_query = edges.make_url_query(query_string=job.id)
+        url = url_for("admin.background_jobs_search", source=string_id_query)
 
         notification = models.Notification()
         notification.who = acc.id
