@@ -15,19 +15,19 @@
             "text" : "<strong>Ready</strong> application",
             "colour" : "var(--dark-green)",
             "feather": "check-circle",
-            "status": "ready"
+            "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"ready"}])
         },
         constants.TODO_MANED_COMPLETED: {
             "text" : "<strong>Completed</strong> application",
             "colour" : "var(--mid-green)",
             "feather": "user-check",
-            "status": "completed"
+            "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"completed"}])
         },
         constants.TODO_MANED_ASSIGN_PENDING: {
             "text" : "<strong>Pending</strong> application",
             "colour" : "var(--yellow)",
             "feather": "inbox",
-            "status": "pending"
+            "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
         }
     }
 %}
@@ -35,7 +35,7 @@
 {% block content %}
   <section>
     <h2 class="type-04">
-      You have <strong>{{ todos|length }}{% if todos|length > config.get("TODO_LIST_SIZE")%}+{% endif %}</strong> items in your priority list:
+      You have <strong>{{ todos|length }}{% if todos|length >= config.get("TODO_LIST_SIZE")%}+{% endif %}</strong> items in your priority list:
     </h2>
     <ol class="todo-list">
       {% for todo in todos %}
@@ -56,19 +56,15 @@
               <span style="font-size: 9.35px;">{{ todo.date.strftime('%Y') }}</span>
               {# TODO link to search results for this kind of task, across all editor groups #}
             </time><br/>
-            {% set status = TODOS[todo.action_id[0]].status %}
-            {# TODO: this isn’t working for now
-              {% set source = search_query_source(term=[{"admin.application_status.exact":status}]) %}
-             #}
-            {% if TODOS[todo.action_id[0]].status %}
-            <a
-              href="{{ url_for('admin.suggestions') }}?source={{ source }}"
-              class="tag"
-              style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
-            >
+            {% if TODOS[todo.action_id[0]].link %}
+                <a
+                  href="{{ TODOS[todo.action_id[0]].link }}"
+                  class="tag"
+                  style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
+                >
             {% endif %}
               <span data-feather="{{ TODOS[todo.action_id[0]].feather | safe }}" aria-hidden="true"></span>
-            {% if TODOS[todo.action_id[0]].status %}</a>{% endif %}
+            {% if TODOS[todo.action_id[0]].link %}</a>{% endif %}
           </div>
           <div style="margin-left: .5em;" class="flex-space-between flex-col">
             <header>
