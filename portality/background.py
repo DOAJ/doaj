@@ -3,6 +3,8 @@ from flask_login import login_user
 from portality.core import app
 from portality import models, app_email
 from portality.dao import Facetview2
+from portality.bll import DOAJ
+from portality import constants
 
 import traceback
 
@@ -79,31 +81,11 @@ class BackgroundApi(object):
             job.success()
         job.save()
 
-        # send a confirmation email to the user if the account exists
-        # ~~->Email:Library~~
-        # ~~->SearchURLGenerator:Feature
-        if acc is not None:
-            if acc.email is not None and acc.has_role("admin"):
-                template = "email/admin_background_job_finished.jinja2"
-                subject = app.config.get("SERVICE_NAME", "") + " - background job finished"
-
-                url_root = app.config.get("BASE_URL")
-                if not url_root.endswith("/"):
-                    url_root += "/"
-                to = [acc.email]
-                fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-                query = Facetview2.make_query(job.id)
-                url = url_root + "admin/background_jobs?source=" + Facetview2.url_encode_query(query)
-
-                app_email.send_mail(to=to,
-                                    fro=fro,
-                                    subject=subject,
-                                    template_name=template,
-                                    job_id=job.id,
-                                    action=job.action,
-                                    status=job.status,
-                                    background_job_url=url
-                                    )
+        # trigger a status change event
+        eventsSvc = DOAJ.eventsService()
+        eventsSvc.trigger(models.Event(constants.BACKGROUND_JOB_FINISHED, job.user.id, {
+            "job": job.id
+        }))
 
         if ctx is not None:
             ctx.pop()
