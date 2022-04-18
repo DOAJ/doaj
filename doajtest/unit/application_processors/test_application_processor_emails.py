@@ -1,3 +1,5 @@
+# FIXME: these tests are no longer as useful as they once were because we always send the notification template
+
 import logging
 import re
 from io import StringIO
@@ -615,11 +617,6 @@ class TestApplicationReviewEmails(DoajTestCase):
         # Construct an application form
         fc = ApplicationFormFactory.context("associate_editor")
         processor = fc.processor(source=pending_application)
-        # fc = formcontext.ApplicationFormFactory.get_form_context(
-        #     role="associate_editor",
-        #     source=pending_application
-        # )
-        # assert isinstance(fc, formcontext.AssEdApplicationReview)
 
         # Make changes to the application status via the form
         processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
@@ -651,7 +648,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # We expect one email sent:
         #   * to the editor, informing them an application has been completed by an Associate Editor
-        editor_template = re.escape('editor_application_completed.jinja2')
+        editor_template = re.escape('notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "application marked 'completed'"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -1166,7 +1163,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email sent:
         #   * to the editor, informing them an application has been completed by an Associate Editor
-        editor_template = re.escape('editor_application_completed.jinja2')
+        editor_template = re.escape('notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "application marked 'completed'"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),

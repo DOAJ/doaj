@@ -79,6 +79,7 @@ class Messages(object):
     FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR = "We were unable to send you an email confirmation - possible problem with the email address provided"
     FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR = 'Error sending application received email.'
     FORMS__APPLICATION_PROCESSORS__ADMIN_APPLICATION__FINALISE__COULD_NOT_UNREJECT = "Could not unreject application, as a new Update Request for the journal now exists"
+    FORMS__APPLICATION_PROCESSORS__ASSOCIATE_APPLICATION__FINALISE__STATUS_COMPLETED_NOTIFIED = "A confirmation email has been sent to notify the editor of the change in status."
 
     BLL__UNREJECT_APPLICATION__NO_APPLICATION = "You must supply an application to unreject_application"
     BLL__UNREJECT_APPLICATION__NO_ACCOUNT = "You must supply an account to unreject_application"
