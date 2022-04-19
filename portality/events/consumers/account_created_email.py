@@ -17,10 +17,13 @@ class AccountCreatedEmail(EventConsumer):
     @classmethod
     def consume(cls, event):
         context = event.context
-        acc_id = context.get("account")
-        acc = models.Account.pull(acc_id)
-        if acc is None:
-            return
+        acc = models.Account(**context.get("account"))
+        if not acc.reset_token or not acc.email:
+            raise Exception()
+        # acc_id = context.get("account")
+        # acc = models.Account.pull(acc_id)
+        # if acc is None:
+        #     return
         cls._send_account_created_email(acc)
 
     @classmethod

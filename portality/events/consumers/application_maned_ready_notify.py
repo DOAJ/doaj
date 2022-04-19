@@ -29,9 +29,10 @@ class ApplicationManedReadyNotify(EventConsumer):
         if not application.editor_group:
             return
 
-        editor = "unknown editor"
-        if application.editor:
-            editor = application.editor
+        # editor = "unknown editor"
+        # if application.editor:
+        #     editor = application.editor
+        acc = models.Account.pull(event.who)
 
         eg = models.EditorGroup.pull_by_key("name", application.editor_group)
         managing_editor = eg.maned

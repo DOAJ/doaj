@@ -46,6 +46,7 @@ TODO_MANED_COMPLETED = "todo_maned_completed"
 TODO_MANED_ASSIGN_PENDING = "todo_maned_assign_pending"
 
 EVENT_ACCOUNT_CREATED = "account:created"
+EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
 EVENT_APPLICATION_STATUS = "application:status"
 EVENT_APPLICATION_ASSED_ASSIGNED = "application:assed:assigned"
 
