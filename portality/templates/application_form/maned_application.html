@@ -11,37 +11,32 @@
 {% set quick_reject = true %}
 
 {% block page_title %}{% if obj.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST %}Update Request{% else %}Application{% endif %}: {{ obj.bibjson().title }}{% endblock %}
+{% block body_id %}apply{% endblock %}
 
 {% block content scoped %}
-<body id="apply">
-    <main class="page-content">
-        {% include "application_form/editorial_form_body.html" %}
+{% include "application_form/editorial_form_body.html" %}
 
-    {% if obj.application_status not in ["accepted", "rejected"] %}
-        {% set fs = formulaic_context.fieldset("quick_reject") %}
-        <div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
-            <div class="modal__dialog" role="document">
-                <h3 class="modal__title" id="modalLabel-quick_reject">
-                    “{{ fs.label | safe }}”
-                </h3>
-            <p>{{ obj.id }}</p>
-                <form class="form form--compact" method="post" data-id="{{ obj.id }}" action="{{ url_for('admin.application_quick_reject', application_id=obj.id) }}" id="application_quick_reject_form">
-                    {% for f in fs.fields() %}
-                        {% set field_template = f.template %}
-                        {%  include field_template %}
-                    {% endfor %}
-                    <button class="button button--primary" type="submit" id="submit_quick_reject">Quick Reject</button>
-                </form>
-                <button type="button" data-dismiss="modal" class="modal__close">Close</button>
-            </div>
-        </div>
-    {% endif %}
+{% if obj.application_status not in ["accepted", "rejected"] %}
+  {% set fs = formulaic_context.fieldset("quick_reject") %}
+  <div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
+      <div class="modal__dialog" role="document">
+          <h3 class="modal__title" id="modalLabel-quick_reject">
+              “{{ fs.label | safe }}”
+          </h3>
+      <p>{{ obj.id }}</p>
+          <form class="form form--compact" method="post" data-id="{{ obj.id }}" action="{{ url_for('admin.application_quick_reject', application_id=obj.id) }}" id="application_quick_reject_form">
+              {% for f in fs.fields() %}
+                  {% set field_template = f.template %}
+                  {%  include field_template %}
+              {% endfor %}
+              <button class="button button--primary" type="submit" id="submit_quick_reject">Quick Reject</button>
+          </form>
+          <button type="button" data-dismiss="modal" class="modal__close">Close</button>
+      </div>
+  </div>
+{% endif %}
 
-    </main>
-
-    {% include "includes/_hotjar.html" %}
-
- </body>
+{% include "includes/_hotjar.html" %}
 {% endblock %}
 
 {% block extra_js_bottom scoped %}
