@@ -34,9 +34,18 @@
 
 {% block content %}
   <section>
+    {% if todos|length == 0 %}
+    <div class="flex-center">
+      <p class="card col-md-6">
+        <span class="type-03">🎉 You have no priority tasks to complete!<br/><br/>
+        Keep an eye on the <a href="{{ url_for('admin.suggestions') }}">ongoing applications</a> to make sure there are no processing delays.</span>
+      </p>
+    </div>
+    {% else %}
     <h2 class="type-04">
       You have <strong>{{ todos|length }}{% if todos|length >= config.get("TODO_LIST_SIZE")%}+{% endif %}</strong> items in your priority list:
     </h2>
+    {% endif %}
     <ol class="todo-list">
       {% for todo in todos %}
       {# TODO only show tasks for this user’s groups #}
