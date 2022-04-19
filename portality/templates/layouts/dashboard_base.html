@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
 
 {% block base_content %}
-    <body class="dashboard {% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
+    <body class="dashboard {% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}" data-spy="scroll" data-offset="70">
 
     {# global site note #}
     {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
