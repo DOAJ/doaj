@@ -57,7 +57,7 @@ $.extend(true, doaj, {
                     must: [
                         es.newTermsFilter({
                             field: "admin.application_status.exact",
-                            values: ["revisions_requried", "pending", "in progress", "completed", "on hold", "ready", "draft"]
+                            values: ["revisions_required", "pending", "in progress", "completed", "on hold", "ready", "draft"]
                         })
                     ],
                     sort: [{"field" : "last_updated", "order" : "desc"}],
