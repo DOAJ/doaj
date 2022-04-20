@@ -113,7 +113,7 @@ def username(username):
                 acc.save()
 
                 events_svc = DOAJ.eventsService()
-                events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, acc.id))
+                events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, acc.id, context={"account" : acc}))
                 flash("Email address updated. You have been logged out for email address verification.")
 
                 logout_user()
@@ -240,7 +240,7 @@ def forgot():
         account.save()
 
         events_svc = DOAJ.eventsService()
-        events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, account.id))
+        events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, account.id, context={"account": account.data}))
         flash('Instructions to reset your password have been sent to you. Please check your emails.')
 
         if app.config.get('DEBUG', False):
@@ -330,7 +330,7 @@ def register():
             account.save()
 
             event_svc = DOAJ.eventsService()
-            event_svc.trigger(Event(constants.EVENT_ACCOUNT_CREATED, context={"account" : account.id}))
+            event_svc.trigger(Event(constants.EVENT_ACCOUNT_CREATED, account.id, context={"account" : account.data}))
             # send_account_created_email(account)
 
             if app.config.get('DEBUG', False):

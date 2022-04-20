@@ -5,6 +5,7 @@ from portality import constants
 from portality import app_email
 from portality import models
 from portality.core import app
+from portality.bll.exceptions import NoSuchPropertyException
 
 
 class AccountPasswordResetEmail(EventConsumer):
@@ -12,14 +13,13 @@ class AccountPasswordResetEmail(EventConsumer):
 
     @classmethod
     def consumes(cls, event):
-        return event.id == constants.EVENT_ACCOUNT_PASSWORD_RESET
+        return event.id == constants.EVENT_ACCOUNT_PASSWORD_RESET and event.context.get("account") is not None
 
     @classmethod
     def consume(cls, event):
-        acc_id = event.who
-        acc = models.Account.pull(acc_id)
-        if acc is None:
-            return
+        acc = models.Account(**event.context.get("account"))
+        if not acc.reset_token or not acc.email:
+            raise NoSuchPropertyException("Account {x} does not have a reset_token and/or an email address".format(x=acc.id))
         cls._send_password_reset_email(acc)
 
     @classmethod

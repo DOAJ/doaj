@@ -5,6 +5,7 @@ from portality import constants
 from portality import app_email
 from portality import models
 from portality.core import app
+from portality.bll.exceptions import NoSuchPropertyException
 
 
 class AccountCreatedEmail(EventConsumer):
@@ -19,11 +20,7 @@ class AccountCreatedEmail(EventConsumer):
         context = event.context
         acc = models.Account(**context.get("account"))
         if not acc.reset_token or not acc.email:
-            raise Exception()
-        # acc_id = context.get("account")
-        # acc = models.Account.pull(acc_id)
-        # if acc is None:
-        #     return
+            raise NoSuchPropertyException("Account {x} does not have a reset_token and/or an email address".format(x=acc.id))
         cls._send_account_created_email(acc)
 
     @classmethod
