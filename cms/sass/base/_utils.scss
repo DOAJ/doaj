@@ -154,6 +154,11 @@
   justify-content: flex-end;
 }
 
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
 .flex-end-col {
   @media (min-width: 769px) {
     display: flex;

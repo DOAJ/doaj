@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
 
 {% block base_content %}
-    <body class="dashboard {% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
+    <body class="dashboard {% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}" data-spy="scroll" data-offset="70">
 
     {# global site note #}
     {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
@@ -46,62 +46,69 @@
           </ul>
         </li> #}
         <li class="flex-center">
-          <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag tag--secondary">
-            <span class="sr-only">Profile</span>
-            <span data-feather="smile" aria-hidden="true"></span>
+          <a href="/dashboard" class="tag">
+            <small><span>My TODO list</span></small>
           </a>
         </li>
         <li class="flex-center">
-          <a href="/" class="tag tag--secondary">
-            <span class="sr-only">Home</span>
-            <span data-feather="home" aria-hidden="true"></span>
-          </a>
-        </li>
-        <li class="flex-center">
-          <a href="{{ url_for('account.logout') }}" class="tag tag--secondary">
-            <span class="sr-only">Log out</span>
-            <span data-feather="log-out" aria-hidden="true"></span>
+          <a href="/" class="tag">
+            <small><span>DOAJ home</span></small>
           </a>
         </li>
       </ul>
-    </nav>
-
-    <nav class="secondary-nav align-right">
-
-            <dl>
-                {% set managed_groups = maned_of() %}
-                {% if managed_groups and managed_groups|length > 0 %}
-                    <dt>
-                        Managing Editor of&nbsp;&nbsp;
-                    </dt>
-                    <dd>
-                        <ul class="inlined-list tags">
-                            {% for eg in managed_groups %}
-                                <li class="tag tag--secondary">
-                                    {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
-                                    <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">{{ eg.name }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </dd>
-                    &nbsp;/&nbsp;&nbsp;
-                {% endif %}
-                <dt>
-                    Username&nbsp;&nbsp;
-                </dt>
-                <dd>
-                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
-                </dd>
-            </dl>
-        </nav>
-
-        {% block extra_header %}{% endblock %}
+      {% block extra_header %}{% endblock %}
     </header>
 
     {% include 'dashboard/nav.html' %}
 
     {% block main_panel %}
-        {% block content %}{% endblock %}
+    <main>
+      <header class="main-header">
+        <div class="flex-space-between">
+          <h1>
+            {% block page_title %}Hi{% if current_user.name %}, {{ current_user.name }}{% endif %}!{% endblock %}
+          </h1>
+          <nav class="align-right">
+            <ul class="inlined-list">
+              <li>
+                {% set managed_groups = maned_of() %}
+                {% if managed_groups and managed_groups|length > 0 %}
+                <dl>
+                  <dt>
+                    Managing Editor of&nbsp;&nbsp;
+                  </dt>
+                  <dd>
+                    <ul class="inlined-list tags">
+                      {% for eg in managed_groups %}
+                      <li class="tag tag--secondary">
+                        {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
+                        <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">{{ eg.name }}</a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </dd>
+                  {% endif %}
+                  <dt>
+                    Username&nbsp;&nbsp;
+                  </dt>
+                  <dd>
+                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
+                  </dd>
+                </dl>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+      {% block content %}{% endblock %}
+
+      <span class="flex-end">
+        <a href="{{ url_for('account.logout') }}" class="tag tag--secondary">
+          <span><strong>Log out</strong></span>
+          <span data-feather="log-out" aria-hidden="true"></span>
+        </a>
+      </span>
+    </main>
     {% endblock %}
 
     {% include '_js_includes.html' %}
