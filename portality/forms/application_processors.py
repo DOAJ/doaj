@@ -260,11 +260,10 @@ class NewApplication(ApplicationProcessor):
 
         # trigger a status change event
         eventsSvc = DOAJ.eventsService()
-        if self.source.application_status != self.target.application_status:
-            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, current_user.id, {
-                "application": self.target.data,
-                "status": constants.APPLICATION_STATUS_CREATED
-            }))
+        eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, None, {
+            "application": self.target.data,
+            "status": constants.APPLICATION_STATUS_CREATED
+        }))
 
 
 class AdminApplication(ApplicationProcessor):
