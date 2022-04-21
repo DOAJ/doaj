@@ -6,6 +6,7 @@ from portality.events.consumers.application_assed_inprogress_notify import Appli
 from portality.events.consumers.application_assed_assigned_notify import ApplicationAssedAssignedNotify
 from portality.events.consumers.bg_job_finished_notify import BGJobFinishedNotify
 from portality.events.consumers.application_maned_ready_notify import ApplicationManedReadyNotify
+from portality.events.consumers.application_publisher_revision_notify import ApplicationPublisherRevisionNotify
 
 
 class EventsService(object):
@@ -14,7 +15,8 @@ class EventsService(object):
         ApplicationAssedInprogressNotify,
         ApplicationAssedAssignedNotify,
         BGJobFinishedNotify,
-        ApplicationManedReadyNotify
+        ApplicationManedReadyNotify,
+        ApplicationPublisherRevisionNotify
     ]
 
     def __init__(self):

@@ -402,11 +402,8 @@ class AdminApplication(ApplicationProcessor):
             # ~~-> Email:Notifications~~
             # if revisions were requested, email the publisher
             if self.source.application_status != constants.APPLICATION_STATUS_REVISIONS_REQUIRED and self.target.application_status == constants.APPLICATION_STATUS_REVISIONS_REQUIRED:
-                try:
-                    emails.send_publisher_update_request_revisions_required(self.target)
-                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
-                except app_email.EmailException as e:
-                    self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
+                self.add_alert(
+                    Messages.SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
 
             # if we need to email the editor and/or the associate, handle those here
             if is_editor_group_changed:

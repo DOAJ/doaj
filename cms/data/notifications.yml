@@ -21,3 +21,8 @@ application:maned:ready:notify:
     "The application for \"{application_title}\" has been marked 'Ready' by {editor}. Please review it as soon as possible."
   email_subject:
     "application ready"
+application:publisher:revision:notify:
+  message:
+    "The update which you submitted for \"{application_title}\" on {date_applied} requires some revisions before it can be accepted. The Managing Editor reviewing your update will contact you to explain the changes that are needed."
+  email_subject:
+    "your update request requires revisions"
