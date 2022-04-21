@@ -21,3 +21,22 @@ application:maned:ready:notify:
     "The application for \"{application_title}\" has been marked 'Ready' by {editor}. Please review it as soon as possible."
   email_subject:
     "application ready"
+application:publisher:created:notify:
+  message:
+    "
+    {title}
+    {journal_url}
+
+    Thank you for your application on {application_date}.
+    We receive hundreds of applications every month. We will review yours as soon as we can. You will receive an email from us when the review is complete or if we have questions.
+    If you need to make a change to your application, send an email to our Help desk: helpdesk@doaj.org. Please include your ISSN.
+    We cannot reply to emails requesting a status update for applications which are less than three months old.
+    If you write to us, check first that there is nothing in your Spam folder from us or one of our volunteers. Our volunteers may not be emailing from a DOAJ email address so you can check that their name is there in the url mentioned below {volunteers_url}
+
+    Yours faithfully,
+    The DOAJ Editorial Team
+
+    ***
+    This is an automated message."
+  email_subject:
+    "application created"
