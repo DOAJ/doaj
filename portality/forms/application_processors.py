@@ -417,7 +417,7 @@ class AdminApplication(ApplicationProcessor):
                     app.logger.exception("Email to associate failed.")
             if is_associate_editor_changed:
                 eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, account.id, {
-                    "application" : self.target.id
+                    "application" : self.target.data
                 }))
                 # try:
                 #     emails.send_assoc_editor_email(self.target)
@@ -599,7 +599,7 @@ class EditorApplication(ApplicationProcessor):
         # ~~-> Email:Notifications~~
         if new_associate_assigned:
             eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={
-                "application": self.target.id
+                "application": self.target.data
             }))
             self.add_alert("New editor assigned - notification has been sent")
             # try:
