@@ -113,7 +113,7 @@ def username(username):
                 acc.save()
 
                 events_svc = DOAJ.eventsService()
-                events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, acc.id, context={"account" : acc}))
+                events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, acc.id, context={"account" : acc.data}))
                 flash("Email address updated. You have been logged out for email address verification.")
 
                 logout_user()
