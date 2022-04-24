@@ -13,26 +13,25 @@ class ApplicationManedReadyNotify(EventConsumer):
     @classmethod
     def consumes(cls, event):
         return event.id == constants.EVENT_APPLICATION_STATUS and \
+                event.context.get("application") is not None and \
                 event.context.get("old_status") != constants.APPLICATION_STATUS_READY and \
                 event.context.get("new_status") == constants.APPLICATION_STATUS_READY
 
     @classmethod
     def consume(cls, event):
-        context = event.context
-        app_id = context.get("application")
-        if app_id is None:
-            return
-        application = models.Application.pull(app_id)
-        if application is None:
-            raise exceptions.NoSuchObjectException("Unable to locate application with id {x}".format(x=app_id))
+        app_source = event.context.get("application")
+
+        try:
+            application = models.Application(**app_source)
+        except Exception as e:
+            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
 
         if not application.editor_group:
             return
 
-        # editor = "unknown editor"
-        # if application.editor:
-        #     editor = application.editor
-        acc = models.Account.pull(event.who)
+        editor = "unknown editor"
+        if application.editor:
+            editor = application.editor
 
         eg = models.EditorGroup.pull_by_key("name", application.editor_group)
         managing_editor = eg.maned
