@@ -1,110 +1,98 @@
 {# ~~Account:Page~~ #}
 {% extends "layouts/dashboard_base.html" %}
 
-{% block page_title %}My account{% endblock %}
+{% block page_title %}{{ account.name if account.name else account.email }}’s profile{% endblock %}
 
 {% block content %}
-    <main class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <section class="page-content" id="userview">
-                    {% if current_user.has_role("list_users") %}
-                        <p class="label"><a href="/account">&larr; View all user accounts</a></p>
-                    {% endif %}
+<div class="row">
+    <div class="col-md-8">
+      {% if current_user.has_role("list_users") or current_user.has_role("admin_journals") %}
+      <ul class="tags">
+          {% if current_user.has_role("list_users") %}
+              <li><a href="/account" class="tag">View <strong>all</strong> user accounts</a></li>
+          {% endif %}
 
-                    {% if current_user.has_role("admin_journals") %}
-                        {% set Q1 = '{"query":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
-                        {% set Q2 = '"}}]}}}' %}
-                        <p class="label"><a href="/admin/?source={{Q1}}{{account.id}}{{Q2}}">&larr; View this user’s journals</a></p>
-                    {% endif %}
+          {% if current_user.has_role("admin_journals") %}
+              {% set Q1 = '{"query":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
+              {% set Q2 = '"}}]}}}' %}
+              <li><a href="/admin/?source={{Q1}}{{account.id}}{{Q2}}" class="tag">View <strong>this user’s</strong> journals</a></li>
+          {% endif %}
+        </ul>
+        {% endif %}
+        {% if current_user.id == account.id or current_user.is_super %}
+            {% if current_user.id != account.id %}
+                <p class="alert">
+                  <span data-feather="alert-triangle" aria-hidden="true"></span>
+                  You are editing a user account that is <strong>not your own</strong>. Be careful!
+                </p>
+            {% endif %}
 
-                    {% if current_user.id == account.id or current_user.is_super %}
-                        <h1>Hi {{ account.name if account.name else account.email }}!</h1>
+            <h2>Edit your details</h2>
+            {% include 'account/_edit_user_form.html' %}
 
-                        {% if current_user.id != account.id %}
-                            <p class="alert">
-                              <span data-feather="alert-triangle" aria-hidden="true"></span>
-                              You are editing a user account that is <strong>not your own</strong>. Be careful!
-                            </p>
-                        {% endif %}
+            {% if current_user.is_super %}
+                <hr/>
+                <h2>Delete this account</h2>
+                <p><span data-feather="alert-triangle" aria-hidden="true"></span> This <strong>irrevocably</strong> deletes the account.</p>
+                <form action="" method="POST">
+                    <input type="checkbox" name="delete_confirm" id="delete_confirm" value="delete_confirm">
+                    <label for="delete_confirm">Yes, I’m sure</label>
+                    <input type="submit" name="submit" value="Delete" class="button">
+                </form>
+            {% endif %}
 
-                        <dl>
-                            {% if account.role|length > 0 %}
-                                <dt>Role(s)</dt>
-                                <dd>{{ account.role|join(", ") }}</dd>
-                            {% endif %}
+        {% else %}
+            <h2>{{ account.id }}</h2>
+            <p>You are not logged in as this user. Use the <a href="/account/login">login page</a> if you want to change this</p>
+        {% endif %}
+    </div>
 
-                            <dt>ID</dt>
-                            <dd><code>{{ account.id }}</code></dd>
+    <div class="col-md-4">
+        <aside>
+          <h2 class="label">Marketing consent</h2>
+          <form action="" method="POST" class="form form--compact">
+              <p>
+                  Your DOAJ account must have an email address in it because we have to contact you with important account and journal information such as security updates; updates to the information we hold about your journal; problems with article metadata, etc. This is part of our responsibility to you to ensure that your journal information is safe and up-to-date.
+              </p>
+              <p>
+                  We also send out occasional marketing emails, such as publisher surveys, opinion polls, newsletters and new functionality alerts. For those emails, we need your consent to use your email address. You may come back here and change your response at any time.
+              </p>
+              <div class="form__question">
+                <input type="radio" name="marketing_consent" id="marketing_consent_yes" {% if account.marketing_consent %}checked="checked"{% endif %} value="true">
+                <label for="marketing_consent_yes">
+                  I consent to DOAJ using my email address for its own marketing purposes
+                </label>
+                <input type="radio" name="marketing_consent" id="marketing_consent_no" {% if account.marketing_consent == False %}checked="checked"{% endif %} value="false">
+                <label for="marketing_consent_no">I do not consent to DOAJ using my email address for its own marketing purposes</label>
+              </div>
+              <p>
+                  DOAJ does not share your name and email address with any other organisation. Please read <a href="{{ url_for('doaj.privacy') }}">our full privacy policy</a>.
+              </p>
+              <input type="submit" class="button" name="submit" value="Save consent">
+          </form>
+      </aside>
+      <aside>
+        <h2 class="label">Your API access</h2>
+        <dl>
+            <dt>ID</dt>
+            <dd><code>{{ account.id }}</code></dd>
 
-                            {% if account.has_role("api") %}
-                                <dt>API Key</dt>
-                                <dd>
-                                  <code>{{ account.api_key }}</code>
-                                </dd>
-                            {% endif %}
-                        </dl>
+            {% if account.has_role("api") %}
+                <dt>API Key</dt>
+                <dd>
+                  <code>{{ account.api_key }}</code>
+                </dd>
+            {% endif %}
+        </dl>
 
-                        {% if account.has_role("api") %}
-                            <form action="" method="POST">
-                                <input type="submit" class="button button--secondary" name="submit" value="Generate a new API Key">
-                            </form>
-                        {% endif %}
-
-                        <hr/>
-
-                        <h2>Edit your details</h2>
-                        {% include 'account/_edit_user_form.html' %}
-
-                        {% if current_user.is_super %}
-                            <hr/>
-                            <h2>Delete this account</h2>
-                            <p>This <strong>irrevocably</strong> deletes the account.</p>
-                            <form action="" method="POST">
-                                <input type="checkbox" name="delete_confirm" id="delete_confirm" value="delete_confirm">
-                                <label for="delete_confirm">Yes, I’m sure</label>
-                                <input type="submit" name="submit" value="Delete" class="button">
-                            </form>
-                        {% endif %}
-
-                    {% else %}
-                        <h2>{{ account.id }}</h2>
-                        <p>You are not logged in as this user. Use the <a href="/account/login">login page</a> if you want to change this</p>
-                    {% endif %}
-
-                </section>
-            </div>
-
-            <div class="col-md-4">
-              <aside class="hero hero--aside">
-                  <form action="" method="POST" style="margin-bottom: 0;">
-                      <h2 class="label">Marketing Consent</h2>
-                      <p>
-                          Your DOAJ account must have an email address in it because we have to contact you with important account and journal information such as security updates; updates to the information we hold about your journal; problems with article metadata, etc. This is part of our responsibility to you to ensure that your journal information is safe and up-to-date.
-                      </p>
-                      <p>
-                          We also send out occasional marketing emails, such as publisher surveys, opinion polls, newsletters and new functionality alerts. For those emails, we need your consent to use your email address. You may come back here and change your response at any time.
-                      </p>
-                      <p>
-                          <input type="radio" name="marketing_consent" id="marketing_consent_yes" {% if account.marketing_consent %}checked="checked"{% endif %} value="true">
-                          <label for="marketing_consent_yes">
-                            I consent to DOAJ using my email address for its own marketing purposes
-                          </label>
-                      </p>
-                      <p>
-                          <input type="radio" name="marketing_consent" id="marketing_consent_no" {% if account.marketing_consent == False %}checked="checked"{% endif %} value="false">
-                          <label for="marketing_consent_no">I do not consent to DOAJ using my email address for its own marketing purposes</label>
-                      </p>
-                      <p>
-                          DOAJ does not share your name and email address with any other organisation. Please read <a href="{{ url_for('doaj.privacy') }}">our full privacy policy</a>.
-                      </p>
-                      <input type="submit" class="button button--secondary" name="submit" value="Save Settings">
-                  </form>
-              </aside>
-            </div>
-        </div>
-    </main>
-
+        {% if account.has_role("api") %}
+            <form action="" method="POST" class="form form--compact">
+                <button type="submit" class="button" name="submit">Generate a new API key</button>
+            </form>
+        {% endif %}
+        </aside>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js_bottom %}
