@@ -6,9 +6,8 @@
     margin-top: 0;
   }
 
-  > header:first-of-type + aside,
-  > header:first-of-type + main {
-    margin-top: 75px;
+  > header:first-of-type {
+    height: 75px;
   }
 
   .primary-nav {
