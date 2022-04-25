@@ -1,3 +1,4 @@
+{% set index = url_for("dashboard.top_todo") %}
 {% set journals = url_for("admin.index") %}
 {% set applications = url_for("admin.suggestions") %}
 {% set update_requests = url_for("admin.update_requests") %}
@@ -7,6 +8,7 @@
 {% set bg = url_for("admin.background_jobs_search") %}
 
 {% set tabs = [
+    (index, "Dashboard", "list"),
     (journals, "Journals", "book-open"),
     (applications, "Applications", "file-text"),
     (update_requests, "Update requests", "edit"),
