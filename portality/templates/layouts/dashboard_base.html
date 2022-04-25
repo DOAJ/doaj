@@ -55,10 +55,11 @@
             </li>
           </ul>
       </nav>
+      {% include 'dashboard/nav.html' %}
       {% block extra_header %}{% endblock %}
     </header>
 
-    {% include 'dashboard/nav.html' %}
+    {% include "includes/_flash_notification.html" %}
 
     {% block main_panel %}
     <main>

@@ -6,6 +6,11 @@
     margin-top: 0;
   }
 
+  > header:first-of-type + aside,
+  > header:first-of-type + main {
+    margin-top: 75px;
+  }
+
   .primary-nav {
     height:75px;
 
@@ -34,7 +39,6 @@
   }
 
   .main-header {
-    margin-top: 75px;
     font-size: smaller;
 
     dt, dd {
@@ -49,6 +53,7 @@
     top: 75px;
     left: 0;
     width: 75px;
+    height: 100%;
     overflow-y: scroll;
 
     > ol {
