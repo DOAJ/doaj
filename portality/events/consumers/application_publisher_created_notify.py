@@ -13,8 +13,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
 
     @classmethod
     def consumes(cls, event):
-        return event.id == constants.EVENT_APPLICATION_STATUS and \
-               event.context.get("status") == constants.APPLICATION_STATUS_CREATED
+        return event.id == constants.EVENT_APPLICATION_CREATED and event.context.get("application") is not None
 
     @classmethod
     def consume(cls, event):

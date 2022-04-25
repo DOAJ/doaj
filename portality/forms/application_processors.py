@@ -258,12 +258,11 @@ class NewApplication(ApplicationProcessor):
             if id:
                 models.DraftApplication.remove_by_id(id)
 
-        # trigger a status change event
-        eventsSvc = DOAJ.eventsService()
-        eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, None, {
-            "application": self.target.data,
-            "status": constants.APPLICATION_STATUS_CREATED
-        }))
+            # trigger an application created event
+            eventsSvc = DOAJ.eventsService()
+            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_CREATED, current_user.id, {
+                "application": self.target.data
+            }))
 
 
 class AdminApplication(ApplicationProcessor):

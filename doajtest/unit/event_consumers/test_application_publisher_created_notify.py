@@ -15,13 +15,13 @@ class TestApplicationPublisherCreatedNotify(DoajTestCase):
         super(TestApplicationPublisherCreatedNotify, self).tearDown()
 
     def test_consumes(self):
-        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" :"2345", "status": "created"})
+        event = models.Event(constants.EVENT_APPLICATION_CREATED, context={"application" : {}})
         assert ApplicationPublisherCreatedNotify.consumes(event)
 
-        event = models.Event("test:event", context={"application" : "2345"})
+        event = models.Event("test:event", context={"application" : {}})
         assert not ApplicationPublisherCreatedNotify.consumes(event)
 
-        event = models.Event(constants.EVENT_APPLICATION_STATUS)
+        event = models.Event(constants.EVENT_APPLICATION_CREATED)
         assert not ApplicationPublisherCreatedNotify.consumes(event)
 
     def test_consume_success(self):
@@ -29,16 +29,16 @@ class TestApplicationPublisherCreatedNotify(DoajTestCase):
         source = ApplicationFixtureFactory.make_application_source()
         app = models.Application(**source)
         app.set_id("1234")
-        app.save()
+        # app.save()
 
         acc = models.Account()
         acc.set_id("publisher")
         acc.set_email("test@example.com")
-        acc.save()
+        acc.save(blocking=True)
 
         app.set_owner(acc.id)
 
-        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : app, "status": "created"})
+        event = models.Event(constants.EVENT_APPLICATION_CREATED, context={"application" : app.data})
         ApplicationPublisherCreatedNotify.consume(event)
 
         time.sleep(2)
@@ -53,7 +53,7 @@ class TestApplicationPublisherCreatedNotify(DoajTestCase):
         assert not n.is_seen()
 
     def test_consume_fail(self):
-        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": {"test":"abcd"}})
+        event = models.Event(constants.EVENT_APPLICATION_CREATED, context={"application": {"test":"abcd"}})
         with self.assertRaises(exceptions.NoSuchObjectException):
             ApplicationPublisherCreatedNotify.consume(event)
 
