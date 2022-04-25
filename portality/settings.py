@@ -1211,4 +1211,4 @@ PRESERVATION_COLLECTION = {}
 
 ########################################
 # Set todo list size
-TODO_LIST_SIZE = 50
+TODO_LIST_SIZE = 48
