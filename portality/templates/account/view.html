@@ -9,13 +9,13 @@
     {% if current_user.has_role("list_users") or current_user.has_role("admin_journals") %}
     <ul class="tags">
       {% if current_user.has_role("list_users") %}
-      <li><a href="/account" class="tag">View <strong>all</strong> user accounts</a></li>
+      <li><a href="/account" class="tag tag--secondary">View <strong>all</strong> user accounts</a></li>
       {% endif %}
 
       {% if current_user.has_role("admin_journals") %}
       {% set Q1 = '{"query":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
       {% set Q2 = '"}}]}}}' %}
-      <li><a href="/admin/?source={{Q1}}{{account.id}}{{Q2}}" class="tag">View <strong>this user’s</strong> journals</a></li>
+      <li><a href="/admin/?source={{Q1}}{{account.id}}{{Q2}}" class="tag tag--secondary">View <strong>this user’s</strong> journals</a></li>
       {% endif %}
     </ul>
     {% endif %}
