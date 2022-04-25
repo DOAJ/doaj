@@ -77,7 +77,11 @@
           </div>
           <div style="margin-left: .5em;" class="flex-space-between flex-col">
             <header>
-              <p class="label label--secondary">{{ TODOS[todo.action_id[0]].text | safe }}</p>
+              <p class="label label--secondary">
+                <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
+                  {{ TODOS[todo.action_id[0]].text | safe }}
+                </a>
+              </p>
               <h3>
                 <a href="{{ app_url }}" class="font-serif type-06" target="_blank" title="{{ todo.title }}">{{ todo.title | truncate(25, True) }}</a>
               </h3>
