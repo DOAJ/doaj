@@ -86,9 +86,11 @@
                  class="label tag"
                  style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
                  >
+                 {% else %}
+                 <span class="label tag">
                  {% endif %}
                  <span data-feather="{{ TODOS[todo.action_id[0]].feather | safe }}" aria-hidden="true"></span>
-                 {% if TODOS[todo.action_id[0]].link %}</a>{% endif %}
+                 {% if TODOS[todo.action_id[0]].link %}</a>{% else %}</span>{% endif %}
                </li>
              </ul>
            </div>
