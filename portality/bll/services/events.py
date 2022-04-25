@@ -7,6 +7,7 @@ from portality.events.consumers.application_assed_assigned_notify import Applica
 from portality.events.consumers.bg_job_finished_notify import BGJobFinishedNotify
 from portality.events.consumers.application_maned_ready_notify import ApplicationManedReadyNotify
 from portality.events.consumers.account_passwordreset_email import AccountPasswordResetEmail
+from portality.events.consumers.application_editor_group_assigned_notify import ApplicationEditorGroupAssignedNotify
 
 
 class EventsService(object):
@@ -15,6 +16,7 @@ class EventsService(object):
         AccountPasswordResetEmail,
         ApplicationAssedInprogressNotify,
         ApplicationAssedAssignedNotify,
+        ApplicationEditorGroupAssignedNotify,
         BGJobFinishedNotify,
         ApplicationManedReadyNotify
     ]

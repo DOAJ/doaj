@@ -12,6 +12,7 @@ from portality.lib import dates
 def send_editor_group_email(obj):
     """ Send an email to the editor of a group """
     if type(obj) is models.Suggestion:
+        # this section has now been superseded by the notification being sent
         template = "email/editor_application_assigned_group.jinja2"
         subject = app.config.get("SERVICE_NAME", "") + " - new application assigned to your group"
     elif type(obj) is models.Journal:
