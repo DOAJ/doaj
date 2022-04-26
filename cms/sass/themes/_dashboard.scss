@@ -138,6 +138,13 @@
       padding: 0;
     }
 
+    .todo-list__status {
+      display: block;
+      margin-top: $spacing-01;
+      font-weight: 400;
+      color: $dark-grey;
+    }
+
     .card {
       display: flex;
       width: 100%;

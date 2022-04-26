@@ -2,29 +2,29 @@
 {# ~~Dashboard:Page~~ #}
 {% set TODOS = {
         constants.TODO_MANED_STALLED: {
-            "text" : "<strong>Stalled</strong> application",
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>+8 wks inactive</span>",
             "colour" : "var(--salmon)",
             "feather": "coffee"
         },
         constants.TODO_MANED_FOLLOW_UP_OLD: {
-            "text": "<strong>Old</strong> application",
+            "text": "<strong>Old</strong> <span class='todo-list__status'>+10 wks old</span>",
             "colour" : "var(--sanguine)",
             "feather": "clock"
         },
         constants.TODO_MANED_READY: {
-            "text" : "<strong>Ready</strong> application",
+            "text" : "<strong>Ready</strong>",
             "colour" : "var(--dark-green)",
             "feather": "check-circle",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"ready"}])
         },
         constants.TODO_MANED_COMPLETED: {
-            "text" : "<strong>Completed</strong> application",
+            "text" : "<strong>Completed</strong> <span class='todo-list__status'>+2 wks updated</span>",
             "colour" : "var(--mid-green)",
             "feather": "user-check",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"completed"}])
         },
         constants.TODO_MANED_ASSIGN_PENDING: {
-            "text" : "<strong>Pending</strong> application",
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>+2 wks submitted</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
