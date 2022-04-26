@@ -43,7 +43,7 @@
     </div>
     {% else %}
     <h2 class="type-04">
-      You have <strong>{{ todos|length }}{% if todos|length >= config.get("TODO_LIST_SIZE")%}+{% endif %}</strong> items in your priority list:
+      You have <strong>{{ todos|length }}{% if todos|length >= config.get("TODO_LIST_SIZE")%}+{% endif %}</strong> applications in your priority list:
     </h2>
     {% endif %}
     <ol class="todo-list">
@@ -52,9 +52,10 @@
       {# TODO integrated priority in list display
       {{ todo.boost }}
        #}
+       {% set action = TODOS[todo.action_id[0]] %}
        {% set app_url =  url_for('admin.application', application_id=todo.object_id) %}
        <li class="todo-list__item" data-app-url="{{ app_url }}">
-         <article class="card card--compact" style="border-color: {{ TODOS[todo.action_id[0]].colour }};">
+         <article class="card card--compact" style="border-color: {{ action.colour }};">
            <div class="flex-space-between flex-col">
              <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
                <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="label label--secondary font-mono" title="{% if todo.date_type == 'last_manual_update' %}Last updated{% else %}First submitted{% endif %} {{ todo.date.strftime('%A, %-d %B %Y') }}">
@@ -69,7 +70,7 @@
              <header>
                <p class="label label--secondary">
                  <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
-                   {{ TODOS[todo.action_id[0]].text | safe }}
+                   {{ action.text | safe }}
                  </a>
                </p>
                <h3>
@@ -80,17 +81,17 @@
                {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [todo.object.editor_group]}]) %}
                <li><a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="label tag">{{ todo.object.editor_group }}</a></li>
                <li>
-                 {% if TODOS[todo.action_id[0]].link %}
+                 {% if action.link %}
                  <a
-                 href="{{ TODOS[todo.action_id[0]].link }}"
+                 href="{{ action.link }}"
                  class="label tag"
-                 style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
+                 style="background-color: {{ action.colour }};"
                  >
                  {% else %}
-                 <span class="label tag" style="background-color: {{ TODOS[todo.action_id[0]].colour }};">
+                 <span class="label tag" style="background-color: {{ action.colour }};">
                  {% endif %}
-                 <span data-feather="{{ TODOS[todo.action_id[0]].feather | safe }}" aria-hidden="true"></span>
-                 {% if TODOS[todo.action_id[0]].link %}</a>{% else %}</span>{% endif %}
+                 <span data-feather="{{ action.feather | safe }}" aria-hidden="true"></span>
+                 {% if action.link %}</a>{% else %}</span>{% endif %}
                </li>
              </ul>
            </div>
