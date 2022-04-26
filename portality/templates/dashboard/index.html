@@ -69,6 +69,8 @@
                <header>
                  <p class="label label--secondary">
                    <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
+                     {% set main_action = todo.action_id[0] %}
+                     {% if main_action == 'todo_maned_follow_up_old' or main_action == 'todo_maned_stalled' %}[{{ todo.object.application_status }}]{% endif %}
                      {{ action.text | safe }}
                    </a>
                  </p>
