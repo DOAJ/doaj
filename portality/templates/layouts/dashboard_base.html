@@ -80,9 +80,11 @@
                   <dd>
                     <ul class="inlined-list tags">
                       {% for eg in managed_groups %}
-                      <li>
+                      <li class="tag tag--secondary">
                         {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
-                        <a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="tag tag--secondary">{{ eg.name }}</a>
+                        <a href="{{ url_for('admin.suggestions') }}?source={{ source }}"><strong>{{ eg.name }}</strong></a>
+                        <a href="{{ url_for('admin.index') }}?source={{ source }}">(journals)
+                        </a>
                       </li>
                       {% endfor %}
                     </ul>
