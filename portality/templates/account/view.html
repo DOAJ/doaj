@@ -1,9 +1,19 @@
 {# ~~Account:Page~~ #}
-{% extends "layouts/dashboard_base.html" %}
+{# Use dashboard layout for ManEds only #}
+{# TODO: switch to dashboard layout once Ed + Associate Ed new workflow UI is done #}
+{% if current_user.has_role("admin") %}
+  {% extends "layouts/dashboard_base.html" %}
+{% elif current_user.has_role("publisher") %}
+  {% extends "publisher/publisher_base.html" %}
+{% else %}
+  {% extends "editor/editor_base.html" %}
+{% endif %}
 
 {% block page_title %}{{ account.name if account.name else account.email }}’s profile{% endblock %}
 
 {% block content %}
+{# TODO remove this once other dashboards are done #}
+{% if not current_user.has_role("admin") %}<main class="container page-content">{% endif %}
 <div class="row">
   <div class="col-md-8">
     {% if current_user.has_role("list_users") or current_user.has_role("admin_journals") %}
@@ -93,6 +103,7 @@
     </aside>
   </div>
 </div>
+{% if not current_user.has_role("admin") %}</main>{% endif %}
 {% endblock %}
 
 {% block extra_js_bottom %}

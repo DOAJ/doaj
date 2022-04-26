@@ -52,37 +52,6 @@
                     {% set section_id=column.id %}
                     {% include "includes/header-secondary-navigation.html" %}
                 {% endfor %}
-
-                {% if not current_user.is_anonymous %}
-                    <li class="dropdown">
-                            <a href="" class="dropdown__trigger nav-bar__link" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                My Account
-                                <span data-feather="chevron-down" aria-hidden="true"></span>
-                            </a>
-                        <ul class="dropdown__menu" aria-labelledby="menu-account">
-                            {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
-                                <li>
-                                    <a href="{{ url_for('editor.index') }}" class="dropdown__link">
-                                        Editor
-                                    </a>
-                                </li>
-                            {% endif %}
-                            {% if current_user.has_role("publisher") %}
-                                <li>
-                                    <a href="{{ url_for('publisher.index') }}" class="dropdown__link">
-                                        Publisher
-                                    </a>
-                                </li>
-                            {% endif %}
-                            <li>
-                                <a href="{{ url_for('account.username', username=current_user.id) }}" class="dropdown__link">
-                                    Settings
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                {% endif %}
-
                 {% set columns = data.nav.entries|selectattr("secondary_mobile")|list %}
                 {% for column in columns %}
                     {% set section_id=column.id %}
@@ -92,13 +61,40 @@
             </ul>
             <ul class="nav-bar secondary-nav__menu" role="menu">
               {% if not current_user.is_anonymous %}
-              {% if current_user.has_role("admin") %}
-                  <li>
-                      <a href="{{ url_for('dashboard.top_todo') }}">
-                          Dashboard
-                      </a>
+                  <li class="dropdown">
+                          <a href="" class="dropdown__trigger nav-bar__link" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Dashboard
+                              <span data-feather="chevron-down" aria-hidden="true"></span>
+                          </a>
+                      <ul class="dropdown__menu" aria-labelledby="menu-account">
+                          {% if current_user.has_role("admin") %}
+                              <li>
+                                  <a href="{{ url_for('dashboard.top_todo') }}" class="dropdown__link">
+                                      Managing Editor
+                                  </a>
+                              </li>
+                          {% endif %}
+                          {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
+                              <li>
+                                  <a href="{{ url_for('editor.index') }}" class="dropdown__link">
+                                      Editor
+                                  </a>
+                              </li>
+                          {% endif %}
+                          {% if current_user.has_role("publisher") %}
+                              <li>
+                                  <a href="{{ url_for('publisher.index') }}" class="dropdown__link">
+                                      Publisher
+                                  </a>
+                              </li>
+                          {% endif %}
+                          <li>
+                              <a href="{{ url_for('account.username', username=current_user.id) }}" class="dropdown__link">
+                                  Settings
+                              </a>
+                          </li>
+                      </ul>
                   </li>
-              {% endif %}
               {% endif %}
               <li>
                   {% if current_user.is_anonymous %}
