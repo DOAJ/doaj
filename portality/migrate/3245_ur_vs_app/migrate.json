@@ -5,22 +5,9 @@
 			"type" : "application",
 			"init_with_model" : true,
 			"keepalive" : "1m",
-			"query" : {
-				"query": {
-					"filtered": {
-						"query": {"match_all": {}},
-						"filter": {
-							"bool": {
-								"must": [
-									{"term": {"admin.application_status.exact": "rejected"} }
-								]
-							}
-						}
-					}
-				}
-			},
+			"query" : {"query":{"term": {"admin.application_status":"rejected"}}},
 			"functions" : [
-				"portality.migrate.3245_ur_vs_app"
+				"portality.migrate.3245_ur_vs_app.operations.make_update_request"
 			]
 		}
 	]
