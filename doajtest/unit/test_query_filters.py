@@ -90,7 +90,7 @@ class TestQueryFilters(TestSuite):
                 'bool': {
                     'filter': [
                         {"range" : {"created_date" : {"gte" : '2018-05-03'}}},
-                        {"exists" : {"field" : "admin.current_journal"}}
+                        {"term" : {"admin.application_type.exact" : "update_request"}}
                     ]
                 }
             }
