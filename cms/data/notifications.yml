@@ -21,3 +21,10 @@ application:maned:ready:notify:
     "The application for \"{application_title}\" has been marked 'Ready' by {editor}. Please review it as soon as possible."
   email_subject:
     "application ready"
+application:editor_group:assigned:notify:
+  message:
+    "A new application or an update request for the journal \"{journal_name}\" has been
+     assigned to your Group by a Managing Editor. Please assign this to an
+     Associate Editor within 5 working days."
+  email_subject:
+    "new application assigned to your group"

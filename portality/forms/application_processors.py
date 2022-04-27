@@ -394,7 +394,7 @@ class AdminApplication(ApplicationProcessor):
             # trigger a status change event
             if self.source.application_status != self.target.application_status:
                 eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, account.id, {
-                    "application" : self.target.id,
+                    "application" : self.target.data,
                     "old_status" : self.source.application_status,
                     "new_status" : self.target.application_status
                 }))
@@ -410,14 +410,20 @@ class AdminApplication(ApplicationProcessor):
 
             # if we need to email the editor and/or the associate, handle those here
             if is_editor_group_changed:
-                try:
-                    emails.send_editor_group_email(self.target)
-                except app_email.EmailException:
-                    self.add_alert("Problem sending email to editor - probably address is invalid")
-                    app.logger.exception("Email to associate failed.")
+                eventsSvc.trigger(models.Event(
+                    constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED,
+                    account.id, {
+                        "application": self.target.data
+                    }
+                ))
+                # try:
+                #     emails.send_editor_group_email(self.target)
+                # except app_email.EmailException:
+                #     self.add_alert("Problem sending email to editor - probably address is invalid")
+                #     app.logger.exception("Email to associate failed.")
             if is_associate_editor_changed:
                 eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, account.id, {
-                    "application" : self.target.id
+                    "application" : self.target.data
                 }))
                 # try:
                 #     emails.send_assoc_editor_email(self.target)
@@ -599,7 +605,7 @@ class EditorApplication(ApplicationProcessor):
         # ~~-> Email:Notifications~~
         if new_associate_assigned:
             eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={
-                "application": self.target.id
+                "application": self.target.data
             }))
             self.add_alert("New editor assigned - notification has been sent")
             # try:
@@ -884,11 +890,15 @@ class ManEdJournalReview(ApplicationProcessor):
         # if we need to email the editor and/or the associate, handle those here
         # ~~-> Email:Notifications~~
         if is_editor_group_changed:
-            try:
-                emails.send_editor_group_email(self.target)
-            except app_email.EmailException:
-                self.add_alert("Problem sending email to editor - probably address is invalid")
-                app.logger.exception('Error sending assignment email to editor.')
+            eventsSvc = DOAJ.eventsService()
+            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED, current_user.id, {
+                "application": self.target.data
+            }))
+            # try:
+            #     emails.send_editor_group_email(self.target)
+            # except app_email.EmailException:
+            #     self.add_alert("Problem sending email to editor - probably address is invalid")
+            #     app.logger.exception('Error sending assignment email to editor.')
         if is_associate_editor_changed:
             try:
                 emails.send_assoc_editor_email(self.target)

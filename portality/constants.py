@@ -46,8 +46,10 @@ TODO_MANED_COMPLETED = "todo_maned_completed"
 TODO_MANED_ASSIGN_PENDING = "todo_maned_assign_pending"
 
 EVENT_ACCOUNT_CREATED = "account:created"
+EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
 EVENT_APPLICATION_STATUS = "application:status"
 EVENT_APPLICATION_ASSED_ASSIGNED = "application:assed:assigned"
+EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED = "application:editor_group:assigned"
 
 NOTIFICATION_CLASSIFICATION_STATUS_CHANGE = "status_change"
 NOTIFICATION_CLASSIFICATION_ASSIGN = "assign"
