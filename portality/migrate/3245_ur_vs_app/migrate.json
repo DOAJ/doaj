@@ -1,0 +1,27 @@
+{
+	"batch" : 10000,
+	"types": [
+		{
+			"type" : "application",
+			"init_with_model" : true,
+			"keepalive" : "1m",
+			"query" : {
+				"query": {
+					"filtered": {
+						"query": {"match_all": {}},
+						"filter": {
+							"bool": {
+								"must": [
+									{"term": {"admin.application_status.exact": "rejected"} }
+								]
+							}
+						}
+					}
+				}
+			},
+			"functions" : [
+				"portality.migrate.3245_ur_vs_app"
+			]
+		}
+	]
+}
