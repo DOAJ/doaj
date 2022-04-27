@@ -142,6 +142,10 @@
   text-align: right;
 }
 
+.flex {
+  display: flex;
+}
+
 .flex-center {
   display: flex;
   align-items: center;
@@ -171,6 +175,7 @@
 .flex-space-between {
   display: flex;
   justify-content: space-between;
+  width: 100%;
 }
 
 .no-margins {

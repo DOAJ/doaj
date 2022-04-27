@@ -6,6 +6,10 @@
     margin-top: 0;
   }
 
+  > header:first-of-type {
+    height: 75px;
+  }
+
   .primary-nav {
     height:75px;
 
@@ -34,7 +38,6 @@
   }
 
   .main-header {
-    margin-top: 75px;
     font-size: smaller;
 
     dt, dd {
@@ -43,12 +46,17 @@
     }
   }
 
+  .row {
+    max-width: 100%;
+  }
+
   .vertical-nav {
     position: absolute;
-    z-index: 1;
+    z-index: 3;
     top: 75px;
     left: 0;
     width: 75px;
+    height: 100%;
     overflow-y: scroll;
 
     > ol {
@@ -119,7 +127,7 @@
 
     h3 {
       margin-top: $spacing-01;
-      margin-bottom: 0;
+      margin-bottom: $spacing-04;
     }
 
     a {
@@ -130,8 +138,14 @@
       padding: 0;
     }
 
+    .todo-list__status {
+      display: block;
+      margin-top: $spacing-01;
+      font-weight: 400;
+      color: $dark-grey;
+    }
+
     .card {
-      display: flex;
       width: 100%;
       height: auto;
       border-left: 10px solid;

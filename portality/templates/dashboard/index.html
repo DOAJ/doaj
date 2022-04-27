@@ -2,29 +2,29 @@
 {# ~~Dashboard:Page~~ #}
 {% set TODOS = {
         constants.TODO_MANED_STALLED: {
-            "text" : "<strong>Stalled</strong> application",
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>+8 wks inactive</span>",
             "colour" : "var(--salmon)",
             "feather": "coffee"
         },
         constants.TODO_MANED_FOLLOW_UP_OLD: {
-            "text": "<strong>Old</strong> application",
+            "text": "<strong>Old</strong> <span class='todo-list__status'>+10 wks old</span>",
             "colour" : "var(--sanguine)",
             "feather": "clock"
         },
         constants.TODO_MANED_READY: {
-            "text" : "<strong>Ready</strong> application",
+            "text" : "<strong>Ready</strong>",
             "colour" : "var(--dark-green)",
             "feather": "check-circle",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"ready"}])
         },
         constants.TODO_MANED_COMPLETED: {
-            "text" : "<strong>Completed</strong> application",
+            "text" : "<strong>Completed</strong> <span class='todo-list__status'>+2 wks updated</span>",
             "colour" : "var(--mid-green)",
             "feather": "user-check",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"completed"}])
         },
         constants.TODO_MANED_ASSIGN_PENDING: {
-            "text" : "<strong>Pending</strong> application",
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>+2 wks submitted</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
@@ -43,7 +43,7 @@
     </div>
     {% else %}
     <h2 class="type-04">
-      You have <strong>{{ todos|length }}{% if todos|length >= config.get("TODO_LIST_SIZE")%}+{% endif %}</strong> items in your priority list:
+      You have <strong>{{ todos|length }}{% if todos|length >= config.get("TODO_LIST_SIZE")%}+{% endif %}</strong> applications in your priority list:
     </h2>
     {% endif %}
     <ol class="todo-list">
@@ -52,43 +52,55 @@
       {# TODO integrated priority in list display
       {{ todo.boost }}
        #}
+       {% set action = TODOS[todo.action_id[0]] %}
        {% set app_url =  url_for('admin.application', application_id=todo.object_id) %}
-      <li
-      class="todo-list__item"
-        data-app-url="{{ app_url }}"
-      >
-        <article class="card card--compact" style="border-color: {{ TODOS[todo.action_id[0]].colour }};">
-          <div class="flex-space-between flex-col">
-            <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="label label--secondary font-mono" title="{% if todo.date_type == 'last_manual_update' %}Last updated{% else %}First submitted{% endif %} {{ todo.date.strftime('%A, %-d %B %Y') }}">
-              <span style="font-size: 22px;">{{ todo.date.strftime('%d') }}</span><br>
-              <span style="font-size: 13.55px;">{{ todo.date.strftime('%b') }}</span><br>
-              <span style="font-size: 9.35px;">{{ todo.date.strftime('%Y') }}</span>
-              {# TODO link to search results for this kind of task, across all editor groups #}
-            </time><br/>
-            {% if TODOS[todo.action_id[0]].link %}
-                <a
-                  href="{{ TODOS[todo.action_id[0]].link }}"
-                  class="tag"
-                  style="background-color: {{ TODOS[todo.action_id[0]].colour }};"
-                >
-            {% endif %}
-              <span data-feather="{{ TODOS[todo.action_id[0]].feather | safe }}" aria-hidden="true"></span>
-            {% if TODOS[todo.action_id[0]].link %}</a>{% endif %}
-          </div>
-          <div style="margin-left: .5em;" class="flex-space-between flex-col">
-            <header>
-              <p class="label label--secondary">{{ TODOS[todo.action_id[0]].text | safe }}</p>
-              <h3>
-                <a href="{{ app_url }}" class="font-serif type-06" target="_blank" title="{{ todo.title }}">{{ todo.title | truncate(25, True) }}</a>
-              </h3>
-            </header>
-            <ul class="unstyled-list tags">
-              {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [todo.object.editor_group]}]) %}
-              <li><a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="label tag tag--secondary">{{ todo.object.editor_group }}</a></li>
+       <li class="todo-list__item" data-app-url="{{ app_url }}">
+         <article class="flex-col flex-space-between card card--compact" style="border-color: {{ action.colour }};">
+           <div class="flex">
+             <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
+               <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="label label--secondary font-mono" title="{% if todo.date_type == 'last_manual_update' %}Last updated{% else %}First submitted{% endif %} {{ todo.date.strftime('%A, %-d %B %Y') }}">
+                 <span style="font-size: 22px;">{{ todo.date.strftime('%d') }}</span><br>
+                 <span style="font-size: 13.55px;">{{ todo.date.strftime('%b') }}</span><br>
+                 <span style="font-size: 9.35px;">{{ todo.date.strftime('%Y') }}</span>
+                 {# TODO link to search results for this kind of task, across all editor groups #}
+               </time>
+              </a>
+             <div style="margin-left: 1em;" class="flex-space-between">
+               <header>
+                 <p class="label label--secondary">
+                   <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
+                     {% set main_action = todo.action_id[0] %}
+                     {% if main_action == 'todo_maned_follow_up_old' or main_action == 'todo_maned_stalled' %}[{{ todo.object.application_status }}]{% endif %}
+                     {{ action.text | safe }}
+                   </a>
+                 </p>
+                 <h3>
+                   <a href="{{ app_url }}" class="font-serif type-06" target="_blank" title="{{ todo.title }}">{{ todo.title | truncate(25, True) }}</a>
+                 </h3>
+               </header>
+               <div>
+                 {% if action.link %}
+                 <a href="{{ action.link }}" class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
+                 {% else %}
+                 <span class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
+                 {% endif %}
+                    <span data-feather="{{ action.feather | safe }}" aria-hidden="true"></span>
+                 {% if action.link %}</a>
+                 {% else %}</span>
+                 {% endif %}
+               </div>
+             </div>
+           </div>
+           <ul class="unstyled-list tags">
+             {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [todo.object.editor_group]}]) %}
+             <li><small><a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="label tag tag--secondary"><span data-feather="users" aria-hidden="true"></span> {{ todo.object.editor_group }}</a></small></li>
+             {% set editor = todo.object.editor %}
+             {% if editor %}
+             <li><small><a href="{{ url_for('account.username', username=editor) }}" class="label tag tag--tertiary"><span data-feather="user" aria-hidden="true"></span> {{ todo.object.editor }}</a></small></li>
+             {% endif %}
             </ul>
-          </div>
-        </article>
-      </li>
+         </article>
+       </li>
       {% endfor %}
     </ol>
     {# TODO to be displayed once we implement page listing out all tasks
