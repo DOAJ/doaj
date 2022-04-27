@@ -5,6 +5,7 @@ from portality import constants
 from portality import models
 from portality.lib import edges
 from portality.bll import DOAJ, exceptions
+from portality.lib.seamless import SeamlessException
 
 
 class ApplicationEditorCompletedNotify(EventConsumer):
@@ -19,19 +20,24 @@ class ApplicationEditorCompletedNotify(EventConsumer):
     @classmethod
     def consume(cls, event):
         context = event.context
-        app_id = context.get("application")
-        if app_id is None:
+        app = context.get("application")
+        if app is None:
             return
-        application = models.Application.pull(app_id)
+        try:
+            application = models.Application(**app)
+        except SeamlessException:
+            raise exceptions.NoSuchObjectException("Unable to create application model from source")
+
         if application is None:
-            raise exceptions.NoSuchObjectException("Unable to locate application with id {x}".format(x=app_id))
+            raise exceptions.NoSuchObjectException("Unable to create application model from source")
 
         if not application.editor_group:
             return
 
+        # The associate editor in question is who created this event
         associate_editor = "unknown associate editor"
         if application.editor:
-            associate_editor = application.editor
+            associate_editor = event.who
 
         # Notification is to the editor in charge of this application's assigned editor group
         editor_group_name = application.editor_group

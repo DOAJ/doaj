@@ -52,7 +52,7 @@ class TestApplicationEditorInProgressNotify(DoajTestCase):
         event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": app, "old_status": "ready", "new_status": "in progress"})
         ApplicationEditorInProgressNotify.consume(event)
 
-        time.sleep(2)
+        time.sleep(1)
         ns = models.Notification.all()
         assert len(ns) == 1
 

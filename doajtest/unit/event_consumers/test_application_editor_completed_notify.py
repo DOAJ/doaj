@@ -15,14 +15,14 @@ class TestApplicationEditorCompletedNotify(DoajTestCase):
         super(TestApplicationEditorCompletedNotify, self).tearDown()
 
     def test_consumes(self):
-        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": "2345", "old_status": "in progress", "new_status": "completed"})
+        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": ApplicationFixtureFactory.make_application_source(), "old_status": "in progress", "new_status": "completed"})
         assert ApplicationEditorCompletedNotify.consumes(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS,
-                             context={"application": "2345", "old_status": "completed", "new_status": "completed"})
+                             context={"application": ApplicationFixtureFactory.make_application_source(), "old_status": "completed", "new_status": "completed"})
         assert not ApplicationEditorCompletedNotify.consumes(event)
 
-        event = models.Event("test:event", context={"application": "2345"})
+        event = models.Event("test:event", context={"application": ApplicationFixtureFactory.make_application_source()})
         assert not ApplicationEditorCompletedNotify.consumes(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS)
@@ -45,10 +45,10 @@ class TestApplicationEditorCompletedNotify(DoajTestCase):
         eg.set_editor(acc.id)
         eg.save(blocking=True)
 
-        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": app.id, "old_status": "in progress", "new_status": "completed"})
+        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": app, "old_status": "in progress", "new_status": "completed"})
         ApplicationEditorCompletedNotify.consume(event)
 
-        time.sleep(2)
+        time.sleep(1)
         ns = models.Notification.all()
         assert len(ns) == 1
 
@@ -61,7 +61,7 @@ class TestApplicationEditorCompletedNotify(DoajTestCase):
         assert not n.is_seen()
 
     def test_consume_fail(self):
-        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": "abcd"})
+        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": {'stuff': 'nonsense'}})
         with self.assertRaises(exceptions.NoSuchObjectException):
             ApplicationEditorCompletedNotify.consume(event)
 
