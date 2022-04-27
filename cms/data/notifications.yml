@@ -21,6 +21,17 @@ application:maned:ready:notify:
     "The application for \"{application_title}\" has been marked 'Ready' by {editor}. Please review it as soon as possible."
   email_subject:
     "application ready"
+application:editor:completed:notify:
+  message:
+    "{associate_editor} has finished a review of the application for \"{application_title}\"
+     and marked it as Completed. Please review within 5 working days."
+  email_subject:
+    "application marked 'completed'"
+application:editor:inprogress:notify:
+  message: "The application for \"{application_title}\" has not passed review by a Managing Editor and has been assigned back to your group with questions or changes."
+  email_subject:
+    "Application reverted to 'In Progress' by Managing Editor"
+
 application:editor_group:assigned:notify:
   message:
     "A new application or an update request for the journal \"{journal_name}\" has been
