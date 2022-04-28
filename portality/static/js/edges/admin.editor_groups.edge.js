@@ -173,7 +173,8 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "name.exact": "Name"
+                        "name.exact": "Name",
+                        "maned.exact": "Managing Editor"
                     }
                 })
             ];
