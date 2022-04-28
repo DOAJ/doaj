@@ -12,6 +12,7 @@ from portality.lib import dates
 def send_editor_group_email(obj):
     """ Send an email to the editor of a group """
     if type(obj) is models.Suggestion:
+        # this section has now been superseded by the notification being sent
         template = "email/editor_application_assigned_group.jinja2"
         subject = app.config.get("SERVICE_NAME", "") + " - new application assigned to your group"
     elif type(obj) is models.Journal:
@@ -142,38 +143,6 @@ def send_publisher_application_editor_assigned_email(application):
             alerts.append(instructions["not_sent_alert"])
 
     return alerts
-
-
-def send_editor_inprogress_email(application):
-    """ Inform editor in charge of an application that the status is has been reverted from ready by a ManEd """
-    journal_name = application.bibjson().title
-    url_root = app.config.get("BASE_URL")
-    query_for_id = Facetview2.make_query(query_string=application.id)
-    string_id_query = json.dumps(query_for_id).replace(' ', '')       # Avoid '+' being added to URLs by removing spaces
-    url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
-
-    # This is to the editor in charge of this AssEd's group
-    editor_group_name = application.editor_group
-    editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
-
-    try:
-        editor_group = models.EditorGroup.pull(editor_group_id)
-        editor_acc = editor_group.get_editor_account()
-        editor_id = editor_acc.id
-        to = [editor_acc.email]
-    except AttributeError:
-        raise
-
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-    subject = app.config.get("SERVICE_NAME", "") + " - Application reverted to 'In Progress' by Managing Editor"
-
-    app_email.send_mail(to=to,
-                        fro=fro,
-                        subject=subject,
-                        template_name="email/editor_application_inprogress.jinja2",
-                        editor=editor_id,
-                        application_title=journal_name,
-                        url_for_application=url_for_application)
 
 
 def send_editor_completed_email(application):

@@ -15,10 +15,10 @@ class TestApplicationAssedAssignedNotify(DoajTestCase):
         super(TestApplicationAssedAssignedNotify, self).tearDown()
 
     def test_consumes(self):
-        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application" : "2345"})
+        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application" : {}})
         assert ApplicationAssedAssignedNotify.consumes(event)
 
-        event = models.Event("test:event", context={"application" : "2345"})
+        event = models.Event("test:event", context={"application" : {}})
         assert not ApplicationAssedAssignedNotify.consumes(event)
 
         event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED)
@@ -29,14 +29,14 @@ class TestApplicationAssedAssignedNotify(DoajTestCase):
 
         source = ApplicationFixtureFactory.make_application_source()
         app = models.Application(**source)
-        app.save()
+        # app.save()
 
         acc = models.Account()
         acc.set_id(app.editor)
         acc.set_email("test@example.com")
         acc.save(blocking=True)
 
-        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application" : app.id})
+        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application" : app.data})
         ApplicationAssedAssignedNotify.consume(event)
 
         time.sleep(2)
@@ -52,15 +52,15 @@ class TestApplicationAssedAssignedNotify(DoajTestCase):
         assert not n.is_seen()
 
     def test_consume_fail(self):
-        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": "abcd"})
+        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": {"key" : "value"}})
         with self.assertRaises(exceptions.NoSuchObjectException):
             ApplicationAssedAssignedNotify.consume(event)
 
         source = ApplicationFixtureFactory.make_application_source()
         del source["admin"]["editor"]
         app = models.Application(**source)
-        app.save(blocking=True)
+        # app.save(blocking=True)
 
-        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": app.id})
+        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": app.data})
         with self.assertRaises(exceptions.NoSuchPropertyException):
             ApplicationAssedAssignedNotify.consume(event)

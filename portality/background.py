@@ -82,9 +82,11 @@ class BackgroundApi(object):
         job.save()
 
         # trigger a status change event
+        jdata = job.data
+        del jdata["audit"]
         eventsSvc = DOAJ.eventsService()
         eventsSvc.trigger(models.Event(constants.BACKGROUND_JOB_FINISHED, job.user.id, {
-            "job": job.id
+            "job": jdata
         }))
 
         if ctx is not None:

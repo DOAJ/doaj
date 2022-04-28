@@ -3,7 +3,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.1.1',
+    version='6.1.4',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -16,6 +16,7 @@ setup(
         "Faker==2.0.3",
         "feedparser==6.0.8",
         "itsdangerous==2.0.1",     # fixme: unpinned dependency of flask, 2.1.0 is causing an import error 'json'
+        "jinja2<3.1.0",            # fixme: unpinned dependency of flask, import error on 'escape'
         "Flask==1.1.1",
         "Flask-Cors==3.0.8",
         "Flask-DebugToolbar==0.10.1",

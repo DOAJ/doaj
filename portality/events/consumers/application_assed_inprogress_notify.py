@@ -4,7 +4,7 @@ from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
 from portality.lib import edges
-from portality.bll import DOAJ
+from portality.bll import DOAJ, exceptions
 
 
 class ApplicationAssedInprogressNotify(EventConsumer):
@@ -13,18 +13,19 @@ class ApplicationAssedInprogressNotify(EventConsumer):
     @classmethod
     def consumes(cls, event):
         return event.id == constants.EVENT_APPLICATION_STATUS and \
+               event.context.get("application") is not None and \
                event.context.get("old_status") in [constants.APPLICATION_STATUS_COMPLETED, constants.APPLICATION_STATUS_READY] and \
                event.context.get("new_status") == constants.APPLICATION_STATUS_IN_PROGRESS
 
     @classmethod
     def consume(cls, event):
-        context = event.context
-        app_id = context.get("application")
-        if app_id is None:
-            return
-        application = models.Application.pull(app_id)
-        if application is None:
-            return
+        app_source = event.context.get("application")
+
+        try:
+            application = models.Application(**app_source)
+        except Exception as e:
+            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
+
         if not application.editor:
             return
 
