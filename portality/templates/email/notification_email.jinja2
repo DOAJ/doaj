@@ -1,15 +1,10 @@
-{%- if user and user.name %}
-Dear {{ user.name }},
-{% endif -%}
-
+{% if user and user.name %}Dear {{ user.name }},{% endif %}
 
 {{ message }}
 
-
-{%- if action %}
+{% if action %}
 To take action based on this notification, follow this link: {{ url_root }}{{ action }}
-{% endif -%}
-
+{% endif %}
 
 - The DOAJ Team
 

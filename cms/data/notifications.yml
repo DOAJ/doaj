@@ -63,3 +63,15 @@ update_request:owner:accepted:notify:
     Thank you for updating this journal and helping to keep the DOAJ database up-to-date."
   email_subject:
     "update request accepted"
+application:publisher:assigned:notify:
+  message:
+    "Your application for \"{application_title}\" submitted on {application_date} has been assigned to an editor for review for inclusion in the DOAJ. Please look out for further communications about the application. These may come from someone who is not using a DOAJ email address: {volunteers_url}"
+  email_subject:
+    "your application has been assigned an editor for review"
+update_request:publisher:assigned:notify:
+  message:
+    "The update you submitted for \"{application_title}\" on {application_date} has been assigned to a Managing Editor for review.
+
+    Thank you for helping to keep the DOAJ database up-to-date."
+  email_subject:
+    "your update request has been assigned an editor for review"

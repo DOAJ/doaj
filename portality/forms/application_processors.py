@@ -434,7 +434,9 @@ class AdminApplication(ApplicationProcessor):
                 #     app.logger.exception("Email to associate failed.")
             if is_associate_editor_changed:
                 eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, account.id, {
-                    "application" : self.target.data
+                    "application" : self.target.data,
+                    "old_editor": self.source.editor,
+                    "new_editor": self.target.editor
                 }))
                 # try:
                 #     emails.send_assoc_editor_email(self.target)
@@ -445,13 +447,7 @@ class AdminApplication(ApplicationProcessor):
             # If this is the first time this application has been assigned to an editor, notify the publisher.
             old_ed = self.source.editor
             if (old_ed is None or old_ed == '') and self.target.editor is not None:
-                is_update_request = self.target.current_journal is not None
-                if is_update_request:
-                    alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
-                else:
-                    alerts = emails.send_publisher_application_editor_assigned_email(self.target)
-                for alert in alerts:
-                    self.add_alert(alert)
+                self.add_alert(Messages.SENT_PUBLISHER_ASSIGNED_EMAIL)
 
             # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
             if (self.source.application_status == constants.APPLICATION_STATUS_READY or self.source.application_status == constants.APPLICATION_STATUS_COMPLETED) and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
@@ -566,7 +562,9 @@ class EditorApplication(ApplicationProcessor):
         # ~~-> Email:Notifications~~
         if new_associate_assigned:
             eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={
-                "application": self.target.data
+                "application": self.target.data,
+                "old_editor": self.source.editor,
+                "new_editor": self.target.editor
             }))
             self.add_alert("New editor assigned - notification has been sent")
             # try:
@@ -579,13 +577,7 @@ class EditorApplication(ApplicationProcessor):
         # If this is the first time this application has been assigned to an editor, notify the publisher.
         old_ed = self.source.editor
         if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            is_update_request = self.target.current_journal is not None
-            if is_update_request:
-                alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
-            else:
-                alerts = emails.send_publisher_application_editor_assigned_email(self.target)
-            for alert in alerts:
-                self.add_alert(alert)
+            self.add_alert(Messages.SENT_PUBLISHER_ASSIGNED_EMAIL)
 
         # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
         if self.source.application_status == constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:

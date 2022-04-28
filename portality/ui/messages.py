@@ -28,7 +28,7 @@ class Messages(object):
     SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL = """An email has been sent to the Journal Contact alerting them that you are working on their application."""
     SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL = """An email has been sent to the Journal Contact alerting them that an editor has been assigned to their application."""
     SENT_PUBLISHER_IN_PROGRESS_EMAIL = """An email has been sent to the Owner alerting them that you are working on their application."""
-    SENT_PUBLISHER_ASSIGNED_EMAIL = """An email has been sent to the Owner alerting them that an editor has been assigned to their application."""
+    SENT_PUBLISHER_ASSIGNED_EMAIL = """A notification has been sent to the Owner alerting them that an editor has been assigned to their application."""
 
     NOT_SENT_ACCEPTED_APPLICATION_EMAIL = """Did not send notification to '{user}' to tell them that their journal was accepted.  Email may be disabled, or there is a problem with the email address."""
     NOT_SENT_REJECTED_APPLICATION_EMAILS = """Did not send email to user '{user}' or application suggester to tell them that their journal was rejected  Email may be disabled, or there is a problem with the email address."""
