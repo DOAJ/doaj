@@ -108,3 +108,7 @@ def day_ranges(fro, to):
             current = next
 
     return ranges
+
+
+def human_date(stamp, string_format="%d %B %Y"):
+    return reformat(stamp, out_format=string_format)

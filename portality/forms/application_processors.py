@@ -308,6 +308,9 @@ class AdminApplication(ApplicationProcessor):
         # if we are allowed to finalise, kick this up to the superclass
         super(AdminApplication, self).finalise()
 
+        # instance of the events service to pick up any events we need to send
+        eventsSvc = DOAJ.eventsService()
+
         # TODO: should these be a BLL feature?
         # If we have changed the editors assigned to this application, let them know.
         # ~~-> ApplicationForm:Crosswalk~~
@@ -352,7 +355,17 @@ class AdminApplication(ApplicationProcessor):
 
                 # for all acceptances, send an email to the owner of the journal
                 if email_alert:
-                    self._send_application_approved_email(self.target, j, owner, self.source.current_journal is not None)
+                    if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                        msg = Messages.SENT_ACCEPTED_APPLICATION_EMAIL.format(user=owner.id)
+                        if self.target.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
+                            msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(user=owner.id)
+                        self.add_alert(msg)
+                    else:
+                        msg = Messages.NOT_SENT_ACCEPTED_APPLICATION_EMAIL.format(user=owner.id)
+                        if self.target.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
+                            msg = Messages.NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(user=owner.id)
+                        self.add_alert(msg)
+                    # self._send_application_approved_email(self.target, j, owner, self.source.current_journal is not None)
             except AttributeError:
                 raise Exception("Account {owner} does not exist".format(owner=j.owner))
             except app_email.EmailException:
@@ -389,8 +402,6 @@ class AdminApplication(ApplicationProcessor):
             self.target.save()
 
         if email_alert:
-            eventsSvc = DOAJ.eventsService()
-
             # trigger a status change event
             if self.source.application_status != self.target.application_status:
                 eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, account.id, {
@@ -456,46 +467,6 @@ class AdminApplication(ApplicationProcessor):
             if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
                 self.add_alert('A notification has been sent to the Managing Editors.')
                 # this template requires who made the change, say it was an Admin
-
-    def _send_application_approved_email(self, application, journal, owner, update_request=False):
-        """Email the publisher when an application is accepted (it's here because it's too troublesome to factor out)"""
-        # ~~-> Email:Library~~
-        url_root = request.url_root
-        if url_root.endswith("/"):
-            url_root = url_root[:-1]
-
-        to = [owner.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-        if update_request:
-            subject = app.config.get("SERVICE_NAME", "") + " - update request accepted"
-        else:
-            subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
-
-        try:
-            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                msg = Messages.SENT_ACCEPTED_APPLICATION_EMAIL.format(email=owner.email)
-                template = "email/publisher_application_accepted.jinja2"
-                if update_request:
-                    msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=owner.email)
-                    template = "email/publisher_update_request_accepted.jinja2"
-
-                app_email.send_mail(to=to,
-                                    fro=fro,
-                                    subject=subject,
-                                    template_name=template,
-                                    owner=owner,
-                                    journal=journal,
-                                    application=application)
-                self.add_alert(msg)
-            else:
-                msg = Messages.NOT_SENT_ACCEPTED_APPLICATION_EMAIL.format(email=owner.email)
-                if update_request:
-                    msg = Messages.NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=owner.email)
-                self.add_alert(msg)
-        except Exception as e:
-            magic = str(uuid.uuid1())
-            self.add_alert('Sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-            app.logger.exception('Error sending application approved email failed - ' + magic)
 
     def validate(self):
         _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']
