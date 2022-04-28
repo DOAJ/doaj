@@ -18,14 +18,14 @@ class TestApplicationPublisherRevisionNotify(DoajTestCase):
     def test_consumes(self):
         source = ApplicationFixtureFactory.make_application_source()
 
-        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": "abcd", "old_status": "in progress", "new_status": "revisions_required"})
+        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": {}, "old_status": "in progress", "new_status": "revisions_required"})
         assert ApplicationPublisherRevisionNotify.consumes(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS,
-                             context={"application": "abcd", "old_status": "revisions_required", "new_status": "revisions_required"})
+                             context={"application": {}, "old_status": "revisions_required", "new_status": "revisions_required"})
         assert not ApplicationPublisherRevisionNotify.consumes(event)
 
-        event = models.Event("test:event", context={"application" : "abcd"})
+        event = models.Event("test:event", context={"application" : {}})
         assert not ApplicationPublisherRevisionNotify.consumes(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS)
@@ -34,16 +34,17 @@ class TestApplicationPublisherRevisionNotify(DoajTestCase):
     def test_consume_success(self):
         self._make_and_push_test_context("/")
 
-        source = ApplicationFixtureFactory.make_application_source()
-        app = models.Application(**source)
-        app.save()
-
         acc = models.Account()
         acc.set_id("publisher")
         acc.set_email("test@example.com")
         acc.save()
 
-        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": "abcdefghijk", "old_status": "in progress", "new_status": "revisions_required"})
+        source = ApplicationFixtureFactory.make_application_source()
+        event = models.Event(constants.EVENT_APPLICATION_STATUS,
+                             context={"application": source, "old_status": "in progress",
+                                      "new_status": "revisions_required"})
+
+        # event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": "abcdefghijk", "old_status": "in progress", "new_status": "revisions_required"})
         ApplicationPublisherRevisionNotify.consume(event)
 
         time.sleep(2)
@@ -59,7 +60,7 @@ class TestApplicationPublisherRevisionNotify(DoajTestCase):
         assert not n.is_seen()
 
     def test_consume_fail(self):
-        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": "abcd"})
+        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": {"dummy" : "data"}})
         with self.assertRaises(exceptions.NoSuchObjectException):
             ApplicationPublisherRevisionNotify.consume(event)
 
