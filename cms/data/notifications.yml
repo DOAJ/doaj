@@ -52,3 +52,12 @@ application:publisher:accepted:notify:
     We are delighted to welcome this journal into DOAJ. Please contact us at helpdesk@doaj.org if you have any questions.'
   email_subject:
     "journal accepted"
+
+application:publisher:rejected:notify:
+  message:
+    'The update which you submitted for \"{title}\" on {date_applied} has been rejected. This is either because:
+
+     - we were unable to verify the information which you provided with the information stated on your website. Please double check your website and submit a new update when you are ready; or
+     - we already have one active update in the system. Additional updates are rejected without review.'
+  email_subject:
+    "your update request or application was rejected"

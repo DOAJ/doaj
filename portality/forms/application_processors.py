@@ -321,6 +321,9 @@ class AdminApplication(ApplicationProcessor):
         # ~~->Application:Service~~
         applicationService = DOAJ.applicationService()
 
+        # ~~->Event:Service~~
+        eventsSvc = DOAJ.eventsService()
+
         # if the application is already rejected, and we are moving it back into a non-rejected status
         if self.source.application_status == constants.APPLICATION_STATUS_REJECTED and self.target.application_status != constants.APPLICATION_STATUS_REJECTED:
             try:
@@ -365,12 +368,17 @@ class AdminApplication(ApplicationProcessor):
             applicationService.reject_application(self.target, current_user._get_current_object())
 
             # if this was an update request, send an email to the owner
-            if is_update_request and email_alert:
-                # ~~-> Email:Notifications~~
+            if is_update_request and email_alert:    # ~~-> Email:Notifications~~
                 sent = False
                 send_report = []
                 try:
-                    send_report = emails.send_publisher_reject_email(self.target, update_request=is_update_request)
+                    if self.source.application_status != self.target.application_status:
+                        eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, account.id, {
+                            "application": self.target.data,
+                            "old_status": self.source.application_status,
+                            "new_status": self.target.application_status
+                    }))
+                    # send_report = emails.send_publisher_reject_email(self.target, update_request=is_update_request)
                     sent = True
                 except app_email.EmailException as e:
                     pass

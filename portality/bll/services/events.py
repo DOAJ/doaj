@@ -11,10 +11,12 @@ from portality.events.consumers.application_editor_inprogress_notify import Appl
 from portality.events.consumers.account_passwordreset_email import AccountPasswordResetEmail
 from portality.events.consumers.application_editor_group_assigned_notify import ApplicationEditorGroupAssignedNotify
 from portality.events.consumers.application_publisher_accepted_notify import ApplicationPublisherAcceptedNotify
+from portality.events.consumers.application_publisher_rejected_notify import ApplicationPublisherRejectedNotify
 
 
 class EventsService(object):
     EVENT_CONSUMERS = [
+        ApplicationPublisherRejectedNotify,
         AccountCreatedEmail,
         AccountPasswordResetEmail,
         ApplicationAssedInprogressNotify,

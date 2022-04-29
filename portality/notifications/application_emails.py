@@ -284,7 +284,7 @@ def send_publisher_update_request_revisions_required(application):
                         owner=owner)
 
 
-def send_publisher_reject_email(application, note=None, update_request=False):
+def send_publisher_reject_email (application, note=None, update_request=False):
     """Tell the publisher their application was rejected"""
     send_instructions = []
 
