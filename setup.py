@@ -38,7 +38,7 @@ setup(
         "openpyxl~=3.0.3",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
         "parameterized==0.7.0",
         "psutil==5.6.3",
-        "pycountry==19.8.18",
+        "pycountry==22.3.5",
         "python-dateutil==2.8.0",  # something else already installs this, so just note we need it without an explicit version freeze
         "pytz==2019.3",
         "redis==3.3.11",
