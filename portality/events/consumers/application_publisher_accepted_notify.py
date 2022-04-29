@@ -1,6 +1,7 @@
 from flask import url_for
 from datetime import datetime
 
+from portality.core import app
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
@@ -39,9 +40,8 @@ class ApplicationPublisherAcceptedNotify(EventConsumer):
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
         datetime_object = datetime.strptime(application.date_applied, '%Y-%m-%dT%H:%M:%SZ')
         date_applied = datetime_object.strftime("%d/%b/%Y")
-        string_id_query = edges.make_url_query(query_string=application.id)
-        url_for_journal = url_for("publisher.journals", source=string_id_query)
-        url_faq=url_for("doaj.faq")
+        url_for_journal = app.config.get("BASE_URL") + url_for("publisher.journals")
+        url_faq=url_root=app.config.get("BASE_URL") + url_for("doaj.faq")
         notification.message = svc.message(cls.ID).format(
             title=application.bibjson().title,
             date_applied=date_applied,
