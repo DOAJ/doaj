@@ -42,7 +42,7 @@ application:editor_group:assigned:notify:
 
 application:publisher:accepted:notify:
   message:
-    'The application submitted for \"{title}\" on {date_applied} has been accepted for inclusion in DOAJ.
+    'The application submitted for "{title}" on {date_applied} has been accepted for inclusion in DOAJ.
     You may access the journal record from your Publisher dashboard: {url_for_journal} using your DOAJ username and password.
     If there are changes or updates to the information about your journal at any time after it has been accepted, please submit an Update Request from your Publisher dashboard promptly. Please be aware that failure to do this may result in removal of your journal from DOAJ.
     How to submit an Update Request: {url_faq}#how-do-i-update-the-information-about-my-journal
@@ -51,13 +51,14 @@ application:publisher:accepted:notify:
     {url_faq}#how-do-i-upload-article-metadata
     We are delighted to welcome this journal into DOAJ. Please contact us at helpdesk@doaj.org if you have any questions.'
   email_subject:
-    "journal accepted"
+    "Your submission accepted"
 
 application:publisher:rejected:notify:
   message:
-    'The update which you submitted for \"{title}\" on {date_applied} has been rejected. This is either because:
+    'The update which you submitted for "{title}" on {date_applied} has been rejected. This is either because:
 
      - we were unable to verify the information which you provided with the information stated on your website. Please double check your website and submit a new update when you are ready; or
+          
      - we already have one active update in the system. Additional updates are rejected without review.'
   email_subject:
-    "your update request or application was rejected"
+    'Your submission  was rejected'
