@@ -441,7 +441,6 @@ def application_quick_reject(application_id):
                 "old_status": self.source.application_status,
                 "new_status": self.target.application_status
             }))
-        # send_report = emails.send_publisher_reject_email(application, note=reason, update_request=update_request)
         sent = True
     except app_email.EmailException as e:
         pass

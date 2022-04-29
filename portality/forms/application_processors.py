@@ -378,7 +378,6 @@ class AdminApplication(ApplicationProcessor):
                             "old_status": self.source.application_status,
                             "new_status": self.target.application_status
                     }))
-                    # send_report = emails.send_publisher_reject_email(self.target, update_request=is_update_request)
                     sent = True
                 except app_email.EmailException as e:
                     pass
