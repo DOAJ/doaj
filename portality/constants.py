@@ -51,6 +51,7 @@ EVENT_APPLICATION_STATUS = "application:status"
 EVENT_APPLICATION_ASSED_ASSIGNED = "application:assed:assigned"
 EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED = "application:editor_group:assigned"
 EVENT_JOURNAL_ASSED_ASSIGNED = "journal:assed:assigned"
+EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED = "journal:editor_group:assigned"
 
 NOTIFICATION_CLASSIFICATION_STATUS_CHANGE = "status_change"
 NOTIFICATION_CLASSIFICATION_ASSIGN = "assign"

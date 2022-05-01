@@ -80,3 +80,8 @@ journal:assed:assigned:notify:
     "The journal \"{journal_name}\" has been assigned to you by the Editor of your Group \"{group_name}\". Please start work on this within 10 days."
   email_subject:
     "new journal assigned to you"
+journal:editor_group:assigned:notify:
+  message:
+    "The journal \"{journal_name}\" has been assigned to your Group by a Managing Editor. Please assign this to an Associate Editor within 5 working days."
+  email_subject:
+    "new journal assigned to your group"

@@ -844,8 +844,8 @@ class ManEdJournalReview(ApplicationProcessor):
         # ~~-> Email:Notifications~~
         if is_editor_group_changed:
             eventsSvc = DOAJ.eventsService()
-            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED, current_user.id, {
-                "application": self.target.data
+            eventsSvc.trigger(models.Event(constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED, current_user.id, {
+                "journal": self.target.data
             }))
             # try:
             #     emails.send_editor_group_email(self.target)

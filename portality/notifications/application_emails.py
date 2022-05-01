@@ -9,41 +9,6 @@ from portality.ui.messages import Messages
 from portality.lib import dates
 
 
-def send_assoc_editor_email(obj):
-    """ Inform an associate editor that a journal or application has been assigned to them """
-    if type(obj) is models.Suggestion:
-        template = "email/assoc_editor_application_assigned.jinja2"
-        subject = app.config.get("SERVICE_NAME", "") + " - new application assigned to you"
-    elif type(obj) is models.Journal:
-        template = "email/assoc_editor_journal_assigned.jinja2"
-        subject = app.config.get("SERVICE_NAME", "") + " - new journal assigned to you"
-    else:
-        app.logger.error("Attempted to send email to editors for something that's not an Application or Journal")
-        return
-
-    if obj.editor is None:
-        return
-
-    assoc_editor = models.Account.pull(obj.editor)
-    eg = models.EditorGroup.pull_by_key("name", obj.editor_group)
-
-    if assoc_editor is None or eg is None:
-        return
-
-    url_root = app.config.get("BASE_URL")
-    to = [assoc_editor.email]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-
-    app_email.send_mail(to=to,
-                        fro=fro,
-                        subject=subject,
-                        template_name=template,
-                        associate_editor=assoc_editor.id,
-                        journal_name=obj.bibjson().title,
-                        group_name=eg.name,
-                        url_root=url_root)
-
-
 def send_editor_completed_email(application):
     """ inform the editor in charge of an application that it has been completed by an associate editor """
     journal_name = application.bibjson().title

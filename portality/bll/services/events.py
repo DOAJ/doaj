@@ -15,6 +15,7 @@ from portality.events.consumers.update_request_owner_accepted_notify import Upda
 from portality.events.consumers.application_publisher_assigned_notify import ApplicationPublisherAssignedNotify
 from portality.events.consumers.update_request_publisher_assigned_notify import UpdateRequestPublisherAssignedNotify
 from portality.events.consumers.journal_assed_assigned_notify import JournalAssedAssignedNotify
+from portality.events.consumers.journal_editor_group_assigned_notify import JournalEditorGroupAssignedNotify
 
 
 class EventsService(object):
@@ -31,6 +32,7 @@ class EventsService(object):
         ApplicationPublisherAssignedNotify,
         BGJobFinishedNotify,
         JournalAssedAssignedNotify,
+        JournalEditorGroupAssignedNotify,
         UpdateRequestOwnerAcceptedNotify,
         UpdateRequestPublisherAssignedNotify
     ]
