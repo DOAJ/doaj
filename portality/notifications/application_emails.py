@@ -9,37 +9,6 @@ from portality.ui.messages import Messages
 from portality.lib import dates
 
 
-def send_editor_group_email(obj):
-    """ Send an email to the editor of a group """
-    if type(obj) is models.Suggestion:
-        # this section has now been superseded by the notification being sent
-        template = "email/editor_application_assigned_group.jinja2"
-        subject = app.config.get("SERVICE_NAME", "") + " - new application assigned to your group"
-    elif type(obj) is models.Journal:
-        template = "email/editor_journal_assigned_group.jinja2"
-        subject = app.config.get("SERVICE_NAME", "") + " - new journal assigned to your group"
-    else:
-        app.logger.error("Attempted to send editor group email for something that's not an Application or Journal")
-        return
-
-    eg = models.EditorGroup.pull_by_key("name", obj.editor_group)
-    if eg is None:
-        return
-    editor = eg.get_editor_account()
-
-    url_root = app.config.get("BASE_URL")
-    to = [editor.email]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-
-    app_email.send_mail(to=to,
-                        fro=fro,
-                        subject=subject,
-                        template_name=template,
-                        editor=editor.id,
-                        journal_name=obj.bibjson().title,
-                        url_root=url_root)
-
-
 def send_assoc_editor_email(obj):
     """ Inform an associate editor that a journal or application has been assigned to them """
     if type(obj) is models.Suggestion:

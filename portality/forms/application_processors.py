@@ -853,11 +853,17 @@ class ManEdJournalReview(ApplicationProcessor):
             #     self.add_alert("Problem sending email to editor - probably address is invalid")
             #     app.logger.exception('Error sending assignment email to editor.')
         if is_associate_editor_changed:
-            try:
-                emails.send_assoc_editor_email(self.target)
-            except app_email.EmailException:
-                self.add_alert("Problem sending email to associate editor - probably address is invalid")
-                app.logger.exception('Error sending assignment email to associate.')
+            events_svc = DOAJ.eventsService()
+            events_svc.trigger(models.Event(constants.EVENT_JOURNAL_ASSED_ASSIGNED, current_user.id, context={
+                "journal": self.target.data,
+                "old_editor": self.source.editor,
+                "new_editor": self.target.editor
+            }))
+            # try:
+            #     emails.send_assoc_editor_email(self.target)
+            # except app_email.EmailException:
+            #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
+            #     app.logger.exception('Error sending assignment email to associate.')
 
     def validate(self):
         # make use of the ability to disable validation, otherwise, let it run
@@ -912,12 +918,18 @@ class EditorJournalReview(ApplicationProcessor):
 
         # if we need to email the associate, handle that here.
         if email_associate:
+            events_svc = DOAJ.eventsService()
+            events_svc.trigger(models.Event(constants.EVENT_JOURNAL_ASSED_ASSIGNED, current_user.id, context={
+                "journal": self.target.data,
+                "old_editor": self.source.editor,
+                "new_editor": self.target.editor
+            }))
             # ~~-> Email:Notifications~~
-            try:
-                emails.send_assoc_editor_email(self.target)
-            except app_email.EmailException:
-                self.add_alert("Problem sending email to associate editor - probably address is invalid")
-                app.logger.exception('Error sending assignment email to associate.')
+            # try:
+            #     emails.send_assoc_editor_email(self.target)
+            # except app_email.EmailException:
+            #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
+            #     app.logger.exception('Error sending assignment email to associate.')
 
 
 class AssEdJournalReview(ApplicationProcessor):

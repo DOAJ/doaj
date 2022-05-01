@@ -14,6 +14,7 @@ from portality.events.consumers.application_owner_accepted_notify import Applica
 from portality.events.consumers.update_request_owner_accepted_notify import UpdateRequestOwnerAcceptedNotify
 from portality.events.consumers.application_publisher_assigned_notify import ApplicationPublisherAssignedNotify
 from portality.events.consumers.update_request_publisher_assigned_notify import UpdateRequestPublisherAssignedNotify
+from portality.events.consumers.journal_assed_assigned_notify import JournalAssedAssignedNotify
 
 
 class EventsService(object):
@@ -29,6 +30,7 @@ class EventsService(object):
         ApplicationOwnerAcceptedNotify,
         ApplicationPublisherAssignedNotify,
         BGJobFinishedNotify,
+        JournalAssedAssignedNotify,
         UpdateRequestOwnerAcceptedNotify,
         UpdateRequestPublisherAssignedNotify
     ]
@@ -45,4 +47,4 @@ class EventsService(object):
                 if consumer.consumes(event):
                     consumer.consume(event)
             except Exception as e:
-                app.logger.error(str(e))
+                app.logger.error("Error in consumer {x}: {e}".format(e=str(e), x=consumer.ID))
