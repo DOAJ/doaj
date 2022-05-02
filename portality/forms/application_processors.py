@@ -307,6 +307,9 @@ class AdminApplication(ApplicationProcessor):
         # if we are allowed to finalise, kick this up to the superclass
         super(AdminApplication, self).finalise()
 
+        # instance of the events service to pick up any events we need to send
+        eventsSvc = DOAJ.eventsService()
+
         # TODO: should these be a BLL feature?
         # If we have changed the editors assigned to this application, let them know.
         # ~~-> ApplicationForm:Crosswalk~~
@@ -351,7 +354,17 @@ class AdminApplication(ApplicationProcessor):
 
                 # for all acceptances, send an email to the owner of the journal
                 if email_alert:
-                    self._send_application_approved_email(self.target, j, owner, self.source.current_journal is not None)
+                    if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                        msg = Messages.SENT_ACCEPTED_APPLICATION_EMAIL.format(user=owner.id)
+                        if self.target.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
+                            msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(user=owner.id)
+                        self.add_alert(msg)
+                    else:
+                        msg = Messages.NOT_SENT_ACCEPTED_APPLICATION_EMAIL.format(user=owner.id)
+                        if self.target.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
+                            msg = Messages.NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(user=owner.id)
+                        self.add_alert(msg)
+                    # self._send_application_approved_email(self.target, j, owner, self.source.current_journal is not None)
             except AttributeError:
                 raise Exception("Account {owner} does not exist".format(owner=j.owner))
             except app_email.EmailException:
@@ -388,35 +401,38 @@ class AdminApplication(ApplicationProcessor):
             self.target.save()
 
         if email_alert:
-            eventsSvc = DOAJ.eventsService()
-
             # trigger a status change event
             if self.source.application_status != self.target.application_status:
                 eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, account.id, {
-                    "application" : self.target.id,
-                    "old_status" : self.source.application_status,
-                    "new_status" : self.target.application_status
+                    "application": self.target.data,
+                    "old_status": self.source.application_status,
+                    "new_status": self.target.application_status
                 }))
 
             # ~~-> Email:Notifications~~
             # if revisions were requested, email the publisher
             if self.source.application_status != constants.APPLICATION_STATUS_REVISIONS_REQUIRED and self.target.application_status == constants.APPLICATION_STATUS_REVISIONS_REQUIRED:
-                try:
-                    emails.send_publisher_update_request_revisions_required(self.target)
-                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
-                except app_email.EmailException as e:
-                    self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
+                self.add_alert(
+                    Messages.SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
 
             # if we need to email the editor and/or the associate, handle those here
             if is_editor_group_changed:
-                try:
-                    emails.send_editor_group_email(self.target)
-                except app_email.EmailException:
-                    self.add_alert("Problem sending email to editor - probably address is invalid")
-                    app.logger.exception("Email to associate failed.")
+                eventsSvc.trigger(models.Event(
+                    constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED,
+                    account.id, {
+                        "application": self.target.data
+                    }
+                ))
+                # try:
+                #     emails.send_editor_group_email(self.target)
+                # except app_email.EmailException:
+                #     self.add_alert("Problem sending email to editor - probably address is invalid")
+                #     app.logger.exception("Email to associate failed.")
             if is_associate_editor_changed:
                 eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, account.id, {
-                    "application" : self.target.id
+                    "application" : self.target.data,
+                    "old_editor": self.source.editor,
+                    "new_editor": self.target.editor
                 }))
                 # try:
                 #     emails.send_assoc_editor_email(self.target)
@@ -427,28 +443,12 @@ class AdminApplication(ApplicationProcessor):
             # If this is the first time this application has been assigned to an editor, notify the publisher.
             old_ed = self.source.editor
             if (old_ed is None or old_ed == '') and self.target.editor is not None:
-                is_update_request = self.target.current_journal is not None
-                if is_update_request:
-                    alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
-                else:
-                    alerts = emails.send_publisher_application_editor_assigned_email(self.target)
-                for alert in alerts:
-                    self.add_alert(alert)
+                self.add_alert(Messages.SENT_PUBLISHER_ASSIGNED_EMAIL)
 
             # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
             if (self.source.application_status == constants.APPLICATION_STATUS_READY or self.source.application_status == constants.APPLICATION_STATUS_COMPLETED) and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
                 # First, the editor
-                try:
-                    emails.send_editor_inprogress_email(self.target)
-                    self.add_alert('An email has been sent to notify the editor of the change in status.')
-                except AttributeError:
-                    magic = str(uuid.uuid1())
-                    self.add_alert('Couldn\'t find a recipient for this email - check editor groups are correct. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                    app.logger.exception('No editor recipient for failed review email - ' + magic)
-                except app_email.EmailException:
-                    magic = str(uuid.uuid1())
-                    self.add_alert('Sending the failed review email to editor didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                    app.logger.exception('Error sending review failed email to editor - ' + magic)
+                self.add_alert('A notification has been sent to alert the editor of the change in status.')
 
                 # Then the associate
                 if self.target.editor:
@@ -459,46 +459,6 @@ class AdminApplication(ApplicationProcessor):
             if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
                 self.add_alert('A notification has been sent to the Managing Editors.')
                 # this template requires who made the change, say it was an Admin
-
-    def _send_application_approved_email(self, application, journal, owner, update_request=False):
-        """Email the publisher when an application is accepted (it's here because it's too troublesome to factor out)"""
-        # ~~-> Email:Library~~
-        url_root = request.url_root
-        if url_root.endswith("/"):
-            url_root = url_root[:-1]
-
-        to = [owner.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-        if update_request:
-            subject = app.config.get("SERVICE_NAME", "") + " - update request accepted"
-        else:
-            subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
-
-        try:
-            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                msg = Messages.SENT_ACCEPTED_APPLICATION_EMAIL.format(email=owner.email)
-                template = "email/publisher_application_accepted.jinja2"
-                if update_request:
-                    msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=owner.email)
-                    template = "email/publisher_update_request_accepted.jinja2"
-
-                app_email.send_mail(to=to,
-                                    fro=fro,
-                                    subject=subject,
-                                    template_name=template,
-                                    owner=owner,
-                                    journal=journal,
-                                    application=application)
-                self.add_alert(msg)
-            else:
-                msg = Messages.NOT_SENT_ACCEPTED_APPLICATION_EMAIL.format(email=owner.email)
-                if update_request:
-                    msg = Messages.NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=owner.email)
-                self.add_alert(msg)
-        except Exception as e:
-            magic = str(uuid.uuid1())
-            self.add_alert('Sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-            app.logger.exception('Error sending application approved email failed - ' + magic)
 
     def validate(self):
         _statuses_not_requiring_validation = ['rejected', 'pending', 'in progress', 'on hold']
@@ -598,7 +558,9 @@ class EditorApplication(ApplicationProcessor):
         # ~~-> Email:Notifications~~
         if new_associate_assigned:
             eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={
-                "application": self.target.id
+                "application": self.target.data,
+                "old_editor": self.source.editor,
+                "new_editor": self.target.editor
             }))
             self.add_alert("New editor assigned - notification has been sent")
             # try:
@@ -611,13 +573,7 @@ class EditorApplication(ApplicationProcessor):
         # If this is the first time this application has been assigned to an editor, notify the publisher.
         old_ed = self.source.editor
         if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            is_update_request = self.target.current_journal is not None
-            if is_update_request:
-                alerts = emails.send_publisher_update_request_editor_assigned_email(self.target)
-            else:
-                alerts = emails.send_publisher_application_editor_assigned_email(self.target)
-            for alert in alerts:
-                self.add_alert(alert)
+            self.add_alert(Messages.SENT_PUBLISHER_ASSIGNED_EMAIL)
 
         # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
         if self.source.application_status == constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
@@ -680,7 +636,15 @@ class AssociateApplication(ApplicationProcessor):
 
         # Check the status change is valid
         self._validate_status_change(self.source.application_status, self.target.application_status)
-        # Choices.validate_status_change('associate', self.source.application_status, self.target.application_status)
+
+        # trigger a status change event
+        eventsSvc = DOAJ.eventsService()
+        if self.source.application_status != self.target.application_status:
+            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, current_user.id, {
+                "application": self.target.data,
+                "old_status": self.source.application_status,
+                "new_status": self.target.application_status
+            }))
 
         # Save the target
         self.target.set_last_manual_update()
@@ -704,21 +668,13 @@ class AssociateApplication(ApplicationProcessor):
             else:
                 self.add_alert(Messages.IN_PROGRESS_NOT_SENT_EMAIL_DISABLED)
 
-        # inform editor if this was newly set to 'completed'
+        # Editor is informed via status change event if this was newly set to 'completed'
+        # fixme: duplicated logic in notification event and here for provenance
         if self.source.application_status != constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_COMPLETED:
             # record the event in the provenance tracker
             # ~~-> Procenance:Model~~
             models.Provenance.make(current_user, "status:completed", self.target)
-
-            try:
-                # ~~-> Email:Notifications~~
-                emails.send_editor_completed_email(self.target)
-                self.add_alert('A confirmation email has been sent to notify the editor of the change in status.')
-            except app_email.EmailException:
-                magic = str(uuid.uuid1())
-                self.add_alert(
-                    'Sending the ready status to editor email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                app.logger.exception('Error sending completed status email to editor - ' + magic)
+            self.add_alert(Messages.FORMS__APPLICATION_PROCESSORS__ASSOCIATE_APPLICATION__FINALISE__STATUS_COMPLETED_NOTIFIED)
 
 
 class PublisherUpdateRequest(ApplicationProcessor):
@@ -883,17 +839,27 @@ class ManEdJournalReview(ApplicationProcessor):
         # if we need to email the editor and/or the associate, handle those here
         # ~~-> Email:Notifications~~
         if is_editor_group_changed:
-            try:
-                emails.send_editor_group_email(self.target)
-            except app_email.EmailException:
-                self.add_alert("Problem sending email to editor - probably address is invalid")
-                app.logger.exception('Error sending assignment email to editor.')
+            eventsSvc = DOAJ.eventsService()
+            eventsSvc.trigger(models.Event(constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED, current_user.id, {
+                "journal": self.target.data
+            }))
+            # try:
+            #     emails.send_editor_group_email(self.target)
+            # except app_email.EmailException:
+            #     self.add_alert("Problem sending email to editor - probably address is invalid")
+            #     app.logger.exception('Error sending assignment email to editor.')
         if is_associate_editor_changed:
-            try:
-                emails.send_assoc_editor_email(self.target)
-            except app_email.EmailException:
-                self.add_alert("Problem sending email to associate editor - probably address is invalid")
-                app.logger.exception('Error sending assignment email to associate.')
+            events_svc = DOAJ.eventsService()
+            events_svc.trigger(models.Event(constants.EVENT_JOURNAL_ASSED_ASSIGNED, current_user.id, context={
+                "journal": self.target.data,
+                "old_editor": self.source.editor,
+                "new_editor": self.target.editor
+            }))
+            # try:
+            #     emails.send_assoc_editor_email(self.target)
+            # except app_email.EmailException:
+            #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
+            #     app.logger.exception('Error sending assignment email to associate.')
 
     def validate(self):
         # make use of the ability to disable validation, otherwise, let it run
@@ -948,12 +914,18 @@ class EditorJournalReview(ApplicationProcessor):
 
         # if we need to email the associate, handle that here.
         if email_associate:
+            events_svc = DOAJ.eventsService()
+            events_svc.trigger(models.Event(constants.EVENT_JOURNAL_ASSED_ASSIGNED, current_user.id, context={
+                "journal": self.target.data,
+                "old_editor": self.source.editor,
+                "new_editor": self.target.editor
+            }))
             # ~~-> Email:Notifications~~
-            try:
-                emails.send_assoc_editor_email(self.target)
-            except app_email.EmailException:
-                self.add_alert("Problem sending email to associate editor - probably address is invalid")
-                app.logger.exception('Error sending assignment email to associate.')
+            # try:
+            #     emails.send_assoc_editor_email(self.target)
+            # except app_email.EmailException:
+            #     self.add_alert("Problem sending email to associate editor - probably address is invalid")
+            #     app.logger.exception('Error sending assignment email to associate.')
 
 
 class AssEdJournalReview(ApplicationProcessor):

@@ -1,3 +1,5 @@
+# FIXME: these tests are no longer as useful as they once were because we always send the notification template
+
 import logging
 import re
 from io import StringIO
@@ -205,7 +207,16 @@ class TestApplicationReviewEmails(DoajTestCase):
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from ready back to in progress.
         #   * to the associate editor, informing them the same
-        editor_template = re.escape('editor_application_inprogress.jinja2')
+        assert len(NOTIFICATIONS_INTERCEPT) == 2  # this will change when more of this file is run through the notifications system
+
+        ### editor in progress notification and email
+        notification = NOTIFICATIONS_INTERCEPT.pop()
+        assert notification.who == "eddie"
+        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.action is not None
+        assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
+
+        editor_template = re.escape('notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "Application reverted to 'In Progress' by Managing Editor"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -264,7 +275,16 @@ class TestApplicationReviewEmails(DoajTestCase):
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from completed back to in progress.
         #   * to the associate editor, informing them the same
-        editor_template = re.escape('editor_application_inprogress.jinja2')
+        assert len(NOTIFICATIONS_INTERCEPT) == 2  # this will change when more of this file is run through the notifications system
+
+        ### editor in progress notification and email
+        notification = NOTIFICATIONS_INTERCEPT.pop()
+        assert notification.who == "eddie"
+        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.action is not None
+        assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
+
+        editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "Application reverted to 'In Progress' by Managing Editor"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -615,11 +635,6 @@ class TestApplicationReviewEmails(DoajTestCase):
         # Construct an application form
         fc = ApplicationFormFactory.context("associate_editor")
         processor = fc.processor(source=pending_application)
-        # fc = formcontext.ApplicationFormFactory.get_form_context(
-        #     role="associate_editor",
-        #     source=pending_application
-        # )
-        # assert isinstance(fc, formcontext.AssEdApplicationReview)
 
         # Make changes to the application status via the form
         processor.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
@@ -651,7 +666,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # We expect one email sent:
         #   * to the editor, informing them an application has been completed by an Associate Editor
-        editor_template = re.escape('editor_application_completed.jinja2')
+        editor_template = re.escape('notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "application marked 'completed'"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -684,6 +699,11 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         self.enable_publisher_email = self.app_test.config["ENABLE_PUBLISHER_EMAIL"]
         self.app_test.config["ENABLE_PUBLISHER_EMAIL"] = True
+
+        self.notifications_service = DOAJ.notificationsService
+        NOTIFICATIONS_INTERCEPT.clear()
+        DOAJ.notificationsService = lambda: InterceptNotifications(NOTIFICATIONS_INTERCEPT)
+        self.svc = DOAJ.notificationsService()
 
     def tearDown(self):
         super(TestUpdateRequestReviewEmails, self).tearDown()
@@ -741,7 +761,17 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from ready back to in progress.
         #   * to the associate editor, informing them the same
-        editor_template = re.escape('editor_application_inprogress.jinja2')
+        assert len(
+            NOTIFICATIONS_INTERCEPT) == 2  # this will change when more of this file is run through the notifications system
+
+        ### editor in progress notification and email
+        notification = NOTIFICATIONS_INTERCEPT.pop()
+        assert notification.who == "eddie"
+        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.action is not None
+        assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
+
+        editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "Application reverted to 'In Progress' by Managing Editor"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -749,14 +779,24 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
                                          re.DOTALL)
         assert bool(editor_email_matched)
 
-        assoc_editor_template = re.escape('assoc_editor_application_inprogress.jinja2')
-        assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = "an application assigned to you has not passed review."
-        assoc_editor_email_matched = re.search(email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
-                                               info_stream_contents,
-                                               re.DOTALL)
-        assert bool(assoc_editor_email_matched)
+        ### associate editor in progress notification and email
+        assert len(
+            NOTIFICATIONS_INTERCEPT) == 1  # this will change when more of this file is run through the notifications system
+        notification = NOTIFICATIONS_INTERCEPT.pop()
+        assert notification.who == "associate"
+        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.action is not None
+        assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
+        assoc_editor_template = re.escape('email/notification_email.jinja2')
+        assoc_editor_to = re.escape('associate@example.com')
+        assoc_editor_subject = self.svc.email_subject(
+            ApplicationAssedInprogressNotify.ID)  # "an application assigned to you has not passed review."
+        assoc_editor_email_matched = re.search(
+            email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
+            info_stream_contents,
+            re.DOTALL)
+        assert bool(assoc_editor_email_matched)
         assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
@@ -792,7 +832,17 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from completed back to in progress.
         #   * to the associate editor, informing them the same
-        editor_template = re.escape('editor_application_inprogress.jinja2')
+        assert len(
+            NOTIFICATIONS_INTERCEPT) == 2  # this will change when more of this file is run through the notifications system
+
+        ### editor in progress notification and email
+        notification = NOTIFICATIONS_INTERCEPT.pop()
+        assert notification.who == "eddie"
+        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.action is not None
+        assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
+
+        editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "Application reverted to 'In Progress' by Managing Editor"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
@@ -800,15 +850,24 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
                                          re.DOTALL)
         assert bool(editor_email_matched)
 
-        assoc_editor_template = re.escape('assoc_editor_application_inprogress.jinja2')
+        ### associate editor in progress notification and email
+        assert len(
+            NOTIFICATIONS_INTERCEPT) == 1  # this will change when more of this file is run through the notifications system
+        notification = NOTIFICATIONS_INTERCEPT.pop()
+        assert notification.who == "associate"
+        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.action is not None
+        assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
+
+        assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = "an application assigned to you has not passed review."
+        assoc_editor_subject = self.svc.email_subject(
+            ApplicationAssedInprogressNotify.ID)  # "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(
             email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
             info_stream_contents,
             re.DOTALL)
         assert bool(assoc_editor_email_matched)
-
         assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
@@ -1166,7 +1225,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email sent:
         #   * to the editor, informing them an application has been completed by an Associate Editor
-        editor_template = re.escape('editor_application_completed.jinja2')
+        editor_template = re.escape('notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
         editor_subject = "application marked 'completed'"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),

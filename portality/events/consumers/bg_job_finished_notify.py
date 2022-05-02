@@ -19,13 +19,12 @@ class BGJobFinishedNotify(EventConsumer):
 
     @classmethod
     def consume(cls, event):
-        context = event.context
-        job_id = context.get("job")
-        if job_id is None:
-            return
-        job = models.BackgroundJob.pull(job_id)
-        if job is None:
-            raise exceptions.NoSuchObjectException("No background job with id {x} found".format(x=job_id))
+        source = event.context.get("job")
+        try:
+            job = models.BackgroundJob(**source)
+        except Exception as e:
+            raise exceptions.NoSuchObjectException("Unable to construct a BackgroundJob object from the data supplied {x}".format(x=e))
+
         if job.user is None:
             return
 

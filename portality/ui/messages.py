@@ -17,10 +17,10 @@ class Messages(object):
     ARTICLE_METADATA_UPDATE_CONFLICT = ("""Article could not be updated, as it matches another existing article.
         Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
 
-    SENT_ACCEPTED_APPLICATION_EMAIL = """Sent email to '{email}' to tell them that their journal was accepted."""
+    SENT_ACCEPTED_APPLICATION_EMAIL = """Sent notification to '{user}' to tell them that their journal was accepted."""
     SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER = """Sent email to user '{user}' ({name}, {email}) to tell them that their journal application was rejected."""
     SENT_REJECTED_APPLICATION_EMAIL_TO_SUGGESTER = """Sent email to suggester {name} ({email}) to tell them that their journal application was rejected."""
-    SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Sent email to '{email}' to tell them that their journal update was accepted."""
+    SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Sent notification to '{user}' to tell them that their journal update was accepted."""
     SENT_REJECTED_UPDATE_REQUEST_EMAIL = """Sent email to user '{user}' ({name}, {email}) to tell them that their journal update was rejected."""
     SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL = """Sent email to user '{user}' to tell them that their journal update requires revisions.  You will need to contact them separately with details."""
     SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL = """Sent email to journal contact '{email}' to tell them their journal was accepted."""
@@ -28,11 +28,11 @@ class Messages(object):
     SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL = """An email has been sent to the Journal Contact alerting them that you are working on their application."""
     SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL = """An email has been sent to the Journal Contact alerting them that an editor has been assigned to their application."""
     SENT_PUBLISHER_IN_PROGRESS_EMAIL = """An email has been sent to the Owner alerting them that you are working on their application."""
-    SENT_PUBLISHER_ASSIGNED_EMAIL = """An email has been sent to the Owner alerting them that an editor has been assigned to their application."""
+    SENT_PUBLISHER_ASSIGNED_EMAIL = """A notification has been sent to the Owner alerting them that an editor has been assigned to their application."""
 
-    NOT_SENT_ACCEPTED_APPLICATION_EMAIL = """Did not send email to '{email}' to tell them that their journal was accepted.  Email may be disabled, or there is a problem with the email address."""
+    NOT_SENT_ACCEPTED_APPLICATION_EMAIL = """Did not send notification to '{user}' to tell them that their journal was accepted.  Email may be disabled, or there is a problem with the email address."""
     NOT_SENT_REJECTED_APPLICATION_EMAILS = """Did not send email to user '{user}' or application suggester to tell them that their journal was rejected  Email may be disabled, or there is a problem with the email address."""
-    NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Did not send email to '{email}' to tell them that their update was accepted  Email may be disabled, or there is a problem with the email address."""
+    NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Did not send notification to '{user}' to tell them that their update was accepted  Email may be disabled, or there is a problem with the email address."""
     NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL = """Did not send email to user '{user}' to tell them that their update was rejected. Email may be disabled, or there is a problem with the email address"""
     NOT_SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL = """Did not send email to user '{user}' to tell them that their update required revisions. Email may be disabled, or there is a problem with the email address"""
     NOT_SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL = """Did not send email to '{email}' to tell them that their application/update request was accepted. Email may be disabled, or there is a problem with the email address"""
@@ -79,6 +79,7 @@ class Messages(object):
     FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR = "We were unable to send you an email confirmation - possible problem with the email address provided"
     FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR = 'Error sending application received email.'
     FORMS__APPLICATION_PROCESSORS__ADMIN_APPLICATION__FINALISE__COULD_NOT_UNREJECT = "Could not unreject application, as a new Update Request for the journal now exists"
+    FORMS__APPLICATION_PROCESSORS__ASSOCIATE_APPLICATION__FINALISE__STATUS_COMPLETED_NOTIFIED = "A confirmation email has been sent to notify the editor of the change in status."
 
     BLL__UNREJECT_APPLICATION__NO_APPLICATION = "You must supply an application to unreject_application"
     BLL__UNREJECT_APPLICATION__NO_ACCOUNT = "You must supply an account to unreject_application"

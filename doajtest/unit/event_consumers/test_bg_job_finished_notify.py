@@ -15,7 +15,7 @@ class TestBGJobFinishedNotify(DoajTestCase):
         super(TestBGJobFinishedNotify, self).tearDown()
 
     def test_consumes(self):
-        event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job" : "2345"})
+        event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job" : {}})
         assert BGJobFinishedNotify.consumes(event)
 
         event = models.Event("test:event", context={"job" : "2345"})
@@ -29,7 +29,7 @@ class TestBGJobFinishedNotify(DoajTestCase):
 
         source = BackgroundFixtureFactory.example()
         bj = models.BackgroundJob(**source)
-        bj.save(blocking=True)
+        # bj.save(blocking=True)
 
         acc = models.Account()
         acc.set_id('testuser')
@@ -37,7 +37,7 @@ class TestBGJobFinishedNotify(DoajTestCase):
         acc.add_role('admin')
         acc.save(blocking=True)
 
-        event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job" : bj.id})
+        event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job" : bj.data})
         BGJobFinishedNotify.consume(event)
 
         time.sleep(2)

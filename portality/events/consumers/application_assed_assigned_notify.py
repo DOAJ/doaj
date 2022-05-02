@@ -17,15 +17,15 @@ class ApplicationAssedAssignedNotify(EventConsumer):
 
     @classmethod
     def consume(cls, event):
-        context = event.context
-        app_id = context.get("application")
-        if app_id is None:
-            return
-        application = models.Application.pull(app_id)
-        if application is None:
-            raise exceptions.NoSuchObjectException("No application with id {x} found".format(x=app_id))
+        app_source = event.context.get("application")
+
+        try:
+            application = models.Application(**app_source)
+        except Exception as e:
+            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
+
         if not application.editor:
-            raise exceptions.NoSuchPropertyException("Application {x} does not have property `editor`".format(x=app_id))
+            raise exceptions.NoSuchPropertyException("Application {x} does not have property `editor`".format(x=application.id))
 
         svc = DOAJ.notificationsService()
 
@@ -37,6 +37,6 @@ class ApplicationAssedAssignedNotify(EventConsumer):
             journal_title=application.bibjson().title,
             group_name=application.editor_group
         )
-        notification.action = url_for("editor.application", application_id=app_id)
+        notification.action = url_for("editor.application", application_id=application.id)
 
         svc.notify(notification)

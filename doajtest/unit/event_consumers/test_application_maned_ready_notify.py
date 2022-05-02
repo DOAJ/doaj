@@ -15,11 +15,11 @@ class TestApplicationManedReadyNotify(DoajTestCase):
         super(TestApplicationManedReadyNotify, self).tearDown()
 
     def test_consumes(self):
-        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : "2345", "old_status" : "in progress", "new_status": "ready"})
+        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : {}, "old_status" : "in progress", "new_status": "ready"})
         assert ApplicationManedReadyNotify.consumes(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS,
-                             context={"application": "2345", "old_status": "ready", "new_status": "ready"})
+                             context={"application": {}, "old_status": "ready", "new_status": "ready"})
         assert not ApplicationManedReadyNotify.consumes(event)
 
         event = models.Event("test:event", context={"application" : "2345"})
@@ -33,7 +33,7 @@ class TestApplicationManedReadyNotify(DoajTestCase):
 
         source = ApplicationFixtureFactory.make_application_source()
         app = models.Application(**source)
-        app.save()
+        # app.save()
 
         acc = models.Account()
         acc.set_id("maned")
@@ -45,7 +45,7 @@ class TestApplicationManedReadyNotify(DoajTestCase):
         eg.set_maned(acc.id)
         eg.save(blocking=True)
 
-        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : app.id, "old_status": "in progress", "new_status": "ready"})
+        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : app.data, "old_status": "in progress", "new_status": "ready"})
         ApplicationManedReadyNotify.consume(event)
 
         time.sleep(2)
@@ -61,7 +61,7 @@ class TestApplicationManedReadyNotify(DoajTestCase):
         assert not n.is_seen()
 
     def test_consume_fail(self):
-        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": "abcd"})
+        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": {"key" : "value"}})
         with self.assertRaises(exceptions.NoSuchObjectException):
             ApplicationManedReadyNotify.consume(event)
 
