@@ -11,6 +11,12 @@ from portality.events.consumers.application_editor_completed_notify import Appli
 from portality.events.consumers.application_editor_inprogress_notify import ApplicationEditorInProgressNotify
 from portality.events.consumers.account_passwordreset_email import AccountPasswordResetEmail
 from portality.events.consumers.application_editor_group_assigned_notify import ApplicationEditorGroupAssignedNotify
+from portality.events.consumers.application_owner_accepted_notify import ApplicationOwnerAcceptedNotify
+from portality.events.consumers.update_request_owner_accepted_notify import UpdateRequestOwnerAcceptedNotify
+from portality.events.consumers.application_publisher_assigned_notify import ApplicationPublisherAssignedNotify
+from portality.events.consumers.update_request_publisher_assigned_notify import UpdateRequestPublisherAssignedNotify
+from portality.events.consumers.journal_assed_assigned_notify import JournalAssedAssignedNotify
+from portality.events.consumers.journal_editor_group_assigned_notify import JournalEditorGroupAssignedNotify
 
 
 class EventsService(object):
@@ -22,9 +28,15 @@ class EventsService(object):
         ApplicationEditorCompletedNotify,
         ApplicationEditorInProgressNotify,
         ApplicationEditorGroupAssignedNotify,
-        BGJobFinishedNotify,
         ApplicationManedReadyNotify,
+        ApplicationOwnerAcceptedNotify,
+        ApplicationPublisherAssignedNotify,
+        BGJobFinishedNotify,
         ApplicationPublisherRevisionNotify
+        JournalAssedAssignedNotify,
+        JournalEditorGroupAssignedNotify,
+        UpdateRequestOwnerAcceptedNotify,
+        UpdateRequestPublisherAssignedNotify
     ]
 
     def __init__(self):
@@ -39,4 +51,4 @@ class EventsService(object):
                 if consumer.consumes(event):
                     consumer.consume(event)
             except Exception as e:
-                app.logger.error(str(e))
+                app.logger.error("Error in consumer {x}: {e}".format(e=str(e), x=consumer.ID))

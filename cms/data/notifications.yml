@@ -44,3 +44,49 @@ application:editor_group:assigned:notify:
      Associate Editor within 5 working days."
   email_subject:
     "new application assigned to your group"
+application:owner:accepted:notify:
+  message:
+    "The application submitted for \"{application_title}\" on {application_date} has been accepted for inclusion in DOAJ.
+
+    You may access the journal record from your Publisher dashboard: {publisher_dashboard_url} using your DOAJ username and password.
+
+    If there are changes or updates to the information about your journal at any time after it has been accepted, please submit an Update Request from your Publisher dashboard promptly. Please be aware that failure to do this may result in removal of your journal from DOAJ.
+
+    How to submit an Update Request: {faq_url}#how-do-i-update-the-information-about-my-journal
+
+    To increase the visibility, impact, distribution and usage of your journal content, we encourage you to upload article metadata for this journal to DOAJ as soon as possible.
+
+    How to upload article metadata: {faq_url}#how-do-i-upload-article-metadata
+
+    We are delighted to welcome this journal into DOAJ. Please contact us at helpdesk@doaj.org if you have any questions."
+  email_subject:
+    "journal accepted"
+update_request:owner:accepted:notify:
+  message:
+    "Congratulations! The changes which you sent us for \"{application_title}\" on {application_date} have been reviewed and the journal record updated. Please note that some of the changes you suggested may have been omitted and replaced with other values by the Managing Editor who carried out the review. Review the journal record here: {publisher_dashboard_url}.
+
+    Thank you for updating this journal and helping to keep the DOAJ database up-to-date."
+  email_subject:
+    "update request accepted"
+application:publisher:assigned:notify:
+  message:
+    "Your application for \"{application_title}\" submitted on {application_date} has been assigned to an editor for review for inclusion in the DOAJ. Please look out for further communications about the application. These may come from someone who is not using a DOAJ email address: {volunteers_url}"
+  email_subject:
+    "your application has been assigned an editor for review"
+update_request:publisher:assigned:notify:
+  message:
+    "The update you submitted for \"{application_title}\" on {application_date} has been assigned to a Managing Editor for review.
+
+    Thank you for helping to keep the DOAJ database up-to-date."
+  email_subject:
+    "your update request has been assigned an editor for review"
+journal:assed:assigned:notify:
+  message:
+    "The journal \"{journal_name}\" has been assigned to you by the Editor of your Group \"{group_name}\". Please start work on this within 10 days."
+  email_subject:
+    "new journal assigned to you"
+journal:editor_group:assigned:notify:
+  message:
+    "The journal \"{journal_name}\" has been assigned to your Group by a Managing Editor. Please assign this to an Associate Editor within 5 working days."
+  email_subject:
+    "new journal assigned to your group"
