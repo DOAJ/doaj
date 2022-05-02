@@ -31,6 +31,11 @@ application:editor:inprogress:notify:
   message: "The application for \"{application_title}\" has not passed review by a Managing Editor and has been assigned back to your group with questions or changes."
   email_subject:
     "Application reverted to 'In Progress' by Managing Editor"
+application:publisher:revision:notify:
+  message:
+    "The update which you submitted for \"{application_title}\" on {date_applied} requires some revisions before it can be accepted. The Managing Editor reviewing your update will contact you to explain the changes that are needed."
+  email_subject:
+    "your update request requires revisions"
 
 application:editor_group:assigned:notify:
   message:

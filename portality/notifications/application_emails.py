@@ -123,31 +123,6 @@ def send_received_email(application):
                         owner=owner,
                         application=application)
 
-
-def send_publisher_update_request_revisions_required(application):
-    """Tell the publisher their update request requires revisions"""
-    journal_title = application.bibjson().title
-
-    owner = models.Account.pull(application.owner)
-    if owner is None:
-        raise app_email.EmailException("Application {x} does not have an owner, cannot send email".format(x=application.id))
-
-    # This is to the publisher contact on the application
-    publisher_name = owner.name
-    publisher_email = owner.email
-
-    to = [publisher_email]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-    subject = app.config.get("SERVICE_NAME", "") + " - your update request requires revisions"
-
-    app_email.send_mail(to=to,
-                        fro=fro,
-                        subject=subject,
-                        template_name="email/publisher_update_request_revisions.jinja2",
-                        application=application,
-                        owner=owner)
-
-
 def send_publisher_reject_email(application, note=None, update_request=False):
     """Tell the publisher their application was rejected"""
     send_instructions = []
