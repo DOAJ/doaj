@@ -258,12 +258,11 @@ class NewApplication(ApplicationProcessor):
             if id:
                 models.DraftApplication.remove_by_id(id)
 
-        if email_alert:
-            try:
-                emails.send_received_email(self.target)
-            except app_email.EmailException as e:
-                self.add_alert(Messages.FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__USER_EMAIL_ERROR)
-                app.logger.exception(Messages.FORMS__APPLICATION_PROCESSORS__NEW_APPLICATION__FINALISE__LOG_EMAIL_ERROR)
+            # trigger an application created event
+            eventsSvc = DOAJ.eventsService()
+            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_CREATED, current_user.id, {
+                "application": self.target.data
+            }))
 
 
 class AdminApplication(ApplicationProcessor):

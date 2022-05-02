@@ -117,7 +117,7 @@ class TestPublicApplicationEmails(DoajTestCase):
 
         # We expect one email sent:
         #   * to the applicant, informing them the application was received
-        public_template = re.escape('publisher_application_received.jinja2')
+        public_template = re.escape('notification_email.jinja2')
         public_to = re.escape(account.email)
         public_subject = "Directory of Open Access Journals - your application to DOAJ has been received"
         public_email_matched = re.search(email_log_regex % (public_template, public_to, public_subject),

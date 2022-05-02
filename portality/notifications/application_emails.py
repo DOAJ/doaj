@@ -108,21 +108,6 @@ def send_publisher_application_inprogress_email(application):
     return alerts
 
 
-def send_received_email(application):
-    """ Email the publisher when an application is received """
-    owner = models.Account.pull(application.owner)
-
-    to = [owner.email]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-    subject = app.config.get("SERVICE_NAME", "") + " - your application to DOAJ has been received"
-
-    app_email.send_mail(to=to,
-                        fro=fro,
-                        subject=subject,
-                        template_name="email/publisher_application_received.jinja2",
-                        owner=owner,
-                        application=application)
-
 def send_publisher_reject_email(application, note=None, update_request=False):
     """Tell the publisher their application was rejected"""
     send_instructions = []
