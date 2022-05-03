@@ -10,7 +10,6 @@ from portality.events.consumers.application_editor_completed_notify import Appli
 from portality.events.consumers.application_editor_inprogress_notify import ApplicationEditorInProgressNotify
 from portality.events.consumers.account_passwordreset_email import AccountPasswordResetEmail
 from portality.events.consumers.application_editor_group_assigned_notify import ApplicationEditorGroupAssignedNotify
-from portality.events.consumers.application_publisher_accepted_notify import ApplicationPublisherAcceptedNotify
 from portality.events.consumers.application_publisher_rejected_notify import ApplicationPublisherRejectedNotify
 
 
@@ -25,9 +24,7 @@ class EventsService(object):
         ApplicationEditorCompletedNotify,
         ApplicationEditorInProgressNotify,
         ApplicationEditorGroupAssignedNotify,
-        BGJobFinishedNotify,
-        ApplicationManedReadyNotify,
-        ApplicationPublisherAcceptedNotify
+        BGJobFinishedNotify
     ]
 
     def __init__(self):
