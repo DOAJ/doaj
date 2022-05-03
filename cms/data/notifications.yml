@@ -55,7 +55,7 @@ application:editor_group:assigned:notify:
      Associate Editor within 5 working days."
   email_subject:
     "new application assigned to your group"
-application:owner:accepted:notify:
+application:publisher:accepted:notify:
   message:
     "The application submitted for \"{application_title}\" on {application_date} has been accepted for inclusion in DOAJ.
 
@@ -72,7 +72,7 @@ application:owner:accepted:notify:
     We are delighted to welcome this journal into DOAJ. Please contact us at helpdesk@doaj.org if you have any questions."
   email_subject:
     "journal accepted"
-update_request:owner:accepted:notify:
+update_request:publisher:accepted:notify:
   message:
     "Congratulations! The changes which you sent us for \"{application_title}\" on {application_date} have been reviewed and the journal record updated. Please note that some of the changes you suggested may have been omitted and replaced with other values by the Managing Editor who carried out the review. Review the journal record here: {publisher_dashboard_url}.
 

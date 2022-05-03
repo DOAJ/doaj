@@ -12,8 +12,8 @@ from portality.events.consumers.application_editor_completed_notify import Appli
 from portality.events.consumers.application_editor_inprogress_notify import ApplicationEditorInProgressNotify
 from portality.events.consumers.account_passwordreset_email import AccountPasswordResetEmail
 from portality.events.consumers.application_editor_group_assigned_notify import ApplicationEditorGroupAssignedNotify
-from portality.events.consumers.application_owner_accepted_notify import ApplicationOwnerAcceptedNotify
-from portality.events.consumers.update_request_owner_accepted_notify import UpdateRequestOwnerAcceptedNotify
+from portality.events.consumers.application_application_accepted_notify import ApplicationPublisherAcceptedNotify
+from portality.events.consumers.update_request_publisher_accepted_notify import UpdateRequestPublisherAcceptedNotify
 from portality.events.consumers.application_publisher_assigned_notify import ApplicationPublisherAssignedNotify
 from portality.events.consumers.update_request_publisher_assigned_notify import UpdateRequestPublisherAssignedNotify
 from portality.events.consumers.journal_assed_assigned_notify import JournalAssedAssignedNotify
@@ -30,14 +30,14 @@ class EventsService(object):
         ApplicationEditorInProgressNotify,
         ApplicationEditorGroupAssignedNotify,
         ApplicationManedReadyNotify,
-        ApplicationOwnerAcceptedNotify,
+        ApplicationPublisherAcceptedNotify,
         ApplicationPublisherAssignedNotify,
         BGJobFinishedNotify,
-        ApplicationPublisherCreatedNotify
-        ApplicationPublisherRevisionNotify
+        ApplicationPublisherCreatedNotify,
+        ApplicationPublisherRevisionNotify,
         JournalAssedAssignedNotify,
         JournalEditorGroupAssignedNotify,
-        UpdateRequestOwnerAcceptedNotify,
+        UpdateRequestPublisherAcceptedNotify,
         UpdateRequestPublisherAssignedNotify
     ]
 

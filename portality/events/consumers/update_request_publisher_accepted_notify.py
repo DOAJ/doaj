@@ -8,8 +8,8 @@ from portality.bll import DOAJ, exceptions
 from portality.core import app
 
 
-class UpdateRequestOwnerAcceptedNotify(EventConsumer):
-    ID = "update_request:owner:accepted:notify"
+class UpdateRequestPublisherAcceptedNotify(EventConsumer):
+    ID = "update_request:publisher:accepted:notify"
 
     @classmethod
     def consumes(cls, event):
