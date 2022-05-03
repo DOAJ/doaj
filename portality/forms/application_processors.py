@@ -355,9 +355,7 @@ class AdminApplication(ApplicationProcessor):
 
                 # for all acceptances, send an email to the owner of the journal
                 if email_alert:
-                    self._send_application_approved_email(self.target, j, owner,
-                                                          self.source.current_journal is not None)
-
+                    self._send_application_approved_email(self.target, j, owner, self.source.current_journal is not None)
             except AttributeError:
                 raise Exception("Account {owner} does not exist".format(owner=j.owner))
             except app_email.EmailException:
@@ -373,7 +371,8 @@ class AdminApplication(ApplicationProcessor):
             applicationService.reject_application(self.target, current_user._get_current_object())
 
             # if this was an update request, send an email to the owner
-            if is_update_request and email_alert:    # ~~-> Email:Notifications~~
+            if is_update_request and email_alert:
+                # ~~-> Email:Notifications~~
                 sent = False
                 send_report = []
                 try:
@@ -503,8 +502,7 @@ class AdminApplication(ApplicationProcessor):
                 self.add_alert(msg)
         except Exception as e:
             magic = str(uuid.uuid1())
-            self.add_alert(
-                'Sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            self.add_alert('Sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.exception('Error sending application approved email failed - ' + magic)
 
     def validate(self):
