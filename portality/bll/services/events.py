@@ -22,23 +22,23 @@ from portality.events.consumers.journal_editor_group_assigned_notify import Jour
 
 class EventsService(object):
     EVENT_CONSUMERS = [
-        # AccountCreatedEmail,
-        # AccountPasswordResetEmail,
-        # ApplicationAssedInprogressNotify,
-        # ApplicationAssedAssignedNotify,
-        # ApplicationEditorCompletedNotify,
-        # ApplicationEditorInProgressNotify,
-        # ApplicationEditorGroupAssignedNotify,
-        # ApplicationManedReadyNotify,
-        # ApplicationPublisherAcceptedNotify,
-        # ApplicationPublisherAssignedNotify,
-        # BGJobFinishedNotify,
-        # ApplicationPublisherCreatedNotify,
-        # ApplicationPublisherRevisionNotify,
-        # JournalAssedAssignedNotify,
-        # JournalEditorGroupAssignedNotify,
-        # UpdateRequestPublisherAcceptedNotify,
-        # UpdateRequestPublisherAssignedNotify
+        AccountCreatedEmail,
+        AccountPasswordResetEmail,
+        ApplicationAssedInprogressNotify,
+        ApplicationAssedAssignedNotify,
+        ApplicationEditorCompletedNotify,
+        ApplicationEditorInProgressNotify,
+        ApplicationEditorGroupAssignedNotify,
+        ApplicationManedReadyNotify,
+        ApplicationPublisherAcceptedNotify,
+        ApplicationPublisherAssignedNotify,
+        BGJobFinishedNotify,
+        ApplicationPublisherCreatedNotify,
+        ApplicationPublisherRevisionNotify,
+        JournalAssedAssignedNotify,
+        JournalEditorGroupAssignedNotify,
+        UpdateRequestPublisherAcceptedNotify,
+        UpdateRequestPublisherAssignedNotify
     ]
 
     def __init__(self):
