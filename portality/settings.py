@@ -1209,3 +1209,10 @@ PRESERVATION_URL = "http://PresevatinURL"
 PRESERVATION_USERNAME = "user_name"
 PRESERVATION_PASSWD = "password"
 PRESERVATION_COLLECTION = {}
+
+
+#########################################################
+# Background tasks --- anon export
+TASKS_ANON_EXPORT_CLEAN = False
+TASKS_ANON_EXPORT_LIMIT = None
+TASKS_ANON_EXPORT_BATCH_SIZE = 100000

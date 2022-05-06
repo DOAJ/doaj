@@ -143,12 +143,21 @@ def run_anon_export(clean=False, limit=None, batch_size=100000):
     tmpStore.delete_container(container)
 
 
+def get_value_safe(key, default_v, kwargs, default_cond_fn=None):
+    v = kwargs.get(key, default_v)
+    default_cond_fn = default_cond_fn or (lambda _v: _v is None)
+    if default_cond_fn(v):
+        v = default_v
+    return v
+
+
 class AnonExportBackgroundTask(BackgroundTask):
     __action__ = "anon_export"
 
     def run(self):
-        # KTODO get params
-        run_anon_export()
+        kwargs = {k: self.get_param(self.background_job.params, k)
+                  for k in ['clean', 'limit', 'batch_size']}
+        run_anon_export(**kwargs)
         self.background_job.add_audit_message("Anon export completed")
 
     def cleanup(self):
@@ -156,28 +165,30 @@ class AnonExportBackgroundTask(BackgroundTask):
 
     @classmethod
     def prepare(cls, username, **kwargs):
-        # KTODO set params
-        # params = {}
-        # cls.set_param(params, 'clean', False if "clean" not in kwargs else kwargs["clean"] if kwargs["clean"] is not None else False)
-        # cls.set_param(params, "prune", False if "prune" not in kwargs else kwargs["prune"] if kwargs["prune"] is not None else False)
-        # cls.set_param(params, "types", "all" if "types" not in kwargs else kwargs["types"] if kwargs["types"] in ["all", "journal", "article"] else "all")
+        params = {}
+        cls.set_param(params, 'clean', get_value_safe('clean', False, kwargs))
+        cls.set_param(params, "limit", kwargs.get('limit'))
+        cls.set_param(params, "batch_size", get_value_safe('batch_size', 100000, kwargs))
         return background_helper.create_job(username=username,
-                                            action=cls.__action__)
+                                            action=cls.__action__,
+                                            params=params)
 
     @classmethod
     def submit(cls, background_job):
         background_job.save()
-        anon_export.schedule(args=(background_job.id,), delay=10)
+        on_submit_anon_export.schedule(args=(background_job.id,), delay=10)
 
 
 @main_queue.periodic_task(schedule(AnonExportBackgroundTask.__action__))
 @write_required(script=True)
 def scheduled_anon_export():
-    # KTODO assign params
-    background_helper.submit_by_bg_task_type(AnonExportBackgroundTask)
+    background_helper.submit_by_bg_task_type(AnonExportBackgroundTask,
+                                             clean=app.config.get("TASKS_ANON_EXPORT_CLEAN", False),
+                                             limit=app.config.get("TASKS_ANON_EXPORT_LIMIT", None),
+                                             batch_size=app.config.get("TASKS_ANON_EXPORT_BATCH_SIZE", 100000))
 
 
 @main_queue.task()
 @write_required(script=True)
-def anon_export(job_id):
+def on_submit_anon_export(job_id):
     background_helper.execute_by_job_id(job_id, AnonExportBackgroundTask)

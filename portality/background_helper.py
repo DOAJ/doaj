@@ -8,12 +8,14 @@ from portality.background import BackgroundApi, BackgroundTask
 from portality.core import app
 
 
-def create_job(username, action):
+def create_job(username, action, params=None):
     """ Common way to create BackgroundJob
     """
     job = models.BackgroundJob()
     job.user = username
     job.action = action
+    if params is not None:
+        job.params = params
     return job
 
 
