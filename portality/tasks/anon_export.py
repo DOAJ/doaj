@@ -9,6 +9,7 @@ class AnonExportBackgroundTask(BackgroundTask):
     __action__ = "anon_export"
 
     def run(self):
+        # KTODO get params
         anon_export_core.anon_export()
         self.background_job.add_audit_message("Anon export completed")
 
@@ -17,6 +18,11 @@ class AnonExportBackgroundTask(BackgroundTask):
 
     @classmethod
     def prepare(cls, username, **kwargs):
+        # KTODO set params
+        # params = {}
+        # cls.set_param(params, 'clean', False if "clean" not in kwargs else kwargs["clean"] if kwargs["clean"] is not None else False)
+        # cls.set_param(params, "prune", False if "prune" not in kwargs else kwargs["prune"] if kwargs["prune"] is not None else False)
+        # cls.set_param(params, "types", "all" if "types" not in kwargs else kwargs["types"] if kwargs["types"] in ["all", "journal", "article"] else "all")
         return background_helper.create_job(username=username,
                                             action=cls.__action__)
 
@@ -29,7 +35,8 @@ class AnonExportBackgroundTask(BackgroundTask):
 @main_queue.periodic_task(schedule(AnonExportBackgroundTask.__action__))
 @write_required(script=True)
 def scheduled_anon_export():
-    background_helper.submit_task_basic(AnonExportBackgroundTask)
+    # KTODO assign params
+    background_helper.submit_by_bg_task_type(AnonExportBackgroundTask)
 
 
 @main_queue.task()
