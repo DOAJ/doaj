@@ -28,7 +28,7 @@ $.extend(true, doaj, {
 
         init : function(params) {
             if (!params) {
-                params = {}
+                params = {};
             }
 
             var current_domain = document.location.host;
@@ -74,8 +74,8 @@ $.extend(true, doaj, {
                     sortOptions : [
                         {'display':'Added to DOAJ (newest first)','field':'created_date', "dir" : "desc"},
                         {'display':'Added to DOAJ (oldest first)','field':'created_date', "dir" : "asc"},
-                        {'display':'Last updated (most recent first)','field':'last_updated', "dir" : "desc"},
-                        {'display':'Last updated (less recent first)','field':'last_updated', "dir" : "asc"},
+                        {'display':'Last updated (most recent first)','field':'last_manual_update', "dir" : "desc"},
+                        {'display':'Last updated (less recent first)','field':'last_manual_update', "dir" : "asc"},
                         {'display':'Title (A-Z)','field':'index.unpunctitle.exact', "dir" : "asc"},
                         {'display':'Title (Z-A)','field':'index.unpunctitle.exact', "dir" : "desc"},
                         {'display':'Relevance','field':'_score'}
@@ -142,7 +142,7 @@ $.extend(true, doaj, {
                 search_url: search_url,
                 manageUrl: true,
                 openingQuery: es.newQuery({
-                    sort: [{"field" : "created_date", "order" : "desc"}],
+                    sort: [{"field" : "last_manual_update", "order" : "desc"}],
                     size: 50
                 }),
                 components: components,

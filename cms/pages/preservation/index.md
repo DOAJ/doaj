@@ -47,7 +47,7 @@ We hope that many open access publishers, whose journals are not currently archi
 - Your journal may not charge any fees of any kind
 - Your journal is not already archived in a preservation service
 
-Towards the end of 2021, DOAJ will send an email to the DOAJ account holders of a subset of the journals that meet the criteria above. The email will invite you to answer a survey. The survey will determine which archiving options are best suited to your journal.
+Towards the end of 2022, DOAJ will send an email to the DOAJ account holders of a subset of the journals that meet the criteria above. The email will invite you to answer a survey. The survey will determine which archiving options are best suited to your journal.
 
 #### Archiving options
 1. *The OJS route*: OJS journals can use the PKP PN preservation service which is built on LOCKSS software. You need to enable a plugin in the journal's dashboard and agree to some simple terms. However, your journal must be on the right version of the OJS software to take part. JASPER makes sure that the journals get the guidance they need to upgrade and become compliant.  PKP is taking a more active role in supporting publishers to upgrade to recent versions of OJS. To help make this happen, they are updating their documentation and guidance.

@@ -2,6 +2,13 @@
 {% include "application_form/_backend_validation.html" %}
 {% include "application_form/_contact.html" %}
 
+{% if obj["es_type"] == "application" and obj.application_type == "update_request" and (not current_journal or not current_journal.is_in_doaj()) %}
+    <h2 class="alert">
+        <span data-feather="alert-triangle" aria-hidden="true"></span>
+        Journal has been withdrawn or deleted. This update request was automatically rejected.
+    </h2>
+{% endif %}
+
 <form id="{{ form_id }}"
       data-context="{{ formulaic_context.name }}"
       class="row application_form form form--compact"
