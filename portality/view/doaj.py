@@ -36,7 +36,7 @@ def cookie_consent():
     else:
         resp = make_response()
     # set a cookie that lasts for one year
-    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"), Messages.CONSENT_COOKIE_VALUE, max_age=31536000)
+    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"), Messages.CONSENT_COOKIE_VALUE, max_age=31536000, samesite=None, secure=True)
     return resp
 
 
@@ -48,7 +48,7 @@ def dismiss_site_note():
     else:
         resp = make_response()
     # set a cookie that lasts for one year
-    resp.set_cookie(app.config.get("SITE_NOTE_KEY"), app.config.get("SITE_NOTE_COOKIE_VALUE"), max_age=app.config.get("SITE_NOTE_SLEEP"))
+    resp.set_cookie(app.config.get("SITE_NOTE_KEY"), app.config.get("SITE_NOTE_COOKIE_VALUE"), max_age=app.config.get("SITE_NOTE_SLEEP"), samesite=None, secure=True)
     return resp
 
 
@@ -473,6 +473,16 @@ def transparency():
 @blueprint.route("/apply/why-index/")
 def why_index():
     return render_template("layouts/static_page.html", page_frag="/apply/why-index.html")
+
+# TODO: Uncomment when ready for public access  - S.E. 2022-03-14
+# @blueprint.route("/apply/publisher-responsibilities/")
+# def publisher_responsibilities():
+#     return render_template("layouts/static_page.html", page_frag="/apply/publisher-responsibilities.html")
+
+
+@blueprint.route("/apply/copyright-and-licensing/")
+def copyright_and_licensing():
+    return render_template("layouts/static_page.html", page_frag="/apply/copyright-and-licensing.html")
 
 
 @blueprint.route("/docs/oai-pmh/")

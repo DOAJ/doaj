@@ -149,7 +149,7 @@ def get_redirect_target(form=None):
             continue
         if target == util.is_safe_url(target):
             return target
-    return url_for('doaj.home')
+    return url_for('dashboard.top_todo')
 
 
 class RedirectForm(Form):

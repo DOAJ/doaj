@@ -2,19 +2,23 @@
 
 .dashboard {
 
+  h1 {
+    margin-top: 0;
+  }
+
+  > header:first-of-type {
+    height: 75px;
+  }
+
   .primary-nav {
+    height:75px;
+
     li {
       margin-right: $spacing-04;
 
       .tag {
         margin: 0;
         padding: $spacing-02;
-      }
-
-      svg {
-        display: block;
-        padding: 0;
-        top: 0;
       }
     }
 
@@ -33,23 +37,26 @@
     }
   }
 
-  .secondary-nav {
-    margin-left: 75px;
-    padding-left: $spacing-04;
-    padding-right: $spacing-04;
+  .main-header {
     font-size: smaller;
 
-    dl, dt, dd {
+    dt, dd {
+      margin-top: 0;
       display: inline-block;
     }
   }
 
+  .row {
+    max-width: 100%;
+  }
+
   .vertical-nav {
     position: absolute;
-    z-index: 1;
+    z-index: 3;
     top: 75px;
     left: 0;
     width: 75px;
+    height: 100%;
     overflow-y: scroll;
 
     > ol {
@@ -92,12 +99,74 @@
     }
   }
 
-  .progress-bar {
+  .todo-list {
+    padding: 0;
+    display: grid;
+    grid-auto-rows: 1fr;
+    list-style: none;
+    font-size: smaller;
+
+    @media screen and (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      grid-column-gap: $spacing-02;
+    }
+
+    @media screen and (max-width: 1279px) and (min-width: 769px) {
+      grid-template-columns: repeat(3, 1fr);
+      grid-column-gap: $spacing-03;
+    }
+
+    @media screen and (min-width: 1280px) {
+      grid-template-columns: repeat(4, 1fr);
+      grid-column-gap: $spacing-04;
+    }
+  }
+
+  .todo-list__item {
+    display: flex;
+
+    h3 {
+      margin-top: $spacing-01;
+      margin-bottom: $spacing-04;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    svg {
+      padding: 0;
+    }
+
+    .todo-list__status {
+      display: block;
+      margin-top: $spacing-01;
+      font-weight: 400;
+      color: $dark-grey;
+    }
+
+    .card {
+      width: 100%;
+      height: auto;
+      border-left: 10px solid;
+
+      &:hover {
+        background-color: $light-grey;
+      }
+    }
+
+    .tag {
+      margin-bottom: 0;
+    }
 
   }
 
   main {
     margin-left: 75px;
     padding: $spacing-04;
+
+    @media screen and (min-width: 1480px) {
+      width: auto;
+    }
   }
 }

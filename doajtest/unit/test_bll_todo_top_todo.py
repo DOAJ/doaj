@@ -1,7 +1,7 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
@@ -54,6 +54,23 @@ class TestBLLTopTodo(DoajTestCase):
 
         apps = []
         w = 7*24*60*60
+
+        account = None
+        if account_arg == "admin":
+            asource = AccountFixtureFactory.make_managing_editor_source()
+            account = models.Account(**asource)
+            eg_source = EditorGroupFixtureFactory.make_editor_group_source(maned=account.id)
+            eg = models.EditorGroup(**eg_source)
+            eg.save(blocking=True)
+        elif account_arg == "editor":
+            asource = AccountFixtureFactory.make_editor_source()
+            account = models.Account(**asource)
+        elif account_arg == "assed":
+            asource = AccountFixtureFactory.make_assed1_source()
+            account = models.Account(**asource)
+        elif account_arg == "no_role":
+            asource = AccountFixtureFactory.make_publisher_source()
+            account = models.Account(**asource)
 
         # Applications that we expect to see reported for some tests
         ############################################################
@@ -132,20 +149,6 @@ class TestBLLTopTodo(DoajTestCase):
 
         models.Application.blockall([(ap.id, ap.last_updated) for ap in apps])
 
-        account = None
-        if account_arg == "admin":
-            asource = AccountFixtureFactory.make_managing_editor_source()
-            account = models.Account(**asource)
-        elif account_arg == "editor":
-            asource = AccountFixtureFactory.make_editor_source()
-            account = models.Account(**asource)
-        elif account_arg == "assed":
-            asource = AccountFixtureFactory.make_assed1_source()
-            account = models.Account(**asource)
-        elif account_arg == "no_role":
-            asource = AccountFixtureFactory.make_publisher_source()
-            account = models.Account(**asource)
-
         raises = None
         if raises_arg:
             raises = EXCEPTIONS[raises_arg]
@@ -183,8 +186,8 @@ class TestBLLTopTodo(DoajTestCase):
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
         ap.set_id(id)
-        ap.set_last_manual_update(dates.before(datetime.utcnow(), lmu_diff))  # 10 weeks ago
-        ap.set_created(dates.before(datetime.utcnow(), cd_diff))  # 10 weeks ago
+        ap.set_last_manual_update(dates.before(datetime.utcnow(), lmu_diff))
+        ap.set_created(dates.before(datetime.utcnow(), cd_diff))
         ap.set_application_status(status)
         if additional_fn is not None:
             additional_fn(ap)

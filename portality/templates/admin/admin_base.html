@@ -5,14 +5,10 @@
 {% endblock %}
 
 {% block content %}
-<main class="container">
-  <h2>{% block page_title %}{% endblock %}</h2>
-
-  <section class="page-content">
-    {% block admin_content %}
-    {% endblock %}
-  </section>
-</main>
+<section class="page-content">
+  {% block admin_content %}
+  {% endblock %}
+</section>
 
 {% include "includes/_hotjar.html" %}
 {% endblock %}

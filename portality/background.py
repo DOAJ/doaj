@@ -91,7 +91,7 @@ class BackgroundApi(object):
                 if not url_root.endswith("/"):
                     url_root += "/"
                 to = [acc.email]
-                fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+                fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
                 query = Facetview2.make_query(job.id)
                 url = url_root + "admin/background_jobs?source=" + Facetview2.url_encode_query(query)
 

@@ -13,7 +13,7 @@
     {% if f.has_widget("multiple_field") or f.has_widget("infinite_repeat") %}
         {% set add_button %}
             <p class="add_field__button_div">
-                <button type="button" id="add_field__{{ f.name }}" class="add_field__button"><span data-feather="plus"></span> Add </button>
+                <button type="button" id="add_field__{{ f.name }}" class="add_field__button label" >Add</button>
             </p>
         {% endset %}
 

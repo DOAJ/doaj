@@ -1,13 +1,17 @@
+{% set index = url_for("dashboard.top_todo") %}
 {% set journals = url_for("admin.index") %}
 {% set applications = url_for("admin.suggestions") %}
+{% set update_requests = url_for("admin.update_requests") %}
 {% set site_search = url_for("admin.admin_site_search") %}
 {% set users = url_for("account.index") %}
 {% set editor_groups = url_for("admin.editor_group_search") %}
 {% set bg = url_for("admin.background_jobs_search") %}
 
 {% set tabs = [
+    (index, "Dashboard", "list"),
     (journals, "Journals", "book-open"),
-    (applications, "Applications/update requests", "file-text"),
+    (applications, "Applications", "file-text"),
+    (update_requests, "Update requests", "edit"),
     (site_search, "Journals & articles", "search"),
     (users, "Users", "user"),
     (editor_groups, "Editor groups", "users"),

@@ -1,15 +1,18 @@
-import requests, uuid
+import time
+import re
+import sys
+import uuid
+import json
+import elasticsearch
+import urllib.parse
+
 from collections import UserDict
 from copy import deepcopy
 from datetime import datetime, timedelta
-import time
-import re
 from typing import List
 
 from portality.core import app, es_connection as ES
-import urllib.parse
-import json
-import elasticsearch
+
 
 # All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 # You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
@@ -144,8 +147,7 @@ class DomainObject(UserDict, object):
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
 
-        if 'es_type' not in self.data and self.__type__ is not None:
-            self.data['es_type'] = self.__type__
+        self.data['es_type'] = self.__type__
 
         now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         if (blocking or differentiate) and "last_updated" in self.data:
@@ -300,11 +302,12 @@ class DomainObject(UserDict, object):
         return cls.bulk(documents=[{'id': i} for i in id_list], idkey=idkey, refresh=refresh, action='delete')
 
     @classmethod
-    def bulk(cls, documents: List[dict], idkey='id', refresh=False, action='index', **kwargs):
+    def bulk(cls, documents: List[dict], idkey='id', refresh=False, action='index', req_timeout=10, **kwargs):
         """
         :param documents: a list of objects to perform bulk actions on (list of dicts)
         :param idkey: The path to extract an ID from the object, e.g. 'id', 'identifiers.id'
         :param refresh: Refresh the index in each operation (make immediately available for search) - expensive!
+        :param req_timeout: Request timeout for bulk operation
         :param kwargs: kwargs are passed into the bulk instruction for each record
         """
         # ~~->ReadOnlyMode:Feature~~
@@ -318,7 +321,8 @@ class DomainObject(UserDict, object):
         data = ''
         for d in documents:
             data += cls.to_bulk_single_rec(d, idkey=idkey, action=action, **kwargs)
-        resp = ES.bulk(body=data, index=cls.index_name(), doc_type=cls.doc_type(), refresh=refresh)
+        resp = ES.bulk(body=data, index=cls.index_name(), doc_type=cls.doc_type(), refresh=refresh,
+                       request_timeout=req_timeout)
         return resp
 
     @staticmethod
@@ -378,7 +382,7 @@ class DomainObject(UserDict, object):
         except elasticsearch.NotFoundError:
             return None
         except elasticsearch.TransportError as e:
-            raise Exception("ES returned an error: {x}".format(x=json.dumps(e.info)))
+            raise Exception("ES returned an error: {x}".format(x=e.info))
         except Exception as e:
             return None
         if out is None:
@@ -632,8 +636,68 @@ class DomainObject(UserDict, object):
     def iterall(cls, page_size=1000, limit=None):
         return cls.iterate(MatchAllQuery().query(), page_size, limit)
 
-    # an alias for the iterate function    # todo: is this a Bad Idea?
+    # an alias for the iterate function
     scroll = iterate
+
+    @classmethod
+    def dump(cls, q=None, page_size=1000, limit=None, out=None, out_template=None, out_batch_sizes=100000,
+             out_rollover_callback=None, transform=None, es_bulk_format=True, idkey='id', es_bulk_fields=None,
+             scroll_keepalive='2m'):
+        """ Export to file, bulk format or just a json dump of the record """
+
+        q = q if q is not None else {"query": {"match_all": {}}}
+
+        filenames = []
+        n = 1
+        current_file = None
+        if out_template is not None:
+            current_file = out_template + "." + str(n)
+            filenames.append(current_file)
+        if out is None and current_file is not None:
+            out = open(current_file, "w")
+        else:
+            out = sys.stdout
+
+        count = 0
+        for record in cls.scroll(q, page_size=page_size, limit=limit, wrap=False, keepalive=scroll_keepalive):
+            if transform is not None:
+                record = transform(record)
+
+            if es_bulk_format:
+                kwargs = {}
+                if es_bulk_fields is None:
+                    es_bulk_fields = ["_id", "_index", "_type"]
+                for key in es_bulk_fields:
+                    if key == "_id":
+                        kwargs["idkey"] = idkey
+                    if key == "_index":
+                        kwargs["index"] = cls.index_name()
+                    if key == "_type":
+                        kwargs["type_"] = type
+                data = cls.to_bulk_single_rec(record, **kwargs)
+            else:
+                data = json.dumps(record) + "\n"
+
+            out.write(data)
+            if out_template is not None:
+                count += 1
+                if count > out_batch_sizes:
+                    out.close()
+                    if out_rollover_callback is not None:
+                        out_rollover_callback(current_file)
+
+                    count = 0
+                    n += 1
+                    current_file = out_template + "." + str(n)
+                    filenames.append(current_file)
+                    out = open(current_file, "w")
+
+        if out_template is not None:
+            out.close()
+        if out_rollover_callback is not None:
+            out_rollover_callback(current_file)
+
+        return filenames
 
     @classmethod
     def prefix_query(cls, field, prefix, size=5, facet_field=None, analyzed_field=True):

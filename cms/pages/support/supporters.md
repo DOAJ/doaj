@@ -15,6 +15,4 @@ We are proud that over 80% of DOAJ's funding comes from academic organisations (
 
 ## Current supporters
 
-<iframe src="https://www.google.com/maps/d/embed?mid=1v1zeuRNC4AIxGIXulRpRqI8T885WYr2F&ll=9.24924582472395%2C0&z=2" height="625"></iframe>
-
 <iframe width="100%" height="500px" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTNhI5rDAvhODscyFp0GW3meD4gHEHFP11vpivCBuC-KYNQd-YO-nNfhKp0DrLvmzlB91Yo8XlL0zFO/pubhtml?widget=true&amp;headers=false"></iframe>

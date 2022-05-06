@@ -5,10 +5,11 @@ DEFAULT_EDITOR_GROUP_NAME = 'editorgroup'
 class EditorGroupFixtureFactory(object):
 
     @classmethod
-    def make_editor_group_source(cls, group_name=DEFAULT_EDITOR_GROUP_NAME, editor="eddie"):
+    def make_editor_group_source(cls, group_name=DEFAULT_EDITOR_GROUP_NAME, editor="eddie", maned="manny"):
         r = deepcopy(EDITOR_GROUP_SOURCE)
         r['name'] = group_name
         r['editor'] = editor
+        r['maned'] = maned
         return r
 
     @classmethod
@@ -20,7 +21,7 @@ class EditorGroupFixtureFactory(object):
         models.Account(**AccountFixtureFactory.make_assed1_source()).save()
         models.Account(**AccountFixtureFactory.make_assed2_source()).save()
         models.Account(**AccountFixtureFactory.make_assed3_source()).save()
-        eg = models.EditorGroup(**cls.make_editor_group_source(group_name=group_name, editor="eddie"))
+        eg = models.EditorGroup(**cls.make_editor_group_source(group_name=group_name, editor="eddie", maned="manny"))
         eg.save(blocking=True)
         return eg
 

@@ -44,12 +44,6 @@ input[type="button"],
   }
 }
 
-input[type="submit"],
-button[type="submit"] {
-  background-color: $warm-black;
-  color: $white;
-}
-
 button:disabled,
 button[disabled],
 input[disabled],
@@ -88,9 +82,7 @@ input[disabled] + label {
   }
 }
 
-.button--cta,
-input[type="submit"],
-button[type="submit"] {
+.button--cta {
   background-color: $grapefruit;
   border-color: $grapefruit;
   color: $warm-black;
@@ -112,6 +104,7 @@ button[type="submit"].button--secondary {
   top: 0;
   transition: all 0.15s ease;
   border-color: currentColor;
+  background-color: transparent;
   box-shadow: $spacing-01 $spacing-01 0 0 currentColor;
 
   &:hover,

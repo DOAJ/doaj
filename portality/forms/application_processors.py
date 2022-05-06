@@ -300,9 +300,14 @@ class AdminApplication(ApplicationProcessor):
         """
 
         if self.source is None:
-            raise Exception("You cannot edit a not-existent application")
-        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
-            raise Exception("You cannot edit applications which have been accepted into DOAJ.")
+            raise Exception(Messages.EXCEPTION_EDITING_NON_EXISTING_APPLICATION)
+        if self.source.current_journal == constants.APPLICATION_STATUS_ACCEPTED:
+            raise Exception(Messages.EXCEPTION_EDITING_ACCEPTED_JOURNAL)
+        if self.source.current_journal is not None:
+            j = models.Journal.pull(self.source.current_journal)
+            if j is None or not j.is_in_doaj():
+                raise Exception(Messages.EXCEPTION_EDITING_WITHDRAWN_OR_DELETED_JOURNAL)
+
 
         # if we are allowed to finalise, kick this up to the superclass
         super(AdminApplication, self).finalise()
@@ -472,7 +477,7 @@ class AdminApplication(ApplicationProcessor):
             url_root = url_root[:-1]
 
         to = [owner.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
         if update_request:
             subject = app.config.get("SERVICE_NAME", "") + " - update request accepted"
         else:
@@ -820,7 +825,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # ~~-> Email:Library~~
         to = [acc.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
         subject = app.config.get("SERVICE_NAME","") + " - update request received"
 
         try:

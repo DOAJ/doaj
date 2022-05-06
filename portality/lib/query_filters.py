@@ -1,6 +1,6 @@
 from flask_login import current_user
 from portality.core import app
-from portality import models
+from portality import models, constants
 from copy import deepcopy
 
 # General utilities
@@ -49,14 +49,14 @@ def owner(q):
 
 def update_request(q):
     q.clear_match_all()
-    q.add_must_filter({"range" : {"created_date" : {"gte" : app.config.get("UPDATE_REQUEST_SHOW_OLDEST")}}})
-    q.add_must_filter({"exists" : {"field" : "admin.current_journal"}})
+    q.add_must_filter({"range" : {"created_date" : {"gte" : app.config.get("UPDATE_REQUESTS_SHOW_OLDEST")}}})
+    q.add_must_filter({"term" : {"admin.application_type.exact" : constants.APPLICATION_TYPE_UPDATE_REQUEST}})
     return q
 
 
 def not_update_request(q):
     q.clear_match_all()
-    q.add_must_not({"exists" : {"field" : "admin.current_journal"}})
+    q.add_must_filter({"term" : {"admin.application_type.exact" : constants.APPLICATION_TYPE_NEW_APPLICATION}})
     return q
 
 

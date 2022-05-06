@@ -329,6 +329,15 @@ def suggestions():
                            admin_page=True,
                            application_status_choices=application_statuses(None, fc))
 
+@blueprint.route("/update_requests", methods=["GET"])
+@login_required
+@ssl_required
+def update_requests():
+    fc = ApplicationFormFactory.context("admin")
+    return render_template("admin/update_requests.html",
+                           admin_page=True,
+                           application_status_choices=application_statuses(None, fc))
+
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
 @write_required()

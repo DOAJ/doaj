@@ -5,7 +5,7 @@
   top: 0;
   width: 100vw;
   z-index: 3000;
-  height: 75px;
+  height: 90px;
   background-color: $warm-black;
   transition: height 0.3s ease-out;
   text-transform: uppercase;
@@ -29,24 +29,20 @@
 
   @media (max-width: 768px) {
     .secondary-nav__menu-toggle {
-      margin-left: $spacing-03;
       display: flex;
+      margin-left: $spacing-03;
       color: $white;
       stroke: $white;
     }
   }
 
   .dropdown__trigger {
-    line-height: 75px;
+    line-height: 90px;
   }
 
   .dropdown__menu {
     background-color: $warm-black;
     color: $white;
-  }
-
-  .primary-nav__item_desktop, .primary-nav__search {
-    margin-left: $spacing-04;
   }
 
   &--scrolled {
@@ -56,6 +52,10 @@
       padding: 0;
       height: 20px;
       line-height: 1;
+    }
+
+    .logo__tagline {
+      display: none;
     }
 
     .nav-bar {

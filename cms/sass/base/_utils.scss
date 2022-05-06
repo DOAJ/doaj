@@ -138,6 +138,14 @@
   stroke: $bronze;
 }
 
+.align-right {
+  text-align: right;
+}
+
+.flex {
+  display: flex;
+}
+
 .flex-center {
   display: flex;
   align-items: center;
@@ -146,8 +154,13 @@
 
 .flex-end {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-end;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
 }
 
 .flex-end-col {
@@ -162,6 +175,7 @@
 .flex-space-between {
   display: flex;
   justify-content: space-between;
+  width: 100%;
 }
 
 .no-margins {

@@ -181,6 +181,9 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def set_seal(self, value):
         self.__seamless__.set_with_struct("admin.seal", value)
 
+    def has_oa_start_date(self):
+        return self.__seamless__.get_single("bibjson.oa_start", default=False)
+
     @property
     def owner(self):
         return self.__seamless__.get_single("admin.owner")
@@ -816,6 +819,7 @@ class Journal(JournalLikeObject):
         for article in self.all_articles():
             article.set_in_doaj(self.is_in_doaj())
             article.save()
+
 
     def prep(self, is_update=True):
         self._ensure_in_doaj()
