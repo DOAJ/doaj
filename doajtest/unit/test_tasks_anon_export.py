@@ -6,9 +6,9 @@ from doajtest.helpers import DoajTestCase
 from portality import background_helper
 from portality.core import app
 from portality.models import BackgroundJob, Account
-from portality.scripts import anon_export
 from portality.store import StoreFactory, StoreLocal
 from portality.tasks.anon_export import AnonExportBackgroundTask
+from portality.tasks import anon_export
 
 
 class TestAnonExport(DoajTestCase):
@@ -34,7 +34,6 @@ class TestAnonExport(DoajTestCase):
         super(TestAnonExport, self).tearDown()
         self.mainStore.delete_container(self.container_id)
 
-    # @unittest.skip
     def test_execute(self):
 
         # prepare test data
