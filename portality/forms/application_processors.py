@@ -370,27 +370,6 @@ class AdminApplication(ApplicationProcessor):
             # reject the application
             applicationService.reject_application(self.target, current_user._get_current_object())
 
-            # if this was an update request, send an email to the owner
-            if is_update_request and email_alert:
-                # ~~-> Email:Notifications~~
-                sent = False
-                send_report = []
-                try:
-                    if self.source.application_status != self.target.application_status:
-                        eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, account.id, {
-                            "application": self.target.data,
-                            "old_status": self.source.application_status,
-                            "new_status": self.target.application_status
-                        }))
-                    sent = True
-                except app_email.EmailException as e:
-                    pass
-
-                if sent:
-                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner, email=send_report[0].get("email"), name=send_report[0].get("name")))
-                else:
-                    self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner))
-
         # the application was neither accepted or rejected, so just save it
         else:
             self.target.set_last_manual_update()

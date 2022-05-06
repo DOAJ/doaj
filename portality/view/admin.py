@@ -437,9 +437,8 @@ def application_quick_reject(application_id):
     try:
         if self.source.application_status != self.target.application_status:
             eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, account.id, {
-                "application": self.target.data,
-                "old_status": self.source.application_status,
-                "new_status": self.target.application_status
+                "application": application.data,
+                "new_status": constants.APPLICATION_STATUS_REJECTED
             }))
         sent = True
     except app_email.EmailException as e:

@@ -54,7 +54,7 @@ class TestApplicationPublisherRejectedNotify(DoajTestCase):
         assert not n.is_seen()
 
     def test_consume_fail(self):
-        event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application": {"key" : "value"}})
+        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": {"key" : "value"}})
         with self.assertRaises(exceptions.NoSuchObjectException):
             ApplicationPublisherRejectedNotify.consume(event)
 
