@@ -1,7 +1,9 @@
+import functools
 import gzip
 import os
 import shutil
 import uuid
+from typing import Callable, NoReturn
 
 from portality import background_helper
 from portality import models, dao
@@ -97,23 +99,26 @@ anonymisation_procedures = {
 }
 
 
-def _copy_on_complete(path):
+def _copy_on_complete(path, logger_fn):
     name = os.path.basename(path)
     raw_size = os.path.getsize(path)
-    print(("Compressing temporary file {x} (from {y} bytes)".format(x=path, y=raw_size)))
+    logger_fn(("Compressing temporary file {x} (from {y} bytes)".format(x=path, y=raw_size)))
     zipped_name = name + ".gz"
     dir = os.path.dirname(path)
     zipped_path = os.path.join(dir, zipped_name)
     with open(path, "rb") as f_in, gzip.open(zipped_path, "wb") as f_out:
         shutil.copyfileobj(f_in, f_out)
     zipped_size = os.path.getsize(zipped_path)
-    print(("Storing from temporary file {x} ({y} bytes)".format(x=zipped_name, y=zipped_size)))
+    logger_fn(("Storing from temporary file {x} ({y} bytes)".format(x=zipped_name, y=zipped_size)))
     mainStore.store(container, name, source_path=zipped_path)
     tmpStore.delete_file(container, name)
     tmpStore.delete_file(container, zipped_name)
 
 
-def run_anon_export(clean=False, limit=None, batch_size=100000):
+def run_anon_export(clean=False, limit=None, batch_size=100000,
+                    logger_fn: Callable[[str], NoReturn] = None):
+    if logger_fn is None:
+        logger_fn = print
     if clean:
         mainStore.delete_container(container)
 
@@ -123,22 +128,24 @@ def run_anon_export(clean=False, limit=None, batch_size=100000):
     for type_ in type_list:
         model = models.lookup_models_by_type(type_, dao.DomainObject)
         if not model:
-            print("unable to locate model for " + type_)
+            logger_fn("unable to locate model for " + type_)
             continue
 
         filename = type_ + ".bulk"
         output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
-        print((dates.now() + " " + type_ + " => " + output_file + ".*"))
+        logger_fn((dates.now() + " " + type_ + " => " + output_file + ".*"))
         iter_q = {"query": {"match_all": {}}, "sort": [{"_id": {"order": "asc"}}]}
         transform = None
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
 
         # Use the model's dump method to write out this type to file
+        out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn)
         _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
-                       out_rollover_callback=_copy_on_complete, es_bulk_fields=["_id"], scroll_keepalive='3m')
+                       out_rollover_callback=out_rollover_fn,
+                       es_bulk_fields=["_id"], scroll_keepalive='3m')
 
-        print((dates.now() + " done\n"))
+        logger_fn((dates.now() + " done\n"))
 
     tmpStore.delete_container(container)
 
@@ -157,6 +164,7 @@ class AnonExportBackgroundTask(BackgroundTask):
     def run(self):
         kwargs = {k: self.get_param(self.background_job.params, k)
                   for k in ['clean', 'limit', 'batch_size']}
+        kwargs['logger_fn'] = self.background_job.add_audit_message
         run_anon_export(**kwargs)
         self.background_job.add_audit_message("Anon export completed")
 

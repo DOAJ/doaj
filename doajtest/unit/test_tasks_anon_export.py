@@ -46,7 +46,13 @@ class TestAnonExport(DoajTestCase):
         new_accounts = list(Account.scroll())
 
         # run execute
-        background_helper.execute_by_bg_task_type(AnonExportBackgroundTask)
+        background_task = background_helper.execute_by_bg_task_type(AnonExportBackgroundTask)
+
+        # assert audit messages
+        self.assertIn('audit', background_task.background_job.data)
+        msgs = {l.get('message') for l in background_task.background_job.data['audit']}
+        self.assertTrue(any('Compressing temporary file' in m for m in msgs))
+        self.assertTrue(any('account.bulk.1' in m for m in msgs))
 
         main_store: StoreLocal = anon_export.mainStore
         container_id = anon_export.container

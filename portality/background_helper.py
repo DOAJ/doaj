@@ -44,3 +44,5 @@ def execute_by_bg_task_type(bg_task_type: Type[BackgroundTask], **prepare_kwargs
     job = bg_task_type.prepare(user, **prepare_kwargs)
     task = bg_task_type(job)
     BackgroundApi.execute(task)
+
+    return task
