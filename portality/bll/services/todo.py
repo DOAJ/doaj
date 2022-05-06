@@ -23,19 +23,38 @@ class TodoService(object):
         q = GroupStatsQuery(eg.name)
         resp = models.Application.query(q=q.query())
 
-        stats["total"] = resp.get("hits", {}).get("total", {}).get("value", 0)
+        stats["total"] = {"applications": 0, "update_requests": 0}
 
-        assigned = 0
         stats["by_editor"] = {}
         for bucket in resp.get("aggregations", {}).get("editor", {}).get("buckets", []):
-            stats["by_editor"][bucket["key"]] = bucket["doc_count"]
-            assigned += bucket["doc_count"]
+            stats["by_editor"][bucket["key"]] = {"applications": 0, "update_requests": 0}
 
-        stats["unassigned"] = stats["total"] - assigned
+            for b in bucket.get("application_type", {}).get("buckets", []):
+                if b["key"] == constants.APPLICATION_TYPE_NEW_APPLICATION:
+                    stats["by_editor"][bucket["key"]]["applications"] = b["doc_count"]
+                    stats["total"]["applications"] += b["doc_count"]
+                elif b["key"] == constants.APPLICATION_TYPE_UPDATE_REQUEST:
+                    stats["by_editor"][bucket["key"]]["update_requests"] = b["doc_count"]
+                    stats["total"]["update_requests"] += b["doc_count"]
+
+        unassigned_buckets = resp.get("aggregations", {}).get("unassigned", {}).get("application_type", {}).get("buckets", [])
+        stats["unassigned"] = {"applications": 0, "update_requests": 0}
+        for ub in unassigned_buckets:
+            if ub["key"] == constants.APPLICATION_TYPE_NEW_APPLICATION:
+                stats["unassigned"]["applications"] = ub["doc_count"]
+                stats["total"]["applications"] += ub["doc_count"]
+            elif ub["key"] == constants.APPLICATION_TYPE_UPDATE_REQUEST:
+                stats["unassigned"]["update_requests"] = ub["doc_count"]
+                stats["total"]["update_requests"] += ub["doc_count"]
 
         stats["by_status"] = {}
         for bucket in resp.get("aggregations", {}).get("status", {}).get("buckets", []):
-            stats["by_status"][bucket["key"]] = bucket["doc_count"]
+            stats["by_status"][bucket["key"]] = {"applications": 0, "update_requests": 0}
+            for b in bucket.get("application_type", {}).get("buckets", []):
+                if b["key"] == constants.APPLICATION_TYPE_NEW_APPLICATION:
+                    stats["by_status"][bucket["key"]]["applications"] = b["doc_count"]
+                elif b["key"] == constants.APPLICATION_TYPE_UPDATE_REQUEST:
+                    stats["by_status"][bucket["key"]]["update_requests"] = b["doc_count"]
 
         return stats
 
@@ -288,12 +307,41 @@ class GroupStatsQuery():
                     "terms" : {
                         "field" : "admin.editor.exact",
                         "size" : self.editor_count
+                    },
+                    "aggs" : {
+                        "application_type" : {
+                            "terms" : {
+                                "field": "admin.application_type.exact",
+                                "size": 2
+                            }
+                        }
                     }
                 },
                 "status" : {
                     "terms" : {
                         "field" : "admin.application_status.exact",
                         "size" : len(constants.APPLICATION_STATUSES_ALL)
+                    },
+                    "aggs": {
+                        "application_type": {
+                            "terms": {
+                                "field": "admin.application_type.exact",
+                                "size": 2
+                            }
+                        }
+                    }
+                },
+                "unassigned" : {
+                    "missing" : {
+                        "field": "admin.editor.exact"
+                    },
+                    "aggs" : {
+                        "application_type" : {
+                            "terms" : {
+                                "field": "admin.application_type.exact",
+                                "size": 2
+                            }
+                        }
                     }
                 }
             }

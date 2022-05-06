@@ -80,13 +80,15 @@
                </header>
                <div>
                  {% if action.link %}
-                 <a href="{{ action.link }}" class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
+                    <a href="{{ action.link }}" class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
                  {% else %}
-                 <span class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
+                    <span class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
                  {% endif %}
-                    <span data-feather="{{ action.feather | safe }}" aria-hidden="true"></span>
-                 {% if action.link %}</a>
-                 {% else %}</span>
+                   <span data-feather="{{ action.feather | safe }}" aria-hidden="true"></span>
+                 {% if action.link %}
+                     </a>   {# pycharm inspection doesn't like this, but it is just confused #}
+                 {% else %}
+                     </span>
                  {% endif %}
                </div>
              </div>

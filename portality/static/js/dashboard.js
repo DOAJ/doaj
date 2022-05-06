@@ -39,51 +39,105 @@ doaj.dashboard.renderGroupInfo = function(data) {
     for (let i = 0; i < allEditors.length; i++) {
         let ed = allEditors[i];
         // ~~-> ApplicationSearch:Page~~
-        let querySource = doaj.searchQuerySource({"term" : [
+        let appQuerySource = doaj.searchQuerySource({"term" : [
             {"admin.editor.exact" : ed},
-            {"admin.editor_group.exact" : data.editor_group.name}
+            {"admin.editor_group.exact" : data.editor_group.name},
+            {"index.application_type.exact" : "new application"}    // this is required so we only see open applications, not finished ones
         ]})
-        let editorCount = data.by_editor[ed] || 0;
+        let urQuerySource = doaj.searchQuerySource({"term" : [
+            {"admin.editor.exact" : ed},
+            {"admin.editor_group.exact" : data.editor_group.name},
+            {"index.application_type.exact" : "update request"}    // this is required so we only see open update requests, not finished ones
+        ]})
+        let appCount = 0;
+        let urCount = 0;
+        if (data.by_editor[ed]) {
+            appCount = data.by_editor[ed].applications || 0;
+            urCount = data.by_editor[ed].update_requests || 0;
+        }
         editorListFrag += `<li>
             <a href="mailto:${data.editors[ed].email}" class="label tag">${ed}</a>
-            <a href="/admin/applications?source=${querySource}" class="tag tag--secondary">${editorCount} <span class="sr-only">applications</span></a>
+            <span class="tag tag--secondary">
+                <a href="/admin/applications?source=${appQuerySource}">${appCount} <span class="sr-only">applications</span> APP</a> | 
+                <a href="/admin/update_requests?source=${urQuerySource}">${urCount} <span class="sr-only">update requests</span> UR</a>
+            </span>
         </li>`;
     }
 
     // ~~-> ApplicationSearch:Page~~
-    let unassignedSource = doaj.searchQuerySource({"term" : [
+    let appUnassignedSource = doaj.searchQuerySource({"term" : [
             {"admin.editor_group.exact" : data.editor_group.name},
-            {"index.has_editor.exact": "No"}
+            {"index.has_editor.exact": "No"},
+            {"index.application_type.exact" : "new application"}    // this is required so we only see open applications, not finished ones
+    ]})
+    let urUnassignedSource = doaj.searchQuerySource({"term" : [
+            {"admin.editor_group.exact" : data.editor_group.name},
+            {"index.has_editor.exact": "No"},
+            {"index.application_type.exact" : "update request"}    // this is required so we only see open update requests, not finished ones
     ]})
     editorListFrag += `<li>
         <span class="label tag tag--featured">unassigned</span>
-        <a href="/admin/applications?source=${unassignedSource}" class="tag tag--secondary">${data.unassigned} <span class="sr-only">applications</span></a>
+        <span class="tag tag--secondary">
+            <a href="/admin/applications?source=${appUnassignedSource}">${data.unassigned.applications} <span class="sr-only">applications</span> APP</a> | 
+            <a href="/admin/update_requests?source=${urUnassignedSource}">${data.unassigned.update_requests} <span class="sr-only">update requests</span> UR</a>
+        </span>
     </li>`;
 
-    let statusFrag = "";
+    let appStatusFrag = "";
+    let urStatusFrag = "";
     let statuses = Object.keys(data.by_status);
     for (let i = 0; i < statuses.length; i++) {
         let status = statuses[i];
         // ~~-> ApplicationSearch:Page~~
-        let statusSource = doaj.searchQuerySource({ "term" : [
-            {"admin.editor_group.exact" : data.editor_group.name},
-            {"admin.application_status.exact": status}
-        ]})
-        statusFrag += `<li>
-            <a href="/admin/applications?source=${statusSource}">
-                <span>${status} <span>${data.by_status[status]}</span></span>
-                <span></span>
-            </a>
-        </li>`;
+        if (data.by_status[status].applications > 0) {
+            let appStatusSource = doaj.searchQuerySource({
+                "term": [
+                    {"admin.editor_group.exact": data.editor_group.name},
+                    {"admin.application_status.exact": status},
+                    {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
+                ]
+            })
+            appStatusFrag += `<li>
+                <a href="/admin/applications?source=${appStatusSource}">
+                    <span>${status} <span>${data.by_status[status].applications}</span></span>
+                    <span></span>
+                </a>
+            </li>`;
+        }
+
+        // ~~-> UpdateRequestsSearch:Page~~
+        if (data.by_status[status].update_requests > 0) {
+            let urStatusSource = doaj.searchQuerySource({
+                "term": [
+                    {"admin.editor_group.exact": data.editor_group.name},
+                    {"admin.application_status.exact": status},
+                    {"index.application_type.exact": "update request"}    // this is required so we only see open update requests, not finished ones
+                ]
+            })
+            urStatusFrag += `<li>
+                <a href="/admin/update_requests?source=${urStatusSource}">
+                    <span>${status} <span>${data.by_status[status].update_requests}</span></span>
+                    <span></span>
+                </a>
+            </li>`;
+        }
     }
 
     // ~~-> ApplicationSearch:Page~~
-    let groupSource = doaj.searchQuerySource({ "term" : [
-        {"admin.editor_group.exact" : data.editor_group.name}
+    let appGroupSource = doaj.searchQuerySource({ "term" : [
+        {"admin.editor_group.exact" : data.editor_group.name},
+        {"index.application_type.exact" : "new application"}    // this is required so we only see open applications, not finished ones
+    ]})
+    let urGroupSource = doaj.searchQuerySource({ "term" : [
+        {"admin.editor_group.exact" : data.editor_group.name},
+        {"index.application_type.exact" : "update request"}    // this is required so we only see open applications, not finished ones
     ]})
     let frag = `<h3>
         ${data.editor_group.name}’s ongoing applications
-        <a href="/admin/applications?source=${groupSource}" class="tag tag--secondary">${data.total} <span class="sr-only">applications</span></a>
+        <span class="tag tag--secondary">
+            <a href="/admin/applications?source=${appGroupSource}">${data.total.applications} <span class="sr-only">applications</span> APP</a> | 
+            <a href="/admin/update_requests?source=${urGroupSource}">${data.total.update_requests} <span class="sr-only">update requests</span> UR</a>
+        </span>
     </h3>
 
     <h4 class="label label--tertiary">By editor</h4>
@@ -94,8 +148,13 @@ doaj.dashboard.renderGroupInfo = function(data) {
     <hr/>
 
     <h4 class="label label--tertiary">By status</h4>
+    <h5>New Applications</h5>
     <ul class="inlined-list progress-bar">
-        ${statusFrag}
+        ${appStatusFrag}
+    </ul>
+    <h5>Update Requests</h5>
+    <ul class="inlined-list progress-bar">
+        ${urStatusFrag}
     </ul>`;
     return frag;
 }
