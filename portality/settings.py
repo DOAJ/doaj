@@ -289,6 +289,18 @@ ROLE_MAP = {
 SYSTEM_USERNAME = "system"
 RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user accounts with this id
 
+# Role map to destination route on login (when no other destination page is present)
+# checked in order, if the user has the role in the first tuple position, they will
+# be redirected to the endpoint in the second tuple position
+ROLE_LOGIN_DESTINATIONS = [
+    ("admin", "dashboard.top_todo"),
+    ("editor", "editor.index"),
+    ("associate_editor", "editor.index"),
+    ("publisher", "publisher.index")
+]
+
+# if the user doesn't have one of the above roles, where should they be sent after login
+DEFAULT_LOGIN_DESTINATION = "doaj.home"
 
 ####################################
 # Email Settings
