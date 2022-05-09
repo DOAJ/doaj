@@ -20,3 +20,10 @@ def top_todo():
 
     # ~~-> Dashboard:Page~~
     return render_template('dashboard/index.html', todos=todos)
+
+
+@blueprint.route("/notifications")
+@login_required
+@ssl_required
+def notifications():
+    return render_template("dashboard/notifications.html")

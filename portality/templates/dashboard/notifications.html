@@ -1,0 +1,24 @@
+{% extends "layouts/dashboard_base.html" %}
+
+{% include "_edges_common_css.html" %}
+
+{% block content %}
+<main>
+<div id="notifications"></div>
+</main>
+{% endblock %}
+
+{% block extra_js_bottom %}
+
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        notificationsSearchConfig : {
+            searchPath : '/dashboard_query/notifications/_search'
+        }
+    });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/notifications.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+{% endblock %}
