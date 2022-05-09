@@ -1,6 +1,6 @@
 from flask import url_for
 
-from portality.app import human_date
+from portality.lib import dates
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
@@ -38,7 +38,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_CREATE
         notification.message = svc.message(cls.ID).format(title=application.bibjson().title,
                                                           journal_url=application.bibjson().journal_url,
-                                                          application_date=human_date(application.date_applied),
+                                                          application_date=dates.human_date(application.date_applied),
                                                           volunteers_url=url_for("doaj.volunteers"))
 
         svc.notify(notification)
