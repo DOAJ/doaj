@@ -18,7 +18,12 @@
 
 {% block publisher_content scoped %}
 
-    {% if obj["es_type"] == "application" and obj.application_type == "update_request" and not obj.current_journal %}
+    {% set related_journal = obj.related_journal_object %}
+
+{% if obj["es_type"] == "application"
+        and obj.application_type == "update_request"
+        and obj.application_status == constants.APPLICATION_STATUS_REJECTED
+        and (not related_journal or not related_journal.is_in_doaj()) %}
         <h2 class="alert">
             <span data-feather="alert-triangle" aria-hidden="true"></span>
             Journal has been withdrawn or deleted. This update request was automatically rejected.

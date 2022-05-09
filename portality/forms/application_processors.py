@@ -301,8 +301,10 @@ class AdminApplication(ApplicationProcessor):
 
         if self.source is None:
             raise Exception(Messages.EXCEPTION_EDITING_NON_EXISTING_APPLICATION)
-        if self.source.current_journal == constants.APPLICATION_STATUS_ACCEPTED:
+
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             raise Exception(Messages.EXCEPTION_EDITING_ACCEPTED_JOURNAL)
+
         if self.source.current_journal is not None:
             j = models.Journal.pull(self.source.current_journal)
             if j is None or not j.is_in_doaj():
