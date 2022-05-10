@@ -435,7 +435,11 @@ def application_quick_reject(application_id):
     sent = False
     send_report = []
     try:
-        send_report = emails.send_publisher_reject_email(application, note=reason, update_request=update_request)
+        if self.source.application_status != self.target.application_status:
+            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, account.id, {
+                "application": application.data,
+                "new_status": constants.APPLICATION_STATUS_REJECTED
+            }))
         sent = True
     except app_email.EmailException as e:
         pass
