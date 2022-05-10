@@ -1208,3 +1208,13 @@ PRESERVATION_URL = "http://PresevatinURL"
 PRESERVATION_USERNAME = "user_name"
 PRESERVATION_PASSWD = "password"
 PRESERVATION_COLLECTION = {}
+
+
+
+#######################################################
+# Plausible analytics
+PLAUSIBLE_URL = "http://localhost:8000"
+# PLAUSIBLE_SITE_NAME = BASE_DOMAIN
+PLAUSIBLE_SITE_NAME = "kk.dev.local"
+PLAUSIBLE_LOG_DIR = None
+

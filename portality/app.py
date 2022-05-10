@@ -98,18 +98,8 @@ def custom_static(path):
 
 # Configure the Google Analytics tracker
 # ~~-> GoogleAnalytics:ExternalService~~
-from portality.lib import analytics
-try:
-    analytics.create_logfile(app.config.get('GOOGLE_ANALTYICS_LOG_DIR', None))
-    analytics.create_tracker(app.config['GOOGLE_ANALYTICS_ID'], app.config['BASE_DOMAIN'])
-except KeyError:
-    err = "No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'."
-    if app.config.get("DOAJENV") == 'production':
-        app.logger.error(err)
-    else:
-        app.logger.debug(err)
-except analytics.GAException as e:
-    app.logger.debug('Unable to send events to Google Analytics: ' + str(e))
+from portality.lib import plausible
+plausible.create_logfile(app.config.get('PLAUSIBLE_LOG_DIR', None))
 
 # Redirects from previous DOAJ app.
 # RJ: I have decided to put these here so that they can be managed
@@ -401,4 +391,15 @@ if __name__ == "__main__":
         import pydevd
         pydevd.settrace(app.config.get('DEBUG_PYCHARM_SERVER', 'localhost'), port=app.config.get('DEBUG_PYCHARM_PORT', 6000), stdoutToServer=True, stderrToServer=True)
 
-    app.run(host=app.config['HOST'], debug=app.config['DEBUG'], port=app.config['PORT'])
+    # app.run(host=app.config['HOST'], debug=app.config['DEBUG'], port=app.config['PORT'])
+
+    # import ssl
+    # context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    # context.verify_mode = ssl.CERT_NONE
+    # context.load_cert_chain('/home/kk/tmp/cert.pem','/home/kk/tmp/key.pem')
+    #
+    #
+    # app.run(host=app.config['HOST'], debug=app.config['DEBUG'], port=app.config['PORT'],
+    #         ssl_context=context)
+    app.run(host=app.config['HOST'], debug=app.config['DEBUG'], port=app.config['PORT'],
+            ssl_context='adhoc')
