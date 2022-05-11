@@ -1,14 +1,19 @@
 
-{% macro build_journal_withdrawn_deleted_msg(obj, is_deleted=False, is_withdrawn=False) -%}
-    {% if obj["es_type"] == "application" and obj.application_type == "update_request" %}
+{% macro build_journal_withdrawn_deleted_msg(obj) -%}
+    {% if obj["es_type"] == "application"
+        and obj.application_type == "update_request"
+        and obj.application_status == constants.APPLICATION_STATUS_REJECTED %}
+
+        {% set related_journal = obj.related_journal_object %}
+
         <h2 class="alert">
             <span data-feather="alert-triangle" aria-hidden="true"></span>
-            {% if is_deleted %}
+            {% if not related_journal %}
                 Journal has been deleted. This update request was automatically rejected.
-            {% endif %}
-            {% if is_withdrawn %}
+            {% else if not related_journal.is_in_doaj() %}
                 Journal has been withdrawn. This update request was automatically rejected.
             {% endif %}
         </h2>
+
     {% endif %}
 {%- endmacro %}

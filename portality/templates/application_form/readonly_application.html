@@ -19,8 +19,7 @@
 {% block publisher_content scoped %}
 
     {% import "application_form/_application_warning_msg.html" as _msg %}
-    {{ _msg.build_journal_withdrawn_deleted_msg(obj, is_deleted=journal_status.is_deleted(),
-                                                is_withdrawn=journal_status.is_withdrawn())  }}
+    {{ _msg.build_journal_withdrawn_deleted_msg(obj) }}
 
     <body id="apply">
     <main class="container">

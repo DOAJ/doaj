@@ -156,8 +156,7 @@ def application_readonly(application_id):
     fc.processor(source=application)
     # fc = formcontext.ApplicationFormFactory.get_form_context(role="update_request_readonly", source=application)
 
-    return fc.render_template(obj=application,
-                              journal_status=DOAJ.journalService().exist_status(journal_id=application.current_journal))
+    return fc.render_template(obj=application)
 
 
 @blueprint.route("/view_update_request/<application_id>", methods=["GET", "POST"])

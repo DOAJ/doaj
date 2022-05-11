@@ -258,19 +258,3 @@ class JournalService(object):
             vs = [v for _, v in cols[i]]
             csvwriter.writerow(vs)
 
-    @staticmethod
-    def exist_status(journal_id=None, journal=None):
-        return JournalExistStatus(journal_id=journal_id, journal=journal)
-
-
-class JournalExistStatus:
-    def __init__(self, journal_id=None, journal=None):
-        if journal_id is not None:
-            journal = models.Journal.pull(journal_id)
-        self.journal = journal
-
-    def is_deleted(self):
-        return self.journal is None
-
-    def is_withdrawn(self):
-        return self.journal and not self.journal.is_in_doaj()

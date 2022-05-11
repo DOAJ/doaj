@@ -8,7 +8,7 @@ from portality.lib.formulaic import FormProcessor
 from portality.ui.messages import Messages
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.crosswalks.journal_form import JournalFormXWalk
-from portality.bll import exceptions, DOAJ
+from portality.bll import exceptions
 
 from flask import url_for, request, has_request_context
 from flask_login import current_user
@@ -301,13 +301,15 @@ class AdminApplication(ApplicationProcessor):
 
         if self.source is None:
             raise Exception(Messages.EXCEPTION_EDITING_NON_EXISTING_APPLICATION)
-        if self.source.current_journal == constants.APPLICATION_STATUS_ACCEPTED:
+
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             raise Exception(Messages.EXCEPTION_EDITING_ACCEPTED_JOURNAL)
+
         if self.source.current_journal is not None:
-            journal_status = DOAJ.journalService().exist_status(journal_id=self.source.current_journal)
-            if journal_status.is_deleted():
+            j = models.Journal.pull(self.source.current_journal)
+            if j is None:
                 raise Exception(Messages.EXCEPTION_EDITING_DELETED_JOURNAL)
-            elif journal_status.is_withdrawn():
+            elif not j.is_in_doaj():
                 raise Exception(Messages.EXCEPTION_EDITING_WITHDRAWN_JOURNAL)
 
 
