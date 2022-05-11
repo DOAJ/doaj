@@ -1213,7 +1213,9 @@ PRESERVATION_COLLECTION = {}
 
 #######################################################
 # Plausible analytics
+# root url for download plausible js
 PLAUSIBLE_URL = "http://localhost:8000"
+# site name / domain name that used to register in plausible
 PLAUSIBLE_SITE_NAME = BASE_DOMAIN
 PLAUSIBLE_LOG_DIR = None
 
