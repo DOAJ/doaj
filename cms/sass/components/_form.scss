@@ -54,6 +54,10 @@
   input[type="checkbox"] + label,
   input[type="radio"] + label {
     font-size: 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }
 
