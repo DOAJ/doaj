@@ -9,9 +9,10 @@
 <script type="text/javascript" src="/static/js/bootstrap.doaj.js"></script>
 
 
-{%- if True or not config.get("DEBUG", True)  -%}
+{%- if not config.get("DEBUG", True)  -%}
     <!-- Plausible Analytics -->
-    <script defer data-domain="kk.dev.local" src="{{ PLAUSIBLE_URL }}/js/plausible.js"></script>
+    <script defer data-domain="{{ config.get('PLAUSIBLE_SITE_NAME')}}"
+            src="{{ config.get('PLAUSIBLE_URL') }}/js/plausible.js"></script>
 {%- endif -%}
 
 {# FIXME: do we need these any more? #}

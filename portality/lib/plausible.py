@@ -29,7 +29,7 @@ def send_event(goal: str, on_completed=None, **props_kwargs):
     """
 
     host_url = app.config.get('PLAUSIBLE_URL', '')
-    if host_url:
+    if not host_url:
         logger.warning('skip send_event, PLAUSIBLE_URL undefined')
         return
 
@@ -41,11 +41,7 @@ def send_event(goal: str, on_completed=None, **props_kwargs):
         payload['props'] = json.dumps(props_kwargs)
 
     def _send():
-        resp = requests.post(f'{host_url}/api/event/', json=payload,
-                             proxies={
-                                 'http': 'http://localhost:58484',
-                                 'https': 'http://localhost:58484',
-                             })
+        resp = requests.post(f'{host_url}/api/event/', json=payload, )
         if on_completed:
             if resp.status_code >= 300:
                 logger.warning(f'send plausible event api fail. [{resp.status_code}][{resp.text}]')
