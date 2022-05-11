@@ -391,15 +391,4 @@ if __name__ == "__main__":
         import pydevd
         pydevd.settrace(app.config.get('DEBUG_PYCHARM_SERVER', 'localhost'), port=app.config.get('DEBUG_PYCHARM_PORT', 6000), stdoutToServer=True, stderrToServer=True)
 
-    # app.run(host=app.config['HOST'], debug=app.config['DEBUG'], port=app.config['PORT'])
-
-    # import ssl
-    # context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    # context.verify_mode = ssl.CERT_NONE
-    # context.load_cert_chain('/home/kk/tmp/cert.pem','/home/kk/tmp/key.pem')
-    #
-    #
-    # app.run(host=app.config['HOST'], debug=app.config['DEBUG'], port=app.config['PORT'],
-    #         ssl_context=context)
-    app.run(host=app.config['HOST'], debug=app.config['DEBUG'], port=app.config['PORT'],
-            ssl_context='adhoc')
+    app.run(host=app.config['HOST'], debug=app.config['DEBUG'], port=app.config['PORT'])
