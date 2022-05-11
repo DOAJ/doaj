@@ -38,3 +38,9 @@ LOCK_JOURNAL = "journal"
 IDENT_TYPE_DOI = "doi"
 LINK_TYPE_FULLTEXT = "fulltext"
 
+# ~~-> Todo:Service~~
+TODO_MANED_STALLED = "todo_maned_stalled"
+TODO_MANED_FOLLOW_UP_OLD = "todo_maned_follow_up_old"
+TODO_MANED_READY = "todo_maned_ready"
+TODO_MANED_COMPLETED = "todo_maned_completed"
+TODO_MANED_ASSIGN_PENDING = "todo_maned_assign_pending"
