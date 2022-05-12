@@ -11,6 +11,7 @@ topic_name = doajapp.config.get("KAFKA_EVENTS_TOPIC")
 app = faust.App('events', broker=broker, value_serializer='json')
 topic = app.topic(topic_name)
 
+
 @app.agent(topic)
 async def handle_event(stream):
     with doajapp.test_request_context("/"):
