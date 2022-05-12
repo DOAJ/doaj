@@ -175,7 +175,7 @@ def set_current_context():
     sponsors available and may include similar minor pieces of
     information.
     '''
-    return {
+    context = {
         'settings': settings,
         'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
@@ -183,6 +183,16 @@ def set_current_context():
         "current_year": datetime.now().strftime('%Y'),
         "base_url": app.config.get('BASE_URL'),
         }
+
+    if app.config.get('DEBUG', False):
+        from pathlib import Path
+        _git_head_file = Path(app.instance_path).parent.joinpath('.git/HEAD')
+        if _git_head_file.is_file():
+            context['branch_name'] = (_git_head_file.read_text()
+                                      .strip().replace('ref: refs/heads/', '')
+                                      .replace('ref: ', ''))
+
+    return context
 
 
 # Jinja2 Template Filters

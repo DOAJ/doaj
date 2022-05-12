@@ -14,6 +14,11 @@
                 </a>
             </div>
             <nav class="col-xs-8 flex-end">
+                {% if config.get('DEBUG', False) %}
+                    <span style="font-size: 11px;color: red;text-transform : none">
+                        {{ branch_name }}
+                    </span>
+                {% endif %}
                 <h2 class="sr-only">Main actions</h2>
                 {% set columns = data.nav.entries|selectattr("primary")|list %}
                   <ul class="nav-bar" role="menubar" id="main_actions">
