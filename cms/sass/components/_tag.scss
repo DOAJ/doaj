@@ -62,6 +62,21 @@
 }
 
 .tag--secondary {
+  background: $dark-grey;
+  color: $white;
+
+  a, svg {
+    color: $white;
+    stroke: $white;
+  }
+
+  &[aria-selected=true] {
+    background-color: $warm-black;
+    color: $white;
+  }
+}
+
+.tag--tertiary {
   background: $light-grey;
   color: $warm-black;
 

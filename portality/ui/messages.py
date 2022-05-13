@@ -67,6 +67,10 @@ class Messages(object):
     EXCEPTION_IDENTIFIER_CHANGE = "DOI or Fulltext URL have been changed.  This operation is not permitted, please contact an administrator for help."
     EXCEPTION_DUPLICATE_NO_PERMISSION = "You do not have the permissions to carry out the requested change"
 
+    EXCEPTION_EDITING_ACCEPTED_JOURNAL = "You cannot edit applications which have been accepted into DOAJ."
+    EXCEPTION_EDITING_WITHDRAWN_OR_DELETED_JOURNAL = "This journal has been withdrawn or deleted, update request cannot be accepted."
+    EXCEPTION_EDITING_NON_EXISTING_APPLICATION = "You cannot edit a not-existent application"
+
     EXCEPTION_NOTIFICATION_NO_ACCOUNT = "Account with id {x} not found"
     EXCEPTION_NOTIFICATION_NO_EMAIL = "Account with id {x} does not have an email address"
 
@@ -91,6 +95,13 @@ class Messages(object):
     BLL__UNREJECT_APPLICATION__SAVE_FAIL = "Save on {obj} {id} in unreject_application failed"
 
     ADMIN__WITHDRAW_REINSTATE = "<a href='{url}'>Job to withdraw/reinstate journal has been submitted</a>"
+
+    AUTOMATICALLY_REJECTED_UPDATE_REQUEST_NOTE = "Update request was automatically rejected because the associated journal was withdrawn or deleted."
+    AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID = "Update request {urid} automatically rejected"
+    NO_UPDATE_REQUESTS = "No update requests found."
+
+    BULK_JOURNAL_DELETE = "About to delete an estimated {journal_no} journals with {article_no} articles associated with their ISSNs. Existing update requests will be automatically rejected."
+    BULK_JOURNAL_DELETE_COMPLETED = "Deleted {journal_no} journals and all articles associated with their ISSNs."
 
     NOTIFY__DEFAULT_EMAIL_SUBJECT = "You have a new notification"
 

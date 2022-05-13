@@ -10,12 +10,6 @@
 .secondary-nav--precedes-highlight {
   background-color: $light-grey;
 }
-
-.secondary-nav__login {
-  margin-left: 20%;
-  font-weight: 400;
-}
-
 // Mobile / hamburger menu
 
 @media (max-width: 768px) {
@@ -60,10 +54,6 @@
   .secondary-nav__menu-toggle--active {
     max-height: 100%;
     height: auto;
-  }
-
-  .secondary-nav__login {
-    margin-left: 0;
   }
 
 

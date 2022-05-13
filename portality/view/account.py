@@ -139,7 +139,7 @@ def username(username):
             return render_template('account/view.html', account=acc, form=form)
 
 
-def get_redirect_target(form=None):
+def get_redirect_target(form=None, acc=None):
     form_target = ''
     if form and hasattr(form, 'next') and getattr(form, 'next'):
         form_target = form.next.data
@@ -149,7 +149,16 @@ def get_redirect_target(form=None):
             continue
         if target == util.is_safe_url(target):
             return target
-    return url_for('doaj.home')
+
+    if acc is None:
+        return ""
+
+    destinations = app.config.get("ROLE_LOGIN_DESTINATIONS")
+    for role, dest in destinations:
+        if acc.has_role(role):
+            return url_for(dest)
+
+    return url_for(app.config.get("DEFAULT_LOGIN_DESTINATION"))
 
 
 class RedirectForm(Form):
@@ -193,7 +202,7 @@ def login():
                 if user.check_password(password):
                     login_user(user, remember=True)
                     flash('Welcome back.', 'success')
-                    return redirect(get_redirect_target(form=form))
+                    return redirect(get_redirect_target(form=form, acc=user))
                 else:
                     form.password.errors.append('The password you entered is incorrect. Try again or <a href="{0}">reset your password</a>.'.format(url_for(".forgot")))
             else:
