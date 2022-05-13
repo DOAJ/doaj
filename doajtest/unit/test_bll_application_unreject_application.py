@@ -136,6 +136,6 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
                 assert len(journal.related_applications) == 0
 
                 if manual_update:
-                    assert application.last_updated == application.last_manual_update
+                    assert application.last_updated == application.last_manual_update, "Expected last manual update to be {}, but got {} instead".format(application.last_updated, application.last_manual_update)
                 else:
                     assert application.last_manual_update == "1970-01-01T00:00:00Z"

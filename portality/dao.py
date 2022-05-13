@@ -147,8 +147,7 @@ class DomainObject(UserDict, object):
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
 
-        if 'es_type' not in self.data and self.__type__ is not None:
-            self.data['es_type'] = self.__type__
+        self.data['es_type'] = self.__type__
 
         now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         if (blocking or differentiate) and "last_updated" in self.data:
@@ -398,6 +397,11 @@ class DomainObject(UserDict, object):
             return cls.pull(res['hits']['hits'][0]['_source']['id'])
         else:
             return None
+
+    @classmethod
+    def object_query(cls, q=None, **kwargs):
+        result = cls.query(q, **kwargs)
+        return [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
 
     @classmethod
     def query(cls, q=None, **kwargs):

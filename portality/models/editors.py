@@ -3,6 +3,9 @@ from portality.models import Account
 
 
 class EditorGroup(DomainObject):
+    """
+    ~~EditorGroup:Model~~
+    """
     __type__ = "editor_group"
 
     @classmethod
@@ -14,6 +17,13 @@ class EditorGroup(DomainObject):
             return None
         if len(ids) > 0:
             return ids[0]
+
+    @classmethod
+    def groups_by_maned(cls, maned):
+        # ~~-> EditorGroupMember:Query~~
+        q = EditorGroupMemberQuery(maned=maned)
+        _iter = cls.iterate(q.query(), page_size=100)
+        return _iter
 
     @classmethod
     def groups_by_editor(cls, editor):
@@ -33,6 +43,16 @@ class EditorGroup(DomainObject):
 
     def set_name(self, val):
         self.data["name"] = val
+
+    @property
+    def maned(self):
+        return self.data.get("maned")
+
+    def set_maned(self, val):
+        self.data["maned"] = val
+
+    def get_maned_account(self):
+        return Account.pull(self.maned)
 
     @property
     def editor(self):
@@ -84,9 +104,13 @@ class EditorGroupQuery(object):
 
 
 class EditorGroupMemberQuery(object):
-    def __init__(self, editor=None, associate=None):
+    """
+    ~~EditorGroupMember:Query->Elasticsearch:Technology~~
+    """
+    def __init__(self, editor=None, associate=None, maned=None):
         self.editor = editor
         self.associate = associate
+        self.maned = maned
 
     def query(self):
         q = {
@@ -99,4 +123,7 @@ class EditorGroupMemberQuery(object):
         if self.associate is not None:
             at = {"term": {"associates.exact": self.associate}}
             q["query"]["bool"]["should"].append(at)
+        if self.maned is not None:
+            mt = {"term" : {"maned.exact" : self.maned}}
+            q["query"]["bool"]["should"].append(mt)
         return q
