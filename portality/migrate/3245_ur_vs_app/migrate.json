@@ -4,8 +4,7 @@
 		{
 			"type" : "application",
 			"init_with_model" : true,
-			"keepalive" : "1m",
-			"query" : {"query":{"term": {"admin.application_status":"rejected"}}},
+			"keepalive" : "5m",
 			"functions" : [
 				"portality.migrate.3245_ur_vs_app.operations.make_update_request"
 			]
