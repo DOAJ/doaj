@@ -138,7 +138,7 @@ class ArticleService(object):
             if isinstance(has_permissions_result, bool) and has_permissions_result == True:
                 doi_or_ft_updated = self._doi_or_fulltext_updated(article, duplicate.id)
                 if doi_or_ft_updated or not merge_duplicate:
-                    raise exceptions.DuplicateArticleException(Messages.EXCEPTION_IDENTIFIER_CHANGE)
+                    raise exceptions.IngestException(message=Messages.EXCEPTION_IDENTIFIER_CHANGE)
                 else:
                     is_update += 1
                     article.merge(duplicate)
