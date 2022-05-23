@@ -18,52 +18,43 @@
                 {% include "includes/svg/doaj-icon.svg" %}
             </a>
             <ul class="unstyled-list flex-center">
-                {# TODO display last 10 event notifications here
-        <li class="dropdown">
-          <span class="dropdown__trigger tag tag--secondary" role="button" aria-haspopup="true" aria-expanded="false">
-            <span class="sr-only">Notifications</span>
-            <span data-feather="bell" aria-hidden="true"></span>
-          </span>
-          <ul class="dropdown__menu">
-            <li>
-              <a href="#" class="dropdown__link">
-                <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                <time datetime="2021-07-17">2 hours ago</time>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="dropdown__link">
-                <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                <time datetime="2021-07-17">2 hours ago</time>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="dropdown__link">
-                <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                <time datetime="2021-07-17">2 hours ago</time>
-              </a>
-            </li>
-          </ul>
-        </li> #}
-        <li class="flex-center">
-          <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag tag--secondary">
-            <span class="sr-only">Profile</span>
-            <span data-feather="smile" aria-hidden="true"></span>
-          </a>
-        </li>
-        <li class="flex-center">
-          <a href="/" class="tag tag--secondary">
-            <span class="sr-only">Home</span>
-            <span data-feather="home" aria-hidden="true"></span>
-          </a>
-        </li>
-        <li class="flex-center">
-          <a href="{{ url_for('account.logout') }}" class="tag tag--secondary">
-            <span class="sr-only">Log out</span>
-            <span data-feather="log-out" aria-hidden="true"></span>
-          </a>
-        </li>
-      </ul>
+              {# TODO display last 10 event notifications here #}
+              <li class="dropdown flex-center">
+                <span class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
+                  <small><span><span data-feather="bell" aria-hidden="true"></span> Notifications</span></small>
+                </span>
+                <ul class="dropdown__menu">
+                  <li>
+                    <a href="#" class="dropdown__link">
+                      <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+                      <time datetime="2021-07-17">2 hours ago</time>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">
+                      <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+                      <time datetime="2021-07-17">2 hours ago</time>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="dropdown__link">
+                      <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+                      <time datetime="2021-07-17">2 hours ago</time>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="flex-center">
+                <a href="/dashboard" class="tag">
+                  <small><span><span data-feather="list" aria-hidden="true"></span> Dashboard</span></small>
+                </a>
+              </li>
+              <li class="flex-center">
+                <a href="/" class="tag">
+                  <small><span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span></small>
+                </a>
+              </li>
+            </ul>
     </nav>
 
     <nav class="secondary-nav align-right">
