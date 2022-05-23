@@ -127,14 +127,14 @@
   </section>
 
   <section>
-    <h2 class="label">Activity</h2>
+    <h2>Activity</h2>
     <div class="tabs">
       <nav class="tabs__menu">
         <ul class="tabs__list" role="tablist">
           {# managed_groups is inherited from the dashboard_base template #}
           {% for eg in managed_groups %}
           <li class="tabs__item">
-            <a href="#{{ eg.id }}" role="tab" aria-selected="{% if loop.first %}true{% else %}false{% endif %}" class="label">{{ eg.name }}</a>
+            <a href="#{{ eg.id }}" role="tab" aria-selected="{% if loop.first %}true{% else %}false{% endif %}" class="label">{{ eg.name }} (10<span class="sr-only"> applications</span>)</a>
           </li>
           {% endfor %}
         </ul>
@@ -143,8 +143,9 @@
       <div class="tabs__content">
         {% for eg in managed_groups %}
         <div id="{{ eg.id }}" class="tabs__panel" role="tabpanel" aria-hidden="{% if loop.first %}false{% else %}true{% endif %}" style="font-size: smaller;">
+          <h3>Ongoing applications by editor</h3>
           {% for associate in eg.associates %}
-          <a href="#" class="tag tag--primary" style="margin-right: 0.15em;">{{ associate }}</a> <a href="#" class="tag tag--tertiary" style="margin-right: 2em;">10</a>
+          <a href="#" class="tag tag--primary" style="margin-right: 0.15em;">{{ associate }}</a> <a href="#" class="tag tag--tertiary" style="margin-right: 2em;">10<span class="sr-only"> applications</span></a>
           {% endfor %}
         </div>
         {% endfor %}
