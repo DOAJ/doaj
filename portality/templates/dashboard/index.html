@@ -111,25 +111,20 @@
     </footer>
     #}
   </section>
-
-        <section>
-            <h2 class="label">Activity</h2>
-
-            <div class="tabs">
-                <nav role="tablist" aria-label="Activity by team">
-                    {# managed_groups is inherited from the dashboard_base template #}
-                    {% for eg in managed_groups %}
-                        <button role="tab" aria-selected="false" aria-controls="group-tab" id="group-tab-{{ eg.id }}" tabindex="0" class="tag tag--secondary">
-                            <a href="#" class="js-group-tab" data-group-id="{{ eg.id }}">{{ eg.name }}</a>
-                        </button>
-                    {% endfor %}
-                </nav>
-                <article id="group-tab" role="tabpanel" tabindex="0" aria-labelledby="" class="card">Select a group</article>
-            </div>
-
-        </section>
-
-    </main>
+  <section>
+    <h2 class="label">Activity</h2>
+    <div class="tabs">
+      <nav role="tablist" aria-label="Activity by team">
+        {# managed_groups is inherited from the dashboard_base template #}
+        {% for eg in managed_groups %}
+        <button role="tab" aria-selected="false" aria-controls="group-tab" id="group-tab-{{ eg.id }}" tabindex="0" class="tag tag--secondary">
+          <a href="#" class="js-group-tab" data-group-id="{{ eg.id }}">{{ eg.name }}</a>
+        </button>
+        {% endfor %}
+      </nav>
+      <article id="group-tab" role="tabpanel" tabindex="0" aria-labelledby="" class="card">Select a group</article>
+    </div>
+  </section>
 {% endblock %}
 
 {% block extra_js_bottom %}
