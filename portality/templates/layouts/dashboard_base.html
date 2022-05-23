@@ -1,112 +1,112 @@
 {% extends "layouts/base.html" %}
 
 {% block base_content %}
-    <body class="dashboard {% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
+<body class="dashboard {% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
 
-    {# global site note #}
-    {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
-        {% include config.get("SITE_NOTE_TEMPLATE") %}
-    {% endif %}
+  {# global site note #}
+  {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
+  {% include config.get("SITE_NOTE_TEMPLATE") %}
+  {% endif %}
 
-    <header>
-        {% include "includes/_flash_notification.html" %}
+  <header>
+    {% include "includes/_flash_notification.html" %}
 
-        <h2 class="sr-only">DOAJ Dashboard</h2>
+    <h2 class="sr-only">DOAJ Dashboard</h2>
 
-        <nav class="primary-nav flex-space-between" id="primary-nav">
-            <a href="/dashboard/" class="logo">
-                {% include "includes/svg/doaj-icon.svg" %}
-            </a>
-            <ul class="unstyled-list flex-center">
-              {# TODO display last 10 event notifications here #}
-              <li class="dropdown flex-center">
-                <span class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
-                  <small><span><span data-feather="bell" aria-hidden="true"></span> Notifications</span></small>
-                </span>
-                <ul class="dropdown__menu">
-                  <li>
-                    <a href="#" class="dropdown__link">
-                      <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                      <time datetime="2021-07-17">2 hours ago</time>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="dropdown__link">
-                      <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                      <time datetime="2021-07-17">2 hours ago</time>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="dropdown__link">
-                      <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                      <time datetime="2021-07-17">2 hours ago</time>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="flex-center">
-                <a href="/dashboard" class="tag">
-                  <small><span><span data-feather="list" aria-hidden="true"></span> Dashboard</span></small>
-                </a>
-              </li>
-              <li class="flex-center">
-                <a href="/" class="tag">
-                  <small><span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span></small>
-                </a>
-              </li>
-            </ul>
+    <nav class="primary-nav flex-space-between" id="primary-nav">
+      <a href="/dashboard/" class="logo">
+        {% include "includes/svg/doaj-icon.svg" %}
+      </a>
+      <ul class="unstyled-list flex-center">
+        {# TODO display last 10 event notifications here #}
+        <li class="dropdown flex-center">
+          <span class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
+            <small><span><span data-feather="bell" aria-hidden="true"></span> Notifications</span></small>
+          </span>
+          <ul class="dropdown__menu">
+            <li>
+              <a href="#" class="dropdown__link">
+                <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+                <time datetime="2021-07-17">2 hours ago</time>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="dropdown__link">
+                <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+                <time datetime="2021-07-17">2 hours ago</time>
+              </a>
+            </li>
+            <li>
+              <a href="#" class="dropdown__link">
+                <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
+                <time datetime="2021-07-17">2 hours ago</time>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="flex-center">
+          <a href="/dashboard" class="tag">
+            <small><span><span data-feather="list" aria-hidden="true"></span> Dashboard</span></small>
+          </a>
+        </li>
+        <li class="flex-center">
+          <a href="/" class="tag">
+            <small><span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span></small>
+          </a>
+        </li>
+      </ul>
     </nav>
 
     <nav class="secondary-nav align-right">
 
-            <dl>
-                {% set managed_groups = maned_of() %}
-                {% if managed_groups and managed_groups|length > 0 %}
-                    <dt>
-                        Managing Editor of&nbsp;&nbsp;
-                    </dt>
-                    <dd>
-                        <ul class="inlined-list tags">
-                            {% for eg in managed_groups %}
-                                <li class="tag tag--secondary">
-                                    {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
-                                    <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">{{ eg.name }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </dd>
-                    &nbsp;/&nbsp;&nbsp;
-                {% endif %}
-                <dt>
-                    Username&nbsp;&nbsp;
-                </dt>
-                <dd>
-                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
-                </dd>
-            </dl>
-        </nav>
+      <dl>
+        {% set managed_groups = maned_of() %}
+        {% if managed_groups and managed_groups|length > 0 %}
+        <dt>
+          Managing Editor of&nbsp;&nbsp;
+        </dt>
+        <dd>
+          <ul class="inlined-list tags">
+            {% for eg in managed_groups %}
+            <li class="tag tag--secondary">
+              {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
+              <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">{{ eg.name }}</a>
+            </li>
+            {% endfor %}
+          </ul>
+        </dd>
+        &nbsp;/&nbsp;&nbsp;
+        {% endif %}
+        <dt>
+          Username&nbsp;&nbsp;
+        </dt>
+        <dd>
+          <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
+        </dd>
+      </dl>
+    </nav>
 
-        {% block extra_header %}{% endblock %}
-    </header>
+    {% block extra_header %}{% endblock %}
+  </header>
 
-    {% include 'dashboard/nav.html' %}
+  {% include 'dashboard/nav.html' %}
 
-    {% block main_panel %}
-        {% block content %}{% endblock %}
-    {% endblock %}
+  {% block main_panel %}
+  {% block content %}{% endblock %}
+  {% endblock %}
 
-    {% include '_js_includes.html' %}
+  {% include '_js_includes.html' %}
 
-    {% block extra_js_bottom %}{% endblock extra_js_bottom %}
+  {% block extra_js_bottom %}{% endblock extra_js_bottom %}
 
-    {% if not request.cookies.get("doaj-consent") %}
-        <script type="text/javascript">
-            jQuery(document).ready(function() {
-                $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
-                $(".site-note-dismiss").on("click", dissmissSiteNote);
-            });
-        </script>
-    {% endif %}
+  {% if not request.cookies.get("doaj-consent") %}
+  <script type="text/javascript">
+    jQuery(document).ready(function() {
+      $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
+      $(".site-note-dismiss").on("click", dissmissSiteNote);
+    });
+  </script>
+  {% endif %}
 
-    </body>
+</body>
 {% endblock %}
