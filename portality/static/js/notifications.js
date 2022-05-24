@@ -16,12 +16,17 @@ doaj.notifications.notificationsReceived = function(data) {
     for (let i = 0; i < data.length; i++) {
         let notification = data[i];
         frag += `<li>
-            <a href="#" class="dropdown__link">
+            <a href="${notification.action}" class="dropdown__link notification_action_link">
                 <span>${notification.message}</span>
                 <time datetime="${notification.created_date}">${notification.created_date}</time>
             </a>
         </li>`;
     }
+    frag += `<li>
+      <a href="/dashboard/notifications" class="dropdown__link">
+          See all notifications
+      </a>
+    </li>`;
 
     $("#top_notifications").html(frag);
 }
