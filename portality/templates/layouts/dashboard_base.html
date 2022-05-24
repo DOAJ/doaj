@@ -23,23 +23,10 @@
           <span class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
             <small><span><span data-feather="bell" aria-hidden="true"></span> Notifications</span></small>
           </span>
-          <ul class="dropdown__menu">
+          <ul class="dropdown__menu" id="top_notifications">
             <li>
               <a href="#" class="dropdown__link">
-                <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                <time datetime="2021-07-17">2 hours ago</time>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="dropdown__link">
-                <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                <time datetime="2021-07-17">2 hours ago</time>
-              </a>
-            </li>
-            <li>
-              <a href="#" class="dropdown__link">
-                <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                <time datetime="2021-07-17">2 hours ago</time>
+                  <a href="{{ url_for("dashboard.notifications") }}">See all notifications</a>
               </a>
             </li>
           </ul>
@@ -97,7 +84,9 @@
 
   {% include '_js_includes.html' %}
 
-  {% block extra_js_bottom %}{% endblock extra_js_bottom %}
+  {% block extra_js_bottom %}
+    <script type="text/javascript" src="/static/js/notifications.js?v={{config.get('DOAJ_VERSION')}}"></script>
+  {% endblock extra_js_bottom %}
 
   {% if not request.cookies.get("doaj-consent") %}
   <script type="text/javascript">
