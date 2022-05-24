@@ -35,6 +35,17 @@
   }
 }
 
+/* FIXME: this is a hack for development purposes, needs review */
+#top_notifications {
+  overflow-y: scroll;
+  height: 300px;
+  width: 300px;
+
+  .dropdown__link {
+    white-space: normal;
+  }
+}
+
 .dropdown__link {
   display: block;
   padding: $spacing-03;
