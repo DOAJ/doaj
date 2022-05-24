@@ -96,7 +96,7 @@ class TestPublicApplicationEmails(DoajTestCase):
         DOAJ.notificationsService = self.notifications_service
 
     def test_01_public_application_email(self):
-        application = models.Application(**UPDATE_REQUEST_SOURCE_TEST_1)
+        application = models.Application(**APPLICATION_SOURCE_TEST_1)
 
         account = models.Account()
         account.set_id("testing")
@@ -405,6 +405,12 @@ class TestApplicationReviewEmails(DoajTestCase):
         # A Managing Editor will notify other ManEds when they set an application to 'Ready'
         # Refresh the application form
         pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_2)
+        jid = pending_application.current_journal
+        journal_source = JOURNAL_SOURCE_TEST_1
+        journal_source["id"] = jid
+        journal_source['admin']["in_doaj"] = True
+        current_journal = models.Journal(**journal_source)
+        current_journal.save()
         fc = ApplicationFormFactory.context("admin")
         processor = fc.processor(source=pending_application)
         # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=pending_application)
@@ -729,6 +735,12 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # an email is sent to the editor and assigned associate editor
         ready_application = models.Suggestion(**UPDATE_REQUEST_SOURCE_TEST_1)
         ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
+        jid = ready_application.current_journal
+        journal_source = JOURNAL_SOURCE_TEST_1
+        journal_source["id"] = jid
+        journal_source['admin']["in_doaj"] = True
+        current_journal = models.Journal(**journal_source)
+        current_journal.save()
 
         owner = models.Account()
         owner.set_id(ready_application.owner)

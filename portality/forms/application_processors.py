@@ -300,9 +300,14 @@ class AdminApplication(ApplicationProcessor):
         """
 
         if self.source is None:
-            raise Exception("You cannot edit a not-existent application")
-        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
-            raise Exception("You cannot edit applications which have been accepted into DOAJ.")
+            raise Exception(Messages.EXCEPTION_EDITING_NON_EXISTING_APPLICATION)
+        if self.source.current_journal == constants.APPLICATION_STATUS_ACCEPTED:
+            raise Exception(Messages.EXCEPTION_EDITING_ACCEPTED_JOURNAL)
+        if self.source.current_journal is not None:
+            j = models.Journal.pull(self.source.current_journal)
+            if j is None or not j.is_in_doaj():
+                raise Exception(Messages.EXCEPTION_EDITING_WITHDRAWN_OR_DELETED_JOURNAL)
+
 
         # if we are allowed to finalise, kick this up to the superclass
         super(AdminApplication, self).finalise()
@@ -322,6 +327,9 @@ class AdminApplication(ApplicationProcessor):
 
         # ~~->Application:Service~~
         applicationService = DOAJ.applicationService()
+
+        # ~~->Event:Service~~
+        eventsSvc = DOAJ.eventsService()
 
         # if the application is already rejected, and we are moving it back into a non-rejected status
         if self.source.application_status == constants.APPLICATION_STATUS_REJECTED and self.target.application_status != constants.APPLICATION_STATUS_REJECTED:
@@ -378,22 +386,6 @@ class AdminApplication(ApplicationProcessor):
 
             # reject the application
             applicationService.reject_application(self.target, current_user._get_current_object())
-
-            # if this was an update request, send an email to the owner
-            if is_update_request and email_alert:
-                # ~~-> Email:Notifications~~
-                sent = False
-                send_report = []
-                try:
-                    send_report = emails.send_publisher_reject_email(self.target, update_request=is_update_request)
-                    sent = True
-                except app_email.EmailException as e:
-                    pass
-
-                if sent:
-                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner, email=send_report[0].get("email"), name=send_report[0].get("name")))
-                else:
-                    self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner))
 
         # the application was neither accepted or rejected, so just save it
         else:
@@ -653,20 +645,6 @@ class AssociateApplication(ApplicationProcessor):
         # record the event in the provenance tracker
         # ~~-> Provenance:Model~~
         models.Provenance.make(current_user, "edit", self.target)
-
-        # inform publisher if this was set to 'in progress' from 'pending'
-        if self.source.application_status == constants.APPLICATION_STATUS_PENDING and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
-            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                # ~~-> Email:Notifications~~
-                is_update_request = self.target.current_journal is not None
-                if is_update_request:
-                    alerts = emails.send_publisher_update_request_inprogress_email(self.target)
-                else:
-                    alerts = emails.send_publisher_application_inprogress_email(self.target)
-                for alert in alerts:
-                    self.add_alert(alert)
-            else:
-                self.add_alert(Messages.IN_PROGRESS_NOT_SENT_EMAIL_DISABLED)
 
         # Editor is informed via status change event if this was newly set to 'completed'
         # fixme: duplicated logic in notification event and here for provenance

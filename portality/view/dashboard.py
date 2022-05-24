@@ -8,6 +8,8 @@ from portality.util import jsonp
 
 import json
 
+from portality.core import app
+
 # ~~Dashboard:Blueprint~~
 blueprint = Blueprint('dashboard', __name__)
 
@@ -18,7 +20,7 @@ blueprint = Blueprint('dashboard', __name__)
 def top_todo():
     # ~~-> Todo:Service~~
     svc = DOAJ.todoService()
-    todos = svc.top_todo(current_user._get_current_object(), size=100)  # FIXME: 100 is probably too large, just using that to get a good view of the data during dev
+    todos = svc.top_todo(current_user._get_current_object(), size=app.config.get("TODO_LIST_SIZE"))
 
     # ~~-> Dashboard:Page~~
     return render_template('dashboard/index.html', todos=todos)

@@ -22,8 +22,7 @@ $.extend(true, doaj, {
             var result = '<a class="edit_editor_group_link button" href="';
             result += doaj.adminEditorGroupSearchConfig.editorGroupEditUrl;
             result += resultobj['id'];
-            result += '" target="_blank"';
-            result += '>Edit this group</a>';
+            result += '">Edit this group</a>';
             return result;
         },
 
@@ -174,7 +173,8 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "name.exact": "Name"
+                        "name.exact": "Name",
+                        "maned.exact": "Managing Editor"
                     }
                 })
             ];

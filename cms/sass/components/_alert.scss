@@ -3,7 +3,7 @@
 .alert {
   display: inline-block;
   padding: $spacing-03;
-  margin: $spacing-02 0;
+  margin: $spacing-02 0$spacing-03 0;
   background-color: $light-grey;
   border: 1px solid $warm-black;
   @include typescale-06;

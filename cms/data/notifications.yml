@@ -101,3 +101,19 @@ journal:editor_group:assigned:notify:
     "The journal \"{journal_name}\" has been assigned to your Group by a Managing Editor. Please assign this to an Associate Editor within 5 working days."
   email_subject:
     "new journal assigned to your group"
+application:publisher:inprogress:notify:
+  message:
+    "Your submission for \"{bibjson.title}\" submitted on {{application_date}} is now being reviewed by an Associate Editor.
+    
+     The Associate Editor ({volunteers}) may contact you by email with questions. They may not be using a doaj.org email address. These emails can end up in your Spam folder so please check your Spam folder regularly."
+  email_subject:
+   "your submission is under review"
+application:publisher:rejected:notify:
+  message:
+    'The update which you submitted for \"{title}\" on {date_applied} has been rejected. This is either because:
+
+     - we were unable to verify the information which you provided with the information stated on your website. Please double check your website and submit a new update when you are ready; or
+          
+     - we already have one active update in the system. Additional updates are rejected without review.'
+  email_subject:
+    'Your submission  was rejected'
