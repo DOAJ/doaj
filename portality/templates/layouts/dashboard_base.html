@@ -104,13 +104,14 @@
       </header>
       {% block content %}{% endblock %}
 
-      <span class="flex-end">
+      <span class="flex-center">
         <a href="{{ url_for('account.logout') }}" class="tag tag--tertiary">
           <span><strong>Log out</strong></span>
           <span data-feather="log-out" aria-hidden="true"></span>
         </a>
       </span>
     </main>
+    {% include "includes/_back-to-top.html" %}
     {% endblock %}
 
     {% include '_js_includes.html' %}
