@@ -184,7 +184,7 @@ class AnonExportBackgroundTask(BackgroundTask):
     @classmethod
     def submit(cls, background_job):
         background_job.save()
-        on_submit_anon_export.schedule(args=(background_job.id,), delay=10)
+        anon_export.schedule(args=(background_job.id,), delay=10)
 
 
 @main_queue.periodic_task(schedule(AnonExportBackgroundTask.__action__))
@@ -198,5 +198,5 @@ def scheduled_anon_export():
 
 @main_queue.task()
 @write_required(script=True)
-def on_submit_anon_export(job_id):
+def anon_export(job_id):
     background_helper.execute_by_job_id(job_id, AnonExportBackgroundTask)
