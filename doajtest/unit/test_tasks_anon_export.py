@@ -3,12 +3,12 @@ import json
 from pathlib import Path
 
 from doajtest.helpers import DoajTestCase
-from portality import background_helper
 from portality.core import app
 from portality.models import BackgroundJob, Account
 from portality.store import StoreFactory, StoreLocal
 from portality.tasks.anon_export import AnonExportBackgroundTask
 from portality.tasks import anon_export
+from portality.tasks.helpers import background_helper
 
 
 class TestAnonExport(DoajTestCase):

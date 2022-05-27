@@ -1,5 +1,5 @@
-from portality import background_helper
 from portality.tasks.anon_export import AnonExportBackgroundTask
+from portality.tasks.helpers import background_helper
 
 if __name__ == '__main__':
 

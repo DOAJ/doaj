@@ -5,7 +5,6 @@ import shutil
 import uuid
 from typing import Callable, NoReturn
 
-from portality import background_helper
 from portality import models, dao
 from portality.background import BackgroundTask
 from portality.core import app, es_connection
@@ -14,6 +13,7 @@ from portality.lib import dates
 from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.store import StoreFactory
+from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import main_queue, schedule
 
 tmpStore = StoreFactory.tmp()
