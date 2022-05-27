@@ -38,11 +38,11 @@ class TestAnonExport(DoajTestCase):
 
         # prepare test data
         for _ in range(3):
-            BackgroundJob().save(blocking=True)
-        new_background_jobs = list(BackgroundJob.scroll())
-
+            BackgroundJob().save()
         for _ in range(2):
             Account().save(blocking=True)
+
+        new_background_jobs = list(BackgroundJob.scroll())
         new_accounts = list(Account.scroll())
 
         # run execute
