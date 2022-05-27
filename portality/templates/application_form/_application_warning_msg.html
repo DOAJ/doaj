@@ -10,7 +10,7 @@
             <span data-feather="alert-triangle" aria-hidden="true"></span>
             {% if not related_journal %}
                 Journal has been deleted. This update request was automatically rejected.
-            {% else if not related_journal.is_in_doaj() %}
+            {% elif not related_journal.is_in_doaj() %}
                 Journal has been withdrawn. This update request was automatically rejected.
             {% endif %}
         </h2>
