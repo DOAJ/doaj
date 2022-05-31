@@ -3,7 +3,10 @@
 		{
 			"type" : "article",
 			"init_with_model" : true,
-			"keepalive" : "20m"
+			"keepalive" : "20m",
+			"functions" : [
+				"portality.migrate.20220323_3256_enforce_correct_es_type_in_articles.operations.enforce_correct_es_type"
+			]
 		}
 ]
 }
