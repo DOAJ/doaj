@@ -367,7 +367,8 @@ def application(application_id):
 
     if request.method == "GET":
         fc.processor(source=ap)
-        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
+        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
+                                  current_journal=current_journal, lcc_tree=lcc_jstree)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
