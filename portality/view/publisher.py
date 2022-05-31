@@ -155,6 +155,7 @@ def application_readonly(application_id):
     fc = ApplicationFormFactory.context("application_read_only")
     fc.processor(source=application)
     # fc = formcontext.ApplicationFormFactory.get_form_context(role="update_request_readonly", source=application)
+
     return fc.render_template(obj=application)
 
 
