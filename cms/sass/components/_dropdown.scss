@@ -35,7 +35,7 @@
   }
 }
 
-/* FIXME: this is a hack for development purposes, needs review */
+/* FIXME: this is a hack for development purposes, needs straightening out */
 #top_notifications {
   overflow-y: scroll;
   height: 300px;
@@ -43,6 +43,15 @@
 
   .dropdown__link {
     white-space: normal;
+    margin-bottom: 10px;
+  }
+
+  .notification_seen {
+
+  }
+
+  .notification_unseen {
+    background-color: #cccccc;
   }
 }
 

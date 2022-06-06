@@ -94,10 +94,8 @@
     {% endblock %}
 
     {% include '_js_includes.html' %}
-
-  {% block extra_js_bottom %}
     <script type="text/javascript" src="/static/js/notifications.js?v={{config.get('DOAJ_VERSION')}}"></script>
-  {% endblock extra_js_bottom %}
+    {% block extra_js_bottom %}{% endblock extra_js_bottom %}
 
     {% if not request.cookies.get("doaj-consent") %}
         <script type="text/javascript">

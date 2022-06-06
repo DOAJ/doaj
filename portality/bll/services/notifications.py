@@ -45,6 +45,17 @@ class NotificationsService(object):
         top = models.Notification.object_query(q.query())
         return top
 
+    def notification_seen(self, account: models.Account, notification_id: str):
+        note = models.Notification.pull(notification_id)
+        if not note:
+            raise NoSuchObjectException(Messages.EXCEPTION_NOTIFICATION_NO_NOTIFICATION.format(n=notification_id))
+        if account.id == note.who or account.is_super:
+            if not note.is_seen():
+                note.set_seen()
+                note.save()
+            return True
+        return False
+
 
 class TopNotificationsQuery(object):
     def __init__(self, account_id, size=10):

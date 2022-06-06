@@ -56,6 +56,11 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "field": "created_date"
+                                },
+                                {
+                                    "pre": " (<strong>action clicked:",
+                                    "field": "seen_date",
+                                    "post": "</strong>)"
                                 }
                             ],
                             [
@@ -65,7 +70,12 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": '<a class="button" href="',
+                                    "pre" : '<a class="button notification_action_button" data-notification-id="',
+                                    "field": "id",
+                                    "post": '"'
+                                },
+                                {
+                                    "pre": 'href="',
                                     "field": "action",
                                     "post": '">Action!</a>'
                                 }
@@ -104,6 +114,9 @@ $.extend(true, doaj, {
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
+                    },
+                    "edges:post-render": function() {
+                        $(".notification_action_button").on("click", doaj.notifications.notificationClicked);
                     }
                 }
             });
