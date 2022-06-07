@@ -2,6 +2,10 @@
 
 .tags {
   @include unstyled-list($inline: true);
+
+  li:last-child a {
+    margin-right: 0;
+  }
 }
 
 .tag {
@@ -37,7 +41,7 @@
 
 .tag--featured {
   background: $grapefruit;
-  color: $warm-black;
+  color: $white;
 
   svg {
     stroke: $warm-black;
@@ -58,11 +62,31 @@
 }
 
 .tag--secondary {
+  background: $dark-grey;
+  color: $white;
+
+  a, svg {
+    color: $white;
+    stroke: $white;
+  }
+
+  &[aria-selected=true] {
+    background-color: $warm-black;
+    color: $white;
+  }
+}
+
+.tag--tertiary {
   background: $light-grey;
   color: $warm-black;
 
   a, svg {
     color: $warm-black;
     stroke: $warm-black;
+  }
+
+  &[aria-selected=true] {
+    background-color: $dark-grey;
+    color: $white;
   }
 }

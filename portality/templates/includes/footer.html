@@ -2,7 +2,7 @@
 
 <footer class="page-footer">
     <div class="container">
-        <a class="back-to-top" data-spy="affix" href="#" id="top"><span aria-hidden="true" data-feather="arrow-up"></span><span class="sr-only">Back to top</span></a>
+        {% include "includes/_back-to-top.html" %}
         <section class="row">
             {% set columns = data.nav.entries|selectattr("footer")|list %}
             {% for column in columns %}

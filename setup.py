@@ -3,7 +3,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.1.5',
+    version='6.1.6',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -29,7 +29,7 @@ setup(
         "huey==1.10.5",  # upgrading to 1.11 / 2.x requires work
         "libsass==0.20.1",
         "LinkHeader==0.4.3",
-        "lxml==4.4.1",
+        "lxml==4.8.0",
         "Markdown==3.1.1",
         "markdown-full-yaml-metadata==2.0.1",
         "markdown-link-attr-modifier==0.2.0",

@@ -56,6 +56,8 @@ DOAJ partners with many organisations. The nature of the partnerships vary and m
   {:.stretch-list__item} 
 + [Cottage Labs LLP](https://cottagelabs.com/)
   {:.stretch-list__item} 
++ [DOAB (Directory of Open Access Books)](https://www.doabooks.org/)
+  {:.stretch-list__item} 
 + [Federation of Finnish Learned Societies](https://tsv.fi/en)
   {:.stretch-list__item} 
 + [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
