@@ -257,3 +257,4 @@ class JournalService(object):
                 csvwriter.writerow(qs)
             vs = [v for _, v in cols[i]]
             csvwriter.writerow(vs)
+

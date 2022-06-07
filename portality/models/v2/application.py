@@ -4,7 +4,7 @@ from portality import constants
 from portality.core import app
 from portality.lib import es_data_mapping
 from portality.models.v2 import shared_structs
-from portality.models.v2.journal import JournalLikeObject
+from portality.models.v2.journal import JournalLikeObject, Journal
 from portality.lib.coerce import COERCE_MAP
 from portality.dao import DomainObject
 
@@ -125,6 +125,12 @@ class Application(JournalLikeObject):
 
     def remove_related_journal(self):
         self.__seamless__.delete("admin.related_journal")
+
+    @property
+    def related_journal_object(self):
+        if self.related_journal:
+            return Journal.pull(self.related_journal)
+        return None
 
     @property
     def application_status(self):
