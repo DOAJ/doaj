@@ -14,7 +14,7 @@ from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.store import StoreFactory
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue, schedule
+from portality.tasks.redis_huey import schedule, long_running
 
 tmpStore = StoreFactory.tmp()
 mainStore = StoreFactory.get("anon_data")
@@ -187,7 +187,7 @@ class AnonExportBackgroundTask(BackgroundTask):
         anon_export.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.periodic_task(schedule(AnonExportBackgroundTask.__action__))
+@long_running.periodic_task(schedule(AnonExportBackgroundTask.__action__))
 @write_required(script=True)
 def scheduled_anon_export():
     background_helper.submit_by_bg_task_type(AnonExportBackgroundTask,
@@ -196,7 +196,7 @@ def scheduled_anon_export():
                                              batch_size=app.config.get("TASKS_ANON_EXPORT_BATCH_SIZE", 100000))
 
 
-@main_queue.task()
+@long_running.task()
 @write_required(script=True)
 def anon_export(job_id):
     background_helper.execute_by_job_id(job_id, AnonExportBackgroundTask)
