@@ -2,10 +2,6 @@
 # ~~Sponsors:Data~~
 
 gold:
-- name: PeerJ
-  url: https://peerj.org/
-  logo: peerj.svg
-
 - name: Royal Society of Chemistry
   url: https://www.rsc.org/
   logo: rsc.png
@@ -20,7 +16,7 @@ silver:
   url: https://pubs.acs.org/
   logo: ACS.jpg
 
-- name: American Physiological Association
+- name: American Psychological Association
   url: https://www.apa.org/pubs
   logo: apa.png
 
@@ -40,15 +36,11 @@ silver:
   url: https://ufm.dk/
   logo: ufm.svg
   
-- name: Elsevier
-  url: https://www.elsevier.com/
-  logo: elsevier.svg
-
 - name: EBSCO
   url: https://www.ebsco.com/
   logo: ebsco.svg
 
-- name: eLife
+- name: eLife Sciences Publications
   url: https://elifesciences.org/
   logo: elife.svg
 
@@ -61,13 +53,9 @@ silver:
   logo: frontiers.svg
 
 - name: JMIR Publications
-  url: http://jmirpublications.com/
+  url: https://jmirpublications.com/
   logo: jmir.svg
 
-- name: KeAi
-  url: http://www.keaipublishing.com/en/
-  logo: keai.png
-  
 - name: MDPI
   url: https://www.mdpi.com/
   logo: mdpi.svg  
@@ -80,10 +68,6 @@ silver:
   url: https://www.nsd.uib.no/nsd/english/index.html
   logo: nsd.svg
 
-- name: OUP
-  url: https://global.oup.com/
-  logo: OUP.jpg
- 
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
   logo: sage.svg
@@ -97,16 +81,7 @@ silver:
   logo: tf.svg  
 
 
-
 bronze:
-- name: Physical Review Journals
-  url: https://journals.aps.org/
-  logo: aps.svg
-
-- name: ARPHA Publishing Platform
-  url: https://arphahub.com/
-  logo: arpha.png
-
 - name: Cambridge University Press
   url: https://www.cambridge.org/
   logo: cambridge.svg
@@ -115,14 +90,14 @@ bronze:
   url: https://cottagelabs.com/
   logo: cl.svg
   
-- name: Digital Science
-  url: https://www.digital-science.com/
-  logo: digsci.png
-
 - name: EDP Sciences
   url: https://www.edpsciences.org/
   logo: edp.svg
 
+- name: Elsevier
+  url: https://www.elsevier.com/
+  logo: elsevier.svg
+  
 - name: Emerald Publishing
   url: https://emeraldpublishing.com/
   logo: emerald.svg
@@ -134,10 +109,6 @@ bronze:
 - name: The Institution of Engineering and Technology (IET)
   url: https://www.theiet.org/
   logo: iet.svg
-
-- name: IOP Publishing
-  url: http://ioppublishing.org/
-  logo: iop.jpg
 
 - name: ISSN
   url: https://www.issn.org/
@@ -159,18 +130,10 @@ bronze:
   url: https://www.oclc.org/
   logo: oclc.svg
 
-- name: PLOS
-  url: https://plos.org/
-  logo: plos.svg
+- name: Oxford University Press
+  url: https://global.oup.com/
+  logo: OUP.jpg
 
-- name: Relawan Jurnal Indonesia
-  url: http://relawanjurnal.id/
-  logo: RelawanJurnalIndonesia.png
-
-- name: SciELO
-  url: https://www.scielo.br/
-  logo: scielo.svg
-  
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg  
