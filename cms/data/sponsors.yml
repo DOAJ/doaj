@@ -70,6 +70,10 @@ silver:
 
 
 bronze:
+- name: ARPHA Publishing Platform
+  url: https://arphahub.com/
+  logo: arpha.png
+
 - name: Cambridge University Press
   url: https://www.cambridge.org/
   logo: cambridge.svg
