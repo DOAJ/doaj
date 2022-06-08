@@ -32,10 +32,6 @@ silver:
   url: https://publications.copernicus.org
   logo: copernicus.svg
 
-- name: Danish Agency for Science and Higher Education
-  url: https://ufm.dk/
-  logo: ufm.svg
-  
 - name: EBSCO
   url: https://www.ebsco.com/
   logo: ebsco.svg
@@ -64,18 +60,10 @@ silver:
   url: https://www.kb.se/
   logo: kbse.svg
 
-- name: Norwegian Centre for Research Data (NSD)
-  url: https://www.nsd.uib.no/nsd/english/index.html
-  logo: nsd.svg
-
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
   logo: sage.svg
 
-- name: Swedish Research Council
-  url: https://vr.se/english.html
-  logo: vr.svg
-  
 - name: Taylor & Francis Group
   url: https://www.taylorandfrancisgroup.com/
   logo: tf.svg  
