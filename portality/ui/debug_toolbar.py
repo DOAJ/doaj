@@ -1,7 +1,7 @@
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_debugtoolbar.panels import DebugPanel
 
-cur_app = None
+from portality.lib import paths
 
 
 class BranchNamePanel(DebugPanel):
@@ -9,11 +9,7 @@ class BranchNamePanel(DebugPanel):
     has_content = True
 
     def get_branch_name(self):
-        if cur_app is None:
-            return 'something wrong, cur_app should be defined in core or before web start'
-
-        from pathlib import Path
-        _git_head_file = Path(cur_app.instance_path).parent.joinpath('.git/HEAD')
+        _git_head_file = paths.get_project_root().joinpath('.git/HEAD')
         if _git_head_file.is_file():
             return (_git_head_file.read_text()
                     .strip().replace('ref: refs/heads/', '')
@@ -39,8 +35,6 @@ class BranchNamePanel(DebugPanel):
 class DoajDebugToolbar(DebugToolbarExtension):
 
     def _default_config(self, app):
-        global cur_app
-        cur_app = app
         config = super()._default_config(app)
         config['DEBUG_TB_PANELS'] += (f'{BranchNamePanel.__module__}.{BranchNamePanel.__name__}',)
         return config

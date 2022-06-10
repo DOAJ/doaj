@@ -1,4 +1,6 @@
 import os
+from pathlib import Path
+
 
 def rel2abs(file, *args):
     file = os.path.realpath(file)
@@ -6,5 +8,11 @@ def rel2abs(file, *args):
         file = os.path.dirname(file)
     return os.path.abspath(os.path.join(file, *args))
 
+
 def list_subdirs(path):
     return [x for x in os.listdir(path) if os.path.isdir(os.path.join(path, x))]
+
+
+def get_project_root():
+    """ Should return folder path of `doaj` """
+    return Path(os.path.dirname(os.path.dirname(__file__))).parent
