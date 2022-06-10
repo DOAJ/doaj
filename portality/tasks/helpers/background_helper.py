@@ -68,5 +68,7 @@ def submit_by_background_job(background_job, execute_fn):
 def create_execute_fn(redis_huey, task_factory: TaskFactory):
     @redis_huey.task()
     @write_required(script=True)
-    def anon_export(job_id):
+    def _execute_fn(job_id):
         execute_by_job_id(job_id, task_factory)
+
+    return _execute_fn

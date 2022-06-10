@@ -18,11 +18,9 @@ def send_mail_if_bgjob_error(to_address_list, from_address, logger_fn=None):
 
     raw_query = {
         'query': {'bool': {'must': [
-            {'term': {'status.exact': 'queued'}},
-            # KTODO
-            # {'term': {'status.exact': 'error'}},
-            # {'term': {'user.exact': 'system'}},
-            # {'term': {'action.exact': 'harvest'}},
+            {'term': {'status.exact': 'error'}},
+            {'term': {'user.exact': 'system'}},
+            {'term': {'action.exact': 'harvest'}},
         ]
         }},
         'sort': [{'created_date': {'order': 'desc'}}],
@@ -41,7 +39,8 @@ def send_mail_if_bgjob_error(to_address_list, from_address, logger_fn=None):
         ]
 
     msg_lines = itertools.chain.from_iterable(_to_msg_lines(j) for j in jobs)
-    msg_body = '<br />'.join(msg_lines)
+    msg_body = f'{len(jobs)} of background jobs found.\n'
+    msg_body += '\n'.join(msg_lines)
     app_email.send_mail(to_address_list, from_address,
                         '[Monitoring Background job] error background jobs found.',
                         msg_body=msg_body)
@@ -87,13 +86,3 @@ def scheduled_monitor_bgjobs():
 
 
 execute_monitor_bgjobs = background_helper.create_execute_fn(long_running, MonitorBgjobsBackgroundTask)
-
-
-# TOBEREMOVE
-def main():
-    app_email.send_mail(['kkh900922@gmail.com'], 'ababa@abab.com', 'Hello testing', msg_body='xxxxx')
-
-
-if __name__ == '__main__':
-    main()
-    # send_mail_if_bgjob_error()
