@@ -28,8 +28,8 @@ def send_event(goal: str, on_completed=None, **props_kwargs):
     """ Send event data to Plausible Analytics. (ref: https://plausible.io/docs/events-api )
     """
 
-    host_url = app.config.get('PLAUSIBLE_URL', '')
-    if not host_url:
+    plausible_api_url = app.config.get('PLAUSIBLE_API_URL', '')
+    if not app.config.get('PLAUSIBLE_URL', '') and not plausible_api_url:
         logger.warning('skip send_event, PLAUSIBLE_URL undefined')
         return
 
@@ -41,7 +41,7 @@ def send_event(goal: str, on_completed=None, **props_kwargs):
         payload['props'] = json.dumps(props_kwargs)
 
     def _send():
-        resp = requests.post(f'{host_url}/api/event/', json=payload, )
+        resp = requests.post(plausible_api_url, json=payload, )
         if on_completed:
             if resp.status_code >= 300:
                 logger.warning(f'send plausible event api fail. [{resp.status_code}][{resp.text}]')

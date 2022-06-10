@@ -12,7 +12,7 @@
 {%- if not config.get("DEBUG", True)  -%}
     <!-- Plausible Analytics -->
     <script defer data-domain="{{ config.get('PLAUSIBLE_SITE_NAME')}}"
-            src="{{ config.get('PLAUSIBLE_URL') }}/js/plausible.js"></script>
+            src="{{ config.get('PLAUSIBLE_JS_URL') }}"></script>
 {%- endif -%}
 
 {# FIXME: do we need these any more? #}
