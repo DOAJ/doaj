@@ -27,6 +27,10 @@ def send_mail_if_bgjob_error(to_address_list, from_address, logger_fn=None):
         'track_total_hits': True}
 
     jobs = models.BackgroundJob.q2obj(q=raw_query)
+    if not jobs:
+        logger_fn(f'[monitor_bgjobs] No background jobs found. exit')
+        return
+
     logger_fn(f'[monitor_bgjobs] {len(jobs)} of background jobs found.')
 
     def _to_msg_lines(_jobs):
