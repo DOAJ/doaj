@@ -56,11 +56,8 @@ doaj.dashboard.renderGroupInfo = function(data) {
             urCount = data.by_editor[ed].update_requests || 0;
         }
         editorListFrag += `<li>
-            <a href="mailto:${data.editors[ed].email}" class="label tag">${ed}</a>
-            <span class="tag tag--secondary">
-                <a href="/admin/applications?source=${appQuerySource}">${appCount} <span class="sr-only">applications</span> APP</a> | 
-                <a href="/admin/update_requests?source=${urQuerySource}">${urCount} <span class="sr-only">update requests</span> UR</a>
-            </span>
+            <a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag">${ed}</a>
+            <a href="/admin/applications?source=${appQuerySource}" class="tag tag--tertiary" style="margin-right: 1.5rem;">${appCount} <span class="sr-only">applications</span></a>
         </li>`;
     }
 
@@ -76,11 +73,8 @@ doaj.dashboard.renderGroupInfo = function(data) {
             {"index.application_type.exact" : "update request"}    // this is required so we only see open update requests, not finished ones
     ]})
     editorListFrag += `<li>
-        <span class="label tag tag--featured">unassigned</span>
-        <span class="tag tag--secondary">
-            <a href="/admin/applications?source=${appUnassignedSource}">${data.unassigned.applications} <span class="sr-only">applications</span> APP</a> | 
-            <a href="/admin/update_requests?source=${urUnassignedSource}">${data.unassigned.update_requests} <span class="sr-only">update requests</span> UR</a>
-        </span>
+        <span class="label tag tag--featured">Unassigned</span>
+        <a href="/admin/applications?source=${appUnassignedSource}" class="tag tag--tertiary">${data.unassigned.applications} <span class="sr-only">applications</span></a>
     </li>`;
 
     let appStatusFrag = "";
@@ -132,29 +126,25 @@ doaj.dashboard.renderGroupInfo = function(data) {
         {"admin.editor_group.exact" : data.editor_group.name},
         {"index.application_type.exact" : "update request"}    // this is required so we only see open applications, not finished ones
     ]})
-    let frag = `<h3>
-        ${data.editor_group.name}’s ongoing applications
-        <span class="tag tag--secondary">
-            <a href="/admin/applications?source=${appGroupSource}">${data.total.applications} <span class="sr-only">applications</span> APP</a> | 
-            <a href="/admin/update_requests?source=${urGroupSource}">${data.total.update_requests} <span class="sr-only">update requests</span> UR</a>
-        </span>
-    </h3>
+    let frag = `<div class="tabs__content card">
+        <h3>
+          ${data.editor_group.name}’s ongoing applications
+          <a href="/admin/applications?source=${appGroupSource}" class="tag tag--secondary">${data.total.applications}<span class="sr-only"> applications</span></a>
+        </h3>
 
-    <h4 class="label label--tertiary">By editor</h4>
-    <ul class="inlined-list type-06">
-        ${editorListFrag}
-    </ul>
+        <section>
+          <h4 class="label label--secondary">By editor</h4>
+          <ul class="inlined-list type-06">
+              ${editorListFrag}
+          </ul>
+        </section>
 
-    <hr/>
-
-    <h4 class="label label--tertiary">By status</h4>
-    <h5>New Applications</h5>
-    <ul class="inlined-list progress-bar">
-        ${appStatusFrag}
-    </ul>
-    <h5>Update Requests</h5>
-    <ul class="inlined-list progress-bar">
-        ${urStatusFrag}
-    </ul>`;
+        <section>
+          <h4 class="label label--secondary">Applications by status</h4>
+          <ul class="inlined-list progress-bar">
+              ${appStatusFrag}
+          </ul>
+        </section>
+      </div>`;
     return frag;
 }
