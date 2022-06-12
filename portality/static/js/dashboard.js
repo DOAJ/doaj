@@ -80,6 +80,25 @@ doaj.dashboard.renderGroupInfo = function(data) {
     let appStatusFrag = "";
     let urStatusFrag = "";
     let statuses = Object.keys(data.by_status);
+
+    let appStatusProgressBar = "";
+
+    for (let i = 0; i < statuses.length; i++) {
+      let status = statuses[i];
+      if (data.by_status[status].applications > 0) {
+          let appStatusSource = doaj.searchQuerySource({
+              "term": [
+                  {"admin.editor_group.exact": data.editor_group.name},
+                  {"admin.application_status.exact": status},
+                  {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
+              ]
+          })
+          appStatusProgressBar += `<li class="progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications/data.total.applications)*100}%;"><a href="/admin/applications?source=${appStatusSource}" class="progress-bar__link">
+            ${status} (${data.by_status[status].applications})
+          </li>`;
+      }
+    }
+
     for (let i = 0; i < statuses.length; i++) {
         let status = statuses[i];
         // ~~-> ApplicationSearch:Page~~
@@ -94,7 +113,6 @@ doaj.dashboard.renderGroupInfo = function(data) {
             appStatusFrag += `<li>
                 <a href="/admin/applications?source=${appStatusSource}">
                     <span>${status} <span>${data.by_status[status].applications}</span></span>
-                    <span></span>
                 </a>
             </li>`;
         }
@@ -142,7 +160,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
         <section>
           <h4 class="label label--secondary">Applications by status</h4>
           <ul class="inlined-list progress-bar">
-              ${appStatusFrag}
+            ${appStatusProgressBar}
           </ul>
         </section>
       </div>`;
