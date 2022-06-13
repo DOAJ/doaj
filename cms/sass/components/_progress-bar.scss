@@ -1,0 +1,40 @@
+.progress-bar {
+  width: 100%;
+}
+
+.progress-bar__bar {
+  display: inline-flex;
+
+  .progress-bar__link {
+    display: flex;
+    align-items: center;
+    padding: 0 $spacing-03;
+    height: 50px;
+    text-decoration: none;
+    color: $warm-black;
+  }
+}
+
+.progress-bar__bar--pending {
+  background-color: $yellow;
+}
+
+.progress-bar__bar--in-progress {
+  background-color: $light-green;
+}
+
+.progress-bar__bar--completed {
+  background-color: $mid-green;
+
+  .progress-bar__link {
+    color: $white;
+  }
+}
+
+.progress-bar__bar--ready {
+  background-color: $dark-green;
+
+  .progress-bar__link {
+    color: $white;
+  }
+}

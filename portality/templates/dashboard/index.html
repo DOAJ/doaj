@@ -112,24 +112,29 @@
     #}
   </section>
 
-        <section>
-            <h2 class="label">Activity</h2>
+  <section>
+    <h2>Activity</h2>
+    <div class="tabs">
+      <nav class="tabs__menu">
+        <ul class="tabs__list" role="tablist">
+          {# managed_groups is inherited from the dashboard_base template #}
+          {% for eg in managed_groups %}
+          <li class="tabs__item">
+            {# TODO: this needs to show the total nb of applications for each group #}
+            <a href="#" data-group-id="{{ eg.id }}" role="tab" aria-selected="{% if loop.first %}true{% else %}false{% endif %}" class="label js-group-tab">{{ eg.name }} (10<span class="sr-only"> applications</span>)</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
 
-            <div class="tabs">
-                <nav role="tablist" aria-label="Activity by team">
-                    {# managed_groups is inherited from the dashboard_base template #}
-                    {% for eg in managed_groups %}
-                        <button role="tab" aria-selected="false" aria-controls="group-tab" id="group-tab-{{ eg.id }}" tabindex="0" class="tag tag--secondary">
-                            <a href="#" class="js-group-tab" data-group-id="{{ eg.id }}">{{ eg.name }}</a>
-                        </button>
-                    {% endfor %}
-                </nav>
-                <article id="group-tab" role="tabpanel" tabindex="0" aria-labelledby="" class="card">Select a group</article>
-            </div>
-
-        </section>
-
-    </main>
+      {# TODO: there’s a bit of a11y work to be done here; we need to indicate which tabs are hidden and which
+      aren’t using ARIA attributes. #}
+      {# TODO: the first tab content needs to be shown by default, without a "click to see" message. #}
+      <div class="tabs__content">
+        <div id="group-tab" role="tabpanel" tabindex="0" aria-labelledby=""  aria-hidden="" style="font-size: smaller;" class="tabs__panel"></div>
+      </div>
+    </div>
+  </section>
 {% endblock %}
 
 {% block extra_js_bottom %}
