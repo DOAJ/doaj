@@ -116,12 +116,14 @@
     <h2>Activity</h2>
     <div class="tabs">
       <nav class="tabs__menu">
-        <ul class="tabs__list" role="tablist">
+        {# note that js-managed-groups-tabs and the structure beneath it is required in dashboard.js - if you change the
+            structure of this code, you need to change that too #}
+        <ul class="tabs__list js-managed-groups-tabs" role="tablist">
           {# managed_groups is inherited from the dashboard_base template #}
           {% for eg in managed_groups %}
           <li class="tabs__item">
             {# TODO: this needs to show the total nb of applications for each group #}
-            <a href="#" data-group-id="{{ eg.id }}" role="tab" aria-selected="{% if loop.first %}true{% else %}false{% endif %}" class="label js-group-tab">{{ eg.name }} (10<span class="sr-only"> applications</span>)</a>
+            <a href="#" data-group-id="{{ eg.id }}" role="tab" aria-selected="{% if loop.first %}true{% else %}false{% endif %}" class="label js-group-tab">{{ eg.name }} ({{ maned_assignments[eg.name] }}<span class="sr-only"> applications</span>)</a>
           </li>
           {% endfor %}
         </ul>

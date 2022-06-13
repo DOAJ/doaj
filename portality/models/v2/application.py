@@ -89,6 +89,16 @@ class Application(JournalLikeObject):
         q = RelatedJournalQuery(journal_id, size=1000)
         return cls.q2obj(q=q.query())
 
+    @classmethod
+    def assignment_to_editor_groups(cls, egs):
+        q = AssignedEditorGroupsQuery([eg.name for eg in egs])
+        res = cls.query(q.query())
+        buckets = res.get("aggregations", {}).get("editor_groups", {}).get("buckets", [])
+        assignments = {}
+        for b in buckets:
+            assignments[b.get("key")] = b.get("doc_count")
+        return assignments
+
     def mappings(self):
         return es_data_mapping.create_mapping(self.__seamless_struct__.raw, MAPPING_OPTS)
 
@@ -357,4 +367,32 @@ class RelatedJournalQuery(object):
                 {"created_date" : {"order" : "asc"}}
             ],
             "size" : self.size
+        }
+
+
+class AssignedEditorGroupsQuery(object):
+    def __init__(self, editor_groups, application_type_name="new application"):
+        self.editor_groups = editor_groups
+        self.application_type_name = application_type_name
+
+    def query(self):
+        return {
+            "query": {
+                "bool": {
+                    "must" : [
+                        {"terms": {"admin.editor_group.exact": self.editor_groups}},
+                        {"term" : {"index.application_type.exact": self.application_type_name}}
+                    ]
+                }
+            },
+            "size": 0,
+            "aggs" : {
+                "editor_groups": {
+                    "terms": {
+                        "field": "admin.editor_group.exact",
+                        "size": len(self.editor_groups),
+                        "order": {"_term" : "asc"}
+                    }
+                }
+            }
         }

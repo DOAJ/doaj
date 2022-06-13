@@ -115,7 +115,8 @@ class EditorGroupMemberQuery(object):
     def query(self):
         q = {
             "track_total_hits": True,
-            "query": {"bool": {"should": []}}
+            "query": {"bool": {"should": []}},
+            "sort": {"name.exact": {"order" : "asc"}}
         }
         if self.editor is not None:
             et = {"term": {"editor.exact": self.editor}}

@@ -2,7 +2,11 @@
 doaj.dashboard = {};
 
 doaj.dashboard.init = function() {
-    $(".js-group-tab").on("click", doaj.dashboard.groupTabClick)
+    $(".js-group-tab").on("click", doaj.dashboard.groupTabClick);
+
+    // trigger a click on the first one, so there is something for the user to look at
+    let first = $(".js-managed-groups-tabs").find("li:first-child a");
+    first.trigger("click");
 }
 
 doaj.dashboard.groupTabClick = function(event) {
