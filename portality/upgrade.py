@@ -48,7 +48,7 @@ def do_upgrade(definition, verbose):
         # learn what kind of model we've got
         model_class = MODELS.get(tdef.get("type"))
         max = model_class.count()
-        action = tdef.get("action","update")
+        action = tdef.get("action", "update")
 
         # Iterate through all of the records in the model class
         try:
