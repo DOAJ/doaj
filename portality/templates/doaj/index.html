@@ -6,7 +6,7 @@
   <div class="homepage__background">
     <section class="homepage__search">
         <div class="container">
-            <p class="label">The Directory of Open Access Journals</p>
+            <p class="label">Directory of Open Access Journals</p>
             <h1>Find open access journals & articles.</h1>
             <form class="row doaj-minisearch--container" role="search" action="{{ url_for('doaj.search_post') }}" method="post">
                 <input type="hidden" name="ref" value="homepage-box">
@@ -105,7 +105,7 @@
                     <p class="col-xs-6 stat">
                         <span class="stat__number">18%</span>
                         <span class="stat__description">
-                          <a href="{{ url_for('doaj.sponsors') }}">from sponsors</a>
+                          <a href="{{ url_for('doaj.sponsors') }}">from contributors</a>
                         </span>
                     </p>
                   </div>
@@ -113,7 +113,7 @@
                       <a href="{{ url_for('doaj.support') }}" class="button">Support DOAJ</a>
                   </p>
                   <p>
-                      Journal publishers don’t need to donate to be part of DOAJ.
+                      Publishers don't need to donate to be part of DOAJ.
                   </p>
               </article>
           </div>
