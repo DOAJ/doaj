@@ -12,29 +12,29 @@
       <h2 class="sr-only">DOAJ Dashboard</h2>
 
       <nav class="primary-nav flex-space-between" id="primary-nav">
-      <a href="/dashboard/" class="logo">
-        {% include "includes/svg/doaj-icon.svg" %}
-      </a>
-      <ul class="unstyled-list flex-center">
-        {# TODO display last 10 event notifications here #}
-        <li class="dropdown flex-center">
-          <span class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
-            <small><span><span data-feather="bell" aria-hidden="true"></span> Notifications</span></small>
-          </span>
-          <ul class="dropdown__menu" id="top_notifications"></ul>
-        </li>
-        <li class="flex-center">
-          <a href="/dashboard" class="tag">
-            <small><span><span data-feather="list" aria-hidden="true"></span> Dashboard</span></small>
-          </a>
-        </li>
-        <li class="flex-center">
-          <a href="/" class="tag">
-            <small><span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span></small>
-          </a>
-        </li>
-      </ul>
-    </nav>
+        <a href="/dashboard/" class="logo">
+          {% include "includes/svg/doaj-icon.svg" %}
+        </a>
+        <ul class="unstyled-list flex-center">
+          {# TODO display last 10 event notifications here #}
+          <li class="dropdown flex-center">
+            <span class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
+              <small><span><span data-feather="bell" aria-hidden="true"></span> Notifications</span></small>
+            </span>
+            <ul class="dropdown__menu notifications" id="top_notifications"></ul>
+          </li>
+          <li class="flex-center">
+            <a href="/dashboard" class="label">
+              <small><span><span data-feather="list" aria-hidden="true"></span> Dashboard</span></small>
+            </a>
+          </li>
+          <li class="flex-center">
+            <a href="/" class="label">
+              <small><span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span></small>
+            </a>
+          </li>
+        </ul>
+      </nav>
       {% include 'dashboard/nav.html' %}
       {% block extra_header %}{% endblock %}
     </header>

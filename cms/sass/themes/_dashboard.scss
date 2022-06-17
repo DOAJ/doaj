@@ -11,15 +11,12 @@
   }
 
   .primary-nav {
-    height:75px;
+    height: 75px;
 
-    li {
-      margin-right: $spacing-04;
-
-      .tag {
-        margin: 0;
-        padding: $spacing-02;
-      }
+    .label {
+      margin-left: $spacing-04;
+      text-decoration: none;
+      line-height: 75px;
     }
 
     .logo {
