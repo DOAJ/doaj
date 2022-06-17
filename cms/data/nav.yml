@@ -58,7 +58,7 @@ entries:
     entries:
       - label: Support DOAJ
         route: doaj.support           # ~~->Support:WebRoute~~
-      - label: Sponsors
+      - label: Contributors
         route: doaj.sponsors          # ~~->Sponsors:WebRoute~~
       - label: Publisher supporters
         route: doaj.publisher_supporters  # ~~->PublisherSupporters:WebRoute~~
