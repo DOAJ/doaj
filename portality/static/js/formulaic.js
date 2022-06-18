@@ -1106,7 +1106,7 @@ var formulaic = {
                                         <h2 class="label">Subject classifications</h2>
                                         <p class="alert">Selecting a subject will not automatically select its sub-categories.</p>
                                         <div id="` + widgetId + `"></div>
-                                        <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
+                                        <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Add subject(s)</button>
                                     </div>
                                  </div>`);
 
