@@ -1,6 +1,7 @@
 /* Common styles for Admin/ManEd, Ed, and Associate Ed dashboards */
 
 .dashboard {
+  font-size: 18px;
 
   h1 {
     margin-top: 0;
@@ -38,16 +39,12 @@
   }
 
   .main-header {
-    font-size: smaller;
+    @include typescale-06;
 
     dt, dd {
       margin-top: 0;
       display: inline-block;
     }
-  }
-
-  .row {
-    max-width: 100%;
   }
 
   .vertical-nav {
@@ -104,7 +101,6 @@
     display: grid;
     grid-auto-rows: 1fr;
     list-style: none;
-    font-size: smaller;
 
     @media screen and (max-width: 768px) {
       grid-template-columns: repeat(2, 1fr);
@@ -163,10 +159,18 @@
 
   main {
     margin-left: 75px;
-    padding: $spacing-04;
+    width: auto;
 
-    @media screen and (min-width: 1480px) {
-      width: auto;
+    @media screen and (max-width: 768px) {
+      padding: 20px;
+    }
+
+    @media screen and (max-width: 1279px) and (min-width: 769px) {
+      padding: 30px;
+    }
+
+    @media screen and (min-width: 1280px) {
+      padding: 40px;
     }
   }
 }

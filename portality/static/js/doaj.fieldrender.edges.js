@@ -411,7 +411,7 @@ $.extend(true, doaj, {
                     <p id="share_embed"></p>\
                     <h2 id="result-count"></h2>\
                     <div class="row">\
-                        <div class="col-md-3">\
+                        <div class="col-sm-2 col-md-3">\
                             <aside class="filters">\
                               <h2 class="filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
                                 <span data-feather="sliders" aria-hidden="true"></span> Refine search results \
@@ -422,7 +422,7 @@ $.extend(true, doaj, {
                             </aside>\
                         </div>\
                             \
-                        <div class="col-md-9">\
+                        <div class="col-sm-10 col-md-9">\
                             <aside id="selected-filters"></aside>\
                             <nav>\
                                 <h3 class="sr-only">Display options</h3>\
@@ -959,7 +959,7 @@ $.extend(true, doaj, {
                     clearFrag = '<div class="col-xs-6" style="text-align: right;">' + clearFrag + '</div>';
                 }
 
-                var frag = searchBox + '<div class="row">' + sortOptions + clearFrag + '</div>';
+                var frag = searchBox + '<div class="container-fluid"><div class="row">' + sortOptions + clearFrag + '</div></div>';
 
                 comp.context.html(frag);
 

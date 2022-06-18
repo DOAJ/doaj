@@ -64,17 +64,22 @@
     {% block main_panel %}
     <main>
       <header class="main-header">
-        <div class="flex-space-between">
-          <h1>
-            {% block page_title %}Hi{% if current_user.name %}, {{ current_user.name }}{% endif %}!{% endblock %}
-          </h1>
-          <nav class="align-right">
+        <div class="row">
+          <header class="col-md-6 col-lg-4">
+            <p class="label tag"><small><a href="{{ url_for('account.username', username=current_user.id) }}">{{ current_user.id }} (Managing Editor)</a></small></p>{# TODO: insert role of user here #}
+            <h1>
+              {% block page_title %}
+                Hi{% if current_user.name %}, {{ current_user.name }}{% endif %}!
+              {% endblock %}
+            </h1>
+          </header>
+          <nav class="col-md-6 col-lg-8 align-right">
             <ul class="inlined-list">
               <li>
                 {% set managed_groups = maned_of() %}
                 {% if managed_groups and managed_groups|length > 0 %}
                 <dl>
-                  <dt>
+                  <dt class="sr-only">
                     Managing Editor of&nbsp;&nbsp;
                   </dt>
                   <dd>
@@ -90,12 +95,6 @@
                     </ul>
                   </dd>
                   {% endif %}
-                  <dt>
-                    Username&nbsp;&nbsp;
-                  </dt>
-                  <dd>
-                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">{{ current_user.id }}</a>
-                  </dd>
                 </dl>
               </li>
             </ul>
@@ -104,12 +103,18 @@
       </header>
       {% block content %}{% endblock %}
 
-      <span class="flex-center">
-        <a href="{{ url_for('account.logout') }}" class="tag tag--tertiary">
-          <span><strong>Log out</strong></span>
-          <span data-feather="log-out" aria-hidden="true"></span>
-        </a>
-      </span>
+      <p>
+        <small>
+          <a href="{{ url_for('account.logout') }}" class="tag">
+            <span data-feather="log-out" aria-hidden="true"></span>
+            Log out
+          </a>
+          <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">
+            <span data-feather="settings" aria-hidden="true"></span>
+            Settings
+          </a>
+        </small>
+      </p>
     </main>
     {% include "includes/_back-to-top.html" %}
     {% endblock %}
