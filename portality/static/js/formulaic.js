@@ -1350,7 +1350,7 @@ var formulaic = {
 
                 if (val) {
                     if (this.container) {
-                        this.container.html('<strong>Full contents: ' + edges.escapeHtml(val) + '</strong>');
+                        this.container.html('<small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small>');
                     } else {
                         var classes = edges.css_classes(this.ns, "contents");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
@@ -1394,12 +1394,17 @@ var formulaic = {
                     $(`<button class="button ` + viewClass + `" style="margin: 0 1rem 1rem 0;">View note<span data-feather="eye" aria-hidden="true"/></button>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                             <div class="modal__dialog" role="document">
-                                <p class="label">Note</p>
-                                <h3 class="modal__title">
-                                    ` + date.val() + `
-                                </h3>
-                                <p>` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `</p>
-                                <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
+                              <header class="flex-space-between modal__title">
+                                <span>
+                                  <p class="label">Note</p>
+                                  <h3 class="no-margins">
+                                      ` + date.val() + `
+                                  </h3>
+                                </span>
+                                <span type="button" data-dismiss="modal" class="type-01 ` + closeClass + `"><span class="sr-only">Close</span>&times;</span>
+                              </header>
+                              <p>` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `</p>
+                              <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
                             </div>
                         </div>
                         </div>
