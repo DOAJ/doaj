@@ -85,7 +85,7 @@
                 <ul class="inlined-list tags">
                   {% for eg in managed_groups %}
                   <li class="tag tag--tertiary">
-                    {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}]) %}
+                    {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}], term=[{"index.application_type.exact" : "new application"}]) %}
                     <a href="{{ url_for('admin.suggestions') }}?source={{ source }}" title="See all applications"><strong>{{ eg.name }}</strong></a>
                     <a href="{{ url_for('admin.index') }}?source={{ source }}" title="See all journals">(journals)
                     </a>
