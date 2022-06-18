@@ -74,9 +74,15 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": '<span class="alt_title">Alternative title: ',
-                                    "field": "bibjson.alternative_title",
-                                    "post": "</span>"
+                                    valueFunction: doaj.fieldRender.editSuggestion({
+                                        editUrl : doaj.adminApplicationsSearchConfig.applicationEditUrl
+                                    })
+                                }
+                            ],
+                            [
+                                {
+                                    "pre": '<strong>Alternative title: </strong>',
+                                    "field": "bibjson.alternative_title"
                                 }
                             ],
                             [
@@ -160,13 +166,6 @@ $.extend(true, doaj, {
                             [
                                 {
                                     valueFunction: doaj.fieldRender.links
-                                }
-                            ],
-                            [
-                                {
-                                    valueFunction: doaj.fieldRender.editSuggestion({
-                                        editUrl : doaj.adminApplicationsSearchConfig.applicationEditUrl
-                                    })
                                 }
                             ]
                         ]

@@ -12,13 +12,13 @@ $.extend(true, doaj, {
                 result += doaj.adminJournalsSearchConfig.journalEditUrl;
                 result += resultobj['id'];
                 result += '/continue?type=replaces" target="_blank"';
-                result += '>Make a preceding continuation</a>';
+                result += ' style="margin-bottom: 0;">Make a preceding continuation</a>';
 
                 result += '<a class="edit_journal_link button" href="';
                 result += doaj.adminJournalsSearchConfig.journalEditUrl;
                 result += resultobj['id'];
                 result += '/continue?type=is_replaced_by" target="_blank"';
-                result += '>Make a succeeding continuation</a>';
+                result += ' style="margin-bottom: 0;">Make a succeeding continuation</a>';
 
                 return result;
             }
@@ -353,6 +353,11 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
+                                   valueFunction: doaj.fieldRender.editJournal({editUrl: doaj.adminJournalsSearchConfig.journalEditUrl})
+                                }
+                            ],
+                            [
+                                {
                                     "pre": '<span class="alt_title">Alternative title: ',
                                     "field": "bibjson.alternative_title",
                                     "post": "</span>"
@@ -455,11 +460,6 @@ $.extend(true, doaj, {
                             [
                                 {
                                     valueFunction: doaj.adminJournalsSearch.makeContinuation
-                                }
-                            ],
-                            [
-                                {
-                                   valueFunction: doaj.fieldRender.editJournal({editUrl: doaj.adminJournalsSearchConfig.journalEditUrl})
                                 }
                             ]
                         ]

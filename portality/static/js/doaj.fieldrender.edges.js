@@ -8,10 +8,10 @@ $.extend(true, doaj, {
                 display: "In DOAJ?",
                 deactivateThreshold: 1,
                 valueMap : {
-                    1 : "True",
-                    0 : "False",
-                    true: "True",
-                    false: "False"
+                    1 : "Yes",
+                    0 : "No",
+                    true: "Yes",
+                    false: "No"
                 },
                 parseSelectedValueString: function(val) {
                     // this is needed because ES7 doesn't understand "1" or `1` to be `true`, so
@@ -3791,7 +3791,7 @@ $.extend(true, doaj, {
                     result += params.editUrl;
                     result += resultobj['id'];
                     result += '" target="_blank"';
-                    result += '>' + linkName + '</a></p>';
+                    result += ' style="margin-bottom: .75em;">' + linkName + '</a></p>';
                     return result;
                 }
                 return false;
@@ -3818,11 +3818,11 @@ $.extend(true, doaj, {
                     // if it's not a suggestion or an article .. (it's a
                     // journal!)
                     // we really need to expose _type ...
-                    var result = '<p><a class="edit_journal_link button button--secondary" href="';
+                    var result = '<p><a class="edit_journal_link button" href="';
                     result += params.editUrl;
                     result += resultobj['id'];
                     result += '" target="_blank"';
-                    result += '>Edit this journal</a></p>';
+                    result += ' style="margin-bottom: .75em;">Edit this journal</a></p>';
                     return result;
                 }
                 return false;
