@@ -58,26 +58,27 @@ $.extend(true, doaj, {
                                     "field": "created_date"
                                 },
                                 {
-                                    "pre": " (<strong>action clicked:",
+                                    "pre": " (<strong>Action opened on ",
                                     "field": "seen_date",
                                     "post": "</strong>)"
                                 }
                             ],
                             [
                                 {
+                                    "pre": "<p>",
                                     "field": "message"
                                 }
                             ],
                             [
                                 {
-                                    "pre" : '<a class="button notification_action_button" data-notification-id="',
+                                    "pre" : '<a class="notification_action_button" data-notification-id="',
                                     "field": "id",
                                     "post": '"'
                                 },
                                 {
                                     "pre": 'href="',
                                     "field": "action",
-                                    "post": '">Action!</a>'
+                                    "post": '">See action</a></p>'
                                 }
                             ],
                             [

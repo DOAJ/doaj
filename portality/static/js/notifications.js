@@ -19,7 +19,7 @@ doaj.notifications.notificationsReceived = function(data) {
         let notification = data[i];
         let seenClass = notification.seen_date ? "notification__seen" : "notifications__unseen";
         frag += `<li class="notifications__item">
-            <a href="${notification.action}" class="dropdown__link notification_action_link ${seenClass}" data-notification-id="${notification.id}">
+            <a href="${notification.action}" class="dropdown__link ${seenClass} notification_action_link" data-notification-id="${notification.id}">
                 <span>${notification.message}</span>
                 <small class="notifications__date"><time datetime="${notification.created_date}">${notification.created_date}</time></small>
             </a>
