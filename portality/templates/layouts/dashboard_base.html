@@ -59,8 +59,6 @@
       {% block extra_header %}{% endblock %}
     </header>
 
-    {% include "includes/_flash_notification.html" %}
-
     {% block main_panel %}
     <main>
       <header class="main-header">
@@ -101,6 +99,7 @@
         </div>
         {% endif %}
       </header>
+      {% include "includes/_flash_notification.html" %}
       {% block content %}{% endblock %}
 
       <p>
