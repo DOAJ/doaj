@@ -18,7 +18,7 @@ $.extend(true, doaj, {
                 result += doaj.adminJournalsSearchConfig.journalEditUrl;
                 result += resultobj['id'];
                 result += '/continue?type=is_replaced_by" target="_blank"';
-                result += '>Make a succeeding continuation</a><br/><br/>';
+                result += '>Make a succeeding continuation</a>';
 
                 return result;
             }
