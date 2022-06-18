@@ -56,7 +56,7 @@ $.extend(true, doaj, {
                 result += "/admin/delete/article/";
                 result += resultobj['id'];
                 result += '" target="_blank"';
-                result += '>Delete this article</a>';
+                result += ' style="margin-bottom: 0;">Delete this article</a>';
                 return result;
             }
             return false;
@@ -68,7 +68,7 @@ $.extend(true, doaj, {
                 result += doaj.adminJournalArticleSearchConfig.articleEditUrl;
                 result += resultobj['id'];
                 result += '" target="_blank"';
-                result += '>Edit this article</a>';
+                result += ' style="margin-bottom: 0;">Edit this article</a>';
                 return result;
             }
             return false;
