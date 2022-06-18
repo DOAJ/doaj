@@ -45,9 +45,9 @@ $.extend(true, doaj, {
                         {'display':'Classification','field':'index.classification'},
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
-                        {'display':'Journal Language','field':'index.language'},
+                        {'display':'Journal language','field':'index.language'},
                         {'display':'Publisher','field':'bibjson.publisher.name'},
-                        {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'}
+                        {'display':'Journal: alternative title','field':'bibjson.alternative_title'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
@@ -111,7 +111,7 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>Editor Group</strong>: ",
+                                    "pre" : "<strong>Editor group</strong>: ",
                                     "field" : "admin.editor_group"
                                 }
                             ],
@@ -147,13 +147,13 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Journal Language</strong>: ",
+                                    "pre": "<strong>Journal language</strong>: ",
                                     "field": "bibjson.language"
                                 }
                             ],
                             [
                                 {
-                                    "pre": "<strong>Journal License</strong>: ",
+                                    "pre": "<strong>Journal license</strong>: ",
                                     valueFunction: doaj.fieldRender.journalLicense
                                 }
                             ],
