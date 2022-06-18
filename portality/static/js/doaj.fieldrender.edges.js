@@ -896,8 +896,7 @@ $.extend(true, doaj, {
 
                     sortOptions = '<div class="input-group ' + sortClasses + '"> \
                                     <button type="button" class="input-group__input ' + directionClass + '" title="" href="#"></button> \
-                                    <select class="' + sortFieldClass + ' input-group__input"> \
-                                        <option value="_score">Relevance</option>';
+                                    <select class="' + sortFieldClass + ' input-group__input">';
 
                     for (var i = 0; i < comp.sortOptions.length; i++) {
                         var field = comp.sortOptions[i].field;
@@ -905,7 +904,8 @@ $.extend(true, doaj, {
                         sortOptions += '<option value="' + field + '">' + edges.escapeHtml(display) + '</option>';
                     }
 
-                    sortOptions += ' </select></div>';
+                    sortOptions += '<option value="_score">Relevance</option>\
+                      </select></div>';
                 }
 
                 // select box for fields to search on
