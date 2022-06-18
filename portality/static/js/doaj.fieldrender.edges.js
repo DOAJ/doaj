@@ -3430,8 +3430,7 @@ $.extend(true, doaj, {
 
                     sortOptions = label + '\
                         ' + direction + ' \
-                        <select name="' + selectName + '" class="form-control input-sm ' + sortFieldClass + '" id="' + selectName + '"> \
-                            <option value="_score">Relevance</option>';
+                        <select name="' + selectName + '" class="form-control input-sm ' + sortFieldClass + '" id="' + selectName + '">';
 
                     for (var i = 0; i < comp.sortOptions.length; i++) {
                         var field = comp.sortOptions[i].field;
