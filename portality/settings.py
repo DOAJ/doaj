@@ -1230,5 +1230,15 @@ TASKS_ANON_EXPORT_LIMIT = None
 TASKS_ANON_EXPORT_BATCH_SIZE = 100000
 
 ########################################
-# Set todo list size
+# Editorial Dashboard - set to-do list size
 TODO_LIST_SIZE = 48
+
+#######################################################
+# Plausible analytics
+# root url of plausible
+PLAUSIBLE_URL = "http://localhost:8000"
+PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/plausible.js"
+PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event/"
+# site name / domain name that used to register in plausible
+PLAUSIBLE_SITE_NAME = BASE_DOMAIN
+PLAUSIBLE_LOG_DIR = None
