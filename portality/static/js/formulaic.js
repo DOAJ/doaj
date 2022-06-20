@@ -1100,7 +1100,7 @@ var formulaic = {
                 this.input = $("[name=" + this.fieldDef.name + "]");
                 this.input.hide();
 
-                this.input.after('<a href="#" class="button button--secondary ' + modalOpenClass + '">Open Subject Classifier</a>');
+                this.input.after('<a href="#" class="button button--tertiary ' + modalOpenClass + '">Open Subject Classifier</a>');
                 this.input.after(`<div class="modal" id="` + containerId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                                     <div class="modal__dialog" role="document">
                                         <h2 class="label">Subject classifications</h2>

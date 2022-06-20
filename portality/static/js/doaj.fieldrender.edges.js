@@ -1265,7 +1265,7 @@ $.extend(true, doaj, {
                 var shareButtonFrag = "";
                 var shareButtonClass = edges.css_classes(this.namespace, "toggle-share", this);
                 var modalId = edges.css_id(this.namespace, "modal", this);
-                shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--secondary" role="button">' + this.shareLinkText + '</button>';
+                shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--tertiary" role="button">' + this.shareLinkText + '</button>';
 
                 var shorten = "";
                 if (this.component.urlShortener) {
@@ -1277,7 +1277,7 @@ $.extend(true, doaj, {
                     var embedClass = edges.css_classes(this.namespace, "embed", this);
                     embed = '<p>Embed this search in your site</p>\
                     <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>\
-                    <p><button class="button button--secondary" data-dismiss="modal" class="modal__close">Close</button></p>';
+                    <p><button class="button button--tertiary" data-dismiss="modal" class="modal__close">Close</button></p>';
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
@@ -2907,7 +2907,7 @@ $.extend(true, doaj, {
                         <div class="modal__dialog" role="document">\
                             <h2 class="modal__title">Delete this application</h2>\
                             <p>Are you sure you want to delete your application for <span class="' + deleteTitleClass + '"></span></p> \
-                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--tertiary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
@@ -3096,7 +3096,7 @@ $.extend(true, doaj, {
                         <div class="modal__dialog" role="document">\
                             <h2 class="modal__title">Delete this update request</h2>\
                             <p>Are you sure you want to delete your update request for <span class="' + deleteTitleClass + '"></span></p> \
-                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--tertiary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
