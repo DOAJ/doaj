@@ -7,6 +7,7 @@ from portality.bll import exceptions
 
 from copy import deepcopy
 
+from portality.bll.exceptions import DuplicateArticleException
 
 
 class ArticlesBulkApi(Api):
@@ -54,6 +55,8 @@ class ArticlesBulkApi(Api):
             # ~~->BatchCreateArticles:Feature~~
             result = articleService.batch_create_articles(articles, account, add_journal_info=True)
             return [a.id for a in articles]
+        except DuplicateArticleException as e:
+            raise Api403Error(str(e))
         except exceptions.IngestException as e:
             raise Api400Error(str(e))
 

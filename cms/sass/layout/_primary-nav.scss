@@ -29,8 +29,8 @@
 
   @media (max-width: 768px) {
     .secondary-nav__menu-toggle {
-      margin-left: $spacing-03;
       display: flex;
+      margin-left: $spacing-03;
       color: $white;
       stroke: $white;
     }
@@ -43,10 +43,6 @@
   .dropdown__menu {
     background-color: $warm-black;
     color: $white;
-  }
-
-  .primary-nav__item_desktop, .primary-nav__search {
-    margin-left: $spacing-04;
   }
 
   &--scrolled {

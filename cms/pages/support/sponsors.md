@@ -15,7 +15,7 @@ The following organisations have committed to supporting DOAJ over a 3-year peri
 
 <div>{% include '/data/sponsors.html' %}</div>
 
-## Benefits for contributing publishers and aggregators 2021
+## Benefits for contributing publishers and aggregators
 
 ([A downloadable version](https://docs.google.com/document/d/1xTVxUvqLkh2-r53cYlWdSIHsPGSnhcE7gi7bRFCaJik/edit?usp=sharing) of these benefits is available.)
 
