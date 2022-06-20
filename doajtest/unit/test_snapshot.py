@@ -1,7 +1,8 @@
-from doajtest.helpers import DoajTestCase
-from portality import models
-import time
 import json
+
+from doajtest.helpers import DoajTestCase, patch_history_dir
+from portality import models
+
 
 class TestSnapshot(DoajTestCase):
 
@@ -14,6 +15,7 @@ class TestSnapshot(DoajTestCase):
         # are cleaned up in the parent DoajTestCase class so they
         # don't have to be cleaned up in each test suite that causes .snapshot()
 
+    @patch_history_dir("ARTICLE_HISTORY_DIR")
     def test_01_snapshot(self):
         # make ourselves an example article
         a = models.Article()
@@ -25,12 +27,14 @@ class TestSnapshot(DoajTestCase):
         # snapshot it
         a.snapshot()
 
-        assert len(self.list_today_article_history_files()) == 1
-        with open(self.list_today_article_history_files()[0], 'r', encoding="utf-8") as i:
+        hist_files = self.list_today_article_history_files()
+        assert len(hist_files) == 1
+        with open(hist_files[0], 'r', encoding="utf-8") as i:
             hist = json.loads(i.read())
         assert hist
         assert hist.get("bibjson", {}).get("title") == "Example article with a fulltext url"
-    
+
+    @patch_history_dir("ARTICLE_HISTORY_DIR")
     def test_02_merge(self):
         # make ourselves an example article
         a = models.Article()
@@ -56,6 +60,7 @@ class TestSnapshot(DoajTestCase):
         assert hist
         assert hist.get("bibjson", {}).get("title") == "Example 2 article with a fulltext url"
 
+    @patch_history_dir('JOURNAL_HISTORY_DIR')
     def test_03_snapshot_journal(self):
         # make ourselves an example journal
         j = models.Journal()
