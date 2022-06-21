@@ -33,7 +33,6 @@ if __name__ == '__main__':
             for row in reader:
                 j_id = row['URL in DOAJ'].split('/').pop()
                 pissn_csv = row['Journal ISSN (print version)']
-                # Get the Journal and its owner details via the ID
                 try:
                     j = Journal.pull(j_id)
                     jbib = j.bibjson();
@@ -43,7 +42,7 @@ if __name__ == '__main__':
                     else:
                         jbib.eissn = pissn
                         del j.bibjson().pissn
-                        j.save(blocking=True)
+                        j.save()
                         row.update(
                             {'Journal ID': j_id, 'old pISSN': pissn, 'pISSN': jbib.pissn, 'eISSN': jbib.eissn})
 
