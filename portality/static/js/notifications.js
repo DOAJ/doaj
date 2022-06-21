@@ -17,11 +17,11 @@ doaj.notifications.notificationsReceived = function(data) {
     let frag = "";
     for (let i = 0; i < data.length; i++) {
         let notification = data[i];
-        let seenClass = notification.seen_date ? "notification_seen" : "notification_unseen";
-        frag += `<li>
-            <a href="${notification.action}" class="dropdown__link notification_action_link ${seenClass}" data-notification-id="${notification.id}">
+        let seenClass = notification.seen_date ? "notification__seen" : "notifications__unseen";
+        frag += `<li class="notifications__item">
+            <a href="${notification.action}" class="dropdown__link ${seenClass} notification_action_link" data-notification-id="${notification.id}">
                 <span>${notification.message}</span>
-                <time datetime="${notification.created_date}">${notification.created_date}</time>
+                <small class="notifications__date"><time datetime="${notification.created_date}">${notification.created_date}</time></small>
             </a>
         </li>`;
     }
@@ -49,7 +49,7 @@ doaj.notifications.setAsSeen = function(notificationId, element) {
         contentType: "application/json",
         dataType: "jsonp"
     });
-    element.removeClass("notification_unseen").addClass("notification_seen");
+    element.removeClass("notifications__unseen").addClass("notification__seen");
 }
 
 jQuery(document).ready(function($) {
