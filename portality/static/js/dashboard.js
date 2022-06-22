@@ -1,5 +1,17 @@
 // ~~Dashboard:Feature~~
-doaj.dashboard = {};
+doaj.dashboard = {
+    statusOrder : [
+        "pending",
+        "in progress",
+        "completed",
+        "update_request",
+        "revisions_required",
+        "on hold",
+        "ready",
+        "rejected",
+        "accepted"
+    ]
+};
 
 doaj.dashboard.init = function() {
     $(".js-group-tab").on("click", doaj.dashboard.groupTabClick);
@@ -81,61 +93,24 @@ doaj.dashboard.renderGroupInfo = function(data) {
         <a href="/admin/applications?source=${appUnassignedSource}" class="tag tag--tertiary">${data.unassigned.applications} <span class="sr-only">applications</span></a>
     </li>`;
 
-    let appStatusFrag = "";
-    let urStatusFrag = "";
-    let statuses = Object.keys(data.by_status);
-
     let appStatusProgressBar = "";
 
-    for (let i = 0; i < statuses.length; i++) {
-      let status = statuses[i];
-      if (data.by_status[status].applications > 0) {
-          let appStatusSource = doaj.searchQuerySource({
-              "term": [
-                  {"admin.editor_group.exact": data.editor_group.name},
-                  {"admin.application_status.exact": status},
-                  {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
-              ]
-          })
-          appStatusProgressBar += `<li class="progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications/data.total.applications)*100}%;"><a href="/admin/applications?source=${appStatusSource}" class="progress-bar__link">
-            ${status} (${data.by_status[status].applications})
-          </li>`;
-      }
-    }
-
-    for (let i = 0; i < statuses.length; i++) {
-        let status = statuses[i];
-        // ~~-> ApplicationSearch:Page~~
-        if (data.by_status[status].applications > 0) {
-            let appStatusSource = doaj.searchQuerySource({
-                "term": [
-                    {"admin.editor_group.exact": data.editor_group.name},
-                    {"admin.application_status.exact": status},
-                    {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
-                ]
-            })
-            appStatusFrag += `<li>
-                <a href="/admin/applications?source=${appStatusSource}">
-                    <span>${status} <span>${data.by_status[status].applications}</span></span>
-                </a>
-            </li>`;
-        }
-
-        // ~~-> UpdateRequestsSearch:Page~~
-        if (data.by_status[status].update_requests > 0) {
-            let urStatusSource = doaj.searchQuerySource({
-                "term": [
-                    {"admin.editor_group.exact": data.editor_group.name},
-                    {"admin.application_status.exact": status},
-                    {"index.application_type.exact": "update request"}    // this is required so we only see open update requests, not finished ones
-                ]
-            })
-            urStatusFrag += `<li>
-                <a href="/admin/update_requests?source=${urStatusSource}">
-                    <span>${status} <span>${data.by_status[status].update_requests}</span></span>
-                    <span></span>
-                </a>
-            </li>`;
+    for (let j = 0; j < doaj.dashboard.statusOrder.length; j++) {
+        let status = doaj.dashboard.statusOrder[j];
+        if (data.by_status.hasOwnProperty(status)) {
+            if (data.by_status[status].applications > 0) {
+                let appStatusSource = doaj.searchQuerySource({
+                    "term": [
+                        {"admin.editor_group.exact": data.editor_group.name},
+                        {"admin.application_status.exact": status},
+                        {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
+                    ]
+                })
+                appStatusProgressBar += `<li class="progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications/data.total.applications)*100}%;">
+                    <a href="/admin/applications?source=${appStatusSource}" class="progress-bar__link">
+                        ${status} (${data.by_status[status].applications})
+                    </a></li>`;
+            }
         }
     }
 
