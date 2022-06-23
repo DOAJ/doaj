@@ -92,6 +92,9 @@ It's recommended to run the DOAJ inside a python virtual environment so it doesn
     git submodule update --init --recursive
     pip install -r requirements.txt
 
+    # If you are running in development, get the extra dependencies to run the tests
+    pip install -e .[test]
+
     # Finally, run the app. You should see it in a browser
     DOAJENV=dev python portality/app.py  # the output of this will tell you which port it's running on and whether it's in debug mode
 
