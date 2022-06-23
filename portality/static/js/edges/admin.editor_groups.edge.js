@@ -49,12 +49,6 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                // edges.newSearchingNotification({
-                //     id: "searching-notification",
-                //     finishedEvent: "edges:post-render",
-                //     renderer : doaj.renderers.newSearchingNotificationRenderer()
-                // }),
-
                 doaj.components.searchingNotification(),
 
                 // facets
