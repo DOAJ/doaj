@@ -1,3 +1,6 @@
+import tempfile
+from pathlib import Path
+
 from flask_login import login_user
 
 from unittest import TestCase
@@ -110,13 +113,15 @@ class DoajTestCase(TestCase):
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
             "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp", cls.__name__.lower()),
+            "STORE_CACHE_CONTAINER": "doaj-data-cache-placeholder" + '-' + cls.__name__.lower(),
             "ES_RETRY_HARD_LIMIT": 0,
             "ES_BLOCK_WAIT_OVERRIDE": 0.1,
             "ELASTIC_SEARCH_DB": app.config.get('ELASTIC_SEARCH_TEST_DB'),
             'ELASTIC_SEARCH_DB_PREFIX': core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX'] + cls.__name__.lower() + '-',
             "FEATURES": app.config['VALID_FEATURES'],
             'ENABLE_EMAIL': False,
-            "FAKER_SEED": 1
+            "FAKER_SEED": 1,
+            'CMS_BUILD_ASSETS_ON_STARTUP': False
         })
 
         main_queue.always_eager = True
@@ -245,3 +250,42 @@ def deep_sort(obj):
         _sorted = obj
 
     return _sorted
+
+
+def patch_history_dir(dir_key):
+    def _wrapper(fn):
+
+        @functools.wraps(fn)
+        def new_fn(*args, **kwargs):
+            # define hist_class
+            if dir_key == 'ARTICLE_HISTORY_DIR':
+                from portality.models import ArticleHistory
+                hist_class = ArticleHistory
+            elif dir_key == 'JOURNAL_HISTORY_DIR':
+                from portality.models import JournalHistory
+                hist_class = JournalHistory
+            else:
+                raise ValueError(f'unknown dir_key [{dir_key}]')
+
+            # setup new path
+            org_config_val = DoajTestCase.app_test.config[dir_key]
+            org_hist_dir = hist_class.SAVE_BASE_DIRECTORY
+            _new_path = Path(tempfile.NamedTemporaryFile().name)
+            _new_path.mkdir(parents=True, exist_ok=True)
+            hist_class.SAVE_BASE_DIRECTORY = _new_path.as_posix()
+            DoajTestCase.app_test.config[dir_key] = _new_path.as_posix()
+
+            # run fn
+            result = fn(*args, **kwargs)
+
+            # reset / cleanup
+            shutil.rmtree(_new_path)
+            hist_class.SAVE_BASE_DIRECTORY = org_hist_dir
+            DoajTestCase.app_test.config[dir_key] = org_config_val
+
+            return result
+
+        return new_fn
+
+    return _wrapper
+
