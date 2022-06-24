@@ -1,7 +1,6 @@
 import time
 from copy import deepcopy
 
-from nose.tools import assert_raises
 from werkzeug.datastructures import MultiDict
 
 from portality import constants
@@ -400,7 +399,7 @@ class TestManEdAppReview(DoajTestCase):
         assert fc.form_data is not None
 
         # Finalise the formcontext. This should raise an exception because the application has already been accepted.
-        assert_raises(Exception, fc.finalise)
+        self.assertRaises(Exception, fc.finalise)
 
         # Check that an application status can when on hold.
         held_source = APPLICATION_SOURCE.copy()
