@@ -55,7 +55,8 @@ class TestApplicationPublisherRevisionNotify(DoajTestCase):
         assert n.who == "publisher", "Expected: {}, Received: {}".format("publisher", n.who)
         assert n.created_by == ApplicationPublisherRevisionNotify.ID, "Expected: {}, Received: {}".format(ApplicationPublisherRevisionNotify.ID, n.created_by)
         assert n.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE, "Expected: {}, Received: {}".format(constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE, n.classification)
-        assert n.message is not None
+        assert n.long is not None
+        assert n.short is not None
         assert n.action is None
         assert not n.is_seen()
 

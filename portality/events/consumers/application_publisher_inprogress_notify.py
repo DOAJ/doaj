@@ -10,7 +10,7 @@ from portality.bll import DOAJ, exceptions
 from portality.lib.seamless import SeamlessException
 from portality.lib.dates import human_date
 
-class ApplicationPublisherInprogresNotify(EventConsumer):
+class ApplicationPublisherInprogressNotify(EventConsumer):
     ID = "application:publisher:inprogress:notify"
 
     @classmethod
@@ -37,10 +37,16 @@ class ApplicationPublisherInprogresNotify(EventConsumer):
         notification.who = application.owner
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
-        notification.message = svc.message(cls.ID).format(
-            application_title=application.bibjson().title,
-            date_applied=human_date(application.date_applied),
-            volunteers=app.config.get("BASE_URL") + url_for("doaj.volunteers")
+
+        title = application.bibjson().title
+        date_applied = human_date(application.date_applied)
+        volunteers = app.config.get("BASE_URL") + url_for("doaj.volunteers")
+
+        notification.long = svc.long_notification(cls.ID).format(
+            title=title,
+            date_applied=date_applied,
+            volunteers=volunteers
         )
+        notification.short = svc.short_notification(cls.ID)
 
         svc.notify(notification)

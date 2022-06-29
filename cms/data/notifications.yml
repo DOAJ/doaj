@@ -1,27 +1,25 @@
 application:assed:inprogress:notify:
-  message:
-    "The application for **{application_title}** has not passed review by an Editor or
-    Managing Editor and has been assigned back to you with questions or changes."
-  email_subject:
+  long:
+    "The application for **{application_title}** has not passed review by an Editor or Managing Editor and has been assigned back to you with questions or changes."
+  short:
     "One of your applications has not passed review"
 application:assed:assigned:notify:
-  message:
-    "An application, or update request for the journal “{journal_title}” has been assigned
-    to you by the Editor of your group “{group_name}”. Please start work on this within 10 days."
-  email_subject:
+  long:
+    "An application, or update request for the journal **{journal_title}** has been assigned to you by the Editor of your group **{group_name}**. Please start work on this within 10 days."
+  short:
     "New application assigned to you"
 bg:job_finished:notify:
-  message:
-    "Your background job {job_id} for “{action}” has finished with the status “{status}”. You can see the record of your job and its status in the background jobs interface here:"
-  email_subject:
+  long:
+    "Your background job {job_id} for **{action}** has finished with the status **{status}**. You can see the record of your job and its status in the background jobs interface here:"
+  short:
     "Background job finished"
 application:maned:ready:notify:
-  message:
-    "The application for “{application_title}” has been marked <strong>Ready</strong> by {editor}. Please review it as soon as possible."
-  email_subject:
+  long:
+    "The application for **{application_title}** has been marked **Ready** by **{editor}**. Please review it as soon as possible."
+  short:
     "Application marked as ready"
 application:publisher:created:notify:
-  message:
+  long:
     "{title}
     {journal_url}
 
@@ -29,91 +27,90 @@ application:publisher:created:notify:
 
     We receive hundreds of applications every month. We will review yours as soon as we can. You will receive an email from us when the review is complete or if we have questions.
 
-    If you need to make a change to your application, send an email to our Help desk: helpdesk@doaj.org. Please include your ISSN.
-    We cannot reply to emails requesting a status update for applications which are less than three months old.
+    If you need to make a change to your application, send an email to our Help desk: [helpdesk@doaj.org](mailto:helpdesk@doaj.org). Please include your ISSN. We cannot reply to emails requesting a status update for applications which are less than three months old.
 
-    If you write to us, check first that there is nothing in your Spam folder from us or one of our volunteers. Our volunteers may not be emailing from a DOAJ email address so you can check that their name is there on this page {volunteers_url}"
-  email_subject:
+    If you write to us, check first that there is nothing in your Spam folder from us or one of our volunteers. Our volunteers may not be emailing from a DOAJ email address so you can check that their name is there on this page [{volunteers_url}]({volunteers_url})"
+  short:
     "Your application to DOAJ has been received"
 application:editor:completed:notify:
-  message:
-    "{associate_editor} has finished a review of the application for “{application_title}”
-     and marked it as Completed. Please review within 5 working days."
-  email_subject:
+  long:
+    "**{associate_editor}** has finished a review of the application for **{application_title}**
+     and marked it as **Completed**. Please review within 5 working days."
+  short:
     "Application marked as completed"
 application:editor:inprogress:notify:
-  message: "The application for “{application_title}” has not passed review by a Managing Editor and has been assigned back to your group with questions or changes."
-  email_subject:
+  long: "The application for **{application_title}** has not passed review by a Managing Editor and has been assigned back to your group with questions or changes."
+  short:
     "Application reverted to 'In Progress' by Managing Editor"
 application:publisher:revision:notify:
-  message:
-    "The update which you submitted for “{application_title}” on {date_applied} requires some revisions before it can be accepted. The Managing Editor reviewing your update will contact you to explain the changes that are needed."
-  email_subject:
+  long:
+    "The update which you submitted for **{application_title}** on {date_applied} requires some revisions before it can be accepted. The Managing Editor reviewing your update will contact you to explain the changes that are needed."
+  short:
     "Your update request needs revisions"
 application:editor_group:assigned:notify:
-  message:
-    "A new application or an update request for the journal “{journal_name}” has been assigned to your group by a Managing Editor. Please assign this to an Associate Editor within 5 working days."
-  email_subject:
+  long:
+    "A new application or an update request for the journal **{journal_name}** has been assigned to your group by a Managing Editor. Please assign this to an Associate Editor within 5 working days."
+  short:
     "New application assigned to your group"
 application:publisher:accepted:notify:
-  message:
-    "Congratulations! The application submitted for “{application_title}” on {application_date} has been accepted for inclusion in DOAJ.
+  long:
+    "Congratulations! The application submitted for **{application_title}** on {application_date} has been accepted for inclusion in DOAJ.
 
-    You may access the journal record from your Publisher dashboard: {publisher_dashboard_url} using your DOAJ username and password.
+    You may access the journal record from your Publisher dashboard: [{publisher_dashboard_url}]({publisher_dashboard_url}) using your DOAJ username and password.
 
     If there are changes or updates to the information about your journal at any time after it has been accepted, please submit an Update Request from your Publisher dashboard promptly. Please be aware that failure to do this may result in removal of your journal from DOAJ.
 
-    How to submit an Update Request: {faq_url}#how-do-i-update-the-information-about-my-journal
+    How to submit an Update Request: [{faq_url}#how-do-i-update-the-information-about-my-journal]({faq_url}#how-do-i-update-the-information-about-my-journal)
 
     To increase the visibility, impact, distribution and usage of your journal content, we encourage you to upload article metadata for this journal to DOAJ as soon as possible.
 
-    How to upload article metadata: {faq_url}#how-do-i-upload-article-metadata
+    How to upload article metadata: [{faq_url}#how-do-i-upload-article-metadata]({faq_url}#how-do-i-upload-article-metadata)
 
-    We are delighted to welcome this journal into DOAJ. Do not hesitate to contact us at helpdesk@doaj.org if you have any questions."
-  email_subject:
+    We are delighted to welcome this journal into DOAJ. Do not hesitate to contact us at [helpdesk@doaj.org](mailto:helpdesk@doaj.org) if you have any questions."
+  short:
     "Your journal has been accepted"
 update_request:publisher:accepted:notify:
-  message:
-    "Congratulations! The changes which you sent us for “{application_title}” on {application_date} have been reviewed and the journal record updated. Please note that some of the changes you suggested may have been omitted and replaced with other values by the Managing Editor who carried out the review. Review the journal record here: {publisher_dashboard_url}.
+  long:
+    "Congratulations! The changes which you sent us for **{application_title}** on {application_date} have been reviewed and the journal record updated. Please note that some of the changes you suggested may have been omitted and replaced with other values by the Managing Editor who carried out the review. Review the journal record here: [{publisher_dashboard_url}]({publisher_dashboard_url}).
 
     Thank you for updating this journal and helping to keep the DOAJ database up-to-date."
-  email_subject:
+  short:
     "Update request accepted"
 application:publisher:assigned:notify:
-  message:
-    "Your application for “{application_title}” submitted on {application_date} has been assigned to an editor for review for inclusion in the DOAJ. Please look out for further communications about the application. These may come from someone who is not using a DOAJ email address: {volunteers_url}"
-  email_subject:
+  long:
+    "Your application for **{application_title}** submitted on {application_date} has been assigned to an editor for review for inclusion in the DOAJ. Please look out for further communications about the application. These may come from someone who is not using a DOAJ email address: [{volunteers_url}]({volunteers_url})"
+  short:
     "Your application has been assigned an editor for review"
 update_request:publisher:assigned:notify:
-  message:
-    "The update you submitted for “{application_title}” on {application_date} has been assigned to a Managing Editor for review.
+  long:
+    "The update you submitted for **{application_title}** on {application_date} has been assigned to a Managing Editor for review.
 
     Thank you for helping to keep the DOAJ database up-to-date."
-  email_subject:
+  short:
     "Your update request has been assigned an editor for review"
 journal:assed:assigned:notify:
-  message:
-    "The journal “{journal_name}” has been assigned to you by the Editor of your group “{group_name}”. Please start work on this within 10 days."
-  email_subject:
+  long:
+    "The journal **{journal_name}** has been assigned to you by the Editor of your group **{group_name}**. Please start work on this within 10 days."
+  short:
     "New journal assigned to you"
 journal:editor_group:assigned:notify:
-  message:
-    "The journal “{journal_name}” has been assigned to your group by a Managing Editor. Please assign this to an Associate Editor within 5 working days."
-  email_subject:
+  long:
+    "The journal **{journal_name}** has been assigned to your group by a Managing Editor. Please assign this to an Associate Editor within 5 working days."
+  short:
     "New journal assigned to your group"
 application:publisher:inprogress:notify:
-  message:
-    "Your submission for “{bibjson.title}” submitted on {{application_date}} is now being reviewed by an Associate Editor.
+  long:
+    "Your submission for **{title}** submitted on {application_date} is now being reviewed by an Associate Editor.
 
      The Associate Editor ({volunteers}) may contact you by email with questions. They may not be using a doaj.org email address. These emails can end up in your Spam folder so please check your Spam folder regularly."
-  email_subject:
+  short:
    "Your submission is under review"
 application:publisher:rejected:notify:
-  message:
-    "The update which you submitted for “{title}” on {date_applied} has been rejected. This is either because:
+  long:
+    "The update which you submitted for **{title}** on {date_applied} has been rejected. This is either because:
 
      - We were unable to verify the information which you provided with the information stated on your website. Please double check your website and submit a new update when you are ready; or
 
      - We already have one active update in the system. Additional updates are rejected without review."
-  email_subject:
+  short:
     "Your submission was rejected"

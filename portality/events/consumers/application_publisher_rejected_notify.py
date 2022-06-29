@@ -39,8 +39,10 @@ class ApplicationPublisherRejectedNotify(EventConsumer):
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
         datetime_object = datetime.strptime(application.date_applied, '%Y-%m-%dT%H:%M:%SZ')
         date_applied = datetime_object.strftime("%d/%b/%Y")
-        notification.message = svc.message(cls.ID).format(
+        notification.long = svc.long_notification(cls.ID).format(
             title=application.bibjson().title,
             date_applied=date_applied,
         )
+        notification.short = svc.short_notification(cls.ID)
+
         svc.notify(notification)

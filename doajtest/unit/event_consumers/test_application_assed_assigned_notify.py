@@ -47,7 +47,8 @@ class TestApplicationAssedAssignedNotify(DoajTestCase):
         assert n.who == app.editor
         assert n.created_by == ApplicationAssedAssignedNotify.ID
         assert n.classification == constants.NOTIFICATION_CLASSIFICATION_ASSIGN
-        assert n.message is not None
+        assert n.long is not None
+        assert n.short is not None
         assert n.action is not None
         assert not n.is_seen()
 

@@ -60,11 +60,12 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
-        notification.message = svc.message(cls.ID).format(
+        notification.long = svc.long_notification(cls.ID).format(
             application_title=application.bibjson().title,
             application_date=dates.human_date(application.date_applied),
             publisher_dashboard_url=url_for("publisher.journals", _external=True)
         )
+        notification.short = svc.short_notification(cls.ID)
 
         notification.action = url_for("publisher.journals")
 

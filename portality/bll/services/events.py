@@ -19,7 +19,7 @@ from portality.events.consumers.application_publisher_assigned_notify import App
 from portality.events.consumers.update_request_publisher_assigned_notify import UpdateRequestPublisherAssignedNotify
 from portality.events.consumers.journal_assed_assigned_notify import JournalAssedAssignedNotify
 from portality.events.consumers.journal_editor_group_assigned_notify import JournalEditorGroupAssignedNotify
-from portality.events.consumers.application_publisher_inprogress_notify import ApplicationPublisherInprogresNotify
+from portality.events.consumers.application_publisher_inprogress_notify import ApplicationPublisherInprogressNotify
 
 
 class EventsService(object):
@@ -34,7 +34,7 @@ class EventsService(object):
         ApplicationEditorGroupAssignedNotify,
         ApplicationManedReadyNotify,
         ApplicationPublisherCreatedNotify,
-        ApplicationPublisherInprogresNotify,
+        ApplicationPublisherInprogressNotify,
         ApplicationPublisherAcceptedNotify,
         ApplicationPublisherAssignedNotify,
         ApplicationPublisherRevisionNotify,

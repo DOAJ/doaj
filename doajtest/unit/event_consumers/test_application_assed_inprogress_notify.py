@@ -57,7 +57,8 @@ class TestApplicationAssedInprogressNotify(DoajTestCase):
         assert n.who == "associate"
         assert n.created_by == ApplicationAssedInprogressNotify.ID
         assert n.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
-        assert n.message is not None
+        assert n.long is not None
+        assert n.short is not None
         assert n.action is not None
         assert not n.is_seen()
 

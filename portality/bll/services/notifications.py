@@ -21,21 +21,22 @@ class NotificationsService(object):
 
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-        subject = app.config.get("SERVICE_NAME", "") + " - " + self.email_subject(notification.created_by)
+        subject = app.config.get("SERVICE_NAME", "") + " - " + notification.short
 
-        app_email.send_mail(to=to,
+        app_email.send_markdown_mail(to=to,
                             fro=fro,
                             subject=subject,
                             template_name="email/notification_email.jinja2",
+                            markdown_template_name="email/notification_email.jinja2",    # for the moment the markdown and plaintext templates are the same
                             user=acc,
-                            message=notification.message,
+                            message=notification.long,
                             action=notification.action,
                             url_root=app.config.get("BASE_URL"))
 
         return notification
 
-    def message(self, message_id):
-        return app.jinja_env.globals["data"]["notifications"].get(message_id, {}).get("message")
+    def long_notification(self, message_id):
+        return app.jinja_env.globals["data"]["notifications"].get(message_id, {}).get("long")
 
-    def email_subject(self, message_id):
-        return app.jinja_env.globals["data"]["notifications"].get(message_id, {}).get("email_subject", Messages.NOTIFY__DEFAULT_EMAIL_SUBJECT)
+    def short_notification(self, message_id):
+        return app.jinja_env.globals["data"]["notifications"].get(message_id, {}).get("short", Messages.NOTIFY__DEFAULT_SHORT_NOTIFICATION)

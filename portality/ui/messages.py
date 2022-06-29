@@ -104,7 +104,7 @@ class Messages(object):
     BULK_JOURNAL_DELETE = "About to delete an estimated {journal_no} journals with {article_no} articles associated with their ISSNs. Existing update requests will be automatically rejected."
     BULK_JOURNAL_DELETE_COMPLETED = "Deleted {journal_no} journals and all articles associated with their ISSNs."
 
-    NOTIFY__DEFAULT_EMAIL_SUBJECT = "You have a new notification"
+    NOTIFY__DEFAULT_SHORT_NOTIFICATION = "You have a new notification"
 
     @classmethod
     def flash(cls, tup):

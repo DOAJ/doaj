@@ -36,9 +36,10 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
         notification.who = application.owner
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_CREATE
-        notification.message = svc.message(cls.ID).format(title=application.bibjson().title,
-                                                          journal_url=application.bibjson().journal_url,
-                                                          application_date=dates.human_date(application.date_applied),
-                                                          volunteers_url=url_for("doaj.volunteers"))
+        notification.long = svc.long_notification(cls.ID).format(title=application.bibjson().title,
+                                                                 journal_url=application.bibjson().journal_url,
+                                                                 application_date=dates.human_date(application.date_applied),
+                                                                 volunteers_url=url_for("doaj.volunteers"))
+        notification.short = svc.short_notification(cls.ID)
 
         svc.notify(notification)
