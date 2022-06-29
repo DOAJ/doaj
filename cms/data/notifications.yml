@@ -114,3 +114,9 @@ application:publisher:rejected:notify:
      - We already have one active update in the system. Additional updates are rejected without review."
   short:
     "Your submission was rejected"
+application:publisher:quickreject:notify:
+  long: "The application which you submitted for **{title}** on {date_applied} has been rejected as the journal does not meet our basic criteria ([{doaj_guide_url}]({doaj_guide_url})).
+    {note}
+    You may submit a new application 6 months after the date of this email unless advised otherwise by a member of the DOAJ Editorial Team. Before you apply again, make any necessary changes to ensure your journal adheres to our criteria: ([{doaj_guide_url}]({doaj_guide_url}))"
+  short:
+    "Your application was rejected"

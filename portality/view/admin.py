@@ -439,7 +439,9 @@ def application_quick_reject(application_id):
         eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, current_user.id, {
             "application": application.data,
             "old_status": old_status,
-            "new_status": constants.APPLICATION_STATUS_REJECTED
+            "new_status": constants.APPLICATION_STATUS_REJECTED,
+            "process": constants.PROCESS__QUICK_REJECT,
+            "note": note
         }))
 
     # sort out some flash messages for the user
