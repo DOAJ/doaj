@@ -2,32 +2,33 @@ from portality import models
 from portality import constants
 from portality.bll import exceptions
 from doajtest.helpers import DoajTestCase
-from portality.events.consumers.application_publisher_rejected_notify import ApplicationPublisherRejectedNotify
+from portality.events.consumers.update_request_publisher_rejected_notify import UpdateRequestPublisherRejectedNotify
 from doajtest.fixtures import ApplicationFixtureFactory
 import time
 
 
-class TestApplicationPublisherRejectedNotify(DoajTestCase):
+class TestUpdateRequestPublisherRejectedNotify(DoajTestCase):
     def setUp(self):
-        super(TestApplicationPublisherRejectedNotify, self).setUp()
+        super(TestUpdateRequestPublisherRejectedNotify, self).setUp()
 
     def tearDown(self):
-        super(TestApplicationPublisherRejectedNotify, self).tearDown()
+        super(TestUpdateRequestPublisherRejectedNotify, self).tearDown()
 
     def test_consumes(self):
+        source = ApplicationFixtureFactory.make_application_source()
 
-        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : {}, "old_status" : "in progress", "new_status": "rejected"})
-        assert ApplicationPublisherRejectedNotify.consumes(event)
+        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : source, "old_status" : "in progress", "new_status": "rejected"})
+        assert UpdateRequestPublisherRejectedNotify.consumes(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS,
                              context={"old_status": "rejected", "new_status": "rejected"})
-        assert not ApplicationPublisherRejectedNotify.consumes(event)
+        assert not UpdateRequestPublisherRejectedNotify.consumes(event)
 
         event = models.Event("test:event", context={"application" : "2345"})
-        assert not ApplicationPublisherRejectedNotify.consumes(event)
+        assert not UpdateRequestPublisherRejectedNotify.consumes(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS)
-        assert not ApplicationPublisherRejectedNotify.consumes(event)
+        assert not UpdateRequestPublisherRejectedNotify.consumes(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")
@@ -40,7 +41,7 @@ class TestApplicationPublisherRejectedNotify(DoajTestCase):
         source = ApplicationFixtureFactory.make_application_source()
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : source, "old_status": "in progress", "new_status": "rejected"})
-        ApplicationPublisherRejectedNotify.consume(event)
+        UpdateRequestPublisherRejectedNotify.consume(event)
 
         time.sleep(2)
         ns = models.Notification.all()
@@ -48,14 +49,29 @@ class TestApplicationPublisherRejectedNotify(DoajTestCase):
 
         n = ns[0]
         assert n.who == "publisher"
-        assert n.created_by == ApplicationPublisherRejectedNotify.ID
+        assert n.created_by == UpdateRequestPublisherRejectedNotify.ID
         assert n.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
         assert n.long is not None
         assert n.short is not None
         assert not n.is_seen()
 
     def test_consume_fail(self):
+        # application model error
         event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": {"key" : "value"}})
         with self.assertRaises(exceptions.NoSuchObjectException):
-            ApplicationPublisherRejectedNotify.consume(event)
+            UpdateRequestPublisherRejectedNotify.consume(event)
+
+        # no owner
+        source = ApplicationFixtureFactory.make_application_source()
+        del source["admin"]["owner"]
+
+        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={
+            "application": source,
+            "old_status": "in progress",
+            "new_status": "rejected"
+        })
+        UpdateRequestPublisherRejectedNotify.consume(event)
+        time.sleep(2)
+        ns = models.Notification.all()
+        assert len(ns) == 0
 

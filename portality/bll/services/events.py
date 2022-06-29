@@ -20,6 +20,7 @@ from portality.events.consumers.update_request_publisher_assigned_notify import 
 from portality.events.consumers.journal_assed_assigned_notify import JournalAssedAssignedNotify
 from portality.events.consumers.journal_editor_group_assigned_notify import JournalEditorGroupAssignedNotify
 from portality.events.consumers.application_publisher_inprogress_notify import ApplicationPublisherInprogressNotify
+from portality.events.consumers.update_request_publisher_rejected_notify import UpdateRequestPublisherRejectedNotify
 
 
 class EventsService(object):
@@ -42,7 +43,8 @@ class EventsService(object):
         JournalAssedAssignedNotify,
         JournalEditorGroupAssignedNotify,
         UpdateRequestPublisherAcceptedNotify,
-        UpdateRequestPublisherAssignedNotify
+        UpdateRequestPublisherAssignedNotify,
+        UpdateRequestPublisherRejectedNotify
     ]
 
     def __init__(self):

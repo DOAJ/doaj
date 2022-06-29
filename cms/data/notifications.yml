@@ -105,7 +105,7 @@ application:publisher:inprogress:notify:
      The Associate Editor ({volunteers}) may contact you by email with questions. They may not be using a doaj.org email address. These emails can end up in your Spam folder so please check your Spam folder regularly."
   short:
    "Your submission is under review"
-application:publisher:rejected:notify:
+update_request:publisher:rejected:notify:
   long:
     "The update which you submitted for **{title}** on {date_applied} has been rejected. This is either because:
 
@@ -113,7 +113,7 @@ application:publisher:rejected:notify:
 
      - We already have one active update in the system. Additional updates are rejected without review."
   short:
-    "Your submission was rejected"
+    "Your update request was rejected"
 application:publisher:quickreject:notify:
   long: "The application which you submitted for **{title}** on {date_applied} has been rejected as the journal does not meet our basic criteria ([{doaj_guide_url}]({doaj_guide_url})).
     {note}

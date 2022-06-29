@@ -41,50 +41,6 @@ def send_editor_completed_email(application):
                         url_for_application=url_for_application)
 
 
-def send_publisher_reject_email(application, note=None, update_request=False):
-    """Tell the publisher their application was rejected"""
-    send_instructions = []
-
-    owner = models.Account.pull(application.owner)
-    if owner is not None:
-        send_instructions.append({
-            "owner" : owner,
-            "name" : owner.name,
-            "email" : owner.email,
-            "type" : "owner"
-        })
-
-    if len(send_instructions) == 0:
-        raise app_email.EmailException("Application {x} does not have an owner or suggester, cannot send email".format(x=application.id))
-
-    # determine if this is an application or an update request
-    app_type = "application" if update_request is False else "update"
-
-    for instructions in send_instructions:
-        to = [instructions["email"]]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-        subject = app.config.get("SERVICE_NAME", "") + " - your " + app_type + " was rejected"
-
-        if update_request:
-            app_email.send_mail(to=to,
-                                fro=fro,
-                                subject=subject,
-                                template_name="email/publisher_update_request_rejected.jinja2",
-                                owner=instructions["owner"],
-                                application=application,
-                                note=note)
-        else:
-            app_email.send_mail(to=to,
-                                fro=fro,
-                                subject=subject,
-                                template_name="email/publisher_application_rejected.jinja2",
-                                owner=instructions["owner"],
-                                application=application,
-                                note=note)
-
-    return send_instructions
-
-
 def send_account_created_email(account):
     reset_url = url_for('account.reset', reset_token=account.reset_token, _external=True)
     forgot_pw_url = url_for('account.forgot', _external=True)
