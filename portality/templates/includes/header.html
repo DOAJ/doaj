@@ -56,7 +56,9 @@
                             <span data-feather="chevron-down" aria-hidden="true"></span>
                         </a>
                     <ul class="dropdown__menu" aria-labelledby="menu-account">
-                        {% if current_user.has_role("admin") or current_user.has_role("editor") %}
+                        {% if current_user.has_role("admin") or
+                              current_user.has_role("editor") or
+                              current_user.has_role(constants.ROLE_ASSOCIATE_EDITOR) %}
                             <li>
                                 <a href="{{ url_for('dashboard.top_todo') }}" class="dropdown__link">
                                     Dashboard
