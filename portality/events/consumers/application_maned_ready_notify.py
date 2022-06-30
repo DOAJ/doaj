@@ -44,10 +44,11 @@ class ApplicationManedReadyNotify(EventConsumer):
         notification.who = managing_editor
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
-        notification.message = svc.message(cls.ID).format(
+        notification.long = svc.long_notification(cls.ID).format(
             application_title=application.bibjson().title,
             editor=editor
         )
+        notification.short = svc.short_notification(cls.ID)
 
         string_id_query = edges.make_url_query(query_string=application.id)
         if application.application_type == constants.APPLICATION_TYPE_NEW_APPLICATION:

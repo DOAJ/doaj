@@ -49,7 +49,7 @@ class TestApplicationEditorInProgressNotify(DoajTestCase):
         eg.set_editor(acc.id)
         eg.save(blocking=True)
 
-        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": app, "old_status": "ready", "new_status": "in progress"})
+        event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": app.data, "old_status": "ready", "new_status": "in progress"})
         ApplicationEditorInProgressNotify.consume(event)
 
         time.sleep(1)
@@ -60,7 +60,8 @@ class TestApplicationEditorInProgressNotify(DoajTestCase):
         assert n.who == "ed"
         assert n.created_by == ApplicationEditorInProgressNotify.ID
         assert n.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
-        assert n.message is not None
+        assert n.long is not None
+        assert n.short is not None
         assert n.action is not None
         assert not n.is_seen()
 

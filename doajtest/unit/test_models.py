@@ -1579,13 +1579,15 @@ class TestModels(DoajTestCase):
     def test_36_notification(self):
         n = models.Notification()
         n.who = "testuser"
-        n.message = "my message"
+        n.long = "my message"
+        n.short = "short note"
         n.action = "/test"
         n.classification = "test_class"
         n.created_by = "test:notify"
 
         assert n.who == "testuser"
-        assert n.message == "my message"
+        assert n.long == "my message"
+        assert n.short == "short note"
         assert n.action == "/test"
         assert n.classification == "test_class"
         assert n.created_by == "test:notify"
@@ -1599,7 +1601,8 @@ class TestModels(DoajTestCase):
 
         n2 = models.Notification(**n.data)
         assert n2.who == "testuser"
-        assert n2.message == "my message"
+        assert n2.long == "my message"
+        assert n2.short == "short note"
         assert n2.action == "/test"
         assert n2.classification == "test_class"
         assert n2.created_by == "test:notify"

@@ -37,7 +37,8 @@ class TestBLLNotifications(DoajTestCase):
 
         n = models.Notification()
         n.who = "testuser"
-        n.message = "my message"
+        n.long = "my message"
+        n.short = "short note"
         n.action = "/test"
         n.classification = "test_class"
         n.created_by = "test:notify"
@@ -48,7 +49,8 @@ class TestBLLNotifications(DoajTestCase):
         assert n.id is not None
         n2 = models.Notification.pull(n.id)
         assert n2.who == "testuser"
-        assert n2.message == "my message"
+        assert n2.long == "my message"
+        assert n2.short == "short note"
         assert n2.action == "/test"
         assert n2.classification == "test_class"
         assert n2.created_by == "test:notify"
@@ -60,7 +62,7 @@ class TestBLLNotifications(DoajTestCase):
         # check an email is sent
         template = re.escape('email/notification_email.jinja2')
         to = re.escape('test@example.com')
-        subject = Messages.NOTIFY__DEFAULT_EMAIL_SUBJECT
+        subject = n2.short
         email_matched = re.search(
             EMAIL_LOG_REGEX % (template, to, subject),
             info_stream_contents,
@@ -70,7 +72,8 @@ class TestBLLNotifications(DoajTestCase):
     def test_02_notify_errors(self):
         n = models.Notification()
         n.who = "testuser"
-        n.message = "my message"
+        n.long = "my message"
+        n.short = "short note"
         n.action = "/test"
         n.classification = "test_class"
         n.created_by = "test:notify"

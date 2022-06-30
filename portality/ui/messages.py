@@ -18,8 +18,7 @@ class Messages(object):
         Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
 
     SENT_ACCEPTED_APPLICATION_EMAIL = """Sent notification to '{user}' to tell them that their journal was accepted."""
-    SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER = """Sent email to user '{user}' ({name}, {email}) to tell them that their journal application was rejected."""
-    SENT_REJECTED_APPLICATION_EMAIL_TO_SUGGESTER = """Sent email to suggester {name} ({email}) to tell them that their journal application was rejected."""
+    SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER = """Sent notification to user '{user}' to tell them that their journal application was rejected."""
     SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Sent notification to '{user}' to tell them that their journal update was accepted."""
     SENT_REJECTED_UPDATE_REQUEST_EMAIL = """Sent email to user '{user}' ({name}, {email}) to tell them that their journal update was rejected."""
     SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL = """Sent email to user '{user}' to tell them that their journal update requires revisions.  You will need to contact them separately with details."""
@@ -68,7 +67,8 @@ class Messages(object):
     EXCEPTION_DUPLICATE_NO_PERMISSION = "You do not have the permissions to carry out the requested change"
 
     EXCEPTION_EDITING_ACCEPTED_JOURNAL = "You cannot edit applications which have been accepted into DOAJ."
-    EXCEPTION_EDITING_WITHDRAWN_OR_DELETED_JOURNAL = "This journal has been withdrawn or deleted, update request cannot be accepted."
+    EXCEPTION_EDITING_WITHDRAWN_JOURNAL = "This journal has been withdrawn, update request cannot be accepted."
+    EXCEPTION_EDITING_DELETED_JOURNAL = "This journal has been deleted, update request cannot be accepted."
     EXCEPTION_EDITING_NON_EXISTING_APPLICATION = "You cannot edit a not-existent application"
 
     EXCEPTION_NOTIFICATION_NO_ACCOUNT = "Account with id {x} not found"
@@ -104,7 +104,7 @@ class Messages(object):
     BULK_JOURNAL_DELETE = "About to delete an estimated {journal_no} journals with {article_no} articles associated with their ISSNs. Existing update requests will be automatically rejected."
     BULK_JOURNAL_DELETE_COMPLETED = "Deleted {journal_no} journals and all articles associated with their ISSNs."
 
-    NOTIFY__DEFAULT_EMAIL_SUBJECT = "You have a new notification"
+    NOTIFY__DEFAULT_SHORT_NOTIFICATION = "You have a new notification"
 
     @classmethod
     def flash(cls, tup):

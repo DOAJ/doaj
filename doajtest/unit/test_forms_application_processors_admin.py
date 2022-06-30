@@ -40,7 +40,7 @@ class TestPublicApplicationProcessor(DoajTestCase):
         ready_application.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         formulaic_context = ApplicationFormFactory.context("admin")
         fc = formulaic_context.processor(source=ready_application)
-        with self.assertRaises(Exception, msg=Messages.EXCEPTION_EDITING_WITHDRAWN_OR_DELETED_JOURNAL):
+        with self.assertRaises(Exception, msg=Messages.EXCEPTION_EDITING_WITHDRAWN_JOURNAL):
             fc.save()
 
     def test_03_do_not_accept_deleted(self):
@@ -53,7 +53,7 @@ class TestPublicApplicationProcessor(DoajTestCase):
         ready_application.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         formulaic_context = ApplicationFormFactory.context("admin")
         fc = formulaic_context.processor(source=ready_application)
-        with self.assertRaises(Exception, msg=Messages.EXCEPTION_EDITING_WITHDRAWN_OR_DELETED_JOURNAL):
+        with self.assertRaises(Exception, msg=Messages.EXCEPTION_EDITING_DELETED_JOURNAL):
             fc.save()
 
     def test_04_do_not_edit_accepted(self):

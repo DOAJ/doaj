@@ -1,15 +1,14 @@
-from flask import url_for
+from datetime import datetime
 
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
-from portality.lib import edges, dates
 from portality.bll import DOAJ, exceptions
 from portality.core import app
 
 
-class UpdateRequestPublisherAcceptedNotify(EventConsumer):
-    ID = "update_request:publisher:accepted:notify"
+class UpdateRequestPublisherRejectedNotify(EventConsumer):
+    ID = "update_request:publisher:rejected:notify"
 
     @classmethod
     def consumes(cls, event):
@@ -25,7 +24,10 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
         if app_source is None:
             return False
 
-        if event.context.get("new_status") != constants.APPLICATION_STATUS_ACCEPTED:
+        if event.context.get("new_status") != constants.APPLICATION_STATUS_REJECTED:
+            return False
+
+        if event.context.get("old_status") == constants.APPLICATION_STATUS_REJECTED:
             return False
 
         try:
@@ -38,11 +40,6 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
 
     @classmethod
     def consume(cls, event):
-        # TODO: in the long run this needs to move out to the user's email preferences but for now it
-        # is here to replicate the behaviour in the code it replaces
-        if not app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-            return
-
         app_source = event.context.get("application")
 
         try:
@@ -59,14 +56,14 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
         notification.who = application.owner
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
-
+        datetime_object = datetime.strptime(application.date_applied, '%Y-%m-%dT%H:%M:%SZ')
+        date_applied = datetime_object.strftime("%d/%b/%Y")
         notification.long = svc.long_notification(cls.ID).format(
-            application_title=application.bibjson().title,
-            application_date=dates.human_date(application.date_applied),
-            publisher_dashboard_url=url_for("publisher.journals", _external=True)
+            title=application.bibjson().title,
+            date_applied=date_applied,
         )
         notification.short = svc.short_notification(cls.ID)
 
-        notification.action = url_for("publisher.journals")
+        # there is no action url associated with this notification
 
         svc.notify(notification)

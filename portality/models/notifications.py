@@ -18,12 +18,20 @@ class Notification(DomainObject):
         self.data["who"] = account_id
 
     @property
-    def message(self):
-        return self.data.get("message")
+    def short(self):
+        return self.data.get("short")
 
-    @message.setter
-    def message(self, message):
-        self.data["message"] = message
+    @short.setter
+    def short(self, message):
+        self.data["short"] = message
+
+    @property
+    def long(self):
+        return self.data.get("long")
+
+    @long.setter
+    def long(self, message):
+        self.data["long"] = message
 
     @property
     def seen_date(self):

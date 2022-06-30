@@ -8,19 +8,23 @@ from portality.lib import edges
 from portality.bll import DOAJ, exceptions
 
 
-class ApplicationPublisherRejectedNotify(EventConsumer):
-    ID = "application:publisher:rejected:notify"
+class ApplicationPublisherQuickRejectNotify(EventConsumer):
+    ID = "application:publisher:quickreject:notify"
 
     @classmethod
     def consumes(cls, event):
         return event.id == constants.EVENT_APPLICATION_STATUS and \
                 event.context.get("application") is not None and \
                 event.context.get("old_status") != constants.APPLICATION_STATUS_REJECTED and \
-                event.context.get("new_status") == constants.APPLICATION_STATUS_REJECTED
+                event.context.get("new_status") == constants.APPLICATION_STATUS_REJECTED and \
+                event.context.get("process") == constants.PROCESS__QUICK_REJECT
 
     @classmethod
     def consume(cls, event):
         app_source = event.context.get("application")
+        note = event.context.get("note")
+        if note:
+            note = "\n\n**Reason for rejection**\n\n" + note + "\n\n"
 
         try:
             application = models.Application(**app_source)
@@ -30,7 +34,6 @@ class ApplicationPublisherRejectedNotify(EventConsumer):
         if not application.owner:
             return
 
-
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
@@ -39,8 +42,14 @@ class ApplicationPublisherRejectedNotify(EventConsumer):
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
         datetime_object = datetime.strptime(application.date_applied, '%Y-%m-%dT%H:%M:%SZ')
         date_applied = datetime_object.strftime("%d/%b/%Y")
-        notification.message = svc.message(cls.ID).format(
+        notification.long = svc.long_notification(cls.ID).format(
             title=application.bibjson().title,
             date_applied=date_applied,
+            note=note,
+            doaj_guide_url=url_for("doaj.guide", _external=True)
         )
+        notification.short = svc.short_notification(cls.ID)
+
+        # there is no action url for this notification
+
         svc.notify(notification)

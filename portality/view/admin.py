@@ -367,7 +367,8 @@ def application(application_id):
 
     if request.method == "GET":
         fc.processor(source=ap)
-        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
+        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
+                                  current_journal=current_journal, lcc_tree=lcc_jstree)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
@@ -429,37 +430,25 @@ def application_quick_reject(application_id):
         return redirect(url_for('.application', application_id=application_id))
 
     # reject the application
+    old_status = application.application_status
     applicationService.reject_application(application, current_user._get_current_object(), note=note)
 
     # send the notification email to the user
-    sent = False
-    send_report = []
-    try:
-        if self.source.application_status != self.target.application_status:
-            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, account.id, {
-                "application": application.data,
-                "new_status": constants.APPLICATION_STATUS_REJECTED
-            }))
-        sent = True
-    except app_email.EmailException as e:
-        pass
+    if old_status != constants.APPLICATION_STATUS_REJECTED:
+        eventsSvc = DOAJ.eventsService()
+        eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, current_user.id, {
+            "application": application.data,
+            "old_status": old_status,
+            "new_status": constants.APPLICATION_STATUS_REJECTED,
+            "process": constants.PROCESS__QUICK_REJECT,
+            "note": note
+        }))
 
     # sort out some flash messages for the user
     flash(note, "success")
 
-    for instructions in send_report:
-        msg = ""
-        flash_type = "success"
-        if sent:
-            if instructions["type"] == "owner":
-                msg = Messages.SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER.format(user=application.owner, email=instructions["email"], name=instructions["name"])
-            elif instructions["type"]  == "suggester":
-                msg = Messages.SENT_REJECTED_APPLICATION_EMAIL_TO_SUGGESTER.format(email=instructions["email"], name=instructions["name"])
-        else:
-            msg = Messages.NOT_SENT_REJECTED_APPLICATION_EMAILS.format(user=application.owner)
-            flash_type = "error"
-
-        flash(msg, flash_type)
+    msg = Messages.SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER.format(user=application.owner)
+    flash(msg, "success")
 
     # redirect the user back to the edit page
     return redirect(url_for('.application', application_id=application_id))

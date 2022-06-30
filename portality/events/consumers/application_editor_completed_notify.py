@@ -54,10 +54,11 @@ class ApplicationEditorCompletedNotify(EventConsumer):
         notification.who = group_editor
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
-        notification.message = svc.message(cls.ID).format(
+        notification.long = svc.long_notification(cls.ID).format(
             application_title=application.bibjson().title,
             associate_editor=associate_editor
         )
+        notification.short = svc.short_notification(cls.ID)
 
         string_id_query = edges.make_url_query(query_string=application.id)
         notification.action = url_for("editor.group_suggestions", source=string_id_query)

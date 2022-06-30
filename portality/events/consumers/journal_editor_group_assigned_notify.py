@@ -39,9 +39,10 @@ class JournalEditorGroupAssignedNotify(EventConsumer):
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_ASSIGN
 
-        notification.message = svc.message(cls.ID).format(
+        notification.long = svc.long_notification(cls.ID).format(
             journal_name=journal.bibjson().title
         )
+        notification.short = svc.short_notification(cls.ID)
         notification.action = url_for("editor.journal_page", journal_id=journal.id)
 
         svc.notify(notification)

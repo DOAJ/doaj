@@ -212,7 +212,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         ### editor in progress notification and email
         notification = NOTIFICATIONS_INTERCEPT.pop()
         assert notification.who == "eddie"
-        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.long is not None  # this and action are hard to predict, so lets just check they are set
         assert notification.action is not None
         assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
@@ -228,13 +228,13 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert len(NOTIFICATIONS_INTERCEPT) == 1    # this will change when more of this file is run through the notifications system
         notification = NOTIFICATIONS_INTERCEPT.pop()
         assert notification.who == "associate"
-        assert notification.message is not None # this and action are hard to predict, so lets just check they are set
+        assert notification.long is not None # this and action are hard to predict, so lets just check they are set
         assert notification.action is not None
         assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
         assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = self.svc.email_subject(ApplicationAssedInprogressNotify.ID)# "an application assigned to you has not passed review."
+        assoc_editor_subject = self.svc.short_notification(ApplicationAssedInprogressNotify.ID)# "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
                                                info_stream_contents,
                                                re.DOTALL)
@@ -280,7 +280,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         ### editor in progress notification and email
         notification = NOTIFICATIONS_INTERCEPT.pop()
         assert notification.who == "eddie"
-        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.long is not None  # this and action are hard to predict, so lets just check they are set
         assert notification.action is not None
         assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
@@ -296,13 +296,13 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert len(NOTIFICATIONS_INTERCEPT) == 1  # this will change when more of this file is run through the notifications system
         notification = NOTIFICATIONS_INTERCEPT.pop()
         assert notification.who == "associate"
-        assert notification.message is not None # this and action are hard to predict, so lets just check they are set
+        assert notification.long is not None # this and action are hard to predict, so lets just check they are set
         assert notification.action is not None
         assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
         assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = self.svc.email_subject(ApplicationAssedInprogressNotify.ID)  # "an application assigned to you has not passed review."
+        assoc_editor_subject = self.svc.short_notification(ApplicationAssedInprogressNotify.ID)  # "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(
             email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
             info_stream_contents,
@@ -779,7 +779,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         ### editor in progress notification and email
         notification = NOTIFICATIONS_INTERCEPT.pop()
         assert notification.who == "eddie"
-        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.long is not None  # this and action are hard to predict, so lets just check they are set
         assert notification.action is not None
         assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
@@ -796,13 +796,13 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             NOTIFICATIONS_INTERCEPT) == 1  # this will change when more of this file is run through the notifications system
         notification = NOTIFICATIONS_INTERCEPT.pop()
         assert notification.who == "associate"
-        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.long is not None  # this and action are hard to predict, so lets just check they are set
         assert notification.action is not None
         assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
         assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = self.svc.email_subject(
+        assoc_editor_subject = self.svc.short_notification(
             ApplicationAssedInprogressNotify.ID)  # "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(
             email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
@@ -850,7 +850,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         ### editor in progress notification and email
         notification = NOTIFICATIONS_INTERCEPT.pop()
         assert notification.who == "eddie"
-        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.long is not None  # this and action are hard to predict, so lets just check they are set
         assert notification.action is not None
         assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
@@ -867,13 +867,13 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
             NOTIFICATIONS_INTERCEPT) == 1  # this will change when more of this file is run through the notifications system
         notification = NOTIFICATIONS_INTERCEPT.pop()
         assert notification.who == "associate"
-        assert notification.message is not None  # this and action are hard to predict, so lets just check they are set
+        assert notification.long is not None  # this and action are hard to predict, so lets just check they are set
         assert notification.action is not None
         assert notification.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
         assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = self.svc.email_subject(
+        assoc_editor_subject = self.svc.short_notification(
             ApplicationAssedInprogressNotify.ID)  # "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(
             email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),

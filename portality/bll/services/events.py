@@ -12,19 +12,20 @@ from portality.events.consumers.application_editor_completed_notify import Appli
 from portality.events.consumers.application_editor_inprogress_notify import ApplicationEditorInProgressNotify
 from portality.events.consumers.account_passwordreset_email import AccountPasswordResetEmail
 from portality.events.consumers.application_editor_group_assigned_notify import ApplicationEditorGroupAssignedNotify
-from portality.events.consumers.application_publisher_rejected_notify import ApplicationPublisherRejectedNotify
+from portality.events.consumers.application_publisher_quickreject_notify import ApplicationPublisherQuickRejectNotify
 from portality.events.consumers.application_publisher_accepted_notify import ApplicationPublisherAcceptedNotify
 from portality.events.consumers.update_request_publisher_accepted_notify import UpdateRequestPublisherAcceptedNotify
 from portality.events.consumers.application_publisher_assigned_notify import ApplicationPublisherAssignedNotify
 from portality.events.consumers.update_request_publisher_assigned_notify import UpdateRequestPublisherAssignedNotify
 from portality.events.consumers.journal_assed_assigned_notify import JournalAssedAssignedNotify
 from portality.events.consumers.journal_editor_group_assigned_notify import JournalEditorGroupAssignedNotify
-from portality.events.consumers.application_publisher_inprogress_notify import ApplicationPublisherInprogresNotify
+from portality.events.consumers.application_publisher_inprogress_notify import ApplicationPublisherInprogressNotify
+from portality.events.consumers.update_request_publisher_rejected_notify import UpdateRequestPublisherRejectedNotify
 
 
 class EventsService(object):
     EVENT_CONSUMERS = [
-        ApplicationPublisherRejectedNotify,
+        ApplicationPublisherQuickRejectNotify,
         AccountCreatedEmail,
         AccountPasswordResetEmail,
         ApplicationAssedInprogressNotify,
@@ -34,7 +35,7 @@ class EventsService(object):
         ApplicationEditorGroupAssignedNotify,
         ApplicationManedReadyNotify,
         ApplicationPublisherCreatedNotify,
-        ApplicationPublisherInprogresNotify,
+        ApplicationPublisherInprogressNotify,
         ApplicationPublisherAcceptedNotify,
         ApplicationPublisherAssignedNotify,
         ApplicationPublisherRevisionNotify,
@@ -42,7 +43,8 @@ class EventsService(object):
         JournalAssedAssignedNotify,
         JournalEditorGroupAssignedNotify,
         UpdateRequestPublisherAcceptedNotify,
-        UpdateRequestPublisherAssignedNotify
+        UpdateRequestPublisherAssignedNotify,
+        UpdateRequestPublisherRejectedNotify
     ]
 
     def __init__(self):
