@@ -12,10 +12,10 @@ constraint account,,none,25,,,
 ,,,,,,
 conditional raises,,none,,ArgumentException,,
 ,,,,,,
-conditional todo_maned_stalled,,admin,!0,,1,
+conditional todo_maned_stalled,,admin,!0,,2,
 conditional todo_maned_stalled,,admin,0,,0,
 conditional todo_maned_stalled,,!admin,,,0,
 ,,,,,,
-conditional todo_maned_follow_up_old,,admin,!0,,,2
+conditional todo_maned_follow_up_old,,admin,!0,,,3
 conditional todo_maned_follow_up_old,,admin,0,,,0
 conditional todo_maned_follow_up_old,,!admin,,,,0
