@@ -253,7 +253,6 @@ class TodoRules(object):
         sort_field = "created_date"
         assign_pending = TodoQuery(
             musts=[
-                # KTODO how to create query for condition `assed is you`
                 TodoQuery.editor(acc_id),
             ],
             must_nots=[
