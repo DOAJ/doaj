@@ -10,7 +10,7 @@ application:assed:assigned:notify:
     New application assigned to you
 bg:job_finished:notify:
   long: |
-    Your background job {job_id} for **{action}** has finished with the status **{status}**. You can see the record of your job and its status in the background jobs interface here:
+    Your background job {job_id} for **{action}** has finished with the status **{status}**. You can see the record of your job and its status in the background jobs interface
   short:
     Background job finished
 application:maned:ready:notify:
