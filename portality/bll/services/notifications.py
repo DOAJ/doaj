@@ -57,6 +57,7 @@ class NotificationsService(object):
             return True
         return False
 
+
 class TopNotificationsQuery(object):
     def __init__(self, account_id, size=10):
         self.account_id = account_id

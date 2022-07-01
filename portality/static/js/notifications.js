@@ -15,13 +15,17 @@ doaj.notifications.init = function() {
 
 doaj.notifications.notificationsReceived = function(data) {
     let frag = "";
+    let unseenCount = 0;
     for (let i = 0; i < data.length; i++) {
         let notification = data[i];
         let seenClass = notification.seen_date ? "notification__seen" : "notifications__unseen";
+        if (!notification.seen_date) {
+            unseenCount++;
+        }
         frag += `<li class="notifications__item">
             <a href="${notification.action}" class="dropdown__link ${seenClass} notification_action_link" data-notification-id="${notification.id}">
-                <span>${notification.message}</span>
-                <small class="notifications__date"><time datetime="${notification.created_date}">${notification.created_date}</time></small>
+                <span>${notification.short ? notification.short : "Untitled notification"}</span>
+                <small class="notifications__date"><time datetime="${notification.created_date}">${doaj.humanDate(notification.created_date)}</time></small>
             </a>
         </li>`;
     }
@@ -32,6 +36,12 @@ doaj.notifications.notificationsReceived = function(data) {
     </li>`;
 
     $("#top_notifications").html(frag);
+
+    if (unseenCount > 0) {
+        $(".js-notifications-count").html(`(${unseenCount})`);
+    } else {
+        $(".js-notifications-count").html("");
+    }
 
     $(".notification_action_link").on("click", doaj.notifications.notificationClicked);
 }
