@@ -1,4 +1,5 @@
-from flask import url_for
+# from flask import url_for
+from portality.lib.flask import url_for
 
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -6,7 +7,6 @@ from portality import models
 from portality.lib import edges
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.dao import Facetview2
 
 
 class BGJobFinishedNotify(EventConsumer):
@@ -35,6 +35,7 @@ class BGJobFinishedNotify(EventConsumer):
         svc = DOAJ.notificationsService()
 
         string_id_query = edges.make_url_query(query_string=job.id)
+        # note we're using the doaj url_for wrapper, not the flask url_for directly, due to the request context hack required
         url = url_for("admin.background_jobs_search", source=string_id_query)
 
         notification = models.Notification()
