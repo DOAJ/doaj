@@ -2,8 +2,13 @@ doaj.notifications = {};
 doaj.notifications.top_url = "/dashboard/top_notifications";
 doaj.notifications.seen_url = "/dashboard/notifications/{notification_id}/seen"
 doaj.notifications.page_url = "/dashboard/notifications"
+doaj.notifications.pollFrequency = 5 * 60 * 1000; // 5 minutes
 
 doaj.notifications.init = function() {
+    doaj.notifications.requestNotifications();
+}
+
+doaj.notifications.requestNotifications = function() {
     $.ajax({
         method: "get",
         url: doaj.notifications.top_url,
@@ -11,6 +16,7 @@ doaj.notifications.init = function() {
         dataType: "jsonp",
         success: doaj.notifications.notificationsReceived
     })
+    setTimeout(doaj.notifications.requestNotifications, doaj.notifications.pollFrequency);
 }
 
 doaj.notifications.notificationsReceived = function(data) {
@@ -22,8 +28,14 @@ doaj.notifications.notificationsReceived = function(data) {
         if (!notification.seen_date) {
             unseenCount++;
         }
+
+        let action = notification.action;
+        if (!action) {
+            action = "#";
+        }
+
         frag += `<li class="notifications__item">
-            <a href="${notification.action}" class="dropdown__link ${seenClass} notification_action_link" data-notification-id="${notification.id}">
+            <a href="${action}" class="dropdown__link ${seenClass} notification_action_link" data-notification-id="${notification.id}">
                 <span>${notification.short ? notification.short : "Untitled notification"}</span>
                 <small class="notifications__date"><time datetime="${notification.created_date}">${doaj.humanDate(notification.created_date)}</time></small>
             </a>
@@ -50,6 +62,11 @@ doaj.notifications.notificationClicked = function(event) {
     let el = $(this);
     let notificationId = el.attr("data-notification-id");
     doaj.notifications.setAsSeen(notificationId, el);
+
+    let link = el.attr("href");
+    if (link === "#") {
+        event.preventDefault();
+    }
 }
 
 doaj.notifications.setAsSeen = function(notificationId, element) {
