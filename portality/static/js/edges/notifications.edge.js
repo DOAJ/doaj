@@ -3,6 +3,8 @@ $.extend(true, doaj, {
     notificationsSearch: {
         activeEdges: {},
 
+        seen_url: "/dashboard/notifications/{notification_id}/seen",
+
         icons: {
             finished: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
                   <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
@@ -155,7 +157,10 @@ $.extend(true, doaj, {
 
             this.markdownConverter = new showdown.Converter({
                 literalMidWordUnderscores: true
-            })
+            });
+
+            this.markAsSeenClass = false;
+            this.seenStatusSpan = false;
 
             this.draw = function () {
                 if (this.component.edge.currentQuery){
@@ -179,6 +184,9 @@ $.extend(true, doaj, {
                     frag = "";
                 }
 
+                this.markAsSeenClass = edges.css_classes(this.namespace, "seen", this);
+                this.seenStatusSpan = edges.css_classes(this.namespace, "seen_status", this);
+
                 var results = this.component.results;
                 if (results && results.length > 0) {
                     // now call the result renderer on each result to build the records
@@ -190,12 +198,13 @@ $.extend(true, doaj, {
 
                 this.component.context.html(frag);
                 feather.replace();
+
+                let markAsSeenSelector = edges.css_class_selector(this.namespace, "seen", this);
+                edges.on(markAsSeenSelector, "click", this, "markAsSeen")
             };
 
             this._renderResult = function(notification) {
-
-                let seenIcon = notification.seen_date ? doaj.notificationsSearch.icons.seen : doaj.notificationsSearch.icons.unseen;
-                let seenTitle = notification.seen_date ? `Seen notification on ${doaj.humanDate(notification.seen_date)}` : "New notification"
+                let seen_icon = this._seenIcon(notification.seen_date);
 
                 let typeIcon = doaj.notificationsSearch.icons[notification.classification];
                 if (!typeIcon) {
@@ -207,16 +216,22 @@ $.extend(true, doaj, {
                     typeTitle = "Notification";
                 }
 
-                let actionFrag = "No action required";
+                let actionFrag = `No action required`
                 if (notification.action) {
-                    actionFrag = `<a class="notification_action_button" data-notification-id="${notification.id}" href="${notification.action}">See action</a>`;
+                    actionFrag = `<a class="notification_action_button" href="${notification.action}">See action</a>`;
+                } else {
+                    if (!notification.seen_date) {
+                        actionFrag += `<br><a href="#" class="${this.markAsSeenClass}" data-notification-id="${notification.id}">Mark as seen</a>`;
+                    }
                 }
 
                 var body = this.markdownConverter.makeHtml(notification.long);
 
-                var frag = `<div class="card search-results__record">
+                var frag = `<div class="card search-results__record" data-notification-id="${notification.id}">
                     <article class="row">
-                      <div class="col-sm-1"><span title="${seenTitle}">${seenIcon}</span>&nbsp;<span title="${typeTitle}">${typeIcon}</span></div>
+                      <div class="col-sm-1">
+                        <span class="${this.seenStatusSpan}">${seen_icon}</span>&nbsp;<span title="${typeTitle}">${typeIcon}</span>
+                        </div>
                       <div class="col-sm-9 search-results__main">
                         <header>
                           <h3 class="search-results__heading">${notification.short}</h3>
@@ -239,6 +254,33 @@ $.extend(true, doaj, {
                 </div>`;
 
                 return frag;
+            };
+
+            this._seenIcon = function(seen_date) {
+                let seenIcon = seen_date ? doaj.notificationsSearch.icons.seen : doaj.notificationsSearch.icons.unseen;
+                let seenTitle = seen_date ? `Notification seen on ${doaj.humanDate(seen_date)}` : "New notification"
+                let frag = `<span title="${seenTitle}">${seenIcon}</span>`;
+                return frag;
+            }
+
+            this.markAsSeen = function(element) {
+                let notificationId = $(element).attr("data-notification-id");
+                $.ajax({
+                    method: "post",
+                    url: doaj.notificationsSearch.seen_url.replace("{notification_id}", notificationId),
+                    contentType: "application/json",
+                    dataType: "jsonp"
+                });
+                let frag = this._seenIcon((new Date()).toString())
+
+                let row = $(`div[data-notification-id=${notificationId}]`);
+
+                let seenSelector = edges.css_class_selector(this.namespace, "seen_status", this);
+                let icon = row.find(seenSelector);
+                icon.html(frag);
+
+                let markSelector = edges.css_class_selector(this.namespace, "seen", this);
+                row.find(markSelector).remove();
             };
         }
     }
