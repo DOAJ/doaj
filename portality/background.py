@@ -85,7 +85,7 @@ class BackgroundApi(object):
         jdata = job.data
         del jdata["audit"]
         eventsSvc = DOAJ.eventsService()
-        eventsSvc.trigger(models.Event(constants.BACKGROUND_JOB_FINISHED, job.user.id, {
+        eventsSvc.trigger(models.Event(constants.BACKGROUND_JOB_FINISHED, job.user, {
             "job": jdata
         }))
 
