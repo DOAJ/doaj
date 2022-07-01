@@ -1,10 +1,8 @@
-from flask import url_for
 from datetime import datetime
 
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
-from portality.lib import edges
 from portality.bll import DOAJ, exceptions
 from portality.lib.seamless import SeamlessException
 

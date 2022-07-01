@@ -1,4 +1,5 @@
-from flask import url_for
+# from flask import url_for
+from portality.lib.flask import url_for
 
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -38,7 +39,9 @@ class ApplicationAssedInprogressNotify(EventConsumer):
         notification.long = svc.long_notification(cls.ID).format(application_title=application.bibjson().title)
         notification.short = svc.short_notification(cls.ID)
 
-        string_id_query = edges.make_url_query(query_string=application.id)
+        # don't make the escaped query, as url_for is also going to escape it, and it will wind up double-escaped!
+        string_id_query = edges.make_query_json(query_string=application.id)
+        # note we're using the doaj url_for wrapper, not the flask url_for directly, due to the request context hack required
         notification.action = url_for("editor.associate_suggestions", source=string_id_query)
 
         svc.notify(notification)
