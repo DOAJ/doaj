@@ -1,4 +1,5 @@
-from flask import url_for
+# from flask import url_for
+from portality.lib.flask import url_for
 
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -50,7 +51,9 @@ class ApplicationManedReadyNotify(EventConsumer):
         )
         notification.short = svc.short_notification(cls.ID)
 
-        string_id_query = edges.make_url_query(query_string=application.id)
+        # don't make the escaped query, as url_for is also going to escape it, and it will wind up double-escaped!
+        # note we're using the doaj url_for wrapper, not the flask url_for directly, due to the request context hack required
+        string_id_query = edges.make_query_json(query_string=application.id)
         if application.application_type == constants.APPLICATION_TYPE_NEW_APPLICATION:
             url_for_application = url_for("admin.suggestions", source=string_id_query)
         else:

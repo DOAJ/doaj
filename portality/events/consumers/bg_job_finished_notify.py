@@ -34,7 +34,8 @@ class BGJobFinishedNotify(EventConsumer):
 
         svc = DOAJ.notificationsService()
 
-        string_id_query = edges.make_url_query(query_string=job.id)
+        # don't make the escaped query, as url_for is also going to escape it, and it will wind up double-escaped!
+        string_id_query = edges.make_query_json(query_string=job.id)
         # note we're using the doaj url_for wrapper, not the flask url_for directly, due to the request context hack required
         url = url_for("admin.background_jobs_search", source=string_id_query)
 
