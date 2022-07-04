@@ -110,7 +110,7 @@ class TestOpenURL(DoajTestCase):
                                             genre='journal'))
 
                 assert resp.status_code == 302
-                assert resp.location == url_for('doaj.toc', identifier=j_matching.id, _external=True)
+                assert resp.location == url_for('doaj.toc', identifier=j_matching.id)
 
                 # A query without genre to show it's the default
                 resp = t_client.get(url_for('openurl.openurl',
@@ -122,7 +122,7 @@ class TestOpenURL(DoajTestCase):
                                             jtitle=param_title))
 
                 assert resp.status_code == 302
-                assert resp.location == url_for('doaj.toc', identifier=j_matching.id, _external=True)
+                assert resp.location == url_for('doaj.toc', identifier=j_matching.id)
 
                 # Search for the second journal by its differing title
                 resp = t_client.get(url_for('openurl.openurl',
@@ -135,7 +135,7 @@ class TestOpenURL(DoajTestCase):
                                             genre='journal'))
 
                 assert resp.status_code == 302
-                assert resp.location == url_for('doaj.toc', identifier=j_nonmatching.id, _external=True)
+                assert resp.location == url_for('doaj.toc', identifier=j_nonmatching.id)
 
                 # Relaxing title constraint means both journals match, but we're served the 'best match' according to ES
                 resp = t_client.get(url_for('openurl.openurl',
