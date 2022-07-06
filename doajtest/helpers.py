@@ -37,6 +37,7 @@ def with_es(_func=None, *, indices=None, warm_mappings=None):
     else:
         return with_es_decorator(_func)
 
+
 class WithES:
 
     def __init__(self, func, indices=None, warm_mappings=None):
@@ -85,13 +86,13 @@ def create_index(index_type):
 
 
 def dao_proxy(dao_method, type="class"):
-
     if type == "class":
         @classmethod
         @functools.wraps(dao_method)
         def proxy_method(cls, *args, **kwargs):
             create_index(cls.__type__)
             return dao_method.__func__(cls, *args, **kwargs)
+
         return proxy_method
 
     else:
@@ -193,7 +194,8 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
     print('Removed :: keys present in {d2} which are not in {d1}'.format(d1=d1_label, d2=d2_label))
     print(differ.removed())
     print()
-    print('Changed :: keys which are the same in {d1} and {d2} but whose values are different'.format(d1=d1_label, d2=d2_label))
+    print('Changed :: keys which are the same in {d1} and {d2} but whose values are different'.format(d1=d1_label,
+                                                                                                      d2=d2_label))
     print(differ.changed())
     print()
 
@@ -211,7 +213,8 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
         print()
 
     if print_unchanged:
-        print('Unchanged :: keys which are the same in {d1} and {d2} and whose values are also the same'.format(d1=d1_label, d2=d2_label))
+        print('Unchanged :: keys which are the same in {d1} and {d2} and whose values are also the same'.format(
+            d1=d1_label, d2=d2_label))
         print(differ.unchanged())
 
 
@@ -220,7 +223,7 @@ def load_from_matrix(filename, test_ids):
         test_ids = []
     with open(paths.rel2abs(__file__, "matrices", filename), 'r') as f:
         reader = csv.reader(f)
-        next(reader)   # pop the header row
+        next(reader)  # pop the header row
         cases = []
         for row in reader:
             if row[0] in test_ids or len(test_ids) == 0:
@@ -268,8 +271,7 @@ def patch_history_dir(dir_key):
             # setup new path
             org_config_val = DoajTestCase.app_test.config[dir_key]
             org_hist_dir = hist_class.SAVE_BASE_DIRECTORY
-            _new_path = Path(tempfile.NamedTemporaryFile().name)
-            _new_path.mkdir(parents=True, exist_ok=True)
+            _new_path = paths.create_tmp_dir(is_auto_mkdir=True)
             hist_class.SAVE_BASE_DIRECTORY = _new_path.as_posix()
             DoajTestCase.app_test.config[dir_key] = _new_path.as_posix()
 
@@ -287,3 +289,31 @@ def patch_history_dir(dir_key):
 
     return _wrapper
 
+
+class StoreLocalPatcher:
+
+    def setUp(self, cur_app):
+        """
+        change STORE_IMPL to StoreLocal
+        make sure STORE_LOCAL_DIR and STORE_TMP_DIR used new tmp dir
+        """
+        self.org_store_imp = cur_app.config.get("STORE_IMPL")
+        self.org_store_tmp_imp = app.config.get("STORE_TMP_IMPL")
+        self.org_store_local_dir = cur_app.config["STORE_LOCAL_DIR"]
+        self.org_store_tmp_dir = cur_app.config["STORE_TMP_DIR"]
+
+        self.new_store_local_dir = paths.create_tmp_dir(is_auto_mkdir=True)
+        self.new_store_tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True)
+
+        cur_app.config["STORE_IMPL"] = "portality.store.StoreLocal"
+        cur_app.config["STORE_LOCAL_DIR"] = self.new_store_local_dir
+        cur_app.config["STORE_TMP_DIR"] = self.new_store_tmp_dir
+
+    def tearDown(self, cur_app):
+        cur_app.config["STORE_IMPL"] = self.org_store_imp
+        cur_app.config["STORE_TMP_IMPL"] = self.org_store_tmp_imp
+
+        shutil.rmtree(self.new_store_local_dir)
+        shutil.rmtree(self.new_store_tmp_dir)
+        cur_app.config["STORE_LOCAL_DIR"] = self.org_store_local_dir
+        cur_app.config["STORE_TMP_DIR"] = self.org_store_tmp_dir
