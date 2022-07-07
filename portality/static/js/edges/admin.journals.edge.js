@@ -490,8 +490,8 @@ $.extend(true, doaj, {
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
-                            true : "True",
-                            false : "False"
+                            true : "Yes",
+                            false : "No"
                         }
                     },
                     rangeFunctions : {
