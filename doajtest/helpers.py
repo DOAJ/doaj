@@ -1,18 +1,18 @@
-import tempfile
-from pathlib import Path
-
-from flask_login import login_user
-
-from unittest import TestCase
-from portality import core, dao
-from portality.app import app
-from portality.tasks.redis_huey import main_queue, long_running
-import dictdiffer
+import csv
+import functools
+import os
+import shutil
 from datetime import datetime
 from glob import glob
-import os, csv, shutil
+from unittest import TestCase
+
+import dictdiffer
+from flask_login import login_user
+
+from portality import core, dao
+from portality.app import app
 from portality.lib import paths
-import functools
+from portality.tasks.redis_huey import main_queue, long_running
 
 
 def patch_config(inst, properties):
