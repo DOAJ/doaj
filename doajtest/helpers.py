@@ -152,7 +152,10 @@ class DoajTestCase(TestCase):
 
     def tearDown(self):
         for f in self.list_today_article_history_files() + self.list_today_journal_history_files():
-            os.remove(f)
+            try:
+                os.remove(f)
+            except FileNotFoundError:
+                pass  # could be removed by other thread / process
         shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
 
         global CREATED_INDICES
