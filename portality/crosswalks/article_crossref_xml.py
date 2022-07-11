@@ -15,6 +15,83 @@ class CrossrefXWalk(object):
     """
     format_name = "crossref"
 
+    """
+    Example record:
+    <doi_batch version="4.4.2" xmlns="http://www.crossref.org/schema/4.4.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.crossref.org/schema/4.3.7 http://www.crossref.org/schema/deposit/crossref4.3.7.xsd">
+        <head>
+            <doi_batch_id>1dbb27d1030c6c9d9d-7ff0</doi_batch_id>
+            <timestamp>200504260247</timestamp>
+            <depositor>
+                <depositor_name>your name</depositor_name>
+                <email_address>your@email.com</email_address>
+            </depositor>
+            <registrant>WEB-FORM</registrant>
+        </head>
+        <body>
+            <journal>
+                <journal_metadata>
+                    <full_title>Test Publication</full_title>
+                    <abbrev_title>TP</abbrev_title>
+                    <issn media_type="print">2073-9813</issn>
+                </journal_metadata>
+                <journal_issue>
+                    <publication_date media_type="print">
+                        <month>12</month>
+                        <day>1</day>
+                        <year>2005</year>
+                    </publication_date>
+                    <journal_volume>
+                        <volume>12</volume>
+                    </journal_volume>
+                    <issue>1</issue>
+                </journal_issue>
+                <!-- ====== This is the article's metadata ======== -->
+                <journal_article publication_type="full_text">
+                    <titles>
+                        <title>First Article</title>
+                    </titles>
+                    <contributors>
+                        <person_name sequence="first" contributor_role="author">
+                            <given_name>Bob</given_name>
+                            <surname>Surname</surname>
+                            <ORCID>http://orcid.org/0000-0002-4011-3590</ORCID>
+                        </person_name>
+                    </contributors>
+                    <publication_date media_type="print">
+                        <month>12</month>
+                        <day>1</day>
+                        <year>2004</year>
+                    </publication_date>
+                    <pages>
+                        <first_page>100</first_page>
+                        <last_page>200</last_page>
+                    </pages>
+                    <doi_data>
+                        <doi>10.50505/test_20051229930</doi>
+                        <resource>http://www.crossref.org/</resource>
+                    </doi_data>
+                    <!-- =========  Here is the list of references cited in the above article -->
+                    <citation_list>
+                        <citation key="ref1">
+                            <journal_title>Current Opinion in Oncology</journal_title>
+                            <author>Chauncey</author>
+                            <volume>13</volume>
+                            <first_page>21</first_page>
+                            <cYear>2001</cYear>
+                        </citation>
+                        <citation key="ref2">
+                            <doi>10.5555/small_md_0001</doi>
+                        </citation>
+                        <citation key="ref=3">
+                        <unstructured_citation>Clow GD, McKay CP, Simmons Jr. GM, and Wharton RA, Jr. 1988. Climatological observations and           predicted sublimation rates at Lake Hoare, Antarctica. Journal of Climate 1:715-728.</unstructured_citation>
+                        </citation>
+                    </citation_list>
+                </journal_article>
+            </journal>
+        </body>
+    </doi_batch>
+            """
+
     def __init__(self):
         self.validation_log = ""
         self.schema_path = app.config.get("SCHEMAS", {}).get("crossref")
@@ -84,93 +161,38 @@ class CrossrefXWalk(object):
         return articles
 
     def crosswalk_article(self, record, journal):
-        """
-Example record:
-<doi_batch version="4.4.2" xmlns="http://www.crossref.org/schema/4.4.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.crossref.org/schema/4.3.7 http://www.crossref.org/schema/deposit/crossref4.3.7.xsd">
-    <head>
-        <doi_batch_id>1dbb27d1030c6c9d9d-7ff0</doi_batch_id>
-        <timestamp>200504260247</timestamp>
-        <depositor>
-            <depositor_name>your name</depositor_name>
-            <email_address>your@email.com</email_address>
-        </depositor>
-        <registrant>WEB-FORM</registrant>
-    </head>
-    <body>
-        <journal>
-            <journal_metadata>
-                <full_title>Test Publication</full_title>
-                <abbrev_title>TP</abbrev_title>
-                <issn media_type="print">2073-9813</issn>
-            </journal_metadata>
-            <journal_issue>
-                <publication_date media_type="print">
-                    <month>12</month>
-                    <day>1</day>
-                    <year>2005</year>
-                </publication_date>
-                <journal_volume>
-                    <volume>12</volume>
-                </journal_volume>
-                <issue>1</issue>
-            </journal_issue>
-            <!-- ====== This is the article's metadata ======== -->
-            <journal_article publication_type="full_text">
-                <titles>
-                    <title>First Article</title>
-                </titles>
-                <contributors>
-                    <person_name sequence="first" contributor_role="author">
-                        <given_name>Bob</given_name>
-                        <surname>Surname</surname>
-                        <ORCID>http://orcid.org/0000-0002-4011-3590</ORCID>
-                    </person_name>
-                </contributors>
-                <publication_date media_type="print">
-                    <month>12</month>
-                    <day>1</day>
-                    <year>2004</year>
-                </publication_date>
-                <pages>
-                    <first_page>100</first_page>
-                    <last_page>200</last_page>
-                </pages>
-                <doi_data>
-                    <doi>10.50505/test_20051229930</doi>
-                    <resource>http://www.crossref.org/</resource>
-                </doi_data>
-                <!-- =========  Here is the list of references cited in the above article -->
-                <citation_list>
-                    <citation key="ref1">
-                        <journal_title>Current Opinion in Oncology</journal_title>
-                        <author>Chauncey</author>
-                        <volume>13</volume>
-                        <first_page>21</first_page>
-                        <cYear>2001</cYear>
-                    </citation>
-                    <citation key="ref2">
-                        <doi>10.5555/small_md_0001</doi>
-                    </citation>
-                    <citation key="ref=3">
-                    <unstructured_citation>Clow GD, McKay CP, Simmons Jr. GM, and Wharton RA, Jr. 1988. Climatological observations and           predicted sublimation rates at Lake Hoare, Antarctica. Journal of Climate 1:715-728.</unstructured_citation>
-                    </citation>
-                </citation_list>
-            </journal_article>
-        </journal>
-    </body>
-</doi_batch>
-        """
+
         article = models.Article()  # ~~->Article:Model~~
         bibjson = article.bibjson()
 
-        # journal title
+        this.extract_title(journal)
+        this.extract_issns(journal)
+        this.extract_publication_date(journal)
+        this.extract_volume(journal)
+        this.extract_issue(journal)
+        this.extract_pages(journal)
+        this.extract_doi(journal)
+        this.extract_fulltext(journal)
+        this.extract_article_title(journal)
+        this.extract_authors(journal)
+        this.extract_abstract(journal)
+
+        return article
+
+
+###############################################################################
+## extractors
+###############################################################################
+
+
+    def extract_title(self, journal):
         jm = journal.find("x:journal_metadata", NS)
         if jm is not None:
             jt = _element(jm, "x:full_title", NS)
             if jt is not None:
                 bibjson.journal_title = jt
 
-        # p-issn and e-issn
+    def extract_issns(self, journal):
         md = journal.find("x:journal_metadata", NS)
         if md is not None:
             issns = md.findall("x:issn", NS)
@@ -182,7 +204,7 @@ Example record:
                 if len(issns[0].attrib) == 0 or issns[0].attrib["media_type"] == 'electronic':
                     bibjson.add_identifier(bibjson.E_ISSN, issns[0].text.upper())
                 elif issns[0].attrib["media_type"] == 'print':
-                     bibjson.add_identifier(bibjson.P_ISSN, issns[0].text.upper())
+                    bibjson.add_identifier(bibjson.P_ISSN, issns[0].text.upper())
 
             elif len(issns) == 2:
                 attrs = [0, 0]
@@ -193,9 +215,10 @@ Example record:
 
                 # if both issns have the same type - raise the exception
                 if attrs[0] != 0 and attrs[0] == attrs[1]:
-                    raise CrosswalkException(message=Messages.EXCEPTION_ISSNS_OF_THE_SAME_TYPE.format(type=issns[1].attrib["media_type"]))
+                    raise CrosswalkException(
+                        message=Messages.EXCEPTION_ISSNS_OF_THE_SAME_TYPE.format(type=issns[1].attrib["media_type"]))
 
-                #if both issns have the same value - raise the exception
+                # if both issns have the same value - raise the exception
                 if issns[0].text.upper() == issns[1].text.upper():
                     raise CrosswalkException(
                         message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN.format(value=issns[0].text.upper()))
@@ -218,15 +241,14 @@ Example record:
                 bibjson.add_identifier(bibjson.P_ISSN if attrs[0] == "print" else bibjson.E_ISSN, issns[0].text.upper())
                 bibjson.add_identifier(bibjson.P_ISSN if attrs[1] == "print" else bibjson.E_ISSN, issns[1].text.upper())
 
-        # publication date
+    def extract_publication_date(self, journal):
         pd = record.find("x:publication_date", NS)
 
         if pd is not None:
             bibjson.year = _element(pd, "x:year", NS)
             bibjson.month = _element(pd, "x:month", NS)
 
-        # volume
-
+    def extract_volume(self, journal):
         issue = journal.find("x:journal_issue", NS)
 
         if issue is not None:
@@ -236,11 +258,12 @@ Example record:
                 if volume is not None:
                     bibjson.volume = volume
 
-            # issue
-            number = _element(issue, "x:issue", NS)
-            if number is not None:
-                bibjson.number = number
+    def extract_issue(self, journal):
+        number = _element(issue, "x:issue", NS)
+        if number is not None:
+            bibjson.number = number
 
+    def extract_pages(self, journal):
         pages = record.find('x:pages', NS)
         # start page
         if pages is not None:
@@ -253,6 +276,7 @@ Example record:
             if ep is not None:
                 bibjson.end_page = ep
 
+    def extract_doi(self, journal):
         d = record.find("x:doi_data", NS)
         if d is not None:
             # doi
@@ -260,22 +284,23 @@ Example record:
             if doi is not None:
                 bibjson.add_identifier(bibjson.DOI, doi)
 
-            # fulltext
-            ftel = _element(d, "x:resource", NS)
-            if ftel is not None:
-                bibjson.add_url(ftel, "fulltext", NS)
+    def extract_fulltext(self, journal):
+        ftel = _element(d, "x:resource", NS)
+        if ftel is not None:
+            bibjson.add_url(ftel, "fulltext", NS)
 
-        # title
+    def extract_article_title(self, journal):
         titles = record.find('x:titles', NS)
         if titles is not None:
             title = _element(titles, "x:title", NS)
             if title is not None:
                 bibjson.title = title
 
-        # authors
+    def extract_authors(self, journal):
         contributors = record.find("x:contributors", NS)
         if contributors is None:
-            raise CrosswalkException(message=Messages.EXCEPTION_NO_CONTRIBUTORS_FOUND, inner_message=Messages.EXCEPTION_NO_CONTRIBUTORS_EXPLANATION)
+            raise CrosswalkException(message=Messages.EXCEPTION_NO_CONTRIBUTORS_FOUND,
+                                     inner_message=Messages.EXCEPTION_NO_CONTRIBUTORS_EXPLANATION)
         contribs = contributors.findall("x:person_name", NS)
         if contribs is not None:
             for ctb in contribs:
@@ -289,8 +314,7 @@ Example record:
                     orcid = e if e else None
                     bibjson.add_author(name, affiliation, orcid)
 
-
-        # abstract
+    def extract_abstract(self, journal):
         abstract_par = record.find("j:abstract", NS)
         if abstract_par is not None:
             text_elems = list(abstract_par.iter())
@@ -302,9 +326,6 @@ Example record:
             bibjson.abstract = text[:30000]  # avoids Elasticsearch
             # exceptions about .exact analyser not being able to handle
             # more than 32766 UTF8 characters
-
-
-        return article
 
 
 ###############################################################################
