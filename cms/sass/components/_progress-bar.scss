@@ -12,6 +12,10 @@
     height: 50px;
     text-decoration: none;
     color: $warm-black;
+    // truncate text if it’s too long — user will need to hover to see full info
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
