@@ -64,11 +64,11 @@ $.extend(true, doaj, {
 
         editArticle : function (val, resultobj, renderer) {
             if (!resultobj.suggestion && resultobj.bibjson.journal) {
-                var result = '<a class="edit_article_link button" href="';
+                var result = '<p><a class="edit_article_link button" href="';
                 result += doaj.adminJournalArticleSearchConfig.articleEditUrl;
                 result += resultobj['id'];
                 result += '" target="_blank"';
-                result += ' style="margin-bottom: 0;">Edit this article</a>';
+                result += ' style="margin-bottom: .75em;">Edit this article</a></p>';
                 return result;
             }
             return false;
@@ -79,11 +79,11 @@ $.extend(true, doaj, {
                 // if it's not a suggestion or an article .. (it's a
                 // journal!)
                 // we really need to expose _type ...
-                var result = '<a class="edit_journal_link button" href="';
+                var result = '<p><a class="edit_journal_link button" href="';
                 result += doaj.adminJournalArticleSearchConfig.journalEditUrl;
                 result += resultobj['id'];
                 result += '" target="_blank"';
-                result += '>Edit this journal</a>';
+                result += 'style="margin-bottom: .75em;">Edit this journal</a></p>';
                 return result;
             }
             return false;
@@ -337,6 +337,16 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
+                                    "valueFunction": doaj.adminJournalArticleSearch.editArticle
+                                }
+                            ],
+                            [
+                                {
+                                    "valueFunction": doaj.adminJournalArticleSearch.editJournal
+                                }
+                            ],
+                            [
+                                {
                                     "pre": '<span class="alt_title">Alternative title: ',
                                     "field": "bibjson.alternative_title",
                                     "post": "</span>"
@@ -494,13 +504,7 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "valueFunction": doaj.adminJournalArticleSearch.editJournal
-                                },
-                                {
                                     "valueFunction": doaj.adminJournalArticleSearch.deleteArticle
-                                },
-                                {
-                                    "valueFunction": doaj.adminJournalArticleSearch.editArticle
                                 }
                             ]
                         ]
