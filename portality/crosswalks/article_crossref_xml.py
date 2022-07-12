@@ -161,21 +161,20 @@ class CrossrefXWalk(object):
         return articles
 
     def crosswalk_article(self, record, journal):
-
         article = models.Article()  # ~~->Article:Model~~
         bibjson = article.bibjson()
 
-        this.extract_title(journal)
-        this.extract_issns(journal)
-        this.extract_publication_date(journal)
-        this.extract_volume(journal)
-        this.extract_issue(journal)
-        this.extract_pages(journal)
-        this.extract_doi(journal)
-        this.extract_fulltext(journal)
-        this.extract_article_title(journal)
-        this.extract_authors(journal)
-        this.extract_abstract(journal)
+        self.extract_title(journal, bibjson)
+        self.extract_issns(journal, bibjson)
+        self.extract_publication_date(record, journal, bibjson)
+        self.extract_volume(journal, bibjson)
+        self.extract_issue(journal, bibjson)
+        self.extract_pages(record, journal, bibjson)
+        self.extract_doi(record, journal, bibjson)
+        self.extract_fulltext(record, journal, bibjson)
+        self.extract_article_title(record, journal, bibjson)
+        self.extract_authors(record, journal, bibjson)
+        self.extract_abstract(record, journal, bibjson)
 
         return article
 
@@ -185,14 +184,14 @@ class CrossrefXWalk(object):
 ###############################################################################
 
 
-    def extract_title(self, journal):
+    def extract_title(self, journal, bibjson):
         jm = journal.find("x:journal_metadata", NS)
         if jm is not None:
             jt = _element(jm, "x:full_title", NS)
             if jt is not None:
                 bibjson.journal_title = jt
 
-    def extract_issns(self, journal):
+    def extract_issns(self, journal, bibjson):
         md = journal.find("x:journal_metadata", NS)
         if md is not None:
             issns = md.findall("x:issn", NS)
@@ -241,14 +240,14 @@ class CrossrefXWalk(object):
                 bibjson.add_identifier(bibjson.P_ISSN if attrs[0] == "print" else bibjson.E_ISSN, issns[0].text.upper())
                 bibjson.add_identifier(bibjson.P_ISSN if attrs[1] == "print" else bibjson.E_ISSN, issns[1].text.upper())
 
-    def extract_publication_date(self, journal):
+    def extract_publication_date(self, record, journal, bibjson):
         pd = record.find("x:publication_date", NS)
 
         if pd is not None:
             bibjson.year = _element(pd, "x:year", NS)
             bibjson.month = _element(pd, "x:month", NS)
 
-    def extract_volume(self, journal):
+    def extract_volume(self, journal, bibjson):
         issue = journal.find("x:journal_issue", NS)
 
         if issue is not None:
@@ -258,12 +257,13 @@ class CrossrefXWalk(object):
                 if volume is not None:
                     bibjson.volume = volume
 
-    def extract_issue(self, journal):
+    def extract_issue(self, journal, bibjson):
+        issue = journal.find("x:journal_issue", NS)
         number = _element(issue, "x:issue", NS)
         if number is not None:
             bibjson.number = number
 
-    def extract_pages(self, journal):
+    def extract_pages(self, record, journal, bibjson):
         pages = record.find('x:pages', NS)
         # start page
         if pages is not None:
@@ -276,7 +276,7 @@ class CrossrefXWalk(object):
             if ep is not None:
                 bibjson.end_page = ep
 
-    def extract_doi(self, journal):
+    def extract_doi(self, record, journal, bibjson):
         d = record.find("x:doi_data", NS)
         if d is not None:
             # doi
@@ -284,19 +284,20 @@ class CrossrefXWalk(object):
             if doi is not None:
                 bibjson.add_identifier(bibjson.DOI, doi)
 
-    def extract_fulltext(self, journal):
+    def extract_fulltext(self, record, journal, bibjson):
+        d = record.find("x:doi_data", NS)
         ftel = _element(d, "x:resource", NS)
         if ftel is not None:
             bibjson.add_url(ftel, "fulltext", NS)
 
-    def extract_article_title(self, journal):
+    def extract_article_title(self, record, journal, bibjson):
         titles = record.find('x:titles', NS)
         if titles is not None:
             title = _element(titles, "x:title", NS)
             if title is not None:
                 bibjson.title = title
 
-    def extract_authors(self, journal):
+    def extract_authors(self, record, journal, bibjson):
         contributors = record.find("x:contributors", NS)
         if contributors is None:
             raise CrosswalkException(message=Messages.EXCEPTION_NO_CONTRIBUTORS_FOUND,
@@ -314,7 +315,7 @@ class CrossrefXWalk(object):
                     orcid = e if e else None
                     bibjson.add_author(name, affiliation, orcid)
 
-    def extract_abstract(self, journal):
+    def extract_abstract(self, record, journal, bibjson):
         abstract_par = record.find("j:abstract", NS)
         if abstract_par is not None:
             text_elems = list(abstract_par.iter())
@@ -335,7 +336,7 @@ class CrossrefXWalk(object):
 def _element(xml, field, namespace):
     el = xml.find(field, namespace)
     if el is not None:
-        # this converts the entire element to a string, so that we can handle the possibility of
+        # self converts the entire element to a string, so that we can handle the possibility of
         # embedded html tags, etc.
         # etree.tostring doesn't actually produce a string, but a byte array, so we must specify
         # the encoding and THEN also decode it using that same encoding to get an actual string
