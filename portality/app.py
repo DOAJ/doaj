@@ -154,7 +154,7 @@ def legacy_doaj_XML_schema():
 # ~~-> CrossrefArticleXML:WebRoute~~
 @app.route("/isCrossrefLoaded")
 def is_crossref_loaded():
-    if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").isAlive():
+    if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").is_alive():
         return "false"
     else:
         return "true"
