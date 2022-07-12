@@ -150,7 +150,7 @@ $.extend(true, doaj, {
                     id: "journal_language",
                     category: "facet",
                     field: "index.language.exact",
-                    display: "Journal Language",
+                    display: "Journal language",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -220,7 +220,7 @@ $.extend(true, doaj, {
                     id: "journal_license",
                     category: "facet",
                     field: "index.license.exact",
-                    display: "Journal License",
+                    display: "Journal license",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -277,14 +277,14 @@ $.extend(true, doaj, {
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'DOI', 'field' : 'bibjson.identifier.id'},
                         {'display':'Country of publisher','field':'index.country'},
-                        {'display':'Journal Language','field':'index.language'},
+                        {'display':'Journal language','field':'index.language'},
                         {'display':'Publisher','field':'bibjson.publisher.name'},
 
                         {'display':'Article: Abstract','field':'bibjson.abstract'},
-                        {'display':'Article: Author\'s name','field':'bibjson.author.name'},
-                        {'display':'Article: Author\'s ORCID iD','field':'bibjson.author.orcid_id'},
+                        {'display':'Article: Author’s name','field':'bibjson.author.name'},
+                        {'display':'Article: Author’s ORCID iD','field':'bibjson.author.orcid_id'},
                         {'display':'Article: Year','field':'bibjson.year'},
-                        {'display':'Article: Journal Title','field':'bibjson.journal.title'},
+                        {'display':'Article: Journal title','field':'bibjson.journal.title'},
 
                         {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'}
                     ],
@@ -292,7 +292,7 @@ $.extend(true, doaj, {
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
                         freetextSubmitDelay: -1,
                         searchButton: true,
-                        searchPlaceholder: "Search All Journals and Articles"
+                        searchPlaceholder: "Search all journals and articles"
                     })
                 }),
 
@@ -368,7 +368,7 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Journal Language</strong>: ",
+                                    "pre": "<strong>Journal language</strong>: ",
                                     "field": "bibjson.language"
                                 }
                             ],
@@ -470,13 +470,13 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Journal Language(s)</strong>: ",
+                                    "pre": "<strong>Journal language(s)</strong>: ",
                                     "field": "bibjson.journal.language"
                                 }
                             ],
                             [
                                 {
-                                    "pre": "<strong>Journal License</strong>: ",
+                                    "pre": "<strong>Journal license</strong>: ",
                                     "valueFunction": doaj.fieldRender.journalLicense
                                 }
                             ],
@@ -514,12 +514,12 @@ $.extend(true, doaj, {
                     fieldDisplays: {
                         "es_type.exact": "Showing",
                         "admin.in_doaj" : "In DOAJ?",
-                        "index.language.exact" : "Journal Language",
+                        "index.language.exact" : "Journal language",
                         "bibjson.publisher.name.exact" : "Publisher",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",
                         "index.country.exact" : "Country of publisher",
-                        "index.license.exact" : "Journal License",
+                        "index.license.exact" : "Journal license",
                         "bibjson.year.exact" : "Year of publication",
                         "bibjson.journal.title.exact" : "Journal title",
                         "index.has_apc.exact" : "Publication charges?"

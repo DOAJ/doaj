@@ -177,20 +177,20 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        'admin.application_status.exact': 'Application Status',
+                        'admin.application_status.exact': 'Application status',
                         'index.application_type.exact' : 'Record type',
-                        'index.has_editor_group.exact' : 'Has Editor Group?',
+                        'index.has_editor_group.exact' : 'Has editor group?',
                         'index.has_editor.exact' : 'Has Associate Editor?',
-                        'admin.editor_group.exact' : 'Editor Group',
+                        'admin.editor_group.exact' : 'Editor group',
                         'admin.editor.exact' : 'Editor',
                         'index.classification.exact' : 'Classification',
-                        'index.language.exact' : 'Journal Language',
+                        'index.language.exact' : 'Journal language',
                         'index.country.exact' : 'Country of publisher',
                         'index.subject.exact' : 'Subject',
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
                         "index.has_apc.exact" : "Publication charges?",
-                        'index.license.exact' : 'Journal License'
+                        'index.license.exact' : 'Journal license'
                     }
                 })
             ];

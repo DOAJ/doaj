@@ -36,7 +36,7 @@ $.extend(true, doaj, {
                 id: "application_type",
                 category: "facet",
                 field: "index.application_type.exact",
-                display: "Open or Closed",
+                display: "Open or closed?",
                 deactivateThreshold : 1,
                 orderDir: "asc",
                 valueMap : {
@@ -76,7 +76,7 @@ $.extend(true, doaj, {
                 id: "has_editor_group",
                 category: "facet",
                 field: "index.has_editor_group.exact",
-                display: "Has Editor Group?",
+                display: "Has editor group?",
                 deactivateThreshold : 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
@@ -108,7 +108,7 @@ $.extend(true, doaj, {
                 id: "editor_group",
                 category: "facet",
                 field: "admin.editor_group.exact",
-                display: "Editor Group",
+                display: "Editor group",
                 deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
@@ -172,7 +172,7 @@ $.extend(true, doaj, {
                 id: "language",
                 category: "facet",
                 field: "index.language.exact",
-                display: "Journal Language",
+                display: "Journal language",
                 deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
@@ -236,7 +236,7 @@ $.extend(true, doaj, {
                 id: "journal_license",
                 category: "facet",
                 field: "index.license.exact",
-                display: "Journal License",
+                display: "Journal license",
                 deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
