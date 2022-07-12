@@ -324,9 +324,8 @@ $.extend(true, doaj, {
                         rowDisplay : [
                             [
                                 {
-                                    "pre" : "<strong>ID</strong>: <em>",
-                                    "field" : "id",
-                                    "post": "</em>"
+                                    "pre" : "<strong>ID</strong>: ",
+                                    "field" : "id"
                                 }
                             ],
                             // Journals
