@@ -138,6 +138,13 @@ doaj.dashboard.renderGroupInfo = function(data) {
 
         <section>
           <h4 class="label label--secondary">Applications by status</h4>
+          <h3 class="sr-only">Status progress bar colour legend</h3>
+          <ul class="inlined-list">
+            <li><span class="progress-bar__bar--pending label label--secondary" style="padding: .5em;">Pending</span></li>
+            <li><span class="progress-bar__bar--in-progress label label--secondary" style="padding: .5em;">In progress</span></li>
+            <li><span class="progress-bar__bar--completed label label--secondary" style="padding: .5em;">Completed</span></li>
+            <li><span class="progress-bar__bar--ready label" style="padding: .5em; color: #FFF;">Ready</span></li>
+          </ul>
           <ul class="inlined-list progress-bar">
             ${appStatusProgressBar}
           </ul>
