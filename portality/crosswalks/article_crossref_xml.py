@@ -9,7 +9,7 @@ from portality.ui.messages import Messages
 NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih.gov/JATS1'}
 
 
-class CrossrefXWalk(object):
+class CrossrefXWalk4_4_2(object):
     """
     ~~CrossrefXML:Crosswalk->Crossref:Feature~~
     """
@@ -99,7 +99,7 @@ class CrossrefXWalk(object):
         # load the schema into memory for more efficient usage in repeat calls to the crosswalk
         if self.schema_path is None:
             raise exceptions.IngestException(
-                message="Unable to validate for CrossrefXWalk, as schema path is not set in config")
+                message="Unable to validate for CrossrefXWalk4_4_2, as schema path is not set in config")
 
         while app.config["CROSSREF_SCHEMA"] is None:
             continue
@@ -123,7 +123,7 @@ class CrossrefXWalk(object):
         valid = self.validate(doc)
 
         if not valid:
-            msg = "Validation message from schema '{x}': {y}\n".format(x=CrossrefXWalk.format_name,
+            msg = "Validation message from schema '{x}': {y}\n".format(x=CrossrefXWalk4_4_2.format_name,
                                                                        y=self.validation_log)
             raise CrosswalkException(message="Unable to validate document with identified schema", inner_message=msg)
 
