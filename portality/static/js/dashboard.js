@@ -107,7 +107,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
                     ]
                 })
                 appStatusProgressBar += `<li class="progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications/data.total.applications)*100}%;">
-                    <a href="/admin/applications?source=${appStatusSource}" class="progress-bar__link">
+                    <a href="/admin/applications?source=${appStatusSource}" class="progress-bar__link" title="See ${data.by_status[status].applications} applications that’re ${status}.">
                         ${status} (${data.by_status[status].applications})
                     </a></li>`;
             }
