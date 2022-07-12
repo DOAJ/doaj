@@ -13,7 +13,7 @@ class CrossrefXWalk442(object):
     """
     ~~CrossrefXML:Crosswalk->Crossref:Feature~~
     """
-    format_name = "crossref"
+    format_name = "crossref442"
 
     """
     Example record:
@@ -94,7 +94,7 @@ class CrossrefXWalk442(object):
 
     def __init__(self):
         self.validation_log = ""
-        self.schema_path = app.config.get("SCHEMAS", {}).get("crossref")
+        self.schema_path = app.config.get("SCHEMAS", {}).get("crossref442")
 
         # load the schema into memory for more efficient usage in repeat calls to the crosswalk
         if self.schema_path is None:

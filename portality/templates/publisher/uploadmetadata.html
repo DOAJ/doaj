@@ -41,10 +41,10 @@
         <select name="schema" class="form-control" id="upload-xml-format" require>
           {% if schema == '' or schema == 'doaj' %}
           <option value="doaj" selected>DOAJ Native XML</option>
-          <option value="crossref">Crossref 4.4.2 XML</option>
+          <option value="crossref442">Crossref 4.4.2 XML</option>
           {% else %}
           <option value="doaj">DOAJ Native XML</option>
-          <option value="crossref" selected>Crossref 4.4.2 XML</option>
+          <option value="crossref442" selected>Crossref 4.4.2 XML</option>
           {% endif %}
         </select>
       </div>
@@ -81,7 +81,7 @@
         <td>
             {% if file.schema == "doaj" %}
                 DOAJ Native XML
-            {%  elif file.schema == "crossref" %}
+            {%  elif file.schema == "crossref442" %}
                 Crossref XML
             {% elif file.schema == "mathml" %}
                 OJS MathML

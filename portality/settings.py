@@ -908,7 +908,7 @@ OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 # ~~->DOAJArticleXML:Schema~~
 SCHEMAS = {
     "doaj": os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd"),
-    "crossref": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd")
+    "crossref442": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd")
 }
 
 # placeholders for the loaded schemas
@@ -921,7 +921,7 @@ LOAD_CROSSREF_THREAD = None
 # ~~->CrossrefXML:Crosswalk~~
 ARTICLE_CROSSWALKS = {
     "doaj": "portality.crosswalks.article_doaj_xml.DOAJXWalk",
-    "crossref": "portality.crosswalks.article_crossref_xml.CrossrefXWalk442"
+    "crossref442": "portality.crosswalks.article_crossref_xml.CrossrefXWalk442"
 }
 
 # maximum size of files that can be provided by-reference (the default value is 250Mb)
