@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_batch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.crossref.org/schema/5.3.0 https://www.crossref.org/schemas/crossref5.3.0.xsd"
+    xmlns="http://www.crossref.org/schema/5.3.0" xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1"
+    xmlns:fr="http://www.crossref.org/fundref.xsd" xmlns:mml="http://www.w3.org/1998/Math/MathML" version="5.3.0">
+    <head>
+        <doi_batch_id>test.x</doi_batch_id>
+        <timestamp>2021010100000003</timestamp>
+        <depositor>
+            <depositor_name>Crossref</depositor_name>
+            <email_address>pfeeney@crossref.org</email_address>
+        </depositor>
+        <registrant>Society of Metadata Idealists</registrant>
+    </head>
+    <body>
+        <journal>
+            <journal_metadata language="en" reference_distribution_opts="any">
+                <full_title>Journal of Crossref Test Data</full_title>
+                <abbrev_title>JOCTD</abbrev_title>
+                <issn media_type="electronic">1942-4027</issn>
+                <archive_locations>
+                    <archive name="Portico"/>
+                    <archive name="CLOCKSS"/>
+                    <archive name="DWT"/>
+                    <archive name="Internet Archive"/>
+                    <archive name="KB"/>
+                    <archive name="LOCKSS"/>
+                </archive_locations>
+                <doi_data>
+                    <doi>10.5555/ScF8aU8</doi>
+                    <resource content_version="vor" mime_type="multipart/digest">https://www.crossref.org/xml-samples</resource>
+                </doi_data>
+            </journal_metadata>
+            <journal_article language="en" publication_type="full_text" reference_distribution_opts="any"> 
+                <titles>
+                    <title>This is a journal article title</title>
+</titles>
+                <contributors>
+                    <person_name sequence="first" contributor_role="author">
+                        <given_name>Minerva</given_name>
+                        <surname>Housecat</surname>
+                        <!--affiliations information (change from 4.x versions)-->
+                        <affiliations>
+                            <!-- This example includes all supported institution metadata for an individual affiliation, but if an identifier (ROR, ISNI, or Wikidata) is supplied, the name, place, and acronym metadata is not recommended.-->
+                            <institution>
+                                <!-- either institution_name or institution_id are required -->
+                                <institution_name>United States Department of Energy</institution_name>
+                                <!-- multiple institution_id values may be provided, IDs must be provided as a https URL -->
+                                <institution_id type="ror">https://ror.org/01bj3aw27</institution_id>
+                                <institution_id type="isni">https://www.isni.org/0000000123423717</institution_id>
+                                <!-- acronym is optional, not recommended if an identifier is supplied -->
+                                <institution_acronym>USDOE(EM)</institution_acronym>
+                                <!-- place metadata is not recommended if an institution_id is supplied -->
+                                <institution_place>Washington, DC</institution_place>
+                                <!-- Department may be supplied when relevant -->
+                                <institution_department>Office of Environmental Management</institution_department>
+                            </institution>
+                            <institution>
+                                <!-- A ROR, ISNI, or Wikidata ID may be provided on its own as it's all we need to identify an organization-->
+                                <institution_id type="ror">https://ror.org/05gq02987</institution_id>
+                            </institution>
+                        </affiliations>
+                        <ORCID authenticated="true">https://orcid.org/0000-0002-4011-3590</ORCID>
+                    </person_name>
+                    <person_name sequence="additional" contributor_role="author">
+                        <given_name>Josiah</given_name>
+                        <surname>Carberry</surname>
+                        <affiliations>
+                            <institution>
+                                <institution_id type="ror">https://ror.org/05gq02987</institution_id>
+                            </institution>
+                        </affiliations>
+                        <ORCID authenticated="true">https://orcid.org/0000-0002-1825-0097</ORCID>
+                    </person_name>
+                    <anonymous sequence="first" contributor_role="author">
+                        <!-- affiliations may be provided for an anonymous contributor -->
+                        <affiliations>
+                            <institution>
+                                <institution_id type="ror">https://ror.org/05gq02987</institution_id>
+                            </institution>
+                        </affiliations>
+                    </anonymous>
+                </contributors>
+                <!-- Abstracts are optional but encouraged, multiple abstracts may be provided -->
+                <jats:abstract>
+                    <jats:p xml:lang="fr">Meilleures pratiques agiles, leadership éclairé impact collectif impact investir dans les familles. Et égalité des chances vibrante, la, narration les métadonnées de synergie sont un défi sans précédent pour B-corp. Entreprise la philanthropie cultive l’impact et la situation actuelle; livre blanc en collaboration consommation entrepreneur des villes collaboratives inclusives. Parse empower mouvements de communautés ciblés; radical; résultats de problèmes d'entreprise sociale la philanthropie du big data.</jats:p>
+                </jats:abstract>
+                <jats:abstract>
+                    <jats:p xml:lang="en">Agile best practices, thought leadership collective impact impact investing to families. And equal opportunity vibrant, the, storytelling synergy metadata matters B-corp unprecedented challenge. Venture philanthropy cultivate impact, state of play; white paper collaborative consumption entrepreneur collaborative cities inclusive. Parse empower communities movements targeted; radical; social enterprise issue outcomes big data venture philanthropy. </jats:p>
+                </jats:abstract>
+                    <publication_date media_type="online">
+                        <month>07</month>
+                        <day>07</day>
+                        <year>2021</year>
+                    </publication_date>
+                <acceptance_date media_type="online">
+                    <month>07</month>
+                    <day>07</day>
+                    <year>2021</year>
+                </acceptance_date>
+                <publisher_item>
+                    <item_number item_number_type="article_number">ABC-123</item_number>
+                </publisher_item>
+                <crossmark>
+                    <crossmark_version>1</crossmark_version>
+                    <crossmark_policy>10.5555/hK7vasW</crossmark_policy>
+                    <custom_metadata>
+                        <assertion name="received" label="Received" group_name="publication_history"
+                            group_label="Publication History" order="0">2012-07-24</assertion>
+                        <assertion name="accepted" label="Accepted" group_name="publication_history"
+                            group_label="Publication History" order="1">2012-08-29</assertion>
+                        <fr:program name="fundref">
+                            <fr:assertion name="fundgroup">
+                                <fr:assertion name="funder_name"> National Science Foundation
+                                    <fr:assertion name="funder_identifier"
+                                        >100000001</fr:assertion>
+                                </fr:assertion>
+                                <fr:assertion name="award_number">CHE-1152342</fr:assertion>
+                            </fr:assertion>
+                        </fr:program>
+                        <program xmlns="http://www.crossref.org/AccessIndicators.xsd">
+                            <free_to_read/>
+                            <license_ref applies_to="vor" start_date="2008-08-13"
+                                >http://creativecommons.org/licenses/by/3.0/deed.en_US</license_ref>
+                        </program>
+                    </custom_metadata>
+                </crossmark>
+                <program xmlns="http://www.crossref.org/relations.xsd">
+                    <related_item>
+                        <description>Review</description>
+                        <inter_work_relation relationship-type="hasReview" identifier-type="doi">10.5555/zLl10OQ</inter_work_relation>
+                    </related_item>
+                </program>
+                <archive_locations>
+                    <archive name="Portico"/>
+                    <archive name="CLOCKSS"/>
+                    <archive name="DWT"/>
+                    <archive name="Internet Archive"/>
+                    <archive name="KB"/>
+                    <archive name="LOCKSS"/>
+                </archive_locations>
+                <doi_data>
+                    <doi>10.5555/n0HRokm</doi>
+                    <resource content_version="vor" mime_type="text/html">https://www.crossref.org/xml-samples</resource>
+                </doi_data>
+                <citation_list>
+                    <citation key="ref1">
+                        <doi>10.1101/144147</doi>
+                        <unstructured_citation>BioSharing: Harnessing Metadata Standards For TheData Commons. Susanna-Assunta Sansone, Alejandra Gonzalez-Beltran, Philippe Rocca-Serra, PeterMcQuilton, Massimiliano Izzo, Allyson Lister, Milo Thurston. bioRxiv 144147</unstructured_citation>
+                    </citation>
+                    <citation key="ref2">
+                        <doi>10.1515/jdis-2017-0012</doi>
+                        <unstructured_citation>Greenberg, J. (2017). Big Metadata, Smart Metadata, and Metadata Capital: Toward Greater Synergy Between Data Science and Metadata, Journal of Data and Information Science, 2(3), 19-36.
+                        </unstructured_citation>
+                    </citation>
+                    <citation key="ref3">
+                        <doi>10.32013/s4947892</doi>
+                    </citation>
+                    <citation key="ref4">
+                        <doi>10.1108/LHTN-12-2016-0059</doi>
+                        <unstructured_citation>Jung ran Park, Yuji Tosaka, (2017) “Emerging information standards and technologies: cataloging and metadata professionals’ perspectives", Library Hi Tech News, Vol. 34 Issue: 4, pp.22-26</unstructured_citation>
+                    </citation>
+                    <citation key="ref5">
+                        <journal_title>Information Technology and Libraries</journal_title>
+                        <author>Park</author>
+                        <volume>29</volume>
+                        <issue>3</issue>
+                        <first_page>104</first_page>
+                        <cYear>2010</cYear>
+                        <doi>10.6017/ital.v29i3.3136</doi>
+                        <article_title>Metadata creation practices in digital repositories and collections: Schemata, selection criteria, and interoperability</article_title>
+                    </citation>
+                    <citation key="ref6">
+                        <unstructured_citation>Riley, J. (2017). Understanding metadata. Bethesda,MD: NISO Press.</unstructured_citation>
+                    </citation>
+                </citation_list>
+            </journal_article>
+        </journal>
+    </body>
+</doi_batch>
