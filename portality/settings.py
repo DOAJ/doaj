@@ -921,7 +921,7 @@ LOAD_CROSSREF_THREAD = None
 # ~~->CrossrefXML:Crosswalk~~
 ARTICLE_CROSSWALKS = {
     "doaj": "portality.crosswalks.article_doaj_xml.DOAJXWalk",
-    "crossref": "portality.crosswalks.article_crossref_xml.CrossrefXWalk"
+    "crossref": "portality.crosswalks.article_crossref_xml.CrossrefXWalk442"
 }
 
 # maximum size of files that can be provided by-reference (the default value is 250Mb)

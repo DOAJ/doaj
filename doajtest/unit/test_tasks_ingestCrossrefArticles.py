@@ -49,7 +49,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         self.schema_old = etree.XMLSchema
 
-        self.xwalk_validate = article_crossref_xml.CrossrefXWalk4_4_2.validate
+        self.xwalk_validate = article_crossref_xml.CrossrefXWalk442.validate
         self.batch_create_articles = articleSvc.ArticleService.batch_create_articles
 
         self.head = requests.head
@@ -67,7 +67,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         etree.XMLSchema = self.schema_old
 
-        article_crossref_xml.CrossrefXWalk4_4_2.validate = self.xwalk_validate
+        article_crossref_xml.CrossrefXWalk442.validate = self.xwalk_validate
         articleSvc.ArticleService.batch_create_articles = self.batch_create_articles
 
         app.config["UPLOAD_DIR"] = self.upload_dir
@@ -145,7 +145,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
     def test_03_crossref_file_upload_fail(self):
 
-        article_crossref_xml.CrossrefXWalk4_4_2.validate = XwalkMockFactory.validate
+        article_crossref_xml.CrossrefXWalk442.validate = XwalkMockFactory.validate
         etree.XMLSchema = self.mock_load_schema
 
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
@@ -302,7 +302,7 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
     def test_09_prepare_file_upload_fail(self):
 
-        article_crossref_xml.CrossrefXWalk4_4_2.validate = XwalkMockFactory.validate
+        article_crossref_xml.CrossrefXWalk442.validate = XwalkMockFactory.validate
         handle = CrossrefArticleFixtureFactory.upload_1_issn_correct()
         f = FileMockFactory(stream=handle)
         etree.XMLSchema = self.mock_load_schema

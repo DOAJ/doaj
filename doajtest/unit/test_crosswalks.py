@@ -4,7 +4,7 @@ from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, diff_dicts
 from portality.crosswalks.article_doaj_xml import DOAJXWalk
-from portality.crosswalks.article_crossref_xml import CrossrefXWalk4_4_2
+from portality.crosswalks.article_crossref_xml import CrossrefXWalk442
 
 from portality import models
 from werkzeug.datastructures import MultiDict
@@ -108,7 +108,7 @@ class TestCrosswalks(DoajTestCase):
 
     def test_06_crossref_article_xml_xwalk(self):
         handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
-        xwalk = CrossrefXWalk4_4_2()
+        xwalk = CrossrefXWalk442()
         art = xwalk.crosswalk_file(file_handle=handle, add_journal_info=False)
         article = models.Article(**art[0])
         bibjson = article.bibjson()
