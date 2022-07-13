@@ -3,7 +3,6 @@ import threading
 import yaml
 
 from flask import Flask
-from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_cors import CORS
 from jinja2 import FileSystemLoader
@@ -13,6 +12,7 @@ from portality import settings, constants, datasets
 from portality.bll import exceptions
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping
+from portality.ui.debug_toolbar import DoajDebugToolbar
 
 import esprit
 import elasticsearch
@@ -54,7 +54,7 @@ def create_app():
     #~~->APM:Feature~~
     initialise_apm(app)
     #~~->DebugToolbar:Framework~~
-    DebugToolbarExtension(app)
+    DoajDebugToolbar(app)
     #~~->ProxyFix:Framework~~
     proxyfix(app)
     #~~->CMS:Build~~

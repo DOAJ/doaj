@@ -41,6 +41,16 @@
       height: 1em;
     }
   }
+
+  .logo {
+    margin: 0 0 $spacing-03 0;
+  }
+}
+
+.page-footer__licensing {
+  path {
+    fill: $white;
+  }
 }
 
 // Legal stuff
@@ -53,10 +63,6 @@
   li {
     display: inline-block;
     margin: 0 $spacing-04 0 0;
-  }
-
-  path {
-    fill: $white;
   }
 
   @media (min-width: 768px) {

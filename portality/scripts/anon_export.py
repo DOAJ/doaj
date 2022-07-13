@@ -1,11 +1,15 @@
-import esprit, os, shutil, gzip, uuid
-from portality import models
+import os, shutil, gzip, uuid
+
+from portality import models, dao
 from portality.core import app, es_connection
 from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.lib import dates
 from portality.store import StoreFactory
-from portality.util import ipt_prefix
+
+tmpStore = StoreFactory.tmp()
+mainStore = StoreFactory.get("anon_data")
+container = app.config.get("STORE_ANON_DATA_CONTAINER")
 
 
 def _anonymise_email(record):
@@ -31,9 +35,9 @@ def _reset_password(record):
     record.set_password(uuid.uuid4().hex)
     return record
 
+
 # transform functions - return the JSON data source since
 # esprit doesn't understand our model classes
-
 def anonymise_account(record):
     try:
         a = models.Account(**record)
@@ -102,6 +106,37 @@ def _copy_on_complete(path):
     tmpStore.delete_file(container, zipped_name)
 
 
+def anon_export(clean=False, limit=None, batch_size=100000):
+
+    if clean:
+        mainStore.delete_container(container)
+
+    doaj_types = es_connection.indices.get(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
+    type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types]
+
+    for type_ in type_list:
+        model = models.lookup_models_by_type(type_, dao.DomainObject)
+        if not model:
+            print("unable to locate model for " + type_)
+            continue
+
+        filename = type_ + ".bulk"
+        output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
+        print((dates.now() + " " + type_ + " => " + output_file + ".*"))
+        iter_q = {"query": {"match_all": {}}, "sort": [{"_id": {"order": "asc"}}]}
+        transform = None
+        if type_ in anonymisation_procedures:
+            transform = anonymisation_procedures[type_]
+
+        # Use the model's dump method to write out this type to file
+        _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
+                       out_rollover_callback=_copy_on_complete, es_bulk_fields=["_id"], scroll_keepalive='3m')
+
+        print((dates.now() + " done\n"))
+
+    tmpStore.delete_container(container)
+
+
 if __name__ == '__main__':
 
     import argparse
@@ -116,34 +151,4 @@ if __name__ == '__main__':
     else:
         limit = None
 
-    tmpStore = StoreFactory.tmp()
-    mainStore = StoreFactory.get("anon_data")
-    container = app.config.get("STORE_ANON_DATA_CONTAINER")
-
-    if args.clean:
-        mainStore.delete_container(container)
-
-    if es_connection.index_per_type:
-        doaj_types = filter(lambda x: x.startswith(app.config['ELASTIC_SEARCH_DB_PREFIX']), esprit.raw.list_indexes(es_connection))
-        type_list = [t[len(app.config['ELASTIC_SEARCH_DB_PREFIX']):] for t in doaj_types]
-        print(type_list)
-    else:
-        type_list = esprit.raw.list_types(connection=es_connection)
-
-    for type_ in type_list:
-        filename = type_ + ".bulk"
-        output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
-        print((dates.now() + " " + type_ + " => " + output_file + ".*"))
-        if type_ in anonymisation_procedures:
-            transform = anonymisation_procedures[type_]
-            filenames = esprit.tasks.dump(es_connection, ipt_prefix(type_), limit=limit, transform=transform,
-                                          out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
-                                          es_bulk_fields=["_id"])
-        else:
-            filenames = esprit.tasks.dump(es_connection, ipt_prefix(type_), limit=limit,
-                                          out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
-                                          es_bulk_fields=["_id"])
-
-        print((dates.now() + " done\n"))
-
-    tmpStore.delete_container(container)
+    anon_export(args.clean, limit, args.batch)

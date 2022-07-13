@@ -24,11 +24,12 @@ class TodoService(object):
 
         queries = []
         if account.has_role("admin"):
-            queries.append(TodoRules.maned_stalled(size))
-            queries.append(TodoRules.maned_follow_up_old(size))
-            queries.append(TodoRules.maned_ready(size))
-            queries.append(TodoRules.maned_completed(size))
-            queries.append(TodoRules.maned_assign_pending(size))
+            maned_of = [g for g in models.EditorGroup.groups_by_maned(account.id)]
+            queries.append(TodoRules.maned_stalled(size, maned_of))
+            queries.append(TodoRules.maned_follow_up_old(size, maned_of))
+            queries.append(TodoRules.maned_ready(size, maned_of))
+            queries.append(TodoRules.maned_completed(size, maned_of))
+            queries.append(TodoRules.maned_assign_pending(size, maned_of))
 
         if account.has_role("editor"):
             groups = [g for g in models.EditorGroup.groups_by_editor(account.id)]
@@ -44,6 +45,7 @@ class TodoService(object):
             for ap in applications:
                 todos.append({
                     "date": ap.last_manual_update_timestamp if sort == "last_manual_update" else ap.created_timestamp,
+                    "date_type": sort,
                     "action_id" : [aid],
                     "title" : ap.bibjson().title,
                     "object_id" : ap.id,
@@ -81,10 +83,11 @@ class TodoService(object):
 
 class TodoRules(object):
     @classmethod
-    def maned_stalled(cls, size):
+    def maned_stalled(cls, size, maned_of):
         stalled = TodoQuery(
             musts=[
-                TodoQuery.lmu_older_than(8)
+                TodoQuery.lmu_older_than(8),
+                TodoQuery.editor_group(maned_of)
             ],
             must_nots=[
                 TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
@@ -95,10 +98,11 @@ class TodoRules(object):
         return constants.TODO_MANED_STALLED, stalled, "last_manual_update", False
 
     @classmethod
-    def maned_follow_up_old(cls, size):
+    def maned_follow_up_old(cls, size, maned_of):
         follow_up_old = TodoQuery(
             musts=[
-                TodoQuery.cd_older_than(10)
+                TodoQuery.cd_older_than(10),
+                TodoQuery.editor_group(maned_of)
             ],
             must_nots=[
                 TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
@@ -109,10 +113,11 @@ class TodoRules(object):
         return constants.TODO_MANED_FOLLOW_UP_OLD, follow_up_old, "created_date", False
 
     @classmethod
-    def maned_ready(cls, size):
+    def maned_ready(cls, size, maned_of):
         ready = TodoQuery(
             musts=[
-                TodoQuery.status([constants.APPLICATION_STATUS_READY])
+                TodoQuery.status([constants.APPLICATION_STATUS_READY]),
+                TodoQuery.editor_group(maned_of)
             ],
             sort="last_manual_update",
             size=size
@@ -120,11 +125,12 @@ class TodoRules(object):
         return constants.TODO_MANED_READY, ready, "last_manual_update", True
 
     @classmethod
-    def maned_completed(cls, size):
+    def maned_completed(cls, size, maned_of):
         completed = TodoQuery(
             musts=[
                 TodoQuery.status([constants.APPLICATION_STATUS_COMPLETED]),
-                TodoQuery.lmu_older_than(2)
+                TodoQuery.lmu_older_than(2),
+                TodoQuery.editor_group(maned_of)
             ],
             sort="last_manual_update",
             size=size
@@ -132,12 +138,13 @@ class TodoRules(object):
         return constants.TODO_MANED_COMPLETED, completed, "last_manual_update", False
 
     @classmethod
-    def maned_assign_pending(cls, size):
+    def maned_assign_pending(cls, size, maned_of):
         assign_pending = TodoQuery(
             musts=[
                 TodoQuery.exists("admin.editor_group"),
                 TodoQuery.lmu_older_than(2),
-                TodoQuery.status([constants.APPLICATION_STATUS_PENDING])
+                TodoQuery.status([constants.APPLICATION_STATUS_PENDING]),
+                TodoQuery.editor_group(maned_of)
             ],
             must_nots=[
                 TodoQuery.exists("admin.editor")
@@ -244,6 +251,14 @@ class TodoQuery(object):
         return q
 
     @classmethod
+    def editor_group(cls, groups):
+        return {
+            "terms" : {
+                "admin.editor_group.exact" : [g.name for g in groups]
+            }
+        }
+
+    @classmethod
     def lmu_older_than(cls, weeks):
         return {
             "range": {
@@ -267,7 +282,7 @@ class TodoQuery(object):
     def status(cls, statuses):
         return {
             "terms" : {
-                "admin.application_status" : statuses
+                "admin.application_status.exact" : statuses
             }
         }
 

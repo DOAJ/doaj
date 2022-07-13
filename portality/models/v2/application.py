@@ -4,7 +4,7 @@ from portality import constants
 from portality.core import app
 from portality.lib import es_data_mapping
 from portality.models.v2 import shared_structs
-from portality.models.v2.journal import JournalLikeObject
+from portality.models.v2.journal import JournalLikeObject, Journal
 from portality.lib.coerce import COERCE_MAP
 from portality.dao import DomainObject
 
@@ -127,6 +127,12 @@ class Application(JournalLikeObject):
         self.__seamless__.delete("admin.related_journal")
 
     @property
+    def related_journal_object(self):
+        if self.related_journal:
+            return Journal.pull(self.related_journal)
+        return None
+
+    @property
     def application_status(self):
         return self.__seamless__.get_single("admin.application_status")
 
@@ -167,7 +173,8 @@ class Application(JournalLikeObject):
         # if index_record_type is not None:
         #     self.__seamless__.set_with_struct("index.application_type", index_record_type)
 
-        # FIXME: Temporary partial reversion of an indexing change
+        # FIXME: Temporary partial reversion of an indexing change (this index.application_type data is still being used
+        # in applications search)
         if self.current_journal is not None:
             self.__seamless__.set_with_struct("index.application_type", "update request")
         elif self.application_status in [constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED]:

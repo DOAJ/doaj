@@ -151,9 +151,10 @@ class JournalService(object):
             def sort(filelist):
                 rx = "journalcsv__doaj_(.+?)_utf8.csv"
                 return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], '%Y%m%d_%H%M'), reverse=True)
-            def filter(filename):
-                return filename.startswith("journalcsv__")
-            action_register = prune_container(mainStore, container_id, sort, filter=filter, keep=2)
+
+            def _filter(f_name):
+                return f_name.startswith("journalcsv__")
+            action_register = prune_container(mainStore, container_id, sort, filter=_filter, keep=2)
 
         # update the ES record to point to the new file
         # ~~-> Cache:Model~~
@@ -184,14 +185,11 @@ class JournalService(object):
             else:
                 return [("Owner", o)]
 
-        def oa_start(j):
-            oa = j.bibjson().oa_start
-            return [("OA Start", oa)]
-
         with open(file_path, "w", encoding="utf-8") as f:
-            self._make_journals_csv(f, [usernames, oa_start])
+            self._make_journals_csv(f, [usernames])
 
-    def _make_journals_csv(self, file_object, additional_columns=None):
+    @staticmethod
+    def _make_journals_csv(file_object, additional_columns=None):
         """
         Make a CSV file of information for all journals.
         :param file_object: a utf8 encoded file object.

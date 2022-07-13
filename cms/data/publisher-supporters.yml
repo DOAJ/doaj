@@ -6,12 +6,6 @@
 - name: Andover House, Inc.
   url: https://andoverhouse.org/
 
-- name: AOSIS
-  url: https://www.openjournals.net/
-
-- name: Cappelen Damm Akademisk – Nordic Open Access Scholarly Publishing
-  url: https://www.cappelendammundervisning.no/undervisning/akademisk/
-
 - name: Cogitatio Press
   url: https://www.cogitatiopress.com/
 
@@ -39,6 +33,9 @@
 - name: Korea Health Personnel Licensing Examination Institute (Journal of Educational Evaluation for Health Professions)
   url: https://jeehp.org/
 
+- name: KeAi
+  url: https://www.keaipublishing.com/en/
+
 - name: Ontario International Development Agency
   url: https://www.ontariointernational.org/
 
@@ -50,6 +47,12 @@
 
 - name: Scientia Agropecuaria
   url: https://revistas.unitru.edu.pe/index.php/scientiaagrop
+
+- name: Springer Nature
+  url: https://www.springernature.com/gp
   
 - name: Verduci Editore
   url: https://www.verduci.it/en/
+  
+- name: Wiley
+  url: https://www.wiley.com/en-us

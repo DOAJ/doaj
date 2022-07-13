@@ -3,7 +3,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.0.2',
+    version='6.1.6',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -14,6 +14,8 @@ setup(
         "esprit==0.1.0",   # legacy for scripts etc (phasing out)
         "Faker==2.0.3",
         "feedparser==6.0.8",
+        "itsdangerous==2.0.1",     # fixme: unpinned dependency of flask, 2.1.0 is causing an import error 'json'
+        "jinja2<3.1.0",            # fixme: unpinned dependency of flask, import error on 'escape'
         "Flask==1.1.1",
         "Flask-Cors==3.0.8",
         "Flask-DebugToolbar==0.10.1",
@@ -27,7 +29,7 @@ setup(
         "huey==1.10.5",  # upgrading to 1.11 / 2.x requires work
         "libsass==0.20.1",
         "LinkHeader==0.4.3",
-        "lxml==4.4.1",
+        "lxml==4.8.0",
         "Markdown==3.1.1",
         "markdown-full-yaml-metadata==2.0.1",
         "markdown-link-attr-modifier==0.2.0",

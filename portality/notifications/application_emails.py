@@ -2,7 +2,7 @@
 from flask import url_for
 import json
 
-from portality import models, app_email
+from portality import models, app_email, constants
 from portality.core import app
 from portality.dao import Facetview2
 from portality.ui.messages import Messages
@@ -14,11 +14,14 @@ def send_admin_ready_email(application, editor_id):
     url_root = app.config.get("BASE_URL")
     query_for_id = Facetview2.make_query(query_string=application.id)
     string_id_query = json.dumps(query_for_id).replace(' ', '')       # Avoid '+' being added to URLs by removing spaces
-    url_for_application = url_root + url_for("admin.suggestions", source=string_id_query)
+    if application.application_type == constants.APPLICATION_TYPE_NEW_APPLICATION:
+        url_for_application = url_root + url_for("admin.suggestions", source=string_id_query)
+    else:
+        url_for_application = url_root + url_for("admin.update_requests", source=string_id_query)
 
     # This is to the managing editor email list
     to = [app.config.get('MANAGING_EDITOR_EMAIL', 'managing-editors@doaj.org')]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - application ready"
 
     app_email.send_mail(to=to,
@@ -49,7 +52,7 @@ def send_editor_group_email(obj):
 
     url_root = app.config.get("BASE_URL")
     to = [editor.email]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
 
     app_email.send_mail(to=to,
                         fro=fro,
@@ -83,7 +86,7 @@ def send_assoc_editor_email(obj):
 
     url_root = app.config.get("BASE_URL")
     to = [assoc_editor.email]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
 
     app_email.send_mail(to=to,
                         fro=fro,
@@ -108,7 +111,7 @@ def send_publisher_update_request_editor_assigned_email(application):
         }
     ]
 
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - your update request has been assigned an editor for review"
 
     alerts = []
@@ -145,7 +148,7 @@ def send_publisher_application_editor_assigned_email(application):
             }
         )
 
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - your application has been assigned an editor for review"
 
     alerts = []
@@ -185,7 +188,7 @@ def send_editor_inprogress_email(application):
     except AttributeError:
         raise
 
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - Application reverted to 'In Progress' by Managing Editor"
 
     app_email.send_mail(to=to,
@@ -209,7 +212,7 @@ def send_assoc_editor_inprogress_email(application):
     assoc_editor = models.Account.pull(application.editor)
     to = [assoc_editor.email]
 
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - an application assigned to you has not passed review."
 
     app_email.send_mail(to=to,
@@ -237,7 +240,7 @@ def send_editor_completed_email(application):
 
     editor_id = editor_acc.id
     to = [editor_acc.email]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - application marked 'completed'"
 
     # The status change will have come from the associate editor assigned to the journal
@@ -265,7 +268,7 @@ def send_publisher_update_request_inprogress_email(application):
         }
     ]
 
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - your update request is under review"
 
     alerts = []
@@ -300,7 +303,7 @@ def send_publisher_application_inprogress_email(application):
             }
         )
 
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - your application is under review"
 
     alerts = []
@@ -325,7 +328,7 @@ def send_received_email(application):
     owner = models.Account.pull(application.owner)
 
     to = [owner.email]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - your application to DOAJ has been received"
 
     app_email.send_mail(to=to,
@@ -349,7 +352,7 @@ def send_publisher_update_request_revisions_required(application):
     publisher_email = owner.email
 
     to = [publisher_email]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - your update request requires revisions"
 
     app_email.send_mail(to=to,
@@ -381,7 +384,7 @@ def send_publisher_reject_email(application, note=None, update_request=False):
 
     for instructions in send_instructions:
         to = [instructions["email"]]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
         subject = app.config.get("SERVICE_NAME", "") + " - your " + app_type + " was rejected"
 
         if update_request:
@@ -413,7 +416,7 @@ def send_account_created_email(account):
     password_create_timeout_days = password_create_timeout_seconds / (60 * 60 * 24)
 
     to = [account.email]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - account created, please verify your email address"
 
     app_email.send_mail(to=to,

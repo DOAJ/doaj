@@ -27,6 +27,7 @@ from portality.ui.messages import Messages
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.view.forms import EditorGroupForm, MakeContinuation
 
+# ~~Admin:Blueprint~~
 blueprint = Blueprint('admin', __name__)
 
 
@@ -328,6 +329,15 @@ def suggestions():
                            admin_page=True,
                            application_status_choices=application_statuses(None, fc))
 
+@blueprint.route("/update_requests", methods=["GET"])
+@login_required
+@ssl_required
+def update_requests():
+    fc = ApplicationFormFactory.context("admin")
+    return render_template("admin/update_requests.html",
+                           admin_page=True,
+                           application_status_choices=application_statuses(None, fc))
+
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
 @write_required()
@@ -357,7 +367,8 @@ def application(application_id):
 
     if request.method == "GET":
         fc.processor(source=ap)
-        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
+        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
+                                  current_journal=current_journal, lcc_tree=lcc_jstree)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
@@ -486,12 +497,14 @@ def editor_group(group_id=None):
     if not current_user.has_role("modify_editor_groups"):
         abort(401)
 
+    # ~~->EditorGroup:Form~~
     if request.method == "GET":
         form = EditorGroupForm()
         if group_id is not None:
             eg = models.EditorGroup.pull(group_id)
             form.group_id.data = eg.id
             form.name.data = eg.name
+            form.maned.data = eg.maned
             form.editor.data = eg.editor
             form.associates.data = ",".join(eg.associates)
         return render_template("admin/editor_group.html", admin_page=True, form=form)
@@ -547,6 +560,7 @@ def editor_group(group_id=None):
                         ae.save()
 
             eg.set_name(form.name.data)
+            eg.set_maned(form.maned.data)
             eg.set_editor(form.editor.data)
             if associates is not None:
                 eg.set_associates(associates)

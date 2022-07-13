@@ -11,14 +11,21 @@
   font-size: smaller;
   transition: height 0.3s ease-out;
 
-  .feather {
-    margin: 0 $spacing-01;
-    top: 0.125em;
-    height: 15px;
+  > li {
+    margin: 0 $spacing-04;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 
-  @media (max-width: 768px) {
-    font-size: 1rem;
+  .feather {
+    margin: 0 $spacing-01;
+    height: 15px;
   }
 }
 

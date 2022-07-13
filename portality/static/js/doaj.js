@@ -9,9 +9,11 @@ var doaj = {
         var openMenu = document.querySelector(".secondary-nav__menu-toggle");
         var nav = document.querySelector(".secondary-nav__menu");
 
-        openMenu.addEventListener('click', function() {
-            nav.classList.toggle("secondary-nav__menu-toggle--active");
-        }, false);
+        if (openMenu) {
+            openMenu.addEventListener('click', function () {
+                nav.classList.toggle("secondary-nav__menu-toggle--active");
+            }, false);
+        }
 
         // On scroll, display back-to-top button & add class to header primary menu
         var topBtn = document.getElementById("top"),
