@@ -136,7 +136,7 @@ def load_crossref_schema(app):
     :param app:
     :return:
     """
-    schema_path = app.config["SCHEMAS"].get("crossref")
+    schema_path = app.config["SCHEMAS"].get("crossref442")
 
     if not app.config.get("CROSSREF_SCHEMA"):
         try:
