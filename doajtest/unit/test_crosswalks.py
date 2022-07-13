@@ -1,7 +1,7 @@
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
-from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
+from doajtest.fixtures.article_crossref import Crossref442ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, diff_dicts
 from portality.crosswalks.article_doaj_xml import DOAJXWalk
 from portality.crosswalks.article_crossref_xml import CrossrefXWalk442
@@ -107,7 +107,7 @@ class TestCrosswalks(DoajTestCase):
         assert bibjson.get_single_url("fulltext") == "http://doaj.org/testing/url.pdf", "expected 'http://doaj.org/testing/url.pdf', received: {}".format(bibjson.get_single_url("fulltext"))
 
     def test_06_crossref_article_xml_xwalk(self):
-        handle = CrossrefArticleFixtureFactory.upload_2_issns_correct()
+        handle = Crossref442ArticleFixtureFactory.upload_2_issns_correct()
         xwalk = CrossrefXWalk442()
         art = xwalk.crosswalk_file(file_handle=handle, add_journal_info=False)
         article = models.Article(**art[0])

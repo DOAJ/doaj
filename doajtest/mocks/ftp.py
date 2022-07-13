@@ -1,4 +1,4 @@
-from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
+from doajtest.fixtures.article_crossref import Crossref442ArticleFixtureFactory
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 
 
@@ -50,4 +50,4 @@ class FTPMockCrossrefFactory(FTPMockFactory):
             raise RuntimeError("oops")
         self.content = None
         if hostname in ["valid"]:
-            self.content = CrossrefArticleFixtureFactory.upload_1_issn_correct().read()
+            self.content = Crossref442ArticleFixtureFactory.upload_1_issn_correct().read()

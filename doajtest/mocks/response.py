@@ -1,4 +1,4 @@
-from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
+from doajtest.fixtures.article_crossref import Crossref442ArticleFixtureFactory
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 import requests
 
@@ -28,7 +28,7 @@ class ResponseMockFactory(object):
         if url in ["http://success", "http://upload"]:
             return Response(200)
         elif url in ["http://valid"]:
-            return Response(200, CrossrefArticleFixtureFactory.upload_1_issn_correct().read())
+            return Response(200, Crossref442ArticleFixtureFactory.upload_1_issn_correct().read())
         return GET(url, **kwargs)
 
     @classmethod
