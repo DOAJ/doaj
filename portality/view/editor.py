@@ -22,11 +22,22 @@ blueprint = Blueprint('editor', __name__)
 def restrict():
     return restrict_to_role('editor_area')
 
-# build an editor's page where things can be done
-@blueprint.route('/')
+@blueprint.route("/")
 @login_required
 @ssl_required
 def index():
+    # ~~-> Todo:Service~~
+    svc = DOAJ.todoService()
+    todos = svc.top_todo(current_user._get_current_object(), size=app.config.get("TODO_LIST_SIZE"))
+
+    # ~~-> Dashboard:Page~~
+    return render_template('editor/dashboard.html', todos=todos)
+
+# build an editor's page where things can be done
+@blueprint.route('/group-info')
+@login_required
+@ssl_required
+def groupinfo():
     editor_of = models.EditorGroup.groups_by_editor(current_user.id)
     associate_of = models.EditorGroup.groups_by_associate(current_user.id)
     return render_template('editor/index.html', editor_of=editor_of, associate_of=associate_of, managing_editor=app.config.get("MANAGING_EDITOR_EMAIL"))

@@ -1,29 +1,32 @@
 {% set index = url_for("editor.index") %}
+{% set groupinfo = url_for("editor.groupinfo") %}
 {% set group_journals = url_for('editor.group_journals') %}
 {% set group_apps = url_for('editor.group_suggestions') %}
 {% set ass_journals = url_for('editor.associate_journals') %}
 {% set ass_apps = url_for('editor.associate_suggestions') %}
 
 {% set tabs = [
-    (index, "Group Info", None),
-    (group_journals, "Your group’s journals", "list_group_journals"),
-    (group_apps, "Your group’s applications", "list_group_suggestions"),
-    (ass_journals, "Journals assigned to you", None),
-    (ass_apps, "Applications assigned to you", None)
+    (index, "Dashboard", None, "list"),
+    (groupinfo, "Group Info", None, "users"),
+    (group_journals, "Your group’s journals", "list_group_journals", "layers"),
+    (group_apps, "Your group’s applications", "list_group_suggestions", "database"),
+    (ass_journals, "Journals assigned to you", None, "book-open"),
+    (ass_apps, "Applications assigned to you", None, "file-text")
     ]
 %}
 
-<div class="tabs">
-    <nav class="tabs__menu">
-        <ul class="tabs__list" role="tablist">
-            {% for url, label, role in tabs %}
-                {% set selected = url == request.path %}
-                {% if role == None or current_user.has_role(role) %}
-                <li class="tabs__item" {% if not selected %}role="presentation"{% endif %}>
-                    <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}">{{ label }}</a>
+<nav class="vertical-nav">
+    <ol class="unstyled-list" role="tablist">
+        {% for url, label, role, icon in tabs %}
+            {% set selected = url == request.path %}
+            {% if role == None or current_user.has_role(role) %}
+                <li>
+                    <a href="{{ url }}" aria-selected="{% if selected %}true{% else %}false{% endif %}" class="flex-center vertical-nav__link ">
+                        <span data-feather="{{ icon }}" aria-hidden="true"></span>
+                        <span class="vertical-nav__link-label">{{ label }}</span>
+                    </a>
                 </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </nav>
-</div>
+            {% endif %}
+        {% endfor %}
+    </ol>
+</nav>

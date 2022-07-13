@@ -1,4 +1,4 @@
-{% extends "layouts/public_base.html" %}
+{% extends "layouts/dashboard_base.html" %}
 
 {% block extra_stylesheets %}
 <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
@@ -6,11 +6,12 @@
 
 {% block page_title %}Editor dashboard{% endblock %}
 
+{% block nav %}
+{% include 'editor/nav.html' %}
+{% endblock %}
+
 {% block content %}
 <main class="container">
-  <h2>Editor dashboard</h2>
-  {% include 'editor/nav.html' %}
-
   <section class="page-content">
     {% block editor_content %}
     {% endblock %}
