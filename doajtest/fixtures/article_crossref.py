@@ -5,17 +5,15 @@ from io import BytesIO, StringIO
 from copy import deepcopy
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "crossref_article_uploads.xml")
-
-
 
 class Crossref442ArticleFixtureFactory(object):
 
     NS = {'x': 'http://www.crossref.org/schema/4.4.2'}
+    ARTICLES = os.path.join(RESOURCES, "crossref442_article_uploads.xml")
 
     @classmethod
     def _response_from_xpath(cls, xpath):
-        with open(ARTICLES) as f:
+        with open(cls.ARTICLES) as f:
             doc = etree.parse(f)
         records = doc.getroot()
         articles = records.xpath(xpath, namespaces=cls.NS)
@@ -125,3 +123,4 @@ class Crossref442ArticleFixtureFactory(object):
 
 class Crossref531ArticleFixtureFactory(Crossref442ArticleFixtureFactory):
     NS = {'x': 'http://www.crossref.org/schema/5.3.1'}
+    ARTICLES = os.path.join(RESOURCES, "crossref531_article_uploads.xml")

@@ -11,7 +11,7 @@ NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih
 
 class CrossrefXWalk442(object):
     """
-    ~~CrossrefXML:Crosswalk->Crossref:Feature~~
+    ~~Crossref442XML:Crosswalk->Crossref442:Feature~~
     """
     format_name = "crossref442"
 
@@ -94,18 +94,21 @@ class CrossrefXWalk442(object):
 
     def __init__(self):
         self.validation_log = ""
-        self.schema_path = app.config.get("SCHEMAS", {}).get("crossref442")
+        self.schema_path = app.config.get("SCHEMAS", {}).get(self.format_name)
 
         # load the schema into memory for more efficient usage in repeat calls to the crosswalk
         if self.schema_path is None:
             raise exceptions.IngestException(
-                message="Unable to validate for CrossrefXWalk442, as schema path is not set in config")
+                message="Unable to validate for " + self.format_name + ", as schema path is not set in config")
 
-        while app.config["CROSSREF_SCHEMA"] is None:
+        while app.config["CROSSREF442_SCHEMA"] is None:
+            continue
+
+        while app.config["CROSSREF531_SCHEMA"] is None:
             continue
 
         # ~~->CrossrefXML:Schema~~
-        self.schema = app.config["CROSSREF_SCHEMA"]
+        self.schema = app.config["CROSSREF442_SCHEMA"]
 
     def validate_file(self, file_handle):
         # first try to parse the file
@@ -123,7 +126,7 @@ class CrossrefXWalk442(object):
         valid = self.validate(doc)
 
         if not valid:
-            msg = "Validation message from schema '{x}': {y}\n".format(x=CrossrefXWalk442.format_name,
+            msg = "Validation message from schema '{x}': {y}\n".format(x=self.format_name,
                                                                        y=self.validation_log)
             raise CrosswalkException(message="Unable to validate document with identified schema", inner_message=msg)
 
@@ -179,9 +182,9 @@ class CrossrefXWalk442(object):
         return article
 
 
-###############################################################################
-## extractors
-###############################################################################
+    ###############################################################################
+    ## extractors
+    ###############################################################################
 
 
     def extract_title(self, journal, bibjson):
@@ -328,9 +331,19 @@ class CrossrefXWalk442(object):
             # exceptions about .exact analyser not being able to handle
             # more than 32766 UTF8 characters
 
+###############################################################################
+## Crossref 5.3.1 Xwalk
+###############################################################################
 
-class CrossrefXWalk5_3_1(CrossrefXWalk442):
-    pass
+class CrossrefXWalk531(CrossrefXWalk442):
+    """
+        ~~Crossref531XML:Crosswalk->Crossref531:Feature~~
+        """
+    format_name = "crossref531"
+
+    def __init__(self):
+        super(CrossrefXWalk531,self).__init__()
+        self.schema = app.config["CROSSREF531_SCHEMA"]
 
 ###############################################################################
 ## some convenient utilities

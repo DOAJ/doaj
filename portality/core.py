@@ -136,16 +136,23 @@ def load_crossref_schema(app):
     :param app:
     :return:
     """
-    schema_path = app.config["SCHEMAS"].get("crossref442")
+    schema442_path = app.config["SCHEMAS"].get("crossref442")
+    schema531_path = app.config["SCHEMAS"].get("crossref531")
 
     if not app.config.get("CROSSREF_SCHEMA"):
         try:
-            schema_doc = etree.parse(schema_path)
+            path = schema442_path
+            schema_doc = etree.parse(schema442_path)
             schema = etree.XMLSchema(schema_doc)
-            app.config["CROSSREF_SCHEMA"] = schema
+            app.config["CROSSREF442_SCHEMA"] = schema
+
+            path = schema531_path
+            schema_doc = etree.parse(schema531_path)
+            schema = etree.XMLSchema(schema_doc)
+            app.config["CROSSREF531_SCHEMA"] = schema
         except Exception as e:
             raise exceptions.IngestException(
-                message="There was an error attempting to load schema from " + schema_path, inner=e)
+                message="There was an error attempting to load schema from " + path, inner=e)
 
 
 
