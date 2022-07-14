@@ -241,6 +241,8 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_READY,
+                    constants.APPLICATION_STATUS_COMPLETED
                 ])
             ],
             sort=sort_field,
@@ -254,9 +256,7 @@ class TodoRules(object):
         assign_pending = TodoQuery(
             musts=[
                 TodoQuery.editor(acc_id),
-            ],
-            must_nots=[
-                TodoQuery.status([constants.APPLICATION_STATUS_PENDING]),
+                TodoQuery.status([constants.APPLICATION_STATUS_PENDING])
             ],
             sort=sort_field,
             size=size
