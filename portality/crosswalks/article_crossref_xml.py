@@ -6,7 +6,6 @@ from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
 from portality.ui.messages import Messages
 
-NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih.gov/JATS1'}
 
 
 class CrossrefXWalk442(object):
@@ -14,6 +13,7 @@ class CrossrefXWalk442(object):
     ~~Crossref442XML:Crosswalk->Crossref442:Feature~~
     """
     format_name = "crossref442"
+    NS = {'x': 'http://www.crossref.org/schema/4.4.2', 'j': 'http://www.ncbi.nlm.nih.gov/JATS1'}
 
     """
     Example record:
@@ -152,11 +152,11 @@ class CrossrefXWalk442(object):
         # go through the records in the doc and crosswalk each one individually
         articles = []
         root = doc.getroot()
-        body = root.find("x:body", NS)
-        journals = body.findall("x:journal", NS)
+        body = root.find("x:body", self.NS)
+        journals = body.findall("x:journal", self.NS)
         if journals is not None:
             for journal in journals:
-                arts = journal.findall("x:journal_article", NS)
+                arts = journal.findall("x:journal_article", self.NS)
                 for record in arts:
                     article = self.crosswalk_article(record, journal)
                     articles.append(article)
@@ -188,20 +188,20 @@ class CrossrefXWalk442(object):
 
 
     def extract_title(self, journal, bibjson):
-        jm = journal.find("x:journal_metadata", NS)
+        jm = journal.find("x:journal_metadata", self.NS)
         if jm is not None:
-            jt = _element(jm, "x:full_title", NS)
+            jt = _element(jm, "x:full_title", self.NS)
             if jt is not None:
                 bibjson.journal_title = jt
 
     def extract_issns(self, journal, bibjson):
-        md = journal.find("x:journal_metadata", NS)
+        md = journal.find("x:journal_metadata", self.NS)
         if md is not None:
-            issns = md.findall("x:issn", NS)
+            issns = md.findall("x:issn", self.NS)
 
             # if more than 2 issns raise the exception
             if len(issns) > 2:
-                raise CrosswalkException(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
+                raise CrosswalkException(message=Messages.EXCEPTION_TOO_MANY_ISSself.NS)
             if len(issns) == 1:
                 if len(issns[0].attrib) == 0 or issns[0].attrib["media_type"] == 'electronic':
                     bibjson.add_identifier(bibjson.E_ISSN, issns[0].text.upper())
@@ -244,82 +244,83 @@ class CrossrefXWalk442(object):
                 bibjson.add_identifier(bibjson.P_ISSN if attrs[1] == "print" else bibjson.E_ISSN, issns[1].text.upper())
 
     def extract_publication_date(self, record, journal, bibjson):
-        pd = record.find("x:publication_date", NS)
+        pd = record.find("x:publication_date", self.NS)
 
         if pd is not None:
-            bibjson.year = _element(pd, "x:year", NS)
-            bibjson.month = _element(pd, "x:month", NS)
+            bibjson.year = _element(pd, "x:year", self.NS)
+            bibjson.month = _element(pd, "x:month", self.NS)
 
     def extract_volume(self, journal, bibjson):
-        issue = journal.find("x:journal_issue", NS)
+        issue = journal.find("x:journal_issue", self.NS)
 
         if issue is not None:
-            vol = issue.find("x:journal_volume", NS)
+            vol = issue.find("x:journal_volume", self.NS)
             if vol is not None:
-                volume = _element(vol, "x:volume", NS)
+                volume = _element(vol, "x:volume", self.NS)
                 if volume is not None:
                     bibjson.volume = volume
 
     def extract_issue(self, journal, bibjson):
-        issue = journal.find("x:journal_issue", NS)
-        number = _element(issue, "x:issue", NS)
-        if number is not None:
-            bibjson.number = number
+        issue = journal.find("x:journal_issue", self.NS)
+        if issue is not None:
+            number = _element(issue, "x:issue", self.NS)
+            if number is not None:
+                bibjson.number = number
 
     def extract_pages(self, record, journal, bibjson):
-        pages = record.find('x:pages', NS)
+        pages = record.find('x:pages', self.NS)
         # start page
         if pages is not None:
-            sp = _element(pages, "x:first_page", NS)
+            sp = _element(pages, "x:first_page", self.NS)
             if sp is not None:
                 bibjson.start_page = sp
 
             # end page
-            ep = _element(pages, "x:last_page", NS)
+            ep = _element(pages, "x:last_page", self.NS)
             if ep is not None:
                 bibjson.end_page = ep
 
     def extract_doi(self, record, journal, bibjson):
-        d = record.find("x:doi_data", NS)
+        d = record.find("x:doi_data", self.NS)
         if d is not None:
             # doi
-            doi = _element(d, "x:doi", NS)
+            doi = _element(d, "x:doi", self.NS)
             if doi is not None:
                 bibjson.add_identifier(bibjson.DOI, doi)
 
     def extract_fulltext(self, record, journal, bibjson):
-        d = record.find("x:doi_data", NS)
-        ftel = _element(d, "x:resource", NS)
+        d = record.find("x:doi_data", self.NS)
+        ftel = _element(d, "x:resource", self.NS)
         if ftel is not None:
-            bibjson.add_url(ftel, "fulltext", NS)
+            bibjson.add_url(ftel, "fulltext", self.NS)
 
     def extract_article_title(self, record, journal, bibjson):
-        titles = record.find('x:titles', NS)
+        titles = record.find('x:titles', self.NS)
         if titles is not None:
-            title = _element(titles, "x:title", NS)
+            title = _element(titles, "x:title", self.NS)
             if title is not None:
                 bibjson.title = title
 
     def extract_authors(self, record, journal, bibjson):
-        contributors = record.find("x:contributors", NS)
+        contributors = record.find("x:contributors", self.NS)
         if contributors is None:
             raise CrosswalkException(message=Messages.EXCEPTION_NO_CONTRIBUTORS_FOUND,
                                      inner_message=Messages.EXCEPTION_NO_CONTRIBUTORS_EXPLANATION)
-        contribs = contributors.findall("x:person_name", NS)
+        contribs = contributors.findall("x:person_name", self.NS)
         if contribs is not None:
             for ctb in contribs:
                 if ctb.attrib["contributor_role"] == 'author':
-                    name = _element(ctb, "x:surname", NS)
-                    e = _element(ctb, "x:given_name", NS)
+                    name = _element(ctb, "x:surname", self.NS)
+                    e = _element(ctb, "x:given_name", self.NS)
                     name = e + ' ' + name if e else name
-                    e = _element(ctb, "x:affiliation", NS)
+                    e = _element(ctb, "x:affiliation", self.NS)
                     affiliation = e if e else None
-                    e = _element(ctb, "x:ORCID", NS)
+                    e = _element(ctb, "x:ORCID", self.NS)
                     orcid = e if e else None
                     bibjson.add_author(name, affiliation, orcid)
 
     def extract_abstract(self, record, journal, bibjson):
-        abstract_par = record.find("j:abstract", NS)
+        abstract_par = record.find("j:abstract", self.NS)
         if abstract_par is not None:
             text_elems = list(abstract_par.iter())
             text = ""
@@ -340,6 +341,7 @@ class CrossrefXWalk531(CrossrefXWalk442):
         ~~Crossref531XML:Crosswalk->Crossref531:Feature~~
         """
     format_name = "crossref531"
+    NS = {'x': 'http://www.crossref.org/schema/5.3.1', 'j': 'http://www.ncbi.nlm.nih.gov/JATS1'}
 
     def __init__(self):
         super(CrossrefXWalk531,self).__init__()

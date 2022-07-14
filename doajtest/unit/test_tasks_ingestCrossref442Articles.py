@@ -174,7 +174,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
 
         # first try with a successful HEAD request
         requests.head = ResponseMockFactory.head_success
-        requests.get = ResponseMockFactory.crossref_get_success
+        requests.get = ResponseMockFactory.crossref442_get_success
         etree.XMLSchema = self.mock_load_schema
 
         url = "http://success"
@@ -323,7 +323,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
 
         requests.head = ResponseMockFactory.head_success
         url = "http://success"
-        requests.get = ResponseMockFactory.crossref_get_success
+        requests.get = ResponseMockFactory.crossref442_get_success
         etree.XMLSchema = self.mock_load_schema
 
         previous = []
@@ -429,7 +429,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
 
         etree.XMLSchema = self.mock_load_schema
         requests.head = ResponseMockFactory.head_fail
-        requests.get = ResponseMockFactory.crossref_get_success
+        requests.get = ResponseMockFactory.crossref442_get_success
 
         url= "http://upload"
 
@@ -454,7 +454,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
 
         etree.XMLSchema = self.mock_load_schema
         requests.head = ResponseMockFactory.head_fail
-        requests.get = ResponseMockFactory.crossref_get_success
+        requests.get = ResponseMockFactory.crossref442_get_success
 
         job = models.BackgroundJob()
         task = ingestarticles.IngestArticlesBackgroundTask(job)
@@ -481,13 +481,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
 
         etree.XMLSchema = self.mock_load_schema
         requests.head = ResponseMockFactory.head_fail
-        requests.get = ResponseMockFactory.crossref_get_success
+        requests.get = ResponseMockFactory.crossref442_get_success
 
         job = models.BackgroundJob()
 
         url = "http://upload"
 
-        requests.get = ResponseMockFactory.crossref_get_success
+        requests.get = ResponseMockFactory.crossref442_get_success
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -770,7 +770,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
     def test_27_run_exists(self):
         etree.XMLSchema = self.mock_load_schema
         requests.head = ResponseMockFactory.head_fail
-        requests.get = ResponseMockFactory.crossref_get_success
+        requests.get = ResponseMockFactory.crossref442_get_success
 
         j = models.Journal()
         j.set_owner("testowner")
