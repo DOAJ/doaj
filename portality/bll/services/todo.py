@@ -21,7 +21,6 @@ class TodoService(object):
             {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"}
         ], exceptions.ArgumentException)
 
-
         queries = []
         if account.has_role("admin"):
             maned_of = [g for g in models.EditorGroup.groups_by_maned(account.id)]
@@ -38,6 +37,13 @@ class TodoService(object):
                 queries.append(TodoRules.editor_follow_up_old(groups, size))
                 queries.append(TodoRules.editor_completed(groups, size))
                 queries.append(TodoRules.editor_assign_pending(groups, size))
+
+        if account.has_role(constants.ROLE_ASSOCIATE_EDITOR):
+            queries.extend([
+                TodoRules.associate_stalled(size),
+                TodoRules.associate_follow_up_old(size),
+                TodoRules.associate_start_pending(account.id, size),
+            ])
 
         todos = []
         for aid, q, sort, boost in queries:
@@ -219,6 +225,51 @@ class TodoRules(object):
         )
         return constants.TODO_EDITOR_ASSIGN_PENDING, assign_pending, "created_date", False
 
+    @classmethod
+    def associate_stalled(cls,  size):
+        sort_field = "last_manual_update"
+        stalled = TodoQuery(
+            musts=[
+                TodoQuery.lmu_older_than(3),
+            ],
+            sort=sort_field,
+            size=size
+        )
+        return constants.TODO_ASSOCIATE_PROGRESS_STALLED, stalled, sort_field, False
+
+    @classmethod
+    def associate_follow_up_old(cls,  size):
+        sort_field = "created_date"
+        follow_up_old = TodoQuery(
+            musts=[
+                TodoQuery.cd_older_than(6),
+            ],
+            must_nots=[
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_READY,
+                    constants.APPLICATION_STATUS_COMPLETED
+                ])
+            ],
+            sort=sort_field,
+            size=size
+        )
+        return constants.TODO_ASSOCIATE_FOLLOW_UP_OLD, follow_up_old, sort_field, False
+
+    @classmethod
+    def associate_start_pending(cls, acc_id, size):
+        sort_field = "created_date"
+        assign_pending = TodoQuery(
+            musts=[
+                TodoQuery.editor(acc_id),
+                TodoQuery.status([constants.APPLICATION_STATUS_PENDING])
+            ],
+            sort=sort_field,
+            size=size
+        )
+        return constants.TODO_ASSOCIATE_START_PENDING, assign_pending, sort_field, False
+
 
 class TodoQuery(object):
     """
@@ -300,5 +351,13 @@ class TodoQuery(object):
         return {
             "terms" : {
                 "admin.editor_group.exact" : gids
+            }
+        }
+
+    @classmethod
+    def editor(cls,acc_id):
+        return {
+            "terms" : {
+                "admin.editor" : [acc_id],
             }
         }
