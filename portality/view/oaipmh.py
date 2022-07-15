@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
 from portality.core import app
 from portality.models import OAIPMHJournal, OAIPMHArticle
-from portality.lib import analytics
+from portality.lib import plausible
 from portality.crosswalks.oaipmh import CROSSWALKS, make_set_spec, make_oai_identifier
 
 blueprint = Blueprint('oaipmh', __name__)
@@ -18,27 +18,28 @@ blueprint = Blueprint('oaipmh', __name__)
 @blueprint.route("/oai.<specified>", methods=["GET", "POST"])
 def oaipmh(specified=None):
     # Google Analytics event, we don't know the action yet but it will be required.
-    event = analytics.GAEvent(category=app.config.get('GA_CATEGORY_OAI', 'OAI-PMH'), action=None)
+    event_payload = {}
     # work out which endpoint we're going to
     if specified is None:
         dao = OAIPMHJournal()
-        event.label = 'Journal'
+        event_payload['label'] = 'Journal'
     else:
         specified = specified.lower()
         dao = OAIPMHArticle()
-        event.label = 'Article'
+        event_payload['label'] = 'Article'
 
     # Add the identifier to the event if there is one
     ident = request.values.get('identifier', None)
     if ident is not None:
-        event.fieldsobject = {app.config.get('GA_DIMENSIONS')['oai_res_id']: ident}
+        event_payload[app.config.get('GA_DIMENSIONS')['oai_res_id']] = ident
 
     # work out the verb and associated parameters
     verb = request.values.get("verb")
-    event.action = verb
+    event_payload['action'] = verb
 
     # Now we have enough information about the request to send to analytics.
-    event.submit()
+    plausible.send_event(app.config.get('GA_CATEGORY_OPENURL', 'OpenURL'),
+                         **event_payload)
 
     # call the appropriate protocol operation:
     # if no verb supplied
