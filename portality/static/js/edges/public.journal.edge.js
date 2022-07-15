@@ -39,13 +39,7 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    finishedEvent: "edges:post-render",
-                    renderer : doaj.renderers.newSearchingNotificationRenderer({
-                        scrollOnSearch: true
-                    })
-                }),
+                doaj.components.searchingNotification(),
                 edges.newFullSearchController({
                     id: "search-input-bar",
                     category: "controller",
