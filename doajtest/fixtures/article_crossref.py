@@ -121,6 +121,10 @@ class Crossref442ArticleFixtureFactory(object):
     def upload_the_same_issns(cls):
         return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 The Same ISSNs']]")
 
+    @classmethod
+    def upload_multiple_affs(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='Multiple Affs']]")
+
 class Crossref531ArticleFixtureFactory(Crossref442ArticleFixtureFactory):
     NS = {'x': 'http://www.crossref.org/schema/5.3.1'}
     ARTICLES = os.path.join(RESOURCES, "crossref531_article_uploads.xml")

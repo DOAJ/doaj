@@ -33,14 +33,13 @@
                         <surname>Housecat</surname>
                         <!--affiliations information (change from 4.x versions)-->
                         <affiliations>
-                            <!-- This example includes all supported institution metadata for an individual affiliation, but if an identifier (ROR, ISNI, or Wikidata) is supplied, the name, place, and acronym metadata is not recommended.-->
                             <institution>
-                                <!-- either institution_name or institution_id are required -->
-                                <institution_name>United States Department of Energy</institution_name>
+                                <institution_name>Cottage Labs University</institution_name>
                                 <!-- multiple institution_id values may be provided, IDs must be provided as a https URL -->
                                 <institution_id type="ror">https://ror.org/01bj3aw27</institution_id>
                             </institution>
                             <institution>
+                                <institution_name>United States Department of Energy</institution_name>
                                 <!-- A ROR, ISNI, or Wikidata ID may be provided on its own as it's all we need to identify an organization-->
                                 <institution_id type="ror">https://ror.org/05gq02987</institution_id>
                             </institution>

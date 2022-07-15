@@ -854,3 +854,45 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         fu = models.FileUpload.pull(id)
         assert fu is not None
         assert fu.status == "processed"
+
+    def test_29_submit_multiple_affs(self):
+        etree.XMLSchema = self.mock_load_schema
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
+
+        handle = Crossref531ArticleFixtureFactory.upload_1_issn_correct()
+        f = FileMockFactory(stream=handle)
+
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="crossref531", upload_file=f)
+        id = job.params.get("ingest_articles__file_upload_id")
+        self.cleanup_ids.append(id)
+
+        # because file upload gets created and saved by prepare
+        time.sleep(2)
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task.run()
+
+        # because file upload needs to be re-saved
+        time.sleep(2)
+
+        found = [a for a in models.Article.find_by_issns(["1234-5678"])]
+        assert len(found) == 1
+        abib = found[0].bibjson()
+        assert len(abib.author)  == 2
+        assert abib.author[0]["affiliation"] == "Cottage Labs University"

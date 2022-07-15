@@ -347,6 +347,32 @@ class CrossrefXWalk531(CrossrefXWalk442):
         super(CrossrefXWalk531,self).__init__()
         self.schema = app.config["CROSSREF531_SCHEMA"]
 
+    def extract_authors(self, record, journal, bibjson):
+        contributors = record.find("x:contributors", self.NS)
+        if contributors is None:
+            raise CrosswalkException(message=Messages.EXCEPTION_NO_CONTRIBUTORS_FOUND,
+                                     inner_message=Messages.EXCEPTION_NO_CONTRIBUTORS_EXPLANATION)
+        contribs = contributors.findall("x:person_name", self.NS)
+        if contribs is not None:
+            for ctb in contribs:
+                if ctb.attrib["contributor_role"] == 'author':
+                    name = _element(ctb, "x:surname", self.NS)
+                    e = _element(ctb, "x:given_name", self.NS)
+                    name = e + ' ' + name if e else name
+
+                    # only first affiliation is supported even if multiple are provided
+                    affs = ctb.find("x:affiliations", self.NS)
+                    affiliation = None
+                    if affs is not None:
+                        institution = affs.find("x:institution", self.NS)
+                        if institution is not None:
+                            inst_name = _element(institution, "x:institution_name", self.NS)
+                            affiliation = inst_name if inst_name else None
+
+                    e = _element(ctb, "x:ORCID", self.NS)
+                    orcid = e if e else None
+                    bibjson.add_author(name, affiliation, orcid)
+
 ###############################################################################
 ## some convenient utilities
 ###############################################################################

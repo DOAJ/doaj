@@ -15,7 +15,7 @@
         <!-- a record with two correct issns -->
        <journal>
             <journal_metadata>
-                <full_title>2 ISSNs Correct</full_title>
+                <full_title>Authors with affiliations</full_title>
                 <abbrev_title>TP</abbrev_title>
                 <issn media_type="print">2538-4449</issn>
             </journal_metadata>
@@ -33,12 +33,14 @@
             <!-- ====== This is the article's metadata ======== -->
             <journal_article publication_type="full_text">
                 <titles>
-                    <title>Success!</title>
+                    <title>Authors with affiliations</title>
                 </titles>
                 <contributors>
                     <person_name sequence="first" contributor_role="author">
                         <given_name>Bob</given_name>
                         <surname>Surname</surname>
+                        <affiliation>Crossref University</affiliation>
+                        <affiliation>Crossref University</affiliation>
                         <ORCID>http://orcid.org/0000-0002-4011-3590</ORCID>
                     </person_name>
                 </contributors>
