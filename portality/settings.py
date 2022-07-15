@@ -1236,7 +1236,7 @@ TODO_LIST_SIZE = 48
 #######################################################
 # Plausible analytics
 # root url of plausible
-PLAUSIBLE_URL = "http://localhost:8000"
+PLAUSIBLE_URL = "https://plausible.io"
 PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/plausible.js"
 PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event/"
 # site name / domain name that used to register in plausible
