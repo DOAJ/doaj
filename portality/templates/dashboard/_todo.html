@@ -47,8 +47,24 @@
             "text" : "<strong>Pending</strong> <span class='todo-list__status'>Recently assigned</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
-            "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
+            "link" : url_for('editor.group_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
         },
+        constants.TODO_ASSOCIATE_PROGRESS_STALLED: {
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>+3 wks inactive</span>",
+            "colour" : "var(--yellow)",
+            "feather": "inbox",
+        },
+        constants.TODO_ASSOCIATE_FOLLOW_UP_OLD: {
+            "text": "<strong>Old</strong> <span class='todo-list__status'>+6 wks old</span>",
+            "colour" : "var(--sanguine)",
+            "feather": "clock"
+        },
+        constants.TODO_ASSOCIATE_START_PENDING: {
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Recently assigned</span>",
+            "colour" : "var(--yellow)",
+            "feather": "inbox",
+            "link" : url_for('editor.associate_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
+        }
     }
 %}
 
