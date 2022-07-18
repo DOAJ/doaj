@@ -7,9 +7,8 @@ from werkzeug.datastructures import MultiDict
 
 from portality import dao
 import portality.models as models
-import portality.notifications.application_emails as emails
 from portality import constants
-from portality import lock, app_email
+from portality import lock
 from portality.background import BackgroundSummary
 from portality.bll import DOAJ, exceptions
 from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
@@ -441,7 +440,7 @@ def application_quick_reject(application_id):
             "old_status": old_status,
             "new_status": constants.APPLICATION_STATUS_REJECTED,
             "process": constants.PROCESS__QUICK_REJECT,
-            "note": note
+            "note": reason
         }))
 
     # sort out some flash messages for the user
