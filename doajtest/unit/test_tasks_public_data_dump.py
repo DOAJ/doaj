@@ -13,12 +13,13 @@ from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
 from portality import models, store
 from portality.core import app
 
-import os, shutil, tarfile, json
+import tarfile, json
 from io import StringIO
+
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "tasks.public_data_dump"), "data_dump", "test_id",
-                               {"test_id" : []})
+                               {"test_id": []})
 
 
 class TestPublicDataDumpTask(DoajTestCase):
@@ -29,16 +30,7 @@ class TestPublicDataDumpTask(DoajTestCase):
         self.store_tmp_imp = app.config.get("STORE_TMP_IMPL")
         self.store_imp = app.config.get("STORE_IMPL")
         self.discovery_records_per_file = app.config.get("DISCOVERY_RECORDS_PER_FILE")
-        self.store_local_dir = app.config["STORE_LOCAL_DIR"]
-        self.store_tmp_dir = app.config["STORE_TMP_DIR"]
         self.cache = models.Cache
-
-        app.config["STORE_IMPL"] = "portality.store.StoreLocal"
-        app.config["STORE_LOCAL_DIR"] = rel2abs(__file__, "..", "tmp", "store", "main")
-        app.config["STORE_TMP_DIR"] = rel2abs(__file__, "..", "tmp", "store", "tmp")
-        os.makedirs(app.config["STORE_LOCAL_DIR"])
-        os.makedirs(app.config["STORE_TMP_DIR"])
-
         models.cache.Cache = ModelCacheMockFactory.in_memory()
 
     def tearDown(self):
@@ -46,12 +38,7 @@ class TestPublicDataDumpTask(DoajTestCase):
         app.config["STORE_IMPL"] = self.store_imp
         app.config["DISCOVERY_RECORDS_PER_FILE"] = self.discovery_records_per_file
 
-        shutil.rmtree(rel2abs(__file__, "..", "tmp"))
-        app.config["STORE_LOCAL_DIR"] = self.store_local_dir
-        app.config["STORE_TMP_DIR"] = self.store_tmp_dir
-
         models.cache.Cache = self.cache
-
         super(TestPublicDataDumpTask, self).tearDown()
 
     @parameterized.expand(load_cases)
