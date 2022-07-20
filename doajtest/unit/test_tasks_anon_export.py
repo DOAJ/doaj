@@ -4,6 +4,9 @@ from pathlib import Path
 
 from doajtest.helpers import DoajTestCase
 from portality.models import BackgroundJob, Account
+from portality.store import StoreLocal
+from portality.tasks.anon_export import AnonExportBackgroundTask
+from portality.tasks.helpers import background_helper
 
 
 class TestAnonExport(DoajTestCase):
@@ -19,12 +22,6 @@ class TestAnonExport(DoajTestCase):
         new_background_jobs = list(BackgroundJob.scroll())
         new_accounts = list(Account.scroll())
 
-        # Delayed import so that we configure the background job on the customised test app
-        from portality.store import StoreLocal
-        from portality.tasks.anon_export import AnonExportBackgroundTask
-        from portality.tasks import anon_export
-        from portality.tasks.helpers import background_helper
-
         # run execute
         background_task = background_helper.execute_by_bg_task_type(AnonExportBackgroundTask)
 
@@ -34,7 +31,7 @@ class TestAnonExport(DoajTestCase):
         self.assertTrue(any('Compressing temporary file' in m for m in msgs))
         self.assertTrue(any('account.bulk.1' in m for m in msgs))
 
-        main_store: StoreLocal = anon_export.mainStore
+        main_store = StoreLocal(None)
         container_id = self.app_test.config.get("STORE_ANON_DATA_CONTAINER")
         target_names = main_store.list(container_id)
 

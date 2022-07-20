@@ -16,10 +16,6 @@ from portality.store import StoreFactory
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import schedule, long_running
 
-tmpStore = StoreFactory.tmp()
-mainStore = StoreFactory.get("anon_data")
-container = app.config.get("STORE_ANON_DATA_CONTAINER")
-
 
 def _anonymise_email(record):
     record.set_email(anon_email(record.email))
@@ -99,7 +95,7 @@ anonymisation_procedures = {
 }
 
 
-def _copy_on_complete(path, logger_fn):
+def _copy_on_complete(path, logger_fn, tmpStore, mainStore, container):
     name = os.path.basename(path)
     raw_size = os.path.getsize(path)
     logger_fn(("Compressing temporary file {x} (from {y} bytes)".format(x=path, y=raw_size)))
@@ -115,7 +111,7 @@ def _copy_on_complete(path, logger_fn):
     tmpStore.delete_file(container, zipped_name)
 
 
-def run_anon_export(clean=False, limit=None, batch_size=100000,
+def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, batch_size=100000,
                     logger_fn: Callable[[str], NoReturn] = None):
     if logger_fn is None:
         logger_fn = print
@@ -140,10 +136,9 @@ def run_anon_export(clean=False, limit=None, batch_size=100000,
             transform = anonymisation_procedures[type_]
 
         # Use the model's dump method to write out this type to file
-        out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn)
+        out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn, tmpStore=tmpStore, mainStore=mainStore, container=container)
         _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
-                       out_rollover_callback=out_rollover_fn,
-                       es_bulk_fields=["_id"], scroll_keepalive='3m')
+                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], scroll_keepalive='3m')
 
         logger_fn((dates.now() + " done\n"))
 
@@ -165,7 +160,12 @@ class AnonExportBackgroundTask(BackgroundTask):
         kwargs = {k: self.get_param(self.background_job.params, k)
                   for k in ['clean', 'limit', 'batch_size']}
         kwargs['logger_fn'] = self.background_job.add_audit_message
-        run_anon_export(**kwargs)
+
+        tmpStore = StoreFactory.tmp()
+        mainStore = StoreFactory.get("anon_data")
+        container = app.config.get("STORE_ANON_DATA_CONTAINER")
+
+        run_anon_export(tmpStore, mainStore, container, **kwargs)
         self.background_job.add_audit_message("Anon export completed")
 
     def cleanup(self):
