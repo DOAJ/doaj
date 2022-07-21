@@ -1,7 +1,7 @@
 import re
 from flask import Blueprint, request, redirect, url_for, render_template, abort
 from portality.models import OpenURLRequest
-from portality.lib import analytics
+from portality.lib import plausible
 from portality.core import app
 from urllib.parse import unquote
 
@@ -29,10 +29,9 @@ def openurl():
         return redirect(parser_response, 301)
 
     # Log this request to analytics
-    ga_event = analytics.GAEvent(category=app.config.get('GA_CATEGORY_OPENURL', 'OpenURL'),
-                                 action=parser_response.genre,
-                                 label=qs)
-    ga_event.submit()
+    plausible.send_event(app.config.get('GA_CATEGORY_OPENURL', 'OpenURL'),
+                         action=parser_response.genre,
+                         label=qs)
 
     # Get the OpenURLRequest object to issue a query and supply a url for the result
     result_url = parser_response.get_result_url()
