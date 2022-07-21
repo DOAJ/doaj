@@ -3,7 +3,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.1.7',
+    version='6.1.10',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -51,7 +51,7 @@ setup(
         "Werkzeug==0.16.0",
         "WTForms==2.2.1",
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
-    extras_require={"test": ["pytest", "pytest-xdist", "selenium"]},
+    extras_require={"test": ["pytest", "pytest-cov", "pytest-xdist", "selenium"]},
     url='http://cottagelabs.com/',
     author='Cottage Labs',
     author_email='us@cottagelabs.com',

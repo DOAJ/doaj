@@ -50,7 +50,7 @@ $.extend(true, doaj, {
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Publisher','field':'bibjson.publisher.name'},
                         {'display':'Country of publisher','field':'index.country'},
-                        {'display':'Journal Language','field':'index.language'}
+                        {'display':'Journal language','field':'index.language'}
                     ],
                     defaultOperator : "AND",
                     renderer : doaj.renderers.newSearchBarRenderer({
