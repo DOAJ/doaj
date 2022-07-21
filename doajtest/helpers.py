@@ -37,6 +37,7 @@ def with_es(_func=None, *, indices=None, warm_mappings=None):
     else:
         return with_es_decorator(_func)
 
+
 class WithES:
 
     def __init__(self, func, indices=None, warm_mappings=None):
@@ -111,9 +112,11 @@ class DoajTestCase(TestCase):
     def setUpClass(cls) -> None:
         cls.originals = patch_config(app, {
             "STORE_IMPL": "portality.store.StoreLocal",
-            "STORE_LOCAL": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
+            "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
             "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp", cls.__name__.lower()),
             "STORE_CACHE_CONTAINER": "doaj-data-cache-placeholder" + '-' + cls.__name__.lower(),
+            "STORE_ANON_DATA_CONTAINER": "doaj-anon-data-placeholder" + '-' + cls.__name__.lower(),
+            "STORE_PUBLIC_DATA_DUMP_CONTAINER": "doaj-data-dump-placeholder" + '-' + cls.__name__.lower(),
             "ES_RETRY_HARD_LIMIT": 0,
             "ES_BLOCK_WAIT_OVERRIDE": 0.1,
             "ELASTIC_SEARCH_DB": app.config.get('ELASTIC_SEARCH_TEST_DB'),
@@ -141,7 +144,6 @@ class DoajTestCase(TestCase):
 
         # if a test on a previous run has totally failed and tearDownClass has not run, then make sure the index is gone first
         dao.DomainObject.destroy_index()
-        # time.sleep(1) # I don't know why we slept here, but not in tearDown, so I have removed it
 
     @classmethod
     def tearDownClass(cls) -> None:
