@@ -124,6 +124,7 @@ class DoajTestCase(TestCase):
             "FEATURES": app.config['VALID_FEATURES'],
             'ENABLE_EMAIL': False,
             "FAKER_SEED": 1,
+            "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
             'CMS_BUILD_ASSETS_ON_STARTUP': False
         })
 

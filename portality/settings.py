@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.1.10"
+DOAJ_VERSION = "6.1.11"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -82,6 +82,18 @@ ELASTIC_APM = {
   # Set custom APM Server URL (default: http://localhost:8200)
   'SERVER_URL': '',
 }
+
+###########################################
+# Event handler
+
+# use this to queue events asynchronously through kafka
+EVENT_SEND_FUNCTION = "portality.events.kafka_producer.send_event"
+# use this one to bypass kafka and process events immediately/synchronously
+# EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
+
+KAFKA_BROKER = "kafka://localhost:9092"
+KAFKA_EVENTS_TOPIC = "events"
+KAFKA_BOOTSTRAP_SERVER = "localhost:9092"
 
 ###########################################
 # Read Only Mode
@@ -626,6 +638,7 @@ MAPPINGS['news'] = MAPPINGS["account"]    #~~->News:Model~~
 MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
 MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
 MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
+MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
 
 #########################################
 # Query Routes
@@ -1211,6 +1224,7 @@ HARVESTER_ZOMBIE_AGE = 604800
 # ~~->ReCAPTCHA:ExternalService
 
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
+RECAPTCHA_ENABLE = True
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 

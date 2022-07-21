@@ -51,7 +51,7 @@ if test -f "cms/error_sass.txt"; then
   exit 1
 fi
 
-# Restart all supervisor tasks, which will cover the app, and huey on the background server. Then reload nginx.
+# Restart all supervisor tasks, which will cover the app, and huey, kafka on the background server. Then reload nginx.
 sudo supervisorctl update
 sudo supervisorctl restart all || sudo supervisorctl start all
 
