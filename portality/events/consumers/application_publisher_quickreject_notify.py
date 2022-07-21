@@ -1,5 +1,5 @@
 # from flask import url_for
-from portality.lib.flask import url_for
+from portality.util import url_for
 from datetime import datetime
 
 from portality.events.consumer import EventConsumer
