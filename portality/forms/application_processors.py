@@ -385,9 +385,6 @@ class AdminApplication(ApplicationProcessor):
 
         # if the application was instead rejected, carry out the rejection actions
         elif self.source.application_status != constants.APPLICATION_STATUS_REJECTED and self.target.application_status == constants.APPLICATION_STATUS_REJECTED:
-            # remember whether this was an update request or not
-            is_update_request = self.target.current_journal is not None
-
             # reject the application
             applicationService.reject_application(self.target, current_user._get_current_object())
 
