@@ -260,7 +260,7 @@ class NewApplication(ApplicationProcessor):
 
             # trigger an application created event
             eventsSvc = DOAJ.eventsService()
-            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_CREATED, current_user.id, {
+            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_CREATED, account.id, {
                 "application": self.target.data
             }))
 
