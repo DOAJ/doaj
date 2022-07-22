@@ -763,6 +763,11 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         owner.set_email("test@example.com")
         owner.save(blocking=True)
 
+        maned = models.Account()
+        maned.set_id(EDITOR_GROUP_SOURCE.get("maned"))
+        maned.set_email("maned@example.com")
+        maned.save(blocking=True)
+
         # Construct an application form
         fc = ApplicationFormFactory.context("admin")
         processor = fc.processor(source=ready_application)
@@ -922,18 +927,18 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect 2 emails to be sent:
         #   * to the AssEd who's been assigned,
         #   * and to the publisher informing them there's an editor assigned.
-        assEd_template = 'assoc_editor_application_assigned.jinja2'
+        assEd_template = 'email/notification_email.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = 'new application assigned to you'
+        assEd_subject = 'New application assigned to you'
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(assEd_email_matched)
 
-        publisher_template = 'publisher_update_request_editor_assigned.jinja2'
+        publisher_template = 'email/notification_email.jinja2'
         publisher_to = re.escape(owner.email)
-        publisher_subject = 'your update request has been assigned an editor for review'
+        publisher_subject = 'Your update request has been assigned an editor for review'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -963,18 +968,18 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect 2 emails to be sent:
         #   * to the editor of the assigned group,
         #   * to the AssEd who's been assigned
-        editor_template = re.escape('editor_application_assigned_group.jinja2')
+        editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = 'new application assigned to your group'
+        editor_subject = 'New application assigned to your group'
 
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
                                          re.DOTALL)
         assert bool(editor_email_matched)
 
-        assEd_template = 'assoc_editor_application_assigned.jinja2'
+        assEd_template = 'email/notification_email.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = 'new application assigned to you'
+        assEd_subject = 'New application assigned to you'
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -1000,9 +1005,9 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email to be sent here:
         #   * to the ManEds, saying an application is ready
-        manEd_template = 'admin_application_ready.jinja2'
-        manEd_to = re.escape(self.app_test.config.get('MANAGING_EDITOR_EMAIL'))
-        manEd_subject = 'application ready'
+        manEd_template = 'email/notification_email.jinja2'
+        manEd_to = re.escape("maned@example.com")
+        manEd_subject = 'Application marked as ready'
 
         manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
                                         info_stream_contents,
@@ -1027,9 +1032,9 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect 1 email to be sent:
         #   * to the publisher, informing them of the journal's acceptance
         #   * to the journal contact, informing them of the journal's acceptance
-        publisher_template = 'publisher_update_request_accepted.jinja2'
+        publisher_template = 'email/notification_email.jinja2'
         publisher_to = re.escape(owner.email)
-        publisher_subject = 'update request accepted'
+        publisher_subject = 'Update request accepted'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -1055,6 +1060,11 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         owner.set_email("test@example.com")
         owner.save(blocking=True)
 
+        maned = models.Account()
+        maned.set_id(EDITOR_GROUP_SOURCE.get("maned"))
+        maned.set_email("maned@example.com")
+        maned.save(blocking=True)
+
         # Construct an application form
         fc = ApplicationFormFactory.context("editor")
         processor = fc.processor(source=pending_application)
@@ -1072,9 +1082,9 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email to be sent here:
         #   * to the ManEds, saying an application is ready
-        manEd_template = 'admin_application_ready.jinja2'
-        manEd_to = re.escape(self.app_test.config.get('MANAGING_EDITOR_EMAIL'))
-        manEd_subject = 'application ready'
+        manEd_template = 'email/notification_email.jinja2'
+        manEd_to = re.escape("maned@example.com")
+        manEd_subject = 'Application marked as ready'
 
         manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
                                         info_stream_contents,
@@ -1106,18 +1116,18 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         # We expect 2 emails to be sent:
         #   * to the AssEd who's been assigned,
         #   * and to the publisher informing them there's an editor assigned.
-        assEd_template = 'assoc_editor_application_assigned.jinja2'
+        assEd_template = 'email/notification_email.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = 'new application assigned to you'
+        assEd_subject = 'New application assigned to you'
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(assEd_email_matched)
 
-        publisher_template = 'publisher_update_request_editor_assigned.jinja2'
+        publisher_template = 'email/notification_email.jinja2'
         publisher_to = re.escape(owner.email)
-        publisher_subject = 'your update request has been assigned an editor for review'
+        publisher_subject = 'Your update request has been assigned an editor for review'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -1144,9 +1154,9 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect 1 email to be sent:
         #   * to the AssEd who's been assigned,
-        assEd_template = 'assoc_editor_application_assigned.jinja2'
+        assEd_template = 'email/notification_email.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_2').email)
-        assEd_subject = 'new application assigned to you'
+        assEd_subject = 'New application assigned to you'
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -1185,16 +1195,16 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email to be sent:
         #   * to the associate editor, informing them the application has been bounced back to in progress.
-        assoc_editor_template = re.escape('assoc_editor_application_inprogress.jinja2')
+        assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = "an application assigned to you has not passed review."
+        assoc_editor_subject = "One of your applications has not passed review"
         assoc_editor_email_matched = re.search(
             email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
             info_stream_contents,
             re.DOTALL)
         assert bool(assoc_editor_email_matched)
 
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         ctx.pop()
 
@@ -1231,9 +1241,9 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email to be sent here:
         #   * to the publisher, notifying that an editor is viewing their application
-        publisher_template = re.escape('publisher_update_request_inprogress.jinja2')
+        publisher_template = re.escape('email/notification_email.jinja2')
         publisher_to = re.escape(owner.email)
-        publisher_subject = 'your update request is under review'
+        publisher_subject = 'Your submission is under review'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -1252,9 +1262,9 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         # We expect one email sent:
         #   * to the editor, informing them an application has been completed by an Associate Editor
-        editor_template = re.escape('notification_email.jinja2')
+        editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = "application marked 'completed'"
+        editor_subject = "Application marked as completed"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
                                          re.DOTALL)
