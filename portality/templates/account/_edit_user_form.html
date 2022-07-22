@@ -28,31 +28,32 @@
       {{ render_field(form.name, placeholder="Firstname Lastname") }}
     </div>
   </fieldset>
-
-  {# Email address #}
   <fieldset>
-    <p class="alert" style="width: 75%;">
+    <p class="alert">
       <strong>NOTE: </strong>Changing your email address will log you out. You will need to verify the new email address and enter a new password.
     </p>
-    <div class="form__question">
-      {{ render_field(form.email, placeholder="name@email.com") }}
-    </div>
-    <div class="form__question">
-      {{ render_field(form.email_confirm, value='', placeholder="name@email.com") }}
+
+    <div class="row">
+      <div class="col-sm-6">
+        {# Email address #}
+        <div class="form__question">
+          {{ render_field(form.email, placeholder="name@email.com") }}
+        </div>
+        <div class="form__question">
+          {{ render_field(form.email_confirm, value='', placeholder="name@email.com") }}
+        </div>
+      </div>
+      <div class="col-sm-6">
+        {# Password change #}
+        <div class="form__question">
+          {{ render_field(form.password_change, placeholder="********") }}
+        </div>
+        <div class="form__question">
+          {{ render_field(form.password_confirm, placeholder="********") }}
+        </div>
+      </div>
     </div>
   </fieldset>
-
-  {# Password change #}
-  <fieldset class="row">
-    <div class="form__question">
-      {{ render_field(form.password_change, placeholder="********") }}
-    </div>
-
-    <div class="form__question">
-      {{ render_field(form.password_confirm, placeholder="********") }}
-    </div>
-  </fieldset>
-
-  <input type="submit" class="button button--secondary" name="submit" value="Update account">
+  <input type="submit" class="button button--tertiary" name="submit" value="Update account">
 </form>
 {% endblock %}

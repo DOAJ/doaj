@@ -7,8 +7,7 @@ $.extend(true, doaj, {
             var result = '<a class="edit_user_link button" href="';
             result += doaj.userSearchConfig.userEditUrl;
             result += resultobj['id'];
-            result += '" target="_blank"';
-            result += '>Edit this user</a>';
+            result += '">Edit this user</a>';
             return result;
         },
 
@@ -41,11 +40,7 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    finishedEvent: "edges:post-render",
-                    renderer : doaj.renderers.newSearchingNotificationRenderer()
-                }),
+                doaj.components.searchingNotification(),
 
                 // facets
                 edges.newRefiningANDTermSelector({

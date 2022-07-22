@@ -74,8 +74,35 @@ class DOAJ(object):
     @classmethod
     def siteService(cls):
         """
-        Obtain an instance of the site service
+        Obtain an instance of the site service  ~~->Site:Service~~
         :return:  SiteService
         """
         from portality.bll.services import site
         return site.SiteService()
+
+    @classmethod
+    def eventsService(cls):
+        """
+        Obtain an instance of the events service
+        :return:  SiteService
+        """
+        from portality.bll.services import events
+        return events.EventsService()
+
+    @classmethod
+    def notificationsService(cls):
+        """
+        Obtain an instance of the notifications service ~~~->Notifications:Service~~
+        :return: NotificationsService
+        """
+        from portality.bll.services import notifications
+        return notifications.NotificationsService()
+
+    @classmethod
+    def todoService(cls):
+        """
+        Obtain an instance of the todo service  ~~->Todo:Service~~
+        :return:  SiteService
+        """
+        from portality.bll.services import todo
+        return todo.TodoService()

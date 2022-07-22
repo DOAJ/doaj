@@ -22,8 +22,7 @@ $.extend(true, doaj, {
             var result = '<a class="edit_editor_group_link button" href="';
             result += doaj.adminEditorGroupSearchConfig.editorGroupEditUrl;
             result += resultobj['id'];
-            result += '" target="_blank"';
-            result += '>Edit this group</a>';
+            result += '">Edit this group</a>';
             return result;
         },
 
@@ -50,27 +49,23 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    finishedEvent: "edges:post-render",
-                    renderer : doaj.renderers.newSearchingNotificationRenderer()
-                }),
+                doaj.components.searchingNotification(),
 
                 // facets
-                // edges.newRefiningANDTermSelector({
-                //     id: "name_keywords",
-                //     category: "facet",
-                //     field: "name.exact",
-                //     display: "Name",
-                //     deactivateThreshold: 1,
-                //     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                //         controls: true,
-                //         open: true,
-                //         togglable: false,
-                //         countFormat: countFormat,
-                //         hideInactive: true
-                //     })
-                // }),
+                edges.newRefiningANDTermSelector({
+                    id: "maned",
+                    category: "facet",
+                    field: "maned.exact",
+                    display: "Managing Editor",
+                    deactivateThreshold: 1,
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: true,
+                        togglable: false,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
 
                 // configure the search controller
                 edges.newFullSearchController({
@@ -79,11 +74,13 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Created Date','field':'created_date'},
                         {'display':'Last Modified Date','field':'last_updated'},
+                        {'display':'Managing Editor ID','field':'maned'},
                         {'display':'Editor ID','field':'editor'},
                         {'display':'Group Name','field':'name.exact'}
                     ],
                     fieldOptions: [
                         {'display':'Group Name','field':'name'},
+                        {'display':'Managing Editor ID','field':'maned'},
                         {'display':'Editor ID','field':'editor'},
                         {'display':'Associate Editor ID','field':'associate'}
                     ],
@@ -146,6 +143,17 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
+                                    "pre": 'Managing Editor: <a href="/account/',
+                                    "field": "maned",
+                                    "post" : '">'
+                                },
+                                {
+                                    "field": "maned",
+                                    "post" : "</a>"
+                                }
+                            ],
+                            [
+                                {
                                     "valueFunction" : doaj.adminEditorGroupSearch.deleteEditorGroup
                                 },
                                 {
@@ -161,7 +169,8 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "name.exact": "Name"
+                        "name.exact": "Name",
+                        "maned.exact": "Managing Editor"
                     }
                 })
             ];

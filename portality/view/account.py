@@ -6,11 +6,12 @@ from flask_login import login_user, logout_user, current_user, login_required
 from wtforms import StringField, HiddenField, PasswordField, validators, Form
 
 from portality import util
+from portality import constants
 from portality.core import app
 from portality.decorators import ssl_required, write_required
-from portality.models import Account
+from portality.models import Account, Event
 from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
-from portality.notifications.application_emails import send_account_created_email, send_account_password_reset_email
+from portality.bll import DOAJ
 
 blueprint = Blueprint('account', __name__)
 
@@ -109,13 +110,12 @@ def username(username):
                 acc.clear_password()
                 reset_token = uuid.uuid4().hex
                 acc.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
-                try:
-                    send_account_password_reset_email(acc)
-                    flash("Email address updated. You have been logged out for email address verification.")
-                except Exception:
-                    flash('Error - Could not send verification, aborting email change', 'error')
-                    return render_template('account/view.html', account=acc, form=form)
                 acc.save()
+
+                events_svc = DOAJ.eventsService()
+                events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, acc.id, context={"account" : acc.data}))
+                flash("Email address updated. You have been logged out for email address verification.")
+
                 logout_user()
 
                 if app.config.get('DEBUG', False):
@@ -139,7 +139,7 @@ def username(username):
             return render_template('account/view.html', account=acc, form=form)
 
 
-def get_redirect_target(form=None):
+def get_redirect_target(form=None, acc=None):
     form_target = ''
     if form and hasattr(form, 'next') and getattr(form, 'next'):
         form_target = form.next.data
@@ -149,7 +149,16 @@ def get_redirect_target(form=None):
             continue
         if target == util.is_safe_url(target):
             return target
-    return url_for('doaj.home')
+
+    if acc is None:
+        return ""
+
+    destinations = app.config.get("ROLE_LOGIN_DESTINATIONS")
+    for role, dest in destinations:
+        if acc.has_role(role):
+            return url_for(dest)
+
+    return url_for(app.config.get("DEFAULT_LOGIN_DESTINATION"))
 
 
 class RedirectForm(Form):
@@ -193,7 +202,7 @@ def login():
                 if user.check_password(password):
                     login_user(user, remember=True)
                     flash('Welcome back.', 'success')
-                    return redirect(get_redirect_target(form=form))
+                    return redirect(get_redirect_target(form=form, acc=user))
                 else:
                     form.password.errors.append('The password you entered is incorrect. Try again or <a href="{0}">reset your password</a>.'.format(url_for(".forgot")))
             else:
@@ -239,13 +248,9 @@ def forgot():
         account.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
         account.save()
 
-        try:
-            send_account_password_reset_email(account)
-            flash('Instructions to reset your password have been sent to you. Please check your emails.')
-        except Exception as e:
-            magic = str(uuid.uuid1())
-            util.flash_with_url('Error - sending the password reset email didn\'t work.' + CONTACT_INSTR + ' It would help us if you also quote this magic number: ' + magic + ' . Thank you!', 'error')
-            app.logger.error(magic + "\n" + repr(e))
+        events_svc = DOAJ.eventsService()
+        events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, account.id, context={"account": account.data}))
+        flash('Instructions to reset your password have been sent to you. Please check your emails.')
 
         if app.config.get('DEBUG', False):
             util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(
@@ -324,13 +329,18 @@ def register():
 
     form = RegisterForm(request.form, csrf_enabled=False, roles='api,publisher', identifier=Account.new_short_uuid())
     if request.method == 'POST' and form.validate():
-        recap_data = util.verify_recaptcha(form.recaptcha_value.data)
+        if app.config.get("RECAPTCHA_ENABLE"):
+            recap_data = util.verify_recaptcha(form.recaptcha_value.data)
+        else:
+            recap_data = {"success": True}
         if recap_data["success"]:
             account = Account.make_account(email=form.email.data, username=form.identifier.data, name=form.name.data,
                                            roles=[r.strip() for r in form.roles.data.split(',')])
             account.save()
 
-            send_account_created_email(account)
+            event_svc = DOAJ.eventsService()
+            event_svc.trigger(Event(constants.EVENT_ACCOUNT_CREATED, account.id, context={"account" : account.data}))
+            # send_account_created_email(account)
 
             if app.config.get('DEBUG', False):
                 util.flash_with_url('Debug mode - url for verify is <a href={0}>{0}</a>'.format(url_for('account.reset', reset_token=account.reset_token)))

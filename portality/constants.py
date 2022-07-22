@@ -38,3 +38,27 @@ LOCK_JOURNAL = "journal"
 IDENT_TYPE_DOI = "doi"
 LINK_TYPE_FULLTEXT = "fulltext"
 
+# ~~-> Todo:Service~~
+TODO_MANED_STALLED = "todo_maned_stalled"
+TODO_MANED_FOLLOW_UP_OLD = "todo_maned_follow_up_old"
+TODO_MANED_READY = "todo_maned_ready"
+TODO_MANED_COMPLETED = "todo_maned_completed"
+TODO_MANED_ASSIGN_PENDING = "todo_maned_assign_pending"
+
+EVENT_ACCOUNT_CREATED = "account:created"
+EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
+EVENT_APPLICATION_STATUS = "application:status"
+EVENT_APPLICATION_ASSED_ASSIGNED = "application:assed:assigned"
+EVENT_APPLICATION_CREATED = "application:created"
+EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED = "application:editor_group:assigned"
+EVENT_JOURNAL_ASSED_ASSIGNED = "journal:assed:assigned"
+EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED = "journal:editor_group:assigned"
+
+NOTIFICATION_CLASSIFICATION_STATUS_CHANGE = "status_change"
+NOTIFICATION_CLASSIFICATION_ASSIGN = "assign"
+NOTIFICATION_CLASSIFICATION_CREATE = "create"
+NOTIFICATION_CLASSIFICATION_FINISHED = "finished"
+
+BACKGROUND_JOB_FINISHED = "bg:job_finished"
+
+PROCESS__QUICK_REJECT = "quick_reject"

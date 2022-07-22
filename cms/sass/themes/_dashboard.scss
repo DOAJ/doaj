@@ -1,0 +1,177 @@
+/* Common styles for Admin/ManEd, Ed, and Associate Ed dashboards */
+
+.dashboard {
+  font-size: 18px;
+
+  h1 {
+    margin-top: 0;
+  }
+
+  > header:first-of-type {
+    height: 75px;
+  }
+
+  .primary-nav {
+    height:75px;
+
+    li {
+      margin-right: $spacing-04;
+
+      .tag {
+        margin: 0;
+        padding: $spacing-02;
+      }
+    }
+
+    .logo {
+      display: block;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      width: 75px;
+      height: 100%;
+
+      svg {
+        display: block;
+        margin: 0 auto;
+        height: 35px;
+      }
+    }
+  }
+
+  .main-header {
+    @include typescale-06;
+
+    dt, dd {
+      margin-top: 0;
+      display: inline-block;
+    }
+  }
+
+  .vertical-nav {
+    position: absolute;
+    z-index: 3;
+    top: 75px;
+    left: 0;
+    width: 75px;
+    height: 100%;
+    overflow-y: scroll;
+
+    > ol {
+      position: fixed;
+      width: 75px;
+      top: 75px;
+      bottom: 0;
+      background-color: $light-grey;
+    }
+  }
+
+  .vertical-nav__link {
+    height: 75px;
+    width: 100%;
+
+    &[aria-selected=true] {
+      background-color: $warm-black;
+      color: $white;
+    }
+  }
+
+  .vertical-nav__link-label {
+    display: none;
+    position: absolute;
+    padding: 0 $spacing-03 0 0;
+    line-height: 75px;
+    left: 75px;
+    height: 75px;
+    width: max-content;
+    background-color: $dark-grey;
+    color: $white;
+  }
+
+  .vertical-nav__link:hover {
+    background-color: $dark-grey;
+    color: $white;
+
+    .vertical-nav__link-label {
+      display: block;
+    }
+  }
+
+  .todo-list {
+    padding: 0;
+    margin-bottom: 0;
+    display: grid;
+    grid-auto-rows: 1fr;
+    list-style: none;
+
+    @media screen and (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+      grid-column-gap: $spacing-02;
+    }
+
+    @media screen and (max-width: 1279px) and (min-width: 769px) {
+      grid-template-columns: repeat(3, 1fr);
+      grid-column-gap: $spacing-03;
+    }
+
+    @media screen and (min-width: 1280px) {
+      grid-template-columns: repeat(4, 1fr);
+      grid-column-gap: $spacing-04;
+    }
+  }
+
+  .todo-list__item {
+    display: flex;
+
+    h3 {
+      margin-top: $spacing-01;
+      margin-bottom: $spacing-04;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    svg {
+      padding: 0;
+    }
+
+    .todo-list__status {
+      display: block;
+      margin-top: $spacing-01;
+      font-weight: 400;
+      color: $dark-grey;
+    }
+
+    .card {
+      width: 100%;
+      height: auto;
+      border-left: 10px solid;
+
+      &:hover {
+        background-color: $light-grey;
+      }
+    }
+
+    .tag {
+      margin-bottom: 0;
+    }
+
+  }
+
+  main {
+    margin-left: 75px;
+    width: auto;
+
+    @media screen and (max-width: 768px) {
+      padding: 20px;
+    }
+
+    @media screen and (max-width: 1279px) and (min-width: 769px) {
+      padding: 30px;
+    }
+
+    @media screen and (min-width: 1280px) {
+      padding: 40px;
+    }
+  }
+}

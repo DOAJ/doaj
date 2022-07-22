@@ -85,7 +85,7 @@
 
 /* Compact form */
 .form--compact {
-  font-size: smaller;
+  @include typescale-06;
 
   h1 {
     margin-top: 0;
@@ -116,8 +116,11 @@
 
     input, select, textarea, .select2-container {
       margin-bottom: $spacing-02;
-      width: 100%;
       font-size: 1em;
+
+      + button {
+        margin: 0 0 $spacing-02 $spacing-02;
+      }
     }
 
     input[type="checkbox"]+label,

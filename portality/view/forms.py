@@ -63,9 +63,38 @@ class NotRole(object):
         raise validators.ValidationError(msg)
 
 
+class MustHaveRole(object):
+    """
+    ~~MustHaveRole:Validator~~
+    """
+    def __init__(self, role, *args, **kwargs):
+        self.role = role
+
+    def __call__(self, form, field):
+        accounts = [a.strip() for a in field.data.split(",") if a.strip() != ""]
+        if len(accounts) == 0:
+            return
+        fails = []
+        for a in accounts:
+            acc = models.Account.pull(a)
+            if acc is None:                                              # If the account has been deleted we can't pull
+                continue
+            if not acc.has_role(self.role):
+                fails.append(acc.id)
+        if len(fails) == 0:
+            return
+        do_or_does = "do" if len(fails) > 1 else "does"
+        msg = ", ".join(fails) + " " + do_or_does + " not have role " + self.role + " so cannot be assigned as a Managing Editor"
+        raise validators.ValidationError(msg)
+
+
 class EditorGroupForm(Form):
+    """
+    ~~EditorGroup:Form~~
+    """
     group_id = HiddenField("Group ID", [validators.Optional()])
     name = StringField("Group Name", [validators.DataRequired(), UniqueGroupName()])
+    maned = StringField("Managing Editor", [validators.Optional(), MustHaveRole("admin")])
     editor = StringField("Editor", [validators.DataRequired(), NotRole("publisher")])
     associates = StringField("Associate Editors", [validators.Optional(), NotRole("publisher")])
 

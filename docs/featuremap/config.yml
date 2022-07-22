@@ -10,6 +10,7 @@ exclude:
   - "*.jpeg"
   - "*.env"
   - "*.pdf"
+  - "*.zip"
   - ".gitignore"
   - ".gitmodules"
   - ".python-version"

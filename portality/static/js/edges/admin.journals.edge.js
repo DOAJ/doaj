@@ -12,13 +12,13 @@ $.extend(true, doaj, {
                 result += doaj.adminJournalsSearchConfig.journalEditUrl;
                 result += resultobj['id'];
                 result += '/continue?type=replaces" target="_blank"';
-                result += '>Make a preceding continuation</a>';
+                result += ' style="margin-bottom: 0;">Make a preceding continuation</a>';
 
                 result += '<a class="edit_journal_link button" href="';
                 result += doaj.adminJournalsSearchConfig.journalEditUrl;
                 result += resultobj['id'];
                 result += '/continue?type=is_replaced_by" target="_blank"';
-                result += '>Make a succeeding continuation</a><br/><br/>';
+                result += ' style="margin-bottom: 0;">Make a succeeding continuation</a>';
 
                 return result;
             }
@@ -68,11 +68,7 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    finishedEvent: "edges:post-render",
-                    renderer : doaj.renderers.newSearchingNotificationRenderer()
-                }),
+                doaj.components.searchingNotification(),
 
                 // facets
                 doaj.facets.inDOAJ(),
@@ -108,7 +104,7 @@ $.extend(true, doaj, {
                     id: "has_editor_group",
                     category: "facet",
                     field: "index.has_editor_group.exact",
-                    display: "Has Editor Group?",
+                    display: "Has eeditor group?",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -136,7 +132,7 @@ $.extend(true, doaj, {
                     id: "editor_group",
                     category: "facet",
                     field: "admin.editor_group.exact",
-                    display: "Editor Group",
+                    display: "Editor group",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -180,7 +176,7 @@ $.extend(true, doaj, {
                     id: "journal_license",
                     category: "facet",
                     field: "index.license.exact",
-                    display: "Journal License",
+                    display: "Journal license",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -236,7 +232,7 @@ $.extend(true, doaj, {
                     id: "journal_language",
                     category: "facet",
                     field: "index.language.exact",
-                    display: "Journal Language",
+                    display: "Journal language",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -309,7 +305,7 @@ $.extend(true, doaj, {
                         {'display':'Classification','field':'index.classification'},
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
-                        {'display':'Journal Language','field':'index.language'},
+                        {'display':'Journal language','field':'index.language'},
                         {'display':'Publisher','field':'bibjson.publisher.name'}
                     ],
                     defaultOperator: "AND",
@@ -353,6 +349,11 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
+                                   valueFunction: doaj.fieldRender.editJournal({editUrl: doaj.adminJournalsSearchConfig.journalEditUrl})
+                                }
+                            ],
+                            [
+                                {
                                     "pre": '<span class="alt_title">Alternative title: ',
                                     "field": "bibjson.alternative_title",
                                     "post": "</span>"
@@ -372,7 +373,7 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre" : "<strong>Editor Group</strong>: ",
+                                    "pre" : "<strong>Editor group</strong>: ",
                                     "field" : "admin.editor_group"
                                 }
                             ],
@@ -456,11 +457,6 @@ $.extend(true, doaj, {
                                 {
                                     valueFunction: doaj.adminJournalsSearch.makeContinuation
                                 }
-                            ],
-                            [
-                                {
-                                   valueFunction: doaj.fieldRender.editJournal({editUrl: doaj.adminJournalsSearchConfig.journalEditUrl})
-                                }
                             ]
                         ]
                     })
@@ -474,15 +470,15 @@ $.extend(true, doaj, {
                         "admin.in_doaj" : "In DOAJ?",
                         "index.has_seal.exact" : "DOAJ Seal",
                         "admin.owner.exact" : "Owner",
-                        "index.has_editor_group.exact" : "Has Editor Group?",
+                        "index.has_editor_group.exact" : "Has editor group?",
                         "index.has_editor.exact" : "Has Associate Editor?",
-                        "admin.editor_group.exact" : "Editor Group",
+                        "admin.editor_group.exact" : "Editor group",
                         "admin.editor.exact" : "Associate Editor",
-                        "index.license.exact" : "Journal License",
+                        "index.license.exact" : "Journal license",
                         "bibjson.publisher.name.exact" : "Publisher",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",
-                        "index.language.exact" : "Journal Language",
+                        "index.language.exact" : "Journal language",
                         "index.country.exact" : "Country of publisher",
                         "index.continued.exact" : "Continued",
                         "bibjson.discontinued_date" : "Discontinued Year",
@@ -490,8 +486,8 @@ $.extend(true, doaj, {
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
-                            true : "True",
-                            false : "False"
+                            true : "Yes",
+                            false : "No"
                         }
                     },
                     rangeFunctions : {
@@ -508,7 +504,7 @@ $.extend(true, doaj, {
                 components: components,
                 callbacks : {
                     "edges:query-fail" : function() {
-                        alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
+                        alert("There was an unexpected error. Please reload the page and try again. If the issue persists please contact an administrator.");
                     }
                 }
             });
