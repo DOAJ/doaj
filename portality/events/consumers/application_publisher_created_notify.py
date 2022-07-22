@@ -28,7 +28,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
             raise exceptions.NoSuchObjectException("Could not create application object")
         if application is None:
             raise exceptions.NoSuchObjectException("Could not create application object")
-        if not application.editor:
+        if not application.owner:
             return
 
         svc = DOAJ.notificationsService()
