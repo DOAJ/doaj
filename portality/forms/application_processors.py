@@ -545,7 +545,7 @@ class EditorApplication(ApplicationProcessor):
         eventsSvc = DOAJ.eventsService()
         if self.source.application_status != self.target.application_status:
             eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, current_user.id, {
-                "application": self.target.id,
+                "application": self.target.data,
                 "old_status": self.source.application_status,
                 "new_status": self.target.application_status
             }))
