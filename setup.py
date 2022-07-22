@@ -3,7 +3,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.1.6',
+    version='6.2.0',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -12,6 +12,7 @@ setup(
         "elastic-apm==5.2.2",
         "elasticsearch==7.13.0",
         "esprit==0.1.0",   # legacy for scripts etc (phasing out)
+        "faust==1.10.4",
         "Faker==2.0.3",
         "feedparser==6.0.8",
         "itsdangerous==2.0.1",     # fixme: unpinned dependency of flask, 2.1.0 is causing an import error 'json'
@@ -50,7 +51,7 @@ setup(
         "Werkzeug==0.16.0",
         "WTForms==2.2.1",
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
-    extras_require={"test": ["pytest", "pytest-xdist", "selenium"]},
+    extras_require={"test": ["pytest", "pytest-cov", "pytest-xdist", "selenium"]},
     url='http://cottagelabs.com/',
     author='Cottage Labs',
     author_email='us@cottagelabs.com',

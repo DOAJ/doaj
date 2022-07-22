@@ -8,16 +8,11 @@
 {# I’m using a much smaller & reduced version of Boostrap’s JS, with some modified classes and only the components we need #}
 <script type="text/javascript" src="/static/js/bootstrap.doaj.js"></script>
 
-{%- if not config.get("DEBUG", True)  -%}
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-46560124-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      gtag('config', 'UA-46560124-1');
-    </script>
+{%- if not config.get("DEBUG", True)  -%}
+    <!-- Plausible Analytics -->
+    <script defer data-domain="{{ config.get('PLAUSIBLE_SITE_NAME')}}"
+            src="{{ config.get('PLAUSIBLE_JS_URL') }}"></script>
 {%- endif -%}
 
 {# FIXME: do we need these any more? #}

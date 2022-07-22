@@ -39,13 +39,7 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    finishedEvent: "edges:post-render",
-                    renderer : doaj.renderers.newSearchingNotificationRenderer({
-                        scrollOnSearch: true
-                    })
-                }),
+                doaj.components.searchingNotification(),
                 edges.newFullSearchController({
                     id: "search-input-bar",
                     category: "controller",
@@ -56,7 +50,7 @@ $.extend(true, doaj, {
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Publisher','field':'bibjson.publisher.name'},
                         {'display':'Country of publisher','field':'index.country'},
-                        {'display':'Journal Language','field':'index.language'}
+                        {'display':'Journal language','field':'index.language'}
                     ],
                     defaultOperator : "AND",
                     renderer : doaj.renderers.newSearchBarRenderer({

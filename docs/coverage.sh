@@ -21,6 +21,6 @@ git submodule update --init --recursive
 COVERAGE_FILE=$OUTDIR/coverage.data
 export COVERAGE_FILE
 
-coverage run --source=portality,esprit,combinatrix,dictdiffer $(which nosetests) doajtest/unit/
+coverage run --source=portality,esprit,combinatrix,dictdiffer $(which pytest) doajtest/unit/
 coverage html --include=portality*.py --omit=*/migrate/*,*/scripts/* -d $OUTDIR/report
 

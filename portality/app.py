@@ -100,18 +100,8 @@ def custom_static(path):
 
 # Configure the Google Analytics tracker
 # ~~-> GoogleAnalytics:ExternalService~~
-from portality.lib import analytics
-try:
-    analytics.create_logfile(app.config.get('GOOGLE_ANALTYICS_LOG_DIR', None))
-    analytics.create_tracker(app.config['GOOGLE_ANALYTICS_ID'], app.config['BASE_DOMAIN'])
-except KeyError:
-    err = "No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'."
-    if app.config.get("DOAJENV") == 'production':
-        app.logger.error(err)
-    else:
-        app.logger.debug(err)
-except analytics.GAException as e:
-    app.logger.debug('Unable to send events to Google Analytics: ' + str(e))
+from portality.lib import plausible
+plausible.create_logfile(app.config.get('PLAUSIBLE_LOG_DIR', None))
 
 # Redirects from previous DOAJ app.
 # RJ: I have decided to put these here so that they can be managed

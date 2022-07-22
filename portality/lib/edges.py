@@ -7,8 +7,13 @@ import json
 
 
 def make_url_query(**params):
-    query = make_query(**params)
+    query = make_query_json(**params)
     return parse.quote_plus(json.dumps(query))
+
+
+def make_query_json(**params):
+    query = make_query(**params)
+    return json.dumps(query)
 
 
 def make_query(**params):

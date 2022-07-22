@@ -24,11 +24,7 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    finishedEvent: "edges:post-render",
-                    renderer : doaj.renderers.newSearchingNotificationRenderer()
-                }),
+                doaj.components.searchingNotification(),
 
                 // facets
                 edges.newRefiningANDTermSelector({
@@ -134,7 +130,7 @@ $.extend(true, doaj, {
                     id: "language",
                     category: "facet",
                     field: "index.language.exact",
-                    display: "Journal Language",
+                    display: "Journal language",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -190,7 +186,7 @@ $.extend(true, doaj, {
                     id: "journal_license",
                     category: "facet",
                     field: "index.license.exact",
-                    display: "Journal License",
+                    display: "Journal license",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -216,7 +212,7 @@ $.extend(true, doaj, {
                         {'display':'Classification','field':'index.classification'},
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
-                        {'display':'Journal Language','field':'index.language'},
+                        {'display':'Journal language','field':'index.language'},
                         {'display':'Publisher','field':'bibjson.publisher.name'},
                         {'display':'Alternative Title','field':'bibjson.alternative_title'}
                     ],
@@ -336,13 +332,13 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Journal Language</strong>: ",
+                                    "pre": "<strong>Journal language</strong>: ",
                                     "field": "bibjson.language"
                                 }
                             ],
                             [
                                 {
-                                    "pre": "<strong>Journal License</strong>: ",
+                                    "pre": "<strong>Journal license</strong>: ",
                                     valueFunction: doaj.fieldRender.journalLicense
                                 }
                             ],
@@ -378,11 +374,11 @@ $.extend(true, doaj, {
                         'admin.editor_group.exact' : 'Editor Group',
                         'admin.editor.exact' : 'Editor',
                         'index.classification.exact' : 'Classification',
-                        'index.language.exact' : 'Journal Language',
+                        'index.language.exact' : 'Journal language',
                         'index.country.exact' : 'Country of publisher',
                         'index.subject.exact' : 'Subject',
                         'bibjson.publisher.name.exact' : 'Publisher',
-                        'index.license.exact' : 'Journal License',
+                        'index.license.exact' : 'Journal license',
                         "index.has_apc.exact" : "Publication charges?"
                     }
                 })
