@@ -415,6 +415,12 @@ class TestApplicationReviewEmails(DoajTestCase):
         journal_source['admin']["in_doaj"] = True
         current_journal = models.Journal(**journal_source)
         current_journal.save()
+
+        # Create a ManEd to be in charge of the Editor Group for this application
+        acc = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+        acc.set_id('manny')  # to match the Editor Group defaults   # Fixme: better fixtures!
+        acc.save(blocking=True)
+
         fc = ApplicationFormFactory.context("admin")
         processor = fc.processor(source=pending_application)
         # fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=pending_application)
@@ -426,23 +432,23 @@ class TestApplicationReviewEmails(DoajTestCase):
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
-        #   * to the ManEds, saying an application is ready # FIXME: this test is outdated - email goes to editor group manEd (which needs to be created for this test)
-        # manEd_template = re.escape('email/notification_email.jinja2')
-        # manEd_to = re.escape(self.app_test.config.get('MANAGING_EDITOR_EMAIL'))
-        # manEd_subject = 'application ready'
-        #
-        # manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
-        #                                 info_stream_contents,
-        #                                 re.DOTALL)
-        # assert bool(manEd_email_matched)
-        # assert len(re.findall(email_count_string, info_stream_contents)) == 1
+        #   * to the ManEd in charge of the assigned Editor Group, saying an application is ready
+        manEd_template = re.escape('email/notification_email.jinja2')
+        manEd_to = re.escape(acc.email)
+        manEd_subject = 'Directory of Open Access Journals - Application marked as ready'
+
+        manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
+                                        info_stream_contents,
+                                        re.DOTALL)
+        assert bool(manEd_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
 
         # Finally, a Managing Editor will also trigger emails to the publisher when they accept an Application
 
-        # Refresh the application form  #FIXME: we should test both  new application (done) and update request (missing)
+        # Refresh the application form
         fc = ApplicationFormFactory.context("admin")
         processor = fc.processor(source=no_ed)
         processor.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
