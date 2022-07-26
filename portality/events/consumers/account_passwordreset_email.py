@@ -25,7 +25,7 @@ class AccountPasswordResetEmail(EventConsumer):
 
     @classmethod
     def _send_password_reset_email(cls, account: models.Account):
-        reset_url = url_for('account.reset', reset_token=account.reset_token, _external=True)
+        reset_url = app.config.get('BASE_URL', "https://doaj.org") + url_for('account.reset', reset_token=account.reset_token)
 
         to = [account.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', app.config['ADMIN_EMAIL'])
@@ -37,5 +37,5 @@ class AccountPasswordResetEmail(EventConsumer):
                             template_name="email/account_password_reset.jinja2",
                             email=account.email,
                             reset_url=reset_url,
-                            forgot_pw_url=url_for('account.forgot', _external=True)
+                            forgot_pw_url=app.config.get('BASE_URL', "https://doaj.org") + url_for('account.forgot')
                             )
