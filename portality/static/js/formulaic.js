@@ -1707,7 +1707,7 @@ var formulaic = {
 
                 for (var idx = 0; idx < this.divs.length; idx++) {
                     let div = $(this.divs[idx]);
-                    div.append($('<button type="button" id="tag remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
+                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="tag remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
 
                     if (idx !== 0) {
                         let inputs = div.find(":input");
