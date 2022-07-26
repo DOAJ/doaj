@@ -26,11 +26,11 @@ class AccountCreatedEmail(EventConsumer):
 
     @classmethod
     def _send_account_created_email(cls, account: models.Account):
-        forgot_pw_url = url_for('account.forgot', _external=True)
+        forgot_pw_url = app.config.get('BASE_URL', "https://doaj.org") + url_for('account.forgot')
         reset_url = forgot_pw_url
 
         if account.reset_token is not None:
-            reset_url = url_for('account.reset', reset_token=account.reset_token, _external=True)
+            reset_url = app.config.get('BASE_URL', "https://doaj.org") + url_for('account.reset', reset_token=account.reset_token)
 
         password_create_timeout_seconds = int(
             app.config.get("PASSWORD_CREATE_TIMEOUT", app.config.get('PASSWORD_RESET_TIMEOUT', 86400) * 14))
