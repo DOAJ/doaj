@@ -7,8 +7,8 @@ Describe the scope/purpose of the PR here in as much detail as you like
 ## Categorisation
 
 This PR...
-- [ ] has Scripts to run
-- [ ] has Migration to run
+- [ ] has scripts to run
+- [ ] has migrations to run
 - [ ] adds new infrastructure
 - [ ] changes the CI pipeline
 - [ ] affects the public site
