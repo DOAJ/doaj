@@ -1,8 +1,3 @@
----
-name: Feature PR
-about: Create a PR for a new or updated feature
----
-
 # Title <- provide a title for the PR
 
 For: # <- enter link to issue on main board
