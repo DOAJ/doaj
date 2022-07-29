@@ -104,7 +104,7 @@ $.extend(true, doaj, {
                     id: "has_editor_group",
                     category: "facet",
                     field: "index.has_editor_group.exact",
-                    display: "Has eeditor group?",
+                    display: "Has editor group?",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -502,6 +502,9 @@ $.extend(true, doaj, {
                 search_url: search_url,
                 manageUrl: true,
                 components: components,
+                openingQuery: es.newQuery({
+                    sort: [{field: "created_date", order: "desc"}]
+                }),
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error. Please reload the page and try again. If the issue persists please contact an administrator.");

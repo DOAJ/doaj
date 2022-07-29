@@ -1041,13 +1041,14 @@ $.extend(true, doaj, {
             };
 
             this.setUISortField = function () {
+                let sb = this.component.sortBy
                 if (!this.component.sortBy) {
-                    return;
+                    sb = "_score";
                 }
                 // get the selector we need
                 var sortSelector = edges.css_class_selector(this.namespace, "sortby", this);
                 var el = this.component.jq(sortSelector);
-                el.val(this.component.sortBy);
+                el.val(sb);
             };
 
             this.setUISearchField = function () {

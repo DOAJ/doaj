@@ -391,6 +391,9 @@ $.extend(true, doaj, {
                 search_url: search_url,
                 manageUrl: true,
                 components: components,
+                openingQuery: es.newQuery({
+                    sort: [{field: "created_date", order: "desc"}]
+                }),
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
