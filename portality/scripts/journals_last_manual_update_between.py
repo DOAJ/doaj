@@ -10,28 +10,35 @@ Country
 Publisher
 """
 
-import esprit
 import csv
-from portality import models
+from portality.models import Journal, Account
 from portality.core import es_connection
-from portality.util import ipt_prefix
 from portality.lib import dates
 
 
 LAST_MANUAL_UPDATE_BETWEEN = {
     "query": {
         "bool": {
-            "must": {"range": {"last_manual_update": {"gte": "", "lte": ""}}},
             "filter": {
-                "bool": {
-                    "must": {"term": {"in_doaj": "true"}}
+                "term": {
+                    "admin.in_doaj": "true"
+                }
+            },
+            "must": {
+                "range": {
+                    "last_manual_update": {
+                        "gte": "x",
+                        "lte": "y"
+                    }
                 }
             }
         }
     },
-    "sort": [{
-        "created_date": "asc"
-    }]
+    "sort": [
+        {
+            "created_date": "asc"
+        }
+    ]
 }
 
 if __name__ == "__main__":
@@ -67,12 +74,11 @@ if __name__ == "__main__":
                          "Country",
                          "Publisher"])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=LAST_MANUAL_UPDATE_BETWEEN, keepalive='5m'):
-            journal = models.Journal(_source=j)
+        for journal in Journal.iterate(q=LAST_MANUAL_UPDATE_BETWEEN, keepalive='5m', wrap=True):
             bibjson = journal.bibjson()
-            index = j["index"]
+            index = journal.data["index"]
             owner = journal.owner
-            account = models.Account.pull(owner)
+            account = Account.pull(owner)
 
             writer.writerow([journal.id,
                              bibjson.title,
@@ -81,7 +87,7 @@ if __name__ == "__main__":
                              bibjson.get_one_identifier(bibjson.P_ISSN),
                              journal.created_date,
                              owner,
-                             account.email,
+                             account.email if account else "Not Found",
                              index["country"],
                              bibjson.publisher
                              ])
