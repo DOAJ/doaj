@@ -28,8 +28,12 @@ $s2-size:  20px;
     @include font-sans;
 
     .select2-search-choice {
-      @extend .tag;
-      margin: auto $spacing-02 $s2-space 0 !important;
+      margin: 0 $spacing-03 $s2-space 0;
+      padding: $spacing-01 $spacing-03;
+      border-radius: 9999px;
+      background: $warm-black;
+      color: $white;
+      text-decoration: none;
       border: 0;
       box-shadow: none;
       height: 30px;
@@ -125,7 +129,6 @@ $s2-size:  20px;
   background: $white;
   border-top: none;
   border-color: $warm-black !important;
-  font-size: smaller;
 }
 
 .select2-search input {
