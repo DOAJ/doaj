@@ -102,6 +102,11 @@ def shorten():
 @jsonp
 @login_required
 def group_status(group_id):
+    """
+    ~~GroupStatus:Feature -> Todo:Service~~
+    :param group_id:
+    :return:
+    """
     if not current_user.has_role("admin"):
         abort(404)
     svc = DOAJ.todoService()

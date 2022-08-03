@@ -9,9 +9,11 @@ class TodoService(object):
     """
 
     def group_stats(self, group_id):
+        # ~~-> EditorGroup:Model~~
         eg = models.EditorGroup.pull(group_id)
         stats = {"editor_group" : eg.data}
 
+        #~~-> Account:Model ~~
         stats["editors"] = {}
         editors = [eg.editor] + eg.associates
         for editor in editors:
@@ -273,6 +275,10 @@ class TodoQuery(object):
 
 
 class GroupStatsQuery():
+    """
+    ~~->$GroupStats:Query~~
+    ~~^->Elasticsearch:Technology~~
+    """
     def __init__(self, group_name, editor_count=10):
         self.group_name = group_name
         self.editor_count = editor_count

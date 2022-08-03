@@ -377,6 +377,10 @@ class RelatedJournalQuery(object):
 
 
 class AssignedEditorGroupsQuery(object):
+    """
+    ~~->$AssignedEditorGroups:Query~~
+    ~~^->Elasticsearch:Technology~~
+    """
     def __init__(self, editor_groups, application_type_name="new application"):
         self.editor_groups = editor_groups
         self.application_type_name = application_type_name

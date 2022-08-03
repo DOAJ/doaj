@@ -80,6 +80,7 @@
   </section>
 
   <section>
+    {# ~~->$GroupStatus:Feature~~ #}
     <h2>Activity</h2>
     <div class="tabs">
       <nav class="tabs__menu">
@@ -87,6 +88,7 @@
             structure of this code, you need to change that too #}
         <ul class="tabs__list js-managed-groups-tabs" role="tablist">
           {# managed_groups is inherited from the dashboard_base template #}
+        {# ~~^-> EditorGroup:Model ~~ #}
           {% for eg in managed_groups %}
           <li class="tabs__item">
             {# TODO: this needs to show the total nb of applications for each group #}

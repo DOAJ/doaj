@@ -1,4 +1,5 @@
 /** base namespace for all DOAJ-specific functions */
+// ~~ DOAJ:Library ~~
 var doaj = {
     scrollPosition: 100,
     init : function() {
@@ -60,7 +61,7 @@ var doaj = {
     },
 
     bitlyShortener : function(query, success_callback, error_callback) {
-
+        // ~~-> Bitly.ExternalService ~~
         function callbackWrapper(data) {
             success_callback(data.url);
         }
@@ -237,6 +238,8 @@ var doaj = {
     },
 
     searchQuerySource : function (params) {
+        // ~~-> Edges:Technology ~~
+        // ~~-> Elasticsearch:Technology ~~
         let terms = params.terms;
         let term = params.term;
         let queryString = params.queryString;

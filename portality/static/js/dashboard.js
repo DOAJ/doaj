@@ -60,6 +60,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
             {"admin.editor_group.exact" : data.editor_group.name},
             {"index.application_type.exact" : "new application"}    // this is required so we only see open applications, not finished ones
         ]})
+        // ~~-> UpdateRequestsSearch:Page ~~
         let urQuerySource = doaj.searchQuerySource({"term" : [
             {"admin.editor.exact" : ed},
             {"admin.editor_group.exact" : data.editor_group.name},
@@ -83,6 +84,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
             {"index.has_editor.exact": "No"},
             {"index.application_type.exact" : "new application"}    // this is required so we only see open applications, not finished ones
     ]})
+    // ~~-> UpdateRequestsSearch:Page ~~
     let urUnassignedSource = doaj.searchQuerySource({"term" : [
             {"admin.editor_group.exact" : data.editor_group.name},
             {"index.has_editor.exact": "No"},
@@ -99,6 +101,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
         let status = doaj.dashboard.statusOrder[j];
         if (data.by_status.hasOwnProperty(status)) {
             if (data.by_status[status].applications > 0) {
+                // ~~-> ApplicationSearch:Page~~
                 let appStatusSource = doaj.searchQuerySource({
                     "term": [
                         {"admin.editor_group.exact": data.editor_group.name},
@@ -119,6 +122,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
         {"admin.editor_group.exact" : data.editor_group.name},
         {"index.application_type.exact" : "new application"}    // this is required so we only see open applications, not finished ones
     ]})
+    // ~~-> UpdateRequestsSearch:Page ~~
     let urGroupSource = doaj.searchQuerySource({ "term" : [
         {"admin.editor_group.exact" : data.editor_group.name},
         {"index.application_type.exact" : "update request"}    // this is required so we only see open applications, not finished ones
