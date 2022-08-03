@@ -4,7 +4,6 @@ from portality.models import Journal, Article
 from portality.core import app
 from copy import deepcopy
 from portality.lib import dates
-from portality.lib import analytics
 
 JOURNAL_SCHEMA_KEYS = ['doi', 'aulast', 'aufirst', 'auinit', 'auinit1', 'auinitm', 'ausuffix', 'au', 'aucorp', 'atitle',
                        'jtitle', 'stitle', 'date', 'chron', 'ssn', 'quarter', 'volume', 'part', 'issue', 'spage',

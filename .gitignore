@@ -42,6 +42,7 @@ local_store/tmp/*
 
 # test detritous
 doajtest/unit/*.csv
+/.pytest_cache/
 
 # Logs created while debugging
 *.log

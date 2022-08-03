@@ -1,15 +1,16 @@
 import json
 import time
 
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, \
+    BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory
+from doajtest.helpers import DoajTestCase, patch_history_dir
 from portality import constants
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory
-from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.lib import dataobj
-from portality.models import shared_structs
 from portality.lib import seamless
-
+from portality.models import shared_structs
 from portality.models.v1.bibjson import GenericBibJSON
+
 
 class TestModels(DoajTestCase):
 
@@ -379,6 +380,7 @@ class TestModels(DoajTestCase):
         s = models.Suggestion.pull(s.id)
         assert s.owner == "another_new_owner"
 
+    @patch_history_dir("ARTICLE_HISTORY_DIR")
     def test_06_article_deletes(self):
         # populate the index with some articles
         for i in range(5):
@@ -419,6 +421,8 @@ class TestModels(DoajTestCase):
         assert len(models.Article.all()) == 2
         assert len(self.list_today_article_history_files()) == 3
 
+    @patch_history_dir("ARTICLE_HISTORY_DIR")
+    @patch_history_dir('JOURNAL_HISTORY_DIR')
     def test_07_journal_deletes(self):
         # tests the various methods that are key to journal deletes
 
@@ -475,6 +479,7 @@ class TestModels(DoajTestCase):
         assert len(models.Journal.all()) == 4
         assert len(self.list_today_journal_history_files()) == 6    # Because all journals are snapshot at create time
 
+    @patch_history_dir('JOURNAL_HISTORY_DIR')
     def test_08_iterate(self):
         for jsrc in JournalFixtureFactory.make_many_journal_sources(count=99, in_doaj=True):
             j = models.Journal(**jsrc)
@@ -1548,7 +1553,65 @@ class TestModels(DoajTestCase):
         assert model.error == "Unknown Reason"
         assert model.error_details == "Error: Unknown  Reason"
 
+    def test_35_event(self):
+        event = models.Event()
+        event.id = "12345"
+        event.who = "testuser"
+        event.set_context(key="value", key2="value2")
 
+        assert event.id == "12345"
+        assert event.who == "testuser"
+        assert event.context.get("key") == "value"
+        assert event.context.get("key2") == "value2"
+        assert event.when is not None
 
+        j = event.serialise()
+        data = json.loads(j)
+
+        event2 = models.Event(raw=data)
+        assert event2.id == "12345"
+        assert event2.who == "testuser"
+        assert event2.context.get("key") == "value"
+        assert event2.context.get("key2") == "value2"
+        assert event2.when == event.when
+
+        event3 = models.Event("ABCD", "another", {"key3" : "value3"})
+        assert event3.id == "ABCD"
+        assert event3.who == "another"
+        assert event3.context.get("key3") == "value3"
+        assert event3.when is not None
+
+    def test_36_notification(self):
+        n = models.Notification()
+        n.who = "testuser"
+        n.long = "my message"
+        n.short = "short note"
+        n.action = "/test"
+        n.classification = "test_class"
+        n.created_by = "test:notify"
+
+        assert n.who == "testuser"
+        assert n.long == "my message"
+        assert n.short == "short note"
+        assert n.action == "/test"
+        assert n.classification == "test_class"
+        assert n.created_by == "test:notify"
+
+        assert not n.is_seen()
+        assert n.seen_date is None
+
+        n.set_seen()
+        assert n.is_seen()
+        assert n.seen_date is not None
+
+        n2 = models.Notification(**n.data)
+        assert n2.who == "testuser"
+        assert n2.long == "my message"
+        assert n2.short == "short note"
+        assert n2.action == "/test"
+        assert n2.classification == "test_class"
+        assert n2.created_by == "test:notify"
+        assert n2.is_seen()
+        assert n2.seen_date is not None
 
 

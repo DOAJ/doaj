@@ -4,14 +4,29 @@ from flask_mail import Mail, Message, Attachment
 from portality.core import app
 
 import uuid
+import markdown
 
 
 class EmailException(Exception):
     pass
 
 
+def send_markdown_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, markdown_template_name=None, **template_params):
+    html_body = None
+    if markdown_template_name:
+        try:
+            markdown_body = render_template(markdown_template_name, **template_params)
+        except:
+            with app.test_request_context():
+                markdown_body = render_template(markdown_template_name, **template_params)
+
+        md = markdown.Markdown()
+        html_body = md.convert(markdown_body)
+
+    send_mail(to, fro, subject, template_name=template_name, bcc=bcc, files=files, msg_body=msg_body, html_body=html_body, **template_params)
+
 # Flask-Mail version of email service from util.py
-def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, **template_params):
+def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, html_body=None, **template_params):
     """
     ~~-> Email:ExternalService~~
     ~~-> FlaskMail:Library~~
@@ -73,7 +88,7 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
     msg = Message(subject=subject,
                   recipients=to,
                   body=plaintext_body,
-                  html=None,
+                  html=html_body,
                   sender=fro,
                   cc=None,
                   bcc=bcc,

@@ -1,13 +1,13 @@
-from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory, ApplicationFixtureFactory, BackgroundFixtureFactory
-from portality.core import app
-from portality import models
-from portality.lib.anon import basic_hash, anon_name, anon_email
-from portality.lib import anon
-from portality.scripts import anon_export
-
-from freezegun import freeze_time
 from faker import Faker
+from freezegun import freeze_time
+
+from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory, BackgroundFixtureFactory
+from doajtest.helpers import DoajTestCase
+from portality import models
+from portality.core import app
+from portality.lib import anon
+from portality.lib.anon import basic_hash, anon_name, anon_email
+from portality.tasks import anon_export
 
 
 class TestAnon(DoajTestCase):
