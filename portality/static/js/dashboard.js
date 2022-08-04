@@ -49,6 +49,13 @@ doaj.dashboard.groupLoadError = function(data) {
 
 doaj.dashboard.renderGroupInfo = function(data) {
     // ~~-> EditorGroup:Model~~
+
+    // first remove the editor from the associates list if they are there
+    let edInAssEd = data.editor_group.associates.indexOf(data.editor_group.editor)
+    if (edInAssEd > -1) {
+        data.editor_group.associates.splice(edInAssEd, 1);
+    }
+
     let allEditors = [data.editor_group.editor].concat(data.editor_group.associates);
 
     let editorListFrag = "";
@@ -72,8 +79,13 @@ doaj.dashboard.renderGroupInfo = function(data) {
             appCount = data.by_editor[ed].applications || 0;
             urCount = data.by_editor[ed].update_requests || 0;
         }
+
+        let isEd = "";
+        if (i === 0) {  // first one in the list is always the editor
+            isEd = " (Ed.)"
+        }
         editorListFrag += `<li>
-            <a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag">${ed}</a>
+            <a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag">${ed}${isEd}</a>
             <a href="/admin/applications?source=${appQuerySource}" class="tag tag--tertiary" style="margin-right: 1.5rem;">${appCount} <span class="sr-only">applications</span></a>
         </li>`;
     }
