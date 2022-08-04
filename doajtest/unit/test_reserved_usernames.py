@@ -1,12 +1,10 @@
-from doajtest.helpers import DoajTestCase
-
-from nose.tools import assert_raises
-
 from werkzeug.datastructures import MultiDict
 from wtforms import StringField, Form, validators
 
 from portality import models
 from portality.forms import validate
+from doajtest.helpers import DoajTestCase
+
 
 class TestReservedUsernames(DoajTestCase):
     def setUp(self):
@@ -33,7 +31,7 @@ class TestReservedUsernames(DoajTestCase):
         assert len(test_form.errors) == 0
 
     def test_03_reserved_usernames_using_model_directly(self):
-        assert_raises(validators.ValidationError, models.Account, id=self.reserved_user)
+        self.assertRaises(validators.ValidationError, models.Account, id=self.reserved_user)
 
     def test_04_unreserved_usernames_using_model_directly(self):
         models.Account(id='justauser')  # no error is raised, that is the test
