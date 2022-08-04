@@ -1,5 +1,5 @@
 """
-S.E. 2021-11-18
+A.D. 2022-06-22
 Script for issue 3290 - https://github.com/DOAJ/doajPM/issues/3290
 
 * Read in provided CSV
@@ -35,8 +35,8 @@ if __name__ == '__main__':
                 pissn_csv = row['Journal ISSN (print version)']
                 try:
                     j = Journal.pull(j_id)
-                    jbib = j.bibjson();
-                    pissn = jbib.pissn;
+                    jbib = j.bibjson()
+                    pissn = jbib.pissn
                     if pissn != pissn_csv:
                         row.update({'Journal ID': j_id, 'pISSN': "journal pissn does not match the csv", 'eISSN': 'skipped'})
                     else:

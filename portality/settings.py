@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.1.6"
+DOAJ_VERSION = "6.2.2"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -82,6 +82,18 @@ ELASTIC_APM = {
   # Set custom APM Server URL (default: http://localhost:8200)
   'SERVER_URL': '',
 }
+
+###########################################
+# Event handler
+
+# use this to queue events asynchronously through kafka
+EVENT_SEND_FUNCTION = "portality.events.kafka_producer.send_event"
+# use this one to bypass kafka and process events immediately/synchronously
+# EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
+
+KAFKA_BROKER = "kafka://localhost:9092"
+KAFKA_EVENTS_TOPIC = "events"
+KAFKA_BOOTSTRAP_SERVER = "localhost:9092"
 
 ###########################################
 # Read Only Mode
@@ -400,7 +412,8 @@ HUEY_SCHEDULE = {
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"}
+    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
+    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
 }
 
 HUEY_TASKS = {
@@ -625,6 +638,7 @@ MAPPINGS['news'] = MAPPINGS["account"]    #~~->News:Model~~
 MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
 MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
 MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
+MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
 
 #########################################
 # Query Routes
@@ -1210,6 +1224,7 @@ HARVESTER_ZOMBIE_AGE = 604800
 # ~~->ReCAPTCHA:ExternalService
 
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
+RECAPTCHA_ENABLE = True
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
@@ -1221,6 +1236,23 @@ PRESERVATION_USERNAME = "user_name"
 PRESERVATION_PASSWD = "password"
 PRESERVATION_COLLECTION = {}
 
+
+#########################################################
+# Background tasks --- anon export
+TASKS_ANON_EXPORT_CLEAN = False
+TASKS_ANON_EXPORT_LIMIT = None
+TASKS_ANON_EXPORT_BATCH_SIZE = 100000
+
 ########################################
-# Set todo list size
+# Editorial Dashboard - set to-do list size
 TODO_LIST_SIZE = 48
+
+#######################################################
+# Plausible analytics
+# root url of plausible
+PLAUSIBLE_URL = "https://plausible.io"
+PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/plausible.js"
+PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event/"
+# site name / domain name that used to register in plausible
+PLAUSIBLE_SITE_NAME = BASE_DOMAIN
+PLAUSIBLE_LOG_DIR = None

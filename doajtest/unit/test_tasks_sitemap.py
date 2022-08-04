@@ -2,8 +2,7 @@ from doajtest.helpers import DoajTestCase
 from portality.core import app
 from portality.tasks import sitemap
 from portality.background import BackgroundApi
-import os, shutil, time
-from portality.lib import paths
+import time
 from portality.store import StoreFactory
 
 
@@ -35,5 +34,5 @@ class TestSitemap(DoajTestCase):
         job = sitemap.SitemapBackgroundTask.prepare(user)
         task = sitemap.SitemapBackgroundTask(job)
         BackgroundApi.execute(task)
-        time.sleep(1.5)
+        time.sleep(2)
         assert len(self.mainStore.list(self.container_id)) == 1

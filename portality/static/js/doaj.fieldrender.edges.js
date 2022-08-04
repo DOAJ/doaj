@@ -8,10 +8,10 @@ $.extend(true, doaj, {
                 display: "In DOAJ?",
                 deactivateThreshold: 1,
                 valueMap : {
-                    1 : "True",
-                    0 : "False",
-                    true: "True",
-                    false: "False"
+                    1 : "Yes",
+                    0 : "No",
+                    true: "Yes",
+                    false: "No"
                 },
                 parseSelectedValueString: function(val) {
                     // this is needed because ES7 doesn't understand "1" or `1` to be `true`, so
@@ -36,7 +36,7 @@ $.extend(true, doaj, {
                 id: "application_type",
                 category: "facet",
                 field: "index.application_type.exact",
-                display: "Open or Closed",
+                display: "Open or closed?",
                 deactivateThreshold : 1,
                 orderDir: "asc",
                 valueMap : {
@@ -76,7 +76,7 @@ $.extend(true, doaj, {
                 id: "has_editor_group",
                 category: "facet",
                 field: "index.has_editor_group.exact",
-                display: "Has Editor Group?",
+                display: "Has editor group?",
                 deactivateThreshold : 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
@@ -108,7 +108,7 @@ $.extend(true, doaj, {
                 id: "editor_group",
                 category: "facet",
                 field: "admin.editor_group.exact",
-                display: "Editor Group",
+                display: "Editor group",
                 deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
@@ -172,7 +172,7 @@ $.extend(true, doaj, {
                 id: "language",
                 category: "facet",
                 field: "index.language.exact",
-                display: "Journal Language",
+                display: "Journal language",
                 deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
@@ -236,7 +236,7 @@ $.extend(true, doaj, {
                 id: "journal_license",
                 category: "facet",
                 field: "index.license.exact",
-                display: "Journal License",
+                display: "Journal license",
                 deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
@@ -413,7 +413,7 @@ $.extend(true, doaj, {
                     <p id="share_embed"></p>\
                     <h2 id="result-count"></h2>\
                     <div class="row">\
-                        <div class="col-md-3">\
+                        <div class="col-sm-2 col-md-3">\
                             <aside class="filters">\
                               <h2 class="filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
                                 <span data-feather="sliders" aria-hidden="true"></span> Refine search results \
@@ -424,7 +424,7 @@ $.extend(true, doaj, {
                             </aside>\
                         </div>\
                             \
-                        <div class="col-md-9">\
+                        <div class="col-sm-10 col-md-9">\
                             <aside id="selected-filters"></aside>\
                             <nav>\
                                 <h3 class="sr-only">Display options</h3>\
@@ -898,8 +898,7 @@ $.extend(true, doaj, {
 
                     sortOptions = '<div class="input-group ' + sortClasses + '"> \
                                     <button type="button" class="input-group__input ' + directionClass + '" title="" href="#"></button> \
-                                    <select class="' + sortFieldClass + ' input-group__input"> \
-                                        <option value="_score">Relevance</option>';
+                                    <select class="' + sortFieldClass + ' input-group__input">';
 
                     for (var i = 0; i < comp.sortOptions.length; i++) {
                         var field = comp.sortOptions[i].field;
@@ -907,7 +906,8 @@ $.extend(true, doaj, {
                         sortOptions += '<option value="' + field + '">' + edges.escapeHtml(display) + '</option>';
                     }
 
-                    sortOptions += ' </select></div>';
+                    sortOptions += '<option value="_score">Relevance</option>\
+                      </select></div>';
                 }
 
                 // select box for fields to search on
@@ -961,7 +961,7 @@ $.extend(true, doaj, {
                     clearFrag = '<div class="col-xs-6" style="text-align: right;">' + clearFrag + '</div>';
                 }
 
-                var frag = searchBox + '<div class="row">' + sortOptions + clearFrag + '</div>';
+                var frag = searchBox + '<div class="container-fluid"><div class="row">' + sortOptions + clearFrag + '</div></div>';
 
                 comp.context.html(frag);
 
@@ -1041,13 +1041,14 @@ $.extend(true, doaj, {
             };
 
             this.setUISortField = function () {
+                let sb = this.component.sortBy
                 if (!this.component.sortBy) {
-                    return;
+                    sb = "_score";
                 }
                 // get the selector we need
                 var sortSelector = edges.css_class_selector(this.namespace, "sortby", this);
                 var el = this.component.jq(sortSelector);
-                el.val(this.component.sortBy);
+                el.val(sb);
             };
 
             this.setUISearchField = function () {
@@ -1267,7 +1268,7 @@ $.extend(true, doaj, {
                 var shareButtonFrag = "";
                 var shareButtonClass = edges.css_classes(this.namespace, "toggle-share", this);
                 var modalId = edges.css_id(this.namespace, "modal", this);
-                shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--secondary" role="button">' + this.shareLinkText + '</button>';
+                shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--tertiary" role="button">' + this.shareLinkText + '</button>';
 
                 var shorten = "";
                 if (this.component.urlShortener) {
@@ -1279,7 +1280,7 @@ $.extend(true, doaj, {
                     var embedClass = edges.css_classes(this.namespace, "embed", this);
                     embed = '<p>Embed this search in your site</p>\
                     <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>\
-                    <p><button class="button button--secondary" data-dismiss="modal" class="modal__close">Close</button></p>';
+                    <p><button class="button button--tertiary" data-dismiss="modal" class="modal__close">Close</button></p>';
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
@@ -2909,7 +2910,7 @@ $.extend(true, doaj, {
                         <div class="modal__dialog" role="document">\
                             <h2 class="modal__title">Delete this application</h2>\
                             <p>Are you sure you want to delete your application for <span class="' + deleteTitleClass + '"></span></p> \
-                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--tertiary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
@@ -3098,7 +3099,7 @@ $.extend(true, doaj, {
                         <div class="modal__dialog" role="document">\
                             <h2 class="modal__title">Delete this update request</h2>\
                             <p>Are you sure you want to delete your update request for <span class="' + deleteTitleClass + '"></span></p> \
-                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--tertiary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
@@ -3432,8 +3433,7 @@ $.extend(true, doaj, {
 
                     sortOptions = label + '\
                         ' + direction + ' \
-                        <select name="' + selectName + '" class="form-control input-sm ' + sortFieldClass + '" id="' + selectName + '"> \
-                            <option value="_score">Relevance</option>';
+                        <select name="' + selectName + '" class="form-control input-sm ' + sortFieldClass + '" id="' + selectName + '">';
 
                     for (var i = 0; i < comp.sortOptions.length; i++) {
                         var field = comp.sortOptions[i].field;
@@ -3542,7 +3542,7 @@ $.extend(true, doaj, {
 
     fieldRender: {
         titleField : function (val, resultobj, renderer) {
-            var field = '<h3>';
+            var field = '<div class="flex-space-between"><h3 class="type-01 font-serif">';
             if (resultobj.bibjson.title) {
                 if (resultobj.es_type === "journal") {
                     var display = edges.escapeHtml(resultobj.bibjson.title);
@@ -3553,18 +3553,19 @@ $.extend(true, doaj, {
                 } else {
                     field += edges.escapeHtml(resultobj.bibjson.title);
                 }
+                field += "</h3>";
                 if (resultobj.admin && resultobj.admin.seal) {
-                    field += '<a href="/apply/seal" target="_blank">\
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1em; width: auto;">\
+                    field += '<div><a href="/apply/seal" target="_blank">\
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1rem; width: auto; margin-left: .5em;">\
                               <path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/>\
                               <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/>\
                               <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/>\
                               <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/>\
                               </svg>\
                             <span class="sr-only">DOAJ Seal</span>\
-                          </a>';
+                          </a></div>';
                 }
-                return field + "</h3>"
+                return field + "</div>";
             } else {
                 return false;
             }
@@ -3794,7 +3795,7 @@ $.extend(true, doaj, {
                     result += params.editUrl;
                     result += resultobj['id'];
                     result += '" target="_blank"';
-                    result += '>' + linkName + '</a></p>';
+                    result += ' style="margin-bottom: .75em;">' + linkName + '</a></p>';
                     return result;
                 }
                 return false;
@@ -3821,11 +3822,11 @@ $.extend(true, doaj, {
                     // if it's not a suggestion or an article .. (it's a
                     // journal!)
                     // we really need to expose _type ...
-                    var result = '<p><a class="edit_journal_link button button--secondary" href="';
+                    var result = '<p><a class="edit_journal_link button" href="';
                     result += params.editUrl;
                     result += resultobj['id'];
                     result += '" target="_blank"';
-                    result += '>Edit this journal</a></p>';
+                    result += ' style="margin-bottom: .75em;">Edit this journal</a></p>';
                     return result;
                 }
                 return false;
