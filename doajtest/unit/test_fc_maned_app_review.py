@@ -355,8 +355,6 @@ class TestManEdAppReview(DoajTestCase):
                 count += 10
         assert count == 11
 
-        assert len(fc.alert) == 1
-
         ctx.pop()
 
     def test_07_disallowed_statuses(self):

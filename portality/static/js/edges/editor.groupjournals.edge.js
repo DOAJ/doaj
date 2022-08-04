@@ -95,7 +95,7 @@ $.extend(true, doaj, {
                     id: "journal_license",
                     category: "facet",
                     field: "index.license.exact",
-                    display: "Journal License",
+                    display: "Journal license",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -151,7 +151,7 @@ $.extend(true, doaj, {
                     id: "journal_language",
                     category: "facet",
                     field: "index.language.exact",
-                    display: "Journal Language",
+                    display: "Journal language",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -179,7 +179,7 @@ $.extend(true, doaj, {
                     id: "journal_title",
                     category: "facet",
                     field: "index.title.exact",
-                    display: "Journal Title",
+                    display: "Journal title",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -208,7 +208,7 @@ $.extend(true, doaj, {
                         {'display':'Classification','field':'index.classification'},
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
-                        {'display':'Journal Language','field':'index.language'},
+                        {'display':'Journal language','field':'index.language'},
                         {'display':'Publisher','field':'bibjson.publisher.name'}
                     ],
                     defaultOperator: "AND",
@@ -365,15 +365,15 @@ $.extend(true, doaj, {
                         "admin.in_doaj" : "In DOAJ?",
                         "admin.owner.exact" : "Owner",
                         "index.has_editor.exact" : "Has Associate Editor?",
-                        "admin.editor_group.exact" : "Editor Group",
+                        "admin.editor_group.exact" : "Editor group",
                         "admin.editor.exact" : "Associate Editor",
-                        "index.license.exact" : "Journal License",
+                        "index.license.exact" : "Journal license",
                         "bibjson.publisher.name.exact" : "Publisher",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",
-                        "index.language.exact" : "Journal Language",
+                        "index.language.exact" : "Journal language",
                         "index.country.exact" : "Country of publisher",
-                        "index.title.exact" : "Journal Title",
+                        "index.title.exact" : "Journal title",
                         "index.has_apc.exact" : "Publication charges?"
                     },
                     valueMaps : {
@@ -391,6 +391,9 @@ $.extend(true, doaj, {
                 search_url: search_url,
                 manageUrl: true,
                 components: components,
+                openingQuery: es.newQuery({
+                    sort: [{field: "created_date", order: "desc"}]
+                }),
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
