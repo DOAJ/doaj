@@ -1,5 +1,6 @@
 import csv
 import functools
+import hashlib
 import os
 import shutil
 from datetime import datetime
@@ -104,6 +105,13 @@ def dao_proxy(dao_method, type="class"):
         return proxy_method
 
 
+def create_es_db_prefix(_cls):
+    class_id = hashlib.sha256(_cls.__module__.encode()).hexdigest()[:10]
+    db_prefix = (core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX'] +
+                 f'{_cls.__name__.lower()}_{class_id}-')
+    return db_prefix
+
+
 class DoajTestCase(TestCase):
     app_test = app
     originals = {}
@@ -117,7 +125,7 @@ class DoajTestCase(TestCase):
             "ES_RETRY_HARD_LIMIT": 0,
             "ES_BLOCK_WAIT_OVERRIDE": 0.1,
             "ELASTIC_SEARCH_DB": app.config.get('ELASTIC_SEARCH_TEST_DB'),
-            'ELASTIC_SEARCH_DB_PREFIX': core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX'] + cls.__name__.lower() + '-',
+            'ELASTIC_SEARCH_DB_PREFIX': create_es_db_prefix(cls),
             "FEATURES": app.config['VALID_FEATURES'],
             'ENABLE_EMAIL': False,
             "FAKER_SEED": 1
