@@ -104,9 +104,6 @@ class CrossrefXWalk442(object):
         while app.config["CROSSREF442_SCHEMA"] is None:
             continue
 
-        while app.config["CROSSREF531_SCHEMA"] is None:
-            continue
-
         # ~~->CrossrefXML:Schema~~
         self.schema = app.config["CROSSREF442_SCHEMA"]
 
@@ -167,7 +164,7 @@ class CrossrefXWalk442(object):
         article = models.Article()  # ~~->Article:Model~~
         bibjson = article.bibjson()
 
-        self.extract_title(journal, bibjson)
+        self.extract_journal_title(journal, bibjson)
         self.extract_issns(journal, bibjson)
         self.extract_publication_date(record, journal, bibjson)
         self.extract_volume(journal, bibjson)
@@ -186,8 +183,7 @@ class CrossrefXWalk442(object):
     ## extractors
     ###############################################################################
 
-
-    def extract_title(self, journal, bibjson):
+    def extract_journal_title(self, journal, bibjson):
         jm = journal.find("x:journal_metadata", self.NS)
         if jm is not None:
             jt = _element(jm, "x:full_title", self.NS)
@@ -201,7 +197,7 @@ class CrossrefXWalk442(object):
 
             # if more than 2 issns raise the exception
             if len(issns) > 2:
-                raise CrosswalkException(message=Messages.EXCEPTION_TOO_MANY_ISSself.NS)
+                raise CrosswalkException(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
             if len(issns) == 1:
                 if len(issns[0].attrib) == 0 or issns[0].attrib["media_type"] == 'electronic':
                     bibjson.add_identifier(bibjson.E_ISSN, issns[0].text.upper())
@@ -345,6 +341,10 @@ class CrossrefXWalk531(CrossrefXWalk442):
 
     def __init__(self):
         super(CrossrefXWalk531,self).__init__()
+
+        while app.config["CROSSREF531_SCHEMA"] is None:
+            continue
+
         self.schema = app.config["CROSSREF531_SCHEMA"]
 
     def extract_authors(self, record, journal, bibjson):

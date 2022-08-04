@@ -1,10 +1,10 @@
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
-from doajtest.fixtures.article_crossref import Crossref442ArticleFixtureFactory
+from doajtest.fixtures.article_crossref import Crossref442ArticleFixtureFactory, Crossref531ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase, diff_dicts
 from portality.crosswalks.article_doaj_xml import DOAJXWalk
-from portality.crosswalks.article_crossref_xml import CrossrefXWalk442
+from portality.crosswalks.article_crossref_xml import CrossrefXWalk442, CrossrefXWalk531
 
 from portality import models
 from werkzeug.datastructures import MultiDict
@@ -106,7 +106,7 @@ class TestCrosswalks(DoajTestCase):
         assert bibjson.author == [{'name': 'Papillon, Joëlle'}], "expected [{{'name': 'Papillon, Joëlle'}}]', received: {}".format(bibjson.author)
         assert bibjson.get_single_url("fulltext") == "http://doaj.org/testing/url.pdf", "expected 'http://doaj.org/testing/url.pdf', received: {}".format(bibjson.get_single_url("fulltext"))
 
-    def test_06_crossref_article_xml_xwalk(self):
+    def test_06_crossref442_article_xml_xwalk(self):
         handle = Crossref442ArticleFixtureFactory.upload_2_issns_correct()
         xwalk = CrossrefXWalk442()
         art = xwalk.crosswalk_file(file_handle=handle, add_journal_info=False)
@@ -120,3 +120,21 @@ class TestCrosswalks(DoajTestCase):
         assert bibjson.title == "Article 12292005 9:32", "expected 'Article 12292005 9:32', received: {}".format(bibjson.title)
         assert bibjson.author == [{'name': 'Bob Surname', 'orcid_id': 'http://orcid.org/0000-0002-4011-3590'}], "expected [{{'name': 'Bob Surname', 'orcid_id': 'http://orcid.org/0000-0002-4011-3590'}}]', received: {}".format(bibjson.author)
         assert bibjson.get_single_url("fulltext") == "http://www.crossref.org/", "expected 'http://www.crossref.org/', received: {}".format(bibjson.get_single_url("fulltext"))
+
+    def test_07_crossref531_article_xml_xwalk(self):
+        handle = Crossref531ArticleFixtureFactory.upload_1_issn_correct()
+        xwalk = CrossrefXWalk531()
+        art = xwalk.crosswalk_file(file_handle=handle, add_journal_info=False)
+        article = models.Article(**art[0])
+        bibjson = article.bibjson()
+
+        assert bibjson.journal_title == "PISSN Correct", "expected '2 ISSNs Correct', received: {}".format(bibjson.journal_title)
+        assert bibjson.get_one_identifier(bibjson.P_ISSN) == "1234-5678", "expected '1234-5678', received: {}".format(bibjson.get_one_identifier(bibjson.P_ISSN))
+        # assert bibjson.get_one_identifier(bibjson.E_ISSN) == "9876-5432", "expected '9876-5432', received: {}".format(bibjson.get_one_identifier(bibjson.E_ISSN))
+        assert bibjson.year == "2021", "expected '2021', received: {}".format(bibjson.year)
+        assert bibjson.title == "This is a journal article title", "expected 'This is a journal article title', received: {}".format(bibjson.title)
+        assert bibjson.author == [
+            {'affiliation': 'Cottage Labs University', 'name': 'Minerva Housecat', 'orcid_id': 'https://orcid.org/0000-0002-4011-3590'},
+            {'name': 'Josiah Carberry', 'orcid_id': 'https://orcid.org/0000-0002-1825-0097'}
+        ], "expected [{{'affiliation': 'Cottage Labs University', 'name': 'Minerva Housecat', 'orcid_id': 'https://orcid.org/0000-0002-4011-3590'}},{{'name': 'Josiah Carberry', 'orcid_id': 'https://orcid.org/0000-0002-1825-0097'}}]', received: {}".format(bibjson.author)
+        assert bibjson.get_single_url("fulltext") == "https://www.crossref.org/xml-samples", "expected 'https://www.crossref.org/xml-samples', received: {}".format(bibjson.get_single_url("fulltext"))

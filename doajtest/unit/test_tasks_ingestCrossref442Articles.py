@@ -29,7 +29,7 @@ from portality.ui.messages import Messages
 
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "crossref_article_uploads.xml")
+ARTICLES = os.path.join(RESOURCES, "crossref442_article_uploads.xml")
 
 class TestIngestArticlesCrossref442XML(DoajTestCase):
 
