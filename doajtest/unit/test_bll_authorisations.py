@@ -7,6 +7,7 @@ from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, Appl
 from doajtest.helpers import DoajTestCase, load_from_matrix
 from portality.bll import DOAJ
 from portality.bll import exceptions
+from portality.constants import ROLE_ASSOCIATE_EDITOR
 from portality.models import Journal, Account, Suggestion
 
 EXCEPTIONS = {
@@ -55,6 +56,10 @@ def create_edit_cases():
     non_editable_application = Suggestion(**deepcopy(application_source))
     non_editable_application.set_application_status(constants.APPLICATION_STATUS_READY)
 
+    editable_application_2 = Suggestion(**deepcopy(application_source))
+    editable_application_2.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
+
+
     owner_account = Account(**deepcopy(account_source))
     owner_account.set_id(editable_application.owner)
 
@@ -67,6 +72,12 @@ def create_edit_cases():
     admin = Account(**deepcopy(account_source))
     admin.add_role("admin")
 
+    aseditor_pub = Account(**deepcopy(account_source))
+    aseditor_pub.set_id("somethingrandom2")
+    aseditor_pub.add_role(ROLE_ASSOCIATE_EDITOR)
+
+    editable_application_2.set_editor(aseditor_pub.id)
+
     return [
         param("no_app_no_account", None, None, raises=exceptions.ArgumentException),
         param("no_app_with_account", None, owner_account, raises=exceptions.ArgumentException),
@@ -75,6 +86,7 @@ def create_edit_cases():
         param("editable_app_nonowning_account", editable_application, non_owner_publisher, raises=exceptions.AuthoriseException),
         param("editable_app_non_publisher_account", editable_application, non_publisher, raises=exceptions.AuthoriseException),
         param("editable_app_admin_account", editable_application, admin, expected=True),
+        param("editable_app_2_aseditor_pub_account", editable_application_2, aseditor_pub, expected=True),
         param("non_editable_app_owning_account", non_editable_application, owner_account, raises=exceptions.AuthoriseException),
         param("non_editable_app_nonowning_account", non_editable_application, non_owner_publisher, raises=exceptions.AuthoriseException),
         param("non_editable_app_non_publisher_account", non_editable_application, non_publisher, raises=exceptions.AuthoriseException),
