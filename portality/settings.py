@@ -815,7 +815,7 @@ QUERY_ROUTE = {
         "notifications" : {
             "auth" : False,
             "role" : "read_notifications",
-            "query_filters" : ["who_current_user"],
+            "query_filters" : ["who_current_user"], # ~~-> WhoCurrentUser:Query
             "dao" : "portality.models.Notification", # ~~->Notification:Model~~
             "required_parameters" : None
         }

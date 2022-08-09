@@ -1,3 +1,4 @@
+# ~~ApplicationPublisherQuickRejectNotify:Consumer~~
 from portality.util import url_for
 from datetime import datetime
 
@@ -34,6 +35,7 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
         if not application.owner:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()

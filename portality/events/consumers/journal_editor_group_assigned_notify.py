@@ -1,3 +1,4 @@
+# ~~JournalEditorGroupAssignedNotify:Consumer~~
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -32,6 +33,7 @@ class JournalEditorGroupAssignedNotify(EventConsumer):
         if not editor_group.editor:
             raise exceptions.NoSuchPropertyException("Editor Group {x} does not have property `editor`".format(x=editor_group.id))
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()

@@ -23,6 +23,7 @@ class NotificationsService(object):
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
         subject = app.config.get("SERVICE_NAME", "") + " - " + notification.short
 
+        # ~~-> Email:Library ~~
         app_email.send_markdown_mail(to=to,
                             fro=fro,
                             subject=subject,
@@ -36,9 +37,11 @@ class NotificationsService(object):
         return notification
 
     def long_notification(self, message_id):
+        # ~~-> Notifications:Data ~~
         return app.jinja_env.globals["data"]["notifications"].get(message_id, {}).get("long")
 
     def short_notification(self, message_id):
+        # ~~-> Notifications:Data ~~
         return app.jinja_env.globals["data"]["notifications"].get(message_id, {}).get("short", Messages.NOTIFY__DEFAULT_SHORT_NOTIFICATION)
 
     def top_notifications(self, account: models.Account, size: int = 10):
@@ -59,6 +62,8 @@ class NotificationsService(object):
 
 
 class TopNotificationsQuery(object):
+    # ~~->$ TopNotifications:Query ~~
+    # ~~^-> Elasticsearch:Technology ~~
     def __init__(self, account_id, size=10):
         self.account_id = account_id
         self.size = size

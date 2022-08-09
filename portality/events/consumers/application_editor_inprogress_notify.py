@@ -1,3 +1,4 @@
+# ~~ApplicationEditorInProgressNotify:Consumer~~
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -42,6 +43,7 @@ class ApplicationEditorInProgressNotify(EventConsumer):
         if not group_editor:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()

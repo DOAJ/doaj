@@ -1,5 +1,6 @@
 {% extends "layouts/base.html" %}
 
+{# ~~Dashboard:Template~~ #}
 {% block base_content %}
     <body class="dashboard {% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}" data-spy="scroll" data-offset="70">
 
@@ -16,6 +17,7 @@
           {% include "includes/svg/doaj-icon.svg" %}
         </a>
         <ul class="unstyled-list flex-center">
+            {# ~~->Notifications:Feature~~ #}
           <li class="dropdown flex-center">
             <span class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
               <span><span data-feather="bell" aria-hidden="true"></span> Notifications <span class="js-notifications-count"></span></span>

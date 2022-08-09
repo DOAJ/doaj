@@ -64,4 +64,5 @@ def notification_seen(notification_id):
 @login_required
 @ssl_required
 def notifications():
+    # ~~-> Notifications:Page~~
     return render_template("dashboard/notifications.html")

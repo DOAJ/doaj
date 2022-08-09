@@ -1,3 +1,7 @@
+// ~~Notifications:Edge->Edges:Technology~~
+// ~~-> Notifications:Model ~~
+// ~~-> Elasticsearch:Technology ~~
+// ~~-> Notifications:Feature ~~
 $.extend(true, doaj, {
 
     notificationsSearch: {
@@ -69,53 +73,6 @@ $.extend(true, doaj, {
                     category: "results",
                     renderer: doaj.notificationsSearch.newNotificationResultRenderer()
                 }),
-
-                // results display
-                // edges.newResultsDisplay({
-                //     id: "results",
-                //     category: "results",
-                //     renderer: edges.bs3.newResultsFieldsByRowRenderer({
-                //         rowDisplay: [
-                //             [
-                //                 {
-                //                     "field": "created_date"
-                //                 },
-                //                 {
-                //                     "pre": " (<strong>Action opened on ",
-                //                     "field": "seen_date",
-                //                     "post": "</strong>)"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre": "<p>",
-                //                     "field": "message"
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "pre" : '<a class="notification_action_button" data-notification-id="',
-                //                     "field": "id",
-                //                     "post": '"'
-                //                 },
-                //                 {
-                //                     "pre": 'href="',
-                //                     "field": "action",
-                //                     "post": '">See action</a></p>'
-                //                 }
-                //             ],
-                //             [
-                //                 {
-                //                     "field": "created_by"
-                //                 },
-                //                 {
-                //                     "pre": " - ",
-                //                     "field": "classification"
-                //                 }
-                //             ]
-                //         ]
-                //     })
-                // }),
 
                 // selected filters display, with all the fields given their display names
                 edges.newSelectedFilters({

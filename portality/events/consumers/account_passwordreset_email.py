@@ -1,3 +1,4 @@
+# ~~ AccountPasswordResetEmail:Consumer ~~
 from portality.util import url_for
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -23,12 +24,14 @@ class AccountPasswordResetEmail(EventConsumer):
 
     @classmethod
     def _send_password_reset_email(cls, account: models.Account):
+        # ~~-> AccountPasswordReset:Email~~
         reset_url = app.config.get('BASE_URL', "https://doaj.org") + url_for('account.reset', reset_token=account.reset_token)
 
         to = [account.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', app.config['ADMIN_EMAIL'])
         subject = app.config.get("SERVICE_NAME", "") + " - password reset"
 
+        # ~~-> Email:Library ~~
         app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,

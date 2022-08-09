@@ -1,5 +1,5 @@
+# ~~ApplicationPublisherCreatedNotify~~
 from portality.util import url_for
-
 from portality.lib import dates
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -30,6 +30,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
         if not application.owner:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()

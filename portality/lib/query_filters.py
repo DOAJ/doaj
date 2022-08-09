@@ -140,6 +140,7 @@ def last_update_fallback(q):
     return q
 
 
+# ~~WhoCurrentUser:Query~~
 def who_current_user(q):
     q.clear_match_all()
     q.add_must_filter({"term": {"who.exact": current_user.id}})

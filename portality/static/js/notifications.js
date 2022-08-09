@@ -1,3 +1,5 @@
+// ~~ Notifications:Feature~~
+// ~~-> Notifications:Model~~
 doaj.notifications = {};
 doaj.notifications.top_url = "/dashboard/top_notifications";
 doaj.notifications.seen_url = "/dashboard/notifications/{notification_id}/seen"

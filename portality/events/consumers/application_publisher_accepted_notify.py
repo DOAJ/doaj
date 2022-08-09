@@ -1,5 +1,5 @@
+# ~~ApplicationPublisherAcceptedNotify:Consumer~~
 from portality.util import url_for
-
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
@@ -53,6 +53,7 @@ class ApplicationPublisherAcceptedNotify(EventConsumer):
         if not application.owner:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
