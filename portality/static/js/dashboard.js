@@ -159,6 +159,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
             <li><span class="progress-bar__bar--pending label label--secondary" style="padding: .5em;">Pending</span></li>
             <li><span class="progress-bar__bar--in-progress label label--secondary" style="padding: .5em;">In progress</span></li>
             <li><span class="progress-bar__bar--completed label label--secondary" style="padding: .5em;">Completed</span></li>
+            <li><span class="progress-bar__bar--on-hold label label--secondary" style="padding: .5em;">On hold</span></li>
             <li><span class="progress-bar__bar--ready label" style="padding: .5em; color: #FFF;">Ready</span></li>
           </ul>
           <ul class="inlined-list progress-bar">
