@@ -1,3 +1,6 @@
+import tempfile
+from pathlib import Path
+
 from flask_login import login_user
 
 from unittest import TestCase
@@ -33,6 +36,7 @@ def with_es(_func=None, *, indices=None, warm_mappings=None):
         return with_es_decorator
     else:
         return with_es_decorator(_func)
+
 
 class WithES:
 
@@ -108,8 +112,11 @@ class DoajTestCase(TestCase):
     def setUpClass(cls) -> None:
         cls.originals = patch_config(app, {
             "STORE_IMPL": "portality.store.StoreLocal",
-            "STORE_LOCAL": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
+            "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
             "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp", cls.__name__.lower()),
+            "STORE_CACHE_CONTAINER": "doaj-data-cache-placeholder" + '-' + cls.__name__.lower(),
+            "STORE_ANON_DATA_CONTAINER": "doaj-anon-data-placeholder" + '-' + cls.__name__.lower(),
+            "STORE_PUBLIC_DATA_DUMP_CONTAINER": "doaj-data-dump-placeholder" + '-' + cls.__name__.lower(),
             "ES_RETRY_HARD_LIMIT": 0,
             "ES_BLOCK_WAIT_OVERRIDE": 0.1,
             "ELASTIC_SEARCH_DB": app.config.get('ELASTIC_SEARCH_TEST_DB'),
@@ -117,7 +124,8 @@ class DoajTestCase(TestCase):
             "FEATURES": app.config['VALID_FEATURES'],
             'ENABLE_EMAIL': False,
             "FAKER_SEED": 1,
-            "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event"
+            "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
+            'CMS_BUILD_ASSETS_ON_STARTUP': False
         })
 
         main_queue.always_eager = True
@@ -137,7 +145,6 @@ class DoajTestCase(TestCase):
 
         # if a test on a previous run has totally failed and tearDownClass has not run, then make sure the index is gone first
         dao.DomainObject.destroy_index()
-        # time.sleep(1) # I don't know why we slept here, but not in tearDown, so I have removed it
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -246,3 +253,42 @@ def deep_sort(obj):
         _sorted = obj
 
     return _sorted
+
+
+def patch_history_dir(dir_key):
+    def _wrapper(fn):
+
+        @functools.wraps(fn)
+        def new_fn(*args, **kwargs):
+            # define hist_class
+            if dir_key == 'ARTICLE_HISTORY_DIR':
+                from portality.models import ArticleHistory
+                hist_class = ArticleHistory
+            elif dir_key == 'JOURNAL_HISTORY_DIR':
+                from portality.models import JournalHistory
+                hist_class = JournalHistory
+            else:
+                raise ValueError(f'unknown dir_key [{dir_key}]')
+
+            # setup new path
+            org_config_val = DoajTestCase.app_test.config[dir_key]
+            org_hist_dir = hist_class.SAVE_BASE_DIRECTORY
+            _new_path = Path(tempfile.NamedTemporaryFile().name)
+            _new_path.mkdir(parents=True, exist_ok=True)
+            hist_class.SAVE_BASE_DIRECTORY = _new_path.as_posix()
+            DoajTestCase.app_test.config[dir_key] = _new_path.as_posix()
+
+            # run fn
+            result = fn(*args, **kwargs)
+
+            # reset / cleanup
+            shutil.rmtree(_new_path)
+            hist_class.SAVE_BASE_DIRECTORY = org_hist_dir
+            DoajTestCase.app_test.config[dir_key] = org_config_val
+
+            return result
+
+        return new_fn
+
+    return _wrapper
+

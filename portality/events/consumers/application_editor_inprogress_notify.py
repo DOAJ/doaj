@@ -1,4 +1,5 @@
-from portality.lib.flask import url_for
+from portality.util import url_for
+
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models

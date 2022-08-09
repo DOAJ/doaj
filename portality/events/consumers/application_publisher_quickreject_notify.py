@@ -1,11 +1,11 @@
-# from flask import url_for
-from portality.lib.flask import url_for
+from portality.util import url_for
 from datetime import datetime
 
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
 from portality.bll import DOAJ, exceptions
+from portality.core import app
 
 
 class ApplicationPublisherQuickRejectNotify(EventConsumer):
@@ -46,7 +46,7 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
             title=application.bibjson().title,
             date_applied=date_applied,
             note=note,
-            doaj_guide_url=url_for("doaj.guide", _external=True)
+            doaj_guide_url=app.config.get('BASE_URL', "https://doaj.org") + url_for("doaj.guide")
         )
         notification.short = svc.short_notification(cls.ID)
 

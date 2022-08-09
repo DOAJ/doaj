@@ -1,5 +1,4 @@
-# from flask import url_for
-from portality.lib.flask import url_for
+from portality.util import url_for
 
 from portality.lib import dates
 from portality.events.consumer import EventConsumer
@@ -28,7 +27,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
             raise exceptions.NoSuchObjectException("Could not create application object")
         if application is None:
             raise exceptions.NoSuchObjectException("Could not create application object")
-        if not application.editor:
+        if not application.owner:
             return
 
         svc = DOAJ.notificationsService()

@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-    <main class="container">
+    <main class="container page-content">
         <div class="row">
             <div class="col-md-4 col-md-push-8">
                 {# todo: this nav was bumping into swagger
@@ -47,7 +47,7 @@
             </div>
 
             <div class="col-md-8 col-md-pull-4">
-                <section class="page-content">
+                <section>
                     <p class="label">Docs</p>
                     <h1>API </h1>
                     {% include "api/current/swagger_description.html" %}

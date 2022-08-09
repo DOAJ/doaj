@@ -260,7 +260,7 @@ class NewApplication(ApplicationProcessor):
 
             # trigger an application created event
             eventsSvc = DOAJ.eventsService()
-            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_CREATED, current_user.id, {
+            eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_CREATED, account.id, {
                 "application": self.target.data
             }))
 
@@ -385,9 +385,6 @@ class AdminApplication(ApplicationProcessor):
 
         # if the application was instead rejected, carry out the rejection actions
         elif self.source.application_status != constants.APPLICATION_STATUS_REJECTED and self.target.application_status == constants.APPLICATION_STATUS_REJECTED:
-            # remember whether this was an update request or not
-            is_update_request = self.target.current_journal is not None
-
             # reject the application
             applicationService.reject_application(self.target, current_user._get_current_object())
 
@@ -545,7 +542,7 @@ class EditorApplication(ApplicationProcessor):
         eventsSvc = DOAJ.eventsService()
         if self.source.application_status != self.target.application_status:
             eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, current_user.id, {
-                "application": self.target.id,
+                "application": self.target.data,
                 "old_status": self.source.application_status,
                 "new_status": self.target.application_status
             }))

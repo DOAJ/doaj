@@ -1,19 +1,21 @@
 from flask_login import login_user
 
 from portality.core import app
-from portality import models, app_email
-from portality.dao import Facetview2
+from portality import models
 from portality.bll import DOAJ
 from portality import constants
 
 import traceback
+from copy import deepcopy
 
 
 class BackgroundException(Exception):
     pass
 
+
 class RetryException(Exception):
     pass
+
 
 class BackgroundSummary(object):
     def __init__(self, job_id, affected=None, error=None):
@@ -27,6 +29,7 @@ class BackgroundSummary(object):
             "affected" : self.affected,
             "error" : self.error
         }
+
 
 class BackgroundApi(object):
     """
@@ -82,7 +85,7 @@ class BackgroundApi(object):
         job.save()
 
         # trigger a status change event
-        jdata = job.data
+        jdata = deepcopy(job.data)
         del jdata["audit"]
         eventsSvc = DOAJ.eventsService()
         eventsSvc.trigger(models.Event(constants.BACKGROUND_JOB_FINISHED, job.user, {
@@ -91,6 +94,7 @@ class BackgroundApi(object):
 
         if ctx is not None:
             ctx.pop()
+
 
 class BackgroundTask(object):
     """

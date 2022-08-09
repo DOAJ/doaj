@@ -1,15 +1,16 @@
 import json
 import time
 
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, \
+    BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory
+from doajtest.helpers import DoajTestCase, patch_history_dir
 from portality import constants
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory, AccountFixtureFactory
-from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.lib import dataobj
-from portality.models import shared_structs
 from portality.lib import seamless
-
+from portality.models import shared_structs
 from portality.models.v1.bibjson import GenericBibJSON
+
 
 class TestModels(DoajTestCase):
 
@@ -379,6 +380,7 @@ class TestModels(DoajTestCase):
         s = models.Suggestion.pull(s.id)
         assert s.owner == "another_new_owner"
 
+    @patch_history_dir("ARTICLE_HISTORY_DIR")
     def test_06_article_deletes(self):
         # populate the index with some articles
         for i in range(5):
@@ -419,6 +421,8 @@ class TestModels(DoajTestCase):
         assert len(models.Article.all()) == 2
         assert len(self.list_today_article_history_files()) == 3
 
+    @patch_history_dir("ARTICLE_HISTORY_DIR")
+    @patch_history_dir('JOURNAL_HISTORY_DIR')
     def test_07_journal_deletes(self):
         # tests the various methods that are key to journal deletes
 
@@ -475,6 +479,7 @@ class TestModels(DoajTestCase):
         assert len(models.Journal.all()) == 4
         assert len(self.list_today_journal_history_files()) == 6    # Because all journals are snapshot at create time
 
+    @patch_history_dir('JOURNAL_HISTORY_DIR')
     def test_08_iterate(self):
         for jsrc in JournalFixtureFactory.make_many_journal_sources(count=99, in_doaj=True):
             j = models.Journal(**jsrc)

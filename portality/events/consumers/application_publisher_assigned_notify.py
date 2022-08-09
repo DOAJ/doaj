@@ -1,5 +1,4 @@
-# from flask import url_for
-from portality.lib.flask import url_for
+from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -62,7 +61,7 @@ class ApplicationPublisherAssignedNotify(EventConsumer):
         notification.long = svc.long_notification(cls.ID).format(
             application_title=application.bibjson().title,
             application_date=dates.human_date(application.date_applied),
-            volunteers_url=url_for("doaj.volunteers", _external=True),
+            volunteers_url=app.config.get('BASE_URL', "https://doaj.org") + url_for("doaj.volunteers"),
         )
         notification.short = svc.short_notification(cls.ID)
         # note that there is no action url
