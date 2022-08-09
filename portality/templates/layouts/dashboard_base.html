@@ -88,7 +88,7 @@
                     {% set app_source = search_query_source(term=[
                             {"admin.editor_group.exact" : eg.name},
                             {"index.application_type.exact" : "new application"}
-                        ], sort=[{"admin.date_applied": {"order": "desc"}}]
+                        ], sort=[{"admin.date_applied": {"order": "asc"}}]
                     ) %}
                     <a href="{{ url_for('admin.suggestions') }}?source={{ app_source }}" title="See all applications" class="tag tag--tertiary label"><span data-feather="users" aria-hidden="true"></span> <strong>{{ eg.name }}</strong></a>
                   </li>
