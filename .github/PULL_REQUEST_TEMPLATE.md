@@ -25,6 +25,7 @@ This PR...
 - [ ] No magic strings/numbers - all strings are in `constants` or `messages` files
 - [ ] Where possible our common library functions have been used (e.g. dates manipulated via `dates`)
 - [ ] If needed, migration has been created and tested locally
+- [ ] Have you done a recent merge up from `develop`
 - [ ] Release sheet has been created, and completed as far as is possible https://docs.google.com/spreadsheets/d/1Bqx23J1MwXzjrmAygbqlU3YHxN1Wf7zkkRv14eTVLZQ/edit
 - [ ] Documentation updates - if needed - have been identified and prepared for inclusion into main documentation (e.g. added and highlighted/commented as appropriate to this PR)
     - [ ] Core model documentation: https://docs.google.com/spreadsheets/d/1lun2S9vwGbyfy3WjIjgXBm05D-3wWDZ4bp8xiIYfImM/edit
