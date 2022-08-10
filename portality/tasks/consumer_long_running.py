@@ -15,3 +15,4 @@ from portality.tasks.prune_es_backups import scheduled_prune_es_backups, prune_e
 from portality.tasks.public_data_dump import scheduled_public_data_dump, public_data_dump  # noqa
 from portality.tasks.harvester import scheduled_harvest  # noqa
 from portality.tasks.anon_export import scheduled_anon_export, anon_export  # noqa
+from portality.tasks.old_data_cleanup import scheduled_old_data_cleanup, execute_old_data_cleanup  # noqa

@@ -414,6 +414,7 @@ HUEY_SCHEDULE = {
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
+    "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
 }
 
 HUEY_TASKS = {
@@ -1242,6 +1243,11 @@ PRESERVATION_COLLECTION = {}
 TASKS_ANON_EXPORT_CLEAN = False
 TASKS_ANON_EXPORT_LIMIT = None
 TASKS_ANON_EXPORT_BATCH_SIZE = 100000
+
+#########################################################
+# Background tasks --- old_data_cleanup
+TASKS_NOTIFICATION_RETENTION_DAYS = 180
+TASKS_BGJOB_RETENTION_DAYS = 180
 
 ########################################
 # Editorial Dashboard - set to-do list size
