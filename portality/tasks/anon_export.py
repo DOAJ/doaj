@@ -136,7 +136,8 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
             transform = anonymisation_procedures[type_]
 
         # Use the model's dump method to write out this type to file
-        out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn, tmpStore=tmpStore, mainStore=mainStore, container=container)
+        out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn, tmpStore=tmpStore,
+                                            mainStore=mainStore, container=container)
         _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
                        out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], scroll_keepalive='3m')
 
@@ -145,20 +146,12 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
     tmpStore.delete_container(container)
 
 
-def get_value_safe(key, default_v, kwargs, default_cond_fn=None):
-    v = kwargs.get(key, default_v)
-    default_cond_fn = default_cond_fn or (lambda _v: _v is None)
-    if default_cond_fn(v):
-        v = default_v
-    return v
-
-
 class AnonExportBackgroundTask(BackgroundTask):
     __action__ = "anon_export"
 
     def run(self):
-        kwargs = {k: self.get_param(self.background_job.params, k)
-                  for k in ['clean', 'limit', 'batch_size']}
+        kwargs = self.create_raw_param_dict(self.background_job.params,
+                                            ['clean', 'limit', 'batch_size'])
         kwargs['logger_fn'] = self.background_job.add_audit_message
 
         tmpStore = StoreFactory.tmp()
@@ -174,9 +167,9 @@ class AnonExportBackgroundTask(BackgroundTask):
     @classmethod
     def prepare(cls, username, **kwargs):
         params = {}
-        cls.set_param(params, 'clean', get_value_safe('clean', False, kwargs))
+        cls.set_param(params, 'clean', background_helper.get_value_safe('clean', False, kwargs))
         cls.set_param(params, "limit", kwargs.get('limit'))
-        cls.set_param(params, "batch_size", get_value_safe('batch_size', 100000, kwargs))
+        cls.set_param(params, "batch_size", background_helper.get_value_safe('batch_size', 100000, kwargs))
         return background_helper.create_job(username=username,
                                             action=cls.__action__,
                                             params=params)
