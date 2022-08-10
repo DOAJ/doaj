@@ -7,8 +7,7 @@ from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, Appl
 from doajtest.helpers import DoajTestCase, load_from_matrix
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.constants import ROLE_ASSOCIATE_EDITOR
-from portality.models import Journal, Account, Suggestion
+from portality.models import Journal, Account, Suggestion, Application
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,
@@ -50,13 +49,13 @@ def create_edit_cases():
     application_source = ApplicationFixtureFactory.make_application_source()
     account_source = AccountFixtureFactory.make_publisher_source()
 
-    editable_application = Suggestion(**deepcopy(application_source))
+    editable_application = Application(**deepcopy(application_source))
     editable_application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
-    non_editable_application = Suggestion(**deepcopy(application_source))
+    non_editable_application = Application(**deepcopy(application_source))
     non_editable_application.set_application_status(constants.APPLICATION_STATUS_READY)
 
-    editable_application_2 = Suggestion(**deepcopy(application_source))
+    editable_application_2 = Application(**deepcopy(application_source))
     editable_application_2.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
 
@@ -74,7 +73,7 @@ def create_edit_cases():
 
     aseditor_pub = Account(**deepcopy(account_source))
     aseditor_pub.set_id("somethingrandom2")
-    aseditor_pub.add_role(ROLE_ASSOCIATE_EDITOR)
+    aseditor_pub.add_role(constants.ROLE_ASSOCIATE_EDITOR)
 
     editable_application_2.set_editor(aseditor_pub.id)
 
