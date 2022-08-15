@@ -1,6 +1,6 @@
 """ The cache contains file metadata for the sitemap, journal csv, and the public data dump. It also holds site stats
  for the front page """
-
+from portality.bll.services.audit import AuditBuilder
 from portality.dao import DomainObject
 from datetime import datetime
 from portality.core import app
@@ -38,16 +38,20 @@ class Cache(DomainObject):
     @classmethod
     def cache_site_statistics(cls, stats):
         cobj = cls(**stats)
+        # audit_builder = AuditBuilder('cache.cache_site_statistics', target_obj=cobj) # TOBEREMOVE should cahce with audit??
         cobj.set_id("site_statistics")
         cobj.save()
+        # audit_builder.save()
 
     @classmethod
     def cache_csv(cls, url):
         cobj = cls(**{
             "url": url
         })
+        # audit_builder = AuditBuilder('cache.cache_csv', target_obj=cobj)
         cobj.set_id("csv")
         cobj.save()
+        # audit_builder.save()
 
     @classmethod
     def get_latest_csv(cls):
@@ -58,8 +62,10 @@ class Cache(DomainObject):
         cobj = cls(**{
             "filename" : url
         })
+        # audit_builder = AuditBuilder('cache.sitemap', target_obj=cobj)
         cobj.set_id("sitemap")
         cobj.save()
+        # audit_builder.save()
 
     @classmethod
     def get_latest_sitemap(cls):
@@ -74,8 +80,10 @@ class Cache(DomainObject):
             "article": { "url" : article_url, "size" : article_size },
             "journal": { "url" : journal_url, "size" : journal_size }
         })
+        # audit_builder = AuditBuilder('cache.cache_public_data_dump', target_obj=cobj)
         cobj.set_id("public_data_dump")
         cobj.save()
+        # audit_builder.save()
 
     @classmethod
     def get_public_data_dump(cls):

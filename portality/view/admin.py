@@ -12,6 +12,7 @@ from portality import lock
 from portality.background import BackgroundSummary
 from portality.bll import DOAJ, exceptions
 from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.decorators import ssl_required, restrict_to_role, write_required
@@ -535,27 +536,34 @@ def editor_group(group_id=None):
             else:
                 eg = models.EditorGroup()
 
-            associates = form.associates.data
+                associates = form.associates.data
             if associates is not None:
                 associates = [a.strip() for a in associates.split(",") if a.strip() != ""]
 
             # prep the user accounts with the correct role(s)
             ed = models.Account.pull(form.editor.data)
+            audit_builder = AuditBuilder('update account -- add role', target_obj=ed).fill_who_by_account(current_user)
             ed.add_role("editor")
             ed.save()
+            audit_builder.save()
             if associates is not None:
                 for a in associates:
                     ae = models.Account.pull(a)
                     if ae is not None:                                     # If the account has been deleted, pull fails
+                        audit_builder = AuditBuilder('update account -- add role', target_obj=ae).fill_who_by_account(
+                            current_user)
                         ae.add_role("associate_editor")
                         ae.save()
+                        audit_builder.save()
 
+            eg_audit_builder = AuditBuilder('update editor_groups', target_obj=eg).fill_who_by_account(current_user)
             eg.set_name(form.name.data)
             eg.set_maned(form.maned.data)
             eg.set_editor(form.editor.data)
             if associates is not None:
                 eg.set_associates(associates)
             eg.save()
+            eg_audit_builder.save()
 
             flash("Group was updated - changes may not be reflected below immediately.  Reload the page to see the update.", "success")
             return redirect(url_for('admin.editor_group_search'))

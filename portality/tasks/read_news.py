@@ -1,6 +1,7 @@
 import feedparser
 
 from portality import models
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 
 from portality.tasks.redis_huey import main_queue, schedule
@@ -54,6 +55,7 @@ class ReadNewsBackgroundTask(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save()
         read_news.schedule(args=(background_job.id,), delay=10)
         # fixme: schedule() could raise a huey.exceptions.HueyException and not reach redis- would that be logged?
@@ -83,6 +85,7 @@ def save_entry(entry):
         news = existing[0]
     else:
         news = models.News()
+    audit_builder = AuditBuilder('save or update News', target_obj=news)
 
     alts = [l.get("href") for l in entry.links if l.get("rel") == "alternate"]
     if len(alts) == 0:
@@ -96,6 +99,7 @@ def save_entry(entry):
     news.published = entry.published
 
     news.save()
+    audit_builder.save()
 
 
 @main_queue.periodic_task(schedule("read_news"))

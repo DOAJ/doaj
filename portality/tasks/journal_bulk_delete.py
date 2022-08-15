@@ -6,6 +6,7 @@ from flask_login import current_user
 
 from portality import models, lock
 from portality.bll import DOAJ
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 
 from portality.tasks.redis_huey import main_queue
@@ -152,6 +153,7 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save(blocking=True)
         journal_bulk_delete.schedule(args=(background_job.id,), delay=10)
 

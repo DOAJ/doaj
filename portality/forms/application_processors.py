@@ -1,20 +1,19 @@
 import uuid
 from datetime import datetime
 
-import portality.notifications.application_emails as emails
-from portality.core import app
+from flask import url_for, has_request_context
+from flask_login import current_user
+from wtforms import FormField, FieldList
+
 from portality import models, constants, app_email
-from portality.lib.formulaic import FormProcessor
-from portality.ui.messages import Messages
-from portality.crosswalks.application_form import ApplicationFormXWalk
-from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll import exceptions
 from portality.bll.doaj import DOAJ
-
-from flask import url_for, request, has_request_context
-from flask_login import current_user
-
-from wtforms import FormField, FieldList
+from portality.bll.services.audit import AuditBuilder
+from portality.core import app
+from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.crosswalks.journal_form import JournalFormXWalk
+from portality.lib.formulaic import FormProcessor
+from portality.ui.messages import Messages
 
 
 class ApplicationProcessor(FormProcessor):
@@ -229,6 +228,7 @@ class NewApplication(ApplicationProcessor):
         draft_application.set_application_status("draft")
         draft_application.set_owner(account.id)
         draft_application.save()
+        AuditBuilder('create draft_application').save(draft_application)
         return draft_application
 
     def finalise(self, account, save_target=True, email_alert=True, id=None):
@@ -254,6 +254,7 @@ class NewApplication(ApplicationProcessor):
         # Finally save the target
         if save_target:
             self.target.save()
+            AuditBuilder('save new application').save(self.target)
             # a draft may have been saved, so also remove that
             if id:
                 models.DraftApplication.remove_by_id(id)
@@ -358,11 +359,13 @@ class AdminApplication(ApplicationProcessor):
             try:
                 # ~~-> Account:Model~~
                 owner = models.Account.pull(j.owner)
+                audit_builder = AuditBuilder('update account', target_obj=owner, )
                 self.add_alert('Associating the journal with account {username}.'.format(username=owner.id))
                 owner.add_journal(j.id)
                 if not owner.has_role('publisher'):
                     owner.add_role('publisher')
                 owner.save()
+                audit_builder.save(owner)
 
                 # for all acceptances, send an email to the owner of the journal
                 if email_alert:
@@ -392,6 +395,7 @@ class AdminApplication(ApplicationProcessor):
         else:
             self.target.set_last_manual_update()
             self.target.save()
+            AuditBuilder('save admin application').save(self.target)
 
         if email_alert:
             # trigger a status change event
@@ -533,6 +537,7 @@ class EditorApplication(ApplicationProcessor):
         # Save the target
         self.target.set_last_manual_update()
         self.target.save()
+        AuditBuilder('save editor application').save(self.target)
 
         # record the event in the provenance tracker
         # ~~-> Procenance:Model~~
@@ -642,6 +647,7 @@ class AssociateApplication(ApplicationProcessor):
         # Save the target
         self.target.set_last_manual_update()
         self.target.save()
+        AuditBuilder('save associate application').save(self.target)
 
         # record the event in the provenance tracker
         # ~~-> Provenance:Model~~
@@ -698,6 +704,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
         self.target.set_last_manual_update()
         if save_target:
             saved = self.target.save()
+            AuditBuilder('save publisher update request').save(self.target)
             if saved is None:
                 raise Exception("Save on application failed")
 
@@ -708,10 +715,12 @@ class PublisherUpdateRequest(ApplicationProcessor):
         journalService = DOAJ.journalService()
         if journal_id is not None:
             journal, _ = journalService.journal(journal_id)
+            audit_builder = AuditBuilder('update journal for publisher update request', target_obj=journal)
             if journal is not None:
                 journal.set_current_application(self.target.id)
                 if save_target:
                     saved = journal.save()
+                    audit_builder.save(self.target)
                     if saved is None:
                         raise Exception("Save on journal failed")
             else:
@@ -814,6 +823,7 @@ class ManEdJournalReview(ApplicationProcessor):
         # Save the target
         self.target.set_last_manual_update()
         self.target.save()
+        AuditBuilder('save ManEdJournalReview').save(self.target)
 
         # if we need to email the editor and/or the associate, handle those here
         # ~~-> Email:Notifications~~
@@ -890,6 +900,7 @@ class EditorJournalReview(ApplicationProcessor):
         # Save the target
         self.target.set_last_manual_update()
         self.target.save()
+        AuditBuilder('save EditorJournalReview').save(self.target)
 
         # if we need to email the associate, handle that here.
         if email_associate:
@@ -937,6 +948,7 @@ class AssEdJournalReview(ApplicationProcessor):
         # Save the target
         self.target.set_last_manual_update()
         self.target.save()
+        AuditBuilder('save AssEdJournalReview').save(self.target)
 
 
 class ReadOnlyJournal(ApplicationProcessor):

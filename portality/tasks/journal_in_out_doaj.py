@@ -1,6 +1,7 @@
 from flask_login import current_user
 from portality import models, lock
 from portality.bll import DOAJ
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 
 from portality.tasks.redis_huey import main_queue
@@ -59,6 +60,7 @@ class SetInDOAJBackgroundTask(BackgroundTask):
             job.add_audit_message("Setting in_doaj to {x} for journal {y}".format(x=str(in_doaj), y=journal_id))
             # ~~->Journal:Model~~
             j = models.Journal.pull(journal_id)
+            audit_builder = AuditBuilder('update journal journal_in_out_doaj', target_obj=j)
             # ~~->Account:Model~~
             account = models.Account.pull(job.user)
             if j is None:
@@ -78,6 +80,7 @@ class SetInDOAJBackgroundTask(BackgroundTask):
             j.set_in_doaj(in_doaj)
             j.save()
             j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
+            audit_builder.save()
             job.add_audit_message("Journal {x} set in_doaj to {y}, and all associated articles".format(x=journal_id, y=str(in_doaj)))
 
     def cleanup(self):
@@ -138,6 +141,7 @@ class SetInDOAJBackgroundTask(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save()
         set_in_doaj.schedule(args=(background_job.id,), delay=10)
 

@@ -1,5 +1,5 @@
 """Task to generate a report on duplicated articles in the index"""
-
+from portality.bll.services.audit import AuditBuilder
 from portality.tasks.redis_huey import long_running
 from portality.app_email import email_archive
 
@@ -283,6 +283,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save()
         article_duplicate_report.schedule(args=(background_job.id,), delay=10)
 

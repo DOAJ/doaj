@@ -1,4 +1,5 @@
 from portality import models
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 from portality.crosswalks.exceptions import CrosswalkException
 
@@ -186,6 +187,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             raise BackgroundException("IngestArticleBackgroundTask.run run without sufficient parameters")
 
         file_upload = models.FileUpload.pull(file_upload_id)
+        audit_builder = AuditBuilder('update file_upload for IngestArticlesBackgroundTask',
+                                     target_obj=file_upload)
         if file_upload is None:
             raise BackgroundException("IngestArticleBackgroundTask.run unable to find file upload with id {x}".format(x=file_upload_id))
 
@@ -201,6 +204,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 self._process(file_upload)
         finally:
             file_upload.save()
+            audit_builder.save()
 
     def _download(self, file_upload):
         job = self.background_job
@@ -413,6 +417,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save(blocking=True)
         ingest_articles.schedule(args=(background_job.id,), delay=10)
 
@@ -433,6 +438,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
             # save the index entry
             record.save()
+            AuditBuilder('create file_upload record', record).save()
         except:
             # if we can't record either of these things, we need to back right off
             try:
@@ -454,11 +460,13 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         # now we have the record in the index and on disk, we can attempt to
         # validate it
+        audit_builder = AuditBuilder('validate file_upload', record)
         try:
             with open(xml) as handle:
                 xwalk.validate_file(handle)
             record.validated(schema)
             record.save()
+            audit_builder.save()
             previous.insert(0, record)
             return record.id
 
@@ -469,6 +477,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             except:
                 pass
             record.save()
+            audit_builder.save()
             previous.insert(0, record)
             raise BackgroundException("Failed to upload file: " + e.message + "; " + str(e.inner_message))
         except Exception as e:
@@ -478,6 +487,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             except:
                 pass
             record.save()
+            audit_builder.save()
             previous.insert(0, record)
             raise BackgroundException("Failed to upload file - please contact an administrator")
 
@@ -528,15 +538,19 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             return __ok(record, previous)
 
         def __ok(record, previous):
+            audit_builder = AuditBuilder('file_uploader mark ok', record)
             record.exists()
             record.save()
+            audit_builder.save()
             previous.insert(0, record)
             return record.id
 
         def __fail(record, previous, error):
+            audit_builder = AuditBuilder('file_uploader mark fail', record)
             message = 'The URL could not be accessed; ' + error
             record.failed(message)
             record.save()
+            audit_builder.save()
             previous.insert(0, record)
             raise BackgroundException(message)
 

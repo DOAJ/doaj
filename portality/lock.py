@@ -2,6 +2,7 @@
 ~~Lock:Feature~~
 """
 from portality import models
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 from portality.dao import ESMappingMissingError
 
@@ -30,8 +31,10 @@ def lock(type, id, username, timeout=None, blocking=False):
         l.set_username(username)
         l.expires_in(timeout)
         l.save(blocking=blocking)
+        # AuditBuilder('create lock', target_obj=l).save() # TOBEREMOVE lock object should not audit?
         return l
 
+    # audit_builder = AuditBuilder('update lock', target_obj=l)
     indate = not l.is_expired()
     yours = l.username == username
 
@@ -40,6 +43,7 @@ def lock(type, id, username, timeout=None, blocking=False):
         l.set_username(username)
         l.expires_in(timeout)
         l.save(blocking=blocking)
+        # audit_builder.save()
         return l
 
     if not yours and indate:
@@ -51,6 +55,7 @@ def lock(type, id, username, timeout=None, blocking=False):
         if l.would_expire_within(timeout):
             l.expires_in(timeout)
             l.save(blocking=blocking)
+            # audit_builder.save()
         return l
 
     # shouldn't ever get here - if we do something is bust

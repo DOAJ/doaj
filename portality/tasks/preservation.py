@@ -13,6 +13,7 @@ from zipfile import ZipFile
 from pathlib import Path
 
 from portality.background import BackgroundTask, BackgroundApi
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 from portality.decorators import write_required
 from portality.lib import dates
@@ -232,11 +233,14 @@ class PreservationBackgroundTask(BackgroundTask):
         app.logger.debug(f"model_id {model_id}")
 
         preserve_model = PreservationState.pull(model_id)
+        audit_builder = AuditBuilder('update task.preservation', target_obj=preserve_model)
         preserve_model.background_task_id = job.id
         preserve_model.pending()
         preserve_model.save()
+        audit_builder.save()
 
         # ~~-> Preservation:Feature~~
+        audit_builder = AuditBuilder('update task.preservation change status', target_obj=preserve_model)
         preserv = Preservation(local_dir, job.user)
         preserv.upload_filename = preserve_model.filename
         try:
@@ -269,6 +273,7 @@ class PreservationBackgroundTask(BackgroundTask):
                 if articles_list.is_partial_success():
                     preserve_model.partial()
                     preserve_model.save()
+                    audit_builder.save()
             else:
                 # If no previous errors found, check other failure reasons
                 if not preserve_model.error:
@@ -276,15 +281,18 @@ class PreservationBackgroundTask(BackgroundTask):
                     if articles_list.get_count() == 0:
                         preserve_model.failed(FailedReasons.no_article_found)
                         preserve_model.save()
+                        audit_builder.save()
                     # All the articles available are invalid
                     else:
                         preserve_model.failed(FailedReasons.no_valid_article_available)
                         preserve_model.save()
+                        audit_builder.save()
 
         except (PreservationException, Exception) as exp:
             # ~~-> PreservationException:Exception~~
             preserve_model.failed(str(exp))
             preserve_model.save()
+            audit_builder.save()
             app.logger.exception("Error at background task")
             raise
 
@@ -294,6 +302,7 @@ class PreservationBackgroundTask(BackgroundTask):
         :param articles_list: articles list
         :param model: model object
         """
+        audit_builder = AuditBuilder('save_articles_list', target_obj=model)
         if len(articles_list.successful_articles()) > 0:
             model.successful_articles(articles_list.successful_articles())
         if len(articles_list.not_found_articles()) > 0:
@@ -309,6 +318,7 @@ class PreservationBackgroundTask(BackgroundTask):
         if len(articles_list.no_files_articles()) > 0:
             model.no_files_articles(articles_list.no_files_articles())
         model.save()
+        audit_builder.save()
 
     def cleanup(self):
         """
@@ -328,6 +338,8 @@ class PreservationBackgroundTask(BackgroundTask):
         :param sha256: sha256sum value
         :param model: model object to update status
         """
+
+        audit_builder = AuditBuilder('preservation.validate_response', target_obj=model)
         if response.status_code == 200:
             res_json = json.loads(response.text)
             files = res_json["files"]
@@ -385,11 +397,13 @@ class PreservationBackgroundTask(BackgroundTask):
             app.logger.error(f"Upload failed {response.text}")
             model.failed(response.text)
             model.save()
+        audit_builder.save()
 
     @classmethod
     def submit(cls, background_job):
         """
         Submit Background job"""
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save(blocking=True)
         preserve.schedule(args=(background_job.id,), delay=10)
 

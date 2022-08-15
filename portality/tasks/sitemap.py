@@ -1,4 +1,5 @@
 from portality import models
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 
 from portality.tasks.redis_huey import main_queue, schedule
@@ -63,6 +64,7 @@ class SitemapBackgroundTask(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save()
         generate_sitemap.schedule(args=(background_job.id,), delay=10)
 

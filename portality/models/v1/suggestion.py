@@ -1,6 +1,7 @@
 from copy import deepcopy
 
 from portality import constants
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 from portality.lib import es_data_mapping
 from portality.models.v1 import shared_structs
@@ -119,8 +120,10 @@ class Suggestion(JournalLikeObject):
         from portality.models import Journal
         cj = Journal.pull(self.current_journal)
         if cj is not None and cj.owner != self.owner:
+            audit_builder = AuditBuilder('suggestion _sync_owner_to_journal', target_obj=cj)
             cj.set_owner(self.owner)
             cj.save(sync_owner=False)
+            audit_builder.save(cj)
 
     def _generate_index(self):
         super(Suggestion, self)._generate_index()

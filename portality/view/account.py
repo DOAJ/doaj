@@ -7,6 +7,7 @@ from wtforms import StringField, HiddenField, PasswordField, validators, Form
 
 from portality import util
 from portality import constants
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 from portality.decorators import ssl_required, write_required
 from portality.models import Account, Event
@@ -52,6 +53,7 @@ class UserEditForm(Form):
 @write_required()
 def username(username):
     acc = Account.pull(username)
+    audit_builder = AuditBuilder('update account',target_obj=acc ).fill_who_by_account(current_user)
 
     if acc is None:
         abort(404)
@@ -65,6 +67,7 @@ def username(username):
                 flash('Check the box to confirm you really mean it!', "error")
                 return render_template('account/view.html', account=acc, form=UserEditForm(obj=acc))
             acc.delete()
+            AuditBuilder('delete account', target_obj=acc).fill_who_by_account(current_user).save()
             flash('Account ' + acc.id + ' deleted')
             return redirect(url_for('.index'))
 
@@ -111,6 +114,7 @@ def username(username):
                 reset_token = uuid.uuid4().hex
                 acc.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
                 acc.save()
+                audit_builder.save()
 
                 events_svc = DOAJ.eventsService()
                 events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, acc.id, context={"account" : acc.data}))
@@ -125,6 +129,7 @@ def username(username):
                 return redirect(url_for('doaj.home'))
 
         acc.save()
+        audit_builder.save()
         flash("Record updated")
         return render_template('account/view.html', account=acc, form=form)
 
@@ -232,6 +237,7 @@ def forgot():
             account = Account.pull(un) or Account.pull_by_email(un)
         else:
             account = Account.pull_by_email(un)
+        audit_builder = AuditBuilder('update account -- forgot', target_obj=account).fill_who_by_account(current_user)
 
         if account is None:
             util.flash_with_url('Error - your account username / email address is not recognised.' + CONTACT_INSTR,
@@ -247,6 +253,7 @@ def forgot():
         reset_token = uuid.uuid4().hex
         account.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
         account.save()
+        audit_builder.save()
 
         events_svc = DOAJ.eventsService()
         events_svc.trigger(Event(constants.EVENT_ACCOUNT_PASSWORD_RESET, account.id, context={"account": account.data}))
@@ -277,6 +284,7 @@ def reset(reset_token):
         abort(404)
 
     if request.method == "POST" and form.validate():
+        audit_builder = AuditBuilder('update account -- reset', target_obj=account).fill_who_by_account(current_user)
         # check that the passwords match, and bounce if not
         pw = request.values.get("password")
         conf = request.values.get("confirm")
@@ -288,6 +296,7 @@ def reset(reset_token):
         account.set_password(pw)
         account.remove_reset_token()
         account.save()
+        audit_builder.save()
         flash("New password has been set and you're now logged in.", "success")
 
         # log the user in
@@ -337,6 +346,9 @@ def register():
             account = Account.make_account(email=form.email.data, username=form.identifier.data, name=form.name.data,
                                            roles=[r.strip() for r in form.roles.data.split(',')])
             account.save()
+            (AuditBuilder('create account -- register', target_obj=account)
+             .fill_who_by_account(current_user)
+             .save())
 
             event_svc = DOAJ.eventsService()
             event_svc.trigger(Event(constants.EVENT_ACCOUNT_CREATED, account.id, context={"account" : account.data}))

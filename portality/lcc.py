@@ -1,6 +1,7 @@
 """
 ~~LCC:Data->LCCXML:Data~~
 """
+from portality.bll.services.audit import AuditBuilder
 from portality.models import LCC
 
 
@@ -57,6 +58,7 @@ def loadLCC(source=None):
 
     lcc = LCC(**tree)
     lcc.save()
+    AuditBuilder('create lcc', target_obj=lcc).save()
 
 
 def lcc2choices(thelcc, level=-2):

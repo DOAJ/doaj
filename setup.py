@@ -51,6 +51,7 @@ setup(
         "Unidecode==1.1.1",
         "Werkzeug==0.16.0",
         "WTForms==2.2.1",
+        'jsonpatch~=1.32',
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={"test": ["pytest", "pytest-cov", "pytest-xdist", "selenium"]},
     url='http://cottagelabs.com/',

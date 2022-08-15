@@ -8,6 +8,7 @@ For each article in the DOAJ index:
 from datetime import datetime
 
 from portality import models
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 from portality.tasks.redis_huey import long_running, schedule
 from portality.decorators import write_required
@@ -212,6 +213,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save()
         article_cleanup_sync.schedule(args=(background_job.id,), delay=10)
 

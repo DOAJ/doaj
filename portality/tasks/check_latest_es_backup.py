@@ -1,4 +1,5 @@
 from portality import models, app_email
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 
 from esprit.raw import Connection
@@ -65,6 +66,7 @@ class CheckLatestESBackupBackgroundTask(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save()
         check_latest_es_backup.schedule(args=(background_job.id,), delay=10)
 

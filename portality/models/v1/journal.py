@@ -1,3 +1,4 @@
+from portality.bll.services.audit import AuditBuilder
 from portality.dao import DomainObject
 from portality.core import app
 from portality.models.v1.bibjson import GenericBibJSON
@@ -503,6 +504,7 @@ class Journal(JournalLikeObject):
         del raw_cont["created_date"]
         del raw_cont["last_updated"]
         j = Journal(**raw_cont)
+        audit_builder = AuditBuilder('Journal make_continuation 2', target_obj=j)
 
         # ensure that the journal is NOT in doaj.  That will be for the admin to decide
         j.set_in_doaj(False)
@@ -546,10 +548,12 @@ class Journal(JournalLikeObject):
             cbj.replaces = issns
 
         # save this journal
+        AuditBuilder('Journal make_continuation').save(self.target)
         self.save()
 
         # save the continuation, and return a copy to the caller
         j.save()
+        audit_builder.save()
         return j
 
     ####################################################
@@ -692,8 +696,10 @@ class Journal(JournalLikeObject):
 
     def propagate_in_doaj_status_to_articles(self):
         for article in self.all_articles():
+            audit_builder = AuditBuilder('article propagate_in_doaj_status_to_articles', target_obj=article)
             article.set_in_doaj(self.is_in_doaj())
             article.save()
+            audit_builder.save(article)
 
     def prep(self):
         self._ensure_in_doaj()
@@ -754,8 +760,10 @@ class Journal(JournalLikeObject):
         from portality.models import Suggestion
         ca = Suggestion.pull(self.current_application)
         if ca is not None and ca.owner != self.owner:
+            audit_builder = AuditBuilder('journal v1 _sync_owner_to_application', target_obj=ca)
             ca.set_owner(self.owner)
             ca.save(sync_owner=False)
+            audit_builder.save()
 
 
 class JournalBibJSON(GenericBibJSON):

@@ -5,6 +5,7 @@ from flask import render_template
 from portality import constants
 from portality import models, app_email
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 from portality.dao import Facetview2
 from portality.tasks.redis_huey import main_queue, schedule
@@ -425,6 +426,7 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
         Submit the specified BackgroundJob to the background queue
         :param background_job: the BackgroundJob instance
         """
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save()
         async_workflow_notifications.schedule(args=(background_job.id,), delay=10)
 

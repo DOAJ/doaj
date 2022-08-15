@@ -639,7 +639,33 @@ MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
 MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
 MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
 MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
-
+MAPPINGS['audit'] = {  # ~~->Account:Model~~
+    'mappings': {
+        'properties' : {
+            'what.diff.value' : {
+                # 'type' : 'text',
+                'type': 'binary',
+            }
+        },
+        'dynamic_templates': [
+            {
+                "strings": {
+                    "match_mapping_type": "string",
+                    "mapping": {
+                        "type": "text",
+                        "fields": {
+                            "exact": {
+                                "type": "keyword",
+                                #"normalizer": "lowercase"
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    'settings': DEFAULT_INDEX_SETTINGS
+}
 #########################################
 # Query Routes
 # ~~->Query:WebRoute~~

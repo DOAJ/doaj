@@ -1,4 +1,5 @@
 from portality.api.current import ArticlesCrudApi
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 from portality.lib import plugin, dates
 from portality.models import Journal, Account
@@ -47,21 +48,26 @@ class HarvesterWorkflow(object):
             state = HarvestState.find_by_issn(account_id, issn)
             if state is not None:
                 if state.suspended:
+                    audit_builder = AuditBuilder('workflow.process_issn_states reactive', target_obj=state)
                     state.reactivate()
                     state.save(blocking=True)
+                    audit_builder.save()
             else:
                 state = HarvestState()
                 state.issn = issn
                 state.account = account_id
                 state.save(blocking=True)
+                AuditBuilder('workflow.process_issn_states new harvest state').save(state)
 
         # now check if there are are any other issns for this account that we haven't
         # been provided - in that case they need to be deactivated
         hss = [hs for hs in HarvestState.find_by_account(account_id)]    # read straight away, as the iterator can timeout
         for hs in hss:
             if hs.issn not in issns and not hs.suspended:
+                audit_builder = AuditBuilder('workflow.process_issn_states suspend', target_obj=hs)
                 hs.suspend()
                 hs.save(blocking=True)
+                audit_builder.save()
 
     def process_issn(self, account_id, issn):
         self._write_to_logger("Processing ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
@@ -70,6 +76,8 @@ class HarvesterWorkflow(object):
         # if this issn is suspended, don't process it
         if state.suspended:
             return
+
+        audit_builder = AuditBuilder('workflow.process_issn reactive', target_obj=state)
         Report.set_state_by_issn(issn, state)
 
         try:
@@ -99,6 +107,7 @@ class HarvesterWorkflow(object):
             # this is especially true if there is an exception, as this will allow us
             # to record where we got to, without having to do a save after each article
             # create
+            audit_builder.save()
             state.save(blocking=True)
             self._write_to_logger("Saved state record for ISSN:{x} for Account:{y}".format(y=account_id, x=issn))
 

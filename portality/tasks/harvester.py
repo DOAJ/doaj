@@ -1,5 +1,6 @@
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
+from portality.bll.services.audit import AuditBuilder
 
 from portality.tasks.harvester_helpers import workflow
 from portality.core import app
@@ -15,11 +16,13 @@ from datetime import datetime
 class BGHarvesterLogger(object):
     def __init__(self, job):
         self._job = job
+        audit_builder = AuditBuilder(f'update bgjob {__name__}', target_obj=self._job)
 
         self._logFile = "harvest-" + job.id + ".log"
         tempStore = StoreFactory.tmp()
         self._tempFile = tempStore.path(app.config.get("STORE_HARVESTER_CONTAINER"), self._logFile, create_container=True, must_exist=False)
         self._job.add_audit_message("Audit messages for this run will be stored in file {x}".format(x=self._tempFile))
+        audit_builder.save()
         self._job.save()
 
         self._fh = open(self._tempFile, "w")
@@ -100,6 +103,7 @@ class HarvesterBackgroundTask(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save()
         harvest.schedule(args=(background_job.id,), delay=10)
         # fixme: schedule() could raise a huey.exceptions.HueyException and not reach redis- would that be logged?

@@ -259,10 +259,16 @@ def preservation():
             flash(error_str, "error")
             preservation_model.failed(error_str)
             preservation_model.save()
+            (AuditBuilder('create preservation and fail', target_obj=preservation_model)
+             .fill_who_by_account(current_user)
+             .save())
             return resp
 
         preservation_model.validated()
         preservation_model.save()
+        (AuditBuilder('create preservation', target_obj=preservation_model)
+         .fill_who_by_account(current_user)
+         .save())
 
         # check if collection has been assigned for the user
         # collection must be in the format {"user_id1",["collection_name1","collection_id1"],
@@ -280,8 +286,11 @@ def preservation():
             flash(
                 "Cannot process upload - you do not have Collection details associated with your user ID. Please contact the DOAJ team.",
                 "error")
+            audit_builder = (AuditBuilder('mark fail preservation', target_obj=preservation_model)
+                             .fill_who_by_account(current_user))
             preservation_model.failed(FailedReasons.collection_not_available)
             preservation_model.save()
+            audit_builder.save()
 
         else:
             try:
@@ -297,8 +306,11 @@ def preservation():
                 try:
                     uid = str(uuid.uuid1())
                     flash("An error has occurred and your preservation upload may not have succeeded. Please report the issue with the ID " + uid)
+                    audit_builder = (AuditBuilder('mark fail preservation', target_obj=preservation_model)
+                                     .fill_who_by_account(current_user))
                     preservation_model.failed(str(exp) + " Issue id : " + uid)
                     preservation_model.save()
+                    audit_builder.save()
                     app.logger.exception('Preservation upload error. ' + uid)
                     if job:
                         background_task = PreservationBackgroundTask(job)

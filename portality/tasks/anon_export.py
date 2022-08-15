@@ -7,6 +7,7 @@ from typing import Callable, NoReturn
 
 from portality import models, dao
 from portality.background import BackgroundTask
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app, es_connection
 from portality.decorators import write_required
 from portality.lib import dates
@@ -183,6 +184,7 @@ class AnonExportBackgroundTask(BackgroundTask):
 
     @classmethod
     def submit(cls, background_job):
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save()
         anon_export.schedule(args=(background_job.id,), delay=10)
 

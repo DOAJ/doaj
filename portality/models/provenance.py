@@ -1,3 +1,4 @@
+from portality.bll.services.audit import AuditBuilder
 from portality.dao import DomainObject
 from portality.lib import dataobj
 from portality.models import EditorGroup
@@ -112,6 +113,7 @@ class Provenance(dataobj.DataObj, DomainObject):
         p = Provenance(**d)
         if save:
             saved = p.save()
+            AuditBuilder('provenance.make', target_obj=p).save()
             if saved is None:
                 raise ProvenanceException("Failed to save provenance record")
         return p

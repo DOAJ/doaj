@@ -1,4 +1,5 @@
 from portality import models
+from portality.bll.services.audit import AuditBuilder
 from portality.lib import dates
 from portality import datasets
 from portality.core import app
@@ -406,6 +407,7 @@ class ReportingBackgroundTask(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
+        AuditBuilder(f'create bgjob {__name__}', target_obj=background_job).save()
         background_job.save()
         run_reports.schedule(args=(background_job.id,), delay=10)
 

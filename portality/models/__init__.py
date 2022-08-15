@@ -27,6 +27,7 @@ from portality.models.news import News
 from portality.models.harvester import HarvestState
 from portality.models.event import Event
 from portality.models.notifications import Notification
+from portality.models.audit import Audit
 
 import sys
 
