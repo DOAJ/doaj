@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
 
-from nose.tools import assert_raises, assert_false
-
 from portality import constants
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
@@ -82,7 +80,7 @@ class TestAsyncWorkflowEmails(DoajTestCase):
 
         user = app.config.get("SYSTEM_USERNAME", 'test_system')
         app.config['ENABLE_EMAIL'] = False
-        assert_raises(BackgroundException, async_workflow_notifications.AsyncWorkflowBackgroundTask.prepare, username=user)
+        self.assertRaises(BackgroundException, async_workflow_notifications.AsyncWorkflowBackgroundTask.prepare, username=user)
 
         # Should succeed when enabled
         app.config['ENABLE_EMAIL'] = True
@@ -185,7 +183,7 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         # This application is assigned to associate editor 1, but it is not yet stale enough to require a reminder
         emails = {}
         async_workflow_notifications.associate_editor_notifications(emails)
-        assert_false(emails)
+        assert not emails
 
         # When we make the application unchanged for a period of time, we expect a message to be generated
         [APPLICATION_SOURCE_2, APPLICATION_SOURCE_3, APPLICATION_SOURCE_4] = ApplicationFixtureFactory.make_many_application_sources(count=3)
