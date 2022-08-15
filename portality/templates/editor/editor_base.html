@@ -4,19 +4,15 @@
 <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
 {% endblock %}
 
-{% block page_title %}Editor dashboard{% endblock %}
-
 {% block nav %}
 {% include 'editor/nav.html' %}
 {% endblock %}
 
 {% block content %}
-<main class="container">
-  <section class="page-content">
-    {% block editor_content %}
-    {% endblock %}
-  </section>
-</main>
+<section class="page-content">
+  {% block editor_content %}
+  {% endblock %}
+</section>
 
 {% include "includes/_hotjar.html" %}
 {% endblock %}
