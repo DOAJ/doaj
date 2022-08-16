@@ -11,13 +11,13 @@ from portality.ui.messages import Messages
 APPLICATION_FORM = ApplicationFixtureFactory.make_application_form()
 
 
-class TestPublicApplicationProcessor(DoajTestCase):
+class TestPublicApplicationProcessorAdmin(DoajTestCase):
 
     def setUp(self):
-        super(TestPublicApplicationProcessor, self).setUp()
+        super(TestPublicApplicationProcessorAdmin, self).setUp()
 
     def tearDown(self):
-        super(TestPublicApplicationProcessor, self).tearDown()
+        super(TestPublicApplicationProcessorAdmin, self).tearDown()
 
     def test_01_do_not_accept_nonexistant(self):
         application_source = ApplicationFixtureFactory.make_application_source()
