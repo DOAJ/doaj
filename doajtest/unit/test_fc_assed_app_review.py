@@ -1,7 +1,6 @@
 import time
 from copy import deepcopy
 
-from nose.tools import assert_raises
 from werkzeug.datastructures import MultiDict
 
 from portality import constants
@@ -247,7 +246,7 @@ class TestAssedAppReview(DoajTestCase):
         assert fc.form_data is not None
 
         # Finalise the formcontext. This should raise an exception because the application has already been accepted.
-        assert_raises(Exception, fc.finalise)
+        self.assertRaises(Exception, fc.finalise)
 
         # Check that an application status can't be edited by associates when on hold,
         # since this status must have been set by a managing editor.
@@ -267,7 +266,7 @@ class TestAssedAppReview(DoajTestCase):
         assert fc.form_data is not None
 
         # Finalise the formcontext. This should raise an exception because the application status is out of bounds.
-        assert_raises(Exception, fc.finalise)
+        self.assertRaises(Exception, fc.finalise)
 
         # Check that an application status can't be brought backwards in the review process
         pending_source = APPLICATION_SOURCE.copy()
@@ -281,6 +280,6 @@ class TestAssedAppReview(DoajTestCase):
                                          formdata=MultiDict(progressing_form))
 
         # Finalise the formcontext. This should raise an exception because the application status can't go backwards.
-        assert_raises(Exception, fc.finalise)
+        self.assertRaises(Exception, fc.finalise)
 
         ctx.pop()

@@ -7,8 +7,13 @@ import json
 
 
 def make_url_query(**params):
+    query = make_query_json(**params)
+    return parse.quote_plus(query)
+
+
+def make_query_json(**params):
     query = make_query(**params)
-    return parse.quote_plus(json.dumps(query))
+    return json.dumps(query)
 
 
 def make_query(**params):
@@ -18,10 +23,11 @@ def make_query(**params):
 
 class GeneralSearchQuery(object):
     # ~~-> Edges:Query~~
-    def __init__(self, term=None, terms=None, query_string=None):
+    def __init__(self, term=None, terms=None, query_string=None, sort=None):
         self.terms = None if terms is None else terms if isinstance(terms, list) else [terms]
         self.term = None if term is None else term
         self.query_string = query_string
+        self.sort = sort
 
     def query(self):
         musts = []
@@ -45,4 +51,11 @@ class GeneralSearchQuery(object):
                 }
             }
 
-        return { "query" : query }
+        obj = {"query": query}
+        if self.sort:
+            if not isinstance(self.sort, list):
+                obj["sort"] = [self.sort]
+            else:
+                obj["sort"] = self.sort
+
+        return obj

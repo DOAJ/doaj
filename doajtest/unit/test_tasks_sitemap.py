@@ -26,5 +26,5 @@ class TestSitemap(DoajTestCase):
         job = sitemap.SitemapBackgroundTask.prepare(user)
         task = sitemap.SitemapBackgroundTask(job)
         BackgroundApi.execute(task)
-        time.sleep(1)
+        time.sleep(2)
         assert len(self.mainStore.list(self.container_id)) == 1
