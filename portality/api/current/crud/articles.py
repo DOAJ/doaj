@@ -4,6 +4,7 @@ import json
 from portality.api.current.crud.common import CrudApi
 from portality.api.current import Api400Error, Api401Error, Api403Error, Api404Error, Api500Error
 from portality.api.current.data_objects.article import IncomingArticleDO, OutgoingArticleDO
+from portality.bll.services.audit import AuditBuilder
 from portality.core import app
 from portality.lib import dataobj
 from portality import models, app_email
@@ -278,3 +279,4 @@ class ArticlesCrudApi(CrudApi):
         # issue the delete (no record of the delete required)
         if not dry_run:
             ar.delete()
+            AuditBuilder('ArticlesCrudApi.delete', target_obj=ar).save()

@@ -257,6 +257,10 @@ class NewApplication(ApplicationProcessor):
             AuditBuilder('save new application').save(self.target)
             # a draft may have been saved, so also remove that
             if id:
+                _draft_app = models.DraftApplication.pull(id)
+                if _draft_app:
+                    AuditBuilder('NewApplication.finalise -- remove DraftApplication',
+                                 target_obj=_draft_app).save()
                 models.DraftApplication.remove_by_id(id)
 
             # trigger an application created event
@@ -822,8 +826,8 @@ class ManEdJournalReview(ApplicationProcessor):
 
         # Save the target
         self.target.set_last_manual_update()
-        self.target.save()
         AuditBuilder('save ManEdJournalReview').save(self.target)
+        self.target.save()
 
         # if we need to email the editor and/or the associate, handle those here
         # ~~-> Email:Notifications~~

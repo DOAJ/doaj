@@ -513,6 +513,7 @@ def editor_group(group_id=None):
                 abort(404)
 
             eg.delete()
+            AuditBuilder('delete editor_group', target_obj=eg).save()
 
             # return a json response
             resp = make_response(json.dumps({"success" : True}))

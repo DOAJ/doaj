@@ -1,3 +1,4 @@
+from portality.bll.services.audit import AuditBuilder
 from portality.lib.argvalidate import argvalidate
 from portality import models
 from portality.bll import exceptions
@@ -228,6 +229,7 @@ class ArticleService(object):
 
         # finally, save the new article
         if not dry_run:
+            AuditBuilder('article_service.create_article').save(article)
             article.save()
 
         return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),

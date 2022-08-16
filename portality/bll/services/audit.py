@@ -43,8 +43,11 @@ def create_what_by_obj(action: List[str],
     return what_dict
 
 
-def create_who_obj_by_account(account: dict):
-    if account is None or not isinstance(account,  dict):
+def create_who_by_account(account: Union[dict, "werkzeug.local.LocalProxy"]):
+    if (account is None or not (
+            isinstance(account, dict),
+            account.__class__.__name__ == 'LocalProxy'
+    )):
         who_dict = dict(
             user='unknown',
             roles=['unknown'],
@@ -70,7 +73,7 @@ class AuditBuilder:
                  who: dict = None):
 
         self.target_obj = target_obj
-        self.target_obj_data = target_obj and deepcopy(target_obj.data)
+        self.target_obj_data = None if target_obj is None else deepcopy(target_obj.data)
         self.action = action if isinstance(action, str) else action
         self.who = who
 
@@ -93,7 +96,7 @@ class AuditBuilder:
                 print(f'for debug -- get current_user fail in fill_who_by_account  {str(e)}')
                 account = None
 
-        self.who = create_who_obj_by_account(account)
+        self.who = create_who_by_account(account)
         return self
 
     def save(self, target_obj: DomainObject = None, created_at=None):
@@ -119,45 +122,12 @@ class AuditBuilder:
         what = create_what_by_obj(self.action, self.target_obj_data, target_obj)
         created_at = created_at or datetime.datetime.now()
 
-        print(what)
+        # TOBEREMOVE for debugging
+        print(f'debugxxx..who {self.who}')
+        print(f'debugxxx..what {what}')
 
         (models.Audit
          .create(self.who, what, created_at=created_at)
          .save(blocking=False))
 
         print(f'************ audit save time  --- [{self.action}][{time.time() - t}]')
-
-# TOBEREMOVE
-#
-# def main():
-#     print('aaaaaaa')
-#     a = models.Audit(a=11, b=22)
-#     a.save(blocking=True)
-#     # a = Notification()
-#     # a.save(blocking=True)
-#     print('bbbbbbbbbbbbb')
-#
-#     for o in models.Audit.object_query():
-#         print(o)
-#
-#
-# def main2():
-#     j_list = Journal.object_query()
-#     j_list = list(j_list)
-#
-#     old_obj_dict = deepcopy(j_list[0].data)
-#     j_list[0].data['bibjson']['title'] = 'akkakak'
-#     j_list[0].data['bibjson']['eissn'] = 'xxxx'
-#
-#     # print(j_list[0])
-#     js = json.dumps(j_list[0].data, indent=4)
-#     print(js)
-#
-#     what = create_what_by_obj(['ccc'],
-#                               Journal(**old_obj_dict),
-#                               j_list[0])
-#     print(what)
-#
-#
-# if __name__ == '__main__':
-#     main2()

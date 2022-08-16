@@ -1,5 +1,6 @@
 import logging
 
+from portality.bll.services.audit import AuditBuilder
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
 from portality import models
@@ -545,6 +546,8 @@ class ApplicationService(object):
                     raise exceptions.SaveException("Unable to save journal record")
 
             if related_journal is not None:
+                audit_builder = AuditBuilder('delete_application -- update related_journal',
+                                             target_obj=related_journal)
                 relation_record = related_journal.related_application_record(application_id)
                 if relation_record is None:
                     relation_record = {}
@@ -552,8 +555,10 @@ class ApplicationService(object):
                 saved = related_journal.save()
                 if saved is None:
                     raise exceptions.SaveException("Unable to save journal record")
+                audit_builder.save()
 
             application.delete()
+            AuditBuilder('application_service.delete_application', target_obj=application).save()
 
         finally:
             if alock is not None: alock.delete()
