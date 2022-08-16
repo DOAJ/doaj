@@ -1,10 +1,8 @@
 from doajtest.helpers import DoajTestCase
-from portality.core import app
 from esprit import raw, snapshot
 from doajtest.fixtures.snapshots import SNAPSHOTS_LIST
 from copy import deepcopy
 from datetime import datetime, timedelta
-from nose.tools import assert_raises
 import responses
 from freezegun import freeze_time
 
@@ -57,7 +55,7 @@ class TestSnapshotClient(DoajTestCase):
             client.check_today_snapshot()
 
         # And a day later it raises an exception, because that snapshot is missing
-        with assert_raises(snapshot.TodaySnapshotMissingException):
+        with self.assertRaises(snapshot.TodaySnapshotMissingException):
             with freeze_time(latest_fixture_date + timedelta(days=1)):
                 client = snapshot.ESSnapshotsClient(self.es_conn, self.snap_repo)
                 client.check_today_snapshot()
@@ -70,7 +68,7 @@ class TestSnapshotClient(DoajTestCase):
 
         # Using the fixture with the failed snapshot, check we get an exception if that's the latest in the response
         failed_fixture_date = datetime.utcfromtimestamp(LATEST_FAILED_SNAPS['snapshots'][-1]['start_time_in_millis'] / 1000)
-        with assert_raises(snapshot.FailedSnapshotException):
+        with self.assertRaises(snapshot.FailedSnapshotException):
             with freeze_time(failed_fixture_date):
                 client = snapshot.ESSnapshotsClient(self.es_conn, self.snap_repo)
                 client.check_today_snapshot()

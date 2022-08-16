@@ -8,6 +8,7 @@ from portality.bll import exceptions
 from portality.models import Application, Account, Journal
 from portality.lib.paths import rel2abs
 from portality import constants
+from datetime import datetime, timedelta
 
 import time
 
@@ -136,6 +137,9 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
                 assert len(journal.related_applications) == 0
 
                 if manual_update:
-                    assert application.last_updated == application.last_manual_update, "Expected last manual update to be {}, but got {} instead".format(application.last_updated, application.last_manual_update)
+                    # fixme: millisecond timestamps would help us here, or last_manual_update shouldn't generate its own date
+                    lu = datetime.strptime(application.last_updated, "%Y-%m-%dT%H:%M:%SZ")
+                    lmu = datetime.strptime(application.last_manual_update, "%Y-%m-%dT%H:%M:%SZ")
+                    assert lmu - lu <= timedelta(seconds=1)
                 else:
                     assert application.last_manual_update == "1970-01-01T00:00:00Z"

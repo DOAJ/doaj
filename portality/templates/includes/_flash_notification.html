@@ -14,18 +14,18 @@
             {% if category == "error" %}
                 {% set category = "danger" %}
             {% endif %}
-            <aside class="container flash_container">
-                <h2 class="sr-only">Notifications</h2>
-                <p class="alert alert--{{category}}">
-                    <span data-feather="alert-octagon" aria-hidden="true"></span>
-                    {% if message_has_url %}
-                        {{ message | safe }}
-                    {% else %}
-                        {{ message | safe }}
-                    {% endif %}
-                    &nbsp;<span class="flash_close alert__close" role="button">(Dismiss)</span>
-                </p>
-            </aside>
+            <div class="flash_container">
+              <h2 class="sr-only">Notifications</h2>
+              <p class="alert alert--{{category}}">
+                  <span data-feather="alert-octagon" aria-hidden="true"></span>
+                  {% if message_has_url %}
+                      {{ message | safe }}
+                  {% else %}
+                      {{ message | safe }}
+                  {% endif %}
+                  &nbsp;<span class="flash_close alert__close" role="button">(Dismiss)</span>
+              </p>
+            </div>
         {% endfor %}
     {% endif %}
 {% endwith %}

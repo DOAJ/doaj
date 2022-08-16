@@ -1,5 +1,8 @@
 # ~~CMSBuildFragments:Script->CMS:Script~~
 import os
+import random
+import string
+
 import markdown
 import shutil
 import yaml
@@ -41,15 +44,26 @@ def _clear_tree(dir):
             os.remove(filepath)
 
 
+def create_random_str(n_char=10):
+    s = string.ascii_letters + string.digits
+    return ''.join(random.choices(s, k=n_char))
+
+
 def _swap(old, new):
+    def _rm_dir_if_exist(_dir):
+        if os.path.exists(_dir):
+            try:
+                shutil.rmtree(_dir)
+            except OSError:
+                os.remove(_dir)
+
+    tmp_old_dir = f'{old}.old.{create_random_str(20)}'
     if os.path.exists(old):
-        os.rename(old, old + ".old")
+        _rm_dir_if_exist(tmp_old_dir)
+        os.rename(old, tmp_old_dir)
+
     os.rename(new, old)
-    if os.path.exists(old + ".old"):
-        try:
-            shutil.rmtree(old + ".old")
-        except OSError:
-            os.remove(old + ".old")
+    _rm_dir_if_exist(tmp_old_dir)
 
 
 def build(base_path=None):

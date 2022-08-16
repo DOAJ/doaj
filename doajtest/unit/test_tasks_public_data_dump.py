@@ -1,24 +1,27 @@
-from parameterized import parameterized
-from combinatrix.testintegration import load_parameter_sets
-
-from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
-from doajtest.mocks.store import StoreMockFactory
-from doajtest.mocks.model_Cache import ModelCacheMockFactory
-
-from portality.lib.paths import rel2abs
-from portality.lib import dates
-from portality.background import BackgroundApi
-from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
-from portality import models, store
-from portality.core import app
-
-import os, shutil, tarfile, json
+import json
+import tarfile
 from io import StringIO
+
+from combinatrix.testintegration import load_parameter_sets
+from parameterized import parameterized
+
+from doajtest import helpers
+from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
+from doajtest.helpers import DoajTestCase
+from doajtest.mocks.model_Cache import ModelCacheMockFactory
+from doajtest.mocks.store import StoreMockFactory
+from portality import models, store
+from portality.background import BackgroundApi
+from portality.core import app
+from portality.lib import dates
+from portality.lib.paths import rel2abs
+from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
+
+
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "tasks.public_data_dump"), "data_dump", "test_id",
-                               {"test_id" : []})
+                               {"test_id": []})
 
 
 class TestPublicDataDumpTask(DoajTestCase):
@@ -26,31 +29,20 @@ class TestPublicDataDumpTask(DoajTestCase):
     def setUp(self):
         super(TestPublicDataDumpTask, self).setUp()
 
-        self.store_tmp_imp = app.config.get("STORE_TMP_IMPL")
-        self.store_imp = app.config.get("STORE_IMPL")
         self.discovery_records_per_file = app.config.get("DISCOVERY_RECORDS_PER_FILE")
-        self.store_local_dir = app.config["STORE_LOCAL_DIR"]
-        self.store_tmp_dir = app.config["STORE_TMP_DIR"]
         self.cache = models.Cache
 
-        app.config["STORE_IMPL"] = "portality.store.StoreLocal"
-        app.config["STORE_LOCAL_DIR"] = rel2abs(__file__, "..", "tmp", "store", "main")
-        app.config["STORE_TMP_DIR"] = rel2abs(__file__, "..", "tmp", "store", "tmp")
-        os.makedirs(app.config["STORE_LOCAL_DIR"])
-        os.makedirs(app.config["STORE_TMP_DIR"])
+        self.store_local_patcher = helpers.StoreLocalPatcher()
+        self.store_local_patcher.setUp(self.app_test)
 
         models.cache.Cache = ModelCacheMockFactory.in_memory()
 
     def tearDown(self):
-        app.config["STORE_TMP_IMPL"] = self.store_tmp_imp
-        app.config["STORE_IMPL"] = self.store_imp
         app.config["DISCOVERY_RECORDS_PER_FILE"] = self.discovery_records_per_file
 
-        shutil.rmtree(rel2abs(__file__, "..", "tmp"))
-        app.config["STORE_LOCAL_DIR"] = self.store_local_dir
-        app.config["STORE_TMP_DIR"] = self.store_tmp_dir
-
         models.cache.Cache = self.cache
+
+        self.store_local_patcher.tearDown(self.app_test)
 
         super(TestPublicDataDumpTask, self).tearDown()
 

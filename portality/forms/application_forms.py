@@ -1675,7 +1675,7 @@ class FieldDefinitions:
     # ~~->$ Continues:FormField~~
     CONTINUES = {
         "name": "continues",
-        "label": "Continues an older journal with the ISSN(s)",
+        "label": "Continues an <strong>older</strong> journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
@@ -1698,7 +1698,7 @@ class FieldDefinitions:
     # ~~->$ ContinuedBy:FormField~~
     CONTINUED_BY = {
         "name": "continued_by",
-        "label": "Continued by a newer version of the journal with the ISSN(s)",
+        "label": "Continued by a <strong>newer</strong> journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
@@ -3087,18 +3087,18 @@ JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYT
 if __name__ == "__main__":
     """
     Running this file from the command line enables you to output documentation for a given form context.
-    
+
     See `docs/forms.sh` for where this is used
-    
+
     To create the documentation you can call this file with 3 arguments:
-    
+
     -t - the object type to output.  Either 'journal' or 'application'
-    -c - the form context.  Will be one of the contexts defined elsewhere in this file, which may be specific to the 
+    -c - the form context.  Will be one of the contexts defined elsewhere in this file, which may be specific to the
             object type.  For example, 'admin' or 'editor'
     -o - the path to the file where to output the result
-    
+
     The output is a CSV which lists the following information:
-    
+
     * Form Position - the position in the form.  Felds are listed in order
     * Field Name - the form field name
     * Label - the form field label
