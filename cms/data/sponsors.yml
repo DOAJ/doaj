@@ -122,6 +122,10 @@ bronze:
   url: https://global.oup.com/
   logo: OUP.jpg
 
+- name: PLOS
+  url: https://plos.org/
+  logo: PLOS.svg
+
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg  
