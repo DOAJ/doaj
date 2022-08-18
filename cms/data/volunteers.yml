@@ -963,6 +963,14 @@ ass_ed:
   city: Lucerne
   country: Switzerland
   language: German, English
+  
+- name: Zakariya Algamal
+  area: Statistics
+  year_since:
+  city: Mosul
+  country: Iraq
+  language: English
+  photo: "Algamal.JPG"
 
 - name: Zhe Jiang (Sophia)
   area: Social Sciences
