@@ -602,6 +602,14 @@ ass_ed:
   city: V.N Gaia
   country: Portugal
   language: Portuguese, Spanish, English
+ 
+- name: Mariano Hernán Corujo
+  area: Librarianship
+  year_since:
+  city: Buenos Aires
+  country: Argentina
+  language: Spanish, English
+  photo: "MarianoCorujo.jpeg"
   
   
 - name: Marie-Eve Dugas
