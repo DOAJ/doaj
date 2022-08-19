@@ -119,12 +119,6 @@ ed:
 ## All associate editors
 
 ass_ed:
-- name: A. Sulthan
-  area: Social Sciences
-  year_since:
-  city: Coimbatore
-  country: India
-  language: Tamil, Urdu, Hindi, English
 
 - name: Alessandro Pierno
   area: Humanities
