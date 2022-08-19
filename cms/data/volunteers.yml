@@ -167,13 +167,6 @@ ass_ed:
   country: Italy
   language: Italian, English
 
-- name: Antti-Jussi Nygård
-  area: History
-  year_since:
-  city: Turku
-  country: Finland
-  language: English, Finnish
-
 - name: Arbain Arbain
   area: Humanities
   year_since:
@@ -418,14 +411,6 @@ ass_ed:
   country: Mexico
   language: Spanish, English
 
-- name: José Molina
-  area:
-  year_since:
-  city:
-  country:
-  language: Spanish, English
-
-
 - name: Juliana Soares Lima
   area: Librarianship and information science
   year_since:
@@ -507,14 +492,6 @@ ass_ed:
   country: Brazil
   language: Portuguese, Spanish, English
   photo: "lucashelal.jpg"
-
-- name: Maarit Koskela
-  area:
-  year_since:
-  city:
-  country:
-  language: English
-
 
 - name: Marcau Flavius-Cristian
   area: Social Sciences
@@ -768,13 +745,6 @@ ass_ed:
   country: Iran
   language: Farsi, English
   photo: "amini.jpg"
-
-- name: Sami Syrjämäki
-  area: Humanities, Social Sciences
-  year_since:
-  city: Helsinki
-  country: Finland
-  language: Finnish, English
 
 - name: Sandra Müller
   area: Librarianship
