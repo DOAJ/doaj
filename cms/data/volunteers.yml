@@ -656,6 +656,14 @@ ass_ed:
   city: Surabaya
   country: Indonesia
   language: Indonesian, English
+
+- name: Muhamad Taufik
+  area: Humanities, Social Sciences
+  year_since:
+  city:
+  country: Indonesia
+  language: Indonesian, English
+  photo: "MuhamadTaufik.jpg"
   
  
 - name: Nataliia Kaliuzhna
