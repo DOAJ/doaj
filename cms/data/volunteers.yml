@@ -732,20 +732,6 @@ ass_ed:
   language: Farsi, English
   photo: "amini.jpg"
 
-- name: Sandra Müller
-  area: Librarianship
-  year_since:
-  city: Lucerne
-  country: Switzerland
-  language: German, English
-
-- name: Sandra Studer
-  area: Librarianship
-  year_since:
-  city: Lucerne
-  country: Switzerland
-  language: German, English
-
 - name: Sara Jalalzadeh Asrjadidi
   area: Librarianship
   year_since:
@@ -759,13 +745,6 @@ ass_ed:
   city: Milan
   country: Italy
   language: Italian, English, German
-
-- name: Simone Rosenkranz
-  area: Humanities
-  year_since:
-  city: Luzern
-  country: Switzerland
-  language: German, English
 
 - name: Sofia Fagiolo
   area: Librarianship
@@ -841,13 +820,7 @@ ass_ed:
   country: Australia
   language: Chinese, English
 
-- name: Yvonne Leimgruber
-  area: Librarianship
-  year_since:
-  city: Lucerne
-  country: Switzerland
-  language: German, English
-  
+ 
 - name: Zakariya Algamal
   area: Statistics
   year_since:
