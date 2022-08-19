@@ -764,6 +764,14 @@ ass_ed:
   city:
   country: Turkey
   language: Turkish, English, Dutch
+  
+- name: Ramiro Doyenart
+  area: Health Sciences
+  year_since:
+  city: Rio Grande do Sul
+  country: Brazil
+  language: Spanish, Portuguese, English
+  photo: "ramir
 
 - name: Ran Dang
   area: Biology, Medical Sciences
