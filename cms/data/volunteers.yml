@@ -162,13 +162,6 @@ ass_ed:
   country: Italy
   language: Italian, English
 
-- name: Andrea Wright
-  area:
-  year_since:
-  city:
-  country: USA
-  language: English
-
 - name: Andronic Octavian
   area: Medicine
   year_since:
@@ -182,13 +175,6 @@ ass_ed:
   city: Rome
   country: Italy
   language: Italian, English
-
-- name: Anne Lahey
-  area: Libraries, Scholarly Communication
-  year_since:
-  city: Canberra
-  country: Australia
-  language: English
 
 - name: Antti-Jussi Nygård
   area: History
@@ -847,14 +833,6 @@ ass_ed:
   city: Luzern
   country: Switzerland
   language: German, English
-
-- name: Soeharto Fisika
-  area: Science education, psychology and social science
-  year_since:
-  city:
-  country: Indonesia
-  language: Indonesian, English
-  photo: "soeharto.jpg"
 
 - name: Sofia Fagiolo
   area: Librarianship
