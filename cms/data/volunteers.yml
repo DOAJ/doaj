@@ -198,13 +198,6 @@ ass_ed:
   country: Romania
   language: Romanian, English
 
-- name: Anna Wolodko
-  area: Library Science
-  year_since:
-  city: Warsaw
-  country: Poland
-  language: Polish, English
-
 - name: Annarita Barbaro
   area: Humanities
   year_since:
@@ -942,13 +935,6 @@ ass_ed:
   country: Brazil
   language: Portuguese, English
   photo: "weldy.jpeg"
-
-- name: Weronika Kortas
-  area: Humanities, Social Sciences
-  year_since:
-  city: Toruń
-  country: Poland
-  language: Polish, English
 
 - name: Yaping Liu
   area: Medical and Healthcare Management
