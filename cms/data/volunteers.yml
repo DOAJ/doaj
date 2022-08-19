@@ -771,7 +771,7 @@ ass_ed:
   city: Rio Grande do Sul
   country: Brazil
   language: Spanish, Portuguese, English
-  photo: "RamiroDoyenart.JPEG"
+  photo: "RamiroDoyenart.jpeg"
 
 - name: Ran Dang
   area: Biology, Medical Sciences
@@ -853,14 +853,6 @@ ass_ed:
   city: Tabriz
   country: Iran
   language: Persian, Azari, Turkish, English
-
-- name: Sara Ricetto
-  area: Humanities
-  year_since:
-  city: Milan
-  country: Italy
-  language: Italian, English
-
 
 - name: Sara Ricetto
   area: Open Access, Open Science
