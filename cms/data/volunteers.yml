@@ -104,6 +104,13 @@ ed:
 
 ass_ed:
 
+- name: Aleksandra Zawadzka
+  area: Librarianship
+  year_since:
+  city: Wroclaw
+  country: Poland
+  language: Polish, English
+
 - name: Alessandro Pierno
   area: Humanities
   year_since:
