@@ -81,6 +81,10 @@ bronze:
 - name: Cottage Labs
   url: https://cottagelabs.com/
   logo: cl.svg
+
+- name: Digital Science
+  url: https://www.digital-science.com/
+  logo: DS-logo.svg
   
 - name: EDP Sciences
   url: https://www.edpsciences.org/
