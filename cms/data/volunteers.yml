@@ -111,13 +111,6 @@ ass_ed:
   country: Italy
   language: Italian, English, Spanish
 
-- name: Alfonso Bustos
-  area:
-  year_since:
-  city:
-  country:
-  language:
-
 - name: Ana Fresco-Santalla
   area: Humanities
   year_since:
@@ -142,9 +135,9 @@ ass_ed:
 - name: Andrea Marchitelli
   area: Librarianship
   year_since:
-  city: Rome
-  country: Italy
-  language: Italian, English
+  city: 
+  country: Poland
+  language: Polish, English
 
 - name: Andronic Octavian
   area: Medicine
@@ -152,6 +145,13 @@ ass_ed:
   city: Bucharest
   country: Romania
   language: Romanian, English
+  
+- name: Anna Sidorko
+  area: Librarianship
+  year_since:
+  city: Padang, West Sumatra
+  country: Indonesia
+  language: Indonesian, English
 
 - name: Annarita Barbaro
   area: Humanities
@@ -213,6 +213,14 @@ ass_ed:
   country: Argentina
   language: Spanish, English
   photo: "CarlosAlegre.jpg"
+  
+- name: Cezary Borkowicz
+  area: Librarianship
+  year_since:
+  city:  Biała Podlaska
+  country: Poland
+  language: Polish, 
+  photo: "CezaryBorkowicz.jpg"
 
 - name: Christine Davidian
   area: Technology
