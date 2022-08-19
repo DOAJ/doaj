@@ -92,13 +92,6 @@ ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Scott Richard St. Louis
-  area: Humanities, Social Sciences, Technology
-  year_since:
-  city:
-  country: USA
-  language: English, French
-
 - name: Souheil Houissa
   area: Library and Information Science
   year_since:
@@ -270,13 +263,6 @@ ass_ed:
   area: Technology
   year_since:
   city: Semarang
-  country: Indonesia
-  language: Indonesian, English
-
-- name: Dr. Ir. Dyah Rini Indriyanti
-  area: Science
-  year_since:
-  city:
   country: Indonesia
   language: Indonesian, English
 
