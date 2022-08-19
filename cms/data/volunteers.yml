@@ -85,15 +85,6 @@ ed:
   country: Iran
   language: Persian, English, Azeri
   
-  
-- name: Sandra Aceng
-  area: Humanities, Social Sciences
-  year_since:
-  city: Kampala
-  country: Uganda
-  language: English, Luo
-  photo: "aceng.jpg"
-
 - name: S.Suharto
   area: Humanities, Social Sciences
   year_since:
@@ -324,13 +315,6 @@ ass_ed:
   city: Minneapolis, MN
   country: USA
   language: English
-
-- name: Eva Höglund
-  area: Social Sciences
-  year_since:
-  city: Turku
-  country: Finland
-  language: Finnish, English
 
 - name: Francesca Soldati
   area: Science
@@ -724,13 +708,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Ramazan Turgut
-  area: Social Science
-  year_since:
-  city:
-  country: Turkey
-  language: Turkish, English, Dutch
-  
 - name: Ramiro Doyenart
   area: Health Sciences
   year_since:
