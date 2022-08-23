@@ -21,6 +21,24 @@ ed:
   language: Spanish
   featured: true
 
+- name: Azhar Aziz Lubis
+  area: English Language Teaching
+  year_since:
+  city: Benkulu
+  country: Indonesia
+  language: Bahasa Indonesia, English
+  featured: true
+  photo: "Azhar.jpg"
+
+- name: Dawam M. Rohmatulloh
+  area: Social Sciences, Humanities
+  year_since:
+  city: Ponorogo
+  country: Indonesia
+  language: Bahasa Indonesia, English, Dutch
+  featured: true
+  photo: "Dawam.jpg"
+
 - name: Fei Yu
   area: Librarianship, Scholarly Publishing, Data Management
   year_since:
