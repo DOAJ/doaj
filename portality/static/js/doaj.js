@@ -240,9 +240,11 @@ var doaj = {
     searchQuerySource : function (params) {
         // ~~-> Edges:Technology ~~
         // ~~-> Elasticsearch:Technology ~~
+        // ~~-> Edges:Query ~~
         let terms = params.terms;
         let term = params.term;
         let queryString = params.queryString;
+        let sort = params.sort;
 
         let musts = [];
         if (terms) {
@@ -275,7 +277,16 @@ var doaj = {
             }
         }
 
-        let source = JSON.stringify({"query" : query})
+        let obj = {"query": query}
+        if (sort) {
+            if (Array.isArray(sort)) {
+                obj["sort"] = sort;
+            } else {
+                obj["sort"] = [sort];
+            }
+        }
+
+        let source = JSON.stringify(obj)
         return encodeURIComponent(source)
     }
 };
