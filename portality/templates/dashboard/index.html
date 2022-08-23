@@ -111,6 +111,8 @@
 {% block extra_js_bottom %}
 <script type="text/javascript" src="/static/js/dashboard.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript">
+jQuery(document).ready(function() {
     doaj.dashboard.init()
+});
 </script>
 {% endblock %}
