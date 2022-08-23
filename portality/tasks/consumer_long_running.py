@@ -13,4 +13,5 @@ from portality.tasks.article_cleanup_sync import scheduled_article_cleanup_sync,
 from portality.tasks.prune_es_backups import scheduled_prune_es_backups, prune_es_backups
 from portality.tasks.public_data_dump import scheduled_public_data_dump, public_data_dump
 from portality.tasks.harvester import scheduled_harvest
+from portality.tasks.anon_export import scheduled_anon_export, anon_export
 from portality.tasks.monitor_bgjobs import scheduled_monitor_bgjobs, execute_monitor_bgjobs

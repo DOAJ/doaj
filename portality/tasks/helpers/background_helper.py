@@ -31,7 +31,8 @@ def submit_by_bg_task_type(background_task: Type[BackgroundTask], **prepare_kwar
     background_task.submit(job)
 
 
-def execute_by_job_id(job_id, task_factory: TaskFactory):
+def execute_by_job_id(job_id,
+                      task_factory: Callable[[models.BackgroundJob], BackgroundTask]):
     """ Common way to execute BackgroundTask by job_id
     """
     job = models.BackgroundJob.pull(job_id)

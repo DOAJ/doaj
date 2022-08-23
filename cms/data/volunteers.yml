@@ -21,15 +21,6 @@ ed:
   language: Spanish
   featured: true
 
-- name: David Scherer
-  area: Library and Information Studies
-  year_since:
-  city: Pittsburgh, PA
-  country: USA
-  language: English
-
-
-
 - name: Fei Yu
   area: Librarianship, Scholarly Publishing, Data Management
   year_since:
@@ -94,28 +85,12 @@ ed:
   country: Iran
   language: Persian, English, Azeri
   
-  
-- name: Sandra Aceng
-  area: Humanities, Social Sciences
-  year_since:
-  city: Kampala
-  country: Uganda
-  language: English, Luo
-  photo: "aceng.jpg"
-
 - name: S.Suharto
   area: Humanities, Social Sciences
   year_since:
   city: Semarang
   country: Indonesia
   language: Indonesian, English
-
-- name: Scott Richard St. Louis
-  area: Humanities, Social Sciences, Technology
-  year_since:
-  city:
-  country: USA
-  language: English, French
 
 - name: Souheil Houissa
   area: Library and Information Science
@@ -128,12 +103,13 @@ ed:
 ## All associate editors
 
 ass_ed:
-- name: A. Sulthan
-  area: Social Sciences
+
+- name: Aleksandra Zawadzka
+  area: Librarianship
   year_since:
-  city: Coimbatore
-  country: India
-  language: Tamil, Urdu, Hindi, English
+  city: Wroclaw
+  country: Poland
+  language: Polish, English
 
 - name: Alessandro Pierno
   area: Humanities
@@ -141,20 +117,6 @@ ass_ed:
   city: Florence
   country: Italy
   language: Italian, English, Spanish
-
-- name: Alfonso Bustos
-  area:
-  year_since:
-  city:
-  country:
-  language:
-
-- name: Amanda Page
-  area: Librarianship
-  year_since:
-  city:
-  country: USA
-  language: English
 
 - name: Ana Fresco-Santalla
   area: Humanities
@@ -180,16 +142,9 @@ ass_ed:
 - name: Andrea Marchitelli
   area: Librarianship
   year_since:
-  city: Rome
-  country: Italy
-  language: Italian, English
-
-- name: Andrea Wright
-  area:
-  year_since:
-  city:
-  country: USA
-  language: English
+  city: 
+  country: Poland
+  language: Polish, English
 
 - name: Andronic Octavian
   area: Medicine
@@ -197,13 +152,13 @@ ass_ed:
   city: Bucharest
   country: Romania
   language: Romanian, English
-
-- name: Anna Wolodko
-  area: Library Science
+  
+- name: Anna Sidorko
+  area: Librarianship
   year_since:
-  city: Warsaw
-  country: Poland
-  language: Polish, English
+  city: Padang, West Sumatra
+  country: Indonesia
+  language: Indonesian, English
 
 - name: Annarita Barbaro
   area: Humanities
@@ -211,20 +166,6 @@ ass_ed:
   city: Rome
   country: Italy
   language: Italian, English
-
-- name: Anne Lahey
-  area: Libraries, Scholarly Communication
-  year_since:
-  city: Canberra
-  country: Australia
-  language: English
-
-- name: Antti-Jussi Nygård
-  area: History
-  year_since:
-  city: Turku
-  country: Finland
-  language: English, Finnish
 
 - name: Arbain Arbain
   area: Humanities
@@ -279,6 +220,14 @@ ass_ed:
   country: Argentina
   language: Spanish, English
   photo: "CarlosAlegre.jpg"
+  
+- name: Cezary Borkowicz
+  area: Librarianship
+  year_since:
+  city:  Biała Podlaska
+  country: Poland
+  language: Polish, English
+  photo: "CezaryBorkowicz.jpg"
 
 - name: Christine Davidian
   area: Technology
@@ -332,13 +281,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Dr. Ir. Dyah Rini Indriyanti
-  area: Science
-  year_since:
-  city:
-  country: Indonesia
-  language: Indonesian, English
-
 - name: Dwi Fajar Saputra
   area: Librarianship
   year_since:
@@ -367,13 +309,6 @@ ass_ed:
   city: Minneapolis, MN
   country: USA
   language: English
-
-- name: Eva Höglund
-  area: Social Sciences
-  year_since:
-  city: Turku
-  country: Finland
-  language: Finnish, English
 
 - name: Francesca Soldati
   area: Science
@@ -477,14 +412,6 @@ ass_ed:
   country: Mexico
   language: Spanish, English
 
-- name: José Molina
-  area:
-  year_since:
-  city:
-  country:
-  language: Spanish, English
-
-
 - name: Juliana Soares Lima
   area: Librarianship and information science
   year_since:
@@ -515,13 +442,6 @@ ass_ed:
   country: Iraq
   language: Arabic, English, Swedish
   photo: "karima.jpg"
-
-- name: Katharine Dunn
-  area: Scholarly Publishing
-  year_since:
-  city: Cambridge, MA
-  country: USA
-  language: English
 
 - name: Khoirul Fathoni
   area: Humanities
@@ -574,14 +494,6 @@ ass_ed:
   language: Portuguese, Spanish, English
   photo: "lucashelal.jpg"
 
-- name: Maarit Koskela
-  area:
-  year_since:
-  city:
-  country:
-  language: English
-
-
 - name: Marcau Flavius-Cristian
   area: Social Sciences
   year_since:
@@ -609,6 +521,14 @@ ass_ed:
   city: V.N Gaia
   country: Portugal
   language: Portuguese, Spanish, English
+ 
+- name: Mariano Hernán Corujo
+  area: Librarianship
+  year_since:
+  city: Buenos Aires
+  country: Argentina
+  language: Spanish, English
+  photo: "MarianoCorujo.jpeg"
   
   
 - name: Marie-Eve Dugas
@@ -663,6 +583,14 @@ ass_ed:
   city: Surabaya
   country: Indonesia
   language: Indonesian, English
+
+- name: Muhamad Taufik
+  area: Humanities, Social Sciences
+  year_since:
+  city:
+  country: Indonesia
+  language: Indonesian, English
+  photo: "MuhamadTaufik.jpg"
   
  
 - name: Nataliia Kaliuzhna
@@ -758,12 +686,13 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Ramazan Turgut
-  area: Social Science
+- name: Ramiro Doyenart
+  area: Health Sciences
   year_since:
-  city:
-  country: Turkey
-  language: Turkish, English, Dutch
+  city: Rio Grande do Sul
+  country: Brazil
+  language: Spanish, Portuguese, English
+  photo: "RamiroDoyenart.jpeg"
 
 - name: Ran Dang
   area: Biology, Medical Sciences
@@ -818,27 +747,6 @@ ass_ed:
   language: Farsi, English
   photo: "amini.jpg"
 
-- name: Sami Syrjämäki
-  area: Humanities, Social Sciences
-  year_since:
-  city: Helsinki
-  country: Finland
-  language: Finnish, English
-
-- name: Sandra Müller
-  area: Librarianship
-  year_since:
-  city: Lucerne
-  country: Switzerland
-  language: German, English
-
-- name: Sandra Studer
-  area: Librarianship
-  year_since:
-  city: Lucerne
-  country: Switzerland
-  language: German, English
-
 - name: Sara Jalalzadeh Asrjadidi
   area: Librarianship
   year_since:
@@ -847,34 +755,11 @@ ass_ed:
   language: Persian, Azari, Turkish, English
 
 - name: Sara Ricetto
-  area: Humanities
-  year_since:
-  city: Milan
-  country: Italy
-  language: Italian, English
-
-
-- name: Sara Ricetto
   area: Open Access, Open Science
   year_since:
   city: Milan
   country: Italy
   language: Italian, English, German
-
-- name: Simone Rosenkranz
-  area: Humanities
-  year_since:
-  city: Luzern
-  country: Switzerland
-  language: German, English
-
-- name: Soeharto Fisika
-  area: Science education, psychology and social science
-  year_since:
-  city:
-  country: Indonesia
-  language: Indonesian, English
-  photo: "soeharto.jpg"
 
 - name: Sofia Fagiolo
   area: Librarianship
@@ -921,20 +806,6 @@ ass_ed:
   country: Romania
   language: Romanian, English, French
 
-- name: Tereza Simandlová
-  area: Humanities
-  year_since:
-  city: Prague
-  country: Czech Republic
-  language: Czech, Slovak, English
-
-- name: Tommaso Fava
-  area: Librarianship
-  year_since:
-  city: Padova
-  country: Italy
-  language: Italian, English
-
 - name: Umar Khasan
   area: Social Sciences
   year_since:
@@ -948,14 +819,7 @@ ass_ed:
   city: São Paulo
   country: Brazil
   language: Portuguese, English
-  photo: "weldy.JPEG"
-
-- name: Weronika Kortas
-  area: Humanities, Social Sciences
-  year_since:
-  city: Toruń
-  country: Poland
-  language: Polish, English
+  photo: "weldy.jpeg"
 
 - name: Yaping Liu
   area: Medical and Healthcare Management
@@ -964,12 +828,14 @@ ass_ed:
   country: Australia
   language: Chinese, English
 
-- name: Yvonne Leimgruber
-  area: Librarianship
+ 
+- name: Zakariya Algamal
+  area: Statistics
   year_since:
-  city: Lucerne
-  country: Switzerland
-  language: German, English
+  city: Mosul
+  country: Iraq
+  language: Arabic, English
+  photo: "Algamal.JPG"
 
 - name: Zhe Jiang (Sophia)
   area: Social Sciences

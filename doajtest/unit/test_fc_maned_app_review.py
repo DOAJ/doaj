@@ -1,12 +1,11 @@
 import time
 from copy import deepcopy
 
-from nose.tools import assert_raises
 from werkzeug.datastructures import MultiDict
 
 from portality import constants
 from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory, AccountFixtureFactory
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, patch_history_dir
 from portality import lcc
 from portality import models
 from portality.forms.application_forms import ApplicationFormFactory
@@ -138,6 +137,7 @@ class TestManEdAppReview(DoajTestCase):
 
         ctx.pop()
 
+    @patch_history_dir('JOURNAL_HISTORY_DIR')
     def test_02_update_request(self):
         acc = models.Account()
         acc.set_id("richard")
@@ -355,8 +355,6 @@ class TestManEdAppReview(DoajTestCase):
                 count += 10
         assert count == 11
 
-        assert len(fc.alert) == 1
-
         ctx.pop()
 
     def test_07_disallowed_statuses(self):
@@ -399,7 +397,7 @@ class TestManEdAppReview(DoajTestCase):
         assert fc.form_data is not None
 
         # Finalise the formcontext. This should raise an exception because the application has already been accepted.
-        assert_raises(Exception, fc.finalise)
+        self.assertRaises(Exception, fc.finalise)
 
         # Check that an application status can when on hold.
         held_source = APPLICATION_SOURCE.copy()

@@ -40,13 +40,13 @@ class FailValidation(object):
 # Main test class
 ######################################################
 
-class TestPublicApplicationProcessor(DoajTestCase):
+class TestPublicApplicationProcessorPublic(DoajTestCase):
 
     def setUp(self):
-        super(TestPublicApplicationProcessor, self).setUp()
+        super(TestPublicApplicationProcessorPublic, self).setUp()
 
     def tearDown(self):
-        super(TestPublicApplicationProcessor, self).tearDown()
+        super(TestPublicApplicationProcessorPublic, self).tearDown()
 
     ###########################################################
     # Tests on the public application form in detail
