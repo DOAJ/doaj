@@ -9,35 +9,30 @@ from datetime import datetime, timedelta
 
 NS = "{http://www.openarchives.org/OAI/2.0/}"
 
-JOURNAL_BASE_URL = "http://localhost:5004/oai"
-ARTICLE_BASE_URL = "http://localhost:5004/oai.article"
-
-# Rate limit the requests (number per second or 0 to disable)
-RATE_LIMIT = 0
-
-if RATE_LIMIT > 0:
-    req_period = timedelta(seconds=1 / RATE_LIMIT)
-else:
-    req_period = timedelta()
-last_req = datetime.min
-
-IDENTS = []
-
-def harvest(base_url, res_token=None):
-    url = base_url + "?verb=ListRecords"
+def harvest(base_url, verb="ListRecords", metadata_prefix="oai_dc", rate_limit=0, last_req=None, res_token=None, idents=None):
+    url = base_url + "?verb=" + verb
     if res_token is not None:
         url += "&resumptionToken=" + res_token
     else:
-        url += "&metadataPrefix=oai_dc"
+        url += "&metadataPrefix=" + metadata_prefix
+
+    if rate_limit > 0:
+        req_period = timedelta(seconds=1 / rate_limit)
+    else:
+        req_period = timedelta()
+
+    if last_req is None:
+        last_req = datetime.min
+
+    if idents is None:
+        idents = []
 
     # Apply our rate limiting for requests
     now = datetime.utcnow()
-    global last_req
     if now - last_req < req_period:
         time.sleep((req_period - (now - last_req)).total_seconds())
 
     print("harvesting " + url)
-    last_req = now
     resp = requests.get(url)
     assert resp.status_code == 200, resp.text
 
@@ -46,16 +41,16 @@ def harvest(base_url, res_token=None):
     records = xml.findall(".//" + NS + "record")
     for record in records:
         oai_id = record.find(".//" + NS + "identifier").text
-        if oai_id in IDENTS:
+        if oai_id in idents:
             print("DUPLICATE ID: " + oai_id)
             return None
-        IDENTS.append(oai_id)
+        idents.append(oai_id)
 
     rtel = xml.find(".//" + NS + "resumptionToken")
     if rtel is not None:
         if rtel.text is not None and rtel.text != "":
             print("\tresumption token", rtel.text, "cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize"))
-            print("\tresults received: ", len(IDENTS))
+            print("\tresults received: ", len(idents))
             return rtel.text
         else:
             print("\tno resumption token, complete. cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize"))
@@ -64,18 +59,50 @@ def harvest(base_url, res_token=None):
         return None
 
 
-# journals
-rt = None
-while True:
-    rt = harvest(JOURNAL_BASE_URL, rt)
-    if rt is None:
-        break
+RUN_CONFIGURATION = {
+    "base_url": "https://doaj.org/",
+    "rate_limit": 0,
+    "endpoints" : [
+        {
+            "endpoint": "oai",
+            "verb": "ListRecords",
+            "metadataPrefix": "oai_dc"
+        },
+        {
+            "endpoint": "oai.article",
+            "verb": "ListRecords",
+            "metadataPrefix": "oai_dc"
+        },
+        {
+            "endpoint": "oai.article",
+            "verb": "ListRecords",
+            "metadataPrefix": "oai_doaj"
+        }
+    ]
+}
 
-IDENTS = []
 
-# articles
-rt = None
-while True:
-    rt = harvest(ARTICLE_BASE_URL, rt)
-    if rt is None:
-        break
+def run(config):
+    for endpoint in config.get("endpoints", []):
+        rt = None
+        last_req=None
+        idents = []
+        while True:
+            request_time = datetime.utcnow()
+            rt = harvest(
+                config.get("base_url") + endpoint.get("endpoint"),
+                verb=endpoint.get("verb", "ListRecords"),
+                metadata_prefix=endpoint.get("metadataPrefix", "oai_dc"),
+                rate_limit=config.get("rate_limit"),
+                last_req=last_req,
+                res_token=rt,
+                idents=idents
+            )
+            last_req = request_time
+
+            if rt is None:
+                break
+
+
+if __name__ == "__main__":
+    run(RUN_CONFIGURATION)
