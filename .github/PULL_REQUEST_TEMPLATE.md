@@ -1,5 +1,7 @@
 # Title <- provide a title for the PR
 
+*Please don't delete any sections when completing this PR template; instead enter **N/A** for checkboxes or sections which are not applicable, unless otherwise stated below*
+
 See # <- enter link to issue on main board
 
 Describe the scope/purpose of the PR here in as much detail as you like
