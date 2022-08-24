@@ -112,7 +112,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
     // ]})
     editorListFrag += `<li>
         <span class="label tag tag--featured">Unassigned</span>
-        <a href="/admin/applications?source=${appUnassignedSource}" class="tag tag--tertiary">${data.unassigned.applications} <span class="sr-only">applications</span></a>
+        <a href="/admin/applications?source=${appUnassignedSource}" class="tag tag--tertiary" title="See unassigned applications">${data.unassigned.applications} <span class="sr-only">applications</span></a>
     </li>`;
 
     let appStatusProgressBar = "";
