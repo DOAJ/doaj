@@ -60,7 +60,7 @@ def harvest(base_url, verb="ListRecords", metadata_prefix="oai_dc", rate_limit=0
 
 
 RUN_CONFIGURATION = {
-    "base_url": "https://doaj.org/",
+    "base_url": "http://localhost:5004/",
     "rate_limit": 0,
     "endpoints" : [
         {
