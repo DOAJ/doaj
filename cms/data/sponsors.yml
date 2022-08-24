@@ -56,6 +56,10 @@ silver:
   url: https://www.kb.se/
   logo: kbse.svg
 
+- name: Oxford University Press
+  url: https://global.oup.com/
+  logo: OUP.jpg
+
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
   logo: sage.svg
@@ -77,6 +81,10 @@ bronze:
 - name: Cottage Labs
   url: https://cottagelabs.com/
   logo: cl.svg
+
+- name: Digital Science
+  url: https://www.digital-science.com/
+  logo: DS-logo.svg
   
 - name: EDP Sciences
   url: https://www.edpsciences.org/
@@ -118,9 +126,9 @@ bronze:
   url: https://www.oclc.org/
   logo: oclc.svg
 
-- name: Oxford University Press
-  url: https://global.oup.com/
-  logo: OUP.jpg
+- name: PLOS
+  url: https://plos.org/
+  logo: PLOS.svg
 
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/

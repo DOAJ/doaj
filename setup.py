@@ -1,9 +1,11 @@
 from setuptools import setup, find_packages
 import sys
 
+# Install for development or CI with pip install -e .[test] to get pytest, coverage, and selenium extras.
+
 setup(
     name='doaj',
-    version='6.2.0',
+    version='6.2.3',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -35,7 +37,6 @@ setup(
         "markdown-full-yaml-metadata==2.0.1",
         "markdown-link-attr-modifier==0.2.0",
         "mdx_truly_sane_lists==1.2",
-        "nose==1.3.7",
         "openpyxl~=3.0.3",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
         "parameterized==0.7.0",
         "psutil==5.6.3",

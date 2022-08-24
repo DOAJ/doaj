@@ -16,7 +16,7 @@ The Directory of Open Access Journals ("DOAJ"), managed independently by [IS4OA]
 
 ### Who to contact at DOAJ about protecting your privacy
 
-The DOAJ Operations Manager, Dom Mitchell, has assumed responsibility of the DOAJ data policy and implementing the changes required by the GDPR which came into effect on 25th May 2018. If you have any questions or concerns about any of the information laid out in this Notice, or any other question about how DOAJ protects or uses your data, please [send an email to Dom](mailto:dom@doaj.org). Alternatively, you can write to him: Dom Mitchell, c/o DOAJ, IS4OA, Sandløkken 9, 2791 Dragør, DENMARK.
+The DOAJ Operations Manager, Dominic Mitchell, has assumed responsibility of the DOAJ data policy and implementing the changes required by the GDPR which came into effect on 25th May 2018. If you have any questions or concerns about any of the information laid out in this Notice, or any other question about how DOAJ protects or uses your data, please [send an email to Dom](mailto:dominic@doaj.org). Alternatively, you can write to him: Dominic Mitchell, IS4OA Denmark, c/o Joanna Ball, c/o Joanna Ball, Bøgevej 33, DK-4000 Roskilde, DENMARK.
 
 ### The policy
 
@@ -170,7 +170,7 @@ An individual may request at any time that DOAJ deletes their user account from 
 
 #### 8b How to request that all personal data is deleted
 
-To request that DOAJ deletes all of the personal data that we hold about you, please send an email to the DOAJ Operations Manager, Dom Mitchell: [dom@doaj.org](mailto:dom@doaj.org).
+To request that DOAJ deletes all of the personal data that we hold about you, please send an email to the DOAJ Operations Manager, Dominic Mitchell: [dominic@doaj.org](mailto:dominic@doaj.org).
 
 ### 9) Subject access request (SAR)
 
@@ -180,7 +180,7 @@ An SAR is the name given to the process by which a user can request to know deta
 
 #### 9.b How to make an SAR to DOAJ
 
-You may submit an SAR to DOAJ by contacting the DOAJ Operations Manager, Dom Mitchell, directly: [dom@doaj.org](mailto:dom@doaj.org) Any request in writing will be considered valid, whatever the format.
+You may submit an SAR to DOAJ by contacting the DOAJ Operations Manager, Dominic Mitchell, directly: [dominic@doaj.org](mailto:dominic@doaj.org) Any request in writing will be considered valid, whatever the format.
 
 ### 10) Withdrawing consent
 
@@ -190,4 +190,4 @@ You may also explicitly indicate that you do not want DOAJ to use your email add
 
 ### 11) How to complain
 
-If you need to complain about how DOAJ has handled an SAR or your request to withdraw consent, or any other aspect related to the information detailed in this Privacy Information Notice, please send an email to the DOAJ Operations Manager, Dom Mitchell: [dom@doaj.org](mailto:dom@doaj.org)
+If you need to complain about how DOAJ has handled an SAR or your request to withdraw consent, or any other aspect related to the information detailed in this Privacy Information Notice, please send an email to the DOAJ Operations Manager, Dominic Mitchell: [dominic@doaj.org](mailto:dominic@doaj.org)

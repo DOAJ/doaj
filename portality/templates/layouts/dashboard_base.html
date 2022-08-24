@@ -65,7 +65,7 @@
         {% if request.path == "/dashboard/" %}
         <div class="row">
           <header class="col-md-6 col-lg-4">
-            <p class="label tag"><small><a href="{{ url_for('account.username', username=current_user.id) }}">{{ current_user.id }} (Managing Editor)</a></small></p>{# TODO: insert role of user here #}
+            <p class="label tag"><small><a href="{{ url_for('account.username', username=current_user.id) }}"><span data-feather="user" aria-hidden="true"></span> {{ current_user.id }} (Managing Editor)</a></small></p>{# TODO: insert role of user here #}
             {% endif %}
             <h1>
               {% block page_title %}
@@ -84,11 +84,13 @@
               <dd>
                 <ul class="inlined-list tags">
                   {% for eg in managed_groups %}
-                  <li class="tag tag--tertiary">
-                    {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [eg.name]}], term=[{"index.application_type.exact" : "new application"}]) %}
-                    <a href="{{ url_for('admin.suggestions') }}?source={{ source }}" title="See all applications"><strong>{{ eg.name }}</strong></a>
-                    <a href="{{ url_for('admin.index') }}?source={{ source }}" title="See all journals">(journals)
-                    </a>
+                  <li>
+                    {% set app_source = search_query_source(term=[
+                            {"admin.editor_group.exact" : eg.name},
+                            {"index.application_type.exact" : "new application"}
+                        ], sort=[{"admin.date_applied": {"order": "asc"}}]
+                    ) %}
+                    <a href="{{ url_for('admin.suggestions') }}?source={{ app_source }}" title="See all applications" class="tag tag--tertiary label"><span data-feather="users" aria-hidden="true"></span> <strong>{{ eg.name }}</strong></a>
                   </li>
                   {% endfor %}
                 </ul>
