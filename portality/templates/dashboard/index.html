@@ -91,8 +91,7 @@
         {# ~~^-> EditorGroup:Model ~~ #}
           {% for eg in managed_groups %}
           <li class="tabs__item">
-            {# TODO: this needs to show the total nb of applications for each group #}
-            <a href="#" data-group-id="{{ eg.id }}" role="tab" aria-selected="{% if loop.first %}true{% else %}false{% endif %}" class="label js-group-tab">{{ eg.name }} ({{ maned_assignments[eg.name] }}<span class="sr-only"> applications</span>)</a>
+            <a href="#" data-group-id="{{ eg.id }}" role="tab" aria-selected="{% if loop.first %}true{% else %}false{% endif %}" class="label js-group-tab" title="Toggle to {{ eg.name }}’s activity data">{{ eg.name }} ({{ maned_assignments[eg.name] }}<span class="sr-only"> applications</span>)</a>
           </li>
           {% endfor %}
         </ul>
