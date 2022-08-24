@@ -32,7 +32,7 @@ def _clean_old_data(domain_class: Type[DomainObject], retention_days,
 
     num_record = domain_class.hit_count(query)
     logger_fn(f'remove [{domain_class.__name__}] -- {datetime_field} <= {last_retention_date}')
-    logger_fn(f'number of [{domain_class.__name__}][{num_record}] to be remove.')
+    logger_fn(f'number of [{domain_class.__name__}][{num_record}] to be removed.')
     domain_class.delete_by_query(query)
 
 
