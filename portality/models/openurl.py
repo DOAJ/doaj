@@ -26,7 +26,8 @@ OPENURL_TO_ES = {
     'epage': (None, 'bibjson.end_page.exact'),
     'issn': ('index.issn.exact', 'index.issn.exact'),   # bibjson.identifier.id.exact
     'eissn': ('index.issn.exact', 'index.issn.exact'),
-    'isbn': ('index.issn.exact', 'index.issn.exact')
+    'isbn': ('index.issn.exact', 'index.issn.exact'),
+    'doi': (None, 'index.doi.exact')
 }
 
 # Terms search template. Ensure all queries from OpenURL return publicly visible results with in_doaj : true
