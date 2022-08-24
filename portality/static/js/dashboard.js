@@ -91,7 +91,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
         }
         editorListFrag += `<li>
             <a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>
-            <a href="/admin/applications?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;">${appCount} <span class="sr-only">applications</span></a>
+            <a href="/admin/applications?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a>
         </li>`;
     }
 
