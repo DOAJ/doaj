@@ -9,10 +9,10 @@ if __name__ == "__main__":
     j = Journal.pull(JOURNAL)
     ur.set_application_status(APPLICATION_STATUS_REJECTED)
     ur.add_note("This update request has been manually rejected because the journal " + JOURNAL + " is no longer in DOAJ, see: https://github.com/DOAJ/doajPM/issues/3285#issuecomment-1205443986")
-    if (ur.current_journal is not None):
+    if ur.current_journal is not None:
         ur.remove_current_journal()
         ur.set_related_journal(JOURNAL)
-    if (j.current_application is not None):
+    if j.current_application is not None:
         j.remove_current_application()
         j.add_related_application(UR_TO_REJECT)
 
