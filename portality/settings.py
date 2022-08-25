@@ -1246,8 +1246,10 @@ TASKS_ANON_EXPORT_BATCH_SIZE = 100000
 
 #########################################################
 # Background tasks --- old_data_cleanup
-TASKS_NOTIFICATION_RETENTION_DAYS = 180
-TASKS_BGJOB_RETENTION_DAYS = 180
+TASK_DATA_RETENTION_DAYS = {
+    "notification": 180,
+    "background_job": 180,
+}
 
 ########################################
 # Editorial Dashboard - set to-do list size
