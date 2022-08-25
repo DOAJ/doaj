@@ -30,14 +30,15 @@ class ApplicationManedReadyNotify(EventConsumer):
         if not application.editor_group:
             return
 
-        editor = "unknown editor"
-        if application.editor:
-            editor = application.editor
 
         eg = models.EditorGroup.pull_by_key("name", application.editor_group)
         managing_editor = eg.maned
         if not managing_editor:
             return
+
+        editor = eg.editor
+        if not editor:
+            editor = "unknown editor"
 
         svc = DOAJ.notificationsService()
 
