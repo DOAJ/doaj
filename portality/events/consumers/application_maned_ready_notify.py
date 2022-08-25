@@ -48,7 +48,7 @@ class ApplicationManedReadyNotify(EventConsumer):
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
         notification.long = svc.long_notification(cls.ID).format(
             application_title=application.bibjson().title,
-            editor=eg.editor
+            editor=editor
         )
         notification.short = svc.short_notification(cls.ID)
 
