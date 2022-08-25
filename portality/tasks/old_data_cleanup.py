@@ -13,6 +13,26 @@ from portality.tasks.redis_huey import schedule, long_running
 target_queue = long_running
 
 
+class RetentionQuery:
+    def __init__(self,
+                 last_retention_date: datetime.datetime,
+                 datetime_field='created_date'):
+        self.last_retention_date = last_retention_date
+        self.datetime_field = datetime_field
+
+    def query(self):
+        # returns the query dict
+        return {
+            'query': {
+                'range': {
+                    self.datetime_field: {
+                        'lte': self.last_retention_date.strftime(ES_DATETIME_FMT),
+                    }
+                }
+            }
+        }
+
+
 def _clean_old_data(domain_class: Type[DomainObject], retention_days,
                     datetime_field='created_date',
                     logger_fn=None, ):
@@ -20,20 +40,11 @@ def _clean_old_data(domain_class: Type[DomainObject], retention_days,
         logger_fn = print
 
     last_retention_date = datetime.datetime.now() - datetime.timedelta(days=retention_days)
-    query = {
-        'query': {
-            'range': {
-                datetime_field: {
-                    'lte': last_retention_date.strftime(ES_DATETIME_FMT),
-                }
-            }
-        }
-    }
-
-    num_record = domain_class.hit_count(query)
+    retention_query = RetentionQuery(last_retention_date, datetime_field=datetime_field).query()
+    num_record = domain_class.hit_count(retention_query)
     logger_fn(f'remove [{domain_class.__name__}] -- {datetime_field} <= {last_retention_date}')
     logger_fn(f'number of [{domain_class.__name__}][{num_record}] to be removed.')
-    domain_class.delete_by_query(query)
+    domain_class.delete_by_query(retention_query)
 
 
 def clean_all_old_data(bgjob_retention_days=180,
