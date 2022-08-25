@@ -7,6 +7,10 @@ from copy import deepcopy
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
 
 class Crossref442ArticleFixtureFactory(object):
+    """
+    ~~Crossref442XML:Fixture->Crossref442:Crosswalk~~
+    """
+
 
     NS = {'x': 'http://www.crossref.org/schema/4.4.2'}
     ARTICLES = os.path.join(RESOURCES, "crossref442_article_uploads.xml")
@@ -126,5 +130,8 @@ class Crossref442ArticleFixtureFactory(object):
         return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='Multiple Affs']]")
 
 class Crossref531ArticleFixtureFactory(Crossref442ArticleFixtureFactory):
+    """
+    ~~Crossref531XML:Fixture->Crossref531:Crosswalk~~
+    """
     NS = {'x': 'http://www.crossref.org/schema/5.3.1'}
     ARTICLES = os.path.join(RESOURCES, "crossref531_article_uploads.xml")

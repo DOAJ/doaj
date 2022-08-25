@@ -335,6 +335,7 @@ class CrossrefXWalk442(object):
 class CrossrefXWalk531(CrossrefXWalk442):
     """
         ~~Crossref531XML:Crosswalk->Crossref531:Feature~~
+        ~~->Crossref422XML:Crosswalk~~
         """
     format_name = "crossref531"
     NS = {'x': 'http://www.crossref.org/schema/5.3.1', 'j': 'http://www.ncbi.nlm.nih.gov/JATS1'}
