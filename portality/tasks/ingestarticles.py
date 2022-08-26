@@ -304,8 +304,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             except:
                 job.add_audit_message("Error cleaning up file which caused IngestException: {x}".format(x=traceback.format_exc()))
         except (DuplicateArticleException, ArticleNotAcceptable) as e:
-            job.add_audit_message("One or more articles did not contain either a DOI or a Fulltext URL")
-            file_upload.failed("One or more articles did not contain either a DOI or a Fulltext URL")
+            job.add_audit_message(str(e))
+            file_upload.failed(str(e))
             try:
                 file_failed(path)
             except:
