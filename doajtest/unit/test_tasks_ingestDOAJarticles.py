@@ -801,7 +801,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         # this assumes that huey is in always eager mode, and thus this immediately calls the async task,
         # which in turn calls execute, which ultimately calls run
-        ingestarticles.IngestArticlesBackgroundTask.submit(job)
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task.run()
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
