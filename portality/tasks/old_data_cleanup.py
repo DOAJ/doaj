@@ -44,6 +44,8 @@ def _clean_old_data(domain_class: Type[DomainObject],
         logger_fn(f'stop cleanup for invalid retention_day [{domain_class.__type__}][{n_retention_day}]')
         return
 
+    logger_fn(f'working for clean_old_data [{domain_class.__type__}][{n_retention_day}]')
+
     last_retention_date = datetime.datetime.now() - datetime.timedelta(days=n_retention_day)
     retention_query = RetentionQuery(last_retention_date, datetime_field=datetime_field).query()
     num_record = domain_class.hit_count(retention_query)
