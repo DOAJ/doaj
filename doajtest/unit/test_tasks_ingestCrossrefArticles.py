@@ -847,7 +847,8 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
 
         # this assumes that huey is in always eager mode, and thus this immediately calls the async task,
         # which in turn calls execute, which ultimately calls run
-        ingestarticles.IngestArticlesBackgroundTask.submit(job)
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task.run()
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -2083,3 +2084,37 @@ class TestIngestArticlesCrossrefXML(DoajTestCase):
         issn.attrib["media_type"] = old_attr
         etree.ElementTree(root).write(ARTICLES, pretty_print=True)
 
+    def test_60_doaj_no_issns(self):
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("doaj")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = CrossrefArticleFixtureFactory.upload_no_issns()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed"
+        assert file_upload.error == "Unable to validate document with identified schema"
