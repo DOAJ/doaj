@@ -75,7 +75,7 @@ ed:
   area: Medicine
   year_since:
   city: Adana
-  country: Turkey
+  country: Türkiye
   language: Turkish, English
   featured: true
 
@@ -450,7 +450,7 @@ ass_ed:
   area: Science
   year_since:
   city: Adiyaman
-  country: Turkey
+  country: Türkiye
   language: Turkish, English
   photo: "kamil.jpg"
 
@@ -569,7 +569,7 @@ ass_ed:
   area: Social Sciences
   year_since:
   city:
-  country: Turkey
+  country: Türkiye
   language: English
 
 - name: Miguel-Ángel Vera-Baceta
