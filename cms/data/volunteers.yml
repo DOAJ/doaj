@@ -666,6 +666,15 @@ ass_ed:
   country:
   language:
 
+- name: Orhan Canpolat
+  area: Engineering
+  year_since:
+  city: Istanbul
+  country: Türkiye
+  language: Turkish, English
+  photo: "Orhan CANPOLAT.jpg"
+
+
 - name: Oskia Agirre
   area: Library and Information Science
   year_since:
@@ -839,6 +848,14 @@ ass_ed:
   country: Brazil
   language: Portuguese, English
   photo: "weldy.jpeg"
+  
+- name: Yalçın Tükel 
+  area: Sports recreation
+  year_since:
+  city: Konya
+  country: Türkiye
+  language: Turkish, English
+  photo: "yalçın tükel.jpg"
 
 - name: Yaping Liu
   area: Medical and Healthcare Management
