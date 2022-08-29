@@ -83,7 +83,7 @@
               </dt>
               <dd>
                 <ul class="inlined-list tags">
-                  {% for eg in managed_groups %}
+                  {% for eg in managed_groups|sort(attribute="name") %}
                   <li>
                     {% set app_source = search_query_source(term=[
                             {"admin.editor_group.exact" : eg.name},
