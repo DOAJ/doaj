@@ -616,7 +616,7 @@ def old_faq():
 
 @blueprint.route("/publishers")
 def publishers():
-    return render_template("layouts/static_page.html")
+    return redirect(url_for("doaj.guide", **request.args), code=308)
 
 
 # Redirects necessitated by new templates
