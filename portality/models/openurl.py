@@ -41,6 +41,8 @@ class OpenURLRequest(object):
     This is the only schema the DOAJ supports.
     """
 
+    # ~~API:Feature~~
+
     def __init__(self, **kwargs):
 
         # Initialise the OpenURLRequest object with empty attributes
@@ -142,6 +144,7 @@ class OpenURLRequest(object):
                 jtoc_url = url_for("doaj.toc", identifier=ident)
             return jtoc_url
 
+        #~~->Article:Page~~
         elif results.get('hits', {}).get('hits', [{}])[0].get('_source', {}).get('es_type') == 'article':
             return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
 
