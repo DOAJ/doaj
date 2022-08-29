@@ -131,7 +131,7 @@ class OpenURLRequest(object):
                 if vol_iss_results == None:
                     # we were asked for a vol/issue, but weren't given the correct information to get it.
                     return None
-                elif vol_iss_results['hits']['total'] > 0:
+                elif vol_iss_results['hits']['total']['value'] > 0:
                     # construct the toc url using the ident, plus volume and issue
                     jtoc_url = url_for("doaj.toc", identifier=ident, volume=self.volume, issue=self.issue)
                 else:
