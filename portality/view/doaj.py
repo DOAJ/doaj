@@ -342,6 +342,7 @@ def toc(identifier=None, volume=None, issue=None):
                            toc_issns=journal.bibjson().issns())
 
 
+#~~->Article:Page~~
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
     # identifier must be the article id
