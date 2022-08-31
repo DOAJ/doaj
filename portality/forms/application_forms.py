@@ -368,8 +368,10 @@ class FieldDefinitions:
         "label": "Up to 6 subject keywords in English",
         "input": "taglist",
         "help": {
-            "long_help": ["Only 6 keywords are allowed. Choose words that describe the subject matter of the journal "
-                          "and not the journal’s qualities.", "Keywords must be in English and separated by a comma."],
+            "long_help": ["Choose upto 6 keywords that describe the subject matter of the journal. "
+                          "Keywords must be in English.", "Use single words or phrases(group of 2 or 3 words)" 
+                          "that describe the journal's main topic.", "Do not add acronyms, abbreviations or descriptive sentences.", 
+                          "Note that the keywords may be edited by DOAJ editorial staff." ],
         },
         "validate": [
             {"required": {"message": "Enter at least <strong>one subject keyword</strong> in English"}},
