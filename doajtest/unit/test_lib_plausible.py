@@ -3,35 +3,47 @@ from collections import namedtuple
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 
-import requests
-
 from portality.lib import plausible
 
 FakeResp = namedtuple('FakeResp', ['status_code'])
 
 
 class TestLibPlausible(TestCase):
-    def _assert_send_event_post_called(self, post_mock, expected_goal):
-        post_mock.call_args.args[0].endswith('/api/event/')
-        input_json = post_mock.call_args.kwargs.get('json', {})
-        self.assertEqual(input_json.get('name'), expected_goal)
-        self.assertIn('url', input_json)
-        self.assertIn('domain', input_json)
+    def _create_assert_send_event_post_called(self, expected_goal):
+        def _fn(*args, **kwargs):
+            args[0].endswith('/api/event/')
+            input_json = kwargs.get('json', {})
+            assert input_json.get('name') == expected_goal
+            assert 'url' in input_json
+            assert 'domain' in input_json
+
+        return _fn
+
+    def _create_side_effect_post_resp(self, return_value, assert_input_fn_list=None):
+        def _fn(*args, **kwargs):
+            for assert_input_fn in assert_input_fn_list:
+                assert_input_fn(*args, **kwargs)
+            return return_value
+
+        return _fn
 
     @patch.object(plausible.requests, 'post')
     def test_send_event__without_props_payload(self, post_mock: MagicMock):
         # prepare test data
         input_goal = 'test_goal'
         input_fake_resp = FakeResp(200)
-        post_mock.return_value = input_fake_resp
+        post_mock.side_effect = self._create_side_effect_post_resp(
+            input_fake_resp,
+            assert_input_fn_list=[
+                self._create_assert_send_event_post_called(input_goal),
+            ]
+        )
 
         def input_on_completed(_resp):
             self.assertEqual(_resp, input_fake_resp)
 
         # tigger send_event
         plausible.send_event(input_goal, on_completed=input_on_completed)
-
-        self._assert_send_event_post_called(post_mock, input_goal)
 
     @patch.object(plausible.requests, 'post')
     def test_send_event__with_props_payload(self, post_mock: MagicMock):
@@ -42,17 +54,22 @@ class TestLibPlausible(TestCase):
             'bb': 'ggg',
         }
         input_fake_resp = FakeResp(200)
-        post_mock.return_value = input_fake_resp
+
+        def _assert_input(*args, **kwargs):
+            input_json = kwargs.get('json', {})
+            assert 'props' in input_json
+            assert json.loads(input_json['props']) == input_props_payload
+
+        post_mock.side_effect = self._create_side_effect_post_resp(
+            input_fake_resp,
+            assert_input_fn_list=[
+                self._create_assert_send_event_post_called(input_goal),
+                _assert_input,
+            ]
+        )
 
         def input_on_completed(_resp):
             self.assertEqual(_resp, input_fake_resp)
 
         # tigger send_event
         plausible.send_event(input_goal, on_completed=input_on_completed, **input_props_payload)
-
-        # assert
-        self._assert_send_event_post_called(post_mock, input_goal)
-        result_json = post_mock.call_args.kwargs.get('json', {})
-        self.assertIn('props', result_json)
-        self.assertEqual(json.loads(result_json['props']),
-                         input_props_payload)
