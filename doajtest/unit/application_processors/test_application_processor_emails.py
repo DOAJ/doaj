@@ -10,7 +10,6 @@ from portality import constants
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.core import app
 from portality.forms.application_forms import ApplicationFormFactory, JournalFormFactory
 from portality.bll import DOAJ
 from doajtest.mocks.bll_notification import InterceptNotifications
@@ -1374,14 +1373,6 @@ class TestJournalReviewEmails(DoajTestCase):
         assEd_template = re.escape('email/notification_email.jinja2')
         assEd_to = re.escape(models.Account.pull('associate_2').email)
         assEd_subject = 'Directory of Open Access Journals - New journal assigned to you'
-
-        print('--------------------- debuggg')
-        print('>>> ENABLE_EMAIL ' + str(app.config.get('ENABLE_EMAIL')))
-        print('>>> email_log_regex')
-        print(email_log_regex % (assEd_template, assEd_to, assEd_subject))
-        print('>>> info_stream_contents')
-        print(info_stream_contents)
-        print('-----------------------------')
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
