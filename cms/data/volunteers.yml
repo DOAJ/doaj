@@ -39,6 +39,14 @@ ed:
   featured: true
   photo: "Dawam.jpg"
 
+- name: Dessy Harisanty
+  area: Library and Information Science
+  year_since:
+  city: Surabaya
+  country: Indonesia
+  language: Bahasa Indonesia, English
+  photo: "dh.jpg"
+
 - name: Fei Yu
   area: Librarianship, Scholarly Publishing, Data Management
   year_since:
