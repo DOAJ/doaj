@@ -377,7 +377,7 @@ class FieldDefinitions:
         "input": "taglist",
         "help": {
             "long_help": ["Choose upto 6 keywords that describe the subject matter of the journal. "
-                          "Keywords must be in English.", "Use single words or short phrases (2 to 3 words)" 
+                          "Keywords must be in English.", "Use single words or short phrases (2 to 3 words) " 
                           "that describe the journal's main topic.", "Do not add acronyms, abbreviations or descriptive sentences.", 
                           "Note that the keywords may be edited by DOAJ editorial staff." ],
         },
