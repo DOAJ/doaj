@@ -18,7 +18,7 @@ class TestLibPlausible(TestCase):
         self.assertIn('url', input_json)
         self.assertIn('domain', input_json)
 
-    @patch.object(requests, 'post')
+    @patch.object(plausible.requests, 'post')
     def test_send_event__without_props_payload(self, post_mock: MagicMock):
         # prepare test data
         input_goal = 'test_goal'
@@ -33,7 +33,7 @@ class TestLibPlausible(TestCase):
 
         self._assert_send_event_post_called(post_mock, input_goal)
 
-    @patch.object(requests, 'post')
+    @patch.object(plausible.requests, 'post')
     def test_send_event__with_props_payload(self, post_mock: MagicMock):
         # prepare test data
         input_goal = 'test_goal'
