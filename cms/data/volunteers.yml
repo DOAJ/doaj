@@ -423,7 +423,7 @@ ass_ed:
   city:
   country: Brazil
   language: Portuguese, English
-  photo: "jlima.jpg"
+  photo:
 
 - name: JuYeon Park
   area:
@@ -432,7 +432,7 @@ ass_ed:
   country:
   language: Korean, English
 
-- name: Kamil B. Varınca
+- name: Kâmil B. Varınca
   area: Science
   year_since:
   city: Adiyaman
