@@ -423,7 +423,7 @@ ass_ed:
   city:
   country: Brazil
   language: Portuguese, English
-  photo:
+  photo: "jlima.jpg"
 
 - name: JuYeon Park
   area:
