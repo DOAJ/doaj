@@ -21,32 +21,6 @@ ed:
   language: Spanish
   featured: true
 
-- name: Azhar Aziz Lubis
-  area: English Language Teaching
-  year_since:
-  city: Benkulu
-  country: Indonesia
-  language: Bahasa Indonesia, English
-  featured: true
-  photo: "Azhar.jpg"
-
-- name: Dawam M. Rohmatulloh
-  area: Social Sciences, Humanities
-  year_since:
-  city: Ponorogo
-  country: Indonesia
-  language: Bahasa Indonesia, English, Dutch
-  featured: true
-  photo: "Dawam.jpg"
-
-- name: Dessy Harisanty
-  area: Library and Information Science
-  year_since:
-  city: Surabaya
-  country: Indonesia
-  language: Bahasa Indonesia, English
-  photo: "dh.jpg"
-
 - name: Fei Yu
   area: Librarianship, Scholarly Publishing, Data Management
   year_since:
@@ -63,14 +37,12 @@ ed:
   language: Russian, German, English
   featured: true
 
-
 - name: Ikhwan Arief
   area: Science, Technology
   year_since:
   city: Padang, West Sumatra
   country: Indonesia
   language: Indonesian, English
-  
   
 - name: Juyeon Park
   area: Librarianship
@@ -209,7 +181,6 @@ ass_ed:
   language: Indonesian, English
   photo: "azhar.jpg"
 
-
 - name: Barbara Łuszczek
   area: Librarianship
   year_since:
@@ -238,7 +209,6 @@ ass_ed:
   country: USA
   language: English, American Sign Language
   photo: "cara.jpg"
-
 
 - name: Carlos Alegre
   area: Social Sciences
@@ -286,6 +256,15 @@ ass_ed:
   country: Cuba
   language: English, French
 
+- name: Dawam M. Rohmatulloh
+  area: Social Sciences, Humanities
+  year_since:
+  city: Ponorogo
+  country: Indonesia
+  language: Bahasa Indonesia, English, Dutch
+  featured: true
+  photo: "Dawam.jpg"
+
 - name: Débora Domingo-Calabuig
   area: Science, Technology
   year_since:
@@ -293,13 +272,20 @@ ass_ed:
   country: Spain
   language: Spanish, English
 
-
 - name: Dedi Rahman Nur
   area: Social Sciences
   year_since:
   city: Samarinda
   country: Indonesia
   language: Indonesian, English
+  
+- name: Dessy Harisanty
+  area: Library and Information Science
+  year_since:
+  city: Surabaya
+  country: Indonesia
+  language: Bahasa Indonesia, English
+  photo: "dh.jpg"  
 
 - name: Dr. Eko Supraptono
   area: Technology
@@ -321,14 +307,6 @@ ass_ed:
   city: Malang
   country: Indonesia
   language: Indonesian, English
-
-
-- name: Elli Papadopoulou
-  area: Librarianship
-  year_since:
-  city: Marousi
-  country: Greece
-  language: Greek, English
 
 - name: Emma Molls
   area: Librarianship
@@ -445,7 +423,7 @@ ass_ed:
   city:
   country: Brazil
   language: Portuguese, English
-  photo: "jlima.jpg"
+  photo:
 
 - name: JuYeon Park
   area:
@@ -454,7 +432,7 @@ ass_ed:
   country:
   language: Korean, English
 
-- name: Kamil B. Varınca
+- name: Kâmil B. Varınca
   area: Science
   year_since:
   city: Adiyaman
