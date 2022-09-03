@@ -30,31 +30,31 @@
     </ul>
     {% endif %}
     {% if current_user.id == account.id or current_user.is_super %}
-    {% if current_user.id != account.id %}
-    <p class="alert">
-      <span data-feather="alert-triangle" aria-hidden="true"></span>
-      You are editing a user account that is <strong>not your own</strong>. Be careful!
-    </p>
-    {% endif %}
+        {% if current_user.id != account.id %}
+            <p class="alert">
+              <span data-feather="alert-triangle" aria-hidden="true"></span>
+              You are editing a user account that is <strong>not your own</strong>. Be careful!
+            </p>
+        {% endif %}
 
-    <h2>Edit your details</h2>
-    {% include 'account/_edit_user_form.html' %}
+        <h2>Edit your details</h2>
+        {% include 'account/_edit_user_form.html' %}
 
-    {% if current_user.is_super %}
-    <hr/>
-    <h2>Delete this account</h2>
-    <p><span data-feather="alert-triangle" aria-hidden="true"></span> This <strong>irrevocably</strong> deletes the account.</p>
-    <form action="" method="POST">
-      <input type="checkbox" name="delete_confirm" id="delete_confirm" value="delete_confirm">
-      <label for="delete_confirm">Yes, I’m sure</label>
-      <input type="submit" name="submit" value="Delete" class="button">
-    </form>
-    {% endif %}
+        {% if current_user.is_super %}
+            <hr/>
+            <h2>Delete this account</h2>
+            <p><span data-feather="alert-triangle" aria-hidden="true"></span> This <strong>irrevocably</strong> deletes the account.</p>
+            <form action="" method="POST">
+              <input type="checkbox" name="delete_confirm" id="delete_confirm" value="delete_confirm">
+              <label for="delete_confirm">Yes, I’m sure</label>
+              <input type="submit" name="submit" value="Delete" class="button">
+            </form>
+        {% endif %}
 
-    {% else %}
-    <h2>{{ account.id }}</h2>
-    <p>You are not logged in as this user. Use the <a href="/account/login">login page</a> if you want to change this</p>
-    {% endif %}
+        {% else %}
+            <h2>{{ account.id }}</h2>
+            <p>You are not logged in as this user. Use the <a href="/account/login">login page</a> if you want to change this</p>
+        {% endif %}
   </div>
 
   <div class="col-md-4">
