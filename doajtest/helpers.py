@@ -136,8 +136,13 @@ class DoajTestCase(TestCase):
             'CMS_BUILD_ASSETS_ON_STARTUP': False
         })
 
+        # always_eager has been replaced by immediate
+        # for huey version > 2
+        # https://huey.readthedocs.io/en/latest/guide.html
         main_queue.always_eager = True
         long_running.always_eager = True
+        main_queue.immediate = True
+        long_running.immediate = True
 
         dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
         dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
