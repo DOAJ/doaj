@@ -129,6 +129,8 @@ class TestPublicApplicationEmails(DoajTestCase):
         print(self.app_test.config.get("ENABLE_EMAIL", False))
         print(app.config.get("ENABLE_EMAIL", False))
         print(app.logger.level)
+        print(app.logger.isEnabledFor(logging.INFO))
+        print(self.app_test.logger.isEnabledFor(logging.INFO))
         print(info_stream_contents)
         print(email_log_regex % (public_template, public_to, public_subject))
         app.logger.info('askdj;kalsdj;aklsjd;klajkkkkkkkkkkkkkkkkkkkkkkkk')
