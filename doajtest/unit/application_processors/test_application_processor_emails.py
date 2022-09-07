@@ -134,7 +134,6 @@ class TestPublicApplicationEmails(DoajTestCase):
         print(info_stream_contents)
         print(email_log_regex % (public_template, public_to, public_subject))
         app.logger.info('askdj;kalsdj;aklsjd;klajkkkkkkkkkkkkkkkkkkkkkkkk')
-        assert False # TOBEREMOVE
         assert bool(public_email_matched)
         assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
