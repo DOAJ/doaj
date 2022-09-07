@@ -125,15 +125,6 @@ class TestPublicApplicationEmails(DoajTestCase):
         public_email_matched = re.search(email_log_regex % (public_template, public_to, public_subject),
                                          info_stream_contents,
                                          re.DOTALL)
-        print('debuggggggggggggggggggggggggggggggggggggggggg')
-        print(self.app_test.config.get("ENABLE_EMAIL", False))
-        print(app.config.get("ENABLE_EMAIL", False))
-        print(app.logger.level)
-        print(app.logger.isEnabledFor(logging.INFO))
-        print(self.app_test.logger.isEnabledFor(logging.INFO))
-        print(info_stream_contents)
-        print(email_log_regex % (public_template, public_to, public_subject))
-        app.logger.info('askdj;kalsdj;aklsjd;klajkkkkkkkkkkkkkkkkkkkkkkkk')
         assert bool(public_email_matched)
         assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
