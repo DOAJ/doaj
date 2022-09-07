@@ -10,6 +10,7 @@ from portality import constants
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
+from portality.core import app
 from portality.forms.application_forms import ApplicationFormFactory, JournalFormFactory
 from portality.bll import DOAJ
 from doajtest.mocks.bll_notification import InterceptNotifications
@@ -124,6 +125,11 @@ class TestPublicApplicationEmails(DoajTestCase):
         public_email_matched = re.search(email_log_regex % (public_template, public_to, public_subject),
                                          info_stream_contents,
                                          re.DOTALL)
+        print('debuggggggggggggggggggggggggggggggggggggggggg')
+        print(self.app_test.config.get("ENABLE_EMAIL", False))
+        print(app.config.get("ENABLE_EMAIL", False))
+        print(info_stream_contents)
+        print(email_log_regex % (public_template, public_to, public_subject))
         assert bool(public_email_matched)
         assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
