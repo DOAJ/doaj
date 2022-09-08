@@ -72,8 +72,23 @@
     {% if todos|length == 0 %}
     <div class="flex-center">
       <p class="card col-md-6">
-        <span class="type-03">🎉 You have no priority tasks to complete!<br/><br/>
-        Keep an eye on the <a href="{{ url_for('admin.suggestions') }}">ongoing applications</a> to make sure there are no processing delays.</span>
+          <span class="type-03">
+              {% if current_user.has_role("admin") %}
+                  {% set source = search_query_source(
+                        term=[
+                            {"admin.editor.exact" : current_user.id},
+                            {"index.application_type.exact" : "new application"}
+                        ],
+                        sort=[{"admin.date_applied": {"order": "asc"}}]
+                     )
+                  %}
+                All priority tasks have been done. Check your <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">queue</a> for more open applications
+              {% elif current_user.has_role("editor") %}
+                  All priority tasks have been done. Check your <a href="{{ url_for('admin.suggestions') }}">queue</a> for more open applications. If you need more applications to be assigned to your group, contact your Managing Editor.
+              {% elif current_user.has_role("associate_editor") %}
+                  All priority tasks have been done. Check your <a href="{{ url_for('admin.suggestions') }}">queue</a> for more open applications. If you need more to be assigned to you, contact your Editor or Managing Editor.
+              {% endif %}
+          </span>
       </p>
     </div>
     {% else %}
