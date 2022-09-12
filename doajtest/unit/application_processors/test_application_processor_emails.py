@@ -10,7 +10,6 @@ from portality import constants
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.core import app
 from portality.forms.application_forms import ApplicationFormFactory, JournalFormFactory
 from portality.bll import DOAJ
 from doajtest.mocks.bll_notification import InterceptNotifications
