@@ -160,11 +160,6 @@ Advertisements should not be related in any way to editorial decision making and
 #### 16. Direct marketing
 Any direct marketing activities, including solicitation of manuscripts, that are conducted on behalf of the journal should be appropriate, well targeted, and unobtrusive. Information provided about the publisher or journal should be truthful and not misleading for readers or authors.
 
-## Applying the Principles
-In the event that a member organization is found to have violated these best practices, or other specific requirements of the organisation, OASPA/DOAJ/COPE/WAME shall in the first instance try to work with the organization in order to address any concerns that have been raised. In the event that the member organization is unable or unwilling to address these concerns, their membership in the organization may be suspended or terminated.
-
-OASPA/DOAJ/COPE/WAME each have their own procedures for dealing with concerns raised about members.
-
 ## Version history
 
 - This is Version 4.0 of the Principles of Transparency and Best Practice in Scholarly Publishing
