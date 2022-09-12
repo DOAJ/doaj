@@ -22,33 +22,149 @@ An infographic of these Principles was commissioned by COPE and is available to 
 
 ## Principles of transparency and best practice in scholarly publishing
 
-{:.numbered-table .numbered-table--labels}
-|   | Principle                                                                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-|---|-----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|   | Website                                                                           | A journal's website, including the text that it contains, shall demonstrate that care has been taken to ensure high ethical and professional standards. It must not contain information that might mislead readers or authors, including any attempt to mimic another journal/publisher’s site. <br><br>An 'Aims & Scope' statement should be included on the website and the readership clearly defined. There should be a statement on what a journal will consider for publication including authorship criteria (e.g. not considering multiple submissions, redundant publications) to be included. ISSNs should be clearly displayed (separate for print and electronic). |
-|   | Name of journal                                                                   | The Journal name shall be unique and not be one that is easily confused with another journal or that might mislead potential authors and readers about the Journal's origin or association with other journals.                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-|   | Peer review process                                                               | Journal content must be clearly marked as whether peer reviewed or not. Peer review is defined as obtaining advice on individual manuscripts from reviewers expert in the field who are not part of the journal's editorial staff. This process, as well as any policies related to the journal's peer review procedures, shall be clearly described on the journal's Web site, including the method of peer review used. Journal websites should not guarantee manuscript acceptance or very short peer review times.                                                                                                                                                         |
-|   | Ownership and management                                                          | Information about the ownership and/or management of a journal shall be clearly indicated on the journal's website. Publishers shall not use organizational or journal names that would mislead potential authors and editors about the nature of the journal's owner.                                                                                                                                                                                                                                                                                                                                                                                                         |
-|   | Governing body                                                                    | Journals shall have editorial boards or other governing bodies whose members are recognized experts in the subject areas included within the journal's scope. The full names and affiliations of the journal's editorial board or other governing body shall be provided on the journal's website.                                                                                                                                                                                                                                                                                                                                                                             |
-|   | Editorial team/contact information                                                | Journals shall provide the full names and affiliations of the journal's editors on the journal's website as well as contact information for the editorial office, including a full address.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-|   | Copyright and Licensing                                                           | The policy for copyright shall be clearly stated in the author guidelines and the copyright holder named on all published articles. Likewise, licensing information shall be clearly described in guidelines on the website, and licensing terms shall be indicated on all published articles, both HTML and PDFs. If authors are allowed to publish under a Creative Commons license then any specific license requirements shall be noted. Any policies on posting of final accepted versions or published articles on third party repositories shall be clearly stated.                                                                                                     |
-|   | Author fees                                                                       | Any fees or charges that are required for manuscript processing and/or publishing materials in the journal shall be clearly stated in a place that is easy for potential authors to find prior to submitting their manuscripts for review, or explained to authors before they begin preparing their manuscript for submission. If no such fees are charged that should also be clearly stated.                                                                                                                                                                                                                                                                                |
-|   | Process for identification of and dealing with allegations of research misconduct | Publishers and editors shall take reasonable steps to identify and prevent the publication of papers where research misconduct has occurred, including plagiarism, citation manipulation, and data falsification/fabrication, among others. In no case shall a journal or its editors encourage such misconduct, or knowingly allow such misconduct to take place. In the event that a journal's publisher or editors are made aware of any allegation of research misconduct relating to a published article in their journal, the publisher or editor shall follow COPE's guidelines (or equivalent) in dealing with allegations.                                            |
-|   | Publication Ethics                                                                | A journal shall also have policies on publishing ethics. These should be clearly visible on its website, and should refer to: i) Journal policies on authorship and contributorship; ii) How the journal will handle complaints and appeals; iii) Journal policies on conflicts of interest / competing interests; iv) Journal policies on data sharing and reproducibility; v) Journal's policy on ethical oversight; vi) Journal's policy on intellectual property; and vii) Journal's options for post-publication discussions and corrections.                                                                                                                             |
-|   | Publishing schedule                                                               | The periodicity at which a journal publishes shall be clearly indicated.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-|   | Access                                                                            | The way(s) in which the journal and individual articles are available to readers and whether there are associated subscription or pay per view fees shall be stated.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-|   | Archiving                                                                         | A journal's plan for electronic backup and preservation of access to the journal content (for example, access to main articles via CLOCKSS or PubMedCentral) in the event a journal is no longer published shall be clearly indicated.                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-|   | Revenue sources                                                                   | Business models or revenue sources (eg, author fees, subscriptions, advertising, reprints, institutional support, and organizational support) shall be clearly stated or otherwise evident on the journal's website. Publishing fees or waiver status should not influence editorial decision making.                                                                                                                                                                                                                                                                                                                                                                          |
-|   | Advertising                                                                       | Journals shall state their advertising policy if relevant, including what types of adverts will be considered, who makes decisions regarding accepting adverts and whether they are linked to content or reader behavior (online only) or are displayed at random. Advertisements should not be related in any way to editorial decision making and shall be kept separate from the published content.                                                                                                                                                                                                                                                                         |
-|   | Direct marketing                                                                  | Any direct marketing activities, including solicitation of manuscripts that are conducted on behalf of the journal, shall be appropriate, well targeted, and unobtrusive. Information provided about the publisher or journal is expected to be truthful and not misleading for readers or authors.                                                                                                                                                                                                                                                                                                                                                                            |
+### JOURNAL CONTENT
 
-In the event that a member organization is found to have violated these best practices, or other specific requirements of the organisation, OASPA/DOAJ/COPE/WAME shall in the first instance try to work with them in order to address any concerns that have been raised. In the event that the member organization is unable or unwilling to address these concerns, their membership in the organization may be suspended or terminated.
+#### 1. Name of journal
+The journal's name should:
+  - Be unique and not be one that is easily confused with another journal.
+  - Not mislead potential authors and readers about the journal's origin, scope, or association with other journals and organisations.
 
-OASPA/DOAJ/COPE/WAME have procedures for dealing with concerns raised about members.
+#### 2. Website
+  - The journal website should use standard security technology, such as encryption, to help protect its users from viruses, phishing, and other attacks. URLs should start with 'https' rather than 'http'.
+  - The organisation or individual responsible for the website should apply high ethical and professional standards to the content and presentation of the website. 
+  - The website should not contain information that might mislead readers or authors. 
+  - The website should not copy another journal/publisher’s site, design, or logo.
+  - If any text is copied from another website, an acknowledgement to the source website should be declared.
 
-This version published on DOAJ: `15 January 2018`
-Second version published on DOAJ: `June 2015`
-First version published on DOAJ: `10 January 2014`
+In addition to the requirements outlined below, the following items should be clearly displayed:
+
+  - Aims and scope.
+  - The target readership of the journal.
+  - The types of manuscripts the journal will consider for publication (for example, that multiple or redundant publication is not allowed).
+  - Authorship criteria.
+  - ISSNs (separate for print and electronic versions).
+
+#### 3. Publishing schedule
+A journal's publishing frequency should be clearly described, and the journal must keep to its publishing schedule unless there are exceptional circumstances.
+
+#### 4. Archiving
+A journal's plan for electronic backup and long term digital preservation of the journal content, in the event that the journal and/or publisher stops operating, should be clearly indicated. Examples include PMC and those listed in [the Keepers Registry](https://keepers.issn.org/).
+
+#### 5. Copyright
+  - The copyright terms for published content should be clearly stated on the website and in the content.
+  - The copyright terms should be separate and distinct from the copyright of the website.
+  - The copyright holder should be named on the full text of all published articles (HTML and PDF).
+  - If the copyright terms are described in a separate form, this should be easy to find on the website and available to all. 
+
+#### 6. Licensing
+  - Licensing information should be clearly described on the website.
+  - Licensing terms should be indicated on the full text of all published articles (HTML and PDF).
+  - Content designated as Open Access must use an open licence.
+  - Licensing policies about the posting of author manuscripts and published articles in third party repositories should be clearly stated.
+
+If Creative Commons licences are used, then the terms of that licence should also link to the correct licence on the Creative Commons website.
+
+### JOURNAL PRACTICES
+
+#### 7. Publication ethics and related editorial policies
+A journal should have policies on publication ethics (for example, [COPE's Core Practice guidance](https://publicationethics.org/core-practices)). These should be visible on its website, and should refer to:
+
+  - Journal's policies on [authorship and contributorship](https://publicationethics.org/authorship).
+  - How the journal will handle [complaints and appeals](https://publicationethics.org/appeals).
+  - How the journal will handle [allegations of research misconduct](https://publicationethics.org/misconduct).
+  - Journal's policies on [conflicts of interest](https://publicationethics.org/competinginterests).
+  - Journal's policies on [data sharing and reproducibility](https://publicationethics.org/data).
+  - Journal's policy on [ethical oversight](https://publicationethics.org/oversight).
+  - Journal's policy on [intellectual property](https://publicationethics.org/intellectualproperty).
+  - Journal's options for [post-publication discussions](https://publicationethics.org/postpublication).
+  - Journal's policies on [corrections and retractions](https://publicationethics.org/postpublication).
+
+Editors and publishers are responsible for ensuring the integrity of the scholarly literature in their journals and should ensure they outline their policies and procedures for handling such issues when they arise. These issues include plagiarism, citation manipulation, and data falsification/fabrication, among others. Neither the journal’s policies nor the statements of its editors should encourage such misconduct, or knowingly allow such misconduct to take place. In the event that a journal's editors or publisher are made aware of any allegation of research misconduct relating to a submitted or published article in their journal, the editor or publisher should follow [COPE's guidance](https://publicationethics.org/guidance/Flowcharts?t=&classification%5B%5D=2771&sort=score) (or equivalent) in dealing with allegations.
+
+#### 8. Peer review 
+Peer review is defined as obtaining advice on manuscripts from reviewers/experts in the manuscript’s subject area. Those individuals should not be part of the journal's editorial team. However, the specific elements of peer review may differ by journal and discipline, so the following should be clearly stated on the website:
+
+  -  Whether or not the content is peer reviewed.
+  -  Who conducts the peer review, for example, external experts or editorial board members.
+  -  The [type of peer review](https://osf.io/7j6ck/) process(es) used
+  - Any policies related to the [peer review procedures](https://publicationethics.org/peerreview), for example:
+  -- Use of author recommended reviewers.
+  -- Any masking of identities, and if so who is masked and to whom.
+  -- Whether or not supplementary material is subjected to peer review.
+  -- Whether or not reviews are posted with articles.
+  -- Whether or not reviews are signed or anonymous.
+  - How a decision about a manuscript is ultimately made and who is involved.
+  - Any exceptions to the peer review process, such as specific article types that do not undergo peer review.
+
+If an article's peer review is an exception to the usual policy, the article should state what review it received.
+
+Journals should not guarantee acceptance of initial manuscript submissions. Statements of peer review times should be supported by published timeframes on accepted papers. In the event of delays, authors should be informed of the reason for the delay and given the opportunity to withdraw their manuscript if they wish.
+
+The date of publication should be published with all published research. Dates of submission and acceptance are preferred as well.
+
+#### 9. Access
+If any of the online content is not freely accessible to everyone, the method of gaining access (for example, registration, subscription, or pay-per-view fees) should be clearly described. If offline versions (for example, print) are available, this should be clearly described along with any associated charges.
+
+### ORGANISATION
+
+#### 10. Ownership and management
+  - Information about the ownership and management of a journal should be clearly indicated on the journal's website.
+  - Organisational names should not be used in a way that could mislead potential authors and editors about the nature of the journal's owner.
+  - If a journal is affiliated with a society, institution, or sponsor, links to their website(s) should be provided where available.
+
+#### 11. Advisory body
+Journals should have editorial boards or other advisory bodies whose members are recognised experts in the subject areas stated in the journal's aims and scope.
+  - The full names and affiliations of the members should be provided on the journal's website.
+  - The list should be up to date, and members must agree to serve.
+  - To avoid being associated with predatory or deceptive journals, journals should periodically review their board to ensure it is still relevant and appropriate.
+
+#### 12. Editorial team/contact information	
+Journals should provide the full names and affiliations of their editors as well as contact information for the editorial office, including a full mailing address, on the journal’s website.
+
+### BUSINESS PRACTICES
+
+#### 13. Author fees
+  - If author fees are charged (such as article processing charges, page charges, editorial processing charges, language editing fees, colour charges, submission fees, membership fees, or other supplementary charges), then the fees should be clearly stated on the website. 
+  - If there are no such fees, this should be clearly stated.
+  -Author fee information should be easy to find and presented as early in the submission process as possible.
+  - If the journal is likely to implement author charges in the future, this should be stated.
+  - If waivers are available for author fees, this information should be stated clearly.
+  - Waiver information should include:
+  -- Who is eligible for a waiver.
+  -- Which author(s) of the group must be eligible for the waiver to apply.
+  -- When and how to apply for a waiver.
+  - Author fees or waiver status should not influence editorial decision making, and this should be clearly stated.
+
+#### 14. Other revenue
+Business models or revenue sources should be clearly stated on the journal's website. 
+
+Examples include author fees (see section 13), subscriptions, sponsorships and subsidies, advertising (see section 15), reprints, supplements, or special issues.
+
+Business models or revenue sources (for example, reprint income, supplements, special issues, sponsorships) should not influence editorial decision making.
+
+#### 15. Advertising
+Journals should state whether they accept advertising. If they do, they should state their advertising policy, including:
+
+  - Which types of advertisements will be considered.
+  - Who makes decisions regarding accepting advertisements.
+  - Whether they are linked to content or reader behaviour or are displayed at random.
+
+Advertisements should not be related in any way to editorial decision making and should be kept separate from the published content.
+
+#### 16. Direct marketing
+Any direct marketing activities, including solicitation of manuscripts, that are conducted on behalf of the journal should be appropriate, well targeted, and unobtrusive. Information provided about the publisher or journal should be truthful and not misleading for readers or authors.
+
+## Applying the Principles
+In the event that a member organization is found to have violated these best practices, or other specific requirements of the organisation, OASPA/DOAJ/COPE/WAME shall in the first instance try to work with the organization in order to address any concerns that have been raised. In the event that the member organization is unable or unwilling to address these concerns, their membership in the organization may be suspended or terminated.
+
+OASPA/DOAJ/COPE/WAME each have their own procedures for dealing with concerns raised about members.
+
+## Version history
+This is Version 4.0 of the Principles of Transparency and Best Practice in Scholarly Publishing
+[Version 3.0](https://docs.google.com/document/d/1wtnA5zj02Hn3XY_SUWvs3U22DC9MaaNVrdiCHYXlrGE/edit?usp=sharing) - January 2018
+[Version 2.0](https://oaspa.org/principles-of-transparency-and-best-practice-in-scholarly-publishing-2/?highlight=principles) - June 2015 (on the OASPA website)
+[Version 1.0](https://oaspa.org/principles-of-transparency-and-best-practice-in-scholarly-publishing/?highlight=principles) - December 2013 (on the OASPA website)
+
 
 ---
 
@@ -76,24 +192,6 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 
 ## In other languages
 
-- [العربية الفصحى](https://docs.google.com/document/d/1z6eEzHKsUjPw8GQtEx0JH2ucHPMrw3USF9tpnYrcwjM/edit?usp=sharing)
-- [català](https://docs.google.com/document/d/16YHOkjonpI6J2VyIWd1kl0UYvPS5TC-1B7mfq8obIVk/edit?usp=sharing)
-- [广州话](https://doi.org/10.5281/zenodo.4542763) (hosted at Zenodo)
-- [dansk](https://drive.google.com/file/d/1HEkuVOjaIRWgbnEpU27VfWi8a4fFfDFQ/view?usp=sharing)
-- [Nederlands](https://docs.google.com/document/d/13vAVViVKkOIKWNYDerYqkazk0-xP84wLNOXU-sGn9mk/edit?usp=sharing)
-- [فارسی](https://docs.google.com/document/d/1YNlg6Tn6sSFh3U1M7xFAwsn-faaPuV51coQhcRrxyTQ/edit?usp=sharing)
-- [suomi](https://docs.google.com/document/d/1banUWX10jT70uqIXGrqCHb8rXLXIhBVaeOXE8YhLWHc/edit?usp=sharing)
-- [français](https://docs.google.com/document/d/1fmV7qGAv_Nt3H1zjS6u-bzjpD2XSN1MqUv-n2uXPkqQ/edit?usp=sharing)
-- [français (Canadian)](https://docs.google.com/document/d/1hN4UC2HZFvO7eX5abRNEsHpQ4QEFZ2b_I-gvjVXbTWc/edit?usp=sharing)
-- [हिन्दी](https://docs.google.com/document/d/1eygNcbFj3DjQ_R7WL0nvDp3Cp9r-Ytu3nPyl106JVVg/edit?usp=sharing)
-- [Bahasa Indonesia](https://docs.google.com/document/d/1bgogeUE5VMiGhecPzYcDPCWR4Af-GVPSwn48f6BCZvk/edit?usp=sharing)
-- [italiano](https://docs.google.com/document/d/1KRRpMklSBmH7CunvZQXEZSt-MTSrsRc-zCqw6lQY1ks/edit?usp=sharing)
-- [한국어](https://docs.google.com/document/d/1cxbYLr-O4d_rdtVBUQHQSGvZAZQy7uAINmFx3F9kj60/edit?usp=sharing)
-- [polski](https://docs.google.com/document/d/1YtWHntS_gHosEYlTLTrJr5KwY4k2_w7ohn9sB96J3uE/edit?usp=sharing)
-- [Português](https://docs.google.com/document/d/12CQy0V4OT6bH5apdjrIUrYZmpHzjjM_52L5VgtufwNE/edit?usp=sharing)
-- [Русский язык](https://docs.google.com/document/d/1YGVPt5ItaCA8UC_H8S4Gv0WJI6iP2J5CBSe0RVjkDqQ/edit?usp=sharing)
-- [español](https://docs.google.com/document/d/11GB_KNLzhpNNfRgyFdGHdAoaNfpnpb61z4iqSEj1dbA/edit?usp=sharing)
-- [svenska](https://docs.google.com/document/d/1NIi0-yGCpMrxJaWc05e_7Ww5pIUqYg6ThH_AnnjimeM/edit?usp=sharing)
-- [Türkçe](https://docs.google.com/document/d/1AKbcm2YpAJOIH-1LLblmmLotXgmg5pi7-jI0-dwaEwQ/edit?usp=sharing)
-- [українська мова](https://docs.google.com/document/d/1wl9LnyQjiALsHBvbsah8-rwxBf4aASzh2tL38YnRVCY/edit?usp=sharing)
+Version 3.0 of the Principles is [available in 21 other languages](https://drive.google.com/drive/folders/1ni9FwfgH8juUuPKKcP72QoCOf51HUww1?usp=sharing). 
 
+New translations of Version 4.0 will be made added here.
