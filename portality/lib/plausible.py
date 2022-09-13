@@ -9,6 +9,7 @@ from threading import Thread
 import requests
 
 from portality.core import app
+from flask import request
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +41,12 @@ def send_event(goal: str, on_completed=None, **props_kwargs):
     if props_kwargs:
         payload['props'] = json.dumps(props_kwargs)
 
+    headers = {}
+    if request:
+        headers = {"X-Forwarded-For": request.remote_addr}  # this works because we have ProxyFix on the app
+
     def _send():
-        resp = requests.post(plausible_api_url, json=payload, )
+        resp = requests.post(plausible_api_url, json=payload, headers=headers)
         if on_completed:
             if resp.status_code >= 300:
                 logger.warning(f'send plausible event api fail. [{resp.status_code}][{resp.text}]')
