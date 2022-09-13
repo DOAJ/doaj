@@ -80,10 +80,10 @@ server {
         alias /home/cloo/doaj/src/doaj/portality/static/crossref;
     }
 
-    }
     location =/robots.txt {
         alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
     }
+
     location / {
         return 301 https://$host$request_uri;
     }
