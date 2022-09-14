@@ -1,5 +1,4 @@
-""" Plausible Analytics
-"""
+# ~~ PlausibleAnalytics:ExternalService~~
 import json
 import logging
 import os
