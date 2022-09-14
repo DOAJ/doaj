@@ -73,6 +73,7 @@ class Messages(object):
 
     EXCEPTION_NOTIFICATION_NO_ACCOUNT = "Account with id {x} not found"
     EXCEPTION_NOTIFICATION_NO_EMAIL = "Account with id {x} does not have an email address"
+    EXCEPTION_NOTIFICATION_NO_NOTIFICATION = "Notification with id {n} does not exist"
 
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
