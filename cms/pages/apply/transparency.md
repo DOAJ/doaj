@@ -31,8 +31,8 @@ The journal's name should:
 
 #### 2. Website
 
-- The journal website should use standard security technology, such as encryption, to help protect its users from viruses, phishing, and other attacks. URLs should start with 'https' rather than 'http'.
-- The organisation or individual responsible for the website should apply high ethical and professional standards to the content and presentation of the website. 
+- Websites should be properly supported and maintained, with particular attention given to security aspects that help protect users from viruses and malware. 
+- As a minimum, websites should use https and not http, and all traffic should be redirected through https. Those responsible for the website should apply web standards and best ethical practices to the website's content, presentation, and application.
 - The website should not contain information that might mislead readers or authors. 
 - The website should not copy another journal/publisher's site, design, or logo.
 - If any text is copied from another website, an acknowledgement to the source website should be declared.
