@@ -1,17 +1,19 @@
-""" Plausible Analytics
-"""
+# ~~ PlausibleAnalytics:ExternalService~~
 import json
 import logging
 import os
+import requests
+
 from functools import wraps
 from threading import Thread
-
-import requests
 
 from portality.core import app
 from flask import request
 
 logger = logging.getLogger(__name__)
+
+# Keep track of when this is misconfigured so we don't spam the logs with skip messages
+_failstate = False
 
 
 def create_logfile(log_dir=None):
@@ -31,7 +33,10 @@ def send_event(goal: str, on_completed=None, **props_kwargs):
 
     plausible_api_url = app.config.get('PLAUSIBLE_API_URL', '')
     if not app.config.get('PLAUSIBLE_URL', '') and not plausible_api_url:
-        logger.warning('skip send_event, PLAUSIBLE_URL undefined')
+        global _failstate
+        if not _failstate:
+            logger.warning('skip send_event, PLAUSIBLE_URL undefined')
+            _failstate = True
         return
 
     # prepare request payload
