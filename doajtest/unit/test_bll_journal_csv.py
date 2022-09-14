@@ -1,19 +1,21 @@
 # -*- coding: UTF-8 -*-
-from parameterized import parameterized
-from combinatrix.testintegration import load_parameter_sets
+import csv
+from io import StringIO
 
+from combinatrix.testintegration import load_parameter_sets
+from parameterized import parameterized
+
+from doajtest import helpers
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.mocks.models_Cache import ModelCacheMockFactory
+from doajtest.mocks.store import StoreMockFactory
+from portality import models
+from portality import store
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality import models
-from portality.lib.paths import rel2abs
 from portality.core import app
-from doajtest.mocks.store import StoreMockFactory
-from doajtest.mocks.models_Cache import ModelCacheMockFactory
-from portality import store
-from io import StringIO
-import csv
+from portality.lib.paths import rel2abs
 
 
 def load_cases():
@@ -33,6 +35,9 @@ class TestBLLJournalCSV(DoajTestCase):
         super(TestBLLJournalCSV, self).setUp()
         self.svc = DOAJ.journalService()
 
+        self.store_local_patcher = helpers.StoreLocalPatcher()
+        self.store_local_patcher.setUp(self.app_test)
+
         self.localStore = store.StoreLocal(None)
         self.tmpStore = store.TempStore()
         self.container_id = app.config.get("STORE_CACHE_CONTAINER")
@@ -44,6 +49,7 @@ class TestBLLJournalCSV(DoajTestCase):
     def tearDown(self):
         self.localStore.delete_container(self.container_id)
         self.tmpStore.delete_container(self.container_id)
+        self.store_local_patcher.tearDown(self.app_test)
 
         models.cache.Cache = self.cache
         models.Cache = self.cache

@@ -15,23 +15,14 @@ import os
 import shutil
 import csv
 
-TMP_DIR = paths.rel2abs(__file__, "resources/article_duplicates_report")
 
 
 class TestArticleMatch(DoajTestCase):
 
-    def setUp(self):
-        super(TestArticleMatch, self).setUp()
-        if os.path.exists(TMP_DIR):
-            shutil.rmtree(TMP_DIR)
-        os.mkdir(TMP_DIR)
-
-    def tearDown(self):
-        super(TestArticleMatch, self).tearDown()
-        shutil.rmtree(TMP_DIR)
-
     def test_01_duplicates_report(self):
         """Check duplication reporting across all articles in the index"""
+
+        tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True).as_posix()
 
         # Create 2 identical articles, a duplicate pair
         article1 = models.Article(**ArticleFixtureFactory.make_article_source(
@@ -60,20 +51,20 @@ class TestArticleMatch(DoajTestCase):
 
         # Run the reporting task
         user = app.config.get("SYSTEM_USERNAME")
-        job = article_duplicate_report.ArticleDuplicateReportBackgroundTask.prepare(user, outdir=TMP_DIR)
+        job = article_duplicate_report.ArticleDuplicateReportBackgroundTask.prepare(user, outdir=tmp_dir)
         task = article_duplicate_report.ArticleDuplicateReportBackgroundTask(job)
         task.run()
 
         # The audit log should show we saved the reports to the TMP_DIR defined above
         audit_1 = job.audit.pop(0)
-        assert audit_1.get('message', '').endswith(TMP_DIR)
-        assert os.path.exists(TMP_DIR + '/duplicate_articles_global_' + dates.today() + '.csv')
+        assert audit_1.get('message', '').endswith(tmp_dir)
+        assert os.path.exists(tmp_dir + '/duplicate_articles_global_' + dates.today() + '.csv')
 
         # It should also clean up its interim article csv
         assert not os.path.exists(paths.rel2abs(__file__, 'tmp_article_duplicate_report'))
 
         # The duplicates should be detected and appear in the report and audit summary count
-        with open(TMP_DIR + '/duplicate_articles_global_' + dates.today() + '.csv') as f:
+        with open(tmp_dir + '/duplicate_articles_global_' + dates.today() + '.csv') as f:
             csvlines = f.readlines()
             # We expect one result line + headings: our newest article has 1 duplicate
             res = csvlines.pop()
@@ -84,8 +75,12 @@ class TestArticleMatch(DoajTestCase):
         audit_2 = job.audit.pop(0)
         assert audit_2.get('message', '') == '2 articles processed for duplicates. 1 global duplicate sets found.'
 
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+
     def test_02_duplicates_global_criteria(self):
         """ Check we match only the actual duplicates, amongst other articles in the index. """
+
+        tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True).as_posix()
 
         dup_doi = '10.xxx/xxx/duplicate'
         dup_fulltext = 'http://fulltext.url/article/duplicate'
@@ -150,7 +145,7 @@ class TestArticleMatch(DoajTestCase):
 
         # Run the reporting task
         user = app.config.get("SYSTEM_USERNAME")
-        job = article_duplicate_report.ArticleDuplicateReportBackgroundTask.prepare(user, outdir=TMP_DIR)
+        job = article_duplicate_report.ArticleDuplicateReportBackgroundTask.prepare(user, outdir=tmp_dir)
         task = article_duplicate_report.ArticleDuplicateReportBackgroundTask(job)
         task.run()
 
@@ -158,7 +153,7 @@ class TestArticleMatch(DoajTestCase):
         assert next((msg for msg in audit if msg["message"] == '6 articles processed for duplicates. 3 global duplicate sets found.'), None) is not None
 
         table = []
-        with open(TMP_DIR + '/duplicate_articles_global_' + dates.today() + '.csv') as f:
+        with open(tmp_dir + '/duplicate_articles_global_' + dates.today() + '.csv') as f:
             reader = csv.reader(f)
             for row in reader:
                 table.append(row)
@@ -185,3 +180,5 @@ class TestArticleMatch(DoajTestCase):
         assert a_match_types.count('doi+fulltext') == 1, "received: {}, expected 1".format(a_match_types.count('doi+fulltext'))
         assert a_match_types.count('doi') == 1, "received: {}, expected 1".format(a_match_types.count('doi'))
         assert a_match_types.count('fulltext') == 2, "received: {}, expected 2".format(a_match_types.count('fulltext'))
+
+        shutil.rmtree(tmp_dir, ignore_errors=True)

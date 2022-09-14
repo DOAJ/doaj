@@ -1,4 +1,3 @@
-from nose.tools import assert_raises
 from doajtest.helpers import DoajTestCase
 
 from portality import models
@@ -8,14 +7,15 @@ from portality import lcc
 
 from doajtest.fixtures import JournalFixtureFactory
 
+
 #####################################################################
 # Mocks required to make some of the lookups work
 #####################################################################
-
 def mock_lookup_code(code):
     if code == "H": return "Social Sciences"
     if code == "HB1-3840": return "Economic theory. Demography"
     return None
+
 
 JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source()
 JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
@@ -23,10 +23,10 @@ del JOURNAL_FORM["owner"]
 del JOURNAL_FORM["editor_group"]
 del JOURNAL_FORM["editor"]
 
+
 ######################################################
 # Main test class
 ######################################################
-
 class TestReadOnlyJournal(DoajTestCase):
 
     def setUp(self):
@@ -39,18 +39,15 @@ class TestReadOnlyJournal(DoajTestCase):
         super(TestReadOnlyJournal, self).tearDown()
         lcc.lookup_code = self.old_lookup_code
 
-
     ###########################################################
     # Tests on the publisher's re-journal form
     ###########################################################
-
     def test_01_readonly_journal_success(self):
         """Give the read-only journal form a full workout"""
 
         # we start by constructing it from source
         formulaic_context = JournalFormFactory.context("readonly")
         fc = formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
-        # fc = formcontext.JournalFormFactory.get_form_context(role="readonly", source=models.Journal(**JOURNAL_SOURCE))
         assert isinstance(fc, ReadOnlyJournal)
         assert fc.form is not None
         assert fc.source is not None
@@ -88,4 +85,4 @@ class TestReadOnlyJournal(DoajTestCase):
         assert fc.target is None  # can't edit data using this form
 
         # shouldn't be able to finalise, can't edit data using this form
-        assert_raises(Exception, fc.finalise)
+        self.assertRaises(Exception, fc.finalise)
