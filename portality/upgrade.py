@@ -28,7 +28,7 @@ class UpgradeTask(object):
         pass
 
 
-def do_upgrade(definition, verbose):
+def do_upgrade(definition, verbose, save_batches=None):
     # get the source and target es definitions
     # ~~->Elasticsearch:Technology~~
 
@@ -39,6 +39,7 @@ def do_upgrade(definition, verbose):
         print("Upgrading", tdef.get("type"))
         batch = []
         total = 0
+        batch_num = 0
         type_start = datetime.now()
 
         default_query = {
@@ -90,6 +91,7 @@ def do_upgrade(definition, verbose):
                 # add the data to the batch
                 if action == 'update':
                     data = _diff(original, data)
+
                 if "id" not in data:
                     data["id"] = _id
 
@@ -100,7 +102,16 @@ def do_upgrade(definition, verbose):
                 # When we have enough, do some writing
                 if len(batch) >= batch_size:
                     total += len(batch)
+                    batch_num += 1
+
                     print(datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
+
+                    if save_batches:
+                        fn = os.path.join(save_batches, tdef.get("type") + "." + str(batch_num) + ".json")
+                        with open(fn, "w") as f:
+                            f.write(json.dumps(batch, indent=2))
+                            print(datetime.now(), "wrote batch to file {x}".format(x=fn))
+
                     model_class.bulk(batch, action=action, req_timeout=120)
                     batch = []
                     # do some timing predictions
@@ -114,6 +125,14 @@ def do_upgrade(definition, verbose):
             # Try to write the part-batch to index
             if len(batch) > 0:
                 total += len(batch)
+                batch_num += 1
+
+                if save_batches:
+                    fn = os.path.join(save_batches, tdef.get("type") + "." + str(batch_num) + ".json")
+                    with open(fn, "w") as f:
+                        f.write(json.dumps(batch, indent=2))
+                        print(datetime.now(), "wrote batch to file {x}".format(x=fn))
+
                 print(datetime.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
                 model_class.bulk(batch, action=action, req_timeout=120)
                 batch = []
@@ -121,6 +140,14 @@ def do_upgrade(definition, verbose):
         # Write the last part-batch to index
         if len(batch) > 0:
             total += len(batch)
+            batch_num += 1
+
+            if save_batches:
+                fn = os.path.join(save_batches, tdef.get("type") + "." + str(batch_num) + ".json")
+                with open(fn, "w") as f:
+                    f.write(json.dumps(batch, indent=2))
+                    print(datetime.now(), "wrote batch to file {x}".format(x=fn))
+
             print(datetime.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
             model_class.bulk(batch, action=action, req_timeout=120)
 
@@ -155,6 +182,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--upgrade", help="path to upgrade definition")
     parser.add_argument("-v", "--verbose", action="store_true", help="verbose output to stdout during processing")
+    parser.add_argument("-s", "--save", help="save batches to disk in this directory")
     args = parser.parse_args()
 
     if not args.upgrade:
@@ -174,6 +202,6 @@ if __name__ == "__main__":
             print(args.upgrade, "does not parse as JSON")
             exit()
 
-        do_upgrade(instructions, args.verbose)
+        do_upgrade(instructions, args.verbose, args.save)
 
     print('Finished {0}.'.format(datetime.now()))
