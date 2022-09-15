@@ -10,7 +10,7 @@ featuremap: ~~Transparency:Fragment~~
 
 ## Introduction
 
-The Committee on Publication Ethics (COPE), DOAJ, the Open Access Scholarly Publishing Association (OASPA), and the World Association of Medical Editors (WAME) are scholarly organisations that have collaborated to identify principles of transparency and best practice for scholarly publications. This is the fourth version of a work in progress (published September 13 2022). We encourage its wide dissemination.
+The Committee on Publication Ethics (COPE), DOAJ, the Open Access Scholarly Publishing Association (OASPA), and the World Association of Medical Editors (WAME) are scholarly organisations that have collaborated to identify principles of transparency and best practice for scholarly publications. This is the fourth version of a work in progress (published September 15 2022). We encourage its wide dissemination.
 
 The Principles of Transparency and Best Practice in Scholarly Publishing should apply to all published content, including special issues and conference proceedings. Where practices deviate from the standards outlined, editors must transparently communicate the procedures that the journal follows.
 
@@ -58,12 +58,12 @@ A journal's plan for electronic backup and long term digital preservation of the
 - The copyright holder should be named on the full text of all published articles (HTML and PDF).
 - If the copyright terms are described in a separate form, this should be easy to find on the website and available to all. 
 
-#### 6. Licensing
+#### 6. Licencing
 
-- Licensing information should be clearly described on the website.
-- Licensing terms should be indicated on the full text of all published articles (HTML and PDF).
+- Licencing information should be clearly described on the website.
+- Licencing terms should be indicated on the full text of all published articles (HTML and PDF).
 - Content designated as Open Access must use an open licence.
-- Licensing policies about the posting of author manuscripts and published articles in third party repositories should be clearly stated.
+- Licencing policies about the posting of author manuscripts and published articles in third party repositories should be clearly stated.
 
 If Creative Commons licences are used, then the terms of that licence should also link to the correct licence on the Creative Commons website.
 
