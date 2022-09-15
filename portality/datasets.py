@@ -44,7 +44,7 @@ def _generate_language_options():
     """
     ~~->Languages:Data~~
     ~~!Languages:Data->PyCountry:Technology~~
-    Gather the languages with 2-character codes (ISO 639-2b)
+    Gather the languages with 2-character codes (ISO 639-1)
     """
     language_options_ = [('', '')]
     for l in sorted(pycountry.languages, key=lambda x: x.name):
