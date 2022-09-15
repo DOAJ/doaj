@@ -5,4 +5,4 @@ label them
 
 Run
 
-    python portality/upgrade.py -u portality/migrate/20210906_1779_ur_labelling/migrate.json
+    python portality/upgrade.py -u portality/migrate/20220915_3362_ur_relabelling/migrate.json
