@@ -64,15 +64,26 @@ server {
     access_log /var/log/nginx/doaj.access.log ip_cloudflare;
     error_log /var/log/nginx/doaj.error.log;
 
-    location =/static/doaj/doajArticle(.*) { # this is for doajArticles.xsd, but is often accessed missing the "s", so use wildcard
+    location =/static/doaj/doajArticle.xsd {
         alias /home/cloo/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
     }
+
+    location =/static/doaj/doajArticles.xsd {
+        alias /home/cloo/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
     location =/static/doaj/iso_639-2b.xsd {
         alias /home/cloo/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
     }
+
+    location /static/crossref {
+        alias /home/cloo/doaj/src/doaj/portality/static/crossref;
+    }
+
     location =/robots.txt {
         alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
     }
+
     location / {
         return 301 https://$host$request_uri;
     }
