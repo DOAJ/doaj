@@ -1,0 +1,89 @@
+<doi_batch xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.crossref.org/schema/5.3.1 https://www.crossref.org/schemas/crossref5.3.1.xsd"
+           xmlns="http://www.crossref.org/schema/5.3.1" xmlns:jats="http://www.ncbi.nlm.nih.gov/JATS1"
+           xmlns:fr="http://www.crossref.org/fundref.xsd" xmlns:mml="http://www.w3.org/1998/Math/MathML" version="5.3.1">
+    <head>
+        <doi_batch_id>1dbb27d1030c6c9d9d-7ff0</doi_batch_id>
+        <timestamp>200504260247</timestamp>
+        <depositor>
+            <depositor_name>your name</depositor_name>
+            <email_address>your@email.com</email_address>
+        </depositor>
+        <registrant>WEB-FORM</registrant>
+    </head>
+    <body>
+        <!-- a record with one correct issns -->
+        <journal>
+            <journal_metadata language="en" reference_distribution_opts="any">
+                <full_title>PISSN Correct</full_title>
+                <abbrev_title>JOCTD</abbrev_title>
+                <issn media_type="print">1234-5678</issn>
+                <doi_data>
+                    <doi>10.5555/ScF8aU8</doi>
+                    <resource content_version="vor" mime_type="multipart/digest">https://www.crossref.org/xml-samples</resource>
+                </doi_data>
+            </journal_metadata>
+            <journal_article language="en" publication_type="full_text" reference_distribution_opts="any">
+                <titles>
+                    <title>This is a journal article title</title>
+                </titles>
+                <contributors>
+                    <person_name sequence="first" contributor_role="author">
+                        <given_name>Minerva</given_name>
+                        <surname>Housecat</surname>
+                        <!--affiliations information (change from 4.x versions)-->
+                        <affiliations>
+                            <institution>
+                                <institution_name>Cottage Labs University</institution_name>
+                                <!-- multiple institution_id values may be provided, IDs must be provided as a https URL -->
+                                <institution_id type="ror">https://ror.org/01bj3aw27</institution_id>
+                            </institution>
+                            <institution>
+                                <institution_name>United States Department of Energy</institution_name>
+                                <!-- A ROR, ISNI, or Wikidata ID may be provided on its own as it's all we need to identify an organization-->
+                                <institution_id type="ror">https://ror.org/05gq02987</institution_id>
+                            </institution>
+                        </affiliations>
+                        <ORCID authenticated="true">https://orcid.org/0000-0002-4011-3590</ORCID>
+                    </person_name>
+                    <person_name sequence="additional" contributor_role="author">
+                        <given_name>Josiah</given_name>
+                        <surname>Carberry</surname>
+                        <affiliations>
+                            <institution>
+                                <institution_id type="ror">https://ror.org/05gq02987</institution_id>
+                            </institution>
+                        </affiliations>
+                        <ORCID authenticated="true">https://orcid.org/0000-0002-1825-0097</ORCID>
+                    </person_name>
+                    <anonymous sequence="first" contributor_role="author">
+                        <!-- affiliations may be provided for an anonymous contributor -->
+                        <affiliations>
+                            <institution>
+                                <institution_id type="ror">https://ror.org/05gq02987</institution_id>
+                            </institution>
+                        </affiliations>
+                    </anonymous>
+                </contributors>
+                <!-- Abstracts are optional but encouraged, multiple abstracts may be provided -->
+                <jats:abstract>
+                    <jats:p xml:lang="fr">Meilleures pratiques agiles, leadership éclairé impact collectif impact investir dans les familles. Et égalité des chances vibrante, la, narration les métadonnées de synergie sont un défi sans précédent pour B-corp. Entreprise la philanthropie cultive l’impact et la situation actuelle; livre blanc en collaboration consommation entrepreneur des villes collaboratives inclusives. Parse empower mouvements de communautés ciblés; radical; résultats de problèmes d'entreprise sociale la philanthropie du big data.</jats:p>
+                </jats:abstract>
+                <jats:abstract>
+                    <jats:p xml:lang="en">Agile best practices, thought leadership collective impact impact investing to families. And equal opportunity vibrant, the, storytelling synergy metadata matters B-corp unprecedented challenge. Venture philanthropy cultivate impact, state of play; white paper collaborative consumption entrepreneur collaborative cities inclusive. Parse empower communities movements targeted; radical; social enterprise issue outcomes big data venture philanthropy. </jats:p>
+                </jats:abstract>
+                <publication_date media_type="online">
+                    <month>07</month>
+                    <day>07</day>
+                    <year>2021</year>
+                </publication_date>
+                <doi_data>
+                    <doi>10.5555/n0HRokm</doi>
+                    <resource content_version="vor" mime_type="text/html">https://www.crossref.org/xml-samples</resource>
+                </doi_data>
+            </journal_article>
+        </journal>
+
+
+    </body>
+</doi_batch>
