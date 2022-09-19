@@ -409,7 +409,6 @@ ass_ed:
   country:
   language: Korean, English
 
-
 - name: José Darío Martínez Ezquerro
   area: Medicine
   year_since:
@@ -850,6 +849,13 @@ ass_ed:
   country: Australia
   language: Chinese, English
 
+- name: Yulingga Nanda Hanief
+  area: Sports Science
+  year_since:
+  city: Malang
+  country: Indonesia
+  language: Bahasa Indonesia, English
+  photo: "hanief.jpg"
  
 - name: Zakariya Algamal
   area: Statistics
