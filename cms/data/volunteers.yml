@@ -822,9 +822,16 @@ ass_ed:
 - name: Umar Khasan
   area: Social Sciences
   year_since:
-  city: Bangkalan
+  city: Bangkalang
   country: Indonesia
-  language: Indonesian, English  
+  language: Bahasa Indonesian, English
+  
+- name: Utiya Hikmah
+  area: Material Physics
+  year_since:
+  city: Malang
+  country: Indonesia
+  language: Bahasa Indonesian, English
   
 - name: Weldy St-Fleur
   area: Social Sciences
