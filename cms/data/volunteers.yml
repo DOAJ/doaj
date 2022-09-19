@@ -255,6 +255,14 @@ ass_ed:
   city: La Habana
   country: Cuba
   language: English, French
+  
+- name: Daria Chrześcijańska
+  area: Computer Science, Social Sciences
+  year_since:
+  city: Toruń
+  country: Poland
+  language: Polish, English
+  photo: "daria.jpg" 
 
 - name: Dawam M. Rohmatulloh
   area: Social Sciences, Humanities
