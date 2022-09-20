@@ -1252,6 +1252,7 @@ class TestModels(DoajTestCase):
 
         eg2 = models.EditorGroup()
         eg2.set_id("editor")
+        eg2.set_name("Editor")   # note: REQUIRED so that the mapping includes .name, which is needed to find groups_by
         eg2.set_editor(acc.id)
         eg2.save()
 
