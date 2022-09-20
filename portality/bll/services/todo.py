@@ -76,7 +76,7 @@ class TodoService(object):
 
         queries = []
         if account.has_role("admin"):
-            maned_of = [g for g in models.EditorGroup.groups_by_maned(account.id)]
+            maned_of = models.EditorGroup.groups_by_maned(account.id)
             queries.append(TodoRules.maned_stalled(size, maned_of))
             queries.append(TodoRules.maned_follow_up_old(size, maned_of))
             queries.append(TodoRules.maned_ready(size, maned_of))
