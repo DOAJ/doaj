@@ -4,9 +4,10 @@ from flask import Blueprint, make_response, request, abort, render_template
 from flask_login import current_user, login_required
 
 from portality.core import app
-from portality.decorators import ssl_required, write_required
+from portality.decorators import ssl_required, write_required, restrict_to_role
 from portality.util import jsonp
 from portality import lock
+from portality.bll import DOAJ
 
 blueprint = Blueprint('doajservices', __name__)
 
@@ -95,3 +96,19 @@ def shorten():
         return answer
     except:
         abort(400)
+
+
+@blueprint.route("/groupstatus/<group_id>", methods=["GET"])
+@jsonp
+@login_required
+def group_status(group_id):
+    """
+    ~~GroupStatus:Feature -> Todo:Service~~
+    :param group_id:
+    :return:
+    """
+    if not current_user.has_role("admin"):
+        abort(404)
+    svc = DOAJ.todoService()
+    stats = svc.group_stats(group_id)
+    return make_response(json.dumps(stats))
