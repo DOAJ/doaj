@@ -169,3 +169,11 @@ def url_for(*args, **kwargs):
             url = flask_url_for(*args, **kwargs)
 
     return url
+
+
+def get_full_url_by_endpoint(endpoint):
+    """
+    werkzeug.routing.BuildError will be throw if rout endpoint not found
+    """
+    return app.config.get("BASE_URL", "https://doaj.org") + url_for(endpoint)
+
