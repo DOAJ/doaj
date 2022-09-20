@@ -49,6 +49,10 @@ def get_url_safe(endpoint):
         return None
 
 
+def get_nav_entries() -> Iterable[dict]:
+    return app.jinja_env.globals.get("data", {}).get('nav', {}).get('entries', [])
+
+
 class SiteService(object):
     def sitemap(self, prune: bool = True):
         """
@@ -81,7 +85,7 @@ class SiteService(object):
         counter = 0
 
         # do the static pages
-        _entries = app.jinja_env.globals["data"]['nav']['entries']
+        _entries = get_nav_entries()
         _routes = yield_all_route(_entries)
         _urls = (get_url_safe(r) for r in _routes)
         _urls = filter(None, _urls)

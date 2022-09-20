@@ -969,7 +969,6 @@ JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
 # approximate rate of change of the Table of Contents for journals
 TOC_CHANGEFREQ = "monthly"
 
-STATIC_PAGES = []
 
 
 ##################################################
