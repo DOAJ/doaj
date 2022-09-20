@@ -207,7 +207,7 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays: {
                         'admin.application_status.exact': 'Application Status',
-                        'index.application_type.exact' : 'Record type',
+                        'index.application_type.exact' : 'Update Request',
                         'index.has_editor_group.exact' : 'Has Editor Group?',
                         'index.has_editor.exact' : 'Has Associate Editor?',
                         'admin.editor_group.exact' : 'Editor Group',
@@ -220,6 +220,13 @@ $.extend(true, doaj, {
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
                         "index.has_apc.exact" : "Publication charges?",
                         'index.license.exact' : 'Journal license'
+                    },
+                    valueMaps : {
+                        "index.application_type.exact" : {
+                            "finished application/update": "Closed",
+                            "update request": "Open",
+                            "new application": "Open"
+                        }
                     }
                 })
             ];
