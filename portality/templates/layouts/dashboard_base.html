@@ -43,9 +43,16 @@
                 </li>
               </ul>
             </li> #}
+            {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
             <li class="flex-center">
-              <a href="/dashboard" class="tag">
-                <span><span data-feather="list" aria-hidden="true"></span> Back to dashboard</span>
+              <a href="{{ url_for("editor.index") }}" class="tag">
+                <span><span data-feather="list" aria-hidden="true"></span> Editor dashboard</span>
+              </a>
+            </li>
+            {% endif %}
+            <li class="flex-center">
+              <a href="{{ url_for("dashboard.top_todo") }}" class="tag">
+                <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>
               </a>
             </li>
             <li class="flex-center">

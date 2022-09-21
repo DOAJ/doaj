@@ -28,7 +28,7 @@ $.extend(true, doaj, {
 
                 // facets
                 doaj.facets.openOrClosed(),
-                
+
                 edges.newRefiningANDTermSelector({
                     id: "application_status",
                     category: "facet",
