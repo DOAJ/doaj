@@ -104,14 +104,15 @@
        #}
        {% set action = TODOS[todo.action_id[0]] %}
        {% set app_url =  url_for('admin.application', application_id=todo.object_id) %}
+      {% set app_date = todo.object.created_timestamp %}
        <li class="todo-list__item" data-app-url="{{ app_url }}">
          <article class="flex-col flex-space-between card card--compact" style="border-color: {{ action.colour }};">
            <div class="flex">
              <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
-               <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="label label--secondary font-mono" title="{% if todo.date_type == 'last_manual_update' %}Last updated{% else %}First submitted{% endif %} {{ todo.date.strftime('%A, %-d %B %Y') }}">
-                 <span style="font-size: 22px;">{{ todo.date.strftime('%d') }}</span><br>
-                 <span style="font-size: 13.55px;">{{ todo.date.strftime('%b') }}</span><br>
-                 <span style="font-size: 9.35px;">{{ todo.date.strftime('%Y') }}</span>
+               <time datetime="{{ app_date.strftime('%Y-%m-%d') }}" class="label label--secondary font-mono" title="First submitted {{ app_date.strftime('%A, %-d %B %Y') }}">
+                 <span style="font-size: 22px;">{{ app_date.strftime('%d') }}</span><br>
+                 <span style="font-size: 13.55px;">{{ app_date.strftime('%b') }}</span><br>
+                 <span style="font-size: 9.35px;">{{ app_date.strftime('%Y') }}</span>
                  {# TODO link to search results for this kind of task, across all editor groups #}
                </time>
               </a>
