@@ -73,20 +73,35 @@
     <div class="flex-center">
       <p class="card col-md-6">
           <span class="type-03">
+
               {% if current_user.has_role("admin") %}
-                  {% set source = search_query_source(
-                        term=[
-                            {"admin.editor.exact" : current_user.id},
-                            {"index.application_type.exact" : "new application"}
-                        ],
-                        sort=[{"admin.date_applied": {"order": "asc"}}]
-                     )
-                  %}
+                {% set source = search_query_source(
+                    term=[
+                        {"admin.editor.exact" : current_user.id},
+                        {"index.application_type.exact" : "new application"}
+                    ],
+                    sort=[{"admin.date_applied": {"order": "asc"}}]
+                 )
+                %}
                 All priority tasks have been done. Check your <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">queue</a> for more open applications
               {% elif current_user.has_role("editor") %}
-                  All priority tasks have been done. Check your <a href="{{ url_for('admin.suggestions') }}">queue</a> for more open applications. If you need more applications to be assigned to your group, contact your Managing Editor.
+                  {% set source = search_query_source(
+                    term=[
+                        {"index.application_type.exact" : "new application"}
+                    ],
+                    sort=[{"admin.date_applied": {"order": "asc"}}]
+                 )
+                  %}
+                  All priority tasks have been done. Check your <a href="{{ url_for('editor.group_suggestions') }}?source={{ source }}">queue</a> for more open applications. If you need more applications to be assigned to your group, contact your Managing Editor.
               {% elif current_user.has_role("associate_editor") %}
-                  All priority tasks have been done. Check your <a href="{{ url_for('admin.suggestions') }}">queue</a> for more open applications. If you need more to be assigned to you, contact your Editor or Managing Editor.
+                  {% set source = search_query_source(
+                    term=[
+                        {"index.application_type.exact" : "new application"}
+                    ],
+                    sort=[{"admin.date_applied": {"order": "asc"}}]
+                 )
+                  %}
+                  All priority tasks have been done. Check your <a href="{{ url_for('editor.associate_suggestions') }}?source={{ source }}">queue</a> for more open applications. If you need more to be assigned to you, contact your Editor or Managing Editor.
               {% endif %}
           </span>
       </p>
@@ -103,7 +118,8 @@
       {{ todo.boost }}
        #}
        {% set action = TODOS[todo.action_id[0]] %}
-       {% set app_url =  url_for('admin.application', application_id=todo.object_id) %}
+      {% set app_route = "admin.application" if current_user.has_role("admin") else "editor.application" %}
+       {% set app_url =  url_for(app_route, application_id=todo.object_id) %}
       {% set app_date = todo.object.created_timestamp %}
        <li class="todo-list__item" data-app-url="{{ app_url }}">
          <article class="flex-col flex-space-between card card--compact" style="border-color: {{ action.colour }};">

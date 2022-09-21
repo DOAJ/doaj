@@ -40,8 +40,8 @@ class TodoService(object):
 
         if account.has_role(constants.ROLE_ASSOCIATE_EDITOR):
             queries.extend([
-                TodoRules.associate_stalled(size),
-                TodoRules.associate_follow_up_old(size),
+                TodoRules.associate_stalled(account.id, size),
+                TodoRules.associate_follow_up_old(account.id, size),
                 TodoRules.associate_start_pending(account.id, size),
             ])
 
@@ -226,11 +226,20 @@ class TodoRules(object):
         return constants.TODO_EDITOR_ASSIGN_PENDING, assign_pending, "created_date", False
 
     @classmethod
-    def associate_stalled(cls,  size):
+    def associate_stalled(cls,  acc_id, size):
         sort_field = "last_manual_update"
         stalled = TodoQuery(
             musts=[
                 TodoQuery.lmu_older_than(3),
+                TodoQuery.editor(acc_id)
+            ],
+            must_nots=[
+                TodoQuery.status([
+                    constants.APPLICATION_STATUS_ACCEPTED,
+                    constants.APPLICATION_STATUS_REJECTED,
+                    constants.APPLICATION_STATUS_READY,
+                    constants.APPLICATION_STATUS_COMPLETED
+                ])
             ],
             sort=sort_field,
             size=size
@@ -238,11 +247,12 @@ class TodoRules(object):
         return constants.TODO_ASSOCIATE_PROGRESS_STALLED, stalled, sort_field, False
 
     @classmethod
-    def associate_follow_up_old(cls,  size):
+    def associate_follow_up_old(cls,  acc_id, size):
         sort_field = "created_date"
         follow_up_old = TodoQuery(
             musts=[
                 TodoQuery.cd_older_than(6),
+                TodoQuery.editor(acc_id)
             ],
             must_nots=[
                 TodoQuery.status([
