@@ -303,6 +303,7 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays: {
                         'admin.application_status.exact': 'Application Status',
+                        'index.application_type.exact': "Record type",
                         'index.classification.exact' : 'Classification',
                         'index.language.exact' : 'Journal language',
                         'index.country.exact' : 'Country of publisher',
