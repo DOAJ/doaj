@@ -1,4 +1,5 @@
 /** base namespace for all DOAJ-specific functions */
+// ~~ DOAJ:Library ~~
 var doaj = {
     scrollPosition: 100,
     init : function() {
@@ -60,7 +61,7 @@ var doaj = {
     },
 
     bitlyShortener : function(query, success_callback, error_callback) {
-
+        // ~~-> Bitly.ExternalService ~~
         function callbackWrapper(data) {
             success_callback(data.url);
         }
@@ -234,6 +235,59 @@ var doaj = {
         } else {
             doaj.scroller.doScroll = true;
         }
+    },
+
+    searchQuerySource : function (params) {
+        // ~~-> Edges:Technology ~~
+        // ~~-> Elasticsearch:Technology ~~
+        // ~~-> Edges:Query ~~
+        let terms = params.terms;
+        let term = params.term;
+        let queryString = params.queryString;
+        let sort = params.sort;
+
+        let musts = [];
+        if (terms) {
+            for (let term of terms) {
+                musts.push({"terms" : term})
+            }
+        }
+
+        if (term) {
+            for (let t of term) {
+                musts.push({"term" : t});
+            }
+        }
+
+        if (queryString) {
+            musts.push({
+                "query_string" : {
+                    "default_operator" : "AND",
+                    "query" : queryString
+                }
+            })
+        }
+
+        let query = {"match_all": {}}
+        if (musts.length > 0) {
+            query = {
+                "bool" : {
+                    "must" : musts
+                }
+            }
+        }
+
+        let obj = {"query": query}
+        if (sort) {
+            if (Array.isArray(sort)) {
+                obj["sort"] = sort;
+            } else {
+                obj["sort"] = [sort];
+            }
+        }
+
+        let source = JSON.stringify(obj)
+        return encodeURIComponent(source)
     }
 };
 

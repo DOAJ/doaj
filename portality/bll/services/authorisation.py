@@ -46,23 +46,25 @@ class AuthorisationService(object):
             {"arg": application, "instance": models.Suggestion, "allow_none" : False, "arg_name" : "application"},
         ], exceptions.ArgumentException)
 
+        no_auth_reason = exceptions.AuthoriseException.WRONG_ROLE
+
         # if this is the super user, they have all rights
         if account.is_super:
             return True
 
         if account.has_role("publisher"):
             if account.id != application.owner:
-                raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.NOT_OWNER)
-            if application.application_status not in [
+                no_auth_reason = exceptions.AuthoriseException.NOT_OWNER
+            elif application.application_status not in [
                 constants.APPLICATION_STATUS_PENDING,
                 constants.APPLICATION_STATUS_UPDATE_REQUEST,
                 constants.APPLICATION_STATUS_REVISIONS_REQUIRED
             ]:
-                raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_STATUS)
+                no_auth_reason = exceptions.AuthoriseException.WRONG_STATUS
+            else:
+                return True
 
-            return True
-
-        elif account.has_role("edit_suggestion"):
+        if account.has_role("edit_suggestion"):
             # user must be either the "admin.editor" of the suggestion, or the editor of the "admin.editor_group"
             # is the user the currently assigned editor of the suggestion?
             if application.editor == account.id:
@@ -76,11 +78,8 @@ class AuthorisationService(object):
             if eg is not None and eg.editor == account.id:
                 return True
 
-            # if the user wasn't the editor or the owner of the editor group, unauthorised
-            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
+        raise exceptions.AuthoriseException(reason=no_auth_reason)
 
-        else:
-            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
 
 
     def can_view_application(self, account, application):

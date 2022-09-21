@@ -1,4 +1,4 @@
-from doajtest.fixtures.article_crossref import CrossrefArticleFixtureFactory
+from doajtest.fixtures.article_crossref import Crossref442ArticleFixtureFactory, Crossref531ArticleFixtureFactory
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 import requests
 
@@ -24,11 +24,19 @@ class ResponseMockFactory(object):
         return GET(url, **kwargs)
 
     @classmethod
-    def crossref_get_success(cls, url, *args, **kwargs):
+    def crossref442_get_success(cls, url, *args, **kwargs):
         if url in ["http://success", "http://upload"]:
             return Response(200)
         elif url in ["http://valid"]:
-            return Response(200, CrossrefArticleFixtureFactory.upload_1_issn_correct().read())
+            return Response(200, Crossref442ArticleFixtureFactory.upload_1_issn_correct().read())
+        return GET(url, **kwargs)
+
+    @classmethod
+    def crossref531_get_success(cls, url, *args, **kwargs):
+        if url in ["http://success", "http://upload"]:
+            return Response(200)
+        elif url in ["http://valid"]:
+            return Response(200, Crossref531ArticleFixtureFactory.upload_1_issn_correct().read())
         return GET(url, **kwargs)
 
     @classmethod

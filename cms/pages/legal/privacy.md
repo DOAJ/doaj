@@ -57,7 +57,7 @@ Your name
 Your email Address
 Name and email address of the applicant's references
 
-We use this information to contact you or your references regarding your application. If your application is successful, we create an account for you in our User database. This allows applications to be assigned to you for you to review and for you to log in to your DOAJ workspace. You may access, review and edit these details by [logging into your DOAJ account](/account/login) at any time.
+We use this information to contact you or your references regarding your application. If your application is successful, we create an account for you in our User database. This allows applications to be assigned to you for you to review and for you to log in to your DOAJ workspace. You may access, review and edit these details by [logging into your DOAJ account](/account/login) at any time. We have to retain your email address so that we can keep you up to date about your volunteer work.
 
 #### 1c Via cookies
 
@@ -87,21 +87,25 @@ DOAJ has a duty to its stakeholder groups to maintain the quality, security and 
 
 #### 2a Journals and uploading article metadata
 
-Anything to do with a journal or uploading article metadata must be linked to an individual user account. All the journals indexed and publicly available in the DOAJ database (i.e. they have not been withdrawn) are administered via your [Publisher dashboard](/publisher/). This dashboard is linked to your user account. The Publisher dashboard allows you to maintain journal information and upload article metadata.
+Anything to do with a journal or uploading article metadata must be linked to an individual user account. All the journals indexed and publicly available in the DOAJ database (i.e. they have not been withdrawn) are administered via your [Publisher dashboard](/publisher/). This dashboard is linked to your user account. The Publisher dashboard allows you to maintain journal information and upload article metadata. You may opt out of Marketing emails at any time by logging into your [DOAJ account](/account/login).
 
 #### 2b Journal applications
 
 Journal applications must include the name and email address of the applicant. We use this information to process the application effectively: we use the email addresses to make contact as part of the standard review process and to fulfill our obligation to you to process your application in an unbiased and timely manner.
 
-#### 2c Business updates newsletter
+#### 2c Volunteers
+
+Volunteer records must include a name and an email address so that we can assign applications to you, and email you about changes to the Admin system where you do you work or other changes. You may opt out of marketing emails by logging into your [DOAJ account](/account/login).
+
+#### 2d Business updates newsletter
 
 Mailchimp requires that an email address be registered for the newsletter to be delivered.
 
 ### 3) Which cookies are in use on this site and why
 
-When you use DOAJ, cookies are set on your machine. There are 3 sites currently setting cookies:
+When you use DOAJ, cookies are set on your machine. The cookies we set are:
 
-*   Google Analytics - we track usage of this site using Google Analytics. We do not track individuals but general paths through the site.
+*   Google Analytics - we track usage of this site using Google Analytics. We do not track individuals but general paths through the site. (Being retired as of August 2023.)
 *   jquery - we use jquery.com to load the javascript framework.
 *   doaj.org - a small number of required cookies for the application to function, for example when you log in and when you click away the cookie consent banner.
 *   schema - if you upload article metadata to us via the Upload Article XML tab, we place a cookie on your machine which allows us to remember which XSD schema you used the last time you uploaded XML to us: doaj or Crossref
@@ -140,7 +144,7 @@ DOAJ sometimes asks Cottage Labs to create an export of email addresses from the
 
 #### 5b Volunteers
 
-DOAJ maintains a list in Google Drive of all the active volunteers' names and email addresses. We use this list to coordinate volunteer activities, ensure that each Editorial Group has enough volunteers, and to ensure a smooth flow of applications through the DOAJ workflow. DOAJ also sends out a volunteer newsletter: the recipient list for this is manually created in Mailchimp using the list in Google Drive. This newsletter contains important updates which help the volunteers carry out their work effectively.
+DOAJ maintains a list in Google Drive of all the active volunteers' names and email addresses. We use this list to coordinate volunteer activities, ensure that each Editorial Group has enough volunteers, and to ensure a smooth flow of applications through the DOAJ workflow. DOAJ also sends out a volunteer newsletter: the recipient list for this is manually created in Gmail using the list in Google Drive. This newsletter contains important updates which help the volunteers carry out their work effectively.
 
 ### 6) How long we store personal data for and when we delete data
 
@@ -152,7 +156,7 @@ Users may request at any time that we delete all their personal data from our sy
 
 #### 6b Volunteer applications
 
-DOAJ stores the personal data of applicants in a Google Sheet until we assess if a person is a suitable candidate. Old applications are struck through and archived in a secure Google Drive folder which is only accessible by the Operations Manager. Volunteer applicants may request at any time that we delete all their personal data from the Google Drive by submitting a Subject Access Request (SAR) to us\*\*.
+DOAJ stores the personal data of applicants in a Google Sheet until we assess if a person is a suitable candidate. Old applications are struck through and archived in a secure Google Drive folder which is only accessible by the Operations Manager. Old applications are deleted after seven years. Volunteer applicants may request at any time that we delete all their personal data from the Google Drive by submitting a Subject Access Request (SAR) to us\*\*.
 
 \*\*see section 9 below.
 

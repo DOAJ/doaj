@@ -11,16 +11,16 @@
   <fieldset>
     {# User role #}
     {% if current_user.is_super %}
-    <div class="form__question">
-      {{ render_field(form.roles, value=account.role|join(','), style="width: 75%") }}
-    </div>
+        <div class="form__question">
+          {{ render_field(form.roles, value=account.role|join(','), style="width: 75%") }}
+        </div>
     {% else %}
-    <dl>
-      <dt>User roles</dt>
-      {% for role in account.role %}
-        <dd class="tag">{{ role }}</dd>
-      {% endfor %}
-    </dl>
+        <dl>
+          <dt>User roles</dt>
+          {% for role in account.role %}
+            <dd class="tag">{{ role }}</dd>
+          {% endfor %}
+        </dl>
     {% endif %}
 
     {# Full name #}
@@ -46,7 +46,7 @@
       <div class="col-sm-6">
         {# Password change #}
         <div class="form__question">
-          {{ render_field(form.password_change, placeholder="********") }}
+          {{ render_field(form.password_change, placeholder="********", autocomplete="new-password") }}
         </div>
         <div class="form__question">
           {{ render_field(form.password_confirm, placeholder="********") }}

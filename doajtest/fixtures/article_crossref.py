@@ -5,23 +5,27 @@ from io import BytesIO, StringIO
 from copy import deepcopy
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "crossref_article_uploads.xml")
 
-NS = {'x': 'http://www.crossref.org/schema/4.4.2'}
+class Crossref442ArticleFixtureFactory(object):
+    """
+    ~~Crossref442XML:Fixture->Crossref442:Crosswalk~~
+    """
 
-class CrossrefArticleFixtureFactory(object):
+
+    NS = {'x': 'http://www.crossref.org/schema/4.4.2'}
+    ARTICLES = os.path.join(RESOURCES, "crossref442_article_uploads.xml")
 
     @classmethod
     def _response_from_xpath(cls, xpath):
-        with open(ARTICLES) as f:
+        with open(cls.ARTICLES) as f:
             doc = etree.parse(f)
         records = doc.getroot()
-        articles = records.xpath(xpath, namespaces=NS)
-        ns = "{%s}" % NS['x']
+        articles = records.xpath(xpath, namespaces=cls.NS)
+        ns = "{%s}" % cls.NS['x']
         nr = etree.Element(ns + "doi_batch")
-        nr.append(records.xpath("//x:head", namespaces=NS)[0])
+        nr.append(records.xpath("//x:head", namespaces=cls.NS)[0])
         nr.append(etree.Element(ns + "body"))
-        body = nr.find("x:body", NS)
+        body = nr.find("x:body", cls.NS)
         for a in articles:
             body.append(a)
         out = etree.tostring(nr, encoding="UTF-8", xml_declaration=True)
@@ -121,3 +125,13 @@ class CrossrefArticleFixtureFactory(object):
     def upload_the_same_issns(cls):
         return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 The Same ISSNs']]")
 
+    @classmethod
+    def upload_multiple_affs(cls):
+        return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='Multiple Affs']]")
+
+class Crossref531ArticleFixtureFactory(Crossref442ArticleFixtureFactory):
+    """
+    ~~Crossref531XML:Fixture->Crossref531:Crosswalk~~
+    """
+    NS = {'x': 'http://www.crossref.org/schema/5.3.1'}
+    ARTICLES = os.path.join(RESOURCES, "crossref531_article_uploads.xml")
