@@ -153,11 +153,11 @@ ass_ed:
   language: Romanian, English
   
 - name: Anna Sidorko
-  area: Librarianship
+  area: Library Science
   year_since:
-  city: Padang, West Sumatra
-  country: Indonesia
-  language: Indonesian, English
+  city: Warsaw
+  country: Poland
+  language: Polish, English
 
 - name: Annarita Barbaro
   area: Humanities
@@ -255,6 +255,14 @@ ass_ed:
   city: La Habana
   country: Cuba
   language: English, French
+  
+- name: Daria Chrześcijańska
+  area: Computer Science, Social Sciences
+  year_since:
+  city: Toruń
+  country: Poland
+  language: Polish, English
+  photo: "daria.jpg" 
 
 - name: Dawam M. Rohmatulloh
   area: Social Sciences, Humanities
@@ -408,7 +416,6 @@ ass_ed:
   city:
   country:
   language: Korean, English
-
 
 - name: José Darío Martínez Ezquerro
   area: Medicine
@@ -823,9 +830,17 @@ ass_ed:
 - name: Umar Khasan
   area: Social Sciences
   year_since:
-  city: Bangkalan
+  city: Bangkalang
   country: Indonesia
-  language: Indonesian, English  
+  language: Bahasa Indonesian, English
+  
+- name: Utiya Hikmah
+  area: Material Physics
+  year_since:
+  city: Malang
+  country: Indonesia
+  language: Bahasa Indonesian, English
+  photo: "utiyah.jpg"
   
 - name: Weldy St-Fleur
   area: Social Sciences
@@ -850,6 +865,13 @@ ass_ed:
   country: Australia
   language: Chinese, English
 
+- name: Yulingga Nanda Hanief
+  area: Sports Science
+  year_since:
+  city: Malang
+  country: Indonesia
+  language: Bahasa Indonesia, English
+  photo: "hanief.jpg"
  
 - name: Zakariya Algamal
   area: Statistics
