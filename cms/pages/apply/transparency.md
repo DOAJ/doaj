@@ -190,6 +190,8 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 
 ## In other languages
 
-Version 3.0 of the Principles is [available in 21 other languages](https://drive.google.com/drive/folders/1ni9FwfgH8juUuPKKcP72QoCOf51HUww1?usp=sharing). 
+(Version 3.0 of the Principles is [available in 21 other languages](https://drive.google.com/drive/folders/1ni9FwfgH8juUuPKKcP72QoCOf51HUww1?usp=sharing).)
 
-New translations of Version 4.0 will be added here as they become available.
+Bengali (coming soon)
+Portuguese (coming soon)
+[Serbian](https://www.ceon.rs/index.php?option=com_content&view=article&id=654:transparentnost-i-najbolja-praksa&catid=94&lang=sr&Itemid=578) (hosted at ceon.rs)
