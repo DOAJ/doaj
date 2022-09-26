@@ -44,6 +44,16 @@ featuremap: ~~FAQ:Fragment~~
   If you are a registered GitHub user, or you don’t mind becoming one, you can [log a GitHub issue](https://github.com/DOAJ/doaj/issues/new/choose) directly in our repository. Alternatively, you can send the information we ask for below to [our helpdesk](mailto:helpdesk@doaj.org).
 
  When you report a bug, please include the following information. (You may not be able to provide every detail but fill in as many as you can.)
+ 
+- The URL of the page
+- The time of the error
+- Whether the error happened once or repeatedly
+- If you are uploading XML, was it DOAJ or Crossref XML?
+  - Whether you are uploading a file or uploading from a link
+  - The file(s) you had problems with
+- The exact error message as it appeared on your screen, including the detail under the 'show error details' link if there is one
+- A screenshot of the error message
+- The DOAJ account ID that you are logged in with
 
 ## How do I update the information about my journal?
 
