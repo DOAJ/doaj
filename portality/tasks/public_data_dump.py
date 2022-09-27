@@ -1,16 +1,16 @@
+import json
+import os
+import tarfile
+
 from portality import models
+from portality.api.current import DiscoveryApi
+from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.core import app
 from portality.lib import dates
 from portality.models import cache
-
-from portality.tasks.redis_huey import long_running, schedule
-from portality.decorators import write_required
-
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.store import StoreFactory
-from portality.api.current import DiscoveryApi
-
-import os, tarfile, json
+from portality.tasks.helpers import background_helper
+from portality.tasks.redis_huey import long_running
 
 
 class PublicDataDumpBackgroundTask(BackgroundTask):
@@ -219,10 +219,9 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             raise BackgroundException("You must set STORE_PUBLIC_DATA_DUMP_CONTAINER in the config")
 
         # first prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
-        job.params = params
+        job = background_helper.create_job(username, cls.__action__,
+                                           queue_type=huey_helper.queue_type,
+                                           params=params)
         return job
 
     @classmethod
@@ -237,16 +236,17 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         public_data_dump.schedule(args=(background_job.id,), delay=10)
 
 
-@long_running.periodic_task(schedule("public_data_dump"))
-@write_required(script=True)
+huey_helper = PublicDataDumpBackgroundTask.create_huey_helper(long_running)
+
+
+@huey_helper.register_schedule
 def scheduled_public_data_dump():
     user = app.config.get("SYSTEM_USERNAME")
     job = PublicDataDumpBackgroundTask.prepare(user, clean=False, prune=True, types="all")
     PublicDataDumpBackgroundTask.submit(job)
 
 
-@long_running.task()
-@write_required(script=True)
+@huey_helper.register_execute(is_load_config=False)
 def public_data_dump(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = PublicDataDumpBackgroundTask(job)

@@ -1,11 +1,10 @@
 from portality import models
-from portality.core import app
-
-from portality.tasks.redis_huey import main_queue, schedule
-from portality.decorators import write_required
-
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException
+from portality.background import BackgroundTask, BackgroundApi
 from portality.bll.doaj import DOAJ
+from portality.core import app
+from portality.tasks.helpers import background_helper
+from portality.tasks.redis_huey import main_queue
+
 
 class JournalCSVBackgroundTask(BackgroundTask):
 
@@ -41,9 +40,7 @@ class JournalCSVBackgroundTask(BackgroundTask):
         :return: a BackgroundJob instance representing this task
         """
         # prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
+        job = background_helper.create_job(username, cls.__action__, queue_type=huey_helper.queue_type)
         return job
 
     @classmethod
@@ -58,16 +55,17 @@ class JournalCSVBackgroundTask(BackgroundTask):
         journal_csv.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.periodic_task(schedule("journal_csv"))
-@write_required(script=True)
+huey_helper = JournalCSVBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_schedule
 def scheduled_journal_csv():
     user = app.config.get("SYSTEM_USERNAME")
     job = JournalCSVBackgroundTask.prepare(user)
     JournalCSVBackgroundTask.submit(job)
 
 
-@main_queue.task()
-@write_required(script=True)
+@huey_helper.register_execute(is_load_config=False)
 def journal_csv(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = JournalCSVBackgroundTask(job)

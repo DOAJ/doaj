@@ -1,12 +1,10 @@
 from portality import models
-from portality.core import app
-
-from portality.tasks.redis_huey import main_queue, schedule
-from portality.decorators import write_required
-
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
-
 from portality.bll.doaj import DOAJ
+from portality.core import app
+from portality.tasks.helpers import background_helper
+from portality.tasks.redis_huey import main_queue
+
 
 class SitemapBackgroundTask(BackgroundTask):
     """
@@ -50,9 +48,8 @@ class SitemapBackgroundTask(BackgroundTask):
             raise BackgroundException("BASE_URL must be set in configuration before we can generate a sitemap")
 
         # first prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
+        job = background_helper.create_job(username, cls.__action__,
+                                           queue_type=huey_helper.queue_type, )
         return job
 
     @classmethod
@@ -67,16 +64,17 @@ class SitemapBackgroundTask(BackgroundTask):
         generate_sitemap.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.periodic_task(schedule("sitemap"))
-@write_required(script=True)
+huey_helper = SitemapBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_schedule
 def scheduled_sitemap():
     user = app.config.get("SYSTEM_USERNAME")
     job = SitemapBackgroundTask.prepare(user)
     SitemapBackgroundTask.submit(job)
 
 
-@main_queue.task()
-@write_required(script=True)
+@huey_helper.register_execute(is_load_config=False)
 def generate_sitemap(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = SitemapBackgroundTask(job)

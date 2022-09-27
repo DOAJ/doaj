@@ -59,6 +59,14 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         self._set_with_struct("action", val)
 
     @property
+    def queue_type(self):
+        return self._get_single("queue_type")
+
+    @queue_type.setter
+    def queue_type(self, val):
+        self._set_with_struct("queue_type", val)
+
+    @property
     def audit(self):
         return self._get_list("audit")
 
@@ -145,7 +153,8 @@ BACKGROUND_STRUCT = {
         "user": {"coerce": "unicode"},
         "action": {"coerce": "unicode"},
         "queue_id": {"coerce": "unicode"},
-        "es_type": {"coerce": "unicode"}
+        "es_type": {"coerce": "unicode"},
+        "queue_type": {"coerce": "unicode"},
     },
     "lists": {
         "audit": {"contains": "object"}

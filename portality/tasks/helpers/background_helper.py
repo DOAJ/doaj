@@ -3,12 +3,27 @@
 """
 from typing import Callable, Type
 
+from huey import RedisHuey
+
 from portality import models
 from portality.background import BackgroundApi, BackgroundTask
 from portality.core import app
+from portality.tasks.redis_huey import long_running, main_queue
 
 
-def create_job(username, action, params=None):
+def get_queue_type_by_task_queue(task_queue: RedisHuey):
+    if task_queue == long_running:
+        queue_type = 'long_running'
+    elif task_queue == main_queue:
+        queue_type = 'main_queue'
+    else:
+        app.logger.warn(f'unknown task_queue[{task_queue}]')
+        queue_type = 'unknown'
+    return queue_type
+
+
+def create_job(username, action, queue_type='unknown',
+               task_queue: RedisHuey = None, params=None):
     """ Common way to create BackgroundJob
     """
     job = models.BackgroundJob()
@@ -16,12 +31,15 @@ def create_job(username, action, params=None):
     job.action = action
     if params is not None:
         job.params = params
+
+    if task_queue is not None:
+        queue_type = get_queue_type_by_task_queue(task_queue)
+    job.queue_type = queue_type
     return job
 
 
 def submit_by_bg_task_type(background_task: Type[BackgroundTask], **prepare_kwargs):
     """ Common way to submit task by BackgroundTask Class
-
     """
     user = app.config.get("SYSTEM_USERNAME")
     job = background_task.prepare(user, **prepare_kwargs)

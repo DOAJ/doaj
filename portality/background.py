@@ -1,12 +1,15 @@
-from flask_login import login_user
-
-from portality.core import app
-from portality import models
-from portality.bll import DOAJ
-from portality import constants
-
 import traceback
 from copy import deepcopy
+
+from flask_login import login_user
+from huey import RedisHuey
+
+from portality import constants
+from portality import models
+from portality.bll import DOAJ
+from portality.core import app
+from portality.decorators import write_required
+from portality.tasks.redis_huey import schedule, configure
 
 
 class BackgroundException(Exception):
@@ -25,9 +28,9 @@ class BackgroundSummary(object):
 
     def as_dict(self):
         return {
-            "job_id" : self.job_id,
-            "affected" : self.affected,
-            "error" : self.error
+            "job_id": self.job_id,
+            "affected": self.affected,
+            "error": self.error
         }
 
 
@@ -47,7 +50,7 @@ class BackgroundApi(object):
             ctx = app.test_request_context("/")
             ctx.push()
             # ~~-> Account:Model~~
-            acc = models.Account.pull(job.user)     # FIXME: what happens when this is the "system" user
+            acc = models.Account.pull(job.user)  # FIXME: what happens when this is the "system" user
             if acc is not None:
                 login_user(acc)
 
@@ -165,9 +168,14 @@ class BackgroundTask(object):
     def set_reference(cls, refs, ref_name, value):
         refs['{}__{}'.format(cls.__action__, ref_name)] = value
 
+    @classmethod
+    def create_huey_helper(cls, task_queue: RedisHuey):
+        return RedisHueyTaskHelper(task_queue, cls.__action__)
+
 
 class AdminBackgroundTask(BackgroundTask):
     """~~AdminBackgroundTask:Process->BackgroundTask:Process~~"""
+
     @classmethod
     def check_admin_privilege(cls, username):
         # ~~->Account:Model~~
@@ -182,3 +190,32 @@ class AdminBackgroundTask(BackgroundTask):
     @classmethod
     def prepare(cls, username, **kwargs):
         cls.check_admin_privilege(username)
+
+
+class RedisHueyTaskHelper:
+    def __init__(self, task_queue: RedisHuey, task_name: str):
+        self.task_queue = task_queue
+        self.task_name = task_name
+
+    @property
+    def queue_type(self):
+        from portality.tasks.helpers import background_helper
+        return background_helper.get_queue_type_by_task_queue(self.task_queue)
+
+    def register_schedule(self, fn):
+        fn = write_required(script=True)(fn)
+        fn = self.task_queue.periodic_task(schedule(self.task_name))(fn)
+        return fn
+
+    def register_execute(self, is_load_config=False):
+        def wrapper(fn):
+            if is_load_config:
+                conf = configure(self.task_name)
+            else:
+                conf = {}
+
+            fn = write_required(script=True)(fn)
+            fn = self.task_queue.task(**conf)(fn)
+            return fn
+
+        return wrapper

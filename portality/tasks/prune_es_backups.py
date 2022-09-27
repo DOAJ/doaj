@@ -1,15 +1,16 @@
-from portality import models
-from portality.core import app
-from portality.lib import dates
-
-from portality.tasks.redis_huey import long_running, schedule
-from portality.decorators import write_required
-from portality.background import BackgroundTask, BackgroundApi
+from datetime import datetime, timedelta
 
 from esprit.raw import Connection
 from esprit.snapshot import ESSnapshotsClient
 
-from datetime import datetime, timedelta
+from portality import models
+from portality.background import BackgroundTask, BackgroundApi
+from portality.core import app
+from portality.lib import dates
+from portality.tasks.helpers import background_helper
+from portality.tasks.redis_huey import long_running
+
+
 # FIXME: update for index-per-type
 
 
@@ -61,9 +62,8 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         """
 
         # first prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
+        job = background_helper.create_job(username, cls.__action__,
+                                           queue_type=huey_helper.queue_type)
         return job
 
     @classmethod
@@ -78,16 +78,17 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         prune_es_backups.schedule(args=(background_job.id,), delay=10)
 
 
-@long_running.periodic_task(schedule("prune_es_backups"))
-@write_required(script=True)
+huey_helper = PruneESBackupsBackgroundTask.create_huey_helper(long_running)
+
+
+@huey_helper.register_schedule
 def scheduled_prune_es_backups():
     user = app.config.get("SYSTEM_USERNAME")
     job = PruneESBackupsBackgroundTask.prepare(user)
     PruneESBackupsBackgroundTask.submit(job)
 
 
-@long_running.task()
-@write_required(script=True)
+@huey_helper.register_execute(is_load_config=False)
 def prune_es_backups(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = PruneESBackupsBackgroundTask(job)

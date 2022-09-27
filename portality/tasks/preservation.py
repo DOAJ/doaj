@@ -2,24 +2,24 @@ import csv
 import hashlib
 import json
 import os
-import requests
 import shutil
 import tarfile
-from typing import List
-from bagit import make_bag, BagError
 from copy import deepcopy
 from datetime import datetime
 from zipfile import ZipFile
-from pathlib import Path
+
+import requests
+from bagit import make_bag, BagError
 
 from portality.background import BackgroundTask, BackgroundApi
+from portality.bll import DOAJ
 from portality.core import app
 from portality.decorators import write_required
 from portality.lib import dates
 from portality.models import Account, Article, BackgroundJob, PreservationState
 from portality.regex import DOI_COMPILED, HTTP_URL_COMPILED
+from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import main_queue, configure
-from portality.bll import DOAJ
 
 
 class PreservationException(Exception):
@@ -118,6 +118,7 @@ class ArticlePackage:
 
 class ArticlesList:
     """This class contains different types of lists depending on the article state"""
+
     def __init__(self):
         self.__successful_articles = []
         self.__unowned_articles = []
@@ -170,18 +171,18 @@ class ArticlesList:
     def get_count(self):
         return len(self.__successful_articles) + \
                len(self.__unowned_articles) + \
-               len(self.__no_identifier_articles) +\
-               len(self.__unbagged_articles) +\
+               len(self.__no_identifier_articles) + \
+               len(self.__unbagged_articles) + \
                len(self.__not_found_articles) + \
                len(self.__no_files_articles)
 
     def is_partial_success(self):
         if len(self.__successful_articles) > 0 and \
                 (len(self.__unbagged_articles) > 0 or
-                len(self.__unowned_articles) > 0 or
-                len(self.__not_found_articles) > 0 or
-                len(self.__no_identifier_articles) > 0 or
-                len(self.__no_files_articles)):
+                 len(self.__unowned_articles) > 0 or
+                 len(self.__not_found_articles) > 0 or
+                 len(self.__no_identifier_articles) > 0 or
+                 len(self.__no_files_articles)):
             return True
 
         return False
@@ -211,14 +212,10 @@ class PreservationBackgroundTask(BackgroundTask):
         preservation.save_file(file)
 
         # prepare a job record
-        job = BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
-
         params = {}
         cls.set_param(params, "local_dir", local_dir)
-        job.params = params
-
+        job = background_helper.create_job(username, cls.__action__,
+                                           queue_type=huey_helper.queue_type, params=params)
         return job
 
     def run(self):
@@ -394,8 +391,10 @@ class PreservationBackgroundTask(BackgroundTask):
         preserve.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.task(**configure("preserve"))
-@write_required(script=True)
+huey_helper = PreservationBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_execute(is_load_config=True)
 def preserve(job_id):
     """~~-> PreservationBackgroundTask:Queue"""
     job = BackgroundJob.pull(job_id)
