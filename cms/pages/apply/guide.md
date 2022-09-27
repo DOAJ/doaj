@@ -68,7 +68,7 @@ The following information must be available online, and easily accessible from t
     - page charges
     - colour charges
 - Contact details
-  - The contact details must include a real name and the journal’s dedicated email address
+  - The contact details must include a contact name and the journal's dedicated email address
   - The country in the application and on the journal website must be the country where the publisher is registered and carries out its business activities
 
 ---
