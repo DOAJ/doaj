@@ -16,7 +16,7 @@ featuremap: ~~FAQ:Fragment~~
   + All information shared with DOAJ is done so in confidence and is never published.
   + Include the ISSN of the journal when you email us.
 3. If you find **a broken link or something that is out of date** or incomplete, [contact us](/contact/).
-  + We are always grateful when our users are our eyes and ears.
+  + We apppreciate the community providing us with this type of feedback.
   + For broken links in articles, include the journal’s ISSN, title and the title of the article.
 4. Become **a volunteer**
   + From time to time, we put out a call for volunteers. Follow us on [Twitter](https://twitter.com/doajplus) or [our blog](https://blog.doaj.org/) to find out when the next call is published.
