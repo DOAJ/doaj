@@ -5,25 +5,28 @@ from typing import Callable, Type
 
 from huey import RedisHuey
 
-from portality import models
+from portality import models, constants
 from portality.background import BackgroundApi, BackgroundTask
 from portality.core import app
-from portality.tasks.redis_huey import long_running, main_queue
+from portality.decorators import write_required
+from portality.tasks.redis_huey import long_running, main_queue, configure, schedule
 
 
 def get_queue_type_by_task_queue(task_queue: RedisHuey):
     if task_queue == long_running:
-        queue_type = 'long_running'
+        queue_type = constants.BGJOB_QUEUE_TYPE_LONG
     elif task_queue == main_queue:
-        queue_type = 'main_queue'
+        queue_type = constants.BGJOB_QUEUE_TYPE_MAIN
     else:
         app.logger.warn(f'unknown task_queue[{task_queue}]')
-        queue_type = 'unknown'
+        queue_type = constants.BGJOB_QUEUE_TYPE_UNKNOWN
     return queue_type
 
 
-def create_job(username, action, queue_type='unknown',
-               task_queue: RedisHuey = None, params=None):
+def create_job(username, action,
+               queue_type=constants.BGJOB_QUEUE_TYPE_UNKNOWN,
+               task_queue: RedisHuey = None,
+               params=None):
     """ Common way to create BackgroundJob
     """
     job = models.BackgroundJob()
@@ -64,3 +67,31 @@ def execute_by_bg_task_type(bg_task_type: Type[BackgroundTask], **prepare_kwargs
     BackgroundApi.execute(task)
 
     return task
+
+
+class RedisHueyTaskHelper:
+    def __init__(self, task_queue: RedisHuey, task_name: str):
+        self.task_queue = task_queue
+        self.task_name = task_name
+
+    @property
+    def queue_type(self):
+        return get_queue_type_by_task_queue(self.task_queue)
+
+    def register_schedule(self, fn):
+        fn = write_required(script=True)(fn)
+        fn = self.task_queue.periodic_task(schedule(self.task_name))(fn)
+        return fn
+
+    def register_execute(self, is_load_config=False):
+        def wrapper(fn):
+            if is_load_config:
+                conf = configure(self.task_name)
+            else:
+                conf = {}
+
+            fn = write_required(script=True)(fn)
+            fn = self.task_queue.task(**conf)(fn)
+            return fn
+
+        return wrapper

@@ -4,6 +4,7 @@ from datetime import datetime
 
 from doajtest.helpers import DoajTestCase
 from doajtest import fixtures
+from doajtest.unit_tester import bgtask_tester
 
 from portality import background, models
 from portality.tasks import article_cleanup_sync
@@ -308,3 +309,6 @@ class TestArticleCleanupSync(DoajTestCase):
 
         with self.assertWarns(DeprecationWarning):
             a1.bibjson().add_journal_license('Title2', 'CC', 'https://example.com')
+
+    def test_prepare__queue_type(self):
+        bgtask_tester.test_queue_type_assigned(article_cleanup_sync.ArticleCleanupSyncBackgroundTask)
