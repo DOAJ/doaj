@@ -253,8 +253,7 @@ class ArticleService(object):
         bj = article.bibjson()
 
         # is journal in doaj
-        issns = article.journal_issns
-        journal = models.Journal.find_by_issn(issns)
+        journal = article.get_journal()
         if journal is None or not journal.is_in_doaj():
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL)
 
