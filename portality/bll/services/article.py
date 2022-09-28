@@ -252,6 +252,12 @@ class ArticleService(object):
         """
         bj = article.bibjson()
 
+        # is journal in doaj
+        issns = article.journal_issns
+        journal = models.Journal.find_by_issn(issns)
+        if journal is None or not journal.is_in_doaj():
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL)
+
         # do we have a DOI.  If so, no need to go further
         doi = bj.get_one_identifier(bj.DOI)
         ft = bj.get_single_url(bj.FULLTEXT)
