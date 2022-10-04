@@ -16,6 +16,8 @@ NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 
 
 def create_simple_sub_element(parent, element_name, text=None):
+    """ create and attach simple text element to argument *parent*
+    """
     loc = etree.SubElement(parent, NS + element_name)
     if text is not None:
         loc.text = text
@@ -23,6 +25,8 @@ def create_simple_sub_element(parent, element_name, text=None):
 
 
 def create_url_element(parent, loc, change_freq, lastmod=None):
+    """ create and attach url element to argument *parent*
+    """
     url_ele = etree.SubElement(parent, NS + "url")
 
     create_simple_sub_element(url_ele, 'loc', loc)
