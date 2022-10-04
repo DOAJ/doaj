@@ -1,12 +1,12 @@
 import re
 from datetime import datetime
-from typing import Iterable
 
 from lxml import etree
 
 from portality import models
 from portality.bll import exceptions
 from portality.core import app
+from portality.lib import nav
 from portality.lib.argvalidate import argvalidate
 from portality.store import StoreFactory, prune_container
 from portality.util import get_full_url_safe
@@ -34,18 +34,6 @@ def create_url_element(parent, loc, change_freq, lastmod=None):
     create_simple_sub_element(url_ele, "changefreq", change_freq)
 
     return url_ele
-
-
-def yield_all_route(entries: Iterable[dict]):
-    for e in entries:
-        if 'route' in e:
-            yield e['route']
-        if 'entries' in e:
-            yield from yield_all_route(e['entries'])
-
-
-def get_nav_entries() -> Iterable[dict]:
-    return app.jinja_env.globals.get("data", {}).get('nav', {}).get('entries', [])
 
 
 class SiteService(object):
@@ -80,8 +68,8 @@ class SiteService(object):
         counter = 0
 
         # do the static pages
-        _entries = get_nav_entries()
-        _routes = yield_all_route(_entries)
+        _entries = nav.get_nav_entries()
+        _routes = nav.yield_all_route(_entries)
         _urls = (get_full_url_safe(r) for r in _routes)
         _urls = filter(None, _urls)
         _urls = set(_urls)
@@ -120,9 +108,13 @@ class SiteService(object):
         if prune:
             def sort(filelist):
                 rx = "sitemap__doaj_(.+?)_utf8.xml"
-                return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], '%Y%m%d_%H%M'), reverse=True)
+                return sorted(filelist,
+                              key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], '%Y%m%d_%H%M'),
+                              reverse=True)
+
             def _filter(filename):
                 return filename.startswith("sitemap__")
+
             action_register += prune_container(mainStore, container_id, sort, filter=_filter, keep=2)
 
         # update the ES record to point to the new file
