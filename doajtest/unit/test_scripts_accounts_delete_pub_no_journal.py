@@ -1,5 +1,4 @@
 import time
-import esprit
 
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures.accounts import AccountFixtureFactory
