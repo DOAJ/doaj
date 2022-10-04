@@ -1,6 +1,6 @@
 from portality import models
 from portality.core import app
-import esprit
+from portality.models import Journal
 import csv
 
 NO_APC = {
@@ -27,19 +27,18 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--out", help="output file path")
     args = parser.parse_args()
 
-    if not args.out:
-        print("Please specify an output file path with the -o option")
-        parser.print_help()
-        exit()
+    args.out = "out.txt"
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+    # if not args.out:
+    #     print("Please specify an output file path with the -o option")
+    #     parser.print_help()
+    #     exit()
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID", "Journal Name", "Journal Contact", "Account", "Account Email", "Marketing Consent"])
 
-        for j in esprit.tasks.scroll(conn, models.Journal.__type__, q=NO_APC, page_size=100, keepalive='5m'):
-            journal = models.Journal(_source=j)
+        for journal in Journal.scroll(q=NO_APC, page_size=100, keepalive='5m'):
             bibjson = journal.bibjson()
             account = models.Account.pull(journal.owner)
 
