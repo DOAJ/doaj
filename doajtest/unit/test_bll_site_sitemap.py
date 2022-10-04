@@ -1,21 +1,21 @@
-from parameterized import parameterized
+from io import StringIO
+
 from combinatrix.testintegration import load_parameter_sets
+from lxml import etree
+from parameterized import parameterized
 
 from doajtest import helpers
 from doajtest.fixtures import JournalFixtureFactory
 from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.mocks.models_Cache import ModelCacheMockFactory
+from doajtest.mocks.store import StoreMockFactory
+from portality import models
+from portality import store
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.bll.services import site
-from portality import models
-from portality.lib.paths import rel2abs
 from portality.core import app
-from doajtest.mocks.store import StoreMockFactory
-from doajtest.mocks.models_Cache import ModelCacheMockFactory
-from portality import store
-from io import StringIO
-from lxml import etree
-
+from portality.lib import nav
+from portality.lib.paths import rel2abs
 from portality.util import get_full_url_safe
 
 
@@ -185,7 +185,7 @@ class TestBLLSitemap(DoajTestCase):
 
             # deduplicate the statics, to check we saw all of them too
             _urls = (get_full_url_safe(r)
-                     for r in site.yield_all_route(self.static_entries))
+                     for r in nav.yield_all_route(self.static_entries))
             _urls = filter(None, _urls)
             assert set(statics) == set(_urls)
 
