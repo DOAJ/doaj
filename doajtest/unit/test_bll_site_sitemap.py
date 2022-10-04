@@ -16,6 +16,8 @@ from portality import store
 from io import StringIO
 from lxml import etree
 
+from portality.util import get_full_url_safe
+
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_sitemap"), "sitemap", "test_id",
@@ -182,7 +184,7 @@ class TestBLLSitemap(DoajTestCase):
             assert len(tocs) == len(expectations)
 
             # deduplicate the statics, to check we saw all of them too
-            _urls = (site.get_url_safe(r)
+            _urls = (get_full_url_safe(r)
                      for r in site.yield_all_route(self.static_entries))
             _urls = filter(None, _urls)
             assert set(statics) == set(_urls)

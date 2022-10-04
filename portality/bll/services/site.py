@@ -2,7 +2,6 @@ import re
 from datetime import datetime
 from typing import Iterable
 
-import werkzeug.routing
 from lxml import etree
 
 from portality import models
@@ -10,7 +9,7 @@ from portality.bll import exceptions
 from portality.core import app
 from portality.lib.argvalidate import argvalidate
 from portality.store import StoreFactory, prune_container
-from portality.util import get_full_url_by_endpoint
+from portality.util import get_full_url_safe
 
 NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 
@@ -43,14 +42,6 @@ def yield_all_route(entries: Iterable[dict]):
             yield e['route']
         if 'entries' in e:
             yield from yield_all_route(e['entries'])
-
-
-def get_url_safe(endpoint):
-    try:
-        return get_full_url_by_endpoint(endpoint)
-    except werkzeug.routing.BuildError:
-        app.logger.warning(f'endpoint not found -- [{endpoint}]')
-        return None
 
 
 def get_nav_entries() -> Iterable[dict]:
@@ -91,7 +82,7 @@ class SiteService(object):
         # do the static pages
         _entries = get_nav_entries()
         _routes = yield_all_route(_entries)
-        _urls = (get_url_safe(r) for r in _routes)
+        _urls = (get_full_url_safe(r) for r in _routes)
         _urls = filter(None, _urls)
         _urls = set(_urls)
         _urls = sorted(_urls)
