@@ -74,18 +74,31 @@
     {% block main_panel %}
     <main>
       <header class="main-header">
-        {% if request.path == "/dashboard/" %}
         <div class="row">
           <header class="col-md-6 col-lg-4">
-            <p class="label tag"><small><a href="{{ url_for('account.username', username=current_user.id) }}" title="Manage my profile & settings"><span data-feather="user" aria-hidden="true"></span> {{ current_user.id }} (Managing Editor)</a></small></p>{# TODO: insert role of user here #}
-            {% endif %}
+            <p class="label tag">
+              <small>
+                <a href="{{ url_for('account.username', username=current_user.id) }}" title="Manage my profile & settings">
+                  <span data-feather="user" aria-hidden="true"></span>
+                  {{ current_user.id }}
+                  {% if current_user.has_role("admin") %}
+                    (Managing Editor)
+                  {% elif current_user.has_role("editor") %}
+                    (Editor)
+                  {% elif current_user.has_role("associate_editor") %}
+                    (Associate Editor)
+                  {% endif %}
+                </a>
+              </small>
+            </p>
             <h1>
               {% block page_title %}
-                Hi{% if current_user.name %}, {{ current_user.name }}{% endif %}!
+                Hi, {% if current_user.name %}{{ current_user.name }}{% else %}
+                {{ current_user.id }}{% endif %}!
               {% endblock %}
             </h1>
           </header>
-          {% if request.path == "/dashboard/" %}
+          {% if current_user.has_role("admin") %}
           <nav class="col-md-6 col-lg-8 align-right">
             {% if managed_groups and managed_groups|length > 0 %}
             <dl>
@@ -106,11 +119,11 @@
                   {% endfor %}
                 </ul>
               </dd>
-              {% endif %}
             </dl>
+            {% endif %}
           </nav>
+          {% endif %}
         </div>
-        {% endif %}
       </header>
       {% include "includes/_flash_notification.html" %}
       {% block content %}{% endblock %}
