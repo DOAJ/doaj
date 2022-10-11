@@ -1259,3 +1259,27 @@ PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event/"
 # site name / domain name that used to register in plausible
 PLAUSIBLE_SITE_NAME = BASE_DOMAIN
 PLAUSIBLE_LOG_DIR = None
+
+
+##################################3
+# Background monitor
+# ~~->BackgroundMonitor:Feature~~
+BG_MONITOR_LAST_COMPLETED = {
+    'main_queue': 7200,
+    'long_running': 93600,
+}
+
+BG_MONITOR_ERRORS_CONFIG = {
+    'journal_csv': {
+        'check_sec': 3600,
+        'allowed_num_err': 0,
+    }
+}
+
+BG_MONITOR_QUEUED_CONFIG = {
+    'journal_csv': {
+        'total': 2,
+        'oldest': 1200,
+    }
+}
+

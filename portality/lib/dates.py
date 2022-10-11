@@ -67,6 +67,10 @@ def before(timestamp, seconds):
     return timestamp - timedelta(seconds=seconds)
 
 
+def before_now(seconds: int):
+    return before(datetime.utcnow(), seconds)
+
+
 def after(timestamp, seconds):
     return timestamp + timedelta(seconds=seconds)
 

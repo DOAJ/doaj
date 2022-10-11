@@ -66,7 +66,17 @@ PROCESS__QUICK_REJECT = "quick_reject"
 # Role
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 
+# BackgroundJob.status
+BGJOB_STATUS_QUEUED = 'queued'
+BGJOB_STATUS_ERROR = 'error'
+
 # BackgroundJob.queue_type
 BGJOB_QUEUE_TYPE_LONG = 'long_running'
 BGJOB_QUEUE_TYPE_MAIN = 'main_queue'
 BGJOB_QUEUE_TYPE_UNKNOWN = 'unknown'
+
+# Background monitor status
+BG_STATUS_STABLE = 'stable'
+BG_STATUS_UNSTABLE = 'unstable'
+
+
