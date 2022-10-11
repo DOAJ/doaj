@@ -303,39 +303,3 @@ class LastCompletedJobQuery:
                 .build_query_dict())
 
 
-def main():
-    # from portality import core
-    # from portality.core import app, initialise_index
-    # initialise_index(app, core.es_connection)
-    # for b in BackgroundJob.active('anon_export'):
-    #     print(b)
-
-    # for b in BackgroundJob.q2obj():
-    #     print(b)
-
-    print(BackgroundJob.hit_count(ErrorQuery().query()))
-    print(BackgroundJob.hit_count(ErrorQuery('reporting').query()))
-
-    actions = {b['action'] for b in BackgroundJob.q2obj(q=ErrorQuery().query())}
-    print(actions)
-    # print(b['action'])
-
-
-# for b in BackgroundJob.q2obj(q=ActiveQuery('sitemap').query()):
-#     print(b)
-
-# from portality.models.v1.journal import Journal
-# for j in Journal.scroll(es_connection):
-#     print(j)
-
-def main2():
-    query_dict = BackgroundJobQueryBuilder().status_includes('error').size(1).build_query_dict()
-    for b in BackgroundJob.q2obj(q=query_dict):
-        print(b)
-    print(BackgroundJob.hit_count(query_dict))
-
-    "created_date"
-
-
-if __name__ == '__main__':
-    main2()
