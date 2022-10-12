@@ -66,6 +66,7 @@ PROCESS__QUICK_REJECT = "quick_reject"
 # Role
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 
+# ~~-> BackgroundTask:MonitoringStatus~~
 # BackgroundJob.status
 BGJOB_STATUS_QUEUED = 'queued'
 BGJOB_STATUS_ERROR = 'error'

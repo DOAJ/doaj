@@ -182,6 +182,7 @@ def status():
     #     res['notes'].append(indexable_note)
 
     # check background jobs
+    # ~~-> BackgroundTask:MonitoringStatus~~
     res['background'] = background_task_status.create_background_status()
     if not background_task_status.is_stable(res['background'].get('status')):
         res['stable'] = False
