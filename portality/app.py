@@ -302,6 +302,20 @@ def maned_of_wrapper():
     return dict(maned_of=maned_of)
 
 
+@app.context_processor
+def editor_of_wrapper():
+    def editor_of():
+        # ~~-> EditorGroup:Model ~~
+        egs = []
+        assignments = {}
+        if current_user.has_role("editor"):
+            egs = models.EditorGroup.groups_by_editor(current_user.id)
+            if len(egs) > 0:
+                assignments = models.Application.assignment_to_editor_groups(egs)
+        return egs, assignments
+    return dict(editor_of_fun=editor_of)
+
+
 # ~~-> Account:Model~~
 # ~~-> AuthNZ:Feature~~
 @app.before_request

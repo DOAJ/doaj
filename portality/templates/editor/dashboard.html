@@ -2,4 +2,39 @@
 
 {% block editor_content %}
   {% include "dashboard/_todo.html" %}
+    <section>
+    {# ~~->$GroupStatus:Feature~~ #}
+    <h2>Activity</h2>
+    <div class="tabs">
+      <nav class="tabs__menu">
+        {# note that js-managed-groups-tabs and the structure beneath it is required in dashboard.js - if you change the
+            structure of this code, you need to change that too #}
+        <ul class="tabs__list js-managed-groups-tabs" role="tablist">
+          {# managed_groups is inherited from the dashboard_base template #}
+        {# ~~^-> EditorGroup:Model ~~ #}
+          {% for eg in editor_of %}
+          <li class="tabs__item">
+            <a href="#" data-group-id="{{ eg.id }}" role="tab" aria-selected="{% if loop.first %}true{% else %}false{% endif %}" class="label js-group-tab" title="Toggle to {{ eg.name }}’s activity data">{{ eg.name }} ({{ editor_of_assignments[eg.name] }}<span class="sr-only"> applications</span>)</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+
+      {# TODO: there’s a bit of a11y work to be done here; we need to indicate which tabs are hidden and which
+      aren’t using ARIA attributes. #}
+      {# TODO: the first tab content needs to be shown by default, without a "click to see" message. #}
+      <div class="tabs__content">
+        <div id="group-tab" role="tabpanel" tabindex="0" aria-labelledby=""  aria-hidden="" style="font-size: smaller;" class="tabs__panel"></div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript" src="/static/js/dashboard.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    doaj.dashboard.init()
+});
+</script>
 {% endblock %}
