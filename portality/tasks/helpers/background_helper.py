@@ -16,14 +16,15 @@ from portality.tasks.redis_huey import long_running, main_queue, configure, sche
 
 
 def get_queue_type_by_task_queue(task_queue: RedisHuey):
-    if task_queue.name == long_running.name:
-        queue_type = constants.BGJOB_QUEUE_TYPE_LONG
+    if task_queue is None:
+        return constants.BGJOB_QUEUE_TYPE_UNKNOWN
+    elif task_queue.name == long_running.name:
+        return constants.BGJOB_QUEUE_TYPE_LONG
     elif task_queue.name == main_queue.name:
-        queue_type = constants.BGJOB_QUEUE_TYPE_MAIN
+        return constants.BGJOB_QUEUE_TYPE_MAIN
     else:
         app.logger.warn(f'unknown task_queue[{task_queue}]')
-        queue_type = constants.BGJOB_QUEUE_TYPE_UNKNOWN
-    return queue_type
+        return constants.BGJOB_QUEUE_TYPE_UNKNOWN
 
 
 def create_job(username, action,
@@ -122,10 +123,18 @@ def _get_background_task_spec(module):
 
 
 def get_all_background_task_specs() -> Iterable[Tuple[str, str, Type]]:
+    def _load_bgtask_safe(_mi):
+        try:
+            return _mi.module_finder.find_spec(_mi.name).loader.load_module(_mi.name)
+        except RuntimeError as e:
+            if 'No configuration for scheduled action' in str(e):
+                app.logger.warn(f'config for {_mi.name} not found')
+                return None
+            raise e
+
     module_infos = (m for m in pkgutil.walk_packages(portality.tasks.__path__) if not m.ispkg)
-    modules = (mi.module_finder.find_spec(mi.name).loader.load_module(mi.name)
-               for mi in module_infos)
+    modules = (_load_bgtask_safe(mi) for mi in module_infos)
+    modules = filter(None, modules)
     bgspec_list = map(_get_background_task_spec, modules)
     bgspec_list = filter(None, bgspec_list)
     return bgspec_list
-

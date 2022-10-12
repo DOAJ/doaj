@@ -2,7 +2,7 @@ import json
 import time
 
 from doajtest.fixtures.background import save_mock_bgjob
-from doajtest.helpers import DoajTestCase, apply_test_case_config
+from doajtest.helpers import DoajTestCase, apply_test_case_config, patch_config
 from portality import constants
 from portality.bll import background_task_status
 from portality.bll.background_task_status import is_stable
@@ -69,6 +69,23 @@ bg_monitor_last_completed__a = {
 
 class TestBackgroundTaskStatus(DoajTestCase):
     # ~~-> BackgroundTask:MonitoringStatus~~
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.org_config = patch_config(cls.app_test, {
+            'HUEY_SCHEDULE': {
+                JournalCSVBackgroundTask.__action__: constants.CRON_NEVER,
+                AnonExportBackgroundTask.__action__: constants.CRON_NEVER,
+            },
+        })
+
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        super().tearDownClass()
+        patch_config(cls.app_test, cls.org_config)
+
 
     @staticmethod
     def assert_stable_dict(val: dict):

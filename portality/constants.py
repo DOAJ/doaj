@@ -66,6 +66,8 @@ PROCESS__QUICK_REJECT = "quick_reject"
 # Role
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 
+CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
+
 # ~~-> BackgroundTask:MonitoringStatus~~
 # BackgroundJob.status
 BGJOB_STATUS_QUEUED = 'queued'
@@ -80,5 +82,3 @@ BGJOB_QUEUE_TYPE_UNKNOWN = 'unknown'
 # Background monitor status
 BG_STATUS_STABLE = 'stable'
 BG_STATUS_UNSTABLE = 'unstable'
-
-
