@@ -11,12 +11,16 @@ from portality.models.background import BackgroundJobQueryBuilder, BackgroundJob
 from portality.tasks.helpers import background_helper
 
 
-def to_bg_status_str(is_stable: bool) -> str:
-    return BG_STATUS_STABLE if is_stable else BG_STATUS_UNSTABLE
+def is_stable(val):
+    return val == BG_STATUS_STABLE
+
+
+def to_bg_status_str(stable_val: bool) -> str:
+    return BG_STATUS_STABLE if stable_val else BG_STATUS_UNSTABLE
 
 
 def all_stable(items: Iterable, field_name='status') -> bool:
-    return all(q.get(field_name) == BG_STATUS_STABLE for q in items)
+    return all(is_stable(q.get(field_name)) for q in items)
 
 
 def all_stable_str(items: Iterable, field_name='status') -> str:
@@ -51,8 +55,8 @@ def create_queued_status(action, total=2, oldest=1200, **_) -> dict:
 
     err_msgs = []
     limited_oldest_date = dates.before_now(oldest)
-    if oldest_job and oldest_job.created_timestamp > limited_oldest_date:
-        err_msgs.append('outdated job found. created_timestamp[{} > {}]'.format(
+    if oldest_job and oldest_job.created_timestamp < limited_oldest_date:
+        err_msgs.append('outdated job found. created_timestamp[{} < {}]'.format(
             oldest_job.created_timestamp,
             limited_oldest_date
         ))
@@ -63,7 +67,7 @@ def create_queued_status(action, total=2, oldest=1200, **_) -> dict:
     return dict(
         status=to_bg_status_str(not err_msgs),
         total=total_queued,
-        oldest=oldest_job and oldest_job.created_date,
+        oldest=oldest_job.created_date if oldest_job else None,
         err_msgs=err_msgs,
     )
 
@@ -97,7 +101,7 @@ def create_background_queues_status(queue_name) -> dict:
             )
 
     result_dict = dict(
-        status=to_bg_status_str(err_msgs or all_stable(itertools.chain(errors.values(), queued.values()))),
+        status=to_bg_status_str(not err_msgs and all_stable(itertools.chain(errors.values(), queued.values()))),
         last_completed_job=last_completed_date and dates.format(last_completed_date),
         errors=errors,
         queued=queued,

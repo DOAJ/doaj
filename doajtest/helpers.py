@@ -341,3 +341,25 @@ class StoreLocalPatcher:
         shutil.rmtree(self.new_store_tmp_dir)
         cur_app.config["STORE_LOCAL_DIR"] = self.org_store_local_dir
         cur_app.config["STORE_TMP_DIR"] = self.org_store_tmp_dir
+
+
+def apply_test_case_config(new_config):
+    def decorator(fn):
+        @functools.wraps(fn)
+        def wrapper(self, *args, **kwargs):
+            # apply new_config
+            _app = getattr(self, 'app_test', None)
+            originals = None
+            if _app:
+                originals = patch_config(_app, new_config)
+
+            # run function
+            fn(self, *args, **kwargs)
+
+            # restore
+            if originals:
+                patch_config(_app, originals)
+
+        return wrapper
+
+    return decorator

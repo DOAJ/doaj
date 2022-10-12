@@ -183,7 +183,7 @@ def status():
 
     # check background jobs
     res['background'] = background_task_status.create_background_status()
-    if res['background'].get('status') != BG_STATUS_STABLE:
+    if not background_task_status.is_stable(res['background'].get('status')):
         res['stable'] = False
 
     resp = make_response(json.dumps(res))

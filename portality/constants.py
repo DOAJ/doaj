@@ -69,6 +69,7 @@ ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 # BackgroundJob.status
 BGJOB_STATUS_QUEUED = 'queued'
 BGJOB_STATUS_ERROR = 'error'
+BGJOB_STATUS_COMPLETE = 'complete'
 
 # BackgroundJob.queue_type
 BGJOB_QUEUE_TYPE_LONG = 'long_running'
