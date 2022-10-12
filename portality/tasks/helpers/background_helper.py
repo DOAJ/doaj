@@ -129,11 +129,3 @@ def get_all_background_task_specs() -> Iterable[Tuple[str, str, Type]]:
     bgspec_list = filter(None, bgspec_list)
     return bgspec_list
 
-
-def main3():
-    bgspec_list = get_all_background_task_specs()
-    print(list(bgspec_list))
-
-
-if __name__ == '__main__':
-    main3()

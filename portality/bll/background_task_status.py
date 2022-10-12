@@ -3,7 +3,6 @@
 """
 
 import itertools
-import json
 from typing import Iterable
 
 from portality.constants import BGJOB_QUEUE_TYPE_LONG, BGJOB_QUEUE_TYPE_MAIN, BGJOB_STATUS_ERROR, BGJOB_STATUS_QUEUED, \
@@ -76,7 +75,7 @@ def create_queued_status(action, total=2, oldest=1200, **_) -> dict:
     )
 
 
-def create_background_queues_status(queue_name) -> dict:
+def create_queues_status(queue_name) -> dict:
     # define last_completed_job
     bgjob_list = BackgroundJob.q2obj(q=LastCompletedJobQuery(queue_name).query())
     bgjob_list = list(bgjob_list)
@@ -128,7 +127,7 @@ def get_config_dict_by_queue_name(config_name, queue_name):
 
 def create_background_status() -> dict:
     queues = {
-        queue_name: create_background_queues_status(queue_name)
+        queue_name: create_queues_status(queue_name)
         for queue_name in [BGJOB_QUEUE_TYPE_LONG, BGJOB_QUEUE_TYPE_MAIN]
     }
 
@@ -137,32 +136,3 @@ def create_background_status() -> dict:
         queues=queues,
     )
     return result_dict
-
-
-def main():
-    # define last_completed_job
-    b_list = BackgroundJob.q2obj(q=LastCompletedJobQuery(BGJOB_QUEUE_TYPE_LONG).query())
-    b_list = list(b_list)
-    if b_list:
-        last_completed_job = b_list[0].last_updated_timestamp
-    else:
-        last_completed_job = None
-    # print(b_list)
-    print(type(last_completed_job))
-    print(last_completed_job)
-    print(len(b_list))
-
-    # for b in b_list:
-    #     print(b)
-    # r = create_background_queues_status(BGJOB_QUEUE_TYPE_LONG)
-    # print(r)
-
-
-def main2():
-    # list(background_helper.get_all_background_task_specs())
-    bg_status = create_background_status()
-    print(json.dumps(bg_status, indent=4))
-
-
-if __name__ == '__main__':
-    main2()

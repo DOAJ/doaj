@@ -1,37 +1,13 @@
 import json
 import time
 
+from doajtest.fixtures.background import save_mock_bgjob
 from doajtest.helpers import DoajTestCase, apply_test_case_config
 from portality import constants
 from portality.bll import background_task_status
 from portality.bll.background_task_status import is_stable
-from portality.lib import dates
-from portality.models import BackgroundJob
 from portality.tasks.anon_export import AnonExportBackgroundTask
 from portality.tasks.journal_csv import JournalCSVBackgroundTask
-
-
-def save_mock_bgjob(action=None, status=None, created_before_sec=0, is_save=True,
-                    queue_type=None):
-    bgjob = BackgroundJob()
-
-    if action:
-        bgjob.action = JournalCSVBackgroundTask.__action__
-
-    if status:
-        bgjob._set_with_struct("status", status)
-
-    if created_before_sec != 0:
-        bgjob.set_created(dates.format(dates.before_now(created_before_sec)))
-
-    if queue_type:
-        bgjob.queue_type = queue_type
-
-    if is_save:
-        bgjob.save()
-
-    return bgjob
-
 
 # config BG_MONITOR_ERRORS_CONFIG
 bg_monitor_errors_config__empty = {

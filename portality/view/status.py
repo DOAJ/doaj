@@ -8,7 +8,6 @@ from flask import Blueprint, make_response, url_for
 
 from portality import util
 from portality.bll import background_task_status
-from portality.constants import BG_STATUS_STABLE
 from portality.core import app
 
 blueprint = Blueprint('status', __name__)
