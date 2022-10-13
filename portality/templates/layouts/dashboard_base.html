@@ -15,14 +15,14 @@
     {% endif %}
 
     <header>
-      <h2 class="sr-only">DOAJ Dashboard</h2>
+        <h2 class="sr-only">DOAJ Dashboard</h2>
 
-      <nav class="primary-nav flex-space-between" id="primary-nav">
-        <a href="/dashboard/" class="logo">
-          {% include "includes/svg/doaj-icon.svg" %}
-        </a>
-        <ul class="unstyled-list flex-center">
-          {# TODO display last 10 event notifications here
+        <nav class="primary-nav flex-space-between" id="primary-nav">
+            <a href="/dashboard/" class="logo">
+                {% include "includes/svg/doaj-icon.svg" %}
+            </a>
+            <ul class="unstyled-list flex-center">
+                {# TODO display last 10 event notifications here
             <li class="dropdown">
               <span class="dropdown__trigger tag tag--secondary" role="button" aria-haspopup="true" aria-expanded="false">
                 <span class="sr-only">Notifications</span>
@@ -49,100 +49,102 @@
                 </li>
               </ul>
             </li> #}
-            {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
-            <li class="flex-center">
-              <a href="{{ url_for("editor.index") }}" class="tag">
-                <span><span data-feather="list" aria-hidden="true"></span> Editor dashboard</span>
-              </a>
-            </li>
-            {% endif %}
-            <li class="flex-center">
-              <a href="{{ url_for("dashboard.top_todo") }}" class="tag">
-                <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>
-              </a>
-            </li>
-            <li class="flex-center">
-              <a href="/" class="tag">
-                <span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span>
-              </a>
-            </li>
-          </ul>
-      </nav>
+                {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
+                    <li class="flex-center">
+                        <a href="{{ url_for("editor.index") }}" class="tag">
+                            <span><span data-feather="list" aria-hidden="true"></span> Editor dashboard</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% if current_user.has_role("admin") %}
+                    <li class="flex-center">
+                        <a href="{{ url_for("dashboard.top_todo") }}" class="tag">
+                            <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="flex-center">
+                    <a href="/" class="tag">
+                        <span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
         {% block nav %}{% endblock %}
-      {% block extra_header %}{% endblock %}
+        {% block extra_header %}{% endblock %}
     </header>
 
     {% block main_panel %}
-    <main>
-      <header class="main-header">
-        <div class="row">
-          <header class="col-md-6 col-lg-4">
-            <p class="label tag">
-              <small>
-                <a href="{{ url_for('account.username', username=current_user.id) }}" title="Manage my profile & settings">
-                  <span data-feather="user" aria-hidden="true"></span>
-                  {{ current_user.id }}
-                  {% if current_user.has_role("admin") %}
-                    (Managing Editor)
-                  {% elif current_user.has_role("editor") %}
-                    (Editor)
-                  {% elif current_user.has_role("associate_editor") %}
-                    (Associate Editor)
-                  {% endif %}
-                </a>
-              </small>
-            </p>
-            <h1>
-              {% block page_title %}
-                Hi, {% if current_user.name %}{{ current_user.name }}{% else %}
-                {{ current_user.id }}{% endif %}!
-              {% endblock %}
-            </h1>
-          </header>
-          {% if current_user.has_role("admin") %}
-          <nav class="col-md-6 col-lg-8 align-right">
-            {% if managed_groups and managed_groups|length > 0 %}
-            <dl>
-              <dt class="sr-only">
-                Managing Editor of&nbsp;&nbsp;
-              </dt>
-              <dd>
-                <ul class="inlined-list tags">
-                  {% for eg in managed_groups|sort(attribute="name") %}
-                  <li>
-                    {% set app_source = search_query_source(term=[
+        <main>
+            <header class="main-header">
+                <div class="row">
+                    <header class="col-md-6 col-lg-4">
+                        <p class="label tag">
+                            <small>
+                                <a href="{{ url_for('account.username', username=current_user.id) }}" title="Manage my profile & settings">
+                                    <span data-feather="user" aria-hidden="true"></span>
+                                    {{ current_user.id }}
+                                    {% if current_user.has_role("admin") %}
+                                        (Managing Editor)
+                                    {% elif current_user.has_role("editor") %}
+                                        (Editor)
+                                    {% elif current_user.has_role("associate_editor") %}
+                                        (Associate Editor)
+                                    {% endif %}
+                                </a>
+                            </small>
+                        </p>
+                        <h1>
+                            {% block page_title %}
+                                Hi, {% if current_user.name %}{{ current_user.name }}{% else %}
+                                {{ current_user.id }}{% endif %}!
+                            {% endblock %}
+                        </h1>
+                    </header>
+                    {% if current_user.has_role("admin") %}
+                        <nav class="col-md-6 col-lg-8 align-right">
+                            {% if managed_groups and managed_groups|length > 0 %}
+                                <dl>
+                                    <dt class="sr-only">
+                                        Managing Editor of&nbsp;&nbsp;
+                                    </dt>
+                                    <dd>
+                                        <ul class="inlined-list tags">
+                                            {% for eg in managed_groups|sort(attribute="name") %}
+                                                <li>
+                                                    {% set app_source = search_query_source(term=[
                             {"admin.editor_group.exact" : eg.name},
                             {"index.application_type.exact" : "new application"}
                         ], sort=[{"admin.date_applied": {"order": "asc"}}]
                     ) %}
-                    <a href="{{ url_for('admin.suggestions') }}?source={{ app_source }}" title="See all {{ eg.name }} applications" class="tag tag--tertiary label"><span data-feather="users" aria-hidden="true"></span> <strong>{{ eg.name }}</strong></a>
-                  </li>
-                  {% endfor %}
-                </ul>
-              </dd>
-            </dl>
-            {% endif %}
-          </nav>
-          {% endif %}
-        </div>
-      </header>
-      {% include "includes/_flash_notification.html" %}
-      {% block content %}{% endblock %}
+                                                    <a href="{{ url_for('admin.suggestions') }}?source={{ app_source }}" title="See all {{ eg.name }} applications" class="tag tag--tertiary label"><span data-feather="users" aria-hidden="true"></span> <strong>{{ eg.name }}</strong></a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </dd>
+                                </dl>
+                            {% endif %}
+                        </nav>
+                    {% endif %}
+                </div>
+            </header>
+            {% include "includes/_flash_notification.html" %}
+            {% block content %}{% endblock %}
 
-      <p>
-        <small>
-          <a href="{{ url_for('account.logout') }}" class="tag">
-            <span data-feather="log-out" aria-hidden="true"></span>
-            Log out
-          </a>
-          <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">
-            <span data-feather="settings" aria-hidden="true"></span>
-            Settings
-          </a>
-        </small>
-      </p>
-    </main>
-    {% include "includes/_back-to-top.html" %}
+            <p>
+                <small>
+                    <a href="{{ url_for('account.logout') }}" class="tag">
+                        <span data-feather="log-out" aria-hidden="true"></span>
+                        Log out
+                    </a>
+                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">
+                        <span data-feather="settings" aria-hidden="true"></span>
+                        Settings
+                    </a>
+                </small>
+            </p>
+        </main>
+        {% include "includes/_back-to-top.html" %}
     {% endblock %}
 
     {% include '_js_includes.html' %}
