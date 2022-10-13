@@ -4,6 +4,7 @@
   {% include "dashboard/_todo.html" %}
     <section>
     {# ~~->$GroupStatus:Feature~~ #}
+    {% if editor_of | length != 0 %}
     <h2>Activity</h2>
     <div class="tabs">
       <nav class="tabs__menu">
@@ -19,6 +20,7 @@
           {% endfor %}
         </ul>
       </nav>
+    {% endif %}
 
       {# TODO: there’s a bit of a11y work to be done here; we need to indicate which tabs are hidden and which
       aren’t using ARIA attributes. #}
