@@ -9,8 +9,5 @@
 -e git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger
 -e git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix
 
-# FIXME: we will only TEMPORARILY get pycountry from github until it's released on pypi
--e git+https://github.com/flyingcircusio/pycountry.git@7d763240fb417b7f9dc242dda8228ee7e404bb87#egg=pycountry
-
 # now run the normal setup.py and get all the normal PyPI dependencies from there
 -e .
