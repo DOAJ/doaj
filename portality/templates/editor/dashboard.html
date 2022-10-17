@@ -13,11 +13,17 @@
         <ul class="tabs__list js-managed-groups-tabs" role="tablist">
           {# managed_groups is inherited from the dashboard_base template #}
         {# ~~^-> EditorGroup:Model ~~ #}
+        {% if editor_of|length == 0 %}
+        <h2 class="type-04">
+            You do not manage any groups now.
+        </h2>
+        {% else %}
           {% for eg in editor_of %}
           <li class="tabs__item">
             <a href="#" data-group-id="{{ eg.id }}" role="tab" aria-selected="{% if loop.first %}true{% else %}false{% endif %}" class="label js-group-tab" title="Toggle to {{ eg.name }}’s activity data">{{ eg.name }} ({{ editor_of_assignments[eg.name] }}<span class="sr-only"> applications</span>)</a>
           </li>
           {% endfor %}
+        {% endif %}
         </ul>
       </nav>
     {% endif %}
@@ -36,7 +42,7 @@
 <script type="text/javascript" src="/static/js/dashboard.js?v={{config.get('DOAJ_VERSION')}}"></script>
 <script type="text/javascript">
 jQuery(document).ready(function() {
-    doaj.dashboard.init()
+    doaj.dashboard.init({"applicationsSearchBase": "{{ url_for('editor.group_suggestions') }}" })
 });
 </script>
 {% endblock %}

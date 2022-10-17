@@ -13,7 +13,8 @@ doaj.dashboard = {
     ]
 };
 
-doaj.dashboard.init = function() {
+doaj.dashboard.init = function(context) {
+    doaj.dashboard.context = context;
     $(".js-group-tab").on("click", doaj.dashboard.groupTabClick);
 
     // trigger a click on the first one, so there is something for the user to look at
@@ -91,7 +92,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
         }
         editorListFrag += `<li>
             <a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>
-            <a href="/admin/applications?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a>
+            <a href= "${doaj.dashboard.context.applicationsSearchBase}?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a>
         </li>`;
     }
 
@@ -112,7 +113,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
     // ]})
     editorListFrag += `<li>
         <span class="label tag tag--featured">Unassigned</span>
-        <a href="/admin/applications?source=${appUnassignedSource}" class="tag tag--tertiary" title="See unassigned applications">${data.unassigned.applications} <span class="sr-only">applications</span></a>
+        <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appUnassignedSource}" class="tag tag--tertiary" title="See unassigned applications">${data.unassigned.applications} <span class="sr-only">applications</span></a>
     </li>`;
 
     let appStatusProgressBar = "";
@@ -131,7 +132,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
                     "sort": [{"admin.date_applied": {"order": "asc"}}]
                 })
                 appStatusProgressBar += `<li class="progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications/data.total.applications)*100}%;">
-                    <a href="/admin/applications?source=${appStatusSource}" class="progress-bar__link" title="See ${data.by_status[status].applications} ${status} application(s)">
+                    <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appStatusSource}" class="progress-bar__link" title="See ${data.by_status[status].applications} ${status} application(s)">
                         <strong>${data.by_status[status].applications}</strong>
                     </a></li>`;
             }
@@ -154,7 +155,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
     let frag = `<div class="tabs__content card">
         <h3>
           ${data.editor_group.name}’s open applications
-          <a href="/admin/applications?source=${appGroupSource}" class="tag tag--secondary" title="See all ${data.editor_group.name}’s open applications ">${data.total.applications}<span class="sr-only"> applications</span></a>
+          <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appGroupSource}" class="tag tag--secondary" title="See all ${data.editor_group.name}’s open applications ">${data.total.applications}<span class="sr-only"> applications</span></a>
         </h3>
 
         <section>

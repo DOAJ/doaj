@@ -30,8 +30,9 @@ def index():
     svc = DOAJ.todoService()
     todos = svc.top_todo(current_user._get_current_object(), size=app.config.get("TODO_LIST_SIZE"))
     editor_of = models.EditorGroup.groups_by_editor(current_user.id)
+    context = {"role": current_user.role}
     # ~~-> Dashboard:Page~~
-    return render_template('editor/dashboard.html', todos=todos, editor_of=editor_of)
+    return render_template('editor/dashboard.html', todos=todos, editor_of=editor_of, context=context)
 
 # build an editor's page where things can be done
 @blueprint.route('/group-info')
