@@ -12,7 +12,7 @@ DOAJ is a unique and extensive index of diverse open access journals from around
 
 OPEN - DOAJ is a vital part of the global open access infrastructure.
 
-GLOBAL – DOAJ is a global community, with [team members](/team/), [ambassadors](/ambassadors/) and [volunteers](/volunteers/) based in 45 countries around the world, speaking 36 languages.
+GLOBAL – DOAJ is a global community, with [team members](/about/team/), [ambassadors](/about/ambassadors/) and [volunteers](/about/volunteers/) based in 45 countries around the world, speaking 36 languages.
 
 TRUSTED – Globally DOAJ's [standards](/apply/guide/#basic-criteria-for-inclusion) have become a gold standard for open access publishing.
 
