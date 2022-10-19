@@ -8,11 +8,13 @@ featuremap: ~~About:Fragment~~
 
 ---
 
-DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open access journals. Today, this [independent](https://blog.doaj.org/2018/11/07/doaj-independence-and-the-importance-of-impartiality/) index contains almost [17 500 peer-reviewed, open access journals](/search/journals) covering all areas of science, technology, medicine, social sciences, arts and humanities. Open access journals from all countries and in all languages are accepted for indexing.
+DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is freely available online for everyone. 
 
-DOAJ is financially supported by many libraries, publishers and other like-minded organisations. Supporting DOAJ demonstrates a firm commitment to open access and the infrastructure that supports it.
+OPEN - DOAJ is a vital part of the global open access infrastructure.
 
-DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) that provide the basis of the [DOAJ basic criteria](/apply/guide) for inclusion.
+GLOBAL – DOAJ is a global community, with [team members](/team/), [ambassadors](/ambassadors/) and [volunteers](/volunteers/) based in 45 countries around the world, speaking 36 languages.
+
+TRUSTED – Globally DOAJ's [standards](/apply/guide/#basic-criteria-for-inclusion) have become a gold standard for open access publishing.
 
 ## Our mission
 
