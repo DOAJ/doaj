@@ -8,19 +8,19 @@ featuremap: ~~About:Fragment~~
 
 ---
 
-DOAJ (Directory of Open Access Journals) was launched in 2003 with 300 open access journals. Today, this [independent](https://blog.doaj.org/2018/11/07/doaj-independence-and-the-importance-of-impartiality/) index contains almost [17 500 peer-reviewed, open access journals](/search/journals) covering all areas of science, technology, medicine, social sciences, arts and humanities. Open access journals from all countries and in all languages are accepted for indexing.
+DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is freely available online for everyone. 
 
-DOAJ is financially supported by many libraries, publishers and other like-minded organisations. Supporting DOAJ demonstrates a firm commitment to open access and the infrastructure that supports it.
+OPEN - DOAJ is a vital part of the global open access infrastructure.
 
-DOAJ is a co-author to the [Principles of Transparency and Best Practice in Scholarly Publishing](/apply/transparency) that provide the basis of the [DOAJ basic criteria](/apply/guide) for inclusion.
+GLOBAL – DOAJ is a global community, with [team members](/about/team/), [ambassadors](/about/ambassadors/) and [volunteers](/about/volunteers/) based in 45 countries around the world, speaking 36 languages.
+
+TRUSTED – Globally DOAJ's [standards](/apply/guide/#basic-criteria-for-inclusion) have become a gold standard for open access publishing.
 
 ## Our mission
 
-DOAJ's mission is to increase the visibility, accessibility, reputation, usage and impact of quality, peer-reviewed, open access scholarly research journals globally, regardless of discipline, geography or language. 
+DOAJ's mission is to increase the visibility, accessibility, reputation, usage and impact of quality, peer-reviewed, open access scholarly research journals globally, regardless of discipline, geography or language.
 
-DOAJ will work with editors, publishers and journal owners to help them understand the value of best practice publishing and standards and to apply those to their own operations. 
-
-DOAJ is committed to being 100% independent and maintaining its primary services and metadata as free to use or reuse for everyone.
+DOAJ is committed to being 100% independent and maintaining all of its primary services and metadata as free for everyone.
 
 ## Constitution
 
