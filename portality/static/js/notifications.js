@@ -37,7 +37,7 @@ doaj.notifications.notificationsReceived = function(data) {
         }
 
         frag += `<li class="notifications__item">
-            <a href="${action}" class="dropdown__link ${seenClass} notification_action_link" data-notification-id="${notification.id}">
+            <a href="${action}" class="dropdown__link ${seenClass} notification_action_link" data-notification-id="${notification.id}" target="_blank">
                 <span>${notification.short ? notification.short : "Untitled notification"}</span>
                 <small class="notifications__date"><time datetime="${notification.created_date}">${doaj.humanDate(notification.created_date)}</time></small>
             </a>

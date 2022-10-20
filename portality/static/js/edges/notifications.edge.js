@@ -175,7 +175,7 @@ $.extend(true, doaj, {
 
                 let actionFrag = `No action required`
                 if (notification.action) {
-                    actionFrag = `<a class="notification_action_button" href="${notification.action}">See action</a>`;
+                    actionFrag = `<a class="notification_action_button" href="${notification.action}" target="_blank">See action</a>`;
                 } else {
                     if (!notification.seen_date) {
                         actionFrag += `<br><a href="#" class="${this.markAsSeenClass}" data-notification-id="${notification.id}">Mark as seen</a>`;
