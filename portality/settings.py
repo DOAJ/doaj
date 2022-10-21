@@ -751,6 +751,13 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "admin",
             "dao" : "portality.models.BackgroundJob"     # ~~->BackgroundJob:Model~~
+        },
+        # ~~->APINotificationQuery:Endpoint~~
+        "notifications" : {
+            "auth" : False,
+            "role" : "admin",
+            "dao" : "portality.models.Notification", # ~~->Notification:Model~~
+            "required_parameters" : None
         }
     },
     "associate_query" : {
@@ -813,6 +820,7 @@ QUERY_ROUTE = {
         }
     },
     "dashboard_query": {
+        # ~~->APINotificationQuery:Endpoint~~
         "notifications" : {
             "auth" : False,
             "role" : "read_notifications",
