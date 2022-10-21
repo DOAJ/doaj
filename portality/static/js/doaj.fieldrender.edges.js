@@ -278,6 +278,16 @@ $.extend(true, doaj, {
             return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
         },
 
+        displayYearMonthPeriod : function(params) {
+            var from = params.from;
+            var to = params.to;
+            var field = params.field;
+
+            let d = new Date(parseInt(from))
+            let display = d.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(d.getUTCMonth() + 1);
+            return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
+        },
+
         schemaCodeToNameClosure : function(tree) {
             var nameMap = {};
             function recurse(ctx) {
@@ -304,6 +314,10 @@ $.extend(true, doaj, {
         countFormat : edges.numFormat({
             thousandsSeparator: ","
         }),
+
+        monthPadding: edges.numFormat({
+            zeroPadding: 2
+        })
     },
 
     components : {
