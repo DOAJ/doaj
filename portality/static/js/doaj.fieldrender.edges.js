@@ -3835,7 +3835,7 @@ $.extend(true, doaj, {
     },
 
     bulk : {
-        applicationMultiFormBox : function(edge_instance) {
+        applicationMultiFormBox : function(edge_instance, doaj_type) {
             return doaj.multiFormBox.newMultiFormBox({
                 edge : edge_instance,
                 selector: "#admin-bulk-box",
@@ -3891,9 +3891,9 @@ $.extend(true, doaj, {
                     }
                 },
                 urls : {
-                    note : "/admin/applications/bulk/add_note",
-                    editor_group : "/admin/applications/bulk/assign_editor_group",
-                    application_status : "/admin/applications/bulk/change_status"
+                    note : "/admin/" + doaj_type + "/bulk/add_note",
+                    editor_group : "/admin/" + doaj_type + "/bulk/assign_editor_group",
+                    application_status : "/admin/" + doaj_type + "/bulk/change_status"
                 }
             });
         }
