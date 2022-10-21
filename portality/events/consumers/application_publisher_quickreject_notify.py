@@ -47,7 +47,7 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
         notification.long = svc.long_notification(cls.ID).format(
             title=application.bibjson().title,
             date_applied=date_applied,
-            note=note,
+            note=note if note is not None else "",
             doaj_guide_url=app.config.get('BASE_URL', "https://doaj.org") + url_for("doaj.guide")
         )
         notification.short = svc.short_notification(cls.ID)
