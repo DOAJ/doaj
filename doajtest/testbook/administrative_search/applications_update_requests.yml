@@ -1,0 +1,132 @@
+suite: Administrative Search
+testset: Applications and Update Requests
+tests:
+
+- title: Test Admin Application Search Interactions
+  context:
+    role: admin
+  steps:
+  - step: Go to the DOAJ admin applications search at /admin/applications
+    results:
+    - All available records are found, and the first page of results is shown
+    - Results are sorted by date applied, oldest first
+  - step: Open one of the facets of your choice
+  - step: Open and Collapse all the facets on the left
+    results:
+    - The facet opens and closes as expected
+    - Each facet contains a maximum of 10 values relevant to that field
+  - step: Select one of the values for that facet
+    results:
+    - All the results for the selected constraints are found, and the first page is
+      shown
+    - The filter applied is shown in the facets on the left and above the search results
+  - step: Click the value off in the facet to the left so all values are shown again
+    results:
+    - The search results are reset.
+  - step: Go through each sort option in the sort option for one facet
+    results:
+    - The order that the filters are listed in changes accordingly
+  - step: In each case, click the "sort by" button to reverse the direction of sort
+    results:
+    - The order that the filters are listed in changes accordingly
+  - step: Go through each SORT BY option at the top of the search results, choosing
+      from Relevance, Title, Last updated, Date added  and remembering to change the
+      order from Ascending to Descending
+    results:
+    - The current search results change with each selection and are then ordered correctly
+      according to the selected sort field and the selected sort direction
+  - step: Enter a search term in the search box
+    results:
+    - All the results for the selected constraints are found, and the first page is
+      shown
+    - Your search text remains in the search box
+  - step: Go through each field constraint under the "search all" pull-down.  You
+      may change your search text if no results are found, to demonstrate that each
+      field works correctly
+    results:
+    - If there are search results, the first page is displayed
+    - If there are no search results, suitable "No results to display" text is displayed
+  - step: Change the number of results on one page using the results per page pulldown
+    results:
+    - The size of the page of results displays increases appropriately
+  - step: Scroll to the bottom
+    results:
+    - The page size displayed at the end of the search results matches.
+  - step: Click the "Next" button to go to the next page of results
+    results:
+    - The next page of results is displayed
+    - The "First" and "Prev" buttons are activated
+  - step: Scroll to the bottom of the page. Click Next again.
+    results:
+    - The page automatically scrolls to the top of the next page
+  - step: Click "Next" again
+  - step: Click "Prev"
+    results:
+    - You are navigated one page forward and then one page back in the results
+  - step: Click "First"
+    results:
+    - You are taken to the first page of the results
+  - step: Click the black X button to clear all filters
+    results:
+    - The interface returns to the initial state
+
+- title: Test Admin Application Search Display
+  context:
+    role: admin
+  steps:
+  - step: Go to the DOAJ admin application search at /admin/applications
+  - step: Open the "Application Status" facet and select "Rejected"
+    results:
+    - Every result includes the text "View finished application" or "View finished
+      update" at the bottom
+  - step: Click on "View finished application" for one of the results
+    results:
+    - You are taken to the edit form for the application
+    - The Quick Reject feature is not available
+  - step: Click "Unlock and Close"
+  - step: Clear the "Rejected" filter and select "Accepted" from the "Application
+      Status" facet
+    results:
+    - Every result includes the text "View finished application" or "View finished
+      update" at the bottom
+  - step: Clear the "Accepted" filter and select any other status except "Rejected"
+      from the "Application Status" facet
+    results:
+    - Every result includes the text "Review application" or "Review update" on the
+      bottom right
+  - step: Click on "Review Application"
+    results:
+    - You are taken to the edit form for the application in a new tab
+    - The Quick Reject feature is available
+  - step: Click "Unlock and Close"
+  - step: Clear the "Application Status" filter
+  - step: Open the "Record type" facet and select "new application"
+    results:
+    - Every result includes the text "Review application" on the bottom right
+  - step: Clear the "new application" filter and select "update request" from the
+      "Record type" facet
+    results:
+    - Every result includes the text "View journal being updated" and "Review update"
+      at the bottom
+    - The metadata for each record contains the field "Update Request For", and then
+      an alphanumeric ID of a journal
+  - step: Click on the alphanumeric journal id
+    results:
+    - You are taken to the admin Journal search interface, and there is one result,
+      which is the current journal for that update request
+  - step: Click back (as many times as needed) in your browser to return to the application
+      search
+  - step: Click on "view journal being updated" on the bottom right of one of your
+      search results
+    results:
+    - You are taken to the Journal Form of the journal being updated
+  - step: Click "Unlock and Close"
+  - step: Click on "Review update"
+    results:
+    - The update request review form is shown
+  - step: Click "Unlock and Close"
+  - step: Clear the "Record type" filter
+  - step: Open the "Journal License" facet and select one of the CC licences
+    results:
+    - The "Journal Licence" metadata field in each search result has the appropriate
+      CC icon displayed
