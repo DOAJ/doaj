@@ -1,3 +1,4 @@
+# ~~-> AssociateJournalForm:FunctionalTest -> AssociateJournalForm:Page ~~
 suite: Journal Form
 testset: Associate Form
 tests:

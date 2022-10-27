@@ -1,3 +1,4 @@
+# ~~ AssociateApplicationForm:FunctionalTest -> AssociateApplicationForm:Page ~~
 suite: New Application Form
 testset: Associate Editor Form
 tests:

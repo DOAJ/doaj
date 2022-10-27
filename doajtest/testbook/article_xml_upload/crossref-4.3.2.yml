@@ -1,5 +1,6 @@
+# ~~ CrossrefUplaod:FunctionalTest -> CrossrefUpload:Feature ~~
 suite: Article XML Upload
-testset: Article Crossref XML Upload
+testset: Crossref 4.3.2
 tests:
 - title: Upload an XML file which does not meet the Crossref schema
   context:

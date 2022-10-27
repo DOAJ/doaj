@@ -1,3 +1,4 @@
+# ~~ AssociateApplicationsSearch:FunctionalTest -> AssociateApplicationsSearch:Feature ~~
 suite: Associate Search
 testset: Applications
 tests:

@@ -1,0 +1,75 @@
+suite: Update Requests
+testset: Update Requests
+
+tests:
+- title: Submitting an update
+  context:
+    role: Publisher
+  steps:
+  - step: Go to Your Journals
+    results:
+    - You see a list of journals each with a button "Update"
+  - step: Click the "Update" button next to one of your journals
+    results:
+    - a new browser tab opens, titled "Journal Update Request"
+  - step: Attempt to edit questions 1, 3, 4 & 5
+    results:
+    - You cannot
+  - step: Make some changes to the editable questions (make a note of what those changes are)
+  - step: submit the form
+    results:
+    - The form is submitted successfully
+    - A flash message tells you that your update has been submitted
+  - step: clear the flash messages
+  - step: Close the Journal tab
+  - step: Refresh the "your journals" page
+    result:
+    - The journal you submitted an update for now says "View update" by it
+  - step: Go to the "My Update Requests" tab
+    result:
+      The journal for which you submitted an update is listed here
+  - step: Click "Edit" on the update request you created above
+    result:
+      - You can see the edit form for the update request
+      - Your changes implemented above are present
+  - step: Make another change to the form and submit
+  - step: Go back to the "My update requests" form
+  - step: Click "Delete this update request"
+    result:
+    - The Update Request is successfully deleted
+  - step: Open a new session in a different browser or a private window
+  - step: Log in as an administrator and go to the dashboard
+  - step: Go to the Update Requests Search page
+    result:
+    - The update request you submitted above is visible
+  - step: Click "Review Update"
+    results:
+      - A new browser tab opens with the update request form
+      - The top of the form contains a table showing the difference between the journal and the update request
+      - The changes in the difference table match the changes you made when submitting the update request
+  - step: Click on one of the links in the difference table
+    results:
+      - Something happens (TODO)
+  - step: Change the status to "In Progress" and save.  Do not make any other changes at this point
+  - step: Go back to the other browser window, where you are signed in as a publisher
+  - step: Go to the Publisher's Update Requests tab
+    result:
+    - Your update request is no longer editable
+  - step: Go back to the browser window where you are logged in as admin
+  - step: Edit the update request, and change the status to "Revisions Required"
+    results:
+    - flash notification confirms that the publisher has been alerted
+  - step: Go back to the other browser window, where you are signed in as a publisher
+  - step: Go to the Publisher's Update Requests tab
+    results:
+    - under the "Status" facet you have an update request listed under "Revisions Required"
+    - Your update request is editable again
+  - step: Make an edit to the update request
+  - step: Go back to the browser window where you are logged in as admin
+  - step: Edit the update request, and Reject it
+    result:
+    - flash message confirms that the publisher has been notified
+  - step: Go back to the other browser window, where you are signed in as a publisher
+  - step: Go to the Publisher's Update Requests tab
+    results:
+    - todo - I think that the publisher can't see rejected update requests

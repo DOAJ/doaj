@@ -1,3 +1,4 @@
+// ~~ AdminJournalsSearch:Feature ~~
 $.extend(true, doaj, {
 
     adminJournalsSearch : {

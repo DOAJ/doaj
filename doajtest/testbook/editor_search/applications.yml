@@ -1,3 +1,4 @@
+# ~~ EditorApplicationsSearch:FunctionalTest -> EditorApplicationsSearch:Feature ~~
 suite: Editor search
 testset: Applications
 tests:

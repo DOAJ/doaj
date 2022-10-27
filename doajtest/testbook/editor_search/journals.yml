@@ -1,3 +1,4 @@
+# ~~ EditorJournalsSearch:FunctionalTest -> EditorJournalsSearch:Feature ~~
 suite: Editor search
 testset: Journals
 tests:

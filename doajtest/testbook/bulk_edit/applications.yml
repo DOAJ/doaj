@@ -1,3 +1,6 @@
+# ~~ ApplicationsBulkEdit:FunctionalTest -> ApplicationsBulkEdit:Feature ~~
+# ~~-> ApplicationStatus:Workflow ~~
+# ~~-> EditorGroup:Page ~~
 suite: Bulk Edit
 testset: Applications
 tests:

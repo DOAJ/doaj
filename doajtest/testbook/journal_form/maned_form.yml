@@ -1,7 +1,8 @@
+# ~~ManEdJournalForm:FunctionalTest -> ManEdJournalForm:Page ~~
 suite: Journal Form
 testset: ManEd Form
 tests:
-- title: Jornal Form Test
+- title: Journal Form Test
   depends:
     - suite: New Application Form
     - suite: Continuations

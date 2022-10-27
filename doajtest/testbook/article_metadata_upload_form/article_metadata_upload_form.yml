@@ -1,3 +1,4 @@
+# ~~ ArticleMetadataUploadForm:FunctionalTest -> ArticleMetadata:Page ~~
 suite: Article Metadata Upload Form
 testset: Article Metadata Upload Form
 tests:

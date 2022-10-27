@@ -1,7 +1,7 @@
+# ~~ AdminArticleMetadata:FunctionalTest -> AdminArticleMetadata:Page~~
 suite: Admin Article Metadata Form
 testset: Admin Article Metadata Form
 tests:
-
 - title: Preparation
   context:
     role: Admin

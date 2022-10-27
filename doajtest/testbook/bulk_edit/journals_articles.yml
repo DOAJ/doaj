@@ -1,3 +1,7 @@
+# ~~ JournalsArticlesBulkEdit:FunctionalTest -> AdminJournalsArticlesSearch:Feature ~~
+# ~~->WithdrawJournal:Feature ~~
+# ~~->ReinstateJournal:Feature ~~
+# ~~->EditorGroup:Feature ~~
 suite: Bulk Edit
 testset: Journals and Articles
 tests:

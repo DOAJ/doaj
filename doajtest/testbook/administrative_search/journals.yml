@@ -1,3 +1,4 @@
+# ~~ AdminJournalsSearch:FunctionalTest -> AdminJournalsSearch:Feature ~~
 suite: Administrative Search
 testset: Journals
 tests:

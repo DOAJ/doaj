@@ -1,3 +1,4 @@
+# ~~ AdminUserSearch:FunctionalTest -> AdminUserSearch:Feature ~~
 suite: Administrative Search
 testset: Users
 tests:

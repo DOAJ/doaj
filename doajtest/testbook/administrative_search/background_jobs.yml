@@ -1,3 +1,4 @@
+# ~~ BackgroundJobsSearch:FunctionalTest -> BackgroundJobsSearch:Feature ~~
 suite: Administrative Search
 testset: Background Jobs
 tests:

@@ -1,3 +1,4 @@
+# ~~EditorJournalForm:FunctionalTest -> EditorJournalForm:Page ~~
 suite: Journal Form
 testset: Editor Form
 tests:

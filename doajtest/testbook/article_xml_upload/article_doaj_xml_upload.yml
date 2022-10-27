@@ -1,5 +1,6 @@
+# ~~ DOAJArticleXMLUpload:FunctionalTest -> DOAJArticleXML:Feature ~~
 suite: Article XML Upload
-testset: Crossref 4.3.2
+testset: DOAJ XML
 tests:
 - title: Upload a file which is not XML
   context:

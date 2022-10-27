@@ -1,3 +1,4 @@
+# ~~ AssociateJournalsSearch:FunctionalTest -> AssociateJournalsSearch:Feature ~~
 suite: Associate Search
 testset: Journals
 tests:

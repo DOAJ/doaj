@@ -1,3 +1,4 @@
+# ~~ EditorGroupsSearch:FunctionalTest -> EditorGroupsSearch:Feature ~~
 suite: Administrative Search
 testset: Editor Groups
 tests:

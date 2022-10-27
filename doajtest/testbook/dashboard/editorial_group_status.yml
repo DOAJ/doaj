@@ -1,3 +1,4 @@
+# ~~ Dashboard:FunctionalTest -> EditorialGroupStatus:Feature ~~
 suite: Dashboard
 testset: Editorial Group Status
 tests:

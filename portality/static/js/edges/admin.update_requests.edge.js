@@ -1,3 +1,4 @@
+// ~~ AdminUpdateRequestSearch:Feature ~~
 $.extend(true, doaj, {
 
     adminApplicationsSearch : {
