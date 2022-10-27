@@ -18,6 +18,7 @@ ExternalService
 Factory
 Feature
 FieldSet
+Fixture
 Form
 FormContext
 FormField
@@ -38,9 +39,11 @@ Regex
 Schema
 Script
 Service
+Task
 Technology
 Template
 Test
+Validator
 WebApp
 WebRoute
 Workflow
