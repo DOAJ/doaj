@@ -42,15 +42,15 @@ tests:
       no assigned editor
     - The number of search results is the same as shown on the dashboard
   - step: Go back to the dashboard page
-- title: Editorial Group Status for ManEds - Updating Editors
-  context:
-    role: admin
-  steps:
   - step: Click on one of the statuses under "Applications By Status"
     results:
     - You are taken to the application search which shows the open applications in
       that status
     - The number of search results is the same as shown on the dashboard
+- title: Editorial Group Status for ManEds - Updating Editors
+  context:
+    role: admin
+  steps:
   - step: To prepare to do this test set up at least 2 editorial groups with multiple
       members and a good selection of applications assigned to a number of associate
       editors.  You should set yourself as the managing editor of those groups
@@ -65,14 +65,14 @@ tests:
     results:
     - The editor selected now has one more application assigned to them
     - The number of unassigned applications has reduced by one
-- title: Editorial Group Status for ManEds - Changing Status
-  context:
-    role: admin
-  steps:
   - step: Click on the count of applications next to the selected editor
     results:
     - The application search is shown
     - The application you assigned to the editor is listed in the search
+- title: Editorial Group Status for ManEds - Changing Status
+  context:
+    role: admin
+  steps:
   - step: To prepare to do this test set up at least 2 editorial groups with multiple
       members and a good selection of applications assigned to a number of associate
       editors.  You should set yourself as the managing editor of those groups

@@ -1,0 +1,71 @@
+suite: Associate Search
+testset: Applications
+tests:
+- title: Test Associate Application Search
+  context:
+    role: editor
+  steps:
+  - step: Go to the DOAJ associate editor's application search at /editor/your_applications
+    results:
+    - All available records are found, and the first page of results is shown
+  - step: Open and Collapse all the facets on the left
+    results:
+    - The facet opens and closes as expected
+    - Each facet contains a maximum of 10 values relevant to that field
+  - step: Open one of the facets of your choice
+  - step: Select one of the values for that facet
+    results:
+    - All the results for the selected constraints are found, and the first page is
+      shown
+    - The filter applied is shown in the facets on the left and above the search results
+  - step: Go through each sort option in the "sort by" pull-down
+  - step: In each case, click the "sort by" button to reverse the direction of sort
+    results:
+    - The current search results are ordered correctly according to the selected sort
+      field and the selected sort direction
+  - step: Enter a search term in the search box
+    results:
+    - All the results for the selected constraints are found, and the first page is
+      shown
+    - Your search text remains in the search box
+  - step: Go through each field constraint under the "search all" pull-down.  You
+      may change your search text if no results are found, to demonstrate that each
+      field works correctly
+    results:
+    - If there are search results, the first page is displayed
+    - If there are no search results, suitable "no results match" text is displayed
+  - step: Change the page size, using the page-size pull-down
+    results:
+    - The size of the page of results displays increases appropriately
+  - step: Click the "Next" button to go to the next page of results
+    results:
+    - The next page of results is displayed
+    - The "First" and "Prev" buttons are activated
+  - step: Click "Next" again
+  - step: Click "Prev"
+    results:
+    - You are navigated one page forward and then one page back in the results
+  - step: Click "First"
+    results:
+    - You are taken to the first page of the results
+  - step: Click the black X button to clear all filters
+    results:
+    - The interface returns to the initial state
+  - step: Choose either Accepted or Rejected value in Application Status facet on
+      the left
+    results:
+    - All result applications have "View finished application" or "View finished update"
+      link
+  - step: Click on "View finished application/update" link
+    results:
+    - editor/application/<id> page is opened in the new tab
+  - step: Click "Unlock and Close" and close the tab
+  - step: Click the black X button to clear all filters
+  - step: Choose a value in Application Status facet on the left which is not "Accepted"
+      or "Rejected"
+    results:
+    - All result applications have "Review application" or "Review update" link on
+      the lower right corner
+  - step: Click on "Review application" link
+    results:
+    - editor/application/<id> page is opened in the new tab

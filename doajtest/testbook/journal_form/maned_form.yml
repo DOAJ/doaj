@@ -1,0 +1,87 @@
+suite: Journal Form
+testset: ManEd Form
+tests:
+- title: Jornal Form Test
+  depends:
+    - suite: New Application Form
+    - suite: Continuations
+  context:
+    role: admin
+  steps:
+  - step: Go to admin journal search page at /admin/journals
+  - step: From the facet "In DOAJ?" on the left choose True
+  - step: Click "Edit this journal" link at the bottom of any journal - note the id
+      of the edited journal for future reference
+    results:
+    - Page /admin/journal/<id> is open in a new browser window/tab (<id> is id of
+      the chosen journal)
+    - All the field are initially filled in with correct values
+  - step: Click red "Withdraw" button at the top of the functions panel on the right
+    results:
+    - Message pop-up appears over the page asking you to confirm if you want to withdraw
+      the journal and shows you the journal's ID.
+  - step: Click Close
+    results:
+    - The box closes and nothing else has changed.
+  - step: Click Withdraw again and click Withdraw in the pop-up
+    results:
+    - You see a flash message at the top which says Job to withdraw/reinstate journal
+      has been submitted
+  - step: Click link to the background jobs interface in the banner
+    results:
+    - The set_in_doaj background job is created
+  - step: Click "More Information"
+    results:
+    - set_in_doaj__journal_ids parameter contains correct journal id and set_in_doaj__in_doaj
+      -- false parameter is set
+  - step: Close the background jobs window
+  - step: Click "Unlock and Close" button at the top of the application
+    results:
+    - 'You see the message: This record is now unlocked
+
+      You may close this tab safely.'
+    - Close the tab.
+  - step: Go back to the admin search page
+  - step: From the facet "In DOAJ?" on the left choose False
+  - step: Click "Edit this journal" link at the bottom of any journal - note the id
+      of the edited journal for future reference
+    results:
+    - Page /admin/journal/<id> is open in a new browser window/tab (<id> is id of
+      the chosen journal)
+  - step: Click "Reinstate" button at the top of the functions panel on the right
+    results:
+    - Message banner appears at the top of the page with the confirmation
+  - step: Click link to the background jobs interface in the banner
+    results:
+    - The set_in_doaj background job is created
+  - step: Click "More Information"
+    results:
+    - set_in_doaj__journal_ids parameter contains correct journal id and set_in_doaj__in_doaj
+      -- true parameter is set
+  - step: Close the background jobs window
+  - step: Close the journal form and go back to the admin search page
+  - step: Click "Edit this journal" link at the bottom of any journal - note the title
+      of the edited journal for future reference
+  - step: Open Editorial Area -> Editor Group dropdown and start writing the name
+      of the Editor Group
+    results:
+    - After initial 3 characters the list of matching Editor Group names are displayed
+  - step: Choose any Editor Group name
+  - step: Repeat steps for "Assigned to" drop-down
+  - step: Click red "Save" button below
+    results:
+    - Message banner  "Journal updated" is displayed and additional ones with information
+      about emails sent
+  - step: Go to Notes section at the very bottom of the functions panel on the right
+  - step: Click "Notes" red button
+    results:
+    - New note section appears below
+  - step: Put any text in the note text area
+  - step: Click red "Save" button
+    results:
+    - Banner appears at the top of the page "Journal updated"
+  - step: Click 'Dismiss' at the right end of the banner
+    results:
+    - Banner is dismissed
+    - In the "Notes" section next to your added note the date field is filled in with
+      correct date and time

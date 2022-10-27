@@ -17,6 +17,9 @@ def migrate(infile, outfile, suite, testset):
             continue
 
         if _test_title(row) and last_row_empty:
+            if len(current_step.keys()) > 0:
+                current_test["steps"].append(current_step)
+            current_step = {}
             if len(current_test.keys()) > 0:
                 tests.append(current_test)
             current_test = {"title": row[2].strip(), "context" : {"role" : ""}, "steps": []}
@@ -81,9 +84,9 @@ def _safe_name(name):
     return name.lower().replace(" ", "_")
 
 
-# migrate("/home/richard/tmp/doaj/functionaltests/Admin Article Metadata Form - Admin Article Metadata Form.csv",
-#         "/home/richard/Code/External/doaj3/doajtest/testbook/admin_article_metadata_form/admin_article_metadata_form.yml",
-#         "Admin Article Metadata Form",
-#         "Admin Article Metadata Form")
+# migrate("/home/richard/tmp/doaj/functionaltests/Application State Change - Application State Change.csv",
+#         "/home/richard/Code/External/doaj3/doajtest/testbook/migrate/application_state_change/application_state_change.yml",
+#         "Application State Change",
+#         "Application State Change")
 
 migrate_all("/home/richard/tmp/doaj/functionaltests", "/home/richard/Code/External/doaj3/doajtest/testbook/migration/")

@@ -1,0 +1,160 @@
+suite: Public Site
+testset: Public Search
+tests:
+- title: Test Public Search Interactions
+  context:
+    role: anonymous
+  steps:
+  - step: Go to the DOAJ journal search page at /search/journals
+    results:
+    - All available records are found, and the first page of 50 results is shown
+    - Only journals are shown.
+    - Only facets relevant to journals appear on the left
+  - step: Change the results per page from 50 to 100 and back again
+    results:
+    - The number of journals on the page increases and decreases and the number of
+      pages changes
+  - step: Open and Collapse all the facets on the left
+    results:
+    - The facet opens and closes as expected
+    - Each facet contains a maximum of 40 values relevant to that field
+  - step: Select one or more values in one facet
+    results:
+    - The number of search results changes. You can still select values from other
+      facets
+    - The values you have selected appear as black lozenges at the top of the search
+      results
+  - step: Click away the black lozenge(s)
+    results:
+    - Search results adjust accordingly
+    - The value deselects in the left-hand column
+  - step: Open and Collapse all the new facets on the left
+    results:
+    - The facet opens and closes as expected
+    - Each facet contains all the values for that field in a scrollable list.
+  - step: Select "Articles" from the Search menu
+    results:
+    - All available article records are found, and the first page is shown
+    - New facets appear on the left, that are relevant only to Articles
+  - step: Open and Collapse all the new facets on the left
+    results:
+    - The facet opens and closes as expected
+    - Each facet contains all the values for that field in a scrollable list.
+  - step: Switch back to 'Journals' in the top nav
+  - step: Open the Journal License Facet
+  - step: Select one of the CC licenses available
+    results:
+    - All the results for the selected constraints are found, and the first page is
+      shown
+  - step: Click "Share | Embed" in the search navigation bar
+    results:
+    - The search/embed box is shown with a URL and an HTML/JS snippet displayed in
+      each box
+  - step: Click "shorten url" (Note that this may not work in test, due to configuration
+      requirements, you may receive an error instead)
+    results:
+    - The long search url is replaced with a bit.ly url
+    - '"shorten url" is replaced by "original url"'
+  - step: Click "original url"
+    results:
+    - The bit.ly url is replaced by the original long search url
+    - '"original url" is replaced by "shorten url"'
+  - step: Close the "Share | Embed" section by clicking the Close button at the bottom
+      of the box, or clicking the "Share | Embed" button again
+    results:
+    - The share/embed section closes
+  - step: Go through each sort option in the "sort by" pull-down
+  - step: In each case, click the "sort by" button to reverse the direction of sort
+    results:
+    - The current search results are ordered correctly according to the selected sort
+      field and the selected sort direction
+  - step: Enter a search term in the search box
+    results:
+    - All the results for the selected constraints are found, and the first page is
+      shown
+    - Your search text ramains in the search box
+  - step: Go through each field constraint under the "search all" pull-down.  You
+      may change your search text if no results are found, to demonstrate that each
+      field works correctly
+    results:
+    - If there are search results, the first page is displayed
+    - If there are no search results, suitable "no results match" text is displayed
+  - step: Change the number of search results on the page, using the page-size pull-down
+    results:
+    - The size of the page of results displays increases appropriately
+  - step: Click the "Next" button to go to the next page of results
+    results:
+    - The next page of results is displayed
+    - The "First" and "Prev" buttons are activated
+  - step: Click "Next" again
+  - step: Click "Prev"
+    results:
+    - You are navigated one page forward and then one page back in the results
+  - step: Click "First"
+    results:
+    - You are taken to the first page of the results
+  - step: Click the black X button to clear all filters
+    results:
+    - The interface returns to the initial state as per 1.1.1
+- title: 'Test Public Search Results Display: Journals'
+  context:
+    role: anonymous
+  steps:
+  - step: Go to the DOAJ search page at /search/journals
+  - step: Under 'See journals' facet on the left, click 'With a DOAJ Seal'
+    results:
+    - All Journals have the DOAJ Seal displayed in the search results
+  - step: Clear the "Journal has DOAJ Seal" filter
+    results:
+    - All Journals are shown
+  - step: Open the facet "Journal License"
+  - step: Select any CC licence from this facet
+    results:
+    - All Journals have the appropriate CC licence displayed in the search results
+  - step: Clear the "Journal License" CC filter
+  - step: Select "Publisher's own licence" from that facet
+    results:
+    - All Journals have the text "Publisher's own license" displayed in the search
+      results
+  - step: Clear the "Journal License" filter
+  - step: Check the 'Without APCs or other fees' facet
+    results:
+    - All Journals have 'No charges' displayed in the search results
+  - step: Clear the "Article processing charges (APCs)" facet
+  - step: Find a journals with APCs (Sort on Added to DOAJ (oldest first) to see some)
+    results:
+    - 'All journals have ''APCS: amount + currency'' displayed in the search results'
+  - step: Look at the first Journal result in your current search results
+  - step: Click on its title
+    results:
+    - You are taken to the DOAJ ToC page for this journal
+  - step: Click back in your browser window so you are back to the search results
+  - step: Click on the word 'Website'
+    results:
+    - You are taken to the Journal's home page which opens in a new tab
+- title: 'Test Public Search Results Display: Articles'
+  context:
+    role: anonymous
+  steps:
+  - step: Go to the DOAJ search page at /search/articles
+    results:
+    - Only articles are shown in the results
+  - step: Look at the first article in your search results
+  - step: Click on the title
+    results:
+    - You are taken to the DOAJ article page for this article
+  - step: Click back in your browser window to return to the search results
+  - step: Click on 'Journal Table of Contents'
+    results:
+    - You are taken to the DOAJ ToC for the journal which opens in a new tab
+  - step: Close the tab
+  - step: Click on "Abstract" where the article has an abstract
+    results:
+    - The abstract appears beneath the article search results
+  - step: Click on "Abstract" again
+    results:
+    - The abstract disappears
+  - step: Click on "Read online"
+    results:
+    - You are taken to the full text of this article on the Web. It opens in a new
+      tab

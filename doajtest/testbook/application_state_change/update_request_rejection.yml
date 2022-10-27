@@ -1,0 +1,145 @@
+suite: Application State Change
+testset: Update Request Rejection
+tests:
+- title: Reject, Unreject and Accept
+  context:
+    role: admin
+  steps:
+  - step: Create an Update Request for a journal that does not have a current Update
+      Request.  Make a change that will be fairly easy to review from the ToC (e.g.
+      the APC amount).  Take a note of the Journal's ToC URL
+  - step: Locate the Update Request created in the previous step from the admin area
+      search
+    results:
+    - 'The record contains the value "Update Request For: [journal id]"'
+  - step: Click "Review Update"
+  - step: Change the Application Status to "Rejected
+  - step: Click "Save"
+  - step: Click the "Unlock and Close" button / close the window
+  - step: Go to the "My update requests" page of the publisher dashboard
+    results:
+    - The update request is no longer visible
+  - step: Find the Update Request again via the search (e.g. filter by Rejected and
+      sort by last updated most recent first)
+    results:
+    - 'Update Request says "Originally For: [journal id]"'
+  - step: Click "View Finished Update"
+  - step: Change the Application Status to "Pending"
+  - step: Click "Save"
+  - step: Click the "Unlock and Close" button / close the window
+  - step: Go to the "My update requests" page of the publisher dashboard
+    results:
+    - The update request is visible again in the status "Pending"
+  - step: Find the Update Request again via the search (e.g. filter by Pending and
+      sort by last updated most recent first)
+    results:
+    - 'The record contains the value "Update Request For: [journal id]"'
+  - step: Click "Review Update"
+  - step: Change the Application Status to "Accepted"
+  - step: Click "Save"
+  - step: Click the "Unlock and Close" button / close the window
+  - step: Go to the Journal ToC
+    results:
+    - The Journal page has been updated with the new information from the Update Request
+      (e.g the updated APC amount)
+  - step: Search for the Journal's ISSN in the admin journal search
+    results:
+    - There is only one Journal published in DOAJ with that ISSN
+  - step: Find the accepted application via the admin search (e.g. filter by Accepted
+      and sort by last updated most recent first)
+    results:
+    - 'Update Request says "Produced Journal: [journal id]"'
+- title: Reject then Resubmit
+  context:
+    role: admin
+  steps:
+  - step: Create an Update Request for a journal that does not have a current Update
+      Request.  Make a change that will be fairly easy to review from the ToC (e.g.
+      the APC amount).  Take a note of the Journal's ToC URL
+  - step: Locate the Update Request created in the previous step from the admin area
+      search
+  - step: Click "Review Update"
+  - step: Change the Application Status to "Rejected
+  - step: Click "Save"
+  - step: Create another Update Request for the same journal.  Make a change that
+      will be fairly easy to review from the ToC (e.g. the APC amount) AND which is
+      different from the change made before.  Take a note of the Journal's ToC URL
+    results:
+    - https://testdoaj.cottagelabs.com/toc/2297-6809
+  - step: Locate the new Update Request created in the previous step in the admin
+      search area
+  - step: Click "Review Update"
+  - step: Change the Application Status to "Accepted"
+  - step: Click "Save"
+  - step: Go to the Journal ToC
+    results:
+    - The Journal page has been updated with the new information from the Update Request
+      (e.g the updated APC amount)
+  - step: Search for the Journal's ISSN in the admin journal search
+    results:
+    - There is only one Journal published in DOAJ with that ISSN
+  - step: Find the accepted application via the admin search (e.g. filter by Accepted
+      and sort by last updated most recent first)
+    results:
+    - 'Update Request says "Produced Journal: [journal id]"'
+- title: Reject, Resubmit, Unreject
+  context:
+    role: admin
+  steps:
+  - step: Create an Update Request for a journal that does not have a current Update
+      Request.  Make a change that will be fairly easy to review from the ToC (e.g.
+      the APC amount).  Take a note of the Journal's ToC URL
+  - step: Locate the Update Request created in the previous step from the admin area
+      search
+  - step: Click "Review Update"
+  - step: Change the Application Status to "Rejected
+  - step: Click "Save"
+  - step: Create another Update Request for the same journal.  Make a change that
+      will be fairly easy to review from the ToC (e.g. the APC amount) AND which is
+      different from the change made before.  Take a note of the Journal's ToC URL
+  - step: Locate the first Update Request in the admin area search
+  - step: Click "View Finished Update"
+  - step: Change the Application Status to "Pending"
+  - step: Click "Save"
+    results:
+    - You receive an error message saying that the Update Request cannot be unrejected
+    - Application status remains "Rejected"
+- title: Reject, Reject, Unreject
+  context:
+    role: admin
+  steps:
+  - step: Create an Update Request for a journal that does not have a current Update
+      Request.  Make a change that will be fairly easy to review from the ToC (e.g.
+      the APC amount).  Take a note of the Journal's ToC URL
+  - step: Locate the Update Request created in the previous step from the admin area
+      search
+  - step: Click "Review Update"
+  - step: Change the Application Status to "Rejected
+  - step: Click "Save"
+  - step: Create another Update Request for the same journal.  Make a change that
+      will be fairly easy to review from the ToC (e.g. the APC amount) AND which is
+      different from the change made before.  Take a note of the Journal's ToC URL
+  - step: Locate the Update Request created in the previous step from the admin area
+      search
+  - step: Click "Review Update"
+  - step: Change the Application Status to "Rejected
+  - step: Click "Save"
+  - step: Locate the first Update Reques in the admin area search (e.g. filter by
+      Rejected and order by last updated, oldest first - the record we want should
+      be the second one on the list)
+  - step: Click "View Finished Update"
+  - step: Change the Application Status to "Accepted"
+  - step: Click "Save"
+    results:
+    - The update request saves successfully
+  - step: Go to the Journal ToC
+    results:
+    - The Journal page has been updated with the new information from the first Update
+      Request (e.g the updated APC amount)
+  - step: Search for the Journal's ISSN in the admin journal search
+    results:
+    - There is only one Journal published in DOAJ with that ISSN
+  - step: Find the accepted application via the admin search (e.g. filter by Accepted
+      and sort by last updated most recent first)
+    results:
+    - 'Update Request says "Produced Journal: [journal id]"'

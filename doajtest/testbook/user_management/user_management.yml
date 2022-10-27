@@ -1,0 +1,207 @@
+suite: User Management
+testset: User Management
+
+fragments:
+  edit_account:
+    - step: Modify your name and click "Update Account"
+      results:
+      - You receive a flash message saying your record is updated
+      - Your name has been updated
+    - step: Modify your email address to one which is already in use in the system and
+        click "Update Account"
+      results:
+      - 'You see a warning at the top which says: Are you sure you want to change your
+        email address? You will be logged out + will need to verify your account again.'
+    - step: Click OK
+      results:
+      - 'You see an error message under ''Email address'': Email address is already
+        in use'
+    - step: Modify the email address to a new one which does not exist and click Update
+        Account
+      results:
+      - 'You see a warning at the top which says: Are you sure you want to change your
+        email address? You will be logged out + will need to verify your account again.'
+    - step: Click OK
+      results:
+      - You are logged out and are taken to the home page
+      - 'You see a message which says: Email address updated. You have been logged out
+        for email address verification.'
+      - 'You see a message which says:  Debug mode - url for reset is /account/reset/39494d7f170f41439323dfa8cf8d392d'
+    - step: Click  Debug mode - url for reset is /account/reset/39494d7f170f41439323dfa8cf8d392d
+        and set a new password
+      results:
+      - You are taken back to the home page and you are logged in
+      - You see a message 'New password has been set and you're now logged in.'
+    - step: Go back to Settings under My Account
+      results:
+      - Your new email address is stored
+    - step: Click "Generate a new API Key"
+      results:
+      - Your API Key at the top of the page is updated
+      - You receive a flash message saying your record is updated and the API key has
+        changed
+    - step: Enter mismatched passwords into the "Change your password" boxes and click
+        "Update Account"
+      results:
+      - You receive an error warning 'Passwords must match'
+    - step: Enter matching passwords into the "Change your password" boxes and click
+        "Update"
+      results:
+      - You receive a flash message saying your record is updated
+    - step: Click "logout" on the top right of the page
+      results:
+      - You see a flash message confirming that you are logged out and you are taken
+        to the home page
+    - step: Click "login" on the top right of the page
+    - step: Log in with your updated password
+      results:
+      - You see a Welcome back message
+  
+  delete_account:
+    - step: Add a role to your user account and click "Update"
+      results:
+      - You receive a flash message saying your record is updated
+      - The new role is associated with your account
+    - step: Delete the role you added by pressing the "x" next to the name of the role,
+        then click "Update"
+      results:
+      - You receive a flash message saying your record is updated
+      - The new role has gone
+    - step: 'WARNING: only carry out the next steps on a test system where your account
+        can be recovered later'
+    - step: Click "Delete"
+      results:
+      - 'A flash message says: ''Check the box to confirm you really mean it!'''
+
+tests:
+- title: Create a new user
+  context:
+    role: admin
+  steps:
+  - step: Go to the user search in admin at /account
+  - step: Click "create new user" in the top left
+    results:
+    - You are taken to the new user form
+    - The "api" role and "publisher" role are pre-filled in the Roles field.
+    - The ID box is prefilled with an alphanumeric value
+  - step: Click in the "Roles" field
+    results:
+    - A pull-down menu appears with all the allowed roles
+  - step: Click in the 'ID' field
+    results:
+    - It is editable
+    - Change the ID to something memorable
+  - step: Enter test values into each field in the form
+  - step: Click "Create User"
+    results:
+    - You are taken back to the /account
+    - You see a message  Debug mode - url for verify is /account/reset/f1b6b123b5f34cd0aa81807a90a096f2
+    - /account/reset/f1b6b123b5f34cd0aa81807a90a096f2 is a link and is clickable DO
+      NOT CLICK IT YET
+    - 'You see a message '' Account created for dom+test5@doaj.org. View Account:
+      /account/testingID'''
+    - /account/testingID is a link and is clickable DO NOT CLICK IT YET
+    - The ID (/testerID in the example above) matches the ID you chose on line 11
+  - step: 'Click on the link that starts: Debug mode - url for verify is...'
+    results:
+    - You are taken to the page to set a password
+    - You see the name of your user at the top
+  - step: Enter different values into each password field
+  - step: Click "Update"
+    results:
+    - You see an error message requiring that the passwords match
+  - step: Enter matching passwords into the password fields
+  - step: Click "Update"
+    results:
+    - You are redirected to the home page
+    - 'There is a flash message that says:  New password has been set and you''re
+      now logged in.'
+  - step: Log out
+  - step: Log back in with your Admin account
+  - step: Go back to /account/
+  - step: Enter the *name* of your test user into the search box
+    results:
+    - Your new user is listed as the only result in the search
+    - The user has all the properties as you specified them in the form
+    - The user's account created and last modified dates are correct
+  - step: Clear your search
+  - step: Enter the *ID* of your test user into the search box
+    results:
+    - Your new user is listed as the only result in the search
+    - The user has all the properties as you specified them in the form
+    - The user's account created and last modified dates are correct
+
+- title: Edit your own user account (publisher)
+  context:
+    role: publisher
+  steps:
+  - step: Log in to your publisher account
+  - step: Go to Settings under My Account
+    results:
+    - Your account page is shown
+    - Your ID and email address are displayed
+    - You can see your user roles but you cannot edit them
+  - include:
+      fragment: edit_account
+  
+- title: Edit your own user account (admin)
+  context:
+    role: admin
+  steps:
+  - step: Log in to your admin account
+  - step: Go to Settings under My Account
+    results:
+    - Your account page is shown
+    - Your ID and email address are displayed
+  - include:
+      fragment: edit_account
+  - step: Log back in to your admin account and go to Settings
+  - include:
+      fragment: delete_account
+  - step: Check the "yes, I'm sure" checkbox
+  - step: Click "Delete"
+    results:
+    - A flash message tells you your user account has been deleted
+    - You are logged out of DOAJ
+  - step: Recreate your user account either from another administrator account, the
+      command line, or data restore
+
+- title: Edit another user's account
+  context:
+    role: admin
+  steps:
+  - step: Select a user account to modify
+  - step: Locate that user in the user search, and select "Edit this user"
+    results:
+    - The user's account page is displayed
+    - A warning alerts you 'NOTE you are editing a user account that is not your own.
+      Be careful!'
+  - include:
+      fragment: edit_account
+  - include:
+      fragment: delete_account
+  - step: Check the "yes, I'm sure" checkbox
+  - step: Click "Delete"
+    results:
+    - A flash message tells you the user account + number has been deleted
+    - You are redirected to the account search page
+  - step: Put the username of the account you deleted into the search box
+    results:
+    - There are no results to display
+- title: User account with journals/applications
+  context:
+    role: admin
+  steps:
+  - step: Find (or create) a user account which has an active update requests and
+      owns journals
+  - step: View the user account page at /account/[account name]
+  - step: Click on the user's journals
+    results:
+    - The search result shows one or more journals
+  - step: Click back on the Browser
+  - step: Delete the user account
+  - step: Recreate the user account
+  - step: View the newly created user account page
+  - step: Click on the user's journals
+    results:
+    - All the same journals are still associated with the user

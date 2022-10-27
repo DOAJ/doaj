@@ -1,11 +1,11 @@
-suite: Editor search
+suite: Publisher Search
 testset: Journals
 tests:
-- title: Test Editors Journal Search
+- title: Test Publisher Journal Search Interactions
   context:
-    role: Editor
+    role: publisher
   steps:
-  - step: Go to the DOAJ editor's journal search at /editor/group_journals
+  - step: Go to the DOAJ admin journal search at /publisher/
     results:
     - All available records are found, and the first page of results is shown
   - step: Open and Collapse all the facets on the left
@@ -48,53 +48,38 @@ tests:
   - step: Click "First"
     results:
     - You are taken to the first page of the results
-  - step: Click the black X button to clear all filters
+  - step: Click the Red X button to clear all filters
     results:
     - The interface returns to the initial state as per 1.1.1
-  - step: Click "Edit this journal" link at the bottom of any journal
-    results:
-    - /editor/journal/<id> opens in a new tab
-- title: Test Admin Journal Search Display
+- title: Test Publisher Journal Search Display
   context:
-    role: editor
+    role: admin
   steps:
-  - step: Go to the DOAJ admin journal search at /editor/group_journals
+  - step: Go to the DOAJ admin journal search at /publisher/
   - step: Open the In DOAJ facet, and select "False"
     results:
     - None of the journal titles in the search results are links
+    - 'In DOAJ: No metadata is present'
   - step: Clear the "In DOAJ?" filter
   - step: Select "True" from that facet
     results:
     - All the journal titles in the search results are links
+    - 'In DOAJ: Yes metadata is present'
   - step: Click on the journal title
     results:
     - You are taken to the DOAJ ToC page for this journal
-  - step: Click back in your browser window to go back to the search results
-  - step: Click on the "Home page" URL for a journal result
+  - step: Click back (twice) in your browser window to go back to the search results
+  - step: Click on the "Hope page" URL for a journal result
     results:
     - You are taken to the Journal's home page
-  - step: Click back in your browser to go back to the search results
-  - step: Click on the "Owner" of a journal result
-    results:
-    - You are requested to log in as the user, you cannot see the user account page
   - step: Click back in your browser winder to go back to the search results
   - step: Open the Journal License facet
   - step: Select one of the CC licences from this facet
     results:
     - All the journal results show the relevant CC icon under the metadata field "License"
   - step: Clear the "Journal License" filter
-  - step: Open the "Publication Charges" filter
-  - step: Select "Yes" from this facet
+  - step: Click on the View current update request link at the bottom right of any
+      journal
     results:
-    - All the journal results show that the journals have publication charges, and
-      provide a link to the Journal page
-  - step: Clear all the search filters with the black X in the search bar
-  - step: Find a journal in the search results which has a "Related Record"
-  - step: Click on the "Related Record" link
-    results:
-    - You are taken to the application search results, and a single search result
-      is present, showing the applicaiton which produced that journal
-  - step: Click "Edit this journal"
-    results:
-    - A new browser window opens containing the edit form for the journal
-  - step: Click "Unlock and Close"
+    - You are taken to Update Requests tab with this journal id search filter on (journal's
+      id in the search fields is on and only related records are shown)
