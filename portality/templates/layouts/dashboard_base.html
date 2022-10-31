@@ -121,7 +121,7 @@
                   </dd>
                 {% endif %}
               {% elif current_user.has_role("editor") %}
-                <dt class="label">
+                <dt class="sr-only">
                   Editor groups:
                 </dt>
                 <dd>
@@ -142,7 +142,7 @@
                   </ul>
                 </dd>
               {% elif current_user.has_role("associate_editor") %}
-                <dt class="label">
+                <dt class="sr-only">
                   Editor groups:
                 </dt>
                 <dd>
