@@ -98,31 +98,75 @@
               {% endblock %}
             </h1>
           </header>
-          {% if current_user.has_role("admin") %}
           <nav class="col-md-6 col-lg-8 align-right">
-            {% if managed_groups and managed_groups|length > 0 %}
             <dl>
-              <dt class="sr-only">
-                Managing Editor of&nbsp;&nbsp;
-              </dt>
-              <dd>
-                <ul class="inlined-list tags">
-                  {% for eg in managed_groups|sort(attribute="name") %}
-                  <li>
-                    {% set app_source = search_query_source(term=[
-                            {"admin.editor_group.exact" : eg.name},
-                            {"index.application_type.exact" : "new application"}
-                        ], sort=[{"admin.date_applied": {"order": "asc"}}]
-                    ) %}
-                    <a href="{{ url_for('admin.suggestions') }}?source={{ app_source }}" title="See all {{ eg.name }} applications" class="tag tag--tertiary label"><span data-feather="users" aria-hidden="true"></span> <strong>{{ eg.name }}</strong></a>
-                  </li>
-                  {% endfor %}
-                </ul>
-              </dd>
+              {% if current_user.has_role("admin") %}
+                {% if managed_groups and managed_groups|length > 0 %}
+                  <dt class="sr-only">
+                    Managing Editor of&nbsp;&nbsp;
+                  </dt>
+                  <dd>
+                    <ul class="inlined-list tags">
+                      {% for eg in managed_groups|sort(attribute="name") %}
+                      <li>
+                        {% set app_source = search_query_source(term=[
+                                {"admin.editor_group.exact" : eg.name},
+                                {"index.application_type.exact" : "new application"}
+                            ], sort=[{"admin.date_applied": {"order": "asc"}}]
+                        ) %}
+                        <a href="{{ url_for('admin.suggestions') }}?source={{ app_source }}" title="See all {{ eg.name }} applications" class="tag tag--tertiary label"><span data-feather="users" aria-hidden="true"></span> <strong>{{ eg.name }}</strong></a>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  </dd>
+                {% endif %}
+              {% elif current_user.has_role("editor") %}
+                <dt class="label">
+                  Editor groups:
+                </dt>
+                <dd>
+                  <ul class="inlined-list tags">
+                    {% for group in editor_of %}
+                      <li>
+                        {% set app_source = search_query_source(term=[
+                                {"admin.editor_group.exact" : group.name},
+                                {"index.application_type.exact" : "new application"}
+                            ], sort=[{"admin.date_applied": {"order": "asc"}}]
+                        ) %}
+                        <a href="{{ url_for('editor.group_suggestions') }}?source={{ app_source }}" title="See all {{ group.name }} applications" class="tag tag--tertiary label"><span data-feather="users" aria-hidden="true"></span> <strong>{{ group.name }}</strong></a>
+                        {% set maned = group.get_maned_account() %}
+                        <a href="mailto:{{ maned.email }}" class="tag label"><span data-feather="mail" aria-hidden="true"></span> {{ maned.id }} (Man. Ed.)</a>
+                        {{ " / " if not loop.last else "" }}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </dd>
+              {% elif current_user.has_role("associate_editor") %}
+                <dt class="label">
+                  Editor groups:
+                </dt>
+                <dd>
+                  <ul class="tags">
+                    {% for group in associate_of %}
+                      <li>
+                        {% set app_source = search_query_source(term=[
+                                {"admin.editor_group.exact" : group.name},
+                                {"index.application_type.exact" : "new application"}
+                            ], sort=[{"admin.date_applied": {"order": "asc"}}]
+                        ) %}
+                        <a href="{{ url_for('editor.group_suggestions') }}?source={{ app_source }}" title="See all {{ group.name }} applications" class="tag tag--tertiary label"><span data-feather="users" aria-hidden="true"></span> <strong>{{ group.name }}</strong></a>
+                        {% set ed = group.get_editor_account() %}
+                        <a href="mailto:{{ ed.email }}" class="tag label"><span data-feather="mail" aria-hidden="true"></span> {{ ed.id }} (Ed.)</a>
+                        {% set maned = group.get_maned_account() %}
+                        <a href="mailto:{{ maned.email }}" class="tag label"><span data-feather="mail" aria-hidden="true"></span> {{ maned.id }} (Man. Ed.)</a>
+                        {{ " / " if not loop.last else "" }}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </dd>
+              {% endif %}
             </dl>
-            {% endif %}
           </nav>
-          {% endif %}
         </div>
       </header>
       {% include "includes/_flash_notification.html" %}
