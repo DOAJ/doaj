@@ -1,17 +1,15 @@
 {% set index = url_for("editor.index") %}
-{% set groupinfo = url_for("editor.groupinfo") %}
-{% set group_journals = url_for('editor.group_journals') %}
 {% set group_apps = url_for('editor.group_suggestions') %}
-{% set ass_journals = url_for('editor.associate_journals') %}
+{% set group_journals = url_for('editor.group_journals') %}
 {% set ass_apps = url_for('editor.associate_suggestions') %}
+{% set ass_journals = url_for('editor.associate_journals') %}
 
 {% set tabs = [
     (index, "Dashboard", None, "list"),
-    (groupinfo, "Group Info", None, "users"),
-    (group_journals, "Your group’s journals", "list_group_journals", "layers"),
-    (group_apps, "Your group’s applications", "list_group_suggestions", "database"),
-    (ass_journals, "Journals assigned to you", None, "book-open"),
-    (ass_apps, "Applications assigned to you", None, "file-text")
+    (group_apps, "Your group’s applications", "list_group_suggestions", "users"),
+    (group_journals, "Your group’s journals", "list_group_journals", "book"),
+    (ass_apps, "Applications assigned to you", None, "file-text"),
+    (ass_journals, "Journals assigned to you", None, "book-open")
     ]
 %}
 
