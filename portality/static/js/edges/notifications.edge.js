@@ -194,7 +194,7 @@ $.extend(true, doaj, {
                           <h3 class="search-results__heading">${notification.short}</h3>
                         </header>
                         <div class="search-results__body">
-                          <ul class="inlined-list">
+                          <ul>
                             <li>${body}</li>
                           </ul>
                         </div>
