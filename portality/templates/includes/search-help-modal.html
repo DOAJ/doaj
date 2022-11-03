@@ -1,9 +1,14 @@
 <div class="modal" id="modal-help" tabindex="-1" role="dialog" aria-labelledby="modalLabel-help" style="display: none;">
     <div class="modal__dialog" role="document">
-        <p class="label">Tips</p>
-        <h3 class="modal__title" id="modalLabel-help">
-            Refining your search
-        </h3>
+        <header class="flex-space-between modal__heading">
+          <div>
+            <p class="label">Tips</p>
+            <h3 class="modal__title" id="modalLabel-help">
+                Refining your search
+            </h3>
+          </div>
+          <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>
+        </header>
         <ul>
             <li>Searching for words separated by space(s) will add an Implicit AND between each word. For example searching for 'international development' will search for both <i>international</i> and <i>development</i>.</li>
             <li>To search a phrase, add quotation marks, for example “international development”.</li>
@@ -14,6 +19,5 @@
                 </ul>
             </li>
         </ul>
-        <button type="button" data-dismiss="modal" class="modal__close">Close</button>
     </div>
 </div>
