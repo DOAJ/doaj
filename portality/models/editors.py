@@ -1,4 +1,4 @@
-from portality.dao import DomainObject
+from portality.dao import DomainObject, ScrollInitialiseException
 from portality.models import Account
 
 
@@ -19,23 +19,27 @@ class EditorGroup(DomainObject):
             return ids[0]
 
     @classmethod
-    def groups_by_maned(cls, maned):
+    def _groups_by_x(cls, **kwargs):
+        """ Generalised editor groups by maned / editor / associate """
         # ~~-> EditorGroupMember:Query~~
-        q = EditorGroupMemberQuery(maned=maned)
-        _iter = cls.iterate(q.query(), page_size=100)
-        return _iter
+        q = EditorGroupMemberQuery(**kwargs)
+        try:
+            return [g for g in cls.iterate(q.query(), page_size=100)]
+        except ScrollInitialiseException:
+            # If there's no mapping for editor groups, the account definitely has no assignments.
+            return []
+
+    @classmethod
+    def groups_by_maned(cls, maned):
+        return cls._groups_by_x(maned=maned)
 
     @classmethod
     def groups_by_editor(cls, editor):
-        q = EditorGroupMemberQuery(editor=editor)
-        _iter = cls.iterate(q.query(), page_size=100)
-        return _iter
+        return cls._groups_by_x(editor=editor)
 
     @classmethod
     def groups_by_associate(cls, associate):
-        q = EditorGroupMemberQuery(associate=associate)
-        _iter = cls.iterate(q.query(), page_size=100)
-        return _iter
+        return cls._groups_by_x(associate=associate)
 
     @property
     def name(self):
@@ -115,7 +119,8 @@ class EditorGroupMemberQuery(object):
     def query(self):
         q = {
             "track_total_hits": True,
-            "query": {"bool": {"should": []}}
+            "query": {"bool": {"should": []}},
+            "sort": {"name.exact": {"order" : "asc"}}
         }
         if self.editor is not None:
             et = {"term": {"editor.exact": self.editor}}

@@ -178,7 +178,7 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays: {
                         'admin.application_status.exact': 'Application status',
-                        'index.application_type.exact' : 'Record type',
+                        'index.application_type.exact' : 'Application',
                         'index.has_editor_group.exact' : 'Has editor group?',
                         'index.has_editor.exact' : 'Has Associate Editor?',
                         'admin.editor_group.exact' : 'Editor group',
@@ -191,6 +191,13 @@ $.extend(true, doaj, {
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
                         "index.has_apc.exact" : "Publication charges?",
                         'index.license.exact' : 'Journal license'
+                    },
+                    valueMaps : {
+                        "index.application_type.exact" : {
+                            "finished application/update": "Closed",
+                            "update request": "Open",
+                            "new application": "Open"
+                        }
                     }
                 })
             ];
@@ -212,7 +219,7 @@ $.extend(true, doaj, {
             });
             doaj.adminApplicationsSearch.activeEdges[selector] = e;
 
-            doaj.multiFormBox.active = doaj.bulk.applicationMultiFormBox(e);
+            doaj.multiFormBox.active = doaj.bulk.applicationMultiFormBox(e, "applications");
             $(selector).on("edges:pre-render", function() {
                 doaj.multiFormBox.active.validate();
             });

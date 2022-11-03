@@ -37,7 +37,7 @@ The journal's name should:
 - The website should not copy another journal/publisher's site, design, or logo.
 - If any text is copied from another website, an acknowledgement to the source website should be declared.
 
-In addition to the requirements outlined below, the following items should be clearly displayed:
+In addition to the requirements outlined above, the following items should be clearly displayed:
 
 - Aims and scope.
 - The target readership of the journal.
@@ -190,6 +190,8 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 
 ## In other languages
 
-Version 3.0 of the Principles is [available in 21 other languages](https://drive.google.com/drive/folders/1ni9FwfgH8juUuPKKcP72QoCOf51HUww1?usp=sharing). 
+(Version 3.0 of the Principles is [available in 21 other languages](https://drive.google.com/drive/folders/1ni9FwfgH8juUuPKKcP72QoCOf51HUww1?usp=sharing).)
 
-New translations of Version 4.0 will be added here as they become available.
+- Bengali (coming soon)
+- [Portuguese](https://docs.google.com/document/d/155dAHllL2KhPhzTsR3UhbMEASYjkxP157fAtiZ1jw2w/edit?usp=sharing)
+- [Serbian](https://www.ceon.rs/index.php?option=com_content&view=article&id=654:transparentnost-i-najbolja-praksa&catid=94&lang=sr&Itemid=578) (hosted at ceon.rs)
