@@ -1,13 +1,40 @@
-from portality.core import app
-from portality import models
-from portality.store import StoreFactory, prune_container
+import re
 from datetime import datetime
-from portality.lib.argvalidate import argvalidate
-
-from portality.bll import exceptions
 
 from lxml import etree
-import re
+
+from portality import models
+from portality.bll import exceptions
+from portality.core import app
+from portality.lib import nav
+from portality.lib.argvalidate import argvalidate
+from portality.store import StoreFactory, prune_container
+from portality.util import get_full_url_safe
+
+NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+
+
+def create_simple_sub_element(parent, element_name, text=None):
+    """ create and attach simple text element to argument *parent*
+    """
+    loc = etree.SubElement(parent, NS + element_name)
+    if text is not None:
+        loc.text = text
+    return loc
+
+
+def create_url_element(parent, loc, change_freq, lastmod=None):
+    """ create and attach url element to argument *parent*
+    """
+    url_ele = etree.SubElement(parent, NS + "url")
+
+    create_simple_sub_element(url_ele, 'loc', loc)
+    if lastmod is not None:
+        create_simple_sub_element(url_ele, "lastmod", lastmod)
+    create_simple_sub_element(url_ele, "changefreq", change_freq)
+
+    return url_ele
+
 
 class SiteService(object):
     def sitemap(self, prune: bool = True):
@@ -36,39 +63,26 @@ class SiteService(object):
         toc_changefreq = app.config.get("TOC_CHANGEFREQ", "monthly")
 
         NSMAP = {None: "http://www.sitemaps.org/schemas/sitemap/0.9"}
-        NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
         urlset = etree.Element(NS + "urlset", nsmap=NSMAP)
 
         counter = 0
 
         # do the static pages
-        statics = app.config.get("STATIC_PAGES", [])
-        for path, change in statics:
-            if path.startswith("/"):
-                path = path[1:]
-            stat_loc = base_url + path
-            url = etree.SubElement(urlset, NS + "url")
-            loc = etree.SubElement(url, NS + "loc")
-            loc.text = stat_loc
-            cf = etree.SubElement(url, NS + "changefreq")
-            cf.text = change
+        _entries = nav.get_nav_entries()
+        _routes = nav.yield_all_route(_entries)
+        _urls = (get_full_url_safe(r) for r in _routes)
+        _urls = filter(None, _urls)
+        _urls = set(_urls)
+        _urls = sorted(_urls)
+        for u in _urls:
+            create_url_element(urlset, u, toc_changefreq)
             counter += 1
 
         # do all the journal ToCs
         for j in models.Journal.all_in_doaj():
-
             # first create an entry purely for the journal
             toc_loc = base_url + "toc/" + j.toc_id
-            lastmod = j.last_updated
-
-            url = etree.SubElement(urlset, NS + "url")
-            loc = etree.SubElement(url, NS + "loc")
-            loc.text = toc_loc
-            if lastmod is not None:
-                lm = etree.SubElement(url, NS + "lastmod")
-                lm.text = lastmod
-            cf = etree.SubElement(url, NS + "changefreq")
-            cf.text = toc_changefreq
+            create_url_element(urlset, toc_loc, toc_changefreq, lastmod=j.last_updated)
             counter += 1
 
         # log to the screen
@@ -94,10 +108,14 @@ class SiteService(object):
         if prune:
             def sort(filelist):
                 rx = "sitemap__doaj_(.+?)_utf8.xml"
-                return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], '%Y%m%d_%H%M'), reverse=True)
-            def filter(filename):
+                return sorted(filelist,
+                              key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], '%Y%m%d_%H%M'),
+                              reverse=True)
+
+            def _filter(filename):
                 return filename.startswith("sitemap__")
-            action_register += prune_container(mainStore, container_id, sort, filter=filter, keep=2)
+
+            action_register += prune_container(mainStore, container_id, sort, filter=_filter, keep=2)
 
         # update the ES record to point to the new file
         # ~~->Cache:Feature~~

@@ -1103,7 +1103,12 @@ var formulaic = {
                 this.input.after('<a href="#" class="button button--tertiary ' + modalOpenClass + '">Open Subject Classifier</a>');
                 this.input.after(`<div class="modal" id="` + containerId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                                     <div class="modal__dialog" role="document">
-                                        <h2 class="label">Subject classifications</h2>
+                                        <header class="flex-space-between modal__heading">
+                                          <h3 class="modal__title">
+                                            “Subject classifications”
+                                          </h3>
+                                          <span type="button" data-dismiss="modal" class="` + closeClass + ` type-01"><span class="sr-only">Close</span>&times;</span>
+                                        </header>
                                         <p class="alert">Selecting a subject will not automatically select its sub-categories.</p>
                                         <div id="` + widgetId + `"></div>
                                         <button type="button" data-dismiss="modal" class="` + closeClass + `">Add subject(s)</button>
@@ -1391,20 +1396,19 @@ var formulaic = {
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
                     var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
 
-                    $(`<button class="button ` + viewClass + `" style="margin: 0 1rem 1rem 0;">View note<span data-feather="eye" aria-hidden="true"/></button>
+                    $(`<button class="button ` + viewClass + `" style="margin: 0 1rem 1rem 0;">View note</button>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                             <div class="modal__dialog" role="document">
-                              <header class="flex-space-between modal__title">
+                              <header class="flex-space-between modal__heading">
                                 <span>
                                   <p class="label">Note</p>
-                                  <h3 class="no-margins">
+                                  <h3 class="modal__title">
                                       ` + date.val() + `
                                   </h3>
                                 </span>
                                 <span type="button" data-dismiss="modal" class="type-01 ` + closeClass + `"><span class="sr-only">Close</span>&times;</span>
                               </header>
                               <p>` + edges.escapeHtml(note.val()).replace(/\n/g, "<br/>") + `</p>
-                              <br/><br/><button type="button" data-dismiss="modal" class="` + closeClass + `">Close</button>
                             </div>
                         </div>
                         </div>
