@@ -116,6 +116,7 @@ $.extend(true, doaj, {
                 literalMidWordUnderscores: true
             });
 
+            this.actionClass = false;
             this.markAsSeenClass = false;
             this.seenStatusSpan = false;
 
@@ -141,6 +142,7 @@ $.extend(true, doaj, {
                     frag = "";
                 }
 
+                this.actionClass = edges.css_classes(this.namespace, "action", this);
                 this.markAsSeenClass = edges.css_classes(this.namespace, "seen", this);
                 this.seenStatusSpan = edges.css_classes(this.namespace, "seen_status", this);
 
@@ -155,6 +157,9 @@ $.extend(true, doaj, {
 
                 this.component.context.html(frag);
                 feather.replace();
+
+                let actionSelector = edges.css_class_selector(this.namespace, "action", this);
+                edges.on(actionSelector, "click", this, "markAsSeen", false, false, false);
 
                 let markAsSeenSelector = edges.css_class_selector(this.namespace, "seen", this);
                 edges.on(markAsSeenSelector, "click", this, "markAsSeen")
@@ -175,7 +180,7 @@ $.extend(true, doaj, {
 
                 let actionFrag = `No action required`
                 if (notification.action) {
-                    actionFrag = `<a class="notification_action_button" href="${notification.action}" target="_blank">See action</a>`;
+                    actionFrag = `<a class="${this.actionClass}" href="${notification.action}" data-notification-id="${notification.id}" target="_blank">See action</a>`;
                 } else {
                     if (!notification.seen_date) {
                         actionFrag += `<br><a href="#" class="${this.markAsSeenClass}" data-notification-id="${notification.id}">Mark as seen</a>`;
