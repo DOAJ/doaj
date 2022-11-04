@@ -51,15 +51,6 @@ ARTICLE = {
         "number" : "Iss. 4",
         "publisher" : "IEEE",
         "title" : "Journal of Things",
-        "license" : [
-            {
-                "title" : "CC-BY",
-                "type" : "CC-BY",
-                "url" : "http://creativecommons.org/by/",
-                "version" : "3.0",
-                "open_access" : True
-            }
-        ],
         "language" : ["eng"],
         "country" : "GB",
         "issns" : ["1234-5678", "9876-5432"]
