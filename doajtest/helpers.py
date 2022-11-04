@@ -1,6 +1,7 @@
 import csv
 import functools
 import hashlib
+import logging
 import os
 import shutil
 from datetime import datetime
@@ -135,6 +136,9 @@ class DoajTestCase(TestCase):
             "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
             'CMS_BUILD_ASSETS_ON_STARTUP': False
         })
+
+        # some unittest will capture log for testing, therefor log level must be debug
+        cls.app_test.logger.setLevel(logging.DEBUG)
 
         # always_eager has been replaced by immediate
         # for huey version > 2

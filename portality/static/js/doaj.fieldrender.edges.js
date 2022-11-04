@@ -1293,8 +1293,7 @@ $.extend(true, doaj, {
                 if (this.component.embedSnippet) {
                     var embedClass = edges.css_classes(this.namespace, "embed", this);
                     embed = '<p>Embed this search in your site</p>\
-                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>\
-                    <p><button class="button button--tertiary" data-dismiss="modal" class="modal__close">Close</button></p>';
+                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>';
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
@@ -1308,8 +1307,11 @@ $.extend(true, doaj, {
 
                 var modal = '<section class="modal" id="' + modalId + '" tabindex="-1" role="dialog">\
                     <div class="modal__dialog" role="document">\
-                        <form class="quick-search__form" role="search">\
-                            <h2 class="modal__title">' + this.shareLinkText + '</h2>\
+                        <form role="search">\
+                            <header class="flex-space-between modal__heading"> \
+                                <h2 class="modal__title">' + this.shareLinkText + '</h2>\
+                              <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>\
+                            </header>\
                             ' + shareFrag + '\
                         </form>\
                     </div>\
@@ -2922,8 +2924,11 @@ $.extend(true, doaj, {
 
                     frag += '<section class="modal in" id="modal-delete-application" tabindex="-1" role="dialog" style="display: none;"> \
                         <div class="modal__dialog" role="document">\
-                            <h2 class="modal__title">Delete this application</h2>\
-                            <p>Are you sure you want to delete your application for <span class="' + deleteTitleClass + '"></span></p> \
+                            <header class="flex-space-between modal__heading"> \
+                                <h2 class="modal__title">Delete this application</h2>\
+                              <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>\
+                            </header>\
+                            <p>Are you sure you want to delete your application for <strong><span class="' + deleteTitleClass + '"></span></strong>?</p> \
                             <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--tertiary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
@@ -3111,8 +3116,11 @@ $.extend(true, doaj, {
 
                     frag += '<section class="modal in" id="modal-delete-update-request" tabindex="-1" role="dialog" style="display: none;"> \
                         <div class="modal__dialog" role="document">\
-                            <h2 class="modal__title">Delete this update request</h2>\
-                            <p>Are you sure you want to delete your update request for <span class="' + deleteTitleClass + '"></span></p> \
+                            <header class="flex-space-between modal__heading">\
+                              <h2 class="modal__title">Delete this update request</h2>\
+                              <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>\
+                            </header>\
+                            <p>Are you sure you want to delete your update request for <strong><span class="' + deleteTitleClass + '"></span></strong>?</p> \
                             <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--tertiary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
@@ -3849,7 +3857,7 @@ $.extend(true, doaj, {
     },
 
     bulk : {
-        applicationMultiFormBox : function(edge_instance) {
+        applicationMultiFormBox : function(edge_instance, doaj_type) {
             return doaj.multiFormBox.newMultiFormBox({
                 edge : edge_instance,
                 selector: "#admin-bulk-box",
@@ -3905,9 +3913,9 @@ $.extend(true, doaj, {
                     }
                 },
                 urls : {
-                    note : "/admin/applications/bulk/add_note",
-                    editor_group : "/admin/applications/bulk/assign_editor_group",
-                    application_status : "/admin/applications/bulk/change_status"
+                    note : "/admin/" + doaj_type + "/bulk/add_note",
+                    editor_group : "/admin/" + doaj_type + "/bulk/assign_editor_group",
+                    application_status : "/admin/" + doaj_type + "/bulk/change_status"
                 }
             });
         }

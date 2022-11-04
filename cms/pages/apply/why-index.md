@@ -8,7 +8,9 @@ featuremap: ~~WhyIndex:Fragment~~
 
 ---
 
-DOAJ indexes and promotes quality, peer-reviewed open access journals from around the world. We see open access as the only truly sustainable model for the future of scholarly publishing. DOAJ strives to achieve an equitable global transition to open access by raising the reputation and visibility of peer-reviewed open access journals from any country or discipline.
+DOAJ's global team helps publishers comply with best practice in open access publishing, to fulfil open access mandates and attract authors looking for quality journals.
+
+The DOAJ index offers a voice to your journals, in any language or subject, increasing their visibility and ability to comply with best publishing practices - opening the door to discovery of research around the world.
 
 ### Why your journal should be indexed in DOAJ
 
