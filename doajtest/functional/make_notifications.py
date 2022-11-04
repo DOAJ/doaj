@@ -1,3 +1,4 @@
+# ~~Notifications:FunctionalTest~~
 import models
 from portality.events.consumers import application_assed_assigned_notify, \
     application_assed_inprogress_notify, \
@@ -26,23 +27,23 @@ from portality import constants
 USER = "richard"
 
 NOTIFICATIONS = [
-    # "application_assed_assigned_notify",
-    # "application_assed_inprogress_notify",
-    # "application_editor_completed_notify",
-    # "application_editor_group_assigned_notify",
-    # "application_editor_inprogress_notify",
-    # "application_maned_ready_notify",
-    # "application_publisher_accepted_notify",
-    # "application_publisher_assigned_notify",
-    # "application_publisher_created_notify",
-    # "application_publisher_inprogress_notify",
-    # "application_publisher_quickreject_notify",
-    # "application_publisher_revision_notify",
-    # "bg_job_finished_notify",
-    # "journal_assed_assigned_notify",
-    # "journal_editor_group_assigned_notify",
-    # "update_request_publisher_accepted_notify",
-    # "update_request_publisher_assigned_notify",
+    "application_assed_assigned_notify",
+    "application_assed_inprogress_notify",
+    "application_editor_completed_notify",
+    "application_editor_group_assigned_notify",
+    "application_editor_inprogress_notify",
+    "application_maned_ready_notify",
+    "application_publisher_accepted_notify",
+    "application_publisher_assigned_notify",
+    "application_publisher_created_notify",
+    "application_publisher_inprogress_notify",
+    "application_publisher_quickreject_notify",
+    "application_publisher_revision_notify",
+    "bg_job_finished_notify",
+    "journal_assed_assigned_notify",
+    "journal_editor_group_assigned_notify",
+    "update_request_publisher_accepted_notify",
+    "update_request_publisher_assigned_notify",
     "update_request_publisher_rejected_notify"
 ]
 

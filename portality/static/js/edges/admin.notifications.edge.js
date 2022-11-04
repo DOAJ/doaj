@@ -1,3 +1,5 @@
+// ~~ AdminNotifications:Edge -> Notifications:Feature ~~
+// ~~-> Edges:Technology ~~
 $.extend(true, doaj, {
 
     adminNotificationsSearch : {

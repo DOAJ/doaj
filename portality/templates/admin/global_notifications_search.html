@@ -1,5 +1,7 @@
 {% extends "admin/admin_base.html" %}
+{# ~~ AdminNotificationsSearch:Page~~ #}
 
+{# ~~-> Edges:Technology ~~ #}
 {% include "_edges_common_css.html" %}
 
 {% block page_title %}Notifications{% endblock %}
@@ -19,7 +21,10 @@
     });
     </script>
 
+    {# ~~-> Edges:Technology ~~ #}
     {% include "_edges_common_js.html" %}
+
+    {# ~~->AdminNotifications:Edge ~~ #}
     <script type="text/javascript" src="/static/js/edges/admin.notifications.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endblock %}

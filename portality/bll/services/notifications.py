@@ -45,6 +45,7 @@ class NotificationsService(object):
         return app.jinja_env.globals["data"]["notifications"].get(message_id, {}).get("short", Messages.NOTIFY__DEFAULT_SHORT_NOTIFICATION)
 
     def top_notifications(self, account: models.Account, size: int = 10):
+        # ~~-> TopNotifications:Query ~~
         q = TopNotificationsQuery(account.id, size)
         top = models.Notification.object_query(q.query())
         return top
