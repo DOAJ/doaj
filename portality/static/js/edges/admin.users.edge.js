@@ -7,21 +7,17 @@ $.extend(true, doaj, {
             var result = '<a class="edit_user_link button" href="';
             result += doaj.userSearchConfig.userEditUrl;
             result += resultobj['id'];
-            result += '" target="_blank"';
-            result += '>Edit this user</a>';
+            result += '">Edit this user</a>';
             return result;
         },
 
         userJournalsLink : function (val, resultobj, renderer) {
             var q = {
-                "query":{
-                    "filtered":{
-                        "filter":{
-                            "bool":{
-                                "must":[{"term":{"admin.owner.exact":resultobj.id}}]
-                            }
-                        },
-                        "query":{"match_all":{}}
+                "query": {
+                    "bool": {
+                        "must": [{
+                            "term": {"admin.owner.exact": resultobj.id}
+                        }]
                     }
                 }
             };
@@ -44,17 +40,13 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    finishedEvent: "edges:post-render",
-                    renderer : doaj.renderers.newSearchingNotificationRenderer()
-                }),
+                doaj.components.searchingNotification(),
 
                 // facets
                 edges.newRefiningANDTermSelector({
                     id: "role",
                     category: "facet",
-                    field: "role",
+                    field: "role.exact",
                     display: "Role",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
@@ -168,7 +160,7 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "role": "Role"
+                        "role.exact": "Role"
                     }
                 })
             ];

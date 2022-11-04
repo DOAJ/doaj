@@ -1,4 +1,4 @@
-from portality.dao import DomainObject
+from portality.dao import DomainObject, ESMappingMissingError
 from datetime import datetime
 from copy import deepcopy
 
@@ -119,13 +119,17 @@ class FileUpload(DomainObject):
     @classmethod
     def by_owner(cls, owner, size=10):
         q = OwnerFileQuery(owner)
-        res = cls.query(q=q.query())
+        try:
+            res = cls.query(q=q.query())
+        except ESMappingMissingError:
+            return []
         rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
         return rs
 
 
 class ValidFileQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query": {
             "term": {"status.exact": "validated"}
         },
@@ -143,6 +147,7 @@ class ValidFileQuery(object):
 
 class ExistsFileQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query": {
             "term": {"status.exact": "exists"}
         },
@@ -160,6 +165,7 @@ class ExistsFileQuery(object):
 
 class OwnerFileQuery(object):
     base_query = {
+        "track_total_hits" : True,
         "query": {
             "bool": {
                 "must": []

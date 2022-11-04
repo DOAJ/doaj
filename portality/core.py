@@ -3,7 +3,6 @@ import threading
 import yaml
 
 from flask import Flask
-from flask_debugtoolbar import DebugToolbarExtension
 from flask_login import LoginManager
 from flask_cors import CORS
 from jinja2 import FileSystemLoader
@@ -13,8 +12,10 @@ from portality import settings, constants, datasets
 from portality.bll import exceptions
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping
+from portality.ui.debug_toolbar import DoajDebugToolbar
 
 import esprit
+import elasticsearch
 
 login_manager = LoginManager()
 
@@ -53,7 +54,7 @@ def create_app():
     #~~->APM:Feature~~
     initialise_apm(app)
     #~~->DebugToolbar:Framework~~
-    DebugToolbarExtension(app)
+    DoajDebugToolbar(app)
     #~~->ProxyFix:Framework~~
     proxyfix(app)
     #~~->CMS:Build~~
@@ -135,16 +136,28 @@ def load_crossref_schema(app):
     :param app:
     :return:
     """
-    schema_path = app.config["SCHEMAS"].get("crossref")
+    schema442_path = app.config["SCHEMAS"].get("crossref442")
+    schema531_path = app.config["SCHEMAS"].get("crossref531")
 
-    if not app.config.get("CROSSREF_SCHEMA"):
+    if not app.config.get("CROSSREF442_SCHEMA"):
+        path = schema442_path
         try:
-            schema_doc = etree.parse(schema_path)
+            schema_doc = etree.parse(schema442_path)
             schema = etree.XMLSchema(schema_doc)
-            app.config["CROSSREF_SCHEMA"] = schema
+            app.config["CROSSREF442_SCHEMA"] = schema
         except Exception as e:
             raise exceptions.IngestException(
-                message="There was an error attempting to load schema from " + schema_path, inner=e)
+                message="There was an error attempting to load schema from " + path, inner=e)
+
+    if not app.config.get("CROSSREF531_SCHEMA"):
+        path = schema531_path
+        try:
+            schema_doc = etree.parse(schema531_path)
+            schema = etree.XMLSchema(schema_doc)
+            app.config["CROSSREF531_SCHEMA"] = schema
+        except Exception as e:
+            raise exceptions.IngestException(
+                message="There was an error attempting to load schema from " + path, inner=e)
 
 
 
@@ -153,44 +166,60 @@ def load_crossref_schema(app):
 
 def create_es_connection(app):
     # ~~ElasticConnection:Framework->Elasticsearch:Technology~~
+    # temporary logging config for debugging index-per-type
+    #import logging
+    #esprit.raw.configure_logging(logging.DEBUG)
+
+    # FIXME: we are removing esprit conn in favour of elasticsearch lib
     # make a connection to the index
-    if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-        conn = esprit.raw.Connection(host=app.config['ELASTIC_SEARCH_HOST'], index='')
-    else:
-        conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
+    # if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
+    #     conn = esprit.raw.Connection(host=app.config['ELASTIC_SEARCH_HOST'], index='')
+    # else:
+    #     conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
+
+    conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'], verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True))
+
     return conn
 
-
-def mutate_mapping(conn, type, mapping):
-    """ When we are using an index-per-type connection change the mappings to be keyed 'doc' rather than the type """
-    if conn.index_per_type:
-        try:
-            mapping[esprit.raw.INDEX_PER_TYPE_SUBSTITUTE] = mapping.pop(type)
-        except KeyError:
-            # Allow this mapping through unaltered if it isn't keyed by type
-            pass
-
-        # Add the index prefix to the mapping as we create the type
-        type = app.config['ELASTIC_SEARCH_DB_PREFIX'] + type
-    return type
+# FIXME: deprecated no longer necessary
+# def mutate_mapping(conn, type, mapping):
+#     """ When we are using an index-per-type connection change the mappings to be keyed 'doc' rather than the type """
+#     if conn.index_per_type:
+#         try:
+#             mapping[esprit.raw.INDEX_PER_TYPE_SUBSTITUTE] = mapping.pop(type)
+#         except KeyError:
+#             # Allow this mapping through unaltered if it isn't keyed by type
+#             pass
+#
+#         # Add the index prefix to the mapping as we create the type
+#         type = app.config['ELASTIC_SEARCH_DB_PREFIX'] + type
+#     return type
 
 
 def put_mappings(conn, mappings):
     # get the ES version that we're working with
-    es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
+    #es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
 
     # for each mapping (a class may supply multiple), create a mapping, or mapping and index
+    # for key, mapping in iter(mappings.items()):
+    #     altered_key = mutate_mapping(conn, key, mapping)
+    #     ix = conn.index or altered_key
+    #     if not esprit.raw.type_exists(conn, altered_key, es_version=es_version):
+    #         r = esprit.raw.put_mapping(conn, altered_key, mapping, es_version=es_version)
+    #         print("Creating ES Type + Mapping in index {0} for {1}; status: {2}".format(ix, key, r.status_code))
+    #     else:
+    #         print("ES Type + Mapping already exists in index {0} for {1}".format(ix, key))
+
     for key, mapping in iter(mappings.items()):
-        altered_key = mutate_mapping(conn, key, mapping)
-        ix = conn.index or altered_key
-        if not esprit.raw.type_exists(conn, altered_key, es_version=es_version):
-            r = esprit.raw.put_mapping(conn, altered_key, mapping, es_version=es_version)
-            print("Creating ES Type + Mapping in index {0} for {1}; status: {2}".format(ix, key, r.status_code))
+        altered_key = app.config['ELASTIC_SEARCH_DB_PREFIX'] + key
+        if not conn.indices.exists(altered_key):
+            r = conn.indices.create(index=altered_key, body=mapping)
+            print("Creating ES Type + Mapping in index {0} for {1}; status: {2}".format(altered_key, key, r))
         else:
-            print("ES Type + Mapping already exists in index {0} for {1}".format(ix, key))
+            print("ES Type + Mapping already exists in index {0} for {1}".format(altered_key, key))
 
 
-def initialise_index(app, conn):
+def initialise_index(app, conn, only_mappings=None):
     """
     ~~InitialiseIndex:Framework->Elasticsearch:Technology~~
     :param app:
@@ -207,6 +236,9 @@ def initialise_index(app, conn):
 
     # get the app mappings
     mappings = es_data_mapping.get_mappings(app)
+
+    if only_mappings is not None:
+        mappings = {key:value for (key, value) in mappings.items() if key in only_mappings}
 
     # Send the mappings to ES
     put_mappings(conn, mappings)

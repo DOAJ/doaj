@@ -7,8 +7,13 @@ import json
 
 
 def make_url_query(**params):
+    query = make_query_json(**params)
+    return parse.quote_plus(query)
+
+
+def make_query_json(**params):
     query = make_query(**params)
-    return parse.quote_plus(json.dumps(query))
+    return json.dumps(query)
 
 
 def make_query(**params):
@@ -17,9 +22,12 @@ def make_query(**params):
 
 
 class GeneralSearchQuery(object):
-    def __init__(self, terms=None, query_string=None):
+    # ~~-> Edges:Query~~
+    def __init__(self, term=None, terms=None, query_string=None, sort=None):
         self.terms = None if terms is None else terms if isinstance(terms, list) else [terms]
+        self.term = None if term is None else term
         self.query_string = query_string
+        self.sort = sort
 
     def query(self):
         musts = []
@@ -27,20 +35,27 @@ class GeneralSearchQuery(object):
             for term in self.terms:
                 musts.append({"terms" : term})
 
-        query = {"match_all" : {}}
-        if self.query_string is not None:
-            query = {"query_string" : {"default_operator" : "AND", "query" : self.query_string}}
+        if self.term is not None:
+            for term in self.term:
+                musts.append({"term" : term})
 
+        if self.query_string is not None:
+            qs = {"query_string": {"default_operator": "AND", "query": self.query_string}}
+            musts.append(qs)
+
+        query = {"match_all": {}}
         if len(musts) > 0:
             query = {
-                "filtered" : {
-                    "filter" : {
-                        "bool": {
-                            "must": musts
-                        }
-                    },
-                    "query" : query
+                "bool": {
+                    "must": musts
                 }
             }
 
-        return { "query" : query }
+        obj = {"query": query}
+        if self.sort:
+            if not isinstance(self.sort, list):
+                obj["sort"] = [self.sort]
+            else:
+                obj["sort"] = self.sort
+
+        return obj

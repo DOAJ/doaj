@@ -1,0 +1,47 @@
+<li class="todo-list__item" data-app-url="{{ app_url }}">
+  <article class="flex-col flex-space-between card card--compact" style="border-color: {{ action.colour }};">
+    <div class="flex">
+      <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
+        <time datetime="{{ todo.date.strftime('%Y-%m-%d') }}" class="label label--secondary font-mono" title="{% if todo.date_type == 'last_manual_update' %}Last updated{% else %}First submitted{% endif %} {{ todo.date.strftime('%A, %-d %B %Y') }}">
+          <span style="font-size: 22px;">{{ todo.date.strftime('%d') }}</span><br>
+          <span style="font-size: 13.55px;">{{ todo.date.strftime('%b') }}</span><br>
+          <span style="font-size: 9.35px;">{{ todo.date.strftime('%Y') }}</span>
+          {# TODO link to search results for this kind of task, across all editor groups #}
+        </time>
+       </a>
+      <div style="margin-left: 1em;" class="flex-space-between">
+        <header>
+          <p class="label label--secondary">
+            <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
+              {% set main_action = todo.action_id[0] %}
+              {% if main_action == 'todo_maned_follow_up_old' or main_action == 'todo_maned_stalled' %}[{{ todo.object.application_status }}]{% endif %}
+              {{ action.text | safe }}
+            </a>
+          </p>
+          <h3>
+            <a href="{{ app_url }}" class="font-serif type-06" target="_blank" title="{{ todo.title }}">{{ todo.title | truncate(25, True) }}</a>
+          </h3>
+        </header>
+        <div>
+          {% if action.link %}
+          <a href="{{ action.link }}" class="label tag" title="See all {{ action.text|striptags }} applications" style="margin-right: 0; background-color: {{ action.colour }};">
+          {% else %}
+          <span class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
+          {% endif %}
+             <span data-feather="{{ action.feather | safe }}" aria-hidden="true"></span>
+          {% if action.link %}</a>
+          {% else %}</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <ul class="unstyled-list tags">
+      {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [todo.object.editor_group]}]) %}
+      <li><small><a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="label tag tag--secondary" title="See all {{ todo.object.editor_group }} applications"><span data-feather="users" aria-hidden="true"></span> {{ todo.object.editor_group }}</a></small></li>
+      {% set editor = todo.object.editor %}
+      {% if editor %}
+      <li><small><a href="{{ url_for('account.username', username=editor) }}" class="label tag tag--tertiary" title="See {{ todo.object.editor }}’s profile"><span data-feather="user" aria-hidden="true"></span> {{ todo.object.editor }}</a></small></li>
+      {% endif %}
+     </ul>
+  </article>
+</li>

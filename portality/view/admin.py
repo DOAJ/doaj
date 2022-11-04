@@ -7,9 +7,8 @@ from werkzeug.datastructures import MultiDict
 
 from portality import dao
 import portality.models as models
-import portality.notifications.application_emails as emails
 from portality import constants
-from portality import lock, app_email
+from portality import lock
 from portality.background import BackgroundSummary
 from portality.bll import DOAJ, exceptions
 from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
@@ -20,13 +19,16 @@ from portality.forms.application_forms import ApplicationFormFactory, applicatio
 from portality.forms.application_forms import JournalFormFactory
 from portality.forms.article_forms import ArticleFormFactory
 from portality.lcc import lcc_jstree
-from portality.lib.query_filters import remove_search_limits
+from portality.lib.query_filters import remove_search_limits, update_request, not_update_request
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
     article_bulk_delete
 from portality.ui.messages import Messages
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.view.forms import EditorGroupForm, MakeContinuation
 
+from portality.bll.services.query import Query
+
+# ~~Admin:Blueprint~~
 blueprint = Blueprint('admin', __name__)
 
 
@@ -328,6 +330,15 @@ def suggestions():
                            admin_page=True,
                            application_status_choices=application_statuses(None, fc))
 
+@blueprint.route("/update_requests", methods=["GET"])
+@login_required
+@ssl_required
+def update_requests():
+    fc = ApplicationFormFactory.context("admin")
+    return render_template("admin/update_requests.html",
+                           admin_page=True,
+                           application_status_choices=application_statuses(None, fc))
+
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
 @write_required()
@@ -357,7 +368,8 @@ def application(application_id):
 
     if request.method == "GET":
         fc.processor(source=ap)
-        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
+        return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
+                                  current_journal=current_journal, lcc_tree=lcc_jstree)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
@@ -419,33 +431,25 @@ def application_quick_reject(application_id):
         return redirect(url_for('.application', application_id=application_id))
 
     # reject the application
+    old_status = application.application_status
     applicationService.reject_application(application, current_user._get_current_object(), note=note)
 
     # send the notification email to the user
-    sent = False
-    send_report = []
-    try:
-        send_report = emails.send_publisher_reject_email(application, note=reason, update_request=update_request)
-        sent = True
-    except app_email.EmailException as e:
-        pass
+    if old_status != constants.APPLICATION_STATUS_REJECTED:
+        eventsSvc = DOAJ.eventsService()
+        eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_STATUS, current_user.id, {
+            "application": application.data,
+            "old_status": old_status,
+            "new_status": constants.APPLICATION_STATUS_REJECTED,
+            "process": constants.PROCESS__QUICK_REJECT,
+            "note": reason
+        }))
 
     # sort out some flash messages for the user
     flash(note, "success")
 
-    for instructions in send_report:
-        msg = ""
-        flash_type = "success"
-        if sent:
-            if instructions["type"] == "owner":
-                msg = Messages.SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER.format(user=application.owner, email=instructions["email"], name=instructions["name"])
-            elif instructions["type"]  == "suggester":
-                msg = Messages.SENT_REJECTED_APPLICATION_EMAIL_TO_SUGGESTER.format(email=instructions["email"], name=instructions["name"])
-        else:
-            msg = Messages.NOT_SENT_REJECTED_APPLICATION_EMAILS.format(user=application.owner)
-            flash_type = "error"
-
-        flash(msg, flash_type)
+    msg = Messages.SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER.format(user=application.owner)
+    flash(msg, "success")
 
     # redirect the user back to the edit page
     return redirect(url_for('.application', application_id=application_id))
@@ -486,12 +490,14 @@ def editor_group(group_id=None):
     if not current_user.has_role("modify_editor_groups"):
         abort(401)
 
+    # ~~->EditorGroup:Form~~
     if request.method == "GET":
         form = EditorGroupForm()
         if group_id is not None:
             eg = models.EditorGroup.pull(group_id)
             form.group_id.data = eg.id
             form.name.data = eg.name
+            form.maned.data = eg.maned
             form.editor.data = eg.editor
             form.associates.data = ",".join(eg.associates)
         return render_template("admin/editor_group.html", admin_page=True, form=form)
@@ -547,6 +553,7 @@ def editor_group(group_id=None):
                         ae.save()
 
             eg.set_name(form.name.data)
+            eg.set_maned(form.maned.data)
             eg.set_editor(form.editor.data)
             if associates is not None:
                 eg.set_associates(associates)
@@ -610,16 +617,24 @@ def bulk_admin_endpoints_bad_request(exception):
 def get_bulk_edit_background_task_manager(doaj_type):
     if doaj_type == 'journals':
         return journal_bulk_edit.journal_manage
-    elif doaj_type == 'applications':
+    elif doaj_type in ['applications', 'update_requests']:
         return suggestion_bulk_edit.suggestion_manage
     else:
-        raise BulkAdminEndpointException('Unsupported DOAJ type - you can currently only bulk edit journals and applications.')
+        raise BulkAdminEndpointException('Unsupported DOAJ type - you can currently only bulk edit journals and applications/update_requests.')
 
 
-def get_query_from_request(payload):
+def get_query_from_request(payload, doaj_type=None):
     q = payload['selection_query']
     q = remove_search_limits(q)
-    return q
+
+    q = Query(q)
+
+    if doaj_type == "update_requests":
+        update_request(q)
+    elif doaj_type == "applications":
+        not_update_request(q)
+
+    return q.as_dict()
 
 
 @blueprint.route("/<doaj_type>/bulk/assign_editor_group", methods=["POST"])
@@ -633,7 +648,7 @@ def bulk_assign_editor_group(doaj_type):
     validate_json(payload, fields_must_be_present=['selection_query', 'editor_group'], error_to_raise=BulkAdminEndpointException)
 
     summary = task(
-        selection_query=get_query_from_request(payload),
+        selection_query=get_query_from_request(payload, doaj_type),
         editor_group=payload['editor_group'],
         dry_run=payload.get('dry_run', True)
     )
@@ -652,7 +667,7 @@ def bulk_add_note(doaj_type):
     validate_json(payload, fields_must_be_present=['selection_query', 'note'], error_to_raise=BulkAdminEndpointException)
 
     summary = task(
-        selection_query=get_query_from_request(payload),
+        selection_query=get_query_from_request(payload, doaj_type),
         note=payload['note'],
         dry_run=payload.get('dry_run', True)
     )
@@ -690,15 +705,17 @@ def bulk_edit_journal_metadata():
     return make_json_resp(summary.as_dict(), status_code=200)
 
 
-@blueprint.route("/applications/bulk/change_status", methods=["POST"])
+@blueprint.route("/<doaj_type>/bulk/change_status", methods=["POST"])
 @login_required
 @ssl_required
 @write_required()
-def applications_bulk_change_status():
+def applications_bulk_change_status(doaj_type):
+    if doaj_type not in ["applications", "update_requests"]:
+        abort(403)
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query', 'application_status'], error_to_raise=BulkAdminEndpointException)
 
-    q = get_query_from_request(payload)
+    q = get_query_from_request(payload, doaj_type)
     summary = get_bulk_edit_background_task_manager('applications')(
         selection_query=q,
         application_status=payload['application_status'],

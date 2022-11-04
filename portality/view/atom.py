@@ -2,17 +2,19 @@ from flask import Blueprint, request, make_response
 
 from portality import models as models
 from portality.core import app
-from portality.lib import analytics
 from portality.crosswalks.atom import AtomCrosswalk
 
 from lxml import etree
 from datetime import datetime, timedelta
 
+from portality.lib import plausible
+
 blueprint = Blueprint('atom', __name__)
 
 
 @blueprint.route('/feed')
-@analytics.sends_ga_event(app.config.get('GA_CATEGORY_ATOM', 'Atom'), app.config.get('GA_ACTION_ACTION', 'Feed Request'))
+@plausible.pa_event(app.config.get('GA_CATEGORY_ATOM', 'Atom'),
+                    action=app.config.get('GA_ACTION_ACTION', 'Feed Request'))
 def feed():
     # get the feed for this base_url (which is just used to set the metadata of
     # the feed, but we want to do this outside of a request context so it

@@ -9,8 +9,8 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "5.2.6"
-API_VERSION = "3.0.0"
+DOAJ_VERSION = "6.2.7"
+API_VERSION = "3.0.1"
 
 ######################################
 # Deployment configuration
@@ -21,6 +21,10 @@ PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
 CMS_BUILD_ASSETS_ON_STARTUP = False
+# Cookies security
+SESSION_COOKIE_SAMESITE='Strict'
+SESSION_COOKIE_SECURE=True
+REMEMBER_COOKIE_SECURE = True
 
 ####################################
 # Debug Mode
@@ -38,8 +42,10 @@ DEBUG_TB_INTERCEPT_REDIRECTS = False
 # Elasticsearch configuration
 #~~->Elasticsearch:Technology
 
-# elasticsearch settings
+# elasticsearch settings # TODO: changing from single host / esprit to multi host on ES & correct the default
 ELASTIC_SEARCH_HOST = os.getenv('ELASTIC_SEARCH_HOST', 'http://localhost:9200') # remember the http:// or https://
+ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}, {'host': 'localhost', 'port': 9201}]
+ELASTIC_SEARCH_VERIFY_CERTS = True  # Verify the SSL certificate of the ES host.  Set to False in dev.cfg to avoid having to configure your local certificates
 
 # 2 sets of elasticsearch DB settings - index-per-project and index-per-type. Keep both for now so we can migrate.
 # e.g. host:port/index/type/id
@@ -48,6 +54,7 @@ ELASTIC_SEARCH_TEST_DB = "doajtest"
 
 # e.g. host:port/type/doc/id
 ELASTIC_SEARCH_INDEX_PER_TYPE = True
+INDEX_PER_TYPE_SUBSTITUTE = '_doc'      # Migrated from esprit
 ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
@@ -75,6 +82,18 @@ ELASTIC_APM = {
   # Set custom APM Server URL (default: http://localhost:8200)
   'SERVER_URL': '',
 }
+
+###########################################
+# Event handler
+
+# use this to queue events asynchronously through kafka
+EVENT_SEND_FUNCTION = "portality.events.kafka_producer.send_event"
+# use this one to bypass kafka and process events immediately/synchronously
+# EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
+
+KAFKA_BROKER = "kafka://localhost:9092"
+KAFKA_EVENTS_TOPIC = "events"
+KAFKA_BOOTSTRAP_SERVER = "localhost:9092"
 
 ###########################################
 # Read Only Mode
@@ -163,6 +182,7 @@ STORE_TMP_WRITE_BUFFER_SIZE = 16777216
 STORE_ANON_DATA_CONTAINER = "doaj-anon-data-placeholder"
 STORE_CACHE_CONTAINER = "doaj-data-cache-placeholder"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump-placeholder"
+STORE_HARVESTER_CONTAINER = "doaj-harvester"
 
 # S3 credentials for relevant scopes
 # ~~->S3:Technology~~
@@ -179,8 +199,15 @@ STORE_S3_SCOPES = {
     "public_data_dump" : {
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    },
+    # Used to store harvester run logs to S3
+    "harvester" : {
+        "aws_access_key_id" : "put this in your dev/test/production.cfg",
+        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }
 }
+
+STORE_S3_MULTIPART_THRESHOLD = 5 * 1024**3   # 5GB
 
 ####################################
 # CMS configuration
@@ -274,6 +301,18 @@ ROLE_MAP = {
 SYSTEM_USERNAME = "system"
 RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user accounts with this id
 
+# Role map to destination route on login (when no other destination page is present)
+# checked in order, if the user has the role in the first tuple position, they will
+# be redirected to the endpoint in the second tuple position
+ROLE_LOGIN_DESTINATIONS = [
+    ("admin", "dashboard.top_todo"),
+    ("editor", "editor.index"),
+    ("associate_editor", "editor.index"),
+    ("publisher", "publisher.index")
+]
+
+# if the user doesn't have one of the above roles, where should they be sent after login
+DEFAULT_LOGIN_DESTINATION = "doaj.home"
 
 ####################################
 # Email Settings
@@ -300,9 +339,9 @@ ADMINS = ["steve@cottagelabs.com", "mark@cottagelabs.com"]
 
 MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
 CONTACT_FORM_ADDRESS = "feedback+contactform@doaj.org"
-SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS = ["feedback@doaj.org"]
+SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS = ["helpdesk@doaj.org"]
 
-SYSTEM_EMAIL_FROM = 'feedback@doaj.org'
+SYSTEM_EMAIL_FROM = 'helpdesk@doaj.org'
 CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the future
 
 # Error logging via email
@@ -313,7 +352,7 @@ ERROR_MAIL_USERNAME = None
 ERROR_MAIL_PASSWORD = None
 
 # Reports email recipient
-REPORTS_EMAIL_TO = ["feedback@doaj.org"]
+REPORTS_EMAIL_TO = ["helpdesk@doaj.org"]
 
 ########################################
 # workflow email notification settings
@@ -373,7 +412,8 @@ HUEY_SCHEDULE = {
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"}
+    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
+    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
 }
 
 HUEY_TASKS = {
@@ -417,112 +457,112 @@ ELASTIC_SEARCH_MAPPINGS = [
 # ~~->Seamless:Library~~
 DATAOBJ_TO_MAPPING_DEFAULTS = {
     "unicode": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "str": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "unicode_upper": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "unicode_lower": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "isolang": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "isolang_2letter": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "country_code": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "currency_code": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "issn": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "url": {
-        "type": "string",
+        "type": "text",
         "fields": {
             "exact": {
-                "type": "string",
-                "index": "not_analyzed",
+                "type": "keyword",
+#                "index": False,
                 "store": True
             }
         }
     },
     "utcdatetimemicros": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
     },
     "utcdatetime": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
     },
     "bool": {
         "type": "boolean"
@@ -532,7 +572,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
     },
     "bigenddate": {
         "type": "date",
-        "format": "dateOptionalTime"
+        "format": "date_optional_time"
     },
     "year": {
         "type": "date",
@@ -540,18 +580,26 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
     }
 }
 
+# TODO: we may want a big-type and little-type setting
+DEFAULT_INDEX_SETTINGS = \
+    {
+        'number_of_shards': 4,
+        'number_of_replicas': 1
+    }
+
 
 DEFAULT_DYNAMIC_MAPPING = {
-    "dynamic_templates": [
+    'dynamic_templates': [
         {
-            "default": {
-                "match": "*",
+            "strings": {
                 "match_mapping_type": "string",
                 "mapping": {
-                    "type": "multi_field",
+                    "type": "text",
                     "fields": {
-                        "{name}": {"type": "{dynamic_type}", "index": "analyzed", "store": "no"},
-                        "exact": {"type": "{dynamic_type}", "index": "not_analyzed", "store": "yes"}
+                        "exact": {
+                            "type": "keyword",
+                            #"normalizer": "lowercase"
+                        }
                     }
                 }
             }
@@ -562,21 +610,35 @@ DEFAULT_DYNAMIC_MAPPING = {
 # LEGACY MAPPINGS
 # a dict of the ES mappings. identify by name, and include name as first object name
 # and identifier for how non-analyzed fields for faceting are differentiated in the mappings
-
 MAPPINGS = {
-    'account': {
-        'account': DEFAULT_DYNAMIC_MAPPING  #~~->Account:Model~~
+    'account': {  #~~->Account:Model~~
+        # 'aliases': {
+        #     'account': {}
+        # },
+        'mappings': DEFAULT_DYNAMIC_MAPPING,
+        'settings': DEFAULT_INDEX_SETTINGS
     }
 }
-MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}  #~~->Article:Model~~
-MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING} #~~->Upload:Model~~
-MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING} #~~->Cache:Model~~
-MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}  #~~->LCC:Model~~
-MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->EditorGroup:Model~~
-MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
-MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
-MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
-MAPPINGS['preserve'] = {'preserve': DEFAULT_DYNAMIC_MAPPING}    #~~->Preservation:Model~~
+# MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}  #~~->Article:Model~~
+# MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING} #~~->Upload:Model~~
+# MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING} #~~->Cache:Model~~
+# MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}  #~~->LCC:Model~~
+# MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING} #~~->EditorGroup:Model~~
+# MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}    #~~->News:Model~~
+# MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}    #~~->Lock:Model~~
+# MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}    #~~->Provenance:Model~~
+# MAPPINGS['preserve'] = {'preserve': DEFAULT_DYNAMIC_MAPPING}    #~~->Preservation:Model~~
+
+MAPPINGS['article'] = MAPPINGS["account"]  #~~->Article:Model~~
+MAPPINGS['upload'] = MAPPINGS["account"] #~~->Upload:Model~~
+MAPPINGS['cache'] = MAPPINGS["account"] #~~->Cache:Model~~
+MAPPINGS['lcc'] = MAPPINGS["account"]  #~~->LCC:Model~~
+MAPPINGS['editor_group'] = MAPPINGS["account"] #~~->EditorGroup:Model~~
+MAPPINGS['news'] = MAPPINGS["account"]    #~~->News:Model~~
+MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
+MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
+MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
+MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
 
 #########################################
 # Query Routes
@@ -653,7 +715,15 @@ QUERY_ROUTE = {
         "suggestion" : {
             "auth" : True,
             "role" : "admin",
-            "dao" : "portality.models.Suggestion"    # ~~->Application:Model~~
+            "query_filters" : ["not_update_request"],
+            "dao" : "portality.models.Application"    # ~~->Application:Model~~
+        },
+        # ~~->AdminUpdateRequestQuery:Endpoint~~
+        "update_requests": {
+            "auth": True,
+            "role": "admin",
+            "query_filters" : ["update_request"],
+            "dao": "portality.models.Application"  # ~~->Application:Model~~
         },
         # ~~->AdminEditorGroupQuery:Endpoint~~
         "editor,group" : {
@@ -852,12 +922,14 @@ OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 # ~~->DOAJArticleXML:Schema~~
 SCHEMAS = {
     "doaj": os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd"),
-    "crossref": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd")
+    "crossref442": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd"),
+    "crossref531": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref5.3.1.xsd")
 }
 
 # placeholders for the loaded schemas
 DOAJ_SCHEMA = None
-CROSSREF_SCHEMA = None
+CROSSREF442_SCHEMA = None
+CROSSREF531_SCHEMA = None
 LOAD_CROSSREF_THREAD = None
 
 # mapping of format names to modules which implement the crosswalks
@@ -865,7 +937,8 @@ LOAD_CROSSREF_THREAD = None
 # ~~->CrossrefXML:Crosswalk~~
 ARTICLE_CROSSWALKS = {
     "doaj": "portality.crosswalks.article_doaj_xml.DOAJXWalk",
-    "crossref": "portality.crosswalks.article_crossref_xml.CrossrefXWalk"
+    "crossref442": "portality.crosswalks.article_crossref_xml.CrossrefXWalk442",
+    "crossref531": "portality.crosswalks.article_crossref_xml.CrossrefXWalk531"
 }
 
 # maximum size of files that can be provided by-reference (the default value is 250Mb)
@@ -896,7 +969,6 @@ JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
 # approximate rate of change of the Table of Contents for journals
 TOC_CHANGEFREQ = "monthly"
 
-STATIC_PAGES = []
 
 
 ##################################################
@@ -1114,6 +1186,7 @@ QUICK_REJECT_REASONS = [
     "The journal's copyright policy is not available or unclear.",
     "The journal's licensing policy is not available or unclear.",
     "The information about the journal is in different languages.",
+    "The information about the journal is not the same in all languages.",
     "The journal makes a false claim to be indexed in DOAJ or other databases or displays non-standard Impact Factors.",
     "The journal does not employ good publishing practices."
 ]
@@ -1153,6 +1226,7 @@ HARVESTER_ZOMBIE_AGE = 604800
 # ~~->ReCAPTCHA:ExternalService
 
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
+RECAPTCHA_ENABLE = True
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
@@ -1163,3 +1237,24 @@ PRESERVATION_URL = "http://PresevatinURL"
 PRESERVATION_USERNAME = "user_name"
 PRESERVATION_PASSWD = "password"
 PRESERVATION_COLLECTION = {}
+
+
+#########################################################
+# Background tasks --- anon export
+TASKS_ANON_EXPORT_CLEAN = False
+TASKS_ANON_EXPORT_LIMIT = None
+TASKS_ANON_EXPORT_BATCH_SIZE = 100000
+
+########################################
+# Editorial Dashboard - set to-do list size
+TODO_LIST_SIZE = 48
+
+#######################################################
+# Plausible analytics
+# root url of plausible
+PLAUSIBLE_URL = "https://plausible.io"
+PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/plausible.js"
+PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event/"
+# site name / domain name that used to register in plausible
+PLAUSIBLE_SITE_NAME = BASE_DOMAIN
+PLAUSIBLE_LOG_DIR = None

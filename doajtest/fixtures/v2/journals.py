@@ -107,6 +107,7 @@ CSV_HEADERS = [
     "Journal title",
     "Journal URL",
     "URL in DOAJ",  # (added outside journal2questions)
+    "When did the journal start to publish all content using an open license?",
     "Alternative title",
     "Journal ISSN (print version)",
     "Journal EISSN (online version)",
@@ -163,7 +164,7 @@ CSV_HEADERS = [
 JOURNAL_QUESTION_ANSWERS = [
     'The Title',
     'http://journal.url',
-#    '2012',
+    '2012',
     'Alternative Title',
     '1234-5678',
     '9876-5432',

@@ -8,14 +8,13 @@ from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
 
 from portality import models
 from portality.constants import APPLICATION_STATUSES_ALL
-from portality.scripts.accounts_delete_pub_no_journal_or_application import accounts_with_no_journals_or_applications, delete_accounts_by_id
+from portality.scripts.accounts_delete_pub_no_journal_or_application import accounts_with_no_journals_or_applications
 
 
 class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
 
     def setUp(self):
         super(TestScriptsAccountsDeletePubNoJournal, self).setUp()
-        self.es_conn = esprit.raw.make_connection(None, self.app_test.config["ELASTIC_SEARCH_HOST"], None, "")
 
     def test_01_dont_delete_if_journal_exists(self):
         """ Ensure the script doesn't delete accounts that own a journal """
@@ -55,13 +54,11 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
         # time.sleep(1)
 
         # Check we get the expected accounts to delete
-        ids_to_delete = accounts_with_no_journals_or_applications(self.es_conn)
+        ids_to_delete = accounts_with_no_journals_or_applications()
         assert sorted(ids_to_delete) == sorted(expected_deletes)
 
         # Run the deletes
-        delete_accounts_by_id(self.es_conn, ids_to_delete)
-        # time.sleep(1)
-
+        models.Account.bulk_delete(ids_to_delete, refresh=True)
         models.Account.blockalldeleted(ids_to_delete)
 
         # Check we only have the accounts with journals remaining in the index
@@ -99,12 +96,12 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
         time.sleep(1)
 
         # Check we get the expected accounts to delete
-        ids_to_delete = accounts_with_no_journals_or_applications(self.es_conn)
+        ids_to_delete = accounts_with_no_journals_or_applications()
         assert sorted(ids_to_delete) == sorted(expected_deletes)
 
         # Run the deletes
-        delete_accounts_by_id(self.es_conn, ids_to_delete)
-        time.sleep(1)
+        models.Account.bulk_delete(ids_to_delete, refresh=True)
+        models.Account.blockalldeleted(ids_to_delete)
 
         # Check we only have the accounts with applications remaining in the index
         assert len(models.Account.all()) == len(APPLICATION_STATUSES_ALL)
@@ -139,7 +136,7 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
         time.sleep(1)
 
         # Check we get the publishers back when we run the script
-        ids_to_delete = accounts_with_no_journals_or_applications(self.es_conn)
+        ids_to_delete = accounts_with_no_journals_or_applications()
         assert sorted(ids_to_delete) == sorted([p.id for p in publishers])
 
         # Add a reserved role to each publisher so they won't be returned next time
@@ -148,5 +145,5 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
             publisher.add_role(EXCLUDED_LIST[i])
             publisher.save(blocking=True)
 
-        ids_to_delete = accounts_with_no_journals_or_applications(self.es_conn)
+        ids_to_delete = accounts_with_no_journals_or_applications()
         assert len(ids_to_delete) == 0

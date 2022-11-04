@@ -1,32 +1,32 @@
-<p>This page documents the third version of the DOAJ API, v.{{ api_version }}, updated October 2021.</p>
+<p>This page documents the third version of the DOAJ API, v.{{ api_version }}, updated March 2022.</p>
 <p>Base URL: <a href="{{ base_url }}" target="_blank">{{ base_url }}</a></p>
 
 <h2 id="intro">Using this live documentation page</h2>
 <p>This page contains a list of all routes available via the DOAJ API. It also serves as a live demo page.
-You can fill in the parameters needed by the API and it will construct and send a request to the live API for you, letting you see all the details you might need for your integration.
-Please note that not all fields will be available on all records.</p>
+You can fill in the parameters needed by the API and it will construct and send a request to the live API for you, letting you see all the details you might need for your integration.</p>
 
-<p>Further information on advanced usage of the routes is available at the bottom below the route list.</p>
+<p>Please note that not all fields will be available on all records.</p>
+
+<p>Further information on advanced usage of the routes, and FAQs, are available <a href="#search-api">further down this page</a>.</p>
 
 <h2 id="intro_auth">Authenticated routes</h2>
 {% if account_url != None %}
-<p>Note that some routes require authentication. You must request us to enable the API key on your DOAJ account page.
+<p>Note that some routes require authentication and require an API key.
     You can view your key for later reference at <a href="{{ account_url }}">{{ account_url }}</a>.
     <br/>
-    Español: Tenga en cuenta que algunas rutas requieren autenticación. Debe solicitarnos habilitar la clave API en la página de su cuenta de DOAJ.
+    Español: Tenga en cuenta que algunas rutas requieren autenticación.
     Puede ver su clave para referencia futura en <a href="{{ account_url }}">{{ account_url }}</a>.</p>
 {% else %}
-<p>Note that some routes require authentication and are only available to publishers who submit data to DOAJ or other collaborators who integrate more closely with DOAJ.
-If you think you could benefit from integrating more closely with DOAJ by using these routes, please <a href="{{ contact_us_url }}">contact us</a>.
-If you already have an account, please log in as usual and click on your username in the top right corner to manage API keys.</p>
+<p>API keys are usually only available to publishers who submit data to DOAJ. If you think you could benefit from integrating more closely with the API, please <a href="{{ contact_us_url }}">contact us</a>.
+If you already have an account, please log in, click 'My Account' and 'Settings' to see your API key. If you do not see an API key then please <a href="{{ contact_us_url }}">contact us</a></p>
 {% endif %}
 
 <h2 id="intro_help">Help and support</h2>
 
-<p>We have 3 groups that you might like to join for API announcements or discussion:</p>
+<p>We have 3 API groups that you can join for API announcements and discussion:</p>
 
 <ul>
-<li><a href="https://groups.google.com/g/doaj-api-announcements">an announcement-only group</a> (e.g. we release an improved API version or we are retiring a version)</li>
-<li><a href="https://groups.google.com/g/doaj-public-api">a public discussion group</a> for the public api, so people can benefit from a public archive</li>
-<li><a href="https://groups.google.com/g/doaj-private-api">a private discussion group</a> for the publishers api, for publishers and others who are authorised to submit applications automatically or modify article metadata directly</li>
+<li><a href="https://groups.google.com/g/doaj-api-announcements">an announcement-only group</a> (e.g. we release changes, updates, a new version or we are retiring a version)</li>
+<li><a href="https://groups.google.com/g/doaj-public-api">a public discussion group</a> for the public api. A public archive of discussions.</li>
+<li><a href="https://groups.google.com/g/doaj-private-api">a private discussion group</a> for the publishers api, for those with API keys.</li>
 </ul>

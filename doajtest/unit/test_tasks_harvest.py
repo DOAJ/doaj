@@ -7,7 +7,7 @@ from datetime import datetime
 from unittest.mock import Mock, patch
 
 from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, with_es
 from portality.core import app
 from portality.tasks.harvester import HarvesterBackgroundTask
 from portality import models
@@ -46,6 +46,8 @@ class TestHarvester(DoajTestCase):
         app.config['HARVEST_ACCOUNTS'] = self.old_harvest_accounts
         app.config["INITIAL_HARVEST_DATE"] = self.old_initial_harvest_date
 
+    @with_es(indices=[models.Article.__type__, models.Journal.__type__],
+             warm_mappings=[models.Article.__type__])
     @patch('portality.tasks.harvester_helpers.epmc.client.EuropePMC.query')
     def test_harvest(self, mock_query):
         # start by adding a zombie background job to prove that this won't hinder the execution of the
@@ -73,6 +75,7 @@ class TestHarvester(DoajTestCase):
 
         time.sleep(2)
 
+        print(job.pretty_audit)
         articles_saved = [a for a in self.journal.all_articles()]
 
         assert len(articles_saved) == 1, "expected 1 article, found: {}".format(len(articles_saved))

@@ -2,6 +2,12 @@
 # ~~AdvisoryBoardCouncil:Data~~
 
 board:
+- name: Andreas Ferus
+  institution: Academy of Fine Arts Vienna
+  country: Austria
+  coi:
+    2022: https://drive.google.com/file/d/1gnyyJTzD98fuBs7cVaeWpDerGfPR8CHl/view?usp=sharing
+
 - name: Anja Oberländer
   institution: University of Konstanz
   country: Germany
@@ -13,12 +19,12 @@ board:
   country: United States
   coi:
     2019: https://drive.google.com/file/d/1FHkg6seMBKTDwlO6XbRr0iEjlKjwMUV2/view?usp=sharing
-
-- name: Jan Erik Frantsvåg
-  institution: University of Tromsø – The Arctic University of Norway
-  country: Norway
+ 
+- name: Karen Hytteballe Ibanez
+  institution: NORA at Technical University of Denmark, representing the Danish Ministry of Higher Education and Science
+  country: Denmark
   coi:
-    2019: https://drive.google.com/file/d/1gTTSF-zPnKJrSFEXLi_g1xCh54b4RgVh/view?usp=sharing
+    2022: https://drive.google.com/file/d/1hq4ZVzBsBZvJNw3It44S36T2ZHNpLw8W/view?usp=sharing
 
 - name: Leslie Chan
   institution: University of Toronto
@@ -36,11 +42,11 @@ board:
   coi:
     2019: https://drive.google.com/file/d/1rSCL0KHewtg6626kf2_YB-0i18IxcoiN/view?usp=sharing
 
-- name: Monica Roos
-  institution: NSD – Norwegian Centre for  Research Data
-  country: Norway
+- name: Pierre De Villiers
+  institution: AOSIS
+  country: South Africa
   coi:
-    2021: https://drive.google.com/file/d/1o9979yl5onq5oY2i5tCDsIU9yCFOIC6z/view?usp=sharing
+    2022: https://drive.google.com/file/d/1Gb4yxUmeI8EW0uF3J8XFD49e8lwIjTx1/view?usp=sharing
 
 - name: Solange Maria Dos Santos
   institution: SciELO
@@ -54,10 +60,16 @@ board:
   coi:
     2019: https://drive.google.com/file/d/1JxIGgxW03CAHyVepbQyOin9unhbrQAif/view?usp=sharing
 
+- name: Xenia Rueda
+  institution: National Autonomous University of Mexico
+  country: Mexico
+  coi:
+    2022: https://drive.google.com/file/d/1wY208VRF128QGg-sAn-gikUID1z_SSC1/view?usp=sharing
+
 # List of council members
 
 council:
-- name: Arianna Becerril García (Nov 2019)
+- name: Arianna Becerril García
   institution: Autonomous University of the State of Mexico, Redalyc, AmeliCA
   country: Mexico
   coi:
@@ -69,11 +81,11 @@ council:
   coi:
     2019: https://drive.google.com/file/d/1KLdiHr_iKgeh6rvSstsP_sgVYIa1GyvK/view?usp=sharing
 
-- name: Donna McRostie
-  institution: University of Melbourne
-  country: Australia
+- name: Christine Davidian
+  institution: Rowan University Libraries
+  country: USA
   coi:
-    2019: https://drive.google.com/file/d/1Qb6awjQhQ8Lx7U1Ww6nP7t51JYBO19LC/view?usp=sharing
+    2022: https://drive.google.com/file/d/1lh_5UBCdeLMhCE55CyzWg0wPHHWw-uuq/view?usp=sharing
 
 - name: Dora Elvira García-González
   institution: Tecnológico de Monterrey
@@ -87,29 +99,35 @@ council:
   coi:
     2019: https://drive.google.com/file/d/1ehhPw3sBU-wey2i4YCcD2LQMUilmTz8l/view?usp=sharing
 
-- name: Gail McMillan
-  institution: Virginia Tech and University Libraries
-  country: United States
+- name: Hans de Jonge
+  institution: Dutch Research Council (NWO)
+  country: The Netherlands
   coi:
-    2019: https://drive.google.com/file/d/1HQX00Ire15yzOoklIikfeTXVTMwG0HGo/view?usp=sharing
+    2022: https://drive.google.com/file/d/1G-F1iEp0pT_t5ro_djxTMjUqbPvqed8U/view?usp=sharing
+
+- name: Iryna Kuchma
+  institution: EIFL
+  country: Ukraine
+  coi:
+    2022:
 
 - name: Karen Rowlett
   institution: University of Reading
   country: United Kingdom
   coi:
     2019: https://drive.google.com/file/d/1AzMj698GNGuqjCKSKQayq_dfYb3PLqbu/view?usp=sharing
-
-- name: Perry Collins
-  institution: University of Florida Libraries
-  country: United States
+ 
+- name: Mahrya Burnett
+  institution: University of Iowa Libraries
+  country: USA
   coi:
-    2019: https://drive.google.com/file/d/1Rs7hX092q-jdlLXAtNyMJ20Ut8elNXHS/view?usp=sharing
+    2022: https://drive.google.com/file/d/1mtnV6QMQqsgorsCSFeU2KSmL3WGYi3NA/view?usp=sharing
 
-- name: Piero Grandesso
-  institution: University of Bologna
-  country: Italy
+- name: Matthew Day
+  institution: Cambridge University Press
+  country: United Kingdom
   coi:
-    2019: https://drive.google.com/file/d/1B0t-J7pZJrCtA6uWGLtQdXq3mcO5CqBZ/view?usp=sharing
+    2022: https://drive.google.com/file/d/1f3swt5p_G7v4XkhREOGefQN0T6fi5mDm/view?usp=sharing
 
 - name: Rainer Rees-Mertins
   institution: Swiss Federal Institute of Technology Zurich
@@ -129,16 +147,8 @@ council:
   coi:
     2019: https://drive.google.com/file/d/1fnMmSYPnsU9ElbBx3PCCy-s00N0ZEYUM/view?usp=sharing
 
-- name: Suzanne Kemperman
-  institution: OCLC
-  country: United States
-  coi:
-    2019: https://drive.google.com/file/d/1hEBsRxlVWHSnEVDEe9fr1m0VFqAUo65K/view?usp=sharing
-    
 - name: Titia van der Werf-Davelaar
   institution: OCLC
   country: The Netherlands
   coi:
     2021: https://drive.google.com/file/d/1x0DIz2DUKygRSlVEy0GNqKGh6BB0pXKf/view?usp=sharing
- 
- 

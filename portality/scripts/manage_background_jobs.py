@@ -33,6 +33,7 @@ from portality.tasks.check_latest_es_backup import CheckLatestESBackupBackground
 from portality.tasks.prune_es_backups import PruneESBackupsBackgroundTask
 from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
 from portality.tasks.harvester import HarvesterBackgroundTask
+from portality.tasks.anon_export import AnonExportBackgroundTask
 
 # dict of {task_name: task_class} so we can interact with the jobs
 HANDLERS = {
@@ -48,6 +49,7 @@ HANDLERS = {
     PruneESBackupsBackgroundTask.__action__: PruneESBackupsBackgroundTask,
     PublicDataDumpBackgroundTask.__action__: PublicDataDumpBackgroundTask,
     HarvesterBackgroundTask.__action__: HarvesterBackgroundTask,
+    AnonExportBackgroundTask.__action__: AnonExportBackgroundTask,
 }
 
 
@@ -98,6 +100,7 @@ class JobsQuery(object):
 
     def query(self):
         q = {
+            "track_total_hits": True,
             "query": {
                 "bool": {
                     "must": [

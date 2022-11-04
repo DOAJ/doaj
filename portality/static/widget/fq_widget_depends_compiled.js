@@ -372,23 +372,24 @@ var es = {
     /** @class */
     Query : function(params) {
         // properties that can be set directly (thought note that they may need to be read via their getters)
-        this.filtered = params.filtered || true;
+        this.filtered = false;  // this is no longer present in es5.x
         this.size = params.size !== undefined ? params.size : false;
         this.from = params.from || false;
         this.fields = params.fields || [];
         this.aggs = params.aggs || [];
         this.must = params.must || [];
+        this.mustNot = params.mustNot || [];
+        this.trackTotalHits = true;   // FIXME: hard code this for the moment, we can introduce the ability to vary it later
 
         // defaults from properties that will be set through their setters (see the bottom
         // of the function)
         this.queryString = false;
         this.sort = [];
-        this.source = params.source || false;
 
         // ones that we haven't used yet, so are awaiting implementation
         // NOTE: once we implement these, they also need to be considered in merge()
+        this.source = params.source || false;
         this.should = params.should || [];
-        this.mustNot = params.mustNot || [];
         this.partialFields = params.partialFields || false;
         this.scriptFields = params.scriptFields || false;
         this.minimumShouldMatch = params.minimumShouldMatch || false;
@@ -608,17 +609,44 @@ var es = {
             // return the count of filters that were removed
             return removes.length;
         };
-        this.clearMust = function() {};
+        this.clearMust = function() {
+            this.must = [];
+        };
+
+        this.addMustNot = function(filter) {
+            var existing = this.listMustNot(filter);
+            if (existing.length === 0) {
+                this.mustNot.push(filter);
+            }
+        };
+        this.listMustNot = function(template) {
+            return this.listFilters({boolType: "must_not", template: template});
+        };
+        this.removeMustNot = function(template) {
+            var removes = [];
+            for (var i = 0; i < this.mustNot.length; i++) {
+                var m = this.mustNot[i];
+                if (m.matches(template)) {
+                    removes.push(i);
+                }
+            }
+            removes = removes.sort().reverse();
+            for (var i = 0; i < removes.length; i++) {
+                this.mustNot.splice(removes[i], 1);
+            }
+            // return the count of filters that were removed
+            return removes.length;
+        };
+        this.clearMustNot = function() {
+            this.mustNot = [];
+        };
 
         this.addShould = function() {};
         this.listShould = function() {};
         this.removeShould = function() {};
         this.clearShould = function() {};
 
-        this.addMustNot = function() {};
-        this.listMustNot = function() {};
-        this.removeMustNot = function() {};
-        this.removeMustNot = function() {};
+
 
         /////////////////////////////////////////////////
         // interrogative functions
@@ -672,7 +700,8 @@ var es = {
             // this.from - take from source if set
             // this.fields - append any new ones from source
             // this.aggs - append any new ones from source, overwriting any with the same name
-            // this must - append any new ones from source
+            // this.must - append any new ones from source
+            // this.mustNot - append any new ones from source
             // this.queryString - take from source if set
             // this.sort - prepend any from source
             // this.source - append any new ones from source
@@ -696,6 +725,10 @@ var es = {
             var must = source.listMust();
             for (var i = 0; i < must.length; i++) {
                 this.addMust(must[i]);
+            }
+            let mustNot = source.listMustNot();
+            for (let i = 0; i < mustNot.length; i++) {
+                this.addMustNot(mustNot[i]);
             }
             if (source.getQueryString()) {
                 this.setQueryString(source.getQueryString())
@@ -746,23 +779,31 @@ var es = {
                     }
                     bool["must"] = musts;
                 }
+                // add any must_not filters
+                if (this.mustNot.length > 0) {
+                    let mustNots = [];
+                    for (var i = 0; i < this.mustNot.length; i++) {
+                        var m = this.mustNot[i];
+                        mustNots.push(m.objectify());
+                    }
+                    bool["must_not"] = mustNots;
+                }
             }
 
-            // add the bool to the query in the correct place (depending on filtering)
-            if (this.filtered && this.hasFilters()) {
-                if (Object.keys(query_part).length == 0) {
-                    query_part["match_all"] = {};
-                }
-                q["query"] = {filtered : {filter : {bool : bool}, query : query_part}};
-            } else {
-                if (this.hasFilters()) {
-                    query_part["bool"] = bool;
-                }
-                if (Object.keys(query_part).length == 0) {
-                    query_part["match_all"] = {};
-                }
-                q["query"] = query_part;
+            var qpl = Object.keys(query_part).length;
+            var bpl = Object.keys(bool).length;
+            var query_portion = {};
+            if (qpl === 0 && bpl === 0) {
+                query_portion["match_all"] = {};
+            } else if (qpl === 0 && bpl > 0) {
+                query_portion["bool"] = bool;
+            } else if (qpl > 0 && bpl === 0) {
+                query_portion = query_part;
+            } else if (qpl > 0 && bpl > 0) {
+                query_portion["bool"] = bool;
+                query_portion["bool"]["must"].push(query_part);
             }
+            q["query"] = query_portion;
 
             if (include_paging) {
                 // page size
@@ -786,7 +827,7 @@ var es = {
 
             // fields
             if (this.fields.length > 0 && include_fields) {
-                q["fields"] = this.fields;
+                q["stored_fields"] = this.fields;
             }
 
             // add any aggregations
@@ -809,6 +850,11 @@ var es = {
                 }
             }
 
+            // set whether to track the total
+            if (this.trackTotalHits) {
+                q["track_total_hits"] = true;
+            }
+
             return q;
         };
 
@@ -824,8 +870,20 @@ var es = {
                     for (var i = 0; i < bool.must.length; i++) {
                         var type = Object.keys(bool.must[i])[0];
                         var fil = es.filterFactory(type, {raw: bool.must[i]});
-                        if (fil) {
+                        if (fil && type !== "query_string") {
                             target.addMust(fil);
+                        } else if (fil && type === "query_string") {
+                            // FIXME: this will work fine as long as there are no nested bools
+                            target.setQueryString(fil);
+                        }
+                    }
+                }
+                if (bool.must_not) {
+                    for (var i = 0; i < bool.must_not.length; i++) {
+                        var type = Object.keys(bool.must_not[i])[0];
+                        var fil = es.filterFactory(type, {raw: bool.must_not[i]});
+                        if (fil) {
+                            target.addMustNot(fil);
                         }
                     }
                 }
@@ -835,6 +893,10 @@ var es = {
                 var keys = Object.keys(q);
                 for (var i = 0; i < keys.length; i++) {
                     var type = keys[i];
+                    if (type === "bool") {
+                        parseBool(q.bool, target);
+                        continue;
+                    }
                     var impl = es.filterFactory(type, {raw: q[type]});
                     if (impl) {
                         if (type === "query_string") {
@@ -869,8 +931,8 @@ var es = {
                 this.from = obj.from;
             }
 
-            if (obj.fields) {
-                this.fields = obj.fields;
+            if (obj.stored_fields) {
+                this.fields = obj.stored_fields;
             }
 
             if (obj.sort) {
@@ -1267,7 +1329,7 @@ var es = {
         };
 
         this.parse = function(obj) {
-            var body = this._parse_wrapper(obj, "range");
+            var body = this._parse_wrapper(obj, "geo_distance");
             this.field = body.field;
 
             // FIXME: only handles the lat/lon object - but there are several forms
@@ -1289,6 +1351,34 @@ var es = {
             }
 
             this.ranges = body.ranges;
+        };
+
+        if (params.raw) {
+            this.parse(params.raw);
+        }
+    },
+
+    newGeohashGridAggregation : function(params) {
+        if (!params) { params = {} }
+        es.GeohashGridAggregation.prototype = es.newAggregation(params);
+        return new es.GeohashGridAggregation(params);
+    },
+    GeohashGridAggregation : function(params) {
+        this.field = params.field || false;
+        this.precision = params.precision || 3;
+
+        this.objectify = function() {
+            var body = {
+                field: this.field,
+                precision: this.precision
+            };
+            return this._make_aggregation("geohash_grid", body);
+        };
+
+        this.parse = function(obj) {
+            var body = this._parse_wrapper(obj, "geohash_grid");
+            this.field = body.field;
+            this.precision = body.precision;
         };
 
         if (params.raw) {
@@ -1374,6 +1464,29 @@ var es = {
         }
     },
 
+    newFiltersAggregation : function(params) {
+        if (!params) { params = {} }
+        es.FiltersAggregation.prototype = es.newAggregation(params);
+        return new es.FiltersAggregation(params);
+    },
+    FiltersAggregation : function(params) {
+        this.filters = params.filters || {};
+
+        this.objectify = function() {
+            var body = {filters: this.filters};
+            return this._make_aggregation("filters", body);
+        };
+
+        this.parse = function(obj) {
+            var body = this._parse_wrapper(obj, "filters");
+            this.filters = body.filters;
+        };
+
+        if (params.raw) {
+            this.parse(params.raw);
+        }
+    },
+
     ///////////////////////////////////////////////////
     // Filters
 
@@ -1437,6 +1550,29 @@ var es = {
             }
             this.field = Object.keys(obj)[0];
             this.value = obj[this.field];
+        };
+
+        if (params.raw) {
+            this.parse(params.raw);
+        }
+    },
+
+    newExistsFilter : function(params) {
+        if (!params) { params = {} }
+        params.type_name = "term";
+        es.ExistsFilter.prototype = es.newFilter(params);
+        return new es.ExistsFilter(params);
+    },
+    ExistsFilter : function(params) {
+        this.objectify = function() {
+            return {exists : {field: this.field}};
+        };
+
+        this.parse = function(obj) {
+            if (obj.exists) {
+                obj = obj.exists;
+            }
+            this.field = obj.field;
         };
 
         if (params.raw) {
@@ -1553,6 +1689,7 @@ var es = {
         this.lt = es.getParam(params.lt, false);
         this.lte = es.getParam(params.lte, false);
         this.gte = es.getParam(params.gte, false);
+        this.format = es.getParam(params.format, false);
 
         // normalise the values to strings
         if (this.lt) { this.lt = this.lt.toString() }
@@ -1584,6 +1721,12 @@ var es = {
                 }
             }
 
+            if (other.format) {
+                if (other.format !== this.format) {
+                    return false;
+                }
+            }
+
             return true;
         };
 
@@ -1598,6 +1741,9 @@ var es = {
             }
             if (this.gte !== false) {
                 obj.range[this.field]["gte"] = this.gte;
+            }
+            if (this.format !== false) {
+                obj.range[this.field]["format"] = this.format;
             }
             return obj;
         };
@@ -1615,6 +1761,9 @@ var es = {
             }
             if (obj[this.field].gte !== undefined && obj[this.field].gte !== false) {
                 this.gte = obj[this.field].gte;
+            }
+            if (obj[this.field].format !== undefined && obj[this.field].format !== false) {
+                this.format = obj[this.field].format;
             }
         };
 
@@ -1697,6 +1846,53 @@ var es = {
         }
     },
 
+    newGeoBoundingBoxFilter : function(params) {
+        if (!params) { params = {} }
+        params.type_name = "geo_bounding_box";
+        return edges.instantiate(es.GeoBoundingBoxFilter, params, es.newFilter);
+    },
+    GeoBoundingBoxFilter : function(params) {
+        this.top_left = params.top_left || false;
+        this.bottom_right = params.bottom_right || false;
+
+        this.matches = function(other) {
+            // ask the parent object first
+            var pm = Object.getPrototypeOf(this).matches.call(this, other);
+            if (!pm) {
+                return false;
+            }
+            if (other.top_left && other.top_left !== this.top_left) {
+                return false;
+            }
+            if (other.bottom_right && other.bottom_right !== this.bottom_right) {
+                return false;
+            }
+            return true;
+        };
+
+        this.objectify = function() {
+            var obj = {geo_bounding_box : {}};
+            obj.geo_bounding_box[this.field] = {
+                top_left: this.top_left,
+                bottom_right: this.bottom_right
+            };
+            return obj;
+        };
+
+        this.parse = function(obj) {
+            if (obj.geo_bounding_box) {
+                obj = obj.geo_bounding_box;
+            }
+            this.field = Object.keys(obj)[0];
+            this.top_left = obj[this.field].top_left;
+            this.bottom_right = obj[this.field].bottom_right;
+        };
+
+        if (params.raw) {
+            this.parse(params.raw);
+        }
+    },
+
     ////////////////////////////////////////////////////
     // The result object
 
@@ -1722,8 +1918,8 @@ var es = {
                     var source = this.data.hits.hits[i];
                     if ("_source" in source) {
                         res.push(source._source);
-                    } else if ("fields" in source) {
-                        res.push(source.fields);
+                    } else if ("_fields" in source) {
+                        res.push(source._fields);
                     } else {
                         res.push(source);
                     }
@@ -1733,8 +1929,8 @@ var es = {
         };
 
         this.total = function() {
-            if (this.data.hits && this.data.hits.hasOwnProperty("total")) {
-                return parseInt(this.data.hits.total);
+            if (this.data.hits && this.data.hits.total && this.data.hits.total.value) {
+                return parseInt(this.data.hits.total.value);
             }
             return false;
         }
@@ -4298,6 +4494,29 @@ $.extend(edges, {
 });
 
 $.extend(true, doaj, {
+    facets : {
+        inDOAJ : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "in_doaj",
+                category: "facet",
+                field: "admin.in_doaj",
+                display: "In DOAJ?",
+                deactivateThreshold: 1,
+                valueMap : {
+                    1 : "True",
+                    0 : "False"
+                },
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        }
+    },
+
     valueMaps : {
         // This must be updated in line with the list in formcontext/choices.py
         applicationStatus : {
@@ -4341,7 +4560,11 @@ $.extend(true, doaj, {
                 }
                 return code;
             }
-        }
+        },
+
+        countFormat : edges.numFormat({
+            thousandsSeparator: ","
+        })
     },
 
     components : {
@@ -5277,7 +5500,7 @@ $.extend(true, doaj, {
                 var shareButtonFrag = "";
                 var shareButtonClass = edges.css_classes(this.namespace, "toggle-share", this);
                 var modalId = edges.css_id(this.namespace, "modal", this);
-                shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--secondary" role="button">' + this.shareLinkText + '</button>';
+                shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--tertiary" role="button">' + this.shareLinkText + '</button>';
 
                 var shorten = "";
                 if (this.component.urlShortener) {
@@ -5288,8 +5511,7 @@ $.extend(true, doaj, {
                 if (this.component.embedSnippet) {
                     var embedClass = edges.css_classes(this.namespace, "embed", this);
                     embed = '<p>Embed this search in your site</p>\
-                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>\
-                    <p><button class="button button--secondary" data-dismiss="modal" class="modal__close">Close</button></p>';
+                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>';
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
@@ -5303,8 +5525,11 @@ $.extend(true, doaj, {
 
                 var modal = '<section class="modal" id="' + modalId + '" tabindex="-1" role="dialog">\
                     <div class="modal__dialog" role="document">\
-                        <form class="quick-search__form" role="search">\
-                            <h2 class="modal__title">' + this.shareLinkText + '</h2>\
+                        <form role="search">\
+                            <header class="flex-space-between modal__heading"> \
+                                <h2 class="modal__title">' + this.shareLinkText + '</h2>\
+                              <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>\
+                            </header>\
                             ' + shareFrag + '\
                         </form>\
                     </div>\
@@ -6452,9 +6677,16 @@ $.extend(true, doaj, {
                         this.currentQueryString = qs.queryString || "";
                     }
                 }
-                var frag = "<li class='alert'><p>You searched for <i>'";
+                var frag = "<li class='alert'><p>You searched for ‘<i>";
                 frag += edges.escapeHtml(this.currentQueryString);
-                frag +="'</i> and we found no results.</p><p>Search terms must be in <strong>English</strong>.</p> <p>Try removing some of the filters you have set, modifying the text in the search box, or using less specific search terms.</p></li>";;
+                frag += "</i>’ and we found no results.</p>";
+                frag += "<p>Please try the following:</p><ul>\
+                    <li>Check the spelling and make sure that there are no missing characters.</li>\
+                    <li>Use fewer words in your search to make the search less specific.</li>\
+                    <li>Remove some of the filters you have set.</li>\
+                    <li>Do your search again in English as much of the index uses English terms.</li>\
+                    </ul></li>\
+                ";
 
                 if (this.component.results === false) {
                     frag = "";
@@ -6893,9 +7125,12 @@ $.extend(true, doaj, {
 
                     frag += '<section class="modal in" id="modal-delete-application" tabindex="-1" role="dialog" style="display: none;"> \
                         <div class="modal__dialog" role="document">\
-                            <h2 class="modal__title">Delete this application</h2>\
-                            <p>Are you sure you want to delete your application for <span class="' + deleteTitleClass + '"></span></p> \
-                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
+                            <header class="flex-space-between modal__heading"> \
+                                <h2 class="modal__title">Delete this application</h2>\
+                              <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>\
+                            </header>\
+                            <p>Are you sure you want to delete your application for <strong><span class="' + deleteTitleClass + '"></span></strong>?</p> \
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--tertiary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
@@ -7082,9 +7317,12 @@ $.extend(true, doaj, {
 
                     frag += '<section class="modal in" id="modal-delete-update-request" tabindex="-1" role="dialog" style="display: none;"> \
                         <div class="modal__dialog" role="document">\
-                            <h2 class="modal__title">Delete this update request</h2>\
-                            <p>Are you sure you want to delete your update request for <span class="' + deleteTitleClass + '"></span></p> \
-                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--secondary" data-dismiss="modal" class="modal__close">No</button>\
+                            <header class="flex-space-between modal__heading">\
+                              <h2 class="modal__title">Delete this update request</h2>\
+                              <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>\
+                            </header>\
+                            <p>Are you sure you want to delete your update request for <strong><span class="' + deleteTitleClass + '"></span></strong>?</p> \
+                            <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--tertiary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
                 }
@@ -7804,7 +8042,7 @@ $.extend(true, doaj, {
                     // if it's not a suggestion or an article .. (it's a
                     // journal!)
                     // we really need to expose _type ...
-                    var result = '<p><a class="edit_journal_link button button--secondary" href="';
+                    var result = '<p><a class="edit_journal_link button button--tertiary" href="';
                     result += params.editUrl;
                     result += resultobj['id'];
                     result += '" target="_blank"';
@@ -8021,7 +8259,7 @@ $.extend(true, edges, {
             };
 
             this.doScroll = function () {
-                $(this.scrollSelector).animate({    // note we do not use component.jq, because the scroll target could be outside it
+                $("html, body").animate({
                     scrollTop: $(this.scrollSelector).offset().top
                 }, 1);
             };
@@ -8054,4 +8292,3 @@ $.extend(true, edges, {
         }
     }
 });
-

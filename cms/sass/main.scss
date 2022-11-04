@@ -13,7 +13,6 @@
   "base/general",
   "base/grid",
   "base/utils",
-  "base/logo",
   "base/highlight",
 
   "layout/editorial-panel",
@@ -39,11 +38,13 @@
   "components/input-group",
   "components/label",
   "components/loading",
+  "components/logo",
   "components/modal",
   "components/numbered-table",
   "components/pager-buttons",
   "components/pagination",
   "components/portrait",
+  "components/progress-bar",
   "components/removable-fields",
   "components/review-table",
   "components/select2",
@@ -61,5 +62,7 @@
   "pages/homepage",
   "pages/journal-details",
   "pages/search",
-  "pages/sponsors"
+  "pages/sponsors",
+
+  "themes/dashboard"
 ;

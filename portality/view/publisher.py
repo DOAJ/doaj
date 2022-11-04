@@ -3,11 +3,10 @@ from flask import render_template, abort, redirect, url_for, flash
 from flask_login import current_user, login_required
 
 from portality.app_email import EmailException
-from portality.core import app
 from portality import models
-from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
-from portality.decorators import ssl_required, restrict_to_role, write_required
+from portality.decorators import ssl_required, restrict_to_role
+from portality.dao import ESMappingMissingError
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 from portality.tasks.preservation import *
@@ -15,7 +14,6 @@ from portality.ui.messages import Messages
 from portality import lock
 from portality.models import DraftApplication
 from portality.lcc import lcc_jstree
-from portality.models import Article
 from portality.forms.article_forms import ArticleFormFactory
 
 from huey.exceptions import TaskException
@@ -118,17 +116,14 @@ def update_request(journal_id):
     if request.method == "GET":
         fc.processor(source=application)
         return fc.render_template(obj=application)
-        #fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=application)
-        #return fc.render_template(edit_suggestion_page=True)
 
     # if we are requesting the page with a POST, we need to accept the data and handle it
     elif request.method == "POST":
-        # fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=request.form, source=application)
         processor = fc.processor(formdata=request.form, source=application)
         if processor.validate():
             try:
                 processor.finalise()
-                Messages.flash(Messages.APPLICATION_UPDATE_SUBMITTED_FLASH)
+                Messages.flash(Messages.PUBLISHER_APPLICATION_UPDATE_SUBMITTED_FLASH)
                 for a in processor.alert:
                     Messages.flash_with_url(a, "success")
                 return redirect(url_for("publisher.updates_in_progress"))
@@ -160,6 +155,7 @@ def application_readonly(application_id):
     fc = ApplicationFormFactory.context("application_read_only")
     fc.processor(source=application)
     # fc = formcontext.ApplicationFormFactory.get_form_context(role="update_request_readonly", source=application)
+
     return fc.render_template(obj=application)
 
 
@@ -183,6 +179,12 @@ def updates_in_progress():
 @ssl_required
 @write_required()
 def upload_file():
+    """
+        ~~UploadMetadata: Feature->UploadMetadata:Page~~
+        ~~->Crossref442:Feature~~
+        ~~->Crossref531:Feature~~
+        """
+
     # all responses involve getting the previous uploads
     previous = models.FileUpload.by_owner(current_user.id)
 
@@ -223,6 +225,7 @@ def upload_file():
     flash("No file or URL provided", "error")
     return resp
 
+
 @blueprint.route("/preservation", methods=["GET", "POST"])
 @login_required
 @ssl_required
@@ -232,7 +235,12 @@ def preservation():
        This feature is available for the users who has 'preservation' role.
     """
 
-    previous = models.PreservationState.by_owner(current_user.id)
+    previous = []
+    try:
+        previous = models.PreservationState.by_owner(current_user.id)
+    # handle exception if there are no records available
+    except ESMappingMissingError:
+        pass
 
     if request.method == "GET":
         return render_template('publisher/preservation.html', previous=previous)
@@ -275,6 +283,9 @@ def preservation():
                 collection_available = False
 
         if not collection_available:
+            flash(
+                "Cannot process upload - you do not have Collection details associated with your user ID. Please contact the DOAJ team.",
+                "error")
             preservation_model.failed(FailedReasons.collection_not_available)
             preservation_model.save()
 
@@ -298,8 +309,8 @@ def preservation():
                     if job:
                         background_task = PreservationBackgroundTask(job)
                         background_task.cleanup()
-                except Exception:
-                    app.logger.exception('Unknown error.')
+                except Exception as e:
+                    app.logger.exception('Unknown error.' + str(e))
         return resp
 
 

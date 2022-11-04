@@ -2,14 +2,6 @@
 # ~~Sponsors:Data~~
 
 gold:
-- name: JMIR Publications
-  url: http://jmirpublications.com/
-  logo: jmir.svg
-
-- name: PeerJ
-  url: https://peerj.org/
-  logo: peerj.svg
-
 - name: Royal Society of Chemistry
   url: https://www.rsc.org/
   logo: rsc.png
@@ -18,14 +10,19 @@ gold:
   url: https://www.thieme.com/
   logo: thieme.svg
 
+
 silver:
 - name: American Chemical Society
   url: https://pubs.acs.org/
   logo: ACS.jpg
 
-- name: American Physiological Association
+- name: American Psychological Association
   url: https://www.apa.org/pubs
   logo: apa.png
+
+- name: AOSIS
+  url: https://aosis.co.za/
+  logo: aosis.png
 
 - name: Cappelen Damm Akademisk
   url: https://www.cappelendammundervisning.no/
@@ -35,62 +32,47 @@ silver:
   url: https://publications.copernicus.org
   logo: copernicus.svg
 
-- name: Danish Agency for Science and Higher Education
-  url: https://ufm.dk/
-  logo: ufm.svg
-  
-- name: Elsevier
-  url: https://www.elsevier.com/
-  logo: elsevier.svg
-
 - name: EBSCO
   url: https://www.ebsco.com/
   logo: ebsco.svg
 
-- name: Federation of Finnish Learned Societies
-  url: https://tsv.fi/en/frontpage
-  logo: tsv.png
+- name: eLife Sciences Publications
+  url: https://elifesciences.org/
+  logo: elife.svg
 
 - name: Frontiers
   url: https://www.frontiersin.org/
   logo: frontiers.svg
 
-- name: Karger
-  url: https://www.karger.com/
-  logo: karger.png
-  
-- name: KeAi
-  url: http://www.keaipublishing.com/en/
-  logo: keai.png
+- name: JMIR Publications
+  url: https://jmirpublications.com/
+  logo: jmir.svg
+
+- name: MDPI
+  url: https://www.mdpi.com/
+  logo: mdpi.svg  
   
 - name: National Library of Sweden
   url: https://www.kb.se/
   logo: kbse.svg
 
-- name: Norwegian Centre for Research Data (NSD)
-  url: https://www.nsd.uib.no/nsd/english/index.html
-  logo: nsd.svg
-
-- name: OUP
+- name: Oxford University Press
   url: https://global.oup.com/
   logo: OUP.jpg
- 
+
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
   logo: sage.svg
 
-- name: Swedish Research Council
-  url: https://vr.se/english.html
-  logo: vr.svg
+- name: Taylor & Francis Group
+  url: https://www.taylorandfrancisgroup.com/
+  logo: tf.svg  
 
-- name: Ubiquity Press
-  url: https://www.ubiquitypress.com/
-  logo: ubiquity.svg
 
 bronze:
-- name: Physical Review Journals
-  url: https://journals.aps.org/
-  logo: aps.svg
+- name: ARPHA Publishing Platform
+  url: https://arphahub.com/
+  logo: arpha.png
 
 - name: Cambridge University Press
   url: https://www.cambridge.org/
@@ -99,19 +81,19 @@ bronze:
 - name: Cottage Labs
   url: https://cottagelabs.com/
   logo: cl.svg
-  
+
 - name: Digital Science
   url: https://www.digital-science.com/
-  logo: digsci.png
-
+  logo: DS-logo.svg
+  
 - name: EDP Sciences
   url: https://www.edpsciences.org/
   logo: edp.svg
 
-- name: eLife
-  url: https://elifesciences.org/
-  logo: elife.svg
-
+- name: Elsevier
+  url: https://www.elsevier.com/
+  logo: elsevier.svg
+  
 - name: Emerald Publishing
   url: https://emeraldpublishing.com/
   logo: emerald.svg
@@ -120,54 +102,38 @@ bronze:
   url: https://www.ieee.org/
   logo: ieee.png
 
+- name: Institute of Physics
+  url: https://www.iop.org/
+  logo: IOP.jpg
+
 - name: The Institution of Engineering and Technology (IET)
   url: https://www.theiet.org/
   logo: iet.svg
 
-- name: IOP Publishing
-  url: http://ioppublishing.org/
-  logo: iop.jpg
-
 - name: ISSN
   url: https://www.issn.org/
   logo: issn.svg
+ 
+- name: Karger
+  url: https://www.karger.com/
+  logo: karger.png
 
 - name: Lund University
   url: https://www.lunduniversity.lu.se/
   logo: lu.png
 
-- name: MDPI
-  url: https://www.mdpi.com/
-  logo: mdpi.svg
+- name: OASPA
+  url: https://oaspa.org/
+  logo: oaspa.png
 
 - name: OCLC
   url: https://www.oclc.org/
   logo: oclc.svg
 
-- name: Pensoft
-  url: https://pensoft.net/
-  logo: pensoft.svg
-
 - name: PLOS
   url: https://plos.org/
-  logo: plos.svg
+  logo: PLOS.svg
 
-- name: Relawan Jurnal Indonesia
-  url: http://relawanjurnal.id/
-  logo: RelawanJurnalIndonesia.png
-
-- name: SciELO
-  url: https://www.scielo.br/
-  logo: scielo.svg
-
-- name: Springer Nature
-  url: https://www.springernature.com/gp/group/aboutus
-  logo: springer.svg
-
-- name: Taylor & Francis Group
-  url: https://www.taylorandfrancisgroup.com/
-  logo: tf.svg
-
-- name: Wiley
-  url: https://wiley.com/
-  logo: wiley.svg
+- name: Ubiquity Press
+  url: https://www.ubiquitypress.com/
+  logo: ubiquity.svg  

@@ -17,25 +17,29 @@
 {% block page_title %}(Read-only) {{ obj.bibjson().title }}{% endblock %}
 
 {% block publisher_content scoped %}
-<body id="apply">
+
+    {% import "application_form/_application_warning_msg.html" as _msg %}
+    {{ _msg.build_journal_withdrawn_deleted_msg(obj) }}
+
+    <body id="apply">
     <main class="container">
         <div class="row">
             <div class="col-md-8">
                 <section class="page-content">
                     <form id="{{ form_id }}"
-                      data-context = "{{ formulaic_context.name }}"
-                      class="application_form"
-                      novalidate
-                      action="{{ form_action }}"
-                      method="post"
-                      data-formulaic-after="{{ formulaic_after }}">
+                          data-context = "{{ formulaic_context.name }}"
+                          class="application_form"
+                          novalidate
+                          action="{{ form_action }}"
+                          method="post"
+                          data-formulaic-after="{{ formulaic_after }}">
 
                         {% include "application_form/_fieldsets.html" %}
 
-                    <div class="tab form-section">
-                        {% include "application_form/07-review/index.html" %}
-                    </div>
-                </form>
+                        <div class="tab form-section">
+                            {% include "application_form/07-review/index.html" %}
+                        </div>
+                    </form>
                 </section>
             </div>
 
@@ -46,7 +50,7 @@
             </div>
         </div>
     </main>
- </body>
+    </body>
 {% endblock %}
 
 {% block extra_js_bottom scoped %}

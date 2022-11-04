@@ -72,7 +72,7 @@ class ApplicationsCrudApi(CrudApi):
             try:
                 # send warning email about the service tag in article metadata detected
                 to = app.config.get('SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS')
-                fro = app.config.get("SYSTEM_EMAIL_FROM", "feedback@doaj.org")
+                fro = app.config.get("SYSTEM_EMAIL_FROM", "helpdesk@doaj.org")
                 subject = app.config.get("SERVICE_NAME", "") + " - script tag detected in application metadata"
                 es_type = "application"
                 app_email.send_mail(to=to,

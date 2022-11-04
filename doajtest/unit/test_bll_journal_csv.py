@@ -1,29 +1,31 @@
 # -*- coding: UTF-8 -*-
-from parameterized import parameterized
-from combinatrix.testintegration import load_parameter_sets
+import csv
+from io import StringIO
 
+from combinatrix.testintegration import load_parameter_sets
+from parameterized import parameterized
+
+from doajtest import helpers
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.mocks.models_Cache import ModelCacheMockFactory
+from doajtest.mocks.store import StoreMockFactory
+from portality import models
+from portality import store
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality import models
-from portality.lib.paths import rel2abs
 from portality.core import app
-from doajtest.mocks.store import StoreMockFactory
-from doajtest.mocks.models_Cache import ModelCacheMockFactory
-from portality import store
-from io import StringIO
-import os, shutil, csv
+from portality.lib.paths import rel2abs
 
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_journal_csv"), "journal_csv", "test_id",
-                               {"test_id" : []})
+                               {"test_id": []})
 
 
 EXCEPTIONS = {
-    "ArgumentException" : exceptions.ArgumentException,
-    "IOError" : IOError
+    "ArgumentException": exceptions.ArgumentException,
+    "IOError": IOError
 }
 
 
@@ -33,28 +35,21 @@ class TestBLLJournalCSV(DoajTestCase):
         super(TestBLLJournalCSV, self).setUp()
         self.svc = DOAJ.journalService()
 
-        self.store_tmp_dir = app.config["STORE_TMP_DIR"]
-        app.config["STORE_TMP_DIR"] = os.path.join("test_store", "tmp")
-        self.store_local_dir = app.config["STORE_LOCAL_DIR"]
-        app.config["STORE_LOCAL_DIR"] = os.path.join("test_store", "main")
+        self.store_local_patcher = helpers.StoreLocalPatcher()
+        self.store_local_patcher.setUp(self.app_test)
 
         self.localStore = store.StoreLocal(None)
         self.tmpStore = store.TempStore()
         self.container_id = app.config.get("STORE_CACHE_CONTAINER")
-        self.store_tmp_impl = app.config["STORE_TMP_IMPL"]
-        self.store_impl = app.config["STORE_IMPL"]
 
         self.cache = models.cache.Cache
         models.cache.Cache = ModelCacheMockFactory.in_memory()
         models.Cache = models.cache.Cache
 
     def tearDown(self):
-        app.config["STORE_TMP_IMPL"] = self.store_tmp_impl
-        app.config["STORE_IMPL"] = self.store_impl
-        if os.path.exists("test_store"):
-            shutil.rmtree("test_store")
         self.localStore.delete_container(self.container_id)
         self.tmpStore.delete_container(self.container_id)
+        self.store_local_patcher.tearDown(self.app_test)
 
         models.cache.Cache = self.cache
         models.Cache = self.cache
@@ -84,11 +79,12 @@ class TestBLLJournalCSV(DoajTestCase):
         not_in_doaj_count = int(not_in_doaj_arg)
         journals_with_articles_count = int(journals_with_articles_arg)
 
+        original_configs = {}
         if tmp_write_arg == "fail":
-            app.config["STORE_TMP_IMPL"] = StoreMockFactory.no_writes_classpath()
+            original_configs.update(patch_config(app, {"STORE_TMP_IMPL": StoreMockFactory.no_writes_classpath()}))
 
         if main_write_arg == "fail":
-            app.config["STORE_IMPL"] = StoreMockFactory.no_writes_classpath()
+            original_configs.update(patch_config(app, {"STORE_IMPL": StoreMockFactory.no_writes_classpath()}))
 
         journals = []
         if journal_count > 0:
@@ -103,7 +99,7 @@ class TestBLLJournalCSV(DoajTestCase):
             issns = journal.bibjson().issns()
             source1 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=False)
             articles.append(models.Article(**source1))
-            comparisons[issns[0]] = {"issns" : issns, "article_count": 0, "article_latest" : ""}
+            comparisons[issns[0]] = {"issns": issns, "article_count": 0, "article_latest" : ""}
             if i < journals_with_articles_count:
                 source2 = ArticleFixtureFactory.make_article_source(eissn=issns[0], pissn=issns[1], with_id=False, in_doaj=True)
                 article2 = models.Article(**source2)
@@ -200,11 +196,11 @@ class TestBLLJournalCSV(DoajTestCase):
 
                 for i in range(1, len(rows)):
                     row = rows[i]
-                    alt_title = row[3]
-                    issn = row[4]
-                    eissn = row[5]
-                    article_count = int(row[51])
-                    article_latest = row[52]
+                    alt_title = row[4]
+                    issn = row[5]
+                    eissn = row[6]
+                    article_count = int(row[52])
+                    article_latest = row[53]
 
                     assert alt_title == "Заглавие на журнала"
                     assert issn in comparisons[issn]["issns"]
@@ -214,3 +210,6 @@ class TestBLLJournalCSV(DoajTestCase):
 
             else:
                 assert len(rows) == 0
+
+        # Tear down
+        patch_config(app, original_configs)

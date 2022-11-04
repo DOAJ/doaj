@@ -4,38 +4,39 @@ from portality import constants
 from portality.core import app
 from portality.lib import es_data_mapping
 from portality.models.v2 import shared_structs
-from portality.models.v2.journal import JournalLikeObject
+from portality.models.v2.journal import JournalLikeObject, Journal
 from portality.lib.coerce import COERCE_MAP
 from portality.dao import DomainObject
 
 APPLICATION_STRUCT = {
-    "objects" : [
+    "objects": [
         "admin", "index"
     ],
 
-    "structs" : {
-        "admin" : {
-            "fields" : {
-                "current_journal" : {"coerce" : "unicode"},
-                "related_journal" : {"coerce" : "unicode"},
-                "application_status" : {"coerce" : "unicode"},
-                "date_applied" : {"coerce" : "utcdatetime"},
-                "application_type" : {
-                    "coerce" : "unicode",
-                    "allowed_values" : [
+    "structs": {
+        "admin": {
+            "fields": {
+                "current_journal": {"coerce": "unicode"},
+                "related_journal": {"coerce": "unicode"},
+                "application_status": {"coerce": "unicode"},
+                "date_applied": {"coerce": "utcdatetime"},
+                "application_type": {
+                    "coerce": "unicode",
+                    "allowed_values": [
                         constants.APPLICATION_TYPE_NEW_APPLICATION,
                         constants.APPLICATION_TYPE_UPDATE_REQUEST
                     ]
                 }
             }
         },
-        "index" : {
-            "fields" : {
+        "index": {
+            "fields": {
                 "application_type": {"coerce": "unicode"}
             }
         }
     }
 }
+
 
 class Application(JournalLikeObject):
     __type__ = "application"
@@ -89,6 +90,16 @@ class Application(JournalLikeObject):
         q = RelatedJournalQuery(journal_id, size=1000)
         return cls.q2obj(q=q.query())
 
+    @classmethod
+    def assignment_to_editor_groups(cls, egs):
+        q = AssignedEditorGroupsQuery([eg.name for eg in egs])
+        res = cls.query(q.query())
+        buckets = res.get("aggregations", {}).get("editor_groups", {}).get("buckets", [])
+        assignments = {}
+        for b in buckets:
+            assignments[b.get("key")] = b.get("doc_count")
+        return assignments
+
     def mappings(self):
         return es_data_mapping.create_mapping(self.__seamless_struct__.raw, MAPPING_OPTS)
 
@@ -125,6 +136,12 @@ class Application(JournalLikeObject):
 
     def remove_related_journal(self):
         self.__seamless__.delete("admin.related_journal")
+
+    @property
+    def related_journal_object(self):
+        if self.related_journal:
+            return Journal.pull(self.related_journal)
+        return None
 
     @property
     def application_status(self):
@@ -167,14 +184,14 @@ class Application(JournalLikeObject):
         # if index_record_type is not None:
         #     self.__seamless__.set_with_struct("index.application_type", index_record_type)
 
-        # FIXME: Temporary partial reversion of an indexing change
+        # FIXME: Temporary partial reversion of an indexing change (this index.application_type data is still being used
+        # in applications search)
         if self.current_journal is not None:
             self.__seamless__.set_with_struct("index.application_type", "update request")
         elif self.application_status in [constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED]:
             self.__seamless__.set_with_struct("index.application_type", "finished application/update")
         else:
             self.__seamless__.set_with_struct("index.application_type", "new application")
-
 
     def prep(self, is_update=True):
         self._generate_index()
@@ -187,7 +204,6 @@ class Application(JournalLikeObject):
         if sync_owner:
             self._sync_owner_to_journal()
         return super(Application, self).save(**kwargs)
-
 
     #########################################################
     ## DEPRECATED METHODS
@@ -210,8 +226,8 @@ class Application(JournalLikeObject):
         if oacc is None:
             return None
         return {
-            "name" : owner,
-            "email" : oacc.email
+            "name": owner,
+            "email": oacc.email
         }
 
 
@@ -220,7 +236,6 @@ class DraftApplication(Application):
 
     __SEAMLESS_APPLY_STRUCT_ON_INIT__ = False
     __SEAMLESS_CHECK_REQUIRED_ON_INIT__ = False
-
 
 
 class AllPublisherApplications(DomainObject):
@@ -232,19 +247,19 @@ MAPPING_OPTS = {
     "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
     "exceptions": {
         "admin.notes.note": {
-                    "type": "string",
-                    "index": "not_analyzed",
-                    "include_in_all": False
+            "type": "text",
+            "index": False,
+            # "include_in_all": False        # Removed in es6 fixme: do we need to look at copy_to for the mapping?
         }
     }
 }
 
 
 class SuggestionQuery(object):
-    _base_query = { "query" : { "bool" : {"must" : []}}}
-    _email_term = {"term" : {"admin.applicant.email.exact" : "<email address>"}}
-    _status_terms = {"terms" : {"admin.application_status.exact" : ["<list of statuses>"]}}
-    _owner_term = {"term" : {"admin.owner.exact" : "<the owner id>"}}
+    _base_query = {"track_total_hits": True, "query": {"bool": {"must": []}}}
+    _email_term = {"term": {"admin.applicant.email.exact": "<email address>"}}
+    _status_terms = {"terms": {"admin.application_status.exact": ["<list of statuses>"]}}
+    _owner_term = {"term": {"admin.owner.exact": "<the owner id>"}}
 
     def __init__(self, email=None, statuses=None, owner=None):
         self.email = email
@@ -271,28 +286,32 @@ class SuggestionQuery(object):
             q["query"]["bool"]["must"].append(ot)
         return q
 
+
 class OwnerStatusQuery(object):
     base_query = {
-        "query" : {
-            "bool" : {
-                "must" : []
+        "track_total_hits": True,
+        "query": {
+            "bool": {
+                "must": []
             }
         },
-        "sort" : [
-            {"created_date" : "desc"}
+        "sort": [
+            {"created_date": "desc"}
         ],
-        "size" : 10
+        "size": 10
     }
+
     def __init__(self, owner, statuses, size=10):
         self._query = deepcopy(self.base_query)
-        owner_term = {"match" : {"owner" : owner}}
+        owner_term = {"match": {"owner": owner}}
         self._query["query"]["bool"]["must"].append(owner_term)
-        status_term = {"terms" : {"admin.application_status.exact" : statuses}}
+        status_term = {"terms": {"admin.application_status.exact": statuses}}
         self._query["query"]["bool"]["must"].append(status_term)
         self._query["size"] = size
 
     def query(self):
         return self._query
+
 
 class StatusQuery(object):
 
@@ -303,14 +322,16 @@ class StatusQuery(object):
 
     def query(self):
         return {
-            "query" : {
-                "bool" : {
-                    "must" : [
-                        {"terms" : {"admin.application_status.exact" : self.statuses}}
+            "track_total_hits": True,
+            "query": {
+                "bool": {
+                    "must": [
+                        {"terms": {"admin.application_status.exact": self.statuses}}
                     ]
                 }
             }
         }
+
 
 class CurrentJournalQuery(object):
 
@@ -320,18 +341,20 @@ class CurrentJournalQuery(object):
 
     def query(self):
         return {
-            "query" : {
-                "bool" : {
-                    "must" : [
-                        {"term" : {"admin.current_journal.exact" : self.journal_id}}
+            "track_total_hits": True,
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"admin.current_journal.exact": self.journal_id}}
                     ]
                 }
             },
-            "sort" : [
-                {"created_date" : {"order" : "desc"}}
+            "sort": [
+                {"created_date": {"order": "desc"}}
             ],
-            "size" : self.size
+            "size": self.size
         }
+
 
 class RelatedJournalQuery(object):
 
@@ -341,15 +364,49 @@ class RelatedJournalQuery(object):
 
     def query(self):
         return {
-            "query" : {
-                "bool" : {
-                    "must" : [
-                        {"term" : {"admin.related_journal.exact" : self.journal_id}}
+            "track_total_hits": True,
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"admin.related_journal.exact": self.journal_id}}
                     ]
                 }
             },
-            "sort" : [
-                {"created_date" : {"order" : "asc"}}
+            "sort": [
+                {"created_date": {"order": "asc"}}
             ],
-            "size" : self.size
+            "size": self.size
+        }
+
+
+class AssignedEditorGroupsQuery(object):
+    """
+    ~~->$AssignedEditorGroups:Query~~
+    ~~^->Elasticsearch:Technology~~
+    """
+
+    def __init__(self, editor_groups, application_type_name="new application"):
+        self.editor_groups = editor_groups
+        self.application_type_name = application_type_name
+
+    def query(self):
+        return {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"terms": {"admin.editor_group.exact": self.editor_groups}},
+                        {"term": {"index.application_type.exact": self.application_type_name}}
+                    ]
+                }
+            },
+            "size": 0,
+            "aggs": {
+                "editor_groups": {
+                    "terms": {
+                        "field": "admin.editor_group.exact",
+                        "size": len(self.editor_groups) or 1,
+                        "order": {"_term": "asc"}
+                    }
+                }
+            }
         }

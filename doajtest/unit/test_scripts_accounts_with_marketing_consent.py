@@ -1,27 +1,23 @@
-from doajtest.helpers import DoajTestCase
+import csv
+import os
+import shutil
+
 from doajtest.fixtures.accounts import AccountFixtureFactory
+from doajtest.helpers import DoajTestCase, with_es
 from portality import models
 from portality.lib import paths
 from portality.scripts.accounts_with_marketing_consent import publishers_with_consent
-import os, shutil, csv
+
 
 class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
 
-    def setUp(self):
-        super(TestScriptsAccountsWithMarketingConsent, self).setUp()
-        self.tmp_dir = paths.rel2abs(__file__, "tmp_data")
-        if os.path.exists(self.tmp_dir):
-            shutil.rmtree(self.tmp_dir)
-        os.mkdir(self.tmp_dir)
-
-    def tearDown(self):
-        super(TestScriptsAccountsWithMarketingConsent, self).tearDown()
-        if os.path.exists(self.tmp_dir):
-            shutil.rmtree(self.tmp_dir)
-
+    @with_es(indices=[models.Account.__type__], warm_mappings=[models.Account.__type__])
     def test_01_publishers_with_consent(self):
+
+        tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True)
+
         # output file to save csv
-        output_file = os.path.join(self.tmp_dir, 'accounts.csv')
+        output_file = os.path.join(tmp_dir, 'accounts.csv')
         # Create accounts with marketing consent not set
         for i in range(20):
             pubsource = AccountFixtureFactory.make_publisher_source()
@@ -37,12 +33,12 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
             pubaccount.save()
         # Create accounts with marketing consent set to True
         expected_data = [[
-          'ID',
-          'Name',
-          'Email',
-          'Created',
-          'Last Updated',
-          'Updated Since Create?'
+            'ID',
+            'Name',
+            'Email',
+            'Created',
+            'Last Updated',
+            'Updated Since Create?'
         ]]
         for i in range(20):
             pubsource = AccountFixtureFactory.make_publisher_source()
@@ -54,12 +50,12 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
             else:
                 pubaccount.save()
             expected_data.append([
-              str(pubaccount.id),
-              str(pubaccount.name),
-              str(pubaccount.email),
-              str(pubaccount.created_date),
-              str(pubaccount.last_updated),
-              str('False')
+                str(pubaccount.id),
+                str(pubaccount.name),
+                str(pubaccount.email),
+                str(pubaccount.created_date),
+                str(pubaccount.last_updated),
+                str('False')
             ])
 
         publishers_with_consent(output_file)
@@ -73,3 +69,5 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
                 table.append(row)
         assert len(table) == 21, "expected: 21, received: {}".format(len(table))
         self.assertCountEqual(table, expected_data)
+
+        shutil.rmtree(tmp_dir, ignore_errors=True)

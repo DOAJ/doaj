@@ -13,6 +13,12 @@
   }
 }
 
+.card--compact {
+  margin-bottom: $spacing-04;
+  border-radius: $spacing-01;
+  font-size: smaller;
+}
+
 .card__header {
   margin-bottom: $spacing-04;
   border-bottom: 1px solid $dark-grey;

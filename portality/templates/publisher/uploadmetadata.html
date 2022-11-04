@@ -1,198 +1,207 @@
+<!--~~UploadMetadata:Page~~-->
+<!--~~->Crossref442:Feature-->
+<!--~~->Crossref531:Feature-->
+
 {% extends "publisher/publisher_base.html" %}
 
 {% block page_title %}Upload article XML{% endblock %}
 
 {% block publisher_content %}
-<div id="crossref-alert" class="alert alert--message fade in" data-alert="alert">
-   Crossref schema is still loading, uploading your file may take a bit longer than usual.
-   &nbsp;<span class="alert__close" data-dismiss="alert" role="button">(Dismiss)</span>
-</div>
-
-<div class="row">
-  <header class="col-md-4">
-    <h2>Upload article XML</h2>
-
-    <div class="alert">
-      <p>Uploaded files must conform to one of the approved XML formats:</p>
-      <ul>
-        <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
-        <li><a href="/static/crossref/crossref4.4.2.xsd">Crossref 4.4.2 XML</a></li>
-      </ul>
+    <div id="crossref-alert" class="alert alert--message fade in" data-alert="alert">
+        Crossref schema is still loading, uploading your file may take a bit longer than usual.
+        &nbsp;<span class="alert__close" data-dismiss="alert" role="button">(Dismiss)</span>
     </div>
-  </header>
 
-  <form id="upload_form" class="col-md-8 form form--compact" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
-    <fieldset>
-      <h3 class="form__header">Article XML</h3>
-      <div class="form__question">
-        <label for="upload-xml-file">Select a file</label>
-        <input type="file" id="upload-xml-file" name="file">
-        <p><small>Must be less than 50Mb.</small></p>
-      </div>
-      <p>• <strong>OR</strong> •</p>
-      <div class="form__question">
-        <label for="upload-xml-link">Upload from a link</label>
-        <input type="url" id="upload-xml-link" name="upload-xml-link" placeholder="https://www.example.com">
-        <p><small>Must be less than 250Mb.</small></p>
-      </div>
+    <div class="row">
+        <header class="col-md-4">
+            <h2>Upload article XML</h2>
 
-      <div class="form__question">
-        <label for="upload-xml-format">File format</label>
-        <select name="schema" class="form-control" id="upload-xml-format" require>
-          {% if schema == '' or schema == 'doaj' %}
-          <option value="doaj" selected>DOAJ Native XML</option>
-          <option value="crossref">Crossref 4.4.2 XML</option>
-          {% else %}
-          <option value="doaj">DOAJ Native XML</option>
-          <option value="crossref" selected>Crossref 4.4.2 XML</option>
-          {% endif %}
-        </select>
-      </div>
-    </fieldset>
-    <button type="submit" id="upload" class="button button--primary">Upload</button>
-  </form>
-</div>
+            <div class="alert">
+                <p>Uploaded files must conform to one of the approved XML formats:</p>
+                <ul>
+                    <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
+                    <li><a href="/static/crossref/crossref4.4.2.xsd">Crossref 4.4.2 XML</a></li>
+                    <li><a href="/static/crossref/crossref5.3.1.xsd">Crossref 5.3.1 XML</a></li>
+                </ul>
+            </div>
+        </header>
 
-<hr>
-
-{% if previous|length > 0 %}
-<h2>History of uploads (showing last {{previous|length}})</h2>
-
-<table id="previous_files" class="file_history tablesorter">
-    <thead>
-        <tr>
-            <th style="width: 17%">Upload Date</th>
-            <th style="width: 20%">Filename</th>
-            <th style="width: 12%">Format</th>
-            <th style="width: 15%">Upload Status</th>
-            <th style="width: 36%">Notes</th>
-        </tr>
-    </thead>
-{% for file in previous %}
-    <tr>
-        <td>{{ file.created_timestamp | utc_timestamp("%d %b %Y %H:%M:%S %Z") }}</td>
-        <td class="long_content">
-            {% if file.filename.startswith("http") %}
-                <a href="{{file.filename}}">{{file.filename}}</a>
-            {% else %}
-                {{file.filename}}
-            {% endif %}
-        </td>
-        <td>
-            {% if file.schema == "doaj" %}
-                DOAJ Native XML
-            {%  elif file.schema == "crossref" %}
-                Crossref XML
-            {% elif file.schema == "mathml" %}
-                OJS MathML
-            {% endif %}
-        </td>
-        <td>
-            {% if file.status == "incoming" %}
-                <span class="file_status--initial">in submission</span>
-            {% elif file.status == "validated" %}
-                <span class="file_status--initial">pending</span>
-            {% elif file.status == "exists" %}
-                <span class="file_status--initial">pending</span>
-            {% elif file.status == "failed" %}
-                <span class="file_status--error"><span data-feather="alert-octagon" aria-hidden="true"></span> processing failed</span>
-            {% elif file.status == "processed" %}
-                <span class="file_status--success"><span data-feather="thumbs-up" aria-hidden="true"></span> successfully processed</span>
-            {% elif file.status == "partial" %}
-                <span class="file_status--warning"><span data-feather="alert-triangle" aria-hidden="true"></span> partial success</span>
-            {% endif %}
-        </td>
-        <td class="long_content">
-            {% if file.error %}
-                {{file.error}}
-                {% if file.error == "One or more articles failed to ingest; entire batch ingest halted" %}
-                    <a target="_blank" href="{{ url_for('publisher.help') }}#explanations">(what does this mean?)</a><br>
-                {% else %}
-                    <a target="_blank" href="{{ url_for('publisher.help') }}#explanations">(what does this mean?)</a><br>
-                {% endif %}
-            {% else %}
-                {% if file.status == "partial" or file.status == "processed" %}
-                    {{ file.imported }} articles imported
-                    {% if file.imported > 0 %}
-                        ({{file.new}} new, {{file.updates}} updated)
-                    {% endif %}
-                    {% if file.failed_imports > 0 %}
-                        ; {{ file.failed_imports }} articles failed
-                        <a target="_blank" href="{{ url_for('doaj.faq', _anchor='some_articles_failed') }}">(what does this mean?)</a><br>
-                    {% endif %}
-                {% endif %}
-            {% endif %}
-            {%  if file.error_details or file.failure_reasons %}
-                <div id="details_{{ file.id }}" style="display:none">
-                    {% if file.error_details %}
-                        {{ file.error_details }}
-                    {% endif %}
-
-                    {% if file.failure_reasons %}
-                        {% if file.failure_reasons.shared %}
-                            The following ISSNs in your article metadata are owned by you and another user.  This is a problem at our end, please contact us with the details:<br>
-                            {{ file.failure_reasons.shared|join(", ") }}
-                            <br>
-                        {% endif %}
-                        {% if file.failure_reasons.unowned %}
-                            The following ISSNs in your article metadata are owned by another user, you cannot associate articles with them.  If you believe you should own these ISSNs, please contact us with the details:<br>
-                            {{ file.failure_reasons.unowned|join(", ") }}
-                            <br>
-                        {% endif %}
-                        {% if file.failure_reasons.unmatched %}
-                            The following ISSNs in your article metadata do not appear in DOAJ, you cannot associate articles with them.  If you believe these ISSNs should be associated with a journal you own, please contact us with the details:<br>
-                            {{ file.failure_reasons.unmatched|join(", ") }}
-                            <br>
-                        {% endif %}
-                    {% endif %}
+        <form id="upload_form" class="col-md-8 form form--compact" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
+            <fieldset>
+                <h3 class="form__header">Article XML</h3>
+                <div class="form__question">
+                    <label for="upload-xml-file">Select a file</label>
+                    <input type="file" id="upload-xml-file" name="file">
+                    <p><small>Must be less than 50MB.</small></p>
                 </div>
-                <a href="#" class="show_error_details" data-id="{{ file.id }}">(show error details)</a>
-            {% endif %}
-        </td>
-    </tr>
-{% endfor %}
-</table>
-{% endif %}
+                <p>• <strong>OR</strong> •</p>
+                <div class="form__question">
+                    <label for="upload-xml-link">Upload from a link</label>
+                    <input type="url" id="upload-xml-link" name="upload-xml-link" placeholder="https://www.example.com">
+                    <p><small>Must be less than 250MB.</small></p>
+                </div>
+
+                <div class="form__question">
+                    <label for="upload-xml-format">File format</label>
+                    <select name="schema" class="form-control" id="upload-xml-format" require>
+                        {% if schema == '' or schema == 'doaj' %}
+                            <option value="doaj" selected>DOAJ Native XML</option>
+                            <option value="crossref442">Crossref 4.4.2 XML</option>
+                            <option value="crossref531">Crossref 5.3.1 XML</option>
+                        {% else %}
+                            <option value="doaj">DOAJ Native XML</option>
+                            <option value="crossref442" selected>Crossref 4.4.2 XML</option>
+                            <option value="crossref531" selected>Crossref 5.3.1 XML</option>
+                        {% endif %}
+                    </select>
+                </div>
+            </fieldset>
+            <button type="submit" id="upload" class="button button--primary">Upload</button>
+        </form>
+    </div>
+
+    <hr>
+
+    {% if previous|length > 0 %}
+        <h2>History of uploads (showing last {{previous|length}})</h2>
+
+        <table id="previous_files" class="file_history tablesorter">
+            <thead>
+            <tr>
+                <th style="width: 17%">Upload Date</th>
+                <th style="width: 20%">Filename</th>
+                <th style="width: 12%">Format</th>
+                <th style="width: 15%">Upload Status</th>
+                <th style="width: 36%">Notes</th>
+            </tr>
+            </thead>
+            {% for file in previous %}
+                <tr>
+                    <td>{{ file.created_timestamp | utc_timestamp("%d %b %Y %H:%M:%S %Z") }}</td>
+                    <td class="long_content">
+                        {% if file.filename.startswith("http") %}
+                            <a href="{{file.filename}}">{{file.filename}}</a>
+                        {% else %}
+                            {{file.filename}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if file.schema == "doaj" %}
+                            DOAJ Native XML
+                        {%  elif file.schema == "crossref442" %}
+                            Crossref 4.4.2 XML
+                        {%  elif file.schema == "crossref531" %}
+                            Crossref 5.3.1 XML
+                        {% elif file.schema == "mathml" %}
+                            OJS MathML
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if file.status == "incoming" %}
+                            <span class="file_status--initial">in submission</span>
+                        {% elif file.status == "validated" %}
+                            <span class="file_status--initial">pending</span>
+                        {% elif file.status == "exists" %}
+                            <span class="file_status--initial">pending</span>
+                        {% elif file.status == "failed" %}
+                            <span class="file_status--error"><span data-feather="alert-octagon" aria-hidden="true"></span> processing failed</span>
+                        {% elif file.status == "processed" %}
+                            <span class="file_status--success"><span data-feather="thumbs-up" aria-hidden="true"></span> successfully processed</span>
+                        {% elif file.status == "partial" %}
+                            <span class="file_status--warning"><span data-feather="alert-triangle" aria-hidden="true"></span> partial success</span>
+                        {% endif %}
+                    </td>
+                    <td class="long_content">
+                        {% if file.error %}
+                            {{file.error}}
+                            {% if file.error == "One or more articles failed to ingest; entire batch ingest halted" %}
+                                <a target="_blank" href="{{ url_for('publisher.help') }}#explanations">(what does this mean?)</a><br>
+                            {% else %}
+                                <a target="_blank" href="{{ url_for('publisher.help') }}#explanations">(what does this mean?)</a><br>
+                            {% endif %}
+                        {% else %}
+                            {% if file.status == "partial" or file.status == "processed" %}
+                                {{ file.imported }} articles imported
+                                {% if file.imported > 0 %}
+                                    ({{file.new}} new, {{file.updates}} updated)
+                                {% endif %}
+                                {% if file.failed_imports > 0 %}
+                                    ; {{ file.failed_imports }} articles failed
+                                    <a target="_blank" href="{{ url_for('doaj.faq', _anchor='some_articles_failed') }}">(what does this mean?)</a><br>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        {%  if file.error_details or file.failure_reasons %}
+                            <div id="details_{{ file.id }}" style="display:none">
+                                {% if file.error_details %}
+                                    {{ file.error_details }}
+                                {% endif %}
+
+                                {% if file.failure_reasons %}
+                                    {% if file.failure_reasons.shared %}
+                                        The following ISSNs in your article metadata are owned by you and another user.  This is a problem at our end, please contact us with the details:<br>
+                                        {{ file.failure_reasons.shared|join(", ") }}
+                                        <br>
+                                    {% endif %}
+                                    {% if file.failure_reasons.unowned %}
+                                        The following ISSNs in your article metadata are owned by another user, you cannot associate articles with them.  If you believe you should own these ISSNs, please contact us with the details:<br>
+                                        {{ file.failure_reasons.unowned|join(", ") }}
+                                        <br>
+                                    {% endif %}
+                                    {% if file.failure_reasons.unmatched %}
+                                        The following ISSNs in your article metadata do not appear in DOAJ, you cannot associate articles with them.  If you believe these ISSNs should be associated with a journal you own, please contact us with the details:<br>
+                                        {{ file.failure_reasons.unmatched|join(", ") }}
+                                        <br>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <a href="#" class="show_error_details" data-id="{{ file.id }}">(show error details)</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 
 {% endblock %}
 
 {% block extra_js_bottom %}
-<script type="text/javascript">
-$(document).ready(function() {
+    <script type="text/javascript">
+        $(document).ready(function() {
 
-document.getElementById("crossref-alert").style.display = "none";
+            document.getElementById("crossref-alert").style.display = "none";
 
-    function load_errors_and_previous_files(){
-        document.getElementById("crossref-alert").style.display = "none";
-        $("#previous_files").tablesorter();
+            function load_errors_and_previous_files(){
+                document.getElementById("crossref-alert").style.display = "none";
+                $("#previous_files").tablesorter();
 
-        $(".show_error_details").click(function (event) {
-            event.preventDefault();
-            var id = $(this).attr("data-id");
-            $("#details_" + id).slideToggle();
-            if ($(this).html() === "(show error details)") {
-                $(this).html("(hide error details)");
-            } else {
-                $(this).html("(show error details)");
+                $(".show_error_details").click(function (event) {
+                    event.preventDefault();
+                    var id = $(this).attr("data-id");
+                    $("#details_" + id).slideToggle();
+                    if ($(this).html() === "(show error details)") {
+                        $(this).html("(hide error details)");
+                    } else {
+                        $(this).html("(show error details)");
+                    }
+                })
             }
+
+            function check_if_crossref_is_loaded() {
+                $.get("/isCrossrefLoaded", function(result) {
+                    if (result === "true"){
+                        load_errors_and_previous_files()
+                    } else {
+                        document.getElementById("crossref-alert").style.display = "block";
+                        check_if_crossref_is_loaded();
+                    }
+
+                });
+            }
+
+            check_if_crossref_is_loaded()
+
         })
-    }
-
-    function check_if_crossref_is_loaded() {
-        $.get("/isCrossrefLoaded", function(result) {
-        if (result === "true"){
-            load_errors_and_previous_files()
-        } else {
-            document.getElementById("crossref-alert").style.display = "block";
-            check_if_crossref_is_loaded();
-        }
-
-        });
-    }
-
-    check_if_crossref_is_loaded()
-
-})
-</script>
+    </script>
 
 {% endblock %}

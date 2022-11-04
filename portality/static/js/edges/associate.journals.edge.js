@@ -17,31 +17,10 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    finishedEvent: "edges:post-render",
-                    renderer : doaj.renderers.newSearchingNotificationRenderer()
-                }),
+                doaj.components.searchingNotification(),
 
                 // facets
-                edges.newRefiningANDTermSelector({
-                    id: "in_doaj",
-                    category: "facet",
-                    field: "admin.in_doaj",
-                    display: "In DOAJ?",
-                    deactivateThreshold: 1,
-                    valueMap : {
-                        "T" : "True",
-                        "F" : "False"
-                    },
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
+                doaj.facets.inDOAJ(),
                 edges.newRefiningANDTermSelector({
                     id: "owner",
                     category: "facet",
@@ -74,7 +53,7 @@ $.extend(true, doaj, {
                     id: "journal_license",
                     category: "facet",
                     field: "index.license.exact",
-                    display: "Journal License",
+                    display: "Journal license",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -130,7 +109,7 @@ $.extend(true, doaj, {
                     id: "journal_language",
                     category: "facet",
                     field: "index.language.exact",
-                    display: "Journal Language",
+                    display: "Journal language",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -158,7 +137,7 @@ $.extend(true, doaj, {
                     id: "journal_title",
                     category: "facet",
                     field: "index.title.exact",
-                    display: "Journal Title",
+                    display: "Journal title",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -187,7 +166,7 @@ $.extend(true, doaj, {
                         {'display':'Classification','field':'index.classification'},
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
-                        {'display':'Journal Language','field':'index.language'},
+                        {'display':'Journal language','field':'index.language'},
                         {'display':'Publisher','field':'bibjson.publisher.name'}
                     ],
                     defaultOperator: "AND",
@@ -331,19 +310,19 @@ $.extend(true, doaj, {
                     fieldDisplays: {
                         "admin.in_doaj" : "In DOAJ?",
                         "admin.owner.exact" : "Owner",
-                        "index.license.exact" : "Journal License",
+                        "index.license.exact" : "Journal license",
                         "bibjson.publisher.name.exact" : "Publisher",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",
-                        "index.language.exact" : "Journal Language",
+                        "index.language.exact" : "Journal language",
                         "index.country.exact" : "Country of publisher",
-                        "index.title.exact" : "Journal Title",
+                        "index.title.exact" : "Journal title",
                         "index.has_apc.exact" : "Publication charges?"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {
-                            "T" : "True",
-                            "F" : "False"
+                            true : "True",
+                            false : "False"
                         }
                     }
                 })
@@ -355,6 +334,9 @@ $.extend(true, doaj, {
                 search_url: search_url,
                 manageUrl: true,
                 components: components,
+                openingQuery: es.newQuery({
+                    sort: [{field: "created_date", order: "desc"}]
+                }),
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");

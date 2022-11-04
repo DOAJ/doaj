@@ -44,6 +44,7 @@ if 'api3' in app.config['FEATURES']:
     from portality.view.api_v3 import blueprint as api_v3
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
+from portality.view.dashboard import blueprint as dashboard
 
 app.register_blueprint(account, url_prefix='/account') #~~->Account:Blueprint~~
 app.register_blueprint(admin, url_prefix='/admin') #~~-> Admin:Blueprint~~
@@ -66,6 +67,7 @@ app.register_blueprint(status, url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
 app.register_blueprint(jct, url_prefix="/jct") # ~~-> JCT:Blueprint~~
+app.register_blueprint(dashboard, url_prefix="/dashboard") #~~-> Dashboard:Blueprint~~
 
 app.register_blueprint(oaipmh) # ~~-> OAIPMH:Blueprint~~
 app.register_blueprint(openurl) # ~~-> OpenURL:Blueprint~~
@@ -98,18 +100,8 @@ def custom_static(path):
 
 # Configure the Google Analytics tracker
 # ~~-> GoogleAnalytics:ExternalService~~
-from portality.lib import analytics
-try:
-    analytics.create_logfile(app.config.get('GOOGLE_ANALTYICS_LOG_DIR', None))
-    analytics.create_tracker(app.config['GOOGLE_ANALYTICS_ID'], app.config['BASE_DOMAIN'])
-except KeyError:
-    err = "No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'."
-    if app.config.get("DOAJENV") == 'production':
-        app.logger.error(err)
-    else:
-        app.logger.debug(err)
-except analytics.GAException as e:
-    app.logger.debug('Unable to send events to Google Analytics: ' + str(e))
+from portality.lib import plausible
+plausible.create_logfile(app.config.get('PLAUSIBLE_LOG_DIR', None))
 
 # Redirects from previous DOAJ app.
 # RJ: I have decided to put these here so that they can be managed
@@ -152,7 +144,7 @@ def legacy_doaj_XML_schema():
 # ~~-> CrossrefArticleXML:WebRoute~~
 @app.route("/isCrossrefLoaded")
 def is_crossref_loaded():
-    if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").isAlive():
+    if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").is_alive():
         return "false"
     else:
         return "true"
@@ -179,6 +171,7 @@ def set_current_context():
         "current_user": current_user,
         "app": app,
         "current_year": datetime.now().strftime('%Y'),
+        "base_url": app.config.get('BASE_URL'),
         }
 
 
@@ -293,6 +286,20 @@ def search_query_source_wrapper():
     def search_query_source(**params):
         return edges.make_url_query(**params)
     return dict(search_query_source=search_query_source)
+
+
+@app.context_processor
+def maned_of_wrapper():
+    def maned_of():
+        # ~~-> EditorGroup:Model ~~
+        egs = []
+        assignments = {}
+        if current_user.has_role("admin"):
+            egs = models.EditorGroup.groups_by_maned(current_user.id)
+            if len(egs) > 0:
+                assignments = models.Application.assignment_to_editor_groups(egs)
+        return egs, assignments
+    return dict(maned_of=maned_of)
 
 
 # ~~-> Account:Model~~

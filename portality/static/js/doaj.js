@@ -1,5 +1,7 @@
 /** base namespace for all DOAJ-specific functions */
+// ~~ DOAJ:Library ~~
 var doaj = {
+    scrollPosition: 100,
     init : function() {
         // Use Feather icons
         feather.replace();
@@ -8,42 +10,31 @@ var doaj = {
         var openMenu = document.querySelector(".secondary-nav__menu-toggle");
         var nav = document.querySelector(".secondary-nav__menu");
 
-        openMenu.addEventListener('click', function() {
-            nav.classList.toggle("secondary-nav__menu-toggle--active");
-        }, false);
+        if (openMenu) {
+            openMenu.addEventListener('click', function () {
+                nav.classList.toggle("secondary-nav__menu-toggle--active");
+            }, false);
+        }
 
-        // Display back-to-top button on scroll
-        var topBtn = document.getElementById("top");
+        // On scroll, display back-to-top button & add class to header primary menu
+        var topBtn = document.getElementById("top"),
+            topNav = document.querySelector(".primary-nav");
 
-        function displayTopBtn() {
-            if (topBtn) {
-                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        function displayOnScroll() {
+            if (topBtn && topNav) {
+                if (document.body.scrollTop > doaj.scrollPosition || document.documentElement.scrollTop > doaj.scrollPosition) {
                     topBtn.style.display = "flex";
+                    topNav.classList.add("primary-nav--scrolled");
                 } else {
                     topBtn.style.display = "none";
+                    topNav.classList.remove("primary-nav--scrolled");
                 }
             }
         }
 
-        // Hide header menu on down scroll; display on scroll up
-        var prevScrollPos = window.pageYOffset,
-            topNav = document.querySelector(".primary-nav");
-
-        function hideNav() {
-            var currentScrollPos = window.pageYOffset;
-
-            if (prevScrollPos > currentScrollPos) {
-                topNav.classList.remove("primary-nav--scrolled");
-            } else {
-                topNav.classList.add("primary-nav--scrolled");
-            }
-            prevScrollPos = currentScrollPos;
-        }
-
-        window.onscroll = function() {
-            displayTopBtn();
-            hideNav();
-        };
+        window.addEventListener("scroll", function() {
+          displayOnScroll();
+        });
 
         // Tabs
         jQuery (function($) {
@@ -70,7 +61,7 @@ var doaj = {
     },
 
     bitlyShortener : function(query, success_callback, error_callback) {
-
+        // ~~-> Bitly.ExternalService ~~
         function callbackWrapper(data) {
             success_callback(data.url);
         }
@@ -244,6 +235,59 @@ var doaj = {
         } else {
             doaj.scroller.doScroll = true;
         }
+    },
+
+    searchQuerySource : function (params) {
+        // ~~-> Edges:Technology ~~
+        // ~~-> Elasticsearch:Technology ~~
+        // ~~-> Edges:Query ~~
+        let terms = params.terms;
+        let term = params.term;
+        let queryString = params.queryString;
+        let sort = params.sort;
+
+        let musts = [];
+        if (terms) {
+            for (let term of terms) {
+                musts.push({"terms" : term})
+            }
+        }
+
+        if (term) {
+            for (let t of term) {
+                musts.push({"term" : t});
+            }
+        }
+
+        if (queryString) {
+            musts.push({
+                "query_string" : {
+                    "default_operator" : "AND",
+                    "query" : queryString
+                }
+            })
+        }
+
+        let query = {"match_all": {}}
+        if (musts.length > 0) {
+            query = {
+                "bool" : {
+                    "must" : musts
+                }
+            }
+        }
+
+        let obj = {"query": query}
+        if (sort) {
+            if (Array.isArray(sort)) {
+                obj["sort"] = sort;
+            } else {
+                obj["sort"] = [sort];
+            }
+        }
+
+        let source = JSON.stringify(obj)
+        return encodeURIComponent(source)
     }
 };
 

@@ -14,6 +14,7 @@ class TestClient(DoajTestCase):
     @classmethod
     def setUpClass(cls):
         app.testing = True
+        super(TestClient, cls).setUpClass()
 
     def setUp(self):
         super(TestClient, self).setUp()

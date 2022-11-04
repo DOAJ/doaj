@@ -5,7 +5,7 @@ $.extend(true, doaj, {
 
         journalSelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type.exact"}));
                 // var type = doaj.currentFVOptions.active_filters._type;
                 if (type && type.length > 0) {
                     type = type[0];
@@ -22,7 +22,7 @@ $.extend(true, doaj, {
 
         anySelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type.exact"}));
                 if (!type || type.length === 0) {
                     return {
                         valid: false,
@@ -35,7 +35,7 @@ $.extend(true, doaj, {
 
         typeSelected : function(selector) {
             return function() {
-                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type"}));
+                var type = doaj.adminJournalArticleSearch.activeEdges[selector].currentQuery.listMust(es.newTermFilter({field: "es_type.exact"}));
                 if (type && type.length > 0) {
                     return type[0].value;
                 }
@@ -56,7 +56,7 @@ $.extend(true, doaj, {
                 result += "/admin/delete/article/";
                 result += resultobj['id'];
                 result += '" target="_blank"';
-                result += '>Delete this article</a>';
+                result += ' style="margin-bottom: 0;">Delete this article</a>';
                 return result;
             }
             return false;
@@ -64,11 +64,11 @@ $.extend(true, doaj, {
 
         editArticle : function (val, resultobj, renderer) {
             if (!resultobj.suggestion && resultobj.bibjson.journal) {
-                var result = '<a class="edit_article_link button" href="';
+                var result = '<p><a class="edit_article_link button" href="';
                 result += doaj.adminJournalArticleSearchConfig.articleEditUrl;
                 result += resultobj['id'];
                 result += '" target="_blank"';
-                result += '>Edit this article</a>';
+                result += ' style="margin-bottom: .75em;">Edit this article</a></p>';
                 return result;
             }
             return false;
@@ -79,11 +79,11 @@ $.extend(true, doaj, {
                 // if it's not a suggestion or an article .. (it's a
                 // journal!)
                 // we really need to expose _type ...
-                var result = '<a class="edit_journal_link button" href="';
+                var result = '<p><a class="edit_journal_link button" href="';
                 result += doaj.adminJournalArticleSearchConfig.journalEditUrl;
                 result += resultobj['id'];
                 result += '" target="_blank"';
-                result += '>Edit this journal</a>';
+                result += 'style="margin-bottom: .75em;">Edit this journal</a></p>';
                 return result;
             }
             return false;
@@ -107,17 +107,13 @@ $.extend(true, doaj, {
             });
 
             var components = [
-                edges.newSearchingNotification({
-                    id: "searching-notification",
-                    finishedEvent: "edges:post-render",
-                    renderer : doaj.renderers.newSearchingNotificationRenderer()
-                }),
+                doaj.components.searchingNotification(),
 
                 // facets
                 edges.newRefiningANDTermSelector({
                     id: "journals_articles",
                     category: "facet",
-                    field: "es_type",
+                    field: "es_type.exact",
                     display: "Journals vs Articles",
                     valueMap : {
                         "journal" : "Journals",
@@ -131,24 +127,7 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
-                edges.newRefiningANDTermSelector({
-                    id: "in_doaj",
-                    category: "facet",
-                    field: "admin.in_doaj",
-                    display: "In DOAJ?",
-                    deactivateThreshold: 1,
-                    valueMap : {
-                        "T" : "True",
-                        "F" : "False"
-                    },
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
+                doaj.facets.inDOAJ(),
                 edges.newRefiningANDTermSelector({
                     id: "author_pays",
                     category: "facet",
@@ -167,7 +146,7 @@ $.extend(true, doaj, {
                     id: "journal_language",
                     category: "facet",
                     field: "index.language.exact",
-                    display: "Journal Language",
+                    display: "Journal language",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -237,7 +216,7 @@ $.extend(true, doaj, {
                     id: "journal_license",
                     category: "facet",
                     field: "index.license.exact",
-                    display: "Journal License",
+                    display: "Journal license",
                     deactivateThreshold: 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -294,14 +273,14 @@ $.extend(true, doaj, {
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'DOI', 'field' : 'bibjson.identifier.id'},
                         {'display':'Country of publisher','field':'index.country'},
-                        {'display':'Journal Language','field':'index.language'},
+                        {'display':'Journal language','field':'index.language'},
                         {'display':'Publisher','field':'bibjson.publisher.name'},
 
                         {'display':'Article: Abstract','field':'bibjson.abstract'},
-                        {'display':'Article: Author\'s name','field':'bibjson.author.name'},
-                        {'display':'Article: Author\'s ORCID iD','field':'bibjson.author.orcid_id'},
+                        {'display':'Article: Author’s name','field':'bibjson.author.name'},
+                        {'display':'Article: Author’s ORCID iD','field':'bibjson.author.orcid_id'},
                         {'display':'Article: Year','field':'bibjson.year'},
-                        {'display':'Article: Journal Title','field':'bibjson.journal.title'},
+                        {'display':'Article: Journal title','field':'bibjson.journal.title'},
 
                         {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'}
                     ],
@@ -309,7 +288,7 @@ $.extend(true, doaj, {
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
                         freetextSubmitDelay: -1,
                         searchButton: true,
-                        searchPlaceholder: "Search All Journals and Articles"
+                        searchPlaceholder: "Search all journals and articles"
                     })
                 }),
 
@@ -341,15 +320,24 @@ $.extend(true, doaj, {
                         rowDisplay : [
                             [
                                 {
-                                    "pre" : "<strong>ID</strong>: <em>",
-                                    "field" : "id",
-                                    "post": "</em>"
+                                    "pre" : "<strong>ID</strong>: ",
+                                    "field" : "id"
                                 }
                             ],
                             // Journals
                             [
                                 {
                                     valueFunction: doaj.fieldRender.titleField
+                                }
+                            ],
+                            [
+                                {
+                                    "valueFunction": doaj.adminJournalArticleSearch.editArticle
+                                }
+                            ],
+                            [
+                                {
+                                    "valueFunction": doaj.adminJournalArticleSearch.editJournal
                                 }
                             ],
                             [
@@ -385,7 +373,7 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Journal Language</strong>: ",
+                                    "pre": "<strong>Journal language</strong>: ",
                                     "field": "bibjson.language"
                                 }
                             ],
@@ -487,13 +475,13 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "pre": "<strong>Journal Language(s)</strong>: ",
+                                    "pre": "<strong>Journal language(s)</strong>: ",
                                     "field": "bibjson.journal.language"
                                 }
                             ],
                             [
                                 {
-                                    "pre": "<strong>Journal License</strong>: ",
+                                    "pre": "<strong>Journal license</strong>: ",
                                     "valueFunction": doaj.fieldRender.journalLicense
                                 }
                             ],
@@ -511,13 +499,7 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    "valueFunction": doaj.adminJournalArticleSearch.editJournal
-                                },
-                                {
                                     "valueFunction": doaj.adminJournalArticleSearch.deleteArticle
-                                },
-                                {
-                                    "valueFunction": doaj.adminJournalArticleSearch.editArticle
                                 }
                             ]
                         ]
@@ -529,26 +511,26 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        "es_type": "Showing",
+                        "es_type.exact": "Showing",
                         "admin.in_doaj" : "In DOAJ?",
-                        "index.language.exact" : "Journal Language",
+                        "index.language.exact" : "Journal language",
                         "bibjson.publisher.name.exact" : "Publisher",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",
                         "index.country.exact" : "Country of publisher",
-                        "index.license.exact" : "Journal License",
+                        "index.license.exact" : "Journal license",
                         "bibjson.year.exact" : "Year of publication",
                         "bibjson.journal.title.exact" : "Journal title",
                         "index.has_apc.exact" : "Publication charges?"
                     },
                     valueMaps : {
-                        "es_type" : {
+                        "es_type.exact" : {
                             "journal" : "Journals",
                             "article" : "Articles"
                         },
                         "admin.in_doaj" : {
-                            "T" : "True",
-                            "F" : "False"
+                            true : "Yes",
+                            false : "No"
                         }
                     }
                 })

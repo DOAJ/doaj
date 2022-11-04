@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
 
-from nose.tools import assert_raises, assert_false
-
 from portality import constants
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
@@ -82,7 +80,7 @@ class TestAsyncWorkflowEmails(DoajTestCase):
 
         user = app.config.get("SYSTEM_USERNAME", 'test_system')
         app.config['ENABLE_EMAIL'] = False
-        assert_raises(BackgroundException, async_workflow_notifications.AsyncWorkflowBackgroundTask.prepare, username=user)
+        self.assertRaises(BackgroundException, async_workflow_notifications.AsyncWorkflowBackgroundTask.prepare, username=user)
 
         # Should succeed when enabled
         app.config['ENABLE_EMAIL'] = True
@@ -185,10 +183,10 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         # This application is assigned to associate editor 1, but it is not yet stale enough to require a reminder
         emails = {}
         async_workflow_notifications.associate_editor_notifications(emails)
-        assert_false(emails)
+        assert not emails
 
         # When we make the application unchanged for a period of time, we expect a message to be generated
-        [APPLICATION_SOURCE_2, APPLICATION_SOURCE_3] = ApplicationFixtureFactory.make_many_application_sources(count=2)
+        [APPLICATION_SOURCE_2, APPLICATION_SOURCE_3, APPLICATION_SOURCE_4] = ApplicationFixtureFactory.make_many_application_sources(count=3)
         comfortably_idle = app.config['ASSOC_ED_IDLE_DAYS'] + 1
         APPLICATION_SOURCE_2['last_manual_update'] = datetime.utcnow() - timedelta(days=comfortably_idle)
         application2 = models.Suggestion(**APPLICATION_SOURCE_2)
@@ -199,10 +197,16 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         application3 = models.Suggestion(**APPLICATION_SOURCE_3)
         application3.save()
 
+        APPLICATION_SOURCE_4['last_manual_update'] = datetime.utcnow() - timedelta(weeks=extremely_idle)
+        APPLICATION_SOURCE_4["admin"]["application_status"] = constants.APPLICATION_STATUS_ACCEPTED
+        application4 = models.Suggestion(**APPLICATION_SOURCE_4)
+        application4.save()
+
         models.Suggestion.blockall([
             (application.id, application.last_updated),
             (application2.id, application2.last_updated),
-            (application3.id, application3.last_updated)
+            (application3.id, application3.last_updated),
+            (application4.id, application4.last_updated)
         ])
 
         async_workflow_notifications.associate_editor_notifications(emails)

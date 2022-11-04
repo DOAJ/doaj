@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 # Environment is a required arg to this script
-[ $# -ne 1 ] && echo "Call this script as `basename "$0"` <environment: [production, test, harvester]>" && exit 1
+[ $# -ne 1 ] && echo "Call this script as `basename "$0"` <environment: [production, test]>" && exit 1
 ENV=$1
 
 # apt dependencies for the DOAJ app
 sudo apt-get update
-sudo apt-get install -q -y libxml2-dev libxslt-dev python3.7-dev lib32z1-dev
+sudo apt-get install -q -y libxml2-dev libxslt-dev python3-dev python3-pip lib32z1-dev
 
 # get awscli from pip so it's up to date (although installation will use the one from the virtualenv it's handy to have)
 sudo pip install awscli
@@ -28,11 +28,6 @@ then
 elif [ "$ENV" = 'test' ]
 then
     aws --profile doaj-test secretsmanager get-secret-value --secret-id doaj/test-credentials | cut -f4 | base64 -d > app.cfg
-elif [ "$ENV" = 'harvester' ]
-then
-    # If this is the harvester machine, get the config and exit early since it'll be run via cron
-    aws --profile doaj-harvester secretsmanager get-secret-value --secret-id doaj/harvester-credentials | cut -f4 | base64 -d > app.cfg
-    exit 0
 fi
 
 # Compile the static pages
@@ -51,7 +46,7 @@ if test -f "cms/error_sass.txt"; then
   exit 1
 fi
 
-# Restart all supervisor tasks, which will cover the app, and huey on the background server. Then reload nginx.
+# Restart all supervisor tasks, will cover the app and kafka, plus huey on the background server. Then reload nginx.
 sudo supervisorctl update
 sudo supervisorctl restart all || sudo supervisorctl start all
 
