@@ -197,7 +197,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             if file_upload.status == "exists" or (file_upload.status == "failed" and re.match(r'^(ht|f)tps?://', file_upload.filename)):
                 job.add_audit_message("Downloading file for file upload {x}, job {y}".format(x=file_upload_id, y=job.id))
                 if self._download(file_upload) is False:
-                    raise BackgroundException("Remote file download failed.")
+                    # TODO: add 'outcome' error here
+                    job.add_audit_message("File download failed".format(x=file_upload_id, y=job.id))
 
             # if the file is validated, which will happen if it has been uploaded, or downloaded successfully, process it.
             if file_upload.status == "validated":
