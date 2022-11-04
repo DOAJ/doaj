@@ -1,6 +1,8 @@
 import json
 import urllib.request
 from functools import wraps
+
+import werkzeug.routing
 from flask import request, current_app, flash, make_response, url_for as flask_url_for
 from urllib.parse import urlparse, urljoin
 from portality.core import app
@@ -169,3 +171,18 @@ def url_for(*args, **kwargs):
             url = flask_url_for(*args, **kwargs)
 
     return url
+
+
+def get_full_url_by_endpoint(endpoint):
+    """
+    werkzeug.routing.BuildError will be throw if rout endpoint not found
+    """
+    return app.config.get("BASE_URL", "https://doaj.org") + url_for(endpoint)
+
+
+def get_full_url_safe(endpoint):
+    try:
+        return get_full_url_by_endpoint(endpoint)
+    except werkzeug.routing.BuildError:
+        app.logger.warning(f'endpoint not found -- [{endpoint}]')
+        return None
