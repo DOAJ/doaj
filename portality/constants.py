@@ -67,6 +67,7 @@ PROCESS__QUICK_REJECT = "quick_reject"
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 
 # BackgroundJob.queue_type
+# ~~->BackgroundTasks:Feature~~
 BGJOB_QUEUE_TYPE_LONG = 'long_running'
 BGJOB_QUEUE_TYPE_MAIN = 'main_queue'
 BGJOB_QUEUE_TYPE_UNKNOWN = 'unknown'
