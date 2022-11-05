@@ -3,16 +3,12 @@
 # ~~Forms:Script->ApplicationForms:Feature~~
 
 DOAJ_DOCS="../../doaj-docs"
-MODE="global"
 BASE_DIR=$(dirname "${BASH_SOURCE[0]}")
 
-while getopts 'd:l' OPTION; do
+while getopts 'd:' OPTION; do
   case "$OPTION" in
     d)
       DOAJ_DOCS="$OPTARG"
-      ;;
-    l)
-      MODE="local"
       ;;
   esac
 done

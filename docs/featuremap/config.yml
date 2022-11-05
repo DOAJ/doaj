@@ -50,9 +50,9 @@ exclude_dirs:
 ignore_parse_errors:
   - noop
 delimiter: ~~
-types: docs/featuremap/types.csv
+types: featuremap/types.csv
 type_validation: error
-terminals: docs/featuremap/terminals.csv
+terminals: featuremap/terminals.csv
 # out_dir: to be specified at run-time
 serialisers:
   - class: featuremap.jsonserialiser.JSONSerialiser
