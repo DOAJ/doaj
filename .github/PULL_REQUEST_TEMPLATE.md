@@ -16,6 +16,7 @@ This PR...
 - [ ] affects the public site
 - [ ] affects the editorial area
 - [ ] affects the publisher area
+- [ ] affects the monitoring
 
 ## Basic PR Checklist
 
