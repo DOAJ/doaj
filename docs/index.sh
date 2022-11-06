@@ -3,7 +3,7 @@
 # ~~GeneratedDocsIndex:Script~~
 
 DOAJ_DOCS="../../doaj-docs"
-BASE_DIR=$(dirname "${BASH_SOURCE[0]}")
+BASE_DIR=$(dirname $(cd $(dirname "${BASH_SOURCE[0]}") && pwd))
 
 while getopts 'd:' OPTION; do
   case "$OPTION" in
@@ -25,8 +25,8 @@ mkdir -p $OUTDIR
 
 # generate the index for the specific branch
 OUTFILE=$OUTDIR/README.md
-python $BASE_DIR/../portality/scripts/generate_docs_index.py -b -f $OUTFILE -d $OUTDIR
+python $BASE_DIR/portality/scripts/generate_docs_index.py -b -f $OUTFILE -d $OUTDIR
 
 # generate the global index for the docs repo
 README=$DOAJ_DOCS/README.md
-python $BASE_DIR/../portality/scripts/generate_docs_index.py -g -f $README -d $DOAJ_DOCS
+python $BASE_DIR/portality/scripts/generate_docs_index.py -g -f $README -d $DOAJ_DOCS

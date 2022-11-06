@@ -9,7 +9,7 @@
 ###############################################
 
 DOAJ_DOCS="../../doaj-docs"
-BASE_DIR=$(dirname "${BASH_SOURCE[0]}")
+BASE_DIR=$(dirname $(cd $(dirname "${BASH_SOURCE[0]}") && pwd))
 
 while getopts 'd:' OPTION; do
   case "$OPTION" in
@@ -30,6 +30,9 @@ OUTDIR=$DOAJ_DOCS/$BRANCH/coverage
 COVERAGE_FILE=$OUTDIR/coverage.data
 export COVERAGE_FILE
 
-coverage run --source=portality,esprit,combinatrix,dictdiffer $(which pytest) $BASE_DIR/../doajtest/unit/
+echo "coverage run --source=portality,esprit,combinatrix,dictdiffer $(which pytest) $BASE_DIR/doajtest/unit/"
+coverage run --source=portality,esprit,combinatrix,dictdiffer $(which pytest) $BASE_DIR/doajtest/unit/
+
+echo "coverage html --include=portality*.py --omit=*/migrate/*,*/scripts/* -d $OUTDIR/report"
 coverage html --include=portality*.py --omit=*/migrate/*,*/scripts/* -d $OUTDIR/report
 

@@ -18,7 +18,7 @@ TESTBOOK_URL="https://doaj.github.io/doaj-docs/$BRANCH/testbook"
 DOAJ_URL="http://testdoaj.cottagelabs.com/"
 DOAJ_TEST_FILEBASE="https://raw.githubusercontent.com/DOAJ/doaj/$BRANCH/doajtest"
 
-BASE_DIR=$(dirname "${BASH_SOURCE[0]}")
+BASE_DIR=$(dirname $(cd $(dirname "${BASH_SOURCE[0]}") && pwd))
 
 while getopts 'd:b:t:f:' OPTION; do
   case "$OPTION" in
@@ -48,6 +48,6 @@ OUTDIR=$DOAJ_DOCS/$BRANCH/testbook
 # ensure that the output directory exists
 mkdir -p $OUTDIR
 
-testbook $BASE_DIR/../doajtest/testbook $OUTDIR -t $TESTBOOK_URL -a $DOAJ_URL -r $DOAJ_TEST_FILEBASE
+testbook $BASE_DIR/doajtest/testbook $OUTDIR -t $TESTBOOK_URL -a $DOAJ_URL -r $DOAJ_TEST_FILEBASE
 
 echo "If you are running this locally you can now go to $OUTDIR and run 'python -m SimpleHTTPServer'"

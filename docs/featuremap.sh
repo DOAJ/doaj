@@ -12,7 +12,7 @@
 # ~~FeatureMap:Script->FeatureMap:Technology~~
 
 DOAJ_DOCS="../../doaj-docs"
-BASE_DIR=$(dirname "${BASH_SOURCE[0]}")
+BASE_DIR=$(dirname $(cd $(dirname "${BASH_SOURCE[0]}") && pwd))
 
 while getopts 'd:' OPTION; do
   case "$OPTION" in
@@ -33,4 +33,5 @@ OUTDIR=$DOAJ_DOCS/$BRANCH/featuremap
 # ensure that the output directory exists
 mkdir -p $OUTDIR
 
-featuremap -c $BASE_DIR/featuremap/config.yml -s https://github.com/DOAJ/doaj/blob/$BRANCH -o $OUTDIR
+echo "featuremap -b $BASE_DIR -c $BASE_DIR/docs/featuremap/config.yml -s https://github.com/DOAJ/doaj/blob/$BRANCH -o $OUTDIR"
+featuremap -b $BASE_DIR -c $BASE_DIR/docs/featuremap/config.yml -s https://github.com/DOAJ/doaj/blob/$BRANCH -o $OUTDIR
