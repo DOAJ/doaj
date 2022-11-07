@@ -1,3 +1,5 @@
+import re
+
 from portality import models
 from portality.core import app
 from portality.crosswalks.exceptions import CrosswalkException
@@ -115,7 +117,7 @@ def http_upload(job, path, file_upload):
     try:
         r = requests.get(file_upload.filename, stream=True)
         if r.status_code != requests.codes.ok:
-            job.add_audit_message("The URL could not be accessed")
+            job.add_audit_message("The URL could not be accessed. Status: {0}, Content: {1}".format(r.status_code, r.text))
             file_upload.failed("The URL could not be accessed")
             return False
 
@@ -192,9 +194,12 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         try:
             # if the file "exists", this means its a remote file that needs to be downloaded, so do that
-            if file_upload.status == "exists":
+            # if it's in "failed" state already but filename has a scheme, this is a retry of a download
+            if file_upload.status == "exists" or (file_upload.status == "failed" and re.match(r'^(ht|f)tps?://', file_upload.filename)):
                 job.add_audit_message("Downloading file for file upload {x}, job {y}".format(x=file_upload_id, y=job.id))
-                self._download(file_upload)
+                if self._download(file_upload) is False:
+                    # TODO: add 'outcome' error here
+                    job.add_audit_message("File download failed".format(x=file_upload_id, y=job.id))
 
             # if the file is validated, which will happen if it has been uploaded, or downloaded successfully, process it.
             if file_upload.status == "validated":
