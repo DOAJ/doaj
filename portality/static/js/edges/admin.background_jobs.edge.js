@@ -257,7 +257,8 @@ $.extend(true, doaj, {
                     fieldDisplays: {
                         'action.exact': 'Action',
                         'user.exact' : 'Submitted By',
-                        'status.exact' : 'Status'
+                        'status.exact' : 'Status',
+                        'queue_type.exact' : 'Queue Type',
                     }
                 })
             ];
