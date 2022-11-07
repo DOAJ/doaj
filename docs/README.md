@@ -2,6 +2,8 @@
 
 The scripts and configuration in this directory allow us to auto-generate documentation and publish it to the doc site.
 
+Once you have run any of the scripts below, you must push to the `master` branch of the doc site to publish your documentation updates.  They will then appear on the doc site at https://doaj.github.io/doaj-docs 
+
 ## Generating documentation for the current branch for publish to the doc site
 
 The default setup for generating documentation assumes that you have a repo called `doaj-docs` that is a sibling directory to your `doaj` code directory.  That is
@@ -23,7 +25,8 @@ You can run the default documentation generation for any branch to be published 
 bash gendocs.sh
 ```
 
-The 
+Once you have generated the docs make sure to push them to the `master` branch of the doc site.
+
 
 ## Generating documentation for local use
 
@@ -81,4 +84,3 @@ bash testbook.sh -d ~/tmp/testbook \
 ```
 
 (note that if the `docs directory` is not a git repo you will see git errors running this script, but they should not interfere with the actual operation)
-
