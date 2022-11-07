@@ -13,12 +13,12 @@
 
 BRANCH=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
 
-DOAJ_DOCS="../../doaj-docs"
 TESTBOOK_URL="https://doaj.github.io/doaj-docs/$BRANCH/testbook"
 DOAJ_URL="http://testdoaj.cottagelabs.com/"
 DOAJ_TEST_FILEBASE="https://raw.githubusercontent.com/DOAJ/doaj/$BRANCH/doajtest"
 
 BASE_DIR=$(dirname $(cd $(dirname "${BASH_SOURCE[0]}") && pwd))
+DOAJ_DOCS="$(dirname $BASE_DIR)/doaj-docs"
 
 while getopts 'd:b:t:f:' OPTION; do
   case "$OPTION" in

@@ -2,8 +2,8 @@
 
 # ~~Forms:Script->ApplicationForms:Feature~~
 
-DOAJ_DOCS="../../doaj-docs"
 BASE_DIR=$(dirname $(cd $(dirname "${BASH_SOURCE[0]}") && pwd))
+DOAJ_DOCS="$(dirname $BASE_DIR)/doaj-docs"
 
 while getopts 'd:' OPTION; do
   case "$OPTION" in
