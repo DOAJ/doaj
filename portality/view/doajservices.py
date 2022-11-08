@@ -1,5 +1,6 @@
 import json, urllib.request, urllib.parse, urllib.error, requests
 
+import models
 from flask import Blueprint, make_response, request, abort, render_template
 from flask_login import current_user, login_required
 
@@ -107,7 +108,7 @@ def group_status(group_id):
     :param group_id:
     :return:
     """
-    if not current_user.has_role("admin"):
+    if (not (current_user.has_role("editor") and models.EditorGroup.pull(group_id).editor == current_user.id)) and (not current_user.has_role("admin")):
         abort(404)
     svc = DOAJ.todoService()
     stats = svc.group_stats(group_id)

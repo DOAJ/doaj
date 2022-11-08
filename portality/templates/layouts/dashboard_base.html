@@ -4,6 +4,7 @@
 {# we're potentially going need this in a few places in inherited files, so lets just put it here #}
 {# ~~-> EditorGroup:Model ~~ #}
 {% set managed_groups, maned_assignments = maned_of() %}
+{% set editor_of_groups, editor_of_assignments = editor_of() %}
 
 {% block base_content %}
     <body class="dashboard {% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}" data-spy="scroll" data-offset="70">
@@ -14,14 +15,14 @@
     {% endif %}
 
     <header>
-      <h2 class="sr-only">DOAJ Dashboard</h2>
+        <h2 class="sr-only">DOAJ Dashboard</h2>
 
-      <nav class="primary-nav flex-space-between" id="primary-nav">
-        <a href="/dashboard/" class="logo">
-          {% include "includes/svg/doaj-icon.svg" %}
-        </a>
-        <ul class="unstyled-list flex-center">
-          {# TODO display last 10 event notifications here
+        <nav class="primary-nav flex-space-between" id="primary-nav">
+            <a href="/dashboard/" class="logo">
+                {% include "includes/svg/doaj-icon.svg" %}
+            </a>
+            <ul class="unstyled-list flex-center">
+                {# TODO display last 10 event notifications here
             <li class="dropdown">
               <span class="dropdown__trigger tag tag--secondary" role="button" aria-haspopup="true" aria-expanded="false">
                 <span class="sr-only">Notifications</span>
@@ -48,27 +49,29 @@
                 </li>
               </ul>
             </li> #}
-            {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
-            <li class="flex-center">
-              <a href="{{ url_for("editor.index") }}" class="tag">
-                <span><span data-feather="list" aria-hidden="true"></span> Editor dashboard</span>
-              </a>
-            </li>
-            {% endif %}
-            <li class="flex-center">
-              <a href="{{ url_for("dashboard.top_todo") }}" class="tag">
-                <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>
-              </a>
-            </li>
-            <li class="flex-center">
-              <a href="/" class="tag">
-                <span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span>
-              </a>
-            </li>
-          </ul>
-      </nav>
+                {% if current_user.has_role("editor") or current_user.has_role("associate_editor") %}
+                    <li class="flex-center">
+                        <a href="{{ url_for("editor.index") }}" class="tag">
+                            <span><span data-feather="list" aria-hidden="true"></span> Editor dashboard</span>
+                        </a>
+                    </li>
+                {% endif %}
+                {% if current_user.has_role("admin") %}
+                    <li class="flex-center">
+                        <a href="{{ url_for("dashboard.top_todo") }}" class="tag">
+                            <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="flex-center">
+                    <a href="/" class="tag">
+                        <span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
         {% block nav %}{% endblock %}
-      {% block extra_header %}{% endblock %}
+        {% block extra_header %}{% endblock %}
     </header>
 
     {% block main_panel %}
@@ -167,20 +170,20 @@
       {% include "includes/_flash_notification.html" %}
       {% block content %}{% endblock %}
 
-      <p>
-        <small>
-          <a href="{{ url_for('account.logout') }}" class="tag">
-            <span data-feather="log-out" aria-hidden="true"></span>
-            Log out
-          </a>
-          <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">
-            <span data-feather="settings" aria-hidden="true"></span>
-            Settings
-          </a>
-        </small>
-      </p>
-    </main>
-    {% include "includes/_back-to-top.html" %}
+            <p>
+                <small>
+                    <a href="{{ url_for('account.logout') }}" class="tag">
+                        <span data-feather="log-out" aria-hidden="true"></span>
+                        Log out
+                    </a>
+                    <a href="{{ url_for('account.username', username=current_user.id) }}" class="tag">
+                        <span data-feather="settings" aria-hidden="true"></span>
+                        Settings
+                    </a>
+                </small>
+            </p>
+        </main>
+        {% include "includes/_back-to-top.html" %}
     {% endblock %}
 
     {% include '_js_includes.html' %}
