@@ -32,7 +32,7 @@ def index():
     editor_of = models.EditorGroup.groups_by_editor(current_user.id)
     context = {"role": current_user.role}
     # ~~-> Dashboard:Page~~
-    return render_template('editor/dashboard.html', todos=todos, editor_of=editor_of, context=context)
+    return render_template('editor/dashboard.html', todos=todos)
 
 # build an editor's page where things can be done
 @blueprint.route('/group-info')
