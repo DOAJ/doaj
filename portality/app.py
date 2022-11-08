@@ -313,7 +313,7 @@ def editor_of_wrapper():
             if len(egs) > 0:
                 assignments = models.Application.assignment_to_editor_groups(egs)
         return egs, assignments
-    return dict(editor_of_fun=editor_of)
+    return dict(editor_of=editor_of)
 
 
 # ~~-> Account:Model~~
