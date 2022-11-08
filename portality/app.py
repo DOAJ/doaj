@@ -293,9 +293,12 @@ def maned_of_wrapper():
     def maned_of():
         # ~~-> EditorGroup:Model ~~
         egs = []
+        assignments = {}
         if current_user.has_role("admin"):
-            egs = [e for e in models.EditorGroup.groups_by_maned(current_user.id)]
-        return egs
+            egs = models.EditorGroup.groups_by_maned(current_user.id)
+            if len(egs) > 0:
+                assignments = models.Application.assignment_to_editor_groups(egs)
+        return egs, assignments
     return dict(maned_of=maned_of)
 
 

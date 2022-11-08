@@ -45,10 +45,14 @@
   }
 }
 
-.modal__title {
-  margin: 0 0 $spacing-04 0;
-  padding-bottom: $spacing-03;
+.modal__heading {
+  margin: 0 0 $spacing-03 0;
   border-bottom: 1px solid $dark-grey;
+}
+
+.modal__title {
+  margin: 0;
+  padding-bottom: $spacing-03;
   @include font-sans;
 }
 

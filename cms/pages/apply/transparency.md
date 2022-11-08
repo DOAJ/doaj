@@ -37,7 +37,7 @@ The journal's name should:
 - The website should not copy another journal/publisher's site, design, or logo.
 - If any text is copied from another website, an acknowledgement to the source website should be declared.
 
-In addition to the requirements outlined below, the following items should be clearly displayed:
+In addition to the requirements outlined above, the following items should be clearly displayed:
 
 - Aims and scope.
 - The target readership of the journal.
@@ -82,7 +82,7 @@ A journal should have policies on publication ethics (for example, [COPE's Core 
 - Journal's options for [post-publication discussions](https://publicationethics.org/postpublication).
 - Journal's policies on [corrections and retractions](https://publicationethics.org/postpublication).
 
-Editors and publishers are responsible for ensuring the integrity of the scholarly literature in their journals and should ensure they outline their policies and procedures for handling such issues when they arise. These issues include plagiarism, citation manipulation, and data falsification/fabrication, among others. Neither the journal’s policies nor the statements of its editors should encourage such misconduct, or knowingly allow such misconduct to take place. In the event that a journal's editors or publisher are made aware of any allegation of research misconduct relating to a submitted or published article in their journal, the editor or publisher should follow [COPE's guidance](https://publicationethics.org/guidance/Flowcharts?t=&classification%5B%5D=2771&sort=score) (or equivalent) in dealing with allegations.
+Editors and publishers are responsible for ensuring the integrity of the scholarly literature in their journals and should ensure they outline their policies and procedures for handling such issues when they arise. These issues include plagiarism, citation manipulation, and data falsification/fabrication, among others. Neither the journal’s policies nor the statements of its editors should encourage such misconduct, or knowingly allow such misconduct to take place. In the event that a journal's editors or publisher are made aware of any allegation of research misconduct relating to a submitted or published article in their journal, the editor or publisher should follow [COPE's guidance](https://publicationethics.org/guidance) (or equivalent) in dealing with allegations.
 
 #### 8. Peer review 
 Peer review is defined as obtaining advice on manuscripts from reviewers/experts in the manuscript’s subject area. Those individuals should not be part of the journal's editorial team. However, the specific elements of peer review may differ by journal and discipline, so the following should be clearly stated on the website:
@@ -190,6 +190,8 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 
 ## In other languages
 
-Version 3.0 of the Principles is [available in 21 other languages](https://drive.google.com/drive/folders/1ni9FwfgH8juUuPKKcP72QoCOf51HUww1?usp=sharing). 
+(Version 3.0 of the Principles is [available in 21 other languages](https://drive.google.com/drive/folders/1ni9FwfgH8juUuPKKcP72QoCOf51HUww1?usp=sharing).)
 
-New translations of Version 4.0 will be added here as they become available.
+- [Bengali](https://docs.google.com/document/d/1hsCynqvYbnaUwnu7VxlEPNKn076mz1KrRUdQ4vefYX4/edit?usp=sharing) - Google document
+- [Portuguese](https://docs.google.com/document/d/155dAHllL2KhPhzTsR3UhbMEASYjkxP157fAtiZ1jw2w/edit?usp=sharing) - Google document
+- [Serbian](https://www.ceon.rs/index.php?option=com_content&view=article&id=654:transparentnost-i-najbolja-praksa&catid=94&lang=sr&Itemid=578) (hosted at ceon.rs)
