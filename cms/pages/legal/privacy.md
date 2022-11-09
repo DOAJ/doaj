@@ -10,7 +10,7 @@ featuremap: ~~Privacy:Fragment~~
 
 Protecting your privacy and personal data is important to us. Please take a few moments to review this Policy.
 
-Last reviewed and updated: November 2022
+(Last reviewed and updated: November 2022)
 
 ### Summary
 
