@@ -1,5 +1,5 @@
 """
-Delete all non-editorial user accounts not assigned to a journal or application
+Delete all non-editorial user accounts who are not the owner of a journal, application, update request, or draft.
 
 python accounts_delete_pub_no_journal_or_application.py [-r deletion_report.csv]
 """
@@ -21,8 +21,10 @@ def accounts_with_no_journals_or_applications(csvwriter=None):
             continue
 
         issns = models.Journal.issns_by_owner(account.id)
-        apps = models.Suggestion.get_by_owner(account.id)
-        if len(issns) == len(apps) == 0:
+        apps = models.Application.get_by_owner(account.id)  # Applications and URs
+        drafts = models.DraftApplication.get_by_owner(account.id)
+
+        if len(issns) == len(apps) == len(drafts) == 0:
             gathered_account_ids.append(account.id)
 
             # Write the user summary to CSV if provided
