@@ -51,6 +51,7 @@ TODO_EDITOR_ASSIGN_PENDING = "todo_editor_assign_pending"
 TODO_ASSOCIATE_PROGRESS_STALLED = "todo_associate_progress_stalled"
 TODO_ASSOCIATE_FOLLOW_UP_OLD = "todo_associate_follow_up_old"
 TODO_ASSOCIATE_START_PENDING = "todo_associate_start_pending"
+TODO_ASSOCIATE_ALL_APPLICATIONS = "todo_associate_all_applications"
 
 # Roles
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'

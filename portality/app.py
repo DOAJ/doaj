@@ -46,6 +46,9 @@ from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 from portality.view.dashboard import blueprint as dashboard
 
+if app.config.get("DEBUG", False):
+    from portality.view.testdrive import blueprint as testdrive
+
 app.register_blueprint(account, url_prefix='/account') #~~->Account:Blueprint~~
 app.register_blueprint(admin, url_prefix='/admin') #~~-> Admin:Blueprint~~
 app.register_blueprint(publisher, url_prefix='/publisher') #~~-> Publisher:Blueprint~~
@@ -68,11 +71,13 @@ app.register_blueprint(status, url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
 app.register_blueprint(jct, url_prefix="/jct") # ~~-> JCT:Blueprint~~
 app.register_blueprint(dashboard, url_prefix="/dashboard") #~~-> Dashboard:Blueprint~~
-
 app.register_blueprint(oaipmh) # ~~-> OAIPMH:Blueprint~~
 app.register_blueprint(openurl) # ~~-> OpenURL:Blueprint~~
 app.register_blueprint(atom) # ~~-> Atom:Blueprint~~
 app.register_blueprint(doaj) # ~~-> DOAJ:Blueprint~~
+
+if app.config.get("DEBUG", False):
+    app.register_blueprint(testdrive, url_prefix="/testdrive") # ~~-> Testdrive:Feature ~~
 
 # initialise the index - don't put into if __name__ == '__main__' block,
 # because that does not run if gunicorn is loading the app, as opposed
@@ -315,6 +320,18 @@ def editor_of_wrapper():
         return egs, assignments
     return dict(editor_of=editor_of)
 
+@app.context_processor
+def associate_of_wrapper():
+    def associate_of():
+        # ~~-> EditorGroup:Model ~~
+        egs = []
+        assignments = {}
+        if current_user.has_role("associate_editor"):
+            egs = models.EditorGroup.groups_by_associate(current_user.id)
+            if len(egs) > 0:
+                assignments = models.Application.assignment_to_editor_groups(egs)
+        return egs, assignments
+    return dict(associate_of=associate_of)
 
 # ~~-> Account:Model~~
 # ~~-> AuthNZ:Feature~~

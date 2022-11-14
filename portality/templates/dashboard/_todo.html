@@ -34,8 +34,8 @@
         },
         constants.TODO_EDITOR_FOLLOW_UP_OLD: {
             "text" : "<strong>Old</strong> <span class='todo-list__status'>+8 wks old</span>",
-            "colour" : "var(--yellow)",
-            "feather": "inbox",
+            "colour" : "var(--sanguine)",
+            "feather": "clock"
         },
         constants.TODO_EDITOR_COMPLETED: {
             "text" : "<strong>Completed</strong> <span class='todo-list__status'>Recently completed</span>",
@@ -64,6 +64,12 @@
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('editor.associate_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
+        },
+        constants.TODO_ASSOCIATE_ALL_APPLICATIONS: {
+            "text" : "<strong>Application</strong> <span class='todo-list__status'>Open application</span>",
+            "colour" : "var(--yellow)",
+            "feather": "inbox",
+            "link" : url_for('editor.associate_suggestions')
         }
     }
 %}

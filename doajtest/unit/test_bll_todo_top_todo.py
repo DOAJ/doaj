@@ -13,8 +13,7 @@ from portality import models
 from portality.bll import DOAJ
 from portality.bll import exceptions
 from portality.constants import TODO_ASSOCIATE_PROGRESS_STALLED, TODO_ASSOCIATE_START_PENDING, \
-    TODO_ASSOCIATE_FOLLOW_UP_OLD
-from portality.lib import dates
+    TODO_ASSOCIATE_FOLLOW_UP_OLD, TODO_ASSOCIATE_ALL_APPLICATIONS
 from portality.lib.paths import rel2abs
 from portality.lib import dates
 from datetime import datetime
@@ -139,14 +138,12 @@ class TestBLLTopTodo(DoajTestCase):
 
         # breakpoint()
         excepted_app_action_dict = {
-            "maned_stalled__maned_old": {TODO_ASSOCIATE_PROGRESS_STALLED, TODO_ASSOCIATE_START_PENDING,
-                                         TODO_ASSOCIATE_FOLLOW_UP_OLD},
-            "unstalled": {TODO_ASSOCIATE_START_PENDING},
-            "rejected": {TODO_ASSOCIATE_START_PENDING, TODO_ASSOCIATE_PROGRESS_STALLED},
-            "maned_old": {TODO_ASSOCIATE_FOLLOW_UP_OLD, TODO_ASSOCIATE_START_PENDING},
-            "not_old": {TODO_ASSOCIATE_START_PENDING},
-            "accepted": {TODO_ASSOCIATE_START_PENDING, TODO_ASSOCIATE_PROGRESS_STALLED},
-            "pending_12": {TODO_ASSOCIATE_PROGRESS_STALLED, TODO_ASSOCIATE_FOLLOW_UP_OLD},
+            "maned_stalled__maned_old": {TODO_ASSOCIATE_PROGRESS_STALLED,
+                                         TODO_ASSOCIATE_FOLLOW_UP_OLD, TODO_ASSOCIATE_ALL_APPLICATIONS},
+            "unstalled": {TODO_ASSOCIATE_ALL_APPLICATIONS},
+            "maned_old": {TODO_ASSOCIATE_FOLLOW_UP_OLD, TODO_ASSOCIATE_ALL_APPLICATIONS},
+            "not_old": {TODO_ASSOCIATE_ALL_APPLICATIONS},
+            "pending_12": {TODO_ASSOCIATE_START_PENDING, TODO_ASSOCIATE_PROGRESS_STALLED, TODO_ASSOCIATE_FOLLOW_UP_OLD, TODO_ASSOCIATE_ALL_APPLICATIONS},
         }
 
         self.assertEqual(app_action_dict, excepted_app_action_dict)
