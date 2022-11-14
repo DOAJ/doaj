@@ -199,9 +199,7 @@ $.extend(true, doaj, {
                           <h3 class="search-results__heading">${notification.short}</h3>
                         </header>
                         <div class="search-results__body">
-                          <ul>
-                            <li>${body}</li>
-                          </ul>
+                          ${body}
                         </div>
                       </div>
                         <aside class="col-sm-2 search-results__aside">
