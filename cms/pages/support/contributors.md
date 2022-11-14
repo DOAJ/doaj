@@ -1,15 +1,19 @@
 ---
 layout: sidenav
-title: Contributors (Publishers and Aggregators)
+sidenav_include: /includes/_sidenav_publisher_supporter.html
+include: /data/publisher-supporters.html
+title: Contributors
 section: Support
-toc: true
 sticky_sidenav: true
-meta_description:
-featuremap: ~~Sponsors:Fragment->SponsorsData:Template~~
+featuremap:
+ - ~~PublisherSupporters:Fragment->PublisherSupporterSidenav:Template~~
+ - ~~->PublisherSupportersData:Template~~
 
 ---
 
 DOAJ is a non-profit organisation and contributions from its supporters are crucial to keeping DOAJ operating to its strategy and mission. We are grateful to all of our Contributors for their continued support.
+
+## Contributors (Publishers and Aggregators)
 
 The following organisations have committed to supporting DOAJ over a 3-year period (Premier, Sustaining) or a 1-year period (Basic).
 
@@ -29,3 +33,7 @@ The following organisations have committed to supporting DOAJ over a 3-year peri
 |                          |                                                 | A yearly account review between the customer and DOAJ. The agenda can be determined by the publisher contact and a DOAJ representative. |
 |                          |                                                 | A CSV file, generated annually, for recording changes in and which DOAJ updates your live records with. |
 |                          |                                                 | Exposure across all our social media channels: Twitter, Instagram, LinkedIn, Facebook, WeChat. (Stats available.) |
+
+## Publisher supporters
+
+The publishers below have chosen to show their commitment to quality, peer-reviewed open access by supporting DOAJ. We thank them! Without them, our work would not be possible.
