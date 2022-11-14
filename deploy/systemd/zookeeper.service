@@ -5,6 +5,7 @@ After=network.target remote-fs.target
 [Service]
 Type=simple
 User=cloo
+Environment="KAFKA_ZOOKEEPER_OPTS=-Xmx2G -Xms2G"
 ExecStart=/home/cloo/kafka_2.13-3.1.0/bin/zookeeper-server-start.sh /home/cloo/kafka_2.13-3.1.0/config/zookeeper.properties
 ExecStop=/home/cloo/kafka_2.13-3.1.0/bin/zookeeper-server-stop.sh
 Restart=on-abnormal

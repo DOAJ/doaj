@@ -7,6 +7,7 @@ After=network.target
 [Service]
 Type=simple
 User=cloo
+Environment="KAFKA_OPTS=-Xmx2G -Xms2G"
 ExecStart=/bin/sh -c '/home/cloo/kafka_2.13-3.1.0/bin/kafka-server-start.sh /home/cloo/kafka_2.13-3.1.0/config/server.properties'
 ExecStop=/home/cloo/kafka_2.13-3.1.0/bin/kafka-server-stop.sh
 Restart=on-abnormal
