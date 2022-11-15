@@ -65,14 +65,14 @@ def anonymise_journal(record):
     return _anonymise_admin(j).data
 
 
-def anonymise_suggestion(record):
+def anonymise_application(record):
     try:
-        sug = models.Suggestion(**record)
+        appl = models.Application(**record)
     except DataStructureException:
         return record
 
-    sug = _anonymise_admin(sug)
-    return sug.data
+    appl = _anonymise_admin(appl)
+    return appl.data
 
 
 def anonymise_background_job(record):
@@ -91,7 +91,7 @@ anonymisation_procedures = {
     'account': anonymise_account,
     'background_job': anonymise_background_job,
     'journal': anonymise_journal,
-    'suggestion': anonymise_suggestion
+    'application': anonymise_application
 }
 
 
@@ -138,7 +138,7 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
         # Use the model's dump method to write out this type to file
         out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn, tmpStore=tmpStore, mainStore=mainStore, container=container)
         _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
-                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], scroll_keepalive='3m')
+                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], scroll_keepalive=app.config.get('TASKS_ANON_EXPORT_SCROLL_TIMEOUT', '5m'))
 
         logger_fn((dates.now() + " done\n"))
 
@@ -154,6 +154,9 @@ def get_value_safe(key, default_v, kwargs, default_cond_fn=None):
 
 
 class AnonExportBackgroundTask(BackgroundTask):
+    """
+    ~~AnonExport:Feature->BackgroundTask:Process~~
+    """
     __action__ = "anon_export"
 
     def run(self):
