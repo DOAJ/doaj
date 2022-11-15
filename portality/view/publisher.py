@@ -208,10 +208,15 @@ def upload_file():
     try:
         job = IngestArticlesBackgroundTask.prepare(current_user.id, upload_file=f, schema=schema, url=url, previous=previous)
         IngestArticlesBackgroundTask.submit(job)
-    except (BackgroundException, TaskException) as e:
+    except TaskException as e:
         magic = str(uuid.uuid1())
-        flash("An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the ID " + magic)
+        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str="", id=magic))
         app.logger.exception('File upload error. ' + magic)
+        return resp
+    except BackgroundException as e:
+        magic = str(uuid.uuid1())
+        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str=str(e), id=magic))
+        app.logger.exception('File upload error. ' + magic + '; ' + str(e))
         return resp
 
     if f is not None and f.filename != "":
