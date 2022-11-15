@@ -10,6 +10,7 @@ class Messages(object):
         for review. Click the 'Edit' button to make further changes, or 'Delete' to cancel the request.
         """, 'success')
     PUBLISHER_UPLOAD_ERROR = """An error has occurred and your upload may not have succeeded. {error_str} <br \> If the problem persists please report the issue with the ID: {id}"""
+    NO_FILE_UPLOAD_ID="""No file upload record has been specified"""
 
     ARTICLE_METADATA_SUBMITTED_FLASH = ("<a href='{url}' target='_blank'>Article created/updated</a>", "success")
     ARTICLE_METADATA_MERGE_CONFLICT = ("""Article could not be submitted, as it matches more than one existing article.
