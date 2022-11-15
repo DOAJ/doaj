@@ -1244,6 +1244,7 @@ PRESERVATION_COLLECTION = {}
 TASKS_ANON_EXPORT_CLEAN = False
 TASKS_ANON_EXPORT_LIMIT = None
 TASKS_ANON_EXPORT_BATCH_SIZE = 100000
+TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
 
 ########################################
 # Editorial Dashboard - set to-do list size

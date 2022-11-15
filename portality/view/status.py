@@ -76,10 +76,14 @@ def status():
     indexable_note = 'index accepts index/delete operations'
     cluster_note = 'cluster stable'
 
-    for addr in app.config.get('APP_MACHINES_INTERNAL_IPS',[]):
+    for addr in app.config.get('APP_MACHINES_INTERNAL_IPS', []):
         if not addr.startswith('http'): addr = 'http://' + addr
         addr += url_for('.stats')
-        r = requests.get(addr)
+        try:
+            r = requests.get(addr)
+        except ConnectionError:
+            app_note = "UNREACHABLE: " + addr
+            continue
         res['ping']['apps'][addr] = r.status_code if r.status_code != 200 else r.json()
         try:
             if res['ping']['apps'][addr].get('inode_used_pc',0) >= 95:
