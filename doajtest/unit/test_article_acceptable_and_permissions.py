@@ -59,7 +59,6 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
             article_source = ArticleFixtureFactory.make_article_source(pissn="0000-0000", eissn="1111-1111")
 
         article = Article(**article_source)
-        article.add_journal_metadata()
 
         if doi is None:
             article.bibjson().remove_identifiers("doi")
