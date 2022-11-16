@@ -7,7 +7,7 @@ sticky_sidenav: true
 featuremap: ~~GuideToApplying:Fragment~~
 
 ---
-Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them. A [PDF version of the application form](/static/doaj/docs/2021-02-17-DOAJQuestions.pdf) is available for reference only.
+Before you start the application process, you will be asked to log in or register. You will be able to save your progress and review all your answers before you submit them. A [PDF version of the application form](/static/doaj/docs/2022-09-27-DOAJQuestions.pdf) is available for reference only.
 
 ## Basic criteria for inclusion
 
@@ -68,7 +68,7 @@ The following information must be available online, and easily accessible from t
     - page charges
     - colour charges
 - Contact details
-  - The contact details must include a real name and the journal’s dedicated email address
+  - The contact details must include a contact name and the journal's dedicated email address
   - The country in the application and on the journal website must be the country where the publisher is registered and carries out its business activities
 
 ---

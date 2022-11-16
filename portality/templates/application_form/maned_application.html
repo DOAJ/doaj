@@ -20,8 +20,8 @@
   {% set fs = formulaic_context.fieldset("quick_reject") %}
   <div class="modal" id="modal-quick_reject" tabindex="-1" role="dialog" aria-labelledby="modalLabel-quick_reject">
       <div class="modal__dialog" role="document">
-          <header class="flex-space-between modal__title">
-            <h3 id="modalLabel-quick_reject">
+          <header class="flex-space-between modal__heading">
+            <h3 id="modalLabel-quick_reject" class="modal__title">
               “{{ fs.label | safe }}”
             </h3>
             <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>
