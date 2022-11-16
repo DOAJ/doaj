@@ -14,8 +14,6 @@ DOAJ is a non-profit organisation and contributions from its supporters are cruc
 
 **To become a publisher supporter**, send an email to [our Help desk](mailto:helpdesk@doaj.org) and we will provide with details on how to support us. _Your organisation will be listed on our site._
 
-## Publisher supporters (Publishers and Aggregators)
-
 The following organisations have committed to supporting DOAJ over a 3-year period (Premier, Sustaining) or a 1-year period (Basic).
 
 <div>{% include '/data/sponsors.html' %}</div>
