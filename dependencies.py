@@ -23,5 +23,5 @@ if __name__ == "__main__":
 
     all = df_dep.merge(right=df_upgrade, how="left", left_on="package.package_name", right_on="name")
     all_short = all.drop(columns=["name","version", "latest_filetype", "editable_project_location"])
-    all_short = all_short[["package.key","package.package_name","package.installed_version","latest_version","dependencies"]]
+    all_short = all_short[["package.key","package.package_name","package.installed_version","package.required_version","latest_version","dependencies"]]
     all_short.to_csv("dependencies_analysis/dependencies.csv", index=False)
