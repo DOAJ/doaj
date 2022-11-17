@@ -125,6 +125,12 @@ if __name__ == "__main__":
                             writer.writerow([j.id, ' | '.join(updates), 'JOURNAL LOCKED - ' + str(e)])
                             continue
 
+                        # If we don't have a UR, we can't continue
+                        if update_req is None:
+                            print('Journal not in DOAJ - missing or not public')
+                            writer.writerow([j.id, ' | '.join(updates), 'JOURNAL NOT IN DOAJ'])
+                            continue
+
                         # validate update_form - portality.forms.application_processors.PublisherUpdateRequest
                         # ~~ ^->UpdateRequest:FormContext ~~
                         formulaic_context = ApplicationFormFactory.context("update_request")
