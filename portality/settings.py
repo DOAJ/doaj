@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.2.5"
+DOAJ_VERSION = "6.2.8"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -969,7 +969,6 @@ JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
 # approximate rate of change of the Table of Contents for journals
 TOC_CHANGEFREQ = "monthly"
 
-STATIC_PAGES = []
 
 
 ##################################################
@@ -1245,6 +1244,7 @@ PRESERVATION_COLLECTION = {}
 TASKS_ANON_EXPORT_CLEAN = False
 TASKS_ANON_EXPORT_LIMIT = None
 TASKS_ANON_EXPORT_BATCH_SIZE = 100000
+TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
 
 ########################################
 # Editorial Dashboard - set to-do list size
