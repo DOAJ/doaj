@@ -17,9 +17,9 @@ sudo pip install awscli
 . /home/cloo/doaj/bin/activate
 cd /home/cloo/doaj/src/doaj || exit 1
 
-# Install DOAJ submodules and requirements
+# Install DOAJ submodules and dependencies
 git submodule update --init --recursive
-pip install -r requirements.txt
+pip install -e .
 
 # Get the app configuration secrets from AWS  - NOTE: on a mac, base64 needs -D rather than -d
 if [ "$ENV" = 'production' ]
