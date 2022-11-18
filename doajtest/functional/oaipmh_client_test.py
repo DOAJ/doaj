@@ -49,7 +49,8 @@ def harvest(base_url, verb="ListRecords", metadata_prefix="oai_dc", rate_limit=0
     rtel = xml.find(".//" + NS + "resumptionToken")
     if rtel is not None:
         if rtel.text is not None and rtel.text != "":
-            print("\tresumption token", rtel.text, "cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize"))
+            print("\tresumption token", rtel.text)
+            print("\tcursor", rtel.get("cursor") + "/" + rtel.get("completeListSize"))
             print("\tresults received: ", len(idents))
             return rtel.text
         else:

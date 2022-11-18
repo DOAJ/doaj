@@ -37,6 +37,7 @@ class OAIPMHRecord(object):
     }
 
     records = {
+        "track_total_hits": True,
         "query": {
             "bool": {
                 "must": [
