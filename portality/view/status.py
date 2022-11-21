@@ -7,7 +7,7 @@ import requests
 from flask import Blueprint, make_response, url_for
 
 from portality import util
-from portality.bll import background_task_status
+from portality.bll import DOAJ
 from portality.core import app
 
 blueprint = Blueprint('status', __name__)
@@ -182,8 +182,9 @@ def status():
 
     # check background jobs
     # ~~-> BackgroundTask:MonitoringStatus~~
-    res['background'] = background_task_status.create_background_status()
-    if not background_task_status.is_stable(res['background'].get('status')):
+    bgtask_status_service = DOAJ.backgroundTaskStatusService()
+    res['background'] = bgtask_status_service.create_background_status()
+    if not bgtask_status_service.is_stable(res['background'].get('status')):
         res['stable'] = False
 
     resp = make_response(json.dumps(res))

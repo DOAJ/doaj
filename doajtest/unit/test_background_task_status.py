@@ -4,10 +4,12 @@ import time
 from doajtest.fixtures.background import save_mock_bgjob
 from doajtest.helpers import DoajTestCase, apply_test_case_config, patch_config
 from portality import constants
-from portality.bll import background_task_status
-from portality.bll.background_task_status import is_stable
+from portality.bll import DOAJ
 from portality.tasks.anon_export import AnonExportBackgroundTask
 from portality.tasks.journal_csv import JournalCSVBackgroundTask
+
+background_task_status = DOAJ.backgroundTaskStatusService()
+is_stable = background_task_status.is_stable
 
 # config BG_MONITOR_ERRORS_CONFIG
 bg_monitor_errors_config__empty = {
@@ -80,12 +82,10 @@ class TestBackgroundTaskStatus(DoajTestCase):
             },
         })
 
-
     @classmethod
     def tearDownClass(cls) -> None:
         super().tearDownClass()
         patch_config(cls.app_test, cls.org_config)
-
 
     @staticmethod
     def assert_stable_dict(val: dict):
