@@ -53,14 +53,14 @@ setup(
         "WTForms==2.2.1",
         "esprit @ git+https://github.com/CottageLabs/esprit.git@edda12177effa0945d99302f0d453b22503e335b#egg=esprit",
         "dictdiffer @ git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer",
-        "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger",
-        "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"
+        "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
-        "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium"],
+        "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium",
+                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
         "docs": [
-            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@4188441bf13538641a266754a6167e136a7ee850",
-            "testbook @ git+https://github.com/CottageLabs/testbook.git@12ff034652e30b05b991866bbeba4f86e14e567e"]
+            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@216abfc4b1fdd11af0442fe565295935e591e7bd",
+            "testbook @ git+https://github.com/CottageLabs/testbook.git@208107ac2741370d9d0d02c18f1594c03e9d38ce"]
     },
     url='https://cottagelabs.com/',
     author='Cottage Labs',

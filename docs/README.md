@@ -12,7 +12,7 @@ The default setup for generating documentation assumes that you have a repo call
 - My Code
   + doaj
   + doaj-docs
-  \ etc
+  \ etc...
 ```
 
 If this is not the case then you will either need to change your local directory layout or follw the instructions in **Generating documentation for local use** below.
