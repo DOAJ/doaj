@@ -14,7 +14,7 @@ setup(
         "elastic-apm==5.2.2",
         "elasticsearch==7.13.0",
         "esprit==0.1.0",   # legacy for scripts etc (phasing out)
-        "faust==1.10.4",
+        "faust-streaming==0.9.5",  # Note: This is a maintained fork of the abandoned robinhood/faust
         "Faker==2.0.3",
         "feedparser==6.0.8",
         "itsdangerous==2.0.1",     # fixme: unpinned dependency of flask, 2.1.0 is causing an import error 'json'
@@ -59,8 +59,8 @@ setup(
         "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium",
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
         "docs": [
-            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@216abfc4b1fdd11af0442fe565295935e591e7bd",
-            "testbook @ git+https://github.com/CottageLabs/testbook.git@208107ac2741370d9d0d02c18f1594c03e9d38ce"]
+            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@81eecd5e7b4da379b14c0ccb0cf64e9665a26e20#egg=featuremap",
+            "testbook @ git+https://github.com/CottageLabs/testbook.git@13403c0e1eb7f5b09cb35c6aa535944251798c0c#egg=testbook"]
     },
     url='https://cottagelabs.com/',
     author='Cottage Labs',
