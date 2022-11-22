@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
-# just run all of the scripts in default mode in the right order
-bash forms.sh
-bash data_models.sh
-bash featuremap.sh
-bash testbook.sh
-bash index.sh
+# Just run all of the doc generation scripts in default mode in the right order.
+# Note: you must have git@github.com:DOAJ/doaj-docs checked out alongside DOAJ as a destination for the docs
+
+./forms.sh;
+./data_models.sh;
+./featuremap.sh;
+./coverage.sh;
+./testbook.sh;
+./index.sh
