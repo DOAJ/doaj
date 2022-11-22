@@ -1,0 +1,66 @@
+# ~~ ArticleMetadataUploadForm:FunctionalTest -> ArticleMetadata:Page ~~
+suite: Article Metadata Upload Form
+testset: Article Metadata Upload Form
+tests:
+- title: Enter an article
+  context:
+    role: Publisher with existing journal
+  steps:
+  - step: Go to the "Enter Article Metadata" tab in the "Publisher Area"
+  - step: Do not fill in any data yet. Click "Add Article" button at the bottom of
+      the page
+    results:
+    - Black popup "Please fill that field in" below the Title field is shown
+    - Title field is focussed (it is possible to type straight into the field without
+      the need to click in it)
+  - step: "In \"Article Title\" textbox enter valid article title\n (any string of\
+      \ characters)"
+  - step: Do not fill in any more data. Click "Add Article" button at the bottom of
+      the page
+    results:
+    - 'Red error: ''You must provide the Full-Text URL or the DOI'' appears under
+      the URL field and the DOI field'
+    - Red error "Please provide at least one author" under Authors fields appears
+    - Red error "Either this field or Journal ISSN (online version) is required" under
+      "Journal ISSN (print version)" appears
+    - Red error "Either this field or Journal ISSN (print version) is required" under
+      "Journal ISSN (online version)" appears
+  - step: In Authors section click on orange "Add more authors" button
+    results:
+    - One row for author is added
+  - step: In Authors section click on one of the white "Remove author" button
+    results:
+    - Row disappears
+  - step: Clear the form by clicking 'Enter article metadata' tab at the top to start
+      again
+  - step: Enter a title
+  - step: Enter a malformed DOI
+  - step: Click Add Article at the bottom
+    results:
+    - 'Red error message: Invalid DOI. A DOI can optionally start with a prefix (such
+      as "doi:"), followed by "10." and the remainder of the identifier'
+  - step: Enter one or more author's name(s)  of the article eg "Aga Domanska"
+  - step: Click "Add Article" button
+    results:
+    - Error message under Authors disappears but others remain
+  - step: Add author's ORCID iD in the wrong format eg "0000-0000-0000-000a"
+  - step: Click "Add Article" button
+    results:
+    - 'Red error message: ''Invalid ORCID iD. Please enter your ORCID iD as a full
+      URL of the form https://orcid.org/0000-0000-0000-0000'''
+  - step: Enter valid Orcid iD for one of the authors
+  - step: 'Enter valid Full-Text URL, eg: https://pl.wikipedia.org/wiki/Torun'
+  - step: Select ISSN print and online version from dropdowns
+    results:
+    - On dropdown lists your issns are available to choose
+  - step: Select 2 identical ISSNs
+  - step: Click "Add Article" button
+    results:
+    - 'Errors: "This field must contain a different value to the field ''eissn''"
+      and "This field must contain a different value to the field ''pissn''" are shown
+      below ISSNs inputs'
+  - step: Choose different Online ISSN
+  - step: Click "Add Article" button
+    results:
+    - 'At the top of the page you see the confirmation message:  Article created/updated'
+    - https://docs.google.com/spreadsheets/d/1KGv7DEwocDvdbT8giN9Aw2EWtZGzKympouEw_uR2q18/edit#gid=782367369

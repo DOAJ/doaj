@@ -92,7 +92,7 @@ class DOAJ(object):
     @classmethod
     def notificationsService(cls):
         """
-        Obtain an instance of the notifications service ~~~->Notifications:Service~~
+        Obtain an instance of the notifications service ~~->Notifications:Service~~
         :return: NotificationsService
         """
         from portality.bll.services import notifications

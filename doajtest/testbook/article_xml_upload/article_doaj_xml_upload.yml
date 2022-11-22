@@ -1,0 +1,305 @@
+# ~~ DOAJArticleXMLUpload:FunctionalTest -> DOAJArticleXML:Feature ~~
+suite: Article XML Upload
+testset: DOAJ XML
+tests:
+- title: Upload a file which is not XML
+  context:
+    role: publisher
+  steps:
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area" /publisher/uploadfile
+  - step: Select "Choose file" and select a file from your computer which is not text
+      based (e.g. an image file or a PDF)
+  - step: Click "Upload"
+    results:
+    - A flash message appears at the top of the screen indicating an error has occurred
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a suitable entry in the "Notes". Check that the explanation link goes to
+      a suitable reason and resolution for the problem.
+- title: Upload an XML file which does not meet the DOAJ schema
+  context:
+    role: publisher
+  steps:
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Select "Choose file" and select a file from your computer which is XML but
+      not of the DOAJ schema. You may use the file "schema_invalid.xml" from the DOAJ
+      folder in resources for this test.
+  - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
+  - step: Click "Upload"
+    results:
+    - A flash message appears at the top of the screen indicating an error has occurred
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a suitable entry in the "Notes" (you may need to reload the page). Check
+      that the explanation link goes to a suitable reason and resolution for the problem.
+- title: Upload a malformed XML file
+  context:
+    role: publisher
+  steps:
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Select "Choose file" and select a file from your computer which looks like
+      XML but is actually malformed.  You may use the file "not_xml.xml" from the
+      DOAJ folder in resources for this test.
+  - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
+  - step: Click "Upload"
+    results:
+    - A flash message appears at the top of the screen indicating an error has occurred
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a suitable entry in the "Notes".  Check that the explanation link goes to
+      a suitable reason and resolution for the problem.
+- title: Upload a file with duplicates inside the file
+  context:
+    role: publisher
+  steps:
+  - step: Ensure that the publisher account owns a journal with Print ISSN "1111-1111"
+      and E-ISSN "2222-2222", and these are not attached to any other journals
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
+  - step: Select "Choose file" and select the test resource file "duplicate_in_file.xml"
+      from the DOAJ folder
+  - step: Click "Upload"
+    results:
+    - 'A flash message appears at the top of the screen: File uploaded and waiting
+      to be processed. Check back here for updates.'
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a suitable entry in the "Notes".  Check that the explanation link goes to
+      a suitable reason and resolution for the problem.
+- title: Upload a file containing ISSNs the publisher does not own
+  context:
+    role: publisher
+  steps:
+  - step: Ensure that the ISSNs 0000-0002 and 0000-000X are in DOAJ attached to one
+      or more journals (e.g. one with 0000-000X AND 0000-0002 or two, one with 0000-0002
+      and another with 0000-000X).  None of the journals with these ISSNs should be
+      owned by the publisher
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
+  - step: Select "Choose file" and select the test resource file "unowned_issn.xml"
+      from the DOAJ folder
+  - step: Click "Upload"
+    results:
+    - 'A flash message appears at the top of the screen indicating a successful upload:
+      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)'
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a suitable entry in the "Notes".  Check that the explanation link goes to
+      a suitable reason and resolution for the problem.
+  - step: click on "(show error details)" for the record in the "History of uploads"
+    results:
+    - Additional error details are shown, indicating that the publisher does not own
+      ISSNs "0000-0000" and "0000-000X"
+- title: Upload a file containing ISSN that has been withdrawn
+  context:
+    role: publisher
+  steps:
+  - step: Ensure that the publisher owns a journal with ISSN 0000-0000 that is not
+      in DOAJ (ie. has been withdrawn)
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
+  - step: Select "Choose file" and select the test resource file "withdrawn_journal.xml"
+      from the DOAJ folder
+  - step: Click "Upload"
+    results:
+    - 'A flash message appears at the top of the screen indicating a successful upload:
+      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)'
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a suitable entry in the "Notes".  Check that the explanation link goes to
+      a suitable reason and resolution for the problem.
+  - step: click on "(show error details)" for the record in the "History of uploads"
+    results:
+    - Additional error details are shown, indicating that the journal has been withdrawn
+      from DOAJ and therefore the article cannot be accepted
+- title: Upload a file containing ISSNs not previously seen in DOAJ
+  context:
+    role: publisher
+  steps:
+  - step: Ensure that the ISSN "1111-1111" is attached to a journal owned by the publisher
+      and ISSN "5555-5555" is not present in any journal in DOAJ.
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
+  - step: Select "Choose file" and select the test resource file "unmatched_issn.xml"  from
+      the DOAJ folder
+  - step: Click "Upload"
+    results:
+    - 'A flash message appears at the top of the screen indicating a successful upload:
+      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)'
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a suitable entry in the "Notes".  Check that the explanation link goes to
+      a suitable reason and resolution for the problem.
+  - step: click on "(show error details)" for the record in the "History of uploads"
+    results:
+    - Additional error details are shown, indicating that the ISSN "5555-5555" does
+      not appear in DOAJ.
+- title: Upload a file containing ISSNs erroneously shared with another account
+  context:
+    role: publisher
+  steps:
+  - step: Ensure that the ISSN "1111-1111" is attached a journal owned by the publisher
+      and ISSN "2222-2222" is attached to the same journal and also to another journal
+      not owned by the publisher
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
+  - step: Select "Choose file" and select the test resource file "shared_issn.xml"  from
+      the DOAJ folder
+  - step: Click "Upload"
+    results:
+    - 'A flash message appears at the top of the screen indicating a successful upload:
+      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)'
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a suitable entry in the "Notes".  Check that the explanation link goes to
+      a suitable reason and resolution for the problem.
+  - step: click on "(show error details)" for the record in the "History of uploads"
+    results:
+    - Additional error details are shown, indicating that the ISSN "2222-2222" is
+      shared with another user
+- title: Successfully upload a file containing a new article
+  context:
+    role: publisher
+  steps:
+  - step: Ensure that the publisher account owns a journal with Print ISSN "1111-1111"
+      and E-ISSN "2222-2222", and these are not attached to any other journals and
+      that these journal does not contain "Success" or "Update" articles from previous
+      tests.
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
+  - step: Select "Choose file" and select the test resource file "successful.xml"  from
+      the DOAJ folder
+  - step: Click "Upload"
+    results:
+    - A flash message appears at the top of the screen indicating a successful upload
+      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "successfully processed",
+      and the Note "1 articles imported (1 new, 0 updated)"
+  - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222)
+    results:
+    - The list of articles should contain an article with the title "Success!"
+- title: Successfully upload a file containing an updated article
+  context:
+    role: publisher
+  steps:
+  - step: Run through test 7 to upload a new article
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
+  - step: Select "Choose file" and select the test resource file "update.xml" from
+      the DOAJ folder
+  - step: Click "Upload"
+    results:
+    - A flash message appears at the top of the screen indicating a successful upload
+      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "successfully processed",
+      and the Note "1 articles imported (0 new, 1 updated)"
+  - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222)
+    results:
+    - The list of articles should contain an article with the title "Updated!", and
+      the previous version ("Success!") should be gone
+- title: Successfully upload a file by reference containing a new or updated article
+  context:
+    role: publisher
+  steps:
+  - step: Run through test 7 and 8 to upload and update a new article
+  - step: 'Make sure there are no other articles in the databse with the DOI: 10.1234/100.
+      Delete those first.'
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: 'In the box "Provide a URL where we can download the XML", enter this URL:
+
+
+      https://github.com/DOAJ/doaj/raw/develop/doajtest/xml_upload_test_package/DOAJ/successful.xml'
+  - step: Click "Upload"
+    results:
+    - A flash message appears at the top of the screen indicating that the file reference
+      was successfully received
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "successfully processed",
+      and the Note "1 articles imported (1 new, 0 updated)" or "1 articles imported
+      (0 new, 1 updated)".
+  - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222)
+    results:
+    - The list of articles should contain an article with the title "Success!"
+- title: Upload a file containing author's ORCID iD in a wrong format
+  context:
+    role: publisher
+  steps:
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Select "Choose file" and select the test resource file "orcid_id_invalid.xml"
+  - step: Click "Upload"
+    results:
+    - A flash message appears at the top of the screen indicating an error has occurred
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a "Unable to validate document with identified schema" entry in the "Notes".  Check
+      that the explanation link goes to a suitable reason and resolution for the problem.
+  - step: click on "(show error details)" for the record in the "History of uploads"
+    results:
+    - Additional error details are shown, indicating that the ORCID iD is not in the
+      correct format
+- title: Upload a file containing 2 identical ISSNs
+  context:
+    role: publisher
+  steps:
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Select "Choose file" and select the test resource file "identical_issns.xml"
+  - step: Click "Upload"
+    results:
+    - 'A flash message appears at the top of the screen indicating a successful upload:
+      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)'
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a suitable entry in the "Notes".  Check that the explanation link goes to
+      a suitable reason and resolution for the problem.
+- title: Upload a file without ISSN
+  context:
+    role: publisher
+  steps:
+  - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+  - step: Select "Choose file" and select the test resource file "no_issn.xml"
+  - step: Click "Upload"
+    results:
+    - 'A flash message appears at the top of the screen indicating a successful upload:
+      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)'
+    - Your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Your file is shown in the "History of uploads" with status "processing failed"
+      and a suitable entry in the "Notes".  Check that the explanation link goes to
+      a suitable reason and resolution for the problem.

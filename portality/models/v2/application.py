@@ -37,7 +37,7 @@ APPLICATION_STRUCT = {
     }
 }
 
-
+# ~~Application:Model~~
 class Application(JournalLikeObject):
     __type__ = "application"
 
