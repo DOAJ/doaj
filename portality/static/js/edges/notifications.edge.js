@@ -218,7 +218,7 @@ $.extend(true, doaj, {
 
             this._seenIcon = function(seen_date) {
                 let seenIcon = seen_date ? doaj.notificationsSearch.icons.seen : doaj.notificationsSearch.icons.unseen;
-                let seenTitle = seen_date ? `Notification seen on ${doaj.humanDate(seen_date)}` : "New notification"
+                let seenTitle = seen_date ? `Read on ${doaj.humanDate(seen_date)}` : "Unread"
                 let frag = `<span title="${seenTitle}">${seenIcon}</span>`;
                 return frag;
             }

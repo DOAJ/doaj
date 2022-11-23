@@ -6,7 +6,7 @@ $.extend(true, doaj, {
         activeEdges : {},
 
         createdByMap : {
-            "application:assed:assigned:notify" : "AssEd: assigned Application",
+            "application:assed:assigned:notify" : "AssEd: Assigned Application",
             "application:assed:inprogress:notify" : "AssEd: Application referred back",
             "application:editor:completed:notify" : "Editor: AssEd Completes Application",
             "application:editor_group:assigned:notify" : "Editor: Group assigned Application",
@@ -16,10 +16,11 @@ $.extend(true, doaj, {
             "application:publisher:assigned:notify" : "Publisher: Application assigned Editor",
             "application:publisher:created:notify" : "Publisher: Application received",
             "application:publisher:inprogress:notify" : "Publisher: Application in progress",
+            "application:publisher:rejected:notify" : "Publisher: Application rejected",
             "application:publisher:quickreject:notify" : "Publisher: Application quick-rejected",
             "application:publisher:revision:notify" : "Publisher: Application requires revisions",
             "bg:job_finished:notify" : "Admin: Background Job finished",
-            "journal:assed:assigned:notify" : "AssEd: assigned Journal",
+            "journal:assed:assigned:notify" : "AssEd: Assigned Journal",
             "journal:editor_group:assigned:notify": "Editor: Group assigned Journal",
             "update_request:publisher:accepted:notify": "Publisher: UR accepted",
             "update_request:publisher:assigned:notify": "Publisher: UR assigned Editor",
@@ -37,6 +38,10 @@ $.extend(true, doaj, {
 
             var countFormat = edges.numFormat({
                 thousandsSeparator: ","
+            });
+
+            let markdownConverter = new showdown.Converter({
+                literalMidWordUnderscores: true
             });
 
             var components = [
@@ -175,7 +180,7 @@ $.extend(true, doaj, {
                                 {
                                     pre: " (",
                                     field: "classification",
-                                    post: ")"
+                                    post: ")<br><br>"
                                 }
                             ],
                             [
@@ -187,9 +192,9 @@ $.extend(true, doaj, {
                             ],
                             [
                                 {
-                                    pre: "<p>",
-                                    field: "long",
-                                    post: "</p>"
+                                    valueFunction: function(val, res, component) {
+                                        return markdownConverter.makeHtml(res.long);
+                                    }
                                 }
                             ],
                             [
