@@ -1264,22 +1264,37 @@ PLAUSIBLE_LOG_DIR = None
 ##################################3
 # Background monitor
 # ~~->BackgroundMonitor:Feature~~
+
+# Configures the age of the last completed job on the queue before the queue is marked as unstable
+# (in seconds)
 BG_MONITOR_LAST_COMPLETED = {
-    'main_queue': 7200,
-    'long_running': 93600,
+    'main_queue': 7200,     # 2 hours
+    'long_running': 93600,  # 26 hours
 }
 
+# Configures the monitoring period and the allowed number of errors in that period before a queue is marked
+# as unstable
 BG_MONITOR_ERRORS_CONFIG = {
     'journal_csv': {
-        'check_sec': 3600,
+        'check_sec': 3600,  # 1 hour, time period between scheduled runs
         'allowed_num_err': 0,
+    },
+    'anon_export': {
+        'check_sec': 86400,  # 1 day, long enough to be alerted on the day, not long enough to stick around for the whole month
+        'allowed_num_err': 0
     }
 }
 
+# Configures the total number of queued items and the age of the oldest of those queued items allowed
+# before the queue is marked as unstable.  This is provided by type, so we can monitor all types separately
 BG_MONITOR_QUEUED_CONFIG = {
     'journal_csv': {
         'total': 2,
-        'oldest': 1200,
+        'oldest': 1200,     # 20 mins
+    },
+    'anon_export': {
+        'total': 2,
+        'oldest': 93600     # 26 hours
     }
 }
 
