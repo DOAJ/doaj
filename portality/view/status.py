@@ -112,7 +112,9 @@ def status():
 
     # check that all necessary ES nodes can actually be pinged from this machine
     for eddr in app.config['ELASTICSEARCH_HOSTS']:
-        es_addr = f'http://{eddr["host"]}:{eddr["port"]}'
+        es_eddr = eddr
+        if not isinstance(eddr, str):
+            es_addr = f'http://{eddr["host"]}:{eddr["port"]}'
         try:
             r = requests.get(es_addr, timeout=3)
             res['ping']['indices'][es_addr] = r.status_code
