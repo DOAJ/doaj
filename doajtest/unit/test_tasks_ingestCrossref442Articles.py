@@ -2108,7 +2108,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
 
-        stream = CrossrefArticleFixtureFactory.upload_no_issns()
+        stream = Crossref442ArticleFixtureFactory.upload_no_issns()
         with open(path, "wb") as f:
             f.write(stream.read())
 
