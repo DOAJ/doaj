@@ -36,12 +36,23 @@ class TodoEditor(TestDrive):
             "applications": apps
         }
 
+    def teardown(self, params) -> dict:
+        models.Account.remove_by_id(params["account"]["username"])
+        models.EditorGroup.remove_by_id(params["editor_group"]["id"])
+        for nature, details in params["applications"].items():
+            for detail in details:
+                models.Application.remove_by_id(detail["id"])
+        return {"status": "success"}
+
 
 def build_application(title, lmu_diff, cd_diff, status, editor=None, editor_group=None):
     source = ApplicationFixtureFactory.make_application_source()
     ap = models.Application(**source)
     ap.bibjson().title = title
     ap.set_id(ap.makeid())
+    ap.remove_current_journal()
+    ap.remove_related_journal()
+    ap.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
     ap.set_last_manual_update(dates.before(datetime.utcnow(), lmu_diff))
     ap.set_created(dates.before(datetime.utcnow(), cd_diff))
     ap.set_application_status(status)
@@ -61,7 +72,7 @@ def build_applications(un, eg):
 
     apps = {}
 
-    app = build_application(un + " Stalled Application", 6 * w, 12 * w, constants.APPLICATION_STATUS_IN_PROGRESS,
+    app = build_application(un + " Stalled Application", 6 * w, 7 * w, constants.APPLICATION_STATUS_IN_PROGRESS,
                                  editor_group=eg.name)
     app.save()
     apps["stalled"] = [{
@@ -95,3 +106,4 @@ def build_applications(un, eg):
     }]
 
     return apps
+

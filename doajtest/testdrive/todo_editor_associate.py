@@ -38,3 +38,14 @@ class TodoEditorAssociate(TestDrive):
                 "editor": eapps
             }
         }
+
+    def teardown(self, params) -> dict:
+        models.Account.remove_by_id(params["account"]["username"])
+        models.EditorGroup.remove_by_id(params["editor_group"]["id"])
+        for nature, details in params["applications"]["associate"].items():
+            for detail in details:
+                models.Application.remove_by_id(detail["id"])
+        for nature, details in params["applications"]["editor"].items():
+            for detail in details:
+                models.Application.remove_by_id(detail["id"])
+        return {"status": "success"}

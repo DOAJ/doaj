@@ -1,0 +1,57 @@
+suite: Dashboard
+testset: Editor Todo List
+
+tests:
+  - title: Editor Todo List
+    context:
+      role: editor
+      testdrive: todo_editor_associate
+    setup:
+      - Use the todo_editor_associate testdrive to setup for this test, of follow the next steps
+      - You should set up a user account which has both the editor and associate editor roles, and is the editor of at least one editorial group
+      - "The user account should be assigned at least 4 applications which meet the following criteria: one that was created over 6 weeks ago, 
+         one that has not been modified for 3 weeks, one which has recently been assigned to the user and is in the pending state, and one
+         recent application"
+      - "The user account should be assigned another 4 applications which meet the following criteria: one that is in the completed state and assigned
+         to your editorial group, one that is assigned to your editorial group in the pending state but with no associate editor assigned, one that
+         is in your editorial group which was created less than 8 weeks ago but which hasn't been updated for 6 weeks, and one that is
+         in your editorial group which was created more than 8 weeks ago"
+    steps:
+      - step: log in as an editor
+      - step: Go to the editor's dashboard page
+        path: /editor
+        results:
+          - You can see 8 applications in your priority list
+          - The highest priority is for a recently completed application (in your editorial group)
+          - The second priority is for a recently assigned/pending application (in your editorial group)
+          - The third priority is for an old (+8 weeks) application (in your editorial group)
+          - The fourth priority is for a stalled (+6 weeks) application (in your editorial group)
+          - The fifth priority is for an old application (+6 weeks) (assigned to you as an associate editor)
+          - The sixth priority is for a stalled application (assigned to you as an associate editor)
+          - The seventh priority is for a recently assigned/pending application (assigned to you as an associate editor)
+          - The lowest priority is for an open application (assigned to you as an associate editor)
+      - step: click on the highest priority application
+      - step: Change the application status to "Ready" and save
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - You can see 7 applications in your priority list
+          - The application you have just edited as disappeared from your priority list
+      - step: click on the new highest priority application (pending)
+      - step: assign an associate editor (ideally yourself) to the application and save
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - You can still see 7 applications in your priority list
+          - The pending application you modified in the previous steps is no longer your highest priority, it is now
+            listed as recently assigned/pending, further down the list
+          - Your new highest priority is an old application
+      - step: click on the new highest priority application (old)
+      - step: Modify the item in some minor way and save
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - Your list of priorities has not changed
+      - step: click on your second highest priority (stalled)
+      - step: Modify the item in some minor way and save
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - You have 6 applications left in your todo list
+          - The stalled application you just edited is no longer visible

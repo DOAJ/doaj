@@ -13,7 +13,7 @@
                 <ul class="tabs__list js-managed-groups-tabs" role="tablist">
                     {# managed_groups is inherited from the dashboard_base template #}
                     {# ~~^-> EditorGroup:Model ~~ #}
-                    {% if editor_of_assignments|length == 0 %}
+                    {% if editor_of_groups|length == 0 %}
                         <h2 class="type-04">
                             You do not manage any groups now.
                         </h2>

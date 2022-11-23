@@ -32,14 +32,6 @@ def index():
     # ~~-> Dashboard:Page~~
     return render_template('editor/dashboard.html', todos=todos)
 
-# build an editor's page where things can be done
-@blueprint.route('/group-info')
-@login_required
-@ssl_required
-def groupinfo():
-    # editor_of = models.EditorGroup.groups_by_editor(current_user.id)
-    # associate_of = models.EditorGroup.groups_by_associate(current_user.id)
-    return render_template('editor/index.html', managing_editor=app.config.get("MANAGING_EDITOR_EMAIL"))
 
 @blueprint.route('/group_journals')
 @login_required

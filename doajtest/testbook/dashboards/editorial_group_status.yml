@@ -1,5 +1,5 @@
-suite: Editorial Group Status
-testset: Editors
+suite: Dashboard
+testset: Editorial Group Status for Editors
 
 tests:
   - title: Record Counts

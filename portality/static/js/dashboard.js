@@ -54,9 +54,13 @@ doaj.dashboard.renderGroupInfo = function(data) {
     // ~~-> EditorGroup:Model~~
 
     // first remove the editor from the associates list if they are there
-    let edInAssEd = data.editor_group.associates.indexOf(data.editor_group.editor)
-    if (edInAssEd > -1) {
-        data.editor_group.associates.splice(edInAssEd, 1);
+    if (data.editor_group.associates && data.editor_group.associates.length > 0) {
+        let edInAssEd = data.editor_group.associates.indexOf(data.editor_group.editor)
+        if (edInAssEd > -1) {
+            data.editor_group.associates.splice(edInAssEd, 1);
+        }
+    } else {
+        data.editor_group.associates = [];  // just to avoid having to keep checking it below
     }
 
     let allEditors = [data.editor_group.editor].concat(data.editor_group.associates);
@@ -86,14 +90,16 @@ doaj.dashboard.renderGroupInfo = function(data) {
             urCount = data.by_editor[ed].update_requests || 0;
         }
 
-        let isEd = "";
-        if (i === 0) {  // first one in the list is always the editor
-            isEd = " (Ed.)"
+        if (data.editors[ed]) {
+            let isEd = "";
+            if (i === 0) {  // first one in the list is always the editor
+                isEd = " (Ed.)"
+            }
+            editorListFrag += `<li>
+                <a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>
+                <a href= "${doaj.dashboard.context.applicationsSearchBase}?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a>
+            </li>`;
         }
-        editorListFrag += `<li>
-            <a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>
-            <a href= "${doaj.dashboard.context.applicationsSearchBase}?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a>
-        </li>`;
     }
 
     // ~~-> ApplicationSearch:Page~~
