@@ -1,3 +1,4 @@
+// ~~ EditorGroupsSearch:Feature ~~
 $.extend(true, doaj, {
 
     adminEditorGroupSearch: {

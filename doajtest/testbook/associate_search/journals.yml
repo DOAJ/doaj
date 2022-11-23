@@ -1,0 +1,57 @@
+# ~~ AssociateJournalsSearch:FunctionalTest -> AssociateJournalsSearch:Feature ~~
+suite: Associate Search
+testset: Journals
+tests:
+- title: Test Associate Journal Search Interactions
+  context:
+    role: Associate Editor
+  steps:
+  - step: Go to the DOAJ editor's journal search at /editor/your_journals
+    results:
+    - All available records are found, and the first page of results is shown
+  - step: Open and Collapse all the facets on the left
+    results:
+    - The facet opens and closes as expected
+    - Each facet contains a maximum of 10 values relevant to that field
+  - step: Open one of the facets of your choice
+  - step: Select one of the values for that facet
+    results:
+    - All the results for the selected constraints are found, and the first page is
+      shown
+    - The filter applied is shown in the facets on the left and above the search results
+  - step: Go through each sort option in the "sort by" pull-down
+  - step: In each case, click the "sort by" button to reverse the direction of sort
+    results:
+    - The current search results are ordered correctly according to the selected sort
+      field and the selected sort direction
+  - step: Enter a search term in the search box
+    results:
+    - All the results for the selected constraints are found, and the first page is
+      shown
+    - Your search text ramains in the search box
+  - step: Go through each field constraint under the "search all" pull-down.  You
+      may change your search text if no results are found, to demonstrate that each
+      field works correctly
+    results:
+    - If there are search results, the first page is displayed
+    - If there are no search results, suitable "no results match" text is displayed
+  - step: Change the page size, using the page-size pull-down
+    results:
+    - The size of the page of results displays increases appropriately
+  - step: Click the "Next" button to go to the next page of results
+    results:
+    - The next page of results is displayed
+    - The "First" and "Prev" buttons are activated
+  - step: Click "Next" again
+  - step: Click "Prev"
+    results:
+    - You are navigated one page forward and then one page back in the results
+  - step: Click "First"
+    results:
+    - You are taken to the first page of the results
+  - step: Click the black X button to clear all filters
+    results:
+    - The interface returns to the initial state as per 1.1.1
+  - step: Click "Edit this journal" link at the bottom of any journal link
+    results:
+    - /editor/journal/<id> opens in a new tab

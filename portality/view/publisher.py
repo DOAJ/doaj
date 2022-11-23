@@ -180,7 +180,7 @@ def updates_in_progress():
 @write_required()
 def upload_file():
     """
-        ~~UploadMetadata: Feature->UploadMetadata:Page~~
+        ~~UploadMetadata:Feature->UploadMetadata:Page~~
         ~~->Crossref442:Feature~~
         ~~->Crossref531:Feature~~
         """

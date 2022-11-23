@@ -40,11 +40,13 @@ upstream doaj_apps {
     server 10.131.191.139:5050;
 }
 upstream doaj_bg_apps {
-    server 10.131.56.133:5050;
+    #server 10.131.56.133:5050;  #old bg machine
+    server 10.131.12.33:5050;
 }
 upstream doaj_apps_failover {
     server 10.131.191.139:5050;
-    server 10.131.56.133:5050 backup;
+    #server 10.131.56.133:5050 backup;  #old bg machine
+    server 10.131.12.33:5050 backup;
 }
 upstream doaj_index {
     server 10.131.191.132:9200;
