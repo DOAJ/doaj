@@ -173,7 +173,7 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
             if bibjson_element in bibjson:
                 for i in range(len(bibjson[bibjson_element]) - 1, -1, -1):
                     ide = bibjson[bibjson_element][i]
-                    if field is not None:
+                    if field is not None and field in ide:
                         if ide[field] == "":
                             bibjson[bibjson_element].remove(ide)
                     else:
