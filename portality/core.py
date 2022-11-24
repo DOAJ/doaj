@@ -14,7 +14,6 @@ from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping
 from portality.ui.debug_toolbar import DoajDebugToolbar
 
-import esprit
 import elasticsearch
 
 login_manager = LoginManager()

@@ -4,9 +4,6 @@ from portality.bll import exceptions
 from portality.lib import plugin
 from copy import deepcopy
 
-import esprit
-
-
 class QueryService(object):
     """
     ~~Query:Service~~
