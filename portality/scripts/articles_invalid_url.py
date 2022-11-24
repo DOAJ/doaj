@@ -37,8 +37,7 @@ if __name__ == "__main__":
         writer = csv.writer(f)
         writer.writerow(["ID", "Article Title", "URL", "In Doaj", "Created Date"])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Article.__type__), q=INVALID_URLS, page_size=100, keepalive='5m'):
-            article = models.Article(_source=j)
+        for article in Article.scroll(q=INVALID_URLS, page_size=100, keepalive='5m'):
             bibjson = article.bibjson()
             fulltext = bibjson.get_single_url("fulltext")
 
