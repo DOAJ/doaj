@@ -6,8 +6,6 @@ python accounts_with_same_email.py -o accounts_email.csv [-a]
 ```
 """
 import csv
-import esprit
-from portality.core import es_connection
 from portality.util import ipt_prefix
 from portality import models
 
@@ -23,14 +21,13 @@ HAS_EMAIL = {
 
 
 def users_with_emails():
-    for acc in esprit.tasks.scroll(conn, ipt_prefix('account'), q=HAS_EMAIL, page_size=100, keepalive='1m'):
-        yield models.Account(**acc)
+    for acct in models.Account.scroll(q=HAS_EMAIL, page_size=100, keepalive='1m'):
+        yield acct
 
 
 def users_with_journals_and_emails():
     """ Get accounts for all users with journals in the DOAJ """
-    for acc in esprit.tasks.scroll(conn, ipt_prefix('account'), q=HAS_EMAIL, page_size=100, keepalive='1m'):
-        acct = models.Account(**acc)
+    for acct in models.Account.scroll(q=HAS_EMAIL, page_size=100, keepalive='5m'):
         journal_ids = acct.journal
         if journal_ids is not None:
             for j in journal_ids:
@@ -53,7 +50,6 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    conn = es_connection
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
