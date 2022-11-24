@@ -1,6 +1,4 @@
 from portality import models
-from portality.core import es_connection
-import esprit
 import csv
 import json
 from portality.util import ipt_prefix
@@ -42,9 +40,6 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    # conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-    conn = es_connection
-
     with open(args.out, "w", encoding="utf-8") as f, open(args.input, "r") as g:
         reader = csv.reader(g)
 
@@ -55,8 +50,7 @@ if __name__ == "__main__":
             query = JournalQuery(row[1])
             print(json.dumps(query.query()))
             count = 0
-            for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=query.query(), limit=800, keepalive='5m'):
-                journal = models.Journal(_source=j)
+            for journal in Journal.scroll(q=query.query(), page_size=100, keepalive='5m', limit=800):
                 bibjson = journal.bibjson()
 
                 writer.writerow([row[0], row[1], journal.id, bibjson.title])
