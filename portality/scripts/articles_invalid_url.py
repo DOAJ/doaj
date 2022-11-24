@@ -1,7 +1,5 @@
 from portality import models
-from portality.core import es_connection
 from portality.util import ipt_prefix
-import esprit
 import re
 import csv
 
@@ -30,8 +28,6 @@ if __name__ == "__main__":
         print("Please specify an output file path with the -o option")
         parser.print_help()
         exit()
-
-    conn = es_connection
 
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
