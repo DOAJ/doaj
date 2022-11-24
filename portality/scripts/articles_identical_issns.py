@@ -1,7 +1,5 @@
 from portality import models
-from portality.core import es_connection
 from portality.util import ipt_prefix
-import esprit
 import csv
 
 ALL = {
