@@ -1,6 +1,5 @@
 from portality.models import Article, Application, Journal
 from portality.util import ipt_prefix
-import esprit
 import re
 import csv
 
