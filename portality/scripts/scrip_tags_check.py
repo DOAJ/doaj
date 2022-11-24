@@ -1,5 +1,4 @@
-from portality import models
-from portality.core import es_connection
+from portality.models import Article, Application, Journal
 from portality.util import ipt_prefix
 import esprit
 import re
@@ -26,37 +25,34 @@ if __name__ == "__main__":
 
     import argparse
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--out", help="output file path")
-    args = parser.parse_args()
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("-o", "--out", help="output file path")
+    # args = parser.parse_args()
+    #
+    # if not args.out:
+    #     print("Please specify an output file path with the -o option")
+    #     parser.print_help()
+    #     exit()
 
-    if not args.out:
-        print("Please specify an output file path with the -o option")
-        parser.print_help()
-        exit()
+    out = "out.txt"
 
-    conn = es_connection
-
-    with open(args.out, "w", encoding="utf-8") as f:
+    with open(out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["es_type", "ID", "Title", "field", "value"])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Article.__type__), q=ALL, page_size=100, keepalive='5m'):
-            article = models.Article(_source=j)
-            results = find_nested("<script>", article.__dict__, [])
+        for art in Article.scroll(q=ALL, page_size=100, keepalive='5m'):
+            results = find_nested("<script>", art.__dict__, [])
 
             for key, value in results:
                 writer.writerow(["article", article.id, article.bibjson().title, key, value])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Application.__type__), q=ALL, page_size=100, keepalive='5m'):
-            app = models.Application(_source=j)
+        for app in Application.scroll(q=ALL, page_size=100, keepalive='5m'):
             results = find_nested("<script>", app.__dict__, [])
 
             for key, value in results:
                 writer.writerow(["application", app.id, app.bibjson().title, key, value])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Journal.__type__), q=ALL, page_size=100, keepalive='5m'):
-            j = models.Journal(_source=j)
+        for j in Journal.scroll(q=ALL, page_size=100, keepalive='5m'):
             results = find_nested("<script>", j.__dict__, [])
 
             for key, value in results:
