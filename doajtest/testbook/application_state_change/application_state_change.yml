@@ -1,0 +1,112 @@
+# ~~ ApplicationStateChange:FunctionalTest -> ApplicationForm:Feature ~~
+# ~~-> UpdateRequest:Feature ~~
+# ~~-> ManEdApplicationForm:Page ~~
+suite: Application State Change
+testset: Application State Change
+tests:
+- title: Accept a New Application
+  context:
+    role: admin
+  steps:
+  - step: Go to the "Applications/Update Requests" page in the Administration area
+  - step: Select a new application that can be accepted (e.g. is in a status such
+      as Ready) and click "Review application"
+  - step: Complete any required fields, and then change the Application Status to
+      "Accepted"
+  - step: Click "SAVE"
+    results:
+    - A flash message indicates that a new journal was created, and links to that
+      journal
+    - A flash message indicates that the application has been updated-
+    - A flash message indicates that the journal has been associated with a new or
+      existing user account
+    - A flash message indicates an email has been sent to the account holder to tell
+      them journal was accepted.
+    - The Application Status field says "Accepted", and a note at the top of the form
+      says "Please note you cannot edit this application as it has been accepted into
+      the DOAJ."
+  - step: Click the "Unlock and Close" button
+  - step: Go to the mailtrap.io inbox for the test environment you are working in
+    results:
+    - There should be a suitable email to the journal owner indicating that their
+      journal has been accepted
+    - There should be a suitable email to the journal contact indicating that their
+      journal has been accepted
+- title: Accept an Update Request
+  context:
+    role: admin
+  steps:
+  - step: Go to the "Applications/Update Requests" page in the Administration area
+  - step: Select an update request that can be accepted (e.g. is in a status such
+      as Ready) and click "Review update"
+  - step: Complete any required fields, and then change the Application Status to
+      "Accepted"
+  - step: Click "SAVE"
+    results:
+    - A flash message indicates that an existing journal was updated and links to
+      that journal
+    - A flash message indicates that the journal has been associated with an existing
+      user account
+    - A flash message indicates an email has been sent to the owner of the journal
+    - The Application Status field says "Accepted", and a note at the top of the form
+      says "Please note you cannot edit this application as it has been accepted into
+      the DOAJ."
+  - step: Click the "Unlock and Close" button
+  - step: Go to the mailtrap.io inbox for the test environment you are working in
+    results:
+    - There should be a suitable email to the journal owner indicating that their
+      update request has been accepted
+- title: Reject a New Application
+  context:
+    role: admin
+  steps:
+  - step: Go to the "Applications/Update Requests" page in the Administration area
+  - step: Select a new application that can be rejected (e.g. is in status Ready)
+      and click "Review application"
+  - step: Complete any required fields, and then change the Application Status to
+      "Rejected"
+  - step: Click "SAVE"
+    results:
+    - A flash message indicates that the application record was updated
+  - step: Click the "Unlock and Close" button
+  - step: Go to the mailtrap.io inbox for the test environment you are working in
+    results:
+    - Ensure that there is no email associated with the rejection
+- title: Reject an Update Request
+  context:
+    role: admin
+  steps:
+  - step: Go to the "Applications/Update Requests" page in the Administration area
+  - step: Select an update request that can be rejected (e.g. is in status Ready)
+      and click "Review update"
+  - step: Complete any required fields, and then change the Application Status to
+      "Rejected"
+  - step: Click "SAVE"
+    results:
+    - A flash message indicates that an email was sent to the owner of the update
+      request
+    - A flash message indicates that the application was updated
+  - step: Click the "Unlock and Close" button
+  - step: Go to the mailtrap.io inbox for the test environment you are working in
+    results:
+    - There should be a suitable email to the journal owner indicating that their
+      update request has been rejected
+- title: Request Revisions on an Update Request
+  context:
+    role: admin
+  steps:
+  - step: Go to the "Applications/Update Requests" page in the Administration area
+  - step: Select an update request that can be rejected (e.g. is in status Ready)
+      and click "Review update"
+  - step: Complete any required fields, and then change the Application Status to
+      "Revisions Required"
+  - step: Click "SAVE"
+    results:
+    - A flash message indicates that an email was sent to the owner of the update
+      request
+    - A flash message indicates that the application was updated
+  - step: Click the "Unlock and Close" button
+  - step: Go to the mailtrap.io inbox for the test environment you are working in
+    results:
+    - There should be a suitable email to the journal owner indicating that their
+      update request has been rejected

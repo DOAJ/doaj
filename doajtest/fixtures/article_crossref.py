@@ -126,6 +126,10 @@ class Crossref442ArticleFixtureFactory(object):
         return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='2 The Same ISSNs']]")
 
     @classmethod
+    def upload_no_issns(cls):
+        return cls._response_from_xpath("//record[journalTitle='No issns']")
+
+    @classmethod
     def upload_multiple_affs(cls):
         return cls._response_from_xpath("//x:body/x:journal[x:journal_metadata[x:full_title='Multiple Affs']]")
 

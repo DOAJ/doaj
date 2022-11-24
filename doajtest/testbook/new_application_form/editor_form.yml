@@ -1,0 +1,33 @@
+# ~~ EditorApplicationForm:FunctionalTest -> EditorApplicationForm:Page ~~
+suite: New Application Form
+testset: Editor Form
+tests:
+- title: Form Overview
+  context:
+    role: editor
+  steps:
+  - step: Go to the editor "Your Group's Applications" search /editor/group_applications
+  - step: Select an application that is not in the "Accepted" or "Rejected" state,
+      and click "Review application"
+    results:
+    - The editor view of the application form is displayed
+    - '"Unlock and Close" is available on the top right'
+    - The ability to assign to an associate editor is available, and the ability to
+      change the editor group is disabled
+    - A "SAVE" button is available
+    - Application Status and Subject Classification sections are available
+    - The main application form questions are available
+    - The Notes section is available
+  - step: Assign one or two subject classifications.  Expand the tree and look for
+      values below the top level
+  - step: Make a superficial modification to the application metadata
+  - step: Click "Add new note" and enter some text into the new note textarea
+  - step: Click "SAVE"
+    results:
+    - A flash message tells you "Application updated" or you are scrolled down to
+      a question which has an answer missing.
+    - Choose an answer for the empty questions
+    - The changes you applied have been saved
+  - step: Click "Unlock and Close"
+    results:
+    - The page closes, and you are able to return to the search interface

@@ -159,6 +159,10 @@ class ArticleService(object):
         pissn = b.get_one_identifier("pissn")
         eissn = b.get_one_identifier("eissn")
 
+        #no pissn or eissn
+        if not pissn and not eissn:
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_ISSNS)
+
         #pissn and eissn identical
         if pissn == eissn:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN)

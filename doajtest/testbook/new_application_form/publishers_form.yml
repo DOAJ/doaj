@@ -1,0 +1,237 @@
+# ~~ PublisherApplicationForm:FunctionalTest -> PublisherApplicationForm:Page ~~
+suite: New Application Form
+testset: Publisher's Form
+tests:
+
+- title: PAGE 1 - Open access compliance
+  context:
+    role: publisher
+  steps:
+  - step: Go to the application form
+  - step: Click the question mark next to the questions.
+    results:
+    - 'A pop-up help box appears
+
+      You can click the link in the help box'
+  - step: Click close
+    results:
+    - The pop-up box disappears
+  - step: Click Next
+  - step: Click Yes on the first question
+    results:
+    - The error message disappears
+  - step: Click No on the first question
+    results:
+    - 'You see the error message: ''DOAJ only indexes open access journals which comply
+      with the statement above. Please check and update the open access statement
+      of your journal. You may return to this application at any time.'''
+  - step: Click Yes on the first question
+    results:
+    - The error message disappears
+  - step: Type XXX into the box for question 2
+    results:
+    - 'The error message changes: ''This value should be a valid URL'''
+  - step: Type https://doaj.org into the box
+    results:
+    - The URL is shown underneath the box and is clickable
+  - step: Click Next
+    results:
+    - An error message appears under the last questions indicating that you must answer
+      them
+  - step: Type 1800
+  - step: Click Next
+    results:
+    - 'You see the error message: ''OA Start Date must be a year in a 4 digit format
+      (eg. 1987) and must be bigger than 1900 but smaller than current year'''
+  - step: Type 2100
+  - step: Click Next
+    results:
+    - 'You see the error message: ''OA Start Date must be a year in a 4 digit format
+      (eg. 1987) and must be bigger than 1900 but smaller than current year'''
+  - step: Type 1800
+  - step: Click Next
+    results:
+    - You're taken to the "About" page
+
+- title: PAGE 2 - About
+  context:
+    role: publisher
+  steps:
+  - step: Check the application progress Menu at the right
+    results:
+    - 1st page marked with a tick, 2nd tab marked orange as active
+  - step: Click on the (1) in the application progress menu
+    results:
+    - You're taken to the first tab
+  - step: Create an error (eg. Change the answer to the 1st question to "No")
+  - step: Click on the (2) in the application progress menu
+    results:
+    - You're taken to the 2nd tab, 1st tab is marked red as containing invalid answers
+  - step: Click "Back" at the bottom of 2nd tab
+    results:
+    - You're taken to the 1st tab
+  - step: Change the answer to Yes
+  - step: Scroll to the bottom and click Next
+    results:
+    - Journal Title, Link to the journal's homepage, ISSN, Keywords, Languages, Publisher's
+      name and country - marked as required
+  - step: Fill in the title field and the homepage URL
+  - step: In the ISSN (print) field add xxxx-xxxx
+    results:
+    - 'You see the error message: ''This value seems to be invalid'''
+  - step: Repeat in the ISSN (online) field
+    results:
+    - You see the same error message
+  - step: Enter the same ISSN in both fields
+    results:
+    - 'You see the error message: The value of this field and the ISSN (print) field
+      must be different.'
+  - step: Change the value of one ISSN
+    results:
+    - All error messages clear.
+  - step: Add keywords
+    results:
+    - As you type, you see suggestions in a list below the box
+  - step: Select a suggestion
+    results:
+    - It is added to the box
+  - step: Add 7 keywords
+    results:
+    - 'As you write the 7th keyword, you see the message: You can only select 6 items'
+  - step: Click on the X in two keywords
+    results:
+    - They disappear
+  - step: Click in the languages box
+    results:
+    - You can start to type and suggested languages appear
+  - step: Select and language and then click the arrow next to it
+    results:
+    - A dropdown list of all available languages appears.
+  - step: Click Add Another
+    results:
+    - Another language field appears
+  - step: Click the X next to it
+    results:
+    - It disappears
+  - step: Repeat steps X to X for the Publisher's Name, Country, Society name, Country
+  - step: Delete the values from Society name and country, click Next
+    results:
+    - You can submit the page without providing answers to optional questions.
+
+- title: PAGE 3 - Copyright & licensing
+  context:
+    role: publisher
+  steps:
+  - step: Check the application progress Menu at the right
+    results:
+    - 1st and 2nd pages marked with a tick, 3rd page is marked orange as active
+  - step: Select 3 of the CC licenses
+    results:
+    - You can select multiple items
+  - step: With a CC license selected, choose Publisher's own license
+    results:
+    - The CC license deselects automatically and the "attributes" choices appear.
+  - step: Choose some attributes and try to click on a CC license
+    results:
+    - The checkboxes are inactive
+  - step: Unclick Publisher own license
+    results:
+    - '"Attributes" question disappears and you can select a CC license'
+  - step: 'Embedded licences: click Yes'
+    results:
+    - The URL field appears.
+  - step: Click No
+    results:
+    - The URL field disappears
+  - step: Scroll to the bottom and click the Previous button
+    results:
+    - You are taken to Page 2.
+  - step: ClickPage 3 Copyright & licensing on the progress bar
+    results:
+    - You are taken back to Page 3 and your answers are preserved.
+  - step: Complete all fields and click Next
+
+- title: PAGE 4 - Editorial
+  context:
+    role: publisher
+  steps:
+  - step: Click on 2 or 3 types of peer review
+    results:
+    - You can select multiple values
+  - step: Click Other
+    results:
+    - The box 'Other peer review' appears
+  - step: Unclick Other
+    results:
+    - It disappears
+  - step: 'Plagiraism: click Yes'
+    results:
+    - The URL box appears
+  - step: Write a number in the Average weeks box,
+    results:
+    - You can use the arrows at the side to increase or decrease the number
+  - step: Complete the rest of the page, click Next
+
+- title: PAGE 5 - Business model
+  context:
+    role: publisher
+  steps:
+  - step: APC question, click Yes
+    results:
+    - The 'Highest APC charged' fields appear.
+  - step: Click No
+    results:
+    - The boxes disappear but the URL fields remains
+  - step: Click Yes again and click Add Another
+    results:
+    - A 2nd row appears. You can select different currencies and different amounts
+
+- title: PAGE 6 - Best practice
+  context:
+    role: publisher
+  steps:
+  - step: Select one or more archiving services
+    results:
+    - You can select more than one and the URL box appears
+  - step: Select 'The journal content isn't archived...' option
+    results:
+    - The others deselect and become inactive
+  - step: Select Other
+    results:
+    - Other archiving policy  and URL boxes appear
+  - step: Scroll to the bottom and press Next
+    results:
+    - You see an error message telling you that the Other box must be filled in
+  - step: Fill in all the other questions and click Next
+    results:
+    - You are taken to the Review page
+
+- title: PAGE 7 - Review your answers
+  context:
+    role: publisher
+  steps:
+  - step: Note the URL under Open access compliance. Click the first 'Edit this section'
+      box
+    results:
+    - You are taken to Page 1 Open access compliance
+  - step: Change the URL and click 'Review your answers' on the progress bar
+    results:
+    - The URL has updated.
+  - step: Click 'Edit this section', scroll to the bottom of the page and click Next
+    results:
+    - You are taken to Page 2 About and all your answers are preserved
+  - step: Click Review your answers on the Progress bar
+    results:
+    - You are taken back to Page 7 -  Review you answers
+  - step: Scroll to the bottom and click try to click Submit
+    results:
+    - The Submit button is greyed out.
+  - step: Check the consent box
+    results:
+    - The Submit button goes red
+  - step: Unchedck the consent box again
+    results:
+    - The Submit button goes grey again
+  - step: Check the consent box and click Submit
+    results:
+    - The application submits and you are shown the confrmation page
