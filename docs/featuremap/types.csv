@@ -18,6 +18,7 @@ ExternalService
 Factory
 Feature
 FieldSet
+Fixture
 Form
 FormContext
 FormField
@@ -26,6 +27,7 @@ FormValidator
 FormWidget
 Fragment
 Framework
+FunctionalTest
 Library
 Model
 Monitoring
@@ -38,9 +40,11 @@ Regex
 Schema
 Script
 Service
+Task
 Technology
 Template
 Test
+Validator
 WebApp
 WebRoute
 Workflow

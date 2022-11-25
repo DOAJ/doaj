@@ -1,0 +1,63 @@
+# ~~ ManEdApplicationForm:FunctionalTest -> ManEdApplicationForm:Page ~~
+suite: New Application Form
+testset: ManEd Form
+tests:
+- title: Form Overview
+  context:
+    role: admin
+  steps:
+  - step: Go to the admin Applications search at /admin/applications
+  - step: Select an application that is not in the "Accepted" or "Rejected" state,
+      and click "Review application"
+    results:
+    - The managing editor view application form is displayed
+    - '"Unlock and Close" is available'
+    - The Quick Reject feature is available
+    - The ability to assign to an editor group and associate editor is available
+    - A "SAVE" button is available
+    - Status, Re-assign publisher account, Continuation Information and Subject Classification
+      sections are available
+    - Award the Seal is available
+    - The main application form questions are available
+    - The Notes section is available
+  - step: Assign an editor group
+    results:
+    - The "Group" pull-down asks you to type three characters.
+  - step: Choose any group
+    results:
+    - The associate editors and editor are shown in the Individual dropdown
+  - step: Select an editor from the "Individual" pull-down
+    results:
+    - The editor is selected
+  - step: Unset the Editor Group using the grey "X" in the "Editor Group" pull-down
+      box
+    results:
+    - The editor group and associate editor are removed
+  - step: Assign a new editor group and associate editor
+  - step: Expand the tree and browse for values below the top level
+    results:
+    - Assign two subject classifications.
+  - step: Start typing a subject in the subject search box
+    results:
+    - Assign one subject that way
+  - step: Assign an owner to the application
+  - step: Make a superficial modification to the application metadata
+  - step: Click "Add new note" and enter some text into the new note textarea
+  - step: Click "SAVE"
+    results:
+    - A message tells you that you cannot save the application because it contains
+      some invalid fields
+    - The form scrolls you down to a question which has a missing answer.
+  - step: Complete the question with the missing answer and 'Save'
+    results:
+    - A message at the top of the form tells you that you can only choose one or two
+      subject classifications
+  - step: Remove one subject classification and 'Save'
+    results:
+    - The form saves
+    - The changes you applied, both to the form, and in the functionality box, have
+      been saved
+    - The form saved without requiring answers to the ORCiD and I4OA questions.
+  - step: Click "Unlock and Close"
+    results:
+    - The page closes, and you are able to return to the search interface

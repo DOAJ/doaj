@@ -36,7 +36,7 @@ def journal_bulk_delete_manage(selection_query, dry_run=True):
         job_id = job.id
     return BackgroundSummary(job_id, affected={"journals" : estimates["journals-to-be-deleted"], "articles" : estimates["articles-to-be-deleted"]})
 
-
+# ~~JournalBulkDelete:Task~~
 class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
 
     __action__ = "journal_bulk_delete"
