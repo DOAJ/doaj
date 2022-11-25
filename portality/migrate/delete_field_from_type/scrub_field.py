@@ -9,23 +9,23 @@ from portality.lib import dataobj
 from datetime import datetime
 
 
-def scrub_field(connection, o_type, o_field, batch_size=500):
+def scrub_field(o_type, o_field, batch_size=500):
 
     batch = []
 
-    for o in esprit.tasks.scroll(connection, o_type):
-        # Access the data using the DataObj class
-        o_obj = dataobj.DataObj(raw=o)
+    model_class = MODELS.get(o_type.get("type"))
+
+    for o_obj in model_class.scroll():
         o_obj._delete(o_field)
 
         batch.append(o_obj.data)
 
         if len(batch) >= batch_size:
-            esprit.raw.bulk(connection, batch, idkey='id', type_=o_type)
+            o_obj.bulk(batch, idkey='id')
             batch = []
 
     # Finish saving the final batch
-    esprit.raw.bulk(connection, batch, idkey='id', type_=o_type)
+    o_obj.bulk(batch, idkey='id')
 
 
 if __name__ == "__main__":
@@ -47,16 +47,13 @@ if __name__ == "__main__":
         print("System is in READ-ONLY mode, script cannot run")
         exit(1)
 
-    # Connection to the ES index, rely on esprit sorting out the port from the host
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-
     # Make sure the user is super serious about doing this.
     resp = input("\nAre you sure? This script can be VERY DESTRUCTIVE!\n"
                      "Confirm delete of field {0} in type {1} y/N: ".format(args.field, args.type))
     if resp.lower() == 'y':
         # Run the function to remove the field
         print("Okay, here we go...")
-        scrub_field(conn, args.type, args.field)
+        scrub_field(args.type, args.field)
     else:
         print("Better safe than sorry, exiting.")
 
