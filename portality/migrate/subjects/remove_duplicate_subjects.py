@@ -1,6 +1,5 @@
 """ Scroll through articles, removing duplicate subjects. No evidence of same in journals """
 
-import esprit
 import json
 from portality import models
 from datetime import datetime
@@ -12,14 +11,14 @@ batch_size = 1000
 failed_articles = []
 
 
-def rem_dup_sub(conn, write_changes=False):
+def rem_dup_sub(write_changes=False):
 
     write_batch = []
     updated_count = 0
     same_count = 0
 
     # Scroll though all articles in the index
-    for a in esprit.tasks.scroll(conn, 'article', page_size=100, keepalive='5m'):
+    for article_model in models.Article.scroll(q=ALL, page_size=100, keepalive='5m'):
         try:
             article_model = models.Article(_source=a)
 
@@ -78,7 +77,7 @@ if __name__ == "__main__":
     # Connection to the ES index, rely on esprit sorting out the port from the host
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
-    (u, s) = rem_dup_sub(conn, args.write)
+    (u, s) = rem_dup_sub(args.write)
 
     if args.write:
         print("Done. {0} articles updated, {1} remain unchanged.".format(u, s))
