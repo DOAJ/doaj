@@ -567,7 +567,6 @@ huey_helper = IngestArticlesBackgroundTask.create_huey_helper(main_queue)
 
 
 @huey_helper.register_execute(is_load_config=True)
-@write_required(script=True)
 def ingest_articles(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = IngestArticlesBackgroundTask(job)
