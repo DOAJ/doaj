@@ -8,10 +8,10 @@ For each article in the DOAJ index:
 from datetime import datetime
 
 from portality import models
-from portality.core import app
-from portality.tasks.redis_huey import long_running, schedule
-from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
+from portality.core import app
+from portality.tasks.helpers import background_helper
+from portality.tasks.redis_huey import long_running
 
 
 class ArticleCleanupSyncBackgroundTask(BackgroundTask):
@@ -196,10 +196,10 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         cls.set_param(params, "prepall", prepall)
 
         # first prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
-        job.params = params
+        job = background_helper.create_job(username=username,
+                                           action=cls.__action__,
+                                           params=params,
+                                           queue_type=huey_helper.queue_type, )
         if prepall:
             job.add_audit_message("'prepall' arg set. 'unchanged' articles will also have their indexes refreshed.")
         return job
@@ -216,16 +216,17 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         article_cleanup_sync.schedule(args=(background_job.id,), delay=10)
 
 
-@long_running.periodic_task(schedule("article_cleanup_sync"))
-@write_required(script=True)
+huey_helper = ArticleCleanupSyncBackgroundTask.create_huey_helper(long_running)
+
+
+@huey_helper.register_schedule
 def scheduled_article_cleanup_sync():
     user = app.config.get("SYSTEM_USERNAME")
     job = ArticleCleanupSyncBackgroundTask.prepare(user)
     ArticleCleanupSyncBackgroundTask.submit(job)
 
 
-@long_running.task()
-@write_required(script=True)
+@huey_helper.register_execute(is_load_config=False)
 def article_cleanup_sync(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = ArticleCleanupSyncBackgroundTask(job)

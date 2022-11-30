@@ -101,6 +101,7 @@ $.extend(true, doaj, {
 
                     result += firstRow + "<br>";
                     result += "Job ID: " + resultobj.id + "<br>";
+                    result += "Queue type: " + resultobj.queue_type + "<br>";
                     result += dateRow + "<br>";
 
                     result += '<a href="#" data-id="' + resultobj.id + '" class="' + toggleClass + '">More Information</a><br>';
@@ -177,6 +178,20 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "status.exact",
                     display: "Status",
+                    deactivateThreshold : 1,
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: false,
+                        togglable: true,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+                edges.newRefiningANDTermSelector({
+                    id: "queue_type",
+                    category: "facet",
+                    field: "queue_type.exact",
+                    display: "Queue Type",
                     deactivateThreshold : 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,

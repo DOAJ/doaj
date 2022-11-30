@@ -1,12 +1,13 @@
-from flask_login import login_user
-
-from portality.core import app
-from portality import models
-from portality.bll import DOAJ
-from portality import constants
-
 import traceback
 from copy import deepcopy
+
+from flask_login import login_user
+from huey import RedisHuey
+
+from portality import constants
+from portality import models
+from portality.bll import DOAJ
+from portality.core import app
 
 
 class BackgroundException(Exception):
@@ -25,9 +26,9 @@ class BackgroundSummary(object):
 
     def as_dict(self):
         return {
-            "job_id" : self.job_id,
-            "affected" : self.affected,
-            "error" : self.error
+            "job_id": self.job_id,
+            "affected": self.affected,
+            "error": self.error
         }
 
 
@@ -47,7 +48,7 @@ class BackgroundApi(object):
             ctx = app.test_request_context("/")
             ctx.push()
             # ~~-> Account:Model~~
-            acc = models.Account.pull(job.user)     # FIXME: what happens when this is the "system" user
+            acc = models.Account.pull(job.user)  # FIXME: what happens when this is the "system" user
             if acc is not None:
                 login_user(acc)
 
@@ -165,9 +166,15 @@ class BackgroundTask(object):
     def set_reference(cls, refs, ref_name, value):
         refs['{}__{}'.format(cls.__action__, ref_name)] = value
 
+    @classmethod
+    def create_huey_helper(cls, task_queue: RedisHuey):
+        from portality.tasks.helpers import background_helper
+        return background_helper.RedisHueyTaskHelper(task_queue, cls.__action__)
+
 
 class AdminBackgroundTask(BackgroundTask):
     """~~AdminBackgroundTask:Process->BackgroundTask:Process~~"""
+
     @classmethod
     def check_admin_privilege(cls, username):
         # ~~->Account:Model~~

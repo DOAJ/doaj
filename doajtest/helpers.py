@@ -137,7 +137,7 @@ class DoajTestCase(TestCase):
             'CMS_BUILD_ASSETS_ON_STARTUP': False
         })
 
-        # some unittest will capture log for testing, therefor log level must be debug
+        # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)
 
         # always_eager has been replaced by immediate

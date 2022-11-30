@@ -1,15 +1,14 @@
+from datetime import datetime
+
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
-
-from portality.tasks.harvester_helpers import workflow
 from portality.core import app
-from portality.models.harvester import HarvesterProgressReport as Report
-from portality.tasks.redis_huey import schedule, long_running
-from portality.decorators import write_required
 from portality.lib import dates
+from portality.models.harvester import HarvesterProgressReport as Report
 from portality.store import StoreFactory
-
-from datetime import datetime
+from portality.tasks.harvester_helpers import workflow
+from portality.tasks.helpers import background_helper
+from portality.tasks.redis_huey import long_running
 
 
 class BGHarvesterLogger(object):
@@ -87,10 +86,7 @@ class HarvesterBackgroundTask(BackgroundTask):
         """
 
         # first prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
-        return job
+        return background_helper.create_job(username, cls.__action__, queue_type=huey_helper.queue_type)
 
     @classmethod
     def submit(cls, background_job):
@@ -115,15 +111,17 @@ class HarvesterBackgroundTask(BackgroundTask):
         return False
 
 
-@long_running.periodic_task(schedule("harvest"))
-@write_required(script=True)
+huey_helper = HarvesterBackgroundTask.create_huey_helper(long_running)
+
+
+@huey_helper.register_schedule
 def scheduled_harvest():
     user = app.config.get("SYSTEM_USERNAME")
     job = HarvesterBackgroundTask.prepare(user)
     HarvesterBackgroundTask.submit(job)
 
-@long_running.task()
-@write_required(script=True)
+
+@huey_helper.register_execute(is_load_config=False)
 def harvest(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = HarvesterBackgroundTask(job)

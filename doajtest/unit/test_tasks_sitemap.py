@@ -1,6 +1,7 @@
 import time
 
 from doajtest.helpers import DoajTestCase, StoreLocalPatcher
+from doajtest.unit_tester import bgtask_tester
 from portality.background import BackgroundApi
 from portality.core import app
 from portality.store import StoreFactory
@@ -28,3 +29,6 @@ class TestSitemap(DoajTestCase):
         BackgroundApi.execute(task)
         time.sleep(2)
         assert len(self.mainStore.list(self.container_id)) == 1
+
+    def test_prepare__queue_type(self):
+        bgtask_tester.test_queue_type_assigned(sitemap.SitemapBackgroundTask)

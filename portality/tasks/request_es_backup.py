@@ -1,12 +1,13 @@
-from portality import models, app_email
-from portality.core import app
-
 from esprit.raw import Connection
 from esprit.snapshot import ESSnapshotsClient
 
-from portality.tasks.redis_huey import main_queue, schedule
-from portality.decorators import write_required
+from portality import models, app_email
 from portality.background import BackgroundTask, BackgroundApi
+from portality.core import app
+from portality.tasks.helpers import background_helper
+from portality.tasks.redis_huey import main_queue
+
+
 # FIXME: update for index-per-type
 
 
@@ -59,9 +60,8 @@ class RequestESBackupBackgroundTask(BackgroundTask):
         """
 
         # first prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
+        job = background_helper.create_job(username, cls.__action__,
+                                           queue_type=huey_helper.queue_type, )
         return job
 
     @classmethod
@@ -76,16 +76,17 @@ class RequestESBackupBackgroundTask(BackgroundTask):
         request_es_backup.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.periodic_task(schedule("request_es_backup"))
-@write_required(script=True)
+huey_helper = RequestESBackupBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_schedule
 def scheduled_request_es_backup():
     user = app.config.get("SYSTEM_USERNAME")
     job = RequestESBackupBackgroundTask.prepare(user)
     RequestESBackupBackgroundTask.submit(job)
 
 
-@main_queue.task()
-@write_required(script=True)
+@huey_helper.register_execute(is_load_config=False)
 def request_es_backup(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = RequestESBackupBackgroundTask(job)
