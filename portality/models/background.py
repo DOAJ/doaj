@@ -1,6 +1,8 @@
+import datetime
+
+from portality import dao
 from portality.core import app
 from portality.lib import dataobj, dates, es_data_mapping
-from portality import dao
 
 
 class BackgroundJob(dataobj.DataObj, dao.DomainObject):
@@ -76,7 +78,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
 
     @params.setter
     def params(self, obj):
-        self._set_single("params", obj)     # note we don't bother setting with struct, as there is none
+        self._set_single("params", obj)  # note we don't bother setting with struct, as there is none
 
     @property
     def reference(self):
@@ -84,7 +86,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
 
     @reference.setter
     def reference(self, obj):
-        self._set_single("reference", obj)     # note we don't bother setting with struct, as there is none
+        self._set_single("reference", obj)  # note we don't bother setting with struct, as there is none
 
     def add_reference(self, name, value):
         if self.reference is None:
@@ -160,7 +162,7 @@ BACKGROUND_STRUCT = {
         "audit": {"contains": "object"}
     },
     "objects": [
-        "params",           # Note that these do not have structs specified, which allows them to have arbitrary content
+        "params",  # Note that these do not have structs specified, which allows them to have arbitrary content
         "reference"
     ],
     "structs": {
@@ -191,6 +193,7 @@ class ActiveQuery(object):
     """
     ~~ActiveBackgroundJob:Query->Elasticsearch:Technology~~
     """
+
     def __init__(self, task_type, size=2, since=None):
         self._task_type = task_type
         self._size = size
@@ -198,16 +201,105 @@ class ActiveQuery(object):
 
     def query(self):
         q = {
-            "query" : {
-                "bool" : {
-                    "must" : [
-                        {"term" : {"action.exact" : self._task_type}},
-                        {"terms" : {"status.exact" : ["queued", "processing"]}}
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"action.exact": self._task_type}},
+                        {"terms": {"status.exact": ["queued", "processing"]}}
                     ]
                 }
             },
-            "size" : self._size
+            "size": self._size
         }
         if self._since:
-            q["query"]["bool"]["must"].append({"range" : {"created_date" : {"gte":  self._since}}})
+            q["query"]["bool"]["must"].append({"range": {"created_date": {"gte": self._since}}})
         return q
+
+
+class BackgroundJobQueryBuilder:
+    def __init__(self):
+        self.query_dict = {
+            "query": {
+                "bool": {
+                    "must": []
+                }
+            },
+        }
+
+    def append_must(self, must_dict: dict):
+        self.query_dict["query"]["bool"]["must"].append(must_dict)
+        return self
+
+    def since(self, since: datetime.datetime):
+        if since:
+            since_str = dates.format(since)
+            self.append_must({"range": {"created_date": {"gte": since_str}}})
+        return self
+
+    def action(self, action):
+        self.append_must({"term": {"action.exact": action}})
+        return self
+
+    def queue_type(self, queue_type):
+        self.append_must({"term": {"queue_type.exact": queue_type}})
+        return self
+
+    def status_includes(self, status):
+        if isinstance(status, str):
+            status = [status]
+        elif not isinstance(status, list):
+            status = list(status)
+
+        self.append_must({"terms": {"status.exact": status}})
+        return self
+
+    def size(self, size: int):
+        self.query_dict['size'] = size
+        return self
+
+    def order_by(self, field_name, order):
+        if 'sort' not in self.query_dict:
+            self.query_dict['sort'] = []
+
+        self.query_dict['sort'].append(
+            {field_name: {"order": order}}
+        )
+        return self
+
+    def build_query_dict(self):
+        return self.query_dict.copy()
+
+    def build_query_object(self):
+        class _Query:
+            def query(subself):
+                return self.build_query_dict()
+
+        return _Query()
+
+
+class SimpleBgjobQueue:
+    def __init__(self, action, status, since=None):
+        self.action = action
+        self.status = status
+        self.since = since
+
+    def query(self):
+        return (BackgroundJobQueryBuilder()
+                .action(self.action)
+                .since(self.since)
+                .status_includes(self.status)
+                .build_query_dict())
+
+
+class LastCompletedJobQuery:
+    def __init__(self, queue_type):
+        self.queue_type = queue_type
+
+    def query(self):
+        return (BackgroundJobQueryBuilder()
+                .queue_type(self.queue_type)
+                .order_by('last_updated', 'desc')
+                .size(1)
+                .build_query_dict())
+
+

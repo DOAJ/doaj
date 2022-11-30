@@ -17,7 +17,6 @@ class TestBackgroundHelper(TestCase):
             (long_running, constants.BGJOB_QUEUE_TYPE_LONG),
             (main_queue, constants.BGJOB_QUEUE_TYPE_MAIN),
             (None, constants.BGJOB_QUEUE_TYPE_UNKNOWN),
-            ('', constants.BGJOB_QUEUE_TYPE_UNKNOWN),
         ]
 
         for case in cases:
@@ -38,15 +37,13 @@ class TestRedisHueyTaskHelper(TestCase):
         super().setUpClass()
         cls.org_config = helpers.patch_config(app, {
             'HUEY_SCHEDULE': {
-                cls.task_name_a: {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
-            }
-        })
-
-        cls.org_config = helpers.patch_config(app, {
+                cls.task_name_a: constants.CRON_NEVER,
+            },
             'HUEY_TASKS': {
                 cls.task_name_b: {'retries': cls.expected_retries}
             }
         })
+
 
     @classmethod
     def tearDownClass(cls) -> None:
