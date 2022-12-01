@@ -32,4 +32,4 @@ Following are the guide to write unit test for parallelised:
 
 ## Testbook
 
-To generate the functional tests suit follow the README.md file from the [Testbook repository](https://github.com/CottageLabs/testbook) 
+See: Testbook section from ../docs/README.md
