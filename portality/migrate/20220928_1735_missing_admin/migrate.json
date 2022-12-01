@@ -1,0 +1,12 @@
+{
+  "types": [
+    {
+      "type" : "article",
+      "init_with_model" : true,
+      "keepalive" : "20m",
+      "functions" : [
+        "portality.migrate.20220928_1735_missing_admin.operations.add_admin_field"
+      ]
+    }
+  ]
+}
