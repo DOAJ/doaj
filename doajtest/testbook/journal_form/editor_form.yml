@@ -1,0 +1,48 @@
+# ~~EditorJournalForm:FunctionalTest -> EditorJournalForm:Page ~~
+suite: Journal Form
+testset: Editor Form
+tests:
+- title: Interactions
+  depends:
+  - suite: Journal Form
+    testset: ManEd Form
+  context:
+    role: editor
+  steps:
+  - step: Go to Journal Search page at /editor/group_journals
+  - step: Click "Edit this journal" link at the bottom of any journal - note the title
+      of the edited journal for future reference
+    results:
+    - Page /editor/journal/<id> is open in a new browser window/tab (<id> is id of
+      the chosen journal)
+    - Editor Group drop down in Editorial area is disabled and show your group's name
+  - step: Click on the "Assigned to" drop down in Editorial area
+    results:
+    - All editors from your group are available to choose
+  - step: Choose any editor from "Assigned to" drop down by clicking on his name
+    results:
+    - Now chosen editor's name is displayed in "Assigned" to field
+    - Besides "Editorial" only "Basic Journal Information", "Subject classification",
+      "Quality and Transparency of the Editoria Process", "How Open is the Journal",
+      "Contact licensing", "Copyright and Permissions" and "Notes" areas are displayed
+      to edit
+    - Note that you cannot change the Editor Group but can assign the journal to different
+      Editor
+    - All displayed questions are editable
+  - step: Edit value of one of the fields
+  - step: Click red "Save" button
+    results:
+    - Message banner "Journal updated." is shown at the top of the page
+  - step: Click Dismiss at the right of the banner
+    results:
+    - The banner hides
+  - step: Click "Unlock and Close" button at the top of the application
+    results:
+    - 'You see the message: This record is now unlocked
+
+      You may close this tab safely.'
+  - step: Close the tab.
+  - step: Go back to the /editor/group_journals
+    results:
+    - Confirm appropriate data was changed either on search result (you may need to
+      refresh the page to see them applied) or on Journals page at /toc/<id>

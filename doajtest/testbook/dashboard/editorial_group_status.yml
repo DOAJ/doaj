@@ -1,0 +1,95 @@
+# ~~ Dashboard:FunctionalTest -> EditorialGroupStatus:Feature ~~
+suite: Dashboard
+testset: Editorial Group Status
+tests:
+- title: Editorial Group Status for ManEds - Record Counts
+  context:
+    role: admin
+  steps:
+  - step: To prepare to do this test set up at least 2 editorial groups with multiple
+      members and a good selection of applications assigned to a number of associate
+      editors.  You should set yourself as the managing editor of those groups
+  - step: Go to your ManEd Dashboard page (/dashboard)
+  - step: Scroll to the bottom of the dashbaord page, after your TODO list items
+    results:
+    - The editorial groups you manage are listed under the heading Activity
+    - The first group is already selected and the data shown
+  - step: Click on one of the other group names
+    results:
+    - The editorial group's statistics are presented on the screen
+    - You can see the total number of applications assigned to the group
+    - You can see the number of applications assigned to each editor
+    - You can see how many applications have not been assigned
+    - You can see the breakdown of the statuses of all the applications
+  - step: Click on the application count next to the group's name (you may want to
+      right click to keep the dashboard tab open during this test)
+    results:
+    - You are taken to the application search which shows the open applications assigned
+      to this group.
+    - The number of search results is the same as shown on the dashboard
+  - step: Go back to the dashboard page
+  - step: Click on an editor's name
+    results:
+    - A mail window opens in your mail client
+  - step: Click on the application count next to an editor's name
+    results:
+    - You are taken to the application search which shows the open applications assigned
+      to the user
+    - The number of search results is the same as shown on the dashboard
+  - step: Go back to the dashboard page
+  - step: Click on the application count next to the "unassigned" label
+    results:
+    - You are taken to the application search which shows the open applications with
+      no assigned editor
+    - The number of search results is the same as shown on the dashboard
+  - step: Go back to the dashboard page
+  - step: Click on one of the statuses under "Applications By Status"
+    results:
+    - You are taken to the application search which shows the open applications in
+      that status
+    - The number of search results is the same as shown on the dashboard
+- title: Editorial Group Status for ManEds - Updating Editors
+  context:
+    role: admin
+  steps:
+  - step: To prepare to do this test set up at least 2 editorial groups with multiple
+      members and a good selection of applications assigned to a number of associate
+      editors.  You should set yourself as the managing editor of those groups
+  - step: Go to your ManEd Dashboard page (/dashboard)
+  - step: Select an editorial group to see its status information
+  - step: Take a note of the number of applications assigned to one of your editors
+  - step: Click on the count of applications next to the "unassigned" tag
+  - step: Click "Review Application" on the application in the search interface
+  - step: Assign the application to the editor selected above
+  - step: Go back to the dashboard page (you may need to refresh it if you kept the
+      page open)
+    results:
+    - The editor selected now has one more application assigned to them
+    - The number of unassigned applications has reduced by one
+  - step: Click on the count of applications next to the selected editor
+    results:
+    - The application search is shown
+    - The application you assigned to the editor is listed in the search
+- title: Editorial Group Status for ManEds - Changing Status
+  context:
+    role: admin
+  steps:
+  - step: To prepare to do this test set up at least 2 editorial groups with multiple
+      members and a good selection of applications assigned to a number of associate
+      editors.  You should set yourself as the managing editor of those groups
+  - step: Go to your ManEd Dashboard page (/dashboard)
+  - step: Select an editorial group to see its status information
+  - step: Take a note of the number of applications assigned to a specific status
+      (e.g. in progress)
+  - step: Click on the link to applications in that status
+  - step: Click "Review Application" on the application in the search interface
+  - step: Change the status to something different
+  - step: Go back to the dashboard page (you may need to refresh it if you kept the
+      page open)
+    results:
+    - The status you selected now has one more application in that state
+    - The previous status has one fewer application in that state
+  - step: Click on the new status link
+    results:
+    - The application search is shown
+    - The application you put into this status is visible

@@ -17,6 +17,7 @@ from portality.lcc import lcc_jstree
 from portality.lib import plausible
 from portality.ui.messages import Messages
 
+# ~~DOAJ:Blueprint~~
 blueprint = Blueprint('doaj', __name__)
 
 

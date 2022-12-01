@@ -1,0 +1,69 @@
+# ~~ AdminUserSearch:FunctionalTest -> AdminUserSearch:Feature ~~
+suite: Administrative Search
+testset: Users
+tests:
+- title: Test Admin Users Search Interactions
+  context:
+    role: admin
+  steps:
+  - step: Go to the DOAJ admin users search at /account
+    results:
+    - All available records are found, and the first page of results is shown
+    - There is one facet on the left, and it is open, showing all the user roles
+  - step: Select Admin in the "Role" facet
+    results:
+    - All the results for the selected constraints are found, and the first page is
+      shown
+    - The filter applied is shown in the facets on the left and above the search results
+  - step: Go through each sort option in the "sort by" pull-down
+    results:
+    - The current search results are ordered correctly according to the selected sort
+      field and the selected sort direction
+  - step: In each case, click the "sort by" button to reverse the direction of sort
+  - step: Making sure, Admin is selectec still, enter a search term in the search
+      box
+    results:
+    - All the results for the selected constraints are found, and the first page is
+      shown
+    - Your search text remains in the search box
+  - step: Go through each field constraint under the "search all" pull-down.  You
+      may change your search text if no results are found, to demonstrate that each
+      field works correctly
+    results:
+    - If there are search results, the first page is displayed
+    - If there are no search results, suitable "no results match" text is displayed
+  - step: Clear your filters and select 'publisher'
+  - step: Change the page size, using the page-size pull-down
+    results:
+    - The size of the page of results displays increases appropriately
+  - step: Click the "Next" button to go to the next page of results
+    results:
+    - The next page of results is displayed
+    - The "First" and "Prev" buttons are activated
+  - step: Click "Next" again
+  - step: Click "Prev"
+    results:
+    - You are navigated one page forward and then one page back in the results
+  - step: Click "First"
+    results:
+    - You are taken to the first page of the results
+  - step: Click the black X button to clear all filters
+    results:
+    - The interface returns to the initial state
+
+- title: Test Admin Users Search Display
+  context:
+    role: admin
+  steps:
+  - step: Go to the DOAJ admin user search at /account
+    results:
+    - Every result includes the text "View journals" and "Edit this user" at the bottom
+  - step: Click on "View journals"
+    results:
+    - You are taken to the admin journals search, with the user's name specified as
+      an "Owner" filter
+    - The list of journals you expect to be associated with this user are displayed
+  - step: Click back on your browser window
+  - step: Click on "Edit this user"
+    results:
+    - A new window opens, and you are taken to the edit form for the user

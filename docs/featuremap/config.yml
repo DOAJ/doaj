@@ -28,6 +28,7 @@ exclude:
   - "production.cfg"
   - "test.cfg"
   - "setup.py"
+  - "docker/.env"
 #include:
 exclude_dirs:
   - portality/static/crossref
