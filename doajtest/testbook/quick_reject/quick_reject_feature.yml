@@ -1,0 +1,128 @@
+suite: Quick Reject
+testset: Quick Reject Feature
+tests:
+- title: Edit a Rejected Application
+  context:
+    role: admin
+  steps:
+  - step: Go to the "Applications/Update Requests" page in the Administration area
+  - step: Select a "Rejected" application (e.g. by selecting "Rejected" from the "Application
+      Status" facet on the left), and click "View finished application"
+    results:
+    - The applicaiton review page is shown
+    - The application is in status "Rejected"
+    - There is no "Quick Reject" button shown on the page
+  - step: Click the "Unlock and Close" button
+- title: Edit an Accepted Application
+  context:
+    role: admin
+  steps:
+  - step: Go to the "Applications/Update Requests" page in the Administration area
+  - step: Select an "Accepted" application (e.g. by selecting "Accepted" from the
+      "Application Status" facet on the left), and click  "View finished application"
+    results:
+    - The applicaiton review page is shown
+    - The application is in status "Accepted"
+    - There is no "Quick Reject" button shown on the page
+  - step: Click the "Unlock and Close" button
+- title: Select a pre-determined reject reason only
+  context:
+    role: admin
+  steps:
+  - step: Go to the "Applications/Update Requests" page in the Administration area
+  - step: Select an application that is not either "Accepted" or "Rejected" (e.g.
+      by selecting "Pending" from the "Application Status" facet on the left), and
+      click Review application
+    results:
+    - The applicaiton review page is shown
+    - The "Quick Reject" feature is shown above the application form
+  - step: Select a reason for rejection from the pull-down menu.  Select any reason
+      except "Other".  Do not enter any text in the additional information box
+  - step: click "Quick Reject"
+    results:
+    - A flash message containing the text "This application was rejected with the
+      reason 'X'" is displayed, where X is the reason you selected for rejection.
+    - A flash message containing the text "Sent email to 'X' to tell them that their
+      journal application was rejected" is displayed, where X is the journal contact
+    - The applicaiton review page is shown
+    - The application is in status "Rejected"
+    - There is no "Quick Reject" button shown on the page
+    - There is a note attached to the application at the current date/time which contains
+      the text "[User name:] This application was rejected with the reason 'X'" is
+      displayed, where X is the reason you selected for rejection.
+  - step: Click the "Unlock and Close" button
+- title: Select a pre-determined reject reason and add custom text
+  context:
+    role: admin
+  steps:
+  - step: Go to the "Applications/Update Requests" page in the Administration area
+  - step: Select an application that is not either "Accepted" or "Rejected" (e.g.
+      by selecting "Pending" from the "Application Status" facet on the left), and
+      click Review application
+    results:
+    - The applicaiton review page is shown
+    - The "Quick Reject" feature is shown above the application form
+  - step: Select a reason for rejection from the pull-down menu.  Select any reason
+      except "Other".
+  - step: Enter some free-text in the additional information box
+  - step: click "Quick Reject"
+    results:
+    - A flash message containing the text "This application was rejected with the
+      reason 'X - Y'" is displayed, where X is the reason you selected for rejection,
+      and Y is the free text you entered
+    - A flash message containing the text "Sent email to 'X' to tell them that their
+      journal application was rejected" is displayed, where X is the journal contact
+    - The applicaiton review page is shown
+    - The application is in status "Rejected"
+    - There is no "Quick Reject" button shown on the page
+    - There is a note attached to the application at the current date/time which contains
+      the text "This application was rejected with the reason 'X - Y'" is displayed,
+      where X is the reason you selected for rejection, and Y is the free text you
+      entered
+  - step: Click the "Unlock and Close" button
+- title: Provide a custom rejection reason
+  context:
+    role: admin
+  steps:
+  - step: Go to the "Applications/Update Requests" page in the Administration area
+  - step: Select an application that is not either "Accepted" or "Rejected" (e.g.
+      by selecting "Pending" from the "Application Status" facet on the left), and
+      click Review application
+    results:
+    - The applicaiton review page is shown
+    - The "Quick Reject" feature is shown above the application form
+  - step: Select "Other" from the pull-down menu of reasons for rejection
+  - step: Enter some free-text in the additional information box
+  - step: click "Quick Reject"
+    results:
+    - A flash message containing the text "This application was rejected with the
+      reason 'Y'" is displayed, where Y is the free text you entered
+    - A flash message containing the text "Sent email to 'X' to tell them that their
+      journal application was rejected" is displayed, where X is the journal contact
+    - The applicaiton review page is shown
+    - The application is in status "Rejected"
+    - There is no "Quick Reject" button shown on the page
+    - There is a note attached to the application at the current date/time which contains
+      the text "This application was rejected with the reason 'Y'" is displayed, where
+      Y is the free text you entered
+  - step: Click the "Unlock and Close" button
+- title: Submit an invalid reject reason
+  context:
+    role: admin
+  steps:
+  - step: Go to the "Applications/Update Requests" page in the Administration area
+  - step: Select an application that is not either "Accepted" or "Rejected" (e.g.
+      by selecting "Pending" from the "Application Status" facet on the left), and
+      click Review application
+    results:
+    - The applicaiton review page is shown
+    - The "Quick Reject" feature is shown above the application form
+  - step: Select "Other" from the pull-down menu of reasons for rejection.  Do not
+      enter any free text in the additional information box
+  - step: click "Quick Reject"
+    results:
+    - An alert popup appears which reads "When selecting 'Other' as a reason for rejection,
+      you must provide additional information"
+    - The "Quick Reject" feature is shown above the application form
+    - The application status has not changed
+  - step: Click the "Unlock and Close" button

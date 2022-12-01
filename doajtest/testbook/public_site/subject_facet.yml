@@ -1,0 +1,126 @@
+suite: Public Site
+testset: Subject Facet
+tests:
+- title: Test Exploring the Subject Tree
+  context:
+    role: anonymous
+  steps:
+  - step: Go to the DOAJ journal search page at /search/journals
+  - step: Select a subject from the subject facet (e.g. Agriculture)
+    results:
+    - The subject is selected in the facet
+    - The subject's children are now visible in the subject facet
+    - All other top level subjects are still visible in the subject facet
+    - There is a "selected filter" pill at the top of the search results for the subject
+      you selected
+    - The search results reflect your subject selection
+    - The number of subjects changes in the Subject Search box above.
+  - step: Select a subject from the second level of subjects (e.g. Animal Culture)
+    results:
+    - The subject is selected in the facet
+    - The third level of subjects is now visible in the subject facet
+    - There is a "selected filter" pill at the top of the search results for the lowest
+      level subject you have selected (e.g. Animal Culture), and no other subject
+      filters are present
+    - The search results reflect your subject selection
+    - The number of subjects in the Subject Search box above has increased/decreased
+  - step: Select a subject from the third level of subjects (e.g. Cattle)
+    results:
+    - The subject is selected in the facet
+    - If present, a 4th level of subjects are now visible in the subject facet
+    - There is a "selected filter" pill at the top of the search results for the lowest
+      level subject you have selected (e.g. Cattle), and no other subject filters
+      are present
+    - The search results reflect your subject selection
+    - The number of subjects in the Subject Search box above has increased/decreased
+  - step: Unselect the subject you selected from the third level (e.g. Cattle)
+    results:
+    - The subject is no longer selected in the facet
+    - Its parent subjects (2 layers) are still selected
+    - There is a "selected filter" pill at the top of the search results for the new
+      lowest level subject selected (e.g. Animal Culture)
+  - step: Reselect the subject from the third level of subjects (e.g. Cattle)
+  - step: Unselect the second level subject, directly above the subject you just selected
+      (e.g. Animal Culture)
+    results:
+    - That subject is no longer selected in the facet, and neither are its children
+    - The parent subject (1 layer) is still selected (e.g. Agriculture)
+    - There is a "selected filter" pill at the top of the search results for the new
+      lowest level subject selected (e.g. Agriculture)
+    - The number of subjects in the Subject Search box above has increased/decreased
+  - step: Reselect the second and third level subjects (e.g. Animal Culture, Cattle)
+  - step: Unselect the top level subject (e.g. Agriculture)
+    results:
+    - No subjects are selected in the facet
+    - There is no "selected filter" on the search
+- title: Multiple Subject Selection
+  context:
+    role: anonymous
+  steps:
+  - step: Go to the DOAJ journal search page at /search/journals
+  - step: Select a subject from the subject facet (e.g. Agriculture)
+  - step: Select two of the children from the second level (e.g. Forestry and Animal
+      Culture)
+    results:
+    - Both subjects (and their parent) are selected in the facet
+    - There is a "selected filter" pill at the top of the search results for both
+      second level subjects you selected
+  - step: Uselect one of the second level subjects (e.g. Animal Culture)
+    results:
+    - The other selected subject is still selected (along with its parent)
+    - There is a "selected filter" pill at the top of the search results for the only
+      second level subject (e.g. Forestry)
+  - step: Reselect one of the second level subjects (e.g. Animal Culture)
+  - step: Unselect the top level subject (e.g. Agriculture)
+    results:
+    - No subjects are selected in the facet
+    - There is no "selected filter" on the search
+- title: Search for an entry
+  context:
+    role: anonymous
+  steps:
+  - step: Go to the DOAJ journal search page at /search/journals
+  - step: Place your cursor in the Subject search box
+  - step: Type a single character (e.g. "F")
+    results:
+    - A hint to type 3 characters or more to search is displayed
+  - step: Enter 3 characters (e.g. "Fin")
+    results:
+    - A list of subjects are displayed.  The full tree is shown (with all children
+      expanded), where there is a match somewhere in each branch
+    - Your search string is highlighted in bold on each term where it appears
+  - step: Delete the last character of your search (so you now have, for example,
+      "Fi")
+    results:
+    - A hint to type 3 characters or more to search is displayed
+  - step: Delete the remaining 2 characters of your search, so there is nothing in
+      the search box
+    results:
+    - The original subject facet content is shown, with a single level of subjects
+  - step: Enter 3 characters (e.g. "Fin")
+  - step: Select a subject (try one that is several levels deep, e.g. Technology >
+      Chemical Technology)
+    results:
+    - The subject and any parents are selected in the facet
+    - The search box clears
+  - step: Enter another search of 3 or more characters, which will also return the
+      values you selected in the previous step (e.g. "Bio")
+    results:
+    - A list of subjects are displayed.  The full tree is shown (with all children
+      expanded), where there is a match somewhere in each branch
+    - Your search string is highlighted in bold on each term where it appears
+    - Your previously selected values are displayed as selected within the tree
+  - step: Select another subject from another part of the tree (e.g. Medicine)
+    results:
+    - All your subjects and any parents are selected in the facet
+    - The search box clears
+  - step: Enter your second search again (e.g. "Bio")
+  - step: Unselect one of the subjects you had previously selected (e.g. Chemical
+      Technology)
+    results:
+    - Your second subject is still present (e.g. Medicine) and any parents of the
+      subject you unselected are still present (e.g. Technology)
+    - The search box clears
+  - step: Enter a long random string into the search box
+    results:
+    - A message is displayed "No subjects match your search"

@@ -1,3 +1,4 @@
+# ~~ CrossrefUpload:FunctionalTest -> CrossrefUpload:Feature ~~
 suite: Article XML Upload
 testset: Crossref 5.3.1
 
@@ -281,4 +282,26 @@ tests:
           If the job remains in "pending", reload the page until the status changes.
         results:
           - Your file is shown in the "History of uploads" with status "processing failed" and a suitable entry in 
+            the "Notes".  Check that the explanation link goes to a suitable reason and resolution for the problem.
+
+  - title: Upload a file without ISSN
+    context:
+      role: publisher
+    setup:
+      - You must be logged in using a pure publisher account (no other privileges)
+    steps:
+      - step: Go to the "Upload Article XML" tab in the "Publisher Area"
+        path: /publisher/uploadfile
+      - step: Browse for a file under "Select a file" and select the test resource file "identical_issns.xml" from
+          the Crossref 5.3.1 resources
+        resource: /xml_upload_test_package/Crossref/5.3.1/no_issn.xml
+      - step: Choose "Crossref 5.3.1 XML" from "Format of the file" dropdown
+      - step: Click "Upload"
+        results:
+          - A flash message appears at the top of the screen indicating a successful upload
+          - Your file is shown in the "History of uploads" with status "pending"
+      - step: wait a short amount of time for the job to process, then reload the page (do not re-submit the form data).
+          If the job remains in "pending", reload the page until the status changes.
+        results:
+          - Your file is shown in the "History of uploads" with status "processing failed" and a suitable entry in
             the "Notes".  Check that the explanation link goes to a suitable reason and resolution for the problem.

@@ -1,0 +1,119 @@
+# ~~ AdminArticleMetadata:FunctionalTest -> AdminArticleMetadata:Page~~
+suite: Admin Article Metadata Form
+testset: Admin Article Metadata Form
+tests:
+- title: Preparation
+  context:
+    role: Admin
+  setup:
+  - Ensure you own a journal with ISSNs 1234-5678 and 9876-5432 and no articles
+    attached
+  - Ensure you are an owner of a journal with ISSN 0000-0000 that is not in
+    DOAJ
+  steps:
+  - step: Upload set of test articles
+    resource: /xml_upload_test_package/admin_metadata_form_test_pack.xml
+    results:
+    - 3 Articles are uploaded and attached to the journal
+
+- title: Updating data other then DOI and Fulltext URL
+  context:
+    role: Admin
+  depends:
+  - suite: Admin Article Metadata Form
+    testset: Admin Article Metadata Form
+    test: Preparation
+  steps:
+  - step: Go to admin journal and articles search, choose Articles from the "Journals
+      vs Articles" facets at the left
+    results:
+    - Each article in the search results has "Delete this article | Edit this article"
+      option in the lower right corner
+  - step: Find "Success 300" article
+  - step: Click "Edit this article"
+    results:
+    - The Admin Metadata Form for "Success 300" article is opened in the new window
+  - step: Check if PISSN and EISSN dropdowns have 1234-5678 and 9876-5432 options
+  - step: Check that PISSN and EISSN dropdowns have not 0000-0000 option
+  - step: Check the Authors section
+    results:
+    - There is only one author and no "Remove Author" button
+  - step: Click "Add Author"
+    results:
+    - New empty Author Subform appears, each has "Remove Author" option
+  - step: Click "Remove Author" under one of the authors
+    results:
+    - The author is removed from the list
+  - step: Change the title to "Success 400"
+  - step: Add an author filling in any string as a name, an affiliation and an orcid
+      id in the correct form, for example https://orcid.org/0001-1234-1234-444X
+  - step: Change all the other fields except doi and fulltext URL to something easily
+      recognisable
+  - step: Click "Update Article" button
+    results:
+    - Green banner saying "Article created/updated" is shown at the top of the page.
+  - step: Search for "Success 400" article again
+  - step: Close the page with the Article Metadata Form
+  - step: Click "Edit the article"
+    results:
+    - Confirm all the metadata is updated
+
+- title: Checking data validation
+  context:
+    role: Admin
+  depends:
+    - suite: Admin Article Metadata Form
+      testset: Admin Article Metadata Form
+      test: Updating data other then DOI and Fulltext URL
+  steps:
+  - step: Open "Success 400" article metadata form
+  - step: 'Change DOI to any string in invalid format, eg: 0000'
+  - step: 'Change author''s orcid_id to the wrong format (eg: "0000")'
+  - step: Click "Update Article" button
+    results:
+    - Error "Invalid DOI. A DOI can optionally start with a prefix (such as "doi:"),
+      followed by "10." and the remainder of the identifier" under DOI field and "Invalid
+      ORCID iD. Please enter your ORCID iD as a full URL of the form https://orcid.org/0000-0000-0000-0000"
+      is shown under orcid_id field
+  - step: Close the form
+    results:
+    - Confirm the metadata of "Success 400" article has not change
+
+- title: Change DOI and Fulltext URL
+  context:
+    role: Admin
+  depends:
+    - suite: Admin Article Metadata Form
+      testset: Admin Article Metadata Form
+      test: Updating data other then DOI and Fulltext URL
+  steps:
+  - step: Open a "Success 400" article metadata form
+  - step: Change DOI to 10.1234/200 and Fulltext URL to http://doaj.org/testing/500.pdf
+  - step: Click "Update article" button
+    results:
+    - The red banner "Article could not be updated, as it matches another existing
+      article. Please check your metadata, and contact us if you cannot resolve the
+      issue yourself."
+  - step: Change DOI to 10.1234/500 and Fulltext URL to http://doaj.org/testing/200.pdf
+  - step: Click "Update article" button
+    results:
+    - The red banner "Article could not be updated, as it matches another existing
+      article. Please check your metadata, and contact us if you cannot resolve the
+      issue yourself."
+  - step: Change DOI back to 10.1234/400 and Fulltext URL to http://doaj.org/testing/500.pdf
+  - step: Click "Update article" button
+    results:
+    - Green banner "Article created/updated" is shown at the top page
+  - step: Open the "Success 400" landing page
+    results:
+    - Confirm that Fulltext URL is changed to http://doaj.org/testing/500.pdf
+  - step: Go back to the article metadata form
+  - step: Change DOI to 10.1234/500
+  - step: Click "Update article" button
+    results:
+    - Green banner "Article created/updated" is shown at the top page
+  - step: Open the "Success 400" landing page
+    results:
+    - Confirm that Fulltext URL is changed to http://doaj.org/testing/500.pdf
+    - Confirm only one article with DOI 10.1234/500 and fulltext URL http://doaj.org/testing/500.pdf
+      exists

@@ -34,6 +34,7 @@ This PR...
     - [ ] Core model documentation: https://docs.google.com/spreadsheets/d/1lun2S9vwGbyfy3WjIjgXBm05D-3wWDZ4bp8xiIYfImM/edit
     - [ ] Events and consumers documentation: https://docs.google.com/spreadsheets/d/1oIeG5vg-blm2MZCE-7YhwulUlSz6TOUeY8jAftdP9JE/edit
 - [ ] There has been a recent merge up from `develop` (or other base branch)
+- [ ] The docs for this branch have been generated and pushed to the doc site (see docs/README.md for details)
 
 ## Testing
 
