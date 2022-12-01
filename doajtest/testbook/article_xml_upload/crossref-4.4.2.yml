@@ -10,6 +10,7 @@ tests:
   - step: Select "Choose file" and select a file from your computer which is XML but
       not of the Crossref schema. You may use the file "schema_invalid.xml" from the
       Crossref folder in resources for this test.
+    resource: /xml_upload_test_package/Crossref/schema_invalid.xml
   - step: Choose "Crossref 4.4.2 XML" from "Format of the file" dropdown
   - step: Click "Upload"
     results:
@@ -17,6 +18,7 @@ tests:
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes" (you may need to reload the page). Check
       that the explanation link goes to a suitable reason and resolution for the problem.
+
 - title: Upload a malformed XML file
   context:
     role: publisher
@@ -25,6 +27,7 @@ tests:
   - step: Select "Choose file" and select a file from your computer which looks like
       XML but is actually malformed.  You may use the file "not_xml.xml" from the
       Crossref folder in resources for this test.
+    resource: /xml_upload_test_package/Crossref/not_xml.xml
   - step: Choose "Crossref 4.4.2 XML" from "Format of the file" dropdown
   - step: Click "Upload"
     results:
@@ -32,6 +35,7 @@ tests:
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
+
 - title: Upload a file with duplicates inside the file
   context:
     role: publisher
@@ -41,7 +45,8 @@ tests:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Choose "Crossref 4.4.2 XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "duplicate_in_file.xml"
-      from the Crossref
+      from the Crossref 4.4.2 folder in resources for this test.
+    resource: /xml_upload_test_package/Crossref/4.4.2/duplicate_in_file.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating a successful upload
@@ -53,6 +58,7 @@ tests:
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
+
 - title: Upload a file containing ISSNs the publisher does not own
   context:
     role: publisher
@@ -64,7 +70,8 @@ tests:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Choose "Crossref 4.4.2 XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "unowned_issn.xml"
-      from the Crossref folder
+      from the Crossref 4.4.2 test resources folder
+    resource: /xml_upload_test_package/Crossref/4.4.2/unowned_issn.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating a successful upload
@@ -80,6 +87,7 @@ tests:
     results:
     - Additional error details are shown, indicating that the publisher does not own
       ISSNs "0000-0000" and "0000-000X"
+
 - title: Upload a file containing ISSNs not previously seen in DOAJ
   context:
     role: publisher
@@ -89,7 +97,8 @@ tests:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Choose "Crossref 4.4.2 XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "unmatched_issn.xml"  from
-      the Crossref
+      the Crossref 4.4.2 test resources folder
+    resource: /xml_upload_test_package/Crossref/4.4.2/unmatched_issn.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating a successful upload
@@ -105,6 +114,7 @@ tests:
     results:
     - Additional error details are shown, indicating that the ISSN "5555-5555" does
       not appear in DOAJ.
+
 - title: Upload a file containing ISSNs erroneously shared with another account
   context:
     role: publisher
@@ -115,7 +125,8 @@ tests:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Choose "Crossref 4.4.2 XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "shared_issn.xml"  from
-      the Crossref folder
+      the Crossref 4.4.2 test resources folder
+    resource: /xml_upload_test_package/Crossref/4.4.2/shared_issn.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating a successful upload
@@ -131,6 +142,7 @@ tests:
     results:
     - Additional error details are shown, indicating that the ISSN "5555-5555" is
       shared with another user
+
 - title: Successfully upload a file containing a new article
   context:
     role: publisher
@@ -142,7 +154,8 @@ tests:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Choose "Crossref 4.4.2 XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "successful.xml"  from
-      the Crossref
+      the Crossref 4.4.2 test resources folder
+    resource: /xml_upload_test_package/Crossref/4.4.2/successful.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating a successful upload
@@ -156,6 +169,7 @@ tests:
   - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222)
     results:
     - The list of articles should contain an article with the title "Success!"
+
 - title: Successfully upload a file containing an updated article
   context:
     role: publisher
@@ -164,7 +178,8 @@ tests:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Choose "Crossref 4.4.2 XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "update.xml" from
-      the Crossref folder
+      the Crossref 4.4.2 test resources folder
+    resource: /xml_upload_test_package/Crossref/4.4.2/update.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating a successful upload
@@ -179,15 +194,14 @@ tests:
     results:
     - The list of articles should contain an article with the title "Updated!", and
       the previous version ("Success!") should be gone
+
 - title: Successfully upload a file by reference containing a new or updated article
   context:
     role: publisher
   steps:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
-  - step: 'In the box "Provide a URL where we can download the XML", enter this URL:
-
-
-      https://github.com/DOAJ/doaj/raw/develop/doajtest/xml_upload_test_package/Crossref/successful.xml'
+  - step: In the box "Provide a URL where we can download the XML", enter the URL below
+    resource: /xml_upload_test_package/Crossref/4.4.2/successful.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating that the file reference
@@ -202,6 +216,7 @@ tests:
   - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222)
     results:
     - The list of articles should contain an article with the title "Success!"
+
 - title: Successfully upload a file containing article with html tag in title
   context:
     role: publisher
@@ -213,7 +228,8 @@ tests:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Choose "Crossref 4.4.2 XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "title_with_html_tags.xml"  from
-      the Crossref
+      the Crossref 4.4.2 test resources folder
+    resource: /xml_upload_test_package/Crossref/4.4.2/title_with_html_tags.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating a successful upload
@@ -228,12 +244,14 @@ tests:
     results:
     - The list of articles should contain an article with the title "Title with HTML
       tags <i>escaped</i> and &lt;i&gt;unescaped&lt;/i&gt; "
+
 - title: Upload a file containing 2 identical ISSNs
   context:
     role: publisher
   steps:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Select "Choose file" and select the test resource file "identical_issns.xml"
+    resource: /xml_upload_test_package/Crossref/4.4.2/identical_issns.xml
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen indicating a successful upload:
@@ -246,12 +264,14 @@ tests:
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
+
 - title: Upload a file without ISSN
   context:
     role: publisher
   steps:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Select "Choose file" and select the test resource file "no_issn.xml"
+    resource: /xml_upload_test_package/Crossref/4.4.2/no_issn.xml
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen indicating a successful upload:
