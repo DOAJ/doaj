@@ -29,3 +29,7 @@ Following are the guide to write unit test for parallelised:
 * avoid use same folder path in difference test case
 * if you need folder for test case, you can use `create_tmp_dir` to create new folder with random name.
 * if test case required `STORE_IMPL`, `StoreLocal`, `STORE_TMP_IMPL`, you may need to use `StoreLocalPatcher`, it will create random path for `StoreLocal`
+
+## Testbook
+
+To generate the functional tests suit follow the README.md file from the [Testbook repository](https://github.com/CottageLabs/testbook) 
