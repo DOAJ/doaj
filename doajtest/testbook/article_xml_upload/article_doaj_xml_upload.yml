@@ -2,6 +2,16 @@
 suite: Article XML Upload
 testset: DOAJ XML
 tests:
+- title: Try uploading without providing a file
+  context:
+    role: publisher
+  steps:
+    - step: Go to the "Upload Article XML" tab in the "Publisher Area" /publisher/uploadfile
+    - step: Do not fill in any inputs
+    - step: Click "Upload"
+      results:
+        - Under the Select a file input and Upload from a link input an error 
+          "You must specify the file or upload from a link" error is displayed
 - title: Upload a file which is not XML
   context:
     role: publisher
@@ -11,7 +21,7 @@ tests:
       based (e.g. an image file or a PDF)
   - step: Click "Upload"
     results:
-    - A flash message appears at the top of the screen indicating an error has occurred
+    - A flash message with appropriate text appears at the top of the screen indicating an error has occurred
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes". Check that the explanation link goes to
       a suitable reason and resolution for the problem.
@@ -26,7 +36,7 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Click "Upload"
     results:
-    - A flash message appears at the top of the screen indicating an error has occurred
+    - A flash message with appropriate text appears at the top of the screen indicating an error has occurred
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes" (you may need to reload the page). Check
       that the explanation link goes to a suitable reason and resolution for the problem.
@@ -41,7 +51,7 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Click "Upload"
     results:
-    - A flash message appears at the top of the screen indicating an error has occurred
+    - A flash message with appropriate text appears at the top of the screen indicating an error has occurred
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
@@ -259,7 +269,7 @@ tests:
   - step: Select "Choose file" and select the test resource file "orcid_id_invalid.xml"
   - step: Click "Upload"
     results:
-    - A flash message appears at the top of the screen indicating an error has occurred
+    - A flash message with appropriate text appears at the top of the screen indicating an error has occurred
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a "Unable to validate document with identified schema" entry in the "Notes".  Check
       that the explanation link goes to a suitable reason and resolution for the problem.
