@@ -12,7 +12,7 @@ from portality.lib import dates
 EXCLUDED_ROLES = {'associate_editor', 'editor', 'admin', 'ultra_bulk_delete', 'jct_inprogress'}
 
 
-def accounts_with_no_journals_or_applications(older_than, csvwriter=None):
+def accounts_with_no_journals_or_applications(older_than=dates.now_with_microseconds(), csvwriter=None):
     """ Scroll through all accounts, return those with no journal unless they have excluded roles
     :param older_than: Exclude accounts newer than the supplied datestamp
     :param csvwriter: A CSV writer to output the accounts to
