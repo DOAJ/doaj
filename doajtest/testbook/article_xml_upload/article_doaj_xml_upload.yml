@@ -15,6 +15,7 @@ tests:
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes". Check that the explanation link goes to
       a suitable reason and resolution for the problem.
+
 - title: Upload an XML file which does not meet the DOAJ schema
   context:
     role: publisher
@@ -23,6 +24,7 @@ tests:
   - step: Select "Choose file" and select a file from your computer which is XML but
       not of the DOAJ schema. You may use the file "schema_invalid.xml" from the DOAJ
       folder in resources for this test.
+    resource: /xml_upload_test_package/DOAJ/schema_invalid.xml
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Click "Upload"
     results:
@@ -30,6 +32,7 @@ tests:
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes" (you may need to reload the page). Check
       that the explanation link goes to a suitable reason and resolution for the problem.
+
 - title: Upload a malformed XML file
   context:
     role: publisher
@@ -38,6 +41,7 @@ tests:
   - step: Select "Choose file" and select a file from your computer which looks like
       XML but is actually malformed.  You may use the file "not_xml.xml" from the
       DOAJ folder in resources for this test.
+    resource: /xml_upload_test_package/DOAJ/not_xml.xml
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Click "Upload"
     results:
@@ -45,6 +49,7 @@ tests:
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
+
 - title: Upload a file with duplicates inside the file
   context:
     role: publisher
@@ -55,6 +60,7 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "duplicate_in_file.xml"
       from the DOAJ folder
+    resource: /xml_upload_test_package/DOAJ/duplicate_in_file.xml
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen: File uploaded and waiting
@@ -67,6 +73,7 @@ tests:
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
+
 - title: Upload a file containing ISSNs the publisher does not own
   context:
     role: publisher
@@ -79,6 +86,7 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "unowned_issn.xml"
       from the DOAJ folder
+    resource: /xml_upload_test_package/DOAJ/unowned_issn.xml
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen indicating a successful upload:
@@ -95,6 +103,7 @@ tests:
     results:
     - Additional error details are shown, indicating that the publisher does not own
       ISSNs "0000-0000" and "0000-000X"
+
 - title: Upload a file containing ISSN that has been withdrawn
   context:
     role: publisher
@@ -105,6 +114,7 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "withdrawn_journal.xml"
       from the DOAJ folder
+    resource: /xml_upload_test_package/DOAJ/withdrawn_journal.xml
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen indicating a successful upload:
@@ -121,6 +131,7 @@ tests:
     results:
     - Additional error details are shown, indicating that the journal has been withdrawn
       from DOAJ and therefore the article cannot be accepted
+
 - title: Upload a file containing ISSNs not previously seen in DOAJ
   context:
     role: publisher
@@ -131,6 +142,7 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "unmatched_issn.xml"  from
       the DOAJ folder
+    resource: /xml_upload_test_package/DOAJ/unmatched_issn.xml
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen indicating a successful upload:
@@ -147,6 +159,7 @@ tests:
     results:
     - Additional error details are shown, indicating that the ISSN "5555-5555" does
       not appear in DOAJ.
+
 - title: Upload a file containing ISSNs erroneously shared with another account
   context:
     role: publisher
@@ -158,6 +171,7 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "shared_issn.xml"  from
       the DOAJ folder
+    resource: /xml_upload_test_package/DOAJ/shared_issn.xml
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen indicating a successful upload:
@@ -174,6 +188,7 @@ tests:
     results:
     - Additional error details are shown, indicating that the ISSN "2222-2222" is
       shared with another user
+
 - title: Successfully upload a file containing a new article
   context:
     role: publisher
@@ -186,6 +201,7 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "successful.xml"  from
       the DOAJ folder
+    resource: /xml_upload_test_package/DOAJ/successful.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating a successful upload
@@ -200,6 +216,7 @@ tests:
   - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222)
     results:
     - The list of articles should contain an article with the title "Success!"
+
 - title: Successfully upload a file containing an updated article
   context:
     role: publisher
@@ -209,6 +226,7 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Select "Choose file" and select the test resource file "update.xml" from
       the DOAJ folder
+    resource: /xml_upload_test_package/DOAJ/update.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating a successful upload
@@ -224,6 +242,7 @@ tests:
     results:
     - The list of articles should contain an article with the title "Updated!", and
       the previous version ("Success!") should be gone
+
 - title: Successfully upload a file by reference containing a new or updated article
   context:
     role: publisher
@@ -232,10 +251,8 @@ tests:
   - step: 'Make sure there are no other articles in the databse with the DOI: 10.1234/100.
       Delete those first.'
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
-  - step: 'In the box "Provide a URL where we can download the XML", enter this URL:
-
-
-      https://github.com/DOAJ/doaj/raw/develop/doajtest/xml_upload_test_package/DOAJ/successful.xml'
+  - step: In the box "Provide a URL where we can download the XML", enter the URL below
+    resource: /xml_upload_test_package/DOAJ/successful.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating that the file reference
@@ -251,12 +268,14 @@ tests:
   - step: Go to the Table of Contents for the journal (e.g. by going to /toc/2222-2222)
     results:
     - The list of articles should contain an article with the title "Success!"
+
 - title: Upload a file containing author's ORCID iD in a wrong format
   context:
     role: publisher
   steps:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Select "Choose file" and select the test resource file "orcid_id_invalid.xml"
+    resource: /xml_upload_test_package/DOAJ/orcid_id_invalid.xml
   - step: Click "Upload"
     results:
     - A flash message appears at the top of the screen indicating an error has occurred
@@ -267,12 +286,14 @@ tests:
     results:
     - Additional error details are shown, indicating that the ORCID iD is not in the
       correct format
+
 - title: Upload a file containing 2 identical ISSNs
   context:
     role: publisher
   steps:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Select "Choose file" and select the test resource file "identical_issns.xml"
+    resource: /xml_upload_test_package/DOAJ/identical_issns.xml
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen indicating a successful upload:
@@ -285,12 +306,14 @@ tests:
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
+
 - title: Upload a file without ISSN
   context:
     role: publisher
   steps:
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Select "Choose file" and select the test resource file "no_issn.xml"
+    resource: /xml_upload_test_package/DOAJ/no_issn.xml
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen indicating a successful upload:
