@@ -2,6 +2,7 @@
   "types": [
     {
       "type" : "article",
+      "action": "index",
       "init_with_model" : true,
       "keepalive" : "20m",
       "functions" : [
