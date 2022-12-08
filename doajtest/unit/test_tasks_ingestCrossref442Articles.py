@@ -2141,3 +2141,48 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
 
         assert file_upload.status == "failed"
         assert file_upload.error == "Unable to validate document with identified schema"
+
+    def test_61_journal_not_indoaj(self):
+        """ You can't upload an article for a journal that's been withdrawn"""
+        etree.XMLSchema = self.mock_load_schema
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(False)
+        j.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("crossref442")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = Crossref442ArticleFixtureFactory.upload_1_issn_correct()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed"
+        assert file_upload.error == Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL
