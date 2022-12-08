@@ -42,6 +42,16 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
         ft = "https://example.com" if ft_arg == "exists" else None
         incorrect_issn_count = True if kwargs.get("incorrect_issn_count") == "yes" else False
         pissn_eissn_match = True if kwargs.get("pissn_eissn_match") == "yes" else False
+        journal_in_doaj = True if kwargs.get("journal_in_doaj") == "yes" else False
+
+        journal_source = JournalFixtureFactory.make_journal_source(in_doaj=False)
+        journal = Journal(**journal_source)
+        jbib = journal.bibjson()
+        jbib.add_identifier(jbib.P_ISSN, '0000-0000')
+        jbib.add_identifier(jbib.E_ISSN, '1111-1111')
+        if journal_in_doaj:
+            journal.set_in_doaj(True)
+        journal.save(blocking=True)
 
         if pissn_eissn_match:
             article_source = ArticleFixtureFactory.make_article_source(pissn="0000-0000", eissn="0000-0000")

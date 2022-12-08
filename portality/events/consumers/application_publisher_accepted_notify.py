@@ -1,6 +1,5 @@
-# from flask import url_for
+# ~~ApplicationPublisherAcceptedNotify:Consumer~~
 from portality.util import url_for
-
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
@@ -54,6 +53,7 @@ class ApplicationPublisherAcceptedNotify(EventConsumer):
         if not application.owner:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
@@ -64,8 +64,8 @@ class ApplicationPublisherAcceptedNotify(EventConsumer):
         notification.long = svc.long_notification(cls.ID).format(
             application_title=application.bibjson().title,
             application_date=dates.human_date(application.date_applied),
-            publisher_dashboard_url=app.config.get('BASE_URL', "https://doaj.org") + url_for("publisher.journals"),
-            faq_url=app.config.get('BASE_URL', "https://doaj.org") + url_for("doaj.faq")
+            publisher_dashboard_url=app.config.get("BASE_URL") + url_for("publisher.journals"),
+            faq_url=app.config.get("BASE_URL") + url_for("doaj.faq")
         )
         notification.short = svc.short_notification(cls.ID)
 

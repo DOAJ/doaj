@@ -1,12 +1,13 @@
-field,test_id,doi,fulltext_url,incorrect_issn_count,pissn_eissn_match,is_acceptable
-type,index,generated,generated,generated,generated,conditional
-,,,,,,
-values,,exists,exists,yes,yes,yes
-values,,none,none,no,no,no
-values,,,,,,
-,,,,,,
-conditional is_acceptable,,exists,,no,no,yes
-conditional is_acceptable,,,exists,no,no,yes
-conditional is_acceptable,,none,none,,,no
-conditional is_acceptable,,,,yes,,no
-conditional is_acceptable,,,,,yes,no
+field,test_id,doi,fulltext_url,incorrect_issn_count,pissn_eissn_match,journal_in_doaj,is_acceptable
+type,index,generated,generated,generated,generated,generated,conditional
+,,,,,,,
+values,,exists,exists,yes,yes,yes,yes
+values,,none,none,no,no,no,no
+values,,,,,,,
+,,,,,,,
+conditional is_acceptable,,exists,,no,no,yes,yes
+conditional is_acceptable,,,exists,no,no,yes,yes
+conditional is_acceptable,,none,none,,,,no
+conditional is_acceptable,,,,yes,,,no
+conditional is_acceptable,,,,,yes,,no
+conditional is_acceptable,,,,,,no,no

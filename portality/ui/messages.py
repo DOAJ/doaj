@@ -54,6 +54,7 @@ class Messages(object):
     EXCEPTION_NO_DOI_NO_FULLTEXT = "The article must have a DOI and/or a Full-Text URL"
     EXCEPTION_ARTICLE_OVERRIDE = "Cannot update the article. An article with this URL and DOI already exists. If you are sure you want to replace it please delete it and then re-create it."
     EXCEPTION_SCRIPT_TAG_FOUND = "Metadata contains <script> tag. Please remove any <script> tags from your metadata and try again."
+    EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL = "You are trying to add the articles to a journal that has been withdrawn from DOAJ. We accept articles only for journals currently in DOAJ"
 
     EXCEPTION_NO_CONTRIBUTORS_FOUND = "No contributors found."
     EXCEPTION_NO_CONTRIBUTORS_EXPLANATION = "DOAJ requires at least one author for each article."
@@ -74,6 +75,7 @@ class Messages(object):
 
     EXCEPTION_NOTIFICATION_NO_ACCOUNT = "Account with id {x} not found"
     EXCEPTION_NOTIFICATION_NO_EMAIL = "Account with id {x} does not have an email address"
+    EXCEPTION_NOTIFICATION_NO_NOTIFICATION = "Notification with id {n} does not exist"
 
     PREVENT_DEEP_PAGING_IN_API = """You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
