@@ -24,7 +24,7 @@ def accounts_with_no_journals_or_applications(csvwriter=None, older_than=dates.n
 
         # An newer date will have a negative timedelta
         if account.created_date is not None:
-            if (dates.parse(older_than) - dates.parse(account.created_date)).days > 0:
+            if (dates.parse(older_than) - dates.parse(account.created_date)).days < 0:
                 continue
 
         issns = models.Journal.issns_by_owner(account.id)
