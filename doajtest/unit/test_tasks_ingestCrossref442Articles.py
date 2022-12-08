@@ -3,8 +3,7 @@ from doajtest.mocks.bll_article import BLLArticleMockFactory
 
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_crossref import Crossref442ArticleFixtureFactory
-from doajtest.fixtures.accounts import AccountFixtureFactory
-from doajtest.fixtures.article import ArticleFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory, AccountFixtureFactory
 from doajtest.mocks.file import FileMockFactory
 from doajtest.mocks.response import ResponseMockFactory
 from doajtest.mocks.ftp import FTPMockFactory
@@ -619,6 +618,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -730,6 +730,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -776,6 +777,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -818,6 +820,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -862,6 +865,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -902,11 +906,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "9876-5432")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.P_ISSN, "1234-5678")
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
@@ -956,11 +961,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
         j2.save(blocking=True)
@@ -1003,6 +1009,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1056,6 +1063,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1107,6 +1115,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1159,6 +1168,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1204,11 +1214,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "9876-5432")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.P_ISSN, "1234-5678")
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
@@ -1261,11 +1272,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
         j2.save()
@@ -1317,11 +1329,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j1.set_owner("testowner")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
         j2.save()
@@ -1380,11 +1393,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "2345-6789")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.P_ISSN, "8765-4321")
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
@@ -1434,6 +1448,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1495,6 +1510,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1553,6 +1569,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1610,6 +1627,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "2222-2222")
+        j1.set_in_doaj(True)
         j1.save(blocking=True)
 
         saved = models.Journal.find_by_issn("1234-5678")
@@ -1661,6 +1679,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj1.add_identifier(bj1.E_ISSN, "9876-5432")
         bj1.add_subject("LCC", "Whatever", "WHATEVA")
         bj1.add_subject("LCC", "Aquaculture. Fisheries. Angling", "SH1-691")
+        j1.set_in_doaj(True)
         j1.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1717,6 +1736,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1795,6 +1815,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -2004,6 +2025,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         # push an article to initialise the mappings
