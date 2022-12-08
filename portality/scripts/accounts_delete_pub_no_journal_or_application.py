@@ -12,7 +12,7 @@ from portality.lib import dates
 EXCLUDED_ROLES = {'associate_editor', 'editor', 'admin', 'ultra_bulk_delete', 'jct_inprogress'}
 
 
-def accounts_with_no_journals_or_applications(older_than=dates.now_with_microseconds(), csvwriter=None):
+def accounts_with_no_journals_or_applications(csvwriter=None, older_than=dates.now_with_microseconds()):
     """ Scroll through all accounts, return those with no journal unless they have excluded roles
     :param older_than: Exclude accounts newer than the supplied datestamp
     :param csvwriter: A CSV writer to output the accounts to
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--report", help="report accounts to CSV (specify filename)")
-    parser.add_argument("-o", "--older-than", default=dates.now_with_microseconds())
+    parser.add_argument("-o", "--older_than", default=dates.now_with_microseconds())
     parser.add_argument("-i", "--instructions", help="CSV of accounts to delete, ID must be first column")
     args = parser.parse_args()
 
@@ -67,7 +67,7 @@ if __name__ == "__main__":
             writer = csv.writer(f)
             writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Roles"])
 
-            accounts_to_delete = accounts_with_no_journals_or_applications(writer)
+            accounts_to_delete = accounts_with_no_journals_or_applications(writer, args.older_than)
 
         print("Done!")
         exit()
