@@ -481,6 +481,15 @@ def editor_group_search():
 def background_jobs_search():
     return render_template("admin/background_jobs_search.html", admin_page=True)
 
+
+@blueprint.route("/notifications")
+@login_required
+@ssl_required
+def global_notifications_search():
+    """ ~~->AdminNotificationsSearch:Page~~ """
+    return render_template("admin/global_notifications_search.html", admin_page=True)
+
+
 @blueprint.route("/editor_group", methods=["GET", "POST"])
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
 @login_required

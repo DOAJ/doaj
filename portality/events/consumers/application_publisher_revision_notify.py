@@ -1,3 +1,4 @@
+# ~~ApplicationPublisherRevisionNotify:Consumer~~
 from datetime import datetime
 
 from portality.events.consumer import EventConsumer
@@ -28,6 +29,7 @@ class ApplicationPublisherRevisionNotify(EventConsumer):
         if application.owner is None:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()

@@ -529,9 +529,10 @@ def choices_for_article_issns(user, article_id=None):
         # ~~->Article:Model~~
         a = models.Article.pull(article_id)
         # ~~->Journal:Model~~
-        issns = models.Journal.issns_by_owner(a.get_owner())
+        issns = models.Journal.issns_by_owner(a.get_owner(), in_doaj=True)
     else:
-        issns = models.Journal.issns_by_owner(user.id)
+        issns = models.Journal.issns_by_owner(user.id, in_doaj=True)
+
     ic = [("", "Select an ISSN")] + [(i, i) for i in issns]
     return ic
 

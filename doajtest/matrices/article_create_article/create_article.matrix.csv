@@ -1,6 +1,11 @@
-test_id,article,get_duplicate_result,account,role,has_doi_ft_changed,duplicate_check,merge_duplicate,add_journal_info,dry_run,update_article_id,raises,success,original_saved,merge_saved,comment
-1,exists,itself,owner,admin,,true,true,false,false,doi_ft_not_changed,,1,yes,no,
-2,exists,itself,owner,publisher,,true,true,false,false,none,,1,yes,no,
-3,exists,different,owner,admin,,true,true,false,false,doi_ft_changed_duplicate,DuplicateArticleException,1,no,yes,
-4,exists,different,owner,publisher,,true,true,false,false,none,DuplicateArticleException,1,no,yes,
-5,exists,none,owner,admin,,true,true,false,false,doi_ft_changed_ok,,1,no,no,
+test_id,article,get_duplicate_result,account,role,has_doi_ft_changed,duplicate_check,merge_duplicate,add_journal_info,journal_in_doaj,dry_run,update_article_id,raises,success,original_saved,merge_saved,comment
+1,exists,itself,owner,admin,,true,true,false,true,false,doi_ft_not_changed,,1,yes,no,
+2,exists,itself,owner,admin,,true,true,false,false,false,doi_ft_not_changed,ArticleNotAcceptable,1,yes,no,
+3,exists,itself,owner,publisher,,true,true,false,true,false,none,,1,yes,no,
+4,exists,itself,owner,publisher,,true,true,false,false,false,none,ArticleNotAcceptable,1,yes,no,
+5,exists,different,owner,admin,,true,true,false,true,false,doi_ft_changed_duplicate,DuplicateArticleException,1,no,yes,
+6,exists,different,owner,admin,,true,true,false,false,false,doi_ft_changed_duplicate,ArticleNotAcceptable,1,no,yes,
+7,exists,different,owner,publisher,,true,true,false,true,false,none,DuplicateArticleException,1,no,yes,
+8,exists,different,owner,publisher,,true,true,false,false,false,none,ArticleNotAcceptable,1,no,yes,
+9,exists,none,owner,admin,,true,true,false,true,false,doi_ft_changed_ok,,1,no,no,
+10,exists,none,owner,admin,,true,true,false,false,false,doi_ft_changed_ok,ArticleNotAcceptable,1,no,no,

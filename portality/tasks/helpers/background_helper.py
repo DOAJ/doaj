@@ -14,6 +14,8 @@ from portality.core import app
 from portality.decorators import write_required
 from portality.tasks.redis_huey import long_running, main_queue, configure, schedule
 
+TaskFactory = Callable[[models.BackgroundJob], BackgroundTask]
+
 
 def get_queue_type_by_task_queue(task_queue: RedisHuey):
     if task_queue is None:
@@ -53,8 +55,7 @@ def submit_by_bg_task_type(background_task: Type[BackgroundTask], **prepare_kwar
     background_task.submit(job)
 
 
-def execute_by_job_id(job_id,
-                      task_factory: Callable[[models.BackgroundJob], BackgroundTask]):
+def execute_by_job_id(job_id, task_factory: TaskFactory):
     """ Common way to execute BackgroundTask by job_id
     """
     job = models.BackgroundJob.pull(job_id)
@@ -138,3 +139,29 @@ def get_all_background_task_specs() -> Iterable[Tuple[str, str, Type]]:
     bgspec_list = map(_get_background_task_spec, modules)
     bgspec_list = filter(None, bgspec_list)
     return bgspec_list
+
+
+def get_value_safe(key, default_v, kwargs, default_cond_fn=None):
+    """ get value from kwargs and return default_v if condition  match
+    """
+    v = kwargs.get(key, default_v)
+    default_cond_fn = default_cond_fn or (lambda _v: _v is None)
+    if default_cond_fn(v):
+        v = default_v
+    return v
+
+
+def submit_by_background_job(background_job, execute_fn):
+    """ Common way of `BackgroundTask.submit`
+    """
+    background_job.save()
+    execute_fn.schedule(args=(background_job.id,), delay=10)
+
+
+def create_execute_fn(redis_huey, task_factory: TaskFactory):
+    @redis_huey.task()
+    @write_required(script=True)
+    def _execute_fn(job_id):
+        execute_by_job_id(job_id, task_factory)
+
+    return _execute_fn

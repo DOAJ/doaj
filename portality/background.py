@@ -1,6 +1,8 @@
 import traceback
 from copy import deepcopy
 
+from typing import Iterable
+
 from flask_login import login_user
 from huey import RedisHuey
 
@@ -161,6 +163,19 @@ class BackgroundTask(object):
     @classmethod
     def set_param(cls, params, param_name, value):
         params['{}__{}'.format(cls.__action__, param_name)] = value
+
+    @classmethod
+    def create_job_params(cls, **raw_param_dict: dict):
+        new_param = {}
+        for k, v in raw_param_dict.items():
+            cls.set_param(new_param, k, v)
+        return new_param
+
+    @classmethod
+    def create_raw_param_dict(cls, job_params: dict, key_list: Iterable[str]):
+        raw_param_dict = {k: cls.get_param(job_params, k)
+                          for k in key_list}
+        return raw_param_dict
 
     @classmethod
     def set_reference(cls, refs, ref_name, value):

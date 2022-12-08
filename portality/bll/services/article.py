@@ -248,7 +248,6 @@ class ArticleService(object):
                         "unmatched": unmatched}
         return True
 
-
     def is_acceptable(self, article):
         """
         conduct some deep validation on the article to make sure we will accept it
@@ -263,6 +262,11 @@ class ArticleService(object):
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_DOI_NO_FULLTEXT)
 
         self._validate_issns(article)
+
+        # is journal in doaj (we do this check last as it has more performance impact)
+        journal = article.get_journal()
+        if journal is None or not journal.is_in_doaj():
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL)
 
     def is_legitimate_owner(self, article, owner):
         """
