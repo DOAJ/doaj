@@ -616,6 +616,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
 
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -727,6 +728,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
     def test_26_run_validated(self):
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -773,6 +775,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         requests.get = ResponseMockFactory.crossref531_get_success
 
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -815,6 +818,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
     def test_29_submit_success(self):
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -858,6 +862,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
     def test_29_submit_multiple_affs(self):
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
