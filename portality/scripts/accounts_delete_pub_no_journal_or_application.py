@@ -12,11 +12,14 @@ from portality.lib import dates
 EXCLUDED_ROLES = {'associate_editor', 'editor', 'admin', 'ultra_bulk_delete', 'jct_inprogress'}
 
 
-def accounts_with_no_journals_or_applications(csvwriter=None, older_than=dates.now_with_microseconds()):
+def accounts_with_no_journals_or_applications(csvwriter=None, older_than=None):
     """ Scroll through all accounts, return those with no journal unless they have excluded roles
     :param older_than: Exclude accounts newer than the supplied datestamp
     :param csvwriter: A CSV writer to output the accounts to
     """
+    if older_than is None:
+        older_than = dates.now_with_microseconds()
+
     gathered_account_ids = []
     for account in models.Account.iterate():
         if set(account.role).intersection(EXCLUDED_ROLES):
@@ -24,7 +27,7 @@ def accounts_with_no_journals_or_applications(csvwriter=None, older_than=dates.n
 
         # An newer date will have a negative timedelta
         if account.created_date is not None:
-            if (dates.parse(older_than) - dates.parse(account.created_date)).days < 0:
+            if dates.parse(account.created_date) >= dates.parse(older_than):
                 continue
 
         issns = models.Journal.issns_by_owner(account.id)
