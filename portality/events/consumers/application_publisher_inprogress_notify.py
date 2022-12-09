@@ -1,6 +1,5 @@
-# from flask import url_for
+# ~~ApplicationPublisherInProgressNotify:Consumer~~
 from portality.util import url_for
-
 from portality.core import app
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -30,6 +29,7 @@ class ApplicationPublisherInprogressNotify(EventConsumer):
         if application.owner is None:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()

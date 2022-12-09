@@ -5,6 +5,7 @@
 {# ~~-> EditorGroup:Model ~~ #}
 {% set managed_groups, maned_assignments = maned_of() %}
 
+{# ~~Dashboard:Template~~ #}
 {% block base_content %}
     <body class="dashboard {% block body_class %}{% endblock %}" id="{% block body_id %}{% endblock %}" data-spy="scroll" data-offset="70">
 
@@ -21,44 +22,24 @@
           {% include "includes/svg/doaj-icon.svg" %}
         </a>
         <ul class="unstyled-list flex-center">
-          {# TODO display last 10 event notifications here
-            <li class="dropdown">
-              <span class="dropdown__trigger tag tag--secondary" role="button" aria-haspopup="true" aria-expanded="false">
-                <span class="sr-only">Notifications</span>
-                <span data-feather="bell" aria-hidden="true"></span>
-              </span>
-              <ul class="dropdown__menu">
-                <li>
-                  <a href="#" class="dropdown__link">
-                    <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                    <time datetime="2021-07-17">2 hours ago</time>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="dropdown__link">
-                    <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                    <time datetime="2021-07-17">2 hours ago</time>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="dropdown__link">
-                    <span>@fsoldati tagged you in <i>Internationale Zeitschrift für Kulturkomparatistik</i></span>
-                    <time datetime="2021-07-17">2 hours ago</time>
-                  </a>
-                </li>
-              </ul>
-            </li> #}
-            <li class="flex-center">
-              <a href="/dashboard" class="tag">
+            {# ~~->Notifications:Feature~~ #}
+          <li class="dropdown flex-center">
+            <a href="/dashboard/notifications" class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
+              <span><span data-feather="bell" aria-hidden="true"></span> Notifications <span class="js-notifications-count"></span></span>
+            </a>
+            <ul class="dropdown__menu notifications" id="top_notifications"></ul>
+          </li>
+          <li class="flex-center">
+              <a href="/dashboard" class="label">
                 <span><span data-feather="list" aria-hidden="true"></span> Back to dashboard</span>
               </a>
             </li>
             <li class="flex-center">
-              <a href="/" class="tag">
+              <a href="/" class="label">
                 <span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span>
               </a>
             </li>
-          </ul>
+        </ul>
       </nav>
       {% include 'dashboard/nav.html' %}
       {% block extra_header %}{% endblock %}
@@ -125,7 +106,7 @@
     {% endblock %}
 
     {% include '_js_includes.html' %}
-
+    <script type="text/javascript" src="/static/js/notifications.js?v={{config.get('DOAJ_VERSION')}}"></script>
     {% block extra_js_bottom %}{% endblock extra_js_bottom %}
 
     {% if not request.cookies.get("doaj-consent") %}

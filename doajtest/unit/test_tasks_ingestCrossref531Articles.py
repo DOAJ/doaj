@@ -616,6 +616,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
 
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -727,6 +728,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
     def test_26_run_validated(self):
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -773,6 +775,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         requests.get = ResponseMockFactory.crossref531_get_success
 
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -815,6 +818,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
     def test_29_submit_success(self):
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -858,6 +862,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
     def test_29_submit_multiple_affs(self):
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -896,3 +901,48 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         abib = found[0].bibjson()
         assert len(abib.author)  == 2
         assert abib.author[0]["affiliation"] == "Cottage Labs University"
+
+    def test_30_journal_not_indoaj(self):
+        """ You can't upload an article for a journal that's been withdrawn"""
+        etree.XMLSchema = self.mock_load_schema
+        j = models.Journal()
+        j.set_in_doaj(False)
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("crossref531")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = Crossref531ArticleFixtureFactory.upload_1_issn_correct()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed"
+        assert file_upload.error == Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL

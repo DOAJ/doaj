@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from flask_login import login_user
 
 from portality.core import app
@@ -25,9 +27,9 @@ class BackgroundSummary(object):
 
     def as_dict(self):
         return {
-            "job_id" : self.job_id,
-            "affected" : self.affected,
-            "error" : self.error
+            "job_id": self.job_id,
+            "affected": self.affected,
+            "error": self.error
         }
 
 
@@ -47,7 +49,7 @@ class BackgroundApi(object):
             ctx = app.test_request_context("/")
             ctx.push()
             # ~~-> Account:Model~~
-            acc = models.Account.pull(job.user)     # FIXME: what happens when this is the "system" user
+            acc = models.Account.pull(job.user)  # FIXME: what happens when this is the "system" user
             if acc is not None:
                 login_user(acc)
 
@@ -162,12 +164,26 @@ class BackgroundTask(object):
         params['{}__{}'.format(cls.__action__, param_name)] = value
 
     @classmethod
+    def create_job_params(cls, **raw_param_dict: dict):
+        new_param = {}
+        for k, v in raw_param_dict.items():
+            cls.set_param(new_param, k, v)
+        return new_param
+
+    @classmethod
+    def create_raw_param_dict(cls, job_params: dict, key_list: Iterable[str]):
+        raw_param_dict = {k: cls.get_param(job_params, k)
+                          for k in key_list}
+        return raw_param_dict
+
+    @classmethod
     def set_reference(cls, refs, ref_name, value):
         refs['{}__{}'.format(cls.__action__, ref_name)] = value
 
 
 class AdminBackgroundTask(BackgroundTask):
     """~~AdminBackgroundTask:Process->BackgroundTask:Process~~"""
+
     @classmethod
     def check_admin_privilege(cls, username):
         # ~~->Account:Model~~

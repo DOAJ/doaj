@@ -1,24 +1,31 @@
 """
 Delete all non-editorial user accounts who are not the owner of a journal, application, update request, or draft.
 
-python accounts_delete_pub_no_journal_or_application.py [-r deletion_report.csv]
+python accounts_delete_pub_no_journal_or_application.py [-r deletion_report.csv] [-o older_than_date]
 """
 
 import csv
 from portality import models
+from portality.lib import dates
 
 # set of roles to exclude from the deletes
 EXCLUDED_ROLES = {'associate_editor', 'editor', 'admin', 'ultra_bulk_delete', 'jct_inprogress'}
 
 
-def accounts_with_no_journals_or_applications(csvwriter=None):
+def accounts_with_no_journals_or_applications(csvwriter=None, older_than=dates.now_with_microseconds()):
     """ Scroll through all accounts, return those with no journal unless they have excluded roles
+    :param older_than: Exclude accounts newer than the supplied datestamp
     :param csvwriter: A CSV writer to output the accounts to
     """
     gathered_account_ids = []
     for account in models.Account.iterate():
         if set(account.role).intersection(EXCLUDED_ROLES):
             continue
+
+        # An newer date will have a negative timedelta
+        if account.created_date is not None:
+            if (dates.parse(older_than) - dates.parse(account.created_date)).days < 0:
+                continue
 
         issns = models.Journal.issns_by_owner(account.id)
         apps = models.Application.get_by_owner(account.id)  # Applications and URs
@@ -46,6 +53,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--report", help="report accounts to CSV (specify filename)")
+    parser.add_argument("-o", "--older_than", default=dates.now_with_microseconds())
     parser.add_argument("-i", "--instructions", help="CSV of accounts to delete, ID must be first column")
     args = parser.parse_args()
 
@@ -60,7 +68,7 @@ if __name__ == "__main__":
             writer = csv.writer(f)
             writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Roles"])
 
-            accounts_to_delete = accounts_with_no_journals_or_applications(writer)
+            accounts_to_delete = accounts_with_no_journals_or_applications(writer, args.older_than)
 
         print("Done!")
         exit()
