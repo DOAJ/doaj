@@ -344,29 +344,29 @@ class JournalFactory(FixtureFactory):
         return j
 
 
-w = 7 * 24 * 60 * 60
-pw = FixtureFactory.create_random_str()
+# w = 7 * 24 * 60 * 60
+# pw = FixtureFactory.create_random_str()
 # acc = AccountFactory.make(roles=[constants.ROLE_ASSOCIATE_EDITOR], password=pw)
 # eg = EditorialGroupFactory.make(name="Todo Associate Group " + acc.id, associates=[acc])
 # app1 = AppFixtureFactory.make(title=acc.id + " Stalled Application", lmu_diff=3 * w, cd_diff=3 * w, status=constants.APPLICATION_STATUS_IN_PROGRESS, editor=acc)
 # app2 = AppFixtureFactory.make(title=acc.id + " Old Application", lmu_diff=6 * w, cd_diff=6 * w, status=constants.APPLICATION_STATUS_IN_PROGRESS, editor=acc)
 
-acc = (AccountFactory.make, {
-    "kwargs": {"roles": [constants.ROLE_ASSOCIATE_EDITOR], "password": pw}
-})
-eg = (EditorialGroupFactory.make, {
-    "kwsubs": {
-        "name": lambda ctx: "Todo Associate Group " + ctx["acc"].id,
-        "associates": lambda ctx: [ctx["acc"].id]
-    }
-})
-app1 = (AppFixtureFactory.make, {
-    "kwargs": { "lmu_diff": 3 * w, "cd_diff": 3 * w, "status": constants.APPLICATION_STATUS_IN_PROGRESS},
-    "kwsubs": {
-        "title": lambda ctx: ctx["acc"].id + " Stalled Application",
-        "editor": lambda ctx: ctx["acc"]
-    }
-})
+# acc = (AccountFactory.make, {
+#     "kwargs": {"roles": [constants.ROLE_ASSOCIATE_EDITOR], "password": pw}
+# })
+# eg = (EditorialGroupFactory.make, {
+#     "kwsubs": {
+#         "name": lambda ctx: "Todo Associate Group " + ctx["acc"].id,
+#         "associates": lambda ctx: [ctx["acc"].id]
+#     }
+# })
+# app1 = (AppFixtureFactory.make, {
+#     "kwargs": { "lmu_diff": 3 * w, "cd_diff": 3 * w, "status": constants.APPLICATION_STATUS_IN_PROGRESS},
+#     "kwsubs": {
+#         "title": lambda ctx: ctx["acc"].id + " Stalled Application",
+#         "editor": lambda ctx: ctx["acc"]
+#     }
+# })
 
 
 # def variant_closure(title_suffix):
@@ -387,28 +387,28 @@ app1 = (AppFixtureFactory.make, {
 # similar = FixtureFactory.fixed_spread(AppFixtureFactory.make, 10, fixed_kwargs={"status": constants.APPLICATION_STATUS_IN_PROGRESS})
 
 # make a bunch of applications which vary according to specified variations
-variants = [
-    {"title_suffix": "Stalled Allication", "week_multiplier": 3},
-    {"title_suffix": "Old Allication", "week_multiplier": 6},
-]
-
-fixed_kwargs = {"status": constants.APPLICATION_STATUS_IN_PROGRESS}
-
-variant_kwargs = {
-    "lmu_diff": lambda v: v["week_multiplier"] * w,
-    "cd_diff": lambda v: v["week_multiplier"] * w
-}
-
-sub_kwargs = {
-    "title": lambda v: lambda ctx: ctx["acc"].id + " " + v["title_suffix"],
-    "editor": lambda v: lambda ctx: ctx["acc"]
-}
+# variants = [
+#     {"title_suffix": "Stalled Allication", "week_multiplier": 3},
+#     {"title_suffix": "Old Allication", "week_multiplier": 6},
+# ]
+#
+# fixed_kwargs = {"status": constants.APPLICATION_STATUS_IN_PROGRESS}
+#
+# variant_kwargs = {
+#     "lmu_diff": lambda v: v["week_multiplier"] * w,
+#     "cd_diff": lambda v: v["week_multiplier"] * w
+# }
+#
+# sub_kwargs = {
+#     "title": lambda v: lambda ctx: ctx["acc"].id + " " + v["title_suffix"],
+#     "editor": lambda v: lambda ctx: ctx["acc"]
+# }
 
 #specified = FixtureFactory.variant_spread(AppFixtureFactory.make, variants, fixed_kwargs, variant_kwargs, sub_kwargs)
 
 # make a bunch of applications which all differ in a specific way
-fixed_kwargs = {"status": constants.APPLICATION_STATUS_IN_PROGRESS}
-variant_kwargs = {"last_updated": lambda i: dates.random_date(dates.before(datetime.utcnow(), 3600), datetime.utcnow())}
+# fixed_kwargs = {"status": constants.APPLICATION_STATUS_IN_PROGRESS}
+# variant_kwargs = {"last_updated": lambda i: dates.random_date(dates.before(datetime.utcnow(), 3600), datetime.utcnow())}
 #differ = FixtureFactory.constrained_spread(AppFixtureFactory.make, 10, fixed_kwargs=fixed_kwargs, variant_kwargs=variant_kwargs)
 
 # cmds = {"acc": acc, "eg": eg, "app1": app1, "specified": specified, "similar": similar, "differ": differ}
