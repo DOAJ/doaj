@@ -88,6 +88,11 @@ class TestOpenURL(DoajTestCase):
         param_pissn = j_matching.bibjson().first_pissn
         param_title = j_matching.bibjson().title
 
+        art_source = ArticleFixtureFactory.make_article_source(eissn=param_eissn, pissn=param_pissn)
+        art_source["bibjson"]["journal"]["volume"] = "1"
+        art = models.Article(**art_source)
+        art.save(blocking=True)
+
         j_nonmatching = models.Journal(**j_nonmatching_source)
         j_nonmatching.set_in_doaj(True)
         param_different_title = "A new title not the same as the old title"
@@ -107,7 +112,8 @@ class TestOpenURL(DoajTestCase):
                                             pissn=param_pissn,
                                             eissn=param_eissn,
                                             jtitle=param_title,
-                                            genre='journal'))
+                                            genre='journal',
+                                            volume="1"))
 
                 assert resp.status_code == 302
                 assert resp.location == url_for('doaj.toc', identifier=j_matching.id)

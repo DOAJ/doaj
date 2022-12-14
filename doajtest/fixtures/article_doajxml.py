@@ -34,6 +34,10 @@ class DoajXmlArticleFixtureFactory(object):
         return cls._response_from_xpath("//record[journalTitle='PISSN Correct']")
 
     @classmethod
+    def upload_no_issns(cls):
+        return cls._response_from_xpath("//record[journalTitle='No issns']")
+
+    @classmethod
     def upload_author_email_address(cls):
         return cls._response_from_xpath("//record[journalTitle='author email address']")
 

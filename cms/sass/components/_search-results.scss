@@ -4,6 +4,7 @@
   padding-left: 0;
   margin-left: 0;
   list-style: none;
+  font-size: 20px;
 
   @media (max-width: 768px) {
     font-size: 18px;
@@ -14,7 +15,6 @@
   display: block;
   padding: $spacing-04;
   margin-bottom: $spacing-04;
-  @include typescale-06;
 }
 
 .search-results__main {
@@ -66,14 +66,18 @@
     }
   }
 
-  ul {
-    @include unstyled-list;
+  ul:last-of-type {
+    @media (max-width: 768px) {
+      padding-bottom: $spacing-03;
+      border-bottom: 1px solid rgba($dark-grey, 0.25);
+    }
   }
 }
 
 .search-results__aside {
   border: 0;
   color: $dark-grey;
+  @include typescale-06;
 
   ul {
     @include unstyled-list;

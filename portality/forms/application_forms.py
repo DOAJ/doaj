@@ -48,14 +48,22 @@ STOP_WORDS = [
     "peer-reviewed",
     "peer-review",
     "peer review",
+    "peer reviewed",
     "quality",
+    "medical journal",
     "multidisciplinary",
+    "multi-disciplinary",
+    "multi-disciplinary journal",
     "interdisciplinary",
+    "inter disciplinary",
+    "inter disciplinary research",
+    "international journal",
     "journal",
     "scholarly journal",
     "open science",
     "impact factor",
     "scholarly",
+    "research",
     "research journal"
 ]
 
@@ -368,8 +376,10 @@ class FieldDefinitions:
         "label": "Up to 6 subject keywords in English",
         "input": "taglist",
         "help": {
-            "long_help": ["Only 6 keywords are allowed. Choose words that describe the subject matter of the journal "
-                          "and not the journal’s qualities.", "Keywords must be in English and separated by a comma."],
+            "long_help": ["Choose upto 6 keywords that describe the subject matter of the journal. "
+                          "Keywords must be in English.", "Use single words or short phrases (2 to 3 words) " 
+                          "that describe the journal's main topic.", "Do not add acronyms, abbreviations or descriptive sentences.", 
+                          "Note that the keywords may be edited by DOAJ editorial staff." ],
         },
         "validate": [
             {"required": {"message": "Enter at least <strong>one subject keyword</strong> in English"}},
@@ -1675,7 +1685,7 @@ class FieldDefinitions:
     # ~~->$ Continues:FormField~~
     CONTINUES = {
         "name": "continues",
-        "label": "Continues an older journal with the ISSN(s)",
+        "label": "Continues an <strong>older</strong> journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
@@ -1698,7 +1708,7 @@ class FieldDefinitions:
     # ~~->$ ContinuedBy:FormField~~
     CONTINUED_BY = {
         "name": "continued_by",
-        "label": "Continued by a newer version of the journal with the ISSN(s)",
+        "label": "Continued by a <strong>newer</strong> journal with the ISSN(s)",
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
@@ -3087,18 +3097,18 @@ JournalFormFactory = Formulaic(JOURNAL_FORMS, WTFORMS_BUILDERS, function_map=PYT
 if __name__ == "__main__":
     """
     Running this file from the command line enables you to output documentation for a given form context.
-    
+
     See `docs/forms.sh` for where this is used
-    
+
     To create the documentation you can call this file with 3 arguments:
-    
+
     -t - the object type to output.  Either 'journal' or 'application'
-    -c - the form context.  Will be one of the contexts defined elsewhere in this file, which may be specific to the 
+    -c - the form context.  Will be one of the contexts defined elsewhere in this file, which may be specific to the
             object type.  For example, 'admin' or 'editor'
     -o - the path to the file where to output the result
-    
+
     The output is a CSV which lists the following information:
-    
+
     * Form Position - the position in the form.  Felds are listed in order
     * Field Name - the form field name
     * Label - the form field label

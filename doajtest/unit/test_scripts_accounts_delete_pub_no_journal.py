@@ -1,12 +1,10 @@
-import time
-import esprit
-
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures.accounts import AccountFixtureFactory
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
 from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
 
 from portality import models
+from portality.lib import dates
 from portality.constants import APPLICATION_STATUSES_ALL
 from portality.scripts.accounts_delete_pub_no_journal_or_application import accounts_with_no_journals_or_applications
 
@@ -51,10 +49,8 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
         models.Account.blockall(account_blocklist)
         models.Journal.blockall(journal_blocklist)
 
-        # time.sleep(1)
-
         # Check we get the expected accounts to delete
-        ids_to_delete = accounts_with_no_journals_or_applications()
+        ids_to_delete = accounts_with_no_journals_or_applications(older_than=dates.now_with_microseconds())
         assert sorted(ids_to_delete) == sorted(expected_deletes)
 
         # Run the deletes
@@ -69,6 +65,9 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
         """ After the application form redesign project accounts are created before the journal, so keep accounts with
         applications in the system """
 
+        account_blocklist = []
+        application_blocklist = []
+
         # Create accounts without applications attached
         expected_deletes = []
         for i in range(10):
@@ -77,6 +76,7 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
             pubaccount.set_id()
             expected_deletes.append(pubaccount.id)
             pubaccount.save()
+            account_blocklist.append((pubaccount.id, pubaccount.last_updated))
 
         # Create accounts with applications
         for i in range(len(APPLICATION_STATUSES_ALL)):
@@ -84,6 +84,7 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
             pubaccount = models.Account(**pubsource)
             pubaccount.set_id()
             pubaccount.save()
+            account_blocklist.append((pubaccount.id, pubaccount.last_updated))
 
             # Attach an application, various statuses
             asource = ApplicationFixtureFactory.make_application_source()
@@ -92,8 +93,10 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
             a.set_owner(pubaccount.id)
             a.set_application_status(APPLICATION_STATUSES_ALL[i])
             a.save()
+            application_blocklist.append((a.id, a.last_updated))
 
-        time.sleep(1)
+        models.Account.blockall(account_blocklist)
+        models.Application.blockall(application_blocklist)
 
         # Check we get the expected accounts to delete
         ids_to_delete = accounts_with_no_journals_or_applications()
@@ -119,10 +122,13 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
             AccountFixtureFactory.make_editor_source(),
         ]
 
+        account_blocklist = []
+
         for s in sources:
             account = models.Account(**s)
             account.set_id()
             account.save()
+            account_blocklist.append((account.id, account.last_updated))
 
         # Add a few publishers we expect to be deleted
         publishers = []
@@ -132,8 +138,9 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
             pub.set_id()
             publishers.append(pub)
             pub.save()
+            account_blocklist.append((pub.id, pub.last_updated))
 
-        time.sleep(1)
+        models.Account.blockall(account_blocklist)
 
         # Check we get the publishers back when we run the script
         ids_to_delete = accounts_with_no_journals_or_applications()

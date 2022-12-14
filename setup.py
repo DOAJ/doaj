@@ -1,9 +1,11 @@
 from setuptools import setup, find_packages
 import sys
 
+# Install for development or CI with pip install -e .[test] to get pytest, coverage, and selenium extras.
+
 setup(
     name='doaj',
-    version='6.1.7',
+    version='6.2.10',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -11,7 +13,7 @@ setup(
         "boto3==1.18.50",
         "elastic-apm==5.2.2",
         "elasticsearch==7.13.0",
-        "esprit==0.1.0",   # legacy for scripts etc (phasing out)
+        "faust-streaming==0.9.5",  # Note: This is a maintained fork of the abandoned robinhood/faust
         "Faker==2.0.3",
         "feedparser==6.0.8",
         "itsdangerous==2.0.1",     # fixme: unpinned dependency of flask, 2.1.0 is causing an import error 'json'
@@ -21,7 +23,6 @@ setup(
         "Flask-DebugToolbar==0.10.1",
         "Flask-Login==0.6.1",
         "Flask-Mail==0.9.1",
-        "Flask-Swagger==0.2.13",
         "Flask-WTF==0.14.2",
         "freezegun==0.3.12",
         "GitPython==2.1.14",
@@ -34,7 +35,6 @@ setup(
         "markdown-full-yaml-metadata==2.0.1",
         "markdown-link-attr-modifier==0.2.0",
         "mdx_truly_sane_lists==1.2",
-        "nose==1.3.7",
         "openpyxl~=3.0.3",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
         "parameterized==0.7.0",
         "psutil==5.6.3",
@@ -51,14 +51,18 @@ setup(
         # Flask2 required >=2.0.*, Flask-Login required <=2.0.*
         "Werkzeug~=2.0.0",
         "WTForms==2.2.1",
+        "esprit @ git+https://github.com/CottageLabs/esprit.git@edda12177effa0945d99302f0d453b22503e335b#egg=esprit",
+        "dictdiffer @ git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer",
+        "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
-    extras_require={"test": [
-        "pytest",
-        "pytest-xdist",
-        "selenium",
-        "urllib3[secure,socks]~=1.26",   # required by selenium
-    ]},
-    url='http://cottagelabs.com/',
+    extras_require={
+        "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium",
+                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
+        "docs": [
+            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@81eecd5e7b4da379b14c0ccb0cf64e9665a26e20#egg=featuremap",
+            "testbook @ git+https://github.com/CottageLabs/testbook.git@15a7c0cc25d951d989504d84c2ef3e24caaf56e9#egg=testbook"]
+    },
+    url='https://cottagelabs.com/',
     author='Cottage Labs',
     author_email='us@cottagelabs.com',
     description='Directory of Open Access Journals website and software',

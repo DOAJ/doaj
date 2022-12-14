@@ -49,11 +49,12 @@ from portality.view.dashboard import blueprint as dashboard
 app.register_blueprint(account, url_prefix='/account') #~~->Account:Blueprint~~
 app.register_blueprint(admin, url_prefix='/admin') #~~-> Admin:Blueprint~~
 app.register_blueprint(publisher, url_prefix='/publisher') #~~-> Publisher:Blueprint~~
-app.register_blueprint(query,  name='query', url_prefix='/query') # ~~-> Query:Blueprint~~
-app.register_blueprint(query,  name='admin_query', url_prefix='/admin_query')
-app.register_blueprint(query,  name='publisher_query', url_prefix='/publisher_query')
-app.register_blueprint(query,  name='editor_query', url_prefix='/editor_query')
-app.register_blueprint(query,  name='associate_query', url_prefix='/associate_query')
+app.register_blueprint(query, name='query', url_prefix='/query') # ~~-> Query:Blueprint~~
+app.register_blueprint(query, name='admin_query', url_prefix='/admin_query')
+app.register_blueprint(query, name='publisher_query', url_prefix='/publisher_query')
+app.register_blueprint(query, name='editor_query', url_prefix='/editor_query')
+app.register_blueprint(query, name='associate_query', url_prefix='/associate_query')
+app.register_blueprint(query, name='dashboard_query', url_prefix="/dashboard_query")
 app.register_blueprint(editor, url_prefix='/editor') # ~~-> Editor:Blueprint~~
 app.register_blueprint(services, url_prefix='/service') # ~~-> Services:Blueprint~~
 if 'api1' in app.config['FEATURES']:
@@ -100,18 +101,8 @@ def custom_static(path):
 
 # Configure the Google Analytics tracker
 # ~~-> GoogleAnalytics:ExternalService~~
-from portality.lib import analytics
-try:
-    analytics.create_logfile(app.config.get('GOOGLE_ANALTYICS_LOG_DIR', None))
-    analytics.create_tracker(app.config['GOOGLE_ANALYTICS_ID'], app.config['BASE_DOMAIN'])
-except KeyError:
-    err = "No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'."
-    if app.config.get("DOAJENV") == 'production':
-        app.logger.error(err)
-    else:
-        app.logger.debug(err)
-except analytics.GAException as e:
-    app.logger.debug('Unable to send events to Google Analytics: ' + str(e))
+from portality.lib import plausible
+plausible.create_logfile(app.config.get('PLAUSIBLE_LOG_DIR', None))
 
 # Redirects from previous DOAJ app.
 # RJ: I have decided to put these here so that they can be managed
@@ -154,7 +145,7 @@ def legacy_doaj_XML_schema():
 # ~~-> CrossrefArticleXML:WebRoute~~
 @app.route("/isCrossrefLoaded")
 def is_crossref_loaded():
-    if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").isAlive():
+    if app.config.get("LOAD_CROSSREF_THREAD") is not None and app.config.get("LOAD_CROSSREF_THREAD").is_alive():
         return "false"
     else:
         return "true"
@@ -303,9 +294,12 @@ def maned_of_wrapper():
     def maned_of():
         # ~~-> EditorGroup:Model ~~
         egs = []
+        assignments = {}
         if current_user.has_role("admin"):
-            egs = [e for e in models.EditorGroup.groups_by_maned(current_user.id)]
-        return egs
+            egs = models.EditorGroup.groups_by_maned(current_user.id)
+            if len(egs) > 0:
+                assignments = models.Application.assignment_to_editor_groups(egs)
+        return egs, assignments
     return dict(maned_of=maned_of)
 
 

@@ -1,0 +1,135 @@
+suite: Publisher dashboards drafts
+testset: Publisher dashboard
+tests:
+- title: Save a draft
+  context:
+    role: Publisher
+  steps:
+  - step: Log in (or register) to submit an application /account/login?redirected=apply
+    results:
+    - You are shown the first page of the application form
+  - step: Complete the first two questions of the application form
+  - step: Click 'Save the draft'
+    results:
+    - You are shown a message confirming that the draft is saved and with a link to
+      the Publisher dashboard
+  - step: Click the link and you are taken back to the dashboard
+    results:
+    - The application you just started it shown at the top of the list as 'Untitled'
+    - The status is Not yet submitted
+    - The Last updated date is today's date
+    - You see an edit and a delete button next to it
+  - step: Click Apply and start a new application form
+  - step: Complete the first two questions of the application form and the title of
+      the journal on the next page
+  - step: Click 'Save the draft'
+    results:
+    - You are shown a message confirming that the draft is saved and with a link to
+      the Publisher dashboard
+  - step: Click the link and you are taken back to the dashboard
+    results:
+    - The application you just started is shown at the top of the list above the first
+      application you started.
+    - The status is Not yet submitted
+    - The Last updated date is today's date
+    - You see an edit and a delete button next to it
+- title: Edit a draft
+  context:
+    role: Publisher
+  steps:
+  - step: Log in (or register) to submit an application /account/login?redirected=apply
+    results:
+    - You are shown the first page of the application form
+  - step: Complete the first two questions of the application form and the title on
+      the second page
+  - step: Click 'Save the draft'
+    results:
+    - You are shown a message confirming that the draft is saved and with a link to
+      the Publisher dashboard
+  - step: Go to the  dashboard
+  - step: Click 'Edit' on the applicatin you just started
+    results:
+    - You are taken back to the first page of the application. All the answers you
+      provided are still there.
+  - step: Click 'Save the draft' at the bottom
+    results:
+    - You are shown a message confirming that the draft is saved and with a link to
+      the Publisher dashboard
+  - step: Click the link and you are taken back to the dashboard
+    results:
+    - The application you just started is shown at the top of the list above the first
+      application you started.
+    - The status is Not yet submitted
+    - The Last updated date is today's date
+    - You see an edit and a delete button next to it
+- title: Delete a draft
+  context:
+    role: Publisher
+  steps:
+  - step: Log in (or register) to submit an application /account/login?redirected=apply
+    results:
+    - You are shown the first page of the application form
+  - step: Complete the first two questions of the application form and the title on
+      the second page
+  - step: Click 'Save the draft'
+    results:
+    - You are shown a message confirming that the draft is saved and with a link to
+      the Publisher dashboard
+  - step: Go to the  dashboard
+    results:
+    - The application you just started is shown at the top of the list.
+    - The status is Not yet submitted
+    - The Last updated date is today's date
+    - You see an edit and a delete button next to it
+  - step: Click delete
+    results:
+    - You see a pop-up message asking you to confirm that you want to delete the draft
+    - You see the title of your draft
+  - step: Click 'No'
+    results:
+    - The pop-up box disappears and you are taken back to the Publisher's dashboard
+    - The draft is not deleted
+  - step: Click delete again
+  - step: Click the button 'Yes, delete it' in the pop-up box
+    results:
+    - You are shown a message whch confirms that your draft has been deleted and a
+      link to the Publisher's dashboard
+  - step: Click the link to the dashboard
+    results:
+    - You are taken back to the dashboard and your draft has been deleted.
+- title: View a submitted application
+  context:
+    role: Publisher
+  steps:
+  - step: Log in (or register) to submit an application /account/login?redirected=apply
+    results:
+    - You are shown the first page of the application form
+  - step: Complete the entire application form until you see the 'Form review' page
+  - step: Click 'Save the draft'
+    results:
+    - You are shown a message which confirms that the draft has been saved and shows
+      a link to the Publisher's dashboard.
+  - step: Go to the Publisher's dashboard
+    results:
+    - Your draft is at the top of the list
+    - The status is Not yet submitted
+    - The Last update date is today's date
+    - You see an edit and a delete button next to it
+  - step: Click edit and work your way through the form until you are on the form
+      review page again
+    results:
+    - You can see a summary of your application page and 'Edit this section' links
+      are present at the start of every section.
+  - step: Click Submit
+    results:
+    - You are shown the 'Thank you for your application.' page
+  - step: Go back to the Publisher dashboard
+    results:
+    - The application you just submitted is at the top of the list
+    - The status is Pending
+    - The Last updated date is today's date
+    - You see a View button next to it.
+  - step: Click View
+    results:
+    - You are taken to the Form review page and no 'Edit this section' links are present
+    - There are no buttons at the bottom of the page.

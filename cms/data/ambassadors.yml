@@ -63,7 +63,7 @@
   photo: "johndove.jpg"
   coi:
     2022: https://drive.google.com/file/d/1cWijl2xdmVjshsvaGTABOvC_chIIfuVA/view?usp=sharing
-
+    
 - name: Mahmoud Khalifa
   region: Middle East and Persian Gulf
   bio: "Mahmoud is the founder of Cybrarians, the Arabic Portal for Librarianship and Information, a non-profit organization located in Egypt since 2002, and working on serving library and information community in Arab countries. He is PhD candidate in Humboldt University of Berlin, Germany. He works on a dissertation about The national information policies. Mahmoud was an Associate at IFLA International Leaders Programme, 2016-2018, and an accredited trainer for the IFLA BSLA programme (Building Strong Library Association), as well as an OCLC Fellow at Jay Jordan IFLA/OCLC Early Career Development Fellowship Program, class 2010. In 2013 he was the winner of the Scientific Research Academy’s prize in informatics in Egypt. Professionally, he worked in Library of Congress Cairo Office from 2006-2018."
@@ -77,6 +77,15 @@
   photo: "max.png"
   coi:
     2022: https://drive.google.com/file/d/1Dzb8QzS5V0KzjNnybkWFQpjBwk1Jy8il/view?usp=sharing
+    
+- name: Melkamu Beyene
+  region: East Africa
+  bio: "Dr.Melkamu Beyene is Assistant professor in the school of information science. He received his Ph.D in Information Retrieval from Addis Ababa University in a joint program with the Institut national des sciences appliquées de Lyon, France by 2017. He is
+serving as a chief librarian of Addis Ababa University Library system and Chairperson of the Consortium of Ethiopian Academic and Research Libraries from March 08, 2018 up
+to now."
+  photo: "Melkamu_Beyene.JPG"
+  coi:
+    2022: 
 
 - name: Muhammad Imtiaz Subhani
   region: Pakistan
@@ -88,7 +97,7 @@
 - name: Narumi Shitara
   region: Japan
   bio: "Narumi is the head of the Editorial Office, Center for Southeast Asian Studies (CSEAS), Kyoto University. She has been the managing editor of CSEAS’s academic journals and monograph series since 2011. Her research interest is in bulletin journals published by Japanese universities and research institutes."
-  photo:
+  photo: "shitara.png"
   coi:
     2022: https://drive.google.com/file/d/1f_Od4aor5r9e2idA1gUNnNnPM8naZCcV/view?usp=sharing
 

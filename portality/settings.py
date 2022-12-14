@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.1.9"
+DOAJ_VERSION = "6.2.10"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -82,6 +82,18 @@ ELASTIC_APM = {
   # Set custom APM Server URL (default: http://localhost:8200)
   'SERVER_URL': '',
 }
+
+###########################################
+# Event handler
+
+# use this to queue events asynchronously through kafka
+EVENT_SEND_FUNCTION = "portality.events.kafka_producer.send_event"
+# use this one to bypass kafka and process events immediately/synchronously
+# EVENT_SEND_FUNCTION = "portality.events.shortcircuit.send_event"
+
+KAFKA_BROKER = "kafka://localhost:9092"
+KAFKA_EVENTS_TOPIC = "events"
+KAFKA_BOOTSTRAP_SERVER = "localhost:9092"
 
 ###########################################
 # Read Only Mode
@@ -276,11 +288,13 @@ ROLE_MAP = {
         "assign_to_associate",
         "list_group_journals",
         "list_group_suggestions",
+        "read_notifications"
     ],
     "associate_editor": [
         "edit_journal",
         "edit_suggestion",
         "editor_area",
+        "read_notifications"
     ]
 }
 
@@ -400,7 +414,9 @@ HUEY_SCHEDULE = {
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "15"},
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"}
+    "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
+    "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
+    "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
 }
 
 HUEY_TASKS = {
@@ -625,6 +641,7 @@ MAPPINGS['news'] = MAPPINGS["account"]    #~~->News:Model~~
 MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
 MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
 MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
+MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
 
 #########################################
 # Query Routes
@@ -734,6 +751,13 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "admin",
             "dao" : "portality.models.BackgroundJob"     # ~~->BackgroundJob:Model~~
+        },
+        # ~~->APINotificationQuery:Endpoint~~
+        "notifications" : {
+            "auth" : False,
+            "role" : "admin",
+            "dao" : "portality.models.Notification", # ~~->Notification:Model~~
+            "required_parameters" : None
         }
     },
     "associate_query" : {
@@ -794,6 +818,16 @@ QUERY_ROUTE = {
             "dao" : "portality.models.Suggestion",  # ~~->Application:Model~~
             "required_parameters" : None
         }
+    },
+    "dashboard_query": {
+        # ~~->APINotificationQuery:Endpoint~~
+        "notifications" : {
+            "auth" : False,
+            "role" : "read_notifications",
+            "query_filters" : ["who_current_user"], # ~~-> WhoCurrentUser:Query
+            "dao" : "portality.models.Notification", # ~~->Notification:Model~~
+            "required_parameters" : None
+        }
     }
 }
 
@@ -811,6 +845,7 @@ QUERY_FILTERS = {
     "es_type_fix" : "portality.lib.query_filters.es_type_fix",
     "last_update_fallback" : "portality.lib.query_filters.last_update_fallback",
     "not_update_request" : "portality.lib.query_filters.not_update_request",
+    "who_current_user" : "portality.lib.query_filters.who_current_user",    # ~~-> WhoCurrentUser:Query ~~
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
@@ -908,12 +943,14 @@ OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 # ~~->DOAJArticleXML:Schema~~
 SCHEMAS = {
     "doaj": os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd"),
-    "crossref": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd")
+    "crossref442": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref4.4.2.xsd"),
+    "crossref531": os.path.join(BASE_FILE_PATH, "static", "crossref", "crossref5.3.1.xsd")
 }
 
 # placeholders for the loaded schemas
 DOAJ_SCHEMA = None
-CROSSREF_SCHEMA = None
+CROSSREF442_SCHEMA = None
+CROSSREF531_SCHEMA = None
 LOAD_CROSSREF_THREAD = None
 
 # mapping of format names to modules which implement the crosswalks
@@ -921,7 +958,8 @@ LOAD_CROSSREF_THREAD = None
 # ~~->CrossrefXML:Crosswalk~~
 ARTICLE_CROSSWALKS = {
     "doaj": "portality.crosswalks.article_doaj_xml.DOAJXWalk",
-    "crossref": "portality.crosswalks.article_crossref_xml.CrossrefXWalk"
+    "crossref442": "portality.crosswalks.article_crossref_xml.CrossrefXWalk442",
+    "crossref531": "portality.crosswalks.article_crossref_xml.CrossrefXWalk531"
 }
 
 # maximum size of files that can be provided by-reference (the default value is 250Mb)
@@ -952,7 +990,6 @@ JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
 # approximate rate of change of the Table of Contents for journals
 TOC_CHANGEFREQ = "monthly"
 
-STATIC_PAGES = []
 
 
 ##################################################
@@ -1210,6 +1247,7 @@ HARVESTER_ZOMBIE_AGE = 604800
 # ~~->ReCAPTCHA:ExternalService
 
 #Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
+RECAPTCHA_ENABLE = True
 RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
 RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
 
@@ -1221,6 +1259,31 @@ PRESERVATION_USERNAME = "user_name"
 PRESERVATION_PASSWD = "password"
 PRESERVATION_COLLECTION = {}
 
+
+#########################################################
+# Background tasks --- anon export
+TASKS_ANON_EXPORT_CLEAN = False
+TASKS_ANON_EXPORT_LIMIT = None
+TASKS_ANON_EXPORT_BATCH_SIZE = 100000
+TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
+
+#########################################################
+# Background tasks --- old_data_cleanup
+TASK_DATA_RETENTION_DAYS = {
+    "notification": 180, # ~~-> Notifications:Feature ~~
+    "background_job": 180, # ~~-> BackgroundJobs:Feature ~~
+}
+
 ########################################
-# Set todo list size
+# Editorial Dashboard - set to-do list size
 TODO_LIST_SIZE = 48
+
+#######################################################
+# Plausible analytics
+# root url of plausible
+PLAUSIBLE_URL = "https://plausible.io"
+PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/plausible.js"
+PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event/"
+# site name / domain name that used to register in plausible
+PLAUSIBLE_SITE_NAME = BASE_DOMAIN
+PLAUSIBLE_LOG_DIR = None

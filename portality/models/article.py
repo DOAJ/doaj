@@ -153,7 +153,11 @@ class Article(DomainObject):
         self.data["history"].append(snobj)
 
     def is_in_doaj(self):
-        return self.data.get("admin", {}).get("in_doaj", False)
+        try:
+            return self.data['admin'].get("in_doaj", False)
+        except KeyError:
+            # If we have no admin section, return None instead
+            return None
 
     def set_in_doaj(self, value):
         if "admin" not in self.data:
@@ -161,7 +165,11 @@ class Article(DomainObject):
         self.data["admin"]["in_doaj"] = value
 
     def has_seal(self):
-        return self.data.get("admin", {}).get("seal", False)
+        try:
+            return self.data['admin'].get("seal", False)
+        except KeyError:
+            # If we have no admin section, return None instead
+            return None
 
     def set_seal(self, value):
         if "admin" not in self.data:
@@ -275,17 +283,6 @@ class Article(DomainObject):
                 trip = True
                 bibjson.journal_title = jbib.title
             rbj.title = jbib.title
-
-        bibjson.remove_journal_licences()
-        """
-        for lic in jbib.licences:
-            bibjson.add_journal_license(
-                lic.get("type"),
-                lic.get("type"),
-                lic.get("url")
-            )
-            rbj.add_license(lic.get("type"), lic.get("url"))
-        """
 
         if len(jbib.language) > 0:
             jlang = jbib.language
@@ -703,61 +700,6 @@ class ArticleBibJSON(GenericBibJSON):
     def author(self, authors):
         self._set_with_struct("author", authors)
 
-    def add_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
-        """
-        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
-
-        :return:
-        """
-        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
-        lobj = {"title": licence_title, "type": licence_type}
-        if url is not None:
-            lobj["url"] = url
-        if version is not None:
-            lobj["version"] = version
-        if open_access is not None:
-            lobj["open_access"] = open_access
-        self._add_to_list_with_struct("journal.license", lobj)
-
-    def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
-        """
-        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
-        """
-        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
-        lobj = {"title": licence_title, "type": licence_type}
-        if url is not None:
-            lobj["url"] = url
-        if version is not None:
-            lobj["version"] = version
-        if open_access is not None:
-            lobj["open_access"] = open_access
-        self._set_with_struct("journal.license", lobj)
-
-    def get_journal_license(self):
-        """
-        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
-        """
-        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
-        lics = self._get_list("journal.license")
-        if len(lics) == 0:
-            return None
-        return lics[0]
-
-    @property
-    def journal_licenses(self):
-        """
-        DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
-        """
-        warnings.warn("DEPRECATED - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", DeprecationWarning)
-        return self._get_list("journal.license")
-
-    def remove_journal_licences(self):
-        """
-        PENDING DEPRECATION - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548
-        """
-        warnings.warn("PENDING DEPRECATION - We have stopped syncing journal license to articles: https://github.com/DOAJ/doajPM/issues/2548", PendingDeprecationWarning)
-        self._delete("journal.license")
-
     def get_publication_date(self, date_format='%Y-%m-%dT%H:%M:%SZ'):
         # work out what the date of publication is
         date = ""
@@ -904,20 +846,8 @@ ARTICLE_BIBJSON_EXTENSION = {
                         "country" : {"coerce" : "unicode"}
                     },
                     "lists" : {
-                        "license" : {"contains" : "object"},
                         "language" : {"contains" : "field", "coerce" : "unicode"},
                         "issns" : {"contains" : "field", "coerce" : "unicode"}
-                    },
-                    "structs" : {
-                        "license" : {
-                            "fields" : {
-                                "title" : {"coerce" : "unicode"},
-                                "type" : {"coerce" : "unicode"},
-                                "url" : {"coerce" : "unicode"},
-                                "version" : {"coerce" : "unicode"},
-                                "open_access" : {"coerce" : "bool"}
-                            }
-                        }
                     }
                 }
             }

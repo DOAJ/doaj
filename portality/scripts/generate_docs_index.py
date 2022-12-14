@@ -3,6 +3,7 @@ Generates the index pages for generated documentation
 """
 
 import os
+from datetime import datetime
 
 BRANCH_PREFIXES = [
     "feature",
@@ -10,6 +11,9 @@ BRANCH_PREFIXES = [
     "release"
 ]
 
+IGNORE = [
+    ".git"
+]
 
 def generate_global_index(file, dir):
     md = "# DOAJ Docs Repo\n\n"
@@ -19,6 +23,8 @@ def generate_global_index(file, dir):
     top = os.listdir(dir)
     for entry in top:
         if not os.path.isdir(os.path.join(dir, entry)):
+            continue
+        if entry in IGNORE:
             continue
         if entry in BRANCH_PREFIXES:
             second = os.listdir(os.path.join(dir, entry))
@@ -35,6 +41,8 @@ def generate_global_index(file, dir):
 
 def generate_branch_index(file, dir):
     md = "# Documentation Index for {x}".format(x=os.path.basename(dir) + "\n\n")
+    md += "generated {x}\n\n".format(x=datetime.utcnow().strftime("%Y-%m-%d %H:%M"))
+    md += _generate_testbook_section(dir)
     md += _generate_data_models_section(dir)
     md += _generate_coverage_section(dir)
     md += _generate_featuremap_section(dir)
@@ -46,6 +54,8 @@ def generate_branch_index(file, dir):
 def _generate_data_models_section(dir):
     md = "## Data Models\n\n"
     dir = os.path.join(dir, "data_models")
+    if not os.path.exists(dir):
+        return ""
     for file in os.listdir(dir):
         if os.path.isdir(os.path.join(dir, file)):
             continue
@@ -77,10 +87,21 @@ def _generate_featuremap_section(dir):
 def _generate_forms_section(dir):
     md = "## Application/Journal Forms\n\n"
     dir = os.path.join(dir, "forms")
+    if not os.path.exists(dir):
+        return ""
     for file in os.listdir(dir):
         name = file.split(".")[:2]
         name = " ".join(name).title()
         md += "* [" + name + "](forms/" + file + ")\n"
+    return md + "\n\n"
+
+
+def _generate_testbook_section(dir):
+    cov = os.path.join(dir, "testbook")
+    if not os.path.exists(cov):
+        return ""
+    md = "## Functional Tests\n\n"
+    md += "* [Testbook](testbook/index.html)"
     return md + "\n\n"
 
 

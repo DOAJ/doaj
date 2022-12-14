@@ -1,18 +1,20 @@
-import tempfile
-from pathlib import Path
-
-from flask_login import login_user
-
-from unittest import TestCase
-from portality import core, dao
-from portality.app import app
-from portality.tasks.redis_huey import main_queue, long_running
-import dictdiffer
+import csv
+import functools
+import hashlib
+import logging
+import os
+import shutil
 from datetime import datetime
 from glob import glob
-import os, csv, shutil
+from unittest import TestCase
+
+import dictdiffer
+from flask_login import login_user
+
+from portality import core, dao
+from portality.app import app
 from portality.lib import paths
-import functools
+from portality.tasks.redis_huey import main_queue, long_running
 
 
 def patch_config(inst, properties):
@@ -36,6 +38,7 @@ def with_es(_func=None, *, indices=None, warm_mappings=None):
         return with_es_decorator
     else:
         return with_es_decorator(_func)
+
 
 class WithES:
 
@@ -85,13 +88,13 @@ def create_index(index_type):
 
 
 def dao_proxy(dao_method, type="class"):
-
     if type == "class":
         @classmethod
         @functools.wraps(dao_method)
         def proxy_method(cls, *args, **kwargs):
             create_index(cls.__type__)
             return dao_method.__func__(cls, *args, **kwargs)
+
         return proxy_method
 
     else:
@@ -103,6 +106,13 @@ def dao_proxy(dao_method, type="class"):
         return proxy_method
 
 
+def create_es_db_prefix(_cls):
+    class_id = hashlib.sha256(_cls.__module__.encode()).hexdigest()[:10]
+    db_prefix = (core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX'] +
+                 f'{_cls.__name__.lower()}_{class_id}-')
+    return db_prefix
+
+
 class DoajTestCase(TestCase):
     app_test = app
     originals = {}
@@ -111,21 +121,32 @@ class DoajTestCase(TestCase):
     def setUpClass(cls) -> None:
         cls.originals = patch_config(app, {
             "STORE_IMPL": "portality.store.StoreLocal",
-            "STORE_LOCAL": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
+            "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
             "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp", cls.__name__.lower()),
             "STORE_CACHE_CONTAINER": "doaj-data-cache-placeholder" + '-' + cls.__name__.lower(),
+            "STORE_ANON_DATA_CONTAINER": "doaj-anon-data-placeholder" + '-' + cls.__name__.lower(),
+            "STORE_PUBLIC_DATA_DUMP_CONTAINER": "doaj-data-dump-placeholder" + '-' + cls.__name__.lower(),
             "ES_RETRY_HARD_LIMIT": 0,
             "ES_BLOCK_WAIT_OVERRIDE": 0.1,
             "ELASTIC_SEARCH_DB": app.config.get('ELASTIC_SEARCH_TEST_DB'),
-            'ELASTIC_SEARCH_DB_PREFIX': core.app.config['ELASTIC_SEARCH_TEST_DB_PREFIX'] + cls.__name__.lower() + '-',
+            'ELASTIC_SEARCH_DB_PREFIX': create_es_db_prefix(cls),
             "FEATURES": app.config['VALID_FEATURES'],
             'ENABLE_EMAIL': False,
             "FAKER_SEED": 1,
+            "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
             'CMS_BUILD_ASSETS_ON_STARTUP': False
         })
 
+        # some unittest will capture log for testing, therefor log level must be debug
+        cls.app_test.logger.setLevel(logging.DEBUG)
+
+        # always_eager has been replaced by immediate
+        # for huey version > 2
+        # https://huey.readthedocs.io/en/latest/guide.html
         main_queue.always_eager = True
         long_running.always_eager = True
+        main_queue.immediate = True
+        long_running.immediate = True
 
         dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
         dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")
@@ -141,7 +162,6 @@ class DoajTestCase(TestCase):
 
         # if a test on a previous run has totally failed and tearDownClass has not run, then make sure the index is gone first
         dao.DomainObject.destroy_index()
-        # time.sleep(1) # I don't know why we slept here, but not in tearDown, so I have removed it
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -153,7 +173,10 @@ class DoajTestCase(TestCase):
 
     def tearDown(self):
         for f in self.list_today_article_history_files() + self.list_today_journal_history_files():
-            os.remove(f)
+            try:
+                os.remove(f)
+            except FileNotFoundError:
+                pass  # could be removed by other thread / process
         shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
 
         global CREATED_INDICES
@@ -195,7 +218,8 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
     print('Removed :: keys present in {d2} which are not in {d1}'.format(d1=d1_label, d2=d2_label))
     print(differ.removed())
     print()
-    print('Changed :: keys which are the same in {d1} and {d2} but whose values are different'.format(d1=d1_label, d2=d2_label))
+    print('Changed :: keys which are the same in {d1} and {d2} but whose values are different'.format(d1=d1_label,
+                                                                                                      d2=d2_label))
     print(differ.changed())
     print()
 
@@ -213,7 +237,8 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
         print()
 
     if print_unchanged:
-        print('Unchanged :: keys which are the same in {d1} and {d2} and whose values are also the same'.format(d1=d1_label, d2=d2_label))
+        print('Unchanged :: keys which are the same in {d1} and {d2} and whose values are also the same'.format(
+            d1=d1_label, d2=d2_label))
         print(differ.unchanged())
 
 
@@ -222,7 +247,7 @@ def load_from_matrix(filename, test_ids):
         test_ids = []
     with open(paths.rel2abs(__file__, "matrices", filename), 'r') as f:
         reader = csv.reader(f)
-        next(reader)   # pop the header row
+        next(reader)  # pop the header row
         cases = []
         for row in reader:
             if row[0] in test_ids or len(test_ids) == 0:
@@ -270,8 +295,7 @@ def patch_history_dir(dir_key):
             # setup new path
             org_config_val = DoajTestCase.app_test.config[dir_key]
             org_hist_dir = hist_class.SAVE_BASE_DIRECTORY
-            _new_path = Path(tempfile.NamedTemporaryFile().name)
-            _new_path.mkdir(parents=True, exist_ok=True)
+            _new_path = paths.create_tmp_dir(is_auto_mkdir=True)
             hist_class.SAVE_BASE_DIRECTORY = _new_path.as_posix()
             DoajTestCase.app_test.config[dir_key] = _new_path.as_posix()
 
@@ -289,3 +313,31 @@ def patch_history_dir(dir_key):
 
     return _wrapper
 
+
+class StoreLocalPatcher:
+
+    def setUp(self, cur_app):
+        """
+        change STORE_IMPL to StoreLocal
+        make sure STORE_LOCAL_DIR and STORE_TMP_DIR used new tmp dir
+        """
+        self.org_store_imp = cur_app.config.get("STORE_IMPL")
+        self.org_store_tmp_imp = app.config.get("STORE_TMP_IMPL")
+        self.org_store_local_dir = cur_app.config["STORE_LOCAL_DIR"]
+        self.org_store_tmp_dir = cur_app.config["STORE_TMP_DIR"]
+
+        self.new_store_local_dir = paths.create_tmp_dir(is_auto_mkdir=True)
+        self.new_store_tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True)
+
+        cur_app.config["STORE_IMPL"] = "portality.store.StoreLocal"
+        cur_app.config["STORE_LOCAL_DIR"] = self.new_store_local_dir
+        cur_app.config["STORE_TMP_DIR"] = self.new_store_tmp_dir
+
+    def tearDown(self, cur_app):
+        cur_app.config["STORE_IMPL"] = self.org_store_imp
+        cur_app.config["STORE_TMP_IMPL"] = self.org_store_tmp_imp
+
+        shutil.rmtree(self.new_store_local_dir)
+        shutil.rmtree(self.new_store_tmp_dir)
+        cur_app.config["STORE_LOCAL_DIR"] = self.org_store_local_dir
+        cur_app.config["STORE_TMP_DIR"] = self.org_store_tmp_dir

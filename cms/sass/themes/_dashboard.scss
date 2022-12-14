@@ -1,6 +1,7 @@
 /* Common styles for Admin/ManEd, Ed, and Associate Ed dashboards */
 
 .dashboard {
+  font-size: 18px;
 
   h1 {
     margin-top: 0;
@@ -11,15 +12,12 @@
   }
 
   .primary-nav {
-    height:75px;
+    height: 75px;
 
-    li {
-      margin-right: $spacing-04;
-
-      .tag {
-        margin: 0;
-        padding: $spacing-02;
-      }
+    .label {
+      margin-left: $spacing-04;
+      text-decoration: none;
+      line-height: 75px;
     }
 
     .logo {
@@ -38,16 +36,12 @@
   }
 
   .main-header {
-    font-size: smaller;
+    @include typescale-06;
 
     dt, dd {
       margin-top: 0;
       display: inline-block;
     }
-  }
-
-  .row {
-    max-width: 100%;
   }
 
   .vertical-nav {
@@ -81,7 +75,7 @@
   .vertical-nav__link-label {
     display: none;
     position: absolute;
-    padding: 0 $spacing-03;
+    padding: 0 $spacing-03 0 0;
     line-height: 75px;
     left: 75px;
     height: 75px;
@@ -101,10 +95,10 @@
 
   .todo-list {
     padding: 0;
+    margin-bottom: 0;
     display: grid;
     grid-auto-rows: 1fr;
     list-style: none;
-    font-size: smaller;
 
     @media screen and (max-width: 768px) {
       grid-template-columns: repeat(2, 1fr);
@@ -163,10 +157,18 @@
 
   main {
     margin-left: 75px;
-    padding: $spacing-04;
+    width: auto;
 
-    @media screen and (min-width: 1480px) {
-      width: auto;
+    @media screen and (max-width: 768px) {
+      padding: 20px;
+    }
+
+    @media screen and (max-width: 1279px) and (min-width: 769px) {
+      padding: 30px;
+    }
+
+    @media screen and (min-width: 1280px) {
+      padding: 40px;
     }
   }
 }

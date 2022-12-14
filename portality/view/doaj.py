@@ -1,20 +1,23 @@
+import json
+import re
+import urllib.error
+import urllib.parse
+import urllib.request
+
 from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
-import urllib.request, urllib.parse, urllib.error
 
 from portality import dao
 from portality import models
 from portality.core import app
 from portality.decorators import ssl_required
-from portality.lcc import lcc_jstree
-from portality.lib import analytics
-from portality.ui.messages import Messages
 from portality.forms.application_forms import JournalFormFactory
+from portality.lcc import lcc_jstree
+from portality.lib import plausible
+from portality.ui.messages import Messages
 
-import json
-import os, re
-
+# ~~DOAJ:Blueprint~~
 blueprint = Blueprint('doaj', __name__)
 
 
@@ -61,12 +64,9 @@ def news():
 def fqw_hit():
     page = request.form.get('embedding_page')
     if page is not None:
-        fqw_event = analytics.GAEvent(
-            category=app.config.get('GA_CATEGORY_FQW', 'FQW'),
-            action=app.config.get('GA_ACTION_FQW', 'hit'),
-            label=request.form.get('embedding_page')
-        )
-        fqw_event.submit()
+        plausible.send_event(app.config.get('GA_CATEGORY_FQW', 'FQW'),
+                             action=app.config.get('GA_ACTION_FQW', 'hit'),
+                             label=request.form.get('embedding_page'))
 
     # No content response, whether data there or not.
     return '', 204
@@ -162,7 +162,8 @@ def journal_readonly(journal_id):
 
 
 @blueprint.route("/csv")
-@analytics.sends_ga_event(event_category=app.config.get('GA_CATEGORY_JOURNALCSV', 'JournalCSV'), event_action=app.config.get('GA_ACTION_JOURNALCSV', 'Download'))
+@plausible.pa_event(app.config.get('GA_CATEGORY_JOURNALCSV', 'JournalCSV'),
+                    action=app.config.get('GA_ACTION_JOURNALCSV', 'Download'))
 def csv_data():
     csv_info = models.Cache.get_latest_csv()
     if csv_info is None:
@@ -342,6 +343,7 @@ def toc(identifier=None, volume=None, issue=None):
                            toc_issns=journal.bibjson().issns())
 
 
+#~~->Article:Page~~
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
     # identifier must be the article id
@@ -616,7 +618,7 @@ def old_faq():
 
 @blueprint.route("/publishers")
 def publishers():
-    return render_template("layouts/static_page.html")
+    return redirect(url_for("doaj.guide", **request.args), code=308)
 
 
 # Redirects necessitated by new templates
