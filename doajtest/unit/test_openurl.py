@@ -116,7 +116,7 @@ class TestOpenURL(DoajTestCase):
                                             volume="1"))
 
                 assert resp.status_code == 302
-                assert resp.location == url_for('doaj.toc', identifier=j_matching.id)
+                assert resp.location == url_for('doaj.toc', identifier=j_matching.id, volume="1")
 
                 # A query without genre to show it's the default
                 resp = t_client.get(url_for('openurl.openurl',
