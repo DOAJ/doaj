@@ -56,7 +56,8 @@ def _github_repo_report(issues, username, password, start, finish):
                     activity.append([
                         record.get("created_at"),
                         "Issue" if "pull_request" not in record else "PR",
-                        record.get("html_url")
+                        record.get("html_url"),
+                        record.get("title")
                     ])
 
             if record.get("comments", 0) > 0:
@@ -76,10 +77,103 @@ def _github_repo_report(issues, username, password, start, finish):
     return activity
 
 
-def github_report(username, password, start, finish, out):
+def _github_counter(issues, username, password, start, finish):
+    params = {
+        "state": "all",
+        "since": start,
+        "per_page": 100,
+        "page": 1
+    }
+    auth = HTTPBasicAuth(username, password)
+
+    activity = []
+    start = toDate(start)
+    finish = toDate(finish)
+
+    while True:
+        resp = requests.get(issues, params=params, auth=auth)
+        if resp.status_code != 200:
+            print(resp.status_code)
+            raise Exception(resp.status_code)
+
+        data = resp.json()
+        if len(data) == 0:
+            break
+        params["page"] += 1
+
+        for record in data:
+            created_at = toDate(record.get("created_at"))
+            if start < created_at < finish:
+                activity.append([
+                    record.get("created_at"),
+                    "Issue" if "pull_request" not in record else "PR",
+                    record.get("html_url")
+                ])
+
+            if record.get("comments", 0) > 0:
+                comments_url = record.get("comments_url")
+                resp2 = requests.get(comments_url, auth=auth)
+                comments = resp2.json()
+                for c in comments:
+                    created_at = toDate(c.get("created_at"))
+                    if start < created_at < finish:
+                        activity.append([
+                            c.get("created_at"),
+                            "Comment",
+                            c.get("html_url")
+                        ])
+
+    return activity
+
+
+def _issue_titles(issues, username, password, start, finish):
+    params = {
+        "state": "all",
+        "since": start,
+        "per_page": 100,
+        "page": 1
+    }
+    auth = HTTPBasicAuth(username, password)
+
+    activity = []
+    start = toDate(start)
+    finish = toDate(finish)
+
+    while True:
+        resp = requests.get(issues, params=params, auth=auth)
+        if resp.status_code != 200:
+            print(resp.status_code)
+            raise Exception(resp.status_code)
+
+        data = resp.json()
+        if len(data) == 0:
+            break
+        params["page"] += 1
+
+        for record in data:
+            if "pull_request" not in record and record.get("state") == "closed":
+                closed_at = toDate(record.get("closed_at"))
+                if start < closed_at < finish and "pull_request" not in record and record.get("state") == "closed":
+                    activity.append([
+                        record.get("closed_at"),
+                        record.get("html_url"),
+                        record.get("title"),
+                        ", ".join([l.get("name", "") for l in record.get("labels", [])])
+                    ])
+
+    return activity
+
+
+
+def github_report(username, password, start, finish, out, count_report=False, title_report=False):
     activity = []
     for issue in ISSUES:
-        report = _github_repo_report(issue, username, password, start, finish)
+        if count_report:
+            report = _github_counter(issue, username, password, start, finish)
+        elif title_report:
+            report = _issue_titles(issue, username, password, start, finish)
+        else:
+            report = _github_repo_report(issue, username, password, start, finish)
         activity += report
 
     activity.sort(key=lambda x: x[0])
@@ -97,6 +191,8 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--start")
     parser.add_argument("-f", "--finish")
     parser.add_argument("-o", "--out")
+    parser.add_argument("-c", "--count", action="store_true", default=False)
+    parser.add_argument("-t", "--title", action="store_true", default=False)
     args = parser.parse_args()
 
-    github_report(args.username, args.password, args.start, args.finish, args.out)
+    github_report(args.username, args.password, args.start, args.finish, args.out, args.count, args.title)
