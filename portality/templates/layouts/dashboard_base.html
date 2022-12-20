@@ -19,7 +19,7 @@
         <h2 class="sr-only">DOAJ Dashboard</h2>
 
         <nav class="primary-nav flex-space-between" id="primary-nav">
-            <a href="/dashboard/" class="logo">
+            <a href="{% if current_user.has_role('admin') %}/dashboard/{% elif current_user.has_role('editor') or current_user.has_role('associate_editor') %}/editor/{% endif %}" class="logo">
                 {% include "includes/svg/doaj-icon.svg" %}
             </a>
             <ul class="unstyled-list flex-center">
