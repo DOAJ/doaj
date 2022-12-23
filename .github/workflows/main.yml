@@ -39,17 +39,11 @@ jobs:
           pip install -e .[test]
           pip install -e .[docs]
           
-      - name: run the docs generation script
+      - name: run the docs generation script and push to the docs repo
         run: |
           export DOAJENV=test
-          cd $GITHUB_WORKSPACE/doaj/docs && pwd
+          cd $GITHUB_WORKSPACE/doaj/docs
           sh gendocs.sh --nocov
-        
-      - name: commit and push to the docs repo
-        uses: actions/checkout@v3
-        with:
-          path: doaj-docs
-      - run: |
           cd $GITHUB_WORKSPACE/doaj-docs
           git config user.name github-actions
           git config user.email github-actions@github.com
