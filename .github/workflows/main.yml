@@ -9,6 +9,10 @@ jobs:
   gen_docs:
     name: generate documentation and push to the docs repo
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      statuses: write
     
     steps:
       - name: checkout the branch of interest
