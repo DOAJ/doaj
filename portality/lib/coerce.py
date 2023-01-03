@@ -1,5 +1,5 @@
 # ~~Coerce:Library~~
-from portality.lib import dates
+from portality.lib import dates, val_convert
 from datetime import date, datetime
 from portality.lib import seamless
 from portality.datasets import get_country_code, get_currency_code
@@ -88,8 +88,8 @@ COERCE_MAP = {
     "utcdatetime" : date_str(),
     "utcdatetimemicros" : date_str(out_format="%Y-%m-%dT%H:%M:%S.%fZ"),
     "bigenddate" : date_str(out_format="%Y-%m-%d"),
-    "isolang": to_isolang(),
-    "isolang_2letter": to_isolang(output_format="alpha2"),
+    "isolang": val_convert.create_fn_to_isolang(is_upper=True),
+    "isolang_2letter": val_convert.create_fn_to_isolang(output_format="alpha2", is_upper=True),
     "country_code": to_country_code,
     "currency_code": to_currency_code,
     "issn" : to_issn
