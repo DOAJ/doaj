@@ -98,6 +98,16 @@ $.extend(true, doaj, {
                                     value: false
                                 })
                             ]
+                        },
+                        {
+                            id : "retains_copyrigths",
+                            display: "Where author holds copyright without restrictions",
+                            must : [
+                                es.newTermFilter({
+                                    field: "bibjson.copyright.author_retains",
+                                    value: true
+                                })
+                            ]
                         }
                     ],
                     renderer : doaj.renderers.newFacetFilterSetterRenderer({
@@ -203,6 +213,23 @@ $.extend(true, doaj, {
                     })
                 }),
 
+                // edges.newORTermSelector({
+                //     id: "copyright",
+                //     category: "facet",
+                //     field: "bibjson.copyright.author_retains.exact",
+                //     display: "Author retains copyright",
+                //     size: 99,
+                //     syncCounts: false,
+                //     lifecycle: "update",
+                //     updateType: "fresh",
+                //     renderer : doaj.renderers.newORTermSelectorRenderer({
+                //         showCount: true,
+                //         hideEmpty: false,
+                //         open: false,
+                //         togglable: true
+                //     })
+                // }),
+
                 edges.newDateHistogramSelector({
                     id : "year_added",
                     category: "facet",
@@ -288,6 +315,7 @@ $.extend(true, doaj, {
                         "index.country.exact" : "Publishers' countries",
                         "index.language.exact" : "Languages",
                         "bibjson.editorial.review_process.exact" : "Peer review",
+                        "bibjson.copyright.author_retains" : "Author retains copyrights",
                         "created_date" : "Date added"
                     },
                     rangeFunctions : {
@@ -298,7 +326,8 @@ $.extend(true, doaj, {
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         hideValues : [
-                            "index.has_seal.exact"
+                            "index.has_seal.exact",
+                            "bibjson.copyright.author_retains"
                         ],
                         omit : [
                             "bibjson.apc.has_apc",
