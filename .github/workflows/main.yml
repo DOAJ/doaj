@@ -19,13 +19,15 @@ jobs:
         uses: actions/checkout@v2.6.0
         with: 
           path: doaj
-        
+
       - name: checkout the documentation repo
         uses: actions/checkout@v2.6.0
         with:
           path: doaj-docs
           repository: DOAJ/doaj-docs
-        
+          persist-credentials: false
+          fetch-depth: 0
+
       - name: set up a python 3.8 environment
         uses: actions/setup-python@v4.4.0
         with:
