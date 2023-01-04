@@ -26,6 +26,7 @@ def check_invalid_datasets(journalobj, report):
 
     # Check whether lookup fails on languages in bibjson
     for l in bj.language:
+        # KTODO very special logic should be updated?
         if l not in language_codes:
             report['language'].append((journalobj.id, str(bj.language)))
         break

@@ -2,6 +2,8 @@
 ~~DataSets:Data~~
 """
 
+# KTODO find which functions have impact after using 3 letter lang code
+
 import pycountry
 from collections import OrderedDict
 
@@ -48,6 +50,7 @@ def _generate_language_options():
     language_options_ = [('', '')]
     for l in sorted(pycountry.languages, key=lambda x: x.name):
         try:
+            # KTODO change to alpha_3 or support alpha_3 ?
             language_options_.append((l.alpha_2.upper(), l.name))
         except AttributeError:
             continue

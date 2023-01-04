@@ -1,3 +1,8 @@
+"""
+contain functions or factory which provide value conversion(coerce) in
+SeamlessMixin or DataObj layer
+"""
+
 from typing import Callable, Any
 
 

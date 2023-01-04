@@ -147,6 +147,7 @@ class Journal2QuestionXwalk(object):
             names = [n.lower() for _, n in datasets.language_options]
             for v in vals:
                 if v.lower() in codes:
+                    # KTODO is better to support both 2-letter and 3-letter
                     keep.append(datasets.name_for_lang(v))
                 elif v.lower() in names:
                     keep.append(v)
@@ -263,6 +264,7 @@ class Journal2QuestionXwalk(object):
 
         def _lang_codes(x):
             """ Get the uppercase 2-char language string for each comma separated language name"""
+            # KTODO change to 3-char language
             langs = [datasets.language_for(_) for _ in _comma_to_list(x)]
             return [l.alpha_2.upper() for l in langs if l is not None]
 
