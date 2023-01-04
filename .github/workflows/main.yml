@@ -55,4 +55,4 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "docs run for ${{ github.ref_name }}"
-          git push https://${{ secrets.steve_pat_doaj_actions_docs }}@github.com/DOAJ/doaj-docs.git
+          git push https://${{secrets.STEVE_PAT_DOAJ_ACTIONS_DOCS}}@github.com/DOAJ/doaj-docs.git
