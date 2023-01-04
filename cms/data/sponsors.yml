@@ -47,6 +47,10 @@ silver:
 - name: JMIR Publications
   url: https://jmirpublications.com/
   logo: jmir.svg
+  
+- name: Knowledge E
+  url: https://knowledgee.com/
+  logo: knowledgee.png
 
 - name: MDPI
   url: https://www.mdpi.com/
