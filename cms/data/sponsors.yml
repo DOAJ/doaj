@@ -138,6 +138,10 @@ bronze:
   url: https://plos.org/
   logo: PLOS.svg
 
+- name: SciFree
+  url: https://scifree.se/
+  logo: SciFree.svg
+
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg  
