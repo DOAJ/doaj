@@ -122,6 +122,10 @@ bronze:
   url: https://www.karger.com/
   logo: karger.png
 
+- name: KeAI Communications
+  url: https://www.keaipublishing.com/
+  logo: KeAI.svg
+
 - name: Lund University
   url: https://www.lunduniversity.lu.se/
   logo: lu.png
