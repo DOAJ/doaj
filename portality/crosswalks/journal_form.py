@@ -445,7 +445,7 @@ class JournalGenericXWalk(object):
 class JournalFormXWalk(JournalGenericXWalk):
 
     @classmethod
-    def form2obj(cls, form):
+    def form2obj(cls, form) -> models.Journal:
         journal = models.Journal()
         bibjson = journal.bibjson()
 
@@ -458,7 +458,7 @@ class JournalFormXWalk(JournalGenericXWalk):
         return journal
 
     @classmethod
-    def obj2form(cls, obj):
+    def obj2form(cls, obj) -> dict:
         forminfo = {}
         bibjson = obj.bibjson()
 

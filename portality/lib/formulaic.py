@@ -110,6 +110,13 @@ from flask import render_template
 import json
 
 
+from typing import TypeVar
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from portality.forms.application_processors import ApplicationProcessor
+    ApplicationProcessorLike = TypeVar('ApplicationProcessorLike', bound=ApplicationProcessor)
+
+
 UI_CONFIG_FIELDS = [
     "label",
     "input",
@@ -394,7 +401,7 @@ class FormulaicContext(object):
         template = self._definition.get("templates", {}).get("form")
         return render_template(template, formulaic_context=self, **kwargs)
 
-    def processor(self, formdata=None, source=None):
+    def processor(self, formdata=None, source=None) -> "ApplicationProcessorLike":
         # ~~^-> FormProcessor:Feature~~
         klazz = self._definition.get("processor")
         if isinstance(klazz, str):

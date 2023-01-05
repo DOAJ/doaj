@@ -77,7 +77,7 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         return fields
 
     @classmethod
-    def form2obj(cls, form):
+    def form2obj(cls, form) -> models.Application:
         application = models.Application()
         bibjson = application.bibjson()
 
@@ -96,7 +96,7 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         return cls.forminfo2multidict(forminfo)
 
     @classmethod
-    def obj2form(cls, obj):
+    def obj2form(cls, obj) -> dict:
         forminfo = {}
         bibjson = obj.bibjson()
 
