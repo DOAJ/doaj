@@ -60,7 +60,7 @@ JOURNAL_LIKE_BIBJSON = {
         "country": "US"
     },
     "keywords": ["word", "key"],
-    "language": ["EN", "FR"],
+    "language": ["ENG", "FRA"],
     "license": [
         {
             "type": "Publisher's own license",
@@ -143,7 +143,7 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "institution_name" : "Society Institution",
     "institution_country" : "US",
     "keywords": ["word", "key"],
-    "language": ["EN", "FR"],
+    "language": ["ENG", "FRA"],
     "license_attributes" : ["BY", "NC"],
     "license_display" : "y",
     "license_display_example_url": "http://licence.embedded",

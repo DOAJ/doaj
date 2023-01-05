@@ -74,7 +74,7 @@ class PreservationMock:
                     }
                 ],
                 "language": [
-                    "EN"
+                    "ENG"
                 ],
                 "issns": [
                     "2051-5960"
