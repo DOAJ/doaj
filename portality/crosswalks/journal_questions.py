@@ -143,7 +143,6 @@ class Journal2QuestionXwalk(object):
 
         def languages(vals):
             keep = []
-            # KTODO language_options should be 3-letter
             codes = [c.lower() for c, _ in datasets.language_options]
             names = [n.lower() for _, n in datasets.language_options]
             for v in vals:
@@ -271,9 +270,8 @@ class Journal2QuestionXwalk(object):
 
         def _lang_codes(x):
             """ Get the uppercase 2-char language string for each comma separated language name"""
-            # KTODO change to 3-char language
-            langs = [datasets.language_for(_) for _ in _comma_to_list(x)]
-            return [l.alpha_2.upper() for l in langs if l is not None]
+            langs = (datasets.language_for(_) for _ in _comma_to_list(x))
+            return [l.alpha_3.upper() for l in langs if l is not None]
 
         def _unfurl_apc(x):
             """ Allow an APC update by splitting the APC string from the spreadsheet """
