@@ -16,16 +16,16 @@ jobs:
     
     steps:
       - name: checkout the branch of interest
-        uses: actions/checkout@v2.6.0
+        uses: actions/checkout@v3
         with: 
           path: doaj
 
       - name: checkout the documentation repo
-        uses: actions/checkout@v2.6.0
+        uses: actions/checkout@v3
         with:
           path: doaj-docs
           repository: DOAJ/doaj-docs
-          persist-credentials: false
+          token: ${{ secrets.STEVE_PAT_DOAJ_ACTIONS_DOCS }}
           fetch-depth: 0
 
       - name: set up a python 3.8 environment
@@ -55,4 +55,4 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "docs run for ${{ github.ref_name }}"
-          git push https://${{secrets.STEVE_PAT_DOAJ_ACTIONS_DOCS}}@github.com/DOAJ/doaj-docs.git
+          git push
