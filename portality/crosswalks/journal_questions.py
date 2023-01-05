@@ -143,14 +143,21 @@ class Journal2QuestionXwalk(object):
 
         def languages(vals):
             keep = []
+            # KTODO language_options should be 3-letter
             codes = [c.lower() for c, _ in datasets.language_options]
             names = [n.lower() for _, n in datasets.language_options]
             for v in vals:
-                if v.lower() in codes:
-                    # KTODO is better to support both 2-letter and 3-letter
+                v = v.lower()
+                if v in codes:
                     keep.append(datasets.name_for_lang(v))
-                elif v.lower() in names:
+                elif v in names:
                     keep.append(v)
+                else:
+                    # handle if input value is 2-letter language code
+                    lang = datasets.language_for(v)
+                    if lang is not None:
+                        keep.append(lang.name)
+
             return ", ".join(keep)
 
         # start by converting the object to the forminfo version
