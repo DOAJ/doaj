@@ -7,7 +7,7 @@ on:
     
 jobs:
   gen_docs:
-    name: generate documentation and push to the docs repo
+    name: generate DOAJ documentation and fuctional tests and push to the docs repo
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -54,5 +54,5 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
-          git commit -m "docs run for ${{ github.ref_name }}"
+          git commit -m "GH Actions docs run for ${{ github.ref_name }}"
           git push
