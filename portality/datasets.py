@@ -2,9 +2,11 @@
 ~~DataSets:Data~~
 """
 
+from collections import OrderedDict
 
 import pycountry
-from collections import OrderedDict
+
+from portality.lib import isolang
 
 
 def _generate_country_options():
@@ -49,7 +51,7 @@ def _generate_language_options():
     language_options_ = [('', '')]
     for l in sorted(pycountry.languages, key=lambda x: x.name):
         try:
-            language_options_.append((l.alpha_3.upper(), l.name))
+            language_options_.append((isolang.get_doaj_3char_lang_by_lang(l).upper(), l.name))
         except AttributeError:
             continue
 

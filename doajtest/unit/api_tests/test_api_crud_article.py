@@ -143,7 +143,7 @@ class TestCrudArticle(DoajTestCase):
             }
         )
         journal.bibjson().country = "US"
-        journal.bibjson().set_language(["ENG", "FRA"])
+        journal.bibjson().set_language(["ENG", "FRE"])
         journal.save(blocking=True)
 
         # call create on the object (which will save it to the index)
@@ -163,7 +163,7 @@ class TestCrudArticle(DoajTestCase):
         # but none of these - these should all be the same as the original article in the index
         assert a.bibjson().publisher == 'The Publisher', a.bibjson().publisher
         assert a.bibjson().journal_title == 'The Title'
-        assert a.bibjson().journal_language == ["ENG", "FRA"]
+        assert a.bibjson().journal_language == ["ENG", "FRE"]
         assert a.bibjson().journal_country == "US"
 
         # time.sleep(1)
@@ -288,7 +288,7 @@ class TestCrudArticle(DoajTestCase):
             assert a.bibjson.journal.license[0].url == "http://license.example.com"
             assert a.bibjson.journal.license[0].version == "1.0"
             assert a.bibjson.journal.license[0].open_access == True
-        assert a.bibjson.journal.language == ["ENG", "FRA"]
+        assert a.bibjson.journal.language == ["ENG", "FRE"]
         assert a.bibjson.journal.country == "US"
 
     @with_es(indices=[models.Article.__type__, models.Journal.__type__])
@@ -345,7 +345,7 @@ class TestCrudArticle(DoajTestCase):
             }
         )
         journal.bibjson().country = "US"
-        journal.bibjson().set_language(["ENG", "FRA"])
+        journal.bibjson().set_language(["ENG", "FRE"])
         journal.save(blocking=True)
 
         data = ArticleFixtureFactory.make_incoming_api_article()
@@ -404,7 +404,7 @@ class TestCrudArticle(DoajTestCase):
         # but none of these - these should all be the same as the original article in the index
         assert updated.bibjson().publisher == 'The Publisher', updated.bibjson().publisher
         assert updated.bibjson().journal_title == 'The Title'
-        assert updated.bibjson().journal_language == ["ENG", "FRA"]
+        assert updated.bibjson().journal_language == ["ENG", "FRE"]
         assert updated.bibjson().journal_country == "US"
 
     @with_es(indices=[models.Article.__type__, models.Journal.__type__],

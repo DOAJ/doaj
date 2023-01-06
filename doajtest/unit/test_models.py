@@ -634,7 +634,7 @@ class TestModels(DoajTestCase):
         assert bj.title == "The Title"
         assert bj.is_replaced_by == ["2222-2222"]
         assert bj.keywords == ["word", "key"]
-        assert bj.language == ["ENG", "FRA"]
+        assert bj.language == ["ENG", "FRE"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["1111-1111"]
         assert len(bj.subject) == 2
@@ -808,8 +808,8 @@ class TestModels(DoajTestCase):
         bj.set_keywords(["one", "two"])
         assert bj.keywords == ["one", "two"]
 
-        bj.set_language("DEU")
-        assert bj.language == ["DEU"]
+        bj.set_language("de")
+        assert bj.language == ["GER"]
 
         bj.persistent_identifier_scheme = ["ARK"]
         assert bj.persistent_identifier_scheme == ["ARK"]
@@ -973,7 +973,7 @@ class TestModels(DoajTestCase):
         bj.volume = "Four"
         bj.number = "Q1"
         bj.journal_title = "Journal of Stuff"
-        bj.journal_language = "fra"
+        bj.journal_language = "fre"
         bj.journal_country = "FR"
         bj.journal_issns = ["1111-1111", "9999-9999"]
         bj.publisher = "Elsevier"
@@ -989,7 +989,7 @@ class TestModels(DoajTestCase):
         assert bj.volume == "Four"
         assert bj.number == "Q1"
         assert bj.journal_title == "Journal of Stuff"
-        assert bj.journal_language == ["fra"]
+        assert bj.journal_language == ["fre"]
         assert bj.journal_country == "FR"
         assert bj.journal_issns == ["1111-1111", "9999-9999"]
         assert bj.publisher == "Elsevier"
