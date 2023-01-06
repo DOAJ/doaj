@@ -2,7 +2,6 @@
 ~~DataSets:Data~~
 """
 
-# KTODO find which functions have impact after using 3 letter lang code
 
 import pycountry
 from collections import OrderedDict

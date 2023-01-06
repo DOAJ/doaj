@@ -57,11 +57,6 @@ def write_lang_schema(out_file, schema_version):
 
     # Gather names and 3-char codes (bibliographic preferred) for only the languages with 2-character codes (ISO639-1)
     for l in pycountry.languages:
-        try:
-            # KTODO should we keep this logic
-            _ = l.alpha_2
-        except AttributeError:
-            continue                                                               # Skip languages without 2-char codes
 
         try:
             code = l.bibliographic

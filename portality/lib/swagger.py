@@ -21,7 +21,6 @@ class SwaggerSupport(object):
         "float": {"type": "float"},
         "isolang": {"type": "string", "format": "isolang"},  # TODO extend swagger-ui with isolang format support and let it produce example values etc. on the front-end
         "url": {"type": "string", "format": "url"},  # TODO add suppport to swagger-ui doc frontend for URL or grab from somewhere we can't be the first!
-        # KTODO what is isolang-alpha2
         "isolang_2letter": {"type": "string", "format": "isolang-alpha2"},  # TODO add support to swagger-ui front for this
         "country_code": {"type": "string", "format": "country_code"},  # TODO add support to swagger-ui front for this
         "currency_code": {"type": "string", "format": "currency_code"},  # TODO add support to swagger-ui front for this
