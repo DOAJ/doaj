@@ -24,7 +24,7 @@ def create_fn_to_isolang(output_format=None, is_upper=False) -> Callable[[Any], 
 
     # sort out the output format list
     if output_format is None:
-        output_format = ["alpha3"]
+        output_format = ["alt3"]
     if not isinstance(output_format, list):
         output_format = [output_format]
 

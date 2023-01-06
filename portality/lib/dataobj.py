@@ -226,7 +226,7 @@ class DataObj(object):
         "bigenddate" : date_str(out_format="%Y-%m-%d"),
         "integer": to_int(),
         "float": to_float(),
-        "isolang": val_convert.create_fn_to_isolang(is_upper=False),
+        "isolang": val_convert.create_fn_to_isolang(output_format='alt3', is_upper=False),
         "url": to_url,
         "bool": to_bool,
         # KTODO search user of isolang_2letter
