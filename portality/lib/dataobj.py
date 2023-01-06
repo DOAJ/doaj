@@ -229,7 +229,6 @@ class DataObj(object):
         "isolang": val_convert.create_fn_to_isolang(output_format='alt3', is_upper=False),
         "url": to_url,
         "bool": to_bool,
-        # KTODO search user of isolang_2letter
         "isolang_2letter": val_convert.create_fn_to_isolang(output_format="alpha2",
                                                             is_upper=False),
         "country_code": to_country_code,

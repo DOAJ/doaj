@@ -409,7 +409,7 @@ class FieldDefinitions:
         "label": "Languages in which the journal accepts manuscripts",
         "input": "select",
         "default" : "",
-        "options_fn": "iso_language_list",  # KTODO check and confirm this list updated for 3 letter
+        "options_fn": "iso_language_list",
         "repeatable": {
             "minimum" : 1,
             "initial": 5
@@ -2372,7 +2372,6 @@ def iso_country_list(field, formualic_context_name):
 
 
 def iso_language_list(field, formulaic_context_name):
-    # KTODO who will use this function ?
     # ~~-> Languages:Data~~
     cl = [{"display" : " ", "value" : ""}]
     for v, d in language_options:
@@ -2811,7 +2810,7 @@ class YearBuilder:
 PYTHON_FUNCTIONS = {
     "options": {
         "iso_country_list": iso_country_list,
-        "iso_language_list": iso_language_list, # KTODO who use this
+        "iso_language_list": iso_language_list,
         "iso_currency_list": iso_currency_list,
         "quick_reject" : quick_reject,
         "application_statuses" : application_statuses,
