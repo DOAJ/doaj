@@ -213,23 +213,6 @@ $.extend(true, doaj, {
                     })
                 }),
 
-                // edges.newORTermSelector({
-                //     id: "copyright",
-                //     category: "facet",
-                //     field: "bibjson.copyright.author_retains.exact",
-                //     display: "Author retains copyright",
-                //     size: 99,
-                //     syncCounts: false,
-                //     lifecycle: "update",
-                //     updateType: "fresh",
-                //     renderer : doaj.renderers.newORTermSelectorRenderer({
-                //         showCount: true,
-                //         hideEmpty: false,
-                //         open: false,
-                //         togglable: true
-                //     })
-                // }),
-
                 edges.newDateHistogramSelector({
                     id : "year_added",
                     category: "facet",
