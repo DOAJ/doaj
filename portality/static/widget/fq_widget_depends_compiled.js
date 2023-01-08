@@ -6775,7 +6775,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                    subjects = "<li>" + resultobj.index.classification_paths.join("</li><li>") + "</li>";
+                  subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                  subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                  subjects += '</ul>';
                 }
 
                 var update_or_added = "";
@@ -7515,7 +7517,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                    subjects = "<li>" + resultobj.index.classification_paths.join("</li><li>") + "</li>";
+                  subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                  subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                  subjects += '</ul>';
                 }
 
                 var update_or_added = "";
