@@ -2759,7 +2759,7 @@ $.extend(true, doaj, {
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
                     subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
                     subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
-                    keywords += '</ul>';
+                    subjects += '</ul>';
                 }
 
                 var subjects_or_keywords = keywords === "" ? subjects : keywords;
