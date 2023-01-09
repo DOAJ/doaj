@@ -2320,7 +2320,8 @@ $.extend(true, doaj, {
 
                 var value = false;
                 if (ft === "terms" || ft === "term") {
-                    value = el.attr("data-value");
+                    val = el.attr("data-value");
+                    value = val == "true" ? true : (val == "false" ? false : val);
                 } else if (ft === "range") {
                     value = {};
 
