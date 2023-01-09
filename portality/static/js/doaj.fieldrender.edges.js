@@ -2321,6 +2321,7 @@ $.extend(true, doaj, {
                 var value = false;
                 if (ft === "terms" || ft === "term") {
                     val = el.attr("data-value");
+                    // change to bool if "true" or "false", leave as string otherwise
                     value = val == "true" ? true : (val == "false" ? false : val);
                 } else if (ft === "range") {
                     value = {};
