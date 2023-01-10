@@ -1,0 +1,122 @@
+suite: Public Site
+testset: Home Page
+tests:
+- title: Launching off from Home Page
+  context:
+    role: anonymous
+  steps:
+  - step: Ensure you are not logged into the system
+  - step: Ensure you have cleared your browser cookies (you could use an ingognito
+      browser window)
+  - step: Go to the DOAJ home page
+    results:
+    - The DOAJ home page is displayed
+    - The DOAJ Cookie banner is displayed
+  - step: Dismiss the Cookie Banner
+    results:
+    - The Cookie banner disappears and does not reappear on subsequent pages
+  - step: Hover over Support
+    results:
+    - The dropdown menu appears
+  - step: Move your mouse away from Support
+    results:
+    - The dropdown menu disappears
+  - step: Click "Support" at the top
+    results:
+    - You are taken to Support DOAJ page
+  - step: Go back to the home page
+  - step: Repeat for the Apply menu
+  - step: Hover over About
+    results:
+    - The dropdown appears
+  - step: Move your mouse away from Apply
+    results:
+    - The dropdown menu disappears
+  - step: Click "About" at the top
+    results:
+    - The About menu appears and stays open
+  - step: Click "About" at the top
+    results:
+    - The menu disappears
+  - step: Repeat for Search and Documentation menus
+  - step: Click the orange magnifying glass, top right
+    results:
+    - The Quick search box appears over the homepage
+  - step: Click it again.
+    results:
+    - The Quick search box disappears
+  - step: Click Login
+    results:
+    - 'You are taken to the Login page: https://testdoaj.cottagelabs.com/account/login'
+  - step: Click the DOAJ logo top left
+    results:
+    - You are taken to the homepage
+  - step: Look at the statistics under the Search box
+    results:
+    - The statistics show the numbers that you would expect to see
+    - You can click on any of the figures and be taken to the correct list of search
+      results
+  - step: Click back on the browser
+    results:
+    - The number of countries is not clickable
+  - step: Scroll down and click 'Why index your journal in DOAJ'
+    results:
+    - You are taken to https://testdoaj.cottagelabs.com/apply/why-index/
+  - step: Click back on your browser and click 'How to apply'
+    results:
+    - You are taken to https://testdoaj.cottagelabs.com/apply/guide/
+  - step: Click back on your browser and hover over the APPLY NOW button
+    results:
+    - It changes colour and moves
+  - step: Click the button
+    results:
+    - You are taken to https://testdoaj.cottagelabs.com/account/login?redirected=apply
+  - step: Click back on your browser and hover over the SUPPORT DOAJ button
+    results:
+    - It changes colour and moves
+  - step: Click the button
+    results:
+    - You are taken to https://testdoaj.cottagelabs.com/support/
+  - step: Scroll to 'From the blog'
+    results:
+    - There are 3 blog posts displayed
+  - step: Click on the title of a blog post
+    results:
+    - You are taken to the appropriate post on the DOAJ blog site. Opens in a new
+      tab.
+  - step: Close the tab.
+  - step: Click on "More" after a blog post
+    results:
+    - You are taken to the appropriate post on the DOAJ blog site. Opens in a new
+      tab.
+  - step: Close the tab.
+  - step: On the right, click on 'Tweets by @doajplus'
+    results:
+    - You are taken to the DOAJ Twitter profile. Opens in a new tab.
+  - step: Close the tab.
+  - step: Click on one of the Tweets
+    results:
+    - You are taken to the tweet, on Twitter, and opens in a new tab.
+  - step: Close the tab.
+  - step: Hover over the list of tweets and scroll
+    results:
+    - You can scroll through 20 tweets
+  - step: Scroll to the bottom and click 'Load more tweets'
+    results:
+    - Another 20 tweets are loaded. You can scroll up and down the list of tweets
+      without the main scroll for the page being affected.
+  - step: Click on each link in the footer, coming back to the home page afterwards
+      if necessary
+    results:
+    - Each link takes you to the appropriate page
+  - step: Go back to the home page
+  - step: Scroll to the very bottom of the page
+    results:
+    - The copyright notification on the bottom right is for the current year
+  - step: Click on each link.
+    results:
+    - Each link takes you to the appropriate page
+  - step: Scroll lto the bottom of the home page. Click the orange up arrow in the
+      bottom right-hand corner.
+    results:
+    - You are returned to the top of the home page

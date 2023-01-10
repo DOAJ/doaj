@@ -16,6 +16,7 @@ This PR...
 - [ ] affects the public site
 - [ ] affects the editorial area
 - [ ] affects the publisher area
+- [ ] affects the monitoring
 
 ## Basic PR Checklist
 
@@ -28,11 +29,14 @@ This PR...
 - [ ] ES queries are wrapped in a Query object rather than inlined in the code
 - [ ] Where possible our common library functions have been used (e.g. dates manipulated via `dates`)
 - [ ] If needed, migration has been created and tested locally
+- [ ] Have you done a recent merge up from `develop`
+- [ ] Cleaned up commented out code, etc
 - [ ] Release sheet has been created, and completed as far as is possible https://docs.google.com/spreadsheets/d/1Bqx23J1MwXzjrmAygbqlU3YHxN1Wf7zkkRv14eTVLZQ/edit
 - [ ] Documentation updates - if needed - have been identified and prepared for inclusion into main documentation (e.g. added and highlighted/commented as appropriate to this PR)
     - [ ] Core model documentation: https://docs.google.com/spreadsheets/d/1lun2S9vwGbyfy3WjIjgXBm05D-3wWDZ4bp8xiIYfImM/edit
     - [ ] Events and consumers documentation: https://docs.google.com/spreadsheets/d/1oIeG5vg-blm2MZCE-7YhwulUlSz6TOUeY8jAftdP9JE/edit
 - [ ] There has been a recent merge up from `develop` (or other base branch)
+- [ ] The docs for this branch have been generated and pushed to the doc site (see docs/README.md for details)
 
 ## Testing
 

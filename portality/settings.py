@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.2.8"
+DOAJ_VERSION = "6.2.11"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -288,11 +288,13 @@ ROLE_MAP = {
         "assign_to_associate",
         "list_group_journals",
         "list_group_suggestions",
+        "read_notifications"
     ],
     "associate_editor": [
         "edit_journal",
         "edit_suggestion",
         "editor_area",
+        "read_notifications"
     ]
 }
 
@@ -414,6 +416,7 @@ HUEY_SCHEDULE = {
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
+    "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
 }
 
 HUEY_TASKS = {
@@ -748,6 +751,13 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "admin",
             "dao" : "portality.models.BackgroundJob"     # ~~->BackgroundJob:Model~~
+        },
+        # ~~->APINotificationQuery:Endpoint~~
+        "notifications" : {
+            "auth" : False,
+            "role" : "admin",
+            "dao" : "portality.models.Notification", # ~~->Notification:Model~~
+            "required_parameters" : None
         }
     },
     "associate_query" : {
@@ -808,6 +818,16 @@ QUERY_ROUTE = {
             "dao" : "portality.models.Suggestion",  # ~~->Application:Model~~
             "required_parameters" : None
         }
+    },
+    "dashboard_query": {
+        # ~~->APINotificationQuery:Endpoint~~
+        "notifications" : {
+            "auth" : False,
+            "role" : "read_notifications",
+            "query_filters" : ["who_current_user"], # ~~-> WhoCurrentUser:Query
+            "dao" : "portality.models.Notification", # ~~->Notification:Model~~
+            "required_parameters" : None
+        }
     }
 }
 
@@ -825,6 +845,7 @@ QUERY_FILTERS = {
     "es_type_fix" : "portality.lib.query_filters.es_type_fix",
     "last_update_fallback" : "portality.lib.query_filters.last_update_fallback",
     "not_update_request" : "portality.lib.query_filters.not_update_request",
+    "who_current_user" : "portality.lib.query_filters.who_current_user",    # ~~-> WhoCurrentUser:Query ~~
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
@@ -1244,6 +1265,14 @@ PRESERVATION_COLLECTION = {}
 TASKS_ANON_EXPORT_CLEAN = False
 TASKS_ANON_EXPORT_LIMIT = None
 TASKS_ANON_EXPORT_BATCH_SIZE = 100000
+TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
+
+#########################################################
+# Background tasks --- old_data_cleanup
+TASK_DATA_RETENTION_DAYS = {
+    "notification": 180, # ~~-> Notifications:Feature ~~
+    "background_job": 180, # ~~-> BackgroundJobs:Feature ~~
+}
 
 ########################################
 # Editorial Dashboard - set to-do list size

@@ -8,7 +8,9 @@ featuremap: ~~Privacy:Fragment~~
 
 ---
 
-Protecting your privacy is important to us. Please take a few moments to review this Policy.
+Protecting your privacy and personal data is important to us. Please take a few moments to review this Policy.
+
+(Last reviewed and updated: November 2022)
 
 ### Summary
 
@@ -16,7 +18,7 @@ The Directory of Open Access Journals ("DOAJ"), managed independently by [IS4OA]
 
 ### Who to contact at DOAJ about protecting your privacy
 
-The DOAJ Operations Manager, Dominic Mitchell, has assumed responsibility of the DOAJ data policy and implementing the changes required by the GDPR which came into effect on 25th May 2018. If you have any questions or concerns about any of the information laid out in this Notice, or any other question about how DOAJ protects or uses your data, please [send an email to Dom](mailto:dominic@doaj.org). Alternatively, you can write to him: Dominic Mitchell, IS4OA Denmark, c/o Joanna Ball, c/o Joanna Ball, Bøgevej 33, DK-4000 Roskilde, DENMARK.
+The DOAJ Operations Manager, Dominic Mitchell, has assumed responsibility of the DOAJ data policy and implementing the changes required by the GDPR which came into effect on 25th May 2018. If you have any questions or concerns about any of the information laid out in this Notice, or any other question about how DOAJ protects or uses your data, please [send an email to Dominic](mailto:dominic@doaj.org). Alternatively, you can write to him: Dominic Mitchell, IS4OA Denmark, c/o Joanna Ball, c/o Joanna Ball, Bøgevej 33, DK-4000 Roskilde, DENMARK.
 
 ### The policy
 
@@ -26,12 +28,13 @@ This is the website for Directory of Open Access Journals, which is a website ma
 
 #### 1a Journal applications
 
-Before you submit an application, you must register or sign in. In that process, we collect:
+Before you submit an application, you must register an account or sign into your account. Your account stores:
 
 Your name
 Your email address
+Your password
 
-An account is created for you in our User database. We need these details to process your application. You are the **Account holder**. We will use the email address you provide to contact you:
+An account is created and stored in our User database. We need these details to process your application. You are the **Account holder**. We will use the email address you provide to contact you:
 
 1.  to ask you about an update to the information we hold on the journal(s)
 2.  to inform you that we have changed the status of the journal in DOAJ
@@ -47,7 +50,7 @@ It is not technically possible for emails, generated as part of the review proce
 
 Gmail automatically saves email addresses that we send emails to. Our use of Gmail and the protection of your personal data within it is governed by [Google's Privacy Policy](https://policies.google.com/privacy/update), [Data Processing Amendment for G Suite](https://gsuite.google.com/terms/dpa_terms.html), and [Data Processing and Security Terms for Google Cloud Platform](https://cloud.google.com/terms/data-processing-term).
 
-You may access, review and edit your account details by [logging into your DOAJ account](/account/login). We will never give out your email address to any 3rd party and we never discuss the details of your account or journal applications with anyone apart from you or a representative who we have confirmed is from your organisation.
+You may access, review and edit your account details by [logging into your DOAJ account](/account/login). We will never share your email address with any 3rd party and we never discuss the details of your account or journal applications with anyone apart from you or an authorised representative.
 
 #### 1b Volunteer applications
 
@@ -55,7 +58,7 @@ When someone applies to be a volunteer for DOAJ, we collect, via a Google Form:
 
 Your name
 Your email Address
-Name and email address of the applicant's references
+Name and email address of the applicant's reference(s)
 
 We use this information to contact you or your references regarding your application. If your application is successful, we create an account for you in our User database. This allows applications to be assigned to you for you to review and for you to log in to your DOAJ workspace. You may access, review and edit these details by [logging into your DOAJ account](/account/login) at any time. We have to retain your email address so that we can keep you up to date about your volunteer work.
 
@@ -69,25 +72,25 @@ Sometimes we create a user account for individuals or organisation becaue they w
 
 A name
 An email address
+A password
 
 An account is created in our User database. This allows journals to be assigned to that account, or for the account to generate an API key. You may access, review and edit these details by [logging into your DOAJ account](/account/login) at any time.
 
-#### 1e Our business updates newsletter
+#### 1e A record in Less Annoying CRM
 
-We have a newsletter, powered by Mailchimp, which individuals can sign up to voluntarily. In that process, we collect:
+Sometimes, we store names, email addresses and the organisation where you work in Less Annoying, our customer relationship manager.
 
-Your name
-Your email address
+#### 1f A record in Billy
 
-Personal data collection in the newsletter is governed by [Mailchimp's privacy practices](https://mailchimp.com/legal/).
+Sometimes, we store names, email addresses and the organisation where you work in Billy, our accounting software.
 
 ### 2) Why we need to collect personal data
 
-DOAJ has a duty to its stakeholder groups to maintain the quality, security and recency of the database. It also has a duty to keep its users informed of updates concerning user accounts, features and functionality, or policy changes. This is our legitimate business interest and why we need to collect a contact name and email address linked to each journal indexed in our database. We use those email addresses to keep our members informed and up-to-date. We use other platforms to keep users and stakeholder groups aware of our updates, such a Wordpress, for our blog, and Mailchimp, for our newsletter.
+DOAJ has a duty to its stakeholder groups to maintain the quality, security and recency of its index. It also has a duty to keep its users informed of updates concerning user accounts, features and functionality, or policy changes. This is our legitimate business interest and why we need to collect a contact name and email address linked to each journal indexed in our database. We use those email addresses to keep our members informed and up-to-date. We use other platforms to keep users and stakeholder groups aware of our updates, such as Wordpress, for our blog, or send invoices to supporters. You may opt out of Marketing emails at any time by logging into your [DOAJ account](/account/login).
 
 #### 2a Journals and uploading article metadata
 
-Anything to do with a journal or uploading article metadata must be linked to an individual user account. All the journals indexed and publicly available in the DOAJ database (i.e. they have not been withdrawn) are administered via your [Publisher dashboard](/publisher/). This dashboard is linked to your user account. The Publisher dashboard allows you to maintain journal information and upload article metadata. You may opt out of Marketing emails at any time by logging into your [DOAJ account](/account/login).
+Anything to do with a journal or uploading article metadata must be linked to an individual user account. All the journals indexed and publicly available in the DOAJ database (i.e. they have not been withdrawn) are administered via your [Publisher dashboard](/publisher/). This dashboard is linked to your user account. The Publisher dashboard allows you to maintain journal information and upload article metadata. 
 
 #### 2b Journal applications
 
@@ -96,10 +99,6 @@ Journal applications must include the name and email address of the applicant. W
 #### 2c Volunteers
 
 Volunteer records must include a name and an email address so that we can assign applications to you, and email you about changes to the Admin system where you do you work or other changes. You may opt out of marketing emails by logging into your [DOAJ account](/account/login).
-
-#### 2d Business updates newsletter
-
-Mailchimp requires that an email address be registered for the newsletter to be delivered.
 
 ### 3) Which cookies are in use on this site and why
 
@@ -118,23 +117,24 @@ You can disable these cookies at any time by using the privacy settings in your 
 
 #### 4a In journal applications
 
-The journal applications are held in a database in the DOAJ Admin system which is accessible only by the DOAJ Team, the DOAJ Ambassadors, the DOAJ Volunteers (collectively **the DOAJ representatives**) and our technical partners in site development and hosting, [Cottage Labs](https://cottagelabs.com). Different groups within the DOAJ representatives have varying levels of access to the database. The main reason and objective for accessing the database is to process journal applications. 
+The journal applications are held in a database in the DOAJ Admin system which is accessible only by the DOAJ Team, the DOAJ Ambassadors, the DOAJ Volunteers (collectively **the DOAJ representatives**) and our technical partners in site development and hosting, [Cottage Labs](https://cottagelabs.com). Different groups of DOAJ representatives have different levels of access to the database. The main reason and objective for accessing the database is to review journal records and applications. 
 
 #### 4b In journal records
-Journal names and other journal details are searchable and displayed on our website; journal contact details are never displayed publicly and are not searchable.
+Your contact details are linked to journal and application records. Journal names and other journal details are searchable and displayed on our website; journal contact details are never displayed publicly and are not searchable.
 
 #### 4c In user accounts
-User details (name, email address) are stored in a separate database, the User database, within the DOAJ Admin system. Sometimes, the DOAJ Team and, very rarely, Cottage Labs, will access user accounts to make updates, reset passwords, reset an API key or delete the user account entirely. Neither DOAJ representatives or Cottage Labs have access to users' passwords which are encrypted. All personal data is encrypted when it is imported into the DOAJ test site or onto a developer's machine for development or testing.
-
-#### 4d In our Mailchimp account
-Sometimes we export email addresses from our system into our Mailchimp account. The protection of your personal data in Mailchimp is covered by Mailchimp's '[Privacy for Contacts](https://mailchimp.com/legal/privacy/#3._Privacy_for_Contacts)' policy.
+User details (name, email address, password) are stored in a separate database, the User database, within the DOAJ Admin system. Sometimes, the DOAJ Team and, very rarely, Cottage Labs, will access user accounts to make updates, reset passwords, reset an API key or delete the user account entirely. Neither DOAJ representatives or Cottage Labs have access to users' passwords which are encrypted. All personal data is encrypted when it is imported into a DOAJ test site or onto a developer's machine for development or testing.
 
 #### 4e In volunteer applications
-Volunteer applications are collected in a Google Sheet and are stored securely in the DOAJ's Google workspace. The Sheet is only accessible by the DOAJ Team (5 DOAJ managers and 6 DOAJ managing editors).
+Volunteer applications are collected in a Google Sheet and are stored securely in the DOAJ's Google workspace. The Sheet is only accessible by the DOAJ Team.
 
 #### 4f As the DOAJ team
 
-The DOAJ User database contains the personal information of all users of the DOAJ Admin system. This includes the DOAJ Team. The DOAJ Team's personal data is also stored in your contracts and role profiles on the Google Drive. DOAJ Team's banking details are held by the Managing Director to make payments.
+The DOAJ User database contains the personal information of all users of the DOAJ Admin system. This includes the DOAJ Team. The personal data of DOAJ Team members is also stored in contracts and role profiles on the Google Drive. DOAJ Team's banking details are held in Billy, our accounting software, to make payments.
+
+#### 4g in Less Annoying and Billy
+
+If the journal contact is also the same contact to whom we issue invoices, a name, email address, and organisation will be stored in Less Annoying CRM and Billy. The protection of your data is governed by their privacy policies. [Less Annoying](https://www.lessannoyingcrm.com/help/gdpr) [Billy](https://www.billy.dk/databehandleraftale/) 
 
 ### 5) How we process personal data
 
@@ -152,9 +152,11 @@ DOAJ maintains a list in Google Drive of all the active volunteers' names and em
 
 DOAJ stores the personal data associated with a journal application and a journal record for as long as the journal is in DOAJ. If/when an application is rejected or a journal is removed from DOAJ, we will usually delete the data after 7 years. However, we do not delete personal data embedded in these records, or delete the user's account from the User database if we need to refer to them to provide the history of a journal and DOAJ. We record notes in all our applications and these Notes provide valuable information over time and help us to continue to meet high levels of quality.
 
-Users may request at any time that we delete all their personal data from our systems by submitting a Subject Access Request to us\*\*. Every year, DOAJ asks Cottage Labs to produce a report of all the user accounts in the system which have no journal associated with them and which are more than 7 years old. We last did this in October 2020. The last major overhaul of the DOAJ User database was when DOAJ migrated to its current platform at the end of 2013: we still have active user accounts pre-dating that time which were migrated to the new platform.
+#### 6b User accounts
 
-#### 6b Volunteer applications
+Users may request at any time that we delete all their personal data from our systems by submitting a Subject Access Request to us\*\*. Every year, DOAJ asks Cottage Labs to produce a report of all the user accounts in the system that have no records associated with them and that are more than 7 years old. The last major overhaul of the DOAJ User database was when DOAJ migrated to its current platform at the end of 2013: we still have active user accounts pre-dating that time which were migrated to the new platform.
+
+#### 6c Volunteer applications
 
 DOAJ stores the personal data of applicants in a Google Sheet until we assess if a person is a suitable candidate. Old applications are struck through and archived in a secure Google Drive folder which is only accessible by the Operations Manager. Old applications are deleted after seven years. Volunteer applicants may request at any time that we delete all their personal data from the Google Drive by submitting a Subject Access Request (SAR) to us\*\*.
 
@@ -163,8 +165,6 @@ DOAJ stores the personal data of applicants in a Google Sheet until we assess if
 ### 7) Who we share data with
 
 DOAJ does not share personal data with any organisation or individual outside the immediate DOAJ organisation, neither will it grant requests from industry organisations for access to user data.
-
-DOAJ has a Mailchimp account ([https://mailchimp.com](https://mailchimp.com/)) into which we occasionally import email addresses (see section 4 above)
 
 ### 8) How to delete your account and request that personal data is deleted
 

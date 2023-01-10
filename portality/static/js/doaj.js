@@ -61,7 +61,7 @@ var doaj = {
     },
 
     bitlyShortener : function(query, success_callback, error_callback) {
-        // ~~-> Bitly.ExternalService ~~
+        // ~~-> Bitly:ExternalService ~~
         function callbackWrapper(data) {
             success_callback(data.url);
         }

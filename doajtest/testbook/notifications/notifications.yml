@@ -1,0 +1,100 @@
+suite: Notifications
+testset: Notifications
+
+tests:
+  - title: Short notification view
+    setup:
+      - Carry out a number of activities which generate notifications visible to your user account OR
+      - Ask the development team to run the make_notifications script for your user account to generate a selection of realistic notifications for you
+    context:
+      role: admin
+    steps:
+      - step: Go the Managing Editor's dashboard
+        path: /dashboard
+        results:
+          - On the top navigation bar is a bell icon and a "Notifications" menu item
+          - The menu item gives you a count of notifications
+      - step: Hover your mouse over the Notifications menu item
+        results:
+          - A pull-down list of notifications appears
+      - step: scroll through the pull-down list of notifications
+        results:
+          - There are the same number of highlighted (unseen) notifications as are listed in the count of notifications next to the menu item
+          - There is a link to See all notifications at the bottom of the list
+      - step: click on an unseen notification
+        results:
+          - A new tab/window opens
+          - you are directed to the appropriate action page for the notification
+      - step: go back to the dashboard page and reload the page (or wait for a few minutes for your notifications to refresh)
+        results:
+          - the count of unseen notifications listed in the menu bar decreases by 1
+          - The notification you previously clicked on above is no longer highlighted as unseen
+
+  - title: User notification search
+    setup:
+      - Carry out a number of activities which generate notifications visible to your user account OR
+      - Ask the development team to run the make_notifications script for your user account to generate a selection of realistic notifications for you
+    context:
+      role: admin
+    steps:
+      - step: Go to the Managing Editor's dashboard
+        path: /dashboard
+      - step: Click on the Notification menu item on the top bar
+        results:
+          - You are taken to the notification search page
+          - You can see the first page of your notifications, most recent notification first
+      - step: find a notification which is unseen (the icon on the right contains a solid black circle) and which has no action associated with it (it will say "Mark as seen" on the right)
+      - step: Click "Mark as seen"
+        results:
+          - The black circle on the right becomes an empty circle
+          - The link "Mark as seen" disappears
+      - step: find a notification which is unseen and requires action
+      - step: Click "see action"
+        results:
+          - A new tab/window opens
+          - You are taken to an appropriate action page for the notification
+      - step: Go back to the search interface
+        results:
+          - the notification you clicked on above is no longer marked as unseen (the black circle has become an empty circle)
+      - step: Hover your mouse over the "seen notification" icon (the empty circle).
+        results:
+          - a tooltip appears which tells you the date the notification was marked as seen
+      - step: Hover your mouse over the resut type icon (next to/below the "seen notification" icon)
+        results:
+          - a tooltip appears which tells you the nature of the notification
+      - step: Enter some search text in the search box and press enter
+        results:
+          - your search results are limited to those containing the text in the search box
+          - They are still ordered by date, most recent first
+      - step: Clear the search filter by removing the text and pressing enter
+        results:
+          - your original unfiltered list of notifications is restored
+      - step: Try the other search controls, such as changing the page size and navigation to the next/previous page
+        results:
+          - search behaviours act as expected
+
+  - title: Administrator global notifications search
+    setup:
+      - Carry out a number of activities which generate notifications visible to your user account OR
+      - Ask the development team to run the make_notifications script for your user account to generate a selection of realistic notifications for you
+    context:
+      role: admin
+    steps:
+      - step: Go to the Managing Editor's dashboard
+        path: /dashboard
+      - step: On the right navigation click on the "bell" icon at the bottom, marked "All Notifications"
+        result:
+          - You are taken to a full search of all notifications for all users
+      - step: open and close the facets on the left
+        results:
+          - facets open and close correctly
+          - they contain data that seems reasonable
+      - step: Try applying/removing facet values (e.g. select a notification user, and a notification month to see that user's notifications for that month)
+        results:
+          - The results reflect your expectations
+      - step: Clear all your filters with the "Clear All" button
+        results:
+          - all search filters are cleared
+      - step: Try out the other search controls, such as changing the page size, and navigation to the next/previous page
+        results:
+          - search behaviours act as expected

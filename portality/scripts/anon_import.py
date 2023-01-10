@@ -3,6 +3,11 @@ Clear out the index and retrieve new anonymised data, according to a configurati
 
 Configure the target index in your *.cfg override file
 For now, this import script requires the same index pattern (prefix, 'types', index-per-type setting) as the exporter.
+
+E.g. for dev:
+
+Ensure in dev.cfg you've set STORE_IMPL = "portality.store.StoreS3"
+python portality/scripts/anon_import.py data_import_settings/dev_basics.json
 """
 
 import esprit, json, gzip, shutil, elasticsearch
