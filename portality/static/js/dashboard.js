@@ -93,7 +93,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
         if (data.editors[ed]) {
             let isEd = "";
             if (i === 0) {  // first one in the list is always the editor
-                isEd = " (Ed.)"
+                isEd = " (Editor)"
             }
             editorListFrag += `<li>
                 <a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>
