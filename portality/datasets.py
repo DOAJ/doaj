@@ -112,12 +112,12 @@ licenses, license_dict, main_license_options = _generate_license_options()
 
 def language_for(rep):
     """ Get the entire language entry for a given representation """
-    return isolang.find(rep, as_dict=False)
+    return isolang.find_raw(rep)
 
 
 def name_for_lang(rep):
     """ Get the language name from a representation of the language"""
-    lang = isolang.find(rep, as_dict=False)
+    lang = isolang.find_raw(rep)
     return lang.name if lang is not None else rep
 
 
