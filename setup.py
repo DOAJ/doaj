@@ -38,7 +38,8 @@ setup(
         "openpyxl~=3.0.3",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
         "parameterized==0.7.0",
         "psutil==5.6.3",
-        "pycountry==22.3.5",  # FIXME: pycountry on pypi is quite outdated (2022-03-05, missing e.g. Türkiye)
+        #"pycountry==22.3.5",  # FIXME: pycountry on pypi is quite outdated (2022-03-05, missing e.g. Türkiye)
+        "pycountry @ git+https://github.com/DOAJ/pycountry.git@30a23571951cf4eb98939a961ac96d1c2b64a3d8#egg=pycountry",
         "python-dateutil==2.8.0",  # something else already installs this, so just note we need it without an explicit version freeze
         "pytz==2019.3",
         "redis==3.3.11",

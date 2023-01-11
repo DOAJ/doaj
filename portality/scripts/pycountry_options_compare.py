@@ -67,7 +67,7 @@ def compare(old_ver, new_ver):
              'languages added': list(language_codes.difference(old_language_codes)),
              'languages removed': list(old_language_codes.difference(language_codes))}
 
-    print(json.dumps(codes, indent=2))
+    print(json.dumps(codes, indent=2, ensure_ascii=False))
 
 
 if __name__ == "__main__":
