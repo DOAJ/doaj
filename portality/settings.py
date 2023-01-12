@@ -417,6 +417,7 @@ HUEY_SCHEDULE = {
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
+    "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
 }
 
 HUEY_TASKS = {
@@ -1288,6 +1289,12 @@ PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event/"
 PLAUSIBLE_SITE_NAME = BASE_DOMAIN
 PLAUSIBLE_LOG_DIR = None
 
+#########################################################
+# Background tasks --- monitor_bgjobs
+TASKS_MONITOR_BGJOBS_TO = ["helpdesk@doaj.org",]
+TASKS_MONITOR_BGJOBS_FROM = "helpdesk@doaj.org"
+
+
 
 ##################################3
 # Background monitor
@@ -1336,7 +1343,7 @@ BG_MONITOR_QUEUED_CONFIG = {
         'total': 250,
         'oldest': 86400
     },
-    
+
     # Long running
     'harvest': {
         'total': 1,
