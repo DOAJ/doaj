@@ -1303,12 +1303,23 @@ BG_MONITOR_LAST_COMPLETED = {
 # Configures the monitoring period and the allowed number of errors in that period before a queue is marked
 # as unstable
 BG_MONITOR_ERRORS_CONFIG = {
+    # Main queue
     'journal_csv': {
         'check_sec': 3600,  # 1 hour, time period between scheduled runs
         'allowed_num_err': 0,
     },
-    'anon_export': {
-        'check_sec': 86400,  # 1 day, long enough to be alerted on the day, not long enough to stick around for the whole month
+    'ingest_articles': {
+        'check_sec': 86400,
+        'allowed_num_err': 0
+    },
+
+    # Long running
+    'harvest': {
+        'check_sec': 86400,
+        'allowed_num_err': 0,
+    },
+    'public_data_dump': {
+        'check_sec': 86400 * 7,
         'allowed_num_err': 0
     }
 }
@@ -1316,13 +1327,24 @@ BG_MONITOR_ERRORS_CONFIG = {
 # Configures the total number of queued items and the age of the oldest of those queued items allowed
 # before the queue is marked as unstable.  This is provided by type, so we can monitor all types separately
 BG_MONITOR_QUEUED_CONFIG = {
+    # Main queue
     'journal_csv': {
         'total': 2,
         'oldest': 1200,     # 20 mins
     },
-    'anon_export': {
-        'total': 2,
-        'oldest': 93600     # 26 hours
+    'ingest_articles': {
+        'total': 250,
+        'oldest': 86400
+    },
+    
+    # Long running
+    'harvest': {
+        'total': 1,
+        'oldest': 86400
+    },
+    'public_data_dump': {
+        'total': 1,
+        'oldest': 86400
     }
 }
 
