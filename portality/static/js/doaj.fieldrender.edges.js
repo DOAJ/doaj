@@ -2664,6 +2664,20 @@ $.extend(true, doaj, {
                 }
 
 
+                let externalLink = "";
+                if (resultobj.bibjson.ref && resultobj.bibjson.ref.journal) {
+                    externalLink = '<li><a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website ';
+
+                    if (this.widget){
+                        externalLink += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
+                    }
+                    else {
+                        externalLink += '<i data-feather="external-link" aria-hidden="true"></i>'
+                    }
+
+                    externalLink += '</a></li>';
+                }
+
                 frag +='</sup>\
                             </a>\
                             ' + subtitle + '\
@@ -2686,20 +2700,8 @@ $.extend(true, doaj, {
                             ' + update_or_added + '\
                           </li>\
                           ' + articles + '\
-                          <li>\
-                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website '
-
-                if (this.widget){
-                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
-                }
-                else {
-                    frag += '<i data-feather="external-link" aria-hidden="true"></i>'
-                }
-
-
-
-                frag += '</a></li>\
-                          <li>\
+                          ' + externalLink + '\
+                        <li>\
                             ' + apcs + '\
                           </li>\
                           <li>\
