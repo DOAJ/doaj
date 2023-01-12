@@ -15,7 +15,7 @@
     height: 75px;
 
     .label {
-      margin-left: $spacing-04;
+      margin: 0 $spacing-04;
       text-decoration: none;
       line-height: 75px;
     }
@@ -51,7 +51,6 @@
     left: 0;
     width: 75px;
     height: 100%;
-    overflow-y: scroll;
 
     > ol {
       position: fixed;
@@ -59,6 +58,7 @@
       top: 75px;
       bottom: 0;
       background-color: $light-grey;
+      overflow-y: scroll;
     }
   }
 
