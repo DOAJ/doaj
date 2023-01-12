@@ -15,6 +15,6 @@ Support of DOAJ by academic organisations is vital and we are proud to acknowled
 
 The suggested contributions for academic organisations are below. Use the table to find the most appropriate option for your organisation. [Send an email](mailto:joanna@doaj.org) to Joanna Ball, Managing Director, with the details of the support level you have chosen. Alternatively, you can use our invoice-free one-time donation button to send us an amount of your choosing.
 
-(Publishers interested in supporting us should read the [publisher supporter](/support/publisher-supporters/) pages.)
+(Publishers interested in supporting us should read the [publisher supporters](/support/publisher-supporters/) page.)
 
 ---
