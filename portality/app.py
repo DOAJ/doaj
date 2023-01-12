@@ -54,6 +54,7 @@ app.register_blueprint(query, url_prefix="/admin_query")
 app.register_blueprint(query, url_prefix="/publisher_query")
 app.register_blueprint(query, url_prefix="/editor_query")
 app.register_blueprint(query, url_prefix="/associate_query")
+app.register_blueprint(query, url_prefix="/dashboard_query")
 app.register_blueprint(editor, url_prefix='/editor') # ~~-> Editor:Blueprint~~
 app.register_blueprint(services, url_prefix='/service') # ~~-> Services:Blueprint~~
 if 'api1' in app.config['FEATURES']:
@@ -293,9 +294,12 @@ def maned_of_wrapper():
     def maned_of():
         # ~~-> EditorGroup:Model ~~
         egs = []
+        assignments = {}
         if current_user.has_role("admin"):
-            egs = [e for e in models.EditorGroup.groups_by_maned(current_user.id)]
-        return egs
+            egs = models.EditorGroup.groups_by_maned(current_user.id)
+            if len(egs) > 0:
+                assignments = models.Application.assignment_to_editor_groups(egs)
+        return egs, assignments
     return dict(maned_of=maned_of)
 
 

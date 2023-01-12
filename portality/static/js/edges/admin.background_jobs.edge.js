@@ -1,3 +1,4 @@
+// ~~ BackgroundJobsSearch:Feature ~~
 $.extend(true, doaj, {
 
     adminBackgroundJobsSearch : {

@@ -1,3 +1,4 @@
+// ~~ AdminUserSearch:Feature ~~
 $.extend(true, doaj, {
 
     userSearch: {

@@ -1,6 +1,8 @@
 # Title <- provide a title for the PR
 
-For: # <- enter link to issue on main board
+*Please don't delete any sections when completing this PR template; instead enter **N/A** for checkboxes or sections which are not applicable, unless otherwise stated below*
+
+See # <- enter link to issue on main board
 
 Describe the scope/purpose of the PR here in as much detail as you like
 
@@ -14,6 +16,7 @@ This PR...
 - [ ] affects the public site
 - [ ] affects the editorial area
 - [ ] affects the publisher area
+- [ ] affects the monitoring
 
 ## Basic PR Checklist
 
@@ -23,12 +26,17 @@ This PR...
 - [ ] Code has been run manually in development, and functional tests followed locally
 - [ ] No deprecated methods are used
 - [ ] No magic strings/numbers - all strings are in `constants` or `messages` files
+- [ ] ES queries are wrapped in a Query object rather than inlined in the code
 - [ ] Where possible our common library functions have been used (e.g. dates manipulated via `dates`)
 - [ ] If needed, migration has been created and tested locally
+- [ ] Have you done a recent merge up from `develop`
+- [ ] Cleaned up commented out code, etc
 - [ ] Release sheet has been created, and completed as far as is possible https://docs.google.com/spreadsheets/d/1Bqx23J1MwXzjrmAygbqlU3YHxN1Wf7zkkRv14eTVLZQ/edit
 - [ ] Documentation updates - if needed - have been identified and prepared for inclusion into main documentation (e.g. added and highlighted/commented as appropriate to this PR)
     - [ ] Core model documentation: https://docs.google.com/spreadsheets/d/1lun2S9vwGbyfy3WjIjgXBm05D-3wWDZ4bp8xiIYfImM/edit
     - [ ] Events and consumers documentation: https://docs.google.com/spreadsheets/d/1oIeG5vg-blm2MZCE-7YhwulUlSz6TOUeY8jAftdP9JE/edit
+- [ ] There has been a recent merge up from `develop` (or other base branch)
+- [ ] The docs for this branch have been generated and pushed to the doc site (see docs/README.md for details)
 
 ## Testing
 
@@ -42,6 +50,10 @@ List the Functional Tests that must be run to confirm this feature
 ## Deployment
 
 What deployment considerations are there? (delete any sections you don't need)
+
+### Configuration changes
+
+What configuration changes are included in this PR, and do we need to set specific values for production
 
 ### Scripts
 

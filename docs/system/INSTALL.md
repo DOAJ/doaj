@@ -4,30 +4,30 @@
 
 This installation instruction is for Ubuntu 16.04 and Ubuntu 18.04 users. We recommend running our application on Ubuntu OS.
 
-## Java 8
+## Java
 
 [comment] <>: (~~->Java:Technology~~)
 
-Java 8 is required to install correct version of Elasticsearch. On ubuntu it can be download from apt:
+Java is required to natively run Elasticsearch, if you're running ES directly from the archive (rather than using `apt`) you'll need a JRE such as:
 
-    sudo apt install openjdk-8-jre
+    sudo apt install openjdk-11-jre
 
 ## Elasticsearch
 
 [comment] <>: (~~->Elasticsearch:Technology~~)
 
-Elasticsearch is the datastore we use. Currently we require version 1.7.
+Elasticsearch is the datastore we use. Currently we use version 7.10.2 OSS in production, but you'll find OpenSearch might work too.
 
-You can download .deb package from [here](https://www.elastic.co/downloads/past-releases/elasticsearch-1-7-0https://www.elastic.co/downloads/past-releases/elasticsearch-1-7-0) and install it by:
+You can download .deb package from [here](https://www.elastic.co/downloads/past-releases/elasticsearch-7-10-2) and install it with:
 
-    sudo apt install <path-to-es-deb-package>
+    sudo dpkg -i <path-to-es-deb-package>
 
 Alternatively, you can download and extract the `tar` or `zip` archive and run the elasticsearch executable directly - this makes it easier to have multiple versions available to use in different projects.
 
     cd <directory-you extracted-elasticsearch>
     ./bin/elasticsearch
 
-Elasticsearch documentation can be found [here](https://www.elastic.co/guide/en/elasticsearch/reference/1.7/setup.html#setup-installation).
+Elasticsearch documentation can be found [here](https://www.elastic.co/guide/en/elasticsearch/reference/7.10/setup.html#setup-installation).
 
 You can check whether its running via `curl localhost:9200` by pointing your browser to [http://localhost:9200](http://localhost:9200) - you should see a basic JSON response telling you what version you're running.
 
@@ -90,10 +90,12 @@ It's recommended to run the DOAJ inside a python virtual environment so it doesn
 
     # Install the submodules then the dependencies
     git submodule update --init --recursive
-    pip install -r requirements.txt
+    pip install -e .
 
     # If you are running in development, get the extra dependencies to run the tests
     pip install -e .[test]
+    # Or the documentation generation libraries:
+    pip install -e .[docs]
 
     # Finally, run the app. You should see it in a browser
     DOAJENV=dev python portality/app.py  # the output of this will tell you which port it's running on and whether it's in debug mode

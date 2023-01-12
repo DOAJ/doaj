@@ -47,6 +47,10 @@ silver:
 - name: JMIR Publications
   url: https://jmirpublications.com/
   logo: jmir.svg
+  
+- name: Knowledge E
+  url: https://knowledgee.com/
+  logo: knowledgee.png
 
 - name: MDPI
   url: https://www.mdpi.com/
@@ -102,6 +106,10 @@ bronze:
   url: https://www.ieee.org/
   logo: ieee.png
 
+- name: Institute of Physics
+  url: https://www.iop.org/
+  logo: IOP.jpg
+
 - name: The Institution of Engineering and Technology (IET)
   url: https://www.theiet.org/
   logo: iet.svg
@@ -113,6 +121,10 @@ bronze:
 - name: Karger
   url: https://www.karger.com/
   logo: karger.png
+
+- name: KeAI Communications
+  url: https://www.keaipublishing.com/
+  logo: KeAI.svg
 
 - name: Lund University
   url: https://www.lunduniversity.lu.se/
@@ -129,6 +141,10 @@ bronze:
 - name: PLOS
   url: https://plos.org/
   logo: PLOS.svg
+
+- name: SciFree
+  url: https://scifree.se/
+  logo: SciFree.svg
 
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/

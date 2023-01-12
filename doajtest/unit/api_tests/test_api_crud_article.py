@@ -404,9 +404,6 @@ class TestCrudArticle(DoajTestCase):
         # but none of these - these should all be the same as the original article in the index
         assert updated.bibjson().publisher == 'The Publisher', updated.bibjson().publisher
         assert updated.bibjson().journal_title == 'The Title'
-        # We strip out any supplied journal license data in add_journal_metadata()
-        with self.assertWarns(DeprecationWarning):
-            assert updated.bibjson().get_journal_license() is None
         assert updated.bibjson().journal_language == ["EN", "FR"]
         assert updated.bibjson().journal_country == "US"
 

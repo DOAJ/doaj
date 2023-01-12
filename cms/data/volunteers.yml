@@ -37,14 +37,12 @@ ed:
   language: Russian, German, English
   featured: true
 
-
 - name: Ikhwan Arief
   area: Science, Technology
   year_since:
   city: Padang, West Sumatra
   country: Indonesia
   language: Indonesian, English
-  
   
 - name: Juyeon Park
   area: Librarianship
@@ -57,7 +55,7 @@ ed:
   area: Medicine
   year_since:
   city: Adana
-  country: Turkey
+  country: Türkiye
   language: Turkish, English
   featured: true
 
@@ -110,6 +108,7 @@ ass_ed:
   city: Wroclaw
   country: Poland
   language: Polish, English
+  photo: "AleksandraZawadzka.jpg"
 
 - name: Alessandro Pierno
   area: Humanities
@@ -154,11 +153,11 @@ ass_ed:
   language: Romanian, English
   
 - name: Anna Sidorko
-  area: Librarianship
+  area: Library Science
   year_since:
-  city: Padang, West Sumatra
-  country: Indonesia
-  language: Indonesian, English
+  city: Warsaw
+  country: Poland
+  language: Polish, English
 
 - name: Annarita Barbaro
   area: Humanities
@@ -181,7 +180,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "azhar.jpg"
-
 
 - name: Barbara Łuszczek
   area: Librarianship
@@ -211,7 +209,6 @@ ass_ed:
   country: USA
   language: English, American Sign Language
   photo: "cara.jpg"
-
 
 - name: Carlos Alegre
   area: Social Sciences
@@ -258,6 +255,23 @@ ass_ed:
   city: La Habana
   country: Cuba
   language: English, French
+  
+- name: Daria Chrześcijańska
+  area: Computer Science, Social Sciences
+  year_since:
+  city: Toruń
+  country: Poland
+  language: Polish, English
+  photo: "daria.jpg" 
+
+- name: Dawam M. Rohmatulloh
+  area: Social Sciences, Humanities
+  year_since:
+  city: Ponorogo
+  country: Indonesia
+  language: Bahasa Indonesia, English, Dutch
+  featured: true
+  photo: "Dawam.jpg"
 
 - name: Débora Domingo-Calabuig
   area: Science, Technology
@@ -266,13 +280,20 @@ ass_ed:
   country: Spain
   language: Spanish, English
 
-
 - name: Dedi Rahman Nur
   area: Social Sciences
   year_since:
   city: Samarinda
   country: Indonesia
   language: Indonesian, English
+  
+- name: Dessy Harisanty
+  area: Library and Information Science
+  year_since:
+  city: Surabaya
+  country: Indonesia
+  language: Bahasa Indonesia, English
+  photo: "dh.jpg"  
 
 - name: Dr. Eko Supraptono
   area: Technology
@@ -294,14 +315,6 @@ ass_ed:
   city: Malang
   country: Indonesia
   language: Indonesian, English
-
-
-- name: Elli Papadopoulou
-  area: Librarianship
-  year_since:
-  city: Marousi
-  country: Greece
-  language: Greek, English
 
 - name: Emma Molls
   area: Librarianship
@@ -404,7 +417,6 @@ ass_ed:
   country:
   language: Korean, English
 
-
 - name: José Darío Martínez Ezquerro
   area: Medicine
   year_since:
@@ -427,11 +439,11 @@ ass_ed:
   country:
   language: Korean, English
 
-- name: Kamil B. Varınca
+- name: Kâmil B. Varınca
   area: Science
   year_since:
   city: Adiyaman
-  country: Turkey
+  country: Türkiye
   language: Turkish, English
   photo: "kamil.jpg"
 
@@ -530,7 +542,6 @@ ass_ed:
   language: Spanish, English
   photo: "MarianoCorujo.jpeg"
   
-  
 - name: Marie-Eve Dugas
   area: Library Science, Social Sciences
   year_since:
@@ -538,7 +549,6 @@ ass_ed:
   country: Canada
   language: French, English
   
-
 - name: Mario Alejandro Marín
   area:
   year_since:
@@ -550,7 +560,7 @@ ass_ed:
   area: Social Sciences
   year_since:
   city:
-  country: Turkey
+  country: Türkiye
   language: English
 
 - name: Miguel-Ángel Vera-Baceta
@@ -646,6 +656,15 @@ ass_ed:
   city:
   country:
   language:
+
+- name: Orhan Canpolat
+  area: Engineering
+  year_since:
+  city: Istanbul
+  country: Türkiye
+  language: Turkish, English
+  photo: "Orhan CANPOLAT.jpg"
+
 
 - name: Oskia Agirre
   area: Library and Information Science
@@ -809,9 +828,17 @@ ass_ed:
 - name: Umar Khasan
   area: Social Sciences
   year_since:
-  city: Bangkalan
+  city: Bangkalang
   country: Indonesia
-  language: Indonesian, English  
+  language: Bahasa Indonesian, English
+  
+- name: Utiya Hikmah
+  area: Material Physics
+  year_since:
+  city: Malang
+  country: Indonesia
+  language: Bahasa Indonesian, English
+  photo: "utiyah.jpg"
   
 - name: Weldy St-Fleur
   area: Social Sciences
@@ -820,6 +847,14 @@ ass_ed:
   country: Brazil
   language: Portuguese, English
   photo: "weldy.jpeg"
+  
+- name: Yalçın Tükel 
+  area: Sports recreation
+  year_since:
+  city: Konya
+  country: Türkiye
+  language: Turkish, English
+  photo: "yalcin.jpg"
 
 - name: Yaping Liu
   area: Medical and Healthcare Management
@@ -828,6 +863,13 @@ ass_ed:
   country: Australia
   language: Chinese, English
 
+- name: Yulingga Nanda Hanief
+  area: Sports Science
+  year_since:
+  city: Malang
+  country: Indonesia
+  language: Bahasa Indonesia, English
+  photo: "hanief.jpg"
  
 - name: Zakariya Algamal
   area: Statistics

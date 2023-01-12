@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.2.3',
+    version='6.2.13',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -13,8 +13,7 @@ setup(
         "boto3==1.18.50",
         "elastic-apm==5.2.2",
         "elasticsearch==7.13.0",
-        "esprit==0.1.0",   # legacy for scripts etc (phasing out)
-        "faust==1.10.4",
+        "faust-streaming==0.9.5",  # Note: This is a maintained fork of the abandoned robinhood/faust
         "Faker==2.0.3",
         "feedparser==6.0.8",
         "itsdangerous==2.0.1",     # fixme: unpinned dependency of flask, 2.1.0 is causing an import error 'json'
@@ -24,7 +23,6 @@ setup(
         "Flask-DebugToolbar==0.10.1",
         "Flask-Login==0.4.1",
         "Flask-Mail==0.9.1",
-        "Flask-Swagger==0.2.13",
         "Flask-WTF==0.14.2",
         "freezegun==0.3.12",
         "GitPython==2.1.14",
@@ -51,9 +49,18 @@ setup(
         "Unidecode==1.1.1",
         "Werkzeug==0.16.0",
         "WTForms==2.2.1",
+        "esprit @ git+https://github.com/CottageLabs/esprit.git@edda12177effa0945d99302f0d453b22503e335b#egg=esprit",
+        "dictdiffer @ git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer",
+        "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
-    extras_require={"test": ["pytest", "pytest-cov", "pytest-xdist", "selenium"]},
-    url='http://cottagelabs.com/',
+    extras_require={
+        "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium",
+                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
+        "docs": [
+            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@81eecd5e7b4da379b14c0ccb0cf64e9665a26e20#egg=featuremap",
+            "testbook @ git+https://github.com/CottageLabs/testbook.git@15a7c0cc25d951d989504d84c2ef3e24caaf56e9#egg=testbook"]
+    },
+    url='https://cottagelabs.com/',
     author='Cottage Labs',
     author_email='us@cottagelabs.com',
     description='Directory of Open Access Journals website and software',

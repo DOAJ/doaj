@@ -1,0 +1,38 @@
+suite: User Management
+testset: Marketing Consent
+tests:
+- title: View Unset Marketing Preferences
+  context:
+    role: any
+  steps:
+  - step: Go to the "Accounts" page
+    results:
+    - marketing consent text and radio button options should be visiblle with no marketing
+      consent option selected (this is just the first time before an option has been
+      chosen)
+- title: Accept Marketing
+  context:
+    role: any
+  steps:
+  - step: Go to the "Accounts" page
+    results:
+    - marketing consent text and radio button options should be visiblle with the
+      previous option selected, if set
+  - step: select "I consent..."
+  - step: Click "Save Settings"
+    results:
+    - Page reloads, flash message says "Record Updated"
+    - '"I consent" is selected'
+- title: Decline Marketing
+  context:
+    role: any
+  steps:
+  - step: Go to the "Accounts" page
+    results:
+    - marketing consent text and radio button options should be visiblle with the
+      previous option selected, if set
+  - step: Select "I do not consent"
+  - step: Click "Save Settings"
+    results:
+    - Page reloads, flash message says "Record Updated"
+    - '"I do not consent" is selected'

@@ -1,5 +1,7 @@
 import logging
 
+import jinja2.optimizer
+
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
 from portality import models, constants
@@ -161,17 +163,20 @@ class JournalService(object):
         models.Cache.cache_csv(url)
         return url, action_register
 
-    def admin_csv(self, file_path, account_sub_length=8, obscure_accounts=True):
+    def admin_csv(self, file_path, account_sub_length=8, obscure_accounts=True, add_sensitive_account_info=False):
         """
         ~~AdminJournalCSV:Feature->JournalCSV:Feature~~
 
-        :param file_path:
-        :param account_sub_length:
-        :param obscure_accounts:
-        :return:
+        :param file_path: where to put the CSV
+        :param account_sub_length: the length in characters for the substituted string
+        :param obscure_accounts: anonymise the account data with consistent random strings
+        :param add_sensitive_account_info: augment the CSV with account information - account ID, account name, account email addr
         """
         # create a closure for substituting owners for consistently used random strings
         unmap = {}
+
+        if obscure_accounts and add_sensitive_account_info:
+            raise Exception("These arguments are mutually exclusive, no point to both add and obscure the account info")
 
         def usernames(j):
             o = j.owner
@@ -185,8 +190,22 @@ class JournalService(object):
             else:
                 return [("Owner", o)]
 
+        def acc_name(j):
+            o = j.owner
+            a = models.Account.pull(o)
+            return [("Account Name", a.name)] if a is not None else ""
+
+        def acc_email(j):
+            o = j.owner
+            a = models.Account.pull(o)
+            return [("Account Email", a.email)] if a is not None else ""
+
+        extra_cols = [usernames]
+        if add_sensitive_account_info:
+            extra_cols += [acc_name, acc_email]
+
         with open(file_path, "w", encoding="utf-8") as f:
-            self._make_journals_csv(f, [usernames])
+            self._make_journals_csv(f, extra_cols)
 
     @staticmethod
     def _make_journals_csv(file_object, additional_columns=None):

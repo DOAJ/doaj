@@ -179,6 +179,12 @@ def updates_in_progress():
 @ssl_required
 @write_required()
 def upload_file():
+    """
+        ~~UploadMetadata:Feature->UploadMetadata:Page~~
+        ~~->Crossref442:Feature~~
+        ~~->Crossref531:Feature~~
+        """
+
     # all responses involve getting the previous uploads
     previous = models.FileUpload.by_owner(current_user.id)
 

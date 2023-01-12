@@ -997,10 +997,6 @@ class TestModels(DoajTestCase):
         assert bj.author[1].get("affiliation") == "School of Hard Knocks"
         assert bj.author[1].get("orcid_id") == "0000-0001-4321-4321", "received: {}".format(bj.author[1].get("orcid_id"))
 
-        # We no longer display the journal's licences within the article metadata
-        with self.assertWarns(DeprecationWarning):
-            assert bj.get_journal_license().get("title") == "CC-BY"
-
         del bj.year
         del bj.month
         bj.remove_journal_metadata()
@@ -1252,6 +1248,7 @@ class TestModels(DoajTestCase):
 
         eg2 = models.EditorGroup()
         eg2.set_id("editor")
+        eg2.set_name("Editor")   # note: REQUIRED so that the mapping includes .name, which is needed to find groups_by
         eg2.set_editor(acc.id)
         eg2.save()
 

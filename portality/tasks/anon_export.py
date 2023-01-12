@@ -65,14 +65,14 @@ def anonymise_journal(record):
     return _anonymise_admin(j).data
 
 
-def anonymise_suggestion(record):
+def anonymise_application(record):
     try:
-        sug = models.Suggestion(**record)
+        appl = models.Application(**record)
     except DataStructureException:
         return record
 
-    sug = _anonymise_admin(sug)
-    return sug.data
+    appl = _anonymise_admin(appl)
+    return appl.data
 
 
 def anonymise_background_job(record):
@@ -91,7 +91,7 @@ anonymisation_procedures = {
     'account': anonymise_account,
     'background_job': anonymise_background_job,
     'journal': anonymise_journal,
-    'suggestion': anonymise_suggestion
+    'application': anonymise_application
 }
 
 
@@ -136,29 +136,25 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
             transform = anonymisation_procedures[type_]
 
         # Use the model's dump method to write out this type to file
-        out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn, tmpStore=tmpStore, mainStore=mainStore, container=container)
+        out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn, tmpStore=tmpStore,
+                                            mainStore=mainStore, container=container)
         _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
-                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], scroll_keepalive='3m')
+                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], scroll_keepalive=app.config.get('TASKS_ANON_EXPORT_SCROLL_TIMEOUT', '5m'))
 
         logger_fn((dates.now() + " done\n"))
 
     tmpStore.delete_container(container)
 
 
-def get_value_safe(key, default_v, kwargs, default_cond_fn=None):
-    v = kwargs.get(key, default_v)
-    default_cond_fn = default_cond_fn or (lambda _v: _v is None)
-    if default_cond_fn(v):
-        v = default_v
-    return v
-
-
 class AnonExportBackgroundTask(BackgroundTask):
+    """
+    ~~AnonExport:Feature->BackgroundTask:Process~~
+    """
     __action__ = "anon_export"
 
     def run(self):
-        kwargs = {k: self.get_param(self.background_job.params, k)
-                  for k in ['clean', 'limit', 'batch_size']}
+        kwargs = self.create_raw_param_dict(self.background_job.params,
+                                            ['clean', 'limit', 'batch_size'])
         kwargs['logger_fn'] = self.background_job.add_audit_message
 
         tmpStore = StoreFactory.tmp()
@@ -174,9 +170,9 @@ class AnonExportBackgroundTask(BackgroundTask):
     @classmethod
     def prepare(cls, username, **kwargs):
         params = {}
-        cls.set_param(params, 'clean', get_value_safe('clean', False, kwargs))
+        cls.set_param(params, 'clean', background_helper.get_value_safe('clean', False, kwargs))
         cls.set_param(params, "limit", kwargs.get('limit'))
-        cls.set_param(params, "batch_size", get_value_safe('batch_size', 100000, kwargs))
+        cls.set_param(params, "batch_size", background_helper.get_value_safe('batch_size', 100000, kwargs))
         return background_helper.create_job(username=username,
                                             action=cls.__action__,
                                             params=params)

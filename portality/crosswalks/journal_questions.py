@@ -336,7 +336,7 @@ class Journal2QuestionXwalk(object):
                     # Only update if the value is changed (apply the reverse transformation to get the form value back)
                     current_val = forminfo.get(form_key)
                     update_val = csv2formval(form_key, v)
-                    if current_val != update_val:
+                    if str(current_val) != str(update_val):
                         updates.append('Updating {0}, from "{1}" to "{2}"'.format(form_key, current_val, update_val))
                         forminfo[form_key] = update_val
 

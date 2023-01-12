@@ -278,6 +278,16 @@ $.extend(true, doaj, {
             return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
         },
 
+        displayYearMonthPeriod : function(params) {
+            var from = params.from;
+            var to = params.to;
+            var field = params.field;
+
+            let d = new Date(parseInt(from))
+            let display = d.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(d.getUTCMonth() + 1);
+            return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
+        },
+
         schemaCodeToNameClosure : function(tree) {
             var nameMap = {};
             function recurse(ctx) {
@@ -304,6 +314,10 @@ $.extend(true, doaj, {
         countFormat : edges.numFormat({
             thousandsSeparator: ","
         }),
+
+        monthPadding: edges.numFormat({
+            zeroPadding: 2
+        })
     },
 
     components : {
@@ -1279,8 +1293,7 @@ $.extend(true, doaj, {
                 if (this.component.embedSnippet) {
                     var embedClass = edges.css_classes(this.namespace, "embed", this);
                     embed = '<p>Embed this search in your site</p>\
-                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>\
-                    <p><button class="button button--tertiary" data-dismiss="modal" class="modal__close">Close</button></p>';
+                    <textarea style="width: 100%; height: 150px" readonly class="' + embedClass + '"></textarea>';
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
@@ -1294,8 +1307,11 @@ $.extend(true, doaj, {
 
                 var modal = '<section class="modal" id="' + modalId + '" tabindex="-1" role="dialog">\
                     <div class="modal__dialog" role="document">\
-                        <form class="quick-search__form" role="search">\
-                            <h2 class="modal__title">' + this.shareLinkText + '</h2>\
+                        <form role="search">\
+                            <header class="flex-space-between modal__heading"> \
+                                <h2 class="modal__title">' + this.shareLinkText + '</h2>\
+                              <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>\
+                            </header>\
                             ' + shareFrag + '\
                         </form>\
                     </div>\
@@ -2547,7 +2563,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                    subjects = "<li>" + resultobj.index.classification_paths.join("</li><li>") + "</li>";
+                  subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                  subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                  subjects += '</ul>';
                 }
 
                 var update_or_added = "";
@@ -2646,6 +2664,20 @@ $.extend(true, doaj, {
                 }
 
 
+                let externalLink = "";
+                if (resultobj.bibjson.ref && resultobj.bibjson.ref.journal) {
+                    externalLink = '<li><a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website ';
+
+                    if (this.widget){
+                        externalLink += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
+                    }
+                    else {
+                        externalLink += '<i data-feather="external-link" aria-hidden="true"></i>'
+                    }
+
+                    externalLink += '</a></li>';
+                }
+
                 frag +='</sup>\
                             </a>\
                             ' + subtitle + '\
@@ -2658,9 +2690,7 @@ $.extend(true, doaj, {
                             </li>\
                             ' + language + '\
                           </ul>\
-                          <ul>\
-                            ' + subjects + '\
-                          </ul>\
+                          ' + subjects + '\
                         </div>\
                       </div>\
                       <aside class="col-sm-4 search-results__aside">\
@@ -2670,20 +2700,8 @@ $.extend(true, doaj, {
                             ' + update_or_added + '\
                           </li>\
                           ' + articles + '\
-                          <li>\
-                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website '
-
-                if (this.widget){
-                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
-                }
-                else {
-                    frag += '<i data-feather="external-link" aria-hidden="true"></i>'
-                }
-
-
-
-                frag += '</a></li>\
-                          <li>\
+                          ' + externalLink + '\
+                        <li>\
                             ' + apcs + '\
                           </li>\
                           <li>\
@@ -2741,8 +2759,8 @@ $.extend(true, doaj, {
 
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                    subjects = '<h4>Journal subjects</h4><ul>';
-                    subjects += "<li>" + resultobj.index.classification_paths.join("<br>") + "</li>";
+                    subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                    subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
                     subjects += '</ul>';
                 }
 
@@ -2908,8 +2926,11 @@ $.extend(true, doaj, {
 
                     frag += '<section class="modal in" id="modal-delete-application" tabindex="-1" role="dialog" style="display: none;"> \
                         <div class="modal__dialog" role="document">\
-                            <h2 class="modal__title">Delete this application</h2>\
-                            <p>Are you sure you want to delete your application for <span class="' + deleteTitleClass + '"></span></p> \
+                            <header class="flex-space-between modal__heading"> \
+                                <h2 class="modal__title">Delete this application</h2>\
+                              <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>\
+                            </header>\
+                            <p>Are you sure you want to delete your application for <strong><span class="' + deleteTitleClass + '"></span></strong>?</p> \
                             <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--tertiary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
@@ -3097,8 +3118,11 @@ $.extend(true, doaj, {
 
                     frag += '<section class="modal in" id="modal-delete-update-request" tabindex="-1" role="dialog" style="display: none;"> \
                         <div class="modal__dialog" role="document">\
-                            <h2 class="modal__title">Delete this update request</h2>\
-                            <p>Are you sure you want to delete your update request for <span class="' + deleteTitleClass + '"></span></p> \
+                            <header class="flex-space-between modal__heading">\
+                              <h2 class="modal__title">Delete this update request</h2>\
+                              <span type="button" data-dismiss="modal" class="type-01"><span class="sr-only">Close</span>&times;</span>\
+                            </header>\
+                            <p>Are you sure you want to delete your update request for <strong><span class="' + deleteTitleClass + '"></span></strong>?</p> \
                             <a href="#" class="button button--primary ' + deleteLinkClass + '" role="button">Yes, delete it</a> <button class="button button--tertiary" data-dismiss="modal" class="modal__close">No</button>\
                         </div>\
                     </section>';
@@ -3279,7 +3303,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                    subjects = "<li>" + resultobj.index.classification_paths.join("</li><li>") + "</li>";
+                  subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                  subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                  subjects += '</ul>';
                 }
 
                 var update_or_added = "";
@@ -3835,7 +3861,7 @@ $.extend(true, doaj, {
     },
 
     bulk : {
-        applicationMultiFormBox : function(edge_instance) {
+        applicationMultiFormBox : function(edge_instance, doaj_type) {
             return doaj.multiFormBox.newMultiFormBox({
                 edge : edge_instance,
                 selector: "#admin-bulk-box",
@@ -3891,9 +3917,9 @@ $.extend(true, doaj, {
                     }
                 },
                 urls : {
-                    note : "/admin/applications/bulk/add_note",
-                    editor_group : "/admin/applications/bulk/assign_editor_group",
-                    application_status : "/admin/applications/bulk/change_status"
+                    note : "/admin/" + doaj_type + "/bulk/add_note",
+                    editor_group : "/admin/" + doaj_type + "/bulk/assign_editor_group",
+                    application_status : "/admin/" + doaj_type + "/bulk/change_status"
                 }
             });
         }

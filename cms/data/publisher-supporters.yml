@@ -33,9 +33,6 @@
 - name: Korea Health Personnel Licensing Examination Institute (Journal of Educational Evaluation for Health Professions)
   url: https://jeehp.org/
 
-- name: KeAi
-  url: https://www.keaipublishing.com/en/
-
 - name: Ontario International Development Agency
   url: https://www.ontariointernational.org/
 
@@ -50,9 +47,9 @@
 
 - name: Springer Nature
   url: https://www.springernature.com/gp
-  
+
 - name: Verduci Editore
   url: https://www.verduci.it/en/
-  
+
 - name: Wiley
   url: https://www.wiley.com/en-us

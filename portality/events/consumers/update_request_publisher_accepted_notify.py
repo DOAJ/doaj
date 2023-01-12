@@ -1,4 +1,4 @@
-# from flask import url_for
+# ~~UpdateRequestPublisherAcceptedNotify:Consumer~~
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -54,6 +54,7 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
         if not application.owner:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()

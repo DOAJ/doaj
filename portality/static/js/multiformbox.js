@@ -187,7 +187,7 @@ $.extend(true, doaj, {
                     } else if ("articles" in data.affected) {
                         mfrg = data.affected.articles + " articles";
                     } else if ("applications" in data.affected) {
-                        mfrg = data.affected.applications + " applications";
+                        mfrg = data.affected.applications + " records";
                     } else {
                         mfrg = "an unknown number of records";
                     }

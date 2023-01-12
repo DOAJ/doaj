@@ -17,6 +17,7 @@ from portality.lcc import lcc_jstree
 from portality.lib import plausible
 from portality.ui.messages import Messages
 
+# ~~DOAJ:Blueprint~~
 blueprint = Blueprint('doaj', __name__)
 
 
@@ -342,6 +343,7 @@ def toc(identifier=None, volume=None, issue=None):
                            toc_issns=journal.bibjson().issns())
 
 
+#~~->Article:Page~~
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
     # identifier must be the article id
@@ -616,7 +618,7 @@ def old_faq():
 
 @blueprint.route("/publishers")
 def publishers():
-    return render_template("layouts/static_page.html")
+    return redirect(url_for("doaj.guide", **request.args), code=308)
 
 
 # Redirects necessitated by new templates

@@ -31,8 +31,7 @@ def submit_by_bg_task_type(background_task: Type[BackgroundTask], **prepare_kwar
     background_task.submit(job)
 
 
-def execute_by_job_id(job_id,
-                      task_factory: Callable[[models.BackgroundJob], BackgroundTask]):
+def execute_by_job_id(job_id, task_factory: TaskFactory):
     """ Common way to execute BackgroundTask by job_id
     """
     job = models.BackgroundJob.pull(job_id)
@@ -52,6 +51,8 @@ def execute_by_bg_task_type(bg_task_type: Type[BackgroundTask], **prepare_kwargs
 
 
 def get_value_safe(key, default_v, kwargs, default_cond_fn=None):
+    """ get value from kwargs and return default_v if condition  match
+    """
     v = kwargs.get(key, default_v)
     default_cond_fn = default_cond_fn or (lambda _v: _v is None)
     if default_cond_fn(v):
@@ -60,7 +61,7 @@ def get_value_safe(key, default_v, kwargs, default_cond_fn=None):
 
 
 def submit_by_background_job(background_job, execute_fn):
-    """ Common way of BackgroundTask.submit
+    """ Common way of `BackgroundTask.submit`
     """
     background_job.save()
     execute_fn.schedule(args=(background_job.id,), delay=10)

@@ -9,7 +9,7 @@ cd /home/cloo/doaj-static/src/doaj
 
 # Install DOAJ submodules and requirements
 git submodule update --init --recursive
-pip install -r requirements.txt
+pip install -e .
 
 # Get the static test secrets configuration secrets from AWS
 aws --profile doaj-test secretsmanager get-secret-value --secret-id doaj/static-credentials | cut -f4 | base64 -d > app.cfg
