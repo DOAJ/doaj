@@ -76,46 +76,42 @@
 
 <section>
     {% if todos|length == 0 %}
-    <div class="flex-center">
-      <p class="card col-md-6">
-          <span class="type-03">
+        <div class="flex-center">
+          <p class="card col-md-6">
+              <span class="type-03">
 
-              {% if current_user.has_role("admin") %}
-                {% set source = search_query_source(
-                    term=[
-                        {"admin.editor.exact" : current_user.id},
-                        {"index.application_type.exact" : "new application"}
-                    ],
-                    sort=[{"admin.date_applied": {"order": "asc"}}]
-                 )
-                %}
-                All priority tasks have been done. Check your <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">queue</a> for more open applications
-              {% elif current_user.has_role("editor") %}
-                  {% set source = search_query_source(
-                    term=[
-                        {"index.application_type.exact" : "new application"}
-                    ],
-                    sort=[{"admin.date_applied": {"order": "asc"}}]
-                 )
-                  %}
-                  All priority tasks have been done. Check your <a href="{{ url_for('editor.group_suggestions') }}?source={{ source }}">queue</a> for more open applications. If you need more applications to be assigned to your group, contact your Managing Editor.
-              {% elif current_user.has_role("associate_editor") %}
-                  {% set source = search_query_source(
-                    term=[
-                        {"index.application_type.exact" : "new application"}
-                    ],
-                    sort=[{"admin.date_applied": {"order": "asc"}}]
-                 )
-                  %}
-                  All priority tasks have been done. Check your <a href="{{ url_for('editor.associate_suggestions') }}?source={{ source }}">queue</a> for more open applications. If you need more to be assigned to you, contact your Editor or Managing Editor.
-              {% endif %}
-          </span>
-      </p>
-    </div>
-    {% else %}
-    <h2 class="type-04">
-      You have <strong>{{ todos|length }}{% if todos|length >= config.get("TODO_LIST_SIZE")%}+{% endif %}</strong> applications in your priority list:
-    </h2>
+                  {% if current_user.has_role("admin") %}
+                    {% set source = search_query_source(
+                        term=[
+                            {"admin.editor.exact" : current_user.id},
+                            {"index.application_type.exact" : "new application"}
+                        ],
+                        sort=[{"admin.date_applied": {"order": "asc"}}]
+                     )
+                    %}
+                    All priority tasks have been done. Check your <a href="{{ url_for('admin.suggestions') }}?source={{ source }}">queue</a> for more open applications
+                  {% elif current_user.has_role("editor") %}
+                      {% set source = search_query_source(
+                        term=[
+                            {"index.application_type.exact" : "new application"}
+                        ],
+                        sort=[{"admin.date_applied": {"order": "asc"}}]
+                     )
+                      %}
+                      All priority tasks have been done. Check your <a href="{{ url_for('editor.group_suggestions') }}?source={{ source }}">queue</a> for more open applications. If you need more applications to be assigned to your group, contact your Managing Editor.
+                  {% elif current_user.has_role("associate_editor") %}
+                      {% set source = search_query_source(
+                        term=[
+                            {"index.application_type.exact" : "new application"}
+                        ],
+                        sort=[{"admin.date_applied": {"order": "asc"}}]
+                     )
+                      %}
+                      All priority tasks have been done. Check your <a href="{{ url_for('editor.associate_suggestions') }}?source={{ source }}">queue</a> for more open applications. If you need more to be assigned to you, contact your Editor or Managing Editor.
+                  {% endif %}
+              </span>
+          </p>
+        </div>
     {% endif %}
     <ol class="todo-list">
       {% for todo in todos %}
