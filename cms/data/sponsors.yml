@@ -12,9 +12,6 @@ gold:
 
 
 silver:
-- name: American Chemical Society
-  url: https://pubs.acs.org/
-  logo: ACS.jpg
 
 - name: American Psychological Association
   url: https://www.apa.org/pubs
@@ -74,6 +71,10 @@ silver:
 
 
 bronze:
+- name: American Chemical Society
+  url: https://pubs.acs.org/
+  logo: ACS.jpg
+  
 - name: ARPHA Publishing Platform
   url: https://arphahub.com/
   logo: arpha.png
@@ -150,6 +151,4 @@ bronze:
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg  
   
-- name: Springer-Nature
-  url: https://scifree.se/
-  logo: Springer.png
+
