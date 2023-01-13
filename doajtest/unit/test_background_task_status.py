@@ -1,5 +1,4 @@
 import json
-import time
 
 from doajtest.fixtures.background import save_mock_bgjob
 from doajtest.helpers import DoajTestCase, apply_test_case_config, patch_config
@@ -103,8 +102,6 @@ class TestBackgroundTaskStatus(DoajTestCase):
                         queue_type=constants.BGJOB_QUEUE_TYPE_MAIN,
                         status=constants.BGJOB_STATUS_COMPLETE, )
 
-        time.sleep(2)
-
         status_dict = background_task_status.create_background_status()
 
         assert not is_stable(status_dict['status'])
@@ -116,8 +113,6 @@ class TestBackgroundTaskStatus(DoajTestCase):
         save_mock_bgjob(AnonExportBackgroundTask.__action__,
                         queue_type=constants.BGJOB_QUEUE_TYPE_LONG,
                         status=constants.BGJOB_STATUS_COMPLETE, )
-
-        time.sleep(2)
 
         status_dict = background_task_status.create_background_status()
 
@@ -133,8 +128,6 @@ class TestBackgroundTaskStatus(DoajTestCase):
         save_mock_bgjob(AnonExportBackgroundTask.__action__,
                         queue_type=constants.BGJOB_QUEUE_TYPE_LONG,
                         status=constants.BGJOB_STATUS_COMPLETE, )
-
-        time.sleep(2)
 
         status_dict = background_task_status.create_background_status()
 
@@ -152,8 +145,6 @@ class TestBackgroundTaskStatus(DoajTestCase):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_ERROR, )
 
-        time.sleep(2)
-
         status_dict = background_task_status.create_background_status()
 
         journal_csv_dict = status_dict['queues']['main_queue']['errors'].get(JournalCSVBackgroundTask.__action__, {})
@@ -165,8 +156,6 @@ class TestBackgroundTaskStatus(DoajTestCase):
     def test_create_background_status__error_in_period_found(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_ERROR, )
-
-        time.sleep(2)
 
         status_dict = background_task_status.create_background_status()
 
@@ -182,8 +171,6 @@ class TestBackgroundTaskStatus(DoajTestCase):
                         status=constants.BGJOB_STATUS_ERROR,
                         created_before_sec=1000000000)
 
-        time.sleep(2)
-
         status_dict = background_task_status.create_background_status()
 
         journal_csv_dict = status_dict['queues']['main_queue']['errors'].get(JournalCSVBackgroundTask.__action__, {})
@@ -197,7 +184,6 @@ class TestBackgroundTaskStatus(DoajTestCase):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_QUEUED, )
 
-        time.sleep(2)
         status_dict = background_task_status.create_background_status()
 
         journal_csv_dict = status_dict['queues']['main_queue']['queued'].get(JournalCSVBackgroundTask.__action__, {})
@@ -211,7 +197,6 @@ class TestBackgroundTaskStatus(DoajTestCase):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_COMPLETE, )
 
-        time.sleep(2)
         status_dict = background_task_status.create_background_status()
 
         journal_csv_dict = status_dict['queues']['main_queue']['queued'].get(JournalCSVBackgroundTask.__action__, {})
@@ -226,7 +211,6 @@ class TestBackgroundTaskStatus(DoajTestCase):
                         status=constants.BGJOB_STATUS_QUEUED,
                         created_before_sec=1000000000)
 
-        time.sleep(2)
         status_dict = background_task_status.create_background_status()
 
         journal_csv_dict = status_dict['queues']['main_queue']['queued'].get(JournalCSVBackgroundTask.__action__, {})
@@ -240,7 +224,6 @@ class TestBackgroundTaskStatus(DoajTestCase):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
                         status=constants.BGJOB_STATUS_QUEUED, )
 
-        time.sleep(2)
         status_dict = background_task_status.create_background_status()
         print(json.dumps(status_dict, indent=4))
 

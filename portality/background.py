@@ -113,7 +113,7 @@ class BackgroundTask(object):
     __action__ = None
     """ static member variable defining the name of this task """
 
-    def __init__(self, background_job):
+    def __init__(self, background_job: models.BackgroundJob):
         self._background_job = background_job
 
     @property

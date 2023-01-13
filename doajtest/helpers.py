@@ -12,7 +12,7 @@ import dictdiffer
 from flask_login import login_user
 
 from portality import core, dao
-from portality.app import app
+from portality.core import app
 from portality.lib import paths
 from portality.tasks.redis_huey import main_queue, long_running
 

@@ -15,6 +15,7 @@ from portality.decorators import write_required
 from portality.tasks.redis_huey import long_running, main_queue, configure, schedule
 
 TaskFactory = Callable[[models.BackgroundJob], BackgroundTask]
+_queue_for_action = None
 
 
 def get_queue_type_by_task_queue(task_queue: RedisHuey):
@@ -121,6 +122,17 @@ def _get_background_task_spec(module):
             return queue_type, task_name, bg_class
 
     return None
+
+
+def lookup_queue_for_action(action):
+    """ Find which queue an action is registered to, by action name """
+    """ Inspect the background tasks to find some useful details. Store in a singleton to reduce work. """
+    global _queue_for_action
+
+    if _queue_for_action is None:
+        _queue_for_action = {_action: _queue for _queue, _action, _class in get_all_background_task_specs()}
+
+    return _queue_for_action.get(action, constants.BGJOB_QUEUE_TYPE_UNKNOWN)
 
 
 def get_all_background_task_specs() -> Iterable[Tuple[str, str, Type]]:

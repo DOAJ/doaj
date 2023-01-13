@@ -69,6 +69,6 @@ def save_mock_bgjob(action=None, status=None, created_before_sec=0, is_save=True
         bgjob.queue_type = queue_type
 
     if is_save:
-        bgjob.save()
+        bgjob.save(blocking=True)
 
     return bgjob
