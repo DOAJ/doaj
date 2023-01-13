@@ -149,3 +149,7 @@ bronze:
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg  
+  
+- name: Springer-Nature
+  url: https://scifree.se/
+  logo: Springer.png
