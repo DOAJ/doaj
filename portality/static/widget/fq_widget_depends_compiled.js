@@ -4545,7 +4545,7 @@ $.extend(true, doaj, {
                 for (var i = 0; i < ctx.length; i++) {
                     var child = ctx[i];
                     var entry = {};
-                    nameMap[doaj.subjects_schema + child.id] = child.text;
+                    nameMap["LCC:" + child.id] = child.text;
                     if (child.children && child.children.length > 0) {
                         recurse(child.children);
                     }
@@ -4583,7 +4583,7 @@ $.extend(true, doaj, {
                             var child = ctx[i];
                             var entry = {};
                             entry.display = child.text;
-                            entry.value = doaj.subjects_schema + child.id;
+                            entry.value = "LCC:" + child.id;
                             if (child.children && child.children.length > 0) {
                                 entry.children = recurse(child.children);
                             }

@@ -1287,7 +1287,3 @@ PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event/"
 # site name / domain name that used to register in plausible
 PLAUSIBLE_SITE_NAME = BASE_DOMAIN
 PLAUSIBLE_LOG_DIR = None
-
-#######################################################
-# Subjects schema
-SUBJECTS_SCHEMA = "LCC:"
