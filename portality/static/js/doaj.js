@@ -138,6 +138,8 @@ var doaj = {
         });
     },
 
+    subjects_schema : "LCC:",
+
     monthmap : [
         "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"
     ],

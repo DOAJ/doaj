@@ -47,10 +47,7 @@ JOURNAL_STRUCT = {
                 "publisher_ac": {"coerce": "unicode"},
                 "institution_ac": {"coerce": "unicode"},
 
-            },
-            "lists": {
-                "schema_subject_tree": {"contains": "object"}
-            },
+            }
         }
     }
 }
@@ -58,6 +55,7 @@ JOURNAL_STRUCT = {
 
 class ContinuationException(Exception):
     pass
+
 
 
 class JournalLikeObject(SeamlessMixin, DomainObject):
