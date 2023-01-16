@@ -45,8 +45,7 @@ JOURNAL_STRUCT = {
         "index": {
             "fields": {
                 "publisher_ac": {"coerce": "unicode"},
-                "institution_ac": {"coerce": "unicode"},
-
+                "institution_ac": {"coerce": "unicode"}
             }
         }
     }
@@ -55,7 +54,6 @@ JOURNAL_STRUCT = {
 
 class ContinuationException(Exception):
     pass
-
 
 
 class JournalLikeObject(SeamlessMixin, DomainObject):
@@ -511,7 +509,7 @@ class Journal(JournalLikeObject):
             bib["pid_scheme"] = {"has_pid_scheme": False}
         if "preservation" in bib and bib["preservation"] != '':
             bib["preservation"]["has_preservation"] = (len(bib["preservation"]) != 0 or
-                                                       bib["national_library"] is not None)
+                                                    bib["national_library"] is not None)
         else:
             bib["preservation"] = {"has_preservation": True}
 
