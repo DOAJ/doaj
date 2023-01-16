@@ -115,11 +115,11 @@ class BackgroundTask(object):
     __action__ = None
     """ static member variable defining the name of this task """
 
-    def __init__(self, background_job: BackgroundJob):
+    def __init__(self, background_job: 'BackgroundJob'):
         self._background_job = background_job
 
     @property
-    def background_job(self) -> BackgroundJob:
+    def background_job(self) -> 'BackgroundJob':
         return self._background_job
 
     def run(self):
