@@ -1,20 +1,20 @@
+import ftplib
+import os
 import re
+import requests
+import shutil
+import traceback
+from urllib.parse import urlparse
 
 from portality import models
+from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
+from portality.bll import DOAJ
+from portality.bll.exceptions import IngestException, DuplicateArticleException, ArticleNotAcceptable
 from portality.core import app
 from portality.crosswalks.exceptions import CrosswalkException
-
-from portality.tasks.redis_huey import main_queue, configure
 from portality.decorators import write_required
-
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
-from portality.bll.exceptions import IngestException, DuplicateArticleException, ArticleNotAcceptable
-from portality.bll import DOAJ
-
 from portality.lib import plugin
-
-import ftplib, os, requests, traceback, shutil
-from urllib.parse import urlparse
+from portality.tasks.redis_huey import main_queue, configure
 
 DEFAULT_MAX_REMOTE_SIZE = 262144000
 CHUNK_SIZE = 1048576
@@ -206,6 +206,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 if self._download(file_upload) is False:
                     # TODO: add 'outcome' error here
                     job.add_audit_message("File download failed".format(x=file_upload_id, y=job.id))
+                    job.outcome_fail()
 
             # if the file is validated, which will happen if it has been uploaded, or downloaded successfully, process it.
             if file_upload.status == "validated":
@@ -313,6 +314,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except (IngestException, CrosswalkException) as e:
             job.add_audit_message("IngestException: {msg}. Inner message: {inner}.  Stack: {x}"
                                   .format(msg=e.message, inner=e.inner_message, x=e.trace()))
+            job.outcome_fail()
             file_upload.failed(e.message, e.inner_message)
             result = e.result
             try:
@@ -323,6 +325,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                                       .format(x=traceback.format_exc()))
         except (DuplicateArticleException, ArticleNotAcceptable) as e:
             job.add_audit_message(str(e))
+            job.outcome_fail()
             file_upload.failed(str(e))
             try:
                 file_failed(path)
@@ -332,6 +335,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 return
         except Exception as e:
             job.add_audit_message("Unanticipated error: {x}".format(x=traceback.format_exc()))
+            job.outcome_fail()
             file_upload.failed("Unanticipated error when importing articles")
             try:
                 file_failed(path)
@@ -351,6 +355,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         if success == 0 and fail > 0 and not ingest_exception:
             file_upload.failed("All articles in file failed to import")
             job.add_audit_message("All articles in file failed to import")
+            job.outcome_fail()
         if success > 0 and fail == 0:
             file_upload.processed(success, update, new)
         if success > 0 and fail > 0:

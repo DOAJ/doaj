@@ -1,5 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.bll_article import BLLArticleMockFactory
+from portality.models.background import OutcomeStatus
 
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_crossref import Crossref531ArticleFixtureFactory
@@ -19,7 +20,7 @@ from portality.bll.services import article as articleSvc
 from portality import models
 from portality.core import app
 
-from portality.background import BackgroundException
+from portality.background import BackgroundException, BackgroundTask
 
 import ftplib, os, requests
 from urllib.parse import urlparse
@@ -29,6 +30,10 @@ from portality.ui.messages import Messages
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
 ARTICLES = os.path.join(RESOURCES, "crossref531_article_uploads.xml")
+
+
+def assert_outcome_fail_by_task(task: BackgroundTask):
+    assert task.background_job.outcome_status == OutcomeStatus.Fail.value
 
 
 class TestIngestArticlesCrossref531XML(DoajTestCase):
@@ -691,6 +696,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is not None and file_upload.error_details != ""
         assert list(file_upload.failure_reasons.keys()) == []
+        assert_outcome_fail_by_task(task)
 
     def test_25_process_filesystem_error(self):
 
@@ -726,6 +732,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is None
         assert list(file_upload.failure_reasons.keys()) == []
+        assert_outcome_fail_by_task(task)
 
     def test_26_run_validated(self):
         etree.XMLSchema = self.mock_load_schema
@@ -948,3 +955,4 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
 
         assert file_upload.status == "failed"
         assert file_upload.error == Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL
+        assert_outcome_fail_by_task(task)

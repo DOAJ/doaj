@@ -1,4 +1,7 @@
 from typing import Iterable
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from portality.models import BackgroundJob
 
 from flask_login import login_user
 
@@ -112,11 +115,11 @@ class BackgroundTask(object):
     __action__ = None
     """ static member variable defining the name of this task """
 
-    def __init__(self, background_job):
+    def __init__(self, background_job: BackgroundJob):
         self._background_job = background_job
 
     @property
-    def background_job(self):
+    def background_job(self) -> BackgroundJob:
         return self._background_job
 
     def run(self):
