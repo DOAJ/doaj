@@ -49,7 +49,6 @@ class OAIPMHRecord(object):
         "size": 25
     }
 
-    set_limit = {"term" : { "index.schema_subject.exact" : "<set name>" }}
     range_limit = { "range" : { "last_updated" : {"gte" : "<from date>", "lte" : "<until date>"} } }
     created_sort = [{"last_updated" : {"order" : "desc"}}, {"id.exact" : "desc"}]
 
@@ -71,9 +70,8 @@ class OAIPMHRecord(object):
         if start_after is not None or from_date is not None or until_date is not None or oai_set is not None:
 
             if oai_set is not None:
-                s = deepcopy(self.set_limit)
-                s["term"]["index.schema_subject.exact"] = oai_set
-                q["query"]["bool"]["must"].append(s)
+                a = oai_set.replace("LCC:","")
+                q["query"]["bool"]["should"] = {"match":{"index.classification": a}}
 
             if until_date is not None or from_date is not None or start_after is not None:
                 d = deepcopy(self.range_limit)
