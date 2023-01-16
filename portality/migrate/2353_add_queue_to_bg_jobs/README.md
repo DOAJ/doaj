@@ -1,6 +1,6 @@
 **S.E. 2023-01-13**
 
-Add the background job queue type to the existing background job records in the index.
+Add the background job queue ID to the existing background job records in the index.
 https://github.com/DOAJ/doajPM/issues/2353
 
 

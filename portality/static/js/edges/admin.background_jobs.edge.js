@@ -101,7 +101,7 @@ $.extend(true, doaj, {
 
                     result += firstRow + '<br>';
                     result += 'Job ID: ' + resultobj.id + '<br>';
-                    result += 'Queue type: ' + resultobj.queue_id + '<br>';
+                    result += 'On Queue: ' + resultobj.queue_id + '<br>';
                     result += dateRow + '<br>';
 
                     result += '<a href="#" data-id="' + resultobj.id + '" class="' + toggleClass + '">More Information</a><br>';
