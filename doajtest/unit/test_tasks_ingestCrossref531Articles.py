@@ -27,9 +27,9 @@ from lxml import etree
 
 from portality.ui.messages import Messages
 
-
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
 ARTICLES = os.path.join(RESOURCES, "crossref531_article_uploads.xml")
+
 
 class TestIngestArticlesCrossref531XML(DoajTestCase):
 
@@ -328,7 +328,8 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
 
         previous = []
 
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="crossref531", previous=previous)
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="crossref531",
+                                                                  previous=previous)
 
         assert job is not None
         assert "ingest_articles__file_upload_id" in job.params
@@ -374,7 +375,8 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         # upload dir not configured
         del app.config["UPLOAD_DIR"]
         with self.assertRaises(BackgroundException):
-            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url="http://whatever", schema="doaj", previous=[])
+            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url="http://whatever", schema="doaj",
+                                                                      previous=[])
 
     def test_13_ftp_upload_success(self):
 
@@ -388,7 +390,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
 
-        url= "ftp://upload"
+        url = "ftp://upload"
         parsed_url = urlparse(url)
 
         job = models.BackgroundJob()
@@ -431,7 +433,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         requests.head = ResponseMockFactory.head_fail
         requests.get = ResponseMockFactory.crossref531_get_success
 
-        url= "http://upload"
+        url = "http://upload"
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -679,7 +681,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
 
         stream = Crossref531ArticleFixtureFactory.invalid_schema_xml()
         with open(path, "w") as f:
-           f.write(stream.read())
+            f.write(stream.read())
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
@@ -899,7 +901,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1
         abib = found[0].bibjson()
-        assert len(abib.author)  == 2
+        assert len(abib.author) == 2
         assert abib.author[0]["affiliation"] == "Cottage Labs University"
 
     def test_30_journal_not_indoaj(self):
