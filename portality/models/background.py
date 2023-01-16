@@ -61,12 +61,12 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         self._set_with_struct("action", val)
 
     @property
-    def queue_type(self):
-        return self._get_single("queue_type")
+    def queue_id(self):
+        return self._get_single("queue_id")
 
-    @queue_type.setter
-    def queue_type(self, val):
-        self._set_with_struct("queue_type", val)
+    @queue_id.setter
+    def queue_id(self, val):
+        self._set_with_struct("queue_id", val)
 
     @property
     def audit(self):
@@ -155,8 +155,7 @@ BACKGROUND_STRUCT = {
         "user": {"coerce": "unicode"},
         "action": {"coerce": "unicode"},
         "queue_id": {"coerce": "unicode"},
-        "es_type": {"coerce": "unicode"},
-        "queue_type": {"coerce": "unicode"},
+        "es_type": {"coerce": "unicode"}
     },
     "lists": {
         "audit": {"contains": "object"}
@@ -240,8 +239,8 @@ class BackgroundJobQueryBuilder:
         self.append_must({"term": {"action.exact": action}})
         return self
 
-    def queue_type(self, queue_type):
-        self.append_must({"term": {"queue_type.exact": queue_type}})
+    def queue_id(self, queue_id):
+        self.append_must({"term": {"queue_id.exact": queue_id}})
         return self
 
     def status_includes(self, status):
@@ -292,12 +291,12 @@ class SimpleBgjobQueue:
 
 
 class LastCompletedJobQuery:
-    def __init__(self, queue_type):
-        self.queue_type = queue_type
+    def __init__(self, queue_id):
+        self.queue_id = queue_id
 
     def query(self):
         return (BackgroundJobQueryBuilder()
-                .queue_type(self.queue_type)
+                .queue_id(self.queue_id)
                 .order_by('last_updated', 'desc')
                 .size(1)
                 .build_query_dict())

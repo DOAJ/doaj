@@ -99,10 +99,10 @@ $.extend(true, doaj, {
                     // start the main box that all the details go in
                     result += "<div class='row-fluid'><div class='span12'>";
 
-                    result += firstRow + "<br>";
-                    result += "Job ID: " + resultobj.id + "<br>";
-                    result += "Queue type: " + resultobj.queue_type + "<br>";
-                    result += dateRow + "<br>";
+                    result += firstRow + '<br>';
+                    result += 'Job ID: ' + resultobj.id + '<br>';
+                    result += 'Queue type: ' + resultobj.queue_id + '<br>';
+                    result += dateRow + '<br>';
 
                     result += '<a href="#" data-id="' + resultobj.id + '" class="' + toggleClass + '">More Information</a><br>';
                     result += expandBlock;
@@ -188,10 +188,10 @@ $.extend(true, doaj, {
                     })
                 }),
                 edges.newRefiningANDTermSelector({
-                    id: "queue_type",
+                    id: "queue_id",
                     category: "facet",
-                    field: "queue_type.exact",
-                    display: "Queue Type",
+                    field: "queue_id.exact",
+                    display: "On Queue",
                     deactivateThreshold : 1,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
@@ -259,7 +259,7 @@ $.extend(true, doaj, {
                         'action.exact': 'Action',
                         'user.exact' : 'Submitted By',
                         'status.exact' : 'Status',
-                        'queue_type.exact' : 'Queue Type',
+                        'queue_id.exact' : 'On Queue',
                     }
                 })
             ];

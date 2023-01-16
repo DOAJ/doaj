@@ -278,5 +278,5 @@ class TestArticleCleanupSync(DoajTestCase):
         best = task._get_best_journal([j3, j4])
         assert best.id == j3.id
 
-    def test_prepare__queue_type(self):
-        bgtask_tester.test_queue_type_assigned(article_cleanup_sync.ArticleCleanupSyncBackgroundTask)
+    def test_prepare__queue_id(self):
+        bgtask_tester.test_queue_id_assigned(article_cleanup_sync.ArticleCleanupSyncBackgroundTask)

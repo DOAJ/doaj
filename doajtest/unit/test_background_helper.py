@@ -11,17 +11,17 @@ from portality.tasks.redis_huey import long_running, main_queue
 
 class TestBackgroundHelper(TestCase):
 
-    def test_get_queue_type_by_task_queue(self):
+    def test_get_queue_id_by_task_queue(self):
         cases = [
-            (long_running, constants.BGJOB_QUEUE_TYPE_LONG),
-            (main_queue, constants.BGJOB_QUEUE_TYPE_MAIN),
-            (None, constants.BGJOB_QUEUE_TYPE_UNKNOWN),
+            (long_running, constants.BGJOB_QUEUE_ID_LONG),
+            (main_queue, constants.BGJOB_QUEUE_ID_MAIN),
+            (None, constants.BGJOB_QUEUE_ID_UNKNOWN),
         ]
 
         for case in cases:
             with self.subTest(case=case):
                 task_queue, excepted = case
-                result = background_helper.get_queue_type_by_task_queue(task_queue)
+                result = background_helper.get_queue_id_by_task_queue(task_queue)
                 assert excepted == result
 
 

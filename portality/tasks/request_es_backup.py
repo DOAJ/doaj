@@ -61,7 +61,7 @@ class RequestESBackupBackgroundTask(BackgroundTask):
 
         # first prepare a job record
         job = background_helper.create_job(username, cls.__action__,
-                                           queue_type=huey_helper.queue_type, )
+                                           queue_id=huey_helper.queue_id, )
         return job
 
     @classmethod

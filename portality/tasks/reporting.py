@@ -393,7 +393,7 @@ class ReportingBackgroundTask(BackgroundTask):
         cls.set_param(params, "to", kwargs.get("to_date", dates.now()))
         cls.set_param(params, "email", kwargs.get("email", False))
         job = background_helper.create_job(username, cls.__action__,
-                                           queue_type=huey_helper.queue_type,
+                                           queue_id=huey_helper.queue_id,
                                            params=params)
 
         return job

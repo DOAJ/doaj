@@ -74,11 +74,11 @@ BGJOB_STATUS_QUEUED = 'queued'
 BGJOB_STATUS_ERROR = 'error'
 BGJOB_STATUS_COMPLETE = 'complete'
 
-# BackgroundJob.queue_type
+# BackgroundJob.queue_id
 # ~~->BackgroundTasks:Feature~~
-BGJOB_QUEUE_TYPE_LONG = 'long_running'
-BGJOB_QUEUE_TYPE_MAIN = 'main_queue'
-BGJOB_QUEUE_TYPE_UNKNOWN = 'unknown'
+BGJOB_QUEUE_ID_LONG = 'long_running'
+BGJOB_QUEUE_ID_MAIN = 'main_queue'
+BGJOB_QUEUE_ID_UNKNOWN = 'unknown'
 
 # Background monitor status
 BG_STATUS_STABLE = 'stable'

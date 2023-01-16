@@ -199,7 +199,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         job = background_helper.create_job(username=username,
                                            action=cls.__action__,
                                            params=params,
-                                           queue_type=huey_helper.queue_type, )
+                                           queue_id=huey_helper.queue_id, )
         if prepall:
             job.add_audit_message("'prepall' arg set. 'unchanged' articles will also have their indexes refreshed.")
         return job

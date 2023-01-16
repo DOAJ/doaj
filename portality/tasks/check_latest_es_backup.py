@@ -51,7 +51,7 @@ class CheckLatestESBackupBackgroundTask(BackgroundTask):
         """
 
         # first prepare a job record
-        return background_helper.create_job(username, cls.__action__, queue_type=huey_helper.queue_type)
+        return background_helper.create_job(username, cls.__action__, queue_id=huey_helper.queue_id)
 
     @classmethod
     def submit(cls, background_job):

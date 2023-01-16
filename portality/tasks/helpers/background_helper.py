@@ -18,20 +18,20 @@ TaskFactory = Callable[[models.BackgroundJob], BackgroundTask]
 _queue_for_action = None
 
 
-def get_queue_type_by_task_queue(task_queue: RedisHuey):
+def get_queue_id_by_task_queue(task_queue: RedisHuey):
     if task_queue is None:
-        return constants.BGJOB_QUEUE_TYPE_UNKNOWN
+        return constants.BGJOB_QUEUE_ID_UNKNOWN
     elif task_queue.name == long_running.name:
-        return constants.BGJOB_QUEUE_TYPE_LONG
+        return constants.BGJOB_QUEUE_ID_LONG
     elif task_queue.name == main_queue.name:
-        return constants.BGJOB_QUEUE_TYPE_MAIN
+        return constants.BGJOB_QUEUE_ID_MAIN
     else:
         app.logger.warn(f'unknown task_queue[{task_queue}]')
-        return constants.BGJOB_QUEUE_TYPE_UNKNOWN
+        return constants.BGJOB_QUEUE_ID_UNKNOWN
 
 
 def create_job(username, action,
-               queue_type=constants.BGJOB_QUEUE_TYPE_UNKNOWN,
+               queue_id=constants.BGJOB_QUEUE_ID_UNKNOWN,
                task_queue: RedisHuey = None,
                params=None):
     """ Common way to create BackgroundJob
@@ -43,8 +43,8 @@ def create_job(username, action,
         job.params = params
 
     if task_queue is not None:
-        queue_type = get_queue_type_by_task_queue(task_queue)
-    job.queue_type = queue_type
+        queue_id = get_queue_id_by_task_queue(task_queue)
+    job.queue_id = queue_id
     return job
 
 
@@ -81,8 +81,8 @@ class RedisHueyTaskHelper:
         self.task_name = task_name
 
     @property
-    def queue_type(self):
-        return get_queue_type_by_task_queue(self.task_queue)
+    def queue_id(self):
+        return get_queue_id_by_task_queue(self.task_queue)
 
     def register_schedule(self, fn):
         fn = write_required(script=True)(fn)
@@ -104,12 +104,12 @@ class RedisHueyTaskHelper:
 
 
 def _get_background_task_spec(module):
-    queue_type = None
+    queue_id = None
     task_name = None
     bg_class = None
     for n, member in inspect.getmembers(module):
         if isinstance(member, RedisHuey):
-            queue_type = get_queue_type_by_task_queue(member)
+            queue_id = get_queue_id_by_task_queue(member)
         elif (
                 inspect.isclass(member)
                 and issubclass(member, BackgroundTask)
@@ -118,8 +118,8 @@ def _get_background_task_spec(module):
             task_name = getattr(member, '__action__', None)
             bg_class = member
 
-        if queue_type and task_name and bg_class:
-            return queue_type, task_name, bg_class
+        if queue_id and task_name and bg_class:
+            return queue_id, task_name, bg_class
 
     return None
 
@@ -132,7 +132,7 @@ def lookup_queue_for_action(action):
     if _queue_for_action is None:
         _queue_for_action = {_action: _queue for _queue, _action, _class in get_all_background_task_specs()}
 
-    return _queue_for_action.get(action, constants.BGJOB_QUEUE_TYPE_UNKNOWN)
+    return _queue_for_action.get(action, constants.BGJOB_QUEUE_ID_UNKNOWN)
 
 
 def get_all_background_task_specs() -> Iterable[Tuple[str, str, Type]]:

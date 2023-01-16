@@ -99,7 +99,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
     @apply_test_case_config(bg_monitor_last_completed__now)
     def test_create_background_status__invalid_last_completed__main_queue(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        queue_type=constants.BGJOB_QUEUE_TYPE_MAIN,
+                        queue_id=constants.BGJOB_QUEUE_ID_MAIN,
                         status=constants.BGJOB_STATUS_COMPLETE, )
 
         status_dict = background_task_status.create_background_status()
@@ -111,7 +111,7 @@ class TestBackgroundTaskStatus(DoajTestCase):
     @apply_test_case_config(bg_monitor_last_completed__now)
     def test_create_background_status__invalid_last_completed__long_running(self):
         save_mock_bgjob(AnonExportBackgroundTask.__action__,
-                        queue_type=constants.BGJOB_QUEUE_TYPE_LONG,
+                        queue_id=constants.BGJOB_QUEUE_ID_LONG,
                         status=constants.BGJOB_STATUS_COMPLETE, )
 
         status_dict = background_task_status.create_background_status()
@@ -123,10 +123,10 @@ class TestBackgroundTaskStatus(DoajTestCase):
     @apply_test_case_config(bg_monitor_last_completed__a)
     def test_create_background_status__valid_last_completed(self):
         save_mock_bgjob(JournalCSVBackgroundTask.__action__,
-                        queue_type=constants.BGJOB_QUEUE_TYPE_MAIN,
+                        queue_id=constants.BGJOB_QUEUE_ID_MAIN,
                         status=constants.BGJOB_STATUS_COMPLETE, )
         save_mock_bgjob(AnonExportBackgroundTask.__action__,
-                        queue_type=constants.BGJOB_QUEUE_TYPE_LONG,
+                        queue_id=constants.BGJOB_QUEUE_ID_LONG,
                         status=constants.BGJOB_STATUS_COMPLETE, )
 
         status_dict = background_task_status.create_background_status()

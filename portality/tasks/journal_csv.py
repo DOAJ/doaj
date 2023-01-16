@@ -40,7 +40,7 @@ class JournalCSVBackgroundTask(BackgroundTask):
         :return: a BackgroundJob instance representing this task
         """
         # prepare a job record
-        job = background_helper.create_job(username, cls.__action__, queue_type=huey_helper.queue_type)
+        job = background_helper.create_job(username, cls.__action__, queue_id=huey_helper.queue_id)
         return job
 
     @classmethod

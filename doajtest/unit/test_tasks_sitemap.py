@@ -30,5 +30,5 @@ class TestSitemap(DoajTestCase):
         time.sleep(2)
         assert len(self.mainStore.list(self.container_id)) == 1
 
-    def test_prepare__queue_type(self):
-        bgtask_tester.test_queue_type_assigned(sitemap.SitemapBackgroundTask)
+    def test_prepare__queue_id(self):
+        bgtask_tester.test_queue_id_assigned(sitemap.SitemapBackgroundTask)

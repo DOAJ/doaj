@@ -215,7 +215,7 @@ class PreservationBackgroundTask(BackgroundTask):
         params = {}
         cls.set_param(params, "local_dir", local_dir)
         job = background_helper.create_job(username, cls.__action__,
-                                           queue_type=huey_helper.queue_type, params=params)
+                                           queue_id=huey_helper.queue_id, params=params)
         return job
 
     def run(self):

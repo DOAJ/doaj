@@ -118,7 +118,7 @@ class SetInDOAJBackgroundTask(BackgroundTask):
             raise RuntimeError("SetInDOAJBackgroundTask.prepare run without sufficient parameters")
 
         job.params = params
-        job.queue_type = huey_helper.queue_type
+        job.queue_id = huey_helper.queue_id
 
         if "selection_query" in kwargs:
             refs = {}

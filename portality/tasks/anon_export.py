@@ -175,7 +175,7 @@ class AnonExportBackgroundTask(BackgroundTask):
         return background_helper.create_job(username=username,
                                             action=cls.__action__,
                                             params=params,
-                                            queue_type=huey_helper.queue_type, )
+                                            queue_id=huey_helper.queue_id, )
 
     @classmethod
     def submit(cls, background_job):

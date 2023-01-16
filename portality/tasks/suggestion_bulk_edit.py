@@ -183,7 +183,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
             raise BackgroundException("{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
-        job.queue_type = huey_helper.queue_type
+        job.queue_id = huey_helper.queue_id
 
         # now ensure that we have the locks for all the suggestions
         # will raise an exception if this fails

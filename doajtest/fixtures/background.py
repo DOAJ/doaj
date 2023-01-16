@@ -52,7 +52,7 @@ BACKGROUND_JOB = {
 
 
 def save_mock_bgjob(action=None, status=None, created_before_sec=0, is_save=True,
-                    queue_type=None):
+                    queue_id=None):
     bgjob = BackgroundJob()
 
     if action:
@@ -65,8 +65,8 @@ def save_mock_bgjob(action=None, status=None, created_before_sec=0, is_save=True
     if created_before_sec != 0:
         bgjob.set_created(dates.format(dates.before_now(created_before_sec)))
 
-    if queue_type:
-        bgjob.queue_type = queue_type
+    if queue_id:
+        bgjob.queue_id = queue_id
 
     if is_save:
         bgjob.save(blocking=True)

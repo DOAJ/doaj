@@ -12,7 +12,7 @@
           "bool": {
             "must_not": {
               "exists": {
-                "field": "queue_type"
+                "field": "queue_id"
               }
             },
             "must": {

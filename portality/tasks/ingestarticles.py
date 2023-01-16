@@ -404,7 +404,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         cls.set_param(params, "file_upload_id", file_upload_id)
         cls.set_param(params, "attempts", 0)
         return background_helper.create_job(username, cls.__action__, params=params,
-                                            queue_type=huey_helper.queue_type)
+                                            queue_id=huey_helper.queue_id)
 
     @classmethod
     def submit(cls, background_job):

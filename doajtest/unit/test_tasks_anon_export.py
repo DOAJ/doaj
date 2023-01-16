@@ -64,5 +64,5 @@ class TestAnonExport(DoajTestCase):
             else:
                 print(f'empty archive {target_name}')
 
-    def test_prepare__queue_type(self):
-        bgtask_tester.test_queue_type_assigned(AnonExportBackgroundTask)
+    def test_prepare__queue_id(self):
+        bgtask_tester.test_queue_id_assigned(AnonExportBackgroundTask)

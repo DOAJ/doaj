@@ -270,7 +270,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         cls.set_param(params, "tmpdir", kwargs.get("tmpdir", "tmp_article_duplicates_" + dates.today()))
         cls.set_param(params, "article_csv", kwargs.get("article_csv", False))
         job.params = params
-        job.queue_type = huey_helper.queue_type
+        job.queue_id = huey_helper.queue_id
 
         return job
 

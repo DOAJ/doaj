@@ -4,7 +4,7 @@
 import itertools
 from typing import Iterable
 
-from portality.constants import BGJOB_QUEUE_TYPE_LONG, BGJOB_QUEUE_TYPE_MAIN, BGJOB_STATUS_ERROR, BGJOB_STATUS_QUEUED, \
+from portality.constants import BGJOB_QUEUE_ID_LONG, BGJOB_QUEUE_ID_MAIN, BGJOB_STATUS_ERROR, BGJOB_STATUS_QUEUED, \
     BG_STATUS_STABLE, BG_STATUS_UNSTABLE
 from portality.core import app
 from portality.lib import dates
@@ -126,7 +126,7 @@ class BackgroundTaskStatusService:
     def create_background_status(self) -> dict:
         queues = {
             queue_name: self.create_queues_status(queue_name)
-            for queue_name in [BGJOB_QUEUE_TYPE_LONG, BGJOB_QUEUE_TYPE_MAIN]
+            for queue_name in [BGJOB_QUEUE_ID_LONG, BGJOB_QUEUE_ID_MAIN]
         }
 
         result_dict = dict(
