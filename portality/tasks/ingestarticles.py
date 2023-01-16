@@ -205,18 +205,16 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                                       .format(x=file_upload_id, y=job.id))
                 if self._download(file_upload) is False:
                     # TODO: add 'outcome' error here
-                    job.add_audit_message("File download failed"
-                                          .format(x=file_upload_id, y=job.id))
+                    job.add_audit_message("File download failed".format(x=file_upload_id, y=job.id))
 
             # if the file is validated, which will happen if it has been uploaded, or downloaded successfully, process it.
             if file_upload.status == "validated":
-                job.add_audit_message("Importing file for file upload {x}, job {y}"
-                                      .format(x=file_upload_id, y=job.id))
+                job.add_audit_message("Importing file for file upload {x}, job {y}".format(x=file_upload_id, y=job.id))
                 self._process(file_upload)
         finally:
             file_upload.save()
 
-    def _download(self, file_upload):
+    def _download(self, file_upload: models.FileUpload) -> bool:
         job = self.background_job
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
@@ -235,8 +233,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             file_upload.failed(msg)
             return False
 
-        job.add_audit_message("Downloaded {x} as {y}"
-                              .format(x=file_upload.filename, y=file_upload.local_filename))
+        job.add_audit_message("Downloaded {x} as {y}".format(x=file_upload.filename, y=file_upload.local_filename))
 
         xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(file_upload.schema)
         try:
@@ -275,7 +272,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         file_upload.validated(file_upload.schema)
         return True
 
-    def _process(self, file_upload):
+    def _process(self, file_upload: models.FileUpload):
         job = self.background_job
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
