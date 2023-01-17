@@ -100,6 +100,7 @@ $.extend(true, doaj, {
                     result += "<div class='row-fluid'><div class='span12'>";
 
                     result += firstRow + "<br>";
+                    result += `Outcome Status: ${resultobj.outcome_status}<br />`
                     result += "Job ID: " + resultobj.id + "<br>";
                     result += dateRow + "<br>";
 
