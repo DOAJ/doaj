@@ -107,7 +107,8 @@ JOURNAL_LIKE_BIBJSON = {
     "subject": [
         {"scheme": "LCC", "term": "Economic theory. Demography",
          "code": "HB1-3840"},
-        {"scheme": "LCC", "term": "Social Sciences", "code": "H"}
+        {"scheme": "LCC", "term": "Social Sciences", "code": "H"},
+        {"scheme": "LCC", "term": "Veterinary medicine", "code": "SF600-1100"}
     ],
     "title": "The Title",
     "waiver": {
