@@ -1,5 +1,6 @@
 from copy import deepcopy
 from portality.models import Journal, Article
+from portality import constants
 
 class OAIPMHRecord(object):
     earliest = {
@@ -70,7 +71,7 @@ class OAIPMHRecord(object):
         if start_after is not None or from_date is not None or until_date is not None or oai_set is not None:
 
             if oai_set is not None:
-                a = oai_set.replace("LCC:","")
+                a = oai_set.replace(constants.SUBJECTS_SCHEMA,"")
                 q["query"]["bool"]["should"] = {"match":{"index.classification": a}}
 
             if until_date is not None or from_date is not None or start_after is not None:

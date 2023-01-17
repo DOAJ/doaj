@@ -65,3 +65,5 @@ PROCESS__QUICK_REJECT = "quick_reject"
 
 # Role
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
+
+SUBJECTS_SCHEMA = "LCC:"
