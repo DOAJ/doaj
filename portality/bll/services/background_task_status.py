@@ -19,10 +19,12 @@ class BackgroundTaskStatusService:
     `create_background_status` is important function in service for create background_status data
     """
 
-    def is_stable(self, val):
+    @staticmethod
+    def is_stable(val):
         return val == BG_STATUS_STABLE
 
-    def to_bg_status_str(self, stable_val: bool) -> str:
+    @staticmethod
+    def to_bg_status_str(stable_val: bool) -> str:
         return BG_STATUS_STABLE if stable_val else BG_STATUS_UNSTABLE
 
     def all_stable(self, items: Iterable, field_name='status') -> bool:
@@ -92,7 +94,7 @@ class BackgroundTaskStatusService:
         # prepare for err_msgs
         limited_sec = app.config.get('BG_MONITOR_LAST_COMPLETED', {}).get(queue_name)
         if limited_sec is None:
-            app.logger.warn(f'BG_MONITOR_LAST_COMPLETED for {queue_name=} not found ')
+            app.logger.warn(f'BG_MONITOR_LAST_COMPLETED for {queue_name} not found ')
 
         err_msgs = []
         if limited_sec is not None and last_completed_date:
@@ -112,7 +114,8 @@ class BackgroundTaskStatusService:
         )
         return result_dict
 
-    def get_config_dict_by_queue_name(self, config_name, queue_name):
+    @staticmethod
+    def get_config_dict_by_queue_name(config_name, queue_name):
         bg_specs = background_helper.get_all_background_task_specs()
         actions = {action for qn, action, _ in bg_specs
                    if qn == queue_name}
