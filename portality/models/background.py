@@ -176,7 +176,7 @@ BACKGROUND_STRUCT = {
 
         # status of bgjob result (business logic level), for example, The job completed without exception,
         # but the action the user wanted was not carried out for some reason
-        "outcome_status": {"coerce": "unicode"} | model_utils.create_allowed_values_by_enum(OutcomeStatus),
+        "outcome_status": {"coerce": "unicode", **model_utils.create_allowed_values_by_enum(OutcomeStatus)},
     },
     "lists": {
         "audit": {"contains": "object"}
