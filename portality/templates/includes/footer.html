@@ -15,12 +15,17 @@
                 Legal &amp; admin
             </h2>
             <div>
+                {# Temporarily removed for the 20th year anniversary, see DOAJ/doajPM#3395
                 <a href="/" class="logo">
                     <h2 class="sr-only">The Directory of Open Access Journals</h2>
                     {% include "includes/svg/logo.svg" %}
                     <span class="logo__tagline">
                       Open <br/>Global <br/>Trusted
                     </span>
+                </a> #}
+                <a href="https://blog.doaj.org/2023/01/12/2022-a-year-in-review/" target="_blank" rel="noopener" style="display: block; margin-bottom: 2em; max-width: 90%;">
+                    <h2 class="sr-only">Celebrating 20 years of DOAJ</h2>
+                    {% include "includes/svg/20yrs.svg" %}
                 </a>
                 <p>
                     © DOAJ {{ current_year }} default by all rights reserved <a href="{{ url_for('doaj.terms') }}" style="text-decoration: underline;">unless otherwise specified</a>.
