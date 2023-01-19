@@ -2563,7 +2563,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                    subjects = "<li>" + resultobj.index.classification_paths.join("</li><li>") + "</li>";
+                  subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                  subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                  subjects += '</ul>';
                 }
 
                 var update_or_added = "";
@@ -2662,6 +2664,20 @@ $.extend(true, doaj, {
                 }
 
 
+                let externalLink = "";
+                if (resultobj.bibjson.ref && resultobj.bibjson.ref.journal) {
+                    externalLink = '<li><a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website ';
+
+                    if (this.widget){
+                        externalLink += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
+                    }
+                    else {
+                        externalLink += '<i data-feather="external-link" aria-hidden="true"></i>'
+                    }
+
+                    externalLink += '</a></li>';
+                }
+
                 frag +='</sup>\
                             </a>\
                             ' + subtitle + '\
@@ -2674,9 +2690,7 @@ $.extend(true, doaj, {
                             </li>\
                             ' + language + '\
                           </ul>\
-                          <ul>\
-                            ' + subjects + '\
-                          </ul>\
+                          ' + subjects + '\
                         </div>\
                       </div>\
                       <aside class="col-sm-4 search-results__aside">\
@@ -2686,20 +2700,8 @@ $.extend(true, doaj, {
                             ' + update_or_added + '\
                           </li>\
                           ' + articles + '\
-                          <li>\
-                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website '
-
-                if (this.widget){
-                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
-                }
-                else {
-                    frag += '<i data-feather="external-link" aria-hidden="true"></i>'
-                }
-
-
-
-                frag += '</a></li>\
-                          <li>\
+                          ' + externalLink + '\
+                        <li>\
                             ' + apcs + '\
                           </li>\
                           <li>\
@@ -2757,8 +2759,8 @@ $.extend(true, doaj, {
 
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                    subjects = '<h4>Journal subjects</h4><ul>';
-                    subjects += "<li>" + resultobj.index.classification_paths.join("<br>") + "</li>";
+                    subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                    subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
                     subjects += '</ul>';
                 }
 
@@ -3301,7 +3303,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                    subjects = "<li>" + resultobj.index.classification_paths.join("</li><li>") + "</li>";
+                  subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                  subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                  subjects += '</ul>';
                 }
 
                 var update_or_added = "";
