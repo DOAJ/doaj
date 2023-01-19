@@ -119,6 +119,6 @@ class NotificationsQuery(object):
                 q["query"]["bool"]["must"] = musts
             if len(must_nots) > 0:
                 q["query"]["bool"]["must_not"] = must_nots
-
+            return q
         else:
             return {"query": {"match_all": {}}}
