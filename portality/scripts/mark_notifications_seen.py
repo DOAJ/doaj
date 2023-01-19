@@ -1,8 +1,10 @@
+# ~~ MarkNotificationsSeen:Script ~~
 from portality.lib import dates
 from portality.bll import DOAJ
 
 
 def mark_notifications_seen(until):
+    # ~~-> Notifications:Service ~~
     notifications_svc = DOAJ.notificationsService()
     notifications_svc.mark_all_as_seen(until=until)
 

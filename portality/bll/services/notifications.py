@@ -53,6 +53,7 @@ class NotificationsService(object):
         return top
 
     def notification_seen(self, account: models.Account, notification_id: str):
+        # ~~-> Notifications:Query ~~
         note = models.Notification.pull(notification_id)
         if not note:
             raise NoSuchObjectException(Messages.EXCEPTION_NOTIFICATION_NO_NOTIFICATION.format(n=notification_id))
@@ -93,6 +94,8 @@ class TopNotificationsQuery(object):
 
 
 class NotificationsQuery(object):
+    # ~~->$ Notifications:Query ~~
+    # ~~^-> Elasticsearch:Technology ~~
     def __init__(self, account_id=None, until=None, seen=None):
         self._account_id = account_id
         self._until = until
