@@ -75,10 +75,10 @@ class OAIPMHRecord(object):
                 a = oai_set.replace(constants.SUBJECTS_SCHEMA,"")
                 s = deepcopy(self.set_limit)
                 s["term"]["index.classification.exact"] = oai_set
+                q["query"]["bool"]["must"].append(s)
 
             if until_date is not None or from_date is not None or start_after is not None:
                 d = deepcopy(self.range_limit)
-                q["query"]["bool"]["must"].append(s)
 
                 if start_after is not None:
                     d["range"]["last_updated"]["lte"] = start_after[0]
