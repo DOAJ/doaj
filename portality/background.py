@@ -1,5 +1,8 @@
 from typing import Iterable
 from typing import TYPE_CHECKING
+
+from portality.constants import BgjobOutcomeStatus
+
 if TYPE_CHECKING:
     from portality.models import BackgroundJob
 
@@ -42,7 +45,7 @@ class BackgroundApi(object):
     """
 
     @classmethod
-    def execute(self, background_task):
+    def execute(self, background_task: 'BackgroundTask'):
         # ~~->BackgroundTask:Process~~
         # ~~->BackgroundJob:Model~~
         job = background_task.background_job
@@ -62,6 +65,8 @@ class BackgroundApi(object):
 
         try:
             background_task.run()
+            if job.outcome_status == BgjobOutcomeStatus.Pending.value:
+                job.outcome_status = BgjobOutcomeStatus.Success
         except RetryException:
             if job.reference is None:
                 job.reference = {}

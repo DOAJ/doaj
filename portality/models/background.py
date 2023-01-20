@@ -29,7 +29,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         super(BackgroundJob, self).__init__(raw=kwargs)
 
         if not self.outcome_status:
-            self.outcome_status = BgjobOutcomeStatus.Success
+            self.outcome_status = BgjobOutcomeStatus.Pending
 
     @classmethod
     def active(cls, task_type, since=None):
@@ -101,6 +101,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
 
     def fail(self):
         self._set_with_struct("status", "error")
+        self.outcome_fail()
 
     def cancel(self):
         self._set_with_struct("status", "cancelled")
