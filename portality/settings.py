@@ -237,7 +237,6 @@ STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 # Service Descriptive Text
 
 SERVICE_NAME = "Directory of Open Access Journals"
-SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
 
 ###################################
 # Cookie settings
