@@ -43,7 +43,7 @@ class ArticleFormXWalk(object):
 
         # keywords
         keywords = form.keywords.data
-        if keywords is not None:
+        if keywords is not None and len(keywords) > 0:
             if isinstance(keywords, str):
                 keywords = keywords.split(",")
             ks = [k.strip() for k in keywords]
