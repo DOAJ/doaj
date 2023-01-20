@@ -17,7 +17,7 @@
     {%- if bibjson.abstract -%}
         {{ bibjson.abstract | striptags | truncate(160) }}
     {% else %}
-        More about this open access article on DOAJ. {{ app.config['SERVICE_TAGLINE'] }}
+        More about this open access article on DOAJ. DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals.
     {%- endif -%}
 {%- endblock -%}
 
