@@ -1,6 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.bll_article import BLLArticleMockFactory
-from portality.models.background import OutcomeStatus
+from portality.constants import BgjobOutcomeStatus
 
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article_crossref import Crossref531ArticleFixtureFactory
@@ -33,7 +33,7 @@ ARTICLES = os.path.join(RESOURCES, "crossref531_article_uploads.xml")
 
 
 def assert_outcome_fail_by_task(task: BackgroundTask):
-    assert task.background_job.outcome_status == OutcomeStatus.Fail.value
+    assert task.background_job.outcome_status == BgjobOutcomeStatus.Fail.value
 
 
 class TestIngestArticlesCrossref531XML(DoajTestCase):

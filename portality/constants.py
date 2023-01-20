@@ -1,4 +1,6 @@
 # ~~Constants:Config~~
+from enum import Enum
+
 APPLICATION_STATUS_ACCEPTED = "accepted"
 APPLICATION_STATUS_REJECTED = "rejected"
 APPLICATION_STATUS_UPDATE_REQUEST = "update_request"
@@ -65,3 +67,9 @@ PROCESS__QUICK_REJECT = "quick_reject"
 
 # Role
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
+
+
+class BgjobOutcomeStatus(Enum):
+    Pending = 'pending'
+    Success = 'success'
+    Fail = 'fail'

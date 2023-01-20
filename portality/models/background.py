@@ -1,15 +1,9 @@
 from typing import Union
 
+from portality.constants import BgjobOutcomeStatus
 from portality.core import app
 from portality.lib import dataobj, dates, es_data_mapping, model_utils
 from portality import dao
-from enum import Enum
-
-
-class OutcomeStatus(Enum):
-    Pending = 'pending'
-    Success = 'success'
-    Fail = 'fail'
 
 
 class BackgroundJob(dataobj.DataObj, dao.DomainObject):
@@ -35,7 +29,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         super(BackgroundJob, self).__init__(raw=kwargs)
 
         if not self.outcome_status:
-            self.outcome_status = OutcomeStatus.Success
+            self.outcome_status = BgjobOutcomeStatus.Success
 
     @classmethod
     def active(cls, task_type, since=None):
@@ -122,11 +116,11 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         return self._get_single('outcome_status')
 
     def outcome_fail(self):
-        self.outcome_status = OutcomeStatus.Fail
+        self.outcome_status = BgjobOutcomeStatus.Fail
 
     @outcome_status.setter
-    def outcome_status(self, outcome_status: Union[str, OutcomeStatus]):
-        if isinstance(outcome_status, OutcomeStatus):
+    def outcome_status(self, outcome_status: Union[str, BgjobOutcomeStatus]):
+        if isinstance(outcome_status, BgjobOutcomeStatus):
             outcome_status = outcome_status.value
         self._set_with_struct('outcome_status', outcome_status)
 
@@ -176,7 +170,7 @@ BACKGROUND_STRUCT = {
 
         # status of bgjob result (business logic level), for example, The job completed without exception,
         # but the action the user wanted was not carried out for some reason
-        "outcome_status": {"coerce": "unicode", **model_utils.create_allowed_values_by_enum(OutcomeStatus)},
+        "outcome_status": {"coerce": "unicode", **model_utils.create_allowed_values_by_enum(BgjobOutcomeStatus)},
     },
     "lists": {
         "audit": {"contains": "object"}
