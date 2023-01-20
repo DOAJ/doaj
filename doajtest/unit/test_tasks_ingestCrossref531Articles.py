@@ -664,6 +664,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         assert file_upload.status == "processed"
         assert file_upload.imported == 1
         assert file_upload.new == 1
+        assert task.background_job.outcome_status == BgjobOutcomeStatus.Pending.value
 
     def test_24_process_invalid_file(self):
 
@@ -823,6 +824,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         fu = models.FileUpload.pull(id)
         assert fu is not None
         assert fu.status == "processed"
+        assert job.outcome_status == BgjobOutcomeStatus.Pending
 
     def test_29_submit_success(self):
         etree.XMLSchema = self.mock_load_schema
