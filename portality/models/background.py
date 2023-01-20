@@ -1,9 +1,9 @@
 from typing import Union
 
+from portality import dao
 from portality.constants import BgjobOutcomeStatus
 from portality.core import app
-from portality.lib import dataobj, dates, es_data_mapping, model_utils
-from portality import dao
+from portality.lib import dataobj, dates, es_data_mapping, seamless
 
 
 class BackgroundJob(dataobj.DataObj, dao.DomainObject):
@@ -170,7 +170,7 @@ BACKGROUND_STRUCT = {
 
         # status of bgjob result (business logic level), for example, The job completed without exception,
         # but the action the user wanted was not carried out for some reason
-        "outcome_status": {"coerce": "unicode", **model_utils.create_allowed_values_by_enum(BgjobOutcomeStatus)},
+        "outcome_status": {"coerce": "unicode", **seamless.create_allowed_values_by_enum(BgjobOutcomeStatus)},
     },
     "lists": {
         "audit": {"contains": "object"}

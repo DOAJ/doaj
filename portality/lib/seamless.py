@@ -1,4 +1,6 @@
 import locale
+from enum import Enum
+from typing import Type
 from urllib.parse import urlparse
 from copy import deepcopy
 from datetime import datetime
@@ -1039,3 +1041,9 @@ class Construct(object):
             return True
 
         recurse(self, "[root]")
+
+
+def create_allowed_values_by_enum(enum_class: Type[Enum]):
+    return {
+        'allowed_values': [x.value for x in enum_class]
+    }
