@@ -8,13 +8,12 @@ from typing import Callable, NoReturn
 from portality import models, dao
 from portality.background import BackgroundTask
 from portality.core import app, es_connection
-from portality.decorators import write_required
 from portality.lib import dates
 from portality.lib.anon import basic_hash, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.store import StoreFactory
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import schedule, long_running
+from portality.tasks.redis_huey import long_running
 
 
 def _anonymise_email(record):
@@ -175,7 +174,8 @@ class AnonExportBackgroundTask(BackgroundTask):
         cls.set_param(params, "batch_size", background_helper.get_value_safe('batch_size', 100000, kwargs))
         return background_helper.create_job(username=username,
                                             action=cls.__action__,
-                                            params=params)
+                                            params=params,
+                                            queue_id=huey_helper.queue_id, )
 
     @classmethod
     def submit(cls, background_job):
@@ -183,8 +183,10 @@ class AnonExportBackgroundTask(BackgroundTask):
         anon_export.schedule(args=(background_job.id,), delay=10)
 
 
-@long_running.periodic_task(schedule(AnonExportBackgroundTask.__action__))
-@write_required(script=True)
+huey_helper = AnonExportBackgroundTask.create_huey_helper(long_running)
+
+
+@huey_helper.register_schedule
 def scheduled_anon_export():
     background_helper.submit_by_bg_task_type(AnonExportBackgroundTask,
                                              clean=app.config.get("TASKS_ANON_EXPORT_CLEAN", False),
@@ -192,7 +194,6 @@ def scheduled_anon_export():
                                              batch_size=app.config.get("TASKS_ANON_EXPORT_BATCH_SIZE", 100000))
 
 
-@long_running.task()
-@write_required(script=True)
+@huey_helper.register_execute(is_load_config=False)
 def anon_export(job_id):
     background_helper.execute_by_job_id(job_id, AnonExportBackgroundTask)
