@@ -8,7 +8,7 @@ from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, D
 from portality.decorators import ssl_required, restrict_to_role
 from portality.dao import ESMappingMissingError
 from portality.forms.application_forms import ApplicationFormFactory
-from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException, RetryException
+from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 from portality.tasks.preservation import *
 from portality.ui.messages import Messages
 from portality import lock
