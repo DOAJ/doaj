@@ -8,7 +8,7 @@ from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, D
 from portality.decorators import ssl_required, restrict_to_role
 from portality.dao import ESMappingMissingError
 from portality.forms.application_forms import ApplicationFormFactory
-from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
+from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException, RetryException
 from portality.tasks.preservation import *
 from portality.ui.messages import Messages
 from portality import lock
@@ -210,8 +210,16 @@ def upload_file():
         IngestArticlesBackgroundTask.submit(job)
     except (BackgroundException, TaskException) as e:
         magic = str(uuid.uuid1())
-        flash("An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the ID " + magic)
-        app.logger.exception('File upload error. ' + magic)
+        flash("Some problem occured and your upload may not have succeeded. See Upload History for details (you may need to refresh the page).")
+        app.logger.exception('File upload error. ' + magic + "; " + str(e))
+        return resp
+    except (Exception) as e:
+        magic = str(uuid.uuid1())
+        msg = "An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the following details: ID: "  + magic
+        if (str(e) != ""):
+            msg += "; msg: " + str(e)
+        flash(msg)
+        app.logger.exception('File upload error. ' + magic + "; " + str(e))
         return resp
 
     if f is not None and f.filename != "":
