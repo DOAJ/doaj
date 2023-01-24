@@ -99,9 +99,8 @@ class OAI_DC_Article(OAI_DC):
     def crosswalk(self, record):
         bibjson = record.bibjson()
 
-        metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
-        oai_dc = etree.SubElement(metadata, self.OAIDC + "dc")
-        # oai_dc.set(self.XMLNS + "xsi", "http://www.w3.org/2001/XMLSchema-instance")
+        metadata = etree.Element(self.PMH + "metadata")
+        oai_dc = etree.SubElement(metadata, self.OAIDC + "dc", nsmap=self.NSMAP)
         oai_dc.set(self.XSI + "schemaLocation",
                    "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd")
 
@@ -233,7 +232,7 @@ class OAI_DC_Journal(OAI_DC):
         bibjson = record.bibjson()
 
         metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
-        oai_dc = etree.SubElement(metadata, self.OAIDC + "dc")
+        oai_dc = etree.SubElement(metadata, self.OAIDC + "dc", nsmap=self.NSMAP)
         oai_dc.set(self.XSI + "schemaLocation",
             "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd")
         if bibjson.title is not None:
