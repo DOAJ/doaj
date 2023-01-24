@@ -17,7 +17,10 @@ class OAI_Crosswalk(object):
     XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"
     XSI = "{%s}" % XSI_NAMESPACE
 
-    NSMAP = {None: PMH_NAMESPACE, "xsi": XSI_NAMESPACE}
+    XMLNS_NAMESPACE = "http://www.openarchives.org/OAI/2.0/"
+    XMLNS = "{%s}" % XMLNS_NAMESPACE
+
+    NSMAP = {None: PMH_NAMESPACE, "xsi": XSI_NAMESPACE, "xmlns": XMLNS_NAMESPACE}
 
     def crosswalk(self, record):
         raise NotImplementedError()
@@ -98,8 +101,9 @@ class OAI_DC_Article(OAI_DC):
 
         metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
         oai_dc = etree.SubElement(metadata, self.OAIDC + "dc")
+        # oai_dc.set(self.XMLNS + "xsi", "http://www.w3.org/2001/XMLSchema-instance")
         oai_dc.set(self.XSI + "schemaLocation",
-            "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd")
+                   "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd")
 
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
@@ -232,7 +236,6 @@ class OAI_DC_Journal(OAI_DC):
         oai_dc = etree.SubElement(metadata, self.OAIDC + "dc")
         oai_dc.set(self.XSI + "schemaLocation",
             "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd")
-
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
             set_text(title, bibjson.title)
