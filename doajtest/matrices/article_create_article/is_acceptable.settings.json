@@ -37,6 +37,14 @@
       }
     },
     {
+      "name": "journal_in_doaj",
+      "type": "generated",
+      "values": {
+        "yes": {},
+        "no": {}
+      }
+    },
+    {
       "name": "is_acceptable",
       "type": "conditional",
       "values": {
@@ -57,6 +65,11 @@
                 "or": [
                   "no"
                 ]
+              },
+              "journal_in_doaj": {
+                "or": [
+                  "yes"
+                ]
               }
             },
             {
@@ -73,6 +86,11 @@
               "pissn_eissn_match": {
                 "or": [
                   "no"
+                ]
+              },
+              "journal_in_doaj": {
+                "or": [
+                  "yes"
                 ]
               }
             }
@@ -103,6 +121,13 @@
               "pissn_eissn_match": {
                 "or": [
                   "yes"
+                ]
+              }
+            },
+            {
+              "journal_in_doaj": {
+                "or": [
+                  "no"
                 ]
               }
             }

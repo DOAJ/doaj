@@ -153,7 +153,11 @@ class Article(DomainObject):
         self.data["history"].append(snobj)
 
     def is_in_doaj(self):
-        return self.data.get("admin", {}).get("in_doaj", False)
+        try:
+            return self.data['admin'].get("in_doaj", False)
+        except KeyError:
+            # If we have no admin section, return None instead
+            return None
 
     def set_in_doaj(self, value):
         if "admin" not in self.data:
@@ -161,7 +165,11 @@ class Article(DomainObject):
         self.data["admin"]["in_doaj"] = value
 
     def has_seal(self):
-        return self.data.get("admin", {}).get("seal", False)
+        try:
+            return self.data['admin'].get("seal", False)
+        except KeyError:
+            # If we have no admin section, return None instead
+            return None
 
     def set_seal(self, value):
         if "admin" not in self.data:

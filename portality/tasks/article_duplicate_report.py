@@ -1,20 +1,18 @@
 """Task to generate a report on duplicated articles in the index"""
-
-from portality.tasks.redis_huey import long_running
-from portality.app_email import email_archive
-
-from portality.background import BackgroundTask, BackgroundApi
-
+import csv
+import json
 import os
 import shutil
-import json
-import csv
 from datetime import datetime
+
 from portality import models
-from portality.lib import dates
-from portality.core import app, es_connection
-from portality.bll.doaj import DOAJ
+from portality.app_email import email_archive
+from portality.background import BackgroundTask, BackgroundApi
 from portality.bll import exceptions
+from portality.bll.doaj import DOAJ
+from portality.core import app, es_connection
+from portality.lib import dates
+from portality.tasks.redis_huey import long_running
 
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
@@ -272,6 +270,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         cls.set_param(params, "tmpdir", kwargs.get("tmpdir", "tmp_article_duplicates_" + dates.today()))
         cls.set_param(params, "article_csv", kwargs.get("article_csv", False))
         job.params = params
+        job.queue_id = huey_helper.queue_id
 
         return job
 
@@ -286,6 +285,9 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         background_job.save()
         article_duplicate_report.schedule(args=(background_job.id,), delay=10)
 
+
+huey_helper = ArticleDuplicateReportBackgroundTask.create_huey_helper(long_running)
+
 '''
 @long_running.periodic_task(schedule("article_duplicate_report"))
 def scheduled_article_cleanup_sync():
@@ -294,7 +296,8 @@ def scheduled_article_cleanup_sync():
     ArticleDuplicateReportBackgroundTask.submit(job)
 '''
 
-@long_running.task()
+
+@huey_helper.task_queue.task()
 def article_duplicate_report(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = ArticleDuplicateReportBackgroundTask(job)

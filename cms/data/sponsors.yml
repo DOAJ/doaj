@@ -12,9 +12,6 @@ gold:
 
 
 silver:
-- name: American Chemical Society
-  url: https://pubs.acs.org/
-  logo: ACS.jpg
 
 - name: American Psychological Association
   url: https://www.apa.org/pubs
@@ -47,6 +44,10 @@ silver:
 - name: JMIR Publications
   url: https://jmirpublications.com/
   logo: jmir.svg
+  
+- name: Knowledge E
+  url: https://knowledgee.com/
+  logo: knowledgee.png
 
 - name: MDPI
   url: https://www.mdpi.com/
@@ -70,6 +71,10 @@ silver:
 
 
 bronze:
+- name: American Chemical Society
+  url: https://pubs.acs.org/
+  logo: ACS.jpg
+  
 - name: ARPHA Publishing Platform
   url: https://arphahub.com/
   logo: arpha.png
@@ -118,6 +123,10 @@ bronze:
   url: https://www.karger.com/
   logo: karger.png
 
+- name: KeAI Communications
+  url: https://www.keaipublishing.com/
+  logo: KeAI.svg
+
 - name: Lund University
   url: https://www.lunduniversity.lu.se/
   logo: lu.png
@@ -134,6 +143,12 @@ bronze:
   url: https://plos.org/
   logo: PLOS.svg
 
+- name: SciFree
+  url: https://scifree.se/
+  logo: SciFree.svg
+
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg  
+  
+

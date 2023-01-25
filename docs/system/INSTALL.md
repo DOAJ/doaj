@@ -2,7 +2,7 @@
 
 [comment] <>: (~~Install:Documentation~~)
 
-This installation instruction is for Ubuntu 16.04 and Ubuntu 18.04 users. We recommend running our application on Ubuntu OS.
+These installation instructions are written for Ubuntu, but it's possible to run in other environments with some changes.
 
 ## Java
 
@@ -47,7 +47,7 @@ For background tasks, we use `redis`. Run this however you like, just make sure 
 
 [comment] <>: (~~->Python:Technology~~)
 
-Install Python 3.7 or more recent. Python 2.x is not supported anymore. You can verify if correct version of python is in use by typing:
+Install Python 3.8 or greater. Python 2.x is not supported anymore. You can verify if correct version of python is in use by typing:
 
     python --version
 

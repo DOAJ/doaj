@@ -1,3 +1,4 @@
+# ~~UpdateRequestPublisherRejectedNotify:Consumer~~
 from datetime import datetime
 
 from portality.events.consumer import EventConsumer
@@ -50,6 +51,7 @@ class UpdateRequestPublisherRejectedNotify(EventConsumer):
         if not application.owner:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()

@@ -1,0 +1,58 @@
+on:
+  push:
+    branches:
+    - master
+    - develop
+    - feature/*
+    
+jobs:
+  gen_docs:
+    name: generate DOAJ documentation and fuctional tests and push to the docs repo
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      statuses: write
+    
+    steps:
+      - name: checkout the branch of interest
+        uses: actions/checkout@v3
+        with: 
+          path: doaj
+
+      - name: checkout the documentation repo
+        uses: actions/checkout@v3
+        with:
+          path: doaj-docs
+          repository: DOAJ/doaj-docs
+          token: ${{ secrets.STEVE_PAT_DOAJ_ACTIONS_DOCS }}
+          fetch-depth: 0
+
+      - name: set up a python 3.8 environment
+        uses: actions/setup-python@v4.4.0
+        with:
+          python-version: 3.8
+        
+      - name: install elasticsearch
+        uses: getong/elasticsearch-action@v1.2
+        with:
+          # for some reason 7.10.2 isn't on docker hub
+          elasticsearch version: 7.10.1
+      
+      - name: install the DOAJ dependencies
+        run: |
+          cd $GITHUB_WORKSPACE/doaj
+          pip install -e .[test]
+          pip install -e .[docs]
+          
+      - name: run the docs generation script and push to the docs repo
+        run: |
+          export DOAJENV=test
+          cd $GITHUB_WORKSPACE/doaj/docs
+          sh gendocs.sh --nocov
+          cd $GITHUB_WORKSPACE/doaj-docs
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "GH Actions docs run for ${{ github.ref_name }}"
+          git push
