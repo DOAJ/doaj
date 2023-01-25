@@ -22,7 +22,8 @@ class TestClient(DoajTestCase):
         # We're going to need this a lot.
         self.oai_ns = {'oai': 'http://www.openarchives.org/OAI/2.0/',
                        'oai_dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/',
-                       'dc': 'http://purl.org/dc/elements/1.1/'}
+                       'dc': 'http://purl.org/dc/elements/1.1/',
+                       'xsi' : 'http://www.w3.org/2001/XMLSchema-instance'}
 
     def test_01_oai_ListMetadataFormats(self):
         """ Check we get the correct response from the OAI endpoint ListMetdataFormats request"""
@@ -344,3 +345,47 @@ class TestClient(DoajTestCase):
 
                 # Check we have the correct journal
                 assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == a_public.bibjson().title
+
+    def test_10_oai_dc_attr(self):
+        """test if the OAI-PMH article feed returns record with correct attributes in oai_dc element"""
+        article_source = ArticleFixtureFactory.make_article_source(eissn='1234-1234', pissn='5678-5678,', in_doaj=True)
+        a_private = models.Article(**article_source)
+        ba = a_private.bibjson()
+        ba.title = "Private Article"
+        a_private.save(blocking=True)
+
+        time.sleep(1)
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh',  specified='article', verb='ListRecords', metadataPrefix='oai_dc'))
+                assert resp.status_code == 200
+
+                t = etree.fromstring(resp.data)
+                # find metadata element of our record
+                elem = t.xpath('/oai:OAI-PMH/oai:ListRecords/oai:record/oai:metadata', namespaces=self.oai_ns)
+                # metadata element should have only one child, "dc" with correct nsmap
+                oai_dc = elem[0].getchildren()
+                assert len(oai_dc) == 1
+                assert oai_dc[0].tag == "{%s}" % self.oai_ns["oai_dc"] + "dc"
+                assert oai_dc[0].nsmap["xsi"] == self.oai_ns["xsi"]
+
+        journal_sources = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
+        j_public = models.Journal(**journal_sources[0])
+        j_public.save(blocking=True)
+        public_id = j_public.id
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(
+                    url_for('oaipmh.oaipmh', specified='article', verb='ListRecords', metadataPrefix='oai_dc'))
+                assert resp.status_code == 200
+
+                t = etree.fromstring(resp.data)
+                # find metadata element of our record
+                elem = t.xpath('/oai:OAI-PMH/oai:ListRecords/oai:record/oai:metadata', namespaces=self.oai_ns)
+                #metadata element should have only one child, "dc" with correct nsmap
+                oai_dc = elem[0].getchildren()
+                assert len(oai_dc) == 1
+                assert oai_dc[0].tag == "{%s}" % self.oai_ns["oai_dc"] + "dc"
+                assert oai_dc[0].nsmap["xsi"] == self.oai_ns["xsi"]
