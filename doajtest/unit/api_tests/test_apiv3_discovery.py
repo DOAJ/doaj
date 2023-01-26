@@ -467,3 +467,14 @@ class TestAPIDiscovery(DoajTestCase):
 
         for t in test_tuples:
             assert escape(t[0]) == t[1], "expected {0} got {1}".format(t[1], t[0])
+
+    def test_08_exception_thrown_invalid_model(self):
+        """ Going for 100% test coverage by validating the DiscoveryException caused by scrolling e.g. accounts"""
+        with self.assertRaises(DiscoveryException):
+            _ = DiscoveryApi.search('account', None, None, 0, 0)
+
+        with self.assertRaises(DiscoveryException):
+            g = DiscoveryApi.scroll('account', None, None, 0, 0)
+            next(g)
+
+

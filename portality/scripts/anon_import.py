@@ -10,26 +10,10 @@ Ensure in dev.cfg you've set STORE_IMPL = "portality.store.StoreS3"
 python portality/scripts/anon_import.py data_import_settings/dev_basics.json
 """
 
-import esprit, json, gzip, shutil, elasticsearch
+import json, gzip, shutil, elasticsearch
 from portality.core import app, es_connection, initialise_index
 from portality.store import StoreFactory
-from portality.util import ipt_prefix
-
-
-# FIXME: monkey patch for esprit.bulk (but esprit's chunking is handy)
-class Resp(object):
-    def __init__(self, **kwargs):
-        [setattr(self, k, v) for k, v in kwargs.items()]
-
-
-def es_bulk(connection, data, type=""):
-    try:
-        if not isinstance(data, str):
-            data = data.read()
-        res = connection.bulk(data, type, timeout='60s', request_timeout=60)
-        return Resp(status_code=200, json=res)
-    except Exception as e:
-        return Resp(status_code=500, text=str(e))
+from portality.dao import DomainObject
 
 
 def do_import(config):
@@ -94,7 +78,10 @@ def do_import(config):
             tempStore.delete_file(container, filename + ".gz")
 
             print(("Importing from {x}".format(x=filename)))
-            imported_count = esprit.tasks.bulk_load(es_connection, ipt_prefix(import_type), uncompressed_file,
+
+            dao = DomainObject()
+            dao.__type__ = import_type
+            imported_count = dao.bulk_load_from_file(uncompressed_file,
                                                     limit=limit, max_content_length=config.get("max_content_length", 100000000))
             tempStore.delete_file(container, filename)
 
@@ -120,9 +107,4 @@ if __name__ == '__main__':
     with open(args.config, "r", encoding="utf-8") as f:
         config = json.loads(f.read())
 
-    # FIXME: monkey patch for esprit raw_bulk
-    unwanted_primate = esprit.raw.raw_bulk
-    esprit.raw.raw_bulk = es_bulk
-
     do_import(config)
-    esprit.raw.raw_bulk = unwanted_primate

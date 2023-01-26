@@ -1,5 +1,6 @@
 import time
 import re
+import os
 import sys
 import uuid
 import json
@@ -698,6 +699,108 @@ class DomainObject(UserDict, object):
             out_rollover_callback(current_file)
 
         return filenames
+
+    @classmethod
+    def bulk_load_from_file(cls, source_file, limit=None, max_content_length=100000000):
+        """ ported from esprit.tasks - bulk laod to index from file """
+
+        source_size = os.path.getsize(source_file)
+        with open(source_file, "r") as f:
+            if limit is None and source_size < max_content_length:
+                # if we aren't selecting a portion of the file, and the file is below the max content length, then
+                # we can just serve it directly
+                ES.bulk(body=f, index=cls.index_name(), doc_type=cls.doc_type())
+                return -1
+            else:
+                count = 0
+                while True:
+                    chunk = DomainObject._make_next_chunk(f, max_content_length)
+                    if chunk == "":
+                        break
+
+                    finished = False
+                    if limit is not None:
+                        newlines = chunk.count("\n")
+                        records = newlines // 2
+                        if count + records > limit:
+                            max = (limit - count) * 2
+                            lines = chunk.split("\n")
+                            allowed = lines[:max]
+                            chunk = "\n".join(allowed) + "\n"
+                            count += max
+                            finished = True
+                        else:
+                            count += records
+
+                    resp = ES.bulk(body=chunk, index=cls.index_name(), doc_type=cls.doc_type())
+                    if resp.status_code != 200:
+                        raise Exception("did not get expected response: " + str(resp.status_code) + " - " + resp.text)
+                    if finished:
+                        break
+                if limit is not None:
+                    return count
+                else:
+                    return -1
+
+    @staticmethod
+    def make_bulk_chunk_files(source_file, out_file_prefix, max_content_length=100000000):
+        """ ported from esprit.tasks - break out a bulk file into smaller chunks """
+
+        source_size = os.path.getsize(source_file)
+        with open(source_file, "r") as f:
+            if source_size < max_content_length:
+                return [source_file]
+            else:
+                filenames = []
+                count = 0
+                while True:
+                    count += 1
+                    chunk = DomainObject._make_next_chunk(f, max_content_length)
+                    if chunk == "":
+                        break
+
+                    filename = out_file_prefix + "." + str(count)
+                    with open(filename, "w") as g:
+                        g.write(chunk)
+                    filenames.append(filename)
+
+                return filenames
+
+    @staticmethod
+    def _make_next_chunk(f, max_content_length):
+        """ ported from esprit.tasks - create a bulk chunk, ensuring it's not a partial instruction """
+
+        def is_command(line):
+            try:
+                command = json.loads(line)
+            except (json.JSONDecodeError, TypeError):
+                return False
+            keys = list(command.keys())
+            if len(keys) > 1:
+                return False
+            if "index" not in keys:
+                return False
+            subkeys = list(command["index"].keys())
+            for sk in subkeys:
+                if sk not in ["_id"]:
+                    return False
+
+            return True
+
+        offset = f.tell()
+        chunk = f.read(max_content_length)
+        while True:
+            last_newline = chunk.rfind("\n")
+            tail = chunk[last_newline + 1:]
+            chunk = chunk[:last_newline]
+
+            if is_command(tail):
+                f.seek(offset + last_newline)
+                if chunk.startswith("\n"):
+                    chunk = chunk[1:]
+                return chunk
+            else:
+                continue
 
     @classmethod
     def prefix_query(cls, field, prefix, size=5, facet_field=None, analyzed_field=True):

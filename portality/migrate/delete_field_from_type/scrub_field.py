@@ -1,11 +1,12 @@
 """
+FIXME: This script has been around for a few years, it'll need a bit of work to reinstate if needed again
+* model lookup by type
+
 Delete a specified field from all records of a certain type in the index.
 FIXME: Doesn't work on fields in lists. e.g. for https://github.com/DOAJ/doajPM/issues/1667 to remove author emails from articles
 """
 
-import esprit
 from portality.core import app
-from portality.lib import dataobj
 from datetime import datetime
 
 

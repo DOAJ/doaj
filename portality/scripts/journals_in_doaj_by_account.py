@@ -1,7 +1,6 @@
-from portality import models
+from portality.models import Journal
 import csv
 import json
-from portality.util import ipt_prefix
 
 
 class JournalQuery(object):
