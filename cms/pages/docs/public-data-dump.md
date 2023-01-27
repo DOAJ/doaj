@@ -10,15 +10,21 @@ featuremap:
 
 ---
 
-An [exportable version of the journal metadata](/csv) is available as a CSV file.
+The data dump is temporarily unavailable, please check back again soon.
 
-Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the same form as those retrieved via the API.
+[//]: # (An [exportable version of the journal metadata]&#40;/csv&#41; is available as a CSV file.)
 
-[Download the journal metadata](/public-data-dump/journal) (4.4Mb, licensed under a [Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0) license](https://creativecommons.org/licenses/by-sa/4.0/))
+[//]: # ()
+[//]: # (Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the same form as those retrieved via the API.)
 
-[Download the article metadata](/public-data-dump/article) (5.5Gb, copyrights and related rights for article metadata waived via [CC0 1.0 Universal (CC0) Public Domain Dedication](https://creativecommons.org/publicdomain/zero/1.0/))
+[//]: # ()
+[//]: # ([Download the journal metadata]&#40;/public-data-dump/journal&#41; &#40;4.4Mb, licensed under a [Creative Commons Attribution-ShareAlike 4.0 International &#40;CC BY-SA 4.0&#41; license]&#40;https://creativecommons.org/licenses/by-sa/4.0/&#41;&#41;)
 
-Each file is a `tar.gz`.
+[//]: # ()
+[//]: # ([Download the article metadata]&#40;/public-data-dump/article&#41; &#40;5.5Gb, copyrights and related rights for article metadata waived via [CC0 1.0 Universal &#40;CC0&#41; Public Domain Dedication]&#40;https://creativecommons.org/publicdomain/zero/1.0/&#41;&#41;)
+
+[//]: # ()
+[//]: # (Each file is a `tar.gz`.)
 
 ## Structure
 
