@@ -158,9 +158,9 @@
                           <li>
                             <small class="tag tag--tertiary label"><strong>{{ group.name }}</strong></small>
                             {% set ed = group.get_editor_account() %}
-                            <a href="mailto:{{ ed.email }}" class="tag label"><span data-feather="mail" aria-hidden="true"></span> {{ ed.id }} (Ed.)</a>
+                            <a href="mailto:{{ ed.email }}" class="tag label"><span data-feather="mail" aria-hidden="true"></span> {{ ed.id }} (Editor)</a>
                             {% set maned = group.get_maned_account() %}
-                            <a href="mailto:{{ maned.email }}" class="tag label"><span data-feather="mail" aria-hidden="true"></span> {{ maned.id }} (Man. Ed.)</a>
+                            <a href="mailto:{{ maned.email }}" class="tag label"><span data-feather="mail" aria-hidden="true"></span> {{ maned.id }} (Managing Editor)</a>
                             {{ " / " if not loop.last else "" }}
                           </li>
                         {% endfor %}
