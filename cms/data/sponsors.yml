@@ -107,10 +107,6 @@ bronze:
   url: https://www.ieee.org/
   logo: ieee.png
 
-- name: Institute of Physics
-  url: https://www.iop.org/
-  logo: IOP.jpg
-
 - name: The Institution of Engineering and Technology (IET)
   url: https://www.theiet.org/
   logo: iet.svg
