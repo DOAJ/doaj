@@ -1,12 +1,11 @@
-from portality import models, app_email
-from portality.core import app
-
 from esprit.raw import Connection
 from esprit.snapshot import ESSnapshotsClient
 
-from portality.tasks.redis_huey import main_queue, schedule
-from portality.decorators import write_required
+from portality import models, app_email
 from portality.background import BackgroundTask, BackgroundApi
+from portality.core import app
+from portality.tasks.helpers import background_helper
+from portality.tasks.redis_huey import main_queue
 
 
 class CheckLatestESBackupBackgroundTask(BackgroundTask):
@@ -52,10 +51,7 @@ class CheckLatestESBackupBackgroundTask(BackgroundTask):
         """
 
         # first prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
-        return job
+        return background_helper.create_job(username, cls.__action__, queue_id=huey_helper.queue_id)
 
     @classmethod
     def submit(cls, background_job):
@@ -69,16 +65,17 @@ class CheckLatestESBackupBackgroundTask(BackgroundTask):
         check_latest_es_backup.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.periodic_task(schedule("check_latest_es_backup"))
-@write_required(script=True)
+huey_helper = CheckLatestESBackupBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_schedule
 def scheduled_check_latest_es_backup():
     user = app.config.get("SYSTEM_USERNAME")
     job = CheckLatestESBackupBackgroundTask.prepare(user)
     CheckLatestESBackupBackgroundTask.submit(job)
 
 
-@main_queue.task()
-@write_required(script=True)
+@huey_helper.register_execute(is_load_config=False)
 def check_latest_es_backup(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = CheckLatestESBackupBackgroundTask(job)

@@ -3,6 +3,7 @@ import re
 from portality import models
 from portality.core import app
 from portality.crosswalks.exceptions import CrosswalkException
+from portality.tasks.helpers import background_helper
 
 from portality.ui.messages import Messages
 
@@ -401,16 +402,11 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             raise BackgroundException(Messages.NO_FILE_UPLOAD_ID)
 
         # first prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
-
         params = {}
         cls.set_param(params, "file_upload_id", file_upload_id)
         cls.set_param(params, "attempts", 0)
-        job.params = params
-
-        return job
+        return background_helper.create_job(username, cls.__action__, params=params,
+                                            queue_id=huey_helper.queue_id)
 
     @classmethod
     def submit(cls, background_job):
@@ -569,8 +565,10 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             return __fail(record, previous, error="please check it before submitting again; " + str(e))
 
 
-@main_queue.task(**configure("ingest_articles"))
-@write_required(script=True)
+huey_helper = IngestArticlesBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_execute(is_load_config=True)
 def ingest_articles(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = IngestArticlesBackgroundTask(job)
