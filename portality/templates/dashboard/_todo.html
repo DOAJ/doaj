@@ -1,72 +1,72 @@
 {% set TODOS = {
         constants.TODO_MANED_STALLED: {
-            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>+8 wks inactive</span>",
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Contact the editor</span>",
             "colour" : "var(--salmon)",
             "feather": "coffee"
         },
         constants.TODO_MANED_FOLLOW_UP_OLD: {
-            "text": "<strong>Old</strong> <span class='todo-list__status'>+10 wks old</span>",
+            "text": "<strong>Old</strong> <span class='todo-list__status'>Old: chase progress</span>",
             "colour" : "var(--sanguine)",
             "feather": "clock"
         },
         constants.TODO_MANED_READY: {
-            "text" : "<strong>Ready</strong>",
+            "text" : "<strong>Ready</strong> <span class='todo-list__status'>Make a decision</span>",
             "colour" : "var(--dark-green)",
             "feather": "check-circle",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"ready"}])
         },
         constants.TODO_MANED_COMPLETED: {
-            "text" : "<strong>Completed</strong> <span class='todo-list__status'>+2 wks updated</span>",
+            "text" : "<strong>Completed</strong> <span class='todo-list__status'>Old: make a decision</span>",
             "colour" : "var(--mid-green)",
             "feather": "user-check",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"completed"}])
         },
         constants.TODO_MANED_ASSIGN_PENDING: {
-            "text" : "<strong>Pending</strong> <span class='todo-list__status'>+2 wks submitted</span>",
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Chase the Editor to assign</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
         },
         constants.TODO_EDITOR_STALLED: {
-            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>+6 wks inactive</span>",
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Contact the Associate Editor</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
         },
         constants.TODO_EDITOR_FOLLOW_UP_OLD: {
-            "text" : "<strong>Old</strong> <span class='todo-list__status'>+8 wks old</span>",
+            "text" : "<strong>Old</strong> <span class='todo-list__status'>Old: chase progress</span>",
             "colour" : "var(--sanguine)",
             "feather": "clock"
         },
         constants.TODO_EDITOR_COMPLETED: {
-            "text" : "<strong>Completed</strong> <span class='todo-list__status'>Recently completed</span>",
+            "text" : "<strong>Completed</strong> <span class='todo-list__status'>Make a decision</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('editor.group_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"completed"}])
         },
         constants.TODO_EDITOR_ASSIGN_PENDING: {
-            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Recently assigned</span>",
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Assign an Associate Editor</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('editor.group_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
         },
         constants.TODO_ASSOCIATE_PROGRESS_STALLED: {
-            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>+3 wks inactive</span>",
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Inactive: review progress</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
         },
         constants.TODO_ASSOCIATE_FOLLOW_UP_OLD: {
-            "text": "<strong>Old</strong> <span class='todo-list__status'>+6 wks old</span>",
+            "text": "<strong>Old</strong> <span class='todo-list__status'>Old: chase progress</span>",
             "colour" : "var(--sanguine)",
             "feather": "clock"
         },
         constants.TODO_ASSOCIATE_START_PENDING: {
-            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Recently assigned</span>",
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Start your review</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('editor.associate_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
         },
         constants.TODO_ASSOCIATE_ALL_APPLICATIONS: {
-            "text" : "<strong>Application</strong> <span class='todo-list__status'>Open application</span>",
+            "text" : "<strong>Application</strong> <span class='todo-list__status'>Assign a group</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('editor.associate_suggestions')
