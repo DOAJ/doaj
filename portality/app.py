@@ -17,7 +17,7 @@ import pytz
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, send_from_directory
 from flask_login import login_user, current_user
 
-from datetime import datetime
+from datetime import datetime, date
 
 import portality.models as models
 from portality.core import app, es_connection, initialise_index
@@ -278,6 +278,11 @@ def form_diff_table_subject_expand(val):
             results.append(v)
 
     return ", ".join(results)
+
+@app.template_filter("is_in_the_past")
+def is_in_the_past(dttm):
+    date = datetime.strptime(dttm, "%Y-%m-%d").date()
+    return date <= date.today()
 
 
 #######################################################
