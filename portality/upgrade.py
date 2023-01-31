@@ -18,7 +18,8 @@ MODELS = {
     "article": models.Article,  #~~->Article:Model~~
     "suggestion": models.Suggestion,    #~~->Application:Model~~
     "application": models.Application,
-    "account": models.Account   #~~->Account:Model~~
+    "account": models.Account,   #~~->Account:Model~~
+    "background_job": models.BackgroundJob  #~~->BackgroundJob:Model~~
 }
 
 

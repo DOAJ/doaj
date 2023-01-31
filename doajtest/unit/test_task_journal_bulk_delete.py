@@ -1,11 +1,10 @@
-from time import sleep
 import json
+from time import sleep
 
+from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.tasks.journal_bulk_delete import journal_bulk_delete_manage
-
-from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ArticleFixtureFactory
 
 TEST_JOURNAL_COUNT = 25
 TEST_ARTICLES_PER_JOURNAL = 2

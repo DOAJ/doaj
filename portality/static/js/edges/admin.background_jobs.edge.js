@@ -102,6 +102,7 @@ $.extend(true, doaj, {
                     result += firstRow + "<br>";
                     result += `Outcome Status: ${resultobj.outcome_status}<br />`
                     result += "Job ID: " + resultobj.id + "<br>";
+                    result += 'On Queue: ' + resultobj.queue_id + '<br>';
                     result += dateRow + "<br>";
 
                     result += '<a href="#" data-id="' + resultobj.id + '" class="' + toggleClass + '">More Information</a><br>';
@@ -188,6 +189,20 @@ $.extend(true, doaj, {
                     })
                 }),
                 edges.newRefiningANDTermSelector({
+                    id: "queue_id",
+                    category: "facet",
+                    field: "queue_id.exact",
+                    display: "On Queue",
+                    deactivateThreshold : 1,
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: false,
+                        togglable: true,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+                edges.newRefiningANDTermSelector({
                     id: "outcome_status",
                     category: "facet",
                     field: "outcome_status.exact",
@@ -261,6 +276,7 @@ $.extend(true, doaj, {
                         'user.exact' : 'Submitted By',
                         'status.exact' : 'Status',
                         'outcome_status.exact' : 'Outcome Status',
+                        'queue_id.exact' : 'On Queue',
                     }
                 })
             ];

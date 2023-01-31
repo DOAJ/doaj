@@ -219,6 +219,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
             raise BackgroundException("{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
+        job.queue_id = huey_helper.queue_id
 
         # now ensure that we have the locks for all the journals
         # will raise an exception if this fails
@@ -238,8 +239,10 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         journal_bulk_edit.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.task()
-@write_required(script=True)
+huey_helper = JournalBulkEditBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_execute(is_load_config=False)
 def journal_bulk_edit(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = JournalBulkEditBackgroundTask(job)

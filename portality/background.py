@@ -1,3 +1,5 @@
+import traceback
+from copy import deepcopy
 from typing import Iterable
 from typing import TYPE_CHECKING
 
@@ -7,14 +9,12 @@ if TYPE_CHECKING:
     from portality.models import BackgroundJob
 
 from flask_login import login_user
+from huey import RedisHuey
 
-from portality.core import app
+from portality import constants
 from portality import models
 from portality.bll import DOAJ
-from portality import constants
-
-import traceback
-from copy import deepcopy
+from portality.core import app
 
 
 class BackgroundException(Exception):
@@ -187,6 +187,11 @@ class BackgroundTask(object):
     @classmethod
     def set_reference(cls, refs, ref_name, value):
         refs['{}__{}'.format(cls.__action__, ref_name)] = value
+
+    @classmethod
+    def create_huey_helper(cls, task_queue: RedisHuey):
+        from portality.tasks.helpers import background_helper
+        return background_helper.RedisHueyTaskHelper(task_queue, cls.__action__)
 
 
 class AdminBackgroundTask(BackgroundTask):

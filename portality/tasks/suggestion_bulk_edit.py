@@ -1,25 +1,22 @@
-from copy import deepcopy
 import json
+from copy import deepcopy
 from datetime import datetime
 
 from flask_login import current_user
 
 from portality import models, lock
-from portality.core import app
-
-from portality.tasks.redis_huey import main_queue
-from portality.decorators import write_required
-
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
+from portality.core import app
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.lib.formulaic import FormulaicException
+from portality.tasks.redis_huey import main_queue
 
 
 def suggestion_manage(selection_query, dry_run=True, editor_group='', note='', application_status=''):
     ids = SuggestionBulkEditBackgroundTask.resolve_selection_query(selection_query)
     if dry_run:
         SuggestionBulkEditBackgroundTask.check_admin_privilege(current_user.id)
-        return BackgroundSummary(None, affected={"applications" : len(ids)})
+        return BackgroundSummary(None, affected={"applications": len(ids)})
         # return len(ids)
 
     job = SuggestionBulkEditBackgroundTask.prepare(
@@ -36,7 +33,7 @@ def suggestion_manage(selection_query, dry_run=True, editor_group='', note='', a
     job_id = None
     if job is not None:
         job_id = job.id
-    return BackgroundSummary(job_id, affected={"applications" : affected})
+    return BackgroundSummary(job_id, affected={"applications": affected})
 
     # return len(ids)
 
@@ -50,7 +47,8 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
         # we need at least one of, "editor_group" or "note" or "application_status"
         return bool(
             cls.get_param(params, 'ids') and \
-            (cls.get_param(params, 'editor_group') or cls.get_param(params, 'note') or cls.get_param(params, 'application_status'))
+            (cls.get_param(params, 'editor_group') or cls.get_param(params, 'note') or cls.get_param(params,
+                                                                                                     'application_status'))
         )
 
     def run(self):
@@ -117,13 +115,15 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
                         fc.finalise(account)
                     except FormulaicException as e:
                         job.add_audit_message(
-                            "Form context exception while bulk editing suggestion {} :\n{}".format(suggestion_id, str(e)))
+                            "Form context exception while bulk editing suggestion {} :\n{}".format(suggestion_id,
+                                                                                                   str(e)))
                 else:
                     data_submitted = {}
                     for affected_field_name in list(fc.form.errors.keys()):
                         affected_field = getattr(fc.form, affected_field_name,
                                                  ' Field {} does not exist on form. '.format(affected_field_name))
-                        if isinstance(affected_field, str):  # ideally this should never happen, an error should not be reported on a field that is not present on the form
+                        # ideally this should never happen, an error should not be reported on a field that is not present on the form
+                        if isinstance(affected_field, str):
                             data_submitted[affected_field_name] = affected_field
                             continue
 
@@ -183,10 +183,12 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
             raise BackgroundException("{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
+        job.queue_id = huey_helper.queue_id
 
         # now ensure that we have the locks for all the suggestions
         # will raise an exception if this fails
-        lock.batch_lock("suggestion", kwargs['ids'], username, timeout=app.config.get("BACKGROUND_TASK_LOCK_TIMEOUT", 3600))
+        lock.batch_lock("suggestion", kwargs['ids'], username,
+                        timeout=app.config.get("BACKGROUND_TASK_LOCK_TIMEOUT", 3600))
 
         return job
 
@@ -202,8 +204,10 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
         suggestion_bulk_edit.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.task()
-@write_required(script=True)
+huey_helper = SuggestionBulkEditBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_execute(is_load_config=False)
 def suggestion_bulk_edit(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = SuggestionBulkEditBackgroundTask(job)

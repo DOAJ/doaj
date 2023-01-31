@@ -1,12 +1,11 @@
 import feedparser
 
 from portality import models
-from portality.core import app
-
-from portality.tasks.redis_huey import main_queue, schedule
-from portality.decorators import write_required
-
 from portality.background import BackgroundTask, BackgroundApi
+from portality.core import app
+from portality.tasks.helpers import background_helper
+from portality.tasks.redis_huey import main_queue
+
 
 class FeedError(Exception):
     pass
@@ -41,10 +40,8 @@ class ReadNewsBackgroundTask(BackgroundTask):
         """
 
         # first prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
-        return job
+        return background_helper.create_job(username, cls.__action__,
+                                            queue_id=huey_helper.queue_id, )
 
     @classmethod
     def submit(cls, background_job):
@@ -98,15 +95,17 @@ def save_entry(entry):
     news.save()
 
 
-@main_queue.periodic_task(schedule("read_news"))
-@write_required(script=True)
+huey_helper = ReadNewsBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_schedule
 def scheduled_read_news():
     user = app.config.get("SYSTEM_USERNAME")
     job = ReadNewsBackgroundTask.prepare(user)
     ReadNewsBackgroundTask.submit(job)
 
-@main_queue.task()
-@write_required(script=True)
+
+@huey_helper.register_execute(is_load_config=False)
 def read_news(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = ReadNewsBackgroundTask(job)

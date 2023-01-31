@@ -1,15 +1,16 @@
-from portality import models
-from portality.lib import dates
+import csv
+import os
+import shutil
+
 from portality import datasets
-from portality.core import app
-
-from portality.background import BackgroundApi, BackgroundTask
-from portality.tasks.redis_huey import main_queue, schedule
+from portality import models
 from portality.app_email import email_archive
-from portality.decorators import write_required
+from portality.background import BackgroundApi, BackgroundTask
+from portality.core import app
 from portality.dao import ESMappingMissingError, ScrollInitialiseException
-
-import os, shutil, csv
+from portality.lib import dates
+from portality.tasks.helpers import background_helper
+from portality.tasks.redis_huey import main_queue
 
 
 def provenance_reports(fr, to, outdir):
@@ -385,16 +386,15 @@ class ReportingBackgroundTask(BackgroundTask):
         :return: a BackgroundJob instance representing this task
         """
 
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
 
         params = {}
         cls.set_param(params, "outdir", kwargs.get("outdir", "report_" + dates.today()))
         cls.set_param(params, "from", kwargs.get("from_date", "1970-01-01T00:00:00Z"))
         cls.set_param(params, "to", kwargs.get("to_date", dates.now()))
         cls.set_param(params, "email", kwargs.get("email", False))
-        job.params = params
+        job = background_helper.create_job(username, cls.__action__,
+                                           queue_id=huey_helper.queue_id,
+                                           params=params)
 
         return job
 
@@ -410,8 +410,10 @@ class ReportingBackgroundTask(BackgroundTask):
         run_reports.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.periodic_task(schedule("reporting"))
-@write_required(script=True)
+huey_helper = ReportingBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_schedule
 def scheduled_reports():
     user = app.config.get("SYSTEM_USERNAME")
     mail = bool(app.config.get("REPORTS_EMAIL_TO", False))                          # Send email if recipient configured
@@ -421,8 +423,7 @@ def scheduled_reports():
     ReportingBackgroundTask.submit(job)
 
 
-@main_queue.task()
-@write_required(script=True)
+@huey_helper.register_execute(is_load_config=False)
 def run_reports(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = ReportingBackgroundTask(job)
