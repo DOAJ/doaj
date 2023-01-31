@@ -29,9 +29,8 @@ The publishers on this page have chosen to show their commitment to quality, pee
 |                          | A one-pager for  journal editors explaining, in general terms, how article metadata is ingested, and then pulled downstream by discovery services. | A one-pager for journal editors explaining, in general terms, how article metadata is ingested, and then pulled downstream by discovery services.|
 |                          | General presentation or documentation, for raising awareness among your stakeholders, about the benefits of DOAJ, the work we do and how DOAJ benefits individual journal titles. | Dedicated presentation or documentation, tailored to your organisation, about the benefits of DOAJ, the work we do and how DOAJ benefits individual journal titles. Written as a joint document with the publisher. |
 |                          | A report, (a Google Sheet), collecting metadata errors, as reported to us by discovery services. | A report, (a Google Sheet), collecting metadata errors, as reported to us by discovery services. |
-|                          | Access to our testing site for API testing      | A yearly account review between the customer and DOAJ. The agenda can be determined by the publisher contact and a DOAJ representative. |
+|                          |                                                 | A yearly account review between the customer and DOAJ. The agenda can be determined by the publisher contact and a DOAJ representative. |
 |                          |                                                 | A CSV file, generated annually, for recording changes in and which DOAJ updates your live records with. |
-|                          |                                                 | Exposure across all our social media channels: Twitter, Instagram, LinkedIn, Facebook, WeChat. (Stats available.) |
-|                          |                                                 | Access to our testing site for API testing   | 
+|                          |                                                 | Exposure across all our social media channels: Twitter, Instagram, LinkedIn, Facebook, WeChat. (Stats available.) | 
 
 ## Other publisher supporters
