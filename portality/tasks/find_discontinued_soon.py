@@ -95,7 +95,7 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        find_discontinued_soon.schedule(args=(background_job.id,), delay=1)
+        find_discontinued_soon.schedule(args=(background_job.id,), delay=86400)
 
 huey_helper = RequestESBackupBackgroundTask.create_huey_helper(main_queue)
 
