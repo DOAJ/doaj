@@ -10,7 +10,7 @@ featuremap:
 
 ---
 
-The data dump is temporarily unavailable, please check back again soon.
+We were obliged to take down the public data dump service on Friday 26th January. This is because, due to a sudden spike, the number of data downloads was so large that it was incurring unforeseen costs. We are committed, however, to providing a data dump service but need some time to investigate a more sustainable way of delivering this data. If you have questions, please email Dominic Mitchell, Operations Manager: [dominic@doaj.org](mailto:dominic@doaj.org).
 
 [//]: # (An [exportable version of the journal metadata]&#40;/csv&#41; is available as a CSV file.)
 
