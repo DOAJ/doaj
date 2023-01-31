@@ -1354,3 +1354,5 @@ BG_MONITOR_QUEUED_CONFIG = {
     }
 }
 
+# report journals that discontinue in ... days (eg. 1 = tomorrow)
+DISCONTINUED_DATE_DELTA = 1
