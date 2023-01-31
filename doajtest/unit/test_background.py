@@ -28,7 +28,7 @@ class TestBackground(DoajTestCase):
 
         job = task.background_job
         assert job.status == "complete"
-        assert job.outcome_status == BgjobOutcomeStatus.Success.value
+        assert job.outcome_status == BgjobOutcomeStatus.Success
         assert len(job.audit) > 2   # there will be some messages, no need to be too specific
 
     def test_02_with_user_cleanup_fail(self):
@@ -42,7 +42,7 @@ class TestBackground(DoajTestCase):
 
         job = task.background_job
         assert job.status == "error"
-        assert job.outcome_status == BgjobOutcomeStatus.Fail.value
+        assert job.outcome_status == BgjobOutcomeStatus.Fail
         assert len(job.audit) > 2   # there will be some messages, no need to be too specific
 
     def test_03_with_user_run_fail(self):
@@ -57,7 +57,7 @@ class TestBackground(DoajTestCase):
         job = task.background_job
         assert job.status == "error"
         assert len(job.audit) > 2   # there will be some messages, no need to be too specific
-        assert job.outcome_status == BgjobOutcomeStatus.Fail.value
+        assert job.outcome_status == BgjobOutcomeStatus.Fail
 
     def test_04_no_user_success(self):
         task = BackgroundFixtureFactory.get_task()
@@ -67,7 +67,7 @@ class TestBackground(DoajTestCase):
         job = task.background_job
         assert job.status == "complete"
         assert len(job.audit) > 2   # there will be some messages, no need to be too specific
-        assert job.outcome_status == BgjobOutcomeStatus.Success.value
+        assert job.outcome_status == BgjobOutcomeStatus.Success
 
     def test_05_no_user_cleanup_fail(self):
         task = BackgroundFixtureFactory.get_task(cleanup_fail=True)
@@ -77,7 +77,7 @@ class TestBackground(DoajTestCase):
         job = task.background_job
         assert job.status == "error"
         assert len(job.audit) > 2   # there will be some messages, no need to be too specific
-        assert job.outcome_status == BgjobOutcomeStatus.Fail.value
+        assert job.outcome_status == BgjobOutcomeStatus.Fail
 
     def test_06_no_user_run_fail(self):
         task = BackgroundFixtureFactory.get_task(run_fail=True)
@@ -87,4 +87,4 @@ class TestBackground(DoajTestCase):
         job = task.background_job
         assert job.status == "error"
         assert len(job.audit) > 2   # there will be some messages, no need to be too specific
-        assert job.outcome_status == BgjobOutcomeStatus.Fail.value
+        assert job.outcome_status == BgjobOutcomeStatus.Fail

@@ -1,5 +1,3 @@
-from typing import Union
-
 from portality import dao
 from portality.constants import BgjobOutcomeStatus
 from portality.core import app
@@ -120,9 +118,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         self.outcome_status = BgjobOutcomeStatus.Fail
 
     @outcome_status.setter
-    def outcome_status(self, outcome_status: Union[str, BgjobOutcomeStatus]):
-        if isinstance(outcome_status, BgjobOutcomeStatus):
-            outcome_status = outcome_status.value
+    def outcome_status(self, outcome_status: str):
         self._set_with_struct('outcome_status', outcome_status)
 
     def add_audit_message(self, msg, timestamp=None):
@@ -171,7 +167,7 @@ BACKGROUND_STRUCT = {
 
         # status of bgjob result (business logic level), for example, The job completed without exception,
         # but the action the user wanted was not carried out for some reason
-        "outcome_status": {"coerce": "unicode", **seamless.create_allowed_values_by_enum(BgjobOutcomeStatus)},
+        "outcome_status": {"coerce": "unicode", **seamless.create_allowed_values_by_constant(BgjobOutcomeStatus)},
     },
     "lists": {
         "audit": {"contains": "object"}

@@ -65,7 +65,7 @@ class BackgroundApi(object):
 
         try:
             background_task.run()
-            if job.outcome_status == BgjobOutcomeStatus.Pending.value:
+            if job.outcome_status == BgjobOutcomeStatus.Pending:
                 job.outcome_status = BgjobOutcomeStatus.Success
         except RetryException:
             if job.reference is None:

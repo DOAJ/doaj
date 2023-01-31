@@ -1278,7 +1278,7 @@ class TestModels(DoajTestCase):
 
         retrieved = models.BackgroundJob.pull(bj.id)
         assert retrieved is not None
-        assert bj.outcome_status == BgjobOutcomeStatus.Pending.value
+        assert bj.outcome_status == BgjobOutcomeStatus.Pending
 
         source = BackgroundFixtureFactory.example()
         source["params"]["ids"] = ["1", "2", "3"]
@@ -1289,7 +1289,7 @@ class TestModels(DoajTestCase):
 
         bj.add_audit_message("message")
         assert len(bj.audit) == 2
-        assert bj.outcome_status == BgjobOutcomeStatus.Pending.value
+        assert bj.outcome_status == BgjobOutcomeStatus.Pending
 
     def test_26a_background_job_active(self):
         source = BackgroundFixtureFactory.example()

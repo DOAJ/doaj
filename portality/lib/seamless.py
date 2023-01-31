@@ -1,9 +1,11 @@
 import locale
-from enum import Enum
-from typing import Type
-from urllib.parse import urlparse
 from copy import deepcopy
 from datetime import datetime
+from typing import Type
+from urllib.parse import urlparse
+
+from portality.constants import ConstantList
+
 
 ###############################################
 ## Common coerce functions
@@ -1043,7 +1045,7 @@ class Construct(object):
         recurse(self, "[root]")
 
 
-def create_allowed_values_by_enum(enum_class: Type[Enum]):
+def create_allowed_values_by_constant(constant_class: Type[ConstantList]):
     return {
-        'allowed_values': [x.value for x in enum_class]
+        'allowed_values': list(constant_class.all_constants())
     }

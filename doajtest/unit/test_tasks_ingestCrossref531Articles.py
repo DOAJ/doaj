@@ -33,7 +33,7 @@ ARTICLES = os.path.join(RESOURCES, "crossref531_article_uploads.xml")
 
 
 def assert_outcome_fail_by_task(task: BackgroundTask):
-    assert task.background_job.outcome_status == BgjobOutcomeStatus.Fail.value
+    assert task.background_job.outcome_status == BgjobOutcomeStatus.Fail
 
 
 class TestIngestArticlesCrossref531XML(DoajTestCase):
@@ -664,7 +664,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         assert file_upload.status == "processed"
         assert file_upload.imported == 1
         assert file_upload.new == 1
-        assert task.background_job.outcome_status == BgjobOutcomeStatus.Pending.value
+        assert task.background_job.outcome_status == BgjobOutcomeStatus.Pending
 
     def test_24_process_invalid_file(self):
 
