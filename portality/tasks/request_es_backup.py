@@ -73,7 +73,7 @@ class RequestESBackupBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        request_es_backup.schedule(args=(background_job.id,), delay=10)
+        request_es_backup.schedule(args=(background_job.id,), delay=86400)
 
 
 huey_helper = RequestESBackupBackgroundTask.create_huey_helper(main_queue)
