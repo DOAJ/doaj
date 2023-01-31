@@ -95,19 +95,19 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        request_es_backup.schedule(args=(background_job.id,), delay=1)
+        find_discontinued_soon.schedule(args=(background_job.id,), delay=1)
 
 huey_helper = RequestESBackupBackgroundTask.create_huey_helper(main_queue)
 
 @huey_helper.register_schedule
-def scheduled_request_es_backup():
+def scheduled_find_discontinued_soon():
     user = app.config.get("SYSTEM_USERNAME")
     job = FindDiscontinuedSoonBackgroundTask.prepare(user)
     FindDiscontinuedSoonBackgroundTask.submit(job)
 
 
 @huey_helper.register_execute(is_load_config=False)
-def request_es_backup(job_id):
+def find_discontinued_soon(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = FindDiscontinuedSoonBackgroundTask(job)
     BackgroundApi.execute(task)
