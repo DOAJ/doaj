@@ -109,6 +109,12 @@ class Messages(object):
 
     NOTIFY__DEFAULT_SHORT_NOTIFICATION = "You have a new notification"
 
+    DISCONTINUED_JOURNAL_FOUND_LOG = "Journal discontinuing soon found: {id}"
+    DISCONTINUED_JOURNALS_FOUND_EMAIL_SENT_LOG = "Email with journals discontinuing soon sent"
+    DISCONTINUED_JOURNALS_FOUND_EMAIL_ERROR_LOG = "Error sending email with journals discountinuing soon."
+    NO_DISCONTINUED_JOURNALS_FOUND_LOG = "No journals discontinuing soon found"
+
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):

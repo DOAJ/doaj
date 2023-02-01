@@ -341,6 +341,7 @@ ADMINS = ["steve@cottagelabs.com", "mark@cottagelabs.com"]
 MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
 CONTACT_FORM_ADDRESS = "feedback+contactform@doaj.org"
 SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS = ["helpdesk@doaj.org"]
+DISCONTINUED_JOURNALS_FOUND_RECEIPIENTS = ["dom@doaj.org"]
 
 SYSTEM_EMAIL_FROM = 'helpdesk@doaj.org'
 CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the future

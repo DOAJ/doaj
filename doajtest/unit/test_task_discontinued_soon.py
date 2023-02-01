@@ -6,6 +6,7 @@ from doajtest.helpers import DoajTestCase
 from portality.core import app
 from portality import models
 from portality.tasks import find_discontinued_soon
+from portality.ui.messages import Messages
 from doajtest.fixtures import JournalFixtureFactory
 
 class TestDiscontinuedSoon(DoajTestCase):
@@ -44,9 +45,9 @@ class TestDiscontinuedSoon(DoajTestCase):
         task.run()
 
         assert len(job.audit) == 3
-        assert job.audit[0]["message"] == "Journal discontinuing soon found: 1"
-        assert job.audit[1]["message"] == "Journal discontinuing soon found: 2"
-        assert job.audit[2]["message"] == "Email with journals discontinuing soon sent"
+        assert job.audit[0]["message"] == Messages.DISCONTINUED_JOURNAL_FOUND_LOG.format(id="1")
+        assert job.audit[1]["message"] == Messages.DISCONTINUED_JOURNAL_FOUND_LOG.format(id="2")
+        assert job.audit[2]["message"] == Messages.DISCONTINUED_JOURNALS_FOUND_EMAIL_SENT_LOG
 
     def test_discontinued_soon_not_found(self):
 
@@ -62,4 +63,4 @@ class TestDiscontinuedSoon(DoajTestCase):
         task.run()
 
         assert len(job.audit) == 1
-        assert job.audit[0]["message"] == "No journals discontinuing soon found"
+        assert job.audit[0]["message"] == Messages.NO_DISCONTINUED_JOURNALS_FOUND_LOG
