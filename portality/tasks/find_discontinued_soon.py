@@ -41,6 +41,7 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
         jdata = []
 
         for journal in models.Journal.iterate(q=DiscontinuedSoonQuery.query(), keepalive='5m', wrap=True):
+            # ~~->Journal:Model~~
             bibjson = journal.bibjson()
             owner = journal.owner
             account = models.Account.pull(owner)
@@ -58,6 +59,7 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
 
 
     def send_email(self, data, job):
+        # ~~->Email:ExternalService~~
         try:
             # send warning email about the service tag in article metadata detected
             to = app.config.get('DISCONTINUED_JOURNALS_FOUND_RECEIPIENTS')
