@@ -5,7 +5,10 @@ import json
 from portality.core import app
 from portality import models,app_email
 
-from portality.background import BackgroundTask
+from portality.tasks.redis_huey import main_queue
+
+from portality.background import BackgroundTask, BackgroundSummary
+from portality.tasks.helpers import background_helper
 
 
 def _date():
@@ -34,6 +37,7 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
     __action__ = "find_discontinued_soon"
 
     def run(self):
+        job = self.background_job
         jdata = []
 
         for journal in models.Journal.iterate(q=DiscontinuedSoonQuery.query(), keepalive='5m', wrap=True):
@@ -47,22 +51,28 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
                           "pissn": bibjson.get_one_identifier(bibjson.P_ISSN),
                           "account_email": account.email if account else "Not Found",
                           "publisher": bibjson.publisher})
+            job.add_audit_message("Journal discontinuing soon found: " + journal.id)
 
-        try:
-            # send warning email about the service tag in article metadata detected
-            to = app.config.get('SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS')
-            fro = app.config.get("SYSTEM_EMAIL_FROM", "helpdesk@doaj.org")
-            subject = app.config.get("SERVICE_NAME", "") + " - script tag detected in application metadata"
-            es_type = "application"
-            app_email.send_mail(to=to,
-                                fro=fro,
-                                subject=subject,
-                                template_name="email/discontinue_soon.jinja2",
-                                es_type=es_type,
-                                days=app.config.get('DISCONTINUED_DATE_DELTA',1),
-                                data=json.dumps({"data": jdata}, indent=4, separators=(',', ': ')))
-        except app_email.EmailException:
-            app.logger.exception('Error sending email with journals discountinuing soon - ' + jdata)
+        if len(jdata):
+            try:
+                # send warning email about the service tag in article metadata detected
+                to = app.config.get('SCRIPT_TAG_DETECTED_EMAIL_RECIPIENTS')
+                fro = app.config.get("SYSTEM_EMAIL_FROM", "helpdesk@doaj.org")
+                subject = app.config.get("SERVICE_NAME", "") + " - script tag detected in application metadata"
+                es_type = "application"
+                app_email.send_mail(to=to,
+                                    fro=fro,
+                                    subject=subject,
+                                    template_name="email/discontinue_soon.jinja2",
+                                    es_type=es_type,
+                                    days=app.config.get('DISCONTINUED_DATE_DELTA',1),
+                                    data=json.dumps({"data": jdata}, indent=4, separators=(',', ': ')))
+            except app_email.EmailException:
+                app.logger.exception('Error sending email with journals discountinuing soon - ' + jdata)
+
+            job.add_audit_message("Email with journals discontinuing soon sent")
+        else:
+            job.add_audit_message("No journals discontinuing soon found")
 
     def cleanup(self):
         """
@@ -95,9 +105,9 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        find_discontinued_soon.schedule(args=(background_job.id,), delay=86400)
+        find_discontinued_soon.schedule(args=(background_job.id,), delay=10)
 
-huey_helper = RequestESBackupBackgroundTask.create_huey_helper(main_queue)
+huey_helper = FindDiscontinuedSoonBackgroundTask.create_huey_helper(main_queue)
 
 @huey_helper.register_schedule
 def scheduled_find_discontinued_soon():
