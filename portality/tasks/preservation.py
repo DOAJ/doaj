@@ -126,10 +126,14 @@ class ArticlesList:
         self.__unbagged_articles = []
         self.__not_found_articles = []
         self.__no_files_articles = []
+        self.__uploaded_journals = []
         self.has_errors = False
 
     def add_successful_article(self, article: ArticlePackage):
         self.__successful_articles.append(os.path.basename(article.article_dir))
+
+    def add_uploaded_journal(self, journal_package):
+        self.__uploaded_journals.append(journal_package)
 
     def add_unowned_articles(self, article: ArticlePackage):
         self.has_errors = True
@@ -167,6 +171,9 @@ class ArticlesList:
 
     def no_files_articles(self):
         return self.__no_files_articles
+
+    def uploaded_journals(self):
+        return self.__uploaded_journals
 
     def get_count(self):
         return len(self.__successful_articles) + \
@@ -243,24 +250,39 @@ class PreservationBackgroundTask(BackgroundTask):
 
             job.add_audit_message("Create Package structure")
             articles_list = preserv.create_package_structure()
-            self.save_articles_list(articles_list, preserve_model)
+
             app.logger.debug("Created package structure")
 
             if len(articles_list.successful_articles()) > 0:
-                package = PreservationPackage(preserv.preservation_dir, job.user)
-                job.add_audit_message("Create preservation package")
-                tar_file = package.create_package()
-                app.logger.debug(f"Created tar file {tar_file}")
+                # Each subdirectory is a jornal and the directory name is ISSN of the journal
+                # iterate through the directories and upload each journal as an individual package
+                dirs = os.listdir(preserv.preservation_dir)
+                upload_failed = False
+                for sub_dir in dirs:
+                    tar_file = os.path.join(preserv.preservation_dir, sub_dir)
+                    package = PreservationPackage(tar_file, job.user)
+                    job.add_audit_message("Create preservation package")
+                    tar_file = package.create_package()
+                    app.logger.debug(f"Created tar file {tar_file}")
 
-                job.add_audit_message("Create shasum")
-                sha256 = package.sha256()
+                    job.add_audit_message("Create shasum")
+                    sha256 = package.sha256()
 
-                job.add_audit_message("Upload package")
-                response = package.upload_package(sha256)
-                app.logger.debug(f"Uploaded. Response{response.text}")
+                    job.add_audit_message("Upload package")
+                    response = package.upload_package(sha256)
+                    app.logger.debug(f"Uploaded. Response{response.text}")
 
-                job.add_audit_message("Validate response")
-                self.validate_response(response, tar_file, sha256, preserve_model)
+                    job.add_audit_message("Validate response")
+                    self.validate_response(response, tar_file, sha256, preserve_model)
+
+                    if preserve_model.status == 'failed':
+                        upload_failed = True
+                        break
+                    else:
+                        articles_list.add_uploaded_journal(package.tar_file_name)
+
+                if not upload_failed:
+                    preserve_model.uploaded_to_ia()
 
                 # Check if the only few articles are successful
                 if articles_list.is_partial_success():
@@ -277,6 +299,8 @@ class PreservationBackgroundTask(BackgroundTask):
                     else:
                         preserve_model.failed(FailedReasons.no_valid_article_available)
                         preserve_model.save()
+
+            self.save_articles_list(articles_list, preserve_model)
 
         except (PreservationException, Exception) as exp:
             # ~~-> PreservationException:Exception~~
@@ -305,6 +329,8 @@ class PreservationBackgroundTask(BackgroundTask):
             model.unbagged_articles(articles_list.unbagged_articles())
         if len(articles_list.no_files_articles()) > 0:
             model.no_files_articles(articles_list.no_files_articles())
+        if len(articles_list.uploaded_journals()) > 0:
+            model.uploaded_journals(articles_list.uploaded_journals())
         model.save()
 
     def cleanup(self):
@@ -345,8 +371,7 @@ class PreservationBackgroundTask(BackgroundTask):
 
                 if res_filename and res_filename == tar_file:
                     if res_shasum and res_shasum == sha256:
-                        app.logger.info("successfully uploaded")
-                        model.uploaded_to_ia()
+                        app.logger.info("successfully uploaded " + tar_file)
                     else:
                         model.failed(FailedReasons.checksum_doesnot_match)
                 else:
@@ -379,7 +404,7 @@ class PreservationBackgroundTask(BackgroundTask):
 
             model.save()
         else:
-            app.logger.error(f"Upload failed {response.text}")
+            app.logger.error(f"Upload failed for {tar_file}. Reason - {response.text}")
             model.failed(response.text)
             model.save()
 
@@ -680,7 +705,8 @@ class PreservationPackage:
 
     def __init__(self, directory, owner):
         self.package_dir = directory
-        self.tar_file = self.package_dir + ".tar.gz"
+        created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
+        self.tar_file = directory + "_" + created_time + ".tar.gz"
         self.tar_file_name = os.path.basename(self.tar_file)
         self.__owner = owner
 
