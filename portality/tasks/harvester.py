@@ -25,7 +25,7 @@ class BGHarvesterLogger(object):
 
     def log(self, msg):
         # self._job.add_audit_message(msg)
-        self._fh.write("[{d}] {m}\n".format(d=dates.now(), m=msg))
+        self._fh.write("[{d}] {m}\n".format(d=dates.now_str(), m=msg))
 
     def close(self):
         self._fh.close()

@@ -331,7 +331,7 @@ class ReportingBackgroundTask(BackgroundTask):
 
         outdir = self.get_param(params, "outdir", "report_" + dates.today())
         fr = self.get_param(params, "from", DEFAULT_TIMESTAMP_VAL)
-        to = self.get_param(params, "to", dates.now())
+        to = self.get_param(params, "to", dates.now_str())
 
         job.add_audit_message("Saving reports to " + outdir)
         if not os.path.exists(outdir):
@@ -391,7 +391,7 @@ class ReportingBackgroundTask(BackgroundTask):
         params = {}
         cls.set_param(params, "outdir", kwargs.get("outdir", "report_" + dates.today()))
         cls.set_param(params, "from", kwargs.get("from_date", DEFAULT_TIMESTAMP_VAL))
-        cls.set_param(params, "to", kwargs.get("to_date", dates.now()))
+        cls.set_param(params, "to", kwargs.get("to_date", dates.now_str()))
         cls.set_param(params, "email", kwargs.get("email", False))
         job = background_helper.create_job(username, cls.__action__,
                                            queue_id=huey_helper.queue_id,

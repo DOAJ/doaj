@@ -47,7 +47,7 @@ if __name__ == "__main__":
             sofar += 1
             if sofar % 1000 == 0:
                 eta = dates.eta(start, sofar, total)
-                print("{now} : {sofar}/{total} | ETA {eta}".format(now=dates.now(), sofar=sofar, total=total, eta=eta))
+                print("{now} : {sofar}/{total} | ETA {eta}".format(now=dates.now_str(), sofar=sofar, total=total, eta=eta))
 
             article = models.Article(**a)
             bibjson = article.bibjson()

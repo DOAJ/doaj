@@ -99,7 +99,7 @@ def document(klazz, field_descriptions):
 def type_map(t):
     type = DO_TYPE_TO_JSON_TYPE.get(t, "string")
     if type == "timestamp":
-        return dates.now()
+        return dates.now_str()
     elif type == "datestamp":
         return dates.format(datetime.utcnow(), "%Y-%m-%d")
     return type

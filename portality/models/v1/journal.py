@@ -56,7 +56,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def set_created(self, date=None):
         if date is None:
-            date = dates.now()
+            date = dates.now_str()
         self._set_with_struct("created_date", date)
 
     @property
@@ -69,7 +69,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def set_last_updated(self, date=None):
         if date is None:
-            date = dates.now()
+            date = dates.now_str()
         self._set_with_struct("last_updated", date)
 
     @property
@@ -93,7 +93,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def set_last_manual_update(self, date=None):
         if date is None:
-            date = dates.now()
+            date = dates.now_str()
         self._set_with_struct("last_manual_update", date)
 
     @property
@@ -132,7 +132,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def add_note(self, note, date=None):
         if date is None:
-            date = dates.now()
+            date = dates.now_str()
         obj = {"date" : date, "note" : note}
         self._delete_from_list("admin.notes", matchsub=obj)
         self._add_to_list_with_struct("admin.notes", obj)

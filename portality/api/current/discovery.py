@@ -265,7 +265,7 @@ class DiscoveryApi(Api):
             "total": total,
             "page": page,
             "pageSize": page_size,
-            "timestamp": dates.now_with_microseconds(),
+            "timestamp": dates.now_str_with_microseconds(),
             "query": q,
             "results": obs
         }

@@ -45,7 +45,7 @@ class Notification(DomainObject):
         return "seen_date" in self.data
 
     def set_seen(self):
-        self.seen_date = dates.now()
+        self.seen_date = dates.now_str()
 
     @property
     def action(self):

@@ -15,7 +15,7 @@ class DefaultLogger():
 
     def log(self, msg):
         self._log.append({
-            "timestamp": dates.now_with_microseconds(),
+            "timestamp": dates.now_str_with_microseconds(),
             "message" : msg
         })
 

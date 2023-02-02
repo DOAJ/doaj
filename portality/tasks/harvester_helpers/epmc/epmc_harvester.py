@@ -13,7 +13,7 @@ class DefaultLogger():
 
     def log(self, msg):
         self._log.append({
-            "timestamp": dates.now_with_microseconds(),
+            "timestamp": dates.now_str_with_microseconds(),
             "message" : msg
         })
 
@@ -33,7 +33,7 @@ class EPMCHarvester(HarvesterPlugin):
     def iterate(self, issn, since, to=None):
         # set the default value for to, if not already set
         if to is None:
-            to = dates.now()
+            to = dates.now_str()
 
         # get the dates into a datestamp
         sd = dates.parse(since)

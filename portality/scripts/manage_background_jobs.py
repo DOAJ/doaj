@@ -138,7 +138,7 @@ if __name__ == '__main__':
                         default=DEFAULT_TIMESTAMP_VAL)
     parser.add_argument('-t', '--to_date',
                         help='Date to which to look for jobs in the given type and status',
-                        default=dates.now())
+                        default=dates.now_str())
     args = parser.parse_args()
 
     if args.requeue and args.cancel:

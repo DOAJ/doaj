@@ -130,7 +130,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     def set_created(self, date=None):
         if date is None:
-            date = dates.now()
+            date = dates.now_str()
         self.__seamless__.set_with_struct("created_date", date)
 
     @property
@@ -143,7 +143,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     def set_last_updated(self, date=None):
         if date is None:
-            date = dates.now()
+            date = dates.now_str()
         self.__seamless__.set_with_struct("last_updated", date)
 
     @property
@@ -159,7 +159,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     def set_last_manual_update(self, date=None):
         if date is None:
-            date = dates.now()
+            date = dates.now_str()
         self.__seamless__.set_with_struct("last_manual_update", date)
 
     @property
@@ -250,7 +250,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     def add_note(self, note, date=None, id=None):
         if not date:
-            date = dates.now()
+            date = dates.now_str()
         obj = {"date": date, "note": note, "id": id}
         self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
         if not id:

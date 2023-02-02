@@ -28,7 +28,7 @@ def parse(s, format=None, guess=True):
     raise ValueError("Unable to parse {x} with any known format".format(x=s))
 
 
-def format(d, format=None):
+def format(d, format=None) -> str:
     format = format or STD_DATETIME_FMT
     return str(d.strftime(format))
 
@@ -37,11 +37,11 @@ def reformat(s, in_format=None, out_format=None):
     return format(parse(s, format=in_format), format=out_format)
 
 
-def now():
+def now_str() -> str:
     return format(datetime.utcnow())
 
 
-def now_with_microseconds():
+def now_str_with_microseconds() -> str:
     return format(datetime.utcnow(), format="%Y-%m-%dT%H:%M:%S.%fZ")
 
 

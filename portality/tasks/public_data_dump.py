@@ -72,7 +72,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
         # Scroll for article and/or journal
         for typ in types:
-            job.add_audit_message(dates.now() + ": Starting export of " + typ)
+            job.add_audit_message(dates.now_str() + ": Starting export of " + typ)
             job.save()
 
             out_dir = tmpStore.path(container, "doaj_" + typ + "_data_" + day_at_start, create_container=True, must_exist=False)
@@ -131,7 +131,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         # finally update the cache
         cache.Cache.cache_public_data_dump(urls["article"], sizes["article"], urls["journal"], sizes["journal"])
 
-        job.add_audit_message(dates.now() + ": done")
+        job.add_audit_message(dates.now_str() + ": done")
 
     def _finish_file(self, storage, container, filename, path, out_file, tarball):
         out_file.write("]")

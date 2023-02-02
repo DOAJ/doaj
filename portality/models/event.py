@@ -8,7 +8,7 @@ class Event(object):
             self.data = raw
         else:
             self.data = {
-                "when" : dates.now()
+                "when" : dates.now_str()
             }
             if id is not None:
                 self.id = id

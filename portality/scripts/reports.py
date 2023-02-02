@@ -17,7 +17,7 @@ if __name__ == "__main__":
                         default=DEFAULT_TIMESTAMP_VAL)
     parser.add_argument("-t", "--to_date",
                         help="End date for reporting period (YYYY-MM-DDTHH:MM:SSZ)",
-                        default=dates.now())
+                        default=dates.now_str())
     parser.add_argument("-o", "--out",
                         help="Output directory into which reports should be made (will be created if it doesn't exist)",
                         default="report_" + dates.today())

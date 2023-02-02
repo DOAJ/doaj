@@ -77,7 +77,7 @@ class JournalService(object):
         application.set_owner(journal.owner)
         application.set_seal(journal.has_seal())
         application.set_bibjson(bj)
-        application.date_applied = dates.now()
+        application.date_applied = dates.now_str()
 
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed journal_2_application; return application object")
         return application

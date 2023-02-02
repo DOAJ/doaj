@@ -50,7 +50,8 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--out", help="output file path")
     parser.add_argument('-s', '--start_date', help=f'Last updated after threshold, default is {DEFAULT_TIMESTAMP_VAL}',
                         default=DEFAULT_TIMESTAMP_VAL)
-    parser.add_argument('-e', '--end_date', help='Last updated before threshold, default is now', default=dates.now_with_microseconds())
+    parser.add_argument('-e', '--end_date', help='Last updated before threshold, default is now',
+                        default=dates.now_str_with_microseconds())
     args = parser.parse_args()
 
     if not args.out:

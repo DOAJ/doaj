@@ -117,7 +117,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
 
     def add_audit_message(self, msg, timestamp=None):
         if timestamp is None:
-            timestamp = dates.now_with_microseconds()
+            timestamp = dates.now_str_with_microseconds()
         obj = {"message": msg, "timestamp": timestamp}
         self._add_to_list_with_struct("audit", obj)
 
