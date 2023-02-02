@@ -71,15 +71,15 @@ def random_date(fro=None, to=None):
     return format(to - timedelta(seconds=s))
 
 
-def before(timestamp, seconds):
+def before(timestamp, seconds) -> datetime:
     return timestamp - timedelta(seconds=seconds)
 
 
-def before_now(seconds: int):
+def before_now(seconds: int) -> datetime:
     return before(now(), seconds)
 
 
-def after(timestamp, seconds):
+def after(timestamp, seconds) -> datetime:
     return timestamp + timedelta(seconds=seconds)
 
 

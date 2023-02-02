@@ -55,7 +55,7 @@ class TestHarvester(DoajTestCase):
         # new job
         zombie = HarvesterBackgroundTask.prepare("testuser")
         zombie.start()
-        cd = dates.format(dates.before(dates.now(), app.config.get("HARVESTER_ZOMBIE_AGE") * 2))
+        cd = dates.format(dates.before_now(app.config.get("HARVESTER_ZOMBIE_AGE") * 2))
         zombie.set_created(cd)
         zombie.save(blocking=True)
 
