@@ -2,14 +2,12 @@ import itertools
 import json
 import os
 import time
-from datetime import datetime
 
 from unittest.mock import Mock, patch
 
 from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase, with_es
 from portality.core import app
-from portality.lib.dates import STD_DATE_FMT
 from portality.tasks.harvester import HarvesterBackgroundTask
 from portality import models
 from portality.tasks.harvester_helpers.epmc import models as h_models
@@ -39,7 +37,7 @@ class TestHarvester(DoajTestCase):
 
         app.config['HARVEST_ACCOUNTS'] = [self.publisher.id]
 
-        self.today = datetime.today().strftime(STD_DATE_FMT)
+        self.today = dates.today()
         app.config["INITIAL_HARVEST_DATE"] = self.today
 
     def tearDown(self):

@@ -132,7 +132,7 @@ class JournalService(object):
         ], exceptions.ArgumentException)
 
         # ~~->FileStoreTemp:Feature~~
-        filename = 'journalcsv__doaj_' + datetime.strftime(dates.now(), '%Y%m%d_%H%M') + '_utf8.csv'
+        filename = 'journalcsv__doaj_' + dates.now_str('%Y%m%d_%H%M') + '_utf8.csv'
         container_id = app.config.get("STORE_CACHE_CONTAINER")
         tmpStore = StoreFactory.tmp()
         out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)

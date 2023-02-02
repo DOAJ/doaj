@@ -55,7 +55,7 @@ class SiteService(object):
             base_url += "/"
 
         # ~~-> FileStoreTemp:Feature~~
-        filename = 'sitemap__doaj_' + datetime.strftime(dates.now(), '%Y%m%d_%H%M') + '_utf8.xml'
+        filename = 'sitemap__doaj_' + dates.now_str('%Y%m%d_%H%M') + '_utf8.xml'
         container_id = app.config.get("STORE_CACHE_CONTAINER")
         tmpStore = StoreFactory.tmp()
         out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)
