@@ -9,7 +9,7 @@ from portality.background import BackgroundApi, BackgroundTask
 from portality.core import app
 from portality.dao import ESMappingMissingError, ScrollInitialiseException
 from portality.lib import dates
-from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL, STD_DATE_FMT
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import main_queue
 
@@ -121,7 +121,7 @@ def _tabulate_time_entity_group(group, entityKey):
 
 def _fft(timestamp):
     """File Friendly Timestamp - Windows doesn't appreciate : / etc in filenames; strip these out"""
-    return dates.reformat(timestamp, dates.STD_DATETIME_FMT, "%Y-%m-%d")
+    return dates.reformat(timestamp, dates.STD_DATETIME_FMT, STD_DATE_FMT)
 
 
 class ReportCounter(object):
@@ -352,8 +352,8 @@ class ReportingBackgroundTask(BackgroundTask):
 
         send_email = self.get_param(params, "email", False)
         if send_email:
-            ref_fr = dates.reformat(fr, dates.STD_DATETIME_FMT, "%Y-%m-%d")
-            ref_to = dates.reformat(to, dates.STD_DATETIME_FMT, "%Y-%m-%d")
+            ref_fr = dates.reformat(fr, dates.STD_DATETIME_FMT, STD_DATE_FMT)
+            ref_to = dates.reformat(to, dates.STD_DATETIME_FMT, STD_DATE_FMT)
             archive_name = "reports_" + ref_fr + "_to_" + ref_to
             email_archive(outdir, archive_name)
             job.add_audit_message("email alert sent")

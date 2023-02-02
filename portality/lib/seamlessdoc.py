@@ -101,7 +101,7 @@ def type_map(t):
     if type == "timestamp":
         return dates.now_str()
     elif type == "datestamp":
-        return dates.format(datetime.utcnow(), "%Y-%m-%d")
+        return dates.format(datetime.utcnow(), STD_DATE_FMT)
     return type
 
 def datatype(t):

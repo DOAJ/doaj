@@ -7,7 +7,8 @@ from random import randint
 import math
 
 STD_DATETIME_FMT = app.config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')
-STD_DATETIME_MS_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
+STD_DATETIME_MS_FMT = '%Y-%m-%dT%H:%M:%S.%fZ'
+STD_DATE_FMT = '%Y-%m-%d'
 DEFAULT_TIMESTAMP_VAL = app.config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
 
 
@@ -47,7 +48,7 @@ def now_str_with_microseconds() -> str:
 
 
 def today():
-    return format(datetime.utcnow(), format="%Y-%m-%d")
+    return format(datetime.utcnow(), format=STD_DATE_FMT)
 
 
 def random_date(fro=None, to=None):

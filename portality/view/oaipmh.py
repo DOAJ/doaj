@@ -3,7 +3,7 @@ from lxml import etree
 from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
 from portality.core import app
-from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL
+from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL, STD_DATE_FMT
 from portality.models import OAIPMHJournal, OAIPMHArticle
 from portality.lib import plausible
 from portality.crosswalks.oaipmh import CROSSWALKS, make_set_spec, make_oai_identifier
@@ -109,7 +109,7 @@ class DateFormat(object):
 
     @classmethod
     def legitimate_granularity(cls, datestr):
-        formats = ["%Y-%m-%d", STD_DATETIME_FMT]
+        formats = [STD_DATE_FMT, STD_DATETIME_FMT]
         success = False
         for f in formats:
             try:
@@ -347,14 +347,6 @@ def _parameterised_list(identifiers_or_records, dao, base_url, specified_oai_end
 
     if not fl or not ul:
         return BadArgument(base_url)
-
-    # try:
-    # if from_date is not None:
-    #    datetime.strptime(from_date, "%Y-%m-%d")
-    # if until_date is not None:
-    #    datetime.strptime(until_date, "%Y-%m-%d")
-    # except:
-    #    return BadArgument(base_url)
 
     # get the result set size
     list_size = app.config.get("OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE", 25)

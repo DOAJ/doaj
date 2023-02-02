@@ -8,7 +8,7 @@ from portality import constants
 from portality import models
 from portality.lib import dataobj
 from portality.lib import seamless
-from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL
+from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL, STD_DATE_FMT
 from portality.models import shared_structs
 from portality.models.v1.bibjson import GenericBibJSON
 
@@ -628,7 +628,7 @@ class TestModels(DoajTestCase):
         assert bj.alternative_title == "Alternative Title"
         assert bj.boai is True
         assert bj.discontinued_date == "2001-01-01"
-        assert bj.discontinued_datestamp.strftime("%Y-%m-%d") == "2001-01-01"
+        assert bj.discontinued_datestamp.strftime(STD_DATE_FMT) == "2001-01-01"
         assert bj.eissn == "9876-5432"
         assert bj.pissn == "1234-5678"
         assert bj.publication_time_weeks == 8

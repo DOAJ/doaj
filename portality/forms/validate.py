@@ -5,6 +5,7 @@ from wtforms.compat import string_types
 from typing import List
 
 from portality.core import app
+from portality.lib.dates import STD_DATE_FMT
 from portality.models import Journal, EditorGroup, Account
 
 from datetime import datetime
@@ -540,7 +541,7 @@ class BigEndDate(object):
         if not field.data:
             return
         try:
-            datetime.strptime(field.data, '%Y-%m-%d')
+            datetime.strptime(field.data, STD_DATE_FMT)
         except Exception:
             raise validators.ValidationError(self.message)
 

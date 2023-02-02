@@ -6,6 +6,7 @@ from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
 from datetime import datetime
 
+from portality.lib.dates import STD_DATE_FMT
 from portality.ui.messages import Messages
 
 
@@ -263,7 +264,7 @@ class DOAJXWalk(object):
 
 def _year_month(date):
     try:
-        stamp = datetime.strptime(date, "%Y-%m-%d")
+        stamp = datetime.strptime(date, STD_DATE_FMT)
         return stamp.year, stamp.month
     except:
         pass
