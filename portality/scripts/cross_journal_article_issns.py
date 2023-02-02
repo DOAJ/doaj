@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
         counter = 1
         sofar = 0
-        start = datetime.utcnow()
+        start = dates.now()
         for a in esprit.tasks.scroll(conn, models.Article.__type__, IN_DOAJ, page_size=1000, keepalive='5m'):
             sofar += 1
             if sofar % 1000 == 0:

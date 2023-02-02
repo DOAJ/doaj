@@ -4,11 +4,12 @@ Build the SASS - main.css and optionally the widgets
 ~~->SASS:Technology~~
 """
 
-import sass
 import os
 import shutil
 
-from datetime import datetime
+import sass
+
+from portality.lib import dates
 
 # SASS directory
 SASS = os.path.join("cms", "sass")
@@ -34,7 +35,7 @@ def _localise_paths(paths, base_path=None):
     SCSS_IN, CSS_OUT, ERROR_OUT = paths
     SOURCE_MAP = CSS_OUT + ".map"
 
-    now = datetime.utcnow().timestamp()
+    now = dates.now().timestamp()
     if base_path is None:
         return SASS, SCSS_IN, CSS_OUT, CSS_OUT + "." + str(now), SOURCE_MAP, SOURCE_MAP + "." + str(now), ERROR_OUT
     return (os.path.join(base_path, SASS),

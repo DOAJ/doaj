@@ -716,9 +716,9 @@ class ArticleBibJSON(GenericBibJSON):
                         return date
 
                     # In the case of truncated years, assume it's this century if before the current year
-                    if intyear <= int(str(datetime.utcnow().year)[:-2]):
+                    if intyear <= int(str(dates.now().year)[:-2]):
                         self.year = "20" + self.year          # For readability over long-lasting code, I have refrained
-                    else:                                     # from using str(datetime.utcnow().year)[:2] here.
+                    else:                                     # from using str(dates.now().year)[:2] here.
                         self.year = "19" + self.year          # But don't come crying to me 90-ish years from now.
 
                 # if we still don't have a 4 digit year, forget it

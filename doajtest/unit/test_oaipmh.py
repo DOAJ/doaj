@@ -4,11 +4,12 @@ from doajtest.fixtures import ArticleFixtureFactory
 from portality import models
 from portality.app import app
 from lxml import etree
-from datetime import datetime, timedelta
+from datetime import timedelta
 from freezegun import freeze_time
 from flask import url_for
 import time
 
+from portality.lib import dates
 from portality.lib.dates import STD_DATE_FMT
 
 
@@ -148,7 +149,7 @@ class TestClient(DoajTestCase):
             jm.save(blocking=True)
 
         # ListRecords - we expect 3 total results and a resumptionToken to fetch the rest
-        yesterday = (datetime.utcnow() - timedelta(days=1)).strftime(STD_DATE_FMT)
+        yesterday = (dates.now() - timedelta(days=1)).strftime(STD_DATE_FMT)
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(yesterday))
@@ -187,10 +188,10 @@ class TestClient(DoajTestCase):
 
         journals = JournalFixtureFactory.make_many_journal_sources(4, in_doaj=True)
 
-        now = datetime.utcnow()
-        yesterday = datetime.utcnow() - timedelta(days=1)
-        day_before_yesterday = datetime.utcnow() - timedelta(days=2)
-        two_days_before_yesterday = datetime.utcnow() - timedelta(days=3)
+        now = dates.now()
+        yesterday = dates.now() - timedelta(days=1)
+        day_before_yesterday = dates.now() - timedelta(days=2)
+        two_days_before_yesterday = dates.now() - timedelta(days=3)
 
         # Save half of our journals 2 days ago
         with freeze_time(day_before_yesterday):

@@ -52,7 +52,7 @@ class EPMCHarvester(HarvesterPlugin):
         for fr, until in ranges:
             # throttle each day
             if last is not None and throttle is not None:
-                diff = (datetime.utcnow() - last).total_seconds()
+                diff = (dates.now() - last).total_seconds()
                 self._write_to_logger("Last day request at {x}, {y}s ago; throttle {z}s".format(x=last, y=diff, z=throttle))
                 if diff < throttle:
                     waitfor = throttle - diff
@@ -68,7 +68,7 @@ class EPMCHarvester(HarvesterPlugin):
                 article = self.crosswalk(record)
                 yield article, fr
 
-            last = datetime.utcnow()
+            last = dates.now()
 
     def crosswalk(self, record):
         article = doaj.Article()

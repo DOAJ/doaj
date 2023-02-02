@@ -4,6 +4,7 @@
 from portality.dao import DomainObject
 from datetime import datetime
 from portality.core import app
+from portality.lib import dates
 from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL
 
 
@@ -89,7 +90,7 @@ class Cache(DomainObject):
             lu = self.last_updated
 
         lu = datetime.strptime(lu, STD_DATETIME_FMT)
-        now = datetime.utcnow()
+        now = dates.now()
         dt = now - lu
 
         # compatibility with Python 2.6

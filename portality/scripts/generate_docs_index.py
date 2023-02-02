@@ -5,6 +5,8 @@ Generates the index pages for generated documentation
 import os
 from datetime import datetime
 
+from portality.lib import dates
+
 BRANCH_PREFIXES = [
     "feature",
     "hotfix",
@@ -41,7 +43,7 @@ def generate_global_index(file, dir):
 
 def generate_branch_index(file, dir):
     md = "# Documentation Index for {x}".format(x=os.path.basename(dir) + "\n\n")
-    md += "generated {x}\n\n".format(x=datetime.utcnow().strftime("%Y-%m-%d %H:%M"))
+    md += "generated {x}\n\n".format(x=dates.now().strftime("%Y-%m-%d %H:%M"))
     md += _generate_testbook_section(dir)
     md += _generate_data_models_section(dir)
     md += _generate_coverage_section(dir)

@@ -8,9 +8,9 @@ import shutil
 import yaml
 
 from copy import deepcopy
-from datetime import datetime
 
 from portality.cms import implied_attr_list
+from portality.lib import dates
 
 BASE = "cms"
 SRC = os.path.join(BASE, "pages")
@@ -20,7 +20,7 @@ ERROR = os.path.join(BASE, "error_fragments.txt")
 
 
 def _localise_paths(base_path=None):
-    now = datetime.utcnow().timestamp()
+    now = dates.now().timestamp()
     if base_path is None:
         return BASE, SRC, OUT, OUT + "." + str(now), FRONT_MATTER, FRONT_MATTER + "." + str(now), ERROR
 

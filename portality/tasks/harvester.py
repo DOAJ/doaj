@@ -102,7 +102,7 @@ class HarvesterBackgroundTask(BackgroundTask):
 
     def only_me(self):
         age = app.config.get("HARVESTER_ZOMBIE_AGE")
-        since = dates.format(dates.before(datetime.utcnow(), age))
+        since = dates.format(dates.before(dates.now(), age))
         actives = models.BackgroundJob.active(self.__action__, since=since)
         if self.background_job.id in [a.id for a in actives] and len(actives) == 1:
             return True

@@ -6,6 +6,7 @@ from flask_login import login_user, current_user
 from portality.api.common import Api401Error
 
 from portality.core import app
+from portality.lib import dates
 from portality.lib.dates import STD_DATETIME_FMT
 from portality.models import Account
 from portality.models.harvester import HarvesterProgressReport as Report
@@ -162,7 +163,7 @@ def capture_sigterm(fn):
                         to=to,
                         fro=fro,
                         subject="DOAJ Harvester caught SIGTERM at {0}".format(
-                            datetime.datetime.utcnow().strftime(STD_DATETIME_FMT)),
+                            dates.now().strftime(STD_DATETIME_FMT)),
                         msg_body=report
                     )
             app.logger.info(report)

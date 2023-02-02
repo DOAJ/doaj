@@ -150,13 +150,13 @@ class DomainObject(UserDict, object):
 
         self.data['es_type'] = self.__type__
 
-        now = datetime.utcnow().strftime(STD_DATETIME_FMT)
+        now = dates.now().strftime(STD_DATETIME_FMT)
         if (blocking or differentiate) and "last_updated" in self.data:
             diff = dates.now() - datetime.strptime(self.data["last_updated"], STD_DATETIME_FMT)
 
             # we need the new last_updated time to be later than the new one
             if diff.total_seconds() < 1:
-                soon = datetime.utcnow() + timedelta(seconds=1)
+                soon = dates.now() + timedelta(seconds=1)
                 now = soon.strftime(STD_DATETIME_FMT)
 
         self.data['last_updated'] = now

@@ -1,7 +1,6 @@
 import os
 import requests
 from io import BytesIO
-from datetime import datetime
 from unittest.mock import patch
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.preservation import PreservationMock
@@ -22,7 +21,7 @@ class TestPreservation(DoajTestCase):
             self.zip_file = FileStorage(BytesIO(zf.read()), filename="articles.zip")
 
         self.upload_dir = app.config.get("UPLOAD_DIR", ".")
-        created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
+        created_time = dates.format(dates.now(), "%Y-%m-%d-%H-%M-%S")
         owner = "rama"
         dir_name = owner + "-" + created_time
         self.local_dir = os.path.join(preservation.Preservation.UPLOAD_DIR, dir_name)

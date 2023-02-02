@@ -45,15 +45,15 @@ def now() -> datetime:
 
 
 def now_str() -> str:
-    return format(datetime.utcnow())
+    return format(now())
 
 
 def now_str_with_microseconds() -> str:
-    return format(datetime.utcnow(), format=STD_DATETIME_MS_FMT)
+    return format(now(), format=STD_DATETIME_MS_FMT)
 
 
 def today():
-    return format(datetime.utcnow(), format=STD_DATE_FMT)
+    return format(now(), format=STD_DATE_FMT)
 
 
 def random_date(fro=None, to=None):
@@ -62,7 +62,7 @@ def random_date(fro=None, to=None):
     if isinstance(fro, str):
         fro = parse(fro)
     if to is None:
-        to = datetime.utcnow()
+        to = now()
     if isinstance(to, str):
         to = parse(to)
 
@@ -76,7 +76,7 @@ def before(timestamp, seconds):
 
 
 def before_now(seconds: int):
-    return before(datetime.utcnow(), seconds)
+    return before(now(), seconds)
 
 
 def after(timestamp, seconds):
@@ -84,8 +84,7 @@ def after(timestamp, seconds):
 
 
 def eta(since, sofar, total):
-    now = datetime.utcnow()
-    td = (now - since).total_seconds()
+    td = (now() - since).total_seconds()
     spr = float(td) / float(sofar)
     alltime = int(math.ceil(total * spr))
     fin = after(since, alltime)

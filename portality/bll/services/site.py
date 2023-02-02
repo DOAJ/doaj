@@ -6,7 +6,7 @@ from lxml import etree
 from portality import models
 from portality.bll import exceptions
 from portality.core import app
-from portality.lib import nav
+from portality.lib import nav, dates
 from portality.lib.argvalidate import argvalidate
 from portality.store import StoreFactory, prune_container
 from portality.util import get_full_url_safe
@@ -55,7 +55,7 @@ class SiteService(object):
             base_url += "/"
 
         # ~~-> FileStoreTemp:Feature~~
-        filename = 'sitemap__doaj_' + datetime.strftime(datetime.utcnow(), '%Y%m%d_%H%M') + '_utf8.xml'
+        filename = 'sitemap__doaj_' + datetime.strftime(dates.now(), '%Y%m%d_%H%M') + '_utf8.xml'
         container_id = app.config.get("STORE_CACHE_CONTAINER")
         tmpStore = StoreFactory.tmp()
         out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)

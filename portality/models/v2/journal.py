@@ -155,7 +155,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return self.__seamless__.get_single("last_updated", coerce=coerce.to_datestamp())
 
     def last_updated_since(self, days=0):
-        return self.last_updated_timestamp > (datetime.utcnow() - timedelta(days=days))
+        return self.last_updated_timestamp > (dates.now() - timedelta(days=days))
 
     def set_last_manual_update(self, date=None):
         if date is None:
@@ -792,7 +792,7 @@ class Journal(JournalLikeObject):
             # we haven't even saved the record yet.  All we need to do is check that the tick
             # threshold is in the past (which I suppose theoretically it could not be), then
             # set it
-            if datetime.utcnow() >= threshold:
+            if dates.now() >= threshold:
                 self.set_ticked(True)
             else:
                 self.set_ticked(False)

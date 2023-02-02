@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 from flask import url_for
 from doajtest.helpers import DoajTestCase, with_es
+from portality.lib import dates
 from portality.lib.dataobj import DataStructureException, ScriptTagFoundException
 from portality.api.current.data_objects.article import IncomingArticleDO, OutgoingArticleDO
 from portality.api.current import ArticlesCrudApi, Api401Error, Api400Error, Api404Error
@@ -198,7 +199,7 @@ class TestCrudArticle(DoajTestCase):
         data["bibjson"]["link"][0]["url"] = "http://www.example.com/this_location/here"     # protocol required
         data["bibjson"]["link"][0]["type"] = "fulltext"
         data["admin"]["in_doaj"] = False
-        data["created_date"] = datetime.utcnow().strftime(STD_DATETIME_FMT)
+        data["created_date"] = dates.now().strftime(STD_DATETIME_FMT)
         ia = IncomingArticleDO(data)
         assert isinstance(ia.bibjson.title, str)
 

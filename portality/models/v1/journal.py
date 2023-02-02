@@ -667,7 +667,7 @@ class Journal(JournalLikeObject):
             # we haven't even saved the record yet.  All we need to do is check that the tick
             # threshold is in the past (which I suppose theoretically it could not be), then
             # set it
-            if datetime.utcnow() >= threshold:
+            if dates.now() >= threshold:
                 self.set_ticked(True)
             else:
                 self.set_ticked(False)

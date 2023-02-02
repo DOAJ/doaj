@@ -166,7 +166,7 @@ class Account(DomainObject, UserMixin):
         expires = self.reset_expires_timestamp
         if expires is None:
             return True
-        return expires < datetime.utcnow()
+        return expires < dates.now()
 
     @property
     def is_super(self):
