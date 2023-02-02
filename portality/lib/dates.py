@@ -39,6 +39,11 @@ def reformat(s, in_format=None, out_format=None) -> str:
     return format(parse(s, format=in_format), format=out_format)
 
 
+def now() -> datetime:
+    """ standard now function for DOAJ  """
+    return datetime.utcnow()
+
+
 def now_str() -> str:
     return format(datetime.utcnow())
 

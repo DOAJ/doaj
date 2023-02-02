@@ -1,11 +1,12 @@
 #!/usr/bin/python
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
 import requests
+from dateutil.relativedelta import relativedelta
+
+from portality.lib import dates
 
 
 def generate_delete_pattern():
-    now = datetime.now()
+    now = dates.now()
     delete_date = now - relativedelta(months=3)
 
     return ".marvel-{0}*".format(delete_date.strftime('%Y.%m'))

@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
+from portality.lib import dates
 from portality.lib.dates import STD_DATETIME_FMT
 
 
@@ -78,7 +79,7 @@ class Account(DomainObject, UserMixin):
         if not_expired:
             try:
                 ed = datetime.strptime(expires, STD_DATETIME_FMT)
-                if ed < datetime.now():
+                if ed < dates.now():
                     return None
             except ValueError:
                 return None
@@ -140,7 +141,7 @@ class Account(DomainObject, UserMixin):
     def reset_token(self): return self.data.get('reset_token')
 
     def set_reset_token(self, token, timeout):
-        expires = datetime.now() + timedelta(0, timeout)
+        expires = dates.now() + timedelta(0, timeout)
         self.data["reset_token"] = token
         self.data["reset_expires"] = expires.strftime(STD_DATETIME_FMT)
 
@@ -204,7 +205,7 @@ class Account(DomainObject, UserMixin):
         self.data["role"] = role
 
     def prep(self):
-        self.data['last_updated'] = datetime.now().strftime(STD_DATETIME_FMT)
+        self.data['last_updated'] = dates.now().strftime(STD_DATETIME_FMT)
 
     @property
     def api_key(self):

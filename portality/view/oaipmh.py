@@ -5,7 +5,7 @@ from flask import Blueprint, request, make_response
 from portality.core import app
 from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL, STD_DATE_FMT
 from portality.models import OAIPMHJournal, OAIPMHArticle
-from portality.lib import plausible
+from portality.lib import plausible, dates
 from portality.crosswalks.oaipmh import CROSSWALKS, make_set_spec, make_oai_identifier
 
 blueprint = Blueprint('oaipmh', __name__)
@@ -101,7 +101,7 @@ class DateFormat(object):
 
     @classmethod
     def now(cls):
-        return datetime.now().strftime(STD_DATETIME_FMT)
+        return dates.now().strftime(STD_DATETIME_FMT)
 
     @classmethod
     def format(cls, date):
@@ -654,7 +654,7 @@ class ListIdentifiers(OAI_PMH):
                 rt.set("cursor", str(self.resumption.get("cursor")))
             expiry = self.resumption.get("expiry", -1)
             if expiry >= 0:
-                expire_date = DateFormat.format(datetime.now() + timedelta(0, expiry))
+                expire_date = DateFormat.format(dates.now() + timedelta(0, expiry))
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
 
@@ -747,7 +747,7 @@ class ListRecords(OAI_PMH):
                 rt.set("cursor", str(self.resumption.get("cursor")))
             expiry = self.resumption.get("expiry", -1)
             if expiry >= 0:
-                expire_date = DateFormat.format(datetime.now() + timedelta(0, expiry))
+                expire_date = DateFormat.format(dates.now() + timedelta(0, expiry))
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
 

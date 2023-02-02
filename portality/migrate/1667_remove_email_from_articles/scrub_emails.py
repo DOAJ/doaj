@@ -5,6 +5,7 @@ Delete the author email field from article records for https://github.com/DOAJ/d
 import esprit
 from portality.core import app
 from portality import models
+from portality.lib import dates
 from portality.models import Article
 from datetime import datetime
 
@@ -45,7 +46,7 @@ def wipe_emails(connection, batch_size=500):
 
 
 if __name__ == "__main__":
-    start = datetime.now()
+    start = dates.now()
 
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
         print("System is in READ-ONLY mode, script cannot run")
@@ -63,5 +64,5 @@ if __name__ == "__main__":
     else:
         print("Better safe than sorry, exiting.")
 
-    end = datetime.now()
+    end = dates.now()
     print((str(start) + "-" + str(end)))

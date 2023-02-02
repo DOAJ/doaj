@@ -5,6 +5,8 @@
 from datetime import datetime
 import os, requests, json, shutil
 
+from portality.lib import dates
+
 # make sure this script is executable, then symlink it from a cron folder,
 # or trigger a schedule for it howevr you see fit
 
@@ -49,8 +51,8 @@ logto = ''
 done = []
 
 # create a folder for todays backup, and set todays backup path
-time = datetime.now().strftime("%H%M")
-today = datetime.now().strftime("%Y%m%d")
+time = dates.now().strftime("%H%M")
+today = dates.now().strftime("%Y%m%d")
 done.append('backup starting at ' + time + ' on ' + today)
 backuppath = backupto + '/' + today + '/'
 try:

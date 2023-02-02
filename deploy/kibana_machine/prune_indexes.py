@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 import requests
 import re
 
+from portality.lib import dates
+
 # TTL in days for monitoring indexes
 INDEX_PREFIXES_TTL = {
     '.monitoring': 14,
@@ -18,7 +20,7 @@ def generate_deletes(index_list):
     for idx in index_list:
         for prefix, ttl in INDEX_PREFIXES_TTL.items():
             if idx.startswith(prefix):
-                delete_threshold = datetime.now() - timedelta(days=ttl)
+                delete_threshold = dates.now() - timedelta(days=ttl)
 
                 date_part = re.search('(\d+\.?){3}$', idx).group()
                 if datetime.strptime(date_part, '%Y.%m.%d') < delete_threshold:

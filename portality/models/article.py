@@ -12,7 +12,7 @@ from portality.lib.dates import STD_DATETIME_FMT
 from portality.models import Journal
 from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article specifically uses the v1 BibJSON
 from portality.models.v1 import shared_structs
-from portality.lib import normalise
+from portality.lib import normalise, dates
 
 
 class NoJournalException(Exception):
@@ -147,7 +147,7 @@ class Article(DomainObject):
         """Deprecated"""
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
         if date is None:
-            date = datetime.now().strftime(STD_DATETIME_FMT)
+            date = dates.now().strftime(STD_DATETIME_FMT)
         snobj = {"date": date, "bibjson": bibjson}
         if "history" not in self.data:
             self.data["history"] = []
@@ -536,7 +536,7 @@ class Article(DomainObject):
 
     def prep(self):
         self._generate_index()
-        self.data['last_updated'] = datetime.now().strftime(STD_DATETIME_FMT)
+        self.data['last_updated'] = dates.now().strftime(STD_DATETIME_FMT)
 
     def save(self, *args, **kwargs):
         self._generate_index()

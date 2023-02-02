@@ -1,9 +1,9 @@
 from portality.core import app
 from portality.dao import DomainObject
-from datetime import datetime
 import os
 import json
 
+from portality.lib import dates
 from portality.lib.dates import STD_DATE_FMT
 
 
@@ -30,7 +30,7 @@ class History(DomainObject):
            it's saved is on a different day).
         """
         self.set_id(self.makeid())
-        directory_name = datetime.now().strftime(STD_DATE_FMT)
+        directory_name = dates.now().strftime(STD_DATE_FMT)
         full_dir = os.path.join(self.SAVE_BASE_DIRECTORY, directory_name)
         full_path = os.path.join(full_dir, "{0}.json".format(self.id))
 

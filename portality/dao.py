@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 from typing import List
 
 from portality.core import app, es_connection as ES
+from portality.lib import dates
 from portality.lib.dates import STD_DATETIME_FMT
 
 # All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
@@ -105,7 +106,7 @@ class DomainObject(UserDict, object):
     
     def set_created(self, date=None):
         if date is None:
-            self.data['created_date'] = datetime.now().strftime(STD_DATETIME_FMT)
+            self.data['created_date'] = dates.now().strftime(STD_DATETIME_FMT)
         else:
             self.data['created_date'] = date
 
@@ -151,7 +152,7 @@ class DomainObject(UserDict, object):
 
         now = datetime.utcnow().strftime(STD_DATETIME_FMT)
         if (blocking or differentiate) and "last_updated" in self.data:
-            diff = datetime.now() - datetime.strptime(self.data["last_updated"], STD_DATETIME_FMT)
+            diff = dates.now() - datetime.strptime(self.data["last_updated"], STD_DATETIME_FMT)
 
             # we need the new last_updated time to be later than the new one
             if diff.total_seconds() < 1:
@@ -850,7 +851,7 @@ class DomainObject(UserDict, object):
             sleep = app.config["ES_BLOCK_WAIT_OVERRIDE"]
 
         q = BlockQuery(id)
-        start_time = datetime.now()
+        start_time = dates.now()
         while True:
             res = cls.query(q=q.query())
             hits = res.get("hits", {}).get("hits", [])
@@ -867,7 +868,7 @@ class DomainObject(UserDict, object):
                 else:
                     return
             else:
-                if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
+                if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
                     raise BlockTimeOutException("Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
 
             time.sleep(sleep)
@@ -883,14 +884,14 @@ class DomainObject(UserDict, object):
             sleep = app.config["ES_BLOCK_WAIT_OVERRIDE"]
 
         q = BlockQuery(id)
-        start_time = datetime.now()
+        start_time = dates.now()
         while True:
             res = cls.query(q=q.query())
             hits = res.get("hits", {}).get("hits", [])
             if len(hits) == 0:
                 return
             else:
-                if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
+                if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
                     raise BlockTimeOutException(
                         "Attempting to block until record with id {id} deleted from Elasticsearch, but this has not happened after {limit}".format(
                             id=id, limit=max_retry_seconds))

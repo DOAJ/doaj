@@ -3,6 +3,7 @@ from lxml import etree
 from datetime import datetime
 from copy import deepcopy
 
+from portality.lib import dates
 from portality.lib.dates import STD_DATETIME_FMT
 from portality.models import Journal, JournalBibJSON, Suggestion, Article, ArticleBibJSON, Account
 
@@ -582,7 +583,7 @@ def _created_date(element):
             print("failed on", cd.text)
             pass
         
-    return datetime.now().strftime(STD_DATETIME_FMT)
+    return dates.now().strftime(STD_DATETIME_FMT)
 
 def _to_article_bibjson(element):
     b = ArticleBibJSON()

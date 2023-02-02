@@ -7,7 +7,7 @@ from portality.crosswalks.atom import AtomCrosswalk
 from lxml import etree
 from datetime import datetime, timedelta
 
-from portality.lib import plausible
+from portality.lib import plausible, dates
 from portality.lib.dates import STD_DATETIME_FMT
 
 blueprint = Blueprint('atom', __name__)
@@ -39,7 +39,7 @@ def get_feed(base_url=None):
     """
     max_size = app.config.get("MAX_FEED_ENTRIES", 20)
     max_age = app.config.get("MAX_FEED_ENTRY_AGE", 2592000)
-    from_date = (datetime.now() - timedelta(0, max_age)).strftime(STD_DATETIME_FMT)
+    from_date = (dates.now() - timedelta(0, max_age)).strftime(STD_DATETIME_FMT)
 
     dao = models.AtomRecord()
     records = dao.list_records(from_date, max_size)
@@ -93,7 +93,7 @@ class AtomFeed(object):
         
     def serialise(self):
         if self.last_updated is None:
-            self.last_updated = datetime.now()
+            self.last_updated = dates.now()
         
         feed = etree.Element(self.ATOM + "feed", nsmap=self.NSMAP)
         

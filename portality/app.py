@@ -172,7 +172,7 @@ def set_current_context():
         'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
         "app": app,
-        "current_year": datetime.now().strftime('%Y'),
+        "current_year": dates.now().strftime('%Y'),
         "base_url": app.config.get('BASE_URL'),
         }
 

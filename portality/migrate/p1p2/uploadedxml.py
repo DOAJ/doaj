@@ -1,11 +1,12 @@
 import os, csv
 from lxml import etree
 from portality import models, settings
+from portality.lib import dates
 from portality.lib.dates import STD_DATETIME_FMT
 from portality.models import article
 from datetime import datetime
 
-start = datetime.now()
+start = dates.now()
 
 corrections_csv = os.path.join(os.path.dirname(os.path.realpath(__file__)), "corrections.csv")
 xml_dir = settings.UPLOAD_DIR
@@ -233,7 +234,7 @@ for lm in lastmods:
                 upload.partial(success, fail, update, new)
             upload.save()
 
-end = datetime.now()
+end = dates.now()
 
 print("Total", total, "attempted", attempted, "valid", valid, "invalid", invalid, "failed", failed, "duplicate", duplicate, "orphaned", orphaned)
 print("Created Articles", articles_in, "Failed Articles", articles_failed)
