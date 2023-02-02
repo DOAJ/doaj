@@ -4,6 +4,7 @@ from datetime import datetime
 import portality.notifications.application_emails as emails
 from portality.core import app
 from portality import models, constants, app_email
+from portality.lib.dates import STD_DATETIME_FMT
 from portality.lib.formulaic import FormProcessor
 from portality.ui.messages import Messages
 from portality.crosswalks.application_form import ApplicationFormXWalk
@@ -28,7 +29,7 @@ class ApplicationProcessor(FormProcessor):
         if self.source is None:
             raise Exception("Cannot carry data from a non-existent source")
 
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        now = datetime.now().strftime(STD_DATETIME_FMT)
 
         # copy over any important fields from the previous version of the object
         created_date = self.source.created_date if self.source.created_date else now
@@ -235,7 +236,7 @@ class NewApplication(ApplicationProcessor):
         super(NewApplication, self).finalise()
 
         # set some administrative data
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        now = datetime.now().strftime(STD_DATETIME_FMT)
         self.target.date_applied = now
         self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
         self.target.set_owner(account.id)

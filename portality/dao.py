@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from typing import List
 
 from portality.core import app, es_connection as ES
-
+from portality.lib.dates import STD_DATETIME_FMT
 
 # All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 # You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
@@ -105,7 +105,7 @@ class DomainObject(UserDict, object):
     
     def set_created(self, date=None):
         if date is None:
-            self.data['created_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            self.data['created_date'] = datetime.now().strftime(STD_DATETIME_FMT)
         else:
             self.data['created_date'] = date
 
@@ -115,7 +115,7 @@ class DomainObject(UserDict, object):
 
     @property
     def created_timestamp(self):
-        return datetime.strptime(self.data.get("created_date"), "%Y-%m-%dT%H:%M:%SZ")
+        return datetime.strptime(self.data.get("created_date"), STD_DATETIME_FMT)
     
     @property
     def last_updated(self):
@@ -123,7 +123,7 @@ class DomainObject(UserDict, object):
 
     @property
     def last_updated_timestamp(self):
-        return datetime.strptime(self.last_updated, "%Y-%m-%dT%H:%M:%SZ")
+        return datetime.strptime(self.last_updated, STD_DATETIME_FMT)
 
     def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False, block_wait=0.25):
         """
@@ -149,14 +149,14 @@ class DomainObject(UserDict, object):
 
         self.data['es_type'] = self.__type__
 
-        now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        now = datetime.utcnow().strftime(STD_DATETIME_FMT)
         if (blocking or differentiate) and "last_updated" in self.data:
-            diff = datetime.now() - datetime.strptime(self.data["last_updated"], "%Y-%m-%dT%H:%M:%SZ")
+            diff = datetime.now() - datetime.strptime(self.data["last_updated"], STD_DATETIME_FMT)
 
             # we need the new last_updated time to be later than the new one
             if diff.total_seconds() < 1:
                 soon = datetime.utcnow() + timedelta(seconds=1)
-                now = soon.strftime("%Y-%m-%dT%H:%M:%SZ")
+                now = soon.strftime(STD_DATETIME_FMT)
 
         self.data['last_updated'] = now
 
@@ -860,8 +860,8 @@ class DomainObject(UserDict, object):
                     if "last_updated" in obj:
                         lu = obj["last_updated"]
                         if len(lu) > 0:
-                            threshold = datetime.strptime(last_updated, "%Y-%m-%dT%H:%M:%SZ")
-                            lud = datetime.strptime(lu[0], "%Y-%m-%dT%H:%M:%SZ")
+                            threshold = datetime.strptime(last_updated, STD_DATETIME_FMT)
+                            lud = datetime.strptime(lu[0], STD_DATETIME_FMT)
                             if lud >= threshold:
                                 return
                 else:

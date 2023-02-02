@@ -6,6 +6,8 @@ from portality.bll.doaj import DOAJ
 from portality.bll.exceptions import ArticleMergeConflict
 from datetime import datetime
 
+from portality.lib.dates import STD_DATETIME_FMT
+
 
 class TestArticleMatch(DoajTestCase):
 
@@ -109,12 +111,12 @@ class TestArticleMatch(DoajTestCase):
         # sort both results and expectations here to avoid false alarm
         # we don't care about the order of duplicates
         expected = [a, a2]
-        expected.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
+        expected.sort(key=lambda x: datetime.strptime(x.last_updated, STD_DATETIME_FMT), reverse=True)
         # determine if there's a duplicate
         l = articleService.get_duplicates(z)
         assert isinstance(l, list), l
         assert l is not None
-        l.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
+        l.sort(key=lambda x: datetime.strptime(x.last_updated, STD_DATETIME_FMT), reverse=True)
         assert expected == l
 
     def test_04_with_doi_instead(self):

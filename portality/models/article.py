@@ -8,6 +8,7 @@ from datetime import datetime
 
 from portality import datasets, constants
 from portality.dao import DomainObject
+from portality.lib.dates import STD_DATETIME_FMT
 from portality.models import Journal
 from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article specifically uses the v1 BibJSON
 from portality.models.v1 import shared_structs
@@ -146,7 +147,7 @@ class Article(DomainObject):
         """Deprecated"""
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
         if date is None:
-            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            date = datetime.now().strftime(STD_DATETIME_FMT)
         snobj = {"date": date, "bibjson": bibjson}
         if "history" not in self.data:
             self.data["history"] = []
@@ -535,7 +536,7 @@ class Article(DomainObject):
 
     def prep(self):
         self._generate_index()
-        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.data['last_updated'] = datetime.now().strftime(STD_DATETIME_FMT)
 
     def save(self, *args, **kwargs):
         self._generate_index()
@@ -700,7 +701,7 @@ class ArticleBibJSON(GenericBibJSON):
     def author(self, authors):
         self._set_with_struct("author", authors)
 
-    def get_publication_date(self, date_format='%Y-%m-%dT%H:%M:%SZ'):
+    def get_publication_date(self, date_format=STD_DATETIME_FMT):
         # work out what the date of publication is
         date = ""
         if self.year is not None:
@@ -755,7 +756,7 @@ class ArticleBibJSON(GenericBibJSON):
 
             # attempt to confirm the format of our datestamp
             try:
-                datecheck = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+                datecheck = datetime.strptime(date, STD_DATETIME_FMT)
                 date = datecheck.strftime(date_format)
             except:
                 return ""

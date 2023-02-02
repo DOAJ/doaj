@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 from random import randint
 import math
 
+STD_DATETIME_FMT = app.config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')
+DEFAULT_TIMESTAMP = app.config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
 
 def parse(s, format=None, guess=True):
     s = s.strip()

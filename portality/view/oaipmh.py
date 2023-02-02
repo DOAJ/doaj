@@ -3,6 +3,7 @@ from lxml import etree
 from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
 from portality.core import app
+from portality.lib.dates import STD_DATETIME_FMT
 from portality.models import OAIPMHJournal, OAIPMHArticle
 from portality.lib import plausible
 from portality.crosswalks.oaipmh import CROSSWALKS, make_set_spec, make_oai_identifier
@@ -100,15 +101,15 @@ class DateFormat(object):
 
     @classmethod
     def now(cls):
-        return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        return datetime.now().strftime(STD_DATETIME_FMT)
 
     @classmethod
     def format(cls, date):
-        return date.strftime("%Y-%m-%dT%H:%M:%SZ")
+        return date.strftime(STD_DATETIME_FMT)
 
     @classmethod
     def legitimate_granularity(cls, datestr):
-        formats = ["%Y-%m-%d", "%Y-%m-%dT%H:%M:%SZ"]
+        formats = ["%Y-%m-%d", STD_DATETIME_FMT]
         success = False
         for f in formats:
             try:
@@ -210,7 +211,6 @@ def extract_internal_id(oai_identifier):
 
 
 def get_response_date():
-    # return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
     return DateFormat.now()
 
 
@@ -661,9 +661,7 @@ class ListIdentifiers(OAI_PMH):
             if "cursor" in self.resumption:
                 rt.set("cursor", str(self.resumption.get("cursor")))
             expiry = self.resumption.get("expiry", -1)
-            expire_date = None
             if expiry >= 0:
-                # expire_date = (datetime.now() + timedelta(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
                 expire_date = DateFormat.format(datetime.now() + timedelta(0, expiry))
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
@@ -756,9 +754,7 @@ class ListRecords(OAI_PMH):
             if "cursor" in self.resumption:
                 rt.set("cursor", str(self.resumption.get("cursor")))
             expiry = self.resumption.get("expiry", -1)
-            expire_date = None
             if expiry >= 0:
-                # expire_date = (datetime.now() + timedelta(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
                 expire_date = DateFormat.format(datetime.now() + timedelta(0, expiry))
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")

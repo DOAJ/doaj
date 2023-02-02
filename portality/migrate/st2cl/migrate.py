@@ -2,6 +2,8 @@ import os, sys, codecs, random, string
 from lxml import etree
 from datetime import datetime
 from copy import deepcopy
+
+from portality.lib.dates import STD_DATETIME_FMT
 from portality.models import Journal, JournalBibJSON, Suggestion, Article, ArticleBibJSON, Account
 
 ################################################################
@@ -573,14 +575,14 @@ def _created_date(element):
         fudge = "T".join(cd.text.split(" ")) + "Z" # fudge the date format
         # check that it parses
         try:
-            datetime.strptime(fudge, "%Y-%m-%dT%H:%M:%SZ")
+            datetime.strptime(fudge, STD_DATETIME_FMT)
             return fudge
         except:
             # do nothing, we'll just fall back to "created now"
             print("failed on", cd.text)
             pass
         
-    return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+    return datetime.now().strftime(STD_DATETIME_FMT)
 
 def _to_article_bibjson(element):
     b = ArticleBibJSON()

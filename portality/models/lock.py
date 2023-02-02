@@ -2,6 +2,9 @@ from portality.dao import DomainObject
 from datetime import datetime, timedelta
 import tzlocal
 
+from portality.lib.dates import STD_DATETIME_FMT
+
+
 class Lock(DomainObject):
     __type__ = "lock"
     """
@@ -43,26 +46,26 @@ class Lock(DomainObject):
 
     def expires_in(self, timeout):
         expires = datetime.now() + timedelta(0, timeout)
-        self.data["expires"] = expires.strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.data["expires"] = expires.strftime(STD_DATETIME_FMT)
 
     def is_expired(self):
-        ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")
+        ed = datetime.strptime(self.expires, STD_DATETIME_FMT)
         return ed <= datetime.now()
 
     def utc_expires(self):
-        ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")
+        ed = datetime.strptime(self.expires, STD_DATETIME_FMT)
         local = tzlocal.get_localzone()
         ld = local.localize(ed)
         tt = ld.utctimetuple()
         utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec)
-        return utcdt.strftime("%Y-%m-%dT%H:%M:%SZ")
+        return utcdt.strftime(STD_DATETIME_FMT)
 
     def expire_formatted(self, format="%H:%M"):
-        ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")
+        ed = datetime.strptime(self.expires, STD_DATETIME_FMT)
         formatted = ed.strftime(format)
         return formatted
 
     def would_expire_within(self, timeout):
         limit = datetime.now() + timedelta(0, timeout)
-        ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")
+        ed = datetime.strptime(self.expires, STD_DATETIME_FMT)
         return ed < limit

@@ -1,5 +1,6 @@
 from portality.dao import DomainObject
 from portality.core import app
+from portality.lib.dates import STD_DATETIME_FMT
 from portality.models.v2.bibjson import JournalLikeBibJSON
 from portality.models.v2 import shared_structs
 from portality.models.account import Account
@@ -785,7 +786,7 @@ class Journal(JournalLikeObject):
         last_update_request = self.last_update_request
 
         tick_threshold = app.config.get("TICK_THRESHOLD", '2014-03-19T00:00:00Z')
-        threshold = datetime.strptime(tick_threshold, "%Y-%m-%dT%H:%M:%SZ")
+        threshold = datetime.strptime(tick_threshold, STD_DATETIME_FMT)
 
         if created_date is None:  # don't worry about the last_update_request date - you can't update unless you've been created!
             # we haven't even saved the record yet.  All we need to do is check that the tick
@@ -800,10 +801,10 @@ class Journal(JournalLikeObject):
         # otherwise, this is an existing record, and we just need to update it
 
         # convert the strings to datetime objects
-        created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
+        created = datetime.strptime(created_date, STD_DATETIME_FMT)
         lud = None
         if last_update_request is not None:
-            lud = datetime.strptime(last_update_request, "%Y-%m-%dT%H:%M:%SZ")
+            lud = datetime.strptime(last_update_request, STD_DATETIME_FMT)
 
         if created >= threshold and self.is_in_doaj():
             self.set_ticked(True)

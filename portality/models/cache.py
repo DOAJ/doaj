@@ -4,6 +4,7 @@
 from portality.dao import DomainObject
 from datetime import datetime
 from portality.core import app
+from portality.lib.dates import STD_DATETIME_FMT
 
 
 class Cache(DomainObject):
@@ -87,7 +88,7 @@ class Cache(DomainObject):
         else:
             lu = self.last_updated
 
-        lu = datetime.strptime(lu, "%Y-%m-%dT%H:%M:%SZ")
+        lu = datetime.strptime(lu, STD_DATETIME_FMT)
         now = datetime.utcnow()
         dt = now - lu
 

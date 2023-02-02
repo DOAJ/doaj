@@ -3,6 +3,9 @@ from urllib.parse import urlparse
 from copy import deepcopy
 from datetime import datetime
 
+from portality.lib.dates import STD_DATETIME_FMT
+
+
 ###############################################
 ## Common coerce functions
 ###############################################
@@ -120,7 +123,7 @@ def to_bool(val):
 
 def to_datetime(val):
     try:
-        datetime.strptime(val, "%Y-%m-%dT%H:%M:%SZ")
+        datetime.strptime(val, STD_DATETIME_FMT)
         return val
     except:
         raise ValueError("Could not convert string {val} to UTC Datetime".format(val=val))

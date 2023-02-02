@@ -6,6 +6,8 @@ import botocore
 import json
 from datetime import datetime, timezone, timedelta
 
+from portality.lib.dates import STD_DATETIME_FMT
+
 s3 = boto3.client('s3')
 # doaj-es-backups is too slow currently, so not good value on Lambda (and is already covered by another check)
 # buckets = ["doaj-duplicity", "doaj-es-backups", "doaj-letsencrypt"]
@@ -79,8 +81,8 @@ def send_alert_email(bucket, last_mod):
                 msg = 'AWS backup error: bucket {b} is missing.'.format(b=bucket)
             else:
                 msg = 'AWS backup error: bucket {b} has not been updated today - it was last modified on {t}.' \
-                      '\nYou may wish to check the corresponding logs.'.format(b=bucket, t=last_mod.strftime(
-                    '%Y-%m-%dT%H:%M:%SZ'))
+                      '\nYou may wish to check the corresponding logs.'.format(b=bucket,
+                                                                               t=last_mod.strftime(STD_DATETIME_FMT))
 
             r = botocore.vendored.requests.post('https://api.mailgun.net/v3/doaj.org/messages',
                                                 auth=('api', credentials.get('ERROR_MAIL_API_KEY', '')),

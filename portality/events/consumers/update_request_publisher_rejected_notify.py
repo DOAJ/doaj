@@ -6,6 +6,7 @@ from portality import constants
 from portality import models
 from portality.bll import DOAJ, exceptions
 from portality.core import app
+from portality.lib.dates import STD_DATETIME_FMT
 
 
 class UpdateRequestPublisherRejectedNotify(EventConsumer):
@@ -58,7 +59,7 @@ class UpdateRequestPublisherRejectedNotify(EventConsumer):
         notification.who = application.owner
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
-        datetime_object = datetime.strptime(application.date_applied, '%Y-%m-%dT%H:%M:%SZ')
+        datetime_object = datetime.strptime(application.date_applied, STD_DATETIME_FMT)
         date_applied = datetime_object.strftime("%d/%b/%Y")
         notification.long = svc.long_notification(cls.ID).format(
             title=application.bibjson().title,

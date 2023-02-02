@@ -1,6 +1,7 @@
 from portality.lib.argvalidate import argvalidate
 from portality import models
 from portality.bll import exceptions
+from portality.lib.dates import STD_DATETIME_FMT
 from portality.ui.messages import Messages
 from portality.lib.dataobj import DataStructureException
 
@@ -460,7 +461,7 @@ class ArticleService(object):
                 possible_articles.append(a)
 
         # Sort the articles newest -> oldest by last_updated so we can get the most recent at [0]
-        possible_articles.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
+        possible_articles.sort(key=lambda x: datetime.strptime(x.last_updated, STD_DATETIME_FMT), reverse=True)
 
         return possible_articles[:max_results]
 

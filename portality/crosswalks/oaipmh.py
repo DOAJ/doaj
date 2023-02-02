@@ -5,6 +5,8 @@ from portality.core import app
 from portality import datasets
 from copy import deepcopy
 
+from portality.lib.dates import STD_DATETIME_FMT
+
 
 #####################################################################
 # Crosswalks for OAI-PMH
@@ -360,7 +362,7 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         # If it's not coming back properly from the bibjson, throw it
         # away.
         try:
-            date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+            date = datetime.strptime(date, STD_DATETIME_FMT)
             date = date.strftime("%Y-%m-%d")
         except:
             date = ""
@@ -494,7 +496,7 @@ def make_oai_identifier(identifier, qualifier):
 def normalise_date(date):
     # FIXME: do we need a more powerful date normalisation routine?
     try:
-        datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+        datetime.strptime(date, STD_DATETIME_FMT)
         return date
     except:
         return "T".join(date.split(" ")) + "Z"

@@ -15,6 +15,8 @@ from requests.auth import HTTPBasicAuth
 from datetime import datetime
 import csv
 
+from portality.lib.dates import STD_DATETIME_FMT
+
 ISSUES = [
     "https://api.github.com/repos/DOAJ/doajPM/issues",
     "https://api.github.com/repos/DOAJ/doaj/issues"
@@ -22,7 +24,7 @@ ISSUES = [
 
 
 def toDate(str):
-    return datetime.strptime(str, "%Y-%m-%dT%H:%M:%SZ")
+    return datetime.strptime(str, STD_DATETIME_FMT)
 
 
 def _github_repo_report(issues, username, password, start, finish):

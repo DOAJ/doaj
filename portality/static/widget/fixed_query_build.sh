@@ -26,4 +26,4 @@ cat ../js/doaj.js <(echo) \
 
 
 # Record the Build time
-echo "Build $(date -u +"%Y-%m-%dT%H:%M:%SZ")" > $BUILD
+echo "Build $(date -u +STD_DATETIME_FMT)" > $BUILD

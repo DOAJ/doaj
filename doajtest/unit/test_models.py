@@ -8,6 +8,7 @@ from portality import constants
 from portality import models
 from portality.lib import dataobj
 from portality.lib import seamless
+from portality.lib.dates import STD_DATETIME_FMT
 from portality.models import shared_structs
 from portality.models.v1.bibjson import GenericBibJSON
 
@@ -73,11 +74,11 @@ class TestModels(DoajTestCase):
 
         assert j.id == "abcd"
         assert j.created_date == "2001-01-01T00:00:00Z"
-        assert j.created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2001-01-01T00:00:00Z"
+        assert j.created_timestamp.strftime(STD_DATETIME_FMT) == "2001-01-01T00:00:00Z"
         assert j.last_updated == "2002-01-01T00:00:00Z"
-        assert j.last_updated_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2002-01-01T00:00:00Z"
+        assert j.last_updated_timestamp.strftime(STD_DATETIME_FMT) == "2002-01-01T00:00:00Z"
         assert j.last_manual_update == "2004-01-01T00:00:00Z"
-        assert j.last_manual_update_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2004-01-01T00:00:00Z"
+        assert j.last_manual_update_timestamp.strftime(STD_DATETIME_FMT) == "2004-01-01T00:00:00Z"
         assert j.has_been_manually_updated() is True
         assert j.has_seal() is True
         assert j.owner == "richard"
@@ -236,11 +237,11 @@ class TestModels(DoajTestCase):
 
         assert s.id == "abcd"
         assert s.created_date == "2001-01-01T00:00:00Z"
-        assert s.created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2001-01-01T00:00:00Z"
+        assert s.created_timestamp.strftime(STD_DATETIME_FMT) == "2001-01-01T00:00:00Z"
         assert s.last_updated == "2002-01-01T00:00:00Z"
-        assert s.last_updated_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2002-01-01T00:00:00Z"
+        assert s.last_updated_timestamp.strftime(STD_DATETIME_FMT) == "2002-01-01T00:00:00Z"
         assert s.last_manual_update == "2004-01-01T00:00:00Z"
-        assert s.last_manual_update_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2004-01-01T00:00:00Z"
+        assert s.last_manual_update_timestamp.strftime(STD_DATETIME_FMT) == "2004-01-01T00:00:00Z"
         assert s.has_been_manually_updated() is True
         assert s.has_seal() is True
         assert s.owner == "richard"

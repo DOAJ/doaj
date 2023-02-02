@@ -5,6 +5,7 @@ from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory, Acco
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
+from portality.lib.dates import STD_DATETIME_FMT
 from portality.models import Article, Journal, Account
 from portality.lib.paths import rel2abs
 from doajtest.mocks.bll_article import BLLArticleMockFactory
@@ -109,7 +110,7 @@ class TestBLLArticleGetDuplicates(DoajTestCase):
             assert article_ids == deduped   # i.e. that there were no duplicates
 
             # check that the articles are ordered by last_updated
-            last_updateds = [datetime.strptime(a.last_updated, "%Y-%m-%dT%H:%M:%SZ") for a in duplicates]
+            last_updateds = [datetime.strptime(a.last_updated, STD_DATETIME_FMT) for a in duplicates]
             sorted_lu = sorted(last_updateds, reverse=True)
             assert sorted_lu == last_updateds   # i.e. they were already sorted
 

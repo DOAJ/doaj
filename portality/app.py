@@ -23,6 +23,7 @@ import portality.models as models
 from portality.core import app, es_connection, initialise_index
 from portality import settings
 from portality.lib import edges, dates
+from portality.lib.dates import STD_DATETIME_FMT
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -190,7 +191,7 @@ def bytes_to_filesize(size):
 
 
 @app.template_filter('utc_timestamp')
-def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
+def utc_timestamp(stamp, string_format=STD_DATETIME_FMT):
     """
     Format a local time datetime object to UTC
     :param stamp: a datetime object
