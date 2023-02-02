@@ -4,9 +4,7 @@ to automatically clean the data
 """
 import os, csv
 from copy import deepcopy
-from datetime import datetime
-from portality.lib import normalise
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib import normalise, dates
 
 MODE = "finalise"
 
@@ -301,7 +299,7 @@ def _remove_old(match_set, actions):
     if doi_match or ft_match:
         dateset = []
         for a in match_set.matches:
-            created = datetime.strptime(a["created"], STD_DATETIME_FMT)
+            created = dates.parse(a["created"])
             dateset.append({"created" : created, "id" : a["id"]})
 
         dateset.sort(key=lambda x : x["created"])

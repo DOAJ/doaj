@@ -81,7 +81,7 @@ class AtomFeed(object):
     def add_entry(self, entry):
         # update the "last_updated" property if necessary
         lu = entry.get("updated")
-        dr = datetime.strptime(lu, STD_DATETIME_FMT)
+        dr = dates.parse(lu)
         if self.last_updated is None or dr > self.last_updated:
             self.last_updated = dr
         

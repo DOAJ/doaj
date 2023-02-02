@@ -8,7 +8,7 @@ import urllib.parse
 
 from collections import UserDict
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import List
 
 from portality.core import app, es_connection as ES
@@ -116,7 +116,7 @@ class DomainObject(UserDict, object):
 
     @property
     def created_timestamp(self):
-        return datetime.strptime(self.data.get("created_date"), STD_DATETIME_FMT)
+        return dates.parse(self.data.get("created_date"))
     
     @property
     def last_updated(self):
@@ -124,7 +124,7 @@ class DomainObject(UserDict, object):
 
     @property
     def last_updated_timestamp(self):
-        return datetime.strptime(self.last_updated, STD_DATETIME_FMT)
+        return dates.parse(self.last_updated)
 
     def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False, block_wait=0.25):
         """
@@ -152,7 +152,7 @@ class DomainObject(UserDict, object):
 
         now = dates.now_str()
         if (blocking or differentiate) and "last_updated" in self.data:
-            diff = dates.now() - datetime.strptime(self.data["last_updated"], STD_DATETIME_FMT)
+            diff = dates.now() - dates.parse(self.data["last_updated"])
 
             # we need the new last_updated time to be later than the new one
             if diff.total_seconds() < 1:
@@ -861,8 +861,8 @@ class DomainObject(UserDict, object):
                     if "last_updated" in obj:
                         lu = obj["last_updated"]
                         if len(lu) > 0:
-                            threshold = datetime.strptime(last_updated, STD_DATETIME_FMT)
-                            lud = datetime.strptime(lu[0], STD_DATETIME_FMT)
+                            threshold = dates.parse(last_updated)
+                            lud = dates.parse(lu[0])
                             if lud >= threshold:
                                 return
                 else:

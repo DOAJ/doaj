@@ -1,8 +1,7 @@
 from portality.dao import DomainObject, ESMappingMissingError
-from datetime import datetime
 from copy import deepcopy
 
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib import dates
 
 
 class FileUpload(DomainObject):
@@ -60,7 +59,7 @@ class FileUpload(DomainObject):
     def created_timestamp(self):
         if "created_date" not in self.data:
             return None
-        return datetime.strptime(self.data["created_date"], STD_DATETIME_FMT)
+        return dates.parse(self.data["created_date"])
 
     def set_schema(self, s):
         self.data["schema"] = s

@@ -50,11 +50,11 @@ class Lock(DomainObject):
         self.data["expires"] = expires.strftime(STD_DATETIME_FMT)
 
     def is_expired(self):
-        ed = datetime.strptime(self.expires, STD_DATETIME_FMT)
+        ed = dates.parse(self.expires)
         return ed <= dates.now()
 
     def utc_expires(self):
-        ed = datetime.strptime(self.expires, STD_DATETIME_FMT)
+        ed = dates.parse(self.expires)
         local = tzlocal.get_localzone()
         ld = local.localize(ed)
         tt = ld.utctimetuple()
@@ -62,11 +62,11 @@ class Lock(DomainObject):
         return utcdt.strftime(STD_DATETIME_FMT)
 
     def expire_formatted(self, format="%H:%M"):
-        ed = datetime.strptime(self.expires, STD_DATETIME_FMT)
+        ed = dates.parse(self.expires)
         formatted = ed.strftime(format)
         return formatted
 
     def would_expire_within(self, timeout):
         limit = dates.now() + timedelta(0, timeout)
-        ed = datetime.strptime(self.expires, STD_DATETIME_FMT)
+        ed = dates.parse(self.expires)
         return ed < limit

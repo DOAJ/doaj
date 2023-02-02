@@ -1,9 +1,8 @@
 import locale
 from urllib.parse import urlparse
 from copy import deepcopy
-from datetime import datetime
 
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib import dates
 
 
 ###############################################
@@ -123,7 +122,7 @@ def to_bool(val):
 
 def to_datetime(val):
     try:
-        datetime.strptime(val, STD_DATETIME_FMT)
+        dates.parse(val)
         return val
     except:
         raise ValueError("Could not convert string {val} to UTC Datetime".format(val=val))

@@ -5,11 +5,12 @@ from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL
+from portality.lib import dates
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.models import Application, Account, Journal
 from portality.lib.paths import rel2abs
 from portality import constants
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import time
 
@@ -139,8 +140,8 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
 
                 if manual_update:
                     # fixme: millisecond timestamps would help us here, or last_manual_update shouldn't generate its own date
-                    lu = datetime.strptime(application.last_updated, STD_DATETIME_FMT)
-                    lmu = datetime.strptime(application.last_manual_update, STD_DATETIME_FMT)
+                    lu = dates.parse(application.last_updated)
+                    lmu = dates.parse(application.last_manual_update)
                     assert lmu - lu <= timedelta(seconds=1)
                 else:
                     assert application.last_manual_update == DEFAULT_TIMESTAMP_VAL

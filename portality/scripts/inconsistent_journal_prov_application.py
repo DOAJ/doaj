@@ -13,7 +13,7 @@ Script which attempts to identify journals, applications and provenance records 
 """
 
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import csv
 import esprit
@@ -21,12 +21,11 @@ import esprit
 from portality import constants
 from portality.core import es_connection
 from portality.lib import dates
-from portality.lib.dates import STD_DATETIME_FMT
 from portality.util import ipt_prefix
 from portality.models import Suggestion, Provenance, Journal, Account
 
-APP_TIMEZONE_CUTOFF = datetime.strptime("2017-05-18T14:02:08Z", STD_DATETIME_FMT)
-JOURNAL_TIMEZONE_CUTOFF = datetime.strptime("2017-09-21T08:54:05Z", STD_DATETIME_FMT)
+APP_TIMEZONE_CUTOFF = dates.parse("2017-05-18T14:02:08Z")
+JOURNAL_TIMEZONE_CUTOFF = dates.parse("2017-09-21T08:54:05Z")
 THRESHOLD = 20.0
 
 local = es_connection
@@ -135,7 +134,7 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, out
             reapp = journal.last_update_request
             print(counter, journal.id, reapp)
             if reapp is not None:
-                jcreated = datetime.strptime(reapp, STD_DATETIME_FMT)
+                jcreated = dates.parse(reapp)
             jcreated = adjust_timestamp(jcreated, JOURNAL_TIMEZONE_CUTOFF)
 
             app_lustamp = adjust_timestamp(latest.last_updated_timestamp, APP_TIMEZONE_CUTOFF)

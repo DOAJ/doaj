@@ -1,10 +1,8 @@
 import os, sys, codecs, random, string
 from lxml import etree
-from datetime import datetime
 from copy import deepcopy
 
 from portality.lib import dates
-from portality.lib.dates import STD_DATETIME_FMT
 from portality.models import Journal, JournalBibJSON, Suggestion, Article, ArticleBibJSON, Account
 
 ################################################################
@@ -576,7 +574,7 @@ def _created_date(element):
         fudge = "T".join(cd.text.split(" ")) + "Z" # fudge the date format
         # check that it parses
         try:
-            datetime.strptime(fudge, STD_DATETIME_FMT)
+            dates.parse(fudge)
             return fudge
         except:
             # do nothing, we'll just fall back to "created now"

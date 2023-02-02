@@ -12,10 +12,9 @@ git log --pretty=format:'"%ad","%d","%B"' --date=short --reverse --all --since=[
 """
 import requests
 from requests.auth import HTTPBasicAuth
-from datetime import datetime
 import csv
 
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib import dates
 
 ISSUES = [
     "https://api.github.com/repos/DOAJ/doajPM/issues",
@@ -24,7 +23,7 @@ ISSUES = [
 
 
 def toDate(str):
-    return datetime.strptime(str, STD_DATETIME_FMT)
+    return dates.parse(str)
 
 
 def _github_repo_report(issues, username, password, start, finish):

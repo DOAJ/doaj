@@ -1,6 +1,6 @@
 import uuid
 from flask_login import UserMixin
-from datetime import datetime, timedelta
+from datetime import timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from portality.dao import DomainObject as DomainObject
@@ -78,7 +78,7 @@ class Account(DomainObject, UserMixin):
             return None
         if not_expired:
             try:
-                ed = datetime.strptime(expires, STD_DATETIME_FMT)
+                ed = dates.parse(expires)
                 if ed < dates.now():
                     return None
             except ValueError:
@@ -160,7 +160,7 @@ class Account(DomainObject, UserMixin):
         expires = self.reset_expires
         if expires is None:
             return None
-        return datetime.strptime(expires, STD_DATETIME_FMT)
+        return dates.parse(expires)
 
     def is_reset_expired(self):
         expires = self.reset_expires_timestamp

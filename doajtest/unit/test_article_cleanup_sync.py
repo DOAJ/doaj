@@ -1,13 +1,12 @@
 import time
 
-from datetime import datetime
 
 from doajtest.helpers import DoajTestCase
 from doajtest import fixtures
 from doajtest.unit_tester import bgtask_tester
 
 from portality import background, models
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib import dates
 from portality.tasks import article_cleanup_sync
 
 
@@ -138,11 +137,11 @@ class TestArticleCleanupSync(DoajTestCase):
 
         # we expect this one not to have changed, but have been prepared anyway
         assert a1u.bibjson().data.get("journal") == a1.bibjson().data.get("journal")
-        assert datetime.strptime(a1u.last_updated, STD_DATETIME_FMT) > datetime.strptime(a1.last_updated, STD_DATETIME_FMT)
+        assert dates.parse(a1u.last_updated) > dates.parse(a1.last_updated)
 
         # we expect this one to have had its journal info updated
         assert a2u.bibjson().data.get("journal") is not None
-        assert datetime.strptime(a2u.last_updated, STD_DATETIME_FMT) > datetime.strptime(a2.last_updated, STD_DATETIME_FMT)
+        assert dates.parse(a2u.last_updated) > dates.parse(a2.last_updated)
 
         # this one should have been deleted
         assert a3u is None

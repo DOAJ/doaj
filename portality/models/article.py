@@ -756,7 +756,7 @@ class ArticleBibJSON(GenericBibJSON):
 
             # attempt to confirm the format of our datestamp
             try:
-                datecheck = datetime.strptime(date, STD_DATETIME_FMT)
+                datecheck = dates.parse(date)
                 date = datecheck.strftime(date_format)
             except:
                 return ""
