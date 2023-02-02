@@ -7,6 +7,9 @@ import locale, json, warnings
 from urllib.parse import urlparse
 from datetime import date, datetime
 
+from portality.lib.dates import STD_DATETIME_MS_FMT
+
+
 #########################################################
 ## Data coerce functions
 
@@ -256,7 +259,7 @@ class DataObj(object):
         "unicode": to_unicode(),
         "unicode_upper" : to_unicode_upper,
         "utcdatetime": date_str(),
-        "utcdatetimemicros" : date_str(out_format="%Y-%m-%dT%H:%M:%S.%fZ"),
+        "utcdatetimemicros" : date_str(out_format=STD_DATETIME_MS_FMT),
         "bigenddate" : date_str(out_format="%Y-%m-%d"),
         "integer": to_int(),
         "float": to_float(),

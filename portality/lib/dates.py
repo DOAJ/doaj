@@ -7,7 +7,9 @@ from random import randint
 import math
 
 STD_DATETIME_FMT = app.config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')
+STD_DATETIME_MS_FMT = "%Y-%m-%dT%H:%M:%S.%fZ"
 DEFAULT_TIMESTAMP_VAL = app.config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
+
 
 def parse(s, format=None, guess=True):
     s = s.strip()
@@ -29,11 +31,10 @@ def parse(s, format=None, guess=True):
 
 
 def format(d, format=None) -> str:
-    format = format or STD_DATETIME_FMT
-    return str(d.strftime(format))
+    return d.strftime(format or STD_DATETIME_FMT)
 
 
-def reformat(s, in_format=None, out_format=None):
+def reformat(s, in_format=None, out_format=None) -> str:
     return format(parse(s, format=in_format), format=out_format)
 
 
@@ -42,7 +43,7 @@ def now_str() -> str:
 
 
 def now_str_with_microseconds() -> str:
-    return format(datetime.utcnow(), format="%Y-%m-%dT%H:%M:%S.%fZ")
+    return format(datetime.utcnow(), format=STD_DATETIME_MS_FMT)
 
 
 def today():
