@@ -83,7 +83,7 @@ def after(timestamp, seconds) -> datetime:
     return timestamp + timedelta(seconds=seconds)
 
 
-def eta(since, sofar, total):
+def eta(since, sofar, total) -> str:
     td = (now() - since).total_seconds()
     spr = float(td) / float(sofar)
     alltime = int(math.ceil(total * spr))
@@ -91,7 +91,7 @@ def eta(since, sofar, total):
     return format(fin)
 
 
-def day_ranges(fro, to):
+def day_ranges(fro, to) -> list[str, str]:
     aday = timedelta(days=1)
 
     # first, workout when the next midnight point is
@@ -121,5 +121,5 @@ def day_ranges(fro, to):
     return ranges
 
 
-def human_date(stamp, string_format="%d %B %Y"):
+def human_date(stamp, string_format="%d %B %Y") -> str:
     return reformat(stamp, out_format=string_format)
