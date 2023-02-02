@@ -1,6 +1,6 @@
 from portality.dao import DomainObject
 from portality.core import app
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL
 from portality.models.v2.bibjson import JournalLikeBibJSON
 from portality.models.v2 import shared_structs
 from portality.models.account import Account
@@ -277,7 +277,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         clusters = {}
         for note in notes:
             if "date" not in note:
-                note["date"] = "1970-01-01T00:00:00Z"   # this really means something is broken with note date setting, which needs to be fixed
+                note["date"] = DEFAULT_TIMESTAMP_VAL   # this really means something is broken with note date setting, which needs to be fixed
             if note["date"] not in clusters:
                 clusters[note["date"]] = [note]
             else:
@@ -591,8 +591,8 @@ class Journal(JournalLikeObject):
         related = self.related_applications
         if len(related) == 0:
             return None
-        sorted(related, key=lambda x: x.get("date_accepted", "1970-01-01T00:00:00Z"))
-        return related[0].get("date_accepted", "1970-01-01T00:00:00Z")
+        sorted(related, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
+        return related[0].get("date_accepted", DEFAULT_TIMESTAMP_VAL)
 
     ############################################################
     ## revision history methods
@@ -744,7 +744,7 @@ class Journal(JournalLikeObject):
             return None
         if len(related) == 1:
             return related[0].get("application_id")
-        sorted(related, key=lambda x: x.get("date_accepted", "1970-01-01T00:00:00Z"))
+        sorted(related, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
         return related[0].get("application_id")
 
     ########################################################################

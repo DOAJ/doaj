@@ -20,6 +20,7 @@ TODO: this should be a script calling functionality inside a business logic laye
 """
 from portality import models
 from portality.lib import dates
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask
 from portality.tasks.preservation import PreservationBackgroundTask
@@ -134,7 +135,7 @@ if __name__ == '__main__':
                         default=None)
     parser.add_argument('-f', '--from_date',
                         help='Date from which to look for jobs in the given type and status',
-                        default='1970-01-01T00:00:00Z')
+                        default=DEFAULT_TIMESTAMP_VAL)
     parser.add_argument('-t', '--to_date',
                         help='Date to which to look for jobs in the given type and status',
                         default=dates.now())

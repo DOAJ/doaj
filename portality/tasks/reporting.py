@@ -9,6 +9,7 @@ from portality.background import BackgroundApi, BackgroundTask
 from portality.core import app
 from portality.dao import ESMappingMissingError, ScrollInitialiseException
 from portality.lib import dates
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import main_queue
 
@@ -329,7 +330,7 @@ class ReportingBackgroundTask(BackgroundTask):
         params = job.params
 
         outdir = self.get_param(params, "outdir", "report_" + dates.today())
-        fr = self.get_param(params, "from", "1970-01-01T00:00:00Z")
+        fr = self.get_param(params, "from", DEFAULT_TIMESTAMP_VAL)
         to = self.get_param(params, "to", dates.now())
 
         job.add_audit_message("Saving reports to " + outdir)
@@ -389,7 +390,7 @@ class ReportingBackgroundTask(BackgroundTask):
 
         params = {}
         cls.set_param(params, "outdir", kwargs.get("outdir", "report_" + dates.today()))
-        cls.set_param(params, "from", kwargs.get("from_date", "1970-01-01T00:00:00Z"))
+        cls.set_param(params, "from", kwargs.get("from_date", DEFAULT_TIMESTAMP_VAL))
         cls.set_param(params, "to", kwargs.get("to_date", dates.now()))
         cls.set_param(params, "email", kwargs.get("email", False))
         job = background_helper.create_job(username, cls.__action__,

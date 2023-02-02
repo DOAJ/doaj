@@ -8,7 +8,7 @@ from portality import constants
 from portality import models
 from portality.lib import dataobj
 from portality.lib import seamless
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL
 from portality.models import shared_structs
 from portality.models.v1.bibjson import GenericBibJSON
 
@@ -1127,7 +1127,7 @@ class TestModels(DoajTestCase):
     def test_21_index_has_apc(self):
         # no apc record, not ticked
         j = models.Journal()
-        j.set_created("1970-01-01T00:00:00Z")  # so it's before the tick
+        j.set_created(DEFAULT_TIMESTAMP_VAL)  # so it's before the tick
         j.prep()
         assert j.data.get("index", {}).get("has_apc") == "No Information"
 
@@ -1138,7 +1138,7 @@ class TestModels(DoajTestCase):
 
         # apc record, not ticked
         j = models.Journal()
-        j.set_created("1970-01-01T00:00:00Z")  # so it's before the tick
+        j.set_created(DEFAULT_TIMESTAMP_VAL)  # so it's before the tick
         b = j.bibjson()
         b.add_apc("GBP", 100)
         j.prep()
@@ -1326,7 +1326,7 @@ class TestModels(DoajTestCase):
         app1 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         app1.set_id(app1.makeid())
         app1.set_current_journal(j.id)
-        app1.set_created("1970-01-01T00:00:00Z")
+        app1.set_created(DEFAULT_TIMESTAMP_VAL)
         app1.save()
 
         app2 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
@@ -1351,7 +1351,7 @@ class TestModels(DoajTestCase):
         app1 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         app1.set_id(app1.makeid())
         app1.set_related_journal(j.id)
-        app1.set_created("1970-01-01T00:00:00Z")
+        app1.set_created(DEFAULT_TIMESTAMP_VAL)
         app1.save()
 
         app2 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())

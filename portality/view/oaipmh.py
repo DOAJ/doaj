@@ -3,7 +3,7 @@ from lxml import etree
 from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
 from portality.core import app
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL
 from portality.models import OAIPMHJournal, OAIPMHArticle
 from portality.lib import plausible
 from portality.crosswalks.oaipmh import CROSSWALKS, make_set_spec, make_oai_identifier
@@ -97,7 +97,7 @@ class DateFormat(object):
 
     @classmethod
     def default_earliest(cls):
-        return "1970-01-01T00:00:00Z"
+        return DEFAULT_TIMESTAMP_VAL
 
     @classmethod
     def now(cls):

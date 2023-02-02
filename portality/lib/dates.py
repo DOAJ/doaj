@@ -7,7 +7,7 @@ from random import randint
 import math
 
 STD_DATETIME_FMT = app.config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')
-DEFAULT_TIMESTAMP = app.config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
+DEFAULT_TIMESTAMP_VAL = app.config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
 
 def parse(s, format=None, guess=True):
     s = s.strip()
@@ -52,7 +52,7 @@ def today():
 
 def random_date(fro=None, to=None):
     if fro is None:
-        fro = parse("1970-01-01T00:00:00Z")
+        fro = parse(DEFAULT_TIMESTAMP_VAL)
     if isinstance(fro, str):
         fro = parse(fro)
     if to is None:

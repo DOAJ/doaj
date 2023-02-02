@@ -4,7 +4,7 @@
 from portality.dao import DomainObject
 from datetime import datetime
 from portality.core import app
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL
 
 
 class Cache(DomainObject):
@@ -84,7 +84,7 @@ class Cache(DomainObject):
 
     def is_stale(self):
         if not self.last_updated:
-            lu = '1970-01-01T00:00:00Z'
+            lu = DEFAULT_TIMESTAMP_VAL
         else:
             lu = self.last_updated
 

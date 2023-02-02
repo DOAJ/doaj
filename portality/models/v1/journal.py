@@ -1,6 +1,6 @@
 from portality.dao import DomainObject
 from portality.core import app
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL
 from portality.models.v1.bibjson import GenericBibJSON
 from portality.models.v1 import shared_structs
 from portality.lib import dataobj, es_data_mapping, dates
@@ -459,8 +459,8 @@ class Journal(JournalLikeObject):
         related = self.related_applications
         if len(related) == 0:
             return None
-        sorted(related, key=lambda x : x.get("date_accepted", "1970-01-01T00:00:00Z"))
-        return related[0].get("date_accepted", "1970-01-01T00:00:00Z")
+        sorted(related, key=lambda x : x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
+        return related[0].get("date_accepted", DEFAULT_TIMESTAMP_VAL)
 
     ############################################################
     ## revision history methods
@@ -603,7 +603,7 @@ class Journal(JournalLikeObject):
             return None
         if len(related) == 1:
             return related[0].get("application_id")
-        sorted(related, key=lambda x: x.get("date_accepted", "1970-01-01T00:00:00Z"))
+        sorted(related, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
         return related[0].get("application_id")
 
     def is_ticked(self):

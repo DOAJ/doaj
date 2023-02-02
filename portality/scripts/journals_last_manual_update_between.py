@@ -11,6 +11,8 @@ Publisher
 """
 
 import csv
+
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.models import Journal, Account
 from portality.core import es_connection
 from portality.lib import dates
@@ -46,7 +48,8 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--out", help="output file path")
-    parser.add_argument('-s', '--start_date', help='Last updated after threshold, default is 1970-01-01T00:00:00Z', default='1970-01-01T00:00:00Z')
+    parser.add_argument('-s', '--start_date', help=f'Last updated after threshold, default is {DEFAULT_TIMESTAMP_VAL}',
+                        default=DEFAULT_TIMESTAMP_VAL)
     parser.add_argument('-e', '--end_date', help='Last updated before threshold, default is now', default=dates.now_with_microseconds())
     args = parser.parse_args()
 

@@ -4,6 +4,7 @@ use this script if you want to manually (and synchronously) execute the reportin
 from portality.background import BackgroundApi
 from portality.core import app
 from portality.lib import dates
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.tasks import reporting
 
 if __name__ == "__main__":
@@ -13,7 +14,7 @@ if __name__ == "__main__":
 
     parser.add_argument("-f", "--from_date",
                         help="Start date for reporting period (YYYY-MM-DDTHH:MM:SSZ)",
-                        default="1970-01-01T00:00:00Z")
+                        default=DEFAULT_TIMESTAMP_VAL)
     parser.add_argument("-t", "--to_date",
                         help="End date for reporting period (YYYY-MM-DDTHH:MM:SSZ)",
                         default=dates.now())

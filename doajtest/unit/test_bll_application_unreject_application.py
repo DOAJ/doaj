@@ -5,7 +5,7 @@ from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL
 from portality.models import Application, Account, Journal
 from portality.lib.paths import rel2abs
 from portality import constants
@@ -71,7 +71,7 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
         if application_arg != "none":
             application = Application(**ApplicationFixtureFactory.make_application_source())
             application.remove_current_journal()
-            application.set_last_manual_update("1970-01-01T00:00:00Z")
+            application.set_last_manual_update(DEFAULT_TIMESTAMP_VAL)
 
             if application_arg == "rejected":
                 application.set_application_status(constants.APPLICATION_STATUS_REJECTED)
@@ -128,7 +128,7 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
 
             if outcome_arg == "noop":
                 assert application.last_updated == last_updated
-                assert application.last_manual_update == "1970-01-01T00:00:00Z"
+                assert application.last_manual_update == DEFAULT_TIMESTAMP_VAL
 
             elif outcome_arg == "unrejected":
                 journal = Journal.pull(journal_id)
@@ -143,4 +143,4 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
                     lmu = datetime.strptime(application.last_manual_update, STD_DATETIME_FMT)
                     assert lmu - lu <= timedelta(seconds=1)
                 else:
-                    assert application.last_manual_update == "1970-01-01T00:00:00Z"
+                    assert application.last_manual_update == DEFAULT_TIMESTAMP_VAL
