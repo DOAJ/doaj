@@ -43,7 +43,7 @@ def generate_global_index(file, dir):
 
 def generate_branch_index(file, dir):
     md = "# Documentation Index for {x}".format(x=os.path.basename(dir) + "\n\n")
-    md += "generated {x}\n\n".format(x=dates.now().strftime("%Y-%m-%d %H:%M"))
+    md += "generated {x}\n\n".format(x=dates.now_str("%Y-%m-%d %H:%M"))
     md += _generate_testbook_section(dir)
     md += _generate_data_models_section(dir)
     md += _generate_coverage_section(dir)

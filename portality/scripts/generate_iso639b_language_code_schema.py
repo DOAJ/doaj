@@ -129,7 +129,7 @@ if __name__ == '__main__':
     # Retain our current languages file if we are overwriting it
     if os.path.exists(dest_path):
         print('Schema already exists with name {n} - replace? [y/N]'.format(n=args.filename))
-        today = dates.now().strftime(STD_DATE_FMT)
+        today = dates.now_str(STD_DATE_FMT)
         resp = input('Your existing file will be retained as {fn}.old.{td} : '.format(fn=args.filename, td=today))
         if resp.lower() == 'y':
             os.rename(dest_path, dest_path + '.old.' + today)

@@ -186,10 +186,10 @@ class DoajTestCase(TestCase):
             CREATED_INDICES = []
 
     def list_today_article_history_files(self):
-        return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], dates.now().strftime(STD_DATE_FMT), '*'))
+        return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], dates.now_str(STD_DATE_FMT), '*'))
 
     def list_today_journal_history_files(self):
-        return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], dates.now().strftime(STD_DATE_FMT), '*'))
+        return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], dates.now_str(STD_DATE_FMT), '*'))
 
     def _make_and_push_test_context(self, path="/", acc=None):
         ctx = self.app_test.test_request_context(path)

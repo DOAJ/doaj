@@ -162,8 +162,7 @@ def capture_sigterm(fn):
                     mail.send_mail(
                         to=to,
                         fro=fro,
-                        subject="DOAJ Harvester caught SIGTERM at {0}".format(
-                            dates.now().strftime(STD_DATETIME_FMT)),
+                        subject="DOAJ Harvester caught SIGTERM at {0}".format(dates.now_str()),
                         msg_body=report
                     )
             app.logger.info(report)

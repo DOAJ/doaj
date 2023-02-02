@@ -133,7 +133,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
             if note:
                 job.add_audit_message("Adding note to for journal {y}".format(y=journal_id))
                 fc.form.notes.append_entry(
-                    {'note_date': dates.now().strftime(STD_DATETIME_FMT), 'note': note}
+                    {'note_date': dates.now_str(), 'note': note}
                 )
                 updated = True
             

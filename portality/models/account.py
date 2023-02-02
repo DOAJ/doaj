@@ -205,7 +205,7 @@ class Account(DomainObject, UserMixin):
         self.data["role"] = role
 
     def prep(self):
-        self.data['last_updated'] = dates.now().strftime(STD_DATETIME_FMT)
+        self.data['last_updated'] = dates.now_str()
 
     @property
     def api_key(self):

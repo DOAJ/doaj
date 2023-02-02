@@ -106,7 +106,7 @@ class DomainObject(UserDict, object):
     
     def set_created(self, date=None):
         if date is None:
-            self.data['created_date'] = dates.now().strftime(STD_DATETIME_FMT)
+            self.data['created_date'] = dates.now_str()
         else:
             self.data['created_date'] = date
 
@@ -150,7 +150,7 @@ class DomainObject(UserDict, object):
 
         self.data['es_type'] = self.__type__
 
-        now = dates.now().strftime(STD_DATETIME_FMT)
+        now = dates.now_str()
         if (blocking or differentiate) and "last_updated" in self.data:
             diff = dates.now() - datetime.strptime(self.data["last_updated"], STD_DATETIME_FMT)
 

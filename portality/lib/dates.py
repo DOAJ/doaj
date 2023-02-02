@@ -44,8 +44,8 @@ def now() -> datetime:
     return datetime.utcnow()
 
 
-def now_str() -> str:
-    return format(now())
+def now_str(fmt=STD_DATETIME_FMT) -> str:
+    return format(now(), format=fmt)
 
 
 def now_str_with_microseconds() -> str:

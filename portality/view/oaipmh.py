@@ -101,7 +101,7 @@ class DateFormat(object):
 
     @classmethod
     def now(cls):
-        return dates.now().strftime(STD_DATETIME_FMT)
+        return dates.now_str()
 
     @classmethod
     def format(cls, date):

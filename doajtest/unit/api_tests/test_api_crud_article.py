@@ -199,7 +199,7 @@ class TestCrudArticle(DoajTestCase):
         data["bibjson"]["link"][0]["url"] = "http://www.example.com/this_location/here"     # protocol required
         data["bibjson"]["link"][0]["type"] = "fulltext"
         data["admin"]["in_doaj"] = False
-        data["created_date"] = dates.now().strftime(STD_DATETIME_FMT)
+        data["created_date"] = dates.now_str()
         ia = IncomingArticleDO(data)
         assert isinstance(ia.bibjson.title, str)
 

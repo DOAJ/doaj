@@ -583,7 +583,7 @@ def _created_date(element):
             print("failed on", cd.text)
             pass
         
-    return dates.now().strftime(STD_DATETIME_FMT)
+    return dates.now_str()
 
 def _to_article_bibjson(element):
     b = ArticleBibJSON()

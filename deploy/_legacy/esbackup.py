@@ -51,8 +51,8 @@ logto = ''
 done = []
 
 # create a folder for todays backup, and set todays backup path
-time = dates.now().strftime("%H%M")
-today = dates.now().strftime("%Y%m%d")
+time = dates.now_str("%H%M")
+today = dates.now_str("%Y%m%d")
 done.append('backup starting at ' + time + ' on ' + today)
 backuppath = backupto + '/' + today + '/'
 try:

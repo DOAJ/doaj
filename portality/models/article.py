@@ -147,7 +147,7 @@ class Article(DomainObject):
         """Deprecated"""
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
         if date is None:
-            date = dates.now().strftime(STD_DATETIME_FMT)
+            date = dates.now_str()
         snobj = {"date": date, "bibjson": bibjson}
         if "history" not in self.data:
             self.data["history"] = []
@@ -536,7 +536,7 @@ class Article(DomainObject):
 
     def prep(self):
         self._generate_index()
-        self.data['last_updated'] = dates.now().strftime(STD_DATETIME_FMT)
+        self.data['last_updated'] = dates.now_str()
 
     def save(self, *args, **kwargs):
         self._generate_index()

@@ -30,7 +30,7 @@ class History(DomainObject):
            it's saved is on a different day).
         """
         self.set_id(self.makeid())
-        directory_name = dates.now().strftime(STD_DATE_FMT)
+        directory_name = dates.now_str(STD_DATE_FMT)
         full_dir = os.path.join(self.SAVE_BASE_DIRECTORY, directory_name)
         full_path = os.path.join(full_dir, "{0}.json".format(self.id))
 

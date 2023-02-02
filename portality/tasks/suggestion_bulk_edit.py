@@ -100,7 +100,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
             if note:
                 job.add_audit_message("Adding note to for suggestion {y}".format(y=suggestion_id))
                 fc.form.notes.append_entry(
-                    {'date': dates.now().strftime(STD_DATETIME_FMT), 'note': note}
+                    {'date': dates.now_str(), 'note': note}
                 )
                 updated = True
 
