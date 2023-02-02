@@ -203,7 +203,7 @@ class PreservationBackgroundTask(BackgroundTask):
         :return: background job
         """
 
-        created_time = dates.format(dates.now(), "%Y-%m-%d-%H-%M-%S")
+        created_time = dates.now_str("%Y-%m-%d-%H-%M-%S")
         dir_name = username + "-" + created_time
         local_dir = os.path.join(Preservation.UPLOAD_DIR, dir_name)
         file = kwargs.get("upload_file")

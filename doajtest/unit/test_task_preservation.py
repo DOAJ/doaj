@@ -21,7 +21,7 @@ class TestPreservation(DoajTestCase):
             self.zip_file = FileStorage(BytesIO(zf.read()), filename="articles.zip")
 
         self.upload_dir = app.config.get("UPLOAD_DIR", ".")
-        created_time = dates.format(dates.now(), "%Y-%m-%d-%H-%M-%S")
+        created_time = dates.now_str("%Y-%m-%d-%H-%M-%S")
         owner = "rama"
         dir_name = owner + "-" + created_time
         self.local_dir = os.path.join(preservation.Preservation.UPLOAD_DIR, dir_name)
