@@ -8,6 +8,7 @@ from portality import models, lock
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 from portality.core import app
 from portality.forms.application_forms import ApplicationFormFactory
+from portality.lib.dates import STD_DATETIME_FMT
 from portality.lib.formulaic import FormulaicException
 from portality.tasks.redis_huey import main_queue
 
@@ -98,7 +99,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
             if note:
                 job.add_audit_message("Adding note to for suggestion {y}".format(y=suggestion_id))
                 fc.form.notes.append_entry(
-                    {'date': datetime.now().strftime(app.config['DEFAULT_DATE_FORMAT']), 'note': note}
+                    {'date': datetime.now().strftime(STD_DATETIME_FMT), 'note': note}
                 )
                 updated = True
 

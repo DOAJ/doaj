@@ -121,7 +121,7 @@ def _tabulate_time_entity_group(group, entityKey):
 
 def _fft(timestamp):
     """File Friendly Timestamp - Windows doesn't appreciate : / etc in filenames; strip these out"""
-    return dates.reformat(timestamp, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
+    return dates.reformat(timestamp, dates.STD_DATETIME_FMT, "%Y-%m-%d")
 
 
 class ReportCounter(object):
@@ -352,8 +352,8 @@ class ReportingBackgroundTask(BackgroundTask):
 
         send_email = self.get_param(params, "email", False)
         if send_email:
-            ref_fr = dates.reformat(fr, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
-            ref_to = dates.reformat(to, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
+            ref_fr = dates.reformat(fr, dates.STD_DATETIME_FMT, "%Y-%m-%d")
+            ref_to = dates.reformat(to, dates.STD_DATETIME_FMT, "%Y-%m-%d")
             archive_name = "reports_" + ref_fr + "_to_" + ref_to
             email_archive(outdir, archive_name)
             job.add_audit_message("email alert sent")

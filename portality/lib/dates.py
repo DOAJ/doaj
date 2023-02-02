@@ -29,8 +29,7 @@ def parse(s, format=None, guess=True):
 
 
 def format(d, format=None):
-    if format is None:
-        format = app.config.get("DEFAULT_DATE_FORMAT")
+    format = format or STD_DATETIME_FMT
     return str(d.strftime(format))
 
 
