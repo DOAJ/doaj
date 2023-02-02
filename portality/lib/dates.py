@@ -12,7 +12,7 @@ STD_DATE_FMT = '%Y-%m-%d'
 DEFAULT_TIMESTAMP_VAL = app.config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
 
 
-def parse(s, format=None, guess=True):
+def parse(s, format=None, guess=True) -> datetime:
     s = s.strip()
 
     if format is not None:
@@ -52,11 +52,11 @@ def now_str_with_microseconds() -> str:
     return format(now(), format=STD_DATETIME_MS_FMT)
 
 
-def today():
+def today() -> str:
     return format(now(), format=STD_DATE_FMT)
 
 
-def random_date(fro=None, to=None):
+def random_date(fro=None, to=None) -> str:
     if fro is None:
         fro = parse(DEFAULT_TIMESTAMP_VAL)
     if isinstance(fro, str):
