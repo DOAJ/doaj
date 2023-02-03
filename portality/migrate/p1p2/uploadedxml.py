@@ -2,7 +2,7 @@ import os, csv
 from lxml import etree
 from portality import models, settings
 from portality.lib import dates
-from portality.lib.dates import FMT_DATETIME_STD
+from portality.lib.dates import FMT_DATETIME_STD, FMT_DATETIME_A
 from portality.models import article
 from datetime import datetime
 
@@ -111,7 +111,7 @@ for t in txt_files:
     publisher = txt.readline().strip()
     filename = txt.readline().strip()
     lm = os.path.getmtime(txt_file)
-    uploaded = datetime.fromtimestamp(lm).strftime("%Y-%m-%d %H:%M:%S")
+    uploaded = datetime.fromtimestamp(lm).strftime(FMT_DATETIME_A)
     
     # at this point we apply a correction in the event that we have a 
     # correction for this id
@@ -132,7 +132,7 @@ for t in txt_files:
             duplicate += 1
             if lm > preup:
                 rid = imports[publisher][filename][preup]
-                ruploaded = datetime.fromtimestamp(preup).strftime("%Y-%m-%d %H:%M:%S")
+                ruploaded = datetime.fromtimestamp(preup).strftime(FMT_DATETIME_A)
                 #print id, publisher, filename, "seen before, so ignoring", rid
                 duplicate_writer.writerow([rid, publisher, filename, ruploaded])
                 imports[publisher][filename] = {lm : id}

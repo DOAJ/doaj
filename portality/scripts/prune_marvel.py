@@ -3,13 +3,14 @@ import requests
 from dateutil.relativedelta import relativedelta
 
 from portality.lib import dates
+from portality.lib.dates import FMT_DATE_YMDOT
 
 
 def generate_delete_pattern():
     now = dates.now()
     delete_date = now - relativedelta(months=3)
 
-    return ".marvel-{0}*".format(delete_date.strftime('%Y.%m'))
+    return ".marvel-{0}*".format(delete_date.strftime(FMT_DATE_YMDOT))
 
 
 def main():

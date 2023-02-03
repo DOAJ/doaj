@@ -1,5 +1,6 @@
 # ~~ApplicationPublisherQuickRejectNotify:Consumer~~
 from portality.lib import dates
+from portality.lib.dates import FMT_DATE_HUMAN_A
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -43,7 +44,7 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
         datetime_object = dates.parse(application.date_applied)
-        date_applied = datetime_object.strftime("%d/%b/%Y")
+        date_applied = datetime_object.strftime(FMT_DATE_HUMAN_A)
         notification.long = svc.long_notification(cls.ID).format(
             title=application.bibjson().title,
             date_applied=date_applied,

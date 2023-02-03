@@ -4,6 +4,7 @@ import requests
 import re
 
 from portality.lib import dates
+from portality.lib.dates import FMT_DATE_DOT
 
 # TTL in days for monitoring indexes
 INDEX_PREFIXES_TTL = {
@@ -23,7 +24,7 @@ def generate_deletes(index_list):
                 delete_threshold = dates.now() - timedelta(days=ttl)
 
                 date_part = re.search('(\d+\.?){3}$', idx).group()
-                if datetime.strptime(date_part, '%Y.%m.%d') < delete_threshold:
+                if datetime.strptime(date_part, FMT_DATE_DOT) < delete_threshold:
                     deletes.append(idx)
 
     return deletes

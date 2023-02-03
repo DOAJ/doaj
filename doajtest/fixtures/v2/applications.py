@@ -7,7 +7,7 @@ from portality import constants, regex
 from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED
 from doajtest.fixtures.v2.journals import JOURNAL_FORM_EXPANDED, JOURNAL_FORM
 from portality.lib import dates
-from portality.lib.dates import FMT_DATE_YM
+from portality.lib.dates import FMT_DATE_YM, FMT_YEAR
 from portality.models.v2.application import Application
 
 class ApplicationFixtureFactory(object):
@@ -81,7 +81,7 @@ class ApplicationFixtureFactory(object):
                 start = dates.format(startts)
                 end = dates.format(endts)
             elif period == "year":
-                startts = dates.parse(h, "%Y")
+                startts = dates.parse(h, FMT_YEAR)
                 endts = datetime(startts.year + 1, 1, 1)
                 start = dates.format(startts)
                 end = dates.format(endts)

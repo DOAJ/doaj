@@ -9,7 +9,7 @@ from portality.background import BackgroundApi, BackgroundTask
 from portality.core import app
 from portality.dao import ESMappingMissingError, ScrollInitialiseException
 from portality.lib import dates
-from portality.lib.dates import DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD, FMT_DATE_YM
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD, FMT_DATE_YM, FMT_YEAR
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import main_queue
 
@@ -132,7 +132,7 @@ class ReportCounter(object):
         if self.period == "month":
             return ts.strftime(FMT_DATE_YM)
         elif self.period == "year":
-            return ts.strftime("%Y")
+            return ts.strftime(FMT_YEAR)
 
     def count(self, prov):
         raise NotImplementedError()

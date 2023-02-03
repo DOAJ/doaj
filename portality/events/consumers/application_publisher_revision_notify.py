@@ -5,6 +5,7 @@ from portality import constants
 from portality import models
 from portality.bll import DOAJ, exceptions
 from portality.lib import dates
+from portality.lib.dates import FMT_DATE_HUMAN_A
 from portality.lib.seamless import SeamlessException
 
 
@@ -37,7 +38,7 @@ class ApplicationPublisherRevisionNotify(EventConsumer):
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
         datetime_object = dates.parse(application.date_applied)
-        date_applied = datetime_object.strftime("%d/%b/%Y")
+        date_applied = datetime_object.strftime(FMT_DATE_HUMAN_A)
         notification.long = svc.long_notification(cls.ID).format(
             application_title=application.bibjson().title,
             date_applied=date_applied
