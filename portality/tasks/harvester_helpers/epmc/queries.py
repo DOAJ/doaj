@@ -1,5 +1,5 @@
 from portality.lib import dates
-from portality.lib.dates import STD_DATE_FMT
+from portality.lib.dates import FMT_STD_DATE
 
 
 class QueryBuilder(object):
@@ -39,9 +39,9 @@ def oa_issn_updated(issn, fro, to=None, date_sort=False):
     :return:
     """
 
-    fro = dates.reformat(fro, out_format=STD_DATE_FMT)
+    fro = dates.reformat(fro, out_format=FMT_STD_DATE)
     if to is not None:
-        to = dates.reformat(to, out_format=STD_DATE_FMT)
+        to = dates.reformat(to, out_format=FMT_STD_DATE)
 
     qb = QueryBuilder()
     qb.add_string_field("ISSN", issn)

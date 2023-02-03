@@ -5,7 +5,7 @@ from portality import datasets
 from copy import deepcopy
 
 from portality.lib import dates
-from portality.lib.dates import STD_DATE_FMT
+from portality.lib.dates import FMT_STD_DATE
 
 
 #####################################################################
@@ -363,7 +363,7 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         # away.
         try:
             date = dates.parse(date)
-            date = date.strftime(STD_DATE_FMT)
+            date = date.strftime(FMT_STD_DATE)
         except:
             date = ""
 

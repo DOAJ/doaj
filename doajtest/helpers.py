@@ -4,7 +4,6 @@ import hashlib
 import logging
 import os
 import shutil
-from datetime import datetime
 from glob import glob
 from unittest import TestCase
 
@@ -14,7 +13,7 @@ from flask_login import login_user
 from portality import core, dao
 from portality.core import app
 from portality.lib import paths, dates
-from portality.lib.dates import STD_DATE_FMT
+from portality.lib.dates import FMT_STD_DATE
 from portality.tasks.redis_huey import main_queue, long_running
 
 
@@ -186,10 +185,10 @@ class DoajTestCase(TestCase):
             CREATED_INDICES = []
 
     def list_today_article_history_files(self):
-        return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], dates.now_str(STD_DATE_FMT), '*'))
+        return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], dates.now_str(FMT_STD_DATE), '*'))
 
     def list_today_journal_history_files(self):
-        return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], dates.now_str(STD_DATE_FMT), '*'))
+        return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], dates.now_str(FMT_STD_DATE), '*'))
 
     def _make_and_push_test_context(self, path="/", acc=None):
         ctx = self.app_test.test_request_context(path)

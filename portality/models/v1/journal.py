@@ -1,6 +1,6 @@
 from portality.dao import DomainObject
 from portality.core import app
-from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.models.v1.bibjson import GenericBibJSON
 from portality.models.v1 import shared_structs
 from portality.lib import dataobj, es_data_mapping, dates

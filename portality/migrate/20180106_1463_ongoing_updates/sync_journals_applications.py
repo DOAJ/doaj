@@ -1,6 +1,6 @@
 import esprit, time, csv
 from portality.core import app
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib.dates import FMT_STD_DATETIME
 from portality.models import Suggestion, Journal
 from portality.lib import dates
 
@@ -59,7 +59,7 @@ with open("application_2_journal.csv", "wb") as f:
                 jc_lmua_diff = int((journal.created_timestamp - almu_adjusted).total_seconds())
                 row = [
                     application.id, application.created_date, application.last_updated, application.last_manual_update,
-                    almu_adjusted.strftime(STD_DATETIME_FMT), ",".join(issns),
+                    almu_adjusted.strftime(FMT_STD_DATETIME), ",".join(issns),
                     str(len(related_journals)), journal.id, journal.created_date, journal.data.get("last_reapplication", ""), ",".join(journal.bibjson().issns()),
                     str(jc_ac_diff), str(jc_lmua_diff), "false"
                 ]

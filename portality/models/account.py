@@ -7,7 +7,7 @@ from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
 from portality.lib import dates
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib.dates import FMT_STD_DATETIME
 
 
 class Account(DomainObject, UserMixin):
@@ -143,7 +143,7 @@ class Account(DomainObject, UserMixin):
     def set_reset_token(self, token, timeout):
         expires = dates.now() + timedelta(0, timeout)
         self.data["reset_token"] = token
-        self.data["reset_expires"] = expires.strftime(STD_DATETIME_FMT)
+        self.data["reset_expires"] = expires.strftime(FMT_STD_DATETIME)
 
     def remove_reset_token(self):
         if "reset_token" in self.data:

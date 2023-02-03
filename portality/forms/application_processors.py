@@ -1,11 +1,8 @@
 import uuid
-from datetime import datetime
 
-import portality.notifications.application_emails as emails
 from portality.core import app
 from portality import models, constants, app_email
 from portality.lib import dates
-from portality.lib.dates import STD_DATETIME_FMT
 from portality.lib.formulaic import FormProcessor
 from portality.ui.messages import Messages
 from portality.crosswalks.application_form import ApplicationFormXWalk
@@ -13,7 +10,7 @@ from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll import exceptions
 from portality.bll.doaj import DOAJ
 
-from flask import url_for, request, has_request_context
+from flask import url_for, has_request_context
 from flask_login import current_user
 
 from wtforms import FormField, FieldList

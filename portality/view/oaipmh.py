@@ -3,7 +3,7 @@ from lxml import etree
 from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
 from portality.core import app
-from portality.lib.dates import STD_DATETIME_FMT, DEFAULT_TIMESTAMP_VAL, STD_DATE_FMT
+from portality.lib.dates import FMT_STD_DATETIME, DEFAULT_TIMESTAMP_VAL, FMT_STD_DATE
 from portality.models import OAIPMHJournal, OAIPMHArticle
 from portality.lib import plausible, dates
 from portality.crosswalks.oaipmh import CROSSWALKS, make_set_spec, make_oai_identifier
@@ -105,11 +105,11 @@ class DateFormat(object):
 
     @classmethod
     def format(cls, date):
-        return date.strftime(STD_DATETIME_FMT)
+        return date.strftime(FMT_STD_DATETIME)
 
     @classmethod
     def legitimate_granularity(cls, datestr):
-        formats = [STD_DATE_FMT, STD_DATETIME_FMT]
+        formats = [FMT_STD_DATE, FMT_STD_DATETIME]
         success = False
         for f in formats:
             try:

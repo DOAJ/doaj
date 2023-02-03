@@ -343,7 +343,7 @@ def toc(identifier=None, volume=None, issue=None):
     # now render all that information
     return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future_journals, past=past_journals,
                            toc_issns=journal.bibjson().issns(),
-                           std_datetime_fmt=dates.STD_DATETIME_FMT,
+                           std_datetime_fmt=dates.FMT_STD_DATETIME,
                            default_timestamp=dates.DEFAULT_TIMESTAMP_VAL, )
 
 

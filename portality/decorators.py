@@ -1,4 +1,4 @@
-import json, signal, datetime
+import json, signal
 from functools import wraps
 from flask import request, abort, redirect, flash, url_for, render_template, make_response
 from flask_login import login_user, current_user
@@ -7,7 +7,6 @@ from portality.api.common import Api401Error
 
 from portality.core import app
 from portality.lib import dates
-from portality.lib.dates import STD_DATETIME_FMT
 from portality.models import Account
 from portality.models.harvester import HarvesterProgressReport as Report
 

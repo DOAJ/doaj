@@ -1,6 +1,6 @@
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib.dates import FMT_STD_DATETIME
 
-ES_DATETIME_FMT = STD_DATETIME_FMT
+ES_DATETIME_FMT = FMT_STD_DATETIME
 
 
 def query_all():

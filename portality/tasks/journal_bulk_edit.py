@@ -1,6 +1,5 @@
 from copy import deepcopy
 import json
-from datetime import datetime
 
 from flask_login import current_user
 from werkzeug.datastructures import MultiDict
@@ -10,10 +9,8 @@ from portality.core import app
 # from portality.formcontext import formcontext
 from portality.forms.application_forms import JournalFormFactory
 from portality.lib import dates
-from portality.lib.dates import STD_DATETIME_FMT
 
 from portality.tasks.redis_huey import main_queue
-from portality.decorators import write_required
 
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 

@@ -8,7 +8,7 @@ from lxml import etree
 from datetime import datetime, timedelta
 
 from portality.lib import plausible, dates
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib.dates import FMT_STD_DATETIME
 
 blueprint = Blueprint('atom', __name__)
 
@@ -39,7 +39,7 @@ def get_feed(base_url=None):
     """
     max_size = app.config.get("MAX_FEED_ENTRIES", 20)
     max_age = app.config.get("MAX_FEED_ENTRY_AGE", 2592000)
-    from_date = (dates.now() - timedelta(0, max_age)).strftime(STD_DATETIME_FMT)
+    from_date = (dates.now() - timedelta(0, max_age)).strftime(FMT_STD_DATETIME)
 
     dao = models.AtomRecord()
     records = dao.list_records(from_date, max_size)
@@ -123,7 +123,7 @@ class AtomFeed(object):
         rights.text = self.rights
         
         updated = etree.SubElement(feed, self.ATOM + "updated")
-        dr = datetime.strftime(self.last_updated, STD_DATETIME_FMT)
+        dr = datetime.strftime(self.last_updated, FMT_STD_DATETIME)
         updated.text = dr
         
         entry_dates = list(self.entries.keys())

@@ -2,7 +2,7 @@ import os, csv
 from lxml import etree
 from portality import models, settings
 from portality.lib import dates
-from portality.lib.dates import STD_DATETIME_FMT
+from portality.lib.dates import FMT_STD_DATETIME
 from portality.models import article
 from datetime import datetime
 
@@ -179,7 +179,7 @@ for lm in lastmods:
         
         f = id + ".xml"
         xml_file = os.path.join(xml_dir, f)
-        uploaded = datetime.fromtimestamp(lm).strftime(STD_DATETIME_FMT)
+        uploaded = datetime.fromtimestamp(lm).strftime(FMT_STD_DATETIME)
         
         upload = models.FileUpload()
         upload.set_schema(xwalk.format_name)
