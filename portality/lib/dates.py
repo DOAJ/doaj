@@ -1,15 +1,16 @@
 # ~~ Dates:Library~~
 
-from portality.core import app
-
+import math
 from datetime import datetime, timedelta
 from random import randint
-import math
+
+from portality.core import app
 
 FMT_DATETIME_STD = app.config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')
 FMT_DATETIME_A = '%Y-%m-%d %H:%M:%S'
 FMT_DATETIME_MS_STD = '%Y-%m-%dT%H:%M:%S.%fZ'
 FMT_DATETIME_SHORT = '%Y%m%d_%H%M'
+
 FMT_DATE_STD = '%Y-%m-%d'
 FMT_DATE_SHORT = '%Y%m%d'
 FMT_DATE_DOT = '%Y.%m.%d'
@@ -17,8 +18,10 @@ FMT_DATE_HUMAN = '%d %B %Y'
 FMT_DATE_HUMAN_A = '%d/%b/%Y'
 FMT_DATE_YM = '%Y-%m'
 FMT_DATE_YMDOT = '%Y.%m'
+
 FMT_TIME_SHORT = '%H%M'
 FMT_YEAR = '%Y'
+
 DEFAULT_TIMESTAMP_VAL = app.config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
 
 
