@@ -23,14 +23,14 @@ class TestPreservation(DoajTestCase):
 
         self.upload_dir = app.config.get("UPLOAD_DIR", ".")
         created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
-        owner = "rama"
-        dir_name = owner + "-" + created_time
+        self.owner = "rama"
+        self.journal_dir = "2051-5960"
+        dir_name = self.owner + "-" + created_time
         self.local_dir = os.path.join(preservation.Preservation.UPLOAD_DIR, dir_name)
-        self.preserve = preservation.Preservation(self.local_dir, owner)
-        self.package = preservation.PreservationPackage(self.preserve.preservation_dir, owner)
-        self.local_dir = os.path.join(self.local_dir,"tmp")
+        self.preserve = preservation.Preservation(self.local_dir, self.owner)
+        self.tmp_dir = os.path.join(self.local_dir, "tmp")
         self.preservation_collection = app.config.get("PRESERVATION_COLLECTION")
-        app.config["PRESERVATION_COLLECTION"] = {"rama":["test","2"]}
+        app.config["PRESERVATION_COLLECTION"] = {"rama": ["test", "2"]}
 
     def tearDown(self):
         super(TestPreservation, self).tearDown()
@@ -88,18 +88,18 @@ class TestPreservation(DoajTestCase):
     def test_preservation(self):
         self.preserve.save_file(self.zip_file)
 
-        assert os.path.exists(os.path.join(self.local_dir, self.zip_file.filename))
+        assert os.path.exists(os.path.join(self.tmp_dir, self.zip_file.filename))
 
         # Test extraction of zip file
         self.preserve.extract_zip_file()
 
-        assert os.path.exists(os.path.join(self.local_dir, "articles"))
-        assert os.path.isdir(os.path.join(self.local_dir, "articles"))
-        assert os.path.isdir(os.path.join(self.local_dir, "articles", "article_1"))
-        assert os.path.exists(os.path.join(self.local_dir, "articles",
+        assert os.path.exists(os.path.join(self.tmp_dir, "articles"))
+        assert os.path.isdir(os.path.join(self.tmp_dir, "articles"))
+        assert os.path.isdir(os.path.join(self.tmp_dir, "articles", "article_1"))
+        assert os.path.exists(os.path.join(self.tmp_dir, "articles",
                                            "article_1", "identifier.txt"))
 
-        reader = preservation.CSVReader(os.path.join(self.local_dir,
+        reader = preservation.CSVReader(os.path.join(self.tmp_dir,
                                                      "articles", "identifiers.csv"))
         data = reader.articles_info()
 
@@ -109,19 +109,22 @@ class TestPreservation(DoajTestCase):
         # Test package structure
         self.preserve.create_package_structure()
         package_dir = os.path.join(self.upload_dir,
-                                   self.preserve.dir_name, self.preserve.dir_name)
-        tag_manifest_file = os.path.join(package_dir, "2051-5960", "00003741594643f4996e2555a01e03c7", "tagmanifest-sha256.txt")
-        manifest_file = os.path.join(package_dir,"2051-5960", "00003741594643f4996e2555a01e03c7", "manifest-sha256.txt")
+                                   self.preserve.dir_name, self.preserve.dir_name, self.journal_dir)
+        tag_manifest_file = os.path.join(package_dir, "00003741594643f4996e2555a01e03c7", "tagmanifest-sha256.txt")
+        manifest_file = os.path.join(package_dir, "00003741594643f4996e2555a01e03c7", "manifest-sha256.txt")
         assert os.path.exists(package_dir)
         assert os.path.exists(tag_manifest_file)
         assert os.path.exists(manifest_file)
 
-        # Test creation of tar file
-        self.package.create_package()
-        assert os.path.exists(package_dir + ".tar.gz")
+        package = preservation.PreservationPackage(self.preserve.preservation_dir, self.journal_dir, self.owner)
 
-        sha256 = self.package.sha256()
-        response = self.package.upload_package(sha256)
+        # Test creation of tar file
+        package.create_package()
+        tar_file = package_dir + "_" + package.created_time + ".tar.gz"
+        assert os.path.exists(tar_file)
+
+        sha256 = package.sha256(tar_file)
+        response = package.upload_package(sha256, tar_file)
         assert response.status_code == 200
 
 
