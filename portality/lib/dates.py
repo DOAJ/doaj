@@ -69,7 +69,7 @@ def today() -> str:
     return format(now(), format=FMT_DATE_STD)
 
 
-def random_date(fro=None, to=None) -> str:
+def random_date(fro: datetime = None, to: datetime = None) -> str:
     if fro is None:
         fro = parse(DEFAULT_TIMESTAMP_VAL)
     if isinstance(fro, str):
@@ -104,7 +104,7 @@ def eta(since, sofar, total) -> str:
     return format(fin)
 
 
-def day_ranges(fro, to) -> list[str, str]:
+def day_ranges(fro: datetime, to: datetime) -> list[str]:
     aday = timedelta(days=1)
 
     # first, workout when the next midnight point is

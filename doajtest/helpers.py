@@ -363,3 +363,8 @@ def apply_test_case_config(new_config):
         return wrapper
 
     return decorator
+
+
+def assert_expected_dict(test_case: TestCase, target, expected: dict):
+    actual = {key: getattr(target, key) for key in expected.keys()}
+    test_case.assertDictEqual(actual, expected)
