@@ -10,7 +10,7 @@ from flask import url_for
 import time
 
 from portality.lib import dates
-from portality.lib.dates import FMT_STD_DATE
+from portality.lib.dates import FMT_DATE_STD
 
 
 class TestClient(DoajTestCase):
@@ -149,7 +149,7 @@ class TestClient(DoajTestCase):
             jm.save(blocking=True)
 
         # ListRecords - we expect 3 total results and a resumptionToken to fetch the rest
-        yesterday = (dates.now() - timedelta(days=1)).strftime(FMT_STD_DATE)
+        yesterday = (dates.now() - timedelta(days=1)).strftime(FMT_DATE_STD)
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(yesterday))
@@ -208,7 +208,7 @@ class TestClient(DoajTestCase):
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 # Request OAI journals since yesterday (looking for today's results only)
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(yesterday.strftime(FMT_STD_DATE)))
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(yesterday.strftime(FMT_DATE_STD)))
                 t = etree.fromstring(resp.data)
                 #print etree.tostring(t, pretty_print=True)
                 rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
@@ -220,7 +220,7 @@ class TestClient(DoajTestCase):
 
                 # Request OAI journals from 3 days ago to yesterday (expecting the 2 days ago results)
                 resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}&until={1}'.format(
-                    two_days_before_yesterday.strftime(FMT_STD_DATE), yesterday.strftime(FMT_STD_DATE)))
+                    two_days_before_yesterday.strftime(FMT_DATE_STD), yesterday.strftime(FMT_DATE_STD)))
                 t = etree.fromstring(resp.data)
                 #print etree.tostring(t, pretty_print=True)
                 rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]

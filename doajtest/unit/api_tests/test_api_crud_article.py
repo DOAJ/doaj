@@ -9,7 +9,7 @@ from portality.api.current.data_objects.article import IncomingArticleDO, Outgoi
 from portality.api.current import ArticlesCrudApi, Api401Error, Api400Error, Api404Error
 from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
-from portality.lib.dates import FMT_STD_DATETIME
+from portality.lib.dates import FMT_DATETIME_STD
 
 
 class TestCrudArticle(DoajTestCase):

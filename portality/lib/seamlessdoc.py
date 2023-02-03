@@ -1,7 +1,7 @@
 from portality.lib import dates, plugin
 import json
 
-from portality.lib.dates import FMT_STD_DATE
+from portality.lib.dates import FMT_DATE_STD
 
 DO_TYPE_TO_JSON_TYPE = {
     "str": "string",
@@ -102,7 +102,7 @@ def type_map(t):
     if type == "timestamp":
         return dates.now_str()
     elif type == "datestamp":
-        return dates.now_str(FMT_STD_DATE)
+        return dates.now_str(FMT_DATE_STD)
     return type
 
 def datatype(t):

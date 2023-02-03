@@ -8,7 +8,7 @@ import botocore
 import json
 from datetime import datetime, timezone, timedelta
 
-from portality.lib.dates import FMT_STD_DATETIME
+from portality.lib.dates import FMT_DATETIME_STD
 
 s3 = boto3.client('s3')
 
@@ -87,7 +87,7 @@ def send_alert_email(bucket, last_mod):
             else:
                 msg = 'AWS backup error: bucket {b} has not been updated today - it was last modified on {t}.' \
                       '\nYou may wish to check the corresponding logs.'.format(b=bucket,
-                                                                               t=last_mod.strftime(FMT_STD_DATETIME))
+                                                                               t=last_mod.strftime(FMT_DATETIME_STD))
 
             r = botocore.vendored.requests.post('https://api.mailgun.net/v3/doaj.org/messages',
                                                 auth=('api', credentials.get('ERROR_MAIL_API_KEY', '')),

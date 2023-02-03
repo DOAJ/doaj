@@ -6,9 +6,9 @@ from datetime import datetime, timedelta
 from random import randint
 import math
 
-FMT_STD_DATETIME = app.config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')
-FMT_STD_DATETIME_MS = '%Y-%m-%dT%H:%M:%S.%fZ'
-FMT_STD_DATE = '%Y-%m-%d'
+FMT_DATETIME_STD = app.config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')
+FMT_DATETIME_MS_STD = '%Y-%m-%dT%H:%M:%S.%fZ'
+FMT_DATE_STD = '%Y-%m-%d'
 DEFAULT_TIMESTAMP_VAL = app.config.get('DEFAULT_TIMESTAMP', '1970-01-01T00:00:00Z')
 
 
@@ -32,7 +32,7 @@ def parse(s, format=None, guess=True) -> datetime:
 
 
 def format(d, format=None) -> str:
-    return d.strftime(format or FMT_STD_DATETIME)
+    return d.strftime(format or FMT_DATETIME_STD)
 
 
 def reformat(s, in_format=None, out_format=None) -> str:
@@ -44,16 +44,16 @@ def now() -> datetime:
     return datetime.utcnow()
 
 
-def now_str(fmt=FMT_STD_DATETIME) -> str:
+def now_str(fmt=FMT_DATETIME_STD) -> str:
     return format(now(), format=fmt)
 
 
 def now_str_with_microseconds() -> str:
-    return format(now(), format=FMT_STD_DATETIME_MS)
+    return format(now(), format=FMT_DATETIME_MS_STD)
 
 
 def today() -> str:
-    return format(now(), format=FMT_STD_DATE)
+    return format(now(), format=FMT_DATE_STD)
 
 
 def random_date(fro=None, to=None) -> str:

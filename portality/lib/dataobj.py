@@ -7,7 +7,7 @@ import locale, json, warnings
 from urllib.parse import urlparse
 from datetime import date, datetime
 
-from portality.lib.dates import FMT_STD_DATETIME_MS, FMT_STD_DATE
+from portality.lib.dates import FMT_DATETIME_MS_STD, FMT_DATE_STD
 
 
 #########################################################
@@ -259,8 +259,8 @@ class DataObj(object):
         "unicode": to_unicode(),
         "unicode_upper" : to_unicode_upper,
         "utcdatetime": date_str(),
-        "utcdatetimemicros" : date_str(out_format=FMT_STD_DATETIME_MS),
-        "bigenddate" : date_str(out_format=FMT_STD_DATE),
+        "utcdatetimemicros" : date_str(out_format=FMT_DATETIME_MS_STD),
+        "bigenddate" : date_str(out_format=FMT_DATE_STD),
         "integer": to_int(),
         "float": to_float(),
         "isolang": to_isolang(),

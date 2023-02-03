@@ -13,7 +13,7 @@ from typing import List
 
 from portality.core import app, es_connection as ES
 from portality.lib import dates
-from portality.lib.dates import FMT_STD_DATETIME
+from portality.lib.dates import FMT_DATETIME_STD
 
 # All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 # You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
@@ -157,7 +157,7 @@ class DomainObject(UserDict, object):
             # we need the new last_updated time to be later than the new one
             if diff.total_seconds() < 1:
                 soon = dates.now() + timedelta(seconds=1)
-                now = soon.strftime(FMT_STD_DATETIME)
+                now = soon.strftime(FMT_DATETIME_STD)
 
         self.data['last_updated'] = now
 

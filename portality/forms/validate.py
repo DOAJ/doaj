@@ -6,7 +6,7 @@ from typing import List
 
 from portality.core import app
 from portality.lib import dates
-from portality.lib.dates import FMT_STD_DATE
+from portality.lib.dates import FMT_DATE_STD
 from portality.models import Journal, EditorGroup, Account
 
 from datetime import datetime
@@ -542,7 +542,7 @@ class BigEndDate(object):
         if not field.data:
             return
         try:
-            datetime.strptime(field.data, FMT_STD_DATE)
+            datetime.strptime(field.data, FMT_DATE_STD)
         except Exception:
             raise validators.ValidationError(self.message)
 

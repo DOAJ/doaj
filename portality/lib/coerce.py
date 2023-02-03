@@ -3,7 +3,7 @@ from portality.lib import dates
 from datetime import date, datetime
 from portality.lib import seamless
 from portality.datasets import get_country_code, get_currency_code
-from portality.lib.dates import FMT_STD_DATETIME_MS, FMT_STD_DATE
+from portality.lib.dates import FMT_DATETIME_MS_STD, FMT_DATE_STD
 
 
 def to_datestamp(in_format=None):
@@ -123,8 +123,8 @@ COERCE_MAP = {
     "bool": seamless.to_bool,
     "datetime" : seamless.to_datetime,
     "utcdatetime" : date_str(),
-    "utcdatetimemicros" : date_str(out_format=FMT_STD_DATETIME_MS),
-    "bigenddate" : date_str(out_format=FMT_STD_DATE),
+    "utcdatetimemicros" : date_str(out_format=FMT_DATETIME_MS_STD),
+    "bigenddate" : date_str(out_format=FMT_DATE_STD),
     "isolang": to_isolang(),
     "isolang_2letter": to_isolang(output_format="alpha2"),
     "country_code": to_country_code,

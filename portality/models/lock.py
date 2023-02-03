@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import tzlocal
 
 from portality.lib import dates
-from portality.lib.dates import FMT_STD_DATETIME
+from portality.lib.dates import FMT_DATETIME_STD
 
 
 class Lock(DomainObject):
@@ -47,7 +47,7 @@ class Lock(DomainObject):
 
     def expires_in(self, timeout):
         expires = dates.now() + timedelta(0, timeout)
-        self.data["expires"] = expires.strftime(FMT_STD_DATETIME)
+        self.data["expires"] = expires.strftime(FMT_DATETIME_STD)
 
     def is_expired(self):
         ed = dates.parse(self.expires)
@@ -59,7 +59,7 @@ class Lock(DomainObject):
         ld = local.localize(ed)
         tt = ld.utctimetuple()
         utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec)
-        return utcdt.strftime(FMT_STD_DATETIME)
+        return utcdt.strftime(FMT_DATETIME_STD)
 
     def expire_formatted(self, format="%H:%M"):
         ed = dates.parse(self.expires)

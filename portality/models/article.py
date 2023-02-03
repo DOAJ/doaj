@@ -7,7 +7,7 @@ from datetime import datetime
 
 from portality import datasets, constants
 from portality.dao import DomainObject
-from portality.lib.dates import FMT_STD_DATETIME
+from portality.lib.dates import FMT_DATETIME_STD
 from portality.models import Journal
 from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article specifically uses the v1 BibJSON
 from portality.models.v1 import shared_structs
@@ -700,7 +700,7 @@ class ArticleBibJSON(GenericBibJSON):
     def author(self, authors):
         self._set_with_struct("author", authors)
 
-    def get_publication_date(self, date_format=FMT_STD_DATETIME):
+    def get_publication_date(self, date_format=FMT_DATETIME_STD):
         # work out what the date of publication is
         date = ""
         if self.year is not None:
