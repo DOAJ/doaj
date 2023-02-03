@@ -104,7 +104,7 @@ def eta(since, sofar, total) -> str:
     return format(fin)
 
 
-def day_ranges(fro: datetime, to: datetime) -> list[str]:
+def day_ranges(fro: datetime, to: datetime) -> 'list[str]':
     aday = timedelta(days=1)
 
     # first, workout when the next midnight point is
