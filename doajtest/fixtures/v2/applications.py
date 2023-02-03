@@ -7,6 +7,7 @@ from portality import constants, regex
 from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED
 from doajtest.fixtures.v2.journals import JOURNAL_FORM_EXPANDED, JOURNAL_FORM
 from portality.lib import dates
+from portality.lib.dates import FMT_DATE_YM
 from portality.models.v2.application import Application
 
 class ApplicationFixtureFactory(object):
@@ -71,7 +72,7 @@ class ApplicationFixtureFactory(object):
             start = None
             end = None
             if period == "month":
-                startts = dates.parse(h, "%Y-%m")
+                startts = dates.parse(h, FMT_DATE_YM)
                 year, month = divmod(startts.month+1, 12)
                 if month == 0:
                     month = 12

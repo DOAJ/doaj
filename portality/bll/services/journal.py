@@ -1,7 +1,5 @@
 import logging
 
-import jinja2.optimizer
-
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
 from portality import models, constants
@@ -9,6 +7,7 @@ from portality.bll import exceptions
 from portality.core import app
 from portality import lock
 from portality.bll.doaj import DOAJ
+from portality.lib.dates import FMT_DATETIME_SHORT
 from portality.store import StoreFactory, prune_container
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
 
@@ -132,7 +131,7 @@ class JournalService(object):
         ], exceptions.ArgumentException)
 
         # ~~->FileStoreTemp:Feature~~
-        filename = 'journalcsv__doaj_' + dates.now_str('%Y%m%d_%H%M') + '_utf8.csv'
+        filename = 'journalcsv__doaj_' + dates.now_str(FMT_DATETIME_SHORT) + '_utf8.csv'
         container_id = app.config.get("STORE_CACHE_CONTAINER")
         tmpStore = StoreFactory.tmp()
         out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)
@@ -152,7 +151,7 @@ class JournalService(object):
         if prune:
             def sort(filelist):
                 rx = "journalcsv__doaj_(.+?)_utf8.csv"
-                return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], '%Y%m%d_%H%M'), reverse=True)
+                return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], FMT_DATETIME_SHORT), reverse=True)
 
             def _filter(f_name):
                 return f_name.startswith("journalcsv__")
