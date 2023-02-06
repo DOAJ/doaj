@@ -7,6 +7,7 @@ from portality import models, app_email
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.core import app
 from portality.dao import Facetview2
+from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import main_queue, schedule
 
 
@@ -414,10 +415,7 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
             raise BackgroundException("Email has been disabled in config. Set ENABLE_EMAIL to True to run this task.")
 
         # first prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
-        return job
+        return background_helper.create_job(username, cls.__action__, queue_id=huey_helper.queue_id)
 
     @classmethod
     def submit(cls, background_job):
@@ -429,14 +427,17 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
         async_workflow_notifications.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.periodic_task(schedule("async_workflow_notifications"))
+huey_helper = AsyncWorkflowBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.task_queue.periodic_task(schedule("async_workflow_notifications"))
 def scheduled_async_workflow_notifications():
     user = app.config.get("SYSTEM_USERNAME")
     job = AsyncWorkflowBackgroundTask.prepare(user)
     AsyncWorkflowBackgroundTask.submit(job)
 
 
-@main_queue.task()
+@huey_helper.task_queue.task()
 def async_workflow_notifications(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = AsyncWorkflowBackgroundTask(job)
