@@ -571,11 +571,13 @@ class Preservation:
 
             # Fetch identifiers at the root directory
             if os.path.dirname(dir) == self.__local_dir:
-                if Preservation.IDENTIFIERS_CSV in files:
-                    # Get articles info from csv file
-                    # ~~-> CSVReader:Feature~~
-                    csv_reader = CSVReader(os.path.join(dir, Preservation.IDENTIFIERS_CSV))
-                    self.__csv_articles_dict = csv_reader.articles_info()
+                for file in files:
+                    if Preservation.IDENTIFIERS_CSV.lower() == file.lower():
+                        # Get articles info from csv file
+                        # ~~-> CSVReader:Feature~~
+                        csv_reader = CSVReader(os.path.join(dir, file))
+                        self.__csv_articles_dict = csv_reader.articles_info()
+                        break
             # process only the directories that has articles
             else:
                 self.__process_article(dir, files, articles_list)
@@ -594,10 +596,12 @@ class Preservation:
                 return
 
         # check if identifier file exist
-        if Preservation.IDENTIFIER_FILE in files:
-            with open(os.path.join(dir_path, Preservation.IDENTIFIER_FILE)) as file:
-                identifiers = file.read().splitlines()
-        elif self.__csv_articles_dict:
+        for file in files:
+            if Preservation.IDENTIFIER_FILE.lower() == file.lower():
+                with open(os.path.join(dir_path, file)) as identifier_file:
+                    identifiers = identifier_file.read().splitlines()
+
+        if not identifiers and self.__csv_articles_dict:
             if dir_name in self.__csv_articles_dict:
                 identifiers = self.__csv_articles_dict[dir_name]
 
