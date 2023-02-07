@@ -2,44 +2,49 @@
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
+from portality.core import app
 from portality import constants
 from portality import models
 from portality.bll import DOAJ
 from portality.bll import exceptions
 
 
-class JournalDiscontinuingSoon(EventConsumer):
+class JournalDiscontinuingSoonNotify(EventConsumer):
     ID = "journal:assed:discontinuing_soon:notify"
 
     @classmethod
     def consumes(cls, event):
         return event.id == constants.EVENT_JOURNAL_DISCONTINUING_SOON and \
-               event.context.get("journal") is not None
+               event.context.get("job") is not None
 
     @classmethod
     def consume(cls, event):
-        j_source = event.context.get("journal")
 
+        source = event.context.get("job")
         try:
-            journal = models.Journal(**j_source)
+            job = models.BackgroundJob(**source)
         except Exception as e:
-            raise exceptions.NoSuchObjectException("Unable to construct Journal from supplied source - data structure validation error, {x}".format(x=e))
+            raise exceptions.NoSuchObjectException(
+                "Unable to construct a BackgroundJob object from the data supplied {x}".format(x=e))
 
-        if not journal.editor:
-            raise exceptions.NoSuchPropertyException("Journal {x} does not have property `editor`".format(x=journal.id))
+        if job.user is None:
+            return
 
-            # ~~-> Notifications:Service ~~
-            svc = DOAJ.notificationsService()
+        acc = models.Account.pull(job.user)
+        if acc is None or not acc.has_role("admin"):
+            return
 
-            notification = models.Notification()
-            notification.who = journal.editor
-            notification.created_by = cls.ID
-            notification.classification = constants.NOTIFICATION_CLASSIFICATION_ASSIGN
-            notification.long = svc.long_notification(cls.ID).format(
-                journal_name=journal.bibjson().title,
-                group_name=journal.editor_group
-            )
-            notification.short = svc.short_notification(cls.ID)
-            notification.action = url_for("editor.journal_page", journal_id=journal.id)
+        # ~~-> Notifications:Service ~~
+        svc = DOAJ.notificationsService()
 
-            svc.notify(notification)
+        notification = models.Notification()
+        notification.who = acc.id
+        notification.created_by = cls.ID
+        notification.classification = constants.NOTIFICATION_CLASSIFICATION_ASSIGN
+        notification.long = svc.long_notification(cls.ID).format(
+            days=app.config.get('DISCONTINUED_DATE_DELTA',1),
+            data=event.context.get("data")
+        )
+        notification.short = svc.short_notification(cls.ID)
+
+        svc.notify(notification)

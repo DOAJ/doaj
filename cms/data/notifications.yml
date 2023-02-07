@@ -142,3 +142,11 @@ update_request:publisher:rejected:notify:
   short:
     Your update request was rejected
 
+journal:assed:discontinuing_soon:notify:
+  long: |
+    Following journals will discontinue in {days} days.
+
+    {data}
+  short:
+     Journals discontinuing soon found
+

@@ -3,6 +3,7 @@ import csv
 import json
 
 from portality.core import app
+from portality.bll import DOAJ
 from portality import models,app_email
 
 from portality.tasks.redis_huey import main_queue
@@ -10,6 +11,7 @@ from portality.tasks.redis_huey import main_queue
 from portality.background import BackgroundTask, BackgroundSummary
 from portality.tasks.helpers import background_helper
 from portality.ui.messages import Messages
+from portality import constants
 
 
 def _date():
@@ -37,7 +39,7 @@ class DiscontinuedSoonQuery:
 class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
     __action__ = "find_discontinued_soon"
 
-    def find_journals_discontinuing_soon(self, job):
+    def find_journals_discontinuing_soon(self):
         jdata = []
 
         for journal in models.Journal.iterate(q=DiscontinuedSoonQuery.query(), keepalive='5m', wrap=True):
@@ -57,30 +59,19 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
 
         return jdata
 
-
-    def send_email(self, data, job):
-        # ~~->Email:ExternalService~~
-        try:
-            # send warning email about the service tag in article metadata detected
-            to = app.config.get('DISCONTINUED_JOURNALS_FOUND_RECEIPIENTS')
-            fro = app.config.get("SYSTEM_EMAIL_FROM", "helpdesk@doaj.org")
-            subject = app.config.get("SERVICE_NAME", "") + " - journals discontinuing soon found"
-            app_email.send_mail(to=to,
-                                fro=fro,
-                                subject=subject,
-                                template_name="email/discontinue_soon.jinja2",
-                                days=app.config.get('DISCONTINUED_DATE_DELTA',1),
-                                data=json.dumps({"data": data}, indent=4, separators=(',', ': ')))
-        except app_email.EmailException:
-            app.logger.exception(Messages.DISCONTINUED_JOURNALS_FOUND_EMAIL_ERROR_LOG)
-
-        job.add_audit_message(Messages.DISCONTINUED_JOURNALS_FOUND_EMAIL_SENT_LOG)
-
     def run(self):
         job = self.background_job
         journals = self.find_journals_discontinuing_soon(job=job)
+        journals = find_journals_discontinuing_soon()
         if len(journals):
-            self.send_email(job=job, data=journals)
+            DOAJ.eventsService().trigger(models.Event(
+                constants.EVENT_JOURNAL_DISCONTINUING_SOON,
+                "system",
+                {
+                    "context": "job",
+                    "data": jdata,
+                    "job": job
+                }))
         else:
             job.add_audit_message(Messages.NO_DISCONTINUED_JOURNALS_FOUND_LOG)
 
@@ -131,3 +122,23 @@ def find_discontinued_soon(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = FindDiscontinuedSoonBackgroundTask(job)
     BackgroundApi.execute(task)
+
+def find_journals_discontinuing_soon():
+    jdata = []
+
+    for journal in models.Journal.iterate(q=DiscontinuedSoonQuery.query(), keepalive='5m', wrap=True):
+        # ~~->Journal:Model~~
+        bibjson = journal.bibjson()
+        owner = journal.owner
+        account = models.Account.pull(owner)
+
+        jdata.append({"id": journal.id,
+                      "title":bibjson.title,
+                      "eissn": bibjson.get_one_identifier(bibjson.E_ISSN),
+                      "pissn": bibjson.get_one_identifier(bibjson.P_ISSN),
+                      "account_email": account.email if account else "Not Found",
+                      "publisher": bibjson.publisher,
+                      "discontinued date": bibjson.discontinued_date})
+        print(Messages.DISCONTINUED_JOURNAL_FOUND_LOG.format(id=journal.id))
+
+    return jdata
