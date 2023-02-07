@@ -1,4 +1,5 @@
 # ~~JournalDiscontinuingSoonNotify:Consumer~~
+import json
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -15,7 +16,8 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
     @classmethod
     def consumes(cls, event):
         return event.id == constants.EVENT_JOURNAL_DISCONTINUING_SOON and \
-               event.context.get("job") is not None
+               event.context.get("job") is not None and \
+                event.context.get("data") is not None
 
     @classmethod
     def consume(cls, event):
@@ -34,6 +36,11 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
         if acc is None or not acc.has_role("admin"):
             return
 
+
+        journals = []
+        for j in data:
+            journals.append(j["id"])
+
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
@@ -43,8 +50,9 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_ASSIGN
         notification.long = svc.long_notification(cls.ID).format(
             days=app.config.get('DISCONTINUED_DATE_DELTA',1),
-            data=event.context.get("data")
+            data=json.dumps({"data": data}, indent=4, separators=(',', ': '))
         )
         notification.short = svc.short_notification(cls.ID)
+        notification.action = url_for("dashboard.notifications")
 
         svc.notify(notification)

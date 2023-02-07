@@ -62,14 +62,13 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
     def run(self):
         job = self.background_job
         journals = self.find_journals_discontinuing_soon(job=job)
-        journals = find_journals_discontinuing_soon()
         if len(journals):
             DOAJ.eventsService().trigger(models.Event(
                 constants.EVENT_JOURNAL_DISCONTINUING_SOON,
                 "system",
                 {
                     "context": "job",
-                    "data": jdata,
+                    "data": journals,
                     "job": job
                 }))
         else:
@@ -139,6 +138,6 @@ def find_journals_discontinuing_soon():
                       "account_email": account.email if account else "Not Found",
                       "publisher": bibjson.publisher,
                       "discontinued date": bibjson.discontinued_date})
-        print(Messages.DISCONTINUED_JOURNAL_FOUND_LOG.format(id=journal.id))
+        job.add_audit_message(Messages.DISCONTINUED_JOURNAL_FOUND_LOG.format(id=journal.id))
 
     return jdata
