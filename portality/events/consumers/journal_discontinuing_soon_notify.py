@@ -47,7 +47,7 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
         notification = models.Notification()
         notification.who = acc.id
         notification.created_by = cls.ID
-        notification.classification = constants.NOTIFICATION_CLASSIFICATION_ASSIGN
+        notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS
         notification.long = svc.long_notification(cls.ID).format(
             days=app.config.get('DISCONTINUED_DATE_DELTA',1),
             data=json.dumps({"data": data}, indent=4, separators=(',', ': '))
