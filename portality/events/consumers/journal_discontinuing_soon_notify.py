@@ -21,7 +21,7 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
 
     @classmethod
     def consume(cls, event):
-
+        data = event.context.get("data")
         source = event.context.get("job")
         try:
             job = models.BackgroundJob(**source)
