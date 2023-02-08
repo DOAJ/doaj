@@ -1122,3 +1122,24 @@ class RecentJournalsQuery(object):
                 {"created_date" : {"order" : "desc"}}
             ]
         }
+
+class JournalDiscontinuedDateQuery(object):
+    base_query = {
+            "track_total_hits": True,
+            "query": {
+                "bool": {
+                    "must": [
+                        {"terms": {"bibjson.discontinued_date": "<date here>"}}
+                    ]
+                }
+            },
+            "size": 10000
+        }
+
+    def __init__(self, discontinued_date):
+        self.discontinued_date = discontinued_date
+
+    def query(self):
+        q = deepcopy(self.base_query)
+        q["query"]["bool"]["must"][0]["terms"]["bibjson.discontinued_date"] = [self.discontinued_date]
+        return q

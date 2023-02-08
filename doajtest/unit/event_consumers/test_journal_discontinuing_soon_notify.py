@@ -28,7 +28,7 @@ class TestJournalDiscontinuingSoonNotify(DoajTestCase):
         event = models.Event(constants.EVENT_JOURNAL_DISCONTINUING_SOON)
         assert not JournalDiscontinuingSoonNotify.consumes(event)
 
-        event = models.Event(constants.EVENT_JOURNAL_DISCONTINUING_SOON, context = {"data": {"1234"}, "job": {"1234"}})
+        event = models.Event(constants.EVENT_JOURNAL_DISCONTINUING_SOON, context = {"data": {"1234"}, "job": {"1234"}, "discontinue_date": "2002-22-02"})
         assert JournalDiscontinuingSoonNotify.consumes(event)
 
     def test_consume_success(self):

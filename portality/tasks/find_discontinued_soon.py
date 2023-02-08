@@ -70,7 +70,8 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
                 {
                     "context": "job",
                     "data": journals,
-                    "job": job
+                    "job": job,
+                    "discontinue_date": _date()
                 }))
         else:
             job.add_audit_message(Messages.NO_DISCONTINUED_JOURNALS_FOUND_LOG)
