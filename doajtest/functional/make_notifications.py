@@ -1,5 +1,5 @@
 # ~~Notifications:FunctionalTest~~
-import models
+from portality import models
 from portality.events.consumers import application_assed_assigned_notify, \
     application_assed_inprogress_notify, \
     application_editor_completed_notify, \
