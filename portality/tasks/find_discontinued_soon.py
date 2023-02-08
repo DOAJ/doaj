@@ -26,7 +26,8 @@ class DiscontinuedSoonQuery:
                     "filter": {
                         "bool" : {
                             "must": [
-                                {"term" : {"bibjson.discontinued_date": _date()}}
+                                {"term" : {"bibjson.discontinued_date": _date()}},
+                                {"term" : {"admin.in_doaj":True}}
                             ]
                         }
                     }
@@ -39,7 +40,7 @@ class DiscontinuedSoonQuery:
 class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
     __action__ = "find_discontinued_soon"
 
-    def find_journals_discontinuing_soon(self):
+    def find_journals_discontinuing_soon(self, job):
         jdata = []
 
         for journal in models.Journal.iterate(q=DiscontinuedSoonQuery.query(), keepalive='5m', wrap=True):
