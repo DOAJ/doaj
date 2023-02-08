@@ -1,11 +1,13 @@
 {% set TODOS = {
         constants.TODO_MANED_STALLED: {
             "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Contact the editor</span>",
+            "show_status": true,
             "colour" : "var(--salmon)",
             "feather": "coffee"
         },
         constants.TODO_MANED_FOLLOW_UP_OLD: {
             "text": "<strong>Old</strong> <span class='todo-list__status'>Old: chase progress</span>",
+            "show_status": true,
             "colour" : "var(--sanguine)",
             "feather": "clock"
         },
@@ -29,11 +31,13 @@
         },
         constants.TODO_EDITOR_STALLED: {
             "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Contact the Associate Editor</span>",
+            "show_status": true,
             "colour" : "var(--yellow)",
             "feather": "inbox",
         },
         constants.TODO_EDITOR_FOLLOW_UP_OLD: {
             "text" : "<strong>Old</strong> <span class='todo-list__status'>Old: chase progress</span>",
+            "show_status": true,
             "colour" : "var(--sanguine)",
             "feather": "clock"
         },
@@ -51,11 +55,13 @@
         },
         constants.TODO_ASSOCIATE_PROGRESS_STALLED: {
             "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Inactive: review progress</span>",
+            "show_status": true,
             "colour" : "var(--yellow)",
             "feather": "inbox",
         },
         constants.TODO_ASSOCIATE_FOLLOW_UP_OLD: {
             "text": "<strong>Old</strong> <span class='todo-list__status'>Old: chase progress</span>",
+            "show_status": true,
             "colour" : "var(--sanguine)",
             "feather": "clock"
         },
@@ -66,7 +72,8 @@
             "link" : url_for('editor.associate_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
         },
         constants.TODO_ASSOCIATE_ALL_APPLICATIONS: {
-            "text" : "<strong>Application</strong> <span class='todo-list__status'>Assign a group</span>",
+            "text" : "<strong>Application</strong> <span class='todo-list__status'>Review application</span>",
+            "show_status": true,
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('editor.associate_suggestions')
@@ -139,7 +146,7 @@
                  <p class="label label--secondary">
                    <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">
                      {% set main_action = todo.action_id[0] %}
-                     {% if main_action == 'todo_maned_follow_up_old' or main_action == 'todo_maned_stalled' %}[{{ todo.object.application_status }}]{% endif %}
+                     {% if action.show_status %}[{{ todo.object.application_status }}]{% endif %}
                      {{ action.text | safe }}
                    </a>
                  </p>
