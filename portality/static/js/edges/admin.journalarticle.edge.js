@@ -275,7 +275,8 @@ $.extend(true, doaj, {
                         {'display':'DOI', 'field' : 'bibjson.identifier.id'},
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal language','field':'index.language'},
-                        {'display':'Publisher','field':'bibjson.publisher.name'},
+
+                        {'display':'Journal: Publisher','field':'bibjson.publisher.name'},
 
                         {'display':'Article: Abstract','field':'bibjson.abstract'},
                         {'display':'Article: Author’s name','field':'bibjson.author.name'},
