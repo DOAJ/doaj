@@ -101,7 +101,7 @@ $.extend(true, doaj, {
                         },
                         {
                             id : "retains_copyrigths",
-                            display: "Where author holds copyright without restrictions",
+                            display: "Author retains all rights",
                             must : [
                                 es.newTermFilter({
                                     field: "bibjson.copyright.author_retains",
