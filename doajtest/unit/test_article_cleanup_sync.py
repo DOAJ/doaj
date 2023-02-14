@@ -4,6 +4,7 @@ from datetime import datetime
 
 from doajtest.helpers import DoajTestCase
 from doajtest import fixtures
+from doajtest.unit_tester import bgtask_tester
 
 from portality import background, models
 from portality.tasks import article_cleanup_sync
@@ -277,3 +278,5 @@ class TestArticleCleanupSync(DoajTestCase):
         best = task._get_best_journal([j3, j4])
         assert best.id == j3.id
 
+    def test_prepare__queue_id(self):
+        bgtask_tester.test_queue_id_assigned(article_cleanup_sync.ArticleCleanupSyncBackgroundTask)

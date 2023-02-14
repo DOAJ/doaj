@@ -118,6 +118,7 @@ class SetInDOAJBackgroundTask(BackgroundTask):
             raise RuntimeError("SetInDOAJBackgroundTask.prepare run without sufficient parameters")
 
         job.params = params
+        job.queue_id = huey_helper.queue_id
 
         if "selection_query" in kwargs:
             refs = {}
@@ -141,8 +142,11 @@ class SetInDOAJBackgroundTask(BackgroundTask):
         background_job.save()
         set_in_doaj.schedule(args=(background_job.id,), delay=10)
 
-@main_queue.task()
-@write_required(script=True)
+
+huey_helper = SetInDOAJBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_execute(is_load_config=False)
 def set_in_doaj(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = SetInDOAJBackgroundTask(job)

@@ -202,12 +202,14 @@ def sitemap():
 
 @blueprint.route("/public-data-dump/<record_type>")
 def public_data_dump_redirect(record_type):
-    store_url = models.Cache.get_public_data_dump().get(record_type, {}).get("url")
-    if store_url is None:
-        abort(404)
-    if store_url.startswith("/"):
-        store_url = "/store" + store_url
-    return redirect(store_url, code=307)
+    # temporarily disable redirects to the data dump
+    abort(503)
+    # store_url = models.Cache.get_public_data_dump().get(record_type, {}).get("url")
+    # if store_url is None:
+    #     abort(404)
+    # if store_url.startswith("/"):
+    #     store_url = "/store" + store_url
+    # return redirect(store_url, code=307)
 
 
 @blueprint.route("/store/<container>/<filename>")

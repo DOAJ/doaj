@@ -99,9 +99,10 @@ $.extend(true, doaj, {
                     // start the main box that all the details go in
                     result += "<div class='row-fluid'><div class='span12'>";
 
-                    result += firstRow + "<br>";
-                    result += "Job ID: " + resultobj.id + "<br>";
-                    result += dateRow + "<br>";
+                    result += firstRow + '<br>';
+                    result += 'Job ID: ' + resultobj.id + '<br>';
+                    result += 'On Queue: ' + resultobj.queue_id + '<br>';
+                    result += dateRow + '<br>';
 
                     result += '<a href="#" data-id="' + resultobj.id + '" class="' + toggleClass + '">More Information</a><br>';
                     result += expandBlock;
@@ -186,6 +187,20 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
+                edges.newRefiningANDTermSelector({
+                    id: "queue_id",
+                    category: "facet",
+                    field: "queue_id.exact",
+                    display: "On Queue",
+                    deactivateThreshold : 1,
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: false,
+                        togglable: true,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
 
                 // configure the search controller
                 edges.newFullSearchController({
@@ -243,7 +258,8 @@ $.extend(true, doaj, {
                     fieldDisplays: {
                         'action.exact': 'Action',
                         'user.exact' : 'Submitted By',
-                        'status.exact' : 'Status'
+                        'status.exact' : 'Status',
+                        'queue_id.exact' : 'On Queue',
                     }
                 })
             ];

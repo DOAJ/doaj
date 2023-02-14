@@ -12,9 +12,6 @@ gold:
 
 
 silver:
-- name: American Chemical Society
-  url: https://pubs.acs.org/
-  logo: ACS.jpg
 
 - name: American Psychological Association
   url: https://www.apa.org/pubs
@@ -26,7 +23,7 @@ silver:
 
 - name: Cappelen Damm Akademisk
   url: https://www.cappelendammundervisning.no/
-  logo: CDA.jpg
+  logo: cda.jpg
 
 - name: Copernicus Publications
   url: https://publications.copernicus.org
@@ -47,6 +44,10 @@ silver:
 - name: JMIR Publications
   url: https://jmirpublications.com/
   logo: jmir.svg
+  
+- name: Knowledge E
+  url: https://knowledgee.com/
+  logo: knowledgee.png
 
 - name: MDPI
   url: https://www.mdpi.com/
@@ -58,7 +59,7 @@ silver:
 
 - name: Oxford University Press
   url: https://global.oup.com/
-  logo: OUP.jpg
+  logo: oup.jpg
 
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
@@ -70,6 +71,10 @@ silver:
 
 
 bronze:
+- name: American Chemical Society
+  url: https://pubs.acs.org/
+  logo: acs.jpg
+  
 - name: ARPHA Publishing Platform
   url: https://arphahub.com/
   logo: arpha.png
@@ -84,7 +89,7 @@ bronze:
 
 - name: Digital Science
   url: https://www.digital-science.com/
-  logo: DS-logo.svg
+  logo: ds.svg
   
 - name: EDP Sciences
   url: https://www.edpsciences.org/
@@ -102,10 +107,6 @@ bronze:
   url: https://www.ieee.org/
   logo: ieee.png
 
-- name: Institute of Physics
-  url: https://www.iop.org/
-  logo: IOP.jpg
-
 - name: The Institution of Engineering and Technology (IET)
   url: https://www.theiet.org/
   logo: iet.svg
@@ -117,6 +118,10 @@ bronze:
 - name: Karger
   url: https://www.karger.com/
   logo: karger.png
+
+- name: KeAI Communications
+  url: https://www.keaipublishing.com/
+  logo: keai.svg
 
 - name: Lund University
   url: https://www.lunduniversity.lu.se/
@@ -132,8 +137,13 @@ bronze:
 
 - name: PLOS
   url: https://plos.org/
-  logo: PLOS.svg
+  logo: plos.svg
+
+- name: SciFree
+  url: https://scifree.se/
+  logo: scifree.svg
 
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg  
+  
