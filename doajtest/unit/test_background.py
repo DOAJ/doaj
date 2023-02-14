@@ -1,10 +1,10 @@
-from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import BackgroundFixtureFactory
+import time
 
+from doajtest.fixtures import BackgroundFixtureFactory
+from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.background import BackgroundApi
-
-import time
+from portality.models.background import BackgroundJobQueryBuilder
 
 
 class TestBackground(DoajTestCase):
@@ -26,7 +26,7 @@ class TestBackground(DoajTestCase):
 
         job = task.background_job
         assert job.status == "complete"
-        assert len(job.audit) > 2   # there will be some messages, no need to be too specific
+        assert len(job.audit) > 2  # there will be some messages, no need to be too specific
 
     def test_02_with_user_cleanup_fail(self):
         acc = models.Account()
@@ -39,7 +39,7 @@ class TestBackground(DoajTestCase):
 
         job = task.background_job
         assert job.status == "error"
-        assert len(job.audit) > 2   # there will be some messages, no need to be too specific
+        assert len(job.audit) > 2  # there will be some messages, no need to be too specific
 
     def test_03_with_user_run_fail(self):
         acc = models.Account()
@@ -52,7 +52,7 @@ class TestBackground(DoajTestCase):
 
         job = task.background_job
         assert job.status == "error"
-        assert len(job.audit) > 2   # there will be some messages, no need to be too specific
+        assert len(job.audit) > 2  # there will be some messages, no need to be too specific
 
     def test_04_no_user_success(self):
         task = BackgroundFixtureFactory.get_task()
@@ -61,7 +61,7 @@ class TestBackground(DoajTestCase):
 
         job = task.background_job
         assert job.status == "complete"
-        assert len(job.audit) > 2   # there will be some messages, no need to be too specific
+        assert len(job.audit) > 2  # there will be some messages, no need to be too specific
 
     def test_05_no_user_cleanup_fail(self):
         task = BackgroundFixtureFactory.get_task(cleanup_fail=True)
@@ -70,7 +70,7 @@ class TestBackground(DoajTestCase):
 
         job = task.background_job
         assert job.status == "error"
-        assert len(job.audit) > 2   # there will be some messages, no need to be too specific
+        assert len(job.audit) > 2  # there will be some messages, no need to be too specific
 
     def test_06_no_user_run_fail(self):
         task = BackgroundFixtureFactory.get_task(run_fail=True)
@@ -79,4 +79,45 @@ class TestBackground(DoajTestCase):
 
         job = task.background_job
         assert job.status == "error"
-        assert len(job.audit) > 2   # there will be some messages, no need to be too specific
+        assert len(job.audit) > 2  # there will be some messages, no need to be too specific
+
+
+class TestBackgroundJobQueryBuilder(DoajTestCase):
+
+    def test_build_query_dict__a(self):
+        query_dict = (BackgroundJobQueryBuilder()
+                      .status_includes('some status')
+                      .build_query_dict())
+        expected_dict = {
+            'query': {
+                'bool': {
+                    'must': [
+                        {'terms': {'status.exact': ['some status']}}
+                    ]
+                }
+            }
+        }
+        assert query_dict == expected_dict
+
+    def test_build_query__b(self):
+        status = ['status a', 'status b']
+        query_dict = (BackgroundJobQueryBuilder()
+                      .status_includes(status)
+                      .size(99)
+                      .order_by('field a', 'desc')
+                      .action('action a')
+                      .build_query_dict())
+        expected_dict = {
+            'query': {
+                'bool': {
+                    'must': [
+                        {'terms': {'status.exact': status}},
+                        {'term': {'action.exact': 'action a'}},
+                    ]
+                },
+            },
+            'size': 99,
+            'sort': [{'field a': {'order': 'desc'}}]
+
+        }
+        assert query_dict == expected_dict

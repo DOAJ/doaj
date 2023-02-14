@@ -2,6 +2,7 @@ from portality.lib.argvalidate import argvalidate
 from portality import models
 from portality.bll import exceptions
 from portality.ui.messages import Messages
+from portality.lib.dataobj import DataStructureException
 
 from datetime import datetime
 
@@ -91,7 +92,8 @@ class ArticleService(object):
         else:
             raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_FAIL, result=report)
 
-    def _batch_contains_duplicates(self, articles):
+    @staticmethod
+    def _batch_contains_duplicates(articles):
         dois = []
         fulltexts = []
 
@@ -110,7 +112,8 @@ class ArticleService(object):
 
         return False
 
-    def _prepare_update_admin(self, article, duplicate, update_article_id, merge_duplicate):
+    @staticmethod
+    def _prepare_update_admin(article, duplicate, update_article_id, merge_duplicate):
 
         is_update = 0
         if duplicate is not None:
@@ -147,26 +150,25 @@ class ArticleService(object):
         return is_update
 
     # here we should have the final point of validation for all incoming articles
-    def _validate_issns(self, article):
+    @staticmethod
+    def _validate_issns(article_bibjson: models.ArticleBibJSON):
         # only 2 issns: one print, one electronic
-        b = article.bibjson()
-        pissn = b.get_identifiers("pissn")
-        eissn = b.get_identifiers("eissn")
+        pissn = article_bibjson.get_identifiers("pissn")
+        eissn = article_bibjson.get_identifiers("eissn")
 
         if len(pissn) > 1 or len(eissn) > 1:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
 
-        pissn = b.get_one_identifier("pissn")
-        eissn = b.get_one_identifier("eissn")
+        pissn = article_bibjson.get_one_identifier("pissn")
+        eissn = article_bibjson.get_one_identifier("eissn")
 
-        #no pissn or eissn
+        # no pissn or eissn
         if not pissn and not eissn:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_ISSNS)
 
-        #pissn and eissn identical
+        # pissn and eissn identical
         if pissn == eissn:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN)
-
 
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
@@ -237,7 +239,6 @@ class ArticleService(object):
         return {"success": 1, "fail": 0, "update": is_update, "new": 1 - is_update, "shared": set(), "unowned": set(),
                 "unmatched": set()}
 
-
     def has_permissions(self, account, article, limit_to_account):
 
         if limit_to_account:
@@ -248,13 +249,15 @@ class ArticleService(object):
                         "unmatched": unmatched}
         return True
 
-
-    def is_acceptable(self, article):
+    def is_acceptable(self, article: models.Article):
         """
         conduct some deep validation on the article to make sure we will accept it
         or the moment, this just means making sure it has a DOI and a fulltext
         """
-        bj = article.bibjson()
+        try:
+            bj = article.bibjson()
+        except DataStructureException as e:
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_INVALID_BIBJSON + e.message)
 
         # do we have a DOI.  If so, no need to go further
         doi = bj.get_one_identifier(bj.DOI)
@@ -262,9 +265,15 @@ class ArticleService(object):
         if doi is None and ft is None:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_DOI_NO_FULLTEXT)
 
-        self._validate_issns(article)
+        self._validate_issns(bj)
 
-    def is_legitimate_owner(self, article, owner):
+        # is journal in doaj (we do this check last as it has more performance impact)
+        journal = article.get_journal()
+        if journal is None or not journal.is_in_doaj():
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL)
+
+    @staticmethod
+    def is_legitimate_owner(article, owner):
         """
         Determine if the owner id is the owner of the article
 
@@ -319,7 +328,8 @@ class ArticleService(object):
 
         return True
 
-    def _doi_or_fulltext_updated(self, new_article, update_id):
+    @staticmethod
+    def _doi_or_fulltext_updated(new_article, update_id):
         if new_article.id is None:
             return False
 
@@ -332,7 +342,8 @@ class ArticleService(object):
 
         return old_doi != new_doi or old_ft_url != new_ft_url
 
-    def issn_ownership_status(self, article, owner):
+    @staticmethod
+    def issn_ownership_status(article, owner):
         """
         Determine the ownership status of the supplied owner over the issns in the given article
 
@@ -397,14 +408,11 @@ class ArticleService(object):
 
     def get_duplicate(self, article):
         """
-        Get at most one one, most recent, duplicate article for the supplied article.
-
-        If the owner id is provided, this will limit the search to duplicates owned by that owner
+        Get at most one, most recent, duplicate article for the supplied article.
 
         ~~->ArticleDeduplication:Feature~~
 
         :param article:
-        :param owner:
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing
@@ -425,12 +433,11 @@ class ArticleService(object):
         """
         Get all known duplicates of an article
 
-        If the owner id is provided, this will limit the search to duplicates owned by that owner
-
         ~~->ArticleDeduplication:Feature~~
 
-        :param article:
-        :return:
+        :param article: Article of interest
+        :param max_results: Maximum number of duplicate candidates to return
+        :return: A list of possible duplicates
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("get_duplicates", [
@@ -457,7 +464,8 @@ class ArticleService(object):
 
         return possible_articles[:max_results]
 
-    def discover_duplicates(self, article, results_per_match_type=10, include_article=True):
+    @staticmethod
+    def discover_duplicates(article, results_per_match_type=10, include_article=True):
         """
         Identify duplicates, separated by duplication criteria
 
@@ -466,6 +474,8 @@ class ArticleService(object):
         ~~->ArticleDeduplication:Feature~~
 
         :param article:
+        :param results_per_match_type
+        :param include_article
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing

@@ -17,10 +17,6 @@ sudo pip install awscli
 . /home/cloo/doaj/bin/activate
 cd /home/cloo/doaj/src/doaj || exit 1
 
-# Install DOAJ submodules and dependencies
-git submodule update --init --recursive
-pip install -e .
-
 # Get the app configuration secrets from AWS  - NOTE: on a mac, base64 needs -D rather than -d
 if [ "$ENV" = 'production' ]
 then
@@ -29,6 +25,19 @@ elif [ "$ENV" = 'test' ]
 then
     aws --profile doaj-test secretsmanager get-secret-value --secret-id doaj/test-credentials | cut -f4 | base64 -d > app.cfg
 fi
+
+# Validate the secrets file so we don't try to install & restart the app if it's broken
+if python -m py_compile app.cfg
+then
+    echo "Secrets file app.cfg is OK"
+else
+    echo "Error in secrets file app.cfg. Exiting."
+    exit 1
+fi
+
+# Install DOAJ submodules and dependencies
+git submodule update --init --recursive
+pip install -e .
 
 # Compile the static pages
 python portality/cms/build_fragments.py

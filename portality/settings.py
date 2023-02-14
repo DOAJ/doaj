@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.2.8"
+DOAJ_VERSION = "6.2.16"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -237,7 +237,6 @@ STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 # Service Descriptive Text
 
 SERVICE_NAME = "Directory of Open Access Journals"
-SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
 
 ###################################
 # Cookie settings
@@ -288,11 +287,13 @@ ROLE_MAP = {
         "assign_to_associate",
         "list_group_journals",
         "list_group_suggestions",
+        "read_notifications"
     ],
     "associate_editor": [
         "edit_journal",
         "edit_suggestion",
         "editor_area",
+        "read_notifications"
     ]
 }
 
@@ -414,6 +415,8 @@ HUEY_SCHEDULE = {
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
+    "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
+    "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
 }
 
 HUEY_TASKS = {
@@ -748,6 +751,13 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "admin",
             "dao" : "portality.models.BackgroundJob"     # ~~->BackgroundJob:Model~~
+        },
+        # ~~->APINotificationQuery:Endpoint~~
+        "notifications" : {
+            "auth" : False,
+            "role" : "admin",
+            "dao" : "portality.models.Notification", # ~~->Notification:Model~~
+            "required_parameters" : None
         }
     },
     "associate_query" : {
@@ -808,6 +818,16 @@ QUERY_ROUTE = {
             "dao" : "portality.models.Suggestion",  # ~~->Application:Model~~
             "required_parameters" : None
         }
+    },
+    "dashboard_query": {
+        # ~~->APINotificationQuery:Endpoint~~
+        "notifications" : {
+            "auth" : False,
+            "role" : "read_notifications",
+            "query_filters" : ["who_current_user"], # ~~-> WhoCurrentUser:Query
+            "dao" : "portality.models.Notification", # ~~->Notification:Model~~
+            "required_parameters" : None
+        }
     }
 }
 
@@ -825,6 +845,7 @@ QUERY_FILTERS = {
     "es_type_fix" : "portality.lib.query_filters.es_type_fix",
     "last_update_fallback" : "portality.lib.query_filters.last_update_fallback",
     "not_update_request" : "portality.lib.query_filters.not_update_request",
+    "who_current_user" : "portality.lib.query_filters.who_current_user",    # ~~-> WhoCurrentUser:Query ~~
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
@@ -1246,6 +1267,13 @@ TASKS_ANON_EXPORT_LIMIT = None
 TASKS_ANON_EXPORT_BATCH_SIZE = 100000
 TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
 
+#########################################################
+# Background tasks --- old_data_cleanup
+TASK_DATA_RETENTION_DAYS = {
+    "notification": 180, # ~~-> Notifications:Feature ~~
+    "background_job": 180, # ~~-> BackgroundJobs:Feature ~~
+}
+
 ########################################
 # Editorial Dashboard - set to-do list size
 TODO_LIST_SIZE = 48
@@ -1259,3 +1287,70 @@ PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event/"
 # site name / domain name that used to register in plausible
 PLAUSIBLE_SITE_NAME = BASE_DOMAIN
 PLAUSIBLE_LOG_DIR = None
+
+#########################################################
+# Background tasks --- monitor_bgjobs
+TASKS_MONITOR_BGJOBS_TO = ["helpdesk@doaj.org",]
+TASKS_MONITOR_BGJOBS_FROM = "helpdesk@doaj.org"
+
+
+
+##################################3
+# Background monitor
+# ~~->BackgroundMonitor:Feature~~
+
+# Configures the age of the last completed job on the queue before the queue is marked as unstable
+# (in seconds)
+BG_MONITOR_LAST_COMPLETED = {
+    'main_queue': 7200,     # 2 hours
+    'long_running': 93600,  # 26 hours
+}
+
+# Configures the monitoring period and the allowed number of errors in that period before a queue is marked
+# as unstable
+BG_MONITOR_ERRORS_CONFIG = {
+    # Main queue
+    'journal_csv': {
+        'check_sec': 3600,  # 1 hour, time period between scheduled runs
+        'allowed_num_err': 0,
+    },
+    'ingest_articles': {
+        'check_sec': 86400,
+        'allowed_num_err': 0
+    },
+
+    # Long running
+    'harvest': {
+        'check_sec': 86400,
+        'allowed_num_err': 0,
+    },
+    'public_data_dump': {
+        'check_sec': 86400 * 7,
+        'allowed_num_err': 0
+    }
+}
+
+# Configures the total number of queued items and the age of the oldest of those queued items allowed
+# before the queue is marked as unstable.  This is provided by type, so we can monitor all types separately
+BG_MONITOR_QUEUED_CONFIG = {
+    # Main queue
+    'journal_csv': {
+        'total': 2,
+        'oldest': 1200,     # 20 mins
+    },
+    'ingest_articles': {
+        'total': 250,
+        'oldest': 86400
+    },
+
+    # Long running
+    'harvest': {
+        'total': 1,
+        'oldest': 86400
+    },
+    'public_data_dump': {
+        'total': 1,
+        'oldest': 86400
+    }
+}
+

@@ -1,4 +1,4 @@
-# from flask import url_for
+# ~~JournalAssedAssignedNotify:Consumer~~
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -28,6 +28,7 @@ class JournalAssedAssignedNotify(EventConsumer):
         if not journal.editor:
             raise exceptions.NoSuchPropertyException("Journal {x} does not have property `editor`".format(x=journal.id))
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()

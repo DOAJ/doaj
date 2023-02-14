@@ -57,6 +57,7 @@ app.register_blueprint(query, url_prefix="/admin_query")
 app.register_blueprint(query, url_prefix="/publisher_query")
 app.register_blueprint(query, url_prefix="/editor_query")
 app.register_blueprint(query, url_prefix="/associate_query")
+app.register_blueprint(query, url_prefix="/dashboard_query")
 app.register_blueprint(editor, url_prefix='/editor') # ~~-> Editor:Blueprint~~
 app.register_blueprint(services, url_prefix='/service') # ~~-> Services:Blueprint~~
 if 'api1' in app.config['FEATURES']:

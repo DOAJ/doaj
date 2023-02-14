@@ -1,0 +1,27 @@
+{
+  "types": [
+    {
+      "type": "background_job",
+      "init_with_model": true,
+      "keepalive": "1m",
+      "functions": [
+        "portality.migrate.2353_add_queue_to_bg_jobs.operations.add_queue_info"
+      ],
+      "query": {
+        "query": {
+          "bool": {
+            "must_not": {
+              "exists": {
+                "field": "queue_id"
+              }
+            },
+            "must": {
+              "match_all": {}
+            }
+          }
+        }
+      },
+      "action": "index"
+    }
+  ]
+}

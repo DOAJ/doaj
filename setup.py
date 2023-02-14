@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.2.8',
+    version='6.2.16',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -13,7 +13,6 @@ setup(
         "boto3==1.18.50",
         "elastic-apm==5.2.2",
         "elasticsearch==7.13.0",
-        "esprit==0.1.0",   # legacy for scripts etc (phasing out)
         "faust-streaming==0.9.5",  # Note: This is a maintained fork of the abandoned robinhood/faust
         "Faker==2.0.3",
         "feedparser==6.0.8",
@@ -24,7 +23,6 @@ setup(
         "Flask-DebugToolbar==0.10.1",
         "Flask-Login==0.4.1",
         "Flask-Mail==0.9.1",
-        "Flask-Swagger==0.2.13",
         "Flask-WTF==0.14.2",
         "freezegun==0.3.12",
         "GitPython==2.1.14",
@@ -60,7 +58,7 @@ setup(
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
         "docs": [
             "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@81eecd5e7b4da379b14c0ccb0cf64e9665a26e20#egg=featuremap",
-            "testbook @ git+https://github.com/CottageLabs/testbook.git@13403c0e1eb7f5b09cb35c6aa535944251798c0c#egg=testbook"]
+            "testbook @ git+https://github.com/CottageLabs/testbook.git@15a7c0cc25d951d989504d84c2ef3e24caaf56e9#egg=testbook"]
     },
     url='https://cottagelabs.com/',
     author='Cottage Labs',
