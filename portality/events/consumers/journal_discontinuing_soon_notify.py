@@ -32,11 +32,13 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
         if journal is None:
             return
 
-        app_id = journal.latest_related_application_id()
+        app_id = journal.current_application
         if app_id is None:
-            return
-        else:
-            application = models.Application.pull(app_id)
+            app_id = journal.latest_related_application_id()
+            if app_id is None:
+                return
+
+        application = models.Application.pull(app_id)
 
         if not application.editor_group:
             return
