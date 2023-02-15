@@ -144,9 +144,6 @@ update_request:publisher:rejected:notify:
 
 journal:assed:discontinuing_soon:notify:
   long: |
-    Following journals will discontinue in {days} days.
-
-    {data}
+    Journal "{title}" (id: {id}) will discontinue in {days} days.
   short:
      Journals discontinuing soon found
-

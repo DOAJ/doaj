@@ -45,17 +45,7 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
 
         for journal in models.Journal.iterate(q=DiscontinuedSoonQuery.query(), keepalive='5m', wrap=True):
             # ~~->Journal:Model~~
-            bibjson = journal.bibjson()
-            owner = journal.owner
-            account = models.Account.pull(owner)
-
-            jdata.append({"id": journal.id,
-                          "title":bibjson.title,
-                          "eissn": bibjson.get_one_identifier(bibjson.E_ISSN),
-                          "pissn": bibjson.get_one_identifier(bibjson.P_ISSN),
-                          "account_email": account.email if account else "Not Found",
-                          "publisher": bibjson.publisher,
-                          "discontinued date": bibjson.discontinued_date})
+            jdata.append(journal.id)
             job.add_audit_message(Messages.DISCONTINUED_JOURNAL_FOUND_LOG.format(id=journal.id))
 
         return jdata
@@ -64,15 +54,14 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
         job = self.background_job
         journals = self.find_journals_discontinuing_soon(job=job)
         if len(journals):
-            DOAJ.eventsService().trigger(models.Event(
-                constants.EVENT_JOURNAL_DISCONTINUING_SOON,
-                "system",
-                {
-                    "context": "job",
-                    "data": journals,
-                    "job": job,
-                    "discontinue_date": _date()
-                }))
+            for j in journals:
+                DOAJ.eventsService().trigger(models.Event(
+                    constants.EVENT_JOURNAL_DISCONTINUING_SOON,
+                    "system",
+                    {
+                        "journal": j,
+                        "discontinue_date": _date()
+                    }))
         else:
             job.add_audit_message(Messages.NO_DISCONTINUED_JOURNALS_FOUND_LOG)
 
@@ -124,22 +113,25 @@ def find_discontinued_soon(job_id):
     task = FindDiscontinuedSoonBackgroundTask(job)
     BackgroundApi.execute(task)
 
-def find_journals_discontinuing_soon():
-    jdata = []
 
-    for journal in models.Journal.iterate(q=DiscontinuedSoonQuery.query(), keepalive='5m', wrap=True):
-        # ~~->Journal:Model~~
-        bibjson = journal.bibjson()
-        owner = journal.owner
-        account = models.Account.pull(owner)
-
-        jdata.append({"id": journal.id,
-                      "title":bibjson.title,
-                      "eissn": bibjson.get_one_identifier(bibjson.E_ISSN),
-                      "pissn": bibjson.get_one_identifier(bibjson.P_ISSN),
-                      "account_email": account.email if account else "Not Found",
-                      "publisher": bibjson.publisher,
-                      "discontinued date": bibjson.discontinued_date})
-        job.add_audit_message(Messages.DISCONTINUED_JOURNAL_FOUND_LOG.format(id=journal.id))
-
-    return jdata
+# Test code - please do not clean up until after the tests
+# def find_journals_discontinuing_soon():
+#     jdata = []
+#
+#     for journal in models.Journal.iterate(q=DiscontinuedSoonQuery.query(), keepalive='5m', wrap=True):
+#         # ~~->Journal:Model~~
+#         jdata.append(journal.id)
+#
+#     return jdata
+#
+# if __name__ == "__main__":
+#     journals = find_journals_discontinuing_soon()
+#     if len(journals):
+#         for j in journals:
+#             DOAJ.eventsService().trigger(models.Event(
+#                 constants.EVENT_JOURNAL_DISCONTINUING_SOON,
+#                 "system",
+#                 {
+#                     "journal": j,
+#                     "discontinue_date": _date()
+#                 }))
