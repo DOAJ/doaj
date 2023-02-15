@@ -5,6 +5,7 @@
             "init_with_model": true,
             "keepalive": "10m",
             "query": {
+                "track_total_hits": true,
                 "query": {
                     "bool": {
                         "must": {
@@ -21,6 +22,7 @@
             "init_with_model": true,
             "keepalive": "10m",
             "query": {
+                "track_total_hits": true,
                 "query": {
                     "bool": {
                         "must": {
@@ -37,6 +39,7 @@
             "init_with_model": true,
             "keepalive": "20m",
             "query": {
+                "track_total_hits": true,
                 "query": {
                     "bool": {
                         "should": [
