@@ -10,11 +10,11 @@ featuremap:
  - ~~->PublisherSupportersData:Template~~
 ---
 
-DOAJ is a non-profit organisation and contributions from its supporters are crucial to keeping DOAJ operating to its strategy and mission. We are grateful to all of our Contributors for their continued support.
+The publishers on this page have chosen to show their commitment to quality, peer-reviewed open access by supporting DOAJ. We thank them! Without them, our work would not be possible.
 
-**To become a publisher supporter**, send an email to [our Help desk](mailto:helpdesk@doaj.org) and we will provide with details on how to support us. _Your organisation will be listed on our site._
+**To become a publisher supporter**, send an email to [our Help desk](mailto:helpdesk@doaj.org) and we will provide with details on how to support us. Your organisation will be listed on this page.
 
-The following organisations have committed to supporting DOAJ over a 3-year period (Premier, Sustaining) or a 1-year period (Basic).
+'Premier' and 'Sustaining' publishers have committed to supporting DOAJ for a three-year period. 'Basic' publishers support us for one year.
 
 <div>{% include '/data/sponsors.html' %}</div>
 
@@ -31,8 +31,6 @@ The following organisations have committed to supporting DOAJ over a 3-year peri
 |                          | A report, (a Google Sheet), collecting metadata errors, as reported to us by discovery services. | A report, (a Google Sheet), collecting metadata errors, as reported to us by discovery services. |
 |                          |                                                 | A yearly account review between the customer and DOAJ. The agenda can be determined by the publisher contact and a DOAJ representative. |
 |                          |                                                 | A CSV file, generated annually, for recording changes in and which DOAJ updates your live records with. |
-|                          |                                                 | Exposure across all our social media channels: Twitter, Instagram, LinkedIn, Facebook, WeChat. (Stats available.) |
+|                          |                                                 | Exposure across all our social media channels: Twitter, Instagram, LinkedIn, Facebook, WeChat. (Stats available.) | 
 
 ## Other publisher supporters
-
-The publishers below have chosen to show their commitment to quality, peer-reviewed open access by supporting DOAJ. We thank them! Without them, our work would not be possible.

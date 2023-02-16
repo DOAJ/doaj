@@ -1,14 +1,15 @@
+import traceback
+from copy import deepcopy
+
 from typing import Iterable
 
 from flask_login import login_user
+from huey import RedisHuey
 
-from portality.core import app
+from portality import constants
 from portality import models
 from portality.bll import DOAJ
-from portality import constants
-
-import traceback
-from copy import deepcopy
+from portality.core import app
 
 
 class BackgroundException(Exception):
@@ -112,7 +113,7 @@ class BackgroundTask(object):
     __action__ = None
     """ static member variable defining the name of this task """
 
-    def __init__(self, background_job):
+    def __init__(self, background_job: models.BackgroundJob):
         self._background_job = background_job
 
     @property
@@ -179,6 +180,11 @@ class BackgroundTask(object):
     @classmethod
     def set_reference(cls, refs, ref_name, value):
         refs['{}__{}'.format(cls.__action__, ref_name)] = value
+
+    @classmethod
+    def create_huey_helper(cls, task_queue: RedisHuey):
+        from portality.tasks.helpers import background_helper
+        return background_helper.RedisHueyTaskHelper(task_queue, cls.__action__)
 
 
 class AdminBackgroundTask(BackgroundTask):
