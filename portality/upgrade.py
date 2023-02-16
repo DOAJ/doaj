@@ -3,6 +3,7 @@
 # FIXME: this script requires more work if it's to be used for specified source and target clusters
 """
 import json, os, dictdiffer
+import logging
 from datetime import datetime, timedelta
 from copy import deepcopy
 from collections import OrderedDict
@@ -20,6 +21,8 @@ MODELS = {
     "application": models.Application,
     "account": models.Account   #~~->Account:Model~~
 }
+
+log = logging.getLogger(__name__)
 
 
 class UpgradeTask(object):
@@ -67,6 +70,8 @@ def do_upgrade(definition, verbose, save_batches=None):
                 for function_path in tdef.get("functions", []):
                     fn = plugin.load_function(function_path)
                     result = fn(result)
+                    if result is None:
+                        log.warning('WARNING! return of [functions] should not None')
 
                 data = result
                 _id = result.get("id", "id not specified")
