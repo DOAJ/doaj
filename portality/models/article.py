@@ -846,7 +846,7 @@ ARTICLE_BIBJSON_EXTENSION = {
                         "country" : {"coerce" : "unicode"}
                     },
                     "lists" : {
-                        "language" : {"contains" : "field", "coerce" : "unicode"},
+                        "language" : {"contains" : "field", "coerce" : "isolang"},
                         "issns" : {"contains" : "field", "coerce" : "unicode"}
                     }
                 }
