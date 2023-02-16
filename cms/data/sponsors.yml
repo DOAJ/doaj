@@ -62,11 +62,10 @@ bronze:
   url: https://pubs.acs.org/
   logo: acs.jpg
   
-  - name: American Psychological Association
+- name: American Psychological Association
   url: https://www.apa.org/pubs
   logo: apa.png
 
-  
 - name: Digital Science
   url: https://www.digital-science.com/
   logo: ds.svg
