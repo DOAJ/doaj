@@ -96,7 +96,7 @@ class TestCrosswalks(DoajTestCase):
         article = models.Article(**art[0])
         bibjson = article.bibjson()
 
-        assert bibjson.journal_language == ["fre"], "expected ['fre'], actual: {} ".format(bibjson.journal_language)
+        assert bibjson.journal_language == ["FRE"], "expected ['fre'], actual: {} ".format(bibjson.journal_language)
         assert bibjson.publisher == "Codicille éditeur et CRILCQ", "expected 'Codicille éditeur et CRILCQ', actual: {} ".format(bibjson.publisher)
         assert bibjson.journal_title == "2 ISSNs Correct", "expected '2 ISSNs Correct', received: {}".format(bibjson.journal_title)
         assert bibjson.get_one_identifier(bibjson.P_ISSN) == "1234-5678", "expected '1234-5678', received: {}".format(bibjson.get_one_identifier(bibjson.P_ISSN))

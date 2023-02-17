@@ -957,7 +957,7 @@ class TestModels(DoajTestCase):
         assert bj.volume == "No 10"
         assert bj.number == "Iss. 4"
         assert bj.journal_title == "Journal of Things"
-        assert bj.journal_language == ["eng"]
+        assert bj.journal_language == ["ENG"]
         assert bj.journal_country == "GB"
         assert bj.journal_issns == ["1234-5678", "9876-5432"]
         assert bj.publisher == "IEEE"
@@ -989,7 +989,7 @@ class TestModels(DoajTestCase):
         assert bj.volume == "Four"
         assert bj.number == "Q1"
         assert bj.journal_title == "Journal of Stuff"
-        assert bj.journal_language == ["fre"]
+        assert bj.journal_language == ["FRE"]
         assert bj.journal_country == "FR"
         assert bj.journal_issns == ["1111-1111", "9999-9999"]
         assert bj.publisher == "Elsevier"

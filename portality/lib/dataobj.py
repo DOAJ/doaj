@@ -218,6 +218,7 @@ class DataObj(object):
         "integer": to_int(),
         "float": to_float(),
         "isolang": val_convert.create_fn_to_isolang(is_upper=False),
+        "isolang_up": val_convert.create_fn_to_isolang(is_upper=True),
         "url": to_url,
         "bool": to_bool,
         "isolang_2letter": val_convert.create_fn_to_isolang(output_format="alpha2",
