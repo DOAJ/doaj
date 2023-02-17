@@ -17,7 +17,7 @@ import pytz
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, send_from_directory
 from flask_login import login_user, current_user
 
-from datetime import datetime, date
+from datetime import datetime
 
 import portality.models as models
 from portality.core import app, es_connection, initialise_index

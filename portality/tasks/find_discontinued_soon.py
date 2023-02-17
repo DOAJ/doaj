@@ -8,7 +8,7 @@ from portality import models,app_email
 
 from portality.tasks.redis_huey import main_queue
 
-from portality.background import BackgroundTask, BackgroundSummary
+from portality.background import BackgroundTask, BackgroundSummary, BackgroundApi
 from portality.tasks.helpers import background_helper
 from portality.ui.messages import Messages
 from portality import constants
