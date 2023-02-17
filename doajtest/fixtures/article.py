@@ -155,7 +155,7 @@ ARTICLE_SOURCE = {
             "publisher": "The Publisher",
             "title": "The Title",
             "language": ["ENG", "FRE"],
-            "country": "US"
+            "country": "USA"
         },
         "year": "1991",
         "month": "January",

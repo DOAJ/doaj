@@ -5,7 +5,7 @@ SeamlessMixin or DataObj layer
 
 from typing import Callable, Any
 
-from portality.datasets import get_country_code_3
+from portality.datasets import get_country_code
 
 
 def create_fn_to_isolang(output_format=None, is_upper=False) -> Callable[[Any], str]:
@@ -65,7 +65,7 @@ def to_country_code_3(val):
     """
     if val is None:
         return None
-    nv = get_country_code_3(val, fail_if_not_found=True)
+    nv = get_country_code(val, fail_if_not_found=True)
     if nv is None:
         raise ValueError("Unable to convert {x} to a valid country code".format(x=val))
     uc = to_utf8_unicode

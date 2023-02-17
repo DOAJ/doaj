@@ -52,7 +52,7 @@ ARTICLE = {
         "publisher" : "IEEE",
         "title" : "Journal of Things",
         "language" : ["eng"],
-        "country" : "GB",
+        "country" : "GBR",
         "issns" : ["1234-5678", "9876-5432"]
     },
     "year" : "1987",

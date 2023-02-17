@@ -656,7 +656,7 @@ class TestModels(DoajTestCase):
         assert bj.editorial_review_url == "http://review.process"
         assert bj.editorial_board_url == "http://editorial.board"
         assert bj.institution == "Society Institution"
-        assert bj.institution_country == "US"
+        assert bj.institution_country == "USA"
         assert bj.has_other_charges is True
         assert bj.other_charges_url == "http://other.charges"
         assert bj.pid_scheme == ["DOI", "ARK", "PURL", "PIDMachine"]
@@ -666,7 +666,7 @@ class TestModels(DoajTestCase):
         assert bj.preservation_summary == ["LOCKSS", "CLOCKSS", "A safe place", ["A national library", "Trinity"], ["A national library", "Imperial"]]
         assert bj.preservation_url == "http://digital.archiving.policy"
         assert bj.publisher_name == "The Publisher"
-        assert bj.publisher_country == "US"
+        assert bj.publisher_country == "USA"
         assert bj.oa_statement_url == "http://oa.statement"
         assert bj.journal_url == "http://journal.url"
         assert bj.aims_scope_url == "http://aims.scope"
@@ -706,7 +706,7 @@ class TestModels(DoajTestCase):
         bj.set_plagiarism_detection("http://test1", False)
         bj.set_preservation(["LOCKSS", ["a national library", "UCL"]], "http://preservation")
         bj.publisher_name = "Me"
-        bj.publisher_country = "GB"
+        bj.publisher_country = "GBR"
         bj.oa_statement_url = "http://oa2.statement"
         bj.journal_url = "http://journal2.url"
         bj.aims_scope_url = "http://aims2.url"
@@ -742,7 +742,7 @@ class TestModels(DoajTestCase):
         assert bj.editorial_review_url == "http://whatever"
         assert bj.editorial_board_url == "http://board2.url"
         assert bj.institution == "UCL"
-        assert bj.institution_country == "FR"
+        assert bj.institution_country == "FRA"
         assert bj.has_other_charges is False
         assert bj.other_charges_url == "http://other2.url"
         assert bj.pid_scheme == ["Handle"]
@@ -752,7 +752,7 @@ class TestModels(DoajTestCase):
         assert bj.preservation_summary == ["LOCKSS", ["A national library", "UCL"]]
         assert bj.preservation_url == "http://preservation"
         assert bj.publisher_name == "Me"
-        assert bj.publisher_country == "GB"
+        assert bj.publisher_country == "GBR"
         assert bj.oa_statement_url == "http://oa2.statement"
         assert bj.journal_url == "http://journal2.url"
         assert bj.aims_scope_url == "http://aims2.url"
@@ -871,9 +871,9 @@ class TestModels(DoajTestCase):
         assert bj.country == bj.publisher_country
         assert bj.open_access == bj.boai
 
-        bj.country = "RU"
-        assert bj.country == "RU"
-        assert bj.publisher_country == "RU"
+        bj.country = "RUS"
+        assert bj.country == "RUS"
+        assert bj.publisher_country == "RUS"
 
         bj.set_open_access(not bj.open_access)
         assert bj.open_access == bj.boai
@@ -958,7 +958,7 @@ class TestModels(DoajTestCase):
         assert bj.number == "Iss. 4"
         assert bj.journal_title == "Journal of Things"
         assert bj.journal_language == ["ENG"]
-        assert bj.journal_country == "GB"
+        assert bj.journal_country == "GBR"
         assert bj.journal_issns == ["1234-5678", "9876-5432"]
         assert bj.publisher == "IEEE"
         assert bj.author[0].get("name") == "Test"

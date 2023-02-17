@@ -327,7 +327,7 @@ class TestCrudApplication(DoajTestCase):
         ia = IncomingApplication(data)
 
         ba = ia.bibjson()
-        assert ba.country == "BD"
+        assert ba.country == "BGD"
         assert ba.apc[0]["currency"] == "BDT"
         assert isinstance(ba.title, str)
         assert ba.publication_time_weeks == 15

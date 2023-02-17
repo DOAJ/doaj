@@ -142,7 +142,7 @@ class TestCrudArticle(DoajTestCase):
                 "url" : "http://license.example.com"
             }
         )
-        journal.bibjson().country = "US"
+        journal.bibjson().country = "USA"
         journal.bibjson().set_language(["ENG", "FRE"])
         journal.save(blocking=True)
 
@@ -164,7 +164,7 @@ class TestCrudArticle(DoajTestCase):
         assert a.bibjson().publisher == 'The Publisher', a.bibjson().publisher
         assert a.bibjson().journal_title == 'The Title'
         assert a.bibjson().journal_language == ["ENG", "FRE"]
-        assert a.bibjson().journal_country == "US"
+        assert a.bibjson().journal_country == "USA"
 
         # time.sleep(1)
 
@@ -289,7 +289,7 @@ class TestCrudArticle(DoajTestCase):
             assert a.bibjson.journal.license[0].version == "1.0"
             assert a.bibjson.journal.license[0].open_access == True
         assert a.bibjson.journal.language == ["ENG", "FRE"]
-        assert a.bibjson.journal.country == "US"
+        assert a.bibjson.journal.country == "USA"
 
     @with_es(indices=[models.Article.__type__, models.Journal.__type__])
     def test_07_retrieve_article_fail(self):
@@ -344,7 +344,7 @@ class TestCrudArticle(DoajTestCase):
                 "url" : "http://license.example.com"
             }
         )
-        journal.bibjson().country = "US"
+        journal.bibjson().country = "USA"
         journal.bibjson().set_language(["ENG", "FRE"])
         journal.save(blocking=True)
 
@@ -405,7 +405,7 @@ class TestCrudArticle(DoajTestCase):
         assert updated.bibjson().publisher == 'The Publisher', updated.bibjson().publisher
         assert updated.bibjson().journal_title == 'The Title'
         assert updated.bibjson().journal_language == ["ENG", "FRE"]
-        assert updated.bibjson().journal_country == "US"
+        assert updated.bibjson().journal_country == "USA"
 
     @with_es(indices=[models.Article.__type__, models.Journal.__type__],
              warm_mappings=[models.Article.__type__])

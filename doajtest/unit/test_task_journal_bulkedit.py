@@ -174,7 +174,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
                                  publisher_name="my replacement publisher",
                                  change_doaj_seal=True,
-                                 publisher_country="AF",
+                                 publisher_country="AFG",
                                  owner="test1",
                                  dry_run=True)
         assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
@@ -182,7 +182,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
                                  publisher_name="my replacement publisher",
                                  change_doaj_seal=True,
-                                 publisher_country="AF",
+                                 publisher_country="AFG",
                                  owner="test1",
                                  dry_run=False)
         assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
@@ -200,7 +200,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
                     .format(ix, j.bibjson().publisher, json.dumps(job.audit, indent=2))
 
             assert j.has_seal()
-            assert j.bibjson().country == "AF"
+            assert j.bibjson().country == "AFG"
             assert j.owner == "test1"
 
 

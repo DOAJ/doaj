@@ -51,7 +51,7 @@
         },
         "institution": {
             "name": "Society Institution",
-            "country": "US"
+            "country": "USA"
         },
         "other_charges": {
             "has_other_charges": true,
@@ -85,7 +85,7 @@
         },
         "publisher": {
             "name": "The Publisher",
-            "country": "US"
+            "country": "USA"
         },
         "ref": {
             "oa_statement": "http://oa.statement",

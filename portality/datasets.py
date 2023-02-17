@@ -13,13 +13,13 @@ def _generate_country_options():
     """
     ~~->Countries:Data~~
     ~~!Countries:Data->PyCountry:Technology~~
-    Gather the countries with 2-character codes
+    Gather the countries with 3-character codes
     """
     country_options_ = [('', '')]
 
     for co in sorted(pycountry.countries, key=lambda x: x.name):
         try:
-            country_options_.append((co.alpha_2.upper(), co.name))
+            country_options_.append((co.alpha_3.upper(), co.name))
         except AttributeError:
             continue
     return country_options_
@@ -66,14 +66,22 @@ def _generate_license_options():
     licenses_ = {
         # The titles and types are made to match the current values of journals in the DOAJ.
         # DOAJ currently assumes type and title are the same.
-        "CC BY": {'BY': True, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC BY', "url" : "https://creativecommons.org/licenses/by/4.0/"},
-        "CC BY-SA": {'BY': True, 'NC': False, 'ND': False, 'SA': True, 'form_label': 'CC BY-SA', "url" : "https://creativecommons.org/licenses/by-sa/4.0/"},
-        "CC BY-ND": {'BY': True, 'NC': False, 'ND': True, 'SA': False, 'form_label': 'CC BY-ND', "url" : "https://creativecommons.org/licenses/by-nd/4.0/"},
-        "CC BY-NC": {'BY': True, 'NC': True, 'ND': False, 'SA': False, 'form_label': 'CC BY-NC', "url" : "https://creativecommons.org/licenses/by-nc/4.0/"},
-        "CC BY-NC-SA": {'BY': True, 'NC': True, 'ND': False, 'SA': True, 'form_label': 'CC BY-NC-SA', "url" : "https://creativecommons.org/licenses/by-nc-sa/4.0/"},
-        "CC BY-NC-ND": {'BY': True, 'NC': True, 'ND': True, 'SA': False, 'form_label': 'CC BY-NC-ND', "url" : "https://creativecommons.org/licenses/by-nc-nd/4.0/"},
-        "CC0" : {'BY': False, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC0', "url" : "https://creativecommons.org/publicdomain/zero/1.0/"},
-        "Public domain" : {'BY': False, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC BY', "url" : "https://creativecommons.org/publicdomain/mark/1.0/"},
+        "CC BY": {'BY': True, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC BY',
+                  "url": "https://creativecommons.org/licenses/by/4.0/"},
+        "CC BY-SA": {'BY': True, 'NC': False, 'ND': False, 'SA': True, 'form_label': 'CC BY-SA',
+                     "url": "https://creativecommons.org/licenses/by-sa/4.0/"},
+        "CC BY-ND": {'BY': True, 'NC': False, 'ND': True, 'SA': False, 'form_label': 'CC BY-ND',
+                     "url": "https://creativecommons.org/licenses/by-nd/4.0/"},
+        "CC BY-NC": {'BY': True, 'NC': True, 'ND': False, 'SA': False, 'form_label': 'CC BY-NC',
+                     "url": "https://creativecommons.org/licenses/by-nc/4.0/"},
+        "CC BY-NC-SA": {'BY': True, 'NC': True, 'ND': False, 'SA': True, 'form_label': 'CC BY-NC-SA',
+                        "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"},
+        "CC BY-NC-ND": {'BY': True, 'NC': True, 'ND': True, 'SA': False, 'form_label': 'CC BY-NC-ND',
+                        "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/"},
+        "CC0": {'BY': False, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC0',
+                "url": "https://creativecommons.org/publicdomain/zero/1.0/"},
+        "Public domain": {'BY': False, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC BY',
+                          "url": "https://creativecommons.org/publicdomain/mark/1.0/"},
     }
 
     # The top-level keys in the licenses dict should always be == to the "type" of each license object
@@ -124,14 +132,6 @@ def name_for_lang(rep):
 
 
 def get_country_code(current_country, fail_if_not_found=False):
-    """ Get the two-character country code for a given country name """
-    try:
-        return pycountry.countries.lookup(current_country).alpha_2
-    except LookupError:
-        return None if fail_if_not_found else current_country
-
-
-def get_country_code_3(current_country, fail_if_not_found=False):
     """ Get the three-character country code for a given country name """
     try:
         return pycountry.countries.lookup(current_country).alpha_3
