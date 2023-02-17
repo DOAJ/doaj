@@ -3,7 +3,6 @@
 """
 
 from collections import OrderedDict
-from portality.lib import isolang
 
 import pycountry
 
@@ -128,6 +127,14 @@ def get_country_code(current_country, fail_if_not_found=False):
     """ Get the two-character country code for a given country name """
     try:
         return pycountry.countries.lookup(current_country).alpha_2
+    except LookupError:
+        return None if fail_if_not_found else current_country
+
+
+def get_country_code_3(current_country, fail_if_not_found=False):
+    """ Get the three-character country code for a given country name """
+    try:
+        return pycountry.countries.lookup(current_country).alpha_3
     except LookupError:
         return None if fail_if_not_found else current_country
 

@@ -5,6 +5,8 @@ SeamlessMixin or DataObj layer
 
 from typing import Callable, Any
 
+from portality.datasets import get_country_code_3
+
 
 def create_fn_to_isolang(output_format=None, is_upper=False) -> Callable[[Any], str]:
     """
@@ -41,3 +43,30 @@ def create_fn_to_isolang(output_format=None, is_upper=False) -> Callable[[Any], 
             return v.upper() if is_upper else v
 
     return isolang
+
+
+def to_utf8_unicode(val) -> str:
+    if isinstance(val, str):
+        return val
+    elif isinstance(val, str):  # why check isinstance(val, str) again ??
+        try:
+            return val.decode("utf8", "strict")
+        except UnicodeDecodeError:
+            raise ValueError("Could not decode string")
+    else:
+        return str(val)
+
+
+def to_country_code_3(val):
+    """
+    ~~-> Countries:Data~~
+    :param val:
+    :return:
+    """
+    if val is None:
+        return None
+    nv = get_country_code_3(val, fail_if_not_found=True)
+    if nv is None:
+        raise ValueError("Unable to convert {x} to a valid country code".format(x=val))
+    uc = to_utf8_unicode
+    return uc(nv)

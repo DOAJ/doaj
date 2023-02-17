@@ -38,20 +38,6 @@ def to_currency_code(val):
     return uc(nv)
 
 
-def to_country_code(val):
-    """
-    ~~-> Countries:Data~~
-    :param val:
-    :return:
-    """
-    if val is None:
-        return None
-    nv = get_country_code(val, fail_if_not_found=True)
-    if nv is None:
-        raise ValueError("Unable to convert {x} to a valid country code".format(x=val))
-    uc = seamless.to_utf8_unicode
-    return uc(nv)
-
 
 def to_issn(issn):
     if len(issn) > 9 or issn == '':
@@ -90,7 +76,7 @@ COERCE_MAP = {
     "bigenddate" : date_str(out_format="%Y-%m-%d"),
     "isolang": val_convert.create_fn_to_isolang( is_upper=True),
     "isolang_2letter": val_convert.create_fn_to_isolang(output_format="alpha2", is_upper=True),
-    "country_code": to_country_code,
+    "country_code": val_convert.to_country_code_3,
     "currency_code": to_currency_code,
     "issn" : to_issn
 }

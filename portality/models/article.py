@@ -838,10 +838,10 @@ ARTICLE_BIBJSON_EXTENSION = {
                         "number" : {"coerce" : "unicode"},
                         "publisher" : {"coerce" : "unicode"},
                         "title" : {"coerce" : "unicode"},
-                        "country" : {"coerce" : "unicode"}
+                        "country" : {"coerce" : "country_code", "set__allow_coerce_failure" : True},
                     },
                     "lists" : {
-                        "language" : {"contains" : "field", "coerce" : "isolang"},
+                        "language" : {"contains" : "field", "coerce" : "isolang", "set__allow_coerce_failure" : True},
                         "issns" : {"contains" : "field", "coerce" : "unicode"}
                     }
                 }

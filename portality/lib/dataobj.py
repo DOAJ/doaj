@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
 from portality.lib import dates, val_convert
-from portality.datasets import get_country_code, get_currency_code
+from portality.datasets import get_currency_code
 from copy import deepcopy
 import locale, json, warnings
 from urllib.parse import urlparse
@@ -16,15 +16,6 @@ def to_currency_code(val):
     nv = get_currency_code(val)
     if nv is None:
         raise ValueError("Unable to convert {x} to a valid currency code".format(x=val))
-    uc = to_unicode()
-    return uc(nv)
-
-def to_country_code(val):
-    if val is None:
-        return None
-    nv = get_country_code(val, fail_if_not_found=True)
-    if nv is None:
-        raise ValueError("Unable to convert {x} to a valid country code".format(x=val))
     uc = to_unicode()
     return uc(nv)
 
@@ -231,7 +222,7 @@ class DataObj(object):
         "bool": to_bool,
         "isolang_2letter": val_convert.create_fn_to_isolang(output_format="alpha2",
                                                             is_upper=False),
-        "country_code": to_country_code,
+        "country_code": val_convert.to_country_code_3,
         "currency_code": to_currency_code,
         "license": string_canonicalise(["CC BY", "CC BY-NC", "CC BY-NC-ND", "CC BY-NC-SA", "CC BY-ND", "CC BY-SA", "Not CC-like"], allow_fail=True),
         "persistent_identifier_scheme": string_canonicalise(["None", "DOI", "Handles", "ARK"], allow_fail=True),

@@ -33,6 +33,16 @@ class UpgradeTask(object):
 
 
 def do_upgrade(definition, verbose, save_batches=None):
+    """
+    :param definition:
+        * init_with_model: record index will be re-generated on save if true
+        * keepalive: keepalive time of ES connection (e.g. 1m, 20m)
+        * batch: size of save or model_class.bulk
+        * scroll_size: size of ES query
+    :param verbose:
+    :param save_batches:
+    :return:
+    """
     # get the source and target es definitions
     # ~~->Elasticsearch:Technology~~
 
