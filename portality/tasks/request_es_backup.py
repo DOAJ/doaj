@@ -1,9 +1,8 @@
-from esprit.raw import Connection
-from esprit.snapshot import ESSnapshotsClient
+from portality.lib.es_snapshot import ESSnapshotsClient
 
 from portality import models, app_email
 from portality.background import BackgroundTask, BackgroundApi
-from portality.core import app
+from portality.core import app, es_connection
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import main_queue
 
@@ -21,17 +20,14 @@ class RequestESBackupBackgroundTask(BackgroundTask):
         :return:
         """
 
-        # Connection to the ES index
-        conn = Connection(app.config.get("ELASTIC_SEARCH_HOST"), index='_snapshot')
-
         try:
-            client = ESSnapshotsClient(conn, app.config['ELASTIC_SEARCH_SNAPSHOT_REPOSITORY'])
-            resp = client.request_snapshot()
-            if resp.status_code == 200:
+            client = ESSnapshotsClient(es_connection, app.config['ELASTIC_SEARCH_SNAPSHOT_REPOSITORY'])
+            resp, success = client.request_snapshot()
+            if success:
                 job = self.background_job
-                job.add_audit_message("ElasticSearch backup requested. Response: " + resp.text)
+                job.add_audit_message("ElasticSearch backup requested. Response: " + resp)
             else:
-                raise Exception("Status code {0} received from snapshots plugin.".format(resp.text))
+                raise Exception("Exception {0} received from snapshots plugin.".format(resp))
 
         except Exception as e:
             app_email.send_mail(
