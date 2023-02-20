@@ -1,0 +1,62 @@
+{
+    "types": [
+        {
+            "type": "application",
+            "init_with_model": true,
+            "keepalive": "10m",
+            "query": {
+                "track_total_hits": true,
+                "query": {
+                    "bool": {
+                        "must": {
+                            "term": {
+                                "bibjson.publisher.country.exact": "TR"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "journal",
+            "init_with_model": true,
+            "keepalive": "10m",
+            "query": {
+                "track_total_hits": true,
+                "query": {
+                    "bool": {
+                        "must": {
+                            "term": {
+                                "bibjson.publisher.country.exact": "TR"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "article",
+            "init_with_model": true,
+            "keepalive": "20m",
+            "query": {
+                "track_total_hits": true,
+                "query": {
+                    "bool": {
+                        "should": [
+                            {
+                                "term": {
+                                    "bibjson.journal.country.exact": "TR"
+                                }
+                            },
+                            {
+                                "term": {
+                                    "index.country.exact": "Turkey"
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}
