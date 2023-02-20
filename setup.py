@@ -49,7 +49,6 @@ setup(
         "Unidecode==1.1.1",
         "Werkzeug==0.16.0",
         "WTForms==2.2.1",
-        "esprit @ git+https://github.com/CottageLabs/esprit.git@edda12177effa0945d99302f0d453b22503e335b#egg=esprit",
         "dictdiffer @ git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer",
         "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
