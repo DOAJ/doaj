@@ -8,7 +8,7 @@ from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 
-import constants
+from portality import constants
 from portality import dao
 from portality import models
 from portality import store
@@ -29,9 +29,11 @@ def home():
     recent_journals = models.Journal.recent(max=16)
     return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
 
+
 @blueprint.route('/login/')
 def login():
     return redirect(url_for('account.login'))
+
 
 @blueprint.route("/cookie_consent")
 def cookie_consent():
@@ -550,9 +552,11 @@ def volunteers():
 def team():
     return render_template("layouts/static_page.html", page_frag="/about/team.html")
 
+
 @blueprint.route("/preservation/")
 def preservation():
     return render_template("layouts/static_page.html", page_frag="/preservation/index.html")
+
 
 # LEGACY ROUTES
 @blueprint.route("/subjects")
@@ -574,6 +578,7 @@ def old_application():
 @blueprint.route("/oainfo")
 def bestpractice(cc=None):
     return redirect(url_for("doaj.transparency", **request.args), code=308)
+
 
 @blueprint.route("/membership")
 def membership():
