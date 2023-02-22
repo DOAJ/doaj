@@ -22,7 +22,7 @@ tests:
   steps:
   - step: Ensure that the archive package has been created with correct structure
   - step: Go to preservation area /publisher/preservation
-  - step: Select 'Browse' and select the paaackage zip file
+  - step: Select 'Browse' and select the package zip file
   - step: click 'Upload'
     results:
     - 'A flash message appears at the top of the screen: File uploaded and waiting
@@ -40,7 +40,7 @@ tests:
   steps:
   - step: Create a incorrect or junk file that does not have articles
   - step: Go to preservation area /publisher/preservation
-  - step: Select 'Browse' and select the paaackage zip file
+  - step: Select 'Browse' and select the package zip file
   - step: click 'Upload'
     results:
     - 'A flash message appears at the top of the screen: File uploaded and waiting
@@ -58,7 +58,7 @@ tests:
   steps:
   - step: Create a incorrect or junk file that does not have articles
   - step: Go to preservation area /publisher/preservation
-  - step: Select 'Browse' and select the paaackage zip file
+  - step: Select 'Browse' and select the package zip file
   - step: click 'Upload'
     results:
     - 'A flash message appears at the top of the screen: File uploaded and waiting
@@ -75,3 +75,24 @@ tests:
     - if the status is 'partially success', show details link will be displayed. When
       clicked on the link details of how many articles successful and how many not
       successful will be displayed
+- title: Upload correctly structured file with multiple journals and it is processed correctly
+  context:
+    role: publisher
+  steps:
+  - step: Ensure that the archive package has been created with correct structure
+  - step: Ensure that the archive package contains more than one article with different journals
+  - step: Go to preservation area /publisher/preservation
+  - step: Select 'Browse' and select the package zip file
+  - step: click 'Upload'
+    results:
+    - 'A flash message appears at the top of the screen: File uploaded and waiting
+      to be processed.'
+    - Upload status is shown in 'History of uploads' with status processing
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Upload status in 'History of uploads' changes to 'successfully processed' and
+      the 'Notes' shows as 'uploaded to archive server'
+    - The 'Notes' has the label 'UPLOADED PACKAGES'
+    - Under the label 'UPLOADED PACKAGES', details of the packages that were uploaded are displayed in the format <journal_id>_<Date>.tar.gz
