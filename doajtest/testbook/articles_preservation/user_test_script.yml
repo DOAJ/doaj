@@ -80,7 +80,10 @@ tests:
     role: publisher
   steps:
   - step: Ensure that the archive package has been created with correct structure
-  - step: Ensure that the archive package contains more than one article with different journals
+  - step: Ensure that the archive package contains more than one article with different journals. 
+          A sample zip file is available for testing purpose. If the articles provided in zip are not available in the elasticsearch data, 
+          the results may not be as expected. In that case unzip the file and update the identifiers.txt file with correct identifier for the articles.
+    resource: /preservation_upload_test_package/multi_journals.zip
   - step: Go to preservation area /publisher/preservation
   - step: Select 'Browse' and select the package zip file
   - step: click 'Upload'
