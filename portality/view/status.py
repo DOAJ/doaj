@@ -187,7 +187,7 @@ def status():
     #     res['notes'].append(indexable_note)
 
     # check background jobs
-    # ~~-> BackgroundTask:Monitoring~~
+    # ~~BackgroundTask:Monitoring~~
     bgtask_status_service = DOAJ.backgroundTaskStatusService()
     res['background'] = bgtask_status_service.create_background_status()
     if not bgtask_status_service.is_stable(res['background'].get('status')):

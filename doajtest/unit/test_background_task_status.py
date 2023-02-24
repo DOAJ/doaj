@@ -69,8 +69,6 @@ bg_monitor_last_completed__a = {
 
 
 class TestBackgroundTaskStatus(DoajTestCase):
-    # ~~-> BackgroundTask:Monitoring~~
-
     @classmethod
     def setUpClass(cls) -> None:
         super().setUpClass()
