@@ -68,7 +68,7 @@ ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
-# ~~-> BackgroundTask:MonitoringStatus~~
+# ~~-> BackgroundTask:Monitoring~~
 # BackgroundJob.status
 BGJOB_STATUS_QUEUED = 'queued'
 BGJOB_STATUS_ERROR = 'error'
