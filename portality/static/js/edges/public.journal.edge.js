@@ -298,7 +298,7 @@ $.extend(true, doaj, {
                         "index.country.exact" : "Publishers' countries",
                         "index.language.exact" : "Languages",
                         "bibjson.editorial.review_process.exact" : "Peer review",
-                        "bibjson.copyright.author_retains" : "Author retains copyrights",
+                        "bibjson.copyright.author_retains" : "Author retains all rights",
                         "created_date" : "Date added"
                     },
                     rangeFunctions : {
