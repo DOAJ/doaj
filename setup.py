@@ -58,7 +58,7 @@ setup(
         "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium",
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
         "docs": [
-            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@81eecd5e7b4da379b14c0ccb0cf64e9665a26e20#egg=featuremap",
+            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@cb52c345b942e50726767b1a7190f1a01b81e722#egg=featuremap",
             "testbook @ git+https://github.com/CottageLabs/testbook.git@15a7c0cc25d951d989504d84c2ef3e24caaf56e9#egg=testbook"]
     },
     url='https://cottagelabs.com/',
