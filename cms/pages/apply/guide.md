@@ -235,6 +235,6 @@ Our criteria are in:
 
 This is Version 1.2 of the Guide to applying.
 
-*Version: 1.2 (February 2022 - copyright and licensing were moved)*<br>
+*Version: 1.2 (February 2022 - extra copyright and licensing information were moved to a separate page)*<br>
 <s>Version: 1.1 (December 2021 - a clarification to endogeny criterion)</s><br>
 <s>Version 1.0 (November 1.0)

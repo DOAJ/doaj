@@ -12,18 +12,17 @@ gold:
 
 
 silver:
-
-- name: American Psychological Association
-  url: https://www.apa.org/pubs
-  logo: apa.png
-
 - name: AOSIS
   url: https://aosis.co.za/
   logo: aosis.png
 
 - name: Cappelen Damm Akademisk
   url: https://www.cappelendammundervisning.no/
-  logo: CDA.jpg
+  logo: cda.jpg
+  
+- name: Cambridge University Press
+  url: https://www.cambridge.org/
+  logo: cambridge.svg
 
 - name: Copernicus Publications
   url: https://publications.copernicus.org
@@ -32,10 +31,6 @@ silver:
 - name: EBSCO
   url: https://www.ebsco.com/
   logo: ebsco.svg
-
-- name: eLife Sciences Publications
-  url: https://elifesciences.org/
-  logo: elife.svg
 
 - name: Frontiers
   url: https://www.frontiersin.org/
@@ -53,14 +48,6 @@ silver:
   url: https://www.mdpi.com/
   logo: mdpi.svg  
   
-- name: National Library of Sweden
-  url: https://www.kb.se/
-  logo: kbse.svg
-
-- name: Oxford University Press
-  url: https://global.oup.com/
-  logo: OUP.jpg
-
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
   logo: sage.svg
@@ -73,27 +60,19 @@ silver:
 bronze:
 - name: American Chemical Society
   url: https://pubs.acs.org/
-  logo: ACS.jpg
+  logo: acs.jpg
   
-- name: ARPHA Publishing Platform
-  url: https://arphahub.com/
-  logo: arpha.png
-
-- name: Cambridge University Press
-  url: https://www.cambridge.org/
-  logo: cambridge.svg
-
-- name: Cottage Labs
-  url: https://cottagelabs.com/
-  logo: cl.svg
+- name: American Psychological Association
+  url: https://www.apa.org/pubs
+  logo: apa.png
 
 - name: Digital Science
   url: https://www.digital-science.com/
-  logo: DS-logo.svg
-  
-- name: EDP Sciences
-  url: https://www.edpsciences.org/
-  logo: edp.svg
+  logo: ds.svg
+
+- name: eLife Sciences Publications
+  url: https://elifesciences.org/
+  logo: elife.svg
 
 - name: Elsevier
   url: https://www.elsevier.com/
@@ -107,33 +86,17 @@ bronze:
   url: https://www.ieee.org/
   logo: ieee.png
 
-- name: Institute of Physics
-  url: https://www.iop.org/
-  logo: IOP.jpg
-
 - name: The Institution of Engineering and Technology (IET)
   url: https://www.theiet.org/
   logo: iet.svg
 
-- name: ISSN
-  url: https://www.issn.org/
-  logo: issn.svg
- 
 - name: Karger
   url: https://www.karger.com/
   logo: karger.png
 
 - name: KeAI Communications
   url: https://www.keaipublishing.com/
-  logo: KeAI.svg
-
-- name: Lund University
-  url: https://www.lunduniversity.lu.se/
-  logo: lu.png
-
-- name: OASPA
-  url: https://oaspa.org/
-  logo: oaspa.png
+  logo: keai.svg
 
 - name: OCLC
   url: https://www.oclc.org/
@@ -141,14 +104,13 @@ bronze:
 
 - name: PLOS
   url: https://plos.org/
-  logo: PLOS.svg
+  logo: plos.svg
 
 - name: SciFree
   url: https://scifree.se/
-  logo: SciFree.svg
+  logo: scifree.svg
 
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg  
   
-
