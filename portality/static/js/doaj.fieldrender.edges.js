@@ -2321,7 +2321,7 @@ $.extend(true, doaj, {
                 var value = false;
                 if (ft === "terms" || ft === "term") {
                     val = el.attr("data-value");
-                    // change to bool if "true" or "false", leave as string otherwise
+                    // translate string value to a type required by a model
                     if (val === "true"){
                         value = true;
                     }
