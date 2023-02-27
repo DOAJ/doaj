@@ -2615,6 +2615,15 @@ $.extend(true, doaj, {
                 }
                 apcs += '</li>';
 
+                var rights = "";
+                if (resultobj.bibjson.copyright) {
+                    var copyright_url = resultobj.bibjson.copyright.url;
+                    rights += '<a href="' + copyright_url + '" target="_blank" rel="noopener">';
+                    rights += resultobj.bibjson.copyright.author_retains ? 'Author <strong> retains </strong> all rights' : 'Author <strong> doesn\'t retain </strong> all rights';
+                    rights += '</a>';
+                }
+
+
                 var licenses = "";
                 if (resultobj.bibjson.license && resultobj.bibjson.license.length > 0) {
                     var terms_url = resultobj.bibjson.ref.license_terms;
@@ -2716,6 +2725,9 @@ $.extend(true, doaj, {
                           ' + externalLink + '\
                         <li>\
                             ' + apcs + '\
+                          </li>\
+                          <li>\
+                            ' + rights + '\
                           </li>\
                           <li>\
                             ' + licenses + '\
