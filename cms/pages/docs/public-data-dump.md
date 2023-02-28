@@ -10,7 +10,7 @@ featuremap:
 
 ---
 
-We are committed to providing a data dump service for the community but, in ordeer to ensure that DOAJ's data is used for the benefit of the entire community and under the terms of the licenses that accompany the data, access to the dumps is granted on a case by case basis. If you would like access, please [email Dominic Mitchell](mailto:dominic@doaj.org), Operations Manager, stating the following information:
+We are committed to providing a data dump service for the community but, in order to ensure that DOAJ's data is used for the benefit of the entire community and under the terms of the licenses that accompany the data, access to the dumps is granted on a case-by-case basis. If you would like access, please [email Dominic Mitchell](mailto:dominic@doaj.org), Operations Manager, stating the following information:
  - your name
  - the group, organisation or company you represent
  - your group/organisation/company address, including country 
