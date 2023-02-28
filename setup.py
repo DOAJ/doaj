@@ -55,7 +55,7 @@ setup(
         "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
-        "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium",
+        "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium==3.141",  # prevent backtracking through all versions
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
         "docs": [
             "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@cb52c345b942e50726767b1a7190f1a01b81e722#egg=featuremap",
