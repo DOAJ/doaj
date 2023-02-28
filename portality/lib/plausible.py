@@ -58,7 +58,6 @@ def send_event(goal: str, on_completed=None, **props_kwargs):
 
     def _send():
         resp = requests.post(plausible_api_url, json=payload, headers=headers)
-        logger.error(f'Plausible event {payload} {headers}')
         if resp.status_code >= 300:
             logger.warning(f'send plausible event api fail. [{resp.status_code}][{resp.text}]')
         if on_completed:
