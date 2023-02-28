@@ -35,6 +35,16 @@ services:
       timeout: 10s
       retries: 10
 
+  selenium-chrome:
+    image: selenium/standalone-chrome:110.0
+    logging:
+      driver: none
+    volumes:
+      - /dev/shm:/dev/shm
+    shm_size: 2G
+    ports:
+      - "4444:4444"
+
 
 volumes:
     doaj_redis_data: {}

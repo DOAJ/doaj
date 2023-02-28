@@ -397,7 +397,15 @@ def page_not_found(e):
     return render_template('500.html'), 500
 
 
-if __name__ == "__main__":
+def run_server(host=None, port=None, fake_https=False):
+    """
+    :param host:
+    :param port:
+    :param fake_https:
+        if fake_https is True, develop can use https:// to access the server
+        that can help for debugging Plausible
+    :return:
+    """
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)
     if len(sys.argv) > 1:
         if sys.argv[1] == '-d':
@@ -406,6 +414,20 @@ if __name__ == "__main__":
     if pycharm_debug:
         app.config['DEBUG'] = False
         import pydevd
-        pydevd.settrace(app.config.get('DEBUG_PYCHARM_SERVER', 'localhost'), port=app.config.get('DEBUG_PYCHARM_PORT', 6000), stdoutToServer=True, stderrToServer=True)
+        pydevd.settrace(app.config.get('DEBUG_PYCHARM_SERVER', 'localhost'),
+                        port=app.config.get('DEBUG_PYCHARM_PORT', 6000),
+                        stdoutToServer=True, stderrToServer=True)
 
-    app.run(host=app.config['HOST'], debug=app.config['DEBUG'], port=app.config['PORT'])
+    run_kwargs = {}
+    if fake_https:
+        run_kwargs['ssl_context'] = 'adhoc'
+
+    host = host or app.config['HOST']
+    port = port or app.config['PORT']
+    app.run(host=host, debug=app.config['DEBUG'], port=port,
+            **run_kwargs)
+
+
+if __name__ == "__main__":
+    run_server()
+
