@@ -164,10 +164,15 @@ REPORTS_BASE_DIR = "/home/cloo/reports/"
 # File store
 # ~~->FileStore:Feature~~
 
-# put this in your production.cfg, to store on S3:
+# put this in your production.cfg, to store everything on S3:
 # STORE_IMPL = "portality.store.StoreS3"
 
 STORE_IMPL = "portality.store.StoreLocal"
+STORE_SCOPE_IMPL = {
+# Enable this by scope in order to have different scopes store via different storage implementations
+#     constants.STORE__SCOPE__PUBLIC_DATA_DUMP: "portality.store.StoreS3"
+}
+
 STORE_TMP_IMPL = "portality.store.TempStore"
 
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
@@ -196,7 +201,7 @@ STORE_S3_SCOPES = {
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     },
     # Used by the api_export script to dump data from the api
-    "public_data_dump" : {
+    constants.STORE__SCOPE__PUBLIC_DATA_DUMP : {
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     },
@@ -275,7 +280,16 @@ PASSWORD_RESET_TIMEOUT = 86400
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 #"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
-TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api", "ultra_bulk_delete", "preservation"]
+TOP_LEVEL_ROLES = [
+    "admin",
+    "publisher",
+    "editor",
+    "associate_editor",
+    "api",
+    "ultra_bulk_delete",
+    "preservation",
+    constants.ROLE_PUBLIC_DATA_DUMP
+]
 
 ROLE_MAP = {
     "editor": [
@@ -1354,3 +1368,8 @@ BG_MONITOR_QUEUED_CONFIG = {
     }
 }
 
+##################################################
+## Public data dump settings
+
+# how long should the temporary URL for public data dumps last
+PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
