@@ -28,7 +28,7 @@ jobs:
     # Here we're making sure we use just use the system-wide pip. By default it uses the project root's requirements.txt.
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
-    executor: python/default
+    #executor: python/default
     steps:
       - checkout
       - python/install-packages:
