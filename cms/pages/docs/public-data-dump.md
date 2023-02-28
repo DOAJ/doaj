@@ -15,7 +15,7 @@ We are committed to providing a data dump service for the community but, in orde
  - the group, organisation or company you represent
  - your group/organisation/company address, including country 
  - whether you want access to the journal or article metadata, or both
- - what you want to use the metadata for. Be concise as possible.
+ - what you want to use the metadata for. Include as much information as possible.
 
 An [exportable version of the journal metadata]&#40;/csv&#41; is also available (CSV format).
 
