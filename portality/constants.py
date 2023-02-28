@@ -65,10 +65,11 @@ PROCESS__QUICK_REJECT = "quick_reject"
 
 # Role
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
+ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
-# ~~-> BackgroundTask:MonitoringStatus~~
+# ~~-> BackgroundTask:Monitoring~~
 # BackgroundJob.status
 BGJOB_STATUS_QUEUED = 'queued'
 BGJOB_STATUS_ERROR = 'error'
@@ -83,3 +84,7 @@ BGJOB_QUEUE_ID_UNKNOWN = 'unknown'
 # Background monitor status
 BG_STATUS_STABLE = 'stable'
 BG_STATUS_UNSTABLE = 'unstable'
+
+
+# Storage scopes
+STORE__SCOPE__PUBLIC_DATA_DUMP = "public_data_dump"
