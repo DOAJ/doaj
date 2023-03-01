@@ -44,6 +44,11 @@ services:
     shm_size: 2G
     ports:
       - "4444:4444"
+    environment:
+      - SE_NODE_MAX_SESSIONS=20
+      - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      - SE_SESSION_REQUEST_TIMEOUT=400
+      - SE_SESSION_RETRY_INTERVAL=2
 
 
 volumes:

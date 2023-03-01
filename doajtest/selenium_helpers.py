@@ -2,9 +2,14 @@ from multiprocessing import Process
 
 from selenium import webdriver
 from selenium.webdriver import DesiredCapabilities
+from selenium.webdriver.common.by import By
 
 from doajtest.helpers import DoajTestCase
 from portality import app
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from selenium.webdriver.remote.webdriver import WebDriver
 
 
 class SeleniumTestCase(DoajTestCase):
@@ -18,7 +23,7 @@ class SeleniumTestCase(DoajTestCase):
     def setUpClass(cls) -> None:
         super().setUpClass()
 
-        # run doaj in a separate process
+        # run doaj server in a background process
         def _run():
             app.run_server(host=cls.DOAJ_HOST, port=cls.DOAJ_PORT)
 
@@ -51,3 +56,17 @@ class SeleniumTestCase(DoajTestCase):
     @classmethod
     def get_doaj_url(cls) -> str:
         return f'http://{cls.DOAJ_HOST}:{cls.DOAJ_PORT}'
+
+
+def goto(driver: 'WebDriver', url_path: str):
+    if not url_path.startswith('/'):
+        url_path = '/' + url_path
+    url = SeleniumTestCase.get_doaj_url() + url_path
+    driver.get(url)
+
+
+def login(driver: 'WebDriver', username: str, password: str):
+    goto(driver, "/login")
+    driver.find_element(By.ID, 'user').send_keys(username)
+    driver.find_element(By.ID, 'password').send_keys(password)
+    driver.find_element(By.CSS_SELECTOR, 'input[type="submit"]').click()
