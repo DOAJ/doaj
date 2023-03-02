@@ -1297,7 +1297,7 @@ TODO_LIST_SIZE = 48
 # root url of plausible
 PLAUSIBLE_URL = "https://plausible.io"
 PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/script.outbound-links.file-downloads.js"
-PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event/"
+PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event"
 # site name / domain name that used to register in plausible
 PLAUSIBLE_SITE_NAME = BASE_DOMAIN
 PLAUSIBLE_LOG_DIR = None
@@ -1308,8 +1308,7 @@ TASKS_MONITOR_BGJOBS_TO = ["helpdesk@doaj.org",]
 TASKS_MONITOR_BGJOBS_FROM = "helpdesk@doaj.org"
 
 
-
-##################################3
+##################################
 # Background monitor
 # ~~->BackgroundMonitor:Feature~~
 
