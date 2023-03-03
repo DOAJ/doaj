@@ -54,7 +54,7 @@ class Account(DomainObject, UserMixin):
         res = cls.query(q='email:"' + email + '"')
         if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
             acc = cls(**res['hits']['hits'][0]['_source'])
-            if acc.email == email:                # Only return the account if it was an exact match with supplied email
+            if acc.email == email:  # Only return the account if it was an exact match with supplied email
                 return acc
         return None
 
@@ -136,7 +136,8 @@ class Account(DomainObject, UserMixin):
         self.data["journal"].remove(jid)
 
     @property
-    def reset_token(self): return self.data.get('reset_token')
+    def reset_token(self):
+        return self.data.get('reset_token')
 
     def set_reset_token(self, token, timeout):
         expires = datetime.now() + timedelta(0, timeout)
@@ -235,3 +236,11 @@ class Account(DomainObject, UserMixin):
             return trunc_uuid
         else:
             return cls.new_short_uuid()
+
+    @classmethod
+    def get_name_safe(cls, account_id) -> str:
+        if account_id:
+            author = Account.pull(account_id)
+            if author is not None and author.name:
+                return author.name
+        return ''

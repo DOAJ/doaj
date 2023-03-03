@@ -378,7 +378,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Choose upto 6 keywords that describe the subject matter of the journal. "
                           "Keywords must be in English.", "Use single words or short phrases (2 to 3 words) " 
-                          "that describe the journal's main topic.", "Do not add acronyms, abbreviations or descriptive sentences.", 
+                          "that describe the journal's main topic.", "Do not add acronyms, abbreviations or descriptive sentences.",
                           "Note that the keywords may be edited by DOAJ editorial staff." ],
         },
         "validate": [
@@ -1775,9 +1775,11 @@ class FieldDefinitions:
             "add_button_placement" : "top"
         },
         "subfields": [
+            "note_author",
             "note_date",
             "note",
-            "note_id"
+            "note_id",
+            "note_author_id",
         ],
         "template": "application_form/_list.html",
         "entry_template": "application_form/_entry_group.html",
@@ -1805,6 +1807,15 @@ class FieldDefinitions:
         "disabled": True
     }
 
+    # ~~->$ NoteAuthor:FormField~~
+    NOTE_AUTHOR = {
+        "subfield": True,
+        "name": "note_author",
+        "group": "notes",
+        "input": "text",
+        "disabled": True
+    }
+
     # ~~->$ NoteDate:FormField~~
     NOTE_DATE = {
         "subfield": True,
@@ -1818,6 +1829,14 @@ class FieldDefinitions:
     NOTE_ID = {
         "subfield" : True,
         "name": "note_id",
+        "group": "notes",
+        "input": "hidden"
+    }
+
+    # ~~->$ NoteAuthorID:FormField~~
+    NOTE_AUTHOR_ID = {
+        "subfield" : True,
+        "name": "note_author_id",
         "group": "notes",
         "input": "hidden"
     }
@@ -2106,8 +2125,10 @@ class FieldSetDefinitions:
         "fields": [
             FieldDefinitions.NOTES["name"],
             FieldDefinitions.NOTE["name"],
+            FieldDefinitions.NOTE_AUTHOR["name"],
             FieldDefinitions.NOTE_DATE["name"],
-            FieldDefinitions.NOTE_ID["name"]
+            FieldDefinitions.NOTE_ID["name"],
+            FieldDefinitions.NOTE_AUTHOR_ID["name"],
         ]
     }
 

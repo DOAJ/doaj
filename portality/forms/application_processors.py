@@ -4,6 +4,7 @@ from datetime import datetime
 import portality.notifications.application_emails as emails
 from portality.core import app
 from portality import models, constants, app_email
+from portality.lib import dates
 from portality.lib.formulaic import FormProcessor
 from portality.ui.messages import Messages
 from portality.crosswalks.application_form import ApplicationFormXWalk
@@ -188,6 +189,15 @@ class ApplicationProcessor(FormProcessor):
                     "You are not permitted to revert the application status from {0} to {1}.".format(source_status,
                                                                                                      target_status))
 
+    def _patch_target_note_id(self):
+        if self.target.notes:
+            # set author_id on the note if it's a new note
+            for note in self.target.notes:
+                note_date = dates.parse(note['date'])
+                if not note.get('author_id') and note_date > dates.before_now(60):
+                    note['author_id'] = current_user.id
+
+
 
 class NewApplication(ApplicationProcessor):
     """
@@ -293,6 +303,9 @@ class AdminApplication(ApplicationProcessor):
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
+
+        # patch author_id of notes
+        self._patch_target_note_id()
 
     def finalise(self, account, save_target=True, email_alert=True):
         """
@@ -796,6 +809,8 @@ class ManEdJournalReview(ApplicationProcessor):
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
 
+        self._patch_target_note_id()
+
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
@@ -926,6 +941,7 @@ class AssEdJournalReview(ApplicationProcessor):
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
+        self._patch_target_note_id()
 
     def finalise(self):
         if self.source is None:

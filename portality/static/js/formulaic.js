@@ -1395,6 +1395,7 @@ var formulaic = {
 
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
                     var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
+                    var author = $("#" + this.fieldDef["name"] + "-" + i + "-note_author");
 
                     $(`<button class="button ` + viewClass + `" style="margin: 0 1rem 1rem 0;">View note</button>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
@@ -1402,6 +1403,9 @@ var formulaic = {
                               <header class="flex-space-between modal__heading">
                                 <span>
                                   <p class="label">Note</p>
+                                  <h3 class="modal__title">
+                                     ` + author.val() + `
+                                  </h3>
                                   <h3 class="modal__title">
                                       ` + date.val() + `
                                   </h3>

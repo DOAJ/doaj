@@ -206,7 +206,8 @@ SHARED_JOURNAL_LIKE = {
                     "fields" : {
                         "id" : {"coerce" : "unicode"},
                         "note" : {"coerce" : "unicode"},
-                        "date" : {"coerce" : "utcdatetime"}
+                        "date" : {"coerce" : "utcdatetime"},
+                        "author_id" : {"coerce" : "unicode"},  # account_id of the note's author
                     }
                 },
             }
