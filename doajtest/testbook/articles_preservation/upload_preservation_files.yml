@@ -1,6 +1,6 @@
 # ~~ ArticlesPreservation:FunctionalTest -> Preservation:Feature ~~
 suite: Articles Preservation
-testset: User Test Script
+testset: Upload Preservation Files
 tests:
 - title: Publisher without preservation role
   context:
@@ -78,11 +78,16 @@ tests:
 - title: Upload correctly structured file with multiple journals and it is processed correctly
   context:
     role: publisher
+  setup:
+    - You will require a publisher account with two journals, both of which have articles whose
+      DOIs (or fulltexts) are represented in the test zip file's identifiers.csv file.  You want the
+      articles in the zip file to represent articles from both journals, not just a single journal
   steps:
   - step: Ensure that the archive package has been created with correct structure
   - step: Ensure that the archive package contains more than one article with different journals. 
-          A sample zip file is available for testing purpose. If the articles provided in zip are not available in the elasticsearch data, 
-          the results may not be as expected. In that case unzip the file and update the identifiers.txt file with correct identifier for the articles.
+          A sample zip file is available for testing purpose. If there are no articles with the DOIs specified in the indentifiers.csv
+          file in your DSoace instance, 
+          the results may not be as expected. In that case unzip the file and update the identifiers.csv file with appropriate identifiers for the articles.
     resource: /preservation_upload_test_package/multi_journals.zip
   - step: Go to preservation area /publisher/preservation
   - step: Select 'Browse' and select the package zip file
