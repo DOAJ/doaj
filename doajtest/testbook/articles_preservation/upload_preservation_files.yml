@@ -23,6 +23,7 @@ tests:
   - step: Ensure that the archive package has been created with correct structure
   - step: Go to preservation area /publisher/preservation
   - step: Select 'Browse' and select the package zip file
+    resource: /preservation_upload_test_package/valid_article.zip
   - step: click 'Upload'
     results:
     - 'A flash message appears at the top of the screen: File uploaded and waiting
@@ -41,6 +42,7 @@ tests:
   - step: Create a incorrect or junk file that does not have articles
   - step: Go to preservation area /publisher/preservation
   - step: Select 'Browse' and select the package zip file
+    resource: /preservation_upload_test_package/invalid_article.zip
   - step: click 'Upload'
     results:
     - 'A flash message appears at the top of the screen: File uploaded and waiting
@@ -56,9 +58,11 @@ tests:
   context:
     role: publisher
   steps:
-  - step: Create a incorrect or junk file that does not have articles
+  - step: Make sure not to login as admin user as admin does not have restrictions.
+  - step: Ensure that the archive package has been created with correct structure but the article does not own by the logged in user.
   - step: Go to preservation area /publisher/preservation
   - step: Select 'Browse' and select the package zip file
+    resource: /preservation_upload_test_package/valid_article.zip
   - step: click 'Upload'
     results:
     - 'A flash message appears at the top of the screen: File uploaded and waiting
