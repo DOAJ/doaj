@@ -1372,3 +1372,8 @@ BG_MONITOR_QUEUED_CONFIG = {
 
 # how long should the temporary URL for public data dumps last
 PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
+
+##################################################
+# Pages under maintenance
+
+PRESERVATION_PAGE_UNDER_MAINTENANCE = False
