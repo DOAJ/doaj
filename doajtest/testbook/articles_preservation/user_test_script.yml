@@ -75,3 +75,11 @@ tests:
     - if the status is 'partially success', show details link will be displayed. When
       clicked on the link details of how many articles successful and how many not
       successful will be displayed
+- title: Test maintenance mode for 'Upload preservation file' tab
+  context:
+    role: publisher
+  steps:
+  - step: Set the value of 'PRESERVATION_PAGE_UNDER_MAINTENANCE' to True in the configuration file (app.cfg/dev.cfg/test.cfg)
+  - step: Go to preservation area /publisher/preservation
+    results:
+    - Maintenance page should be displayed with the content as 'This page is currently offline for maintenance'
