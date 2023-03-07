@@ -84,7 +84,7 @@
                 </span>
             </p>
 
-            {% if bibjson.discontinued_date | is_in_the_past %}
+            {% if bibjson.discontinued_date is not none and bibjson.discontinued_date | is_in_the_past %}
                 <p>Ceased publication on <strong>{{ bibjson.discontinued_datestamp.strftime("%d %B %Y") }}</strong></p>
             {% endif %}
 
