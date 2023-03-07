@@ -247,6 +247,9 @@ def preservation():
        This feature is available for the users who has 'preservation' role.
     """
 
+    if app.config.get('PRESERVATION_PAGE_UNDER_MAINTENANCE', False):
+        return render_template('publisher/readonly.html')
+
     previous = []
     try:
         previous = models.PreservationState.by_owner(current_user.id)
