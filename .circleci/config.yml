@@ -28,5 +28,9 @@ jobs:
 
 workflows:
   unit_tests:
+    triggers:
+      branches:
+        ignore:
+          - /release\/.*/
     jobs:
       - build-and-test
