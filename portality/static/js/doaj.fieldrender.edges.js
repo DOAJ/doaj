@@ -435,6 +435,12 @@ $.extend(true, doaj, {
                               <ul class="collapse filters__list" id="filters" aria-expanded="false">\
                                   {{FACETS}}\
                               </ul>\
+                              <aside class="hidden-sm">\
+                                <h2 class="sr-only">Celebrating 20 years of DOAJ</h2>\
+                                <a href="https://blog.doaj.org/2023/02/20/doaj20-open-global-and-trusted-since-2003/" target="_blank" rel="noopener" style="display: block;">\
+                                  <img src="/assets/img/20yrs-stacked.png"/>\
+                                </a>\
+                              </aside>\
                             </aside>\
                         </div>\
                             \
