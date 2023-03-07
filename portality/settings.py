@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.2.18"
+DOAJ_VERSION = "6.2.19"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -1372,3 +1372,8 @@ BG_MONITOR_QUEUED_CONFIG = {
 
 # how long should the temporary URL for public data dumps last
 PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
+
+##################################################
+# Pages under maintenance
+
+PRESERVATION_PAGE_UNDER_MAINTENANCE = False
