@@ -2,7 +2,7 @@ import json
 import os
 import tarfile
 
-from portality import models
+from portality import models, constants
 from portality.api.current import DiscoveryApi
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.core import app
@@ -47,7 +47,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         types = self.get_param(params, 'types')
 
         tmpStore = StoreFactory.tmp()
-        mainStore = StoreFactory.get("public_data_dump")
+        mainStore = StoreFactory.get(constants.STORE__SCOPE__PUBLIC_DATA_DUMP)
         container = app.config.get("STORE_PUBLIC_DATA_DUMP_CONTAINER")
 
         if clean:
@@ -68,6 +68,8 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             types = [types]
 
         urls = {"article" : None, "journal" : None}
+        containers = {"article": None, "journal": None}
+        filenames = {"article": None, "journal": None}
         sizes = {"article" : None, "journal" : None}
 
         # Scroll for article and/or journal
@@ -120,6 +122,8 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             store_url = mainStore.url(container, zipped_name)
             urls[typ] = store_url
             sizes[typ] = filesize
+            containers[typ] = container
+            filenames[typ] = zipped_name
 
         if prune:
             self._prune_container(mainStore, container, day_at_start, types)
@@ -129,7 +133,14 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         tmpStore.delete_container(container)
 
         # finally update the cache
-        cache.Cache.cache_public_data_dump(urls["article"], sizes["article"], urls["journal"], sizes["journal"])
+        cache.Cache.cache_public_data_dump(containers["article"],
+                                           filenames["article"],
+                                           urls["article"],
+                                           sizes["article"],
+                                           containers["journal"],
+                                           filenames["journal"],
+                                           urls["journal"],
+                                           sizes["journal"])
 
         job.add_audit_message(dates.now() + ": done")
 

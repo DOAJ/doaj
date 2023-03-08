@@ -435,6 +435,12 @@ $.extend(true, doaj, {
                               <ul class="collapse filters__list" id="filters" aria-expanded="false">\
                                   {{FACETS}}\
                               </ul>\
+                              <aside class="hidden-sm">\
+                                <h2 class="sr-only">Celebrating 20 years of DOAJ</h2>\
+                                <a href="https://blog.doaj.org/2023/02/20/doaj20-open-global-and-trusted-since-2003/" target="_blank" rel="noopener" style="display: block;">\
+                                  <img src="/assets/img/20yrs-stacked.png"/>\
+                                </a>\
+                              </aside>\
                             </aside>\
                         </div>\
                             \
@@ -2320,7 +2326,20 @@ $.extend(true, doaj, {
 
                 var value = false;
                 if (ft === "terms" || ft === "term") {
-                    value = el.attr("data-value");
+                    val = el.attr("data-value");
+                    // translate string value to a type required by a model
+                    if (val === "true"){
+                        value = true;
+                    }
+                    else if (val === "false"){
+                        value = false;
+                    }
+                    else if (!isNaN(parseInt(val))){
+                        value = parseInt(val);
+                    }
+                    else {
+                        value = val;
+                    }
                 } else if (ft === "range") {
                     value = {};
 
@@ -2602,6 +2621,15 @@ $.extend(true, doaj, {
                 }
                 apcs += '</li>';
 
+                var rights = "";
+                if (resultobj.bibjson.copyright) {
+                    var copyright_url = resultobj.bibjson.copyright.url;
+                    rights += '<a href="' + copyright_url + '" target="_blank" rel="noopener">';
+                    rights += resultobj.bibjson.copyright.author_retains ? 'Author <strong> retains </strong> all rights' : 'Author <strong> doesn\'t retain </strong> all rights';
+                    rights += '</a>';
+                }
+
+
                 var licenses = "";
                 if (resultobj.bibjson.license && resultobj.bibjson.license.length > 0) {
                     var terms_url = resultobj.bibjson.ref.license_terms;
@@ -2703,6 +2731,9 @@ $.extend(true, doaj, {
                           ' + externalLink + '\
                         <li>\
                             ' + apcs + '\
+                          </li>\
+                          <li>\
+                            ' + rights + '\
                           </li>\
                           <li>\
                             ' + licenses + '\

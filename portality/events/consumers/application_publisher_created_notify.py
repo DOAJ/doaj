@@ -1,4 +1,4 @@
-# ~~ApplicationPublisherCreatedNotify~~
+# ~~ApplicationPublisherCreatedNotify:Notifications~~
 from portality.util import url_for
 from portality.lib import dates
 from portality.events.consumer import EventConsumer

@@ -98,6 +98,16 @@ $.extend(true, doaj, {
                                     value: false
                                 })
                             ]
+                        },
+                        {
+                            id : "retains_copyrigths",
+                            display: "Author retains all rights",
+                            must : [
+                                es.newTermFilter({
+                                    field: "bibjson.copyright.author_retains",
+                                    value: true
+                                })
+                            ]
                         }
                     ],
                     renderer : doaj.renderers.newFacetFilterSetterRenderer({
@@ -288,6 +298,7 @@ $.extend(true, doaj, {
                         "index.country.exact" : "Publishers' countries",
                         "index.language.exact" : "Languages",
                         "bibjson.editorial.review_process.exact" : "Peer review",
+                        "bibjson.copyright.author_retains" : "Author retains all rights",
                         "created_date" : "Date added"
                     },
                     rangeFunctions : {
@@ -298,7 +309,8 @@ $.extend(true, doaj, {
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         hideValues : [
-                            "index.has_seal.exact"
+                            "index.has_seal.exact",
+                            "bibjson.copyright.author_retains"
                         ],
                         omit : [
                             "bibjson.apc.has_apc",

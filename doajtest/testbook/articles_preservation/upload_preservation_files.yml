@@ -58,7 +58,7 @@ tests:
   context:
     role: publisher
   steps:
-  - step: Make sure not to login as admin user as admin does not have restrictions.
+  - step: Make sure not to login as admin user as admin does not have restrictions. Login as publisher.
   - step: Ensure that the archive package has been created with correct structure but the article does not own by the logged in user.
   - step: Go to preservation area /publisher/preservation
   - step: Select 'Browse' and select the package zip file
@@ -108,3 +108,11 @@ tests:
       the 'Notes' shows as 'uploaded to archive server'
     - The 'Notes' has the label 'UPLOADED PACKAGES'
     - Under the label 'UPLOADED PACKAGES', details of the packages that were uploaded are displayed in the format <journal_id>_<Date>.tar.gz
+- title: Test maintenance mode for 'Upload preservation file' tab
+  context:
+    role: publisher
+  steps:
+  - step: Set the value of 'PRESERVATION_PAGE_UNDER_MAINTENANCE' to True in the configuration file (app.cfg/dev.cfg/test.cfg)
+  - step: Go to preservation area /publisher/preservation
+    results:
+    - Maintenance page should be displayed with the content as 'This page is currently offline for maintenance'
