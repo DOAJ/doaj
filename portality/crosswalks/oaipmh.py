@@ -231,10 +231,10 @@ class OAI_DC_Journal(OAI_DC):
     def crosswalk(self, record):
         bibjson = record.bibjson()
 
-        metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
+        metadata = etree.Element(self.PMH + "metadata")
         oai_dc = etree.SubElement(metadata, self.OAIDC + "dc", nsmap=self.NSMAP)
         oai_dc.set(self.XSI + "schemaLocation",
-            "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd")
+               "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd")
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
             set_text(title, bibjson.title)
@@ -315,8 +315,8 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
     def crosswalk(self, record):
         bibjson = record.bibjson()
 
-        metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
-        oai_doaj_article = etree.SubElement(metadata, self.OAI_DOAJ + "doajArticle")
+        metadata = etree.Element(self.PMH + "metadata")
+        oai_doaj_article = etree.SubElement(metadata, self.OAI_DOAJ + "doajArticle", nsmap=self.NSMAP)
         oai_doaj_article.set(self.XSI + "schemaLocation",
             "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd http://doaj.org/features/oai_doaj/1.0/ https://doaj.org/static/doaj/doajArticles.xsd")
 
