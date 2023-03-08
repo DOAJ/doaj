@@ -44,18 +44,26 @@ def send_event(goal: str, on_completed=None, **props_kwargs):
                'url': app.config.get('BASE_URL', 'http://localhost'),
                'domain': app.config.get('PLAUSIBLE_SITE_NAME', 'localhost'), }
     if props_kwargs:
-        payload['props'] = json.dumps(props_kwargs)
+        payload['props'] = props_kwargs
 
-    headers = {}
+    # headers for plausible API
+    headers = {'Content-Type': 'application/json'}
     if request:
-        headers = {"X-Forwarded-For": request.remote_addr}  # this works because we have ProxyFix on the app
+        # Add IP from CloudFlare header or remote_addr - this works because we have ProxyFix on the app
+        headers["X-Forwarded-For"] = request.headers.get("cf-connecting-ip", request.remote_addr)
+        user_agent_key = 'User-Agent'
+        user_agent_val = request.headers.get(user_agent_key)
+        if user_agent_val:
+            headers[user_agent_key] = user_agent_val
+
+        # Supply detailed URL if we have it from the request context
+        payload['url'] = request.base_url
 
     def _send():
         resp = requests.post(plausible_api_url, json=payload, headers=headers)
+        if resp.status_code >= 300:
+            logger.warning(f'send plausible event api fail. [{resp.status_code}][{resp.text}]')
         if on_completed:
-            if resp.status_code >= 300:
-                logger.warning(f'send plausible event api fail. [{resp.status_code}][{resp.text}]')
-
             on_completed(resp)
 
     Thread(target=_send).start()

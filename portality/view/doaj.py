@@ -8,10 +8,12 @@ from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 
+from portality import constants
 from portality import dao
 from portality import models
+from portality import store
 from portality.core import app
-from portality.decorators import ssl_required
+from portality.decorators import ssl_required, api_key_required
 from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
 from portality.lib import plausible
@@ -27,9 +29,11 @@ def home():
     recent_journals = models.Journal.recent(max=16)
     return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
 
+
 @blueprint.route('/login/')
 def login():
     return redirect(url_for('account.login'))
+
 
 @blueprint.route("/cookie_consent")
 def cookie_consent():
@@ -186,30 +190,25 @@ def sitemap():
     return redirect(sitemap_url, code=307)
 
 
-# @blueprint.route("/public-data-dump")
-# def public_data_dump():
-#     data_dump = models.Cache.get_public_data_dump()
-#     show_article = data_dump.get("article", {}).get("url") is not None
-#     article_size = data_dump.get("article", {}).get("size")
-#     show_journal = data_dump.get("journal", {}).get("url") is not None
-#     journal_size = data_dump.get("journal", {}).get("size")
-#     return render_template("doaj/public_data_dump.html",
-#                            show_article=show_article,
-#                            article_size=article_size,
-#                            show_journal=show_journal,
-#                            journal_size=journal_size)
-
-
 @blueprint.route("/public-data-dump/<record_type>")
+@api_key_required
 def public_data_dump_redirect(record_type):
-    # temporarily disable redirects to the data dump
-    abort(503)
-    # store_url = models.Cache.get_public_data_dump().get(record_type, {}).get("url")
-    # if store_url is None:
-    #     abort(404)
-    # if store_url.startswith("/"):
-    #     store_url = "/store" + store_url
-    # return redirect(store_url, code=307)
+    if not current_user.has_role(constants.ROLE_PUBLIC_DATA_DUMP):
+        abort(404)
+
+    target_data = models.Cache.get_public_data_dump().get(record_type, {})
+    if target_data is None:
+        abort(404)
+
+    main_store = store.StoreFactory.get(constants.STORE__SCOPE__PUBLIC_DATA_DUMP)
+    store_url = main_store.temporary_url(target_data.get("container"),
+                                         target_data.get("filename"),
+                                         timeout=app.config.get("PUBLIC_DATA_DUMP_URL_TIMEOUT", 3600))
+
+    if store_url.startswith("/"):
+        store_url = "/store" + store_url
+
+    return redirect(store_url, code=307)
 
 
 @blueprint.route("/store/<container>/<filename>")
@@ -556,9 +555,11 @@ def volunteers():
 def team():
     return render_template("layouts/static_page.html", page_frag="/about/team.html")
 
+
 @blueprint.route("/preservation/")
 def preservation():
     return render_template("layouts/static_page.html", page_frag="/preservation/index.html")
+
 
 # LEGACY ROUTES
 @blueprint.route("/subjects")
@@ -580,6 +581,7 @@ def old_application():
 @blueprint.route("/oainfo")
 def bestpractice(cc=None):
     return redirect(url_for("doaj.transparency", **request.args), code=308)
+
 
 @blueprint.route("/membership")
 def membership():

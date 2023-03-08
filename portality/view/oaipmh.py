@@ -38,7 +38,7 @@ def oaipmh(specified=None):
     event_payload['action'] = verb
 
     # Now we have enough information about the request to send to analytics.
-    plausible.send_event(app.config.get('GA_CATEGORY_OPENURL', 'OpenURL'),
+    plausible.send_event(app.config.get('GA_CATEGORY_OAI', 'OAI-PMH'),
                          **event_payload)
 
     # call the appropriate protocol operation:
