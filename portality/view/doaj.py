@@ -527,6 +527,9 @@ def faq():
 def about():
     return render_template("layouts/static_page.html", page_frag="/about/index.html")
 
+@blueprint.route("/at-20/")
+def at_20():
+    return render_template("layouts/static_page.html", page_frag="/about/at-20.html")
 
 @blueprint.route("/about/ambassadors/")
 def ambassadors():
