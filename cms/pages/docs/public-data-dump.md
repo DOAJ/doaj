@@ -17,7 +17,7 @@ We are committed to providing a data dump service for the community but, in orde
  - whether you want access to the journal or article metadata, or both
  - what you want to use the metadata for. Include as much information as possible.
 
-An [exportable version of the journal metadata]&#40;/csv&#41; is also available (CSV format).
+An [exportable version of the journal metadata](/csv) is also available (CSV format).
 
 [//]: # ()
 [//]: # (Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the same form as those retrieved via the API.)
