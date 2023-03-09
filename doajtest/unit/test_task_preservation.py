@@ -173,10 +173,10 @@ class TestPreservationMultipleJournals(TestPreservationSetup):
         assert os.path.isdir(os.path.join(self.tmp_dir, "articles"))
         assert os.path.isdir(os.path.join(self.tmp_dir, "articles", "article_1"))
         assert os.path.exists(os.path.join(self.tmp_dir, "articles",
-                                           "article_1", "identifier.txt"))
+                                           "article_1", "Identifier.txt"))
 
         reader = preservation.CSVReader(os.path.join(self.tmp_dir,
-                                                     "articles", "identifiers.csv"))
+                                                     "articles", "Identifiers.csv"))
         data = reader.articles_info()
 
         assert "article_1" in data
