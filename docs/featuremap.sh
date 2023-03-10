@@ -34,4 +34,4 @@ OUTDIR=$DOAJ_DOCS/$BRANCH/featuremap
 mkdir -p $OUTDIR
 
 echo "featuremap -b $BASE_DIR -c $BASE_DIR/docs/featuremap/config.yml -s https://github.com/DOAJ/doaj/blob/$BRANCH -o $OUTDIR"
-featuremap -b $BASE_DIR -c $BASE_DIR/docs/featuremap/config.yml -s https://github.com/DOAJ/doaj/blob/$BRANCH -o $OUTDIR
+cd $BASE_DIR && featuremap -b $BASE_DIR -c $BASE_DIR/docs/featuremap/config.yml -s https://github.com/DOAJ/doaj/blob/$BRANCH -o $OUTDIR
