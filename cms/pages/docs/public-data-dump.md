@@ -11,11 +11,11 @@ featuremap:
 ---
 
 We are committed to providing a data dump service for the community but, in order to ensure that DOAJ's data is used for the benefit of the entire community and under the terms of the licenses that accompany the data, access to the dumps is granted on a case-by-case basis. If you would like access, please [email our Help Desk](mailto:helpdesk@doaj.org) stating the following information:
- - your name
- - the group, organisation or company you represent or that wants to use the metadata
- - your group/organisation/company address, including country 
- - whether you want access to the journal or article metadata, or both
- - what you want to use the metadata for. Include as much information as possible.
+  - your name
+  - the group, organisation or company you represent or that wants to use the metadata
+  - your group/organisation/company address, including country 
+  - whether you want access to the journal or article metadata, or both
+  - what you want to use the metadata for. Include as much information as possible.
 
 An [exportable version of the journal metadata](/csv) is also available (CSV format).
 
