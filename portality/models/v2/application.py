@@ -8,6 +8,9 @@ from portality.models.v2.journal import JournalLikeObject, Journal
 from portality.lib.coerce import COERCE_MAP
 from portality.dao import DomainObject
 
+import redis
+
+
 APPLICATION_STRUCT = {
     "objects": [
         "admin", "index"
@@ -36,6 +39,10 @@ APPLICATION_STRUCT = {
         }
     }
 }
+
+class ConcurrentUpdateRequestException(Exception):
+    pass
+
 
 # ~~Application:Model~~
 class Application(JournalLikeObject):
@@ -199,8 +206,19 @@ class Application(JournalLikeObject):
             self.set_last_updated()
 
     def save(self, sync_owner=True, **kwargs):
+        if self.id is None:
+            self.set_id(self.makeid())
+
+        if self.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
+            rc = redis.Redis(host=app.config.get("HUEY_REDIS_HOST"), port=app.config.get("HUEY_REDIS_PORT"))
+            aid = rc.get(self.current_journal)
+            if aid is not None and aid != self.id:
+                raise ConcurrentUpdateRequestException()
+            rc.set(self.current_journal, self.id, ex=10)
+
         self.prep()
         self.verify_against_struct()
+
         if sync_owner:
             self._sync_owner_to_journal()
         return super(Application, self).save(**kwargs)
