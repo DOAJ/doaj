@@ -11,15 +11,15 @@
 {% set quick_reject = false %}
 
 {% block page_title %}{% if obj.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST %}Update Request{% else %}Application{% endif %}: {{ obj.bibjson().title }}{% endblock %}
+{% block body_id %}apply{% endblock %}
 
 {% block editor_content scoped %}
-<body id="apply">
-    <main class="page-content">
-        {% include "application_form/editorial_form_body.html" %}
-    </main>
+<h3>{{ obj.bibjson().title }}</h3>
+<main class="page-content">
+    {% include "application_form/editorial_form_body.html" %}
+</main>
 
-    {% include "includes/_hotjar.html" %}
- </body>
+{% include "includes/_hotjar.html" %}
 {% endblock %}
 
 {% block extra_js_bottom scoped %}

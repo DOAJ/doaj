@@ -5,6 +5,8 @@ from portality.core import app
 from portality.crosswalks.exceptions import CrosswalkException
 from portality.tasks.helpers import background_helper
 
+from portality.ui.messages import Messages
+
 from portality.tasks.redis_huey import main_queue, configure
 from portality.decorators import write_required
 
@@ -397,7 +399,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             file_upload_id = cls._url_upload(username, url, schema, previous)
 
         if file_upload_id is None:
-            raise BackgroundException("No file upload record was created")
+            raise BackgroundException(Messages.NO_FILE_UPLOAD_ID)
 
         # first prepare a job record
         params = {}

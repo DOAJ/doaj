@@ -11,8 +11,8 @@ class TestDatasets(DoajTestCase):
 
     def test_01_countries(self):
         """ Use country information from our datasets """
-        assert datasets.get_country_code('united kingdom') == 'GB', 'expected GB, received: {}'.format(datasets.get_country_name('GB'))
-        assert datasets.get_country_name('GB') == 'United Kingdom', 'expected United Kingdom, received: {}'.format(datasets.get_country_name('GB'))
+        assert datasets.get_country_code('united kingdom') == 'GB'
+        assert datasets.get_country_name('GB') == 'United Kingdom'
 
         # If the country is unrecognised, we send it back unchanged.
         assert datasets.get_country_code('mordor') == 'mordor'
@@ -44,3 +44,46 @@ class TestDatasets(DoajTestCase):
         assert datasets.language_for('English').name == 'English'
 
         assert datasets.language_for('german').bibliographic == 'ger'
+
+        # Specific languages we were asked to correct e.g. https://github.com/DOAJ/doajPM/issues/1262
+        assert datasets.name_for_lang("ro") == "Romanian"   # alpha_2
+        assert datasets.name_for_lang("ron") == "Romanian"  # alpha_3
+        assert datasets.name_for_lang("rum") == "Romanian"  # bibliographic
+        assert datasets.name_for_lang("hr") == "Croatian"
+        assert datasets.name_for_lang("hrv") == "Croatian"
+        assert datasets.name_for_lang("ga") == "Irish"
+        assert datasets.name_for_lang("gle") == "Irish"
+        assert datasets.name_for_lang("gd") == "Scottish Gaelic"
+        assert datasets.name_for_lang("gla") == "Scottish Gaelic"
+
+    def test_04_from_options(self):
+        """ Verify our lookups will resolve to the same records that the options expect """
+        countries_options = datasets.country_options
+        currencies_options = datasets.currency_options
+        languages_options = datasets.language_options
+
+        # We want an empty record at the start of each options list
+        assert countries_options.pop(0) == ('', '')
+        assert currencies_options.pop(0) == ('', '')
+        assert languages_options.pop(0) == ('', '')
+
+        for (code, name) in countries_options:
+            assert datasets.get_country_name(code) == name
+            assert datasets.get_country_code(name).upper() == code
+
+        for (code, name) in currencies_options:
+            # We retrieve these names as "code - name" as in "GBP - Pound Sterling"
+            assert f'{datasets.get_currency_name(code)} ({code})' == f'{code} - {name}'
+
+            # FIXME: skip post-2018 Venezuelan Bolívar Soberano; it appears twice with different codes but will be
+            #  retrieved by pycountry via name as VES, the old one. Same with Sierra Leonean leone (old SLL /
+            #  new SLE since July 22)
+            if code in ["VED", 'SLE']:
+                continue
+
+            # Here we need to remove the (code) from the end of e.g. "Pound Sterling (GBP)" to do our lookup.
+            assert datasets.get_currency_code(name[:-6]) == code
+
+        for (code, name) in languages_options:
+            assert datasets.name_for_lang(code) == name
+            assert datasets.language_for(code).alpha_2.upper() == code
