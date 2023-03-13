@@ -2,7 +2,6 @@ from doajtest.helpers import DoajTestCase, with_es
 from portality.api.current import ArticlesBulkApi, Api401Error, Api400Error
 from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
-from portality.bll.exceptions import ArticleNotAcceptable
 from copy import deepcopy
 from flask import url_for
 import json
