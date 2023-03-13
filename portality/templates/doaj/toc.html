@@ -451,7 +451,9 @@
         <footer id="updated" class="page-content__footer">
             <p>
                 Added {{journal.created_timestamp.strftime("%e %B %Y")}}
-                {% if journal.last_manual_update_timestamp and journal.last_manual_update_timestamp.strftime(std_datetime_fmt) != default_timestamp%}
+                {% if journal.last_manual_update_timestamp and
+                      dates.format(journal.last_manual_update_timestamp) != dates.DEFAULT_TIMESTAMP_VAL
+                 %}
                     &bull; Updated {{journal.last_manual_update_timestamp.strftime("%e %B %Y")}}
                 {% endif %}
             </p>
