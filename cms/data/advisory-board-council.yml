@@ -29,6 +29,8 @@ board:
 - name: Leslie Chan
   institution: University of Toronto
   country: Canada
+  coi:
+    2023: https://drive.google.com/file/d/12GGWk1D6zb0YlPhSmFwCvp8ApnXOKekG/view?usp=sharing
 
 - name: Lisa Schiff
   institution: California Digital Library

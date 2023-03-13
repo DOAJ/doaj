@@ -14,6 +14,13 @@ tests:
     results:
     - The number of journals on the page increases and decreases and the number of
       pages changes
+  - step: Choose filters on the left (one or more at the time)
+    results:
+    - Search results adjust accordingly
+    - The number of search results changes. You can still select values from other
+      facets and filters
+    - The filters you have selected appear as black lozenges at the top of the search
+      results
   - step: Open and Collapse all the facets on the left
     results:
     - The facet opens and closes as expected
