@@ -2,15 +2,6 @@
   "batch": 10000,
   "types": [
     {
-      "init_with_model": true,
-      "type": "article",
-      "scroll_size": 1000,
-      "keepalive": "20m",
-      "functions": [
-        "portality.migrate.3374_three_letter_language_code.operations.update_article_code"
-      ]
-    },
-    {
       "type": "application",
       "init_with_model": true,
       "scroll_size": 1000,
