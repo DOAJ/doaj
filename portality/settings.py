@@ -435,7 +435,8 @@ HUEY_SCHEDULE = {
 
 HUEY_TASKS = {
     "ingest_articles": {"retries": 10, "retry_delay": 15},
-    "preserve": {"retries": 0, "retry_delay": 15}
+    "preserve": {"retries": 0, "retry_delay": 15},
+    "annotations": {"retries": 0, "retry_delay": 15}
 }
 
 ####################################
@@ -466,7 +467,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Application", # ~~->Application:Model~~
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
     "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
-    "portality.models.background.BackgroundJob" # ~~-> BackgroundJob:Model~~
+    "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
+    "portality.models.annotation.Annotation" # ~~-> Annotation:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
