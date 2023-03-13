@@ -2,6 +2,7 @@ from doajtest.helpers import DoajTestCase, with_es
 from portality.api.current import ArticlesBulkApi, Api401Error, Api400Error
 from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
+from portality.bll.exceptions import ArticleNotAcceptable
 from copy import deepcopy
 from flask import url_for
 import json
@@ -35,7 +36,7 @@ class TestBulkArticle(DoajTestCase):
             if doi_ix == -1:
                 data['bibjson']['identifier'].append({"type": "doi"})
             data['bibjson']['identifier'][doi_ix]['id'] = '10.0000/SOME.IDENTIFIER.{0}'.format(i)
-            
+
             fulltext_url_ix = find_dict_in_list(data['bibjson']['link'], 'type', 'fulltext')
             if fulltext_url_ix == -1:
                 data['bibjson']['link'].append({"type": "fulltext"})
@@ -224,7 +225,7 @@ class TestBulkArticle(DoajTestCase):
         dataset = []
         for i in range(10):
             data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i),
-                                                                          fulltext="http://example.com/" + str(i))
+                                                                   fulltext="http://example.com/" + str(i))
             dataset.append(data)
 
         # create the main account we're going to work as
@@ -236,7 +237,7 @@ class TestBulkArticle(DoajTestCase):
         article_owner.add_role('publisher')
         article_owner.add_role('api')
         article_owner.save(blocking=True)
-        
+
         # Add another user who doesn't own these articles
         somebody_else = models.Account()
         somebody_else.set_id("somebody_else")
@@ -299,7 +300,7 @@ class TestBulkArticle(DoajTestCase):
     def test_07_v1_no_redirects(self):
         """ v1 answers directly without redirect https://github.com/DOAJ/doajPM/issues/2664 """
         # TODO: this is a copy of the test above, with v1 instead of current. If redirects are reinstated, uncomment above
-        
+
         # set up all the bits we need
         dataset = []
         for i in range(10):
@@ -441,3 +442,23 @@ class TestBulkArticle(DoajTestCase):
                 resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=somebody_else.api_key),
                                        data=json.dumps([first_art['id']]))
                 assert resp.status_code == 400
+    def test_09_article_unacceptable(self):
+        # set up all the bits we need
+        dataset = []
+        for i in range(10):
+            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i), fulltext="http://example.com/" + str(i))
+            dataset.append(data)
+
+        # create the account we're going to work as
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        # add a journal to the account
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=False))
+        journal.set_owner(account.id)
+        journal.save(blocking=False)
+
+        # check that 400 is raised
+        with self.assertRaises(Api400Error):
+            ids = ArticlesBulkApi.create(dataset, account)
