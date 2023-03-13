@@ -26,6 +26,10 @@ def mock_lookup_code(code):
 
 JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source()
 JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
+for k, v in list(JOURNAL_FORM.items()):
+    if k.startswith("notes-") and k.endswith("-author_id"):
+        del JOURNAL_FORM[k]
+        JOURNAL_FORM[k.replace("-author_id", "-note_author_id")] = v
 del JOURNAL_FORM["owner"]
 del JOURNAL_FORM["editor_group"]
 del JOURNAL_FORM["editor"]
@@ -92,6 +96,7 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         assert fc.target.created_date == "2000-01-01T00:00:00Z"
         assert fc.target.id == "abcdefghijk_journal"
         assert len(fc.target.notes) == 2
+        assert 'fake_account_id__c' in {n.get('author_id') for n in fc.target.notes}
         assert fc.target.owner == "publisher"
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"

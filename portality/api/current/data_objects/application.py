@@ -299,10 +299,10 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     def remove_editor(self):
         self.__seamless__.delete('admin.editor')
 
-    def add_note(self, note, date=None, id=None):
+    def add_note(self, note, date=None, id=None, author_id=None,):
         if date is None:
             date = dates.now()
-        obj = {"date": date, "note": note, "id": id}
+        obj = {"date": date, "note": note, "id": id, "author_id": author_id}
         self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
         if id is None:
             obj["id"] = uuid.uuid4()

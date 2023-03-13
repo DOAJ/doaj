@@ -1418,7 +1418,7 @@ class TestModels(DoajTestCase):
         models.Cache.cache_sitemap("sitemap.xml")
 
         models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article", 100, "jc", "jf", "http://example.com/journal", 200)
-        
+
         time.sleep(1)
 
         stats = models.Cache.get_site_statistics()
@@ -1618,4 +1618,22 @@ class TestModels(DoajTestCase):
         assert n2.is_seen()
         assert n2.seen_date is not None
 
+
+class TestAccount(DoajTestCase):
+    def test_get_name_safe(self):
+
+        # have name
+        acc = models.Account.make_account(email='user@example.com')
+        acc_name = 'Account Name'
+        acc.set_name(acc_name)
+        acc.save(blocking=True)
+        assert models.Account.get_name_safe(acc.id) == acc_name
+
+        # no name
+        acc = models.Account.make_account(email='user2@example.com')
+        acc.save(blocking=True)
+        assert models.Account.get_name_safe(acc.id) == ''
+
+        # account does not exist
+        assert models.Account.get_name_safe('not existing account id') == ''
 

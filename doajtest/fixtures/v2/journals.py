@@ -68,8 +68,10 @@ JOURNAL_SOURCE = {
         "editor": "associate",
         "in_doaj": False,
         "notes" : [
-            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234"},
-            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd"}
+            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234",
+             "author_id": "fake_account_id__a"},
+            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd",
+             "author_id": "fake_account_id__b"},
         ],
         "owner": "publisher",
         "related_applications": [
