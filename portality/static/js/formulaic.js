@@ -1403,12 +1403,8 @@ var formulaic = {
                               <header class="flex-space-between modal__heading">
                                 <span>
                                   <p class="label">Note</p>
-                                  <h3 class="modal__title">
-                                     ` + author.val() + `
-                                  </h3>
-                                  <h3 class="modal__title">
-                                      ` + date.val() + `
-                                  </h3>
+                                  <h3 class="modal__title"> ${author.val()} </h3>
+                                  <h3 class="modal__title"> ${date.val()} </h3>
                                 </span>
                                 <span type="button" data-dismiss="modal" class="type-01 ` + closeClass + `"><span class="sr-only">Close</span>&times;</span>
                               </header>
