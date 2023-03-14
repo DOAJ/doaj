@@ -55,7 +55,7 @@ class AuthorisationService(object):
         if account.has_role("publisher"):
             if account.id != application.owner:
                 no_auth_reason = exceptions.AuthoriseException.NOT_OWNER
-            elif application.application_status not in [
+            elif application.application_status not in [    # ~~-> ApplicationStatuses:Config~~
                 constants.APPLICATION_STATUS_PENDING,
                 constants.APPLICATION_STATUS_UPDATE_REQUEST,
                 constants.APPLICATION_STATUS_REVISIONS_REQUIRED

@@ -267,7 +267,12 @@ class FieldDefinitions:
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
-                }
+                },
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "full_contents",  # ~~^->FullContents:FormWidget~~
+                    "annotation"    # ~~^-> Annotation:FormWidget~~
+                ]
             },
             "editor": {
                 "disabled": True,
@@ -335,7 +340,12 @@ class FieldDefinitions:
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
-                }
+                },
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "full_contents",  # ~~^->FullContents:FormWidget~~
+                    "annotation"    # ~~^-> Annotation:FormWidget~~
+                ]
             },
             "editor": {
                 "disabled": True,
@@ -2399,6 +2409,7 @@ def quick_reject(field, formulaic_context_name):
 
 def application_statuses(field, formulaic_context):
     # ~~->$ ApplicationStatus:Workflow~~
+    # ~~-> ApplicationStatuses:Config~~
     _application_status_base = [  # This is all the Associate Editor sees
         ('', ' '),
         (constants.APPLICATION_STATUS_PENDING, 'Pending'),
@@ -2406,7 +2417,12 @@ def application_statuses(field, formulaic_context):
         (constants.APPLICATION_STATUS_COMPLETED, 'Completed')
     ]
 
+    # Note that an admin is given the Post Submission Automation status, as technically they
+    # may edit an item that's in this status, but it is functionally useless to them
+    # It would be nice to be able to somehow disable it being changed, perhaps we can do that
+    # via a widget
     _application_status_admin = _application_status_base + [
+        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW, 'Post Submission Automation'),
         (constants.APPLICATION_STATUS_UPDATE_REQUEST, 'Update Request'),
         (constants.APPLICATION_STATUS_REVISIONS_REQUIRED, 'Revisions Required'),
         (constants.APPLICATION_STATUS_ON_HOLD, 'On Hold'),
@@ -2881,7 +2897,8 @@ JAVASCRIPT_FUNCTIONS = {
     "full_contents" : "formulaic.widgets.newFullContents",  # ~~^->FullContents:FormWidget~~
     "load_editors" : "formulaic.widgets.newLoadEditors",    # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
-    "note_modal" : "formulaic.widgets.newNoteModal" # ~~-> NoteModal:FormWidget~~
+    "note_modal" : "formulaic.widgets.newNoteModal", # ~~-> NoteModal:FormWidget~~
+    "annotation": "formulaic.widgets.newAnnotation" # ~~-> Annotation:FormWidget~~
 }
 
 

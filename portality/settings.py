@@ -379,6 +379,7 @@ ASSOC_ED_IDLE_DAYS = 10
 ASSOC_ED_IDLE_WEEKS = 3
 
 # Which statuses the notification queries should be filtered to show
+# ~~-> ApplicationStatuses:Config~~
 MAN_ED_NOTIFICATION_STATUSES = [
     constants.APPLICATION_STATUS_PENDING,
     constants.APPLICATION_STATUS_IN_PROGRESS, constants.APPLICATION_STATUS_COMPLETED,

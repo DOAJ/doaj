@@ -1076,6 +1076,69 @@ var formulaic = {
             $(select2_elem).focus();
         },
 
+        newAnnotation : function(params) {
+            return edges.instantiate(formulaic.widgets.Annotation, params);
+        },
+        Annotation: function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+
+            this.ns = "formulaic-annotation"
+
+            this.init = function() {
+                let annos = this._getAnnotationsForField();
+                if (annos.length === 0) {
+                    return;
+                }
+
+                let frag = "<ul>";
+                for (let anno of annos) {
+                    frag += this._renderAnnotation(anno)
+                }
+                frag += `</ul>`;
+
+                let elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                for (var i = 0; i < elements.length; i++) {
+                    let el = $(elements[i]);
+                    el.after(frag);
+                }
+            }
+
+            this._getAnnotationsForField = function() {
+                if (!doaj.annotations) {
+                    return [];
+                }
+                let applicable = [];
+                for (let anno of doaj.annotations.annotations) {
+                    if (anno.field && anno.field === this.fieldDef.name) {
+                        applicable.push(anno);
+                    }
+                }
+                return applicable;
+            }
+
+            this._renderAnnotation = function(annotation) {
+                let frag = "<li>";
+                if (annotation.advice) {
+                    frag += `${annotation.advice}<br>`
+                }
+                if (annotation.reference_url) {
+                    frag += `<a href="${annotation.reference_url}" target="_blank">${annotation.reference_url}</a><br>`
+                }
+                if (annotation.suggested_value) {
+                    frag += `Suggested Value: ${annotation.suggested_value}<br>`
+                }
+                if (annotation.original_value) {
+                    frag += `(Original value when automated checks ran: ${annotation.original_value})`
+                }
+                frag += `</li>`;
+
+                return frag;
+            }
+
+            this.init();
+        },
+
         newSubjectTree : function(params) {
             return edges.instantiate(formulaic.widgets.SubjectTree, params);
         },

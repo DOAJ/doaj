@@ -1,4 +1,6 @@
 # ~~Constants:Config~~
+
+# ~~-> ApplicationStatuses:Config~~
 APPLICATION_STATUS_ACCEPTED = "accepted"
 APPLICATION_STATUS_REJECTED = "rejected"
 APPLICATION_STATUS_UPDATE_REQUEST = "update_request"

@@ -366,10 +366,12 @@ def application(application_id):
     fc = ApplicationFormFactory.context("admin")
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
 
+    annotations = models.Annotation.for_application(application_id)
+
     if request.method == "GET":
         fc.processor(source=ap)
         return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
-                                  current_journal=current_journal, lcc_tree=lcc_jstree)
+                                  current_journal=current_journal, lcc_tree=lcc_jstree, annotations=annotations)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
