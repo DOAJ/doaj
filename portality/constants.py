@@ -65,10 +65,11 @@ PROCESS__QUICK_REJECT = "quick_reject"
 
 # Role
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
+ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
-# ~~-> BackgroundTask:MonitoringStatus~~
+# ~~-> BackgroundTask:Monitoring~~
 # BackgroundJob.status
 BGJOB_STATUS_QUEUED = 'queued'
 BGJOB_STATUS_ERROR = 'error'
@@ -97,3 +98,7 @@ class BgjobOutcomeStatus(ConstantList):
     Pending = 'pending'
     Success = 'success'
     Fail = 'fail'
+
+
+# Storage scopes
+STORE__SCOPE__PUBLIC_DATA_DUMP = "public_data_dump"

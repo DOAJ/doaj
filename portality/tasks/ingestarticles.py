@@ -15,6 +15,7 @@ from portality.crosswalks.exceptions import CrosswalkException
 from portality.lib import plugin
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import main_queue
+from portality.ui.messages import Messages
 
 DEFAULT_MAX_REMOTE_SIZE = 262144000
 CHUNK_SIZE = 1048576
@@ -416,7 +417,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             file_upload_id = cls._url_upload(username, url, schema, previous)
 
         if file_upload_id is None:
-            raise BackgroundException("No file upload record was created")
+            raise BackgroundException(Messages.NO_FILE_UPLOAD_ID)
 
         # first prepare a job record
         params = {}

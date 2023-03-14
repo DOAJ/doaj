@@ -31,6 +31,6 @@ The publishers on this page have chosen to show their commitment to quality, pee
 |                          | A report, (a Google Sheet), collecting metadata errors, as reported to us by discovery services. | A report, (a Google Sheet), collecting metadata errors, as reported to us by discovery services. |
 |                          |                                                 | A yearly account review between the customer and DOAJ. The agenda can be determined by the publisher contact and a DOAJ representative. |
 |                          |                                                 | A CSV file, generated annually, for recording changes in and which DOAJ updates your live records with. |
-|                          |                                                 | Exposure across all our social media channels: Twitter, Instagram, LinkedIn, Facebook, WeChat. (Stats available.) |
+|                          |                                                 | Exposure across all our social media channels: Twitter, Instagram, LinkedIn, Facebook, WeChat. (Stats available.) | 
 
 ## Other publisher supporters
