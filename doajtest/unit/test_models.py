@@ -634,7 +634,7 @@ class TestModels(DoajTestCase):
         assert bj.title == "The Title"
         assert bj.is_replaced_by == ["2222-2222"]
         assert bj.keywords == ["word", "key"]
-        assert bj.language == ["EN", "FR"]
+        assert bj.language == ["ENG", "FRE"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["1111-1111"]
         assert len(bj.subject) == 2
@@ -656,7 +656,7 @@ class TestModels(DoajTestCase):
         assert bj.editorial_review_url == "http://review.process"
         assert bj.editorial_board_url == "http://editorial.board"
         assert bj.institution == "Society Institution"
-        assert bj.institution_country == "US"
+        assert bj.institution_country == "USA"
         assert bj.has_other_charges is True
         assert bj.other_charges_url == "http://other.charges"
         assert bj.pid_scheme == ["DOI", "ARK", "PURL", "PIDMachine"]
@@ -666,7 +666,7 @@ class TestModels(DoajTestCase):
         assert bj.preservation_summary == ["LOCKSS", "CLOCKSS", "A safe place", ["A national library", "Trinity"], ["A national library", "Imperial"]]
         assert bj.preservation_url == "http://digital.archiving.policy"
         assert bj.publisher_name == "The Publisher"
-        assert bj.publisher_country == "US"
+        assert bj.publisher_country == "USA"
         assert bj.oa_statement_url == "http://oa.statement"
         assert bj.journal_url == "http://journal.url"
         assert bj.aims_scope_url == "http://aims.scope"
@@ -684,7 +684,7 @@ class TestModels(DoajTestCase):
         bj.title = "Another title"
         bj.keywords = ["new", "terms"]
         bj.is_replaced_by = ["4444-4444"]
-        bj.language = ["IT"]
+        bj.language = ["ITA"]
         bj.replaces = ["3333-3333"]
         bj.subject = [{"scheme": "TEST", "term": "first", "code": "one"}]
         bj.apc_url = "http://apc2.com"
@@ -706,7 +706,7 @@ class TestModels(DoajTestCase):
         bj.set_plagiarism_detection("http://test1", False)
         bj.set_preservation(["LOCKSS", ["a national library", "UCL"]], "http://preservation")
         bj.publisher_name = "Me"
-        bj.publisher_country = "GB"
+        bj.publisher_country = "GBR"
         bj.oa_statement_url = "http://oa2.statement"
         bj.journal_url = "http://journal2.url"
         bj.aims_scope_url = "http://aims2.url"
@@ -724,7 +724,7 @@ class TestModels(DoajTestCase):
         assert bj.title == "Another title"
         assert bj.is_replaced_by == ["4444-4444"]
         assert bj.keywords == ["new", "terms"]
-        assert bj.language == ["IT"]
+        assert bj.language == ["ITA"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["3333-3333"]
         assert len(bj.subject) == 1
@@ -742,7 +742,7 @@ class TestModels(DoajTestCase):
         assert bj.editorial_review_url == "http://whatever"
         assert bj.editorial_board_url == "http://board2.url"
         assert bj.institution == "UCL"
-        assert bj.institution_country == "FR"
+        assert bj.institution_country == "FRA"
         assert bj.has_other_charges is False
         assert bj.other_charges_url == "http://other2.url"
         assert bj.pid_scheme == ["Handle"]
@@ -752,7 +752,7 @@ class TestModels(DoajTestCase):
         assert bj.preservation_summary == ["LOCKSS", ["A national library", "UCL"]]
         assert bj.preservation_url == "http://preservation"
         assert bj.publisher_name == "Me"
-        assert bj.publisher_country == "GB"
+        assert bj.publisher_country == "GBR"
         assert bj.oa_statement_url == "http://oa2.statement"
         assert bj.journal_url == "http://journal2.url"
         assert bj.aims_scope_url == "http://aims2.url"
@@ -766,7 +766,7 @@ class TestModels(DoajTestCase):
 
         bj.add_is_replaced_by("4321-4321")
         bj.add_keyword("keyword")
-        bj.add_language("CZ")
+        bj.add_language("CES")
         bj.add_license("CC YOUR", "http://cc.your", True, True, True, False)
         bj.add_replaces("1234-1234")
         bj.add_subject("SCH", "TERM", "CDE")
@@ -778,7 +778,7 @@ class TestModels(DoajTestCase):
 
         assert bj.is_replaced_by == ["4444-4444", "4321-4321"]
         assert bj.keywords == ["new", "terms", "keyword"]
-        assert bj.language == ["IT", "CZ"]
+        assert bj.language == ["ITA", "CES"]
         assert len(bj.licences) == 2
         assert bj.replaces == ["3333-3333", "1234-1234"]
         assert len(bj.subject) == 2
@@ -808,8 +808,8 @@ class TestModels(DoajTestCase):
         bj.set_keywords(["one", "two"])
         assert bj.keywords == ["one", "two"]
 
-        bj.set_language("DE")
-        assert bj.language == ["DE"]
+        bj.set_language("de")
+        assert bj.language == ["GER"]
 
         bj.persistent_identifier_scheme = ["ARK"]
         assert bj.persistent_identifier_scheme == ["ARK"]
@@ -871,9 +871,9 @@ class TestModels(DoajTestCase):
         assert bj.country == bj.publisher_country
         assert bj.open_access == bj.boai
 
-        bj.country = "RU"
-        assert bj.country == "RU"
-        assert bj.publisher_country == "RU"
+        bj.country = "RUS"
+        assert bj.country == "RUS"
+        assert bj.publisher_country == "RUS"
 
         bj.set_open_access(not bj.open_access)
         assert bj.open_access == bj.boai
@@ -957,8 +957,8 @@ class TestModels(DoajTestCase):
         assert bj.volume == "No 10"
         assert bj.number == "Iss. 4"
         assert bj.journal_title == "Journal of Things"
-        assert bj.journal_language == ["eng"]
-        assert bj.journal_country == "GB"
+        assert bj.journal_language == ["ENG"]
+        assert bj.journal_country == "GBR"
         assert bj.journal_issns == ["1234-5678", "9876-5432"]
         assert bj.publisher == "IEEE"
         assert bj.author[0].get("name") == "Test"
@@ -973,7 +973,7 @@ class TestModels(DoajTestCase):
         bj.volume = "Four"
         bj.number = "Q1"
         bj.journal_title = "Journal of Stuff"
-        bj.journal_language = "fra"
+        bj.journal_language = "fre"
         bj.journal_country = "FR"
         bj.journal_issns = ["1111-1111", "9999-9999"]
         bj.publisher = "Elsevier"
@@ -989,7 +989,7 @@ class TestModels(DoajTestCase):
         assert bj.volume == "Four"
         assert bj.number == "Q1"
         assert bj.journal_title == "Journal of Stuff"
-        assert bj.journal_language == ["fra"]
+        assert bj.journal_language == ["FRE"]
         assert bj.journal_country == "FR"
         assert bj.journal_issns == ["1111-1111", "9999-9999"]
         assert bj.publisher == "Elsevier"

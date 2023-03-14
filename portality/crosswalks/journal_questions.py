@@ -146,10 +146,17 @@ class Journal2QuestionXwalk(object):
             codes = [c.lower() for c, _ in datasets.language_options]
             names = [n.lower() for _, n in datasets.language_options]
             for v in vals:
-                if v.lower() in codes:
+                v = v.lower()
+                if v in codes:
                     keep.append(datasets.name_for_lang(v))
-                elif v.lower() in names:
+                elif v in names:
                     keep.append(v)
+                else:
+                    # handle if input value is 2-letter language code
+                    lang = datasets.language_for(v)
+                    if lang is not None:
+                        keep.append(lang.name)
+
             return ", ".join(keep)
 
         # start by converting the object to the forminfo version
@@ -263,8 +270,8 @@ class Journal2QuestionXwalk(object):
 
         def _lang_codes(x):
             """ Get the uppercase 2-char language string for each comma separated language name"""
-            langs = [datasets.language_for(_) for _ in _comma_to_list(x)]
-            return [l.alpha_2.upper() for l in langs if l is not None]
+            langs = (datasets.language_for(_) for _ in _comma_to_list(x))
+            return [l.alpha_3.upper() for l in langs if l is not None]
 
         def _unfurl_apc(x):
             """ Allow an APC update by splitting the APC string from the spreadsheet """

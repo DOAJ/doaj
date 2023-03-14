@@ -2,22 +2,14 @@ import locale
 from urllib.parse import urlparse
 from copy import deepcopy
 from datetime import datetime
+from portality.lib import val_convert
 
 ###############################################
 ## Common coerce functions
 ###############################################
 
-def to_utf8_unicode(val):
-    if isinstance(val, str):
-        return val
-    elif isinstance(val, str):
-        try:
-            return val.decode("utf8", "strict")
-        except UnicodeDecodeError:
-            raise ValueError("Could not decode string")
-    else:
-        return str(val)
-
+# proxy function, which extract to val_convert
+to_utf8_unicode = val_convert.to_utf8_unicode
 
 def to_unicode_upper(val):
     val = to_utf8_unicode(val)

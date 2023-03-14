@@ -35,10 +35,10 @@
 		"is_replaced_by": ["2222-2222"],
 		"institution": {
 			"name": "Society Institution",
-			"country": "US"
+			"country": "USA"
 		},
 		"keywords": ["word", "key"],
-		"language": ["EN", "FR"],
+		"language": ["ENG", "FRE"],
 		"license": [{
 			"type": "Publisher's own license",
 			"BY": "True",
@@ -70,7 +70,7 @@
 		"publication_time_weeks": 8,
 		"publisher": {
 			"name": "The Publisher",
-			"country": "US"
+			"country": "USA"
 		},
 		"ref": {
 			"oa_statement": "http://oa.statement",

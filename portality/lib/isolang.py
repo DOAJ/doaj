@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pycountry
 
 
@@ -46,3 +48,9 @@ def _as_dict(language_object: pycountry.Languages):
         "name": language_dict.get('name', ''),
         "fr": ''
     }
+
+
+def get_doaj_3char_lang_by_lang(lang: 'pycountry.db.Language') -> Optional[str]:
+    return lang and getattr(lang,
+                            'bibliographic',
+                            getattr(lang, 'alpha_3', None))

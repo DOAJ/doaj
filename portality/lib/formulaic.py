@@ -100,12 +100,21 @@ CONTEXT_EXAMPLE = {
 """
 import csv
 from copy import deepcopy
+from typing import Callable, Iterable, Optional
+
 from wtforms import Form
 from wtforms.fields.core import UnboundField, FieldList, FormField
 
 from portality.lib import plugin
 from flask import render_template
 import json
+
+
+from typing import TypeVar
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from portality.forms.application_processors import ApplicationProcessor
+    ApplicationProcessorLike = TypeVar('ApplicationProcessorLike', bound=ApplicationProcessor)
 
 
 UI_CONFIG_FIELDS = [
@@ -392,7 +401,7 @@ class FormulaicContext(object):
         template = self._definition.get("templates", {}).get("form")
         return render_template(template, formulaic_context=self, **kwargs)
 
-    def processor(self, formdata=None, source=None):
+    def processor(self, formdata=None, source=None) -> "ApplicationProcessorLike":
         # ~~^-> FormProcessor:Feature~~
         klazz = self._definition.get("processor")
         if isinstance(klazz, str):
@@ -719,7 +728,7 @@ class FormulaicField(object):
         return wtf(**kwargs)
 
     @classmethod
-    def make_wtforms_field(cls, formulaic_context, field) -> UnboundField:
+    def make_wtforms_field(cls, formulaic_context: FormulaicContext, field: dict) -> UnboundField:
         builder = cls._get_wtforms_builder(field, formulaic_context.wtforms_builders)
         if builder is None:
             raise FormulaicException("No WTForms mapping for field '{x}'".format(x=field.get("name")))
@@ -752,7 +761,10 @@ class FormulaicField(object):
         return builder(formulaic_context, field, wtargs)
 
     @classmethod
-    def _get_wtforms_builder(self, field, wtforms_builders):
+    def _get_wtforms_builder(
+            self, field: dict,
+            wtforms_builders: Iterable['WTFormsBuilder']
+    ) -> Optional[Callable[[FormulaicContext, dict, dict], 'Field']]:
         for builder in wtforms_builders:
             if builder.match(field):
                 return builder.wtform

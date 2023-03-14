@@ -1,5 +1,6 @@
 from portality import datasets
 from doajtest.helpers import DoajTestCase
+from portality.lib.isolang import get_doaj_3char_lang_by_lang
 
 
 class TestDatasets(DoajTestCase):
@@ -11,7 +12,7 @@ class TestDatasets(DoajTestCase):
 
     def test_01_countries(self):
         """ Use country information from our datasets """
-        assert datasets.get_country_code('united kingdom') == 'GB'
+        assert datasets.get_country_code('united kingdom') == 'GBR'
         assert datasets.get_country_name('GB') == 'United Kingdom'
 
         # If the country is unrecognised, we send it back unchanged.
@@ -19,7 +20,7 @@ class TestDatasets(DoajTestCase):
         assert datasets.get_country_name('mordor') == 'mordor'
 
         # Unless fail_if_not_found is set in get_country_code()
-        assert datasets.get_country_code('united states') == 'US'
+        assert datasets.get_country_code('united states') == 'USA'
         assert datasets.get_country_code('the shire', fail_if_not_found=True) is None
         assert datasets.get_country_code('the shire', fail_if_not_found=False) == 'the shire'
 
@@ -46,7 +47,7 @@ class TestDatasets(DoajTestCase):
         assert datasets.language_for('german').bibliographic == 'ger'
 
         # Specific languages we were asked to correct e.g. https://github.com/DOAJ/doajPM/issues/1262
-        assert datasets.name_for_lang("ro") == "Romanian"   # alpha_2
+        assert datasets.name_for_lang("ro") == "Romanian"  # alpha_2
         assert datasets.name_for_lang("ron") == "Romanian"  # alpha_3
         assert datasets.name_for_lang("rum") == "Romanian"  # bibliographic
         assert datasets.name_for_lang("hr") == "Croatian"
@@ -86,4 +87,4 @@ class TestDatasets(DoajTestCase):
 
         for (code, name) in languages_options:
             assert datasets.name_for_lang(code) == name
-            assert datasets.language_for(code).alpha_2.upper() == code
+            assert get_doaj_3char_lang_by_lang(datasets.language_for(code)).upper() == code

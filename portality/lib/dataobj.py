@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 
-from portality.lib import dates
-from portality.datasets import get_country_code, get_currency_code
+from portality.lib import dates, val_convert
+from portality.datasets import get_currency_code
 from copy import deepcopy
 import locale, json, warnings
 from urllib.parse import urlparse
@@ -16,15 +16,6 @@ def to_currency_code(val):
     nv = get_currency_code(val)
     if nv is None:
         raise ValueError("Unable to convert {x} to a valid currency code".format(x=val))
-    uc = to_unicode()
-    return uc(nv)
-
-def to_country_code(val):
-    if val is None:
-        return None
-    nv = get_country_code(val, fail_if_not_found=True)
-    if nv is None:
-        raise ValueError("Unable to convert {x} to a valid country code".format(x=val))
     uc = to_unicode()
     return uc(nv)
 
@@ -123,40 +114,6 @@ def to_datestamp(in_format=None):
 
     return stampify
 
-def to_isolang(output_format=None):
-    """
-    :param output_format: format from input source to putput.  Must be one of:
-        * alpha3
-        * alt3
-        * alpha2
-        * name
-        * fr
-    Can be a list in order of preference, too
-    fixme: we could make these pycountry's keys, removing the need for so many transformations and intermediate steps
-    :return:
-    """
-    # delayed import, since we may not always want to load the whole dataset for a dataobj
-    from portality.lib import isolang as dataset
-
-    # sort out the output format list
-    if output_format is None:
-        output_format = ["alpha3"]
-    if not isinstance(output_format, list):
-        output_format = [output_format]
-
-    def isolang(val):
-        if val is None:
-            return None
-        l = dataset.find(val)
-        if l is None:
-            raise ValueError("Unable to find iso code for language {x}".format(x=val))
-        for f in output_format:
-            v = l.get(f)
-            if v is None or v == "":
-                continue
-            return v
-
-    return isolang
 
 def to_url(val):
     if not isinstance(val, str):
@@ -260,11 +217,13 @@ class DataObj(object):
         "bigenddate" : date_str(out_format="%Y-%m-%d"),
         "integer": to_int(),
         "float": to_float(),
-        "isolang": to_isolang(),
+        "isolang": val_convert.create_fn_to_isolang(is_upper=False),
+        "isolang_up": val_convert.create_fn_to_isolang(is_upper=True),
         "url": to_url,
         "bool": to_bool,
-        "isolang_2letter": to_isolang(output_format="alpha2"),
-        "country_code": to_country_code,
+        "isolang_2letter": val_convert.create_fn_to_isolang(output_format="alpha2",
+                                                            is_upper=False),
+        "country_code": val_convert.to_country_code_3,
         "currency_code": to_currency_code,
         "license": string_canonicalise(["CC BY", "CC BY-NC", "CC BY-NC-ND", "CC BY-NC-SA", "CC BY-ND", "CC BY-SA", "Not CC-like"], allow_fail=True),
         "persistent_identifier_scheme": string_canonicalise(["None", "DOI", "Handles", "ARK"], allow_fail=True),

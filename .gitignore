@@ -40,6 +40,7 @@ local_store/main/*
 local_store/tmp/*
 !local_store/tmp/README.md
 *_options_*.json
+portality/_playground/
 
 # test detritous
 doajtest/unit/*.csv

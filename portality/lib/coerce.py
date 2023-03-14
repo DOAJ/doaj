@@ -1,5 +1,5 @@
 # ~~Coerce:Library~~
-from portality.lib import dates
+from portality.lib import dates, val_convert
 from datetime import date, datetime
 from portality.lib import seamless
 from portality.datasets import get_country_code, get_currency_code
@@ -23,42 +23,6 @@ def date_str(in_format=None, out_format=None):
     return datify
 
 
-def to_isolang(output_format=None):
-    """
-    :param output_format: format from input source to putput.  Must be one of:
-        * alpha3
-        * alt3
-        * alpha2
-        * name
-        * fr
-    Can be a list in order of preference, too
-    ~~-> Languages:Data~~
-    :return:
-    """
-    # delayed import, since we may not always want to load the whole dataset for a dataobj
-    from portality.lib import isolang as dataset
-
-    # sort out the output format list
-    if output_format is None:
-        output_format = ["alpha3"]
-    if not isinstance(output_format, list):
-        output_format = [output_format]
-
-    def isolang(val):
-        if val is None:
-            return None
-        l = dataset.find(val)
-        if l is None:
-            raise ValueError("Unable to find iso code for language {x}".format(x=val))
-        for f in output_format:
-            v = l.get(f)
-            if v is None or v == "":
-                continue
-            return v.upper()
-
-    return isolang
-
-
 def to_currency_code(val):
     """
     ~~-> Currencies:Data~~
@@ -73,20 +37,6 @@ def to_currency_code(val):
     uc = seamless.to_utf8_unicode
     return uc(nv)
 
-
-def to_country_code(val):
-    """
-    ~~-> Countries:Data~~
-    :param val:
-    :return:
-    """
-    if val is None:
-        return None
-    nv = get_country_code(val, fail_if_not_found=True)
-    if nv is None:
-        raise ValueError("Unable to convert {x} to a valid country code".format(x=val))
-    uc = seamless.to_utf8_unicode
-    return uc(nv)
 
 
 def to_issn(issn):
@@ -124,9 +74,9 @@ COERCE_MAP = {
     "utcdatetime" : date_str(),
     "utcdatetimemicros" : date_str(out_format="%Y-%m-%dT%H:%M:%S.%fZ"),
     "bigenddate" : date_str(out_format="%Y-%m-%d"),
-    "isolang": to_isolang(),
-    "isolang_2letter": to_isolang(output_format="alpha2"),
-    "country_code": to_country_code,
+    "isolang": val_convert.create_fn_to_isolang( is_upper=True),
+    "isolang_2letter": val_convert.create_fn_to_isolang(output_format="alpha2", is_upper=True),
+    "country_code": val_convert.to_country_code_3,
     "currency_code": to_currency_code,
     "issn" : to_issn
 }

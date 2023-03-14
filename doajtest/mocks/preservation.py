@@ -64,7 +64,7 @@ class PreservationMock:
                 "number": "1",
                 "publisher": "BMC",
                 "title": "Acta Neuropathologica Communications",
-                "country": "GB",
+                "country": "GBR",
                 "license": [
                     {
                         "title": "CC BY",
@@ -74,7 +74,7 @@ class PreservationMock:
                     }
                 ],
                 "language": [
-                    "EN"
+                    "ENG"
                 ],
                 "issns": [
                     "2051-5960"

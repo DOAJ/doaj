@@ -57,10 +57,10 @@ JOURNAL_LIKE_BIBJSON = {
     "is_replaced_by": ["2222-2222"],
     "institution": {
         "name": "Society Institution",
-        "country": "US"
+        "country": "USA"
     },
     "keywords": ["word", "key"],
-    "language": ["EN", "FR"],
+    "language": ["ENG", "FRE"],
     "license": [
         {
             "type": "Publisher's own license",
@@ -94,7 +94,7 @@ JOURNAL_LIKE_BIBJSON = {
     "publication_time_weeks": 8,
     "publisher": {
         "name": "The Publisher",
-        "country": "US"
+        "country": "USA"
     },
     "ref": {
         "oa_statement": "http://oa.statement",
@@ -131,7 +131,7 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "preservation_service_url" : "http://digital.archiving.policy",
     "copyright_author_retains" : "y",
     "copyright_url" : "http://copyright.com",
-    "publisher_country" : "US",
+    "publisher_country" : "USA",
     "publisher_name" : "The Publisher",
     "deposit_policy" : ["Sherpa/Romeo", "other"],
     "deposit_policy_other" : "Store it",
@@ -141,9 +141,9 @@ JOURNAL_LIKE_BIBJSON_FORM_EXPANDED = {
     "pissn": "1234-5678",
     "eissn": "9876-5432",
     "institution_name" : "Society Institution",
-    "institution_country" : "US",
+    "institution_country" : "USA",
     "keywords": ["word", "key"],
-    "language": ["EN", "FR"],
+    "language": ["ENG", "FRE"],
     "license_attributes" : ["BY", "NC"],
     "license_display" : "y",
     "license_display_example_url": "http://licence.embedded",

@@ -3,6 +3,7 @@
 # FIXME: this script requires more work if it's to be used for specified source and target clusters
 """
 import json, os, dictdiffer
+import logging
 from datetime import datetime, timedelta
 from copy import deepcopy
 from collections import OrderedDict
@@ -22,6 +23,8 @@ MODELS = {
     "background_job": models.BackgroundJob  #~~->BackgroundJob:Model~~
 }
 
+log = logging.getLogger(__name__)
+
 
 class UpgradeTask(object):
 
@@ -30,6 +33,16 @@ class UpgradeTask(object):
 
 
 def do_upgrade(definition, verbose, save_batches=None):
+    """
+    :param definition:
+        * init_with_model: record index will be re-generated on save if true
+        * keepalive: keepalive time of ES connection (e.g. 1m, 20m)
+        * batch: size of save or model_class.bulk
+        * scroll_size: size of ES query
+    :param verbose:
+    :param save_batches:
+    :return:
+    """
     # get the source and target es definitions
     # ~~->Elasticsearch:Technology~~
 
@@ -68,6 +81,8 @@ def do_upgrade(definition, verbose, save_batches=None):
                 for function_path in tdef.get("functions", []):
                     fn = plugin.load_function(function_path)
                     result = fn(result)
+                    if result is None:
+                        log.warning('WARNING! return of [functions] should not None')
 
                 data = result
                 _id = result.get("id", "id not specified")
