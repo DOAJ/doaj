@@ -99,6 +99,7 @@ class TestEditorJournalReview(DoajTestCase):
         assert fc.target.owner == "publisher"
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"
+        assert 'fake_account_id__c' in {n.get('author_id') for n in fc.target.notes}
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"

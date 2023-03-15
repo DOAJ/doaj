@@ -26,10 +26,6 @@ def mock_lookup_code(code):
 
 JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source()
 JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
-for k, v in list(JOURNAL_FORM.items()):
-    if k.startswith("notes-") and k.endswith("-author_id"):
-        del JOURNAL_FORM[k]
-        JOURNAL_FORM[k.replace("-author_id", "-note_author_id")] = v
 del JOURNAL_FORM["owner"]
 del JOURNAL_FORM["editor_group"]
 del JOURNAL_FORM["editor"]

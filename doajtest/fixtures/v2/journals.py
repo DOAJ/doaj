@@ -1,11 +1,11 @@
 # -*- coding: UTF-8 -*-
+import re
 from copy import deepcopy
+
 import rstr
 
 from doajtest.fixtures.v2.common import EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, \
     OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED
-
-from portality.forms.utils import expanded2compact
 from portality.regex import ISSN_COMPILED
 
 
@@ -38,7 +38,12 @@ class JournalFixtureFactory(object):
 
     @staticmethod
     def make_journal_form():
-        return deepcopy(JOURNAL_FORM)
+        data = deepcopy(JOURNAL_FORM)
+        for k, v in list(data.items()):
+            if re.match(r'notes-\d+-author_id', k):
+                del data[k]
+                data[k.replace("-author_id", "-note_author_id")] = v
+        return data
 
     @staticmethod
     def make_journal_form_info():

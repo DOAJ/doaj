@@ -1,8 +1,10 @@
+from werkzeug import MultiDict
+
 from portality import models, lcc
 from portality.datasets import licenses
 from portality.forms.utils import expanded2compact
+from portality.models import Account
 
-from werkzeug import MultiDict
 
 class JournalGenericXWalk(object):
     """
@@ -429,7 +431,6 @@ class JournalGenericXWalk(object):
 
     @classmethod
     def admin2form(cls, obj, forminfo):
-        from portality.models import Account
         forminfo['notes'] = []
         for n in obj.ordered_notes:
             author_id = n.get('author_id', '')
