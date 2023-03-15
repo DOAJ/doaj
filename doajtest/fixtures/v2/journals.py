@@ -1,5 +1,4 @@
 # -*- coding: UTF-8 -*-
-import re
 from copy import deepcopy
 
 import rstr
@@ -38,8 +37,7 @@ class JournalFixtureFactory(object):
 
     @staticmethod
     def make_journal_form():
-        data = deepcopy(JOURNAL_FORM)
-        return data
+        return deepcopy(JOURNAL_FORM)
 
     @staticmethod
     def make_journal_form_info():

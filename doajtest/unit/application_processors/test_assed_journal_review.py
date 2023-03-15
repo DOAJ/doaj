@@ -92,7 +92,7 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         assert fc.target.created_date == "2000-01-01T00:00:00Z"
         assert fc.target.id == "abcdefghijk_journal"
         assert len(fc.target.notes) == 2
-        assert 'fake_account_id__c' in {n.get('author_id') for n in fc.target.notes}
+        assert 'fake_account_id__b' in {n.get('author_id') for n in fc.target.notes}
         assert fc.target.owner == "publisher"
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"
