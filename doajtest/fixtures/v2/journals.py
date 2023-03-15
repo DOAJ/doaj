@@ -39,10 +39,6 @@ class JournalFixtureFactory(object):
     @staticmethod
     def make_journal_form():
         data = deepcopy(JOURNAL_FORM)
-        for k, v in list(data.items()):
-            if re.match(r'notes-\d+-author_id', k):
-                del data[k]
-                data[k.replace("-author_id", "-note_author_id")] = v
         return data
 
     @staticmethod
@@ -74,9 +70,9 @@ JOURNAL_SOURCE = {
         "in_doaj": False,
         "notes" : [
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234",
-             "author_id": "fake_account_id__a"},
-            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd",
              "author_id": "fake_account_id__b"},
+            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd",
+             "author_id": "fake_account_id__a"},
         ],
         "owner": "publisher",
         "related_applications": [
