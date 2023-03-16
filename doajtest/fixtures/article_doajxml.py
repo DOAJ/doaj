@@ -1,12 +1,13 @@
 import os
+from io import BytesIO, StringIO
+from pathlib import Path
+
 from lxml import etree
-from io import BytesIO,StringIO
-from copy import deepcopy
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
 ARTICLES = os.path.join(RESOURCES, "doajxml_article_uploads.xml")
 
-ARTICLE_UPLOAD_SUCCESSFUL = os.path.join(RESOURCES, "article_upload_successful.xml")
+ARTICLE_UPLOAD_SUCCESSFUL = Path(os.path.join(RESOURCES, "article_upload_successful.xml")).resolve().as_posix()
 
 
 class DoajXmlArticleFixtureFactory(object):

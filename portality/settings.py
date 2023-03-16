@@ -1354,3 +1354,5 @@ BG_MONITOR_QUEUED_CONFIG = {
     }
 }
 
+# set driver path to run selenium with local browser
+SELENIUM_CHROME_DRIVER_PATH = ''

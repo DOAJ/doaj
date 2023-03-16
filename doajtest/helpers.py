@@ -11,7 +11,8 @@ from unittest import TestCase
 import dictdiffer
 from flask_login import login_user
 
-from portality import core, dao
+from doajtest.fixtures import ArticleFixtureFactory
+from portality import core, dao, models
 from portality.core import app
 from portality.lib import paths
 from portality.tasks.redis_huey import main_queue, long_running
@@ -198,6 +199,16 @@ class DoajTestCase(TestCase):
             login_user(acc)
 
         return ctx
+
+    @staticmethod
+    def fix_es_mapping():
+        """
+        you need to call this method if you get some errors like:
+        ESMappingMissingError - 'reason': 'No mapping found for [field]
+
+        :return:
+        """
+        models.Article(**ArticleFixtureFactory.make_article_source()).save(blocking=True)
 
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
