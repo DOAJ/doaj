@@ -19,19 +19,18 @@ class SeleniumTestCase(DoajTestCase):
     SELENIUM_URL = 'http://localhost:4444/wd/hub'
     selenium = None  # selenium driver
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        super().setUpClass()
+    def setUp(self):
+        super().setUp()
 
         # run doaj server in a background process
         def _run():
-            app.run_server(host=cls.DOAJ_HOST, port=cls.DOAJ_PORT)
+            app.run_server(host=self.DOAJ_HOST, port=self.DOAJ_PORT)
 
-        cls.doaj_process = Process(target=_run)
-        cls.doaj_process.start()
+        self.doaj_process = Process(target=_run)
+        self.doaj_process.start()
 
         # prepare selenium driver
-        path_chrome_driver = cls.app_test.config.get('SELENIUM_CHROME_DRIVER_PATH')
+        path_chrome_driver = self.app_test.config.get('SELENIUM_CHROME_DRIVER_PATH')
         if path_chrome_driver:
             # run selenium with your local browser
             options = webdriver.ChromeOptions()
@@ -45,23 +44,22 @@ class SeleniumTestCase(DoajTestCase):
             options.add_argument("--window-size=800,600")
             options.add_argument("--disable-dev-shm-usage")
             browser_driver = webdriver.Remote(
-                command_executor=cls.SELENIUM_URL,
+                command_executor=self.SELENIUM_URL,
                 desired_capabilities=DesiredCapabilities.CHROME,
                 options=options,
             )
 
-        cls.selenium = browser_driver
-        cls.selenium.maximize_window()  # avoid something is not clickable
-        cls.selenium.implicitly_wait(10)
+        self.selenium = browser_driver
+        self.selenium.maximize_window()  # avoid something is not clickable
+        self.selenium.implicitly_wait(10)
 
-    @classmethod
-    def tearDownClass(cls) -> None:
-        super().tearDownClass()
+    def tearDown(self):
+        super().tearDown()
 
-        cls.doaj_process.terminate()
+        self.doaj_process.terminate()
         print('doaj process terminated')
 
-        cls.selenium.quit()
+        self.selenium.quit()
 
     @classmethod
     def get_doaj_url(cls) -> str:
@@ -94,5 +92,11 @@ def login_by_acc(driver: 'WebDriver', acc: models.Account = None):
     password = 'password'
     acc.set_password(password)
     acc.save(blocking=True)
-    login(driver, acc.id, password)
+    from selenium.common import NoSuchElementException
+    try:
+        login(driver, acc.id, password)
+    except NoSuchElementException:
+        import traceback
+        traceback.print_exc()
+        breakpoint()
     assert "/login" not in driver.current_url
