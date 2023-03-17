@@ -14,7 +14,7 @@ from portality.core import app
 from portality.decorators import ssl_required
 from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
-from portality.lib import plausible, dates
+from portality.lib import plausible
 from portality.ui.messages import Messages
 
 # ~~DOAJ:Blueprint~~
@@ -342,9 +342,7 @@ def toc(identifier=None, volume=None, issue=None):
 
     # now render all that information
     return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future_journals, past=past_journals,
-                           toc_issns=journal.bibjson().issns(),
-                           std_datetime_fmt=dates.FMT_DATETIME_STD,
-                           default_timestamp=dates.DEFAULT_TIMESTAMP_VAL, )
+                           toc_issns=journal.bibjson().issns())
 
 
 #~~->Article:Page~~
