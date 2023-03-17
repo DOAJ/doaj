@@ -89,6 +89,9 @@ class Annotation(SeamlessMixin, DomainObject):
             obj["advice"] = advice
         if reference_url is not None:
             obj["reference_url"] = reference_url
+
+        # ensure we add the annotation only once
+        self.__seamless__.delete_from_list("annotations", val=obj)
         self.__seamless__.add_to_list_with_struct("annotations", obj)
 
     @property
