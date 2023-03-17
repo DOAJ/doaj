@@ -50,17 +50,20 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--out", help="Output summary csv file path", required=True)
     parser.add_argument("-s", "--skip-strict", help="Skip strict checking of CSV structure (JournalCSV headings check)", action='store_true')
     parser.add_argument("-d", "--dry-run", help="Run this script without actually making index changes", action='store_true')
-    parser.add_argument("-f", "--force", help="Force update despite failed validation", action='store_true')
+    parser.add_argument("-f", "--force", help="Force update despite failed validation (DANGER!)", action='store_true')
     parser.add_argument("-m", "--manual-review", help="Don't finalise the update requests, instead leave open for manual review.", action='store_true')
+    parser.add_argument("-y", "--yes", help="Bypass prompt to accept the note", action='store_true')
     args = parser.parse_args()
 
     note = os.getenv('DOAJ_CSV_NOTE', '')
     print('\nNote supplied via $DOAJ_CSV_NOTE: ' + note)
-    doit = input('Proceed? [y\\N] ')
 
-    if doit.lower() != 'y':
-        print('\nExiting.')
-        exit(0)
+    if not args.yes:
+        doit = input('Proceed? [y\\N] ')
+
+        if doit.lower() != 'y':
+            print('\nExiting.')
+            exit(0)
 
     # Disable app emails so this doesn't spam users
     app.config['ENABLE_EMAIL'] = False
@@ -80,21 +83,24 @@ if __name__ == "__main__":
             # verify header row with current CSV headers, report errors
             header_row = reader.fieldnames
             expected_headers = JournalFixtureFactory.csv_headers()
-            if header_row[1:] != expected_headers:
-                print("\nWARNING: CSV input file is the wrong format. "
-                      "Expected ID column followed by the JournalCSV columns.\n")
-                for i in range(0, len(expected_headers)):
-                    try:
-                        if expected_headers[i] != header_row[i+1]:
-                            print('At column no {0} expected "{1}", found "{2}"'.format(i+1, expected_headers[i], header_row[i+1]))
-                    except IndexError:
-                        print('At column no {0} expected "{1}", found <NO DATA>'.format(i+1, expected_headers[i]))
-                if not args.skip_strict:
-                    print("\nERROR - CSV is wrong shape, exiting. Use --force to do this update anyway (and you know the consequences)")
-                    exit(1)
+            if not args.skip_strict:
+                if header_row[1:] != expected_headers:
+                    print("\nWARNING: CSV input file is the wrong format. "
+                          "Expected ID column followed by the JournalCSV columns.\n")
+                    for i in range(0, len(expected_headers)):
+                        try:
+                            if expected_headers[i] != header_row[i+1]:
+                                print('At column no {0} expected "{1}", found "{2}"'.format(i+1, expected_headers[i], header_row[i+1]))
+                        except IndexError:
+                            print('At column no {0} expected "{1}", found <NO DATA>'.format(i+1, expected_headers[i]))
+                    if not args.force:
+                        print("\nERROR - CSV is wrong shape, exiting. Use --force to do this update anyway (and you know the consequences)")
+                        exit(1)
+                else:
+                    print("\nCSV structure check passed.\n")
+                print('\nContinuing to update records...\n')
             else:
-                print("\nCSV structure check passed.\n")
-            print('\nContinuing to update records...\n')
+                print('\nSkipping CSV headings check.\n')
 
             # ~~ ->$JournalUpdateByCSV:Feature ~~
             for row in reader:
