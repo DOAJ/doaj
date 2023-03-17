@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.2.17',
+    version='6.2.20',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -55,11 +55,11 @@ setup(
         "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
+        # prevent backtracking through all versions
         "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium~=4.7.0",
-                 'beautifulsoup4~=4.11.2',
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
         "docs": [
-            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@81eecd5e7b4da379b14c0ccb0cf64e9665a26e20#egg=featuremap",
+            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@cb52c345b942e50726767b1a7190f1a01b81e722#egg=featuremap",
             "testbook @ git+https://github.com/CottageLabs/testbook.git@15a7c0cc25d951d989504d84c2ef3e24caaf56e9#egg=testbook"]
     },
     url='https://cottagelabs.com/',
