@@ -279,11 +279,13 @@ class TestClient(DoajTestCase):
                 t = etree.fromstring(resp.data)
                 records = t.xpath('/oai:OAI-PMH/oai:ListSets', namespaces=self.oai_ns)
                 sets = records[0].getchildren()
-            assert len(sets) == 2
+            assert len(sets) == 3
             set0 = sets[0].getchildren()
             set1 = sets[1].getchildren()
+            set2 = sets[2].getchildren()
             assert set0[1].text == 'LCC:Economic theory. Demography'
             assert set1[1].text == 'LCC:Social Sciences'
+            assert set2[1].text == 'LCC:Veterinary medicine'
 
             # check that we can retrieve a record with one of those sets
             with self.app_test.test_client() as t_client:
@@ -344,3 +346,54 @@ class TestClient(DoajTestCase):
 
                 # Check we have the correct journal
                 assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == a_public.bibjson().title
+
+    def test_10_subjects(self):
+        """test if the OAI-PMH journal feed returns correct journals when set specified"""
+        journal_source = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        j_public = models.Journal(**journal_source)
+        j_public.save(blocking=True)
+        public_id = j_public.id
+
+        with self.app_test.test_request_context():
+            # Check whether the journal is found for its specific set: Veterinary Medicine (TENDOlZldGVyaW5hcnkgbWVkaWNpbmU)
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc', set='TENDOlZldGVyaW5hcnkgbWVkaWNpbmU~'))
+                assert resp.status_code == 200
+
+                t = etree.fromstring(resp.data)
+                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+
+                # Check we only have one journal returned
+                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 1
+
+                # Check we have the correct journal
+                assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == j_public.bibjson().title
+
+                #check we have expected subjects (Veterinary Medicine but not Agriculture)
+                subjects = records[0].xpath('//dc:subject', namespaces=self.oai_ns)
+                assert len(subjects) != 0
+
+                subjects_txt = list(map(lambda s: s.text, subjects))
+                assert "Veterinary medicine" in subjects_txt
+                assert not "Agriculture" in subjects_txt
+
+        # check we can still find the record in Agriculture set (parent of Veterinary Medicine)
+        with self.app_test.test_request_context():
+            # Check whether the journal is found for more general set: Agriculture (TENDOkFncmljdWx0dXJl)
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc', set='TENDOkFncmljdWx0dXJl~'))
+                assert resp.status_code == 200
+
+                t = etree.fromstring(resp.data)
+                records = t.xpath('/oai:OAI-PMH/oai:ListRecords', namespaces=self.oai_ns)
+
+                sets = records[0].getchildren()
+
+                assert len(sets) == 1
+                set0 = sets[0].getchildren()
+
+                # Check we only have one journal returned
+                assert len(records[0].xpath('//oai:record', namespaces=self.oai_ns)) == 1
+
+                # Check we have the correct journal
+                assert records[0].xpath('//dc:title', namespaces=self.oai_ns)[0].text == j_public.bibjson().title
