@@ -71,8 +71,17 @@ def before_now(seconds: int):
     return before(datetime.utcnow(), seconds)
 
 
-def after(timestamp, seconds):
+def seconds_after(timestamp, seconds):
     return timestamp + timedelta(seconds=seconds)
+
+def seconds_after_now(timestamp, seconds):
+    return after(datetime.utcnow(), seconds)
+
+def days_after(timestamp, days):
+    return timestamp + timedelta(days=days)
+
+def days_after_now(timestamp, days):
+    return days_after(datetime.utcnow(), days)
 
 
 def eta(since, sofar, total):
@@ -116,3 +125,13 @@ def day_ranges(fro, to):
 
 def human_date(stamp, string_format="%d %B %Y"):
     return reformat(stamp, out_format=string_format)
+
+def is_before(mydate, comparison=None):
+    if comparison is None:
+        comparison = datetime.utcnow()
+    if isinstance(mydate, str):
+        mydate = parse(mydate)
+    if isinstance(comparison, str):
+        comparison = parse(comparison)
+    return mydate < comparison
+
