@@ -6,7 +6,7 @@ NOTES_FORM_EXPANDED = {
 }
 
 SUBJECT_FORM_EXPANDED = {
-    "subject": ['HB1-3840', 'H']
+    "subject": ['HB1-3840', 'H', 'SF600-1100']
 }
 
 OWNER_FORM_EXPANDED = {
