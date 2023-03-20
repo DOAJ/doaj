@@ -56,7 +56,7 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS
         notification.long = svc.long_notification(cls.ID).format(
-            days=app.config.get('DISCONTINUED_DATE_DELTA',1),
+            days=app.config.get('DISCONTINUED_DATE_DELTA',0),
             title=journal.bibjson().title,
             id=journal.id
         )
