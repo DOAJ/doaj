@@ -16,23 +16,17 @@ We are committed to providing a data dump service for the community but, in orde
 - the group, organisation or company you represent or that wants to use the metadata
 - your group/organisation/company address, including country 
 - whether you want access to the journal or article metadata, or both
-- what you want to use the metadata for. Include as much information as possible.
+- what you want to use the metadata for (Include as much information as possible.)
 
-An [exportable version of the journal metadata](/csv) is also available (CSV format).
+Our article and journal metadata are [licensed differently](https://doaj.org/terms/). Please make sure you understand those differences as this affects what you can do with the metadata.
 
-[//]: # ()
-[//]: # (Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the same form as those retrieved via the API.)
+Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the same form as those retrieved via the API.
 
-[//]: # ()
-[//]: # ([Download the journal metadata]&#40;/public-data-dump/journal&#41; &#40;4.4Mb, licensed under a [Creative Commons Attribution-ShareAlike 4.0 International &#40;CC BY-SA 4.0&#41; license]&#40;https://creativecommons.org/licenses/by-sa/4.0/&#41;&#41;)
+Each file is a `tar.gz`.
 
-[//]: # ()
-[//]: # ([Download the article metadata]&#40;/public-data-dump/article&#41; &#40;5.5Gb, copyrights and related rights for article metadata waived via [CC0 1.0 Universal &#40;CC0&#41; Public Domain Dedication]&#40;https://creativecommons.org/publicdomain/zero/1.0/&#41;&#41;)
+An [exportable version of the journal metadata](/csv) is also available (CSV format) for immediate download.
 
-[//]: # ()
-[//]: # (Each file is a `tar.gz`.)
-
-## Structure
+## Structure of the data dumps
 
 The data dumps are structured as follows:
 
