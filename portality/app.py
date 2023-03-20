@@ -281,8 +281,7 @@ def form_diff_table_subject_expand(val):
 
 @app.template_filter("is_in_the_past")
 def is_in_the_past(dttm):
-    date = datetime.strptime(dttm, "%Y-%m-%d").date()
-    return date <= date.today()
+    return dates.is_before(dates.today())
 
 
 #######################################################
