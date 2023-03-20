@@ -1,23 +1,13 @@
-# 2018-01-06; Issue 1463 - Ongoing Updates
+# 20 03 2023; Issue 3371 - Remove Ableist Terms 
 
-This migration covers the deployment of code to support the ongoing update
-by publishers of their journal records.
+This migration changes the ableist terms present in our models
 
-This migration will carry out the following actions:
-
-* Link all applications in the index to the journal that was derived from them
-* Link all journals in the index to the applications that fed into them
-* Remove any "current_journal" field on applications which are in status "accepted" or "rejected"
-* Calls prep() on every suggestion, so that index.application_type is set correctly for faceting
-* Exchanges any application statuses of "reapplication" to "update_request"
+This migration changes all occurance of "Blind peer review" and "Double blind peer review" values of editorial process 
+field and changes it into "Anonymous peer review" and "Double anonymous peer review" accordingly 
 
 
 ## Execution
 
-First link the applications and journals together
+Run the migration with
 
-    python portality/migrate/20180106_1463_ongoing_updates/sync_journals_applications.py
-
-Then run the final migration, to remove unwanted data, modify statuses, and regenerate the indices:
-
-    python portality/upgrade.py -u portality/migrate/20180106_1463_ongoing_updates/migrate.json
+    python portality/upgrade.py -u portality/migrate/3371_blind_to_anonymous/migrate.json
