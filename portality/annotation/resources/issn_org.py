@@ -23,4 +23,9 @@ class ISSNOrg(Resource):
 
         raw = scripts[0].string
         data = json.loads(raw)
-        return data
+        return ISSNOrgData(data)
+
+
+class ISSNOrgData(object):
+    def __init__(self, raw):
+        self.data = raw

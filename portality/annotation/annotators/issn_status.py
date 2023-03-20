@@ -5,16 +5,8 @@ from portality.annotation.resources.issn_org import ISSNOrg
 from typing import List
 
 
-class ISSNStatus(Annotator):
-    __identity__ = "issn_status"
-
-    def annotate(self, application_form: dict,
-                        application: Application,
-                        annotations: Annotation,
-                        resources: ResourceBundle,
-                        existing: Annotation=None) -> List[str]:
-
-        logs = []
+class ISSNAnnotator(Annotator):
+    def retrieve_from_source(self, application_form, resources, annotations, logs):
         source = ISSNOrg(resources)
 
         eissn = application_form.get("eissn")
@@ -59,42 +51,42 @@ class ISSNStatus(Annotator):
                 )
                 pissn_fail = True
 
-        if eissn is not None:
-            if eissn_data is None:
-                if not eissn_fail:
-                    logs.append("eissn not registered at {x}".format(x=eissn_url))
+        return eissn, eissn_url, eissn_data, eissn_fail, pissn, pissn_url, pissn_data, pissn_fail
+
+
+class ISSNStatus(ISSNAnnotator):
+    __identity__ = "issn_status"
+
+    def _apply_rule(self, field, value, data, fail, url, logs, annotations):
+        if value is not None:
+            if data is None:
+                if not fail:
+                    logs.append("{y} not registered at {x}".format(y=field, x=url))
                     annotations.add_annotation(
-                        field="eissn",
-                        original_value=eissn,
-                        advice="The supplied Electronic ISSN was not found at ISSN.org",
-                        reference_url=eissn_url
+                        field=field,
+                        original_value=value,
+                        advice="The supplied ISSN was not found at ISSN.org",
+                        reference_url=url
                     )
             else:
-                logs.append("eissn successfully resolved at {x}".format(x=eissn_url))
+                logs.append("{y} successfully resolved at {x}".format(y=field, x=url))
                 annotations.add_annotation(
-                    field="eissn",
-                    original_value=eissn,
-                    advice="The supplied Electronic ISSN was found at ISSN.org",
-                    reference_url=eissn_url
+                    field=field,
+                    original_value=value,
+                    advice="The supplied ISSN was found at ISSN.org",
+                    reference_url=url
                 )
 
-        if pissn is not None:
-            if pissn_data is None:
-                if not pissn_fail:
-                    logs.append("pissn not registered at {x}".format(x=eissn_url))
-                    annotations.add_annotation(
-                        field="pissn",
-                        original_value=pissn,
-                        advice="The supplied Print ISSN was not found at ISSN.org",
-                        reference_url=pissn_url
-                    )
-            else:
-                logs.append("pissn successfully resolved at {x}".format(x=eissn_url))
-                annotations.add_annotation(
-                    field="pissn",
-                    original_value=pissn,
-                    advice="The supplied Print ISSN was found at ISSN.org",
-                    reference_url=pissn_url
-                )
+    def annotate(self, application_form: dict,
+                        application: Application,
+                        annotations: Annotation,
+                        resources: ResourceBundle,
+                        existing: Annotation=None) -> List[str]:
+
+        logs = []
+        eissn, eissn_url, eissn_data, eissn_fail, pissn, pissn_url, pissn_data, pissn_fail = self.retrieve_from_source(application_form, resources, annotations, logs)
+
+        self._apply_rule("eissn", eissn, eissn_data, eissn_fail, eissn_url, logs, annotations)
+        self._apply_rule("pissn", pissn, pissn_data, pissn_fail, pissn_url, logs, annotations)
 
         return logs
