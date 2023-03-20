@@ -4,6 +4,7 @@ import json
 
 from portality.core import app
 from portality.bll import DOAJ
+from portality.lib import dates
 from portality import models,app_email
 
 from portality.tasks.redis_huey import main_queue
@@ -18,6 +19,9 @@ def _date():
     return (datetime.datetime.today() + datetime.timedelta(days=app.config.get('DISCONTINUED_DATE_DELTA', 1))).strftime(
         '%Y-%m-%d')
 class DiscontinuedSoonQuery:
+    def __init__(self, time_delta=None):
+        self._delta = time_delta if time_delta is not None else app.config.get('DISCONTINUED_DATE_DELTA', 1);
+        self._date = days_after_now(days=time_delta)
     @classmethod
     def query(cls):
         return {
@@ -26,7 +30,7 @@ class DiscontinuedSoonQuery:
                     "filter": {
                         "bool" : {
                             "must": [
-                                {"term" : {"bibjson.discontinued_date": _date()}},
+                                {"term" : {"bibjson.discontinued_date": self._date}},
                                 {"term" : {"admin.in_doaj":True}}
                             ]
                         }
