@@ -638,7 +638,7 @@ class TestModels(DoajTestCase):
         assert bj.language == ["EN", "FR"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["1111-1111"]
-        assert len(bj.subject) == 2
+        assert len(bj.subject) == 3, bj.subject
         assert len(bj.apc) == 1
         assert bj.apc[0].get("currency") == "GBP"
         assert bj.apc[0].get("price") == 2
