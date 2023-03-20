@@ -83,9 +83,16 @@ tests:
   context:
     role: publisher
   setup:
-    - You will require a publisher account with two journals, both of which have articles whose
-      DOIs (or fulltexts) are represented in the test zip file's identifiers.csv file.  You want the
-      articles in the zip file to represent articles from both journals, not just a single journal
+    - Have a publisher account which is the owner of 3 journals that are in DOAJ, and which have articles
+      uploaded for them
+    - Select 1 article from each journal and note its DOI
+    - Download the multi_journals.zip test package (see link below in second step)
+    - Unzip the multi_journals.zip test package
+    - In the identifiers.csv file in the root of the test package, put each of the DOIs from your articles
+      next to one of the article directory names listed (removing the existing test DOIs that are present in that
+      file already).  For example you will have a line which reads "article1,10.1224/mydoi/3" where the DOI
+      is the one from your article.
+    - Re-zip the multi_journals.zip package.  This wil be the file you will upload for testing in the below script
   steps:
   - step: Ensure that the archive package has been created with correct structure
   - step: Ensure that the archive package contains more than one article with different journals. 
