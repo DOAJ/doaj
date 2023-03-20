@@ -20,17 +20,16 @@ def _date():
         '%Y-%m-%d')
 class DiscontinuedSoonQuery:
     def __init__(self, time_delta=None):
-        self._delta = time_delta if time_delta is not None else app.config.get('DISCONTINUED_DATE_DELTA', 1);
-        self._date = days_after_now(days=time_delta)
-    @classmethod
-    def query(cls):
+        self._delta = time_delta if time_delta is not None else app.config.get('DISCONTINUED_DATE_DELTA', 0);
+        self._date = dates.days_after_now(days=self._delta)
+    def query(self):
         return {
             "query": {
                 "bool": {
                     "filter": {
                         "bool" : {
                             "must": [
-                                {"term" : {"bibjson.discontinued_date": self._date}},
+                                {"term" : {"bibjson.discontinued_date": dates.format(self._date, format="%Y-%m-%d")}},
                                 {"term" : {"admin.in_doaj":True}}
                             ]
                         }
@@ -47,7 +46,7 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
     def find_journals_discontinuing_soon(self, job):
         jdata = []
 
-        for journal in models.Journal.iterate(q=DiscontinuedSoonQuery.query(), keepalive='5m', wrap=True):
+        for journal in models.Journal.iterate(q=DiscontinuedSoonQuery().query(), keepalive='5m', wrap=True):
             # ~~->Journal:Model~~
             jdata.append(journal.id)
             job.add_audit_message(Messages.DISCONTINUED_JOURNAL_FOUND_LOG.format(id=journal.id))
@@ -122,7 +121,8 @@ def find_discontinued_soon(job_id):
 # def find_journals_discontinuing_soon():
 #     jdata = []
 #
-#     for journal in models.Journal.iterate(q=DiscontinuedSoonQuery.query(), keepalive='5m', wrap=True):
+#     q = DiscontinuedSoonQuery()
+#     for journal in models.Journal.iterate(q=q.query(), keepalive='5m', wrap=True):
 #         # ~~->Journal:Model~~
 #         jdata.append(journal.id)
 #

@@ -11,9 +11,6 @@ from portality.bll import DOAJ, exceptions
 from portality.lib import edges
 from portality import dao
 
-
-from portality.models.v2.journal import JournalDiscontinuedDateQuery
-
 class JournalDiscontinuingSoonNotify(EventConsumer):
     ID = "journal:assed:discontinuing_soon:notify"
 

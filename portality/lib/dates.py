@@ -74,13 +74,13 @@ def before_now(seconds: int):
 def seconds_after(timestamp, seconds):
     return timestamp + timedelta(seconds=seconds)
 
-def seconds_after_now(timestamp, seconds):
+def seconds_after_now(seconds: int):
     return after(datetime.utcnow(), seconds)
 
 def days_after(timestamp, days):
     return timestamp + timedelta(days=days)
 
-def days_after_now(timestamp, days):
+def days_after_now(days: int):
     return days_after(datetime.utcnow(), days)
 
 
