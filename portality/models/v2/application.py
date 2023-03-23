@@ -7,8 +7,8 @@ from portality.models.v2 import shared_structs
 from portality.models.v2.journal import JournalLikeObject, Journal
 from portality.lib.coerce import COERCE_MAP
 from portality.dao import DomainObject
+from portality.bll.services.concurrency_prevention import ConcurrencyPreventionService
 
-import redis
 
 
 APPLICATION_STRUCT = {
@@ -39,10 +39,6 @@ APPLICATION_STRUCT = {
         }
     }
 }
-
-class ConcurrentUpdateRequestException(Exception):
-    pass
-
 
 # ~~Application:Model~~
 class Application(JournalLikeObject):
@@ -210,11 +206,13 @@ class Application(JournalLikeObject):
             self.set_id(self.makeid())
 
         if self.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
-            rc = redis.Redis(host=app.config.get("HUEY_REDIS_HOST"), port=app.config.get("HUEY_REDIS_PORT"))
-            aid = rc.get(self.current_journal)
-            if aid is not None and aid != self.id:
-                raise ConcurrentUpdateRequestException()
-            rc.set(self.current_journal, self.id, ex=10)
+            cs = ConcurrencyPreventionService()
+            cs.prevent_concurrency(self.current_journal, self.id)
+            # rc = redis.Redis(host=app.config.get("HUEY_REDIS_HOST"), port=app.config.get("HUEY_REDIS_PORT"))
+            # aid = rc.get(self.current_journal)
+            # if aid is not None and aid != self.id:
+            #     raise ConcurrentUpdateRequestException()
+            # rc.set(self.current_journal, self.id, ex=10)
 
         self.prep()
         self.verify_against_struct()

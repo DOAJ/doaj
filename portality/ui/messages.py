@@ -18,6 +18,8 @@ class Messages(object):
     ARTICLE_METADATA_UPDATE_CONFLICT = ("""Article could not be updated, as it matches another existing article.
         Please check your metadata, and contact us if you cannot resolve the issue yourself.""", "error")
 
+    CONCURRENT_UPDATE_REQUEST = """Concurrent update request has been submitted, try again in a short moment"""
+
     SENT_ACCEPTED_APPLICATION_EMAIL = """Sent notification to '{user}' to tell them that their journal was accepted."""
     SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER = """Sent notification to user '{user}' to tell them that their journal application was rejected."""
     SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Sent notification to '{user}' to tell them that their journal update was accepted."""

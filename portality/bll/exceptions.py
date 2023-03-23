@@ -78,6 +78,12 @@ class ArticleMergeConflict(Exception):
     """
     pass
 
+class ConcurrentUpdateRequestException(Exception):
+    """
+    Exception to raise when two update requests were submitted cuncurrently
+    """
+    pass
+
 class IllegalStatusException(Exception):
     """
     Exception to raise when an application is in a state that is not allowed for the current action

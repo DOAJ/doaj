@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory
 from portality.models import Journal
-from portality.models.v2.application import ConcurrentUpdateRequestException
+from portality.bll.exceptions import ConcurrentUpdateRequestException
 from portality.bll import DOAJ
 import time
 
