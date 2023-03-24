@@ -7,9 +7,6 @@ from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import main_queue
 
 
-# FIXME: update for index-per-type
-
-
 class RequestESBackupBackgroundTask(BackgroundTask):
 
     __action__ = "request_es_backup"
