@@ -702,14 +702,14 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def bulk_load_from_file(cls, source_file, limit=None, max_content_length=100000000):
-        """ ported from esprit.tasks - bulk laod to index from file """
+        """ ported from esprit.tasks - bulk load to index from file """
 
         source_size = os.path.getsize(source_file)
         with open(source_file, "r") as f:
             if limit is None and source_size < max_content_length:
                 # if we aren't selecting a portion of the file, and the file is below the max content length, then
                 # we can just serve it directly
-                ES.bulk(body=f, index=cls.index_name(), doc_type=cls.doc_type())
+                ES.bulk(body=f.read(), index=cls.index_name(), doc_type=cls.doc_type())
                 return -1
             else:
                 count = 0
@@ -732,9 +732,7 @@ class DomainObject(UserDict, object):
                         else:
                             count += records
 
-                    resp = ES.bulk(body=chunk, index=cls.index_name(), doc_type=cls.doc_type())
-                    if resp.status_code != 200:
-                        raise Exception("did not get expected response: " + str(resp.status_code) + " - " + resp.text)
+                    ES.bulk(body=chunk, index=cls.index_name(), doc_type=cls.doc_type())
                     if finished:
                         break
                 if limit is not None:
