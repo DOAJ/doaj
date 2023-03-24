@@ -709,7 +709,7 @@ class DomainObject(UserDict, object):
             if limit is None and source_size < max_content_length:
                 # if we aren't selecting a portion of the file, and the file is below the max content length, then
                 # we can just serve it directly
-                ES.bulk(body=f.read(), index=cls.index_name(), doc_type=cls.doc_type())
+                ES.bulk(body=f.read(), index=cls.index_name(), doc_type=cls.doc_type(), request_timeout=120)
                 return -1
             else:
                 count = 0
@@ -732,7 +732,7 @@ class DomainObject(UserDict, object):
                         else:
                             count += records
 
-                    ES.bulk(body=chunk, index=cls.index_name(), doc_type=cls.doc_type())
+                    ES.bulk(body=chunk, index=cls.index_name(), doc_type=cls.doc_type(), request_timeout=120)
                     if finished:
                         break
                 if limit is not None:
