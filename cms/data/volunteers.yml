@@ -602,7 +602,6 @@ ass_ed:
   language: Indonesian, English
   photo: "MuhamadTaufik.jpg"
   
- 
 - name: Nataliia Kaliuzhna
   area: Library and Information Science
   year_since:
@@ -611,7 +610,6 @@ ass_ed:
   language: Ukranian, Russian, English, Polish
   photo: "Nataliia.jpg"
  
-
 - name: Nathalia Avila
   area:
   year_since:
@@ -665,14 +663,12 @@ ass_ed:
   language: Turkish, English
   photo: "Orhan CANPOLAT.jpg"
 
-
 - name: Oskia Agirre
   area: Library and Information Science
   year_since:
   city: Donostia
   country: Spain
   language: Euskera, Spanish, English
-
 
 - name: Pablo Hernandez
   area: Science
@@ -727,7 +723,6 @@ ass_ed:
   city:
   country: Mexico
   language: Spanish, English
-
 
 - name: Remedios Melero (Reme)
   area: Social Sciences
@@ -810,7 +805,6 @@ ass_ed:
   language: French
   photo: "sogoba1.jpg"
 
-
 - name: Swasti Maharani
   area: Mathematics
   year_since:
@@ -863,13 +857,6 @@ ass_ed:
   country: Türkiye
   language: Turkish, English
   photo: "yalcin.jpg"
-
-- name: Yaping Liu
-  area: Medical and Healthcare Management
-  year_since:
-  city: Sydney
-  country: Australia
-  language: Chinese, English
 
 - name: Yulingga Nanda Hanief
   area: Sports Science
