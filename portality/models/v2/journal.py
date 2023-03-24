@@ -364,9 +364,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         for subs in cbib.subject:
             scheme = subs.get("scheme")
             term = subs.get("term")
-            subjects.append(term)
-            schema_subjects.append(scheme + ":" + term)
-            classification.append(term)
+            if term:
+                subjects.append(term)
+                schema_subjects.append(scheme + ":" + term)
+                classification.append(term)
             if "code" in subs:
                 schema_codes.append(scheme + ":" + subs.get("code"))
 

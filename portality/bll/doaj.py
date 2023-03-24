@@ -112,7 +112,7 @@ class DOAJ(object):
     def backgroundTaskStatusService(cls):
         """
         Obtain an instance of the background_task_status service
-        ~~->BackgroundTask:MonitoringStatus~~
+        ~~->BackgroundTask:Monitoring~~
         :return:  BackgroundTaskStatusService
         """
         from portality.bll.services import background_task_status

@@ -1,8 +1,9 @@
 import datetime
 
 from portality import dao
+from portality.constants import BgjobOutcomeStatus
 from portality.core import app
-from portality.lib import dataobj, dates, es_data_mapping
+from portality.lib import dataobj, dates, es_data_mapping, seamless
 
 
 class BackgroundJob(dataobj.DataObj, dao.DomainObject):
@@ -26,6 +27,9 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
         # self._audit_log_counter = 0
 
         super(BackgroundJob, self).__init__(raw=kwargs)
+
+        if not self.outcome_status:
+            self.outcome_status = BgjobOutcomeStatus.Pending
 
     @classmethod
     def active(cls, task_type, since=None):
@@ -105,6 +109,7 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
 
     def fail(self):
         self._set_with_struct("status", "error")
+        self.outcome_fail()
 
     def cancel(self):
         self._set_with_struct("status", "cancelled")
@@ -114,6 +119,17 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
 
     def queue(self):
         self._set_with_struct("status", "queued")
+
+    @property
+    def outcome_status(self):
+        return self._get_single('outcome_status')
+
+    def outcome_fail(self):
+        self.outcome_status = BgjobOutcomeStatus.Fail
+
+    @outcome_status.setter
+    def outcome_status(self, outcome_status: str):
+        self._set_with_struct('outcome_status', outcome_status)
 
     def add_audit_message(self, msg, timestamp=None):
         if timestamp is None:
@@ -151,11 +167,17 @@ BACKGROUND_STRUCT = {
         "id": {"coerce": "unicode"},
         "created_date": {"coerce": "utcdatetime"},
         "last_updated": {"coerce": "utcdatetime"},
+
+        # status of bgjob level, for example, This job experienced an exception and failed to complete normally
         "status": {"coerce": "unicode", "allowed_values": ["queued", "processing", "complete", "error", "cancelled"]},
         "user": {"coerce": "unicode"},
         "action": {"coerce": "unicode"},
         "queue_id": {"coerce": "unicode"},
-        "es_type": {"coerce": "unicode"}
+        "es_type": {"coerce": "unicode"},
+
+        # status of bgjob result (business logic level), for example, The job completed without exception,
+        # but the action the user wanted was not carried out for some reason
+        "outcome_status": {"coerce": "unicode", **seamless.create_allowed_values_by_constant(BgjobOutcomeStatus)},
     },
     "lists": {
         "audit": {"contains": "object"}

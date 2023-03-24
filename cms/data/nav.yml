@@ -36,6 +36,8 @@ entries:
     entries:
       - label: About DOAJ
         route: doaj.about             # ~~->About:WebRoute~~
+      - label: DOAJ at 20
+        route: doaj.at_20             # ~~->At20:WebRoute~~
       - label: DOAJ team
         route: doaj.team              # ~~->Team:WebRoute~~
       - label: Ambassadors
