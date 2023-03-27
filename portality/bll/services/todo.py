@@ -19,7 +19,7 @@ class TodoService(object):
         for editor in editors:
             acc = models.Account.pull(editor)
             stats["editors"][editor] = {
-                    "email" : acc.email
+                    "email" : None if acc is None else acc.email
                 }
 
         q = GroupStatsQuery(eg.name)
