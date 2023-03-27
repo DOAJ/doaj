@@ -14,10 +14,6 @@ from portality.tasks.helpers import background_helper
 from portality.ui.messages import Messages
 from portality import constants
 
-
-def _date():
-    return (datetime.datetime.today() + datetime.timedelta(days=app.config.get('DISCONTINUED_DATE_DELTA', 1))).strftime(
-        '%Y-%m-%d')
 class DiscontinuedSoonQuery:
     def __init__(self, time_delta=None):
         self._delta = time_delta if time_delta is not None else app.config.get('DISCONTINUED_DATE_DELTA', 0);
@@ -43,6 +39,10 @@ class DiscontinuedSoonQuery:
 class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
     __action__ = "find_discontinued_soon"
 
+    def __init__(self, time_delta=None):
+        self._delta = time_delta if time_delta is not None else app.config.get('DISCONTINUED_DATE_DELTA', 0);
+        self._date = dates.days_after_now(days=self._delta)
+
     def find_journals_discontinuing_soon(self, job):
         jdata = []
 
@@ -63,7 +63,7 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
                     "system",
                     {
                         "journal": j,
-                        "discontinue_date": _date()
+                        "discontinue_date": self._date()
                     }))
         else:
             job.add_audit_message(Messages.NO_DISCONTINUED_JOURNALS_FOUND_LOG)
@@ -118,24 +118,24 @@ def find_discontinued_soon(job_id):
 
 
 # Test code - please do not clean up until after the tests
-# def find_journals_discontinuing_soon():
-#     jdata = []
-#
-#     q = DiscontinuedSoonQuery()
-#     for journal in models.Journal.iterate(q=q.query(), keepalive='5m', wrap=True):
-#         # ~~->Journal:Model~~
-#         jdata.append(journal.id)
-#
-#     return jdata
-#
-# if __name__ == "__main__":
-#     journals = find_journals_discontinuing_soon()
-#     if len(journals):
-#         for j in journals:
-#             DOAJ.eventsService().trigger(models.Event(
-#                 constants.EVENT_JOURNAL_DISCONTINUING_SOON,
-#                 "system",
-#                 {
-#                     "journal": j,
-#                     "discontinue_date": _date()
-#                 }))
+def find_journals_discontinuing_soon():
+    jdata = []
+
+    q = DiscontinuedSoonQuery()
+    for journal in models.Journal.iterate(q=q.query(), keepalive='5m', wrap=True):
+        # ~~->Journal:Model~~
+        jdata.append(journal.id)
+
+    return jdata
+
+if __name__ == "__main__":
+    journals = find_journals_discontinuing_soon()
+    if len(journals):
+        for j in journals:
+            DOAJ.eventsService().trigger(models.Event(
+                constants.EVENT_JOURNAL_DISCONTINUING_SOON,
+                "system",
+                {
+                    "journal": j,
+                    "discontinue_date": dates.days_after_now(days=0)
+                }))
