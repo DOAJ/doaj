@@ -1,3 +1,5 @@
+{% set bibjson = journal.bibjson() %}
+
 {%- if bibjson.keywords -%}
     A peer-reviewed, open access journal in {% for keyword in bibjson.keywords %}{% if loop.last %} & {% elif loop.first %}{% else %}, {% endif %}{{ keyword }}{% endfor %}.
 {% else %}
