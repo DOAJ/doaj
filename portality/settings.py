@@ -437,7 +437,8 @@ HUEY_SCHEDULE = {
 HUEY_TASKS = {
     "ingest_articles": {"retries": 10, "retry_delay": 15},
     "preserve": {"retries": 0, "retry_delay": 15},
-    "annotations": {"retries": 0, "retry_delay": 15}
+    "application_annotations": {"retries": 0, "retry_delay": 15},
+    "journal_annotations": {"retries": 0, "retry_delay": 15}
 }
 
 ####################################

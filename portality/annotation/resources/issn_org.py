@@ -29,3 +29,10 @@ class ISSNOrg(Resource):
 class ISSNOrgData(object):
     def __init__(self, raw):
         self.data = raw
+
+    @property
+    def version(self):
+        return self.data.get("mainEntityOfPage", {}).get("version")
+
+    def is_registered(self):
+        return self.version == "Register"

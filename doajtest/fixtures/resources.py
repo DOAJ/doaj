@@ -1,9 +1,10 @@
 from copy import deepcopy
 
+from portality.annotation.resources.issn_org import ISSNOrgData
 
 class ResourcesFixtureFactory(object):
     @classmethod
-    def issn_org(cls, issn=None):
+    def issn_org(cls, issn=None, version=None):
         record = deepcopy(ISSN_ORG)
         if issn is not None:
             record["@id"] = "https://portal.issn.org/resource/ISSN/" + issn
@@ -14,7 +15,10 @@ class ResourcesFixtureFactory(object):
             record["identifier"][1]["value"] = issn
             record["mainEntityOfPage"]["@id"] = record["@id"] + "#Record"
             record["mainEntityOfPage"]["mainEntity"] = record["@id"]
-        return record
+        if version is not None:
+            record["mainEntityOfPage"]["version"] = version
+
+        return ISSNOrgData(record)
 
 
 ISSN_ORG = {

@@ -1,7 +1,7 @@
-from portality.models import Application, Annotation
+from portality.models import JournalLikeObject, Annotation
 from portality.annotation.resource_bundle import ResourceBundle
 
-from typing import List
+from typing import Callable
 
 
 class Annotator(object):
@@ -10,9 +10,9 @@ class Annotator(object):
     def name(self):
         return self.__identity__
 
-    def annotate(self, application_form: dict,
-                        application: Application,
+    def annotate(self, form: dict,
+                        jla: JournalLikeObject,
                         annotations: Annotation,
                         resources: ResourceBundle,
-                        existing: Annotation=None) -> List[str]:
+                        logger: Callable):
         raise NotImplementedError()

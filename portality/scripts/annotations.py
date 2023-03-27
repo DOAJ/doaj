@@ -1,4 +1,4 @@
-from portality.tasks.annotations import Annotations
+from portality.tasks.application_annotations import Annotations
 from portality.tasks.helpers import background_helper
 from portality.models.background import StdOutBackgroundJob
 

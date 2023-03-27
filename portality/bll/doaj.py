@@ -117,3 +117,8 @@ class DOAJ(object):
         """
         from portality.bll.services import background_task_status
         return background_task_status.BackgroundTaskStatusService()
+
+    @classmethod
+    def annotationsService(cls, annotation_plugins=None):
+        from portality.bll.services import annotations
+        return annotations.AnnotationsService(annotation_plugins=annotation_plugins)

@@ -10,7 +10,8 @@ ANNOTATION_STRUCT = {
         "es_type": {"coerce": "unicode"},
         "created_date": {"coerce": "utcdatetime"},
         "last_updated": {"coerce": "utcdatetime"},
-        "application": {"coerce": "unicode"}
+        "application": {"coerce": "unicode"},
+        "journal": {"coerce": "unicode"}
     },
     "lists": {
         "annotations": {"contains": "object"}
@@ -69,6 +70,14 @@ class Annotation(SeamlessMixin, DomainObject):
             return res[0]
         return None
 
+    @classmethod
+    def for_journal(cls, journal_id):
+        q = JournalQuery(journal_id)
+        res = cls.object_query(q.query())
+        if len(res) > 0:
+            return res[0]
+        return None
+
     @property
     def application(self):
         return self.__seamless__.get_single("application")
@@ -76,6 +85,14 @@ class Annotation(SeamlessMixin, DomainObject):
     @application.setter
     def application(self, val):
         self.__seamless__.set_with_struct("application", val)
+
+    @property
+    def journal(self):
+        return self.__seamless__.get_single("journal")
+
+    @journal.setter
+    def journal(self, val):
+        self.__seamless__.set_with_struct("journal", val)
 
     def add_annotation(self, field=None, original_value=None, suggested_value=None, advice=None, reference_url=None):
         obj = {}
@@ -109,6 +126,26 @@ class ApplicationQuery(object):
                 "bool": {
                     "must": [
                         {"term": {"application.exact": self._app_id}}
+                    ]
+                }
+            },
+            "size": 1,
+            "sort": {
+                "created_date": {"order": "desc"}
+            }
+        }
+
+
+class JournalQuery(object):
+    def __init__(self, journal_id):
+        self._journal_id = journal_id
+
+    def query(self):
+        return {
+            "query" : {
+                "bool": {
+                    "must": [
+                        {"term": {"journal.exact": self._journal_id}}
                     ]
                 }
             },
