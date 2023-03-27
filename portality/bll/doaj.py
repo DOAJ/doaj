@@ -117,3 +117,13 @@ class DOAJ(object):
         """
         from portality.bll.services import background_task_status
         return background_task_status.BackgroundTaskStatusService()
+
+    @classmethod
+    def UpdateRequestConcurrencyPreventionService(cls):
+        """
+        Obtain an instance of the concurrency_prevention service
+        ~~->Concurrency_Prevention:Service~~
+        :return:  UpdateRequestConcurrencyPreventionService
+        """
+        from portality.bll.services import concurrency_prevention
+        return concurrency_prevention.UpdateRequestConcurrencyPreventionService()

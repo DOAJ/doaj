@@ -7,7 +7,7 @@ from portality.models.v2 import shared_structs
 from portality.models.v2.journal import JournalLikeObject, Journal
 from portality.lib.coerce import COERCE_MAP
 from portality.dao import DomainObject
-from portality.bll.services.concurrency_prevention import ConcurrencyPreventionService
+from portality.bll import DOAJ
 
 
 
@@ -206,7 +206,8 @@ class Application(JournalLikeObject):
             self.set_id(self.makeid())
 
         if self.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
-            cs = ConcurrencyPreventionService()
+            # ~~-> Concurrency_Prevention:Service ~~
+            cs = DOAJ.UpdateRequestConcurrencyPreventionService()
             cs.prevent_concurrency(self.current_journal, self.id)
 
         self.prep()
