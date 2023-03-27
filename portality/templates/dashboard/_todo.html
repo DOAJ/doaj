@@ -6,7 +6,7 @@
             "feather": "coffee"
         },
         constants.TODO_MANED_FOLLOW_UP_OLD: {
-            "text": "<strong>Old</strong> <span class='todo-list__status'>Old: chase progress</span>",
+            "text": "<strong>Old</strong> <span class='todo-list__status'>Chase progress</span>",
             "show_status": true,
             "colour" : "var(--sanguine)",
             "feather": "clock"
@@ -18,7 +18,7 @@
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"ready"}])
         },
         constants.TODO_MANED_COMPLETED: {
-            "text" : "<strong>Completed</strong> <span class='todo-list__status'>Old: make a decision</span>",
+            "text" : "<strong>Completed</strong> <span class='todo-list__status'>Make a decision</span>",
             "colour" : "var(--mid-green)",
             "feather": "user-check",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"completed"}])
@@ -36,7 +36,7 @@
             "feather": "inbox",
         },
         constants.TODO_EDITOR_FOLLOW_UP_OLD: {
-            "text" : "<strong>Old</strong> <span class='todo-list__status'>Old: chase progress</span>",
+            "text" : "<strong>Old</strong> <span class='todo-list__status'>Chase progress</span>",
             "show_status": true,
             "colour" : "var(--sanguine)",
             "feather": "clock"
@@ -54,13 +54,13 @@
             "link" : url_for('editor.group_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
         },
         constants.TODO_ASSOCIATE_PROGRESS_STALLED: {
-            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Inactive: review progress</span>",
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Review progress</span>",
             "show_status": true,
             "colour" : "var(--yellow)",
             "feather": "inbox",
         },
         constants.TODO_ASSOCIATE_FOLLOW_UP_OLD: {
-            "text": "<strong>Old</strong> <span class='todo-list__status'>Old: chase progress</span>",
+            "text": "<strong>Old</strong> <span class='todo-list__status'>Chase progress</span>",
             "show_status": true,
             "colour" : "var(--sanguine)",
             "feather": "clock"
@@ -155,15 +155,9 @@
                  </h3>
                </header>
                <div>
-                 {% if action.link %}
-                 <a href="{{ action.link }}" class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
-                 {% else %}
                  <span class="label tag" style="margin-right: 0; background-color: {{ action.colour }};">
-                 {% endif %}
                     <span data-feather="{{ action.feather | safe }}" aria-hidden="true"></span>
-                 {% if action.link %}</a>
-                 {% else %}</span>
-                 {% endif %}
+                 </span>
                </div>
              </div>
            </div>
@@ -171,9 +165,11 @@
              {% set source = search_query_source(terms=[{"admin.editor_group.exact" : [todo.object.editor_group]}]) %}
              <li><small><a href="{{ url_for('admin.suggestions') }}?source={{ source }}" class="label tag tag--secondary"><span data-feather="users" aria-hidden="true"></span> {{ todo.object.editor_group }}</a></small></li>
              {% set editor = todo.object.editor %}
-             {% if editor %}
-             <li><small><a href="{{ url_for('account.username', username=editor) }}" class="label tag tag--tertiary"><span data-feather="user" aria-hidden="true"></span> {{ todo.object.editor }}</a></small></li>
-             {% endif %}
+             {%- if editor %}
+             <li><small><a href="{{ url_for('account.username', username=editor) }}" class="label tag tag--tertiary"><span data-feather="user" aria-hidden="true"></span>
+                 {% if editor == current_user.id %}Assigned to you{% else %}{{ editor }}{% endif %}
+             </a></small></li>
+             {% endif -%}
             </ul>
          </article>
        </li>
