@@ -52,7 +52,9 @@
             </li>
         </ul>
       </nav>
-      {% include 'dashboard/nav.html' %}
+        {% block nav %}
+            {% include 'dashboard/nav.html' %}
+        {% endblock %}
       {% block extra_header %}{% endblock %}
     </header>
 
