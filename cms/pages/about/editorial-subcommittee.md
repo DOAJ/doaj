@@ -9,4 +9,4 @@ featuremap: ~~EditorialSubcommittee:Fragment->EditorialSubcommitteeData:Template
 
 ---
 
-The Editorial Subcommittee was chosen by the DOAJ Editorial Team to provide advice and guidance to the Managing Editors in the following areas: medicine, life sciences, physical sciences, social sciences, humanities, the arts, statistics, and publishing/research ethics.
+The Editorial Subcommittee was retired at the end of December 2022. DOAJ thanks all the members for their contribution.
