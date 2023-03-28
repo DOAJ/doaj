@@ -36,5 +36,16 @@ class DoajDebugToolbar(DebugToolbarExtension):
 
     def _default_config(self, app):
         config = super()._default_config(app)
+
+        # add branch name panel
         config['DEBUG_TB_PANELS'] += (f'{BranchNamePanel.__module__}.{BranchNamePanel.__name__}',)
+
+        # remove env list panel if not enabled
+        key_env_list = 'flask_debugtoolbar.panels.config_vars.ConfigVarsDebugPanel'
+        panels = list(config['DEBUG_TB_PANELS'])
+
+        if not app.config.get('DEBUG_TB_ENV_LIST_ENABLED', False) and key_env_list in panels:
+            panels.remove(key_env_list)
+            config['DEBUG_TB_PANELS'] = tuple(panels)
+
         return config
