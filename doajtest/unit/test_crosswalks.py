@@ -27,9 +27,11 @@ APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
 # Mocks
 ######################################################################
 
+
 def mock_lookup_code(code):
     if code == "H": return "Social Sciences"
     if code == "HB1-3840": return "Economic theory. Demography"
+    if code == "SF600-1100": return 'Veterinary medicine'
     return None
 
 
