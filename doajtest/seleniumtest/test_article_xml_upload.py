@@ -22,11 +22,6 @@ def get_latest(domain_obj: Union[Type[dao.DomainObject], dao.DomainObject]):
 
 class ArticleXmlUploadSTC(SeleniumTestCase):
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        super().setUpClass()
-        cls.fix_es_mapping()
-
     def goto_upload_page(self, acc: models.Account = None):
         if acc:
             publisher = acc

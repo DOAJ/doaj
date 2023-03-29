@@ -19,6 +19,11 @@ class SeleniumTestCase(DoajTestCase):
     SELENIUM_URL = 'http://localhost:4444/wd/hub'
     selenium = None  # selenium driver
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.fix_es_mapping()
+
     def setUp(self):
         super().setUp()
 
