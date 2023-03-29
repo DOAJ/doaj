@@ -1,3 +1,9 @@
+"""
+DO NOT USE - this file was developed as an experiment, and has not been
+developed further.  It may be deleted in due course, but for the moment
+remains as a reference
+"""
+
 from portality.models import JournalLikeObject, Annotation
 from portality.annotation.annotator import Annotator
 from portality.annotation.resource_bundle import ResourceBundle, ResourceUnavailable

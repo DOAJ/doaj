@@ -1,10 +1,11 @@
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import ApplicationFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, IssnOrgFixtureFactory
 from doajtest.mocks.annotation_resource_bundle_Resource import ResourceBundleResourceMockFactory
 
 from portality.annotation.annotators.issn_active import ISSNActive
 from portality import models
 from portality.annotation.resource_bundle import Resource, ResourceBundle
+from portality.annotation.resources.issn_org import ISSNOrg
 
 import responses    # mocks for the requests library
 
@@ -17,24 +18,18 @@ class TestISSNOrg(DoajTestCase):
         super(TestISSNOrg, self).tearDown()
 
     @responses.activate
-    def test_01_issn_fetch_fail(self):
-        Resource.fetch = ResourceBundleResourceMockFactory.fail_fetch()
-
-        issn_active = ISSNActive()
-
-        form = {
-            "pissn": "1234-5678",
-            "eissn": "9876-5432"
-        }
-
-        source = ApplicationFixtureFactory.make_application_source()
-        app = models.Application(**source)
-
-        annotations = models.Annotation()
+    def test_01_issn_fetch(self):
         resources = ResourceBundle()
+        issn_org = ISSNOrg(resources)
 
-        issn_active.annotate(form, app, annotations, resources, logger=lambda x: x)
+        rsp1 = responses.Response(
+            method="GET",
+            url=issn_org.reference_url("1234-5678"),
+            body=IssnOrgFixtureFactory.web_page_body()
+        )
+        responses.add(rsp1)
 
-        assert len(annotations.annotations) == 2
-        for anno in annotations.annotations:
-            assert anno.get("advice") == issn_active.UNABLE_TO_ACCESS
+        data = issn_org.fetch("1234-5678")
+
+        assert data is not None
+        assert data.is_registered()
