@@ -13,11 +13,12 @@ if TYPE_CHECKING:
 
 
 class SeleniumTestCase(DoajTestCase):
-    DOAJ_HOST = '172.17.0.1'
-    DOAJ_PORT = 5014
     doaj_process = None
     SELENIUM_URL = 'http://localhost:4444/wd/hub'
     selenium = None  # selenium driver
+
+    DOAJ_HOST = app.app.config.get('SELENIUM_DOAJ_HOST', 'localhost')
+    DOAJ_PORT = app.app.config.get('SELENIUM_DOAJ_PORT', 5014)
 
     @classmethod
     def setUpClass(cls) -> None:

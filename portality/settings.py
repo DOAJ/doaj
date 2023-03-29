@@ -1378,5 +1378,15 @@ PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
 
 PRESERVATION_PAGE_UNDER_MAINTENANCE = False
 
+
+#######################################################
+# Selenium test environment
+
 # set driver path to run selenium with local browser
+# SELENIUM_CHROME_DRIVER_PATH = '/home/kk/app/chromedriver'
 SELENIUM_CHROME_DRIVER_PATH = ''
+
+# host and port that used to run doaj server in background for selenium tests
+SELENIUM_DOAJ_HOST = 'localhost'
+SELENIUM_DOAJ_PORT = 5014
+
