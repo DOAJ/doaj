@@ -693,6 +693,14 @@ ass_ed:
   country:
   language: English
   photo: "princessnwafor.jpg"
+  
+- name: Priya Rangra
+  area: Open Source Software, Open Science, Information Seeking Behaviour, Applications of ICT and AI in Libraries, Bibliometric Analysis
+  year_since:
+  city: Himachal Pradesh
+  country: India
+  language: English
+  photo: "Priya.jpg"
 
 - name: Prof. Dr. Sudarmin
   area: Science
