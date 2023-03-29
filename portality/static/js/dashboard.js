@@ -95,9 +95,16 @@ doaj.dashboard.renderGroupInfo = function(data) {
             if (i === 0) {  // first one in the list is always the editor
                 isEd = " (Editor)"
             }
-            editorListFrag += `<li>
-                <a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>
-                <a href= "${doaj.dashboard.context.applicationsSearchBase}?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a>
+
+            editorListFrag += `<li>`
+            if (data.editors[ed].email) {
+                editorListFrag += `<a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>`
+            }
+            else {
+                editorListFrag += `<span class="label tag">${ed}${isEd} (no email)</span>`
+            }
+
+            editorListFrag += `<a href= "${doaj.dashboard.context.applicationsSearchBase}?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a>
             </li>`;
         }
     }

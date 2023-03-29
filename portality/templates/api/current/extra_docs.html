@@ -173,7 +173,7 @@ sort=bibjson.title:desc
     <p>There are two ways to upload articles to DOAJ:</p>
         <ol>
             <li><b>One by one via the Article CRUD API</b>. This allows one article at a time but it should be possible to upload 1-2 per second, or more if you have multiple IP addresses sending them at once.</li>
-            <li><b>In batches using the Article Bulk API</b> (only for authenticated users). There are no limits to how many articles are uploaded in a batch. There is a maximum upload size of 50MB per batch. Processing happens synchronously so you may encounter a timeout based on how long the articles take to process in our system. The timeout is set very high: our server has 10 minutes to respond before the web server closes the connection. Your client may drop the connection sooner, however. Keep the batch sizes small to help mitigate this.</li>
+            <li><b>In batches using the Article Bulk API</b> (only for authenticated users). There are no limits to how many articles are uploaded in a batch. However, processing happens synchronously so you may encounter a timeout based on how long the articles take to process in our system. The timeout is set very high: our server has 10 minutes to respond before the web server closes the connection. Your client may drop the connection sooner, however. Keep the batch sizes small to help mitigate this. We recommend around 600 kilobytes.</li>
         </ol>
     <p>There is <b>a rate limit</b> of two requests per second on all API routes. "Bursts" are permitted, which means up to five requests per user are queued by the system and are fulfilled in turn so long as they average out to two requests per second overall.</p>
 

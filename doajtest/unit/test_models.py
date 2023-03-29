@@ -6,6 +6,7 @@ from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, 
 from doajtest.helpers import DoajTestCase, patch_history_dir
 from portality import constants
 from portality import models
+from portality.constants import BgjobOutcomeStatus
 from portality.lib import dataobj
 from portality.lib import seamless
 from portality.models import shared_structs
@@ -637,7 +638,7 @@ class TestModels(DoajTestCase):
         assert bj.language == ["EN", "FR"]
         assert len(bj.licences) == 1
         assert bj.replaces == ["1111-1111"]
-        assert len(bj.subject) == 2
+        assert len(bj.subject) == 3, bj.subject
         assert len(bj.apc) == 1
         assert bj.apc[0].get("currency") == "GBP"
         assert bj.apc[0].get("price") == 2
@@ -1277,6 +1278,7 @@ class TestModels(DoajTestCase):
 
         retrieved = models.BackgroundJob.pull(bj.id)
         assert retrieved is not None
+        assert bj.outcome_status == BgjobOutcomeStatus.Pending
 
         source = BackgroundFixtureFactory.example()
         source["params"]["ids"] = ["1", "2", "3"]
@@ -1287,6 +1289,7 @@ class TestModels(DoajTestCase):
 
         bj.add_audit_message("message")
         assert len(bj.audit) == 2
+        assert bj.outcome_status == BgjobOutcomeStatus.Pending
 
     def test_26a_background_job_active(self):
         source = BackgroundFixtureFactory.example()
@@ -1417,7 +1420,7 @@ class TestModels(DoajTestCase):
 
         models.Cache.cache_sitemap("sitemap.xml")
 
-        models.Cache.cache_public_data_dump("http://example.com/article", 100, "http://example.com/journal", 200)
+        models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article", 100, "jc", "jf", "http://example.com/journal", 200)
         
         time.sleep(1)
 
@@ -1432,10 +1435,17 @@ class TestModels(DoajTestCase):
 
         assert models.Cache.get_latest_sitemap() == "sitemap.xml"
 
-        assert models.Cache.get_public_data_dump().get("article").get("url") == "http://example.com/article"
-        assert models.Cache.get_public_data_dump().get("article").get("size") == 100
-        assert models.Cache.get_public_data_dump().get("journal").get("url") == "http://example.com/journal"
-        assert models.Cache.get_public_data_dump().get("journal").get("size") == 200
+        article_data = models.Cache.get_public_data_dump().get("article")
+        assert article_data.get("url") == "http://example.com/article"
+        assert article_data.get("size") == 100
+        assert article_data.get("container") == "ac"
+        assert article_data.get("filename") == "af"
+
+        journal_data = models.Cache.get_public_data_dump().get("journal")
+        assert journal_data.get("url") == "http://example.com/journal"
+        assert journal_data.get("size") == 200
+        assert journal_data.get("container") == "jc"
+        assert journal_data.get("filename") == "jf"
 
     def test_32_journal_like_object_discovery(self):
         """ Check that the JournalLikeObject can retrieve the correct results for Journals and Applications """

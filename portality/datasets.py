@@ -4,6 +4,7 @@
 
 import pycountry
 from collections import OrderedDict
+from portality.lib import isolang
 
 
 def _generate_country_options():
@@ -43,7 +44,7 @@ def _generate_language_options():
     """
     ~~->Languages:Data~~
     ~~!Languages:Data->PyCountry:Technology~~
-    Gather the languages with 2-character codes (ISO 639-2b)
+    Gather the languages with 2-character codes (ISO 639-1)
     """
     language_options_ = [('', '')]
     for l in sorted(pycountry.languages, key=lambda x: x.name):
@@ -111,18 +112,13 @@ licenses, license_dict, main_license_options = _generate_license_options()
 
 def language_for(rep):
     """ Get the entire language entry for a given representation """
-    try:
-        return pycountry.languages.lookup(rep)
-    except LookupError:
-        return None
+    return isolang.find_raw(rep)
 
 
 def name_for_lang(rep):
     """ Get the language name from a representation of the language"""
-    try:
-        return pycountry.languages.lookup(rep).name
-    except LookupError:
-        return rep
+    lang = isolang.find_raw(rep)
+    return lang.name if lang is not None else rep
 
 
 def get_country_code(current_country, fail_if_not_found=False):

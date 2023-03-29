@@ -10,9 +10,15 @@ featuremap:
 
 ---
 
-We were obliged to take down the public data dump service on Friday 26th January. This is because, due to a sudden spike, the number of data downloads was so large that it was incurring unforeseen costs. We are committed, however, to providing a data dump service but need some time to investigate a more sustainable way of delivering this data. If you have questions, please email Dominic Mitchell, Operations Manager: [dominic@doaj.org](mailto:dominic@doaj.org).
+We are committed to providing a data dump service for the community but, in order to ensure that DOAJ's data is used for the benefit of the entire community and under the terms of the licenses that accompany the data, access to the dumps is granted on a case-by-case basis. If you would like access, please [email our Help Desk](mailto:helpdesk@doaj.org) stating the following information:
 
-[//]: # (An [exportable version of the journal metadata]&#40;/csv&#41; is available as a CSV file.)
+  - your name
+  - the group, organisation or company you represent or that wants to use the metadata
+  - your group/organisation/company address, including country 
+  - whether you want access to the journal or article metadata, or both
+  - what you want to use the metadata for. Include as much information as possible.
+
+An [exportable version of the journal metadata](/csv) is also available (CSV format).
 
 [//]: # ()
 [//]: # (Full data-dumps of the entire journal and article metadata are generated weekly. The files are in JSON format and are in the same form as those retrieved via the API.)

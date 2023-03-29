@@ -1,7 +1,11 @@
 import locale
-from urllib.parse import urlparse
 from copy import deepcopy
 from datetime import datetime
+from typing import Type
+from urllib.parse import urlparse
+
+from portality.constants import ConstantList
+
 
 ###############################################
 ## Common coerce functions
@@ -1039,3 +1043,9 @@ class Construct(object):
             return True
 
         recurse(self, "[root]")
+
+
+def create_allowed_values_by_constant(constant_class: Type[ConstantList]):
+    return {
+        'allowed_values': list(constant_class.all_constants())
+    }

@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.2.16',
+    version='6.2.23',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -38,7 +38,8 @@ setup(
         "openpyxl~=3.0.3",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
         "parameterized==0.7.0",
         "psutil==5.6.3",
-        "pycountry==19.8.18",
+        #"pycountry==22.3.5",  # FIXME: pycountry on pypi is quite outdated (2022-03-05, missing e.g. Türkiye)
+        "pycountry @ git+https://github.com/DOAJ/pycountry.git@30a23571951cf4eb98939a961ac96d1c2b64a3d8#egg=pycountry",
         "python-dateutil==2.8.0",  # something else already installs this, so just note we need it without an explicit version freeze
         "pytz==2019.3",
         "redis==3.3.11",
@@ -54,10 +55,10 @@ setup(
         "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
-        "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium",
+        "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium==3.141",  # prevent backtracking through all versions
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
         "docs": [
-            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@81eecd5e7b4da379b14c0ccb0cf64e9665a26e20#egg=featuremap",
+            "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@cb52c345b942e50726767b1a7190f1a01b81e722#egg=featuremap",
             "testbook @ git+https://github.com/CottageLabs/testbook.git@15a7c0cc25d951d989504d84c2ef3e24caaf56e9#egg=testbook"]
     },
     url='https://cottagelabs.com/',
