@@ -104,9 +104,33 @@ if __name__ == "__main__":
 
             # ~~ ->$JournalUpdateByCSV:Feature ~~
             for row in reader:
+                # Skip empty rows
+                if not any(row.values()):
+                    print("Skipping empty row.")
+                    continue
+
                 # Pull by ID, If that column is missing, parse ID from the ToC URL
-                _id = row.get('ID', row['URL in DOAJ'].split('/').pop())
-                j = Journal.pull(_id)
+                try:
+                    _id = row.get('ID', row['URL in DOAJ'].split('/').pop())
+                    j = Journal.pull(_id)
+                except KeyError:
+                    # No ID string to be found, we need to look up the journal ID from the ISSN
+                    print("No ID provided, looking up journal by its ISSNs")
+                    try:
+                        j = Journal.find_by_issn([
+                            row.get('Journal ISSN (print version)'),
+                            row.get('Journal EISSN (online version)')
+                        ], in_doaj=True, max=1).pop(0)
+
+                        if j.bibjson().title != row['Journal title']:
+                            print("ERROR: Retrieved journal's title doesn't match supplied title. Skipping.")
+                            print(f'CSV title: {row["Journal title"]}\n Retrieved title: {j.bibjson().title}')
+                            continue
+                    except IndexError:
+                        print(f'Warning: could not find journal for ISSNs [{row.get("Journal ISSN (print version)")}, '
+                              f'{row.get("Journal EISSN (online version)")}]')
+                        continue
+
                 if j is not None:
                     print('\n' + j.id)
                     # Load remaining rows into application form as an update
