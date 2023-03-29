@@ -1,13 +1,15 @@
 import os
 from io import BytesIO, StringIO
-from pathlib import Path
 
 from lxml import etree
+
+from portality.lib import paths
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
 ARTICLES = os.path.join(RESOURCES, "doajxml_article_uploads.xml")
 
-ARTICLE_UPLOAD_SUCCESSFUL = Path(os.path.join(RESOURCES, "article_upload_successful.xml")).resolve().as_posix()
+ARTICLE_UPLOAD_SUCCESSFUL = os.path.join(paths.get_project_root(), 'doajtest/xml_upload_test_package/DOAJ/successful.xml')
+
 
 
 class DoajXmlArticleFixtureFactory(object):
