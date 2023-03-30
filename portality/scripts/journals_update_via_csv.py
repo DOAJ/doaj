@@ -102,8 +102,14 @@ if __name__ == "__main__":
             else:
                 print('\nSkipping CSV headings check.\n')
 
+            # Talking about spreadsheets, so we start at 1
+            row_ix = 1
+
             # ~~ ->$JournalUpdateByCSV:Feature ~~
             for row in reader:
+                row_ix += 1
+                print(f'\n***\nCSV row {row_ix}')
+
                 # Skip empty rows
                 if not any(row.values()):
                     print("Skipping empty row.")
@@ -132,7 +138,7 @@ if __name__ == "__main__":
                         continue
 
                 if j is not None:
-                    print('\n' + j.id)
+                    print('Updating journal with ID ' + j.id)
                     # Load remaining rows into application form as an update
                     # ~~ ^->JournalQuestions:Crosswalk ~~
                     update_form, updates = journal_questions.Journal2QuestionXwalk.question2form(j, row)
@@ -215,7 +221,10 @@ if __name__ == "__main__":
                             if alock is not None:
                                 alock.delete()
                     else:
+                        print("No updates to do")
                         updates = ['NO CHANGES']
                 else:
-                    print("\nWARNING: no journal found for ID {0}".format(_id))
+                    print("WARNING: no journal found for ID {0}".format(_id))
                     writer.writerow([_id, "NOT FOUND", ''])
+
+                writer.writerow([j.id, ' | '.join(updates), ''])
