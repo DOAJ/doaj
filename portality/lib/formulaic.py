@@ -100,6 +100,8 @@ CONTEXT_EXAMPLE = {
 """
 import csv
 from copy import deepcopy
+from typing import Optional
+
 from wtforms import Form
 from wtforms.fields.core import UnboundField, FieldList, FormField
 
@@ -145,7 +147,7 @@ class Formulaic(object):
         self._function_map = function_map
         self._javascript_functions = javascript_functions
 
-    def context(self, context_name):
+    def context(self, context_name) -> Optional['FormulaicContext']:
         context_def = deepcopy(self._definition.get("contexts", {}).get(context_name))
         if context_def is None:
             return None
@@ -222,7 +224,7 @@ class Formulaic(object):
 
 # ~~->$ FormulaicContext:Feature~~
 class FormulaicContext(object):
-    def __init__(self, name, definition, parent: Formulaic):
+    def __init__(self, name, definition, parent: 'Formulaic'):
         self._name = name
         self._definition = definition
         self._formulaic = parent
