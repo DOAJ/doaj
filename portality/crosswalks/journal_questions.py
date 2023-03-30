@@ -271,7 +271,8 @@ class Journal2QuestionXwalk(object):
             apcs = []
             for apc in x.split('; '):
                 [amt, cur] = apc.split()
-                apcs.append({'apc_max': round(float(amt)), 'apc_currency': cur})
+                apcs.append({'apc_currency': cur, 'apc_max': round(float(amt))})
+            apcs.reverse()
             return apcs
 
         # Undo the transformations applied to specific fields. TODO: Add these as they are encountered in the wild
