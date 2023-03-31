@@ -83,6 +83,16 @@ if __name__ == "__main__":
             # verify header row with current CSV headers, report errors
             header_row = reader.fieldnames
             expected_headers = JournalFixtureFactory.csv_headers()
+
+            # Always perform a match check on supplied headers, not counting order
+            for h in header_row[1:]:
+                if h not in expected_headers:
+                    if h.lower() in map(str.lower, expected_headers):
+                        (print(f'\nNOTE - "{h}" has mismatching case to expected header, but changes should succeed.'))
+                    else:
+                        print(f'\nWARNING - Unexpected header "{h}" not mappable (updates will be missed)')
+
+            # Strict check for CSV being exactly the same as exported, including order
             if not args.skip_strict:
                 if header_row[1:] != expected_headers:
                     print("\nWARNING: CSV input file is the wrong format. "
