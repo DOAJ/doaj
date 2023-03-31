@@ -78,15 +78,15 @@ if __name__ == "__main__":
 
         # Open with encoding that deals with the Byte Order Mark since we're given files from Windows.
         with open(args.infile, 'r', encoding='utf-8-sig') as g:
-            reader = csv.DictReader(g)
+            header_row = list(map(str.strip, g.readline().split(',')))
+            reader = csv.DictReader(g, fieldnames=header_row)
 
             # verify header row with current CSV headers, report errors
-            header_row = reader.fieldnames
             expected_headers = JournalFixtureFactory.csv_headers()
 
             # Always perform a match check on supplied headers, not counting order
             for h in header_row[1:]:
-                if h not in expected_headers:
+                if h and h not in expected_headers:
                     if h.lower() in map(str.lower, expected_headers):
                         (print(f'\nNOTE - "{h}" has mismatching case to expected header, but changes should succeed.'))
                     else:
