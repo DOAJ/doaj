@@ -4,7 +4,7 @@
 import datetime
 from copy import deepcopy
 
-from wtforms import StringField, TextAreaField, IntegerField, BooleanField, RadioField, SelectMultipleField, \
+from wtforms import StringField, TextAreaField, IntegerField, BooleanField, SelectMultipleField, \
     SelectField, \
     FormField, FieldList, HiddenField
 from wtforms import widgets, validators
@@ -37,7 +37,7 @@ from portality.forms.validate import (
     CustomRequired,
     OwnerExists, NoScriptTag, Year
 )
-from portality.lib.formulaic import Formulaic, WTFormsBuilder
+from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
 from portality.models import EditorGroup
 from portality.regex import ISSN, ISSN_COMPILED
 
@@ -1804,7 +1804,12 @@ class FieldDefinitions:
         "name": "note",
         "group": "notes",
         "input": "textarea",
-        "disabled": True
+        "disabled": "disable_edit_note_except_cur_user",
+        "contexts": {
+            "admin": {
+                "disabled" : False
+            }
+        }
     }
 
     # ~~->$ NoteAuthor:FormField~~
@@ -2490,6 +2495,27 @@ def application_status_disabled(field, formulaic_context):
     return field_value not in [c.get("value") for c in choices]
 
 
+def disable_edit_note_except_cur_user(field: FormulaicField,
+                                     formulaic_context: FormulaicContext):
+    """
+    Only allow the current user to edit this field if author is current user
+
+    :param field:
+    :param formulaic_context:
+    :return:
+        False is editable, True is disabled
+    """
+    # KTODO  for debugging
+    if not formulaic_context.extra_param.get('cur_user', {}):
+        breakpoint() # cur_user not set
+
+    # ~~->Notes:Feature~~
+    cur_user_id = formulaic_context.extra_param.get('cur_user', {}).get('id')
+    form_field: FormField  = field.find_related_form_field('notes', formulaic_context)
+    if form_field is None:
+        return True
+    return cur_user_id != form_field.data.get('note_author_id')
+
 #######################################################
 ## Merge disabled
 #######################################################
@@ -2838,7 +2864,8 @@ PYTHON_FUNCTIONS = {
         "editor_choices" : editor_choices
     },
     "disabled" : {
-        "application_status_disabled" : application_status_disabled
+        "application_status_disabled" : application_status_disabled,
+        "disable_edit_note_except_cur_user": disable_edit_note_except_cur_user,
     },
     "merge_disabled" : {
         "merge_disabled_notes" : merge_disabled_notes

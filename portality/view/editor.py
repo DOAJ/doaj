@@ -84,7 +84,9 @@ def journal_page(journal_id):
     except lock.Locked as l:
         return render_template("editor/journal_locked.html", journal=journal, lock=l.lock, lcc_tree=lcc_jstree)
 
-    fc = JournalFormFactory.context(role)
+    fc = JournalFormFactory.context(role, extra_param={
+        'cur_user': current_user,
+    })
 
     if request.method == "GET":
         fc.processor(source=journal)

@@ -99,11 +99,12 @@ CONTEXT_EXAMPLE = {
 }
 """
 import csv
+import itertools
 from copy import deepcopy
-from typing import Optional
+from typing import Optional, Dict, Iterable
 
 from wtforms import Form
-from wtforms.fields.core import UnboundField, FieldList, FormField
+from wtforms.fields.core import UnboundField, FieldList, FormField, Field
 
 from portality.lib import plugin
 from flask import render_template
@@ -147,7 +148,7 @@ class Formulaic(object):
         self._function_map = function_map
         self._javascript_functions = javascript_functions
 
-    def context(self, context_name) -> Optional['FormulaicContext']:
+    def context(self, context_name, extra_param=None) -> Optional['FormulaicContext']:
         context_def = deepcopy(self._definition.get("contexts", {}).get(context_name))
         if context_def is None:
             return None
@@ -167,7 +168,8 @@ class Formulaic(object):
             expanded_fieldsets.append(fieldset_def)
 
         context_def["fieldsets"] = expanded_fieldsets
-        return FormulaicContext(context_name, context_def, self)
+        return FormulaicContext(context_name, context_def, self,
+                                extra_param=extra_param or {})
 
     @property
     def wtforms_builders(self):
@@ -224,7 +226,16 @@ class Formulaic(object):
 
 # ~~->$ FormulaicContext:Feature~~
 class FormulaicContext(object):
-    def __init__(self, name, definition, parent: 'Formulaic'):
+    def __init__(self, name, definition, parent: 'Formulaic', extra_param: Dict = None):
+        """
+
+        :param name:
+        :param definition:
+        :param parent:
+        :param extra_param:
+            the parameter that could be used by plugin function like
+            "disable_edit_note_except_cur_user"
+        """
         self._name = name
         self._definition = definition
         self._formulaic = parent
@@ -233,6 +244,8 @@ class FormulaicContext(object):
 
         self._wtform_class = self.wtform_class()
         self._wtform_inst = self.wtform()
+
+        self.extra_param = extra_param or {}
 
     @property
     def name(self):
@@ -517,6 +530,28 @@ class FormulaicField(object):
         self._definition = definition
         self._formulaic_fieldset = parent
 
+        self.wtfinst : Optional[Field] = None  # used by some plugins function
+
+    def find_related_form_field(self, fieldset_name, formulaic_context: 'FormulaicContext') -> Optional[FormField]:
+        """ Find the "parent" FormField of self.wtfinst in the given fieldset.
+
+        the reason you need to call this method to find FormField inst is because
+        wtfinst is subfield of FormField, and you need data of other subfields and
+        FormField inst contain all data of subfields.
+
+        :param fieldset_name:
+        :param formulaic_context:
+        :return:
+        """
+
+        fields: Iterable[FormField] = itertools.chain.from_iterable(
+            f.wtfield for f in formulaic_context.fieldset(fieldset_name).fields())
+        for form_field in fields:
+            for f in form_field:
+                if f == self.wtfinst:
+                    return form_field
+        return None
+
     def __contains__(self, item):
         return item in self._definition
 
@@ -684,6 +719,8 @@ class FormulaicField(object):
 
     def render_form_control(self, custom_args=None, wtfinst=None):
         # ~~-> WTForms:Library~~
+        self.wtfinst = wtfinst
+
         kwargs = deepcopy(self._definition.get("attr", {}))
         if "placeholder" in self._definition.get("help", {}):
             kwargs["placeholder"] = self._definition["help"]["placeholder"]
