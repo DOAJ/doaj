@@ -134,7 +134,9 @@ def application(application_id):
     # Edit role is either associate_editor or editor, depending whether the user is group leader
     eg = models.EditorGroup.pull_by_key("name", ap.editor_group)
     role = 'editor' if eg is not None and eg.editor == current_user.id else 'associate_editor'
-    fc = ApplicationFormFactory.context(role)
+    fc = ApplicationFormFactory.context(role, extra_param={
+        'cur_user': current_user,
+    })
 
     if request.method == "GET":
         fc.processor(source=ap)

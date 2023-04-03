@@ -25,6 +25,11 @@ class ApplicationProcessor(FormProcessor):
         # chain
         super(ApplicationProcessor, self).pre_validate()
 
+    def patch_target(self):
+        super().patch_target()
+
+        self._patch_target_note_id()
+
     def _carry_fixed_aspects(self):
         if self.source is None:
             raise Exception("Cannot carry data from a non-existent source")
@@ -304,8 +309,6 @@ class AdminApplication(ApplicationProcessor):
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
 
-        # patch author_id of notes
-        self._patch_target_note_id()
 
     def finalise(self, account, save_target=True, email_alert=True):
         """
@@ -628,6 +631,7 @@ class AssociateApplication(ApplicationProcessor):
         if self.source is None:
             raise Exception("You cannot patch a target from a non-existent source")
 
+        super().patch_target()
         self._carry_fixed_aspects()
         self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
@@ -684,6 +688,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
         if self.source is None:
             raise Exception("You cannot patch a target from a non-existent source")
 
+        super().patch_target()
         self._carry_subjects_and_seal()
         self._carry_fixed_aspects()
         self._merge_notes_forward()
@@ -802,6 +807,7 @@ class ManEdJournalReview(ApplicationProcessor):
         if self.source is None:
             raise Exception("You cannot patch a target from a non-existent source")
 
+        super().patch_target()
         self._carry_fixed_aspects()
         self._merge_notes_forward(allow_delete=True)
 
@@ -809,7 +815,6 @@ class ManEdJournalReview(ApplicationProcessor):
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
 
-        self._patch_target_note_id()
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
@@ -878,6 +883,7 @@ class EditorJournalReview(ApplicationProcessor):
         if self.source is None:
             raise Exception("You cannot patch a target from a non-existent source")
 
+        super().patch_target()
         self._carry_fixed_aspects()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
@@ -935,13 +941,13 @@ class AssEdJournalReview(ApplicationProcessor):
         if self.source is None:
             raise Exception("You cannot patch a target from a non-existent source")
 
+        super().patch_target()
         self._carry_fixed_aspects()
         self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
-        self._patch_target_note_id()
 
     def finalise(self):
         if self.source is None:

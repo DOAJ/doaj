@@ -407,7 +407,11 @@ class FormulaicContext(object):
         template = self._definition.get("templates", {}).get("form")
         return render_template(template, formulaic_context=self, **kwargs)
 
-    def processor(self, formdata=None, source=None):
+    def processor(self, formdata=None, source=None) -> 'FormProcessor':
+        """
+        Returns a FormProcessor instance and also update data in FormulaicContext (self)
+        """
+
         # ~~^-> FormProcessor:Feature~~
         klazz = self._definition.get("processor")
         if isinstance(klazz, str):

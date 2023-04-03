@@ -461,7 +461,9 @@ def application_quick_reject(application_id):
 def admin_site_search():
     #edit_formcontext = formcontext.ManEdBulkEdit()
     #edit_form = edit_formcontext.render_template()
-    edit_formulaic_context = JournalFormFactory.context("bulk_edit")
+    edit_formulaic_context = JournalFormFactory.context("bulk_edit", extra_param={
+        'cur_user': current_user,
+    })
     edit_form = edit_formulaic_context.render_template()
 
     return render_template("admin/admin_site_search.html",
@@ -695,7 +697,9 @@ def bulk_edit_journal_metadata():
         raise BulkAdminEndpointException("key 'metadata' not present in request json")
 
     formdata = MultiDict(payload["metadata"])
-    formulaic_context = JournalFormFactory.context("bulk_edit")
+    formulaic_context = JournalFormFactory.context("bulk_edit", extra_param={
+        'cur_user': current_user,
+    })
     fc = formulaic_context.processor(formdata=formdata)
 
     if not fc.validate():

@@ -110,7 +110,9 @@ def update_request(journal_id):
         if alock is not None: alock.delete()
         return redirect(url_for("publisher.updates_in_progress"))
 
-    fc = ApplicationFormFactory.context("update_request")
+    fc = ApplicationFormFactory.context("update_request", extra_param={
+        'cur_user': current_user,
+    })
 
     # if we are requesting the page with a GET, we just want to show the form
     if request.method == "GET":

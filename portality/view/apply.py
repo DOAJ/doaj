@@ -44,8 +44,10 @@ def public_application(draft_id=None):
         if draft_application is not None and draft_application.owner != current_user.id:
             abort(404)
 
+    fc = ApplicationFormFactory.context("public", extra_param={
+        'cur_user': current_user,
+    })
     if request.method == "GET":
-        fc = ApplicationFormFactory.context("public")
         if draft_application is not None:
             fc.processor(source=draft_application)
 
@@ -56,8 +58,6 @@ def public_application(draft_id=None):
         return fc.render_template(obj=draft_application, draft_data=draft_data)
 
     elif request.method == "POST":
-
-        fc = ApplicationFormFactory.context("public")
 
         draft = request.form.get("draft")
         async_def = request.form.get("async")
