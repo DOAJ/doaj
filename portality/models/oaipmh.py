@@ -1,5 +1,6 @@
 from copy import deepcopy
 from portality.models import Journal, Article
+from portality import constants
 
 class OAIPMHRecord(object):
     earliest = {
@@ -49,7 +50,7 @@ class OAIPMHRecord(object):
         "size": 25
     }
 
-    set_limit = {"term" : { "index.schema_subject.exact" : "<set name>" }}
+    set_limit = {"term" : { "index.classification.exact" : "<set name>" }}
     range_limit = { "range" : { "last_updated" : {"gte" : "<from date>", "lte" : "<until date>"} } }
     created_sort = [{"last_updated" : {"order" : "desc"}}, {"id.exact" : "desc"}]
 
@@ -71,8 +72,9 @@ class OAIPMHRecord(object):
         if start_after is not None or from_date is not None or until_date is not None or oai_set is not None:
 
             if oai_set is not None:
+                a = oai_set.replace(constants.SUBJECTS_SCHEMA,"")
                 s = deepcopy(self.set_limit)
-                s["term"]["index.schema_subject.exact"] = oai_set
+                s["term"]["index.classification.exact"] = a
                 q["query"]["bool"]["must"].append(s)
 
             if until_date is not None or from_date is not None or start_after is not None:

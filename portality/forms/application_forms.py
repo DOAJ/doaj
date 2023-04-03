@@ -726,8 +726,8 @@ class FieldDefinitions:
         "options": [
             {"display": "Editorial review", "value": "Editorial review"},
             {"display": "Peer review", "value": "Peer review"},
-            {"display": "Blind peer review", "value": "Blind peer review"},
-            {"display": "Double blind peer review", "value": "Double blind peer review"},
+            {"display": "Anonymous peer review", "value": "Anonymous peer review"},
+            {"display": "Double anonymous peer review", "value": "Double anonymous peer review"},
             {"display": "Post-publication peer review", "value": "Post-publication peer review"},
             {"display": "Open peer review", "value": "Open peer review"},
             {"display": "Other", "value": "other", "subfields": ["review_process_other"]}

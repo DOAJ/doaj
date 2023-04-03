@@ -1,7 +1,12 @@
 import traceback
 from copy import deepcopy
-
 from typing import Iterable
+from typing import TYPE_CHECKING
+
+from portality.constants import BgjobOutcomeStatus
+
+if TYPE_CHECKING:
+    from portality.models import BackgroundJob
 
 from flask_login import login_user
 from huey import RedisHuey
@@ -40,7 +45,7 @@ class BackgroundApi(object):
     """
 
     @classmethod
-    def execute(self, background_task):
+    def execute(self, background_task: 'BackgroundTask'):
         # ~~->BackgroundTask:Process~~
         # ~~->BackgroundJob:Model~~
         job = background_task.background_job
@@ -60,6 +65,8 @@ class BackgroundApi(object):
 
         try:
             background_task.run()
+            if job.outcome_status == BgjobOutcomeStatus.Pending:
+                job.outcome_status = BgjobOutcomeStatus.Success
         except RetryException:
             if job.reference is None:
                 job.reference = {}
@@ -113,11 +120,11 @@ class BackgroundTask(object):
     __action__ = None
     """ static member variable defining the name of this task """
 
-    def __init__(self, background_job: models.BackgroundJob):
+    def __init__(self, background_job: 'BackgroundJob'):
         self._background_job = background_job
 
     @property
-    def background_job(self):
+    def background_job(self) -> 'BackgroundJob':
         return self._background_job
 
     def run(self):
