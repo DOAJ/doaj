@@ -2505,9 +2505,6 @@ def disable_edit_note_except_cur_user(field: FormulaicField,
     :return:
         False is editable, True is disabled
     """
-    # TOBEREMOVE for debugging TOBEREMOVE
-    if not formulaic_context.extra_param.get('cur_user', {}):
-        breakpoint() # cur_user not set
 
     # ~~->Notes:Feature~~
     cur_user_id = formulaic_context.extra_param.get('cur_user', {}).get('id')
