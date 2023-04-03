@@ -1,5 +1,6 @@
 import pytest
 
+from doajtest import helpers
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
@@ -47,8 +48,7 @@ class TestEditableNote(DoajTestCase):
         journal.save(blocking=True)
 
         with self.app_test.test_client() as t_client:
-            resp = t_client.post(url_for('account.login'),
-                                 data={'user': acc.email, 'password': pwd}, follow_redirects=True)
+            resp = helpers.login(t_client, acc.email, pwd)
             assert resp.status_code == 200
 
             resp = t_client.get(url_for("editor.journal_page", journal_id=journal.id))

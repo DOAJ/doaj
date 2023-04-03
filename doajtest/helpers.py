@@ -15,6 +15,7 @@ from portality import core, dao
 from portality.core import app
 from portality.lib import paths
 from portality.tasks.redis_huey import main_queue, long_running
+from portality.util import url_for
 
 
 def patch_config(inst, properties):
@@ -363,3 +364,12 @@ def apply_test_case_config(new_config):
         return wrapper
 
     return decorator
+
+
+def login(app_client, username, password, follow_redirects=True):
+    return app_client.post(url_for('account.login'),
+                           data=dict(user=username, password=password),
+                           follow_redirects=follow_redirects)
+
+def logout(app_client, follow_redirects=True):
+    return app_client.get(url_for('account.logout'), follow_redirects=follow_redirects)

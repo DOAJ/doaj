@@ -1,5 +1,6 @@
 import time
 
+from doajtest import helpers
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.models import Article, Account, Journal
@@ -34,25 +35,15 @@ class TestAdminEditMetadata(DoajTestCase):
     def admin_post_article_metadata_form(self, formdata):
         """ Post a form tto the article metadata endpoint """
         with self.app_test.test_client() as t_client:
-            self.login(t_client, "admin", "password123")
+            helpers.login(t_client, "admin", "password123")
             resp = t_client.post(url_for('admin.article_page', article_id=self.a.id), data=dict(formdata))
             assert resp.status_code == 200, "expected: 200, received: {}".format(resp.status)
-
-    @staticmethod
-    def login(app, username, password):
-        return app.post('/account/login',
-                        data=dict(user=username, password=password),
-                        follow_redirects=True)
-
-    @staticmethod
-    def logout(app):
-        return app.get('/account/logout', follow_redirects=True)
 
     def test_01_open_article_page(self):
         """ Ensure only Admin can open the article metadata form """
 
         with self.app_test.test_client() as t_client:
-            login_request = self.login(t_client, "admin", "password123")
+            login_request = helpers.login(t_client, "admin", "password123")
             resp = t_client.get(url_for('admin.article_page', article_id=self.a.id), follow_redirects=False)
             assert resp.status_code == 200, "expected: 200, received: {}".format(resp.status)
 
@@ -64,7 +55,7 @@ class TestAdminEditMetadata(DoajTestCase):
 
         # login as publisher
         with self.app_test.test_client() as t_client:
-            self.login(t_client, "publisher", "password456")
+            helpers.login(t_client, "publisher", "password456")
             resp = t_client.get(url_for('admin.article_page', article_id=self.a.id), follow_redirects=False)
             assert resp.status_code == 302, "expected: 302, received: {}".format(resp.status)  # expect redirection to login page
 
