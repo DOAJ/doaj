@@ -16,7 +16,7 @@ We are committed to providing a data dump service for the community but, in orde
 - the group, organisation or company you represent or that wants to use the metadata
 - your group/organisation/company address, including country 
 - whether you want access to the journal or article metadata, or both
-- what you want to use the metadata for (Include as much information as possible.)
+- what you want to use the metadata for (include as much information as possible)
 
 Our article and journal metadata are [licensed differently](https://doaj.org/terms/). Please make sure you understand those differences as this affects what you can do with the metadata.
 
