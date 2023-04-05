@@ -40,10 +40,6 @@ silver:
   url: https://jmirpublications.com/
   logo: jmir.svg
   
-- name: Institute of Physics
-  url: https://www.iop.org/
-  logo: iop.jpg
-  
 - name: Knowledge E
   url: https://knowledgee.com/
   logo: knowledgee.png
@@ -92,6 +88,10 @@ bronze:
 - name: IEEE
   url: https://www.ieee.org/
   logo: ieee.png
+  
+- name: Institute of Physics
+  url: https://www.iop.org/
+  logo: iop.jpg
 
 - name: Karger
   url: https://www.karger.com/
