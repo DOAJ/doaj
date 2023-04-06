@@ -230,7 +230,7 @@ $.extend(true, doaj, {
                         open: false,
                         togglable: true,
                         countFormat: countFormat,
-                        hideInactive: false
+                        hideInactive: true
                     })
                 }),
 

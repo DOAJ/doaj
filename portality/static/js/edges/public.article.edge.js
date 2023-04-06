@@ -111,10 +111,11 @@ $.extend(true, doaj, {
                         return values;
                     },
                     renderer : doaj.renderers.newDateHistogramSelectorRenderer({
-                        open: false,
+                        open: true,
                         togglable: true,
                         countFormat: countFormat,
-                        hideInactive: false
+                        hideInactive: false,
+                        hideEmpty: true
                     })
                 }),
 
@@ -131,7 +132,7 @@ $.extend(true, doaj, {
                         showCount: true,
                         hideEmpty: false,
                         open: false,
-                        togglable: true
+                        togglable: true,
                     })
                 }),
 
