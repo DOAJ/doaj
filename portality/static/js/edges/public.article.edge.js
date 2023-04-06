@@ -132,7 +132,7 @@ $.extend(true, doaj, {
                         showCount: true,
                         hideEmpty: false,
                         open: false,
-                        togglable: true,
+                        togglable: true
                     })
                 }),
 
