@@ -58,7 +58,7 @@ class ISSNAnnotator(Annotator):
 
 
 class ISSNActive(ISSNAnnotator):
-    __identity__ = "issn_status"
+    __identity__ = "issn_active"
 
     NOT_FOUND = "not_found"
     FULLY_VALIDATED = "fully_validated"
@@ -73,7 +73,8 @@ class ISSNActive(ISSNAnnotator):
                         field=field,
                         original_value=value,
                         advice=self.NOT_FOUND,
-                        reference_url=url
+                        reference_url=url,
+                        annotator=self.__identity__
                     )
             else:
                 if data.is_registered():
@@ -82,7 +83,8 @@ class ISSNActive(ISSNAnnotator):
                         field=field,
                         original_value=value,
                         advice=self.FULLY_VALIDATED,
-                        reference_url=url
+                        reference_url=url,
+                        annotator=self.__identity__
                     )
                 else:
                     logger("{y} is not fully validated at {x}".format(y=value, x=url))
@@ -90,7 +92,8 @@ class ISSNActive(ISSNAnnotator):
                         field=field,
                         original_value=value,
                         advice=self.NOT_VALIDATED,
-                        reference_url=url
+                        reference_url=url,
+                        annotator=self.__identity__
                     )
 
     def annotate(self, form: dict,

@@ -22,10 +22,13 @@ ANNOTATION_STRUCT = {
             "fields": {
                 "field": {"coerce": "unicode"},
                 "original_value": {"coerce": "unicode"},
-                "suggested_value": {"coerce": "unicode"},
                 "replaced_value": {"coerce": "unicode"},
                 "advice": {"coerce": "unicode"},
-                "reference_url": {"coerce": "unicode"}
+                "reference_url": {"coerce": "unicode"},
+                "annotator": {"coerce": "unicode"}
+            },
+            "lists": {
+                "suggested_value": {"contains": "field", "coerce": "unicode"}
             }
         }
     }
@@ -94,7 +97,7 @@ class Annotation(SeamlessMixin, DomainObject):
     def journal(self, val):
         self.__seamless__.set_with_struct("journal", val)
 
-    def add_annotation(self, field=None, original_value=None, suggested_value=None, advice=None, reference_url=None):
+    def add_annotation(self, field=None, original_value=None, suggested_value=None, advice=None, reference_url=None, annotator=None):
         obj = {}
         if field is not None:
             obj["field"] = field
@@ -106,6 +109,8 @@ class Annotation(SeamlessMixin, DomainObject):
             obj["advice"] = advice
         if reference_url is not None:
             obj["reference_url"] = reference_url
+        if annotator is not None:
+            obj["annotator"] = annotator
 
         # ensure we add the annotation only once
         self.__seamless__.delete_from_list("annotations", val=obj)

@@ -1102,6 +1102,8 @@ var formulaic = {
                     let el = $(elements[i]);
                     el.after(frag);
                 }
+
+                feather.replace();
             }
 
             this._getAnnotationsForField = function() {
@@ -1119,6 +1121,20 @@ var formulaic = {
 
             this._renderAnnotation = function(annotation) {
                 let frag = "<li>";
+
+                if (annotation.annotator && doaj.annotators &&
+                        doaj.annotators.registry.hasOwnProperty(annotation.annotator)) {
+                    frag += (new doaj.annotators.registry[annotation.annotator]()).draw(annotation)
+                } else {
+                    frag += this._defaultRender(annotation);
+                }
+
+                frag += `</li>`;
+                return frag;
+            }
+
+            this._defaultRender = function(annotation) {
+                let frag = "";
                 if (annotation.advice) {
                     frag += `${annotation.advice}<br>`
                 }
@@ -1126,13 +1142,11 @@ var formulaic = {
                     frag += `<a href="${annotation.reference_url}" target="_blank">${annotation.reference_url}</a><br>`
                 }
                 if (annotation.suggested_value) {
-                    frag += `Suggested Value: ${annotation.suggested_value}<br>`
+                    frag += `Suggested Value(s): ${annotation.suggested_value.join(", ")}<br>`
                 }
                 if (annotation.original_value) {
                     frag += `(Original value when automated checks ran: ${annotation.original_value})`
                 }
-                frag += `</li>`;
-
                 return frag;
             }
 

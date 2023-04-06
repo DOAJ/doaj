@@ -42,8 +42,11 @@
 {% endblock %}
 
 {% block extra_js_bottom scoped %}
+    {% if annotations %}
     <script type="application/javascript">
         doaj.annotations = {{ annotations.data|tojson }}
     </script>
+    <script type="text/javascript" src="/static/js/annotators.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    {% endif %}
     {% include "application_form/js/_form_js.html" %}
 {% endblock %}
