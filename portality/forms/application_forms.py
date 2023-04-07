@@ -246,7 +246,8 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "full_contents" # ~~^->FullContents:FormWidget~~
+            "full_contents", # ~~^->FullContents:FormWidget~~
+            "issn_link" # ~~^->IssnLink:FormWidget~~
         ],
         "contexts": {
             "public" : {
@@ -315,7 +316,8 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "full_contents" # ~~^->FullContents:FormWidget~~
+            "full_contents", # ~~^->FullContents:FormWidget~~
+            "issn_link"  # ~~^->IssnLink:FormWidget~~
         ],
         "contexts": {
             "public" : {
@@ -2881,7 +2883,8 @@ JAVASCRIPT_FUNCTIONS = {
     "full_contents" : "formulaic.widgets.newFullContents",  # ~~^->FullContents:FormWidget~~
     "load_editors" : "formulaic.widgets.newLoadEditors",    # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
-    "note_modal" : "formulaic.widgets.newNoteModal" # ~~-> NoteModal:FormWidget~~
+    "note_modal" : "formulaic.widgets.newNoteModal", # ~~-> NoteModal:FormWidget~~,
+    "issn_link" : "formulaic.widgets.newIssnLink" # ~~-> IssnLink:FormWidget~~,
 }
 
 
