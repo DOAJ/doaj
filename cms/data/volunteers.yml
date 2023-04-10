@@ -602,7 +602,6 @@ ass_ed:
   language: Indonesian, English
   photo: "MuhamadTaufik.jpg"
   
- 
 - name: Nataliia Kaliuzhna
   area: Library and Information Science
   year_since:
@@ -611,7 +610,6 @@ ass_ed:
   language: Ukranian, Russian, English, Polish
   photo: "Nataliia.jpg"
  
-
 - name: Nathalia Avila
   area:
   year_since:
@@ -665,14 +663,12 @@ ass_ed:
   language: Turkish, English
   photo: "Orhan CANPOLAT.jpg"
 
-
 - name: Oskia Agirre
   area: Library and Information Science
   year_since:
   city: Donostia
   country: Spain
   language: Euskera, Spanish, English
-
 
 - name: Pablo Hernandez
   area: Science
@@ -697,6 +693,14 @@ ass_ed:
   country:
   language: English
   photo: "princessnwafor.jpg"
+  
+- name: Priya Rangra
+  area: Open Source Software, Open Science, Information Seeking Behaviour, Applications of ICT and AI in Libraries, Bibliometric Analysis
+  year_since:
+  city: Himachal Pradesh
+  country: India
+  language: English
+  photo: "Priya.jpg"
 
 - name: Prof. Dr. Sudarmin
   area: Science
@@ -727,7 +731,6 @@ ass_ed:
   city:
   country: Mexico
   language: Spanish, English
-
 
 - name: Remedios Melero (Reme)
   area: Social Sciences
@@ -810,7 +813,6 @@ ass_ed:
   language: French
   photo: "sogoba1.jpg"
 
-
 - name: Swasti Maharani
   area: Mathematics
   year_since:
@@ -840,6 +842,14 @@ ass_ed:
   language: Bahasa Indonesian, English
   photo: "utiyah.jpg"
   
+- name: Vasanth N
+  area: Librarianship
+  year_since:
+  city: Mysore
+  country: India
+  language: Kannada, English
+  photo: "Vasanth.jpg"
+  
 - name: Weldy St-Fleur
   area: Social Sciences
   year_since:
@@ -855,13 +865,6 @@ ass_ed:
   country: Türkiye
   language: Turkish, English
   photo: "yalcin.jpg"
-
-- name: Yaping Liu
-  area: Medical and Healthcare Management
-  year_since:
-  city: Sydney
-  country: Australia
-  language: Chinese, English
 
 - name: Yulingga Nanda Hanief
   area: Sports Science
