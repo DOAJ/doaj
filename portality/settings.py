@@ -38,6 +38,9 @@ DEBUG_PYCHARM_PORT = 6000
 DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
 DEBUG_TB_INTERCEPT_REDIRECTS = False
 
+# set to True to enable the env list panel in the debug toolbar
+DEBUG_TB_ENV_LIST_ENABLED = False
+
 #######################################
 # Elasticsearch configuration
 #~~->Elasticsearch:Technology
