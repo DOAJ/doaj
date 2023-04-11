@@ -1,0 +1,21 @@
+.timeline {
+  @extend .unstyled-list; 
+
+  // The dates headings
+  h3 {
+
+  }
+
+  // The contents for each section
+  ul {
+    @extend .unstyled-list; 
+
+    > li:first-child {
+      // styles for heading here 
+
+      + li {
+        // styles for paragraph/content here
+      }
+    }
+  }
+}
