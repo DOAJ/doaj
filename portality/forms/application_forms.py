@@ -1818,7 +1818,10 @@ class FieldDefinitions:
         "name": "note_author",
         "group": "notes",
         "input": "text",
-        "disabled": True
+        "disabled": True,
+        "help": {
+            "placeholder": "Original author unknown",
+        },
     }
 
     # ~~->$ NoteDate:FormField~~
