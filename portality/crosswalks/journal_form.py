@@ -434,8 +434,9 @@ class JournalGenericXWalk(object):
         forminfo['notes'] = []
         for n in obj.ordered_notes:
             author_id = n.get('author_id', '')
+            note_author_name = f'{Account.get_name_safe(author_id)}({author_id})'
             note_obj = {'note': n['note'], 'note_date': n['date'], 'note_id': n['id'],
-                        'note_author': Account.get_name_safe(author_id) or author_id,
+                        'note_author': note_author_name,
                         'note_author_id': author_id,
                         }
             forminfo['notes'].append(note_obj)
