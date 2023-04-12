@@ -1,3 +1,23 @@
+.at-twenty main {
+  font-size: 20px; 
+  h1 {
+    font-size: 3em;
+    text-transform: uppercase;
+    font-weight: 900;
+  }
+
+  h2 {
+    @include typescale-05;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-align: center;
+    color: $warm-black;
+    margin: $spacing-06 0 $spacing-05 0;
+    padding-bottom: $spacing-03;
+    border-bottom: $spacing-01 solid;
+  }
+}
+
 .timeline {
   @extend .unstyled-list; 
 
@@ -28,11 +48,27 @@
   justify-content: space-between;
   gap: 1em;
 
+  // Each event
   > li {
     flex: 30%;
+    padding: .75em;
+    border-radius: .25em;
+
+    &:nth-child(1) {
+      background-color: $yellow;
+    }
+
+    &:nth-child(2) {
+      background-color: $light-green;
+    }
+
+    &:nth-child(3) {
+      background-color: $mid-green;
+    }
 
     ul {
-      @extend .unstyled-list; 
+      @extend .unstyled-list;
+      margin: 0;
     }
   }
 }
