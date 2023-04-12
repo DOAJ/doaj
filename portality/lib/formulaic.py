@@ -110,7 +110,6 @@ from portality.lib import plugin
 from flask import render_template
 import json
 
-
 UI_CONFIG_FIELDS = [
     "label",
     "input",
@@ -148,7 +147,7 @@ class Formulaic(object):
         self._function_map = function_map
         self._javascript_functions = javascript_functions
 
-    def context(self, context_name, extra_param=None) -> Optional['FormulaicContext']:
+    def context(self, context_name, extra_param: Dict = None) -> Optional['FormulaicContext']:
         context_def = deepcopy(self._definition.get("contexts", {}).get(context_name))
         if context_def is None:
             return None
@@ -159,7 +158,8 @@ class Formulaic(object):
         for fsn in fieldsets:
             fieldset_def = deepcopy(self._definition.get("fieldsets", {}).get(fsn))
             if fieldset_def is None:
-                raise FormulaicException("Unable to locate fieldset with name {x} in context {y}".format(x=fsn, y=context_name))
+                raise FormulaicException("Unable to locate fieldset with name {x} in context {y}"
+                                         .format(x=fsn, y=context_name))
             fieldset_def["name"] = fsn
 
             expanded_fields = self._process_fields(context_name, fieldset_def.get("fields", []))
@@ -319,7 +319,7 @@ class FormulaicContext(object):
             for field in fieldset.get("fields", []):
                 if "group" in field:
                     continue
-                #if "subfield" in field:
+                # if "subfield" in field:
                 #    continue
                 fields.append(field)
 
@@ -473,7 +473,8 @@ class FormulaicContext(object):
 
         with open(out_file, "w", encoding="utf-8") as f:
             writer = csv.writer(f)
-            writer.writerow(["Form Position", "Field Name", "Label", "Input Type", "Options", "Disabled?", "Fieldset ID"])
+            writer.writerow(["Form Position", "Field Name", "Label", "Input Type",
+                             "Options", "Disabled?", "Fieldset ID"])
             i = 1
             for fs in self.fieldsets():
                 for field in fs.fields():
@@ -483,6 +484,7 @@ class FormulaicContext(object):
                         for sf in field.group_subfields():
                             _make_row(i, fs, field, sf, writer)
                             i += 1
+
 
 # ~~->$ FormulaicFieldset:Feature~~
 class FormulaicFieldset(object):
@@ -528,13 +530,14 @@ class FormulaicFieldset(object):
 
         raise AttributeError('{name} is not set'.format(name=name))
 
+
 # ~~->$ FormulaicField:Feature~~
 class FormulaicField(object):
     def __init__(self, definition, parent):
         self._definition = definition
         self._formulaic_fieldset = parent
 
-        self.wtfinst : Optional[Field] = None  # used by some plugins function
+        self.wtfinst: Optional[Field] = None  # used by some plugins function
 
     def find_related_form_field(self, fieldset_name, formulaic_context: 'FormulaicContext') -> Optional[FormField]:
         """ Find the "parent" FormField of self.wtfinst in the given fieldset.
@@ -776,15 +779,16 @@ class FormulaicField(object):
                 vname = list(v.keys())[0]
                 args = v[vname]
             if vname not in vfuncs:
-                raise FormulaicException("No validate WTForms function defined for {x} in python function references".format(x=vname))
+                raise FormulaicException("No validate WTForms function defined for {x} in python function references"
+                                         .format(x=vname))
             vfn = vfuncs[vname]
             if isinstance(vfn, str):
                 vfn = plugin.load_function(vfn)
             validators.append(vfn(field, args))
 
         wtargs = {
-            "label" : field.get("label"),
-            "validators" : validators,
+            "label": field.get("label"),
+            "validators": validators,
             "description": field.get("help", {}).get("description"),
         }
         if "default" in field:
@@ -825,9 +829,10 @@ class FormulaicField(object):
 
         return choices
 
+
 # ~~->$ FormProcessor:Feature~~
 class FormProcessor(object):
-    def __init__(self, formdata=None, source=None, parent: FormulaicContext=None):
+    def __init__(self, formdata=None, source=None, parent: FormulaicContext = None):
         # initialise our core properties
         self._source = source
         self._target = None
@@ -974,7 +979,8 @@ class FormProcessor(object):
         # patch over any disabled fields
         disableds = self._formulaic.disabled_fields()
         if len(disableds) > 0:
-            alt_formulaic = self._formulaic.__class__(self._formulaic.name, self._formulaic._definition, self._formulaic._formulaic)
+            alt_formulaic = self._formulaic.__class__(self._formulaic.name, self._formulaic._definition,
+                                                      self._formulaic._formulaic)
             other_processor = alt_formulaic.processor(source=self.source)
             other_form = other_processor.form
             for dis in disableds:
