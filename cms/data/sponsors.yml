@@ -55,6 +55,10 @@ silver:
 - name: Taylor & Francis Group
   url: https://www.taylorandfrancisgroup.com/
   logo: tf.svg  
+  
+- name: John Wiley and Sons LTD
+  url: https://www.wiley.com/en-us 
+  logo: Wiley_Wordmark_black.png
 
 
 bronze:
@@ -85,10 +89,10 @@ bronze:
 - name: IEEE
   url: https://www.ieee.org/
   logo: ieee.png
-
-- name: The Institution of Engineering and Technology (IET)
-  url: https://www.theiet.org/
-  logo: iet.svg
+  
+- name: Institute of Physics
+  url: https://www.iop.org/
+  logo: iop.jpg
 
 - name: Karger
   url: https://www.karger.com/
@@ -113,4 +117,4 @@ bronze:
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg  
-  
+   

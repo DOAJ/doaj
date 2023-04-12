@@ -1,16 +1,6 @@
 # ~~PublisherSupporters:Data~~
-
-- name: Alexander Galushkin Publishing House
-  url: https://publishing.agalushkin.ru/
-
-- name: Andover House, Inc.
-  url: https://andoverhouse.org/
-
 - name: Cogitatio Press
   url: https://www.cogitatiopress.com/
-
-- name: Corporación Universitaria Republicana
-  url: https://urepublicana.edu.co/
 
 - name: Faculty of Communication, Universitas Tarumanagara
   url: https://fikom.untar.ac.id/
@@ -21,20 +11,8 @@
 - name: INCAS - National Institute for Aerospace Research “Elie Carafoli”, INCAS Bucuresti
   url: https://www.gruppofrattura.it/sito/en/
 
-- name: International Medical Research and Development Corporation
-  url: https://imrdcorp.org/
-
 - name: Italian Society of Victimology
   url: https://www.vittimologia.it/rivista
-
-- name: Journal of Degraded and Mining Lands Management
-  url: https://www.jdmlm.ub.ac.id/index.php/jdmlm
-
-- name: Korea Health Personnel Licensing Examination Institute (Journal of Educational Evaluation for Health Professions)
-  url: https://jeehp.org/
-
-- name: Ontario International Development Agency
-  url: https://www.ontariointernational.org/
 
 - name: Open Academia
   url: https://www.openacademia.net/
@@ -47,9 +25,3 @@
 
 - name: Springer Nature
   url: https://www.springernature.com/gp
-
-- name: Verduci Editore
-  url: https://www.verduci.it/en/
-
-- name: Wiley
-  url: https://www.wiley.com/en-us
