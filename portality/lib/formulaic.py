@@ -100,15 +100,18 @@ CONTEXT_EXAMPLE = {
 """
 import csv
 import itertools
+import json
+import logging
 from copy import deepcopy
 from typing import Optional, Dict, Iterable
 
+from flask import render_template
 from wtforms import Form
 from wtforms.fields.core import UnboundField, FieldList, FormField, Field
 
 from portality.lib import plugin
-from flask import render_template
-import json
+
+log = logging.getLogger(__name__)
 
 UI_CONFIG_FIELDS = [
     "label",
@@ -546,10 +549,16 @@ class FormulaicField(object):
         wtfinst is subfield of FormField, and you need data of other subfields and
         FormField inst contain all data of subfields.
 
+        self.wtfinst should be defined before calling this method.
+
         :param fieldset_name:
         :param formulaic_context:
         :return:
         """
+
+        if not self.wtfinst:
+            log.debug('wtfinst is not defined, cannot find related form field with find_related_form_field')
+            return None
 
         fields: Iterable[FormField] = itertools.chain.from_iterable(
             f.wtfield for f in formulaic_context.fieldset(fieldset_name).fields())
