@@ -53,7 +53,7 @@
 
     <main class="container page-content">
         <header>
-          {% if journal.last_updated_since(days=30) %}
+          {% if journal.last_manually_updated_since(days=30) %}
           <span class="label label--secondary">
               <span data-feather="clock" aria-hidden="true"></span>
               <span title="Updated {{journal.last_manual_update_timestamp.strftime("%e %B %Y")}}">Updated recently</span>
