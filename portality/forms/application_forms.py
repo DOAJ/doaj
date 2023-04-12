@@ -2507,7 +2507,8 @@ def disable_edit_note_except_cur_user(field: FormulaicField,
     """
 
     # ~~->Notes:Feature~~
-    cur_user_id = formulaic_context.extra_param.get('cur_user', {}).get('id')
+    cur_user = formulaic_context.extra_param.get('cur_user')
+    cur_user_id = cur_user and cur_user.id
     form_field: FormField  = field.find_related_form_field('notes', formulaic_context)
     if form_field is None:
         return True

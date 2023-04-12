@@ -6,6 +6,7 @@ from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.forms.application_forms import disable_edit_note_except_cur_user, JournalFormFactory
 from portality.lib.formulaic import FormulaicField
+from portality.models import Account
 from portality.util import url_for
 import bs4
 
@@ -26,7 +27,7 @@ def edit_note_cases():
 ])
 def test_disable_edit_note_except_cur_user(user_id, expected_result):
     formulaic_context = JournalFormFactory.context("associate_editor", extra_param={
-        'cur_user': {'id': user_id},
+        'cur_user': Account(id=user_id),
     })
     formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
     note_field: FormulaicField = formulaic_context.fieldset('notes').fields()[0].group_subfields()[0]
