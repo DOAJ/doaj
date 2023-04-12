@@ -19,3 +19,20 @@
     }
   }
 }
+
+.events {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
+  gap: 1em;
+
+  > li {
+    flex: 30%;
+
+    ul {
+      @extend .unstyled-list; 
+    }
+  }
+}
