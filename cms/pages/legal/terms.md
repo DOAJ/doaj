@@ -37,20 +37,20 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 ---
 
 ### Copyright
-5. Copyright of this site and the intellectual property contained in it is owned by IS4OA and defaults to all rights reserved unless otherwise specified.
+5. Copyright of this site and the intellectual property contained in it is owned by Infrastructure Services for Open Access C.I.C. ("IS4OA") and defaults to all rights reserved unless otherwise specified.
 
-6. Reproduction of DOAJ content on this website is prohibited unless express permission is given by IS4OA.
+6. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by IS4OA.
 
 7. Except where expressly noted, no license is granted in respect of any intellectual property rights vested in IS4OA or other third parties.
 
 ---
 
 ### Conditions of using this website
-8. Use of this website is subject to the following Terms and Conditions. By using this website you agree to be bound by these Terms and Conditions which form a binding contract between you and [Infrastructure for Open Access C.I.C.](https://is4oa.org/) (“IS4OA”), the company responsible for providing the DOAJ (Directory of Open Access Journals) service.
+8. Use of this website is subject to the following Terms and Conditions. By using this website you agree to be bound by these Terms and Conditions which form a binding contract between you and [Infrastructure Services for Open Access C.I.C.](https://is4oa.org/), the company responsible for providing the DOAJ (Directory of Open Access Journals) service.
 
 9. You confirm that you have read and accept [our Privacy policy](/privacy/).
 
-10. IS4OA reserves the right to suspend or terminate your account at any time without notice.
+10. IS4OA reserves the right to suspend or terminate your account at any time without notice. Written notice will be provided twenty-four (24) hours in advance.
 
 11. You may only redistribute the content of this website or create a database, in electronic form or manually, by downloading and storing any such content in accordance with the license of the applicable OA Content Creative Commons license. You should seek prior permission from IS4OA.
 
