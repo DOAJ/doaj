@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 from time import sleep
 from typing import Type, Union
@@ -59,6 +60,18 @@ class ArticleXmlUploadSTC(SeleniumTestCase):
         assert alert_ele
         assert err_msg in alert_ele.text
 
+        for _ in range(3):
+            time.sleep(0.5) # wait for es update history of uploads
+            self.selenium.refresh()
+            rows = find_history_rows(self.selenium)
+            if rows:
+                break
+
+        assert rows
+        history_row_text = rows[0].text
+        assert Path(file_path).name in history_row_text
+        assert 'failed' in history_row_text
+
     def test_new_article_success(self):
         """ similar to "Successfully upload a file containing a new article" from testbook """
 
@@ -78,14 +91,11 @@ class ArticleXmlUploadSTC(SeleniumTestCase):
         # goto upload page and upload article xml file
         selenium_helpers.goto(self.selenium, URL_PUBLISHER_UPLOADFILE)
 
-        def _find_history_rows():
-            return self.selenium.find_elements(By.CSS_SELECTOR, "#previous_files tbody tr")
-
         n_file_upload = models.FileUpload.count()
-        n_org_rows = len(_find_history_rows())
+        n_org_rows = len(find_history_rows(self.selenium))
         self.upload_submit_file(ARTICLE_UPLOAD_SUCCESSFUL)
 
-        new_rows = _find_history_rows()
+        new_rows = find_history_rows(self.selenium)
         assert n_org_rows + 1 == len(new_rows)
         assert 'pending' in new_rows[0].text
         assert n_file_upload + 1 == models.FileUpload.count()
@@ -101,9 +111,13 @@ class ArticleXmlUploadSTC(SeleniumTestCase):
 
         # back to /publisher/uploadfile check status updated
         selenium_helpers.goto(self.selenium, URL_PUBLISHER_UPLOADFILE)
-        new_rows = _find_history_rows()
+        new_rows = find_history_rows(self.selenium)
         assert 'successfully processed 1 articles imported' in new_rows[0].text
 
         selenium_helpers.goto(self.selenium, url_path.url_toc(bib.eissn))
         assert 'The Title' in self.selenium.find_element(
             By.CSS_SELECTOR, 'main.page-content header h1').text
+
+
+def find_history_rows(driver):
+    return driver.find_elements(By.CSS_SELECTOR, "#previous_files tbody tr")
