@@ -94,6 +94,11 @@ class ConstantList:
         return (getattr(cls, n) for n in att_names)
 
 
+class FileUploadStatus(ConstantList):
+    Processed = 'processed'
+    Failed = 'failed'
+
+
 class BgjobOutcomeStatus(ConstantList):
     Pending = 'pending'
     Success = 'success'

@@ -5,6 +5,7 @@ from typing import Type, Union
 
 from parameterized import parameterized
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 
 from doajtest import selenium_helpers
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, url_path, article_doajxml
@@ -12,6 +13,9 @@ from doajtest.fixtures.article_doajxml import ARTICLE_UPLOAD_SUCCESSFUL
 from doajtest.fixtures.url_path import URL_PUBLISHER_UPLOADFILE
 from doajtest.selenium_helpers import SeleniumTestCase
 from portality import models, dao
+from portality.constants import FileUploadStatus
+
+HISTORY_ROW_PROCESSING_FAILED = 'processing failed'
 
 
 def get_latest(domain_obj: Union[Type[dao.DomainObject], dao.DomainObject]):
@@ -25,10 +29,7 @@ def get_latest(domain_obj: Union[Type[dao.DomainObject], dao.DomainObject]):
 class ArticleXmlUploadSTC(SeleniumTestCase):
 
     def goto_upload_page(self, acc: models.Account = None):
-        if acc:
-            publisher = acc
-        else:
-            publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+        publisher = acc or create_publisher_a()
         selenium_helpers.login_by_acc(self.selenium, publisher)
         selenium_helpers.goto(self.selenium, URL_PUBLISHER_UPLOADFILE)
         return publisher
@@ -63,39 +64,45 @@ class ArticleXmlUploadSTC(SeleniumTestCase):
         assert err_msg in alert_ele.text
 
         for _ in range(3):
-            time.sleep(0.5) # wait for es update history of uploads
+            time.sleep(0.5)  # wait for es update history of uploads
             self.selenium.refresh()
             rows = find_history_rows(self.selenium)
             if rows:
                 break
 
         assert rows
-        history_row_text = rows[0].text
-        assert Path(file_path).name in history_row_text
-        assert 'processing failed' in history_row_text
+        self.assert_history_row(rows[0], status_msg='processing failed', file_path=file_path)
 
-    def test_new_article_success(self):
-        """ similar to "Successfully upload a file containing a new article" from testbook """
+    def assert_history_row(self, history_row, status_msg=None, file_path=None, note=None):
+        history_row_text = history_row.text
+        if file_path:
+            assert Path(file_path).name in history_row_text
 
-        publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+        if status_msg:
+            assert status_msg in history_row_text
 
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-        journal.set_owner(publisher.id)
-        bib = journal.bibjson()
-        bib.pissn = '1111-1111'
-        bib.eissn = '2222-2222'
-        journal.bibjson().is_replaced_by = []
-        journal.bibjson().replaces = []
-        journal.save(blocking=True)
+        if note:
+            assert note in history_row_text
 
-        self.goto_upload_page(acc=publisher)
+    def test_duplicates_inside_the_file(self):
+        """ similar to "Upload a file with duplicates inside the file" from testbook """
+        publisher = create_publisher_a()
+        create_journal_a(publisher)
 
-        # goto upload page and upload article xml file
-        selenium_helpers.goto(self.selenium, URL_PUBLISHER_UPLOADFILE)
+        self.goto_upload_page(publisher)
 
+        Select(self.selenium.find_element(By.ID, 'upload-xml-format')).select_by_value('doaj')
+
+        file_path = article_doajxml.DUPLICATE_IN_FILE
+        history_row = self.assert_pending_wait_bgjob(file_path, FileUploadStatus.Failed)
+
+        self.assert_history_row(history_row, status_msg=HISTORY_ROW_PROCESSING_FAILED, file_path=file_path,
+                                note='One or more articles in this batch have duplicate identifiers')
+
+    def assert_pending_wait_bgjob(self, file_path, expected_bgjob_status):
         n_file_upload = models.FileUpload.count()
         n_org_rows = len(find_history_rows(self.selenium))
-        self.upload_submit_file(ARTICLE_UPLOAD_SUCCESSFUL)
+        self.upload_submit_file(file_path)
 
         new_rows = find_history_rows(self.selenium)
         assert n_org_rows + 1 == len(new_rows)
@@ -107,18 +114,49 @@ class ArticleXmlUploadSTC(SeleniumTestCase):
         new_file_upload: models.FileUpload = get_latest(models.FileUpload)
 
         # trigger upload article background job by function call
-        print(new_file_upload)
-        assert new_file_upload.filename == Path(ARTICLE_UPLOAD_SUCCESSFUL).name
-        assert new_file_upload.status == 'processed'
+        assert new_file_upload.filename == Path(file_path).name
+        assert new_file_upload.status == expected_bgjob_status
 
         # back to /publisher/uploadfile check status updated
         selenium_helpers.goto(self.selenium, URL_PUBLISHER_UPLOADFILE)
         new_rows = find_history_rows(self.selenium)
-        assert 'successfully processed 1 articles imported' in new_rows[0].text
+        return new_rows[0]
 
-        selenium_helpers.goto(self.selenium, url_path.url_toc(bib.eissn))
+    def test_new_article_success(self):
+        """ similar to "Successfully upload a file containing a new article" from testbook """
+
+        publisher = create_publisher_a()
+
+        journal = create_journal_a(publisher)
+
+        # goto upload page and upload article xml file
+        self.goto_upload_page(acc=publisher)
+
+        latest_history_row = self.assert_pending_wait_bgjob(
+            ARTICLE_UPLOAD_SUCCESSFUL, FileUploadStatus.Processed)
+        # assert 'successfully processed 1 articles imported' in latest_history_row.text
+        self.assert_history_row(latest_history_row, note='successfully processed 1 articles imported')
+
+        selenium_helpers.goto(self.selenium, url_path.url_toc(journal.bibjson().eissn))
         assert 'The Title' in self.selenium.find_element(
             By.CSS_SELECTOR, 'main.page-content header h1').text
+
+
+def create_journal_a(publisher) -> models.Journal:
+    journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+    journal.set_owner(publisher.id)
+    bib = journal.bibjson()
+    bib.pissn = '1111-1111'
+    bib.eissn = '2222-2222'
+    bib.is_replaced_by = []
+    bib.replaces = []
+    journal.save(blocking=True)
+    return journal
+
+
+def create_publisher_a():
+    publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+    return publisher
 
 
 def find_history_rows(driver):
