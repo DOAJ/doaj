@@ -16,6 +16,7 @@ NON_XML_FILE = join(PATH_XML, 'non_xml_file.txt')
 PATH_XML_DOAJ = join(PATH_XML, 'DOAJ')
 ARTICLE_UPLOAD_SUCCESSFUL = join(PATH_XML_DOAJ, 'successful.xml')
 SCHEMA_INVALID = join(PATH_XML_DOAJ, 'schema_invalid.xml')
+XML_MALFORMED = join(PATH_XML_DOAJ, 'not_xml.xml')
 
 
 

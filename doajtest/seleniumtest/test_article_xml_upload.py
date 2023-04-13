@@ -46,10 +46,12 @@ class ArticleXmlUploadSTC(SeleniumTestCase):
             By.CSS_SELECTOR, '.form__question .error').text
 
     @parameterized.expand([
-        # case "Upload an XML file which does not meet the DOAJ schema"
-        (article_doajxml.SCHEMA_INVALID, 'Unable to validate document with identified schema'),
         # case "Upload a file which is not XML"
         (article_doajxml.NON_XML_FILE, 'Unable to parse XML file'),
+        # case "Upload an XML file which does not meet the DOAJ schema"
+        (article_doajxml.SCHEMA_INVALID, 'Unable to validate document with identified schema'),
+        # case "Upload a malformed XML file"
+        (article_doajxml.XML_MALFORMED, 'Unable to parse XML file'),
     ])
     def test_upload_fail(self, file_path, err_msg):
         """ cases about upload article failed with error message """
@@ -70,7 +72,7 @@ class ArticleXmlUploadSTC(SeleniumTestCase):
         assert rows
         history_row_text = rows[0].text
         assert Path(file_path).name in history_row_text
-        assert 'failed' in history_row_text
+        assert 'processing failed' in history_row_text
 
     def test_new_article_success(self):
         """ similar to "Successfully upload a file containing a new article" from testbook """
