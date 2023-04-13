@@ -20,12 +20,14 @@ ANNOTATION_STRUCT = {
     "structs": {
         "annotations": {
             "fields": {
+                "id": {"coerce": "unicode"},
                 "field": {"coerce": "unicode"},
                 "original_value": {"coerce": "unicode"},
                 "replaced_value": {"coerce": "unicode"},
                 "advice": {"coerce": "unicode"},
                 "reference_url": {"coerce": "unicode"},
-                "annotator": {"coerce": "unicode"}
+                "annotator": {"coerce": "unicode"},
+                "dismissed": {"coerce": "bool"}
             },
             "lists": {
                 "suggested_value": {"contains": "field", "coerce": "unicode"}
@@ -113,12 +115,30 @@ class Annotation(SeamlessMixin, DomainObject):
             obj["annotator"] = annotator
 
         # ensure we add the annotation only once
-        self.__seamless__.delete_from_list("annotations", val=obj)
-        self.__seamless__.add_to_list_with_struct("annotations", obj)
+        exists = self.__seamless__.exists_in_list("annotations", val=obj)
+
+        # now give this annotation an id and add it
+        if not exists:
+            obj["id"] = self.makeid()
+            self.__seamless__.add_to_list_with_struct("annotations", obj)
 
     @property
     def annotations(self):
         return self.__seamless__.get_list("annotations")
+
+    def dismiss(self, annotation_id):
+        annos = self.annotations
+        for anno in annos:
+            if anno.get("id") == annotation_id:
+                anno["dismissed"] = True
+                break
+
+    def undismiss(self, annotation_id):
+        annos = self.annotations
+        for anno in annos:
+            if anno.get("id") == annotation_id:
+                del anno["dismissed"]
+                break
 
 
 class ApplicationQuery(object):

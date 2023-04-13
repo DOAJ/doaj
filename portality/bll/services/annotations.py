@@ -56,3 +56,19 @@ class AnnotationsService(object):
 
         new_annotations.save()
         logger("Saved new annotation document {id}".format(id=new_annotations.id))
+
+    def dismiss(self, annotation_set_id, annotation_id):
+        annotations = models.Annotation.pull(annotation_set_id)
+        if annotations is None:
+            return False
+        annotations.dismiss(annotation_id)
+        annotations.save()
+        return True
+
+    def undismiss(self, annotation_set_id, annotation_id):
+        annotations = models.Annotation.pull(annotation_set_id)
+        if annotations is None:
+            return False
+        annotations.undismiss(annotation_id)
+        annotations.save()
+        return True

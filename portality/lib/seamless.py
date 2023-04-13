@@ -464,6 +464,32 @@ class SeamlessData(object):
         # otherwise, append
         current.append(val)
 
+    def exists_in_list(self, path, val=None, matchsub=None, apply_struct_on_matchsub=True):
+        l = self.get_list(path)
+
+        for entry in l:
+            if val is not None:
+                if entry == val:
+                    return True
+            elif matchsub is not None:
+                # attempt to coerce the sub
+                if apply_struct_on_matchsub:
+                    try:
+                        type, struct, instructions = self._struct.lookup(path)
+                        if struct is not None:
+                            matchsub = struct.construct(matchsub, struct).data
+                    except:
+                        pass
+
+                matches = 0
+                for k, v in matchsub.items():
+                    if entry.get(k) == v:
+                        matches += 1
+                if matches == len(list(matchsub.keys())):
+                    return True
+
+        return False
+
     def delete_from_list(self, path, val=None, matchsub=None, prune=True, apply_struct_on_matchsub=True):
         """
         Note that matchsub will be coerced with the struct if it exists, to ensure

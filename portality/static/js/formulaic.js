@@ -1091,19 +1091,29 @@ var formulaic = {
                     return;
                 }
 
-                let frag = "<ul>";
+                let listClass = edges.css_classes(this.namespace, "annotations")
+                let frag = `<ul class="${listClass}">`;
                 for (let anno of annos) {
                     frag += this._renderAnnotation(anno)
                 }
                 frag += `</ul>`;
 
+                let listSelector = edges.css_class_selector(this.namespace, "annotations")
                 let elements = this.form.controlSelect.input({name: this.fieldDef.name});
                 for (var i = 0; i < elements.length; i++) {
                     let el = $(elements[i]);
+                    let sibs = el.siblings(listSelector)
+                    sibs.remove();
                     el.after(frag);
                 }
 
                 feather.replace();
+
+                let dismissSelector = edges.css_class_selector(this.namespace, "dismiss");
+                edges.on(dismissSelector, "click", this, "dismiss");
+
+                let undismissSelector = edges.css_class_selector(this.namespace, "undismiss");
+                edges.on(undismissSelector, "click", this, "undismiss");
             }
 
             this._getAnnotationsForField = function() {
@@ -1122,11 +1132,19 @@ var formulaic = {
             this._renderAnnotation = function(annotation) {
                 let frag = "<li>";
 
-                if (annotation.annotator && doaj.annotators &&
-                        doaj.annotators.registry.hasOwnProperty(annotation.annotator)) {
-                    frag += (new doaj.annotators.registry[annotation.annotator]()).draw(annotation)
+                if (annotation.hasOwnProperty("dismissed") && annotation.dismissed) {
+                    let undismissClass = edges.css_classes(this.namespace, "undismiss");
+                    frag += `Annotation ${annotation.id} was dismissed (<a href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${undismissClass}">Undismiss</a>)`;
+
                 } else {
-                    frag += this._defaultRender(annotation);
+                    if (annotation.annotator && doaj.annotators &&
+                        doaj.annotators.registry.hasOwnProperty(annotation.annotator)) {
+                        frag += (new doaj.annotators.registry[annotation.annotator]()).draw(annotation)
+                    } else {
+                        frag += this._defaultRender(annotation);
+                    }
+                    let dismissClass = edges.css_classes(this.namespace, "dismiss");
+                    frag += ` (<a href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${dismissClass}">Dismiss</a>)`;
                 }
 
                 frag += `</li>`;
@@ -1148,6 +1166,60 @@ var formulaic = {
                     frag += `(Original value when automated checks ran: ${annotation.original_value})`
                 }
                 return frag;
+            }
+
+            this.dismiss = function(element) {
+                let el = $(element);
+                let annotationSet = el.attr("data-annotation-set")
+                let annotationId = el.attr("data-annotation");
+                let url = "/service/annotation/dismiss/" + annotationSet + "/" + annotationId;
+                let that = this;
+                $.ajax({
+                    method: "post",
+                    url: url,
+                    error: function(data) {
+                        alert("There was an error dismissing the annotation, please try again");
+                    },
+                    success: function(data) {
+                        that.dismissSuccess(annotationId);
+                    }
+                })
+            }
+
+            this.dismissSuccess = function(annotationId) {
+                for (let anno of doaj.annotations.annotations) {
+                    if (anno.id === annotationId) {
+                        anno.dismissed = true;
+                    }
+                }
+                this.init();
+            }
+
+            this.undismiss = function(element) {
+                let el = $(element);
+                let annotationSet = el.attr("data-annotation-set")
+                let annotationId = el.attr("data-annotation");
+                let url = "/service/annotation/undismiss/" + annotationSet + "/" + annotationId;
+                let that = this;
+                $.ajax({
+                    method: "post",
+                    url: url,
+                    error: function(data) {
+                        alert("There was an error undismissing the annotation, please try again");
+                    },
+                    success: function(data) {
+                        that.undismissSuccess(annotationId);
+                    }
+                })
+            }
+
+            this.undismissSuccess = function(annotationId) {
+                for (let anno of doaj.annotations.annotations) {
+                    if (anno.id === annotationId) {
+                        anno.dismissed = false;
+                    }
+                }
+                this.init();
             }
 
             this.init();
