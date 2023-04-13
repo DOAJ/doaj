@@ -5,10 +5,18 @@ from lxml import etree
 
 from portality.lib import paths
 
-RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "doajxml_article_uploads.xml")
+from os.path import join
 
-ARTICLE_UPLOAD_SUCCESSFUL = os.path.join(paths.get_project_root(), 'doajtest/xml_upload_test_package/DOAJ/successful.xml')
+RESOURCES = join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
+ARTICLES = join(RESOURCES, "doajxml_article_uploads.xml")
+
+PATH_XML = join(paths.get_project_root(), 'doajtest/xml_upload_test_package/')
+NON_XML_FILE = join(PATH_XML, 'non_xml_file.txt')
+
+PATH_XML_DOAJ = join(PATH_XML, 'DOAJ')
+ARTICLE_UPLOAD_SUCCESSFUL = join(PATH_XML_DOAJ, 'successful.xml')
+SCHEMA_INVALID = join(PATH_XML_DOAJ, 'schema_invalid.xml')
+
 
 
 

@@ -1,3 +1,4 @@
+import time
 from multiprocessing import Process
 from typing import TYPE_CHECKING
 
@@ -66,6 +67,7 @@ class SeleniumTestCase(DoajTestCase):
         print('doaj process terminated')
 
         self.selenium.quit()
+        time.sleep(5)  # wait for selenium to quit
 
     @classmethod
     def get_doaj_url(cls) -> str:
