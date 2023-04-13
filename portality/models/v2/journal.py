@@ -166,7 +166,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return self.__seamless__.get_single("last_manual_update")
     
     def last_manually_updated_since(self, days=0):
-        return self.last_manual_update > (datetime.utcnow() - timedelta(days=days))
+        return self.last_manual_update_timestamp > (datetime.utcnow() - timedelta(days=days))
 
     @property
     def last_manual_update_timestamp(self):
