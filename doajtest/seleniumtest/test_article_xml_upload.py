@@ -27,7 +27,8 @@ def get_latest(domain_obj: Union[Type[dao.DomainObject], dao.DomainObject]):
     return next(obj, None)
 
 
-class ArticleXmlUploadSTC(SeleniumTestCase):
+class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
+    """ testbook: article_xml_upload/doaj_xml """
 
     def goto_upload_page(self, acc: models.Account = None):
         publisher = acc or create_publisher_a()
