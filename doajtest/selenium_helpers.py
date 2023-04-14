@@ -112,3 +112,12 @@ def login_by_acc(driver: 'WebDriver', acc: models.Account = None):
         traceback.print_exc()
         breakpoint()
     assert "/login" not in driver.current_url
+
+
+def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1):
+    start = time.time()
+    while (time.time() - start) < timeout:
+        if exit_cond_fn():
+            return
+        time.sleep(check_interval)
+    raise TimeoutError(f"wait_unit timeout after {timeout} seconds")

@@ -97,6 +97,8 @@ class ConstantList:
 class FileUploadStatus(ConstantList):
     Processed = 'processed'
     Failed = 'failed'
+    Incoming = 'incoming'
+    Validated = 'validated'
 
 
 class BgjobOutcomeStatus(ConstantList):

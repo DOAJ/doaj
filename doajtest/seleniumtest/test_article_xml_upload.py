@@ -121,7 +121,12 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
         assert 'pending' in new_rows[0].text
         assert n_file_upload + 1 == models.FileUpload.count()
 
-        sleep(14)  # wait for background job to finish
+        # wait for background job to finish
+        selenium_helpers.wait_unit(
+            lambda: get_latest(models.FileUpload).status not in (
+                FileUploadStatus.Validated, FileUploadStatus.Incoming),
+            timeout=15,
+        )
 
         new_file_upload: models.FileUpload = get_latest(models.FileUpload)
 
