@@ -17,6 +17,7 @@ from portality import models, dao
 from portality.constants import FileUploadStatus
 
 HISTORY_ROW_PROCESSING_FAILED = 'processing failed'
+XML_FORMAT_DOAJ = 'doaj'
 
 
 def get_latest(domain_obj: Union[Type[dao.DomainObject], dao.DomainObject]):
@@ -96,7 +97,7 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
         self.select_xml_format_by_value('doaj')
 
         file_path = article_doajxml.DUPLICATE_IN_FILE
-        history_row = self.assert_pending_wait_bgjob(file_path, FileUploadStatus.Failed)
+        history_row = self.upload_pending_wait_bgjob(file_path, FileUploadStatus.Failed, XML_FORMAT_DOAJ)
 
         self.assert_history_row(history_row, status_msg=HISTORY_ROW_PROCESSING_FAILED, file_path=file_path,
                                 note='One or more articles in this batch have duplicate identifiers')
@@ -104,7 +105,12 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
     def select_xml_format_by_value(self, value):
         Select(self.selenium.find_element(By.ID, 'upload-xml-format')).select_by_value(value)
 
-    def assert_pending_wait_bgjob(self, file_path, expected_bgjob_status):
+    def upload_pending_wait_bgjob(self, file_path, expected_bgjob_status, xml_format=None):
+        # assume browser at publisher upload page
+
+        if xml_format:
+            self.select_xml_format_by_value(xml_format)
+
         n_file_upload = models.FileUpload.count()
         n_org_rows = len(find_history_rows(self.selenium))
         self.upload_submit_file(file_path)
@@ -144,16 +150,37 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
         publisher = create_publisher_a()
         self.goto_upload_page(publisher)
 
-        self.select_xml_format_by_value('doaj')
+        history_row = self.upload_pending_wait_bgjob(article_doajxml.UNOWNED_ISSN, FileUploadStatus.Failed,
+                                                     XML_FORMAT_DOAJ)
 
-        history_row = self.assert_pending_wait_bgjob(article_doajxml.UNOWNED_ISSN, FileUploadStatus.Failed)
-
-        self.assert_history_row(history_row, note='One or more articles failed to ingest')
+        self.assert_history_row(history_row,
+                                status_msg=HISTORY_ROW_PROCESSING_FAILED,
+                                note='One or more articles failed to ingest')
         self.js_click('.show_error_details')
+        time.sleep(0.5)  # wait for js to show details
 
         detail = find_history_rows(self.selenium)[0].find_element(By.CSS_SELECTOR, 'div[id^="details_"]').text
         assert 'If you believe you should own these ISSNs, please contact us with the details' in detail
         assert '0000-0000' in detail
+
+    def test_has_been_withdrawn(self):
+        """ similar to "Upload a file containing ISSN that has been withdrawn" from testbook """
+
+        publisher = create_publisher_a()
+        publisher.save()
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=False))
+        journal.set_owner(publisher.id)
+        journal.save(blocking=True)
+
+        self.goto_upload_page(publisher)
+
+        history_row = self.upload_pending_wait_bgjob(article_doajxml.WITHDRAWN_JOURNAL, FileUploadStatus.Failed,
+                                                     XML_FORMAT_DOAJ)
+
+        self.assert_history_row(history_row,
+                                status_msg=HISTORY_ROW_PROCESSING_FAILED,
+                                note='You are trying to add the articles to a journal that has been withdrawn from DOAJ')
 
     def test_new_article_success(self):
         """ similar to "Successfully upload a file containing a new article" from testbook """
@@ -165,8 +192,8 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
         # goto upload page and upload article xml file
         self.goto_upload_page(acc=publisher)
 
-        latest_history_row = self.assert_pending_wait_bgjob(
-            ARTICLE_UPLOAD_SUCCESSFUL, FileUploadStatus.Processed)
+        latest_history_row = self.upload_pending_wait_bgjob(ARTICLE_UPLOAD_SUCCESSFUL, FileUploadStatus.Processed,
+                                                            XML_FORMAT_DOAJ)
 
         self.assert_history_row(latest_history_row, note='successfully processed 1 articles imported')
 
