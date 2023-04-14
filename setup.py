@@ -20,7 +20,7 @@ setup(
         "jinja2<3.1.0",            # fixme: unpinned dependency of flask, import error on 'escape'
         "Flask~=2.1.2",
         "Flask-Cors==3.0.8",
-        "Flask-DebugToolbar==0.10.1",
+        "Flask-DebugToolbar==0.13.1",
         "Flask-Login==0.6.1",
         "Flask-Mail==0.9.1",
         "Flask-WTF==0.14.2",
