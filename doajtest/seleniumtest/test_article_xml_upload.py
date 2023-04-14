@@ -139,6 +139,23 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
         new_rows = find_history_rows(self.selenium)
         return new_rows[0]
 
+    def assert_one_or_more_articles_failed(self, publisher, file_path, expected_failed_issn,
+                                           expected_detail):
+        self.goto_upload_page(publisher)
+
+        history_row = self.upload_pending_wait_bgjob(file_path, FileUploadStatus.Failed,
+                                                     XML_FORMAT_DOAJ)
+
+        self.assert_history_row(history_row,
+                                status_msg=HISTORY_ROW_PROCESSING_FAILED,
+                                note='One or more articles failed to ingest')
+        self.js_click('.show_error_details')
+        time.sleep(0.5)  # wait for js to show details
+
+        detail = find_history_rows(self.selenium)[0].find_element(By.CSS_SELECTOR, 'div[id^="details_"]').text
+        assert expected_detail in detail
+        assert expected_failed_issn in detail
+
     def test_containing_issn_the_publisher_does_not_own(self):
         """ similar to "Upload a file containing ISSNs the publisher does not own" from testbook """
 
@@ -153,20 +170,10 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
         journal.save(blocking=True)
 
         publisher = create_publisher_a()
-        self.goto_upload_page(publisher)
-
-        history_row = self.upload_pending_wait_bgjob(article_doajxml.UNOWNED_ISSN, FileUploadStatus.Failed,
-                                                     XML_FORMAT_DOAJ)
-
-        self.assert_history_row(history_row,
-                                status_msg=HISTORY_ROW_PROCESSING_FAILED,
-                                note='One or more articles failed to ingest')
-        self.js_click('.show_error_details')
-        time.sleep(0.5)  # wait for js to show details
-
-        detail = find_history_rows(self.selenium)[0].find_element(By.CSS_SELECTOR, 'div[id^="details_"]').text
-        assert 'If you believe you should own these ISSNs, please contact us with the details' in detail
-        assert '0000-0000' in detail
+        self.assert_one_or_more_articles_failed(publisher, article_doajxml.UNOWNED_ISSN,
+                                                expected_failed_issn='0000-0000',
+                                                expected_detail='If you believe you should own these ISSNs, please contact us with the details',
+                                                )
 
     def test_has_been_withdrawn(self):
         """ similar to "Upload a file containing ISSN that has been withdrawn" from testbook """
@@ -186,6 +193,19 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
         self.assert_history_row(history_row,
                                 status_msg=HISTORY_ROW_PROCESSING_FAILED,
                                 note='You are trying to add the articles to a journal that has been withdrawn from DOAJ')
+
+    def test_issn_not_previously_seen_in_doaj(self):
+        """ similar to "Upload a file containing ISSNs not previously seen in DOAJ" from testbook """
+
+        publisher = create_publisher_a()
+        publisher.save()
+
+        journal = create_journal_a(publisher)
+        journal.save(blocking=True)
+
+        self.assert_one_or_more_articles_failed(publisher, article_doajxml.UNMATCHED_ISSN,
+                                                expected_failed_issn='5555-5555',
+                                                expected_detail='If you believe these ISSNs should be associated with a journal you own')
 
     def test_new_article_success(self):
         """ similar to "Successfully upload a file containing a new article" from testbook """
