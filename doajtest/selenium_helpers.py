@@ -56,7 +56,6 @@ class SeleniumTestCase(DoajTestCase):
 
         self.selenium = browser_driver
         self.selenium.maximize_window()  # avoid something is not clickable
-        self.selenium.implicitly_wait(10) # KTODO test if this is needed
 
         self.fix_es_mapping()
 
