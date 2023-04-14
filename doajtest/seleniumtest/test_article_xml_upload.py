@@ -207,6 +207,20 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
                                                 expected_failed_issn='5555-5555',
                                                 expected_detail='If you believe these ISSNs should be associated with a journal you own')
 
+    def test_upload_file_erroneously_shared_ISSNs(self):
+        """ similar to "Upload a file containing ISSNs erroneously shared with another account" from testbook """
+
+        publisher = create_publisher_a()
+        pub_b = models.Account(**PUBLISHER_B_SOURCE)
+        pub_b.save()
+
+        create_journal_by_issn(publisher=publisher, pissn='1111-1111', eissn='2222-2222')
+        create_journal_by_issn(publisher=pub_b, pissn='2222-2222', eissn='3333-3333')
+
+        self.assert_one_or_more_articles_failed(publisher, article_doajxml.SHARED_ISSN,
+                                                expected_failed_issn='2222-2222',
+                                                expected_detail='If you believe these ISSNs should be associated with a journal you own')
+
     def test_new_article_success(self):
         """ similar to "Successfully upload a file containing a new article" from testbook """
 
@@ -236,6 +250,20 @@ def create_journal_a(publisher) -> models.Journal:
     bib.is_replaced_by = []
     bib.replaces = []
     journal.save(blocking=True)
+    return journal
+
+def create_journal_by_issn(publisher=None, pissn=None, eissn=None, blocking=False) -> models.Journal:
+    journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+    if publisher is not None:
+        journal.set_owner(publisher.id)
+    bib = journal.bibjson()
+    if pissn is not None:
+        bib.pissn = pissn
+    if eissn is not None:
+        bib.eissn = eissn
+    bib.is_replaced_by = []
+    bib.replaces = []
+    journal.save(blocking=blocking)
     return journal
 
 

@@ -21,6 +21,7 @@ DUPLICATE_IN_FILE = join(PATH_XML_DOAJ, 'duplicate_in_file.xml')
 UNOWNED_ISSN = join(PATH_XML_DOAJ, 'unowned_issn.xml')
 WITHDRAWN_JOURNAL = join(PATH_XML_DOAJ, 'withdrawn_journal.xml')
 UNMATCHED_ISSN = join(PATH_XML_DOAJ, 'unmatched_issn.xml')
+SHARED_ISSN = join(PATH_XML_DOAJ, 'shared_issn.xml')
 
 
 
