@@ -21,10 +21,8 @@ class SeleniumTestCase(DoajTestCase):
     DOAJ_HOST = app.app.config.get('SELENIUM_DOAJ_HOST', 'localhost')
     DOAJ_PORT = app.app.config.get('SELENIUM_DOAJ_PORT', 5014)
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        super().setUpClass()
-        cls.fix_es_mapping()
+    def find_ele_by_css(self, css_selector: str) -> 'WebElement':
+        return self.selenium.find_element(By.CSS_SELECTOR, css_selector)
 
     def setUp(self):
         super().setUp()
@@ -60,6 +58,8 @@ class SeleniumTestCase(DoajTestCase):
         self.selenium.maximize_window()  # avoid something is not clickable
         self.selenium.implicitly_wait(10) # KTODO test if this is needed
 
+        self.fix_es_mapping()
+
     def tearDown(self):
         super().tearDown()
 
@@ -72,6 +72,10 @@ class SeleniumTestCase(DoajTestCase):
     @classmethod
     def get_doaj_url(cls) -> str:
         return f'http://{cls.DOAJ_HOST}:{cls.DOAJ_PORT}'
+
+    def js_click(self, selector):
+        script = f"document.querySelector('{selector}').click(); "
+        self.selenium.execute_script(script)
 
 
 def goto(driver: 'WebDriver', url_path: str):

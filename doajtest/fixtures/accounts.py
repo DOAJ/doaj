@@ -33,6 +33,13 @@ PUBLISHER_SOURCE = {
     "id": "publisher"
 }
 
+PUBLISHER_B_SOURCE = {
+    "email": "pub_b@example.com",
+    "name": "Publisher bbbbb",
+    "role": ['publisher', 'api'],
+    "id": "publisher_b"
+}
+
 MANED_SOURCE = {
     "email": "maned@example.com",
     "name": "Managing Editor / Administrator",

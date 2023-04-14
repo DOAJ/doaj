@@ -18,6 +18,7 @@ ARTICLE_UPLOAD_SUCCESSFUL = join(PATH_XML_DOAJ, 'successful.xml')
 SCHEMA_INVALID = join(PATH_XML_DOAJ, 'schema_invalid.xml')
 XML_MALFORMED = join(PATH_XML_DOAJ, 'not_xml.xml')
 DUPLICATE_IN_FILE = join(PATH_XML_DOAJ, 'duplicate_in_file.xml')
+UNOWNED_ISSN = join(PATH_XML_DOAJ, 'unowned_issn.xml')
 
 
 

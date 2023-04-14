@@ -9,6 +9,7 @@ from selenium.webdriver.support.select import Select
 
 from doajtest import selenium_helpers
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, url_path, article_doajxml
+from doajtest.fixtures.accounts import PUBLISHER_B_SOURCE
 from doajtest.fixtures.article_doajxml import ARTICLE_UPLOAD_SUCCESSFUL
 from doajtest.fixtures.url_path import URL_PUBLISHER_UPLOADFILE
 from doajtest.selenium_helpers import SeleniumTestCase
@@ -91,7 +92,7 @@ class ArticleXmlUploadSTC(SeleniumTestCase):
 
         self.goto_upload_page(publisher)
 
-        Select(self.selenium.find_element(By.ID, 'upload-xml-format')).select_by_value('doaj')
+        self.select_xml_format_by_value('doaj')
 
         file_path = article_doajxml.DUPLICATE_IN_FILE
         history_row = self.assert_pending_wait_bgjob(file_path, FileUploadStatus.Failed)
@@ -99,11 +100,15 @@ class ArticleXmlUploadSTC(SeleniumTestCase):
         self.assert_history_row(history_row, status_msg=HISTORY_ROW_PROCESSING_FAILED, file_path=file_path,
                                 note='One or more articles in this batch have duplicate identifiers')
 
+    def select_xml_format_by_value(self, value):
+        Select(self.selenium.find_element(By.ID, 'upload-xml-format')).select_by_value(value)
+
     def assert_pending_wait_bgjob(self, file_path, expected_bgjob_status):
         n_file_upload = models.FileUpload.count()
         n_org_rows = len(find_history_rows(self.selenium))
         self.upload_submit_file(file_path)
 
+        assert 'File uploaded and waiting to be processed' in self.find_ele_by_css('.alert--success').text
         new_rows = find_history_rows(self.selenium)
         assert n_org_rows + 1 == len(new_rows)
         assert 'pending' in new_rows[0].text
@@ -122,6 +127,33 @@ class ArticleXmlUploadSTC(SeleniumTestCase):
         new_rows = find_history_rows(self.selenium)
         return new_rows[0]
 
+    def test_containing_issn_the_publisher_does_not_own(self):
+        """ similar to "Upload a file containing ISSNs the publisher does not own" from testbook """
+
+        pub_b = models.Account(**PUBLISHER_B_SOURCE)
+        pub_b.save()
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(pub_b.id)
+        bib = journal.bibjson()
+        bib.pissn = '0000-0000'
+        bib.eissn = '0000-000X'
+        journal.save(blocking=True)
+
+        publisher = create_publisher_a()
+        self.goto_upload_page(publisher)
+
+        self.select_xml_format_by_value('doaj')
+
+        history_row = self.assert_pending_wait_bgjob(article_doajxml.UNOWNED_ISSN, FileUploadStatus.Failed)
+
+        self.assert_history_row(history_row, note='One or more articles failed to ingest')
+        self.js_click('.show_error_details')
+
+        detail = find_history_rows(self.selenium)[0].find_element(By.CSS_SELECTOR, 'div[id^="details_"]').text
+        assert 'If you believe you should own these ISSNs, please contact us with the details' in detail
+        assert '0000-0000' in detail
+
     def test_new_article_success(self):
         """ similar to "Successfully upload a file containing a new article" from testbook """
 
@@ -134,7 +166,7 @@ class ArticleXmlUploadSTC(SeleniumTestCase):
 
         latest_history_row = self.assert_pending_wait_bgjob(
             ARTICLE_UPLOAD_SUCCESSFUL, FileUploadStatus.Processed)
-        # assert 'successfully processed 1 articles imported' in latest_history_row.text
+
         self.assert_history_row(latest_history_row, note='successfully processed 1 articles imported')
 
         selenium_helpers.goto(self.selenium, url_path.url_toc(journal.bibjson().eissn))
