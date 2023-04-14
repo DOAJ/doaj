@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.2.24',
+    version='6.2.25',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -18,10 +18,10 @@ setup(
         "feedparser==6.0.8",
         "itsdangerous==2.0.1",     # fixme: unpinned dependency of flask, 2.1.0 is causing an import error 'json'
         "jinja2<3.1.0",            # fixme: unpinned dependency of flask, import error on 'escape'
-        "Flask==1.1.1",
+        "Flask~=2.1.2",
         "Flask-Cors==3.0.8",
         "Flask-DebugToolbar==0.10.1",
-        "Flask-Login==0.4.1",
+        "Flask-Login==0.6.1",
         "Flask-Mail==0.9.1",
         "Flask-WTF==0.14.2",
         "freezegun==0.3.12",
@@ -48,7 +48,9 @@ setup(
         "rstr==2.2.6",
         "tzlocal==2.0.0",
         "Unidecode==1.1.1",
-        "Werkzeug==0.16.0",
+
+        # Flask2 required >=2.0.*, Flask-Login required <=2.0.*
+        "Werkzeug~=2.0.0",
         "WTForms==2.2.1",
         "esprit @ git+https://github.com/CottageLabs/esprit.git@edda12177effa0945d99302f0d453b22503e335b#egg=esprit",
         "dictdiffer @ git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer",

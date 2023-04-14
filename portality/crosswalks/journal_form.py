@@ -1,8 +1,9 @@
+from werkzeug.datastructures import MultiDict
+
 from portality import models, lcc
 from portality.datasets import licenses
 from portality.forms.utils import expanded2compact
 
-from werkzeug import MultiDict
 
 class JournalGenericXWalk(object):
     """
