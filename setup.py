@@ -33,7 +33,7 @@ setup(
         "lxml==4.8.0",
         "Markdown==3.1.1",
         "markdown-full-yaml-metadata==2.0.1",
-        "markdown-link-attr-modifier==0.2.0",
+        "markdown-link-attr-modifier==0.2.1",
         "mdx_truly_sane_lists==1.2",
         "openpyxl~=3.0.3",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
         "parameterized==0.7.0",
