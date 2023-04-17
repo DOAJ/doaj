@@ -52,7 +52,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 
 10. IS4OA reserves the right to suspend or terminate your account at any time without notice. Written notice will be provided twenty-four (24) hours in advance.
 
-11. You may only redistribute the content of this website or create a database, in electronic form or manually, by downloading and storing any such content in accordance with the license of the applicable OA Content Creative Commons license. You should seek prior permission from IS4OA.
+11. The name 'Directory of Open Access Journals' and the acronym 'DOAJ' are protected as trade names owned by IS4OA. Neither the name, the acronym nor the look and feel of the DOAJ website may be reproduced without the express prior written permission of the [DOAJ Managing Director](mailto:helpdesk@doaj.org).
 
 12. In no event shall IS4OA, or its employees, ambassadors, volunteers or contractors be liable for any damages of any nature, including without limitation any consequential loss, loss of income or profit, loss of or damage to property, claims of third parties, or any other loss, cost, claim or expense of any kind or character arising out of or in connection with the use of this website, its content or any website with which it is linked. This exclusion and limitation only applies to the extent permitted by law and does not apply to liability for death or personal injury caused by the negligence of IS4OA, its employees, ambassadors, volunteers or contractors.
 
