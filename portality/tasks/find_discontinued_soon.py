@@ -115,27 +115,3 @@ def find_discontinued_soon(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = FindDiscontinuedSoonBackgroundTask(job)
     BackgroundApi.execute(task)
-
-
-# Test code - please do not clean up until after the tests
-def find_journals_discontinuing_soon():
-    jdata = []
-
-    q = DiscontinuedSoonQuery()
-    for journal in models.Journal.iterate(q=q.query(), keepalive='5m', wrap=True):
-        # ~~->Journal:Model~~
-        jdata.append(journal.id)
-
-    return jdata
-
-if __name__ == "__main__":
-    journals = find_journals_discontinuing_soon()
-    if len(journals):
-        for j in journals:
-            DOAJ.eventsService().trigger(models.Event(
-                constants.EVENT_JOURNAL_DISCONTINUING_SOON,
-                "system",
-                {
-                    "journal": j,
-                    "discontinue_date": dates.days_after_now(days=0)
-                }))
