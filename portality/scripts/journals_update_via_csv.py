@@ -50,17 +50,20 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--out", help="Output summary csv file path", required=True)
     parser.add_argument("-s", "--skip-strict", help="Skip strict checking of CSV structure (JournalCSV headings check)", action='store_true')
     parser.add_argument("-d", "--dry-run", help="Run this script without actually making index changes", action='store_true')
-    parser.add_argument("-f", "--force", help="Force update despite failed validation", action='store_true')
+    parser.add_argument("-f", "--force", help="Force update despite failed validation (DANGER!)", action='store_true')
     parser.add_argument("-m", "--manual-review", help="Don't finalise the update requests, instead leave open for manual review.", action='store_true')
+    parser.add_argument("-y", "--yes", help="Bypass prompt to accept the note", action='store_true')
     args = parser.parse_args()
 
     note = os.getenv('DOAJ_CSV_NOTE', '')
     print('\nNote supplied via $DOAJ_CSV_NOTE: ' + note)
-    doit = input('Proceed? [y\\N] ')
 
-    if doit.lower() != 'y':
-        print('\nExiting.')
-        exit(0)
+    if not args.yes:
+        doit = input('Proceed? [y\\N] ')
+
+        if doit.lower() != 'y':
+            print('\nExiting.')
+            exit(0)
 
     # Disable app emails so this doesn't spam users
     app.config['ENABLE_EMAIL'] = False
@@ -75,34 +78,77 @@ if __name__ == "__main__":
 
         # Open with encoding that deals with the Byte Order Mark since we're given files from Windows.
         with open(args.infile, 'r', encoding='utf-8-sig') as g:
-            reader = csv.DictReader(g)
+            header_row = list(map(str.strip, g.readline().split(',')))
+            reader = csv.DictReader(g, fieldnames=header_row)
 
             # verify header row with current CSV headers, report errors
-            header_row = reader.fieldnames
             expected_headers = JournalFixtureFactory.csv_headers()
-            if header_row[1:] != expected_headers:
-                print("\nWARNING: CSV input file is the wrong format. "
-                      "Expected ID column followed by the JournalCSV columns.\n")
-                for i in range(0, len(expected_headers)):
-                    try:
-                        if expected_headers[i] != header_row[i+1]:
-                            print('At column no {0} expected "{1}", found "{2}"'.format(i+1, expected_headers[i], header_row[i+1]))
-                    except IndexError:
-                        print('At column no {0} expected "{1}", found <NO DATA>'.format(i+1, expected_headers[i]))
-                if not args.skip_strict:
-                    print("\nERROR - CSV is wrong shape, exiting. Use --force to do this update anyway (and you know the consequences)")
-                    exit(1)
+
+            # Always perform a match check on supplied headers, not counting order
+            for h in header_row[1:]:
+                if h and h not in expected_headers:
+                    if h.lower() in map(str.lower, expected_headers):
+                        (print(f'\nNOTE - "{h}" has mismatching case to expected header, but changes should succeed.'))
+                    else:
+                        print(f'\nWARNING - Unexpected header "{h}" not mappable (updates will be missed)')
+
+            # Strict check for CSV being exactly the same as exported, including order
+            if not args.skip_strict:
+                if header_row[1:] != expected_headers:
+                    print("\nWARNING: CSV input file is the wrong format. "
+                          "Expected ID column followed by the JournalCSV columns.\n")
+                    for i in range(0, len(expected_headers)):
+                        try:
+                            if expected_headers[i] != header_row[i+1]:
+                                print('At column no {0} expected "{1}", found "{2}"'.format(i+1, expected_headers[i], header_row[i+1]))
+                        except IndexError:
+                            print('At column no {0} expected "{1}", found <NO DATA>'.format(i+1, expected_headers[i]))
+                    if not args.force:
+                        print("\nERROR - CSV is wrong shape, exiting. Use --force to do this update anyway (and you know the consequences)")
+                        exit(1)
+                else:
+                    print("\nCSV structure check passed.\n")
+                print('\nContinuing to update records...\n')
             else:
-                print("\nCSV structure check passed.\n")
-            print('\nContinuing to update records...\n')
+                print('\nSkipping CSV headings check.\n')
+
+            # Talking about spreadsheets, so we start at 1
+            row_ix = 1
 
             # ~~ ->$JournalUpdateByCSV:Feature ~~
             for row in reader:
+                row_ix += 1
+                print(f'\n***\nCSV row {row_ix}')
+
+                # Skip empty rows
+                if not any(row.values()):
+                    print("Skipping empty row.")
+                    continue
+
                 # Pull by ID, If that column is missing, parse ID from the ToC URL
-                _id = row.get('ID', row['URL in DOAJ'].split('/').pop())
-                j = Journal.pull(_id)
+                try:
+                    _id = row.get('ID', row['URL in DOAJ'].split('/').pop())
+                    j = Journal.pull(_id)
+                except KeyError:
+                    # No ID string to be found, we need to look up the journal ID from the ISSN
+                    print("No ID provided, looking up journal by its ISSNs")
+                    try:
+                        j = Journal.find_by_issn([
+                            row.get('Journal ISSN (print version)'),
+                            row.get('Journal EISSN (online version)')
+                        ], in_doaj=True, max=1).pop(0)
+
+                        if j.bibjson().title != row['Journal title']:
+                            print("ERROR: Retrieved journal's title doesn't match supplied title. Skipping.")
+                            print(f'CSV title: {row["Journal title"]}\n Retrieved title: {j.bibjson().title}')
+                            continue
+                    except IndexError:
+                        print(f'Warning: could not find journal for ISSNs [{row.get("Journal ISSN (print version)")}, '
+                              f'{row.get("Journal EISSN (online version)")}]')
+                        continue
+
                 if j is not None:
-                    print('\n' + j.id)
+                    print('Updating journal with ID ' + j.id)
                     # Load remaining rows into application form as an update
                     # ~~ ^->JournalQuestions:Crosswalk ~~
                     update_form, updates = journal_questions.Journal2QuestionXwalk.question2form(j, row)
@@ -185,7 +231,10 @@ if __name__ == "__main__":
                             if alock is not None:
                                 alock.delete()
                     else:
+                        print("No updates to do")
                         updates = ['NO CHANGES']
                 else:
-                    print("\nWARNING: no journal found for ID {0}".format(_id))
+                    print("WARNING: no journal found for ID {0}".format(_id))
                     writer.writerow([_id, "NOT FOUND", ''])
+
+                writer.writerow([j.id, ' | '.join(updates), ''])

@@ -14,12 +14,11 @@ from bagit import make_bag, BagError
 from portality.background import BackgroundTask, BackgroundApi
 from portality.bll import DOAJ
 from portality.core import app
-from portality.decorators import write_required
 from portality.lib import dates
 from portality.models import Account, Article, BackgroundJob, PreservationState
 from portality.regex import DOI_COMPILED, HTTP_URL_COMPILED
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue, configure
+from portality.tasks.redis_huey import main_queue
 
 
 class PreservationException(Exception):
