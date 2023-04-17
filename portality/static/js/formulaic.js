@@ -1083,28 +1083,45 @@ var formulaic = {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
 
-            this.ns = "formulaic-annotation"
+            this.namespace = "formulaic-annotation-" + this.fieldDef.name;
 
             this.init = function() {
+                // first, remove any existing annotations, leaving the container intact
+                let listSelector = edges.css_class_selector(this.namespace, "annotations");
+                let elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                let existing = false;
+                for (let i = 0; i < elements.length; i++) {
+                    let el = $(elements[i]);
+                    let sibs = el.siblings(listSelector)
+                    if (sibs.length > 0) {
+                        sibs.empty();
+                        existing = true;
+                    }
+                }
+
                 let annos = this._getAnnotationsForField();
                 if (annos.length === 0) {
                     return;
                 }
 
-                let listClass = edges.css_classes(this.namespace, "annotations")
-                let frag = `<ul class="${listClass}">`;
+                let frag = "";
                 for (let anno of annos) {
                     frag += this._renderAnnotation(anno)
                 }
-                frag += `</ul>`;
 
-                let listSelector = edges.css_class_selector(this.namespace, "annotations")
-                let elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                for (var i = 0; i < elements.length; i++) {
-                    let el = $(elements[i]);
-                    let sibs = el.siblings(listSelector)
-                    sibs.remove();
-                    el.after(frag);
+                if (existing) {
+                    for (let i = 0; i < elements.length; i++) {
+                        let el = $(elements[i]);
+                        let sibs = el.siblings(listSelector)
+                        sibs.html(frag);
+                    }
+                } else {
+                    let listClass = edges.css_classes(this.namespace, "annotations")
+                    frag = `<ul class="${listClass}">${frag}</ul>`;
+                    for (let i = 0; i < elements.length; i++) {
+                        let el = $(elements[i]);
+                        el.after(frag);
+                    }
                 }
 
                 feather.replace();
@@ -1114,6 +1131,8 @@ var formulaic = {
 
                 let undismissSelector = edges.css_class_selector(this.namespace, "undismiss");
                 edges.on(undismissSelector, "click", this, "undismiss");
+
+                edges.on(window, "doaj:annotations-undismiss", this, "undismissHandler");
             }
 
             this._getAnnotationsForField = function() {
@@ -1192,6 +1211,7 @@ var formulaic = {
                         anno.dismissed = true;
                     }
                 }
+                $(window).trigger("doaj:annotations-dismiss")
                 this.init();
             }
 
@@ -1219,6 +1239,11 @@ var formulaic = {
                         anno.dismissed = false;
                     }
                 }
+                $(window).trigger("doaj:annotations-undismiss")
+                // this.init();
+            }
+
+            this.undismissHandler = function() {
                 this.init();
             }
 

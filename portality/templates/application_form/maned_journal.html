@@ -54,4 +54,7 @@
     {% endif %}
     {% set factory = "journal" %}
     {% include "application_form/js/_form_js.html" %}
+    <script type="application/javascript">
+        doaj.annotators.dismissed = new doaj.annotators.DismissedAnnotations({})
+    </script>
 {% endblock %}
