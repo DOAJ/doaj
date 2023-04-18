@@ -63,6 +63,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 ---
 
 ### Version history
-1. Current version: 20 April 2023 - address and contact details added to Copyright (1). 'Other than as permitted in law...' added to Copyright (2). Notice period added to Conditions (3). Conditions (4) rewritten completely to make it clearer that the name and website are protected.
-2. Previous version
+1. Version 1.3 (20 April 2023) - address and contact details added to Copyright (1). 'Other than as permitted in law...' added to Copyright (2). Notice period added to Conditions of using this website (3). Conditions of using this website (4) rewritten completely to make it clearer that the name and website are protected.
+2. Version 1.2 (20 January 2022) - corrected ownership from DOAJ to IS4OA in Copyright (1). Simplified the language of Copyright (3). Corrected ownership from DOAJ to IS4OA in Conditions of using this website (4)
+3. First version: Version 1 (March 2021)
 
