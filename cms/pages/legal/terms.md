@@ -37,7 +37,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 ---
 
 ### Copyright
-5. Copyright of this site and the intellectual property contained in it is owned by Infrastructure Services for Open Access C.I.C. ("IS4OA") and defaults to all rights reserved unless otherwise specified.
+5. Copyright of this site and the intellectual property contained in it is owned by Infrastructure Services for Open Access C.I.C. ("IS4OA"), 2 Clyst Works, Clyst Road, Topsham, Devon EX3 0EP, United Kingdom and defaults to all rights reserved unless otherwise specified. [Contact IS4OA here](https://is4oa.org/contact-us/) or email helpdesk@doaj.org.
 
 6. Other than as permitted in law, reproduction of DOAJ content on this website is prohibited unless express permission is given by IS4OA.
 
@@ -59,4 +59,10 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 13. IS4OA reserves the right to change these Terms and Conditions by posting changes on this page of this website and you will be deemed to have accepted such changes if you use this website after those changes are posted.
 
 14. These terms shall be governed by and construed in accordance with English Law.
+
+---
+
+### Version history
+1. Current version: 20 April 2023 - address and contact details added to Copyright (1). 'Other than as permitted in law...' added to Copyright (2). Notice period added to Conditions (3). Conditions (4) rewritten completely to make it clearer that the name and website are protected.
+2. Previous version
 
