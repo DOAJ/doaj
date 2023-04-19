@@ -17,7 +17,7 @@ class concurrencyPreventionService(object):
             return updateRequestConcurrencyPreventionService(redis_service=self.rs, **self.kwargs).prevent_concurrency()
 
 
-class updateRequestConcurrencyPreventionService(concurrencyPreventionService):
+class updateRequestConcurrencyPreventionService(object):
     def __init__(self, redis_service, **kwargs):
         self.journal = kwargs["journal"]
         self.id = kwargs["id"]
