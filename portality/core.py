@@ -177,7 +177,7 @@ def create_es_connection(app):
     # else:
     #     conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
 
-    conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'], verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True))
+    conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'], verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True), http_auth=('admin', 'admin'))
 
     return conn
 

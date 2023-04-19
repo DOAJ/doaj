@@ -207,7 +207,7 @@ class Application(JournalLikeObject):
 
         if self.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
             # ~~-> Concurrency_Prevention:Service ~~
-            cs = DOAJ.UpdateRequestConcurrencyPreventionService()
+            cs = DOAJ.updateRequestConcurrencyPreventionService()
             cs.prevent_concurrency(self.current_journal, self.id)
 
         self.prep()

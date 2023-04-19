@@ -3,7 +3,7 @@ from portality.bll.exceptions import ConcurrentUpdateRequestException
 from portality.ui.messages import Messages
 import redis
 
-class UpdateRequestConcurrencyPreventionService:
+class updateRequestConcurrencyPreventionService:
     def __init__(self):
         self.rc = redis.Redis(host=app.config.get("HUEY_REDIS_HOST"), port=app.config.get("HUEY_REDIS_PORT"))
 
