@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.2.23"
+DOAJ_VERSION = "6.2.25"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -37,6 +37,9 @@ DEBUG_PYCHARM_PORT = 6000
 #~~->DebugToolbar:Framework~~
 DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
 DEBUG_TB_INTERCEPT_REDIRECTS = False
+
+# set to True to enable the env list panel in the debug toolbar
+DEBUG_TB_ENV_LIST_ENABLED = False
 
 #######################################
 # Elasticsearch configuration
