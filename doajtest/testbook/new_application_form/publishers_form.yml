@@ -89,6 +89,7 @@ tests:
   - step: Change the value of one ISSN
     results:
     - All error messages clear.
+    - Under both ISSN fields the link to 'https://portal.issn.org/resource/ISSN/<issn>' is displayed
   - step: Add keywords
     results:
     - As you type, you see suggestions in a list below the box
