@@ -2084,6 +2084,9 @@ var formulaic = {
                         var url = this.url + val;
                         var classes = edges.css_classes(this.ns, "visit");
                         that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + url + '">' + url + '</a></small></p>');
+
+                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                        this.link = $(selector, this.form.context);
                     }
                 } else if (this.link) {
                     this.link.remove();
