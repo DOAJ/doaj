@@ -16,6 +16,9 @@ from flask_login import current_user
 
 from wtforms import FormField, FieldList
 
+from portality.tasks.application_annotations import ApplicationAnnotations
+from portality.tasks.helpers import background_helper
+
 
 class ApplicationProcessor(FormProcessor):
 
@@ -237,7 +240,7 @@ class NewApplication(ApplicationProcessor):
         # set some administrative data
         now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         self.target.date_applied = now
-        self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
+        self.target.set_application_status(constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW)
         self.target.set_owner(account.id)
         self.target.set_last_manual_update()
 
@@ -263,6 +266,10 @@ class NewApplication(ApplicationProcessor):
             eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_CREATED, account.id, {
                 "application": self.target.data
             }))
+
+            # Kick off the post-submission review
+            background_helper.execute_by_bg_task_type(Annotations,
+                                                      application=self.target.id)
 
 
 class AdminApplication(ApplicationProcessor):
