@@ -75,6 +75,7 @@ $.extend(true, doaj, {
                     id : "see_journals",
                     category: "facet",
                     filters : [
+                        doaj.filters.noApcCharges(),
                         {
                             id: "with_seal",
                             display: "With a DOAJ Seal&nbsp;&nbsp;<span data-feather=\"check-circle\" aria-hidden=\"true\"></span>",
@@ -82,20 +83,6 @@ $.extend(true, doaj, {
                                 es.newTermFilter({
                                     field: "index.has_seal.exact",
                                     value: "Yes"
-                                })
-                            ]
-                        },
-                        {
-                            id : "no_charges",
-                            display: "Without article processing charges (APCs)",
-                            must : [
-                                es.newTermFilter({
-                                    field: "bibjson.apc.has_apc",
-                                    value: false
-                                }),
-                                es.newTermFilter({
-                                    field: "bibjson.other_charges.has_other_charges",
-                                    value: false
                                 })
                             ]
                         },
