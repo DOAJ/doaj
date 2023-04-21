@@ -18,253 +18,253 @@ $.extend(true, doaj, {
         }
     },
     facets : {
-    inDOAJ : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "in_doaj",
-            category: "facet",
-            field: "admin.in_doaj",
-            display: "In DOAJ?",
-            deactivateThreshold: 1,
-            valueMap : {
-                1 : "Yes",
-                0 : "No",
-                true: "Yes",
-                false: "No"
-            },
-            parseSelectedValueString: function(val) {
-                // this is needed because ES7 doesn't understand "1" or `1` to be `true`, so
-                // we convert the string value of the aggregation back to a boolean
-                return val === "1"
-            },
-            filterToAggValue : function(val) {
-                return val === true ? 1 : 0;
-            },
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        inDOAJ : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "in_doaj",
+                category: "facet",
+                field: "admin.in_doaj",
+                display: "In DOAJ?",
+                deactivateThreshold: 1,
+                valueMap : {
+                    1 : "Yes",
+                    0 : "No",
+                    true: "Yes",
+                    false: "No"
+                },
+                parseSelectedValueString: function(val) {
+                    // this is needed because ES7 doesn't understand "1" or `1` to be `true`, so
+                    // we convert the string value of the aggregation back to a boolean
+                    return val === "1"
+                },
+                filterToAggValue : function(val) {
+                    return val === true ? 1 : 0;
+                },
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
+        },
 
-    openOrClosed: function() {
-        return edges.newRefiningANDTermSelector({
-            id: "application_type",
-            category: "facet",
-            field: "index.application_type.exact",
-            display: "Open or closed?",
-            deactivateThreshold : 1,
-            orderDir: "asc",
-            valueMap : {
-                "finished application/update": "Closed",
-                "update request": "Open",
-                "new application": "Open"
-            },
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        openOrClosed: function() {
+            return edges.newRefiningANDTermSelector({
+                id: "application_type",
+                category: "facet",
+                field: "index.application_type.exact",
+                display: "Open or closed?",
+                deactivateThreshold : 1,
+                orderDir: "asc",
+                valueMap : {
+                    "finished application/update": "Closed",
+                    "update request": "Open",
+                    "new application": "Open"
+                },
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
+        },
 
-    applicationStatus : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "application_status",
-            category: "facet",
-            field: "admin.application_status.exact",
-            display: "Status",
-            deactivateThreshold: 1,
-            valueFunction: doaj.valueMaps.adminStatusMap,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        applicationStatus : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "application_status",
+                category: "facet",
+                field: "admin.application_status.exact",
+                display: "Status",
+                deactivateThreshold: 1,
+                valueFunction: doaj.valueMaps.adminStatusMap,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
-    hasEditorGroup : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "has_editor_group",
-            category: "facet",
-            field: "index.has_editor_group.exact",
-            display: "Has editor group?",
-            deactivateThreshold : 1,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        },
+        hasEditorGroup : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "has_editor_group",
+                category: "facet",
+                field: "index.has_editor_group.exact",
+                display: "Has editor group?",
+                deactivateThreshold : 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
-    hasEditor : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "has_editor",
-            category: "facet",
-            field: "index.has_editor.exact",
-            display: "Has Associate Editor?",
-            deactivateThreshold: 1,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        },
+        hasEditor : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "has_editor",
+                category: "facet",
+                field: "index.has_editor.exact",
+                display: "Has Associate Editor?",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
-    editorGroup : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "editor_group",
-            category: "facet",
-            field: "admin.editor_group.exact",
-            display: "Editor group",
-            deactivateThreshold: 1,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        },
+        editorGroup : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "editor_group",
+                category: "facet",
+                field: "admin.editor_group.exact",
+                display: "Editor group",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
-    editor : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "editor",
-            category: "facet",
-            field: "admin.editor.exact",
-            display: "Editor",
-            deactivateThreshold: 1,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        },
+        editor : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "editor",
+                category: "facet",
+                field: "admin.editor.exact",
+                display: "Editor",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
-    hasAPC : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "author_pays",
-            category: "facet",
-            field: "index.has_apc.exact",
-            display: "Publication charges?",
-            deactivateThreshold: 1,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        },
+        hasAPC : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "author_pays",
+                category: "facet",
+                field: "index.has_apc.exact",
+                display: "Publication charges?",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
-    classification : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "classification",
-            category: "facet",
-            field: "index.classification.exact",
-            display: "Classification",
-            deactivateThreshold: 1,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        },
+        classification : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "classification",
+                category: "facet",
+                field: "index.classification.exact",
+                display: "Classification",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
-    language : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "language",
-            category: "facet",
-            field: "index.language.exact",
-            display: "Journal language",
-            deactivateThreshold: 1,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        },
+        language : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "language",
+                category: "facet",
+                field: "index.language.exact",
+                display: "Journal language",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
-    countryPublisher : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "country_publisher",
-            category: "facet",
-            field: "index.country.exact",
-            display: "Country of publisher",
-            deactivateThreshold: 1,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        },
+        countryPublisher : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "country_publisher",
+                category: "facet",
+                field: "index.country.exact",
+                display: "Country of publisher",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
-    subject : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "subject",
-            category: "facet",
-            field: "index.subject.exact",
-            display: "Subject",
-            deactivateThreshold: 1,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        },
+        subject : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "subject",
+                category: "facet",
+                field: "index.subject.exact",
+                display: "Subject",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
-    publisher : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "publisher",
-            category: "facet",
-            field: "bibjson.publisher.name.exact",
-            display: "Publisher",
-            deactivateThreshold: 1,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        },
+        publisher : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "publisher",
+                category: "facet",
+                field: "bibjson.publisher.name.exact",
+                display: "Publisher",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    },
-    journalLicence : function() {
-        return edges.newRefiningANDTermSelector({
-            id: "journal_license",
-            category: "facet",
-            field: "index.license.exact",
-            display: "Journal license",
-            deactivateThreshold: 1,
-            renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                controls: true,
-                open: false,
-                togglable: true,
-                countFormat: doaj.valueMaps.countFormat,
-                hideInactive: true
+        },
+        journalLicence : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "journal_license",
+                category: "facet",
+                field: "index.license.exact",
+                display: "Journal license",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
             })
-        })
-    }
+        }
 },
 
 valueMaps : {
