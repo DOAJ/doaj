@@ -45,7 +45,7 @@ def public_application(draft_id=None):
             abort(404)
 
     fc = ApplicationFormFactory.context("public", extra_param={
-        'cur_user': current_user,
+        'editing_user': current_user,
     })
     if request.method == "GET":
         if draft_application is not None:

@@ -237,7 +237,7 @@ class FormulaicContext(object):
         :param parent:
         :param extra_param:
             the parameter that could be used by plugin function like
-            "disable_edit_note_except_cur_user"
+            "disable_edit_note_except_editing_user"
         """
         self._name = name
         self._definition = definition

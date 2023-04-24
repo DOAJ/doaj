@@ -4,7 +4,7 @@ from doajtest import helpers
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.forms.application_forms import disable_edit_note_except_cur_user, JournalFormFactory
+from portality.forms.application_forms import disable_edit_note_except_editing_user, JournalFormFactory
 from portality.lib.formulaic import FormulaicField
 from portality.models import Account
 from portality.util import url_for
@@ -25,14 +25,14 @@ def edit_note_cases():
     ('test_user_id', True),
     ("fake_account_id__b", False),
 ])
-def test_disable_edit_note_except_cur_user(user_id, expected_result):
+def test_disable_edit_note_except_editing_user(user_id, expected_result):
     formulaic_context = JournalFormFactory.context("associate_editor", extra_param={
-        'cur_user': Account(id=user_id),
+        'editing_user': Account(id=user_id),
     })
     formulaic_context.processor(source=models.Journal(**JOURNAL_SOURCE))
     note_field: FormulaicField = formulaic_context.fieldset('notes').fields()[0].group_subfields()[0]
     note_field.wtfinst = next(formulaic_context.fieldset('notes').fields()[0].wtfield[0].__iter__(), None)
-    assert disable_edit_note_except_cur_user(note_field, formulaic_context) == expected_result
+    assert disable_edit_note_except_editing_user(note_field, formulaic_context) == expected_result
 
 
 class TestEditableNote(DoajTestCase):

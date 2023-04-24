@@ -1804,7 +1804,7 @@ class FieldDefinitions:
         "name": "note",
         "group": "notes",
         "input": "textarea",
-        "disabled": "disable_edit_note_except_cur_user",
+        "disabled": "disable_edit_note_except_editing_user",
         "contexts": {
             "admin": {
                 "disabled" : False
@@ -2498,8 +2498,8 @@ def application_status_disabled(field, formulaic_context):
     return field_value not in [c.get("value") for c in choices]
 
 
-def disable_edit_note_except_cur_user(field: FormulaicField,
-                                     formulaic_context: FormulaicContext):
+def disable_edit_note_except_editing_user(field: FormulaicField,
+                                          formulaic_context: FormulaicContext):
     """
     Only allow the current user to edit this field if author is current user
 
@@ -2510,8 +2510,8 @@ def disable_edit_note_except_cur_user(field: FormulaicField,
     """
 
     # ~~->Notes:Feature~~
-    cur_user = formulaic_context.extra_param.get('cur_user')
-    cur_user_id = cur_user and cur_user.id
+    editing_user = formulaic_context.extra_param.get('editing_user')
+    cur_user_id = editing_user and editing_user.id
     form_field: FormField  = field.find_related_form_field('notes', formulaic_context)
     if form_field is None:
         return True
@@ -2866,7 +2866,7 @@ PYTHON_FUNCTIONS = {
     },
     "disabled" : {
         "application_status_disabled" : application_status_disabled,
-        "disable_edit_note_except_cur_user": disable_edit_note_except_cur_user,
+        "disable_edit_note_except_editing_user": disable_edit_note_except_editing_user,
     },
     "merge_disabled" : {
         "merge_disabled_notes" : merge_disabled_notes

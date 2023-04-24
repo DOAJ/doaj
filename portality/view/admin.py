@@ -462,7 +462,7 @@ def admin_site_search():
     #edit_formcontext = formcontext.ManEdBulkEdit()
     #edit_form = edit_formcontext.render_template()
     edit_formulaic_context = JournalFormFactory.context("bulk_edit", extra_param={
-        'cur_user': current_user,
+        'editing_user': current_user,
     })
     edit_form = edit_formulaic_context.render_template()
 
@@ -698,7 +698,7 @@ def bulk_edit_journal_metadata():
 
     formdata = MultiDict(payload["metadata"])
     formulaic_context = JournalFormFactory.context("bulk_edit", extra_param={
-        'cur_user': current_user,
+        'editing_user': current_user,
     })
     fc = formulaic_context.processor(formdata=formdata)
 

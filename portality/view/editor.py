@@ -85,7 +85,7 @@ def journal_page(journal_id):
         return render_template("editor/journal_locked.html", journal=journal, lock=l.lock, lcc_tree=lcc_jstree)
 
     fc = JournalFormFactory.context(role, extra_param={
-        'cur_user': current_user,
+        'editing_user': current_user,
     })
 
     if request.method == "GET":
@@ -135,7 +135,7 @@ def application(application_id):
     eg = models.EditorGroup.pull_by_key("name", ap.editor_group)
     role = 'editor' if eg is not None and eg.editor == current_user.id else 'associate_editor'
     fc = ApplicationFormFactory.context(role, extra_param={
-        'cur_user': current_user,
+        'editing_user': current_user,
     })
 
     if request.method == "GET":
