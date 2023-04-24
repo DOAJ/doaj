@@ -1,4 +1,4 @@
-from werkzeug import MultiDict
+from werkzeug.datastructures import MultiDict
 
 from portality import models, lcc
 from portality.datasets import licenses
