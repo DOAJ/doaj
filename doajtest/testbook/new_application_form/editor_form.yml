@@ -31,3 +31,25 @@ tests:
   - step: Click "Unlock and Close"
     results:
     - The page closes, and you are able to return to the search interface
+- title: Note features for Editor
+  context:
+    role: editor
+  steps:
+    - step: Prepare two editor accounts (editor1 and editor2), they both can access
+        to the same application (e.g. /editor/application/1234)
+    - step: Login as `editor1`
+    - step: Go to Application page at `/editor/application/1234`
+    - step: Click "ADD" button in "Notes" area
+      results:
+        - New note UI is displayed for you to fill in
+    - step: Fill in the note
+    - step: Click "Save" button
+      results:
+        - The note is saved and displayed in the list of notes
+        - you username and user id will be showed on that note
+        - you can edit and delete the note
+    - step: Switch to other editor account `editor2`
+    - step: Go to Application page at `/editor/application/1234`
+      results:
+        - You can see the note that you have created before with `editor1`
+        - but you can't edit or delete that note

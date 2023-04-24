@@ -86,3 +86,25 @@ tests:
     - Banner is dismissed
     - In the "Notes" section next to your added note the date field is filled in with
       correct date and time
+- title: Note features for admin
+  context:
+    role: admin
+  steps:
+    - step: Prepare two admin accounts (admin1 and admin2), they both can access
+        to the same journal (e.g. /admin/journal/1234)
+    - step: Login as `admin1`
+    - step: Go to Journal page at `/editor/journal/1234`
+    - step: Click "ADD" button in "Notes" area
+      results:
+        - New note UI is displayed for you to fill in
+    - step: Fill in the note
+    - step: Click "Save" button
+      results:
+        - The note is saved and displayed in the list of notes
+        - you username and user id will be showed on that note
+        - you can edit and delete the note
+    - step: Switch to other account `admin2`
+    - step: Go to Journal page at `/admin/journal/1234`
+      results:
+        - You can see the note that you have created before with `admin1`
+        - you also can edit or delete that note

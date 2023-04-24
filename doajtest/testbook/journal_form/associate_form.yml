@@ -36,3 +36,26 @@ tests:
     results:
     - Confirm appropriate data was changed either on search result (you may need to
       refresh the page to see them applied) or on Journals page at /toc/<id>
+- title: Note features for Associate Editor
+  context:
+    role: associate editor
+  steps:
+  - step: Prepare two associate editor accounts (aseditor1 and aseditor2), they both can access 
+          to the same journal (e.g. /editor/journal/1234)
+  - step: Login as `aseditor1`
+  - step: Go to Journal page at `/editor/journal/1234`
+  - step: Click "ADD" button in "Notes" area
+    results:
+      - New note UI is displayed for you to fill in
+  - step: Fill in the note
+  - step: Click "Save" button
+    results:
+      - The note is saved and displayed in the list of notes
+      - you username and user id will be showed on that note
+      - you can edit and delete the note
+  - step: Switch to other associate editor account `aseditor2`
+  - step: Go to Journal page at `/editor/journal/1234`
+    results:
+      - You can see the note that you have created before with `aseditor1`
+      - but you can't edit or delete that note
+
