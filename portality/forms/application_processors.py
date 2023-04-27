@@ -16,9 +16,6 @@ from flask_login import current_user
 
 from wtforms import FormField, FieldList
 
-from portality.tasks.application_annotations import ApplicationAnnotations
-from portality.tasks.helpers import background_helper
-
 
 class ApplicationProcessor(FormProcessor):
 
@@ -268,8 +265,12 @@ class NewApplication(ApplicationProcessor):
             }))
 
             # Kick off the post-submission review
-            background_helper.execute_by_bg_task_type(Annotations,
-                                                      application=self.target.id)
+            # FIXME: imports are delayed because of a circular import problem buried in portality.decorators
+            from portality.tasks.application_annotations import ApplicationAnnotations
+            from portality.tasks.helpers import background_helper
+            background_helper.execute_by_bg_task_type(ApplicationAnnotations,
+                                                      application=self.target.id,
+                                                      status_on_complete=constants.APPLICATION_STATUS_PENDING)
 
 
 class AdminApplication(ApplicationProcessor):

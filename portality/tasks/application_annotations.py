@@ -1,3 +1,4 @@
+import constants
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.tasks.helpers import background_helper
@@ -31,9 +32,9 @@ class ApplicationAnnotations(BackgroundTask):
         annoSvc = DOAJ.annotationsService()
         annoSvc.annotate_application(application, logger=lambda x: job.add_audit_message(x))
 
-        if status_on_complete != "":
+        if status_on_complete != "" and status_on_complete in constants.APPLICATION_STATUSES_ALL:
             job.add_audit_message("Setting status to {x}".format(x=status_on_complete))
-            application.application_status = status_on_complete
+            application.set_application_status(status_on_complete)
             # Note: we have not locked the application
             application.save()
 
