@@ -61,6 +61,10 @@
     </div>
     {% endif %}
 
+    {% if f.widgets  %}
+    <div id="{{ f.name }}_widgets-container" class="widgets-container"></div>
+    {% endif %}
+
 </div>
 
 {% include "application_form/modal.html" %}

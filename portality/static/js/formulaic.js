@@ -581,6 +581,11 @@ var formulaic = {
             var selector = "." + this.containerClassTemplate.replace("{name}", name);
             return $(selector, context);
         };
+
+        this.widgetsContainer = function(params) {
+            var context = this.get_context(params);
+            return $("#" + params.name + "_widgets-container", context)
+        }
     },
 
     edges : {
@@ -1088,7 +1093,7 @@ var formulaic = {
             this.init = function() {
                 // first, remove any existing annotations, leaving the container intact
                 let listSelector = edges.css_class_selector(this.namespace, "annotations");
-                let elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                let elements = this.form.controlSelect.widgetsContainer({name: this.fieldDef.name});
                 let existing = false;
                 for (let i = 0; i < elements.length; i++) {
                     let el = $(elements[i]);

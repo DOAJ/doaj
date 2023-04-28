@@ -1196,7 +1196,14 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}
-        ]
+        ],
+        "contexts" : {
+            "admin": {
+                "widgets": [
+                    "annotation",  # ~~^-> Annotation:FormWidget~~
+                ]
+            }
+        }
     }
 
     # ~~->$ PreservationServiceLibrary:FormField~~

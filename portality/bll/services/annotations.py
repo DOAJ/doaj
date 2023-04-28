@@ -3,10 +3,12 @@ from portality.annotation.resource_bundle import ResourceBundle
 from portality import models
 
 from portality.annotation.annotators.issn_active import ISSNActive
+from portality.annotation.annotators.keepers_registry import KeepersRegistry
 
 ANNOTATION_PLUGINS = [
     # (journal, application, plugin)
-    (True, True, ISSNActive)
+    (True, True, ISSNActive),
+    (True, True, KeepersRegistry)
 ]
 
 class AnnotationsService(object):

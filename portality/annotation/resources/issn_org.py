@@ -36,3 +36,7 @@ class ISSNOrgData(object):
 
     def is_registered(self):
         return self.version == "Register"
+
+    @property
+    def archive_components(self):
+        return [ac for ac in self.data.get("subjectOf", []) if ac.get("@type") == "ArchiveComponent"]

@@ -28,8 +28,36 @@ doaj.annotators.ISSNActive = class {
     }
 }
 
+doaj.annotators.KeepersRegistry = class {
+    MESSAGES = {
+        "missing": "{service} is missing from the Keepers Registry record at ISSN.org",
+        "present": "{service} is present and current in the Keepers Registry record at ISSN.org",
+        "outdated": "{service} is not currently being used according to the Keepers Registry record as ISSN.org"
+    }
+
+    ICONS = {
+        "missing": "x-circle",
+        "present": "check-circle",
+        "outdated": "x-circle"
+    }
+
+    draw(annotation) {
+        let icon = this.ICONS[annotation.advice];
+        let message = this.MESSAGES[annotation.advice];
+
+        let context = JSON.parse(annotation.context);
+        message = message.replace("{service}", context.service);
+
+        let frag = `<span data-feather="${icon}" aria-hidden="true"></span> 
+                    ${message} (see 
+                    <a href="${annotation.reference_url}">${annotation.reference_url})</a>`;
+        return frag;
+    }
+}
+
 doaj.annotators.registry = {
-    "issn_active": doaj.annotators.ISSNActive
+    "issn_active": doaj.annotators.ISSNActive,
+    "keepers_registry": doaj.annotators.KeepersRegistry
 }
 
 doaj.annotators.DismissedAnnotations = class {

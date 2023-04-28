@@ -4,6 +4,9 @@ from portality.lib.coerce import COERCE_MAP
 from portality.lib import es_data_mapping
 from portality.core import app
 
+import json
+
+
 ANNOTATION_STRUCT = {
     "fields": {
         "id": {"coerce": "unicode"},
@@ -27,7 +30,8 @@ ANNOTATION_STRUCT = {
                 "advice": {"coerce": "unicode"},
                 "reference_url": {"coerce": "unicode"},
                 "annotator": {"coerce": "unicode"},
-                "dismissed": {"coerce": "bool"}
+                "dismissed": {"coerce": "bool"},
+                "context": {"coerce": "unicode"}
             },
             "lists": {
                 "suggested_value": {"contains": "field", "coerce": "unicode"}
@@ -99,7 +103,7 @@ class Annotation(SeamlessMixin, DomainObject):
     def journal(self, val):
         self.__seamless__.set_with_struct("journal", val)
 
-    def add_annotation(self, field=None, original_value=None, suggested_value=None, advice=None, reference_url=None, annotator=None):
+    def add_annotation(self, field=None, original_value=None, suggested_value=None, advice=None, reference_url=None, context=None, annotator=None):
         obj = {}
         if field is not None:
             obj["field"] = field
@@ -113,6 +117,8 @@ class Annotation(SeamlessMixin, DomainObject):
             obj["reference_url"] = reference_url
         if annotator is not None:
             obj["annotator"] = annotator
+        if context is not None:
+            obj["context"] = json.dumps(context)
 
         # ensure we add the annotation only once
         exists = self.__seamless__.exists_in_list("annotations", val=obj)
@@ -124,17 +130,25 @@ class Annotation(SeamlessMixin, DomainObject):
 
     @property
     def annotations(self):
+        annos = self.__seamless__.get_list("annotations")
+        for anno in annos:
+            if "context" in anno:
+                anno["context"] = json.loads(anno["context"])
+        return annos
+
+    @property
+    def annotations_raw(self):
         return self.__seamless__.get_list("annotations")
 
     def dismiss(self, annotation_id):
-        annos = self.annotations
+        annos = self.annotations_raw
         for anno in annos:
             if anno.get("id") == annotation_id:
                 anno["dismissed"] = True
                 break
 
     def undismiss(self, annotation_id):
-        annos = self.annotations
+        annos = self.annotations_raw
         for anno in annos:
             if anno.get("id") == annotation_id:
                 del anno["dismissed"]
