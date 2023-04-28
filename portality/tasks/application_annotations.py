@@ -1,8 +1,8 @@
-import constants
+from portality import constants
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import main_queue
 from portality.bll import DOAJ
 
 
@@ -85,7 +85,7 @@ class ApplicationAnnotations(BackgroundTask):
         application_annotations.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = ApplicationAnnotations.create_huey_helper(long_running)
+huey_helper = ApplicationAnnotations.create_huey_helper(main_queue)
 
 
 @huey_helper.register_execute(is_load_config=True)
