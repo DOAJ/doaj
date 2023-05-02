@@ -34,3 +34,4 @@ workflows:
             branches:
               ignore:
                 - /release\/.*/
+                - static_pages

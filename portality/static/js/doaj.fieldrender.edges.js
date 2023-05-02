@@ -1923,6 +1923,7 @@ $.extend(true, doaj, {
 
             // whether to hide or just disable the facet if not active
             this.hideInactive = edges.getParam(params.hideInactive, false);
+            this.hideEmpty = edges.getParam(params.hideEmpty, false)
 
             // whether the facet should be open or closed
             // can be initialised and is then used to track internal state
@@ -1987,6 +1988,9 @@ $.extend(true, doaj, {
                     // render each value, if it is not also a filter that has been set
                     for (var i = 0; i < ts.values.length; i++) {
                         var val = ts.values[i];
+                        if (val.count === 0 && this.hideEmpty) {
+                            continue
+                        }
                         if ($.inArray(val.display, filterTerms) === -1) {
 
                             var ltData = "";
