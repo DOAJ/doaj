@@ -4,21 +4,12 @@
     journal-details
 {% endblock %}
 
-{% block page_title %}
-    {% set metatitle = bibjson.title %}
-    {% if current_volume %}{% set metatitle = metatitle + ', ' + 'Volume ' + current_volume %}{% endif %}
-    {% if current_issue %}{% set metatitle = metatitle + ', ' + 'Issue ' + current_issue %}{% endif %}
-    {% set metatitle = metatitle %}
-    {{ metatitle }}
-{% endblock %}
-
-{%- block meta_description -%}
-    {%- if bibjson.keywords -%}
-        A peer-reviewed, open access journal in {% for keyword in bibjson.keywords %}{% if loop.last %} & {% elif loop.first %}{% else %}, {% endif %}{{ keyword }}{% endfor %}.
-    {% else %}
-        More about this peer-reviewed, open access journal on DOAJ.
-    {%- endif -%}
-{%- endblock -%}
+{% block page_title %}{% include "doaj/includes/_journal_meta_title.html" %}{% endblock %}
+{% block meta_og_title %}{% include "doaj/includes/_journal_meta_title.html" %}{% endblock %}
+{% block meta_twitter_title %}{% include "doaj/includes/_journal_meta_title.html" %}{% endblock %}
+{%- block meta_description -%}{% include "doaj/includes/_journal_meta_description.html" %}{%- endblock -%}
+{%- block meta_og_description -%}{% include "doaj/includes/_journal_meta_description.html" %}{%- endblock -%}
+{%- block meta_twitter_description -%}{% include "doaj/includes/_journal_meta_description.html" %}{%- endblock -%}
 
 {% block content %}
 

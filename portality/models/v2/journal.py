@@ -523,7 +523,7 @@ class Journal(JournalLikeObject):
     @classmethod
     def all_in_doaj(cls, page_size=5000):
         q = JournalQuery()
-        return cls.iterate(q.all_in_doaj(), page_size=page_size, wrap=True)
+        return cls.iterate(q.all_in_doaj(), page_size=page_size, wrap=True, keepalive='5m')
 
     @classmethod
     def find_by_publisher(cls, publisher, exact=True):
