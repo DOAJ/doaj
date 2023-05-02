@@ -10,7 +10,7 @@ from selenium.webdriver.support.select import Select
 from doajtest import selenium_helpers
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, url_path, article_doajxml
 from doajtest.fixtures.accounts import PUBLISHER_B_SOURCE
-from doajtest.fixtures.article_doajxml import ARTICLE_UPLOAD_SUCCESSFUL
+from doajtest.fixtures.article_doajxml import ARTICLE_UPLOAD_SUCCESSFUL, ARTICLE_UPLOAD_UPDATE
 from doajtest.fixtures.url_path import URL_PUBLISHER_UPLOADFILE
 from doajtest.selenium_helpers import SeleniumTestCase
 from portality import models, dao
@@ -28,8 +28,11 @@ def get_latest(domain_obj: Union[Type[dao.DomainObject], dao.DomainObject]):
     return next(obj, None)
 
 
-class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
-    """ testbook: article_xml_upload/doaj_xml """
+class ArticleXmlUploadCommonSTC(SeleniumTestCase):
+    """
+    Layer for common / utils functions
+    don't put test cases in this class
+    """
 
     def goto_upload_page(self, acc: models.Account = None):
         publisher = acc or create_publisher_a()
@@ -41,23 +44,43 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
         self.selenium.find_element(By.ID, 'upload-xml-file').send_keys(file_path)
         self.selenium.find_element(By.ID, 'upload_form').submit()
 
-    def test_without_file(self):
-        """ similar to "Try uploading without providing a file" from testbook """
-        self.goto_upload_page()
-        self.selenium.find_element(By.ID, 'upload_form').submit()
+    def assert_history_row(self, history_row, status_msg=None, file_path=None, note=None):
+        history_row_text = history_row.text
+        if file_path:
+            assert Path(file_path).name in history_row_text
 
-        assert 'You must specify the file or upload from a link' in self.selenium.find_element(
-            By.CSS_SELECTOR, '.form__question .error').text
+        if status_msg:
+            assert status_msg in history_row_text
 
+        if note:
+            assert note in history_row_text
+
+    def assert_history_row_success(self, history_row, n_article=1):
+        self.assert_history_row(history_row, note=f'successfully processed {n_article} articles imported')
+
+
+class ArticleXmlUploadDoajXmlFailSTC(ArticleXmlUploadCommonSTC):
     @parameterized.expand([
         # case "Upload a file which is not XML"
-        (article_doajxml.NON_XML_FILE, 'Unable to parse XML file'),
+        (article_doajxml.NON_XML_FILE,
+         'Unable to parse XML file',
+         'Unable to parse XML file'),
         # case "Upload an XML file which does not meet the DOAJ schema"
-        (article_doajxml.SCHEMA_INVALID, 'Unable to validate document with identified schema'),
+        (article_doajxml.SCHEMA_INVALID,
+         'Unable to validate document with identified schema',
+         'Unable to validate document with identified schema'),
         # case "Upload a malformed XML file"
-        (article_doajxml.XML_MALFORMED, 'Unable to parse XML file'),
+        (article_doajxml.XML_MALFORMED,
+         'Unable to parse XML file',
+         'Unable to parse XML file'),
+        # case "Upload a file containing 2 identical ISSNs"
+        (article_doajxml.IDENTICAL_ISSNS,
+         '', 'failed The Print and Online ISSNs supplied are identical'),
+        # case "Upload a file without ISSN"
+        (article_doajxml.NO_ISSN,
+         '', 'Neither Print ISSN nor Online ISSN has been supplied'),
     ])
-    def test_upload_fail(self, file_path, err_msg):
+    def test_upload_fail(self, file_path, err_msg, expected_note):
         """ cases about upload article failed with error message """
         self.goto_upload_page()
         self.upload_submit_file(file_path)
@@ -74,18 +97,19 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
                 break
 
         assert rows
-        self.assert_history_row(rows[0], status_msg='processing failed', file_path=file_path)
+        self.assert_history_row(rows[0], status_msg='processing failed', file_path=file_path, note=expected_note)
 
-    def assert_history_row(self, history_row, status_msg=None, file_path=None, note=None):
-        history_row_text = history_row.text
-        if file_path:
-            assert Path(file_path).name in history_row_text
 
-        if status_msg:
-            assert status_msg in history_row_text
+class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
+    """ testbook: article_xml_upload/doaj_xml """
 
-        if note:
-            assert note in history_row_text
+    def test_without_file(self):
+        """ similar to "Try uploading without providing a file" from testbook """
+        self.goto_upload_page()
+        self.selenium.find_element(By.ID, 'upload_form').submit()
+
+        assert 'You must specify the file or upload from a link' in self.selenium.find_element(
+            By.CSS_SELECTOR, '.form__question .error').text
 
     def test_duplicates_inside_the_file(self):
         """ similar to "Upload a file with duplicates inside the file" from testbook """
@@ -130,7 +154,7 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
 
         new_file_upload: models.FileUpload = get_latest(models.FileUpload)
 
-        # trigger upload article background job by function call
+        # assert file upload status
         assert new_file_upload.filename == Path(file_path).name
         assert new_file_upload.status == expected_bgjob_status
 
@@ -221,24 +245,45 @@ class ArticleXmlUploadDoajXmlSTC(SeleniumTestCase):
                                                 expected_failed_issn='2222-2222',
                                                 expected_detail='If you believe these ISSNs should be associated with a journal you own')
 
-    def test_new_article_success(self):
-        """ similar to "Successfully upload a file containing a new article" from testbook """
+    def test_article_success_scenarios(self):
+        """ testing multi success scenarios from testbook """
 
         publisher = create_publisher_a()
 
         journal = create_journal_a(publisher)
 
-        # goto upload page and upload article xml file
-        self.goto_upload_page(acc=publisher)
+        """ Successfully upload a file containing a new article """
+        self.step_upload_success(publisher, ARTICLE_UPLOAD_SUCCESSFUL, journal.bibjson().eissn, 'Success!')
 
-        latest_history_row = self.upload_pending_wait_bgjob(ARTICLE_UPLOAD_SUCCESSFUL, FileUploadStatus.Processed,
+        """ Successfully upload a file containing an updated article """
+        self.step_upload_success(publisher, ARTICLE_UPLOAD_UPDATE, journal.bibjson().eissn, 'Updated!')
+
+        """ Successfully upload a file by reference containing a new or updated article """
+        self.step_upload_success(publisher, ARTICLE_UPLOAD_SUCCESSFUL, journal.bibjson().eissn, 'Success!')
+
+    def step_upload_success(self, publisher, article_xml_path, journal_issn, expected_title):
+        article_title_selector = 'h3.search-results__heading a'
+        self.goto_upload_page(acc=publisher)
+        latest_history_row = self.upload_pending_wait_bgjob(article_xml_path,
+                                                            FileUploadStatus.Processed,
+                                                            XML_FORMAT_DOAJ)
+        self.assert_history_row_success(latest_history_row)
+        selenium_helpers.goto(self.selenium, url_path.url_toc(journal_issn))
+        selenium_helpers.wait_unit(lambda: self.find_eles_by_css(article_title_selector))
+        assert expected_title in [e.get_attribute('innerHTML').strip()
+                                  for e in self.find_eles_by_css(article_title_selector)]
+
+    def assert_upload_fail(self, acc, article_xml_path, expected_note):
+        # goto upload page and upload article xml file
+        self.goto_upload_page(acc=acc)
+
+        latest_history_row = self.upload_pending_wait_bgjob(article_xml_path,
+                                                            FileUploadStatus.Failed,
                                                             XML_FORMAT_DOAJ)
 
-        self.assert_history_row(latest_history_row, note='successfully processed 1 articles imported')
-
-        selenium_helpers.goto(self.selenium, url_path.url_toc(journal.bibjson().eissn))
-        assert 'The Title' in self.selenium.find_element(
-            By.CSS_SELECTOR, 'main.page-content header h1').text
+        self.assert_history_row(latest_history_row,
+                                status_msg=HISTORY_ROW_PROCESSING_FAILED,
+                                note=expected_note)
 
 
 def create_journal_a(publisher) -> models.Journal:
@@ -251,6 +296,7 @@ def create_journal_a(publisher) -> models.Journal:
     bib.replaces = []
     journal.save(blocking=True)
     return journal
+
 
 def create_journal_by_issn(publisher=None, pissn=None, eissn=None, blocking=False) -> models.Journal:
     journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))

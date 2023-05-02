@@ -24,6 +24,9 @@ class SeleniumTestCase(DoajTestCase):
     def find_ele_by_css(self, css_selector: str) -> 'WebElement':
         return self.selenium.find_element(By.CSS_SELECTOR, css_selector)
 
+    def find_eles_by_css(self, css_selector: str) -> 'WebElement':
+        return self.selenium.find_elements(By.CSS_SELECTOR, css_selector)
+
     def setUp(self):
         super().setUp()
 
@@ -109,7 +112,7 @@ def login_by_acc(driver: 'WebDriver', acc: models.Account = None):
     except NoSuchElementException:
         import traceback
         traceback.print_exc()
-        breakpoint()
+        breakpoint()  # for checking, how could this happen?
     assert "/login" not in driver.current_url
 
 

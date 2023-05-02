@@ -43,7 +43,7 @@ setup(
         "python-dateutil==2.8.0",  # something else already installs this, so just note we need it without an explicit version freeze
         "pytz==2019.3",
         "redis==3.3.11",
-        "requests==2.22.0",
+        "requests~=2.29.0",
         "responses==0.10.6",
         "rstr==2.2.6",
         "tzlocal==2.0.0",
@@ -56,7 +56,10 @@ setup(
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
         # prevent backtracking through all versions
-        "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium~=4.7.0",
+        "test": ["pytest~=7.3.1",
+                 "pytest-cov~=4.0.0",
+                 "pytest-xdist~=3.2.1",
+                 "selenium~=4.9.0",
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
         "docs": [
             "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@cb52c345b942e50726767b1a7190f1a01b81e722#egg=featuremap",
