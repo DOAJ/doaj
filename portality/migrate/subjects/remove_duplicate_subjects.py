@@ -5,6 +5,7 @@ import json
 from portality import models
 from datetime import datetime
 from portality.core import app
+from portality.lib import dates
 
 batch_size = 1000
 
@@ -60,7 +61,7 @@ def rem_dup_sub(conn, write_changes=False):
 
 
 if __name__ == "__main__":
-    start = datetime.now()
+    start = dates.now()
 
     import argparse
     parser = argparse.ArgumentParser()
@@ -90,5 +91,5 @@ if __name__ == "__main__":
         for f in failed_articles:
             print(f)
 
-    end = datetime.now()
+    end = dates.now()
     print(start, "-", end)

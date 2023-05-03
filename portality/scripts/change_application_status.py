@@ -1,6 +1,7 @@
-from datetime import datetime
 from portality.core import app
 import csv
+
+from portality.lib import dates
 from portality.models import Suggestion
 from portality.forms.application_forms import ApplicationFormFactory, application_statuses
 
@@ -18,7 +19,7 @@ def change_status(ids, new_status):
 
 
 if __name__ == "__main__":
-    print('Starting {0}.'.format(datetime.now()))
+    print('Starting {0}.'.format(dates.now()))
 
     import argparse
     parser = argparse.ArgumentParser()
@@ -39,4 +40,4 @@ if __name__ == "__main__":
         ids = [row[0] for row in reader]
         change_status(ids, args.status)
 
-    print('Finished {0}.'.format(datetime.now()))
+    print('Finished {0}.'.format(dates.now()))

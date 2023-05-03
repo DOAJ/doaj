@@ -1,14 +1,14 @@
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
-from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory, AccountFixtureFactory
+from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.models import Article, Journal, Account
+from portality.lib import dates
+from portality.models import Article, Account
 from portality.lib.paths import rel2abs
 from doajtest.mocks.bll_article import BLLArticleMockFactory
-from datetime import datetime
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_get_duplicates"), "get_duplicates", "test_id",
@@ -109,7 +109,7 @@ class TestBLLArticleGetDuplicates(DoajTestCase):
             assert article_ids == deduped   # i.e. that there were no duplicates
 
             # check that the articles are ordered by last_updated
-            last_updateds = [datetime.strptime(a.last_updated, "%Y-%m-%dT%H:%M:%SZ") for a in duplicates]
+            last_updateds = [dates.parse(a.last_updated) for a in duplicates]
             sorted_lu = sorted(last_updateds, reverse=True)
             assert sorted_lu == last_updateds   # i.e. they were already sorted
 

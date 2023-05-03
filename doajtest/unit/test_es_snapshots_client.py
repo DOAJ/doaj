@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 import responses
 from freezegun import freeze_time
 
+from portality.lib import dates
+
 
 class TestSnapshotClient(DoajTestCase):
 
@@ -96,7 +98,7 @@ class TestSnapshotClient(DoajTestCase):
     @responses.activate
     def test_05_request_snapshot(self):
         # Mock response for initiating a snapshot
-        right_now = datetime.utcnow()
+        right_now = dates.now()
         slashtimestamp = datetime.strftime(right_now, "/%Y-%m-%d_%H%Mz")
         responses.add(responses.PUT, self.snapshot_url + slashtimestamp, json={"acknowledged": True}, status=200)
 

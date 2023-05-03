@@ -5,7 +5,7 @@ from typing import Iterable
 from doajtest import helpers
 from doajtest.helpers import DoajTestCase
 from portality.dao import DomainObject
-from portality.lib import es_queries
+from portality.lib import es_queries, dates
 from portality.models import Notification, BackgroundJob
 from portality.tasks import old_data_cleanup
 
@@ -19,7 +19,7 @@ def _save_all(objs: Iterable[DomainObject]):
 
 
 def _create_obj(domain_class, _days):
-    created_date = datetime.datetime.now() - datetime.timedelta(days=_days)
+    created_date = dates.now() - datetime.timedelta(days=_days)
     obj = domain_class(
         created_date=created_date.strftime(es_queries.ES_DATETIME_FMT)
     )

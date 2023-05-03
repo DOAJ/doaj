@@ -9,6 +9,7 @@ from portality.background import BackgroundApi, BackgroundTask
 from portality.core import app
 from portality.dao import ESMappingMissingError, ScrollInitialiseException
 from portality.lib import dates
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD, FMT_DATE_YM, FMT_YEAR, FMT_DATETIME_STD
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import main_queue
 
@@ -120,7 +121,7 @@ def _tabulate_time_entity_group(group, entityKey):
 
 def _fft(timestamp):
     """File Friendly Timestamp - Windows doesn't appreciate : / etc in filenames; strip these out"""
-    return dates.reformat(timestamp, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
+    return dates.reformat(timestamp, FMT_DATETIME_STD, FMT_DATE_STD)
 
 
 class ReportCounter(object):
@@ -129,9 +130,9 @@ class ReportCounter(object):
 
     def _flatten_timestamp(self, ts):
         if self.period == "month":
-            return ts.strftime("%Y-%m")
+            return ts.strftime(FMT_DATE_YM)
         elif self.period == "year":
-            return ts.strftime("%Y")
+            return ts.strftime(FMT_YEAR)
 
     def count(self, prov):
         raise NotImplementedError()
@@ -329,8 +330,8 @@ class ReportingBackgroundTask(BackgroundTask):
         params = job.params
 
         outdir = self.get_param(params, "outdir", "report_" + dates.today())
-        fr = self.get_param(params, "from", "1970-01-01T00:00:00Z")
-        to = self.get_param(params, "to", dates.now())
+        fr = self.get_param(params, "from", DEFAULT_TIMESTAMP_VAL)
+        to = self.get_param(params, "to", dates.now_str())
 
         job.add_audit_message("Saving reports to " + outdir)
         if not os.path.exists(outdir):
@@ -351,8 +352,8 @@ class ReportingBackgroundTask(BackgroundTask):
 
         send_email = self.get_param(params, "email", False)
         if send_email:
-            ref_fr = dates.reformat(fr, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
-            ref_to = dates.reformat(to, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
+            ref_fr = dates.reformat(fr, FMT_DATETIME_STD, FMT_DATE_STD)
+            ref_to = dates.reformat(to, FMT_DATETIME_STD, FMT_DATE_STD)
             archive_name = "reports_" + ref_fr + "_to_" + ref_to
             email_archive(outdir, archive_name)
             job.add_audit_message("email alert sent")
@@ -389,8 +390,8 @@ class ReportingBackgroundTask(BackgroundTask):
 
         params = {}
         cls.set_param(params, "outdir", kwargs.get("outdir", "report_" + dates.today()))
-        cls.set_param(params, "from", kwargs.get("from_date", "1970-01-01T00:00:00Z"))
-        cls.set_param(params, "to", kwargs.get("to_date", dates.now()))
+        cls.set_param(params, "from", kwargs.get("from_date", DEFAULT_TIMESTAMP_VAL))
+        cls.set_param(params, "to", kwargs.get("to_date", dates.now_str()))
         cls.set_param(params, "email", kwargs.get("email", False))
         job = background_helper.create_job(username, cls.__action__,
                                            queue_id=huey_helper.queue_id,

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from portality import constants
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
@@ -6,6 +6,7 @@ from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.background import BackgroundException
 from portality.core import app
+from portality.lib import dates
 from portality.tasks import async_workflow_notifications
 from portality.lib.seamless import SeamlessException
 
@@ -94,7 +95,7 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         # When we make the application unchanged for a short period of time, we don't tell the managing editors
         [APPLICATION_SOURCE_1, APPLICATION_SOURCE_2, APPLICATION_SOURCE_3] = ApplicationFixtureFactory.make_many_application_sources(count=3)
         comfortably_idle = app.config['ASSOC_ED_IDLE_DAYS'] + 1
-        APPLICATION_SOURCE_1['last_manual_update'] = datetime.utcnow() - timedelta(days=comfortably_idle)
+        APPLICATION_SOURCE_1['last_manual_update'] = dates.now() - timedelta(days=comfortably_idle)
         try:
             application1 = models.Suggestion(**APPLICATION_SOURCE_1)
         except SeamlessException as e:
@@ -104,12 +105,12 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         # This exceeds the idle limit, managing editors should be notified.
         APPLICATION_SOURCE_2['admin']['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
         extremely_idle = app.config['MAN_ED_IDLE_WEEKS'] + 1
-        APPLICATION_SOURCE_2['last_manual_update'] = datetime.utcnow() - timedelta(weeks=extremely_idle)
+        APPLICATION_SOURCE_2['last_manual_update'] = dates.now() - timedelta(weeks=extremely_idle)
         application2 = models.Suggestion(**APPLICATION_SOURCE_2)
         application2.save()
 
         # This one is ready - managing editors are told as it's now their responsibility.
-        APPLICATION_SOURCE_3['last_manual_update'] = datetime.utcnow()
+        APPLICATION_SOURCE_3['last_manual_update'] = dates.now()
         APPLICATION_SOURCE_3['admin']['application_status'] = constants.APPLICATION_STATUS_READY
         application3 = models.Suggestion(**APPLICATION_SOURCE_3)
         application3.save()
@@ -137,21 +138,21 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         # When we make the application unchanged for a short period of time, we don't tell the editors
         [APPLICATION_SOURCE_1, APPLICATION_SOURCE_2, APPLICATION_SOURCE_3] = ApplicationFixtureFactory.make_many_application_sources(count=3)
         comfortably_idle = app.config['ASSOC_ED_IDLE_DAYS'] + 1
-        APPLICATION_SOURCE_1['last_manual_update'] = datetime.utcnow() - timedelta(days=comfortably_idle)
+        APPLICATION_SOURCE_1['last_manual_update'] = dates.now() - timedelta(days=comfortably_idle)
         application1 = models.Suggestion(**APPLICATION_SOURCE_1)
         application1.save()
 
         # This exceeds the idle limit, editors should be notified.
         APPLICATION_SOURCE_2['admin']['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
         extremely_idle = app.config['ED_IDLE_WEEKS'] + 1
-        APPLICATION_SOURCE_2['last_manual_update'] = datetime.utcnow() - timedelta(weeks=extremely_idle)
+        APPLICATION_SOURCE_2['last_manual_update'] = dates.now() - timedelta(weeks=extremely_idle)
         application2 = models.Suggestion(**APPLICATION_SOURCE_2)
         application2.save()
 
         # This one is assigned to the group but not an associate - editors are reminded.
         extremely_idle = app.config['ED_IDLE_WEEKS'] + 1
         APPLICATION_SOURCE_2['admin']['application_status'] = constants.APPLICATION_STATUS_UPDATE_REQUEST
-        APPLICATION_SOURCE_3['last_manual_update'] = datetime.utcnow() - timedelta(days=extremely_idle)
+        APPLICATION_SOURCE_3['last_manual_update'] = dates.now() - timedelta(days=extremely_idle)
         APPLICATION_SOURCE_3['admin']['editor'] = None
         application3 = models.Suggestion(**APPLICATION_SOURCE_3)
         application3.save()
@@ -176,7 +177,7 @@ class TestAsyncWorkflowEmails(DoajTestCase):
     def test_04_workflow_associate_editor_notifications(self):
         ctx = self._make_and_push_test_context()
 
-        APPLICATION_SOURCE['last_manual_update'] = datetime.utcnow()
+        APPLICATION_SOURCE['last_manual_update'] = dates.now()
         application = models.Suggestion(**APPLICATION_SOURCE)
         application.save(blocking=True)
 
@@ -188,16 +189,16 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         # When we make the application unchanged for a period of time, we expect a message to be generated
         [APPLICATION_SOURCE_2, APPLICATION_SOURCE_3, APPLICATION_SOURCE_4] = ApplicationFixtureFactory.make_many_application_sources(count=3)
         comfortably_idle = app.config['ASSOC_ED_IDLE_DAYS'] + 1
-        APPLICATION_SOURCE_2['last_manual_update'] = datetime.utcnow() - timedelta(days=comfortably_idle)
+        APPLICATION_SOURCE_2['last_manual_update'] = dates.now() - timedelta(days=comfortably_idle)
         application2 = models.Suggestion(**APPLICATION_SOURCE_2)
         application2.save()
 
         extremely_idle = app.config['ASSOC_ED_IDLE_WEEKS'] + 1
-        APPLICATION_SOURCE_3['last_manual_update'] = datetime.utcnow() - timedelta(weeks=extremely_idle)
+        APPLICATION_SOURCE_3['last_manual_update'] = dates.now() - timedelta(weeks=extremely_idle)
         application3 = models.Suggestion(**APPLICATION_SOURCE_3)
         application3.save()
 
-        APPLICATION_SOURCE_4['last_manual_update'] = datetime.utcnow() - timedelta(weeks=extremely_idle)
+        APPLICATION_SOURCE_4['last_manual_update'] = dates.now() - timedelta(weeks=extremely_idle)
         APPLICATION_SOURCE_4["admin"]["application_status"] = constants.APPLICATION_STATUS_ACCEPTED
         application4 = models.Suggestion(**APPLICATION_SOURCE_4)
         application4.save()
