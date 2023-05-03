@@ -102,9 +102,21 @@ tests:
       results:
         - The note is saved and displayed in the list of notes
         - you username and user id will be showed on that note
-        - you can edit and delete the note
-    - step: Switch to other account `admin2`
-    - step: Go to Journal page at `/admin/journal/1234`
+        - the date and time you created the note will be shown
+    - step: Click into the note field and edit the note
+      results:
+      - The note is editable
+    - step: Click "Remove" underneath the note
+      results:
+        - The note is deleted
+    - step: Create a new note as per the above steps
+    - step: Switch to other associate editor account `admin2`
+    - step: Go to Journal page at `/editor/journal/1234`
       results:
         - You can see the note that you have created before with `admin1`
-        - you also can edit or delete that note
+    - step: Attempt to click into the note area and edit it
+      results:
+        - you are able to edit the note
+    - step: Attempt to click the "Remove" button
+      results:
+        - You are able to delete the note
