@@ -1,66 +1,66 @@
 {% set TODOS = {
         constants.TODO_MANED_STALLED: {
-            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Contact the editor</span>",
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Chase Editor</span>",
             "show_status": true,
             "colour" : "var(--salmon)",
             "feather": "coffee"
         },
         constants.TODO_MANED_FOLLOW_UP_OLD: {
-            "text": "<strong>Old</strong> <span class='todo-list__status'>Chase progress</span>",
+            "text": "<strong>Old</strong> <span class='todo-list__status'>Chase Editor</span>",
             "show_status": true,
             "colour" : "var(--sanguine)",
             "feather": "clock"
         },
         constants.TODO_MANED_READY: {
-            "text" : "<strong>Ready</strong> <span class='todo-list__status'>Make a decision</span>",
+            "text" : "<strong>Ready</strong> <span class='todo-list__status'>Make decision</span>",
             "colour" : "var(--dark-green)",
             "feather": "check-circle",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"ready"}])
         },
         constants.TODO_MANED_COMPLETED: {
-            "text" : "<strong>Completed</strong> <span class='todo-list__status'>Make a decision</span>",
+            "text" : "<strong>Completed</strong> <span class='todo-list__status'>Chase Editor</span>",
             "colour" : "var(--mid-green)",
             "feather": "user-check",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"completed"}])
         },
         constants.TODO_MANED_ASSIGN_PENDING: {
-            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Chase the Editor to assign</span>",
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Chase Editor</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
         },
         constants.TODO_EDITOR_STALLED: {
-            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Contact the Associate Editor</span>",
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Chase Associate Editor</span>",
             "show_status": true,
             "colour" : "var(--yellow)",
             "feather": "inbox",
         },
         constants.TODO_EDITOR_FOLLOW_UP_OLD: {
-            "text" : "<strong>Old</strong> <span class='todo-list__status'>Chase progress</span>",
+            "text" : "<strong>Old</strong> <span class='todo-list__status'>Chase Associate Editor</span>",
             "show_status": true,
             "colour" : "var(--sanguine)",
             "feather": "clock"
         },
         constants.TODO_EDITOR_COMPLETED: {
-            "text" : "<strong>Completed</strong> <span class='todo-list__status'>Make a decision</span>",
+            "text" : "<strong>Completed</strong> <span class='todo-list__status'>Review and set to Ready</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('editor.group_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"completed"}])
         },
         constants.TODO_EDITOR_ASSIGN_PENDING: {
-            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Assign an Associate Editor</span>",
+            "text" : "<strong>Pending</strong> <span class='todo-list__status'>Assign to Associate Editor</span>",
             "colour" : "var(--yellow)",
             "feather": "inbox",
             "link" : url_for('editor.group_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
         },
         constants.TODO_ASSOCIATE_PROGRESS_STALLED: {
-            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Review progress</span>",
+            "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Complete as soon as possible</span>",
             "show_status": true,
             "colour" : "var(--yellow)",
             "feather": "inbox",
         },
         constants.TODO_ASSOCIATE_FOLLOW_UP_OLD: {
-            "text": "<strong>Old</strong> <span class='todo-list__status'>Chase progress</span>",
+            "text": "<strong>Old</strong> <span class='todo-list__status'>Complete as soon as possible</span>",
             "show_status": true,
             "colour" : "var(--sanguine)",
             "feather": "clock"

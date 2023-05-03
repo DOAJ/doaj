@@ -227,7 +227,7 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_COMPLETED
+                    constants.APPLICATION_STATUS_READY
                 ])
             ],
             sort="last_manual_update",
@@ -246,7 +246,7 @@ class TodoRules(object):
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
                     constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_COMPLETED
+                    constants.APPLICATION_STATUS_READY
                 ])
             ],
             sort="created_date",
