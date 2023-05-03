@@ -26,6 +26,7 @@ class AccountFixtureFactory(object):
     def make_assed3_source():
         return deepcopy(ASSED_SOURCE3)
 
+
 PUBLISHER_SOURCE = {
     "email": "pub@example.com",
     "name": "Joe Publisher",
@@ -74,3 +75,15 @@ ASSED_SOURCE3 = {
     "role": ["associate_editor"],
     "id": "associate_3"
 }
+
+
+def create_publisher_a():
+    from portality import models
+    publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+    return publisher
+
+
+def create_maned_a():
+    from portality import models
+    maned = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+    return maned

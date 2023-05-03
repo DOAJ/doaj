@@ -9,9 +9,9 @@ from selenium.webdriver.support.select import Select
 
 from doajtest import selenium_helpers
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, url_path, article_doajxml
-from doajtest.fixtures.accounts import PUBLISHER_B_SOURCE
+from doajtest.fixtures.accounts import PUBLISHER_B_SOURCE, create_publisher_a, create_maned_a
 from doajtest.fixtures.article_doajxml import ARTICLE_UPLOAD_SUCCESSFUL, ARTICLE_UPLOAD_UPDATE
-from doajtest.fixtures.url_path import URL_PUBLISHER_UPLOADFILE
+from doajtest.fixtures.url_path import URL_PUBLISHER_UPLOADFILE, URL_ADMIN_BGJOBS
 from doajtest.selenium_helpers import SeleniumTestCase
 from portality import models, dao
 from portality.constants import FileUploadStatus
@@ -125,6 +125,23 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
 
         self.assert_history_row(history_row, status_msg=HISTORY_ROW_PROCESSING_FAILED, file_path=file_path,
                                 note='One or more articles in this batch have duplicate identifiers')
+
+        """ Check Outcome Status of "Upload a file with duplicates inside the file"  """
+        self.assert_outcome_status('fail')
+
+    def assert_outcome_status(self, outcome_status):
+        admin = create_maned_a()
+        selenium_helpers.login_by_acc(self.selenium, admin)
+        selenium_helpers.goto(self.selenium, URL_ADMIN_BGJOBS)
+
+        selenium_helpers.click_edges_item(self.selenium, 'action', 'ingest_articles')
+        selenium_helpers.click_edges_item(self.selenium, 'status', 'complete')
+        sleep(1)  # wait for javascript update
+
+        assert f'Outcome Status: {outcome_status}' in (
+            selenium_helpers
+            .find_ele_by_css(self.selenium, '.doaj-bg-results-container-results .row-fluid')
+            .get_attribute('innerHTML'))
 
     def select_xml_format_by_value(self, value):
         Select(self.selenium.find_element(By.ID, 'upload-xml-format')).select_by_value(value)
@@ -261,6 +278,9 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
         """ Successfully upload a file by reference containing a new or updated article """
         self.step_upload_success(publisher, ARTICLE_UPLOAD_SUCCESSFUL, journal.bibjson().eissn, 'Success!')
 
+        """ Check Outcome Status of "Successfully upload a file containing a new article" """
+        self.assert_outcome_status('success')
+
     def step_upload_success(self, publisher, article_xml_path, journal_issn, expected_title):
         article_title_selector = 'h3.search-results__heading a'
         self.goto_upload_page(acc=publisher)
@@ -311,11 +331,6 @@ def create_journal_by_issn(publisher=None, pissn=None, eissn=None, blocking=Fals
     bib.replaces = []
     journal.save(blocking=blocking)
     return journal
-
-
-def create_publisher_a():
-    publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
-    return publisher
 
 
 def find_history_rows(driver):

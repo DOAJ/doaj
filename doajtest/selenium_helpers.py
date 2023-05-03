@@ -3,14 +3,24 @@ from multiprocessing import Process
 from typing import TYPE_CHECKING
 
 from selenium import webdriver
+from selenium.common import StaleElementReferenceException
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 
+from doajtest.fixtures.url_path import URL_LOGOUT
 from doajtest.helpers import DoajTestCase
 from portality import app, models
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
+
+
+def find_ele_by_css(driver, css_selector: str) -> 'WebElement':
+    return driver.find_element(By.CSS_SELECTOR, css_selector)
+
+
+def find_eles_by_css(driver, css_selector: str) -> 'WebElement':
+    return driver.find_elements(By.CSS_SELECTOR, css_selector)
 
 
 class SeleniumTestCase(DoajTestCase):
@@ -22,10 +32,10 @@ class SeleniumTestCase(DoajTestCase):
     DOAJ_PORT = app.app.config.get('SELENIUM_DOAJ_PORT', 5014)
 
     def find_ele_by_css(self, css_selector: str) -> 'WebElement':
-        return self.selenium.find_element(By.CSS_SELECTOR, css_selector)
+        return find_ele_by_css(self.selenium, css_selector)
 
     def find_eles_by_css(self, css_selector: str) -> 'WebElement':
-        return self.selenium.find_elements(By.CSS_SELECTOR, css_selector)
+        return find_eles_by_css(self.selenium, css_selector)
 
     def setUp(self):
         super().setUp()
@@ -102,6 +112,10 @@ def login(driver: 'WebDriver', username: str, password: str):
     driver.find_element(By.CSS_SELECTOR, 'input[type="submit"]').click()
 
 
+def logout(driver: 'WebDriver'):
+    goto(driver, URL_LOGOUT)
+
+
 def login_by_acc(driver: 'WebDriver', acc: models.Account = None):
     password = 'password'
     acc.set_password(password)
@@ -123,3 +137,40 @@ def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1):
             return
         time.sleep(check_interval)
     raise TimeoutError(f"wait_unit timeout after {timeout} seconds")
+
+
+def wait_unit_elements(driver: 'WebDriver', css_selector: str, timeout=10, check_interval=0.1):
+
+    elements = []
+
+    def exit_cond_fn():
+        nonlocal elements
+        try:
+            elements = driver.find_elements(By.CSS_SELECTOR, css_selector)
+            return elements
+        except:
+            return False
+
+    wait_unit(exit_cond_fn, timeout, check_interval)
+    return elements
+
+
+def wait_unit_click(driver: 'WebDriver', css_selector: str, timeout=10, check_interval=0.1):
+    def _click():
+        try:
+            ele = find_ele_by_css(driver, css_selector)
+            if ele:
+                ele.click()
+                return True
+            return False
+        except StaleElementReferenceException:
+            return False
+
+    wait_unit(_click, timeout=10, check_interval=0.1)
+
+
+def click_edges_item(driver: 'WebDriver', ele_name, item_name):
+    wait_unit_click(driver, f'#edges-bs3-refiningand-term-selector-toggle-{ele_name}')
+    for ele in find_eles_by_css(driver, f'.edges-bs3-refiningand-term-selector-result-{ele_name} a'):
+        if item_name in ele.text.strip():
+            ele.click()
