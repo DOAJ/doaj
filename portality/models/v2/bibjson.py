@@ -325,6 +325,9 @@ class JournalLikeBibJSON(SeamlessMixin):
     def add_editorial_review_process(self, process):
         self.__seamless__.add_to_list_with_struct("editorial.review_process", process)
 
+    def remove_editorial_review_process(self, process):
+        self.__seamless__.delete_from_list("editorial.review_process", process)
+
     @property
     def editorial_review_process(self):
         return self.__seamless__.get_list("editorial.review_process")

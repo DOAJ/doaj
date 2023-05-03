@@ -1,0 +1,7 @@
+{% set bibjson = article.bibjson() %}
+{%- if bibjson.title -%}
+    {% set metatitle = bibjson.title %}
+{% else %}
+    {% set metatitle = app.config['SERVICE_NAME'] %}
+{%- endif -%}
+{{ metatitle }}

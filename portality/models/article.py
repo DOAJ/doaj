@@ -428,10 +428,8 @@ class Article(DomainObject):
         if len(cbib.journal_language) > 0:
             langs = [datasets.name_for_lang(l) for l in cbib.journal_language]
 
-        # copy the country
-        if jindex.get('country'):
-            country = jindex.get('country')
-        elif cbib.journal_country:
+        # Get the country name from the bibjson country code
+        if cbib.journal_country:
             country = datasets.get_country_name(cbib.journal_country)
 
         # copy the publisher/provider
@@ -484,7 +482,6 @@ class Article(DomainObject):
             # if we can't normalise the DOI, just store it as-is.
             doi = source_doi
 
-
         # create a normalised version of the fulltext URL for deduplication
         fulltexts = cbib.get_urls(constants.LINK_TYPE_FULLTEXT)
         if len(fulltexts) > 0:
@@ -494,8 +491,6 @@ class Article(DomainObject):
             except ValueError as e:
                 # if we can't normalise the fulltext store it as-is
                 fulltext = source_fulltext
-
-
 
         # build the index part of the object
         self.data["index"] = {}

@@ -165,6 +165,9 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     @property
     def last_manual_update(self):
         return self.__seamless__.get_single("last_manual_update")
+    
+    def last_manually_updated_since(self, days=0):
+        return self.last_manual_update_timestamp > (datetime.utcnow() - timedelta(days=days))
 
     @property
     def last_manual_update_timestamp(self):
@@ -365,9 +368,10 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         for subs in cbib.subject:
             scheme = subs.get("scheme")
             term = subs.get("term")
-            subjects.append(term)
-            schema_subjects.append(scheme + ":" + term)
-            classification.append(term)
+            if term:
+                subjects.append(term)
+                schema_subjects.append(scheme + ":" + term)
+                classification.append(term)
             if "code" in subs:
                 schema_codes.append(scheme + ":" + subs.get("code"))
 
@@ -520,7 +524,7 @@ class Journal(JournalLikeObject):
     @classmethod
     def all_in_doaj(cls, page_size=5000):
         q = JournalQuery()
-        return cls.iterate(q.all_in_doaj(), page_size=page_size, wrap=True)
+        return cls.iterate(q.all_in_doaj(), page_size=page_size, wrap=True, keepalive='5m')
 
     @classmethod
     def find_by_publisher(cls, publisher, exact=True):

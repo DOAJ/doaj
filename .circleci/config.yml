@@ -1,0 +1,37 @@
+version: 2.1
+orbs:
+  python: circleci/python@2.1.1
+
+jobs:
+  build-and-test:
+    docker:
+      - image: cimg/python:3.8.10
+        environment:
+          DOAJENV: test
+      - image: elasticsearch:7.10.1
+        environment:
+          - xpack.security.enabled: false
+          - transport.host: localhost
+          - discovery.type: single-node
+    steps:
+      - checkout
+      - run: git submodule update --init --recursive
+      - python/install-packages:
+          pkg-manager: pip-dist
+          pip-dependency-file: setup.py
+          path-args: .[test]
+      - run: |
+          echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
+          python portality/cms/build_fragments.py
+          python portality/cms/build_sass.py
+          pytest -v --color=yes --code-highlight=yes --log-level=DEBUG doajtest/unit
+
+workflows:
+  unit_tests:
+    jobs:
+      - build-and-test:
+          filters:
+            branches:
+              ignore:
+                - /release\/.*/
+                - static_pages

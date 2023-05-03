@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from portality.app_email import EmailException
 from portality import models
 from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
-from portality.decorators import ssl_required, restrict_to_role
+from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.dao import ESMappingMissingError
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
@@ -192,7 +192,7 @@ def upload_file():
         schema = request.cookies.get("schema")
         if schema is None:
             schema = ""
-        return render_template('publisher/uploadmetadata.html', previous=previous, schema=schema)
+        return render_template('publisher/uploadmetadata.html', previous=previous, schema=schema, error=False)
 
     # otherwise we are dealing with a POST - file upload or supply of url
     f = request.files.get("file")
@@ -208,10 +208,22 @@ def upload_file():
     try:
         job = IngestArticlesBackgroundTask.prepare(current_user.id, upload_file=f, schema=schema, url=url, previous=previous)
         IngestArticlesBackgroundTask.submit(job)
-    except (BackgroundException, TaskException) as e:
+    except TaskException as e:
         magic = str(uuid.uuid1())
-        flash("An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the ID " + magic)
+        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str="", id=magic))
         app.logger.exception('File upload error. ' + magic)
+        return resp
+    except BackgroundException as e:
+        if str(e) == Messages.NO_FILE_UPLOAD_ID:
+            schema = request.cookies.get("schema")
+            if schema is None:
+                schema = ""
+            return render_template('publisher/uploadmetadata.html', previous=previous, schema=schema, error=True)
+
+
+        magic = str(uuid.uuid1())
+        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str=str(e), id=magic))
+        app.logger.exception('File upload error. ' + magic + '; ' + str(e))
         return resp
 
     if f is not None and f.filename != "":
@@ -234,6 +246,9 @@ def preservation():
     """Upload articles on Internet Servers for archiving.
        This feature is available for the users who has 'preservation' role.
     """
+
+    if app.config.get('PRESERVATION_PAGE_UNDER_MAINTENANCE', False):
+        return render_template('publisher/readonly.html')
 
     previous = []
     try:

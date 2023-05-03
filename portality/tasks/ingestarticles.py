@@ -1,21 +1,21 @@
+import ftplib
+import os
 import re
+import requests
+import shutil
+import traceback
+from urllib.parse import urlparse
 
 from portality import models
+from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
+from portality.bll import DOAJ
+from portality.bll.exceptions import IngestException, DuplicateArticleException, ArticleNotAcceptable
 from portality.core import app
 from portality.crosswalks.exceptions import CrosswalkException
-from portality.tasks.helpers import background_helper
-
-from portality.tasks.redis_huey import main_queue, configure
-from portality.decorators import write_required
-
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
-from portality.bll.exceptions import IngestException, DuplicateArticleException, ArticleNotAcceptable
-from portality.bll import DOAJ
-
 from portality.lib import plugin
-
-import ftplib, os, requests, traceback, shutil
-from urllib.parse import urlparse
+from portality.tasks.helpers import background_helper
+from portality.tasks.redis_huey import main_queue
+from portality.ui.messages import Messages
 
 DEFAULT_MAX_REMOTE_SIZE = 262144000
 CHUNK_SIZE = 1048576
@@ -35,11 +35,14 @@ def ftp_upload(job, path, parsed_url, file_upload):
     # 2. if not too big, download it
     size_limit = app.config.get("MAX_REMOTE_SIZE", DEFAULT_MAX_REMOTE_SIZE)
 
-    too_large = [False]  # you CANNOT override (rebind) vars inside nested funcs in python 2
-                         # and we can't pass too_large and downloaded as args to
-                         # ftp_callback either since we don't control what args it gets
-                         # hence, widely adopted ugly hack - since you can READ nonlocal
-                         # vars from nested funcs, we use a mutable container!
+    """
+    you CANNOT override (rebind) vars inside nested funcs in python 2
+    and we can't pass too_large and downloaded as args to
+    ftp_callback either since we don't control what args it gets
+    hence, widely adopted ugly hack - since you can READ nonlocal
+    vars from nested funcs, we use a mutable container!
+    """
+    too_large = [False]
     downloaded = [0]
 
     def ftp_callback(chunk):
@@ -57,7 +60,7 @@ def ftp_upload(job, path, parsed_url, file_upload):
 
         if chunk:
             with open(path, 'a') as o:
-                if type(chunk) == bytes:    #TODO: why chunk are different types? check test #20
+                if type(chunk) == bytes:  # TODO: why chunk are different types? check test #20
                     o.write(chunk.decode("utf-8"))
                 else:
                     o.write(chunk)
@@ -117,7 +120,8 @@ def http_upload(job, path, file_upload):
     try:
         r = requests.get(file_upload.filename, stream=True)
         if r.status_code != requests.codes.ok:
-            job.add_audit_message("The URL could not be accessed. Status: {0}, Content: {1}".format(r.status_code, r.text))
+            job.add_audit_message("The URL could not be accessed. Status: {0}, Content: {1}"
+                                  .format(r.status_code, r.text))
             file_upload.failed("The URL could not be accessed")
             return False
 
@@ -137,17 +141,18 @@ def http_upload(job, path, file_upload):
         too_large = False
         with open(path, 'w') as f:
             downloaded = 0
-            for chunk in r.iter_content(chunk_size=CHUNK_SIZE): # 1Mb chunks
-                if type(chunk) == bytes:        #TODO: chunk here always should be the same type, ,refer to ingestarticle tests #15 and 17
+            for chunk in r.iter_content(chunk_size=CHUNK_SIZE):  # 1Mb chunks
+                if type(chunk) == bytes:  # TODO: chunk here always should be the same type, ,refer to ingestarticle tests #15 and 17
                     downloaded += len(chunk)
-                else: downloaded += len(bytes(chunk, "utf-8"))
+                else:
+                    downloaded += len(bytes(chunk, "utf-8"))
                 # check the size limit again
                 if downloaded > size_limit:
                     file_upload.failed("The file at the URL was too large")
                     job.add_audit_message("too large")
                     too_large = True
                     break
-                if chunk: # filter out keep-alive new chunks
+                if chunk:  # filter out keep-alive new chunks
                     if type(chunk) == bytes:
                         f.write(chunk.decode("utf-8"))
                     else:
@@ -160,7 +165,7 @@ def http_upload(job, path, file_upload):
 
     if too_large:
         try:
-            os.remove(path) # don't keep this file around
+            os.remove(path)  # don't keep this file around
         except:
             pass
         return False
@@ -170,7 +175,6 @@ def http_upload(job, path, file_upload):
 
 
 class IngestArticlesBackgroundTask(BackgroundTask):
-
     __action__ = "ingest_articles"
 
     def run(self):
@@ -190,16 +194,20 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         file_upload = models.FileUpload.pull(file_upload_id)
         if file_upload is None:
-            raise BackgroundException("IngestArticleBackgroundTask.run unable to find file upload with id {x}".format(x=file_upload_id))
+            raise BackgroundException("IngestArticleBackgroundTask.run unable to find file upload with id {x}"
+                                      .format(x=file_upload_id))
 
         try:
             # if the file "exists", this means its a remote file that needs to be downloaded, so do that
             # if it's in "failed" state already but filename has a scheme, this is a retry of a download
-            if file_upload.status == "exists" or (file_upload.status == "failed" and re.match(r'^(ht|f)tps?://', file_upload.filename)):
-                job.add_audit_message("Downloading file for file upload {x}, job {y}".format(x=file_upload_id, y=job.id))
+            if file_upload.status == "exists" or (file_upload.status == "failed"
+                                                  and re.match(r'^(ht|f)tps?://', file_upload.filename)):
+                job.add_audit_message("Downloading file for file upload {x}, job {y}"
+                                      .format(x=file_upload_id, y=job.id))
                 if self._download(file_upload) is False:
                     # TODO: add 'outcome' error here
                     job.add_audit_message("File download failed".format(x=file_upload_id, y=job.id))
+                    job.outcome_fail()
 
             # if the file is validated, which will happen if it has been uploaded, or downloaded successfully, process it.
             if file_upload.status == "validated":
@@ -208,7 +216,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         finally:
             file_upload.save()
 
-    def _download(self, file_upload):
+    def _download(self, file_upload: models.FileUpload) -> bool:
         job = self.background_job
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
@@ -246,15 +254,18 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             try:
                 file_failed(path)
             except:
-                job.add_audit_message("Error cleaning up file which caused IngestException: {x}".format(x=traceback.format_exc()))
+                job.add_audit_message("Error cleaning up file which caused IngestException: {x}"
+                                      .format(x=traceback.format_exc()))
             return False
         except Exception as e:
-            job.add_audit_message("File system error while downloading file: {x}".format(x=traceback.format_exc()))
+            job.add_audit_message("File system error while downloading file: {x}"
+                                  .format(x=traceback.format_exc()))
             file_upload.failed("File system error when downloading file")
             try:
                 file_failed(path)
             except:
-                job.add_audit_message("Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
+                job.add_audit_message("Error cleaning up file which caused Exception: {x}"
+                                      .format(x=traceback.format_exc()))
             return False
 
         # if we get to here then we have a successfully downloaded and validated
@@ -263,7 +274,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         file_upload.validated(file_upload.schema)
         return True
 
-    def _process(self, file_upload):
+    def _process(self, file_upload: models.FileUpload):
         job = self.background_job
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
@@ -296,34 +307,42 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         articles = None
         try:
             with open(path) as handle:
-                articles = xwalk.crosswalk_file(handle, add_journal_info=False) # don't import the journal info, as we haven't validated ownership of the ISSNs in the article yet
+                # don't import the journal info, as we haven't validated ownership of the ISSNs in the article yet
+                articles = xwalk.crosswalk_file(handle, add_journal_info=False)
                 for article in articles:
                     article.set_upload_id(file_upload.id)
                 result = articleService.batch_create_articles(articles, account, add_journal_info=True)
         except (IngestException, CrosswalkException) as e:
-            job.add_audit_message("IngestException: {msg}. Inner message: {inner}.  Stack: {x}".format(msg=e.message, inner=e.inner_message, x=e.trace()))
+            job.add_audit_message("IngestException: {msg}. Inner message: {inner}.  Stack: {x}"
+                                  .format(msg=e.message, inner=e.inner_message, x=e.trace()))
+            job.outcome_fail()
             file_upload.failed(e.message, e.inner_message)
             result = e.result
             try:
                 file_failed(path)
                 ingest_exception = True
             except:
-                job.add_audit_message("Error cleaning up file which caused IngestException: {x}".format(x=traceback.format_exc()))
+                job.add_audit_message("Error cleaning up file which caused IngestException: {x}"
+                                      .format(x=traceback.format_exc()))
         except (DuplicateArticleException, ArticleNotAcceptable) as e:
             job.add_audit_message(str(e))
+            job.outcome_fail()
             file_upload.failed(str(e))
             try:
                 file_failed(path)
             except:
-                job.add_audit_message("Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
+                job.add_audit_message("Error cleaning up file which caused Exception: {x}"
+                                      .format(x=traceback.format_exc()))
                 return
         except Exception as e:
             job.add_audit_message("Unanticipated error: {x}".format(x=traceback.format_exc()))
+            job.outcome_fail()
             file_upload.failed("Unanticipated error when importing articles")
             try:
                 file_failed(path)
             except:
-                job.add_audit_message("Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
+                job.add_audit_message("Error cleaning up file which caused Exception: {x}"
+                                      .format(x=traceback.format_exc()))
                 return
 
         success = result.get("success", 0)
@@ -337,6 +356,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         if success == 0 and fail > 0 and not ingest_exception:
             file_upload.failed("All articles in file failed to import")
             job.add_audit_message("All articles in file failed to import")
+            job.outcome_fail()
         if success > 0 and fail == 0:
             file_upload.processed(success, update, new)
         if success > 0 and fail > 0:
@@ -354,7 +374,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         if not ingest_exception:
             try:
-                os.remove(path) # just remove the file, no need to keep it
+                os.remove(path)  # just remove the file, no need to keep it
             except Exception as e:
                 job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=str(e)))
 
@@ -397,7 +417,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             file_upload_id = cls._url_upload(username, url, schema, previous)
 
         if file_upload_id is None:
-            raise BackgroundException("No file upload record was created")
+            raise BackgroundException(Messages.NO_FILE_UPLOAD_ID)
 
         # first prepare a job record
         params = {}
@@ -501,7 +521,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             get.close()
             if get.status_code == requests.codes.ok:
                 return __ok(record, previous)
-            return __fail(record, previous, error='error while checking submitted file reference: {0}'.format(get.status_code))
+            return __fail(record, previous,
+                          error='error while checking submitted file reference: {0}'.format(get.status_code))
 
         def __ftp_upload(record, previous, parsed_url):
             # 1. find out whether the file exists
@@ -517,7 +538,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 r = f.sendcmd('TYPE I')  # SIZE is not usually allowed in ASCII mode, so set to binary mode
                 if not r.startswith('2'):
                     return __fail(record, previous, error='could not set binary '
-                        'mode in target FTP server while checking file exists')
+                                                          'mode in target FTP server while checking file exists')
                 if f.size(parsed_url.path) < 0:
                     # this will either raise an error which will get caught below
                     # or, very rarely, will return an invalid size
@@ -545,7 +566,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         record = models.FileUpload()
         record.upload(username, url)
         record.set_id()
-        record.set_schema(schema) # although it could be wrong, this will get checked later
+        record.set_schema(schema)  # although it could be wrong, this will get checked later
 
         # now we attempt to verify that the file is retrievable
         try:
@@ -556,7 +577,9 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             elif parsed_url.scheme == 'ftp':
                 return __ftp_upload(record, previous, parsed_url)
             else:
-                return __fail(record, previous, error='unsupported URL scheme "{0}". Only HTTP(s) and FTP are supported.'.format(parsed_url.scheme))
+                return __fail(record, previous,
+                              error='unsupported URL scheme "{0}". Only HTTP(s) and FTP are supported.'.format(
+                                  parsed_url.scheme))
         except BackgroundException as e:
             raise
         except Exception as e:

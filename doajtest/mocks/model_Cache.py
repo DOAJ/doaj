@@ -27,10 +27,11 @@ class InMemoryCache(object):
         pass
 
     @classmethod
-    def cache_public_data_dump(cls, article_url, article_size, journal_url, journal_size):
+    def cache_public_data_dump(cls, article_container, article_filename, article_url, article_size,
+                                    journal_container, journal_filename, journal_url, journal_size):
         cls.__memory__["public_data_dump"] = {
-            "article": {"url" : article_url, "size" : article_size},
-            "journal": {"url" : journal_url, "size" : journal_size}
+            "article": {"container": article_container, "filename": article_filename, "url" : article_url, "size" : article_size},
+            "journal": {"container": journal_container, "filename": journal_filename, "url" : journal_url, "size" : journal_size}
         }
 
     @classmethod

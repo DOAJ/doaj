@@ -2,6 +2,16 @@
 suite: Article XML Upload
 testset: DOAJ XML
 tests:
+- title: Try uploading without providing a file
+  context:
+    role: publisher
+  steps:
+    - step: Go to the "Upload Article XML" tab in the "Publisher Area" /publisher/uploadfile
+    - step: Do not fill in any inputs
+    - step: Click "Upload"
+      results:
+        - Under the Select a file input and Upload from a link input an error 
+          "You must specify the file or upload from a link" error is displayed
 - title: Upload a file which is not XML
   context:
     role: publisher
@@ -11,7 +21,7 @@ tests:
       based (e.g. an image file or a PDF)
   - step: Click "Upload"
     results:
-    - A flash message appears at the top of the screen indicating an error has occurred
+    - A flash message with appropriate text appears at the top of the screen indicating an error has occurred
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes". Check that the explanation link goes to
       a suitable reason and resolution for the problem.
@@ -28,7 +38,7 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Click "Upload"
     results:
-    - A flash message appears at the top of the screen indicating an error has occurred
+    - A flash message with appropriate text appears at the top of the screen indicating an error has occurred
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes" (you may need to reload the page). Check
       that the explanation link goes to a suitable reason and resolution for the problem.
@@ -45,7 +55,7 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Click "Upload"
     results:
-    - A flash message appears at the top of the screen indicating an error has occurred
+    - A flash message with appropriate text appears at the top of the screen indicating an error has occurred
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
@@ -278,7 +288,7 @@ tests:
     resource: /xml_upload_test_package/DOAJ/orcid_id_invalid.xml
   - step: Click "Upload"
     results:
-    - A flash message appears at the top of the screen indicating an error has occurred
+    - A flash message with appropriate text appears at the top of the screen indicating an error has occurred
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a "Unable to validate document with identified schema" entry in the "Notes".  Check
       that the explanation link goes to a suitable reason and resolution for the problem.
@@ -326,3 +336,29 @@ tests:
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
+
+- title: Check Outcome Status of "Upload a file with duplicates inside the file"
+  context:
+    role: admin
+  steps:
+    - step: Run through test "Upload a file with duplicates inside the file"
+    - step: Go to the DOAJ admin Background Jobs search at /admin/background_jobs
+    - step: Search related article background job by filter Action=ingest_articles, Status=complete
+      results:
+        - Related background job is found
+        - status is "complete"
+        - Outcome Status is "fail"
+
+
+
+- title: Check Outcome Status of "Successfully upload a file containing a new article"
+  context:
+    role: admin
+  steps:
+    - step: Run through test "Successfully upload a file containing a new article"
+    - step: Go to the DOAJ admin Background Jobs search at /admin/background_jobs
+    - step: Search related article background job by filter Action=ingest_articles, Status=complete
+      results:
+        - Related background job is found
+        - status is "complete"
+        - Outcome Status is "success"

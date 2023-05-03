@@ -50,12 +50,12 @@ from portality.view.dashboard import blueprint as dashboard
 app.register_blueprint(account, url_prefix='/account') #~~->Account:Blueprint~~
 app.register_blueprint(admin, url_prefix='/admin') #~~-> Admin:Blueprint~~
 app.register_blueprint(publisher, url_prefix='/publisher') #~~-> Publisher:Blueprint~~
-app.register_blueprint(query, url_prefix='/query') # ~~-> Query:Blueprint~~
-app.register_blueprint(query, url_prefix="/admin_query")
-app.register_blueprint(query, url_prefix="/publisher_query")
-app.register_blueprint(query, url_prefix="/editor_query")
-app.register_blueprint(query, url_prefix="/associate_query")
-app.register_blueprint(query, url_prefix="/dashboard_query")
+app.register_blueprint(query, name='query', url_prefix='/query') # ~~-> Query:Blueprint~~
+app.register_blueprint(query, name='admin_query', url_prefix='/admin_query')
+app.register_blueprint(query, name='publisher_query', url_prefix='/publisher_query')
+app.register_blueprint(query, name='editor_query', url_prefix='/editor_query')
+app.register_blueprint(query, name='associate_query', url_prefix='/associate_query')
+app.register_blueprint(query, name='dashboard_query', url_prefix="/dashboard_query")
 app.register_blueprint(editor, url_prefix='/editor') # ~~-> Editor:Blueprint~~
 app.register_blueprint(services, url_prefix='/service') # ~~-> Services:Blueprint~~
 if 'api1' in app.config['FEATURES']:
@@ -63,10 +63,10 @@ if 'api1' in app.config['FEATURES']:
 if 'api2' in app.config['FEATURES']:
     app.register_blueprint(api_v2, url_prefix='/api/v2') # ~~-> APIv2:Blueprint~~
 if 'api3' in app.config['FEATURES']:
-    app.register_blueprint(api_v3, url_prefix='/api') # ~~-> APIv3:Blueprint~~
-    app.register_blueprint(api_v3, url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
-app.register_blueprint(status, url_prefix='/status') # ~~-> Status:Blueprint~~
-app.register_blueprint(status, url_prefix='/_status')
+    app.register_blueprint(api_v3, name='api', url_prefix='/api') # ~~-> APIv3:Blueprint~~
+    app.register_blueprint(api_v3, name='api_v3', url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
+app.register_blueprint(status, name='status', url_prefix='/status') # ~~-> Status:Blueprint~~
+app.register_blueprint(status, name='_status', url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
 app.register_blueprint(jct, url_prefix="/jct") # ~~-> JCT:Blueprint~~
 app.register_blueprint(dashboard, url_prefix="/dashboard") #~~-> Dashboard:Blueprint~~
