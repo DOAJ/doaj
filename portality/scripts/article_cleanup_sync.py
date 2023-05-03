@@ -4,15 +4,15 @@ For each article in the DOAJ index:
     * Ensures that the article in_doaj status is the same as the journal's
     * Applies the journal's information to the article metadata as needed
 """
-from datetime import datetime
 from portality.core import app
+from portality.lib import dates
 
 from portality.tasks import article_cleanup_sync as asc
 from portality.background import BackgroundApi
 
 
 if __name__ == "__main__":
-    start = datetime.now()
+    start = dates.now()
 
     import argparse
     parser = argparse.ArgumentParser()
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     task = asc.ArticleCleanupSyncBackgroundTask(job)
     BackgroundApi.execute(task)
 
-    end = datetime.now()
+    end = dates.now()
     print(start, "-", end)
 
     for a in job.audit:

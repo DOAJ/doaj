@@ -5,10 +5,12 @@ from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
+from portality.lib import dates
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.models import Application, Account, Journal
 from portality.lib.paths import rel2abs
 from portality import constants
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import time
 
@@ -70,7 +72,7 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
         if application_arg != "none":
             application = Application(**ApplicationFixtureFactory.make_application_source())
             application.remove_current_journal()
-            application.set_last_manual_update("1970-01-01T00:00:00Z")
+            application.set_last_manual_update(DEFAULT_TIMESTAMP_VAL)
 
             if application_arg == "rejected":
                 application.set_application_status(constants.APPLICATION_STATUS_REJECTED)
@@ -127,7 +129,7 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
 
             if outcome_arg == "noop":
                 assert application.last_updated == last_updated
-                assert application.last_manual_update == "1970-01-01T00:00:00Z"
+                assert application.last_manual_update == DEFAULT_TIMESTAMP_VAL
 
             elif outcome_arg == "unrejected":
                 journal = Journal.pull(journal_id)
@@ -138,8 +140,8 @@ class TestBLLApplicationUnrejectApplication(DoajTestCase):
 
                 if manual_update:
                     # fixme: millisecond timestamps would help us here, or last_manual_update shouldn't generate its own date
-                    lu = datetime.strptime(application.last_updated, "%Y-%m-%dT%H:%M:%SZ")
-                    lmu = datetime.strptime(application.last_manual_update, "%Y-%m-%dT%H:%M:%SZ")
+                    lu = dates.parse(application.last_updated)
+                    lmu = dates.parse(application.last_manual_update)
                     assert lmu - lu <= timedelta(seconds=1)
                 else:
-                    assert application.last_manual_update == "1970-01-01T00:00:00Z"
+                    assert application.last_manual_update == DEFAULT_TIMESTAMP_VAL
