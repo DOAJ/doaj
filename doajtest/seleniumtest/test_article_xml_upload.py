@@ -8,7 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
 from doajtest import selenium_helpers
-from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, url_path, article_doajxml
+from doajtest.fixtures import JournalFixtureFactory, url_path, article_doajxml
 from doajtest.fixtures.accounts import PUBLISHER_B_SOURCE, create_publisher_a, create_maned_a
 from doajtest.fixtures.article_doajxml import ARTICLE_UPLOAD_SUCCESSFUL, ARTICLE_UPLOAD_UPDATE
 from doajtest.fixtures.url_path import URL_PUBLISHER_UPLOADFILE, URL_ADMIN_BGJOBS
@@ -58,6 +58,21 @@ class ArticleXmlUploadCommonSTC(SeleniumTestCase):
     def assert_history_row_success(self, history_row, n_article=1):
         self.assert_history_row(history_row, note=f'successfully processed {n_article} articles imported')
 
+    @staticmethod
+    def wait_unit_file_upload_status_ready():
+        new_file_upload = None
+
+        def _cond_fn():
+            nonlocal new_file_upload
+            new_file_upload = get_latest(models.FileUpload)
+            if new_file_upload is None:
+                return False
+            return new_file_upload.status not in (FileUploadStatus.Validated, FileUploadStatus.Incoming)
+
+        # interval 0.5 is good because ES can't handle too many requests
+        selenium_helpers.wait_unit(_cond_fn, timeout=15, check_interval=0.5)
+        return new_file_upload
+
 
 class ArticleXmlUploadDoajXmlFailSTC(ArticleXmlUploadCommonSTC):
     @parameterized.expand([
@@ -89,15 +104,13 @@ class ArticleXmlUploadDoajXmlFailSTC(ArticleXmlUploadCommonSTC):
         assert alert_ele
         assert err_msg in alert_ele.text
 
-        for _ in range(3):
-            time.sleep(0.5)  # wait for es update history of uploads
-            self.selenium.refresh()
-            rows = find_history_rows(self.selenium)
-            if rows:
-                break
+        # # wait for background job to finish
+        self.wait_unit_file_upload_status_ready()
 
-        assert rows
-        self.assert_history_row(rows[0], status_msg='processing failed', file_path=file_path, note=expected_note)
+        self.selenium.refresh()
+        new_rows = find_history_rows(self.selenium)
+        assert new_rows
+        self.assert_history_row(new_rows[0], status_msg='processing failed', file_path=file_path, note=expected_note)
 
 
 class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
@@ -163,13 +176,7 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
         assert n_file_upload + 1 == models.FileUpload.count()
 
         # wait for background job to finish
-        selenium_helpers.wait_unit(
-            lambda: get_latest(models.FileUpload).status not in (
-                FileUploadStatus.Validated, FileUploadStatus.Incoming),
-            timeout=15,
-        )
-
-        new_file_upload: models.FileUpload = get_latest(models.FileUpload)
+        new_file_upload = self.wait_unit_file_upload_status_ready()
 
         # assert file upload status
         assert new_file_upload.filename == Path(file_path).name
