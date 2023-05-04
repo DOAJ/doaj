@@ -51,8 +51,7 @@ class SeleniumTestCase(DoajTestCase):
                 app.run_server(host=self.DOAJ_HOST, port=self.DOAJ_PORT)
             except Exception as e:
                 _shared_dict['is_server_running'] = False
-                import traceback
-                traceback.print_exc()
+                raise e
 
         self.doaj_process = Process(target=_run, args=(shared_dict,))
         self.doaj_process.start()
@@ -82,7 +81,11 @@ class SeleniumTestCase(DoajTestCase):
 
         self.fix_es_mapping()
 
-        wait_unit(lambda: shared_dict['is_server_running'], 10, 1.5)
+        # wait for server to start
+        try:
+            wait_unit(lambda: shared_dict['is_server_running'], 10, 1.5)
+        except TimeoutError:
+            raise TimeoutError('doaj server not started')
 
     def tearDown(self):
         super().tearDown()
