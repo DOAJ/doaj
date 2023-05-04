@@ -39,23 +39,23 @@ class DiscontinuedSoonQuery:
 class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
     __action__ = "find_discontinued_soon"
 
-    def __init__(self, time_delta=None):
+    def __init__(self, job, time_delta=None):
+        super(FindDiscontinuedSoonBackgroundTask,self).__init__(job)
         self._delta = time_delta if time_delta is not None else app.config.get('DISCONTINUED_DATE_DELTA', 0);
         self._date = dates.days_after_now(days=self._delta)
 
-    def find_journals_discontinuing_soon(self, job):
+    def find_journals_discontinuing_soon(self):
         jdata = []
 
         for journal in models.Journal.iterate(q=DiscontinuedSoonQuery().query(), keepalive='5m', wrap=True):
             # ~~->Journal:Model~~
             jdata.append(journal.id)
-            job.add_audit_message(Messages.DISCONTINUED_JOURNAL_FOUND_LOG.format(id=journal.id))
+            self.background_job.add_audit_message(Messages.DISCONTINUED_JOURNAL_FOUND_LOG.format(id=journal.id))
 
         return jdata
 
     def run(self):
-        job = self.background_job
-        journals = self.find_journals_discontinuing_soon(job=job)
+        journals = self.find_journals_discontinuing_soon()
         if len(journals):
             for j in journals:
                 DOAJ.eventsService().trigger(models.Event(
@@ -63,10 +63,10 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
                     "system",
                     {
                         "journal": j,
-                        "discontinue_date": self._date()
+                        "discontinue_date": self._date
                     }))
         else:
-            job.add_audit_message(Messages.NO_DISCONTINUED_JOURNALS_FOUND_LOG)
+            self.background_job.add_audit_message(Messages.NO_DISCONTINUED_JOURNALS_FOUND_LOG)
 
     def cleanup(self):
         """
