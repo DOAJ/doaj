@@ -2,7 +2,6 @@ import itertools
 import json
 import os
 import time
-from datetime import datetime
 
 from unittest.mock import Mock, patch
 
@@ -38,7 +37,7 @@ class TestHarvester(DoajTestCase):
 
         app.config['HARVEST_ACCOUNTS'] = [self.publisher.id]
 
-        self.today = datetime.today().strftime('%Y-%m-%d')
+        self.today = dates.today()
         app.config["INITIAL_HARVEST_DATE"] = self.today
 
     def tearDown(self):
@@ -54,7 +53,7 @@ class TestHarvester(DoajTestCase):
         # new job
         zombie = HarvesterBackgroundTask.prepare("testuser")
         zombie.start()
-        cd = dates.format(dates.before(datetime.utcnow(), app.config.get("HARVESTER_ZOMBIE_AGE") * 2))
+        cd = dates.format(dates.before_now(app.config.get("HARVESTER_ZOMBIE_AGE") * 2))
         zombie.set_created(cd)
         zombie.save(blocking=True)
 

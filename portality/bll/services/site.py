@@ -6,8 +6,9 @@ from lxml import etree
 from portality import models
 from portality.bll import exceptions
 from portality.core import app
-from portality.lib import nav
+from portality.lib import nav, dates
 from portality.lib.argvalidate import argvalidate
+from portality.lib.dates import FMT_DATETIME_SHORT
 from portality.store import StoreFactory, prune_container
 from portality.util import get_full_url_safe
 
@@ -55,7 +56,7 @@ class SiteService(object):
             base_url += "/"
 
         # ~~-> FileStoreTemp:Feature~~
-        filename = 'sitemap__doaj_' + datetime.strftime(datetime.utcnow(), '%Y%m%d_%H%M') + '_utf8.xml'
+        filename = 'sitemap__doaj_' + dates.now_str(FMT_DATETIME_SHORT) + '_utf8.xml'
         container_id = app.config.get("STORE_CACHE_CONTAINER")
         tmpStore = StoreFactory.tmp()
         out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)
@@ -109,7 +110,7 @@ class SiteService(object):
             def sort(filelist):
                 rx = "sitemap__doaj_(.+?)_utf8.xml"
                 return sorted(filelist,
-                              key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], '%Y%m%d_%H%M'),
+                              key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], FMT_DATETIME_SHORT),
                               reverse=True)
 
             def _filter(filename):

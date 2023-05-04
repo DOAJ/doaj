@@ -1,5 +1,6 @@
 from portality.dao import DomainObject
 from portality.core import app
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.models.v1.bibjson import GenericBibJSON
 from portality.models.v1 import shared_structs
 from portality.lib import dataobj, es_data_mapping, dates
@@ -55,7 +56,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def set_created(self, date=None):
         if date is None:
-            date = dates.now()
+            date = dates.now_str()
         self._set_with_struct("created_date", date)
 
     @property
@@ -68,7 +69,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def set_last_updated(self, date=None):
         if date is None:
-            date = dates.now()
+            date = dates.now_str()
         self._set_with_struct("last_updated", date)
 
     @property
@@ -92,7 +93,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def set_last_manual_update(self, date=None):
         if date is None:
-            date = dates.now()
+            date = dates.now_str()
         self._set_with_struct("last_manual_update", date)
 
     @property
@@ -131,7 +132,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def add_note(self, note, date=None):
         if date is None:
-            date = dates.now()
+            date = dates.now_str()
         obj = {"date" : date, "note" : note}
         self._delete_from_list("admin.notes", matchsub=obj)
         self._add_to_list_with_struct("admin.notes", obj)
@@ -458,8 +459,8 @@ class Journal(JournalLikeObject):
         related = self.related_applications
         if len(related) == 0:
             return None
-        sorted(related, key=lambda x : x.get("date_accepted", "1970-01-01T00:00:00Z"))
-        return related[0].get("date_accepted", "1970-01-01T00:00:00Z")
+        sorted(related, key=lambda x : x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
+        return related[0].get("date_accepted", DEFAULT_TIMESTAMP_VAL)
 
     ############################################################
     ## revision history methods
@@ -602,7 +603,7 @@ class Journal(JournalLikeObject):
             return None
         if len(related) == 1:
             return related[0].get("application_id")
-        sorted(related, key=lambda x: x.get("date_accepted", "1970-01-01T00:00:00Z"))
+        sorted(related, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
         return related[0].get("application_id")
 
     def is_ticked(self):
@@ -660,13 +661,13 @@ class Journal(JournalLikeObject):
         last_update_request = self.last_update_request
 
         tick_threshold = app.config.get("TICK_THRESHOLD", '2014-03-19T00:00:00Z')
-        threshold = datetime.strptime(tick_threshold, "%Y-%m-%dT%H:%M:%SZ")
+        threshold = dates.parse(tick_threshold)
 
         if created_date is None:    # don't worry about the last_update_request date - you can't update unless you've been created!
             # we haven't even saved the record yet.  All we need to do is check that the tick
             # threshold is in the past (which I suppose theoretically it could not be), then
             # set it
-            if datetime.utcnow() >= threshold:
+            if dates.now() >= threshold:
                 self.set_ticked(True)
             else:
                 self.set_ticked(False)
@@ -675,10 +676,10 @@ class Journal(JournalLikeObject):
         # otherwise, this is an existing record, and we just need to update it
 
         # convert the strings to datetime objects
-        created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
+        created = dates.parse(created_date)
         lud = None
         if last_update_request is not None:
-            lud = datetime.strptime(last_update_request, "%Y-%m-%dT%H:%M:%SZ")
+            lud = dates.parse(last_update_request)
 
         if created >= threshold and self.is_in_doaj():
             self.set_ticked(True)
