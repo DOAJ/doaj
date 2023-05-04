@@ -1,3 +1,4 @@
+import multiprocessing
 import time
 from multiprocessing import Process
 from typing import TYPE_CHECKING
@@ -39,12 +40,21 @@ class SeleniumTestCase(DoajTestCase):
 
     def setUp(self):
         super().setUp()
+        process_manager = multiprocessing.Manager()
+        shared_dict = process_manager.dict()
+        shared_dict['is_server_running'] = False
 
         # run doaj server in a background process
-        def _run():
-            app.run_server(host=self.DOAJ_HOST, port=self.DOAJ_PORT)
+        def _run(_shared_dict):
+            try:
+                _shared_dict['is_server_running'] = True
+                app.run_server(host=self.DOAJ_HOST, port=self.DOAJ_PORT)
+            except Exception as e:
+                _shared_dict['is_server_running'] = False
+                import traceback
+                traceback.print_exc()
 
-        self.doaj_process = Process(target=_run)
+        self.doaj_process = Process(target=_run, args=(shared_dict,))
         self.doaj_process.start()
 
         # prepare selenium driver
@@ -71,6 +81,8 @@ class SeleniumTestCase(DoajTestCase):
         self.selenium.maximize_window()  # avoid something is not clickable
 
         self.fix_es_mapping()
+
+        wait_unit(lambda: shared_dict['is_server_running'], 10, 1.5)
 
     def tearDown(self):
         super().tearDown()
@@ -140,7 +152,6 @@ def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1):
 
 
 def wait_unit_elements(driver: 'WebDriver', css_selector: str, timeout=10, check_interval=0.1):
-
     elements = []
 
     def exit_cond_fn():
