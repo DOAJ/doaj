@@ -1,19 +1,23 @@
+import logging
 import multiprocessing
 import time
 from multiprocessing import Process
 from typing import TYPE_CHECKING
 
 from selenium import webdriver
-from selenium.common import StaleElementReferenceException
+from selenium.common import StaleElementReferenceException, ElementClickInterceptedException
 from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 
 from doajtest.fixtures.url_path import URL_LOGOUT
 from doajtest.helpers import DoajTestCase
 from portality import app, models
+from portality.dao import ESMappingMissingError
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
+
+log = logging.getLogger(__name__)
 
 
 def find_ele_by_css(driver, css_selector: str) -> 'WebElement':
@@ -51,6 +55,11 @@ class SeleniumTestCase(DoajTestCase):
                 app.run_server(host=self.DOAJ_HOST, port=self.DOAJ_PORT)
             except Exception as e:
                 _shared_dict['is_server_running'] = False
+
+                if isinstance(e, ESMappingMissingError):
+                    log.error(str(e))
+                    return
+
                 raise e
 
         self.doaj_process = Process(target=_run, args=(shared_dict,))
@@ -177,7 +186,7 @@ def wait_unit_click(driver: 'WebDriver', css_selector: str, timeout=10, check_in
                 ele.click()
                 return True
             return False
-        except StaleElementReferenceException:
+        except (StaleElementReferenceException, ElementClickInterceptedException):
             return False
 
     wait_unit(_click, timeout=10, check_interval=0.1)
