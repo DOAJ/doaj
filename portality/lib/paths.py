@@ -3,7 +3,6 @@ import tempfile
 from pathlib import Path
 from typing import Union, TypeVar
 
-join = os.path.join
 PathStr = TypeVar("PathStr", str, Path)  # type of str or Path
 
 
