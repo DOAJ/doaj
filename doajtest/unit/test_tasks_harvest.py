@@ -2,21 +2,21 @@ import itertools
 import json
 import os
 import time
-
 from unittest.mock import Mock, patch
 
+from doajtest import test_constants
 from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase, with_es
-from portality.core import app
-from portality.tasks.harvester import HarvesterBackgroundTask
 from portality import models
+from portality.background import BackgroundApi
+from portality.core import app
+from portality.lib import dates
+from portality.tasks.harvester import HarvesterBackgroundTask
 from portality.tasks.harvester_helpers.epmc import models as h_models
 from portality.tasks.harvester_helpers.epmc.client import EuropePMC, EuropePMCException
 from portality.tasks.harvester_helpers.epmc.models import EPMCMetadata
-from portality.background import BackgroundApi
-from portality.lib import dates
 
-RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources/")
+RESOURCES = test_constants.PATH_RESOURCES
 
 
 class TestHarvester(DoajTestCase):
