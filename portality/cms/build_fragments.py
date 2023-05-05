@@ -11,6 +11,7 @@ from copy import deepcopy
 from datetime import datetime
 
 from portality.cms import implied_attr_list
+from portality.lib import paths
 
 BASE = "cms"
 SRC = os.path.join(BASE, "pages")
@@ -161,6 +162,4 @@ def build(base_path=None):
 
 
 if __name__ == "__main__":
-    here = os.path.dirname(os.path.abspath(__file__))
-    base_path = os.path.dirname(os.path.dirname(here))
-    build(base_path)
+    build(paths.get_project_root())

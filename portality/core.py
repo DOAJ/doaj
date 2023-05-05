@@ -11,7 +11,7 @@ from lxml import etree
 from portality import settings, constants, datasets
 from portality.bll import exceptions
 from portality.error_handler import setup_error_logging
-from portality.lib import es_data_mapping, dates
+from portality.lib import es_data_mapping, dates, paths
 from portality.ui.debug_toolbar import DoajDebugToolbar
 
 import esprit
@@ -79,16 +79,16 @@ def configure_app(app):
     app.config.from_object(settings)
 
     # import from <env>.cfg
-    here = os.path.dirname(os.path.abspath(__file__))
+    proj_root = paths.get_project_root()
     app.config['DOAJENV'] = get_app_env(app)
-    config_path = os.path.join(os.path.dirname(here), app.config['DOAJENV'] + '.cfg')
+    config_path = proj_root / app.config['DOAJENV'] + '.cfg'
     print('Running in ' + app.config['DOAJENV'])  # the app.logger is not set up yet (?)
     if os.path.exists(config_path):
         app.config.from_pyfile(config_path)
         print('Loaded environment config from ' + config_path)
 
     # import from app.cfg
-    config_path = os.path.join(os.path.dirname(here), 'app.cfg')
+    config_path = proj_root / 'app.cfg'
     if os.path.exists(config_path):
         app.config.from_pyfile(config_path)
         print('Loaded secrets config from ' + config_path)
@@ -100,7 +100,7 @@ def get_app_env(app):
 
     env = os.getenv('DOAJENV')
     if not env:
-        envpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../.env')
+        envpath = paths.rel2abs(__file__, '../.env')
         if os.path.exists(envpath):
             with open(envpath, 'r') as f:
                 env = f.readline().strip()
@@ -332,8 +332,7 @@ def build_statics(app):
         return
     from portality.cms import build_fragments, build_sass
 
-    here = os.path.dirname(os.path.abspath(__file__))
-    base_path = os.path.dirname(here)
+    base_path = paths.get_project_root()
 
     print("Compiling static content")
     build_fragments.build(base_path)

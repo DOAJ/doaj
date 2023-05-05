@@ -126,10 +126,10 @@ VALID_FEATURES = ['api1', 'api2', 'api3']
 # File Path and URL Path settings
 
 # root of the git repo
-ROOT_DIR = paths.join_with_dir(__file__, "..")
+ROOT_DIR = paths.rel2abs(__file__, "..")
 
 # base path, to the directory where this settings file lives
-BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
+BASE_FILE_PATH = paths.abs_dir_path(__file__)
 
 BASE_URL = "https://doaj.org"
 if BASE_URL.startswith('https://'):

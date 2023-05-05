@@ -11,7 +11,7 @@ def loadLCC(source=None):
     from lxml import etree
 
     if source is None:
-        source = paths.join_with_dir(__file__, "..", "lccSubjects.xml")
+        source = paths.rel2abs(__file__, "..", "lccSubjects.xml")
 
     doc = etree.parse(open(source))
     root = doc.getroot()

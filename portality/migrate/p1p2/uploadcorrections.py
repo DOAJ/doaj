@@ -2,10 +2,10 @@ import csv, re, os
 from portality import models
 from portality.lib import paths
 
-analysis = paths.join_with_dir(__file__, "orphan_analysis.csv")
+analysis = paths.rel2abs(__file__, "orphan_analysis.csv")
 # analysis = "/home/richard/Dropbox/Documents/DOAJ/orphan_analysis2.csv"
 
-out_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)))
+out_dir = paths.abs_dir_path(__file__)
 corrections = os.path.join(out_dir, "corrections.csv")
 ambiguous = os.path.join(out_dir, "ambiguous.csv")
 failed = os.path.join(out_dir, "failed.csv")

@@ -5,9 +5,9 @@ from io import StringIO
 
 from portality.lib import paths
 
-corrections_csv = paths.join_with_dir(__file__, "corrections.csv")
-malformed_csv = paths.join_with_dir(__file__, "malformed.csv")
-invalid_csv = paths.join_with_dir(__file__, "invalid.csv")
+corrections_csv = paths.rel2abs(__file__, "corrections.csv")
+malformed_csv = paths.rel2abs(__file__, "malformed.csv")
+invalid_csv = paths.rel2abs(__file__, "invalid.csv")
 
 malformed_sio = StringIO()
 malformed_writer = csv.writer(malformed_sio)

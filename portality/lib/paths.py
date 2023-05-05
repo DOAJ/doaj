@@ -1,14 +1,31 @@
 import os
 import tempfile
 from pathlib import Path
+from typing import Union, TypeVar
 
 join = os.path.join
+PathStr = TypeVar("PathStr", str, Path)  # type of str or Path
 
-def rel2abs(file, *args):
-    file = os.path.realpath(file)
-    if os.path.isfile(file):
-        file = os.path.dirname(file)
-    return os.path.abspath(os.path.join(file, *args))
+
+def rel2abs(src, *paths):
+    """  Output is absolute path of target_filenames joined with src's dirname
+
+    Example:
+    >>> rel2abs('/opt/doaj/abc.xml', 'corrections.csv')
+    '/opt/doaj/corrections.csv'
+    >>> rel2abs('/opt/doaj/', 'corrections.csv')
+    '/opt/doaj/corrections.csv'
+    >>> rel2abs('/opt/doaj/abc.xml', '..', 'corrections.csv')
+    '/opt/corrections.csv'
+
+    :param src:
+    :param paths:
+    :return:
+    """
+    src = os.path.realpath(src)
+    if os.path.isfile(src):
+        src = os.path.dirname(src)
+    return os.path.abspath(os.path.join(src, *paths))
 
 
 def list_subdirs(path):
@@ -17,7 +34,7 @@ def list_subdirs(path):
 
 def get_project_root() -> Path:
     """ Should return folder path of `doaj` """
-    return Path(os.path.dirname(os.path.dirname(__file__))).parent
+    return Path(__file__).parent.parent.parent.absolute()
 
 
 def create_tmp_dir(is_auto_mkdir=False) -> Path:
@@ -34,19 +51,5 @@ def create_tmp_dir(is_auto_mkdir=False) -> Path:
     return path
 
 
-def join_with_dir(src, *target_filenames) -> str:
-    """  Output is absolute path of target_filenames joined with src's dirname
-
-    Example:
-    >>> join_with_dir('/opt/doaj/abc.xml', 'corrections.csv')
-    '/opt/doaj/corrections.csv'
-
-    >>> join_with_dir('/opt/doaj/abc.xml', '..', 'corrections.csv')
-    '/opt/corrections.csv'
-
-    :param src:
-    :param target_filenames:
-    :return:
-    """
-
-    return os.path.join(os.path.dirname(os.path.realpath(src)), *target_filenames)
+def abs_dir_path(src) -> str:
+    return os.path.dirname(os.path.realpath(src))

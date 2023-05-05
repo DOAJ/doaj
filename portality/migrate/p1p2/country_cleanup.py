@@ -7,7 +7,7 @@ from portality import models
 from portality import datasets
 from portality.lib import dates, paths
 
-OUT_FILENAME = paths.join_with_dir(__file__, 'country_cleanup.csv')
+OUT_FILENAME = paths.rel2abs(__file__, 'country_cleanup.csv')
 
 
 def main(argv=sys.argv):

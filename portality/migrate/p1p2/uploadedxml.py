@@ -8,7 +8,7 @@ from datetime import datetime
 
 start = dates.now()
 
-corrections_csv = paths.join_with_dir(__file__, "corrections.csv")
+corrections_csv = paths.rel2abs(__file__, "corrections.csv")
 xml_dir = settings.UPLOAD_DIR
 
 # xml_dir = "/home/richard/tmp/doaj/uploads/doaj-xml"
@@ -29,7 +29,7 @@ for row in reader:
 txt_files = [f for f in os.listdir(xml_dir) if f.endswith(".txt")]
 
 # out_dir = "/home/richard/tmp/doaj/uploads/output"
-out_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)))
+out_dir = paths.abs_dir_path(__file__)
 success_file = os.path.join(out_dir, "success.csv")
 malformed_file = os.path.join(out_dir, "malformed.csv")
 invalid_file = os.path.join(out_dir, "invalid.csv")
