@@ -157,8 +157,8 @@ PROXIED = False
 
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
-UPLOAD_DIR = paths.join(ROOT_DIR, "upload")
-FAILED_ARTICLE_DIR = paths.join(ROOT_DIR, "failed_articles")
+UPLOAD_DIR = os.path.join(ROOT_DIR, "upload")
+FAILED_ARTICLE_DIR = os.path.join(ROOT_DIR, "failed_articles")
 
 # directory where reports are output
 REPORTS_BASE_DIR = "/home/cloo/reports/"

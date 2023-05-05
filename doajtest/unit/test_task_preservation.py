@@ -16,7 +16,7 @@ class TestPreservation(DoajTestCase):
 
     def setUp(self):
         super(TestPreservation, self).setUp()
-        articles_zip_path = os.path.join(test_constants.PATH_RESOURCES, "articles.zip")
+        articles_zip_path = test_constants.PATH_RESOURCES / "articles.zip"
         with open(articles_zip_path, 'rb') as zf:
             self.zip_file = FileStorage(BytesIO(zf.read()), filename="articles.zip")
 

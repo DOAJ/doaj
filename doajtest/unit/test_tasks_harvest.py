@@ -16,7 +16,7 @@ from portality.tasks.harvester_helpers.epmc import models as h_models
 from portality.tasks.harvester_helpers.epmc.client import EuropePMC, EuropePMCException
 from portality.tasks.harvester_helpers.epmc.models import EPMCMetadata
 
-RESOURCES = test_constants.PATH_RESOURCES
+PATH_HARVESTER_RESP = test_constants.PATH_RESOURCES / 'harvester_resp.json'
 
 
 class TestHarvester(DoajTestCase):
@@ -57,7 +57,7 @@ class TestHarvester(DoajTestCase):
         zombie.set_created(cd)
         zombie.save(blocking=True)
 
-        with open(os.path.join(RESOURCES, 'harvester_resp.json')) as json_file:
+        with open(PATH_HARVESTER_RESP) as json_file:
             articles = json.load(json_file)
 
         articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + self.today + ' sort_date:"y"',
@@ -83,7 +83,7 @@ class TestHarvester(DoajTestCase):
     @patch('portality.lib.httputil.get')
     def test_query(self, mock_get):
 
-        with open(os.path.join(RESOURCES, 'harvester_resp.json')) as json_file:
+        with open(PATH_HARVESTER_RESP) as json_file:
             articles = json.load(json_file)
 
         articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + self.today + ' sort_date:"y"',

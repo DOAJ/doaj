@@ -162,4 +162,4 @@ def build(base_path=None):
 
 
 if __name__ == "__main__":
-    build(paths.get_project_root())
+    build(paths.get_project_root().as_posix())

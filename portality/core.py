@@ -79,16 +79,16 @@ def configure_app(app):
     app.config.from_object(settings)
 
     # import from <env>.cfg
-    proj_root = paths.get_project_root()
+    proj_root = paths.get_project_root().as_posix()
     app.config['DOAJENV'] = get_app_env(app)
-    config_path = proj_root / app.config['DOAJENV'] + '.cfg'
+    config_path = os.path.join(proj_root, app.config['DOAJENV'] + '.cfg')
     print('Running in ' + app.config['DOAJENV'])  # the app.logger is not set up yet (?)
     if os.path.exists(config_path):
         app.config.from_pyfile(config_path)
         print('Loaded environment config from ' + config_path)
 
     # import from app.cfg
-    config_path = proj_root / 'app.cfg'
+    config_path = os.path.join(proj_root, 'app.cfg')
     if os.path.exists(config_path):
         app.config.from_pyfile(config_path)
         print('Loaded secrets config from ' + config_path)
@@ -332,7 +332,7 @@ def build_statics(app):
         return
     from portality.cms import build_fragments, build_sass
 
-    base_path = paths.get_project_root()
+    base_path = paths.get_project_root().as_posix()
 
     print("Compiling static content")
     build_fragments.build(base_path)

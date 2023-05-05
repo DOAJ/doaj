@@ -8,7 +8,7 @@ PathStr = TypeVar("PathStr", str, Path)  # type of str or Path
 
 
 def rel2abs(src, *paths):
-    """  Output is absolute path of target_filenames joined with src's dirname
+    """  Output is absolute path of paths joined with src's dir
 
     Example:
     >>> rel2abs('/opt/doaj/abc.xml', 'corrections.csv')
