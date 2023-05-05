@@ -126,7 +126,7 @@ VALID_FEATURES = ['api1', 'api2', 'api3']
 # File Path and URL Path settings
 
 # root of the git repo
-ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+ROOT_DIR = paths.join_with_dir(__file__, "..")
 
 # base path, to the directory where this settings file lives
 BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -157,8 +157,8 @@ PROXIED = False
 
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
-FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "failed_articles")
+UPLOAD_DIR = paths.join(ROOT_DIR, "upload")
+FAILED_ARTICLE_DIR = paths.join(ROOT_DIR, "failed_articles")
 
 # directory where reports are output
 REPORTS_BASE_DIR = "/home/cloo/reports/"

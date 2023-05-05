@@ -1,8 +1,9 @@
 from lxml import etree
 import os, json
 from portality import models
+from portality.lib import paths
 
-source = os.path.join(os.path.dirname(os.path.realpath(__file__)), "lccSubjects.xml")
+source = paths.join_with_dir(__file__, "lccSubjects.xml")
 
 doc = etree.parse(open(source))
 root = doc.getroot()

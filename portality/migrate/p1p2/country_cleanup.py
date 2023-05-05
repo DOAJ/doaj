@@ -5,10 +5,9 @@ import csv
 
 from portality import models
 from portality import datasets
-from portality.lib import dates
+from portality.lib import dates, paths
 
-OUT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)))
-OUT_FILENAME = 'country_cleanup.csv'
+OUT_FILENAME = paths.join_with_dir(__file__, 'country_cleanup.csv')
 
 
 def main(argv=sys.argv):
@@ -25,7 +24,7 @@ def main(argv=sys.argv):
 
 def test_migration():
     data = []
-    with open(os.path.join(OUT_DIR, OUT_FILENAME)) as i:
+    with open(OUT_FILENAME) as i:
         reader = csv.reader(i)
         for row in reader:
             data.append(row)
@@ -47,7 +46,7 @@ def migrate(test=False):
     journal_iterator = models.Journal.all_in_doaj()
     
     counter = 0
-    with open(os.path.join(OUT_DIR, OUT_FILENAME), 'wb') as o:
+    with open(OUT_FILENAME, 'wb') as o:
         writer = csv.writer(o)
         writer.writerow(['Old country', 'New Country'])
 

@@ -1,7 +1,8 @@
 import csv, re, os
 from portality import models
+from portality.lib import paths
 
-analysis = os.path.join(os.path.dirname(os.path.realpath(__file__)), "orphan_analysis.csv")
+analysis = paths.join_with_dir(__file__, "orphan_analysis.csv")
 # analysis = "/home/richard/Dropbox/Documents/DOAJ/orphan_analysis2.csv"
 
 out_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)))
@@ -119,10 +120,6 @@ for row in reader:
         failed_writer.writerow([id, original_publisher, original_filename, correction])
     
     summary_writer.writerow(record)
-
-
-
-
 
 
 

@@ -3,9 +3,11 @@ from portality import models, settings
 from datetime import datetime
 from io import StringIO
 
-corrections_csv = os.path.join(os.path.dirname(os.path.realpath(__file__)), "corrections.csv")
-malformed_csv = os.path.join(os.path.dirname(os.path.realpath(__file__)), "malformed.csv")
-invalid_csv = os.path.join(os.path.dirname(os.path.realpath(__file__)), "invalid.csv")
+from portality.lib import paths
+
+corrections_csv = paths.join_with_dir(__file__, "corrections.csv")
+malformed_csv = paths.join_with_dir(__file__, "malformed.csv")
+invalid_csv = paths.join_with_dir(__file__, "invalid.csv")
 
 malformed_sio = StringIO()
 malformed_writer = csv.writer(malformed_sio)

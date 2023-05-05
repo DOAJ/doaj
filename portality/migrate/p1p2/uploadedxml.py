@@ -1,14 +1,14 @@
 import os, csv
 from lxml import etree
 from portality import models, settings
-from portality.lib import dates
+from portality.lib import dates, paths
 from portality.lib.dates import FMT_DATETIME_STD, FMT_DATETIME_A
 from portality.models import article
 from datetime import datetime
 
 start = dates.now()
 
-corrections_csv = os.path.join(os.path.dirname(os.path.realpath(__file__)), "corrections.csv")
+corrections_csv = paths.join_with_dir(__file__, "corrections.csv")
 xml_dir = settings.UPLOAD_DIR
 
 # xml_dir = "/home/richard/tmp/doaj/uploads/doaj-xml"
