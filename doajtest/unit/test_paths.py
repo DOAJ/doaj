@@ -33,7 +33,6 @@ class TestPaths(TestCase):
     def test_abs_dir_path(self, input, expected):
         assert paths.abs_dir_path(input) == expected
 
-
     def test_get_project_root(self):
         assert paths.get_project_root().name == 'doaj'
         assert paths.get_project_root().joinpath('doajtest').exists()
