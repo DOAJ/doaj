@@ -50,5 +50,13 @@ def create_tmp_dir(is_auto_mkdir=False) -> Path:
     return path
 
 
-def abs_dir_path(src) -> str:
+def abs_dir_path(src: PathStr) -> str:
+    """ Return absolute dir path of src
+
+    Example:
+    >>> abs_dir_path('/opt/doaj/abc.xml')
+    '/opt/doaj'
+    >>> abs_dir_path('/opt/doaj/')
+    '/opt'
+    """
     return os.path.dirname(os.path.realpath(src))
