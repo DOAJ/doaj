@@ -2075,13 +2075,13 @@ var formulaic = {
                 var id = edges.css_id(this.ns, this.fieldDef.name);
 
                 var match = val.match(/[d0-9]{4}-{0,1}[0-9]{3}[0-9xX]{1}/);
+                var url = this.url + val;
 
                 if (val && match) {
                     if (this.link) {
-                        this.link.text(val);
-                        this.link.attr("href", val);
+                        this.link.text(url);
+                        this.link.attr("href", url);
                     } else {
-                        var url = this.url + val;
                         var classes = edges.css_classes(this.ns, "visit");
                         that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + url + '">' + url + '</a></small></p>');
 
