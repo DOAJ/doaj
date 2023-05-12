@@ -1168,7 +1168,7 @@ var formulaic = {
                         frag += this._defaultRender(annotation);
                     }
                     let dismissClass = edges.css_classes(this.namespace, "dismiss");
-                    frag += ` (<a href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${dismissClass}">Dismiss</a>)`;
+                    frag += `<br><a href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${dismissClass}">Dismiss</a>`;
                 }
 
                 frag += `</li>`;
@@ -1485,7 +1485,7 @@ var formulaic = {
                         this.link.attr("href", val);
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + val + '">' + val + '</a></small></p>');
+                        that.after('<p><a id="' + id + '" class="' + classes + ' button" rel="noopener noreferrer" target="_blank" title="Open URL in a new tab" href="' + val + '">Open this link</a></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
@@ -1538,7 +1538,7 @@ var formulaic = {
                     } else {
                         var classes = edges.css_classes(this.ns, "contents");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p id="' + id + '" class="' + classes + '"><small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small></p>');
+                        //that.after('<p id="' + id + '" class="' + classes + '"><small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.container = $(selector, this.form.context);

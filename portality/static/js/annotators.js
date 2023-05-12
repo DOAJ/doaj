@@ -5,9 +5,9 @@ doaj.annotators.ISSNActive = class {
 
     MESSAGES = {
         "unable_to_access": "We were unable to access the ISSN.org service",
-        "not_found": "The ISSN was not found at ISSN.org",
+        "not_found": "The ISSN was <strong>NOT</strong> found at ISSN.org",
         "fully_validated": "The ISSN is fully registered at ISSN.org",
-        "not_validated": "The ISSN has not been registered at ISSN.org"
+        "not_validated": "The ISSN has <strong>NOT</strong> been registered at ISSN.org"
     }
 
     ICONS = {
@@ -21,9 +21,8 @@ doaj.annotators.ISSNActive = class {
         let icon = this.ICONS[annotation.advice];
         let message = this.MESSAGES[annotation.advice];
 
-        let frag = `<span data-feather="${icon}" aria-hidden="true"></span> 
-                    Checked ${annotation.original_value}: ${message} (see 
-                    <a href="${annotation.reference_url}">${annotation.reference_url})</a>`;
+        let frag = `<span data-feather="${icon}" aria-hidden="true"></span><br> ${message} 
+                    (<a href="${annotation.reference_url}">see record</a>).`;
         return frag;
     }
 }
@@ -93,7 +92,7 @@ doaj.annotators.DismissedAnnotations = class {
     }
 
     _renderDismissed(annotation) {
-        let frag = `<li>${annotation.field}: `;
+        let frag = `<li class="alert">${annotation.field}: `;
 
         if (annotation.annotator && doaj.annotators &&
             doaj.annotators.registry.hasOwnProperty(annotation.annotator)) {
