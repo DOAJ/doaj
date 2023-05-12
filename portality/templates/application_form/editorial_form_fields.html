@@ -1,5 +1,5 @@
 <fieldset>
-    <h1><span data-feather="settings" aria-hidden="true"></span> Administrative</h1>
+    <legend class="form__legend"><div><span data-feather="settings" aria-hidden="true"></span> Administrative</div></legend>
     {% if withdrawable %}
         {% set withdraw_reinstate = "Withdraw" if obj.is_in_doaj() else "Reinstate" %}
         {% if job %}
