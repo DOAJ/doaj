@@ -1516,7 +1516,7 @@ var formulaic = {
 
                 for (var i = 0; i < elements.length; i++) {
                     this.updateContents(elements[i]);
-             gi   }
+                }
             };
 
             this.updateContents = function(element) {
