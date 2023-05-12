@@ -17,7 +17,7 @@ $.extend(true, doaj, {
                 result.link = doaj.publisherUpdatesSearchConfig.journalReadOnlyUrl + resultobj['id'];
                 result.label = '<span data-feather="eye" aria-hidden="true"></span><span>View</span>';
 
-                if (status === "update_request" || status === "revisions_required") {
+                if (status === "post_submission_review" || status === "update_request" || status === "revisions_required") {
                     result.link = doaj.publisherUpdatesSearchConfig.journalUpdateUrl + resultobj.admin.current_journal;
                     result.label = '<span data-feather="edit-3" aria-hidden="true"></span><span>Edit</span>';
                 }
