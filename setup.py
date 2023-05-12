@@ -36,6 +36,7 @@ setup(
         "markdown-link-attr-modifier==0.2.1",
         "mdx_truly_sane_lists==1.2",
         "openpyxl~=3.0.3",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
+        "pandas==2.0.1"
         "parameterized==0.7.0",
         "psutil==5.6.3",
         #"pycountry==22.3.5",  # FIXME: pycountry on pypi is quite outdated (2022-03-05, missing e.g. Türkiye)
