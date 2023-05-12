@@ -207,7 +207,7 @@
 
     .form__header {
       margin: 0 (-$spacing-04);
-      padding: $spacing-03;
+      padding: $spacing-03 $spacing-04;
       width: auto;
       border: 0;
       border-top: 1px dotted $mid-grey;
@@ -254,6 +254,31 @@
       font-size: smaller;
     }
 
+    .icon-container {
+      display: inline-flex;
+      margin-bottom: $spacing-02;
+      padding: $spacing-01;
+      line-height: 1;
+      border-radius: 50%;
+      color: $white;
+    }
+
+    .icon-container--unable_to_access {
+      background: $grapefruit;
+    }
+
+    .icon-container--not_found,
+    .icon-container--not_validated,
+    .icon-container--missing,
+    .icon-container--outdated {
+      background: $sanguine;
+    }
+
+    .icon-container--fully_validated,
+    .icon-container--present {
+      background: $mid-green;
+    }
+
     .parsley-errors-list {
       padding: $spacing-03;
       border-radius: $spacing-01;
@@ -265,7 +290,9 @@
       }
     }
 
-    .formulaic-annotation-pissn-annotations, .formulaic-annotation-eissn-annotations {
+    .formulaic-annotation-pissn-list, 
+    .formulaic-annotation-eissn-list, 
+    .formulaic-annotation-preservation_service-list {
       margin: 0;
       padding: $spacing-03;
       border-radius: $spacing-02;

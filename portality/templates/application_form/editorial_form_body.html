@@ -19,15 +19,12 @@
             {% if diff_table %}
                 {% include 'application_form/_application_diff.html' %}
             {% endif %}
-            {% include "application_form/_fieldsets.html" %}
             {% include 'application_form/editorial_form_fields.html' %}
+            {% include "application_form/_fieldsets.html" %}
         </section>
     </div>
     <div class="col-md-4 editorial-panel">
         {% include "application_form/editorial_side_panel.html" %}
-        {% if quick_reject and obj.application_status not in ["accepted", "rejected"] and obj.current_journal == None %}
-            <button class="button button--primary" type="button" id="open_quick_reject" data-toggle="modal" data-target="#modal-quick_reject">Quick Reject</button>
-        {% endif %}
     </div>
 </form>
 
