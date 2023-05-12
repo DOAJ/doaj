@@ -58,6 +58,7 @@
       top: 75px;
       bottom: 0;
       background-color: $light-grey;
+      border-right: 1px dotted $mid-grey;
       overflow-y: scroll;
     }
   }
@@ -169,6 +170,112 @@
 
     @media screen and (min-width: 1280px) {
       padding: 40px;
+    }
+  }
+
+  // Application form styles — overrides
+  .form {
+    padding: $spacing-04 0;
+    background: rgba($salmon, .15);
+  }
+
+  .form--compact {
+    h1 {
+      margin: 0 (-$spacing-04) $spacing-04 (-$spacing-04);
+      padding: $spacing-04;
+      border-radius: $spacing-02 $spacing-02 0 0;
+      background: $warm-black;
+      color: $white;
+
+      + .form__header {
+        margin-top: -$spacing-04;
+      }
+      
+      + .alert {
+        margin: 0 0 $spacing-04 0;
+        background-color: $light-grey;
+        border-radius: $spacing-02;
+        border-color: $mid-grey;
+        color: $warm-black;
+      }
+
+      + .form__question {
+        padding-top: 0;
+        border: 0;
+      }
+    }
+
+    .form__header {
+      margin: 0 (-$spacing-04);
+      padding: $spacing-03;
+      width: auto;
+      border: 0;
+      border-top: 1px dotted $mid-grey;
+      background: $light-grey;
+    }
+
+    fieldset {
+      margin: 0 0 $spacing-04 0;
+      padding: 0 $spacing-04;
+      border-radius: $spacing-02;
+      background: $white;
+    }
+
+    .form__question {
+      padding: $spacing-04;
+      margin: 0;
+      margin-left: -$spacing-04;
+      margin-right: -$spacing-04;
+      border-top: 1px dotted $mid-grey;
+
+      input, select, textarea, .select2-container {
+        margin-bottom: $spacing-03;
+        width: 100% !important;
+        border-color: $mid-grey;
+      }
+
+      .removable-fields li {
+        display: flex;
+        justify-content: center;
+      }
+
+      .remove_field__button {
+        margin-bottom: $spacing-03;
+        white-space: nowrap;
+      }
+    }
+
+    .form__subquestion {
+      border-left-width: $spacing-01;
+    }
+
+    .form__short-help {
+      margin-bottom: $spacing-02;
+      font-size: smaller;
+    }
+
+    .parsley-errors-list {
+      padding: $spacing-03;
+      border-radius: $spacing-01;
+      background: rgba($grapefruit, .25);
+      font-weight: bold;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .formulaic-annotation-pissn-annotations, .formulaic-annotation-eissn-annotations {
+      margin: 0;
+      padding: $spacing-03;
+      border-radius: $spacing-02;
+      border: 1px dotted $mid-grey;
+      background: $light-grey;
+    }
+
+    .formulaic-clickableurl-visit {
+      margin: 0 0 0 $spacing-03;
+      white-space: nowrap;
     }
   }
 }

@@ -1167,7 +1167,7 @@ var formulaic = {
                         frag += this._defaultRender(annotation);
                     }
                     let dismissClass = edges.css_classes(this.namespace, "dismiss");
-                    frag += ` (<a href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${dismissClass}">Dismiss</a>)`;
+                    frag += `<br><a href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${dismissClass}">Dismiss</a>`;
                 }
 
                 frag += `</li>`;
@@ -1481,10 +1481,10 @@ var formulaic = {
                         this.link.text(val);
                         this.link.attr("href", val);
                     } else {
-                        let cont = formulaic.widgets._make_empty_container(this.ns, "clickable_url", this.form, this.fieldDef);
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
                         cont.html('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + val + '">' + val + '</a></small></p>');
+                        that.after('<p><a id="' + id + '" class="' + classes + ' button" rel="noopener noreferrer" target="_blank" title="Open URL in a new tab" href="' + val + '">Open this link</a></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
@@ -1516,7 +1516,7 @@ var formulaic = {
 
                 for (var i = 0; i < elements.length; i++) {
                     this.updateContents(elements[i]);
-                }
+             gi   }
             };
 
             this.updateContents = function(element) {

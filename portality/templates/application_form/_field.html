@@ -17,7 +17,7 @@
     {% endif %}
 
     {% if f.help("short_help") %}
-       <p><small>{{ f.help("short_help") | safe }}</small></p>
+       <p class="form__short-help"><small>{{ f.help("short_help") | safe }}</small></p>
     {% endif %}
 
     {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
@@ -29,7 +29,9 @@
           </p>
         </div>
     {% else %}
-        {{ f.render_form_control() }}
+        <div style="display: flex;">
+            {{ f.render_form_control() }}
+        </div>
     {% endif %}
 
     {% if f.wtfield.__class__.__name__ == "BooleanField"  %}
