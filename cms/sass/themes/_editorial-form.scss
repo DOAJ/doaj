@@ -1,6 +1,8 @@
 // Application form review styles — overrides
 // Managing editor, editor, associate editor views
-#maned_form {
+#maned_form,
+#ed_form,
+#assed_form {
   padding: $spacing-04 0;
   background: rgba($light-grey, .5);
 
