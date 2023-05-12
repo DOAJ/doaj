@@ -1,0 +1,17 @@
+id,labels,columns
+HP/DaR,"Priority: High, Type: Data at Risk",
+HP/bug,"Priority: High, bug",
+HP/PfL,"Prioroty: High, Workflow: Pending for Live",Review
+HP/sup,"Priority: High, Origin: Support",
+Test1,Workflow: On Test,Review
+Test2,Workflow: On Test 2,Review
+HP/PfT,"Priority: High, Workflow: Pending for Test",Review
+HP/rev,Priority: High,Review
+PfT,Workflow: Pending for Test,Review
+PfL,Workflow: Pending for Live,Review
+Rev,,Review
+Sch,Priority: Scheduled,
+HP/IP,Priority: High,In progress
+HP/TD,Priority: High,To Do
+IP,,In progress
+TD,,To Do
