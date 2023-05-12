@@ -5,9 +5,9 @@ doaj.annotators.ISSNActive = class {
 
     MESSAGES = {
         "unable_to_access": "We were unable to access the ISSN.org service",
-        "not_found": "The ISSN was <strong>NOT</strong> found at ISSN.org",
+        "not_found": "The ISSN was <strong>not found</strong> at ISSN.org",
         "fully_validated": "The ISSN is fully registered at ISSN.org",
-        "not_validated": "The ISSN has <strong>NOT</strong> been registered at ISSN.org"
+        "not_validated": "The ISSN has <strong>not been registered</strong> at ISSN.org"
     }
 
     ICONS = {
@@ -21,17 +21,17 @@ doaj.annotators.ISSNActive = class {
         let icon = this.ICONS[annotation.advice];
         let message = this.MESSAGES[annotation.advice];
 
-        let frag = `<span class="icon-container icon-container--${annotation.advice}"><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    <br>${message} (<a href="${annotation.reference_url}">see record</a>).`;
+        let frag = `<div><span class="icon-container icon-container--${annotation.advice}"><span data-feather="${icon}" aria-hidden="true"></span></span>
+                    ${message} (<a href="${annotation.reference_url}">see record</a>).</div>`;
         return frag;
     }
 }
 
 doaj.annotators.KeepersRegistry = class {
     MESSAGES = {
-        "missing": "{service} is missing from the Keepers Registry record at ISSN.org",
+        "missing": "{service} is <strong>missing</strong> from the Keepers Registry record at ISSN.org",
         "present": "{service} is present and current in the Keepers Registry record at ISSN.org",
-        "outdated": "{service} is not currently being used according to the Keepers Registry record as ISSN.org"
+        "outdated": "{service} is <strong>not currently being used</strong> according to the Keepers Registry record as ISSN.org"
     }
 
     ICONS = {
@@ -47,8 +47,8 @@ doaj.annotators.KeepersRegistry = class {
         let context = JSON.parse(annotation.context);
         message = message.replace("{service}", context.service);
 
-        let frag = `<span class="icon-container icon-container--${annotation.advice}"><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    <br>${message} (<a href="${annotation.reference_url}">see record</a>).`;
+        let frag = `<div><span class="icon-container icon-container--${annotation.advice}"><span data-feather="${icon}" aria-hidden="true"></span></span>
+                    ${message} (<a href="${annotation.reference_url}">see record</a>).</div>`;
         return frag;
     }
 }
@@ -72,7 +72,7 @@ doaj.annotators.DismissedAnnotations = class {
             return
         }
 
-        let frag = "<h2>Dismissed Annotations</h2><ul>";
+        let frag = "<h2>Dismissed Annotations</h2><ul class='unstyled-list'>";
         for (let anno of doaj.annotations.annotations) {
             if (!anno.dismissed) {
                 continue
@@ -91,7 +91,7 @@ doaj.annotators.DismissedAnnotations = class {
     }
 
     _renderDismissed(annotation) {
-        let frag = `<li class="alert">${annotation.field}: `;
+        let frag = `<li class="alert"><h3 class='label label--large'>“${annotation.field}”</h3> `;
 
         if (annotation.annotator && doaj.annotators &&
             doaj.annotators.registry.hasOwnProperty(annotation.annotator)) {
@@ -100,7 +100,7 @@ doaj.annotators.DismissedAnnotations = class {
             frag += this._defaultRender(annotation);
         }
         let undismissClass = edges.css_classes(this.namespace, "undismiss");
-        frag += ` (<a href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${undismissClass}">Undismiss</a>)`
+        frag += `<button href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${undismissClass}">Undismiss</button>`
 
         frag += `</li>`;
         return frag;

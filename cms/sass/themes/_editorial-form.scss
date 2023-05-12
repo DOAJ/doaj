@@ -16,6 +16,10 @@
     @include box-shadow;
   }
 
+  .page-content {
+    padding: 0;
+  }
+
   .form__legend {
     margin: 0;
     width: 100%;
@@ -91,7 +95,7 @@
 
   .icon-container {
     display: inline-flex;
-    margin-bottom: $spacing-02;
+    margin-right: $spacing-02;
     padding: $spacing-01;
     line-height: 1;
     border-radius: 50%;
@@ -133,6 +137,18 @@
     border-radius: $spacing-02;
     border: 1px dotted $mid-grey;
     background: $light-grey;
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    button { // dismiss button 
+      margin: 0;
+      margin-left: auto;
+    }
   }
 
   .formulaic-clickableurl-visit {

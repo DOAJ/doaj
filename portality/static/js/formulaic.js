@@ -1157,7 +1157,7 @@ var formulaic = {
 
                 if (annotation.hasOwnProperty("dismissed") && annotation.dismissed) {
                     let undismissClass = edges.css_classes(this.namespace, "undismiss");
-                    frag += `Annotation ${annotation.id} was dismissed (<a href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${undismissClass}">Undismiss</a>)`;
+                    frag += `Annotation ${annotation.id} was dismissed <button data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${undismissClass}">Undismiss</button>`;
 
                 } else {
                     if (annotation.annotator && doaj.annotators &&
@@ -1167,7 +1167,7 @@ var formulaic = {
                         frag += this._defaultRender(annotation);
                     }
                     let dismissClass = edges.css_classes(this.namespace, "dismiss");
-                    frag += `<br><a href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${dismissClass}">Dismiss</a>`;
+                    frag += `<button data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${dismissClass}">Dismiss <span data-feather="x" aria-hidden="true"></span></button>`;
                 }
 
                 frag += `</li>`;
