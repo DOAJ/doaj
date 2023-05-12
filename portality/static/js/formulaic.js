@@ -1483,7 +1483,10 @@ var formulaic = {
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p><a id="' + id + '" class="' + classes + ' button" rel="noopener noreferrer" target="_blank" title="Open URL in a new tab" href="' + val + '">Open this link</a></p>');
+                        that.after('<p><a id="' + id + '" class="' + classes + ' button" rel="noopener noreferrer" target="_blank" title="Open URL in a new tab" href="' + val + '">\
+                                        Open link\
+                                        <span data-feather="external-link" aria-hidden="true"></span>\
+                                    </a></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
