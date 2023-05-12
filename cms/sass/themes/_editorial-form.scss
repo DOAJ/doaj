@@ -2,7 +2,19 @@
 // Managing editor, editor, associate editor views
 #maned_form {
   padding: $spacing-04 0;
-  background: rgba($salmon, .15);
+  background: rgba($light-grey, .5);
+
+  details {
+    cursor: pointer;
+  }
+
+  fieldset {
+    margin: 0 0 $spacing-04 0;
+    padding: 0 $spacing-04;
+    border-radius: $spacing-02;
+    background: $white;
+    @include box-shadow;
+  }
 
   .form__legend {
     margin: 0;
@@ -42,17 +54,6 @@
     border: 0;
     border-top: 1px dotted $mid-grey;
     background: $light-grey;
-  }
-
-  details {
-    cursor: pointer;
-  }
-
-  fieldset {
-    margin: 0 0 $spacing-04 0;
-    padding: 0 $spacing-04;
-    border-radius: $spacing-02 0;
-    background: $white;
   }
 
   .form__question {
