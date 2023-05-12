@@ -265,7 +265,9 @@
       }
     }
 
-    .formulaic-annotation-pissn-annotations, .formulaic-annotation-eissn-annotations {
+    .formulaic-annotation-pissn-annotations, 
+    .formulaic-annotation-eissn-annotations, 
+    .formulaic-annotation-preservation_service-list {
       margin: 0;
       padding: $spacing-03;
       border-radius: $spacing-02;
