@@ -1,11 +1,17 @@
 {% if obj %}
-    <h3 class="label"> LOCKED FOR EDITING UNTIL <span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></h3>
-      {% if obj.application_status != constants.APPLICATION_STATUS_ACCEPTED %}
-          <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><em>You cannot save the application because it contains some invalid fields. Please review the answers and admin fields and try again.</em></p>
-          <button id="submitBtn" class="button button--cta" type="button">Save</button>
-      {% endif %}
-      <button type="button" class="button" id="unlock" data-type="{{ obj.es_type }}" data-id="{{obj.id}}">Unlock & Close</button>
+    <h3 class="label"> Locked for editing until <span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></h3>
+    {% if obj.application_status != constants.APPLICATION_STATUS_ACCEPTED %}
+        <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><em>You cannot save the application because it contains some invalid fields. Please review the answers and admin fields and try again.</em></p>
+        <button id="submitBtn" class="button button--cta" type="button">Save</button>
+    {% endif %}
+    <button type="button" class="button" id="unlock" data-type="{{ obj.es_type }}" data-id="{{obj.id}}">Unlock & Close</button>
     <input type="hidden" name="id" value="{{ obj.id }}">
+{% endif %}
+
+{% if quick_reject and obj.application_status not in ["accepted", "rejected"] and obj.current_journal == None %}
+    <div>
+        <button class="button" type="button" id="open_quick_reject" data-toggle="modal" data-target="#modal-quick_reject">Quick Reject</button>
+    </div>
 {% endif %}
 
 {% set fs = formulaic_context.fieldset("optional_validation") %}
@@ -28,5 +34,7 @@
         {% endif %}
     </fieldset>
 
-    <section class="dismissed-annotations"></section>
+    <fieldset>
+        <section class="dismissed-annotations"></section>
+    </fieldset>
 </aside>
