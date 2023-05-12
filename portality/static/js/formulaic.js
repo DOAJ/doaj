@@ -1112,12 +1112,12 @@ var formulaic = {
             this.namespace = "formulaic-annotation-" + this.fieldDef.name;
 
             this.init = function() {
-                let cont = formulaic.widgets._make_empty_container(this.namespace, "annotations", this.form, this.fieldDef);
-
                 let annos = this._getAnnotationsForField();
                 if (annos.length === 0) {
                     return;
                 }
+
+                let cont = formulaic.widgets._make_empty_container(this.namespace, "annotations", this.form, this.fieldDef);
 
                 let frag = "";
                 for (let anno of annos) {
@@ -1463,10 +1463,8 @@ var formulaic = {
             this.link = false;
 
             this.init = function() {
-                var elements = this.form.controlSelect.input(
-                    {name: this.fieldDef.name});
-                // TODO: should work as-you-type by changing "change" to "keyup" event; doesn't work in edges
-                //edges.on(elements, "change.ClickableUrl", this, "updateUrl");
+                var elements = this.form.controlSelect.input({name: this.fieldDef.name});
+
                 edges.on(elements, "keyup.ClickableUrl", this, "updateUrl");
 
                 for (var i = 0; i < elements.length; i++) {
@@ -1477,7 +1475,6 @@ var formulaic = {
             this.updateUrl = function(element) {
                 var that = $(element);
                 var val = that.val();
-                var id = edges.css_id(this.ns, this.fieldDef.name);
 
                 if (val && (val.substring(0,7) === "http://" || val.substring(0,8) === "https://") && val.length > 10) {
                     if (this.link) {
@@ -1485,6 +1482,7 @@ var formulaic = {
                         this.link.attr("href", val);
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
+                        var id = edges.css_id(this.ns, this.fieldDef.name);
                         that.after('<p><a id="' + id + '" class="' + classes + ' button" rel="noopener noreferrer" target="_blank" title="Open URL in a new tab" href="' + val + '">Open this link</a></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
@@ -1536,9 +1534,10 @@ var formulaic = {
                     if (this.container) {
                         this.container.html('<small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small>');
                     } else {
+                        let cont = formulaic.widgets._make_empty_container(this.ns, "clickable_url", this.form, this.fieldDef);
                         var classes = edges.css_classes(this.ns, "contents");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        //that.after('<p id="' + id + '" class="' + classes + '"><small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small></p>');
+                        cont.html('<p id="' + id + '" class="' + classes + '"><small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.container = $(selector, this.form.context);
