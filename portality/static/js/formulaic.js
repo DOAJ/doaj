@@ -1112,12 +1112,12 @@ var formulaic = {
             this.namespace = "formulaic-annotation-" + this.fieldDef.name;
 
             this.init = function() {
-                let cont = formulaic.widgets._make_empty_container(this.namespace, "annotations", this.form, this.fieldDef);
-
                 let annos = this._getAnnotationsForField();
                 if (annos.length === 0) {
                     return;
                 }
+
+                let cont = formulaic.widgets._make_empty_container(this.namespace, "annotations", this.form, this.fieldDef);
 
                 let frag = "";
                 for (let anno of annos) {
@@ -1483,7 +1483,6 @@ var formulaic = {
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        cont.html('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + val + '">' + val + '</a></small></p>');
                         that.after('<p><a id="' + id + '" class="' + classes + ' button" rel="noopener noreferrer" target="_blank" title="Open URL in a new tab" href="' + val + '">Open this link</a></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
