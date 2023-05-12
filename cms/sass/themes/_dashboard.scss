@@ -187,7 +187,8 @@
       background: $warm-black;
       color: $white;
 
-      + .form__header {
+      + .form__header,
+      + details {
         margin-top: -$spacing-04;
       }
       
@@ -214,10 +215,15 @@
       background: $light-grey;
     }
 
+    details {
+      cursor: pointer;
+    }
+
     fieldset {
       margin: 0 0 $spacing-04 0;
       padding: 0 $spacing-04;
       border-radius: $spacing-02;
+      border-bottom: 1px dotted $mid-grey;
       background: $white;
     }
 
