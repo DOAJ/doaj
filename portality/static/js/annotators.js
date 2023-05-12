@@ -47,9 +47,8 @@ doaj.annotators.KeepersRegistry = class {
         let context = JSON.parse(annotation.context);
         message = message.replace("{service}", context.service);
 
-        let frag = `<span data-feather="${icon}" aria-hidden="true"></span> 
-                    ${message} (see 
-                    <a href="${annotation.reference_url}">${annotation.reference_url})</a>`;
+        let frag = `<span data-feather="${icon}" aria-hidden="true"></span><br> ${message} 
+        (<a href="${annotation.reference_url}">see record</a>).`;
         return frag;
     }
 }
