@@ -1,7 +1,5 @@
 from portality.models import JournalLikeObject, Annotation
-from portality.annotation.annotator import Annotator
-from portality.annotation.resource_bundle import ResourceBundle, ResourceUnavailable
-from portality.annotation.resources.issn_org import ISSNOrg
+from portality.annotation.resource_bundle import ResourceBundle
 from typing import Callable
 from portality.annotation.annotators.issn_active import ISSNAnnotator
 from datetime import datetime
@@ -12,10 +10,10 @@ class KeepersRegistry(ISSNAnnotator):
 
     ID_MAP = {
         "CLOCKSS": "http://issn.org/organization/keepers#clockss",
-        "LOCKSS": "",
-        "Internet Archive": "",
-        "PKP PN": "",
-        "Portico": ""
+        "LOCKSS": "http://issn.org/organization/keepers#lockss",
+        "Internet Archive": "http://issn.org/organization/keepers#internetarchive",
+        "PKP PN": "http://issn.org/organization/keepers#pkppln",
+        "Portico": "http://issn.org/organization/keepers#portico"
     }
 
     MISSING = "missing"

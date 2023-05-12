@@ -1081,6 +1081,27 @@ var formulaic = {
             $(select2_elem).focus();
         },
 
+        _make_empty_container: function(namespace, containerName, form, fieldDef) {
+            let containerSelector = edges.css_class_selector(namespace, containerName);
+            let elements = form.controlSelect.widgetsContainer({name: fieldDef.name});
+            let existing = false;
+            for (let i = 0; i < elements.length; i++) {
+                let el = $(elements[i]);
+                let cont = el.find(containerSelector)
+                if (cont.length > 0) {
+                    cont.empty();
+                    existing = true;
+                }
+            }
+
+            if (!existing) {
+                let containerClass = edges.css_classes(namespace, containerName);
+                elements.append(`<div class="${containerClass}"></div>`);
+            }
+
+            return elements.find(containerSelector);
+        },
+
         newAnnotation : function(params) {
             return edges.instantiate(formulaic.widgets.Annotation, params);
         },
@@ -1091,18 +1112,7 @@ var formulaic = {
             this.namespace = "formulaic-annotation-" + this.fieldDef.name;
 
             this.init = function() {
-                // first, remove any existing annotations, leaving the container intact
-                let listSelector = edges.css_class_selector(this.namespace, "annotations");
-                let elements = this.form.controlSelect.widgetsContainer({name: this.fieldDef.name});
-                let existing = false;
-                for (let i = 0; i < elements.length; i++) {
-                    let el = $(elements[i]);
-                    let sibs = el.siblings(listSelector)
-                    if (sibs.length > 0) {
-                        sibs.empty();
-                        existing = true;
-                    }
-                }
+                let cont = formulaic.widgets._make_empty_container(this.namespace, "annotations", this.form, this.fieldDef);
 
                 let annos = this._getAnnotationsForField();
                 if (annos.length === 0) {
@@ -1114,20 +1124,9 @@ var formulaic = {
                     frag += this._renderAnnotation(anno)
                 }
 
-                if (existing) {
-                    for (let i = 0; i < elements.length; i++) {
-                        let el = $(elements[i]);
-                        let sibs = el.siblings(listSelector)
-                        sibs.html(frag);
-                    }
-                } else {
-                    let listClass = edges.css_classes(this.namespace, "annotations")
-                    frag = `<ul class="${listClass}">${frag}</ul>`;
-                    for (let i = 0; i < elements.length; i++) {
-                        let el = $(elements[i]);
-                        el.after(frag);
-                    }
-                }
+                let listClass = edges.css_classes(this.namespace, "list")
+                frag = `<ul class="${listClass}">${frag}</ul>`;
+                cont.html(frag);
 
                 feather.replace();
 
@@ -1382,7 +1381,7 @@ var formulaic = {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
 
-            this.ns = "formulaic-clickableowner";
+            this.namespace = "formulaic-clickableowner";
 
             this.link = false;
 
@@ -1402,11 +1401,12 @@ var formulaic = {
                     if (this.link) {
                         this.link.attr("href", "/account/" + val);
                     } else {
-                        var classes = edges.css_classes(this.ns, "visit");
-                        var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">See this account’s profile</a></small></p>');
+                        let cont = formulaic.widgets._make_empty_container(this.namespace, "clickable_owner", this.form, this.fieldDef);
+                        var classes = edges.css_classes(this.namespace, "visit");
+                        var id = edges.css_id(this.namespace, this.fieldDef.name);
+                        cont.html('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">See this account’s profile</a></small></p>');
 
-                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                        var selector = edges.css_id_selector(this.namespace, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
                     }
                 } else if (this.link) {
