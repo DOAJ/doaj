@@ -21,8 +21,8 @@ doaj.annotators.ISSNActive = class {
         let icon = this.ICONS[annotation.advice];
         let message = this.MESSAGES[annotation.advice];
 
-        let frag = `<span data-feather="${icon}" aria-hidden="true"></span><br> ${message} 
-                    (<a href="${annotation.reference_url}">see record</a>).`;
+        let frag = `<span class="icon-container icon-container--${annotation.advice}"><span data-feather="${icon}" aria-hidden="true"></span></span>
+                    <br>${message} (<a href="${annotation.reference_url}">see record</a>).`;
         return frag;
     }
 }
@@ -47,8 +47,8 @@ doaj.annotators.KeepersRegistry = class {
         let context = JSON.parse(annotation.context);
         message = message.replace("{service}", context.service);
 
-        let frag = `<span data-feather="${icon}" aria-hidden="true"></span><br> ${message} 
-        (<a href="${annotation.reference_url}">see record</a>).`;
+        let frag = `<span class="icon-container icon-container--${annotation.advice}"><span data-feather="${icon}" aria-hidden="true"></span></span>
+                    <br>${message} (<a href="${annotation.reference_url}">see record</a>).`;
         return frag;
     }
 }
