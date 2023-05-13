@@ -10,13 +10,15 @@
 
     {% set fs = formulaic_context.fieldset("reviewers") %}
     {% if fs %}
-        <details>
-            <summary><h2 class="form__header">{{ fs.label }} +</h2></summary>
+        <h2 class="form__header">{{ fs.label }}</h2>
+        <div class="row">
             {% for f in fs.fields() %}
+                <div class="col-md-6">
                 {% set field_template = f.template %}
                 {%  include field_template %}
+                </div>
             {% endfor %}
-        </details>
+        </div>
     {% endif %}
 
     {% if formulaic_context.fieldset("reassign") or formulaic_context.fieldset("status") %}

@@ -1,7 +1,14 @@
 {% if obj.owner %}
     {% set account = obj.owner_account %}
     <ul class="tags">
-        <li class="tag"><a href="mailto:{{account.email}}"><span data-feather="mail" aria-hidden="true"></span> {{account.name}}</a>
-            (<a href="{{ url_for("account.username", username=account.id) }}">{{ account.id }}</a>)</li>
+        <li>
+            <a href="mailto:{{account.email}}" class="tag"><span data-feather="mail" aria-hidden="true"></span> {{account.name}}</a>
+        </li>
+        <li>
+            <a href="{{ url_for("account.username", username=account.id) }}" class="tag tag--secondary"><span data-feather="user" aria-hidden="true"></span> {{ account.id }}</a>
+        </li>
+        <li>
+            <span class="tag tag--tertiary label label--secondary">Status: {{ obj.application_status }}</span>
+        </li>
     </ul>
 {% endif %}

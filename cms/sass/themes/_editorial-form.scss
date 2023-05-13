@@ -84,6 +84,11 @@
       margin-bottom: $spacing-03;
       white-space: nowrap;
     }
+
+    &.editor_group__container,
+    &.editor__container {
+      border-top: 0;
+    }
   }
 
   .form__subquestion {

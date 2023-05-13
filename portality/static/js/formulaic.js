@@ -1404,7 +1404,7 @@ var formulaic = {
                         let cont = formulaic.widgets._make_empty_container(this.namespace, "clickable_owner", this.form, this.fieldDef);
                         var classes = edges.css_classes(this.namespace, "visit");
                         var id = edges.css_id(this.namespace, this.fieldDef.name);
-                        cont.html('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">See this account’s profile</a></small></p>');
+                        cont.html('<p><small><a id="' + id + '" class="' + classes + ' tag" rel="noopener noreferrer" target="_blank" href="/account/' + val + '"><span data-feather="user" aria-hidden="true"></span> See this account’s profile</a></small></p>');
 
                         var selector = edges.css_id_selector(this.namespace, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
