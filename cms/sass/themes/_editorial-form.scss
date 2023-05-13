@@ -150,6 +150,10 @@
       align-items: center;
       justify-content: center;
       line-height: 1;
+
+      + li {
+        margin-top: $spacing-02;
+      }
     }
 
     button { // dismiss button 
