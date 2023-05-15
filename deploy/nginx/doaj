@@ -246,7 +246,7 @@ server {
     }
 
     location /assets/ {
-        alias /home/cloo/doaj/src/doaj/portality/cms/assets/;
+        alias /home/cloo/doaj/src/doaj/cms/assets/;
         autoindex off;
         expires max;
         add_header 'Access-Control-Allow-Origin' '*';              # CORS settings since we don't get these from the app
