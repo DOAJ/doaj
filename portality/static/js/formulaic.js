@@ -1157,7 +1157,7 @@ var formulaic = {
 
                 if (annotation.hasOwnProperty("dismissed") && annotation.dismissed) {
                     let undismissClass = edges.css_classes(this.namespace, "undismiss");
-                    frag += `Annotation ${annotation.id} was dismissed (<a href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${undismissClass}">Undismiss</a>)`;
+                    frag += `Annotation ${annotation.id} was dismissed <button data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${undismissClass}">Undismiss</button>`;
 
                 } else {
                     if (annotation.annotator && doaj.annotators &&
@@ -1167,7 +1167,7 @@ var formulaic = {
                         frag += this._defaultRender(annotation);
                     }
                     let dismissClass = edges.css_classes(this.namespace, "dismiss");
-                    frag += `<br><a href="#" data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${dismissClass}">Dismiss</a>`;
+                    frag += `<button data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${dismissClass}">Dismiss <span data-feather="x" aria-hidden="true"></span></button>`;
                 }
 
                 frag += `</li>`;
@@ -1404,7 +1404,7 @@ var formulaic = {
                         let cont = formulaic.widgets._make_empty_container(this.namespace, "clickable_owner", this.form, this.fieldDef);
                         var classes = edges.css_classes(this.namespace, "visit");
                         var id = edges.css_id(this.namespace, this.fieldDef.name);
-                        cont.html('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">See this account’s profile</a></small></p>');
+                        cont.html('<p><small><a id="' + id + '" class="' + classes + ' tag" rel="noopener noreferrer" target="_blank" href="/account/' + val + '"><span data-feather="user" aria-hidden="true"></span> See this account’s profile</a></small></p>');
 
                         var selector = edges.css_id_selector(this.namespace, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
@@ -1756,7 +1756,7 @@ var formulaic = {
                     let f = this.fields[idx];
                     let s2_input = $($(f).select2());
                     $(f).on("focus", formulaic.widgets._select2_shift_focus);
-                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="tag remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
+                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
                     if (idx !== 0) {
                         s2_input.attr("required", false);
                         s2_input.attr("data-parsley-validate-if-empty", "true");
@@ -1892,7 +1892,7 @@ var formulaic = {
 
                 for (var idx = 0; idx < this.divs.length; idx++) {
                     let div = $(this.divs[idx]);
-                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="tag remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
+                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
 
                     if (idx !== 0) {
                         let inputs = div.find(":input");

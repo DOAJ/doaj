@@ -1,0 +1,179 @@
+// Application form review styles — overrides
+// Managing editor, editor, associate editor views
+#maned_form,
+#ed_form,
+#assed_form {
+  padding: $spacing-04 0;
+  background: rgba($light-grey, .5);
+
+  details {
+    cursor: pointer;
+  }
+
+  fieldset {
+    margin: 0 0 $spacing-04 0;
+    padding: 0 $spacing-04;
+    border-radius: $spacing-02;
+    background: $white;
+    @include box-shadow;
+  }
+
+  .page-content {
+    padding: 0;
+  }
+
+  .form__legend {
+    margin: 0;
+    width: 100%;
+
+    div {
+      margin: 0 (-$spacing-04) $spacing-04 (-$spacing-04);
+      padding: $spacing-04;
+      border-radius: $spacing-02 $spacing-02 0 0;
+      background: $warm-black;
+      color: $white;
+    }
+
+    + .form__header,
+    + details {
+      margin-top: -$spacing-04;
+    }
+    
+    + .alert {
+      margin: 0 0 $spacing-04 0;
+      background-color: $light-grey;
+      border-radius: $spacing-02;
+      border-color: $mid-grey;
+      color: $warm-black;
+    }
+
+    + .form__question {
+      padding-top: 0;
+      border: 0;
+    }
+  }
+
+  .form__header {
+    margin: 0 (-$spacing-04);
+    padding: $spacing-03 $spacing-04;
+    width: auto;
+    border: 0;
+    border-top: 1px dotted $mid-grey;
+    background: $light-grey;
+  }
+
+  .form__question {
+    padding: $spacing-04;
+    margin: 0;
+    margin-left: -$spacing-04;
+    margin-right: -$spacing-04;
+    border-top: 1px dotted $mid-grey;
+
+    input, select, textarea, .select2-container {
+      margin-bottom: $spacing-03;
+      width: 100% !important;
+      border-color: $mid-grey;
+    }
+
+    .removable-fields li {
+      display: flex;
+      justify-content: center;
+    }
+
+    .remove_field__button {
+      margin-bottom: $spacing-03;
+      white-space: nowrap;
+    }
+
+    &.editor_group__container,
+    &.editor__container {
+      border-top: 0;
+    }
+  }
+
+  .form__subquestion {
+    border-left-width: $spacing-01;
+  }
+
+  .form__short-help {
+    margin-bottom: $spacing-02;
+    font-size: smaller;
+  }
+
+  .icon-container {
+    display: inline-flex;
+    margin-right: $spacing-02;
+    padding: $spacing-01;
+    line-height: 1;
+    border-radius: 50%;
+    color: $white;
+  }
+
+  .icon-container--unable_to_access {
+    background: $grapefruit;
+  }
+
+  .icon-container--not_found,
+  .icon-container--not_validated,
+  .icon-container--missing,
+  .icon-container--outdated {
+    background: $sanguine;
+  }
+
+  .icon-container--fully_validated,
+  .icon-container--present {
+    background: $mid-green;
+  }
+
+  .parsley-errors-list {
+    padding: $spacing-03;
+    border-radius: $spacing-01;
+    background: rgba($grapefruit, .25);
+    font-weight: bold;
+
+    p {
+      margin: 0;
+    }
+  }
+
+  .formulaic-annotation-pissn-list, 
+  .formulaic-annotation-eissn-list, 
+  .formulaic-annotation-preservation_service-list {
+    margin: 0;
+    padding: $spacing-03;
+    border-radius: $spacing-02;
+    border: 1px dotted $mid-grey;
+    background: $light-grey;
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+
+      + li {
+        margin-top: $spacing-02;
+      }
+    }
+
+    button { // dismiss button 
+      margin: 0;
+      margin-left: auto;
+    }
+  }
+
+  .formulaic-clickableurl-visit {
+    margin: 0 0 0 $spacing-03;
+    white-space: nowrap;
+  }
+
+  [class*="-annotations"] {
+    + [class*="fullcontents"]  {
+      margin: $spacing-03 0 0 0;
+    }
+  }
+
+  [class*="fullcontents-contents"] {
+    margin: 0;
+  }
+}

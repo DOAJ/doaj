@@ -3,7 +3,7 @@
 <p class="label af-pager">Page 2 of {{ FORM | length + 1}}</p>
 {% endif %}
 
-<h1><span data-feather="edit-3"></span> About the journal</h1>
+<legend class="form__legend"><div><span data-feather="edit-3"></span> About the journal</div></legend>
 
 {% set fs = formulaic_context.fieldset("about_the_journal") %}
 {% for f in fs.fields() %}

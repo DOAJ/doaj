@@ -1,5 +1,5 @@
 <fieldset>
-    <h1><span data-feather="settings" aria-hidden="true"></span> Administrative</h1>
+    <legend class="form__legend"><div><span data-feather="settings" aria-hidden="true"></span> Administrative</div></legend>
     {% if withdrawable %}
         {% set withdraw_reinstate = "Withdraw" if obj.is_in_doaj() else "Reinstate" %}
         {% if job %}
@@ -11,59 +11,73 @@
     {% set fs = formulaic_context.fieldset("reviewers") %}
     {% if fs %}
         <h2 class="form__header">{{ fs.label }}</h2>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
+        <div class="row">
+            {% for f in fs.fields() %}
+                <div class="col-md-6">
+                {% set field_template = f.template %}
+                {%  include field_template %}
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
 
     {% if formulaic_context.fieldset("reassign") or formulaic_context.fieldset("status") %}
         {% set fs = formulaic_context.fieldset("reassign") %}
         {% if fs %}
             {% for f in fs.fields() %}
-                <h2 class="form__header">{{ fs.label }}</h2>
+            <details>
+                <summary><h2 class="form__header">{{ fs.label }} +</h2></summary>
                 {% set field_template = f.template %}
-                {%  include field_template %}
+                {% include field_template %}
+            </details>
             {% endfor %}
         {% endif %}
 
         {% set fs = formulaic_context.fieldset("status") %}
         {% if fs %}
         {% for f in fs.fields() %}
-            <h2 class="form__header">{{ fs.label }}</h2>
-            {% set field_template = f.template %}
-            {%  include field_template %}
+            <details>
+                <summary><h2 class="form__header">{{ fs.label }} +</h2></summary>
+                {% set field_template = f.template %}
+                {%  include field_template %}
+            </details>
         {% endfor %}
         {% endif %}
     {% endif %}
 
     {% set fs = formulaic_context.fieldset("continuations") %}
     {% if fs %}
-    <h2 class="form__header">{{ fs.label }}</h2>
-    {% for f in fs.fields() %}
-        {% set field_template = f.template %}
-        {% include field_template %}
-    {% endfor %}
+        <details>
+            <summary><h2 class="form__header">{{ fs.label }} +</h2></summary>
+            {% for f in fs.fields() %}
+                {% set field_template = f.template %}
+                {% include field_template %}
+            {% endfor %}
+        </details>
     {% endif %}
 
     {% set fs = formulaic_context.fieldset("subject") %}
     {% if fs %}
-        <h2 class="form__header">{{ fs.label }}</h2>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
-        <p>Selected: <strong class="admin_value_preview" id="subject-value" data-source="#subject"></strong></p>
-        <div id="subject_checkbox-errors"></div>
+        <details>
+            <summary><h2 class="form__header">{{ fs.label }} +</h2></summary>
+            {% for f in fs.fields() %}
+                {% set field_template = f.template %}
+                {%  include field_template %}
+            {% endfor %}
+            <p>Selected: <strong class="admin_value_preview" id="subject-value" data-source="#subject"></strong></p>
+            <div id="subject_checkbox-errors"></div>
+        </details>
     {% endif %}
 
     {% set fs = formulaic_context.fieldset("seal") %}
     {% if fs %}
-        <h2 class="form__header">{{ fs.label }}</h2>
-        <p>The journal has fulfilled all the criteria for the Seal. </p>
-        {% for f in fs.fields() %}
-            {% set field_template = f.template %}
-            {%  include field_template %}
-        {% endfor %}
+        <details>
+            <summary><h2 class="form__header">{{ fs.label }} +</h2></summary>
+            <p>The journal has fulfilled all the criteria for the Seal. </p>
+            {% for f in fs.fields() %}
+                {% set field_template = f.template %}
+                {%  include field_template %}
+            {% endfor %}
+        </details>
     {% endif %}
 </fieldset>
