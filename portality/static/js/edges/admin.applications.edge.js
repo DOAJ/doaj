@@ -20,7 +20,7 @@ $.extend(true, doaj, {
                     id : "see_applications",
                     category: "facet",
                     filters : [
-                        doaj.filters.noApcCharges()
+                        doaj.filters.noCharges()
                     ],
                     renderer : doaj.renderers.newFacetFilterSetterRenderer({
                         facetTitle : "See applications...",

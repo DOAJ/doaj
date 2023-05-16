@@ -1,9 +1,9 @@
 $.extend(true, doaj, {
     filters : {
-        noApcCharges : function() {
+        noCharges : function() {
             return {
                 id: "no_charges",
-                display: "Without article processing charges (APCs)",
+                display: "Without article processing charges (APCs) and other charges",
                 must: [
                     es.newTermFilter({
                         field: "bibjson.apc.has_apc",
