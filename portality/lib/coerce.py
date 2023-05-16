@@ -139,5 +139,5 @@ COERCE_MAP_OUTGOING = {
 }
 
 COERCE_MAP_INGOING = {
-    "currency_code": to_currency_code(fail_if_not_found=False)
+    "currency_code": to_currency_code(fail_if_not_found=True)
 }
