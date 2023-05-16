@@ -383,7 +383,11 @@ class ApplicationsCrudApi(CrudApi):
                 else:
                     reportable = []
                     for em in errorMessages:
-                        if isinstance(em, list):
+                        if isinstance(em, dict):
+                            for sub, subErrors in em.items():
+                                fieldName = fieldName + "." + sub
+                                em = " ".join(subErrors)
+                        elif isinstance(em, list):
                             em = " ".join(em)
                         reportable.append(em)
                     report[fieldName] = list(set(reportable))

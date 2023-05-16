@@ -10,7 +10,7 @@ from portality.api.current.data_objects.common_journal_application import Outgoi
 
 # both incoming and outgoing applications share this struct
 # "required" fields are only put on incoming applications
-from portality.lib.coerce import COERCE_MAP
+from portality.lib.coerce import COERCE_MAP, COERCE_MAP_INGOING, COERCE_MAP_OUTGOING
 from portality.lib.seamless import SeamlessMixin
 from portality.models import JournalLikeBibJSON
 from portality.ui.messages import Messages
@@ -114,7 +114,8 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     ~~APIIncomingApplication:Model->Seamless:Library~~
     """
     __type__ = "application"
-    __SEAMLESS_COERCE__ = COERCE_MAP
+    __SEAMLESS_COERCE__ = dict(COERCE_MAP)
+    __SEAMLESS_COERCE__.update(COERCE_MAP_INGOING)
     __SEAMLESS_STRUCT__ = [
         OUTGOING_APPLICATION_STRUCT,
         # FIXME: should this be here? It looks like it allows users to send administrative data to the system
@@ -354,7 +355,8 @@ class OutgoingApplication(OutgoingCommonJournalApplication):
     ~~APIOutgoingApplication:Model->APIOutgoingCommonJournalApplication:Model~~
     ~~->Seamless:Library~~
     """
-    __SEAMLESS_COERCE__ = COERCE_MAP
+    __SEAMLESS_COERCE__ = dict(COERCE_MAP)
+    COERCE_MAP.update(COERCE_MAP_OUTGOING)
     __SEAMLESS_STRUCT__ = [
         OUTGOING_APPLICATION_STRUCT,
         _SHARED_STRUCT

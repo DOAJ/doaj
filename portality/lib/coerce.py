@@ -60,19 +60,22 @@ def to_isolang(output_format=None):
     return isolang
 
 
-def to_currency_code(val):
+def to_currency_code(fail_if_not_found=True):
     """
     ~~-> Currencies:Data~~
     :param val:
     :return:
     """
-    if val is None:
-        return None
-    nv = get_currency_code(val)
-    if nv is None:
-        raise ValueError("Unable to convert {x} to a valid currency code".format(x=val))
-    uc = seamless.to_utf8_unicode
-    return uc(nv)
+    def codify(val):
+        if val is None:
+            return None
+        nv = get_currency_code(val, fail_if_not_found=fail_if_not_found)
+        if nv is None:
+            raise ValueError("Unable to convert {x} to a valid currency code".format(x=val))
+        uc = seamless.to_utf8_unicode
+        return uc(nv)
+
+    return codify
 
 
 def to_country_code(val):
@@ -128,6 +131,13 @@ COERCE_MAP = {
     "isolang": to_isolang(),
     "isolang_2letter": to_isolang(output_format="alpha2"),
     "country_code": to_country_code,
-    "currency_code": to_currency_code,
     "issn" : to_issn
+}
+
+COERCE_MAP_OUTGOING = {
+    "currency_code": to_currency_code(fail_if_not_found=False)
+}
+
+COERCE_MAP_INGOING = {
+    "currency_code": to_currency_code(fail_if_not_found=False)
 }
