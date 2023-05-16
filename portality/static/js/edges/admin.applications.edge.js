@@ -15,7 +15,20 @@ $.extend(true, doaj, {
 
             var components = [
                 doaj.components.searchingNotification(),
-
+                // filters
+                edges.newFilterSetter({
+                    id : "see_applications",
+                    category: "facet",
+                    filters : [
+                        doaj.filters.noCharges()
+                    ],
+                    renderer : doaj.renderers.newFacetFilterSetterRenderer({
+                        facetTitle : "See applications...",
+                        open: true,
+                        togglable: false,
+                        showCount: false
+                    })
+                }),
                 // facets
                 doaj.facets.openOrClosed(),
                 doaj.facets.applicationStatus(),
@@ -177,6 +190,21 @@ $.extend(true, doaj, {
                 edges.newSelectedFilters({
                     id: "selected-filters",
                     category: "selected-filters",
+                    compoundDisplays : [
+                        {
+                            filters : [
+                                es.newTermFilter({
+                                    field: "bibjson.apc.has_apc",
+                                    value: false
+                                }),
+                                es.newTermFilter({
+                                    field: "bibjson.other_charges.has_other_charges",
+                                    value: false
+                                })
+                            ],
+                            display : "Without article processing charges (APCs)"
+                        }
+                    ],
                     fieldDisplays: {
                         'admin.application_status.exact': 'Application status',
                         'index.application_type.exact' : 'Application',
@@ -199,7 +227,13 @@ $.extend(true, doaj, {
                             "update request": "Open",
                             "new application": "Open"
                         }
-                    }
+                    },
+                    renderer : doaj.renderers.newSelectedFiltersRenderer({
+                        omit : [
+                            "bibjson.apc.has_apc",
+                            "bibjson.other_charges.has_other_charges"
+                        ]
+                    })
                 })
             ];
 
