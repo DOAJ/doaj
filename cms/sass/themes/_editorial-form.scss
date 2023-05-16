@@ -166,4 +166,14 @@
     margin: 0 0 0 $spacing-03;
     white-space: nowrap;
   }
+
+  [class*="-annotations"] {
+    + [class*="fullcontents"]  {
+      margin: $spacing-03 0 0 0;
+    }
+  }
+
+  [class*="fullcontents-contents"] {
+    margin: 0;
+  }
 }
