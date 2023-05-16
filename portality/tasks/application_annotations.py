@@ -26,11 +26,14 @@ class ApplicationAnnotations(BackgroundTask):
             return
 
         application = models.Application.pull(app_id)
+        if application is None:
+            job.add_audit_message("Application id {id} is not present, no further action required".format(id=app_id))
+            return
 
         job.add_audit_message("Running application annotation for application with id {id}".format(id=app_id))
 
         annoSvc = DOAJ.annotationsService()
-        annoSvc.annotate_application(application, logger=lambda x: job.add_audit_message(x))
+        annoSvc.annotate_application(application, created_date=job.created_date, logger=lambda x: job.add_audit_message(x))
 
         if status_on_complete != "" and status_on_complete in constants.APPLICATION_STATUSES_ALL:
             job.add_audit_message("Setting status to {x}".format(x=status_on_complete))

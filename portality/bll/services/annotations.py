@@ -19,7 +19,7 @@ class AnnotationsService(object):
     def __init__(self, annotation_plugins=None):
         self._annotation_plugins = annotation_plugins if annotation_plugins is not None else ANNOTATION_PLUGINS
 
-    def annotate_application(self, application: models.Application, logger=None):
+    def annotate_application(self, application: models.Application, created_date=None, logger=None):
         if logger is None:
             logger = lambda x: x    # does nothing, just swallows the logs
 
@@ -27,6 +27,9 @@ class AnnotationsService(object):
         resource_bundle = ResourceBundle()
         new_annotations = models.Annotation()
         new_annotations.application = application.id
+
+        if created_date is not None:
+            new_annotations.set_created(created_date)
 
         for j, a, anno in self._annotation_plugins:
             if not a:
