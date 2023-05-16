@@ -8,6 +8,8 @@ from datetime import datetime
 import json
 import re
 
+from portality.lib import dates
+
 # Regex to find and replace http for https when it's a hindawi URL
 match_hindawi_urls = re.compile(r'http://www.hindawi')
 replacement_text = 'https://www.hindawi'
@@ -57,7 +59,7 @@ if __name__ == "__main__":
         print('One or more type parameters are required. If supplying more than one, ensure the query is valid for both types.')
         exit(1)
 
-    print('Starting {0}.'.format(datetime.now()))
+    print('Starting {0}.'.format(dates.now()))
 
     # Connection to the ES index
     conn = raw.Connection(host=app.config.get("ELASTIC_SEARCH_HOST"), index=app.config.get("ELASTIC_SEARCH_DB"))
@@ -65,4 +67,4 @@ if __name__ == "__main__":
     for t in args.type:
         scroll_edit(conn, t, json.loads(args.query))
 
-    print('Finished {0}.'.format(datetime.now()))
+    print('Finished {0}.'.format(dates.now()))

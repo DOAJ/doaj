@@ -1,6 +1,8 @@
 import os, csv
 from datetime import datetime
 
+from portality.lib.dates import FMT_DATETIME_A
+
 upload_dir = "/home/richard/tmp/doaj/uploads/doaj-xml"
 txt_files = [f for f in os.listdir(upload_dir) if f.endswith(".txt")]
 
@@ -16,4 +18,4 @@ for f in txt_files:
     lm = os.path.getmtime(path)
     id = f.split(".")[0]
     
-    writer.writerow([publisher.strip(), filename.strip(), datetime.fromtimestamp(lm).strftime("%Y-%m-%d %H:%M:%S"), id])
+    writer.writerow([publisher.strip(), filename.strip(), datetime.fromtimestamp(lm).strftime(FMT_DATETIME_A), id])

@@ -13,7 +13,7 @@ class DefaultLogger():
 
     def log(self, msg):
         self._log.append({
-            "timestamp": dates.now_with_microseconds(),
+            "timestamp": dates.now_str_with_microseconds(),
             "message" : msg
         })
 
@@ -33,7 +33,7 @@ class EPMCHarvester(HarvesterPlugin):
     def iterate(self, issn, since, to=None):
         # set the default value for to, if not already set
         if to is None:
-            to = dates.now()
+            to = dates.now_str()
 
         # get the dates into a datestamp
         sd = dates.parse(since)
@@ -52,7 +52,7 @@ class EPMCHarvester(HarvesterPlugin):
         for fr, until in ranges:
             # throttle each day
             if last is not None and throttle is not None:
-                diff = (datetime.utcnow() - last).total_seconds()
+                diff = (dates.now() - last).total_seconds()
                 self._write_to_logger("Last day request at {x}, {y}s ago; throttle {z}s".format(x=last, y=diff, z=throttle))
                 if diff < throttle:
                     waitfor = throttle - diff
@@ -68,7 +68,7 @@ class EPMCHarvester(HarvesterPlugin):
                 article = self.crosswalk(record)
                 yield article, fr
 
-            last = datetime.utcnow()
+            last = dates.now()
 
     def crosswalk(self, record):
         article = doaj.Article()

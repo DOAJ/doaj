@@ -13,6 +13,7 @@ from portality.core import app
 from portality.crosswalks.article_form import ArticleFormXWalk
 from portality.forms.fields import DOAJSelectField, TagListField
 from portality.forms.validate import OptionalIf, ThisOrThat, NoScriptTag, DifferentTo
+from portality.lib import dates
 from portality.ui.messages import Messages
 
 
@@ -518,8 +519,8 @@ DOI_ERROR = 'Invalid DOI. A DOI can optionally start with a prefix (such as "doi
 ORCID_ERROR = "Invalid ORCID iD. Please enter your ORCID iD as a full URL of the form https://orcid.org/0000-0000-0000-0000"
 IDENTICAL_ISSNS_ERROR = "The Print and Online ISSNs supplied are identical. If you supply 2 ISSNs they must be different."
 
-start_year = app.config.get("METADATA_START_YEAR", datetime.now().year - 15)
-YEAR_CHOICES = [(str(y), str(y)) for y in range(datetime.now().year + 1, start_year - 1, -1)]
+start_year = app.config.get("METADATA_START_YEAR", dates.now().year - 15)
+YEAR_CHOICES = [(str(y), str(y)) for y in range(dates.now().year + 1, start_year - 1, -1)]
 MONTH_CHOICES = [("","---"), ("1", "01"), ("2", "02"), ("3", "03"), ("4", "04"), ("5", "05"), ("6", "06"), ("7", "07"), ("8", "08"), ("9", "09"), ("10", "10"), ("11", "11"), ("12", "12")]
 INITIAL_AUTHOR_FIELDS = 3
 
@@ -553,7 +554,7 @@ class ArticleForm(Form):
     abstract = TextAreaField("Abstract", [validators.Optional(), NoScriptTag()])
     keywords = TagListField("Keywords", [validators.Optional(), NoScriptTag()], description="Use a , to separate keywords") # enhanced with select2
     fulltext = StringField("Full-text URL", [OptionalIf("doi", "You must provide the Full-Text URL or the DOI"), validators.URL()])
-    publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
+    publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(dates.now().year))
     publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default="" )
     pissn = DOAJSelectField("Print", [ThisOrThat("eissn", "Either this field or Online ISSN is required"), DifferentTo("eissn", message=IDENTICAL_ISSNS_ERROR)], choices=[]) # choices set at construction
     eissn = DOAJSelectField("Online", [ThisOrThat("pissn", "Either this field or Print ISSN is required"), DifferentTo("pissn", message=IDENTICAL_ISSNS_ERROR)], choices=[]) # choices set at construction

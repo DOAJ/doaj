@@ -5,6 +5,7 @@ from random import randint
 
 from portality import constants
 from portality.lib import dates
+from portality.lib.dates import FMT_DATE_YM, FMT_YEAR
 from portality.models import Provenance
 
 
@@ -24,7 +25,7 @@ class ProvenanceFixtureFactory(object):
             start = None
             end = None
             if period == "month":
-                startts = dates.parse(h, "%Y-%m")
+                startts = dates.parse(h, FMT_DATE_YM)
                 year, month = divmod(startts.month+1, 12)
                 if month == 0:
                     month = 12
@@ -33,7 +34,7 @@ class ProvenanceFixtureFactory(object):
                 start = dates.format(startts)
                 end = dates.format(endts)
             elif period == "year":
-                startts = dates.parse(h, "%Y")
+                startts = dates.parse(h, FMT_YEAR)
                 endts = datetime(startts.year + 1, 1, 1)
                 start = dates.format(startts)
                 end = dates.format(endts)
@@ -69,7 +70,7 @@ class ProvenanceFixtureFactory(object):
             start = None
             end = None
             if period == "month":
-                startts = dates.parse(h, "%Y-%m")
+                startts = dates.parse(h, FMT_DATE_YM)
                 year, month = divmod(startts.month+1, 12)
                 if month == 0:
                     month = 12
@@ -78,7 +79,7 @@ class ProvenanceFixtureFactory(object):
                 start = dates.format(startts)
                 end = dates.format(endts)
             elif period == "year":
-                startts = dates.parse(h, "%Y")
+                startts = dates.parse(h, FMT_YEAR)
                 endts = datetime(startts.year + 1, 1, 1)
                 start = dates.format(startts)
                 end = dates.format(endts)

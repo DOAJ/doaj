@@ -90,8 +90,8 @@
           {# managed_groups is inherited from the dashboard_base template #}
         {# ~~^-> EditorGroup:Model ~~ #}
           {% for eg in managed_groups %}
-          <li class="tabs__item">
-            <a href="#" data-group-id="{{ eg.id }}" role="tab" aria-selected="{% if loop.first %}true{% else %}false{% endif %}" class="label js-group-tab" title="Toggle to {{ eg.name }}’s activity data">{{ eg.name }} ({{ maned_assignments[eg.name] }}<span class="sr-only"> applications</span>)</a>
+          <li class="tabs__item" role="tab">
+            <a href="#" data-group-id="{{ eg.id }}" aria-selected="{% if loop.first %}true{% else %}false{% endif %}" class="label js-group-tab" title="Toggle to {{ eg.name }}’s activity data">{{ eg.name }} ({{ maned_assignments[eg.name] }}<span class="sr-only"> applications</span>)</a>
           </li>
           {% endfor %}
         </ul>

@@ -20,8 +20,8 @@
   <!-- OpenGraph -->
   <meta property="og:url" content="{{ request.url }}">
   <meta property="og:type" content="website">
-  <meta property="og:title" content=" Directory of Open Access Journals">
-  <meta property="og:description" content="DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is freely available online for everyone.">
+  <meta property="og:title" content="{% block meta_og_title %}Directory of Open Access Journals{% endblock %} – DOAJ">
+  <meta property="og:description" content="{%- block meta_og_description -%}DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is freely available online for everyone.{%- endblock -%}">
   <meta property="og:image" content="{{ base_url }}/assets/img/opengraph/img.png">
 
   <!-- Twitter Meta Tags -->
@@ -29,8 +29,8 @@
   <meta property="twitter:domain" content="doaj.org">
   <meta property="twitter:creator" content="@DOAJplus">
   <meta property="twitter:url" content="https://doaj.org">
-  <meta name="twitter:title" content=" Directory of Open Access Journals">
-  <meta name="twitter:description" content="DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is freely available online for everyone.">
+  <meta name="twitter:title" content="{% block meta_twitter_title %}Directory of Open Access Journals{% endblock %} – DOAJ">
+  <meta name="twitter:description" content="{%- block meta_twitter_description -%}DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is freely available online for everyone.{%- endblock -%}">
   <meta name="twitter:image" content="{{ base_url }}/assets/img/opengraph/img.png">
 
   {% block extra_meta_tags %}{% endblock %}
@@ -42,15 +42,15 @@
 
   <link rel="preload"
         as="style"
-        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" />
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" />
 
   <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap"
         media="print" onload="this.media='all'" />
 
   <noscript>
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" />
+          href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" />
   </noscript>
 
   <link rel="stylesheet" type="text/css" href="/static/vendor/select2-3.5.4/select2.css">

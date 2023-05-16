@@ -1,7 +1,5 @@
 import uuid
-from datetime import datetime
 
-import portality.notifications.application_emails as emails
 from portality.core import app
 from portality import models, constants, app_email
 from portality.lib import dates
@@ -12,7 +10,7 @@ from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll import exceptions
 from portality.bll.doaj import DOAJ
 
-from flask import url_for, request, has_request_context
+from flask import url_for, has_request_context
 from flask_login import current_user
 
 from wtforms import FormField, FieldList
@@ -34,7 +32,7 @@ class ApplicationProcessor(FormProcessor):
         if self.source is None:
             raise Exception("Cannot carry data from a non-existent source")
 
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        now = dates.now_str()
 
         # copy over any important fields from the previous version of the object
         created_date = self.source.created_date if self.source.created_date else now
@@ -250,7 +248,7 @@ class NewApplication(ApplicationProcessor):
         super(NewApplication, self).finalise()
 
         # set some administrative data
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        now = dates.now_str()
         self.target.date_applied = now
         self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
         self.target.set_owner(account.id)

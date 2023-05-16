@@ -2,8 +2,9 @@
  for the front page """
 
 from portality.dao import DomainObject
-from datetime import datetime
 from portality.core import app
+from portality.lib import dates
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 
 
 class Cache(DomainObject):
@@ -94,12 +95,12 @@ class Cache(DomainObject):
 
     def is_stale(self):
         if not self.last_updated:
-            lu = '1970-01-01T00:00:00Z'
+            lu = DEFAULT_TIMESTAMP_VAL
         else:
             lu = self.last_updated
 
-        lu = datetime.strptime(lu, "%Y-%m-%dT%H:%M:%SZ")
-        now = datetime.utcnow()
+        lu = dates.parse(lu)
+        now = dates.now()
         dt = now - lu
 
         # compatibility with Python 2.6

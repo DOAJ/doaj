@@ -5,6 +5,8 @@ from wtforms.compat import string_types
 from typing import List
 
 from portality.core import app
+from portality.lib import dates
+from portality.lib.dates import FMT_DATE_STD
 from portality.models import Journal, EditorGroup, Account
 
 from datetime import datetime
@@ -540,7 +542,7 @@ class BigEndDate(object):
         if not field.data:
             return
         try:
-            datetime.strptime(field.data, '%Y-%m-%d')
+            datetime.strptime(field.data, FMT_DATE_STD)
         except Exception:
             raise validators.ValidationError(self.message)
 
@@ -552,7 +554,7 @@ class Year(object):
     def __call__(self, form, field):
         if not field.data:
             return
-        return app.config.get('MINIMAL_OA_START_DATE', 1900) <= field.data <= datetime.now().year
+        return app.config.get('MINIMAL_OA_START_DATE', 1900) <= field.data <= dates.now().year
 
 
 class CustomRequired(object):

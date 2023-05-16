@@ -1,11 +1,13 @@
 import uuid
 from flask_login import UserMixin
-from datetime import datetime, timedelta
+from datetime import timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
+from portality.lib import dates
+from portality.lib.dates import FMT_DATETIME_STD
 
 
 class Account(DomainObject, UserMixin):
@@ -76,8 +78,8 @@ class Account(DomainObject, UserMixin):
             return None
         if not_expired:
             try:
-                ed = datetime.strptime(expires, "%Y-%m-%dT%H:%M:%SZ")
-                if ed < datetime.now():
+                ed = dates.parse(expires)
+                if ed < dates.now():
                     return None
             except ValueError:
                 return None
@@ -140,9 +142,9 @@ class Account(DomainObject, UserMixin):
         return self.data.get('reset_token')
 
     def set_reset_token(self, token, timeout):
-        expires = datetime.now() + timedelta(0, timeout)
+        expires = dates.now() + timedelta(0, timeout)
         self.data["reset_token"] = token
-        self.data["reset_expires"] = expires.strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.data["reset_expires"] = expires.strftime(FMT_DATETIME_STD)
 
     def remove_reset_token(self):
         if "reset_token" in self.data:
@@ -159,13 +161,13 @@ class Account(DomainObject, UserMixin):
         expires = self.reset_expires
         if expires is None:
             return None
-        return datetime.strptime(expires, "%Y-%m-%dT%H:%M:%SZ")
+        return dates.parse(expires)
 
     def is_reset_expired(self):
         expires = self.reset_expires_timestamp
         if expires is None:
             return True
-        return expires < datetime.utcnow()
+        return expires < dates.now()
 
     @property
     def is_super(self):
@@ -204,7 +206,7 @@ class Account(DomainObject, UserMixin):
         self.data["role"] = role
 
     def prep(self):
-        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.data['last_updated'] = dates.now_str()
 
     @property
     def api_key(self):

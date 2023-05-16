@@ -23,6 +23,7 @@ import portality.models as models
 from portality.core import app, es_connection, initialise_index
 from portality import settings
 from portality.lib import edges, dates
+from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -171,7 +172,7 @@ def set_current_context():
         'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
         "app": app,
-        "current_year": datetime.now().strftime('%Y'),
+        "current_year": dates.now_str(FMT_YEAR),
         "base_url": app.config.get('BASE_URL'),
         }
 
@@ -190,7 +191,7 @@ def bytes_to_filesize(size):
 
 
 @app.template_filter('utc_timestamp')
-def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
+def utc_timestamp(stamp, string_format=FMT_DATETIME_STD):
     """
     Format a local time datetime object to UTC
     :param stamp: a datetime object
@@ -204,9 +205,7 @@ def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
     return utcdt.strftime(string_format)
 
 
-@app.template_filter("human_date")
-def human_date(stamp, string_format="%d %B %Y"):
-    return dates.reformat(stamp, out_format=string_format)
+human_date = app.template_filter("human_date")(dates.human_date)
 
 
 @app.template_filter('doi_url')

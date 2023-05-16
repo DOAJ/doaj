@@ -406,7 +406,7 @@ class ApplicationService(object):
             b.add_identifier("eissn", None)
 
         # no relate the journal to the application and place it in_doaj
-        journal.add_related_application(application.id, dates.now())
+        journal.add_related_application(application.id, dates.now_str())
         journal.set_in_doaj(True)
 
         # if we've been called in the context of a manual update, record that

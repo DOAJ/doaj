@@ -21,8 +21,8 @@ log_format ip_cloudflare '$remote_addr - $remote_user [$time_local] "$request" '
 #ssl_stapling on;
 
 # NOTE: change back to $binary_remote_addr if the app is no longer being served through cloudflare.
-limit_req_zone $http_cf_connecting_ip zone=general:100m rate=4r/s;
-limit_req_zone $http_cf_connecting_ip zone=api:100m rate=6r/s;
+limit_req_zone $http_cf_connecting_ip zone=general:100m rate=8r/s;
+limit_req_zone $http_cf_connecting_ip zone=api:100m rate=12r/s;
 limit_req_status 429;
 
 map $http_user_agent $block_ua {
@@ -232,17 +232,6 @@ server {
         proxy_buffering off;
     }
     
-    location / {
-        limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_apps_failover;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
-    }
-    
     location =/robots.txt {
         alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
     }
@@ -250,10 +239,31 @@ server {
         alias /home/cloo/doaj/src/doaj/portality/static/;
         autoindex off;
         expires max;
-        add_header 'Access-Control-Allow-Origin' '*'; # why are these cors settings needed?
+        add_header 'Access-Control-Allow-Origin' '*';              # CORS settings since we don't get these from the app
         add_header 'Access-Control-Allow-Credentials' 'true';
         add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
         add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+    }
+
+    location /assets/ {
+        alias /home/cloo/doaj/src/doaj/cms/assets/;
+        autoindex off;
+        expires max;
+        add_header 'Access-Control-Allow-Origin' '*';              # CORS settings since we don't get these from the app
+        add_header 'Access-Control-Allow-Credentials' 'true';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+    }
+
+    location / {
+        limit_req zone=general burst=20 nodelay;
+        proxy_pass http://doaj_apps_failover;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
     }
 
 }
