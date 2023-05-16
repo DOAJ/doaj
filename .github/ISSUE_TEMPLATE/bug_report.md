@@ -9,12 +9,12 @@ assignees: ''
 
 Warning: don’t send us your passwords or API keys.
 
-**Contact details of bug reporter (or proxy of bug reporter)** 
+**Your contact details** 
 
 
-**User account you are logged in to when this occurred**
-The account’s e-mail address
-*please do not send password or API keys. this is a public ticketing system. if you do not want to put your email address here, please send the information below to us in an email instead.*
+**Your DOAJ user account ID that you are logged in with**
+The account’s e-mail address or account ID
+*please do not send password or API keys. this is a public ticketing system. if you do not want to put your email address here, please send the information below to us in [an email instead](mailto:helpdesk@doaj.org).*
 
 
 **Where this happened**
@@ -23,7 +23,8 @@ e.g. in the UI, API, OAI and which URL you were trying to access.
 
 
 **When this happened**
-What date and time; if it happened several times: a date range or all dates and times it happened. 
+What date and time? (Use UTC time.) If it happened several times: a date range or all dates and times it happened.
+Can you reproduce the error again if you try now?
 
 
 **What happened**
@@ -61,6 +62,12 @@ If applicable, add screenshots to help explain your problem.
  - Browser [e.g. stock browser, safari]
  - Version [e.g. 22]
 
+
+**Do you have a Cloudflare Ray ID?
+Have you been blocked by Cloudflare?
+ - Path accessed (e.g. /api/v2/articles)
+ - supplied content if possible.
+ 
 
 **Additional context**
 Add any other context about the problem here, such as copies of the XML data you were trying to send.
