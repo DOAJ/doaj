@@ -75,7 +75,7 @@ $.extend(true, doaj, {
                     id : "see_journals",
                     category: "facet",
                     filters : [
-                        doaj.filters.noApcCharges(),
+                        doaj.filters.noCharges(),
                         {
                             id: "with_seal",
                             display: "With a DOAJ Seal&nbsp;&nbsp;<span data-feather=\"check-circle\" aria-hidden=\"true\"></span>",
