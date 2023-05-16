@@ -1,5 +1,4 @@
 import string
-import warnings
 
 from unidecode import unidecode
 from functools import reduce
@@ -8,10 +7,11 @@ from datetime import datetime
 
 from portality import datasets, constants
 from portality.dao import DomainObject
+from portality.lib.dates import FMT_DATETIME_STD
 from portality.models import Journal
 from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article specifically uses the v1 BibJSON
 from portality.models.v1 import shared_structs
-from portality.lib import normalise
+from portality.lib import normalise, dates
 
 
 class NoJournalException(Exception):
@@ -146,7 +146,7 @@ class Article(DomainObject):
         """Deprecated"""
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
         if date is None:
-            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            date = dates.now_str()
         snobj = {"date": date, "bibjson": bibjson}
         if "history" not in self.data:
             self.data["history"] = []
@@ -530,7 +530,7 @@ class Article(DomainObject):
 
     def prep(self):
         self._generate_index()
-        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.data['last_updated'] = dates.now_str()
 
     def save(self, *args, **kwargs):
         self._generate_index()
@@ -695,7 +695,7 @@ class ArticleBibJSON(GenericBibJSON):
     def author(self, authors):
         self._set_with_struct("author", authors)
 
-    def get_publication_date(self, date_format='%Y-%m-%dT%H:%M:%SZ'):
+    def get_publication_date(self, date_format=FMT_DATETIME_STD):
         # work out what the date of publication is
         date = ""
         if self.year is not None:
@@ -710,9 +710,9 @@ class ArticleBibJSON(GenericBibJSON):
                         return date
 
                     # In the case of truncated years, assume it's this century if before the current year
-                    if intyear <= int(str(datetime.utcnow().year)[:-2]):
+                    if intyear <= int(str(dates.now().year)[:-2]):
                         self.year = "20" + self.year          # For readability over long-lasting code, I have refrained
-                    else:                                     # from using str(datetime.utcnow().year)[:2] here.
+                    else:                                     # from using str(dates.now().year)[:2] here.
                         self.year = "19" + self.year          # But don't come crying to me 90-ish years from now.
 
                 # if we still don't have a 4 digit year, forget it
@@ -750,7 +750,7 @@ class ArticleBibJSON(GenericBibJSON):
 
             # attempt to confirm the format of our datestamp
             try:
-                datecheck = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+                datecheck = dates.parse(date)
                 date = datecheck.strftime(date_format)
             except:
                 return ""

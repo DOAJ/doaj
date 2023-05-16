@@ -1,9 +1,11 @@
 import base64, sys, re
 from lxml import etree
-from datetime import datetime
 from portality.core import app
 from portality import datasets
 from copy import deepcopy
+
+from portality.lib import dates
+from portality.lib.dates import FMT_DATE_STD
 
 
 #####################################################################
@@ -362,8 +364,8 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         # If it's not coming back properly from the bibjson, throw it
         # away.
         try:
-            date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
-            date = date.strftime("%Y-%m-%d")
+            date = dates.parse(date)
+            date = date.strftime(FMT_DATE_STD)
         except:
             date = ""
 
@@ -496,7 +498,7 @@ def make_oai_identifier(identifier, qualifier):
 def normalise_date(date):
     # FIXME: do we need a more powerful date normalisation routine?
     try:
-        datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+        dates.parse(date)
         return date
     except:
         return "T".join(date.split(" ")) + "Z"

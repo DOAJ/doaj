@@ -21,8 +21,8 @@ def build_application(id, title, lmu_diff, cd_diff, status, editor_group, associ
     bj = ap.bibjson()
     bj.title = title
     ap.set_id(id)
-    ap.set_last_manual_update(dates.before(datetime.utcnow(), lmu_diff))
-    ap.set_created(dates.before(datetime.utcnow(), cd_diff))
+    ap.set_last_manual_update(dates.before_now(lmu_diff))
+    ap.set_created(dates.before_now(cd_diff))
     ap.set_application_status(status)
     ap.set_editor_group(editor_group)
     ap.set_editor(associate)

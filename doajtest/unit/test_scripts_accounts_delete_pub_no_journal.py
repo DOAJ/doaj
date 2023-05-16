@@ -50,7 +50,7 @@ class TestScriptsAccountsDeletePubNoJournal(DoajTestCase):
         models.Journal.blockall(journal_blocklist)
 
         # Check we get the expected accounts to delete
-        ids_to_delete = accounts_with_no_journals_or_applications(older_than=dates.now_with_microseconds())
+        ids_to_delete = accounts_with_no_journals_or_applications(older_than=dates.now_str_with_microseconds())
         assert sorted(ids_to_delete) == sorted(expected_deletes)
 
         # Run the deletes

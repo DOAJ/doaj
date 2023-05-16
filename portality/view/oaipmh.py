@@ -3,8 +3,9 @@ from lxml import etree
 from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
 from portality.core import app
+from portality.lib.dates import FMT_DATETIME_STD, DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD
 from portality.models import OAIPMHJournal, OAIPMHArticle
-from portality.lib import plausible
+from portality.lib import plausible, dates
 from portality.crosswalks.oaipmh import CROSSWALKS, make_set_spec, make_oai_identifier
 
 blueprint = Blueprint('oaipmh', __name__)
@@ -96,19 +97,19 @@ class DateFormat(object):
 
     @classmethod
     def default_earliest(cls):
-        return "1970-01-01T00:00:00Z"
+        return DEFAULT_TIMESTAMP_VAL
 
     @classmethod
     def now(cls):
-        return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        return dates.now_str()
 
     @classmethod
     def format(cls, date):
-        return date.strftime("%Y-%m-%dT%H:%M:%SZ")
+        return date.strftime(FMT_DATETIME_STD)
 
     @classmethod
     def legitimate_granularity(cls, datestr):
-        formats = ["%Y-%m-%d", "%Y-%m-%dT%H:%M:%SZ"]
+        formats = [FMT_DATE_STD, FMT_DATETIME_STD]
         success = False
         for f in formats:
             try:
@@ -210,7 +211,6 @@ def extract_internal_id(oai_identifier):
 
 
 def get_response_date():
-    # return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
     return DateFormat.now()
 
 
@@ -347,14 +347,6 @@ def _parameterised_list(identifiers_or_records, dao, base_url, specified_oai_end
 
     if not fl or not ul:
         return BadArgument(base_url)
-
-    # try:
-    # if from_date is not None:
-    #    datetime.strptime(from_date, "%Y-%m-%d")
-    # if until_date is not None:
-    #    datetime.strptime(until_date, "%Y-%m-%d")
-    # except:
-    #    return BadArgument(base_url)
 
     # get the result set size
     list_size = app.config.get("OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE", 25)
@@ -661,10 +653,8 @@ class ListIdentifiers(OAI_PMH):
             if "cursor" in self.resumption:
                 rt.set("cursor", str(self.resumption.get("cursor")))
             expiry = self.resumption.get("expiry", -1)
-            expire_date = None
             if expiry >= 0:
-                # expire_date = (datetime.now() + timedelta(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
-                expire_date = DateFormat.format(datetime.now() + timedelta(0, expiry))
+                expire_date = DateFormat.format(dates.now() + timedelta(0, expiry))
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
 
@@ -756,10 +746,8 @@ class ListRecords(OAI_PMH):
             if "cursor" in self.resumption:
                 rt.set("cursor", str(self.resumption.get("cursor")))
             expiry = self.resumption.get("expiry", -1)
-            expire_date = None
             if expiry >= 0:
-                # expire_date = (datetime.now() + timedelta(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
-                expire_date = DateFormat.format(datetime.now() + timedelta(0, expiry))
+                expire_date = DateFormat.format(dates.now() + timedelta(0, expiry))
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
 

@@ -4,10 +4,13 @@ from doajtest.fixtures import ArticleFixtureFactory
 from portality import models
 from portality.app import app
 from lxml import etree
-from datetime import datetime, timedelta
+from datetime import timedelta
 from freezegun import freeze_time
 from flask import url_for
 import time
+
+from portality.lib import dates
+from portality.lib.dates import FMT_DATE_STD
 
 
 class TestClient(DoajTestCase):
@@ -147,7 +150,7 @@ class TestClient(DoajTestCase):
             jm.save(blocking=True)
 
         # ListRecords - we expect 3 total results and a resumptionToken to fetch the rest
-        yesterday = (datetime.utcnow() - timedelta(days=1)).strftime('%Y-%m-%d')
+        yesterday = (dates.now() - timedelta(days=1)).strftime(FMT_DATE_STD)
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(yesterday))
@@ -186,10 +189,10 @@ class TestClient(DoajTestCase):
 
         journals = JournalFixtureFactory.make_many_journal_sources(4, in_doaj=True)
 
-        now = datetime.utcnow()
-        yesterday = datetime.utcnow() - timedelta(days=1)
-        day_before_yesterday = datetime.utcnow() - timedelta(days=2)
-        two_days_before_yesterday = datetime.utcnow() - timedelta(days=3)
+        now = dates.now()
+        yesterday = dates.now() - timedelta(days=1)
+        day_before_yesterday = dates.now() - timedelta(days=2)
+        two_days_before_yesterday = dates.now() - timedelta(days=3)
 
         # Save half of our journals 2 days ago
         with freeze_time(day_before_yesterday):
@@ -206,7 +209,7 @@ class TestClient(DoajTestCase):
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 # Request OAI journals since yesterday (looking for today's results only)
-                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(yesterday.strftime('%Y-%m-%d')))
+                resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}'.format(yesterday.strftime(FMT_DATE_STD)))
                 t = etree.fromstring(resp.data)
                 #print etree.tostring(t, pretty_print=True)
                 rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
@@ -218,7 +221,7 @@ class TestClient(DoajTestCase):
 
                 # Request OAI journals from 3 days ago to yesterday (expecting the 2 days ago results)
                 resp = t_client.get(url_for('oaipmh.oaipmh', verb='ListRecords', metadataPrefix='oai_dc') + '&from={0}&until={1}'.format(
-                    two_days_before_yesterday.strftime('%Y-%m-%d'), yesterday.strftime('%Y-%m-%d')))
+                    two_days_before_yesterday.strftime(FMT_DATE_STD), yesterday.strftime(FMT_DATE_STD)))
                 t = etree.fromstring(resp.data)
                 #print etree.tostring(t, pretty_print=True)
                 rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]

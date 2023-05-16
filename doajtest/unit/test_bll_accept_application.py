@@ -8,6 +8,7 @@ from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, Appl
 from doajtest.helpers import DoajTestCase, load_from_matrix
 from portality.bll import DOAJ
 from portality.bll import exceptions
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.models import Journal, Account, Suggestion, Provenance
 
 
@@ -120,9 +121,9 @@ class TestBLLAcceptApplication(DoajTestCase):
 
             if result_manual_update == "yes":
                 assert journal.last_manual_update is not None
-                assert journal.last_manual_update != "1970-01-01T00:00:00Z"
+                assert journal.last_manual_update != DEFAULT_TIMESTAMP_VAL
                 assert application.last_manual_update is not None
-                assert application.last_manual_update != "1970-01-01T00:00:00Z"
+                assert application.last_manual_update != DEFAULT_TIMESTAMP_VAL
             elif result_manual_update == "no":
                 assert journal.last_manual_update is None
                 assert application.last_manual_update == "2001-01-01T00:00:00Z"
