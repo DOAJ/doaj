@@ -58,7 +58,8 @@ setup(
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
         "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium==3.141",  # prevent backtracking through all versions
-                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
+                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix",
+                 "bs4==0.0.1"],   # beautifulsoup for HTML parsing
         "docs": [
             "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@cb52c345b942e50726767b1a7190f1a01b81e722#egg=featuremap",
             "testbook @ git+https://github.com/CottageLabs/testbook.git@15a7c0cc25d951d989504d84c2ef3e24caaf56e9#egg=testbook"]
