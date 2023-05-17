@@ -4,6 +4,7 @@ import time
 from multiprocessing import Process
 from typing import TYPE_CHECKING
 
+import selenium
 from selenium import webdriver
 from selenium.common import StaleElementReferenceException, ElementClickInterceptedException
 from selenium.webdriver import DesiredCapabilities
@@ -45,24 +46,19 @@ class SeleniumTestCase(DoajTestCase):
     def setUp(self):
         super().setUp()
         process_manager = multiprocessing.Manager()
-        shared_dict = process_manager.dict()
-        shared_dict['is_server_running'] = False
 
         # run doaj server in a background process
-        def _run(_shared_dict):
+        def _run():
             try:
-                _shared_dict['is_server_running'] = True
                 app.run_server(host=self.DOAJ_HOST, port=self.DOAJ_PORT)
             except Exception as e:
-                _shared_dict['is_server_running'] = False
-
                 if isinstance(e, ESMappingMissingError):
                     log.error(str(e))
                     return
 
                 raise e
 
-        self.doaj_process = Process(target=_run, args=(shared_dict,))
+        self.doaj_process = Process(target=_run)
         self.doaj_process.start()
 
         # prepare selenium driver
@@ -91,8 +87,16 @@ class SeleniumTestCase(DoajTestCase):
         self.fix_es_mapping()
 
         # wait for server to start
+        def _is_doaj_server_running():
+            goto(self.selenium, "/")
+            try:
+                self.selenium.find_element(By.CSS_SELECTOR, 'div.container')
+                return True
+            except selenium.common.exceptions.NoSuchElementException:
+                return False
+
         try:
-            wait_unit(lambda: shared_dict['is_server_running'], 10, 1.5)
+            wait_unit(_is_doaj_server_running, 10, 1.5)
         except TimeoutError:
             raise TimeoutError('doaj server not started')
 
