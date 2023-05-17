@@ -23,7 +23,7 @@ $.extend(true, doaj, {
                         doaj.filters.noCharges()
                     ],
                     renderer : doaj.renderers.newFacetFilterSetterRenderer({
-                        facetTitle : "See applications...",
+                        facetTitle : "",
                         open: true,
                         togglable: false,
                         showCount: false

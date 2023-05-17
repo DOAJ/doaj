@@ -3,7 +3,7 @@ $.extend(true, doaj, {
         noCharges : function() {
             return {
                 id: "no_charges",
-                display: "Without article processing charges (APCs) and other charges",
+                display: "Without fees",
                 must: [
                     es.newTermFilter({
                         field: "bibjson.apc.has_apc",
