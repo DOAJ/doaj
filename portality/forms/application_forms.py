@@ -1805,11 +1805,6 @@ class FieldDefinitions:
         "group": "notes",
         "input": "textarea",
         "disabled": "disable_edit_note_except_editing_user",
-        "contexts": {
-            "admin": {
-                "disabled" : False
-            }
-        }
     }
 
     # ~~->$ NoteAuthor:FormField~~
