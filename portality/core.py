@@ -11,7 +11,7 @@ from lxml import etree
 from portality import settings, constants, datasets
 from portality.bll import exceptions
 from portality.error_handler import setup_error_logging
-from portality.lib import es_data_mapping
+from portality.lib import es_data_mapping, dates
 from portality.ui.debug_toolbar import DoajDebugToolbar
 
 import esprit
@@ -290,6 +290,8 @@ def setup_jinja(app):
     app.jinja_env.globals['type'] = type
     #~~->Constants:Config~~
     app.jinja_env.globals['constants'] = constants
+    #~~-> Dates:Library~~
+    app.jinja_env.globals['dates'] = dates
     #~~->Datasets:Data~~
     app.jinja_env.globals['datasets'] = datasets
     _load_data(app)

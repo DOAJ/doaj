@@ -5,6 +5,7 @@ import csv
 
 from portality import models
 from portality import datasets
+from portality.lib import dates
 
 OUT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)))
 OUT_FILENAME = 'country_cleanup.csv'
@@ -41,7 +42,7 @@ def test_migration():
 
 
 def migrate(test=False):
-    start = datetime.now()
+    start = dates.now()
     
     journal_iterator = models.Journal.all_in_doaj()
     
@@ -63,7 +64,7 @@ def migrate(test=False):
                 j.prep()
                 j.save()
     
-    end = datetime.now()
+    end = dates.now()
     
     print("Updated Journals", counter)
     print(start, end)

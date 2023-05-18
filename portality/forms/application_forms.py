@@ -1,7 +1,6 @@
 """
 ~~ApplicationForm:Feature~~
 """
-import datetime
 from copy import deepcopy
 
 from wtforms import StringField, TextAreaField, IntegerField, BooleanField, RadioField, SelectMultipleField, \
@@ -37,6 +36,7 @@ from portality.forms.validate import (
     CustomRequired,
     OwnerExists, NoScriptTag, Year
 )
+from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
 from portality.models import EditorGroup
 from portality.regex import ISSN, ISSN_COMPILED
@@ -801,12 +801,12 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Enter the Year (YYYY)."}},
-            {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": datetime.datetime.utcnow().year}},
+            {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": dates.now().year}},
             {"year": {"message": "OA Start Date must be a year in a 4 digit format (eg. 1987) and must be greater than {}".format(app.config.get('MINIMAL_OA_START_DATE', 1900))}}
         ],
         "attr": {
             "min": app.config.get('MINIMAL_OA_START_DATE', 1900),
-            "max": datetime.datetime.utcnow().year
+            "max": dates.now().year
         }
     }
 

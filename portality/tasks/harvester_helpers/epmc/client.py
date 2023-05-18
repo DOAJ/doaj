@@ -15,7 +15,7 @@ class DefaultLogger():
 
     def log(self, msg):
         self._log.append({
-            "timestamp": dates.now_with_microseconds(),
+            "timestamp": dates.now_str_with_microseconds(),
             "message" : msg
         })
 
@@ -120,7 +120,7 @@ class EuropePMC(object):
         last = None
         while True:
             if last is not None and throttle is not None:
-                diff = (datetime.utcnow() - last).total_seconds()
+                diff = (dates.now() - last).total_seconds()
                 self._write_to_logger("Last request at {x}, {y}s ago; throttle {z}s".format(x=last, y=diff, z=throttle))
                 if diff < throttle:
                     waitfor = throttle - diff
@@ -130,7 +130,7 @@ class EuropePMC(object):
             # our `url_from_query` method, and we may want to transition to using that going forward.  But for now
             # the method that we use is still supported
             results, cursor = self.query(query_string, cursor=cursor, page_size=page_size)
-            last = datetime.utcnow()
+            last = dates.now()
             if len(results) == 0:
                 break
             for r in results:
