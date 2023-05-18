@@ -4,7 +4,7 @@
 {% endif %}
 
 {% if not current_user.is_anonymous %}
-    <li class="dropdown {{ extraClasses }}">
+    <li class="dropdown {{ extraClasses }}" role="menuitem">
             <a href="" class="dropdown__trigger nav-bar__link" id="menu-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Dashboard
                 <span data-feather="chevron-down" aria-hidden="true"></span>
@@ -39,7 +39,7 @@
         </ul>
     </li>
 {% endif %}
-<li class="{{ extraClasses }}">
+<li class="{{ extraClasses }}" role="menuitem">
     {% if current_user.is_anonymous %}
         <a href="{{ url_for('account.login') }}" class="nav-bar__link">
             Login

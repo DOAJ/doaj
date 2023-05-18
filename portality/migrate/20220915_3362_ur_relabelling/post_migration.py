@@ -1,3 +1,4 @@
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.models import Application, Journal
 from portality import constants
 
@@ -160,7 +161,7 @@ for application in Application.iterate(RJ_EXISTS):
 
     else:
         relaps = j.related_applications
-        sorted(relaps, key=lambda x: x.get("date_accepted", "1970-01-01T00:00:00Z"))
+        sorted(relaps, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
         if relaps[-1].get("application_id") == application.id:
             oldest_journals += 1
             oldest_types[application.application_type] += 1

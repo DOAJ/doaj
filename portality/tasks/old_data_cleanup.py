@@ -5,6 +5,7 @@ from portality.background import BackgroundTask
 from portality.core import app
 from portality.dao import DomainObject
 from portality.decorators import write_required
+from portality.lib import dates
 from portality.lib.es_queries import ES_DATETIME_FMT
 from portality.models import Notification, BackgroundJob
 from portality.tasks.helpers import background_helper
@@ -46,7 +47,7 @@ def _clean_old_data(domain_class: Type[DomainObject],
 
     logger_fn(f'working for clean_old_data [{domain_class.__type__}][{n_retention_day}]')
 
-    last_retention_date = datetime.datetime.now() - datetime.timedelta(days=n_retention_day)
+    last_retention_date = dates.now() - datetime.timedelta(days=n_retention_day)
     retention_query = RetentionQuery(last_retention_date, datetime_field=datetime_field).query()
     num_record = domain_class.hit_count(retention_query)
     logger_fn(f'remove [{domain_class.__name__}] -- {datetime_field} <= {last_retention_date}')
