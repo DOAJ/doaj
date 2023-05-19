@@ -12,8 +12,8 @@ from portality import constants
 
 
 class DiscontinuedSoonQuery:
-    def __init__(self, time_delta=None):
-        self._delta = time_delta if time_delta is not None else app.config.get('DISCONTINUED_DATE_DELTA', 0)
+    def __init__(self):
+        self._delta = app.config.get('DISCONTINUED_DATE_DELTA', 0)
         self._date = dates.days_after_now(days=self._delta)
 
     def query(self):
@@ -37,9 +37,9 @@ class DiscontinuedSoonQuery:
 class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
     __action__ = "find_discontinued_soon"
 
-    def __init__(self, job, time_delta=None):
+    def __init__(self, job):
         super(FindDiscontinuedSoonBackgroundTask, self).__init__(job)
-        self._delta = time_delta if time_delta is not None else app.config.get('DISCONTINUED_DATE_DELTA', 0)
+        self._delta = app.config.get('DISCONTINUED_DATE_DELTA', 0)
         self._date = dates.days_after_now(days=self._delta)
 
     def find_journals_discontinuing_soon(self):
