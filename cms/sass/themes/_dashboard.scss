@@ -45,18 +45,12 @@
   }
 
   .vertical-nav {
-    position: absolute;
-    z-index: 3;
-    top: 75px;
-    left: 0;
+    margin-top: 75px;
     width: 75px;
     height: 100%;
 
     > ol {
-      position: fixed;
       width: 75px;
-      top: 75px;
-      bottom: 0;
       background-color: $light-grey;
       overflow-y: scroll;
     }
@@ -82,6 +76,7 @@
     width: max-content;
     background-color: $dark-grey;
     color: $white;
+    z-index: 5;
   }
 
   .vertical-nav__link:hover {
