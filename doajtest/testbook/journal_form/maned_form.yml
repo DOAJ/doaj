@@ -116,7 +116,7 @@ tests:
         - You can see the note that you have created before with `admin1`
     - step: Attempt to click into the note area and edit it
       results:
-        - you are able to edit the note
+        - you are unable to edit the note
     - step: Attempt to click the "Remove" button
       results:
-        - You are able to delete the note
+        - You are unable to delete the note
