@@ -370,10 +370,12 @@ def assert_expected_dict(test_case: TestCase, target, expected: dict):
     actual = {key: getattr(target, key) for key in expected.keys()}
     test_case.assertDictEqual(actual, expected)
 
+
 def login(app_client, username, password, follow_redirects=True):
     return app_client.post(url_for('account.login'),
                            data=dict(user=username, password=password),
                            follow_redirects=follow_redirects)
+
 
 def logout(app_client, follow_redirects=True):
     return app_client.get(url_for('account.logout'), follow_redirects=follow_redirects)
