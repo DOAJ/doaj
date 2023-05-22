@@ -1483,9 +1483,14 @@ var formulaic = {
                 edges.on(this.addFieldBtn, "click", this, "addField");
                 edges.on(this.removeFieldBtns, "click", this, "removeField");
 
-                if (this.args.allow_delete) {
-                    this.removeFieldBtns.show();
+                // show or hide the remove buttons
+                for (let i = 0; i < this.divs.length; i++) {
+                    let cur_div = $(this.divs[i]);
+                    if (!cur_div.find('textarea').is(':disabled')) {
+                        cur_div.find('[id^="remove_field__"]').show();
+                    }
                 }
+
             };
 
             this.addField = function() {

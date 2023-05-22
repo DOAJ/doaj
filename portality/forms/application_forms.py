@@ -1788,14 +1788,6 @@ class FieldDefinitions:
             "note_modal"
         ],
         "merge_disabled" : "merge_disabled_notes",
-        "contexts" : {
-            "admin" : {
-                "widgets": [
-                    {"infinite_repeat": {"enable_on_repeat": ["textarea"], "allow_delete" : True}},
-                    "note_modal"
-                ]
-            }
-        }
     }
 
     # ~~->$ Note:FormField~~
