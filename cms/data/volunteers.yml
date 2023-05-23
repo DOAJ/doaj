@@ -116,7 +116,15 @@ ass_ed:
   city: Florence
   country: Italy
   language: Italian, English, Spanish
-
+  
+- name: Amir Reza Asnafi
+  area: Library and Information Science, Scientometrics
+  year_since:
+  city: Tehran
+  country: I.R.Iran
+  language: Persian (Farsi), English
+  photo: "Amir Reza Asnafi.jpg"
+  
 - name: Ana Fresco-Santalla
   area: Humanities
   year_since:
