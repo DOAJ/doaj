@@ -2,8 +2,6 @@ import os
 import pandas as pd
 from portality.core import app
 from portality.bll.doaj import DOAJ
-from portality.lib import dates
-from portality.lib.dates import FMT_DATETIME_SHORT
 
 """
 This script is the first step of generating csv file with the details validity of the urls in the journal
@@ -25,43 +23,64 @@ review_process_information_url = 'Review process information URL',
 other_fees_information_url = 'Other fees information URL',
 plagiarism_information_url = 'Plagiarism information URL',
 preservation_information_url = 'Preservation information URL',
-url_for_journals_aims_and_scope = 'URL for journal\'s aims \& scope',
-url_for_journals_instructions_for_authors = 'URL for journal\'s instructions for authors',
+url_for_journals_aims_and_scope = "URL for journal's aims & scope",
+url_for_journals_instructions_for_authors = "URL for journal's instructions for authors",
 url_for_license_terms = 'URL for license terms',
 URL_to_an_example_page_with_embedded_licensing_information = 'URL to an example page with embedded licensing ' \
                                                              'information',
 
 
 def get_csv_file_name():
-    # ~~->FileStoreTemp:Feature~~
-    filename = 'journalcsv__doaj_' + dates.now_str(FMT_DATETIME_SHORT) + '_utf8.csv'
-    return filename
+    return 'doaj_journals_links.csv'
 
 
 def extra_columns(j):
+    """Add extra columns"""
     return [('Journal ID', j.id)]
 
 
 def generate_journals_csv(csv_file):
+    """Generate the csv file for all journals"""
     journal_service = DOAJ.journalService()
     extra_cols = [extra_columns]
     with open(csv_file, 'w', encoding='utf-8') as csvfile:
         journal_service._make_journals_csv(csvfile, extra_cols)
 
-# Read the CSV file
-# csv_file = '/Users/rama/CottageLabs/DOAJ/miscellaneous-work/journal_info.csv'
-# df = pd.read_csv(csv_file)
+
+def add_link(df, url_column):
+    df[url_column] = df[url_column].apply(lambda x: f'<a href="{x}">{x}</a>' if pd.notna(x) else "")
+    return df
 
 
-# Function to add links for URLs
-def add_link(url):
-    if pd.notna(url):
-        return f'<a href="{url}">{url}</a>'
-    return ""
+def select_columns(df, columns):
+    return df[columns]
+
+
+def read_csv(csv_file):
+    df = pd.read_csv(csv_file)
+    return df
+
+
+def generate_html_files(df, file_name, rows_count=1150):
+    """
+    Generates HTML file from the CSV file
+    :param df: DataFrame object of the csv file
+    :param file_name: File name of the HTML output file
+    :param rows_count: Rows for each HTML file
+    :return:
+    """
+    for i in range(0, len(df), rows_count):
+        html_file = file_name + f'{i // rows_count + 1}.html'
+        chunk = df.iloc[i:i + rows_count]
+        chunk.to_html(html_file, index=False)
 
 
 def generate_html_from_csv(csv_file):
-    df = pd.read_csv(csv_file)
+    """
+    Generates HTML files from csv files
+    :param csv_file: csv file input
+    """
+    df = read_csv(csv_file)
 
     # Specify the columns you want to include in the HTML table
     columns = ["Journal ID", "Journal URL", "URL in DOAJ", "APC information URL", "Copyright information URL",
@@ -75,35 +94,27 @@ def generate_html_from_csv(csv_file):
     count = 1
 
     while count < len(columns):
-        df[columns[count]] = df[columns[count]].apply(add_link)
+        add_link(df, columns[count])
         count += 1
 
     # Select the desired columns from the DataFrame
-    df_selected_columns = df[columns]
-
-    # Convert the DataFrame to an HTML table
-    html_table = df_selected_columns.to_html(escape=False, index=False)
+    df_selected_columns = select_columns(df, columns)
 
     file_name = os.path.splitext(os.path.basename(csv_file))[0] + '_'
 
-    counter = 1
+    generate_html_files(df_selected_columns, file_name)
 
-    html_file_name = file_name + str(counter) + '.html'
-
-    html_file_path = os.path.join(local_dir, html_file_name)
-
-    # Save the HTML table to a file
-    with open(html_file_path, 'w') as f:
-        f.write(html_table)
-
-    print("HTML file has been generated.")
+    print("HTML file(s) generated.")
 
 
 def generate_urls():
-    # csv_file_name = get_csv_file_name()
-    # csv_file_path = os.path.join(local_dir, csv_file_name)
-    # generate_journals_csv(csv_file_path)
-    generate_html_from_csv('/Users/rama/CottageLabs/DOAJ/code/doaj/local_store/main/journalcsv__doaj_20230511_0528_utf8.csv')
+    """
+    Generated HTML file with journal urls
+    """
+    csv_file_name = get_csv_file_name()
+    csv_file_path = os.path.join(local_dir, csv_file_name)
+    generate_journals_csv(csv_file_path)
+    generate_html_from_csv(csv_file_path)
 
 
 if __name__ == "__main__":
