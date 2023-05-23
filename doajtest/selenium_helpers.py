@@ -53,7 +53,7 @@ class SeleniumTestCase(DoajTestCase):
                 app.run_server(host=self.DOAJ_HOST, port=self.DOAJ_PORT)
             except Exception as e:
                 if isinstance(e, ESMappingMissingError):
-                    log.error(str(e))
+                    log.error(f'es index could be removed by TestCase: {str(e)}')
                     return
 
                 raise e
