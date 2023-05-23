@@ -271,7 +271,6 @@ class FieldDefinitions:
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                     "annotation",  # ~~^-> Annotation:FormWidget~~
-                    "full_contents"  # ~~^->FullContents:FormWidget~~
                 ]
             },
             "editor": {
@@ -320,7 +319,6 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "contexts": {
             "public" : {
@@ -344,7 +342,6 @@ class FieldDefinitions:
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                     "annotation",  # ~~^-> Annotation:FormWidget~~
-                    "full_contents"  # ~~^->FullContents:FormWidget~~
                 ]
             },
             "editor": {
