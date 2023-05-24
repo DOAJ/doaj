@@ -36,7 +36,6 @@ setup(
         "markdown-link-attr-modifier==0.2.1",
         "mdx_truly_sane_lists==1.2",
         "openpyxl~=3.0.3",  # this package is needed for script only https://github.com/DOAJ/doajPM/issues/2433
-        "pandas==2.0.1"
         "parameterized==0.7.0",
         "psutil==5.6.3",
         #"pycountry==22.3.5",  # FIXME: pycountry on pypi is quite outdated (2022-03-05, missing e.g. Türkiye)
@@ -59,7 +58,8 @@ setup(
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
         "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium==3.141",  # prevent backtracking through all versions
-                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
+                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix",
+                 "pandas==2.0.1"],
         "docs": [
             "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@cb52c345b942e50726767b1a7190f1a01b81e722#egg=featuremap",
             "testbook @ git+https://github.com/CottageLabs/testbook.git@15a7c0cc25d951d989504d84c2ef3e24caaf56e9#egg=testbook"]
