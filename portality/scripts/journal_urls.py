@@ -8,7 +8,22 @@ This script is the first step of generating csv file with the details validity o
 This script is used to generate html page with the urls for all journals.
 Once the html page is generated, upload the page to the server to access the html from web url.
 Add the Url to link checker tool(ex https://www.drlinkcheck.com/) and run the link check and generate the report as csv
-Input the csv report to 'link_checker_report' script and generate a csv report of the urls along journal information 
+Input the csv report to 'link_checker_report' script and generate a csv report of the urls along journal information
+
+Steps to generate the report csv file:
+
+1. Run journal_urls.py -> python portality/scripts/journal_urls.py
+2. The above scripts will generate doaj_journals_links.csv file at the location mention in the config for 
+   'STORE_LOCAL_DIR'. Example location 'local_store/main/doaj_journals_links.csv'
+3. This script also generates the HTML files at the location from where the script is executed
+4. Input the html files to link checker tool (https://www.drlinkcheck.com/)  by copying the html files to the server and mention the location to the 
+   link checker tool
+5. Run the link check on the tool and export the csv file to a local location
+6. Run link_checker_report.py by passing the file locations as parameters.
+   ex: python portality/scripts/link_checker_report.py --file <links-doaj-link-check-test-2023-05-11_13-31-59.csv>
+    --journal_csv_file <local_store/main/doaj_journals_links.csv>
+    Provide the absolute paths for the files
+7. Once the above script is run, final report csv file will be generated 
 """
 
 local_dir = app.config.get("STORE_LOCAL_DIR")
