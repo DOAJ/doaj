@@ -49,7 +49,7 @@ JOURNAL_BIBJSON = {
                     "structs" : {
                         "max" : {
                             "fields" : {
-                                "currency" : {"coerce" : "currency_code"},
+                                "currency" : {"coerce" : "currency_code_lax"},
                                 "price" : {"coerce" : "integer"}
                             }
                         }

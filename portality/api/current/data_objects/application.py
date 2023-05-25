@@ -10,7 +10,7 @@ from portality.api.current.data_objects.common_journal_application import Outgoi
 
 # both incoming and outgoing applications share this struct
 # "required" fields are only put on incoming applications
-from portality.lib.coerce import COERCE_MAP, COERCE_MAP_INGOING, COERCE_MAP_OUTGOING
+from portality.lib.coerce import COERCE_MAP
 from portality.lib.seamless import SeamlessMixin
 from portality.models import JournalLikeBibJSON
 from portality.ui.messages import Messages
@@ -36,13 +36,13 @@ OUTGOING_APPLICATION_STRUCT = {
 }
 
 INTERNAL_APPLICATION_STRUCT = {
-"fields": {
-    "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
-    "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
-    "last_updated": {"coerce": "utcdatetime"}, # to the real object
-    "last_manual_update": {"coerce": "utcdatetime"},
-    "es_type": {"coerce": "unicode"}
-},
+    "fields": {
+        "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
+        "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
+        "last_updated": {"coerce": "utcdatetime"}, # to the real object
+        "last_manual_update": {"coerce": "utcdatetime"},
+        "es_type": {"coerce": "unicode"}
+    },
     "objects": ["admin", "bibjson"],
     "structs": {
         "admin" : {
@@ -102,6 +102,20 @@ INCOMING_APPLICATION_REQUIREMENTS = {
                 },
                 "ref": {
                     "required" : ["journal"]
+                },
+                # override for lax currency code enforcement in the core, making it strict for incoming applications
+                "apc" : {
+                    "lists" : {
+                        "max" : {"contains" : "object"}
+                    },
+                    "structs" : {
+                        "max" : {
+                            "fields" : {
+                                "currency" : {"coerce" : "currency_code_strict"},
+                                "price" : {"coerce" : "integer"}
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -115,7 +129,6 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     """
     __type__ = "application"
     __SEAMLESS_COERCE__ = dict(COERCE_MAP)
-    __SEAMLESS_COERCE__.update(COERCE_MAP_INGOING)
     __SEAMLESS_STRUCT__ = [
         OUTGOING_APPLICATION_STRUCT,
         # FIXME: should this be here? It looks like it allows users to send administrative data to the system
@@ -356,7 +369,6 @@ class OutgoingApplication(OutgoingCommonJournalApplication):
     ~~->Seamless:Library~~
     """
     __SEAMLESS_COERCE__ = dict(COERCE_MAP)
-    COERCE_MAP.update(COERCE_MAP_OUTGOING)
     __SEAMLESS_STRUCT__ = [
         OUTGOING_APPLICATION_STRUCT,
         _SHARED_STRUCT

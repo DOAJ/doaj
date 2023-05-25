@@ -34,7 +34,10 @@ from portality.forms.validate import (
     BigEndDate,
     ReservedUsernames,
     CustomRequired,
-    OwnerExists, NoScriptTag, Year
+    OwnerExists,
+    NoScriptTag,
+    Year,
+    CurrentISOCurrency
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder
@@ -1003,10 +1006,12 @@ class FieldDefinitions:
             "class": "input-xlarge"
         },
         "validate": [
-            {"required_if": {
-                "field": "apc",
-                "value": "y",
-                "message": "Enter the currency or currencies for the journal’s publishing fees"
+            "current_iso_currency",
+            {
+                "required_if": {
+                    "field": "apc",
+                    "value": "y",
+                    "message": "Enter the currency or currencies for the journal’s publishing fees"
                 }
             }
         ]
@@ -1023,10 +1028,11 @@ class FieldDefinitions:
             "placeholder": "Highest fee charged"
         },
         "validate":[
-            {"required_if": {
-                "field": "apc",
-                "value": "y",
-                "message": "Enter the value of the highest publishing fee the journal has charged"
+            {
+                "required_if": {
+                    "field": "apc",
+                    "value": "y",
+                    "message": "Enter the value of the highest publishing fee the journal has charged"
                 }
             }
         ],
@@ -2799,9 +2805,19 @@ class YearBuilder:
         html_attrs["data-parsley-year"] = app.config.get('MINIMAL_OA_START_DATE', 1900)
         html_attrs["data-parsley-year-message"] = "<p><small>" + settings["message"] + "</small></p>"
 
+    @staticmethod
     def wtforms(field, settings):
         return Year(settings.get("message"))
 
+
+class CurrentISOCurrencyBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        pass
+
+    @staticmethod
+    def wtforms(field, settings):
+        return CurrentISOCurrency(settings.get("message"))
 
 #########################################################
 # Crosswalks
@@ -2864,6 +2880,7 @@ PYTHON_FUNCTIONS = {
             "owner_exists" : OwnerExistsBuilder.wtforms,
             "no_script_tag": NoScriptTagBuilder.wtforms,
             "year": YearBuilder.wtforms,
+            "current_iso_currency": CurrentISOCurrencyBuilder.wtforms
         }
     }
 }

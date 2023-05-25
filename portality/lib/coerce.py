@@ -131,13 +131,7 @@ COERCE_MAP = {
     "isolang": to_isolang(),
     "isolang_2letter": to_isolang(output_format="alpha2"),
     "country_code": to_country_code,
-    "issn" : to_issn
-}
-
-COERCE_MAP_OUTGOING = {
-    "currency_code": to_currency_code(fail_if_not_found=False)
-}
-
-COERCE_MAP_INGOING = {
-    "currency_code": to_currency_code(fail_if_not_found=True)
+    "issn" : to_issn,
+    "currency_code_strict": to_currency_code(fail_if_not_found=True),
+    "currency_code_lax": to_currency_code(fail_if_not_found=False)
 }
