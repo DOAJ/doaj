@@ -22,6 +22,10 @@ DOAJ's mission is to increase the visibility, accessibility, reputation, usage a
 
 DOAJ is committed to being 100% independent and maintaining all of its primary services and metadata as free for everyone.
 
+## Our vision
+
+DOAJ works to build an equitable and diverse scholarly ecosystem where trusted research can be accessed without barriers across the world.
+
 ## Constitution
 
 DOAJ is an independent, non-profit organisation managed by [Infrastructure Services for Open Access C.I.C.](https://is4oa.org/) (IS4OA), a  [community interest company](https://en.wikipedia.org/wiki/Community_interest_company) registered in the United Kingdom and with a branch in Denmark. 
