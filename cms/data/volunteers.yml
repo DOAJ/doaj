@@ -663,14 +663,6 @@ ass_ed:
   country:
   language:
 
-- name: Orhan Canpolat
-  area: Engineering
-  year_since:
-  city: Istanbul
-  country: Türkiye
-  language: Turkish, English
-  photo: "Orhan CANPOLAT.jpg"
-
 - name: Oskia Agirre
   area: Library and Information Science
   year_since:
