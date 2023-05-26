@@ -58,7 +58,7 @@ class SeleniumTestCase(DoajTestCase):
 
                 raise e
 
-        self.doaj_process = Process(target=_run)
+        self.doaj_process = Process(target=_run, daemon=True)
         self.doaj_process.start()
 
         # prepare selenium driver
