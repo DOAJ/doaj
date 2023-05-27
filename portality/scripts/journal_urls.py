@@ -87,7 +87,7 @@ def generate_html_files(df, file_name, rows_count=1150):
     for i in range(0, len(df), rows_count):
         html_file = file_name + f'{i // rows_count + 1}.html'
         chunk = df.iloc[i:i + rows_count]
-        chunk.to_html(html_file, index=False)
+        chunk.to_html(html_file, escape=False, index=False)
 
 
 def generate_html_from_csv(csv_file):
