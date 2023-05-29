@@ -7,6 +7,7 @@ import time, os, shutil, csv, json
 from copy import deepcopy
 
 from portality import models
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.tasks import reporting
 from portality.lib import dates, paths
 
@@ -167,7 +168,7 @@ class TestReporting(DoajTestCase):
             blocklist.append((a.id, a.last_updated))
         models.Application.blockall(blocklist)
 
-        outfiles = reporting.content_reports("1970-01-01T00:00:00Z", dates.now(), TMP_DIR)
+        outfiles = reporting.content_reports(DEFAULT_TIMESTAMP_VAL, dates.now_str(), TMP_DIR)
 
         assert len(outfiles) == 1
         assert os.path.exists(outfiles[0])
@@ -192,7 +193,7 @@ class TestReporting(DoajTestCase):
 
         time.sleep(2)
 
-        job = reporting.ReportingBackgroundTask.prepare("system", outdir=TMP_DIR, from_date="1970-01-01T00:00:00Z", to_date=dates.now())
+        job = reporting.ReportingBackgroundTask.prepare("system", outdir=TMP_DIR, from_date=DEFAULT_TIMESTAMP_VAL, to_date=dates.now_str())
         reporting.ReportingBackgroundTask.submit(job)
 
         time.sleep(2)
@@ -271,8 +272,8 @@ class TestReporting(DoajTestCase):
         assert outfiles is None, outfiles
 
         # Try as background job
-        job = reporting.ReportingBackgroundTask.prepare("system", outdir=TMP_DIR, from_date="1970-01-01T00:00:00Z",
-                                                        to_date=dates.now())
+        job = reporting.ReportingBackgroundTask.prepare("system", outdir=TMP_DIR, from_date=DEFAULT_TIMESTAMP_VAL,
+                                                        to_date=dates.now_str())
         reporting.ReportingBackgroundTask.submit(job)
         time.sleep(1)
         job = models.BackgroundJob.pull(job.id)
