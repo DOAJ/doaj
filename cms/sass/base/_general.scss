@@ -142,10 +142,11 @@ img {
 }
 
 iframe {
-  margin-bottom: $spacing-04;
   padding: $spacing-02;
   width: 100%;
-  border: 1px solid $sanguine;
+  border: 0;
+  border-radius: $spacing-02;
+  @include box-shadow;
 }
 
 table {
