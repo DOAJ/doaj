@@ -130,13 +130,14 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     __type__ = "application"
     __SEAMLESS_COERCE__ = dict(COERCE_MAP)
     __SEAMLESS_STRUCT__ = [
+        # FIXME: Struct merge isn't an OVERRIDE, so we apply the strict checks first since they'll persist
+        # FIXME: can we live without specifying required fields, since the form validation will handle this?
+        INCOMING_APPLICATION_REQUIREMENTS,
         OUTGOING_APPLICATION_STRUCT,
         # FIXME: should this be here? It looks like it allows users to send administrative data to the system
         # I have removed it as it was exposing incorrect data in the auto-generated documentation
         # INTERNAL_APPLICATION_STRUCT,
-        _SHARED_STRUCT,
-        # FIXME: can we live without specifying required fields, since the form validation will handle this?
-        INCOMING_APPLICATION_REQUIREMENTS
+        _SHARED_STRUCT
     ]
 
     def __init__(self, raw=None, **kwargs):
