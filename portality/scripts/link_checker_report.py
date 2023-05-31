@@ -51,12 +51,14 @@ def fetch_matching_rows(df, report_values):
     df_result = df[mask.any(axis=1)]
 
     if not df_result.empty:
-        columns = ['Journal title', 'Added on Date', 'Last updated Date']
+        columns = ['Journal title', 'Added on Date', 'Last updated Date', "Journal ID"]
 
         # Select the desired columns from the DataFrame
         df_result_selected_columns = df_result[columns].copy()  # create a copy to avoid SettingWithCopyWarning
 
         # Add more columns to the DataFrame
+        df_result_selected_columns["DOAJ Link"] = "https://doaj.org/admin/journal/" + df_result_selected_columns["Journal ID"]
+        df_result_selected_columns["Field Link in Form"] = df_result_selected_columns["DOAJ Link"] + "#[question_id]"   # FIXME: how to connect the url to the field?
         df_result_selected_columns['Url'] = report_values["url"]
         df_result_selected_columns['BrokenCheck'] = report_values["broken_check"]
         df_result_selected_columns['RedirectUrl'] = report_values["redirect_url"]
