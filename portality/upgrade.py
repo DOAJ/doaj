@@ -14,12 +14,12 @@ from portality.lib.seamless import SeamlessException
 from portality.dao import ScrollTimeoutException
 
 MODELS = {
-    "journal": models.Journal,  #~~->Journal:Model~~
-    "article": models.Article,  #~~->Article:Model~~
-    "suggestion": models.Suggestion,    #~~->Application:Model~~
+    "journal": models.Journal,  # ~~->Journal:Model~~
+    "article": models.Article,  # ~~->Article:Model~~
+    "suggestion": models.Suggestion,  # ~~->Application:Model~~
     "application": models.Application,
-    "account": models.Account,   #~~->Account:Model~~
-    "background_job": models.BackgroundJob  #~~->BackgroundJob:Model~~
+    "account": models.Account,  # ~~->Account:Model~~
+    "background_job": models.BackgroundJob  # ~~->BackgroundJob:Model~~
 }
 
 
@@ -54,7 +54,8 @@ def do_upgrade(definition, verbose, save_batches=None):
 
         # Iterate through all of the records in the model class
         try:
-            for result in model_class.iterate(q=tdef.get("query", default_query), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), wrap=False):
+            for result in model_class.iterate(q=tdef.get("query", default_query), keepalive=tdef.get("keepalive", "1m"),
+                                              page_size=tdef.get("scroll_size", 1000), wrap=False):
 
                 original = deepcopy(result)
                 if tdef.get("init_with_model", True):
@@ -83,7 +84,8 @@ def do_upgrade(definition, verbose, save_batches=None):
                         result.prep()
                     except AttributeError:
                         if verbose:
-                            print(tdef.get("type"), result.id, "has no prep method - no, pre-save preparation being done")
+                            print(tdef.get("type"), result.id,
+                                  "has no prep method - no, pre-save preparation being done")
                         pass
 
                     data = result.data
@@ -134,7 +136,8 @@ def do_upgrade(definition, verbose, save_batches=None):
                         f.write(json.dumps(batch, indent=2))
                         print(dates.now(), "wrote batch to file {x}".format(x=fn))
 
-                print(dates.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
+                print(dates.now(), "scroll timed out / writing ", len(batch), "to",
+                      tdef.get("type"), ";", total, "of", max)
                 model_class.bulk(batch, action=action, req_timeout=120)
                 batch = []
 
@@ -180,6 +183,7 @@ def _diff(original, current):
 if __name__ == "__main__":
     # ~~->Migrate:Script~~
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--upgrade", help="path to upgrade definition")
     parser.add_argument("-v", "--verbose", action="store_true", help="verbose output to stdout during processing")
