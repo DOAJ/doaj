@@ -20,6 +20,8 @@ from huey.exceptions import TaskException
 
 import uuid
 
+from portality.view.view_helper import exparam_editing_user
+
 blueprint = Blueprint('publisher', __name__)
 
 # restrict everything in admin to logged in users with the "publisher" role
@@ -110,7 +112,7 @@ def update_request(journal_id):
         if alock is not None: alock.delete()
         return redirect(url_for("publisher.updates_in_progress"))
 
-    fc = ApplicationFormFactory.context("update_request")
+    fc = ApplicationFormFactory.context("update_request", extra_param=exparam_editing_user())
 
     # if we are requesting the page with a GET, we just want to show the form
     if request.method == "GET":

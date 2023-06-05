@@ -3,6 +3,7 @@ from werkzeug.datastructures import MultiDict
 from portality import models, lcc
 from portality.datasets import licenses
 from portality.forms.utils import expanded2compact
+from portality.models import Account
 
 
 class JournalGenericXWalk(object):
@@ -266,7 +267,8 @@ class JournalGenericXWalk(object):
                 if formnote["note"]:
                     note_date = formnote["note_date"]
                     note_id = formnote["note_id"]
-                    obj.add_note(formnote["note"], date=note_date, id=note_id)
+                    obj.add_note(formnote["note"], date=note_date, id=note_id,
+                                 author_id=formnote["note_author_id"])
 
         if getattr(form, 'owner', None):
             owner = form.owner.data
@@ -431,7 +433,12 @@ class JournalGenericXWalk(object):
     def admin2form(cls, obj, forminfo):
         forminfo['notes'] = []
         for n in obj.ordered_notes:
-            note_obj = {'note': n['note'], 'note_date': n['date'], 'note_id': n['id']}
+            author_id = n.get('author_id', '')
+            note_author_name = f'{Account.get_name_safe(author_id)}({author_id})' if author_id else ''
+            note_obj = {'note': n['note'], 'note_date': n['date'], 'note_id': n['id'],
+                        'note_author': note_author_name,
+                        'note_author_id': author_id,
+                        }
             forminfo['notes'].append(note_obj)
 
         forminfo['owner'] = obj.owner
