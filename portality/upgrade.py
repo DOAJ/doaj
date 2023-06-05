@@ -33,10 +33,10 @@ class UpgradeTask(object):
 
 class UpgradeType(TypedDict):
     type: str  # name / key of the MODELS class
-    action: str
+    action: str  # default is update
     query: dict  # ES query to use to find the records to upgrade
-    keepalive: str  # ES keepalive time for the scroll, e.g. 10m
-    scroll_size: int  # ES scroll size
+    keepalive: str  # ES keepalive time for the scroll, default 1m
+    scroll_size: int  # ES scroll size, default 1000
 
     """
     python path of functions to run on the record
@@ -44,7 +44,12 @@ class UpgradeType(TypedDict):
       my_function(instance: DomainObject | dict) -> DomainObject | dict
     """
     functions: List[str]
-    init_with_model: bool  # instance would be a DomainObject if True, otherwise a dict
+
+    """
+    instance would be a DomainObject if True, otherwise a dict
+    default is True
+    """
+    init_with_model: bool  #
 
     """
     tasks to run on the record
