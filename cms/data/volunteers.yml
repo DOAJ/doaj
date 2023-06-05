@@ -75,6 +75,7 @@ ed:
   country: Italy
   language: Italian, German, English
   featured: true
+  photo: "pg.png"
 
 - name: Rasoul Zavaraqi
   area: Knowledge and Information Science
