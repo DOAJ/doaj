@@ -6,6 +6,8 @@ import json, os, dictdiffer
 from datetime import datetime, timedelta
 from copy import deepcopy
 from collections import OrderedDict
+from typing import TypedDict, List, Dict
+
 from portality import models
 from portality.dao import ScrollTimeoutException
 from portality.lib import plugin, dates
@@ -29,7 +31,37 @@ class UpgradeTask(object):
         pass
 
 
-def do_upgrade(definition, verbose, save_batches=None):
+class UpgradeType(TypedDict):
+    type: str  # name / key of the MODELS class
+    action: str
+    query: dict  # ES query to use to find the records to upgrade
+    keepalive: str  # ES keepalive time for the scroll, e.g. 10m
+    scroll_size: int  # ES scroll size
+
+    """
+    python path of functions to run on the record
+    interface of the function should be:
+      my_function(instance: DomainObject | dict) -> DomainObject | dict
+    """
+    functions: List[str]
+    init_with_model: bool  # instance would be a DomainObject if True, otherwise a dict
+
+    """
+    tasks to run on the record
+    that will only work if init_with_model is True
+    
+    format of each task:
+    { function name of model : kwargs }
+    """
+    tasks: List[Dict[str, dict]]
+
+
+class Definition(TypedDict):
+    batch: int
+    types: List[UpgradeType]
+
+
+def do_upgrade(definition: Definition, verbose, save_batches=None):
     # get the source and target es definitions
     # ~~->Elasticsearch:Technology~~
 
