@@ -1,5 +1,7 @@
 import pandas as pd
 import argparse
+from portality import models
+from portality.crosswalks.journal_form import JournalFormXWalk
 
 """
 This script is the second step of generating csv file with the details validity of the urls in the journal.
@@ -38,6 +40,27 @@ def write_results(df, filename='multi_result.csv'):
     print("Result CSV file has been written.")
 
 
+def _get_link_type(link, journal):
+    form = JournalFormXWalk.obj2form(journal)
+
+    locations = []
+    subs = []
+    for k, v in form:
+        if isinstance(v, list):
+            if link in v:
+                locations.append(k)
+            else:
+                if True in [e.startswith(link) for e in v]:
+                    subs.append(k)
+        else:
+            if v == link:
+                locations.append(k)
+            elif v.startswith(link):
+                subs.append(k)
+
+    return locations + subs
+
+
 def fetch_matching_rows(df, report_values):
     """Check with journals dataframe and retrieve matching rows with url.
        :param df: DataFrame
@@ -56,10 +79,20 @@ def fetch_matching_rows(df, report_values):
         # Select the desired columns from the DataFrame
         df_result_selected_columns = df_result[columns].copy()  # create a copy to avoid SettingWithCopyWarning
 
+        journal = models.Journal.pull(df_result_selected_columns["Journal ID"])
+        types = _get_link_type(report_values["url"], journal)
+        primary_type = ""
+        question_link = ""
+        if len(types) > 0:
+            primary_type = types[0]
+            question_link = "https://doaj.org/admin/journal/" + df_result_selected_columns["Journal ID"] + "#question-" + primary_type
+
         # Add more columns to the DataFrame
-        df_result_selected_columns["DOAJ Link"] = "https://doaj.org/admin/journal/" + df_result_selected_columns["Journal ID"]
-        df_result_selected_columns["Field Link in Form"] = df_result_selected_columns["DOAJ Link"] + "#[question_id]"   # FIXME: how to connect the url to the field?
+        df_result_selected_columns["DOAJ Form"] = "https://doaj.org/admin/journal/" + df_result_selected_columns["Journal ID"]
+        df_result_selected_columns["Form Field"] = question_link
         df_result_selected_columns['Url'] = report_values["url"]
+        df_result_selected_columns['Type'] = primary_type
+        df_result_selected_columns["Also present in"] = ", ".join(types)
         df_result_selected_columns['BrokenCheck'] = report_values["broken_check"]
         df_result_selected_columns['RedirectUrl'] = report_values["redirect_url"]
         df_result_selected_columns['RedirectType'] = report_values["redirect_type"]
