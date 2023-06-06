@@ -24,7 +24,17 @@ class UpdateRequestConcurrencyPreventionService(object):
         self.rs = redis_service
 
     def preventConcurrency(self):
+        try:
+            self._checkConcurrency()
+            self._storeConcurrency()
+        except ConcurrencyPreventionService as e:
+            raise e
+
+    def _checkConcurrency(self):
         aid = self.rs.get(self.journal)
         if aid is not None and aid != self.id:
             raise ConcurrentUpdateRequestException(Messages.CONCURRENT_UPDATE_REQUEST)
-        self.rs.set(self.journal, self.id, ex=10)
+        return True
+
+    def _storeConcurrency(self):
+        self.rs.set(self.journal, self.id, ex=app.config.get("UR_CONCURRENCY_TIMEOUT", 10))

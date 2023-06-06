@@ -1355,3 +1355,8 @@ PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
 # Pages under maintenance
 
 PRESERVATION_PAGE_UNDER_MAINTENANCE = False
+
+#################################################
+# Concurrency timeout
+
+UR_CONCURRENCY_TIMEOUT = 10
