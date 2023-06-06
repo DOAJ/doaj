@@ -6,7 +6,7 @@ import redis
 
 class ConcurrencyPreventionService(object):
     def __init__(self, **kwargs):
-        self.rs = redis.Redis(host=app.config.get("HUEY_REDIS_HOST"), port=app.config.get("HUEY_REDIS_PORT"))
+        self.rs = redis.Redis(host=app.config.get("HUEY_HOST"), port=app.config.get("HUEY_PORT"))
         self.context = kwargs["context"]
         self.kwargs = dict(kwargs)
 

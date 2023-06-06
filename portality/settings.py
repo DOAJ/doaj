@@ -411,8 +411,8 @@ APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in pro
 # ~~->BackgroundTasks:Feature~~
 
 # huey/redis settings
-HUEY_REDIS_HOST = os.getenv('HUEY_REDIS_HOST', '127.0.0.1')
-HUEY_REDIS_PORT = os.getenv('HUEY_REDIS_PORT', 6379)
+HUEY_HOST = os.getenv('HUEY_HOST', '127.0.0.1')
+HUEY_PORT = os.getenv('HUEY_PORT', 6379)
 HUEY_EAGER = False
 
 # Crontab for never running a job - February 31st (use to disable tasks)
