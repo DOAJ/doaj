@@ -19,22 +19,18 @@
 }
 
 .timeline {
-  @extend .unstyled-list; 
-
-  // The dates headings
-  h3 {
-
-  }
-
   // The contents for each section
-  ul {
-    @extend .unstyled-list; 
+  &.tabular-list > li > ul {
+    list-style: circle;
+    width: 75%;
 
     > li:first-child {
-      // styles for heading here 
+      list-style: none;
+      margin-left: 0;
+      @include typescale-02;
 
       + li {
-        // styles for paragraph/content here
+        margin-left: $spacing-03;
       }
     }
   }
