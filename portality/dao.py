@@ -8,11 +8,12 @@ import urllib.parse
 
 from collections import UserDict
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import List
 
 from portality.core import app, es_connection as ES
-
+from portality.lib import dates
+from portality.lib.dates import FMT_DATETIME_STD
 
 # All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 # You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
@@ -105,7 +106,7 @@ class DomainObject(UserDict, object):
     
     def set_created(self, date=None):
         if date is None:
-            self.data['created_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            self.data['created_date'] = dates.now_str()
         else:
             self.data['created_date'] = date
 
@@ -115,7 +116,7 @@ class DomainObject(UserDict, object):
 
     @property
     def created_timestamp(self):
-        return datetime.strptime(self.data.get("created_date"), "%Y-%m-%dT%H:%M:%SZ")
+        return dates.parse(self.data.get("created_date"))
     
     @property
     def last_updated(self):
@@ -123,7 +124,7 @@ class DomainObject(UserDict, object):
 
     @property
     def last_updated_timestamp(self):
-        return datetime.strptime(self.last_updated, "%Y-%m-%dT%H:%M:%SZ")
+        return dates.parse(self.last_updated)
 
     def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False, block_wait=0.25):
         """
@@ -149,14 +150,14 @@ class DomainObject(UserDict, object):
 
         self.data['es_type'] = self.__type__
 
-        now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        now = dates.now_str()
         if (blocking or differentiate) and "last_updated" in self.data:
-            diff = datetime.now() - datetime.strptime(self.data["last_updated"], "%Y-%m-%dT%H:%M:%SZ")
+            diff = dates.now() - dates.parse(self.data["last_updated"])
 
             # we need the new last_updated time to be later than the new one
             if diff.total_seconds() < 1:
-                soon = datetime.utcnow() + timedelta(seconds=1)
-                now = soon.strftime("%Y-%m-%dT%H:%M:%SZ")
+                soon = dates.now() + timedelta(seconds=1)
+                now = soon.strftime(FMT_DATETIME_STD)
 
         self.data['last_updated'] = now
 
@@ -850,7 +851,7 @@ class DomainObject(UserDict, object):
             sleep = app.config["ES_BLOCK_WAIT_OVERRIDE"]
 
         q = BlockQuery(id)
-        start_time = datetime.now()
+        start_time = dates.now()
         while True:
             res = cls.query(q=q.query())
             hits = res.get("hits", {}).get("hits", [])
@@ -860,14 +861,14 @@ class DomainObject(UserDict, object):
                     if "last_updated" in obj:
                         lu = obj["last_updated"]
                         if len(lu) > 0:
-                            threshold = datetime.strptime(last_updated, "%Y-%m-%dT%H:%M:%SZ")
-                            lud = datetime.strptime(lu[0], "%Y-%m-%dT%H:%M:%SZ")
+                            threshold = dates.parse(last_updated)
+                            lud = dates.parse(lu[0])
                             if lud >= threshold:
                                 return
                 else:
                     return
             else:
-                if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
+                if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
                     raise BlockTimeOutException("Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
 
             time.sleep(sleep)
@@ -883,14 +884,14 @@ class DomainObject(UserDict, object):
             sleep = app.config["ES_BLOCK_WAIT_OVERRIDE"]
 
         q = BlockQuery(id)
-        start_time = datetime.now()
+        start_time = dates.now()
         while True:
             res = cls.query(q=q.query())
             hits = res.get("hits", {}).get("hits", [])
             if len(hits) == 0:
                 return
             else:
-                if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
+                if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
                     raise BlockTimeOutException(
                         "Attempting to block until record with id {id} deleted from Elasticsearch, but this has not happened after {limit}".format(
                             id=id, limit=max_retry_seconds))

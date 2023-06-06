@@ -5,7 +5,7 @@ FIXME: Doesn't work on fields in lists. e.g. for https://github.com/DOAJ/doajPM/
 
 import esprit
 from portality.core import app
-from portality.lib import dataobj
+from portality.lib import dataobj, dates
 from datetime import datetime
 
 
@@ -29,7 +29,7 @@ def scrub_field(connection, o_type, o_field, batch_size=500):
 
 
 if __name__ == "__main__":
-    start = datetime.now()
+    start = dates.now()
 
     import argparse
     parser = argparse.ArgumentParser()
@@ -60,5 +60,5 @@ if __name__ == "__main__":
     else:
         print("Better safe than sorry, exiting.")
 
-    end = datetime.now()
+    end = dates.now()
     print((str(start) + "-" + str(end)))

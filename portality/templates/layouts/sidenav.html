@@ -1,20 +1,32 @@
 
 <main class="container page-content">
     <div class="row">
+        <div class="col-md-8">
+            <section>
+                {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
+                <h1>{{ page.title }}</h1>
 
-        <div class="col-md-4 col-md-push-8">
+                {% if page.preface %}
+                    {% include page.preface %}
+                {% endif %}
+
+                {% include page.frag %}
+
+                {% if page.include %}
+                    {% include page.include %}
+                {% endif %}
+            </section>
+        </div>
+        <div class="col-md-4">
             {% if page.toc %}
                 <nav class="page-nav nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
                     <h2 class="page-nav__heading">Jump to:</h2>
                     {% include "includes/_sidenav_toc.html" %}
                 </nav>
-
             {% else %}
-
                 {% if page.sidenav_include %}
                     {% include page.sidenav_include %}
                 {% endif %}
-
                 <aside class="hero hero--aside">
                     <p class="label">Just so you know&hellip;</p>
 
@@ -36,24 +48,5 @@
                 </aside>
             {% endif %}
         </div>
-
-        <div class="col-md-8 col-md-pull-4">
-            <section>
-                {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
-                <h1>{{ page.title }}</h1>
-
-                {% if page.preface %}
-                    {% include page.preface %}
-                {% endif %}
-
-                {% include page.frag %}
-
-                {% if page.include %}
-                    {% include page.include %}
-                {% endif %}
-
-            </section>
-        </div>
-
     </div>
 </main>

@@ -782,6 +782,14 @@ ass_ed:
   city: Milan
   country: Italy
   language: Italian, English, German
+  
+- name: Sridhar Gutam
+  area: Plant Physiology, Tree Phenology and Open Science
+  year_since:
+  city: Bengaluru
+  country: India
+  language: Telugu, English, Hindi, Kannada
+  photo: "Sridhar_photo.png"
 
 - name: Sofia Fagiolo
   area: Librarianship
