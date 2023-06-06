@@ -331,6 +331,14 @@ ass_ed:
   city: Minneapolis, MN
   country: USA
   language: English
+  
+- name: Emrah Kaya
+  area: Social Sciences, Humanities
+  year_since:
+  city: Sakarya
+  country: Turkey
+  language: English
+  photo: "Emrah Kaya.jpg"
 
 - name: Francesca Soldati
   area: Science
