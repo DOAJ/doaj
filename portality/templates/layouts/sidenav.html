@@ -1,7 +1,7 @@
 
 <main class="container page-content">
     <div class="row">
-        <div class="col-md-8">
+        <div class="{% if page.larger_main %}col-lg-10 col-md-9{% else %}col-md-8{% endif %}">
             <section>
                 {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}
                 <h1>{{ page.title }}</h1>
@@ -17,7 +17,7 @@
                 {% endif %}
             </section>
         </div>
-        <div class="col-md-4">
+        <div class="{% if page.larger_main %}col-lg-2 col-md-3{% else %}col-md-4{% endif %}">
             {% if page.toc %}
                 <nav class="page-nav nav"{% if page.sticky_sidenav %} data-spy="affix"{% endif %}>
                     <h2 class="page-nav__heading">Jump to:</h2>

@@ -53,17 +53,12 @@
     flex: 30%;
     padding: .75em;
     border-radius: .25em;
+    @include box-shadow;
 
-    &:nth-child(1) {
-      background-color: $yellow;
-    }
-
-    &:nth-child(2) {
-      background-color: $light-green;
-    }
-
-    &:nth-child(3) {
-      background-color: $mid-green;
+    svg {
+      margin-bottom: $spacing-03;
+      height: $spacing-04;
+      width: auto;
     }
 
     ul {
