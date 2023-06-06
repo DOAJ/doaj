@@ -21,11 +21,10 @@
 .timeline {
   // The contents for each section
   &.tabular-list > li > ul {
-    list-style: circle;
     width: 75%;
 
     > li {
-      margin-left: $spacing-03;
+      margin-bottom: $spacing-03;
     }
 
     > li:first-child {
