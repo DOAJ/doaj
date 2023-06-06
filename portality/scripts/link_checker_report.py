@@ -45,14 +45,29 @@ def _get_link_type(link, journal):
 
     locations = []
     subs = []
-    for k, v in form:
+    for k, v in form.items():
+        if v is None:
+            continue
         if isinstance(v, list):
             if link in v:
                 locations.append(k)
             else:
-                if True in [e.startswith(link) for e in v]:
-                    subs.append(k)
+                for e in v:
+                    if isinstance(e, dict):
+                        for sk, sv in e.items():
+                            if not isinstance(sv, str):
+                                continue
+                            if link == sv:
+                                locations.append(sk)
+                            elif sv.startswith(link):
+                                subs.append(sk)
+                    else:
+                        if e.startswith(link):
+                            subs.append(k)
+                            break
         else:
+            if not isinstance(v, str):
+                continue
             if v == link:
                 locations.append(k)
             elif v.startswith(link):
@@ -79,16 +94,20 @@ def fetch_matching_rows(df, report_values):
         # Select the desired columns from the DataFrame
         df_result_selected_columns = df_result[columns].copy()  # create a copy to avoid SettingWithCopyWarning
 
-        journal = models.Journal.pull(df_result_selected_columns["Journal ID"])
-        types = _get_link_type(report_values["url"], journal)
+        jid = df_result_selected_columns["Journal ID"].values[0]
+        journal = models.Journal.pull(jid)
         primary_type = ""
         question_link = ""
-        if len(types) > 0:
-            primary_type = types[0]
-            question_link = "https://doaj.org/admin/journal/" + df_result_selected_columns["Journal ID"] + "#question-" + primary_type
+        types = []
+
+        if journal is not None:
+            types = _get_link_type(report_values["url"], journal)
+            if len(types) > 0:
+                primary_type = types[0]
+                question_link = "https://doaj.org/admin/journal/" + jid + "#question-" + primary_type
 
         # Add more columns to the DataFrame
-        df_result_selected_columns["DOAJ Form"] = "https://doaj.org/admin/journal/" + df_result_selected_columns["Journal ID"]
+        df_result_selected_columns["DOAJ Form"] = "https://doaj.org/admin/journal/" + jid
         df_result_selected_columns["Form Field"] = question_link
         df_result_selected_columns['Url'] = report_values["url"]
         df_result_selected_columns['Type'] = primary_type
