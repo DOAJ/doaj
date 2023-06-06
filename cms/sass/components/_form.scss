@@ -55,6 +55,13 @@
   input[type="radio"] + label {
     font-size: 1rem;
   }
+
+  textarea:disabled {
+    height: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
 }
 
 .form__question--optional {

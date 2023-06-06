@@ -165,7 +165,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     @property
     def last_manual_update(self):
         return self.__seamless__.get_single("last_manual_update")
-    
+
     def last_manually_updated_since(self, days=0):
         return self.last_manual_update_timestamp > (datetime.utcnow() - timedelta(days=days))
 
@@ -251,14 +251,19 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def remove_contact(self):
         self.__seamless__.delete("admin.contact")
 
-    def add_note(self, note, date=None, id=None):
+    def add_note(self, note, date=None, id=None, author_id=None):
         if not date:
             date = dates.now_str()
-        obj = {"date": date, "note": note, "id": id}
+        obj = {"date": date, "note": note, "id": id, "author_id": author_id}
         self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
         if not id:
             obj["id"] = uuid.uuid4()
         self.__seamless__.add_to_list_with_struct("admin.notes", obj)
+
+    def add_note_by_dict(self, note):
+        return self.add_note(note=note.get("note"), date=note.get("date"),
+                             id=note.get("id"), author_id=note.get("author_id"))
+
 
     def remove_note(self, note):
         self.__seamless__.delete_from_list("admin.notes", matchsub=note)
