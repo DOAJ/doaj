@@ -24,14 +24,14 @@
     list-style: circle;
     width: 75%;
 
+    > li {
+      margin-left: $spacing-03;
+    }
+
     > li:first-child {
       list-style: none;
       margin-left: 0;
       @include typescale-02;
-
-      + li {
-        margin-left: $spacing-03;
-      }
     }
   }
 }
