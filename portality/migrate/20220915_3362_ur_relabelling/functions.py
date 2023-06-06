@@ -1,4 +1,5 @@
 from portality import constants
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.models import Journal
 
 
@@ -78,7 +79,7 @@ def detect_application_type(application):
         return application
 
     # The next bit requires us to know about the applications in order
-    sorted(relaps, key=lambda x: x.get("date_accepted", "1970-01-01T00:00:00Z"))
+    sorted(relaps, key=lambda x: x.get("date_accepted", DEFAULT_TIMESTAMP_VAL))
 
     # for all applications which have a related journal, and of all other applications
     # for that journal they have the earliest created_date (they are the oldest), tag them as a new application

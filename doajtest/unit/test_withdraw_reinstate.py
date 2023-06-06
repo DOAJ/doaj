@@ -15,15 +15,6 @@ class TestWithdrawReinstate(DoajTestCase):
     def tearDown(self):
         super(TestWithdrawReinstate, self).tearDown()
 
-    @staticmethod
-    def login(app, username, password):
-        return app.post('/account/login',
-                        data=dict(user=username, password=password),
-                        follow_redirects=True)
-
-    @staticmethod
-    def logout(app):
-        return app.get('/account/logout', follow_redirects=True)
 
     @staticmethod
     def make_account():

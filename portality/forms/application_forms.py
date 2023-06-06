@@ -1,10 +1,9 @@
 """
 ~~ApplicationForm:Feature~~
 """
-import datetime
 from copy import deepcopy
 
-from wtforms import StringField, TextAreaField, IntegerField, BooleanField, RadioField, SelectMultipleField, \
+from wtforms import StringField, TextAreaField, IntegerField, BooleanField, SelectMultipleField, \
     SelectField, \
     FormField, FieldList, HiddenField
 from wtforms import widgets, validators
@@ -37,7 +36,8 @@ from portality.forms.validate import (
     CustomRequired,
     OwnerExists, NoScriptTag, Year
 )
-from portality.lib.formulaic import Formulaic, WTFormsBuilder
+from portality.lib import dates
+from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
 from portality.models import EditorGroup
 from portality.regex import ISSN, ISSN_COMPILED
 
@@ -380,7 +380,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Choose upto 6 keywords that describe the subject matter of the journal. "
                           "Keywords must be in English.", "Use single words or short phrases (2 to 3 words) " 
-                          "that describe the journal's main topic.", "Do not add acronyms, abbreviations or descriptive sentences.", 
+                          "that describe the journal's main topic.", "Do not add acronyms, abbreviations or descriptive sentences.",
                           "Note that the keywords may be edited by DOAJ editorial staff." ],
         },
         "validate": [
@@ -803,12 +803,12 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Enter the Year (YYYY)."}},
-            {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": datetime.datetime.utcnow().year}},
+            {"int_range": {"gte": app.config.get('MINIMAL_OA_START_DATE', 1900), "lte": dates.now().year}},
             {"year": {"message": "OA Start Date must be a year in a 4 digit format (eg. 1987) and must be greater than {}".format(app.config.get('MINIMAL_OA_START_DATE', 1900))}}
         ],
         "attr": {
             "min": app.config.get('MINIMAL_OA_START_DATE', 1900),
-            "max": datetime.datetime.utcnow().year
+            "max": dates.now().year
         }
     }
 
@@ -1777,9 +1777,11 @@ class FieldDefinitions:
             "add_button_placement" : "top"
         },
         "subfields": [
+            "note_author",
             "note_date",
             "note",
-            "note_id"
+            "note_id",
+            "note_author_id",
         ],
         "template": "application_form/_list.html",
         "entry_template": "application_form/_entry_group.html",
@@ -1788,14 +1790,6 @@ class FieldDefinitions:
             "note_modal"
         ],
         "merge_disabled" : "merge_disabled_notes",
-        "contexts" : {
-            "admin" : {
-                "widgets": [
-                    {"infinite_repeat": {"enable_on_repeat": ["textarea"], "allow_delete" : True}},
-                    "note_modal"
-                ]
-            }
-        }
     }
 
     # ~~->$ Note:FormField~~
@@ -1804,7 +1798,19 @@ class FieldDefinitions:
         "name": "note",
         "group": "notes",
         "input": "textarea",
-        "disabled": True
+        "disabled": "disable_edit_note_except_editing_user",
+    }
+
+    # ~~->$ NoteAuthor:FormField~~
+    NOTE_AUTHOR = {
+        "subfield": True,
+        "name": "note_author",
+        "group": "notes",
+        "input": "text",
+        "disabled": True,
+        "help": {
+            "placeholder": "Original author unknown",
+        },
     }
 
     # ~~->$ NoteDate:FormField~~
@@ -1820,6 +1826,14 @@ class FieldDefinitions:
     NOTE_ID = {
         "subfield" : True,
         "name": "note_id",
+        "group": "notes",
+        "input": "hidden"
+    }
+
+    # ~~->$ NoteAuthorID:FormField~~
+    NOTE_AUTHOR_ID = {
+        "subfield" : True,
+        "name": "note_author_id",
         "group": "notes",
         "input": "hidden"
     }
@@ -2108,8 +2122,10 @@ class FieldSetDefinitions:
         "fields": [
             FieldDefinitions.NOTES["name"],
             FieldDefinitions.NOTE["name"],
+            FieldDefinitions.NOTE_AUTHOR["name"],
             FieldDefinitions.NOTE_DATE["name"],
-            FieldDefinitions.NOTE_ID["name"]
+            FieldDefinitions.NOTE_ID["name"],
+            FieldDefinitions.NOTE_AUTHOR_ID["name"],
         ]
     }
 
@@ -2471,6 +2487,25 @@ def application_status_disabled(field, formulaic_context):
     return field_value not in [c.get("value") for c in choices]
 
 
+def disable_edit_note_except_editing_user(field: FormulaicField,
+                                          formulaic_context: FormulaicContext):
+    """
+    Only allow the current user to edit this field if author is current user
+
+    :param field:
+    :param formulaic_context:
+    :return:
+        False is editable, True is disabled
+    """
+
+    # ~~->Notes:Feature~~
+    editing_user = formulaic_context.extra_param.get('editing_user')
+    cur_user_id = editing_user and editing_user.id
+    form_field: FormField = field.find_related_form_field('notes', formulaic_context)
+    if form_field is None:
+        return True
+    return cur_user_id != form_field.data.get('note_author_id')
+
 #######################################################
 ## Merge disabled
 #######################################################
@@ -2819,7 +2854,8 @@ PYTHON_FUNCTIONS = {
         "editor_choices" : editor_choices
     },
     "disabled" : {
-        "application_status_disabled" : application_status_disabled
+        "application_status_disabled" : application_status_disabled,
+        "disable_edit_note_except_editing_user": disable_edit_note_except_editing_user,
     },
     "merge_disabled" : {
         "merge_disabled_notes" : merge_disabled_notes

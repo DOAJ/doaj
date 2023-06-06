@@ -40,9 +40,18 @@ var doaj = {
         jQuery (function($) {
             $("[role='tab']").click(function(e) {
                 e.preventDefault();
-                $(this).attr("aria-selected", "true");
-                $(this).parent().siblings().children().attr("aria-selected", "false");
-                var tabpanelShow = $(this).attr("href");
+                let el = $(this);
+
+                el.attr("aria-selected", "true");
+                el.siblings().children().attr("aria-selected", "false");
+
+                let tabpanelShow = el.attr("href");
+                if (!tabpanelShow) {
+                    let innerLink = el.find("a");
+                    innerLink.attr("aria-selected", "true");
+                    tabpanelShow = innerLink.attr("href")
+                }
+
                 $(tabpanelShow).attr("aria-hidden", "false");
                 $(tabpanelShow).siblings().attr("aria-hidden", "true");
             });

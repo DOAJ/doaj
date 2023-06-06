@@ -1,7 +1,7 @@
 import esprit, time, csv
 from portality.core import app
+from portality.lib.dates import FMT_DATETIME_STD
 from portality.models import Suggestion, Journal
-from datetime import datetime
 from portality.lib import dates
 
 source = {
@@ -59,13 +59,13 @@ with open("application_2_journal.csv", "wb") as f:
                 jc_lmua_diff = int((journal.created_timestamp - almu_adjusted).total_seconds())
                 row = [
                     application.id, application.created_date, application.last_updated, application.last_manual_update,
-                    almu_adjusted.strftime("%Y-%m-%dT%H:%M:%SZ"), ",".join(issns),
+                    almu_adjusted.strftime(FMT_DATETIME_STD), ",".join(issns),
                     str(len(related_journals)), journal.id, journal.created_date, journal.data.get("last_reapplication", ""), ",".join(journal.bibjson().issns()),
                     str(jc_ac_diff), str(jc_lmua_diff), "false"
                 ]
                 if journal.data.get("last_reapplication") is not None:
                     lr = journal.data.get("last_reapplication")
-                    lrd = datetime.strptime(lr, "%Y-%m-%dT%H:%M:%SZ")
+                    lrd = dates.parse(lr)
                     lra_ac_diff = int((lrd - app_created).total_seconds())
                     row.append(str(lra_ac_diff))
                     row.append("false")
@@ -85,7 +85,7 @@ with open("application_2_journal.csv", "wb") as f:
                     break
                 elif journal.data.get("last_reapplication") is not None:
                     lr = journal.data.get("last_reapplication")
-                    lrd = datetime.strptime(lr, "%Y-%m-%dT%H:%M:%SZ")
+                    lrd = dates.parse(lr)
                     if lrd > app_created:
                         application.set_related_journal(journal.id)
                         row[13] = ""
@@ -145,7 +145,7 @@ for result in esprit.tasks.scroll(conn, "journal", keepalive="1m"):
             jreapp_str = journal.data.get("last_reapplication")
             jreapp = None
             if jreapp_str is not None:
-                jreapp = datetime.strptime(jreapp_str, "%Y-%m-%dT%H:%M:%SZ")
+                jreapp = dates.parse(jreapp_str)
 
             if acreated < jcreated:
                 date_accepted = journal.created_date

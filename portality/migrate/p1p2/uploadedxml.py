@@ -1,10 +1,12 @@
 import os, csv
 from lxml import etree
 from portality import models, settings
+from portality.lib import dates
+from portality.lib.dates import FMT_DATETIME_STD, FMT_DATETIME_A
 from portality.models import article
 from datetime import datetime
 
-start = datetime.now()
+start = dates.now()
 
 corrections_csv = os.path.join(os.path.dirname(os.path.realpath(__file__)), "corrections.csv")
 xml_dir = settings.UPLOAD_DIR
@@ -109,7 +111,7 @@ for t in txt_files:
     publisher = txt.readline().strip()
     filename = txt.readline().strip()
     lm = os.path.getmtime(txt_file)
-    uploaded = datetime.fromtimestamp(lm).strftime("%Y-%m-%d %H:%M:%S")
+    uploaded = datetime.fromtimestamp(lm).strftime(FMT_DATETIME_A)
     
     # at this point we apply a correction in the event that we have a 
     # correction for this id
@@ -130,7 +132,7 @@ for t in txt_files:
             duplicate += 1
             if lm > preup:
                 rid = imports[publisher][filename][preup]
-                ruploaded = datetime.fromtimestamp(preup).strftime("%Y-%m-%d %H:%M:%S")
+                ruploaded = datetime.fromtimestamp(preup).strftime(FMT_DATETIME_A)
                 #print id, publisher, filename, "seen before, so ignoring", rid
                 duplicate_writer.writerow([rid, publisher, filename, ruploaded])
                 imports[publisher][filename] = {lm : id}
@@ -177,7 +179,7 @@ for lm in lastmods:
         
         f = id + ".xml"
         xml_file = os.path.join(xml_dir, f)
-        uploaded = datetime.fromtimestamp(lm).strftime("%Y-%m-%dT%H:%M:%SZ")
+        uploaded = datetime.fromtimestamp(lm).strftime(FMT_DATETIME_STD)
         
         upload = models.FileUpload()
         upload.set_schema(xwalk.format_name)
@@ -232,7 +234,7 @@ for lm in lastmods:
                 upload.partial(success, fail, update, new)
             upload.save()
 
-end = datetime.now()
+end = dates.now()
 
 print("Total", total, "attempted", attempted, "valid", valid, "invalid", invalid, "failed", failed, "duplicate", duplicate, "orphaned", orphaned)
 print("Created Articles", articles_in, "Failed Articles", articles_failed)

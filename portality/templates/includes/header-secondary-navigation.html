@@ -5,7 +5,7 @@
     {% set extraClasses = "secondary-nav__item_mobile" %}
 {% endif %}
 
-<li class="dropdown {{ extraClasses }}">
+<li class="dropdown {{ extraClasses }}" role="menuitem">
     <a href="#" class="dropdown__trigger nav-bar__link" data-toggle="dropdown" id="menu-{{ selected_nav.id }}" role="button" aria-haspopup="true" aria-expanded="false" role="menuitem">
         {{ selected_nav.label }}
         <span data-feather="chevron-down" aria-hidden="true"></span>
