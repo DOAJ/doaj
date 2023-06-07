@@ -1,32 +1,30 @@
-import datetime
-import csv
-import json
-
 from portality.core import app
 from portality.bll import DOAJ
 from portality.lib import dates
-from portality import models,app_email
+from portality import models
 
 from portality.tasks.redis_huey import main_queue
 
-from portality.background import BackgroundTask, BackgroundSummary, BackgroundApi
+from portality.background import BackgroundTask, BackgroundApi
 from portality.tasks.helpers import background_helper
 from portality.ui.messages import Messages
 from portality import constants
 
+
 class DiscontinuedSoonQuery:
-    def __init__(self, time_delta=None):
-        self._delta = time_delta if time_delta is not None else app.config.get('DISCONTINUED_DATE_DELTA', 0);
+    def __init__(self):
+        self._delta = app.config.get('DISCONTINUED_DATE_DELTA', 0)
         self._date = dates.days_after_now(days=self._delta)
+
     def query(self):
         return {
             "query": {
                 "bool": {
                     "filter": {
-                        "bool" : {
+                        "bool": {
                             "must": [
-                                {"term" : {"bibjson.discontinued_date": dates.format(self._date, format="%Y-%m-%d")}},
-                                {"term" : {"admin.in_doaj":True}}
+                                {"term": {"bibjson.discontinued_date": dates.format(self._date, format="%Y-%m-%d")}},
+                                {"term": {"admin.in_doaj": True}}
                             ]
                         }
                     }
@@ -34,14 +32,14 @@ class DiscontinuedSoonQuery:
             }
         }
 
-# ~~FindDiscontinuedSoonBackgroundTask:Task~~
 
+# ~~FindDiscontinuedSoonBackgroundTask:Task~~
 class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
     __action__ = "find_discontinued_soon"
 
-    def __init__(self, job, time_delta=None):
-        super(FindDiscontinuedSoonBackgroundTask,self).__init__(job)
-        self._delta = time_delta if time_delta is not None else app.config.get('DISCONTINUED_DATE_DELTA', 0);
+    def __init__(self, job):
+        super(FindDiscontinuedSoonBackgroundTask, self).__init__(job)
+        self._delta = app.config.get('DISCONTINUED_DATE_DELTA', 0)
         self._date = dates.days_after_now(days=self._delta)
 
     def find_journals_discontinuing_soon(self):
@@ -60,11 +58,12 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
             for j in journals:
                 DOAJ.eventsService().trigger(models.Event(
                     constants.EVENT_JOURNAL_DISCONTINUING_SOON,
-                    "system",
+                    self.background_job.user,
                     {
                         "journal": j,
                         "discontinue_date": self._date
                     }))
+            self.background_job.add_audit_message(Messages.DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_SENT_LOG)
         else:
             self.background_job.add_audit_message(Messages.NO_DISCONTINUED_JOURNALS_FOUND_LOG)
 
@@ -81,6 +80,7 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
         Take an arbitrary set of keyword arguments and return an instance of a BackgroundJob,
         or fail with a suitable exception
 
+        :param username: User account for this task to complete as
         :param kwargs: arbitrary keyword arguments pertaining to this task type
         :return: a BackgroundJob instance representing this task
         """
@@ -101,7 +101,9 @@ class FindDiscontinuedSoonBackgroundTask(BackgroundTask):
         background_job.save()
         find_discontinued_soon.schedule(args=(background_job.id,), delay=10)
 
+
 huey_helper = FindDiscontinuedSoonBackgroundTask.create_huey_helper(main_queue)
+
 
 @huey_helper.register_schedule
 def scheduled_find_discontinued_soon():
