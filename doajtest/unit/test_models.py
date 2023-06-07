@@ -1622,6 +1622,20 @@ class TestModels(DoajTestCase):
         assert n2.is_seen()
         assert n2.seen_date is not None
 
+    def test_37_currency_code_lax(self):
+        """ Check we can open a journal / application model with an invalid currency but can't save it """
+        asource = ApplicationFixtureFactory.make_application_source()
+
+        # VEF is a deprecated currency - we should be able to read it out
+        asource['bibjson']['apc']['max'][0]['currency'] = 'VEF'
+        a = models.Application(**asource)
+        assert a.bibjson().apc[0] == {'currency': 'VEF', 'price': 2}
+
+        # We could actually put complete nonsense in here if we wanted
+        asource['bibjson']['apc']['max'][0]['currency'] = 'bananas'
+        a2 = models.Application(**asource)
+        assert a2.bibjson().apc.pop() == {'currency': 'bananas', 'price': 2}
+
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

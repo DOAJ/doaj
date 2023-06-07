@@ -1,5 +1,6 @@
 import time
-
+import json
+from flask import url_for
 from portality import constants, models
 from doajtest.fixtures.v2 import ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.fixtures import AccountFixtureFactory
@@ -140,7 +141,7 @@ class TestCrudApplication(DoajTestCase):
         preservation = a.bibjson().preservation
         assert preservation.get("has_preservation")
         assert len(preservation.get("service")) == 3, "expected 3, got: {}".format(len(preservation.get("service")))
-        assert set(preservation.get("national_library")) == set(["Trinity", "Imperial"])
+        assert set(preservation.get("national_library")) == {"Trinity", "Imperial"}
         assert "CLOCKSS" in preservation.get("service")
         assert "LOCKSS" in preservation.get("service")
         assert "A safe place" in preservation.get("service")
@@ -206,7 +207,7 @@ class TestCrudApplication(DoajTestCase):
 
         # validation fails at formulaic form processor
         IncomingApplication.custom_validate = mock_custom_validate_always_pass
-        with self.assertRaises(Api400Error):
+        with self.assertRaises(Api400Error) as ex:
             data = ApplicationFixtureFactory.incoming_application()
             del data["admin"]["current_journal"]
             # a bungled URL should trigger the form validation failure
@@ -216,6 +217,7 @@ class TestCrudApplication(DoajTestCase):
                 a = ApplicationsCrudApi.create(data, publisher)
             except Api400Error as e:
                 raise
+        assert str(ex.exception).startswith("The following validation errors were received: bibjson.plagiarism.url")
         IncomingApplication.custom_validate = self.old_custom_validate
 
         # issns are the same
@@ -832,3 +834,47 @@ class TestCrudApplication(DoajTestCase):
         data["admin"]["current_journal"] = "owqierqwoieqwoijefwq"
         with self.assertRaises(Api400Error):
             ApplicationsCrudApi.update(a.id, data, account)
+
+    def test_18_applications_currency_validator(self):
+        """ Ensure we get the correct validation messages via the API """
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        account.set_role(["publisher", "api"])
+        api_key = account.generate_api_key()
+        account.save(blocking=True)
+
+        data = ApplicationFixtureFactory.incoming_application()
+
+        # Outdated APC currency error comes from the form validator (nested field)
+        data['bibjson']['apc']['max'][0]['currency'] = 'rusty bottle caps'
+        with self.assertRaises(Api400Error) as e2:
+            ApplicationsCrudApi.create(data, account=account)
+        assert str(e2.exception).startswith("Coerce with '<function to_currency_code.")
+
+        # If you use the API route your data goes through form validation too
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.post(url_for('api_v3.create_application') + f'?api_key={api_key}',
+                                     data=json.dumps(data))
+                assert resp.status_code == 400, resp.status_code
+                assert resp.json['error'].startswith("Coerce with '<function to_currency_code.")
+
+        # But an outgoing application with the same problem is ok (we can read but not write these to the index)
+        out_A = OutgoingApplication(data)
+        assert out_A.verify_against_struct() is None  # None means there's no verification errors
+
+        # Missing title comes from the seamless messages
+        del data['bibjson']['title']
+        with self.assertRaises(Api400Error) as e:
+            ApplicationsCrudApi.create(data, account=account)
+        assert str(e.exception) == "Field 'title' is required but not present at '[root]bibjson.'"
+
+        # Seamless message is propagated through to the API route
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.post(url_for('api_v3.create_application') + f'?api_key={api_key}',
+                                     data=json.dumps(data))
+                assert resp.status_code == 400, resp.status_code
+                assert resp.json['error'].startswith("Field 'title' is required but not present at '[root]bibjson.'")
