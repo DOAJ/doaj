@@ -15,6 +15,19 @@ class ApplicationService(object):
     ~~Application:Service->DOAJ:Service~~
     """
 
+    def prevent_concurrent_ur_submission(self, jid, id):
+        """
+        Prevent duplicated update request submission
+        ur: update request being submitted
+        """
+
+        cs = DOAJ.ConcurrencyPreventionService()
+        if cs.checkConcurrency(jid,id):
+            raise exceptions.ConcurrentUpdateRequestException(Messages.CONCURRENT_UPDATE_REQUEST)
+        else:
+            cs.storeConcurrency(jid,id)
+
+
     def reject_application(self, application, account, provenance=True, note=None, manual_update=True):
         """
         Reject an application.  This will:
