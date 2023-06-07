@@ -88,21 +88,23 @@ class SeleniumTestCase(DoajTestCase):
         self.fix_es_mapping()
 
         # wait for server to start
-
-        try:
-            wait_unit(self._is_doaj_server_running, 10, 1.5)
-        except TimeoutError:
-            raise TimeoutError('doaj server not started')
+        wait_unit(self._is_doaj_server_running, 10, 1.5, timeout_msg='doaj server not started')
 
     def _is_doaj_server_running(self):
         log.info('checking if doaj server is running')
-        try:
-            goto(self.selenium, "/")
-        except selenium.common.exceptions.WebDriverException as e:
-            if 'ERR_CONNECTION_REFUSED' in str(e):
-                log.info('doaj server is not running')
-                return False
-            raise e
+
+        for _ in range(5):
+            try:
+                goto(self.selenium, "/")
+                break
+            except selenium.common.exceptions.UnexpectedAlertPresentException as e:
+                print('alert present, retrying...')
+                continue
+            except selenium.common.exceptions.WebDriverException as e:
+                if 'ERR_CONNECTION_REFUSED' in str(e):
+                    log.info('doaj server is not running')
+                    return False
+                raise e
 
         try:
             self.selenium.find_element(By.CSS_SELECTOR, 'div.container')
@@ -124,19 +126,14 @@ class SeleniumTestCase(DoajTestCase):
         print('doaj process terminating...')
         self.doaj_process.terminate()
         self.doaj_process.join()
-        try:
-            wait_unit(lambda: not self._is_doaj_server_running(), 10, 1)
-        except TimeoutError:
-            raise TimeoutError('doaj server is still running')
+        wait_unit(lambda: not self._is_doaj_server_running(), 10, 1,
+                  timeout_msg='doaj server is still running')
 
         self.selenium.quit()
 
         super().tearDown()
 
-        try:
-            wait_unit(self._is_selenium_quit, 10, 1)
-        except TimeoutError:
-            raise TimeoutError('selenium is still running')
+        wait_unit(self._is_selenium_quit, 10, 1, timeout_msg='selenium is still running')
 
     @classmethod
     def get_doaj_url(cls) -> str:
@@ -187,13 +184,14 @@ def login_by_acc(driver: 'WebDriver', acc: models.Account = None):
     assert "/login" not in driver.current_url
 
 
-def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1):
+def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1,
+              timeout_msg="wait_unit but exit_cond timeout"):
     start = time.time()
     while (time.time() - start) < timeout:
         if exit_cond_fn():
             return
         time.sleep(check_interval)
-    raise TimeoutError(f"wait_unit timeout after {timeout} seconds")
+    raise TimeoutError(timeout_msg)
 
 
 def wait_unit_elements(driver: 'WebDriver', css_selector: str, timeout=10, check_interval=0.1):
