@@ -4,6 +4,7 @@ import time
 from multiprocessing import Process
 from typing import TYPE_CHECKING
 
+import elasticsearch
 import selenium
 from selenium import webdriver
 from selenium.common import StaleElementReferenceException, ElementClickInterceptedException
@@ -87,27 +88,55 @@ class SeleniumTestCase(DoajTestCase):
         self.fix_es_mapping()
 
         # wait for server to start
-        def _is_doaj_server_running():
-            goto(self.selenium, "/")
-            try:
-                self.selenium.find_element(By.CSS_SELECTOR, 'div.container')
-                return True
-            except selenium.common.exceptions.NoSuchElementException:
-                return False
 
         try:
-            wait_unit(_is_doaj_server_running, 10, 1.5)
+            wait_unit(self._is_doaj_server_running, 10, 1.5)
         except TimeoutError:
             raise TimeoutError('doaj server not started')
 
-    def tearDown(self):
-        super().tearDown()
+    def _is_doaj_server_running(self):
+        log.info('checking if doaj server is running')
+        try:
+            goto(self.selenium, "/")
+        except selenium.common.exceptions.WebDriverException as e:
+            if 'ERR_CONNECTION_REFUSED' in str(e):
+                log.info('doaj server is not running')
+                return False
+            raise e
 
+        try:
+            self.selenium.find_element(By.CSS_SELECTOR, 'div.container')
+            log.info('doaj server is running')
+            return True
+        except selenium.common.exceptions.NoSuchElementException:
+            log.info('doaj server is not running')
+            return False
+
+    def _is_selenium_quit(self):
+        try:
+            self.selenium.title
+            return False
+        except:
+            return True
+
+    def tearDown(self):
+
+        print('doaj process terminating...')
         self.doaj_process.terminate()
-        print('doaj process terminated')
+        self.doaj_process.join()
+        try:
+            wait_unit(lambda: not self._is_doaj_server_running(), 10, 1)
+        except TimeoutError:
+            raise TimeoutError('doaj server is still running')
 
         self.selenium.quit()
-        time.sleep(5)  # wait for selenium to quit
+
+        super().tearDown()
+
+        try:
+            wait_unit(self._is_selenium_quit, 10, 1)
+        except TimeoutError:
+            raise TimeoutError('selenium is still running')
 
     @classmethod
     def get_doaj_url(cls) -> str:
