@@ -29,18 +29,10 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
         if journal is None:
             return
 
-        app_id = journal.current_application
-        if app_id is None:
-            app_id = journal.latest_related_application_id()
-            if app_id is None:
-                return
-
-        application = models.Application.pull(app_id)
-
-        if not application.editor_group:
+        if not journal.editor_group:
             return
 
-        eg = models.EditorGroup.pull_by_key("name", application.editor_group)
+        eg = models.EditorGroup.pull_by_key("name", journal.editor_group)
         managing_editor = eg.maned
         if not managing_editor:
             return
