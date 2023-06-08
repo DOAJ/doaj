@@ -556,6 +556,16 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
+    "currency_code_lax": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+#                "index": False,
+                "store": True
+            }
+        }
+    },
     "issn": {
         "type": "text",
         "fields": {
