@@ -1,18 +1,9 @@
 import csv
-from typing import Iterable
+from typing import Iterable, Union
 
 
-def read_all(csv_path) -> Iterable[list]:
+def read_all(csv_path, as_dict=False) -> Iterable[Union[list, dict]]:
+    reader = csv.DictReader if as_dict else csv.reader
     with open(csv_path, 'r') as f:
-        for row in csv.reader(f):
+        for row in reader(f):
             yield row
-
-
-def read_all_as_dict(csv_path) -> Iterable[dict]:
-    headers = None
-    for row in read_all(csv_path):
-        if headers is None:
-            headers = row
-            continue
-        row = dict(zip(headers, row))
-        yield row

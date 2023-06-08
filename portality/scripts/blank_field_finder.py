@@ -58,7 +58,7 @@ def filter_bad_only(row: Iterable):
 
 def write_bad_data_journals_csv(csv_path, out_path):
     with open(out_path, 'w') as out_file:
-        for row in csv_utils.read_all_as_dict(csv_path):
+        for row in csv_utils.read_all(csv_path, as_dict=True):
             for k, v in filter_bad_only(row.items()):
                 tee(f'{k} [{v}]', out_file)
 
