@@ -1,3 +1,4 @@
+import datetime
 import logging
 import multiprocessing
 import time
@@ -13,7 +14,7 @@ from selenium.webdriver.common.by import By
 
 from doajtest.fixtures.url_path import URL_LOGOUT
 from doajtest.helpers import DoajTestCase
-from portality import app, models
+from portality import app, models, core
 from portality.dao import ESMappingMissingError
 
 if TYPE_CHECKING:
@@ -28,6 +29,26 @@ def find_ele_by_css(driver, css_selector: str) -> 'WebElement':
 
 def find_eles_by_css(driver, css_selector: str) -> 'WebElement':
     return driver.find_elements(By.CSS_SELECTOR, css_selector)
+
+
+def fix_index_not_found_exception(app):
+    """
+    fix index_not_found_exception
+    some mappings have not created in initialise_index
+    and will be created in this function to avoid index_not_found_exception
+    :return:
+    """
+    missing_mappings = {}
+    for name in [
+        'draft_application',
+        'application',
+    ]:
+        missing_mappings[name] = {
+            'mappings': app.config['DEFAULT_DYNAMIC_MAPPING'],
+            'settings': app.config['DEFAULT_INDEX_SETTINGS'],
+        }
+
+    core.put_mappings(core.es_connection, missing_mappings)
 
 
 class SeleniumTestCase(DoajTestCase):
@@ -85,10 +106,11 @@ class SeleniumTestCase(DoajTestCase):
         self.selenium = browser_driver
         self.selenium.maximize_window()  # avoid something is not clickable
 
-        self.fix_es_mapping()
-
         # wait for server to start
         wait_unit(self._is_doaj_server_running, 10, 1.5, timeout_msg='doaj server not started')
+
+        fix_index_not_found_exception(self.app_test)
+        self.fix_es_mapping()
 
     def _is_doaj_server_running(self):
         log.info('checking if doaj server is running')
@@ -123,7 +145,7 @@ class SeleniumTestCase(DoajTestCase):
 
     def tearDown(self):
 
-        print('doaj process terminating...')
+        print(f'{datetime.datetime.now().isoformat()} --- doaj process terminating...')
         self.doaj_process.terminate()
         self.doaj_process.join()
         wait_unit(lambda: not self._is_doaj_server_running(), 10, 1,
@@ -131,9 +153,10 @@ class SeleniumTestCase(DoajTestCase):
 
         self.selenium.quit()
 
-        super().tearDown()
-
         wait_unit(self._is_selenium_quit, 10, 1, timeout_msg='selenium is still running')
+        print('selenium terminated')
+
+        super().tearDown()
 
     @classmethod
     def get_doaj_url(cls) -> str:

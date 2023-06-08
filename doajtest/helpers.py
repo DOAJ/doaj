@@ -11,7 +11,7 @@ from unittest import TestCase
 import dictdiffer
 from flask_login import login_user
 
-from doajtest.fixtures import ArticleFixtureFactory
+from doajtest.fixtures import ArticleFixtureFactory, ApplicationFixtureFactory
 from portality import core, dao, models
 from portality.core import app
 from portality.lib import paths
@@ -208,7 +208,9 @@ class DoajTestCase(TestCase):
 
         :return:
         """
-        models.Article(**ArticleFixtureFactory.make_article_source()).save(blocking=True)
+        models.Article(**ArticleFixtureFactory.make_article_source()).save()
+        models.Application(**ApplicationFixtureFactory.make_application_source()).save()
+        models.Notification().save()
 
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
