@@ -2,10 +2,10 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 18px;
+  font-size: 20px;
 
   @media (max-width: 768px) {
-    font-size: 16px;
+    font-size: 18px;
   }
 }
 
@@ -28,6 +28,7 @@ h1 {
   font-weight: 700;
   line-height: 1.05;
   @include typescale-01;
+  @include font-serif;
 }
 
 h2 {
@@ -142,10 +143,11 @@ img {
 }
 
 iframe {
-  margin-bottom: $spacing-04;
   padding: $spacing-02;
   width: 100%;
-  border: 1px solid $sanguine;
+  border: 0;
+  border-radius: $spacing-02;
+  @include box-shadow;
 }
 
 table {
