@@ -61,6 +61,7 @@ class Messages(object):
     EXCEPTION_NO_CONTRIBUTORS_EXPLANATION = "DOAJ requires at least one author for each article."
 
     EXCEPTION_TOO_MANY_ISSNS = "Too many ISSNs. Only 2 ISSNs are allowed: one Print ISSN and one Online ISSN."
+    EXCEPTION_MISMATCHED_ISSNS = "Issns provided don't match any journal."
     EXCEPTION_ISSNS_OF_THE_SAME_TYPE = "Both ISSNs have the same type: {type}"
     EXCEPTION_IDENTICAL_PISSN_AND_EISSN = "The Print and Online ISSNs supplied are identical. If you supply 2 ISSNs they must be different."
     EXCEPTION_NO_ISSNS = "Neither Print ISSN nor Online ISSN has been supplied. DOAJ requires at least one ISSN."

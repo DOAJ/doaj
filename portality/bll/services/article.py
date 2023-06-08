@@ -170,6 +170,10 @@ class ArticleService(object):
         if pissn == eissn:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN)
 
+        journals = models.Journal.find_by_issn([pissn,eissn], True)
+        if journals is None or len(journals) > 1:
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
+
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
 
