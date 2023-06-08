@@ -1006,14 +1006,14 @@ class FieldDefinitions:
             "class": "input-xlarge"
         },
         "validate": [
-            "current_iso_currency",
             {
                 "required_if": {
                     "field": "apc",
                     "value": "y",
                     "message": "Enter the currency or currencies for the journal’s publishing fees"
                 }
-            }
+            },
+            "current_iso_currency"
         ]
     }
 

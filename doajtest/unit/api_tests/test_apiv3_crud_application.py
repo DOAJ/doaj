@@ -847,13 +847,13 @@ class TestCrudApplication(DoajTestCase):
 
         data = ApplicationFixtureFactory.incoming_application()
 
-        # Outdated APC currency error comes from the form validator (nested field)
+        # Outdated APC currency error comes from the model
         data['bibjson']['apc']['max'][0]['currency'] = 'rusty bottle caps'
         with self.assertRaises(Api400Error) as e2:
             ApplicationsCrudApi.create(data, account=account)
         assert str(e2.exception).startswith("Coerce with '<function to_currency_code.")
 
-        # If you use the API route your data goes through form validation too
+        # If you make a new application via tha API route a bad currency is caught by the model too:
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
                 resp = t_client.post(url_for('api_v3.create_application') + f'?api_key={api_key}',
@@ -862,8 +862,45 @@ class TestCrudApplication(DoajTestCase):
                 assert resp.json['error'].startswith("Coerce with '<function to_currency_code.")
 
         # But an outgoing application with the same problem is ok (we can read but not write these to the index)
+        assert data['bibjson']['apc']['max'][0]['currency'] == 'rusty bottle caps'
         out_A = OutgoingApplication(data)
         assert out_A.verify_against_struct() is None  # None means there's no verification errors
+
+        # An application already in the index can only be updated with a valid currency by API
+        grandfathered_app = ApplicationFixtureFactory.make_application_source()
+        del grandfathered_app['admin']['current_journal']
+        del grandfathered_app['admin']['related_journal']
+        grandfathered_app['admin']['application_type'] = 'new_application'
+        grandfathered_app['bibjson']['apc']['max'][0]['currency'] = 'old outdated currency'
+        grandfathered_app['admin']['owner'] = account.id
+        appl = models.Application(**grandfathered_app)
+        appl_id = appl.id
+        appl.save(blocking=True)
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('api_v3.retrieve_application', application_id=appl_id) + f'?api_key={api_key}',
+                                     data=json.dumps(data))
+                assert resp.status_code == 200, resp.status_code
+
+        retrieved_app = resp.json
+        assert retrieved_app['bibjson']['apc']['max'][0]['currency'] == 'old outdated currency'
+
+        # The same application is rejected when sent with the same invalid currency
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.put(url_for('api_v3.update_application', application_id=appl_id) + f'?api_key={api_key}',
+                                     data=json.dumps(retrieved_app))
+                assert resp.status_code == 400, resp.status_code
+                assert resp.json['error'].startswith("Coerce with '<function to_currency_code.")
+
+        # Updated currency is fine
+        retrieved_app['bibjson']['apc']['max'][0]['currency'] = 'EUR'
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.put(url_for('api_v3.update_application', application_id=appl_id) + f'?api_key={api_key}',
+                                     data=json.dumps(retrieved_app))
+                assert resp.status_code == 204, resp.status_code
 
         # Missing title comes from the seamless messages
         del data['bibjson']['title']

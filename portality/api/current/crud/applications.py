@@ -60,7 +60,7 @@ class ApplicationsCrudApi(CrudApi):
         if account is None:
             raise Api401Error()
 
-        # first thing to do is a structural validation, but instantiating the data object
+        # first thing to do is a structural validation, by instantiating the data object
         try:
             ia = IncomingApplication(data)  # ~~-> APIIncomingApplication:Model~~
         except seamless.SeamlessException as e:

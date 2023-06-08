@@ -638,7 +638,7 @@ class CurrentISOCurrency(object):
         self.message = message
 
     def __call__(self, form, field):
-        if field.data is not None:
+        if field.data is not None and field.data != '':
             check = get_currency_code(field.data, fail_if_not_found=True)
             if check is None:
                 raise validators.ValidationError(self.message)
