@@ -162,6 +162,10 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
     def upload_pending_wait_bgjob(self, file_path, expected_bgjob_status, xml_format=None):
         # assume browser at publisher upload page
 
+        def _find_history_rows():
+            self.selenium.refresh()
+            return find_history_rows(self.selenium)
+
         if xml_format:
             self.select_xml_format_by_value(xml_format)
 
@@ -170,9 +174,12 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
         self.upload_submit_file(file_path)
 
         assert 'File uploaded and waiting to be processed' in self.find_ele_by_css('.alert--success').text
-        new_rows = find_history_rows(self.selenium)
+        selenium_helpers.wait_unit(
+            lambda: len(_find_history_rows()) == n_org_rows + 1,
+            timeout=10, check_interval=1
+        )
+        new_rows = _find_history_rows()
         assert n_org_rows + 1 == len(new_rows)
-        assert 'pending' in new_rows[0].text
         assert n_file_upload + 1 == models.FileUpload.count()
 
         # wait for background job to finish

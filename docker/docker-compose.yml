@@ -41,14 +41,13 @@ services:
       driver: none
     volumes:
       - /dev/shm:/dev/shm
-    shm_size: 2G
+    shm_size: 4gb
     network_mode: "host"
     environment:
       - SE_NODE_MAX_SESSIONS=100
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
       - SE_SESSION_REQUEST_TIMEOUT=400
       - SE_SESSION_RETRY_INTERVAL=2
-
 
 volumes:
     doaj_redis_data: {}
