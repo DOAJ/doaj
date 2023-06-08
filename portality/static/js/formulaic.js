@@ -1389,6 +1389,20 @@ var formulaic = {
                 var closeClass = edges.css_classes(this.ns, "close");
                 var textarea = $("div[name='" + this.fieldDef["name"] + "__group']").find("textarea");
 
+                let inputs = $("div[name='" + this.fieldDef["name"] + "__group']").find("input[type=text]")
+                for (let i = 0; i < inputs.length; i++) {
+                    let iid = $(inputs[i]).attr("id");
+                    if (iid.endsWith("_author")) {
+                        let val = $(inputs[i]).val()
+                        if (val === "") {
+                            $(inputs[i]).hide();
+                        }
+                    }
+                }
+
+                let contentHeight = textarea[0].scrollHeight;
+                textarea.css("height", (contentHeight + 5) + "px");
+
                 for (var i = 0; i < textarea.length; i++) {
                     var container = $(textarea[i]);
                     var modalId = "modal-" + this.fieldDef["name"] + "-" + i;
