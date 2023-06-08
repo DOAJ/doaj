@@ -165,3 +165,23 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
         else:
             with self.assertRaises(exceptions.ArticleNotAcceptable):
                 self.svc.is_acceptable(article)
+
+    def test_check_validation_for_2_journals(self):
+
+        js = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
+        journal_in_doaj = Journal(**js[0])
+        journal_in_doaj.bibjson().pissn = "1111-1111"
+        journal_in_doaj.bibjson().eissn = "2222-2222"
+        journal_in_doaj.save(blocking=True)
+
+        journal_not_in_doaj = Journal(**js[1])
+        journal_not_in_doaj.bibjson().pissn = "3333-3333"
+        journal_not_in_doaj.bibjson().eissn = "4444-4444"
+        journal_not_in_doaj.save(blocking=True)
+
+
+        art_source = ArticleFixtureFactory.make_article_source(pissn="1111-1111", eissn="4444-4444")
+        article = Article(**art_source)
+
+        with self.assertRaises(exceptions.ArticleNotAcceptable):
+            self.svc.is_acceptable(article)
