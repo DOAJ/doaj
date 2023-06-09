@@ -159,9 +159,6 @@ class ArticleService(object):
         if len(pissn) > 1 or len(eissn) > 1:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
 
-        pissn = article_bibjson.get_one_identifier("pissn")
-        eissn = article_bibjson.get_one_identifier("eissn")
-
         # no pissn or eissn
         if not pissn and not eissn:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_ISSNS)
