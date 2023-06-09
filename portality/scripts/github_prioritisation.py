@@ -4,6 +4,7 @@ import os
 
 import requests
 from requests.auth import HTTPBasicAuth
+from collections import defaultdict
 
 REPO = "https://api.github.com/repos/DOAJ/doajPM/"
 PROJECTS = REPO + "projects"
@@ -64,15 +65,12 @@ def priorities(priorities_file, outfile, username=None, password=None, ):
     project_list = resp.json()
     project = [p for p in project_list if p.get("name") == PROJECT_NAME][0]
 
-    user_priorities = {}
-
+    user_priorities = defaultdict(list)
     for priority in rules:
         print("Applying rule {x}".format(x=json.dumps(priority)))
         issues_by_user = _issues_by_user(project, priority, sender)
         print("Unfiltered matches for rule {x}".format(x=issues_by_user))
         for user, issues in issues_by_user.items():
-            if user not in user_priorities:
-                user_priorities[user] = []
             novel_issues = [i for i in issues if i not in [u[0] for u in user_priorities[user]]]
             print("Novel issues for rule for user {x} {y}".format(x=user, y=novel_issues))
             user_priorities[user] += [(n, priority.get("id")) for n in novel_issues]
