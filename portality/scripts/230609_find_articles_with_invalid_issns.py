@@ -37,10 +37,8 @@ if __name__ == "__main__":
         writer.writerow(["ID", "PISSN", "EISSN", "Journals found with article's PISSN", "In doaj?", "Journals found with article's EISSN", "In doaj?", "Error"])
 
         for a in models.Article.iterate(q=IN_DOAJ, page_size=100, keepalive='5m'):
-            print(a["id"])
             article = models.Article(_source=a)
             bibjson = article.bibjson()
-
             try:
                 articlesvc.ArticleService._validate_issns(bibjson)
             except exceptions.ArticleNotAcceptable as e:
