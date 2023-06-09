@@ -1641,3 +1641,30 @@ class TestAccount(DoajTestCase):
         # account does not exist
         assert models.Account.get_name_safe('not existing account id') == ''
 
+    def test_11_find_by_issn(self):
+        js = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
+        j1 = models.Journal(**js[0])
+        j1.bibjson().pissn = "1111-1111"
+        j1.bibjson().eissn = "2222-2222"
+        j1.save(blocking=True)
+
+        j2 = models.Journal(**js[1])
+        j2.bibjson().pissn = "3333-3333"
+        j2.bibjson().eissn = "4444-4444"
+        j2.save(blocking=True)
+
+        journals = models.Journal.find_by_issn(["1111-1111", "2222-2222"], True)
+        assert len(journals) == 1
+        assert journals[0].id == j1.id
+
+        journals = models.Journal.find_by_issn(["1111-1111", "3333-3333"], True)
+        assert len(journals) == 2
+        assert journals[0].id == j1.id
+        assert journals[1].id == j2.id
+
+        journals = models.Journal.find_by_issn_exact(["1111-1111", "2222-2222"], True)
+        assert len(journals) == 1
+        assert journals[0].id == j1.id
+
+        journals = models.Journal.find_by_issn_exact(["1111-1111", "3333-3333"], True)
+        assert len(journals) == 0

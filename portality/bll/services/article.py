@@ -170,20 +170,17 @@ class ArticleService(object):
         if pissn == eissn:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN)
 
-        journalp = models.Journal.find_by_issn([pissn], True)
-        journale = models.Journal.find_by_issn([eissn], True)
+        journal = models.Journal.find_by_issn_exact([pissn,eissn], True)
 
-        # check if only one and the same journal matches pissn and eissn and if they are in the correct fields
-        if len(journalp) != 1 or \
-                len(journale) != 1 or \
-                journale[0].id != journalp[0].id or \
-                journale[0].bibjson().pissn != pissn:
+        # check if only one journal matches pissn and eissn and if they are in the correct fields
+        # no need to check eissn, if pissn matches, pissn and eissn are different and only 1 journal has been found - then eissn matches too
+        if len(journal) != 1 or journal[0].bibjson().pissn != pissn:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
 
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
 
-        """
+        """# no need to check eissn, if pissn matches, pissn and eissn are different and only 1 journal has been found - then eissn matches too
         Create an individual article in the database
 
         This method will check and merge any duplicates, and report back on successes and failures in a manner consistent with
