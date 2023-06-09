@@ -159,6 +159,9 @@ class ArticleService(object):
         if len(pissn) > 1 or len(eissn) > 1:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
 
+        pissn = article_bibjson.get_one_identifier("pissn")
+        eissn = article_bibjson.get_one_identifier("eissn")
+
         # no pissn or eissn
         if not pissn and not eissn:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_ISSNS)
@@ -167,12 +170,24 @@ class ArticleService(object):
         if pissn == eissn:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN)
 
-        journal = models.Journal.find_by_issn_exact([pissn,eissn], True)
+        issns = []
+        if pissn is not None:
+            issns.append(pissn)
+        if eissn is not None:
+            issns.append(eissn)
+
+        journal = models.Journal.find_by_issn_exact(issns, True)
 
         # check if only one journal matches pissn and eissn and if they are in the correct fields
         # no need to check eissn, if pissn matches, pissn and eissn are different and only 1 journal has been found - then eissn matches too
-        if len(journal) != 1 or journal[0].bibjson().pissn != pissn:
+        if len(journal) != 1:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
+        if pissn is not None:
+            if journal[0].bibjson().pissn != pissn:
+                raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
+        if eissn is not None:
+            if journal[0].bibjson().eissn != eissn:
+                raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
 
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
