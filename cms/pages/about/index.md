@@ -22,6 +22,10 @@ DOAJ's mission is to increase the visibility, accessibility, reputation, usage a
 
 DOAJ is committed to being 100% independent and maintaining all of its primary services and metadata as free for everyone.
 
+## Our vision
+
+DOAJ works to build an equitable and diverse scholarly ecosystem where trusted research can be accessed without barriers across the world.
+
 ## Constitution
 
 DOAJ is an independent, non-profit organisation managed by [Infrastructure Services for Open Access C.I.C.](https://is4oa.org/) (IS4OA), a  [community interest company](https://en.wikipedia.org/wiki/Community_interest_company) registered in the United Kingdom and with a branch in Denmark. 
@@ -83,9 +87,9 @@ DOAJ is a proud founder of [Think. Check. Submit.](https://thinkchecksubmit.org/
 
 Established in 2015, Think. Check. Submit. was developed with the support of an international coalition of organisations from across scholarly communications in response to discussions about predatory publishing and amid a growing number of new and unfamiliar publishing options available for researchers.
 
-Think. Check. Submit. provides tools and practical resources to educate researchers, promote integrity, and build trust in credible research and publications. Separate checklists for [journals](https://thinkchecksubmit.org/journals/) and [books](https://thinkchecksubmit.org/books-and-chapters/) are available to guide researchers through the key criteria for selecting where to publish their research and are also invaluable to scholarly communications professionals who are advising researchers about these issues.  [Translations of the checklists](https://thinkchecksubmit.org/translations/) are also available in a number of languages.
+Think. Check. Submit. provides tools and practical resources to educate researchers, promote integrity, and build trust in credible research and publications. Separate checklists for [journals](https://thinkchecksubmit.org/journals/) and [books](https://thinkchecksubmit.org/books-and-chapters/) are available to guide researchers through the key criteria for selecting where to publish their research and are also invaluable to scholarly communications professionals who are advising researchers about these issues. Both checklists are also available in a growing number of languages.
 
 
 ## Diversity
 
-DOAJ believes in the power and value of diversity in scholarly communications. DOAJ is an [adopting organisation](https://c4disc.org/about/adopting-organizations/) of the [C4DISC Joint Statement of Principles](https://c4disc.org/principles/). Adopting the Joint Statement of Principles demonstrates our support for improving diversity and inclusion in our industry.
+DOAJ believes in the power and value of diversity in scholarly communications. DOAJ is an [adopting organisation](https://c4disc.org/about/adopting-organizations/) of the [C4DISC Joint Statement of Principles](https://c4disc.org/joint-statement-of-principles/). Adopting the Joint Statement of Principles demonstrates our support for improving diversity and inclusion in our industry.
