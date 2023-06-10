@@ -165,49 +165,13 @@ def load_crossref_schema(app):
 
 def create_es_connection(app):
     # ~~ElasticConnection:Framework->Elasticsearch:Technology~~
-    # temporary logging config for debugging index-per-type
-    #import logging
-    #esprit.raw.configure_logging(logging.DEBUG)
-
-    # FIXME: we are removing esprit conn in favour of elasticsearch lib
-    # make a connection to the index
-    # if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-    #     conn = esprit.raw.Connection(host=app.config['ELASTIC_SEARCH_HOST'], index='')
-    # else:
-    #     conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
 
     conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'], verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True))
 
     return conn
 
-# FIXME: deprecated no longer necessary
-# def mutate_mapping(conn, type, mapping):
-#     """ When we are using an index-per-type connection change the mappings to be keyed 'doc' rather than the type """
-#     if conn.index_per_type:
-#         try:
-#             mapping[esprit.raw.INDEX_PER_TYPE_SUBSTITUTE] = mapping.pop(type)
-#         except KeyError:
-#             # Allow this mapping through unaltered if it isn't keyed by type
-#             pass
-#
-#         # Add the index prefix to the mapping as we create the type
-#         type = app.config['ELASTIC_SEARCH_DB_PREFIX'] + type
-#     return type
-
 
 def put_mappings(conn, mappings):
-    # get the ES version that we're working with
-    #es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
-
-    # for each mapping (a class may supply multiple), create a mapping, or mapping and index
-    # for key, mapping in iter(mappings.items()):
-    #     altered_key = mutate_mapping(conn, key, mapping)
-    #     ix = conn.index or altered_key
-    #     if not esprit.raw.type_exists(conn, altered_key, es_version=es_version):
-    #         r = esprit.raw.put_mapping(conn, altered_key, mapping, es_version=es_version)
-    #         print("Creating ES Type + Mapping in index {0} for {1}; status: {2}".format(ix, key, r.status_code))
-    #     else:
-    #         print("ES Type + Mapping already exists in index {0} for {1}".format(ix, key))
 
     for key, mapping in iter(mappings.items()):
         altered_key = app.config['ELASTIC_SEARCH_DB_PREFIX'] + key
