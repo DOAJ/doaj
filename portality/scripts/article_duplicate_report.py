@@ -48,10 +48,10 @@ if __name__ == "__main__":
 
     user = app.config.get("SYSTEM_USERNAME")
 
-    app.logger.debug("Starting " + dates.now_with_microseconds())
+    app.logger.debug("Starting " + dates.now_str_with_microseconds())
     job = article_duplicate_report.ArticleDuplicateReportBackgroundTask.prepare(user, outdir=args.out, email=args.email, tmpdir=args.tmp, article_csv=args.csv)
     task = article_duplicate_report.ArticleDuplicateReportBackgroundTask(job)
     BackgroundApi.execute(task)
     for msg in job.audit:
         print((msg["timestamp"] + " - " + msg["message"]))
-    app.logger.debug("Finished " + dates.now_with_microseconds())
+    app.logger.debug("Finished " + dates.now_str_with_microseconds())

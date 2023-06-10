@@ -146,9 +146,9 @@ def get_currency_name(code):
         return code  # return what was passed in if not found
 
 
-def get_currency_code(name):
+def get_currency_code(name, fail_if_not_found=True):
     """ Retrieve a currency code by the currency name """
     try:
         return pycountry.currencies.lookup(name).alpha_3
     except LookupError:
-        return None
+        return None if fail_if_not_found else name

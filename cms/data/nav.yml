@@ -44,8 +44,6 @@ entries:
         route: doaj.ambassadors       # ~~->Ambassadors:WebRoute~~
       - label: Advisory Board & Council
         route: doaj.abc               # ~~->AdvisoryBoardCouncil:WebRoute~~
-      - label: Editorial Subcommittee
-        route: doaj.editorial_subcommittee  # ~~->EditorialSubcommittee:WebRoute~~
       - label: Volunteers
         route: doaj.volunteers        # ~~->Volunteers:WebRoute~~
       - label: News

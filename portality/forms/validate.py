@@ -5,10 +5,13 @@ from wtforms.compat import string_types
 from typing import List
 
 from portality.core import app
+from portality.lib import dates
+from portality.lib.dates import FMT_DATE_STD
 from portality.models import Journal, EditorGroup, Account
 
 from datetime import datetime
 from portality import regex
+from portality.datasets import get_currency_code
 
 
 class MultiFieldValidator(object):
@@ -540,7 +543,7 @@ class BigEndDate(object):
         if not field.data:
             return
         try:
-            datetime.strptime(field.data, '%Y-%m-%d')
+            datetime.strptime(field.data, FMT_DATE_STD)
         except Exception:
             raise validators.ValidationError(self.message)
 
@@ -552,7 +555,7 @@ class Year(object):
     def __call__(self, form, field):
         if not field.data:
             return
-        return app.config.get('MINIMAL_OA_START_DATE', 1900) <= field.data <= datetime.now().year
+        return app.config.get('MINIMAL_OA_START_DATE', 1900) <= field.data <= dates.now().year
 
 
 class CustomRequired(object):
@@ -623,3 +626,19 @@ class IgnoreUnchanged(object):
         if field.data and field.object_data and field.data == field.object_data:
             field.errors[:] = []
             raise validators.StopValidation()
+
+
+class CurrentISOCurrency(object):
+    """
+    ~~EmailAvailable:FormValidator~~
+    """
+    def __init__(self, message=None):
+        if not message:
+            message = "Currency is not in the currently supported ISO list"
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data is not None and field.data != '':
+            check = get_currency_code(field.data, fail_if_not_found=True)
+            if check is None:
+                raise validators.ValidationError(self.message)

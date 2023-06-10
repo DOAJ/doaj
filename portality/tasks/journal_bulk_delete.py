@@ -8,6 +8,7 @@ from portality import models, lock
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 from portality.bll import DOAJ
 from portality.core import app
+from portality.lib import dates
 from portality.tasks.redis_huey import main_queue
 from portality.ui.messages import Messages
 
@@ -67,7 +68,6 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         account = models.Account.pull(job.user)
         # ~~->Application:Service~~
         svc = DOAJ.applicationService()
-        date_after = datetime.utcnow()
         urs_ids = svc.reject_update_request_of_journals(ids, account)
         if len(urs_ids) > 0:
             job.add_audit_message(Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID.format(urid=urs_ids))

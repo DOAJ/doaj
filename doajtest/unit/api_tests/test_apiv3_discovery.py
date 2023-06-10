@@ -4,7 +4,6 @@ from portality.api.current import DiscoveryApi, DiscoveryException
 from portality.api.common import generate_link_headers
 from portality.lib import dates
 import time
-from datetime import datetime
 from flask import url_for
 
 class TestAPIDiscovery(DoajTestCase):
@@ -238,7 +237,7 @@ class TestAPIDiscovery(DoajTestCase):
 
     def test_03_applications(self):
         # populate the index with some suggestions owned by this owner
-        now = datetime.utcnow()
+        now = dates.now()
         for i in range(5):
             a = models.Suggestion()
             a.set_owner("owner")

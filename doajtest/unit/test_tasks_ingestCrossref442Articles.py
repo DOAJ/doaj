@@ -1,34 +1,30 @@
-from doajtest.helpers import DoajTestCase
-from doajtest.mocks.bll_article import BLLArticleMockFactory
-
-from portality.tasks import ingestarticles
-from doajtest.fixtures.article_crossref import Crossref442ArticleFixtureFactory
-from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory, AccountFixtureFactory
-from doajtest.mocks.file import FileMockFactory
-from doajtest.mocks.response import ResponseMockFactory
-from doajtest.mocks.ftp import FTPMockFactory
-from doajtest.mocks.xwalk import XwalkMockFactory
-
-from portality.bll.exceptions import IngestException
-
+import ftplib
+import os
+import requests
 import time
-from portality.crosswalks import article_crossref_xml
-from portality.bll.services import article as articleSvc
-
-from portality import models
-from portality.core import app
-
-from portality.background import BackgroundException
-
-import ftplib, os, requests
 from urllib.parse import urlparse
+
 from lxml import etree
 
+from doajtest import test_constants
+from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory
+from doajtest.fixtures.article_crossref import Crossref442ArticleFixtureFactory
+from doajtest.helpers import DoajTestCase
+from doajtest.mocks.bll_article import BLLArticleMockFactory
+from doajtest.mocks.file import FileMockFactory
+from doajtest.mocks.ftp import FTPMockFactory
+from doajtest.mocks.response import ResponseMockFactory
+from doajtest.mocks.xwalk import XwalkMockFactory
+from portality import models
+from portality.background import BackgroundException
+from portality.bll.exceptions import IngestException
+from portality.bll.services import article as articleSvc
+from portality.core import app
+from portality.crosswalks import article_crossref_xml
+from portality.tasks import ingestarticles
 from portality.ui.messages import Messages
 
-
-RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "crossref442_article_uploads.xml")
+ARTICLES = test_constants.PATH_RESOURCES / "crossref442_article_uploads.xml"
 
 class TestIngestArticlesCrossref442XML(DoajTestCase):
 

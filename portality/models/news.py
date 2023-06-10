@@ -1,6 +1,7 @@
 from portality.dao import DomainObject as DomainObject
 from copy import deepcopy
-from datetime import datetime
+
+from portality.lib import dates
 
 
 class News(DomainObject):
@@ -54,7 +55,7 @@ class News(DomainObject):
 
     def published_formatted(self, format="%-d %B %Y"):
         try:
-            dt = datetime.strptime(self.published, "%Y-%m-%dT%H:%M:%SZ")
+            dt = dates.parse(self.published)
             return dt.strftime(format)
         except:
             return self.published

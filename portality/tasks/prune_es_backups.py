@@ -22,7 +22,7 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         job = self.background_job
 
         snap_ttl = app.config.get('ELASTIC_SEARCH_SNAPSHOT_TTL', 366)
-        snap_thresh = datetime.utcnow() - timedelta(days=snap_ttl)
+        snap_thresh = dates.now() - timedelta(days=snap_ttl)
         job.add_audit_message('Deleting backups older than {}'.format(dates.format(snap_thresh)))
 
         client = ESSnapshotsClient(es_connection, app.config['ELASTIC_SEARCH_SNAPSHOT_REPOSITORY'])

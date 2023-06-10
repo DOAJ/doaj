@@ -1,4 +1,4 @@
-<main class="page-content">
+<main class="page-content {% if page.main_class %}{{ page.main_class }}{% endif %}">
     {% if page.highlight %}<div class="hero">{% endif %}
     <header class="container">
         {% if page.section %}<p class="label">{{ page.section }}</p>{% endif %}

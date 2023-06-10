@@ -105,3 +105,6 @@ STORE__SCOPE__PUBLIC_DATA_DUMP = "public_data_dump"
 
 # OAI
 SUBJECTS_SCHEMA = "LCC:"
+
+# Extra params
+EXPARAM_EDITING_USER = 'editing_user'

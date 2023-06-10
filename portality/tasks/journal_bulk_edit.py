@@ -1,6 +1,5 @@
 from copy import deepcopy
 import json
-from datetime import datetime
 
 from flask_login import current_user
 from werkzeug.datastructures import MultiDict
@@ -9,9 +8,9 @@ from portality import models, lock
 from portality.core import app
 # from portality.formcontext import formcontext
 from portality.forms.application_forms import JournalFormFactory
+from portality.lib import dates
 
 from portality.tasks.redis_huey import main_queue
-from portality.decorators import write_required
 
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 
@@ -131,7 +130,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
             if note:
                 job.add_audit_message("Adding note to for journal {y}".format(y=journal_id))
                 fc.form.notes.append_entry(
-                    {'note_date': datetime.now().strftime(app.config['DEFAULT_DATE_FORMAT']), 'note': note}
+                    {'note_date': dates.now_str(), 'note': note}
                 )
                 updated = True
             

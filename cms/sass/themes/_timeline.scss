@@ -1,0 +1,64 @@
+.at-twenty {
+  font-size: 20px; 
+  h1 {
+    font-size: 3em;
+    text-transform: uppercase;
+    font-weight: 900;
+  }
+
+  h2 {
+    @include typescale-05;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-align: center;
+    color: $warm-black;
+    margin: $spacing-06 0 $spacing-05 0;
+    padding-bottom: $spacing-03;
+    border-bottom: $spacing-01 solid;
+  }
+}
+
+.timeline {
+  // The contents for each section
+  &.tabular-list > li > ul {
+    width: 75%;
+
+    > li {
+      margin-bottom: $spacing-03;
+    }
+
+    > li:first-child {
+      list-style: none;
+      margin-left: 0;
+      @include typescale-02;
+    }
+  }
+}
+
+.events {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
+  gap: 1em;
+
+  // Each event
+  > li {
+    flex: 30%;
+    padding: .75em;
+    border-radius: .25em;
+    @include box-shadow;
+
+    svg {
+      margin-bottom: $spacing-03;
+      height: $spacing-04;
+      width: auto;
+    }
+
+    ul {
+      @extend .unstyled-list;
+      margin: 0;
+    }
+  }
+}

@@ -1,7 +1,7 @@
 from doajtest.fixtures import ArticleFixtureFactory
 from portality.bll import exceptions
+from portality.lib.dates import FMT_DATETIME_STD
 from portality.models import Article
-from portality.bll.exceptions import ArticleMergeConflict
 from datetime import datetime
 
 class BLLArticleMockFactory(object):
@@ -48,7 +48,7 @@ class BLLArticleMockFactory(object):
             source = ArticleFixtureFactory.make_article_source(eissn="1234-5678", pissn="9876-5432", doi=ident["doi"], fulltext=["fulltext"])
             article = Article(**source)
             article.set_id()
-            article.data["last_updated"] = datetime.fromtimestamp(i * 100000).strftime("%Y-%m-%dT%H:%M:%SZ")
+            article.data["last_updated"] = datetime.fromtimestamp(i * 100000).strftime(FMT_DATETIME_STD)
             if "doi_domain" in ident:
                 possible_duplicates["doi"].append(article)
             if "fulltext_domain" in ident:

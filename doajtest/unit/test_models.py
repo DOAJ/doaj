@@ -9,6 +9,7 @@ from portality import models
 from portality.constants import BgjobOutcomeStatus
 from portality.lib import dataobj
 from portality.lib import seamless
+from portality.lib.dates import FMT_DATETIME_STD, DEFAULT_TIMESTAMP_VAL, FMT_DATE_STD
 from portality.models import shared_structs
 from portality.models.v1.bibjson import GenericBibJSON
 
@@ -74,11 +75,11 @@ class TestModels(DoajTestCase):
 
         assert j.id == "abcd"
         assert j.created_date == "2001-01-01T00:00:00Z"
-        assert j.created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2001-01-01T00:00:00Z"
+        assert j.created_timestamp.strftime(FMT_DATETIME_STD) == "2001-01-01T00:00:00Z"
         assert j.last_updated == "2002-01-01T00:00:00Z"
-        assert j.last_updated_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2002-01-01T00:00:00Z"
+        assert j.last_updated_timestamp.strftime(FMT_DATETIME_STD) == "2002-01-01T00:00:00Z"
         assert j.last_manual_update == "2004-01-01T00:00:00Z"
-        assert j.last_manual_update_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2004-01-01T00:00:00Z"
+        assert j.last_manual_update_timestamp.strftime(FMT_DATETIME_STD) == "2004-01-01T00:00:00Z"
         assert j.has_been_manually_updated() is True
         assert j.has_seal() is True
         assert j.owner == "richard"
@@ -237,11 +238,11 @@ class TestModels(DoajTestCase):
 
         assert s.id == "abcd"
         assert s.created_date == "2001-01-01T00:00:00Z"
-        assert s.created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2001-01-01T00:00:00Z"
+        assert s.created_timestamp.strftime(FMT_DATETIME_STD) == "2001-01-01T00:00:00Z"
         assert s.last_updated == "2002-01-01T00:00:00Z"
-        assert s.last_updated_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2002-01-01T00:00:00Z"
+        assert s.last_updated_timestamp.strftime(FMT_DATETIME_STD) == "2002-01-01T00:00:00Z"
         assert s.last_manual_update == "2004-01-01T00:00:00Z"
-        assert s.last_manual_update_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2004-01-01T00:00:00Z"
+        assert s.last_manual_update_timestamp.strftime(FMT_DATETIME_STD) == "2004-01-01T00:00:00Z"
         assert s.has_been_manually_updated() is True
         assert s.has_seal() is True
         assert s.owner == "richard"
@@ -628,7 +629,7 @@ class TestModels(DoajTestCase):
         assert bj.alternative_title == "Alternative Title"
         assert bj.boai is True
         assert bj.discontinued_date == "2001-01-01"
-        assert bj.discontinued_datestamp.strftime("%Y-%m-%d") == "2001-01-01"
+        assert bj.discontinued_datestamp.strftime(FMT_DATE_STD) == "2001-01-01"
         assert bj.eissn == "9876-5432"
         assert bj.pissn == "1234-5678"
         assert bj.publication_time_weeks == 8
@@ -1127,7 +1128,7 @@ class TestModels(DoajTestCase):
     def test_21_index_has_apc(self):
         # no apc record, not ticked
         j = models.Journal()
-        j.set_created("1970-01-01T00:00:00Z")  # so it's before the tick
+        j.set_created(DEFAULT_TIMESTAMP_VAL)  # so it's before the tick
         j.prep()
         assert j.data.get("index", {}).get("has_apc") == "No Information"
 
@@ -1138,7 +1139,7 @@ class TestModels(DoajTestCase):
 
         # apc record, not ticked
         j = models.Journal()
-        j.set_created("1970-01-01T00:00:00Z")  # so it's before the tick
+        j.set_created(DEFAULT_TIMESTAMP_VAL)  # so it's before the tick
         b = j.bibjson()
         b.add_apc("GBP", 100)
         j.prep()
@@ -1328,7 +1329,7 @@ class TestModels(DoajTestCase):
         app1 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         app1.set_id(app1.makeid())
         app1.set_current_journal(j.id)
-        app1.set_created("1970-01-01T00:00:00Z")
+        app1.set_created(DEFAULT_TIMESTAMP_VAL)
         app1.save()
 
         app2 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
@@ -1353,7 +1354,7 @@ class TestModels(DoajTestCase):
         app1 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         app1.set_id(app1.makeid())
         app1.set_related_journal(j.id)
-        app1.set_created("1970-01-01T00:00:00Z")
+        app1.set_created(DEFAULT_TIMESTAMP_VAL)
         app1.save()
 
         app2 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
@@ -1421,7 +1422,7 @@ class TestModels(DoajTestCase):
         models.Cache.cache_sitemap("sitemap.xml")
 
         models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article", 100, "jc", "jf", "http://example.com/journal", 200)
-        
+
         time.sleep(1)
 
         stats = models.Cache.get_site_statistics()
@@ -1621,4 +1622,36 @@ class TestModels(DoajTestCase):
         assert n2.is_seen()
         assert n2.seen_date is not None
 
+    def test_37_currency_code_lax(self):
+        """ Check we can open a journal / application model with an invalid currency but can't save it """
+        asource = ApplicationFixtureFactory.make_application_source()
+
+        # VEF is a deprecated currency - we should be able to read it out
+        asource['bibjson']['apc']['max'][0]['currency'] = 'VEF'
+        a = models.Application(**asource)
+        assert a.bibjson().apc[0] == {'currency': 'VEF', 'price': 2}
+
+        # We could actually put complete nonsense in here if we wanted
+        asource['bibjson']['apc']['max'][0]['currency'] = 'bananas'
+        a2 = models.Application(**asource)
+        assert a2.bibjson().apc.pop() == {'currency': 'bananas', 'price': 2}
+
+
+class TestAccount(DoajTestCase):
+    def test_get_name_safe(self):
+
+        # have name
+        acc = models.Account.make_account(email='user@example.com')
+        acc_name = 'Account Name'
+        acc.set_name(acc_name)
+        acc.save(blocking=True)
+        assert models.Account.get_name_safe(acc.id) == acc_name
+
+        # no name
+        acc = models.Account.make_account(email='user2@example.com')
+        acc.save(blocking=True)
+        assert models.Account.get_name_safe(acc.id) == ''
+
+        # account does not exist
+        assert models.Account.get_name_safe('not existing account id') == ''
 

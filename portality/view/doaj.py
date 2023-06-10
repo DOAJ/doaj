@@ -541,11 +541,6 @@ def abc():
     return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council.html")
 
 
-@blueprint.route("/about/editorial-subcommittee/")
-def editorial_subcommittee():
-    return render_template("layouts/static_page.html", page_frag="/about/editorial-subcommittee.html")
-
-
 @blueprint.route("/about/volunteers/")
 def volunteers():
     return render_template("layouts/static_page.html", page_frag="/about/volunteers.html")

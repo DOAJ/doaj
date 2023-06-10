@@ -6,6 +6,8 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 from freezegun import freeze_time
 
+from portality.lib import dates
+
 
 class TestSnapshotClient(DoajTestCase):
 
@@ -95,7 +97,7 @@ class TestSnapshotClient(DoajTestCase):
 
     def test_05_request_snapshot(self):
         # Mock response for initiating a snapshot
-        right_now = datetime.utcnow()
+        right_now = dates.now()
         snaptimestamp = datetime.strftime(right_now, "%Y-%m-%d_%H%Mz")
 
         # capture the snapshot name at the ES level to show the client is adding our timestamp
