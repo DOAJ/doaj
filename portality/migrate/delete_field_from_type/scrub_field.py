@@ -1,6 +1,5 @@
 """
 FIXME: This script has been around for a few years, it'll need a bit of work to reinstate if needed again
-* model lookup by type
 
 Delete a specified field from all records of a certain type in the index.
 FIXME: Doesn't work on fields in lists. e.g. for https://github.com/DOAJ/doajPM/issues/1667 to remove author emails from articles
@@ -8,6 +7,7 @@ FIXME: Doesn't work on fields in lists. e.g. for https://github.com/DOAJ/doajPM/
 
 from portality.core import app
 from portality.lib import dates
+from portality.upgrade import MODELS
 
 
 def scrub_field(o_type, o_field, batch_size=500):
@@ -25,8 +25,8 @@ def scrub_field(o_type, o_field, batch_size=500):
             o_obj.bulk(batch, idkey='id')
             batch = []
 
-    # Finish saving the final batch
-    o_obj.bulk(batch, idkey='id')
+        # Finish saving the final batch
+        o_obj.bulk(batch, idkey='id')
 
 
 if __name__ == "__main__":
