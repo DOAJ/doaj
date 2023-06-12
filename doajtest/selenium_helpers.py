@@ -1,11 +1,9 @@
 import datetime
 import logging
-import multiprocessing
 import time
 from multiprocessing import Process
 from typing import TYPE_CHECKING
 
-import elasticsearch
 import selenium
 from selenium import webdriver
 from selenium.common import StaleElementReferenceException, ElementClickInterceptedException
@@ -13,7 +11,7 @@ from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 
 from doajtest.fixtures.url_path import URL_LOGOUT
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, patch_config
 from portality import app, models, core
 from portality.dao import ESMappingMissingError
 
@@ -59,6 +57,13 @@ class SeleniumTestCase(DoajTestCase):
     DOAJ_HOST = app.app.config.get('SELENIUM_DOAJ_HOST', 'localhost')
     DOAJ_PORT = app.app.config.get('SELENIUM_DOAJ_PORT', 5014)
 
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        cls.originals = patch_config(cls.app_test, {
+            "DEBUG": False,
+        })
+
     def find_ele_by_css(self, css_selector: str) -> 'WebElement':
         return find_ele_by_css(self.selenium, css_selector)
 
@@ -67,7 +72,6 @@ class SeleniumTestCase(DoajTestCase):
 
     def setUp(self):
         super().setUp()
-        process_manager = multiprocessing.Manager()
 
         # run doaj server in a background process
         def _run():
