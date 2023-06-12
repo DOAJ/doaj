@@ -278,7 +278,8 @@ $.extend(true, doaj, {
             'on hold' : 'On Hold',
             'ready' : 'Ready',
             'rejected' : 'Rejected',
-            'accepted' : 'Accepted'
+            'accepted' : 'Accepted',
+            'post_submission_review': "Autochecking",
         },
 
         adminStatusMap: function(value) {
