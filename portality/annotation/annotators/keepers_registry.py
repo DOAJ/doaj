@@ -32,7 +32,7 @@ class KeepersRegistry(ISSNAnnotator):
         ad = {}
         for ac in acs:
             id = ac.get("holdingArchive", {}).get("@id")
-            tc = ac.get("temporalCoverage")
+            tc = ac.get("temporalCoverage", "")
             bits = tc.split("/")
             if len(bits) != 2:
                 continue
