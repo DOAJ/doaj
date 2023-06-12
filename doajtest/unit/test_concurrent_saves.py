@@ -3,6 +3,7 @@ from doajtest.fixtures import JournalFixtureFactory
 from portality.models import Journal
 from portality.bll.exceptions import ConcurrentUpdateRequestException
 from portality.bll import DOAJ
+from portality.core import app
 import time
 
 class TestConcurrentSaves(DoajTestCase):
@@ -32,7 +33,8 @@ class TestConcurrentSaves(DoajTestCase):
             ur2.save()
 
         # wait until the redis key times out, and then try making a 3rd UR
-        time.sleep(11)
+        wait = app.config.get("UR_CONCURRENCY_TIMEOUT", 10) + 1
+        time.sleep(wait)
         ur3, jl3, al3 = appsvc.update_request_for_journal(j.id)
 
         # this third UR should be the same as the first one, as the index is now

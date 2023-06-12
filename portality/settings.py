@@ -411,8 +411,8 @@ APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in pro
 # ~~->BackgroundTasks:Feature~~
 
 # huey/redis settings
-HUEY_HOST = os.getenv('HUEY_HOST', '127.0.0.1')
-HUEY_PORT = os.getenv('HUEY_PORT', 6379)
+REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
+REDIS_PORT = os.getenv('REDIS_PORT', 6379)
 HUEY_EAGER = False
 
 # Crontab for never running a job - February 31st (use to disable tasks)
@@ -1357,6 +1357,6 @@ PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
 PRESERVATION_PAGE_UNDER_MAINTENANCE = False
 
 #################################################
-# Concurrency timeout
+# Concurrency timeout(s)
 
 UR_CONCURRENCY_TIMEOUT = 10

@@ -10,23 +10,24 @@ from portality import lock
 from portality.bll.doaj import DOAJ
 from portality.ui.messages import Messages
 
+
 class ApplicationService(object):
     """
     ~~Application:Service->DOAJ:Service~~
     """
 
-    def prevent_concurrent_ur_submission(self, jid, id):
+    def prevent_concurrent_ur_submission(self, ur, record_if_not_concurrent=True):
         """
         Prevent duplicated update request submission
         ur: update request being submitted
         """
 
-        cs = DOAJ.ConcurrencyPreventionService()
-        if cs.checkConcurrency(jid,id):
+        cs = DOAJ.concurrencyPreventionService()
+        if cs.checkConcurrency(ur.current_journal, ur.id):
             raise exceptions.ConcurrentUpdateRequestException(Messages.CONCURRENT_UPDATE_REQUEST)
-        else:
-            cs.storeConcurrency(jid,id)
 
+        if record_if_not_concurrent:
+            cs.storeConcurrency(ur.current_journal, ur.id, timeout=app.config.get("UR_CONCURRENCY_TIMEOUT", 10))
 
     def reject_application(self, application, account, provenance=True, note=None, manual_update=True):
         """

@@ -1,6 +1,4 @@
 from portality.core import app
-from portality.bll.exceptions import ConcurrentUpdateRequestException
-from portality.ui.messages import Messages
 import redis
 
 
@@ -16,6 +14,5 @@ class ConcurrencyPreventionService():
         value = self.rs.get(key)
         return value is not None and value != id
 
-
-    def storeConcurrency(self, key, id):
-        self.rs.set(key, id, ex=app.config.get("UR_CONCURRENCY_TIMEOUT", 10))
+    def storeConcurrency(self, key, id, timeout=10):
+        self.rs.set(key, id, ex=timeout)
