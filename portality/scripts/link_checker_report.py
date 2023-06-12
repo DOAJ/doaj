@@ -139,6 +139,7 @@ def _index_journals(df):
         for cell in row:
             # FIXME: assumes each URL only appears once
             if isinstance(cell, str) and cell.startswith("http"):
+                # make an index of the URL to the journal title, added date, updated date and journal id
                 jidx[cell] = (row[0], row[50], row[51], row[54])
     return jidx
 
