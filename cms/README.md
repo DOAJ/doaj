@@ -108,7 +108,6 @@ The following information is represented in data files:
   - Team: `team.yml`
   - Ambassadors: `ambassadors.yml`
   - Volunteers: `volunteers.yml`
-  - Editorial Sub Committee: `editorial-subcommittee.yml`
 - _Support_ section
   - Publisher supporters: `publisher-supporters.yml`
   - Sponsors: `sponsors.yml`

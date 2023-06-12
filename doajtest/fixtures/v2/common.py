@@ -1,12 +1,18 @@
 NOTES_FORM_EXPANDED = {
     'notes': [
-        {"note": "Second Note", "note_date": "2014-05-22T00:00:00Z", "note_id": "1234"},
-        {"note": "First Note", "note_date": "2014-05-21T14:02:45Z", "note_id": "abcd"}
+        {"note": "Second Note", "note_date": "2014-05-22T00:00:00Z", "note_id": "1234",
+         'note_author': '(fake_account_id__b)',
+         "note_author_id": "fake_account_id__b",
+         },
+        {"note": "First Note", "note_date": "2014-05-21T14:02:45Z", "note_id": "abcd",
+         'note_author': '(fake_account_id__a)',
+         "note_author_id": "fake_account_id__a",
+         }
     ]
 }
 
 SUBJECT_FORM_EXPANDED = {
-    "subject": ['HB1-3840', 'H']
+    "subject": ['HB1-3840', 'H', 'SF600-1100']
 }
 
 OWNER_FORM_EXPANDED = {
@@ -107,7 +113,8 @@ JOURNAL_LIKE_BIBJSON = {
     "subject": [
         {"scheme": "LCC", "term": "Economic theory. Demography",
          "code": "HB1-3840"},
-        {"scheme": "LCC", "term": "Social Sciences", "code": "H"}
+        {"scheme": "LCC", "term": "Social Sciences", "code": "H"},
+        {"scheme": "LCC", "term": "Veterinary medicine", "code": "SF600-1100"}
     ],
     "title": "The Title",
     "waiver": {

@@ -3,6 +3,7 @@ from portality.lib import dates
 from datetime import date, datetime
 from portality.lib import seamless
 from portality.datasets import get_country_code, get_currency_code
+from portality.lib.dates import FMT_DATETIME_MS_STD, FMT_DATE_STD
 
 
 def to_datestamp(in_format=None):
@@ -59,19 +60,22 @@ def to_isolang(output_format=None):
     return isolang
 
 
-def to_currency_code(val):
+def to_currency_code(fail_if_not_found=True):
     """
     ~~-> Currencies:Data~~
     :param val:
     :return:
     """
-    if val is None:
-        return None
-    nv = get_currency_code(val)
-    if nv is None:
-        raise ValueError("Unable to convert {x} to a valid currency code".format(x=val))
-    uc = seamless.to_utf8_unicode
-    return uc(nv)
+    def codify(val):
+        if val is None:
+            return None
+        nv = get_currency_code(val, fail_if_not_found=fail_if_not_found)
+        if nv is None:
+            raise ValueError("Unable to convert {x} to a valid currency code".format(x=val))
+        uc = seamless.to_utf8_unicode
+        return uc(nv)
+
+    return codify
 
 
 def to_country_code(val):
@@ -122,11 +126,12 @@ COERCE_MAP = {
     "bool": seamless.to_bool,
     "datetime" : seamless.to_datetime,
     "utcdatetime" : date_str(),
-    "utcdatetimemicros" : date_str(out_format="%Y-%m-%dT%H:%M:%S.%fZ"),
-    "bigenddate" : date_str(out_format="%Y-%m-%d"),
+    "utcdatetimemicros" : date_str(out_format=FMT_DATETIME_MS_STD),
+    "bigenddate" : date_str(out_format=FMT_DATE_STD),
     "isolang": to_isolang(),
     "isolang_2letter": to_isolang(output_format="alpha2"),
     "country_code": to_country_code,
-    "currency_code": to_currency_code,
-    "issn" : to_issn
+    "issn" : to_issn,
+    "currency_code_strict": to_currency_code(fail_if_not_found=True),
+    "currency_code_lax": to_currency_code(fail_if_not_found=False)
 }

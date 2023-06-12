@@ -25,6 +25,7 @@ tests:
     results:
     - The facet opens and closes as expected
     - Each facet contains a maximum of 40 values relevant to that field
+    - No facet contains results with count 0
   - step: Select one or more values in one facet
     results:
     - The number of search results changes. You can still select values from other

@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 from portality.app_email import EmailException
 from portality import models
 from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
-from portality.decorators import ssl_required, restrict_to_role
+from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.dao import ESMappingMissingError
 from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
@@ -19,6 +19,8 @@ from portality.forms.article_forms import ArticleFormFactory
 from huey.exceptions import TaskException
 
 import uuid
+
+from portality.view.view_helper import exparam_editing_user
 
 blueprint = Blueprint('publisher', __name__)
 
@@ -110,7 +112,7 @@ def update_request(journal_id):
         if alock is not None: alock.delete()
         return redirect(url_for("publisher.updates_in_progress"))
 
-    fc = ApplicationFormFactory.context("update_request")
+    fc = ApplicationFormFactory.context("update_request", extra_param=exparam_editing_user())
 
     # if we are requesting the page with a GET, we just want to show the form
     if request.method == "GET":

@@ -59,6 +59,8 @@ class ArticlesBulkApi(Api):
             raise Api403Error(str(e))
         except exceptions.IngestException as e:
             raise Api400Error(str(e))
+        except exceptions.ArticleNotAcceptable as e:
+            raise Api400Error(str(e))
 
 
     @classmethod

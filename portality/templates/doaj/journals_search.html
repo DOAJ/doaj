@@ -1,10 +1,13 @@
 {% extends "layouts/public_base.html" %}
 
-{% block page_title %}Journals{% endblock %}
-
 {% block body_attrs %}class="search"{% endblock %}
 
-{% block meta_description %}Find open access journals in DOAJ.{% endblock %}
+{% block page_title %}Journals{% endblock %}
+{% block meta_og_title %}Journals{% endblock %}
+{% block meta_twitter_title %}Journals{% endblock %}
+{%- block meta_description -%}Find open access journals in DOAJ.{%- endblock -%}
+{%- block meta_og_description -%}Find open access journals in DOAJ.{%- endblock -%}
+{%- block meta_twitter_description -%}Find open access journals in DOAJ.{%- endblock -%}
 
 {% block content %}
     <main class="container page-content">

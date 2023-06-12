@@ -1,9 +1,11 @@
 import base64, sys, re
 from lxml import etree
-from datetime import datetime
 from portality.core import app
 from portality import datasets
 from copy import deepcopy
+
+from portality.lib import dates
+from portality.lib.dates import FMT_DATE_STD
 
 
 #####################################################################
@@ -17,7 +19,10 @@ class OAI_Crosswalk(object):
     XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"
     XSI = "{%s}" % XSI_NAMESPACE
 
-    NSMAP = {None: PMH_NAMESPACE, "xsi": XSI_NAMESPACE}
+    XMLNS_NAMESPACE = "http://www.openarchives.org/OAI/2.0/"
+    XMLNS = "{%s}" % XMLNS_NAMESPACE
+
+    NSMAP = {None: PMH_NAMESPACE, "xsi": XSI_NAMESPACE, "xmlns": XMLNS_NAMESPACE}
 
     def crosswalk(self, record):
         raise NotImplementedError()
@@ -96,10 +101,10 @@ class OAI_DC_Article(OAI_DC):
     def crosswalk(self, record):
         bibjson = record.bibjson()
 
-        metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
-        oai_dc = etree.SubElement(metadata, self.OAIDC + "dc")
+        metadata = etree.Element(self.PMH + "metadata")
+        oai_dc = etree.SubElement(metadata, self.OAIDC + "dc", nsmap=self.NSMAP)
         oai_dc.set(self.XSI + "schemaLocation",
-            "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd")
+                   "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd")
 
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
@@ -228,11 +233,10 @@ class OAI_DC_Journal(OAI_DC):
     def crosswalk(self, record):
         bibjson = record.bibjson()
 
-        metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
-        oai_dc = etree.SubElement(metadata, self.OAIDC + "dc")
+        metadata = etree.Element(self.PMH + "metadata")
+        oai_dc = etree.SubElement(metadata, self.OAIDC + "dc", nsmap=self.NSMAP)
         oai_dc.set(self.XSI + "schemaLocation",
-            "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd")
-
+               "http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd")
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
             set_text(title, bibjson.title)
@@ -313,8 +317,8 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
     def crosswalk(self, record):
         bibjson = record.bibjson()
 
-        metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
-        oai_doaj_article = etree.SubElement(metadata, self.OAI_DOAJ + "doajArticle")
+        metadata = etree.Element(self.PMH + "metadata")
+        oai_doaj_article = etree.SubElement(metadata, self.OAI_DOAJ + "doajArticle", nsmap=self.NSMAP)
         oai_doaj_article.set(self.XSI + "schemaLocation",
             "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd http://doaj.org/features/oai_doaj/1.0/ https://doaj.org/static/doaj/doajArticles.xsd")
 
@@ -360,8 +364,8 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         # If it's not coming back properly from the bibjson, throw it
         # away.
         try:
-            date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
-            date = date.strftime("%Y-%m-%d")
+            date = dates.parse(date)
+            date = date.strftime(FMT_DATE_STD)
         except:
             date = ""
 
@@ -494,7 +498,7 @@ def make_oai_identifier(identifier, qualifier):
 def normalise_date(date):
     # FIXME: do we need a more powerful date normalisation routine?
     try:
-        datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+        dates.parse(date)
         return date
     except:
         return "T".join(date.split(" ")) + "Z"

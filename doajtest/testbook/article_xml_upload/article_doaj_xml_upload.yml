@@ -336,3 +336,29 @@ tests:
     - Your file is shown in the "History of uploads" with status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
+
+- title: Check Outcome Status of "Upload a file with duplicates inside the file"
+  context:
+    role: admin
+  steps:
+    - step: Run through test "Upload a file with duplicates inside the file"
+    - step: Go to the DOAJ admin Background Jobs search at /admin/background_jobs
+    - step: Search related article background job by filter Action=ingest_articles, Status=complete
+      results:
+        - Related background job is found
+        - status is "complete"
+        - Outcome Status is "fail"
+
+
+
+- title: Check Outcome Status of "Successfully upload a file containing a new article"
+  context:
+    role: admin
+  steps:
+    - step: Run through test "Successfully upload a file containing a new article"
+    - step: Go to the DOAJ admin Background Jobs search at /admin/background_jobs
+    - step: Search related article background job by filter Action=ingest_articles, Status=complete
+      results:
+        - Related background job is found
+        - status is "complete"
+        - Outcome Status is "success"

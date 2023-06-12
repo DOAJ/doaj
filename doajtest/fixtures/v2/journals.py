@@ -1,11 +1,10 @@
 # -*- coding: UTF-8 -*-
 from copy import deepcopy
+
 import rstr
 
 from doajtest.fixtures.v2.common import EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, \
     OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED, JOURNAL_LIKE_BIBJSON, JOURNAL_LIKE_BIBJSON_FORM_EXPANDED
-
-from portality.forms.utils import expanded2compact
 from portality.regex import ISSN_COMPILED
 
 
@@ -68,8 +67,10 @@ JOURNAL_SOURCE = {
         "editor": "associate",
         "in_doaj": False,
         "notes" : [
-            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234"},
-            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd"}
+            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234",
+             "author_id": "fake_account_id__b"},
+            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd",
+             "author_id": "fake_account_id__a"},
         ],
         "owner": "publisher",
         "related_applications": [
@@ -208,5 +209,5 @@ JOURNAL_QUESTION_ANSWERS = [
     'http://oa.statement',
     "1111-1111",
     "2222-2222",
-    "HB1-3840|H"
+    "HB1-3840|H|SF600-1100"
 ]

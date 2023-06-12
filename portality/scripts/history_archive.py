@@ -83,11 +83,13 @@ def _walk_history_tree(dir, writer):
                 fid = f.split(".")[0]
                 path = os.path.join(dirpath, f)
                 report_path = path[len("reorg/"):]
-                with open(path, "r", encoding="utf-8") as g:
-                    data = json.load(g)
-                    id = data.get("about", "no id")
-                date = os.path.basename(dirpath)
-                writer.writerow([id, date, report_path, fid])
+                # check for empty files
+                if os.stat(path).st_size > 0:
+                    with open(path, "r", encoding="utf-8") as g:
+                        data = json.load(g)
+                        id = data.get("about", "no id")
+                    date = os.path.basename(dirpath)
+                    writer.writerow([id, date, report_path, fid])
 
 
 def _create_new_archives(config):

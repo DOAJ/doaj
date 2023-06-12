@@ -8,7 +8,7 @@ from copy import deepcopy
 from collections import OrderedDict
 from portality import models
 from portality.dao import ScrollTimeoutException
-from portality.lib import plugin
+from portality.lib import plugin, dates
 from portality.lib.dataobj import DataStructureException
 from portality.lib.seamless import SeamlessException
 from portality.dao import ScrollTimeoutException
@@ -41,7 +41,7 @@ def do_upgrade(definition, verbose, save_batches=None):
         batch = []
         total = 0
         batch_num = 0
-        type_start = datetime.now()
+        type_start = dates.now()
 
         default_query = {
             "query": {"match_all": {}}
@@ -105,18 +105,18 @@ def do_upgrade(definition, verbose, save_batches=None):
                     total += len(batch)
                     batch_num += 1
 
-                    print(datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
+                    print(dates.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
 
                     if save_batches:
                         fn = os.path.join(save_batches, tdef.get("type") + "." + str(batch_num) + ".json")
                         with open(fn, "w") as f:
                             f.write(json.dumps(batch, indent=2))
-                            print(datetime.now(), "wrote batch to file {x}".format(x=fn))
+                            print(dates.now(), "wrote batch to file {x}".format(x=fn))
 
                     model_class.bulk(batch, action=action, req_timeout=120)
                     batch = []
                     # do some timing predictions
-                    batch_tick = datetime.now()
+                    batch_tick = dates.now()
                     time_so_far = batch_tick - type_start
                     seconds_so_far = time_so_far.total_seconds()
                     estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
@@ -132,9 +132,9 @@ def do_upgrade(definition, verbose, save_batches=None):
                     fn = os.path.join(save_batches, tdef.get("type") + "." + str(batch_num) + ".json")
                     with open(fn, "w") as f:
                         f.write(json.dumps(batch, indent=2))
-                        print(datetime.now(), "wrote batch to file {x}".format(x=fn))
+                        print(dates.now(), "wrote batch to file {x}".format(x=fn))
 
-                print(datetime.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
+                print(dates.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
                 model_class.bulk(batch, action=action, req_timeout=120)
                 batch = []
 
@@ -147,9 +147,9 @@ def do_upgrade(definition, verbose, save_batches=None):
                 fn = os.path.join(save_batches, tdef.get("type") + "." + str(batch_num) + ".json")
                 with open(fn, "w") as f:
                     f.write(json.dumps(batch, indent=2))
-                    print(datetime.now(), "wrote batch to file {x}".format(x=fn))
+                    print(dates.now(), "wrote batch to file {x}".format(x=fn))
 
-            print(datetime.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
+            print(dates.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
             model_class.bulk(batch, action=action, req_timeout=120)
 
 
@@ -194,7 +194,7 @@ if __name__ == "__main__":
         print(args.upgrade, "does not exist or is not a file")
         exit()
 
-    print('Starting {0}.'.format(datetime.now()))
+    print('Starting {0}.'.format(dates.now()))
 
     with open(args.upgrade) as f:
         try:
@@ -205,4 +205,4 @@ if __name__ == "__main__":
 
         do_upgrade(instructions, args.verbose, args.save)
 
-    print('Finished {0}.'.format(datetime.now()))
+    print('Finished {0}.'.format(dates.now()))

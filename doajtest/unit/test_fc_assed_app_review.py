@@ -28,13 +28,15 @@ def editor_group_pull(cls, field, value):
 
 mock_lcc_choices = [
     ('H', 'Social Sciences'),
-    ('HB1-3840', '--Economic theory. Demography')
+    ('HB1-3840', '--Economic theory. Demography'),
+    ('SF600-1100', 'Veterinary medicine')
 ]
 
 
 def mock_lookup_code(code):
     if code == "H": return "Social Sciences"
     if code == "HB1-3840": return "Economic theory. Demography"
+    if code == "SF600-1100": return 'Veterinary medicine'
     return None
 
 

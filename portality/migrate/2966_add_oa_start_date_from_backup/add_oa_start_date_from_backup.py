@@ -1,9 +1,9 @@
 import csv
-from datetime import datetime
 
 import esprit
 
 from portality.core import es_connection
+from portality.lib import dates
 from portality.models import Journal
 from portality.util import ipt_prefix
 
@@ -22,13 +22,13 @@ def reinstate_oa_start(csv_reader):
                 batch.append({'doc': j.data})
 
                 if len(batch) >= batch_size:
-                    print('{0}, writing {1} to {2}'.format(datetime.now(), len(batch), ipt_prefix('journal')))
+                    print('{0}, writing {1} to {2}'.format(dates.now(), len(batch), ipt_prefix('journal')))
                     r = esprit.raw.bulk(es_connection, batch, idkey="doc.id", type_=ipt_prefix("journal"), bulk_type="update")
                     assert r.status_code == 200, r.json()
                     batch = []
 
         if len(batch) > 0:
-            print('{0}, final result set / writing {1} to {2}'.format(datetime.now(), len(batch), ipt_prefix('journal')))
+            print('{0}, final result set / writing {1} to {2}'.format(dates.now(), len(batch), ipt_prefix('journal')))
             r = esprit.raw.bulk(es_connection, batch, idkey="doc.id", type_=ipt_prefix("journal"), bulk_type="update")
             assert r.status_code == 200, r.json()
 

@@ -33,12 +33,19 @@
 - name: Dominic Mitchell
   role: Operations Manager
   photo: dominic.jpg
-  bio: 'Dominic has over 20 years experience working with publisher and library communities. He started off as a publisher with BMJ Group, and then became an account and project manager with HighWire Press. He represents DOAJ on the <a href="https://thinkchecksubmit.org" target="_blank">Think. Check. Submit.</a> initiative, of which DOAJ is a founding organisation. He writes the <a href="https://blog.doaj.org" target="_blank">DOAJ blog</a>. In 2019, he was elected to the OASPA Board of Directors. Outside of work, he is reluctantly becoming an expert in the playparks of Stockholm with his twin sons.'
+  bio: 'Dominic has over 25 years experience working with publisher and library communities. He is responsible for operations and development of the DOAJ platform. He acts as Committee chair for the Think. Check. Submit. initiative, of which DOAJ is a founding organisation. He represents DOAJ in Project JASPER, a cross-industry project working to ensure that journals are preserved for the long term. He also sits on the OASPA Board of Directors and serves as Secretary. Outside of work, he is reluctantly becoming an expert in the playparks of Stockholm with his twin sons.'
   coi:
     2016: https://drive.google.com/file/d/0ByRf6PVViI-mWmU0UHZqZm1xcDQ/view?usp=sharing&resourcekey=0-BmQKwWn6Vb9ot73Xie66aA
     2018: https://drive.google.com/file/d/13XX_GUrw2xRmXARjRrTxegULPT8Redka/view?usp=sharing
     2020: https://drive.google.com/file/d/1nxFOuAdXLb8A-LulhNpz9i5vSmr5DBwF/view?usp=sharing
     2022: https://drive.google.com/file/d/1HBF9RLaIt3lFNG6WDcV08fQSMS_C6zwA/view?usp=sharing
+
+- name: Gala García Reátegui
+  role: Managing Editor
+  photo: gala.jpg
+  bio: 'Gala holds a Masters Degree in Information and Documentation from Lyon 3 University in France. Prior to joining DOAJ, she worked for the Digital Strategy and Data Directorate at The French National Research Agency (ANR) and for the Open Archive HAL at the Center for Direct Scientific Communication (CCSD). Gala is Peruvian but lived for more than ten years in France. Today, she is based in Denmark. She loves meeting people from other cultures, trying local dishes or experiences: currently Gala goes winter bathing in the Limfjord, Denmark! She also loves running.'
+  coi:
+    2023: https://drive.google.com/file/d/1R7XquFauefdmtjPIsfGfAWQoAw7NLIci/view?usp=sharing
 
 - name: Iemima Ploscariu
   role: Managing Editor
@@ -121,6 +128,13 @@ Based in Rome and Göttingen, Ilaria loves baking cakes; she speaks Italian, Eng
     2021: https://drive.google.com/file/d/1DmDsIkv-orjF7QGEVwqFDAl0EQx3qRXg/view?usp=sharing
     2022: https://drive.google.com/file/d/1wOeX97BZGEX50orKo6TwlWmGsdbLFfBD/view?usp=sharing
 
+- name: Luis Montilla
+  role: Managing Editor
+  photo: luis.jpeg
+  bio: "Luis is a marine ecologist with a passion for improving the quality of scientific publishing. After finishing his Masters in Venezuela, he spent three years in Italy completing his PhD studying marine microbial symbioses in seagrass beds. In his free time, he enjoys reading and watching movies."
+  coi:
+    2023: https://drive.google.com/file/d/1IJhnV2Ht5t5jilaCAFzpuFdYk7UMOjN3/view?usp=sharing
+
 - name: Mahmoud Khalifa
   role: Managing Editor and Ambassador
   photo: mahmoud-new.jpg
@@ -143,6 +157,13 @@ Based in Rome and Göttingen, Ilaria loves baking cakes; she speaks Italian, Eng
   coi:
     2020: https://drive.google.com/file/d/1OkvnZowntZDVx6-gvDTfBO9ywqtlko2W/view?usp=sharing
     2022: https://drive.google.com/file/d/1VOAHZCrkEUUW1dBDerWVJXn74tZ71J06/view?usp=sharing
+
+- name: Ramazan Turgut
+  role: Managing Editor
+  photo: ramazan.jpeg
+  bio: "Ramazan Turgut is a teacher at Mardin Artuklu University in Türkiye. He has a Ph.D. in History of Religion and has done research at Radboud University and the University of Chicago. He speaks Kurdish, Turkish, English, and Dutch, which helps him to work with scholars from different countries. Ramazan is a proud father of three children and enjoys reading, cooking, and traveling to learn about new cultures. If he could be a character in Middle Earth, he would have chosen Boromir."
+  coi:
+    2023: https://drive.google.com/file/d/1Mipqt2uTdv968VajWjEkIo5S9rTHSKCT/view?usp=sharing
 
 - name: Rikard Zeylon
   role: Managing Editor

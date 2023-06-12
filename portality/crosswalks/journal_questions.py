@@ -84,7 +84,7 @@ class Journal2QuestionXwalk(object):
             ident = cls.DEGEN[ident]
         i = 0
         for k, q in cls.QTUP:
-            if k == ident:
+            if k.lower() == ident.lower():
                 return i
             i += 1
         return -1
@@ -94,10 +94,10 @@ class Journal2QuestionXwalk(object):
         """ p is a backwards q - i.e. get the question from the CSV heading """
         if ident in cls.DEGEN.values():
             for k, v in cls.DEGEN.items():
-                if ident == v:
+                if ident.lower() == v.lower():
                     ident = k
         for k, q in cls.QTUP:
-            if q == ident:
+            if q.lower() == ident.lower():
                 return k
         return None
 
@@ -271,7 +271,8 @@ class Journal2QuestionXwalk(object):
             apcs = []
             for apc in x.split('; '):
                 [amt, cur] = apc.split()
-                apcs.append({'apc_max': round(float(amt)), 'apc_currency': cur})
+                apcs.append({'apc_currency': cur, 'apc_max': round(float(amt))})
+            apcs.reverse()
             return apcs
 
         # Undo the transformations applied to specific fields. TODO: Add these as they are encountered in the wild

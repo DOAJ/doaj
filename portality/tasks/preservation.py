@@ -14,12 +14,11 @@ from bagit import make_bag, BagError
 from portality.background import BackgroundTask, BackgroundApi
 from portality.bll import DOAJ
 from portality.core import app
-from portality.decorators import write_required
 from portality.lib import dates
 from portality.models import Account, Article, BackgroundJob, PreservationState
 from portality.regex import DOI_COMPILED, HTTP_URL_COMPILED
 from portality.tasks.helpers import background_helper
-from portality.tasks.redis_huey import main_queue, configure
+from portality.tasks.redis_huey import main_queue
 
 
 class PreservationException(Exception):
@@ -203,7 +202,7 @@ class PreservationBackgroundTask(BackgroundTask):
         :return: background job
         """
 
-        created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
+        created_time = dates.now_str("%Y-%m-%d-%H-%M-%S")
         dir_name = username + "-" + created_time
         local_dir = os.path.join(Preservation.UPLOAD_DIR, dir_name)
         file = kwargs.get("upload_file")
