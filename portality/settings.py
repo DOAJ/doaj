@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.2.23"
+DOAJ_VERSION = "6.3.5"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -37,6 +37,9 @@ DEBUG_PYCHARM_PORT = 6000
 #~~->DebugToolbar:Framework~~
 DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
 DEBUG_TB_INTERCEPT_REDIRECTS = False
+
+# set to True to enable the env list panel in the debug toolbar
+DEBUG_TB_ENV_LIST_ENABLED = False
 
 #######################################
 # Elasticsearch configuration
@@ -123,10 +126,10 @@ VALID_FEATURES = ['api1', 'api2', 'api3']
 # File Path and URL Path settings
 
 # root of the git repo
-ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+ROOT_DIR = paths.rel2abs(__file__, "..")
 
 # base path, to the directory where this settings file lives
-BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
+BASE_FILE_PATH = paths.abs_dir_path(__file__)
 
 BASE_URL = "https://doaj.org"
 if BASE_URL.startswith('https://'):
@@ -154,8 +157,8 @@ PROXIED = False
 
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
-FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "failed_articles")
+UPLOAD_DIR = os.path.join(ROOT_DIR, "upload")
+FAILED_ARTICLE_DIR = os.path.join(ROOT_DIR, "failed_articles")
 
 # directory where reports are output
 REPORTS_BASE_DIR = "/home/cloo/reports/"
@@ -544,6 +547,16 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
         }
     },
     "currency_code": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+#                "index": False,
+                "store": True
+            }
+        }
+    },
+    "currency_code_lax": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1043,32 +1056,7 @@ BITLY_OAUTH_TOKEN = ""
 
 ###############################################
 # Date handling
-#
-# when dates.format is called without a format argument, what format to use?
-# FIXME: this is actually wrong - should really use the timezone correctly
-DEFAULT_DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
-
-# date formats that we know about, and should try, in order, when parsing
-DATE_FORMATS = [
-    "%Y-%m-%dT%H:%M:%S.%fZ",   # e.g. 2010-01-01T00:00:00.000Z
-    "%Y-%m-%dT%H:%M:%SZ",   # e.g. 2014-09-23T11:30:45Z
-    "%Y-%m-%d",             # e.g. 2014-09-23
-    "%d/%m/%y",             # e.g. 29/02/80
-    "%d/%m/%Y",             # e.g. 29/02/1980
-    "%d-%m-%Y",             # e.g. 01-01-2015
-    "%Y.%m.%d",             # e.g. 2014.09.12
-    "%d.%m.%Y",             # e.g. 12.9.2014
-    "%d.%m.%y",             # e.g. 12.9.14
-    "%d %B %Y",             # e.g. 21 June 2014
-    "%d-%b-%Y",             # e.g. 31-Jul-13
-    "%d-%b-%y",             # e.g. 31-Jul-2013
-    "%b-%y",                # e.g. Aug-13
-    "%B %Y",                # e.g. February 2014
-    "%Y"                    # e.g. 1978
-]
-
-# The last_manual_update field was initialised to this value. Used to label as 'never'.
-DEFAULT_TIMESTAMP = "1970-01-01T00:00:00Z"
+# See portality.lib.dates   - moved to prevent circular import
 
 #################################################
 # API configuration

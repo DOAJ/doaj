@@ -4,7 +4,6 @@ import hashlib
 import logging
 import os
 import shutil
-from datetime import datetime
 from glob import glob
 from unittest import TestCase
 
@@ -13,8 +12,10 @@ from flask_login import login_user
 
 from portality import core, dao
 from portality.core import app
-from portality.lib import paths
+from portality.lib import paths, dates
+from portality.lib.dates import FMT_DATE_STD
 from portality.tasks.redis_huey import main_queue, long_running
+from portality.util import url_for
 
 
 def patch_config(inst, properties):
@@ -189,10 +190,10 @@ class DoajTestCase(TestCase):
             CREATED_INDICES = []
 
     def list_today_article_history_files(self):
-        return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
+        return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], dates.now_str(FMT_DATE_STD), '*'))
 
     def list_today_journal_history_files(self):
-        return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
+        return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], dates.now_str(FMT_DATE_STD), '*'))
 
     def _make_and_push_test_context(self, path="/", acc=None):
         ctx = self.app_test.test_request_context(path)
@@ -367,3 +368,18 @@ def apply_test_case_config(new_config):
         return wrapper
 
     return decorator
+
+
+def assert_expected_dict(test_case: TestCase, target, expected: dict):
+    actual = {key: getattr(target, key) for key in expected.keys()}
+    test_case.assertDictEqual(actual, expected)
+
+
+def login(app_client, username, password, follow_redirects=True):
+    return app_client.post(url_for('account.login'),
+                           data=dict(user=username, password=password),
+                           follow_redirects=follow_redirects)
+
+
+def logout(app_client, follow_redirects=True):
+    return app_client.get(url_for('account.logout'), follow_redirects=follow_redirects)

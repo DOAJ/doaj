@@ -16,7 +16,6 @@ from portality.constants import TODO_ASSOCIATE_PROGRESS_STALLED, TODO_ASSOCIATE_
     TODO_ASSOCIATE_FOLLOW_UP_OLD, TODO_ASSOCIATE_ALL_APPLICATIONS
 from portality.lib.paths import rel2abs
 from portality.lib import dates
-from datetime import datetime
 
 
 def load_cases():
@@ -172,8 +171,8 @@ class TestBLLTopTodo(DoajTestCase):
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
         ap.set_id(id)
-        ap.set_last_manual_update(dates.before(datetime.utcnow(), lmu_diff))
-        ap.set_created(dates.before(datetime.utcnow(), cd_diff))
+        ap.set_last_manual_update(dates.before_now(lmu_diff))
+        ap.set_created(dates.before_now(cd_diff))
         ap.set_application_status(status)
 
         if editor is not None:

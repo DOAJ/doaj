@@ -394,7 +394,7 @@ class ApplicationService(object):
         if application.editor_group is not None:
             journal.set_editor_group(application.editor_group)
         for note in notes:
-            journal.add_note(note.get("note"), note.get("date"), note.get("id"))
+            journal.add_note_by_dict(note)
         if application.owner is not None:
             journal.set_owner(application.owner)
         journal.set_seal(application.has_seal())
@@ -406,7 +406,7 @@ class ApplicationService(object):
             b.add_identifier("eissn", None)
 
         # no relate the journal to the application and place it in_doaj
-        journal.add_related_application(application.id, dates.now())
+        journal.add_related_application(application.id, dates.now_str())
         journal.set_in_doaj(True)
 
         # if we've been called in the context of a manual update, record that
@@ -425,7 +425,7 @@ class ApplicationService(object):
                 # bring forward any notes from the old journal record
                 old_notes = cj.notes
                 for note in old_notes:
-                    journal.add_note(note.get("note"), note.get("date"), note.get("id"))
+                    journal.add_note_by_dict(note)
 
                 # bring forward any related applications
                 related = cj.related_applications

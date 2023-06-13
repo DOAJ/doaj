@@ -7,6 +7,7 @@ from portality import constants, regex
 from doajtest.fixtures.v2.common import JOURNAL_LIKE_BIBJSON, EDITORIAL_FORM_EXPANDED, SUBJECT_FORM_EXPANDED, NOTES_FORM_EXPANDED, OWNER_FORM_EXPANDED, SEAL_FORM_EXPANDED
 from doajtest.fixtures.v2.journals import JOURNAL_FORM_EXPANDED, JOURNAL_FORM
 from portality.lib import dates
+from portality.lib.dates import FMT_DATE_YM, FMT_YEAR
 from portality.models.v2.application import Application
 
 class ApplicationFixtureFactory(object):
@@ -71,7 +72,7 @@ class ApplicationFixtureFactory(object):
             start = None
             end = None
             if period == "month":
-                startts = dates.parse(h, "%Y-%m")
+                startts = dates.parse(h, FMT_DATE_YM)
                 year, month = divmod(startts.month+1, 12)
                 if month == 0:
                     month = 12
@@ -80,7 +81,7 @@ class ApplicationFixtureFactory(object):
                 start = dates.format(startts)
                 end = dates.format(endts)
             elif period == "year":
-                startts = dates.parse(h, "%Y")
+                startts = dates.parse(h, FMT_YEAR)
                 endts = datetime(startts.year + 1, 1, 1)
                 start = dates.format(startts)
                 end = dates.format(endts)
@@ -115,8 +116,8 @@ APPLICATION_SOURCE = {
         "editor" : "associate",
         "editor_group" : "editorgroup",
         "notes" : [
-            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234"},
-            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd"}
+            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234", 'author_id': 'fake_account_id__b'},
+            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd", 'author_id': 'fake_account_id__a'},
         ],
         "owner" : "publisher",
         "related_journal" : "987654321123456789",

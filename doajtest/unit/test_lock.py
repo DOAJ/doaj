@@ -3,7 +3,7 @@ from portality import models, lock
 from portality.lib import dates
 from doajtest.fixtures import JournalFixtureFactory
 import time
-from datetime import datetime, timedelta
+from datetime import timedelta
 from copy import deepcopy
 
 class TestLock(DoajTestCase):
@@ -113,7 +113,7 @@ class TestLock(DoajTestCase):
 
         time.sleep(2)
 
-        after = datetime.utcnow() + timedelta(seconds=2300)
+        after = dates.now() + timedelta(seconds=2300)
 
         # set a lock with a longer timout
         l = lock.lock("journal", j.id, "testuser", 2400)

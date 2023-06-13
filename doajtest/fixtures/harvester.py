@@ -1,6 +1,8 @@
 # coding=UTF-8
 
 from copy import deepcopy
+
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.tasks.harvester_helpers.epmc import models
 
 
@@ -24,15 +26,15 @@ class HarvestStateFactory(object):
 
 STATE = {
     "id" : "oqwiwfqwjfwejfw",
-    "created_date": "1970-01-01T00:00:00Z",
-    "last_updated" : "1970-01-01T00:00:00Z",
+    "created_date": DEFAULT_TIMESTAMP_VAL,
+    "last_updated" : DEFAULT_TIMESTAMP_VAL,
     "issn" : "1234-5678",
     "account" : "123456789",
     "status" : "active",
     "last_harvest" : [
         {
             "plugin" : "epmc",
-            "date" : "1970-01-01T00:00:00Z"
+            "date" : DEFAULT_TIMESTAMP_VAL
         }
     ]
 }
