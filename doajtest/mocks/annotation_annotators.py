@@ -14,8 +14,8 @@ class MockAnnotator(Annotator):
                         annotations,
                         resources,
                         logger):
-        annotations.add_annotation(field="pissn",
-                                   original_value="1234-5678",
-                                   suggested_value="9876-5432",
-                                   advice="Change the issn",
-                                   reference_url="http://example.com/9876-5432")
+        annotations.add_check(field="pissn",
+                              original_value="1234-5678",
+                              suggested_value="9876-5432",
+                              advice="Change the issn",
+                              reference_url="http://example.com/9876-5432")

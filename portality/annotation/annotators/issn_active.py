@@ -1,4 +1,4 @@
-from portality.models import JournalLikeObject, Annotation
+from portality.models import JournalLikeObject, Autocheck
 from portality.annotation.annotator import Annotator
 from portality.annotation.resource_bundle import ResourceBundle, ResourceUnavailable
 from portality.annotation.resources.issn_org import ISSNOrg
@@ -30,7 +30,7 @@ class ISSNAnnotator(Annotator):
                 logger("Data received for eissn from {x}".format(x=eissn_url))
             except ResourceUnavailable:
                 logger("Unable to resolve eissn at {x}".format(x=eissn_url))
-                annotations.add_annotation(
+                annotations.add_check(
                     field="eissn",
                     original_value=eissn,
                     advice=self.UNABLE_TO_ACCESS,
@@ -46,7 +46,7 @@ class ISSNAnnotator(Annotator):
                 logger("Data received for pissn from {x}".format(x=pissn_url))
             except ResourceUnavailable:
                 logger("Unable to resolve pissn at {x}".format(x=pissn_url))
-                annotations.add_annotation(
+                annotations.add_check(
                     field="pissn",
                     original_value=pissn,
                     advice=self.UNABLE_TO_ACCESS,
@@ -69,7 +69,7 @@ class ISSNActive(ISSNAnnotator):
             if data is None:
                 if not fail:
                     logger("{y} not registered at {x}".format(y=field, x=url))
-                    annotations.add_annotation(
+                    annotations.add_check(
                         field=field,
                         original_value=value,
                         advice=self.NOT_FOUND,
@@ -79,7 +79,7 @@ class ISSNActive(ISSNAnnotator):
             else:
                 if data.is_registered():
                     logger("{y} confirmed as fully validated at {x}".format(y=value, x=url))
-                    annotations.add_annotation(
+                    annotations.add_check(
                         field=field,
                         original_value=value,
                         advice=self.FULLY_VALIDATED,
@@ -88,7 +88,7 @@ class ISSNActive(ISSNAnnotator):
                     )
                 else:
                     logger("{y} is not fully validated at {x}".format(y=value, x=url))
-                    annotations.add_annotation(
+                    annotations.add_check(
                         field=field,
                         original_value=value,
                         advice=self.NOT_VALIDATED,
@@ -97,10 +97,10 @@ class ISSNActive(ISSNAnnotator):
                     )
 
     def annotate(self, form: dict,
-                        jla: JournalLikeObject,
-                        annotations: Annotation,
-                        resources: ResourceBundle,
-                        logger: Callable):
+                 jla: JournalLikeObject,
+                 annotations: Autocheck,
+                 resources: ResourceBundle,
+                 logger: Callable):
 
         eissn, eissn_url, eissn_data, eissn_fail, pissn, pissn_url, pissn_data, pissn_fail = self.retrieve_from_source(form, resources, annotations, logger)
 

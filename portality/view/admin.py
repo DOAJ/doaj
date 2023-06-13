@@ -211,7 +211,7 @@ def journal_page(journal_id):
         return render_template("admin/journal_locked.html", journal=journal, lock=l.lock)
 
     fc = JournalFormFactory.context("admin", extra_param=exparam_editing_user())
-    annotations = models.Annotation.for_journal(journal_id)
+    annotations = models.Autocheck.for_journal(journal_id)
 
     if request.method == "GET":
         job = None
@@ -370,7 +370,7 @@ def application(application_id):
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
 
-    annotations = models.Annotation.for_application(application_id)
+    annotations = models.Autocheck.for_application(application_id)
 
     if request.method == "GET":
         fc.processor(source=ap)

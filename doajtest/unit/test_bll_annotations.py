@@ -40,12 +40,12 @@ class TestBLLAnnotations(DoajTestCase):
         time.sleep(2)
 
         application = models.Application.pull(application.id)
-        annotation = models.Annotation.for_application(application.id)
+        annotation = models.Autocheck.for_application(application.id)
 
         # assert application.application_status == constants.APPLICATION_STATUS_PENDING
         assert annotation is not None
         assert annotation.application == application.id
-        assert len(annotation.annotations) == 1
+        assert len(annotation.checks) == 1
 
     def test_01_annotate_journal(self):
         source = JournalFixtureFactory.make_journal_source()
@@ -59,11 +59,11 @@ class TestBLLAnnotations(DoajTestCase):
         time.sleep(2)
 
         journal = models.Journal.pull(journal.id)
-        annotation = models.Annotation.for_journal(journal.id)
+        annotation = models.Autocheck.for_journal(journal.id)
 
         # assert application.application_status == constants.APPLICATION_STATUS_PENDING
         assert annotation is not None
         assert annotation.journal == journal.id
-        assert len(annotation.annotations) == 1
+        assert len(annotation.checks) == 1
 
 

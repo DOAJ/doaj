@@ -39,7 +39,7 @@ class AnnotationsService(object):
 
         application_form = ApplicationFormXWalk.obj2form(application)
         resource_bundle = ResourceBundle()
-        new_annotations = models.Annotation()
+        new_annotations = models.Autocheck()
         new_annotations.application = application.id
 
         if created_date is not None:
@@ -76,7 +76,7 @@ class AnnotationsService(object):
 
         journal_form = JournalFormXWalk.obj2form(journal)
         resource_bundle = ResourceBundle()
-        new_annotations = models.Annotation()
+        new_annotations = models.Autocheck()
         new_annotations.journal = journal.id
 
         for j, a, anno in self._annotation_plugins:
@@ -91,7 +91,7 @@ class AnnotationsService(object):
         logger("Saved new annotation document {id}".format(id=new_annotations.id))
 
     def dismiss(self, annotation_set_id, annotation_id):
-        annotations = models.Annotation.pull(annotation_set_id)
+        annotations = models.Autocheck.pull(annotation_set_id)
         if annotations is None:
             return False
         annotations.dismiss(annotation_id)
@@ -99,7 +99,7 @@ class AnnotationsService(object):
         return True
 
     def undismiss(self, annotation_set_id, annotation_id):
-        annotations = models.Annotation.pull(annotation_set_id)
+        annotations = models.Autocheck.pull(annotation_set_id)
         if annotations is None:
             return False
         annotations.undismiss(annotation_id)

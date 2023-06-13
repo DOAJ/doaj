@@ -1636,6 +1636,9 @@ class TestModels(DoajTestCase):
         a2 = models.Application(**asource)
         assert a2.bibjson().apc.pop() == {'currency': 'bananas', 'price': 2}
 
+    def test_38_autochecks(self):
+        a = models.Autocheck()
+
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

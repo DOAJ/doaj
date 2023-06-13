@@ -4,7 +4,7 @@ developed further.  It may be deleted in due course, but for the moment
 remains as a reference
 """
 
-from portality.models import JournalLikeObject, Annotation
+from portality.models import JournalLikeObject, Autocheck
 from portality.annotation.annotator import Annotator
 from portality.annotation.resource_bundle import ResourceBundle, ResourceUnavailable
 from portality.annotation.resources.issn_org import ISSNOrg
@@ -27,7 +27,7 @@ class ISSNMatch(ISSNAnnotator):
 
                 # no issn in form, no issn in issn.org
                 if other_field_value is None and len(issns) == 0:
-                    annotations.add_annotation(
+                    annotations.add_check(
                         field=other_field,
                         original_value="",
                         advice="There is no {y} registered on issn.org".format(y=other_field),
@@ -36,7 +36,7 @@ class ISSNMatch(ISSNAnnotator):
 
                 # ISSN in form, no ISSN in issn.org
                 if other_field_value is not None and len(issns) == 0:
-                    annotations.add_annotation(
+                    annotations.add_check(
                         field=other_field,
                         original_value=other_field_value,
                         advice="There is no {y} registered on issn.org".format(y=other_field),
@@ -46,7 +46,7 @@ class ISSNMatch(ISSNAnnotator):
 
                 # no ISSN in form, ISSN in issn.org
                 if other_field_value is None and len(issns) > 0:
-                    annotations.add_annotation(
+                    annotations.add_check(
                         field=other_field,
                         original_value="",
                         advice="There is one or more potential value for this field in issn.org",
@@ -58,7 +58,7 @@ class ISSNMatch(ISSNAnnotator):
                 if other_field_value is not None and len(issns) > 0:
                     # they match
                     if other_field_value in issns:
-                        annotations.add_annotation(
+                        annotations.add_check(
                             field=other_field,
                             original_value=other_field_value,
                             advice="This issn is registered at issn.org",
@@ -67,7 +67,7 @@ class ISSNMatch(ISSNAnnotator):
 
                     # they don't match
                     if other_field_value not in issns:
-                        annotations.add_annotation(
+                        annotations.add_check(
                             field="pissn",
                             original_value=other_field_value,
                             advice="This issn is not registered at issn.org",
@@ -76,10 +76,10 @@ class ISSNMatch(ISSNAnnotator):
                         )
 
     def annotate(self, form: dict,
-                        jla: JournalLikeObject,
-                        annotations: Annotation,
-                        resources: ResourceBundle,
-                        logger: Callable):
+                 jla: JournalLikeObject,
+                 annotations: Autocheck,
+                 resources: ResourceBundle,
+                 logger: Callable):
 
         eissn, eissn_url, eissn_data, eissn_fail, pissn, pissn_url, pissn_data, pissn_fail = self.retrieve_from_source(form, resources, annotations, logs)
 
