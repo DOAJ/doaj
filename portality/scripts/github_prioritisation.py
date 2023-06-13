@@ -78,15 +78,21 @@ def _get_column_issues(project, col, auth):
     column_record = [c for c in col_data if c.get("name") == col][0]
     cards_url = column_record.get("cards_url")
 
-    resp = requests.get(cards_url, auth=auth, headers=HEADERS)
-    cards_data = resp.json()
-
+    params = {"per_page": 100, "page": 1}
     issues = []
-    for card_data in cards_data:
-        content_url = card_data.get("content_url")
-        resp = requests.get(content_url, auth=auth, headers=HEADERS)
-        issue_data = resp.json()
-        issues.append(issue_data)
+
+    while True:
+        resp = requests.get(cards_url, auth=auth, headers=HEADERS, params=params)
+        cards_data = resp.json()
+        if len(cards_data) == 0:
+            break
+        params["page"] += 1
+
+        for card_data in cards_data:
+            content_url = card_data.get("content_url")
+            resp = requests.get(content_url, auth=auth, headers=HEADERS)
+            issue_data = resp.json()
+            issues.append(issue_data)
 
     COLUMN_CACHE[col] = issues
     print("Column issues {x}".format(x=[i.get("url") for i in issues]))
