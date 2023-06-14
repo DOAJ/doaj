@@ -20,10 +20,6 @@ silver:
   url: https://www.cappelendammundervisning.no/
   logo: cda.jpg
   
-- name: Cambridge University Press
-  url: https://www.cambridge.org/
-  logo: cambridge.svg
-
 - name: Copernicus Publications
   url: https://publications.copernicus.org
   logo: copernicus.svg
@@ -35,10 +31,6 @@ silver:
 - name: Frontiers
   url: https://www.frontiersin.org/
   logo: frontiers.svg
-
-- name: JMIR Publications
-  url: https://jmirpublications.com/
-  logo: jmir.svg
   
 - name: Knowledge E
   url: https://knowledgee.com/
@@ -69,6 +61,10 @@ bronze:
 - name: American Psychological Association
   url: https://www.apa.org/pubs
   logo: apa.png
+  
+- name: Cambridge University Press
+  url: https://www.cambridge.org/
+  logo: cambridge.svg
 
 - name: Digital Science
   url: https://www.digital-science.com/
@@ -93,6 +89,10 @@ bronze:
 - name: Institute of Physics
   url: https://www.iop.org/
   logo: iop.jpg
+  
+- name: JMIR Publications
+  url: https://jmirpublications.com/
+  logo: jmir.svg
 
 - name: Karger
   url: https://www.karger.com/
