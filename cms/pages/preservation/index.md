@@ -42,13 +42,17 @@ JASPER's aim is to get more journals archived by establishing a simple process:
 The premise of the JASPER process is that all journals are different, with different needs, different priorities and different resources. The workflow needs to offer viable alternatives to journals so that they engage with one or more archiving services that meet their requirements and capacities. 
 
 ### For publishers
-We hope that many open access publishers, whose journals are not currently archived, will want to take part. The criteria for eligibility for Phase Two are:
+We hope that many open access publishers, whose journals are not currently archived, will want to take part. Due to the partners self-funding the project, the criteria for eligibility are several and we are rigorous in applying them. They are:
 
 - Your journal must be indexed in DOAJ
-- Your journal may not charge any fees of any kind
-- Your journal is not already archived in a preservation service (although it may be archived in PKP PN)
-- Your content is licensed with a CC BY licence
-- The copyright of published content remains with the author
+- The abstracts of your articles must be indexed in DOAJ
+- Your journal may not charge any fees of any kind, or be subsidised in any way.
+- Your journal is not supported by or funded by any organisation that we deem capable of covering the costs of long-term preservation.
+- Your journal is not already archived in a preservation service (although it may be archived in PKP PN).
+- Your content is licensed with a CC BY licence (although sometimes, we will accept less open licenses).
+- The copyright of published content remains with the author.
+
+If you have any questions about these criteria, don't hesitate to [get in touch](mailto:preservation@doaj.org).
 
 #### Archiving options
 1. *The OJS route*: OJS journals can use [the PKP PN preservation](https://docs.pkp.sfu.ca/pkp-pn/en/) service which is built on LOCKSS software. You need to enable a plugin in the journal's dashboard and agree to some simple terms. However, your journal must be on the right version of the OJS software to take part. JASPER will make sure that the journals are pointed to the guidance they need to upgrade and become compliant. Journals on OJS may also choose to have their content preserved via the upload route below.
