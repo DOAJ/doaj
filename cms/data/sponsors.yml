@@ -113,6 +113,10 @@ bronze:
 - name: SciFree
   url: https://scifree.se/
   logo: scifree.svg
+  
+- name: The IET
+  url: https://www.theiet.org/
+  logo: iet.svg
 
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
