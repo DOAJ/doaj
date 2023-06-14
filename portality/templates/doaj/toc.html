@@ -42,7 +42,7 @@
         }
     %}
 
-    <main class="container page-content">
+    <div class="container page-content">
         <header>
           {% if journal.last_manually_updated_since(days=30) %}
           <span class="label label--secondary">
@@ -450,7 +450,7 @@
             </p>
         </footer>
 
-    </main>
+    </div>
     {% include "includes/_hotjar.html" %}
 
 {% endblock %}

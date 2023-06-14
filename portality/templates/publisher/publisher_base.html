@@ -7,14 +7,14 @@
 {% block page_title %}Publisher dashboard{% endblock %}
 
 {% block content %}
-<main class="container">
+<div class="container">
   <h1>Publisher dashboard</h1>
 
     {% include 'publisher/nav.html' %}
 
     {% block publisher_content %}
     {% endblock %}
-</main>
+</div>
 
 {% include "includes/_hotjar.html" %}
 {% endblock %}
