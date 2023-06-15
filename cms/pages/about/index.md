@@ -24,7 +24,7 @@ DOAJ is committed to being 100% independent and maintaining all of its primary s
 
 ## Our vision
 
-DOAJ works to build an equitable and diverse scholarly ecosystem where trusted research can be accessed without barriers across the world.
+DOAJ works to build an equitable and diverse scholarly ecosystem where trusted research can be accessed globally without barriers.
 
 ## Constitution
 
