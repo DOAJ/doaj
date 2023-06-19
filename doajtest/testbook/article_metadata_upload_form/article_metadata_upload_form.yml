@@ -46,8 +46,7 @@ tests:
   - step: Add author's ORCID iD in the wrong format eg "0000-0000-0000-000a"
   - step: Click "Add Article" button
     results:
-    - 'Red error message: ''Invalid ORCID iD. Please enter your ORCID iD as a full
-      URL with the structure https://orcid.org/0000-0000-0000-0000. URLs must start with https.'''
+    - 'Red error message: ''Invalid ORCID iD. Please enter your ORCID iD structured as: https://orcid.org/0000-0000-0000-0000. URLs must start with https.'''
   - step: Enter valid Orcid iD for one of the authors
   - step: 'Enter valid Full-Text URL, eg: https://pl.wikipedia.org/wiki/Torun'
   - step: Select ISSN print and online version from dropdowns
