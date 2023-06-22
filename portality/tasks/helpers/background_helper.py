@@ -75,10 +75,28 @@ def execute_by_bg_task_type(bg_task_type: Type[BackgroundTask], **prepare_kwargs
     return task
 
 
+def register_execute(task_queue, task_name=None, script=True):
+    """
+    decorator for register background job execute function
+    """
+    def wrapper(fn):
+        if task_name:
+            conf = configure(task_name)
+        else:
+            conf = {}
+
+        fn = write_required(script=script)(fn)
+        fn = task_queue.task(**conf)(fn)
+        return fn
+
+    return wrapper
+
+
 class RedisHueyTaskHelper:
-    def __init__(self, task_queue: RedisHuey, task_name: str):
+    def __init__(self, task_queue: RedisHuey, task_name: str, task_factory: Callable = None):
         self.task_queue = task_queue
         self.task_name = task_name
+        self.task_factory = task_factory
 
     @property
     def queue_id(self):
@@ -90,17 +108,14 @@ class RedisHueyTaskHelper:
         return fn
 
     def register_execute(self, is_load_config=False):
-        def wrapper(fn):
-            if is_load_config:
-                conf = configure(self.task_name)
-            else:
-                conf = {}
+        return register_execute(self.task_queue,
+                                self.task_name if is_load_config else None)
 
-            fn = write_required(script=True)(fn)
-            fn = self.task_queue.task(**conf)(fn)
-            return fn
-
-        return wrapper
+    def create_common_execute_fn(self, is_load_config=False) -> Callable:
+        assert self.task_factory is not None, "task_factory is required"
+        execute_fn = create_execute_fn(self.task_queue, self.task_factory,
+                                       self.task_name if is_load_config else None)
+        return execute_fn
 
 
 def _get_background_task_spec(module):
@@ -170,9 +185,10 @@ def submit_by_background_job(background_job, execute_fn):
     execute_fn.schedule(args=(background_job.id,), delay=10)
 
 
-def create_execute_fn(redis_huey, task_factory: TaskFactory):
-    @redis_huey.task()
-    @write_required(script=True)
+def create_execute_fn(task_queue: RedisHuey, task_factory: TaskFactory, task_name=None, script=True):
+    """ Common way to create execute_fn for BackgroundTask """
+
+    @register_execute(task_queue, task_name=task_name, script=script)
     def _execute_fn(job_id):
         execute_by_job_id(job_id, task_factory)
 
