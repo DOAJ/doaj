@@ -85,7 +85,7 @@ class TestBLLGetters(DoajTestCase):
                 else:
                     assert retrieved is None
 
-                time.sleep(2)
+                time.sleep(1)
 
                 assert lock.has_lock("journal", journal_id, account.id)
 
@@ -119,6 +119,6 @@ class TestBLLGetters(DoajTestCase):
                 else:
                     assert retrieved is None
 
-                time.sleep(2)
+                time.sleep(1)
 
                 assert lock.has_lock(constants.LOCK_APPLICATION, application_id, account.id)
