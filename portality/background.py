@@ -191,7 +191,7 @@ class BackgroundTask(object):
     @classmethod
     def create_huey_helper(cls, task_queue: RedisHuey):
         from portality.tasks.helpers import background_helper
-        return background_helper.RedisHueyTaskHelper(task_queue, cls.__action__, task_factory=cls)
+        return background_helper.RedisHueyTaskHelper(task_queue, cls)
 
 
 class AdminBackgroundTask(BackgroundTask):
