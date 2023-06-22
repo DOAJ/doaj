@@ -158,6 +158,7 @@ PROXIED = False
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
 UPLOAD_DIR = os.path.join(ROOT_DIR, "upload")
+UPLOAD_ASYNC_DIR = os.path.join(ROOT_DIR, "upload_async")
 FAILED_ARTICLE_DIR = os.path.join(ROOT_DIR, "failed_articles")
 
 # directory where reports are output

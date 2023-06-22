@@ -1,18 +1,18 @@
 # ~~APIBulkArticles:Feature->APIBulk:Feature~~
+from copy import deepcopy
+from typing import List
+
+from portality import models
 from portality.api.common import Api, Api404Error, Api400Error, Api403Error, Api401Error
 from portality.api.current.crud import ArticlesCrudApi
-
 from portality.bll import DOAJ
 from portality.bll import exceptions
-
-from copy import deepcopy
-
 from portality.bll.exceptions import DuplicateArticleException
+from portality.tasks.article_bulk_create import ArticleBulkCreateBackgroundTask
 
 
 class ArticlesBulkApi(Api):
-
-    #~~->Swagger:Feature~~
+    # ~~->Swagger:Feature~~
     # ~~->API:Documentation~~
     SWAG_TAG = 'Bulk API'
 
@@ -23,7 +23,7 @@ class ArticlesBulkApi(Api):
             {
                 "description": "<div class=\"search-query-docs\">A list/array of article JSON objects that you would like to create or update. The contents should be a list, and each object in the list should comply with the schema displayed in the <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. Partial updates are not allowed, you have to supply the full JSON.</div>",
                 "required": True,
-                "schema": {"type" : "string"},
+                "schema": {"type": "string"},
                 "name": "article_json",
                 "in": "body"
             }
@@ -33,6 +33,34 @@ class ArticlesBulkApi(Api):
         template['responses']['400'] = cls.R400
         template['responses']['401'] = cls.R401
         template['responses']['403'] = cls.R403
+        return cls._build_swag_response(template)
+
+    @classmethod
+    def create_async_swag(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        description = """
+        <div class=\"search-query-docs\">
+        A list/array of article JSON objects that you would like to create or update. 
+        The contents should be a list, and each object in the list should comply with 
+        the schema displayed in the 
+        <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. 
+        Partial updates are not allowed, you have to supply the full JSON.
+        
+        This api is asynchronously, response will be a task id, you can use this id to query the task status.
+        </div>
+        """
+        template['parameters'].append(
+            {
+                "description": description,
+                "required": True,
+                "schema": {"type": "string"},
+                "name": "article_json",
+                "in": "body"
+            }
+        )
+        template['parameters'].append(cls.SWAG_API_KEY_REQ_PARAM)
+        template['responses']['201'] = cls.R201_BULK
+        template['responses']['400'] = cls.R400
         return cls._build_swag_response(template)
 
     @classmethod
@@ -62,6 +90,12 @@ class ArticlesBulkApi(Api):
         except exceptions.ArticleNotAcceptable as e:
             raise Api400Error(str(e))
 
+    @classmethod
+    def create_async(cls, income_articles: List[dict], account: models.Account):
+        # KTODO test and make sure `prep_article` and `prepare` will not tool slow with large data
+        articles = [ArticlesCrudApi.prep_article(data, account).data for data in income_articles]
+        job = ArticleBulkCreateBackgroundTask.prepare(account.id, articles=articles)
+        ArticleBulkCreateBackgroundTask.submit(job)
 
     @classmethod
     def delete_swag(cls):
@@ -70,7 +104,7 @@ class ArticlesBulkApi(Api):
             {
                 "description": "<div class=\"search-query-docs\">A list/array of DOAJ article IDs. E.g. [\"4cf8b72139a749c88d043129f00e1b07\", \"232b53726fb74cc4a8eb4717e5a43193\"].</div>",
                 "required": True,
-                "schema": {"type" : "string"},
+                "schema": {"type": "string"},
                 "name": "article_ids",
                 "in": "body"
             }

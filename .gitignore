@@ -28,6 +28,7 @@ app.cfg
 # directories of transient stuff that gets created locally
 media/*
 upload/*
+upload_async/*
 !upload/README.md
 failed_articles/*
 !failed_articles/README.md
@@ -122,3 +123,6 @@ portality/static/widget/fq_widget_build_info.txt
 
 #json for harvester test
 doajtest/unit/resources/harvester_resp_temp.json
+
+
+_playground

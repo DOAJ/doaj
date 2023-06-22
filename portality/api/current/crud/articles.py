@@ -101,7 +101,7 @@ class ArticlesCrudApi(CrudApi):
 
 
     @classmethod
-    def prep_article(cls, data, account):
+    def prep_article(cls, data, account) -> models.Article:
         # first thing to do is a structural validation, by instantiating the data object
         try:
             ia = IncomingArticleDO(data)

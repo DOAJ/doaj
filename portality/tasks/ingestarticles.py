@@ -1,19 +1,17 @@
 import ftplib
 import os
 import re
-import requests
-import shutil
 import traceback
 from urllib.parse import urlparse
 
+import requests
+
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
-from portality.bll import DOAJ
-from portality.bll.exceptions import IngestException, DuplicateArticleException, ArticleNotAcceptable
+from portality.bll.exceptions import IngestException
 from portality.core import app
-from portality.crosswalks.exceptions import CrosswalkException
 from portality.lib import plugin
-from portality.tasks.helpers import background_helper
+from portality.tasks.helpers import background_helper, articles_upload_helper
 from portality.tasks.redis_huey import main_queue
 from portality.ui.messages import Messages
 
@@ -21,11 +19,12 @@ DEFAULT_MAX_REMOTE_SIZE = 262144000
 CHUNK_SIZE = 1048576
 
 
-def file_failed(path):
-    filename = os.path.split(path)[1]
-    fad = app.config.get("FAILED_ARTICLE_DIR")
-    dest = os.path.join(fad, filename)
-    shutil.move(path, dest)
+def load_xwalk(schema):
+    xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(schema)
+    try:
+        return plugin.load_class(xwalk_name)()
+    except IngestException:
+        raise RetryException("Unable to load schema {}".format(xwalk_name))
 
 
 def ftp_upload(job, path, parsed_url, file_upload):
@@ -237,11 +236,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         job.add_audit_message("Downloaded {x} as {y}".format(x=file_upload.filename, y=file_upload.local_filename))
 
-        xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(file_upload.schema)
-        try:
-            xwalk = plugin.load_class(xwalk_name)()
-        except IngestException:
-            raise RetryException("Unable to load schema {}".format(xwalk_name))
+        xwalk = load_xwalk(file_upload.schema)
 
         # now we have the record in the index and on disk, we can attempt to
         # validate it
@@ -252,7 +247,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             job.add_audit_message("IngestException: {x}".format(x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
             try:
-                file_failed(path)
+                articles_upload_helper.file_failed(path)
             except:
                 job.add_audit_message("Error cleaning up file which caused IngestException: {x}"
                                       .format(x=traceback.format_exc()))
@@ -262,7 +257,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                                   .format(x=traceback.format_exc()))
             file_upload.failed("File system error when downloading file")
             try:
-                file_failed(path)
+                articles_upload_helper.file_failed(path)
             except:
                 job.add_audit_message("Error cleaning up file which caused Exception: {x}"
                                       .format(x=traceback.format_exc()))
@@ -293,90 +288,17 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         job.add_audit_message("Importing from {x}".format(x=path))
 
-        articleService = DOAJ.articleService()
-        account = models.Account.pull(file_upload.owner)
+        xwalk = load_xwalk(file_upload.schema)
 
-        xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(file_upload.schema)
-        try:
-            xwalk = plugin.load_class(xwalk_name)()
-        except IngestException:
-            raise RetryException("Unable to load schema {}".format(xwalk_name))
-
-        ingest_exception = False
-        result = {}
-        articles = None
-        try:
-            with open(path) as handle:
+        def _articles_factory(p):
+            with open(p) as f:
                 # don't import the journal info, as we haven't validated ownership of the ISSNs in the article yet
-                articles = xwalk.crosswalk_file(handle, add_journal_info=False)
+                articles = xwalk.crosswalk_file(f, add_journal_info=False)
                 for article in articles:
                     article.set_upload_id(file_upload.id)
-                result = articleService.batch_create_articles(articles, account, add_journal_info=True)
-        except (IngestException, CrosswalkException) as e:
-            job.add_audit_message("IngestException: {msg}. Inner message: {inner}.  Stack: {x}"
-                                  .format(msg=e.message, inner=e.inner_message, x=e.trace()))
-            job.outcome_fail()
-            file_upload.failed(e.message, e.inner_message)
-            result = e.result
-            try:
-                file_failed(path)
-                ingest_exception = True
-            except:
-                job.add_audit_message("Error cleaning up file which caused IngestException: {x}"
-                                      .format(x=traceback.format_exc()))
-        except (DuplicateArticleException, ArticleNotAcceptable) as e:
-            job.add_audit_message(str(e))
-            job.outcome_fail()
-            file_upload.failed(str(e))
-            try:
-                file_failed(path)
-            except:
-                job.add_audit_message("Error cleaning up file which caused Exception: {x}"
-                                      .format(x=traceback.format_exc()))
-                return
-        except Exception as e:
-            job.add_audit_message("Unanticipated error: {x}".format(x=traceback.format_exc()))
-            job.outcome_fail()
-            file_upload.failed("Unanticipated error when importing articles")
-            try:
-                file_failed(path)
-            except:
-                job.add_audit_message("Error cleaning up file which caused Exception: {x}"
-                                      .format(x=traceback.format_exc()))
-                return
+                return articles
 
-        success = result.get("success", 0)
-        fail = result.get("fail", 0)
-        update = result.get("update", 0)
-        new = result.get("new", 0)
-        shared = result.get("shared", [])
-        unowned = result.get("unowned", [])
-        unmatched = result.get("unmatched", [])
-
-        if success == 0 and fail > 0 and not ingest_exception:
-            file_upload.failed("All articles in file failed to import")
-            job.add_audit_message("All articles in file failed to import")
-            job.outcome_fail()
-        if success > 0 and fail == 0:
-            file_upload.processed(success, update, new)
-        if success > 0 and fail > 0:
-            file_upload.partial(success, fail, update, new)
-            job.add_audit_message("Some articles in file failed to import correctly, so no articles imported")
-
-        file_upload.set_failure_reasons(list(shared), list(unowned), list(unmatched))
-        job.add_audit_message("Shared ISSNs: " + ", ".join(list(shared)))
-        job.add_audit_message("Unowned ISSNs: " + ", ".join(list(unowned)))
-        job.add_audit_message("Unmatched ISSNs: " + ", ".join(list(unmatched)))
-
-        if new:
-            ids = [a.id for a in articles]
-            job.add_audit_message("Created/updated articles: " + ", ".join(list(ids)))
-
-        if not ingest_exception:
-            try:
-                os.remove(path)  # just remove the file, no need to keep it
-            except Exception as e:
-                job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=str(e)))
+        articles_upload_helper.upload_process(file_upload, job, path, _articles_factory)
 
     def cleanup(self):
         """
@@ -457,7 +379,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except:
             # if we can't record either of these things, we need to back right off
             try:
-                file_failed(xml)
+                articles_upload_helper.file_failed(xml)
             except:
                 pass
             try:
@@ -486,7 +408,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except IngestException as e:
             record.failed(e.message, e.inner_message)
             try:
-                file_failed(xml)
+                articles_upload_helper.file_failed(xml)
             except:
                 pass
             record.save()
@@ -495,7 +417,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except Exception as e:
             record.failed("File system error when reading file")
             try:
-                file_failed(xml)
+                articles_upload_helper.file_failed(xml)
             except:
                 pass
             record.save()

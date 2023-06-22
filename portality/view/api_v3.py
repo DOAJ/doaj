@@ -4,6 +4,7 @@ from flask import Blueprint, jsonify, url_for, request, make_response, render_te
 from flask_login import current_user
 from flask_swagger import swagger
 
+from portality.api import respond
 from portality.api.current import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi, ApplicationsBulkApi, \
     ArticlesBulkApi
 from portality.api.current import DiscoveryApi, DiscoveryException
@@ -52,11 +53,13 @@ def api_spec():
 
 
 # Handle wayward paths by raising an API404Error
-@blueprint.route("/<path:invalid_path>", methods=["POST", "GET", "PUT", "DELETE", "PATCH", "HEAD"])     # leaving out methods should mean all, but tests haven't shown that behaviour.
+@blueprint.route("/<path:invalid_path>", methods=["POST", "GET", "PUT", "DELETE", "PATCH",
+                                                  "HEAD"])  # leaving out methods should mean all, but tests haven't shown that behaviour.
 def missing_resource(invalid_path):
     docs_url = app.config.get("BASE_URL", "") + url_for('.docs')
     spec_url = app.config.get("BASE_URL", "") + url_for('.api_spec')
-    raise Api404Error("No endpoint at {0}. See {1} for valid paths or read the documentation at {2}.".format(invalid_path, spec_url, docs_url))
+    raise Api404Error("No endpoint at {0}. See {1} for valid paths or read the documentation at {2}."
+                      .format(invalid_path, spec_url, docs_url))
 
 
 @swag(swag_summary='Search your applications <span class="red">[Authenticated, not public]</span>',
@@ -350,6 +353,14 @@ def bulk_application_delete():
 #########################################
 # Article Bulk API
 
+def _load_income_articles_json(request):
+    # get the data from the request
+    try:
+        return json.loads(request.data.decode("utf-8"))
+    except:
+        raise Api400Error("Supplied data was not valid JSON")
+
+
 @blueprint.route("/bulk/articles", methods=["POST"])
 @api_key_required
 @write_required(api=True)
@@ -357,11 +368,7 @@ def bulk_application_delete():
       swag_spec=ArticlesBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('bulk_article_create', 'Bulk article create'))
 def bulk_article_create():
-    # get the data from the request
-    try:
-        data = json.loads(request.data.decode("utf-8"))
-    except:
-        raise Api400Error("Supplied data was not valid JSON")
+    data = _load_income_articles_json(request)
 
     # delegate to the API implementation
     ids = ArticlesBulkApi.create(data, current_user._get_current_object())
@@ -373,6 +380,22 @@ def bulk_article_create():
 
     # respond with a suitable Created response
     return bulk_created(inl)
+
+
+@blueprint.route("/bulk/articles/async", methods=["POST"])
+@api_key_required
+@write_required(api=True)
+@swag(swag_summary='Bulk article creation asynchronously <span class="red">[Authenticated, not public]</span>',
+      swag_spec=ArticlesBulkApi.create_async_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('bulk_article_create_async',
+                                                       'Bulk article create asynchronously'))
+def bulk_article_create_async():
+    data = _load_income_articles_json(request)
+    ArticlesBulkApi.create_async(data, current_user._get_current_object())
+
+    d = {'msg': 'articles are being created asynchronously'}
+    d = json.dumps(d)
+    return respond(d, 201)
 
 
 @blueprint.route("/bulk/articles", methods=["DELETE"])
