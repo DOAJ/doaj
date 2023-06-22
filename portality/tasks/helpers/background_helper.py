@@ -93,10 +93,10 @@ def register_execute(task_queue, task_name=None, script=True):
 
 
 class RedisHueyTaskHelper:
-    def __init__(self, task_queue: RedisHuey, task_name: str, task_factory: Callable = None):
+    def __init__(self, task_queue: RedisHuey, bgtask: Type[BackgroundTask]):
         self.task_queue = task_queue
-        self.task_name = task_name
-        self.task_factory = task_factory
+        self.task_name = bgtask.__action__
+        self.task_factory = bgtask
 
     @property
     def queue_id(self):
