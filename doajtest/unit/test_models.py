@@ -1422,7 +1422,7 @@ class TestModels(DoajTestCase):
         models.Cache.cache_sitemap("sitemap.xml")
 
         models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article", 100, "jc", "jf", "http://example.com/journal", 200)
-        
+
         time.sleep(1)
 
         stats = models.Cache.get_site_statistics()
@@ -1622,4 +1622,36 @@ class TestModels(DoajTestCase):
         assert n2.is_seen()
         assert n2.seen_date is not None
 
+    def test_37_currency_code_lax(self):
+        """ Check we can open a journal / application model with an invalid currency but can't save it """
+        asource = ApplicationFixtureFactory.make_application_source()
+
+        # VEF is a deprecated currency - we should be able to read it out
+        asource['bibjson']['apc']['max'][0]['currency'] = 'VEF'
+        a = models.Application(**asource)
+        assert a.bibjson().apc[0] == {'currency': 'VEF', 'price': 2}
+
+        # We could actually put complete nonsense in here if we wanted
+        asource['bibjson']['apc']['max'][0]['currency'] = 'bananas'
+        a2 = models.Application(**asource)
+        assert a2.bibjson().apc.pop() == {'currency': 'bananas', 'price': 2}
+
+
+class TestAccount(DoajTestCase):
+    def test_get_name_safe(self):
+
+        # have name
+        acc = models.Account.make_account(email='user@example.com')
+        acc_name = 'Account Name'
+        acc.set_name(acc_name)
+        acc.save(blocking=True)
+        assert models.Account.get_name_safe(acc.id) == acc_name
+
+        # no name
+        acc = models.Account.make_account(email='user2@example.com')
+        acc.save(blocking=True)
+        assert models.Account.get_name_safe(acc.id) == ''
+
+        # account does not exist
+        assert models.Account.get_name_safe('not existing account id') == ''
 
