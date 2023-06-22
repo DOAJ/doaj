@@ -47,7 +47,7 @@ class ApplicationPublisherInprogressNotify(EventConsumer):
             volunteers=volunteers
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns)
+            issns=", ".join(issn for issn in application.bibjson().issns())
         )
 
         svc.notify(notification)

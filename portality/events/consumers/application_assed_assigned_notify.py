@@ -39,7 +39,7 @@ class ApplicationAssedAssignedNotify(EventConsumer):
             group_name=application.editor_group
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns)
+            issns=", ".join(issn for issn in application.bibjson().issns())
         )
         notification.action = url_for("editor.application", application_id=application.id)
 

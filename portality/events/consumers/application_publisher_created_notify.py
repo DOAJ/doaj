@@ -42,7 +42,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
                                                                  application_date=dates.human_date(application.date_applied),
                                                                  volunteers_url=url_for("doaj.volunteers"))
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns)
+            issns=", ".join(issn for issn in application.bibjson().issns())
         )
 
         svc.notify(notification)
