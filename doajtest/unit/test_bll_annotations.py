@@ -4,7 +4,7 @@ from portality import constants
 from doajtest.helpers import DoajTestCase
 from portality.core import app
 from portality import models
-from portality.tasks.application_annotations import ApplicationAnnotations
+from portality.tasks.application_autochecks import ApplicationAutochecks
 from portality.background import BackgroundApi
 from portality.bll import DOAJ
 
@@ -12,7 +12,7 @@ from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.mocks.annotation_resource_bundle_Resource import ResourceBundleResourceMockFactory
 from doajtest.mocks.annotation_annotators import AnnotatorsMockFactory
 
-from portality.annotation.resource_bundle import Resource
+from portality.autocheck.resource_bundle import Resource
 
 
 class TestBLLAnnotations(DoajTestCase):
@@ -34,8 +34,8 @@ class TestBLLAnnotations(DoajTestCase):
         application.save(blocking=True)
 
         ma = AnnotatorsMockFactory.mock_annotator()
-        anno_svc = DOAJ.annotationsService([(True, True, ma)])
-        anno_svc.annotate_application(application)
+        anno_svc = DOAJ.autochecksService([(True, True, ma)])
+        anno_svc.autocheck_application(application)
 
         time.sleep(2)
 
@@ -53,8 +53,8 @@ class TestBLLAnnotations(DoajTestCase):
         journal.save(blocking=True)
 
         ma = AnnotatorsMockFactory.mock_annotator()
-        anno_svc = DOAJ.annotationsService([(True, True, ma)])
-        anno_svc.annotate_journal(journal)
+        anno_svc = DOAJ.autochecksService([(True, True, ma)])
+        anno_svc.autocheck_journal(journal)
 
         time.sleep(2)
 

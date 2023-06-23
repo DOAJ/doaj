@@ -1,20 +1,20 @@
-from portality.annotation.annotator import Annotator
+from portality.autocheck.checker import Checker
 
 class AnnotatorsMockFactory(object):
     @classmethod
     def mock_annotator(cls):
-        return MockAnnotator
+        return MockChecker
 
 
-class MockAnnotator(Annotator):
+class MockChecker(Checker):
     __identity__ = "mock_annotator"
 
-    def annotate(self, form,
-                        jla,
-                        annotations,
-                        resources,
-                        logger):
-        annotations.add_check(field="pissn",
+    def check(self, form,
+              jla,
+              autochecks,
+              resources,
+              logger):
+        autochecks.add_check(field="pissn",
                               original_value="1234-5678",
                               suggested_value="9876-5432",
                               advice="Change the issn",

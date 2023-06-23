@@ -2,9 +2,9 @@ from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import ApplicationFixtureFactory
 from doajtest.mocks.annotation_resource_bundle_Resource import ResourceBundleResourceMockFactory
 
-from portality.annotation.annotators.issn_active import ISSNActive
+from portality.autocheck.checkers.issn_active import ISSNActive
 from portality import models
-from portality.annotation.resource_bundle import Resource, ResourceBundle
+from portality.autocheck.resource_bundle import Resource, ResourceBundle
 
 
 class TestISSNActive(DoajTestCase):
@@ -32,7 +32,7 @@ class TestISSNActive(DoajTestCase):
         annotations = models.Autocheck()
         resources = ResourceBundle()
 
-        issn_active.annotate(form, app, annotations, resources, logger=lambda x: x)
+        issn_active.check(form, app, annotations, resources, logger=lambda x: x)
 
         assert len(annotations.checks) == 2
         for anno in annotations.checks:
@@ -54,7 +54,7 @@ class TestISSNActive(DoajTestCase):
         annotations = models.Autocheck()
         resources = ResourceBundle()
 
-        issn_active.annotate(form, app, annotations, resources, logger=lambda x: x)
+        issn_active.check(form, app, annotations, resources, logger=lambda x: x)
 
         assert len(annotations.checks) == 2
         for anno in annotations.checks:
@@ -76,7 +76,7 @@ class TestISSNActive(DoajTestCase):
         annotations = models.Autocheck()
         resources = ResourceBundle()
 
-        issn_active.annotate(form, app, annotations, resources, logger=lambda x: x)
+        issn_active.check(form, app, annotations, resources, logger=lambda x: x)
 
         assert len(annotations.checks) == 2
         for anno in annotations.checks:
@@ -98,7 +98,7 @@ class TestISSNActive(DoajTestCase):
         annotations = models.Autocheck()
         resources = ResourceBundle()
 
-        issn_active.annotate(form, app, annotations, resources, logger=lambda x: x)
+        issn_active.check(form, app, annotations, resources, logger=lambda x: x)
 
         assert len(annotations.checks) == 2
         for anno in annotations.checks:

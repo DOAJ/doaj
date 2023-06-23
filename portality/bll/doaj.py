@@ -119,6 +119,6 @@ class DOAJ(object):
         return background_task_status.BackgroundTaskStatusService()
 
     @classmethod
-    def annotationsService(cls, annotation_plugins=None):
-        from portality.bll.services import annotations
-        return annotations.AnnotationsService(annotation_plugins=annotation_plugins)
+    def autochecksService(cls, autocheck_plugins=None):
+        from portality.bll.services import autochecks
+        return autochecks.AutocheckService(autocheck_plugins=autocheck_plugins)

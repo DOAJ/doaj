@@ -1,11 +1,11 @@
 from portality.models import JournalLikeObject, Autocheck
-from portality.annotation.resource_bundle import ResourceBundle
+from portality.autocheck.resource_bundle import ResourceBundle
 from typing import Callable
-from portality.annotation.annotators.issn_active import ISSNAnnotator
+from portality.autocheck.checkers.issn_active import ISSNChecker
 from datetime import datetime
 
 
-class KeepersRegistry(ISSNAnnotator):
+class KeepersRegistry(ISSNChecker):
     __identity__ = "keepers_registry"
 
     ID_MAP = {
@@ -45,13 +45,13 @@ class KeepersRegistry(ISSNAnnotator):
 
         return ad
 
-    def annotate(self, form: dict,
-                 jla: JournalLikeObject,
-                 annotations: Autocheck,
-                 resources: ResourceBundle,
-                 logger: Callable):
+    def check(self, form: dict,
+              jla: JournalLikeObject,
+              autochecks: Autocheck,
+              resources: ResourceBundle,
+              logger: Callable):
 
-        eissn, eissn_url, eissn_data, eissn_fail, pissn, pissn_url, pissn_data, pissn_fail = self.retrieve_from_source(form, resources, annotations, logger)
+        eissn, eissn_url, eissn_data, eissn_fail, pissn, pissn_url, pissn_data, pissn_fail = self.retrieve_from_source(form, resources, autochecks, logger)
 
         url = eissn_url if eissn_url else pissn_url
 
@@ -68,32 +68,32 @@ class KeepersRegistry(ISSNAnnotator):
             if not coverage:
                 # the archive is not mentioned in issn.org
                 logger("Service {x} is not registered at issn.org for this record".format(x=service))
-                annotations.add_check(
+                autochecks.add_check(
                     field="preservation_service",
                     advice=self.MISSING,
                     reference_url=url,
                     context={"service": service},
-                    annotator=self.__identity__
+                    checked_by=self.__identity__
                 )
                 continue
 
             if coverage < datetime.utcnow().year - 1:
                 # the temporal coverage is too old
                 logger("Service {x} is registerd as issn.org for this record, but the archive is not recent enough".format(x=service))
-                annotations.add_check(
+                autochecks.add_check(
                     field="preservation_service",
                     advice=self.OUTDATED,
                     reference_url=url,
                     context={"service": service},
-                    annotator=self.__identity__
+                    checked_by=self.__identity__
                 )
             else:
                 # the coverage is within a reasonable period
                 logger("Service {x} is registerd as issn.org for this record".format(x=service))
-                annotations.add_check(
+                autochecks.add_check(
                     field="preservation_service",
                     advice=self.PRESENT,
                     reference_url=url,
                     context={"service": service},
-                    annotator=self.__identity__
+                    checked_by=self.__identity__
                 )

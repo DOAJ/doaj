@@ -6,9 +6,9 @@ from portality.tasks.redis_huey import main_queue
 from portality.bll import DOAJ
 
 
-class ApplicationAnnotations(BackgroundTask):
+class ApplicationAutochecks(BackgroundTask):
 
-    __action__ = "application_annotations"
+    __action__ = "application_autochecks"
 
     def run(self):
         """
@@ -30,10 +30,10 @@ class ApplicationAnnotations(BackgroundTask):
             job.add_audit_message("Application id {id} is not present, no further action required".format(id=app_id))
             return
 
-        job.add_audit_message("Running application annotation for application with id {id}".format(id=app_id))
+        job.add_audit_message("Running application autocheck for application with id {id}".format(id=app_id))
 
-        annoSvc = DOAJ.annotationsService()
-        annoSvc.annotate_application(application, created_date=job.created_date, logger=lambda x: job.add_audit_message(x))
+        annoSvc = DOAJ.autochecksService()
+        annoSvc.autocheck_application(application, created_date=job.created_date, logger=lambda x: job.add_audit_message(x))
 
         if status_on_complete != "" and status_on_complete in constants.APPLICATION_STATUSES_ALL:
             job.add_audit_message("Setting status to {x}".format(x=status_on_complete))
@@ -85,14 +85,14 @@ class ApplicationAnnotations(BackgroundTask):
         :return:
         """
         background_job.save()
-        application_annotations.schedule(args=(background_job.id,), delay=10)
+        application_autochecks.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = ApplicationAnnotations.create_huey_helper(main_queue)
+huey_helper = ApplicationAutochecks.create_huey_helper(main_queue)
 
 
 @huey_helper.register_execute(is_load_config=True)
-def application_annotations(job_id):
+def application_autochecks(job_id):
     job = models.BackgroundJob.pull(job_id)
-    task = ApplicationAnnotations(job)
+    task = ApplicationAutochecks(job)
     BackgroundApi.execute(task)

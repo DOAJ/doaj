@@ -9,28 +9,28 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-i", "--id", help="ID of application or journal on which to run annotations")
-    parser.add_argument("-a", "--applications", help="CSV of application IDs on which to run annotations")
-    parser.add_argument("-j", "--journals", help="CSV of journal IDs on which to run annotations")
+    parser.add_argument("-i", "--id", help="ID of application or journal on which to run autocheck")
+    parser.add_argument("-a", "--applications", help="CSV of application IDs on which to run autochecks")
+    parser.add_argument("-j", "--journals", help="CSV of journal IDs on which to run autochecks")
 
     args = parser.parse_args()
     if args.applications is None and args.journals is None:
         print("You must specify an application id with the -i argument, or a list of ids in a csv with the -a or -j arguments for applications and journals respectively")
         exit(1)
 
-    anno_svc = DOAJ.annotationsService()
+    anno_svc = DOAJ.autochecksService()
 
     if args.id:
         application = models.Application.pull(args.id)
         if application is not None:
             print("\nAnnotating application {x}".format(x=application.id))
-            anno_svc.annotate_application(application, logger=lambda x: print(x))
+            anno_svc.autocheck_application(application, logger=lambda x: print(x))
             exit(1)
 
         journal = models.Journal.pull(args.id)
         if journal is not None:
             print("\nAnnotating journal {x}".format(x=journal.id))
-            anno_svc.annotate_journal(journal, logger=lambda x: print(x))
+            anno_svc.autocheck_journal(journal, logger=lambda x: print(x))
             exit(1)
 
         print("ID did not resolve to an application or journal")
@@ -53,7 +53,7 @@ if __name__ == '__main__':
                     print("Application ID {x} did not resolve to an application".format(x=id))
                     continue
                 print("\nAnnotating application {x}".format(x=application.id))
-                anno_svc.annotate_application(application, logger=lambda x: print(x))
+                anno_svc.autocheck_application(application, logger=lambda x: print(x))
 
     if args.journals:
         with open(args.journals, "r", encoding="utf-8") as f:
@@ -72,4 +72,4 @@ if __name__ == '__main__':
                     print("Journal ID {x} did not resolve to a journal".format(x=id))
                     continue
                 print("\nAnnotating journal {x}".format(x=journal.id))
-                anno_svc.annotate_journal(journal, logger=lambda x: print(x))
+                anno_svc.autocheck_journal(journal, logger=lambda x: print(x))

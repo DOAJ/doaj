@@ -279,11 +279,11 @@ class NewApplication(ApplicationProcessor):
 
             # Kick off the post-submission review
             # FIXME: imports are delayed because of a circular import problem buried in portality.decorators
-            from portality.tasks.application_annotations import ApplicationAnnotations
+            from portality.tasks.application_autochecks import ApplicationAutochecks
             from portality.tasks.helpers import background_helper
-            background_helper.submit_by_bg_task_type(ApplicationAnnotations,
-                                                      application=self.target.id,
-                                                      status_on_complete=constants.APPLICATION_STATUS_PENDING)
+            background_helper.submit_by_bg_task_type(ApplicationAutochecks,
+                                                     application=self.target.id,
+                                                     status_on_complete=constants.APPLICATION_STATUS_PENDING)
 
 
 class AdminApplication(ApplicationProcessor):
@@ -743,11 +743,11 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # Kick off the post-submission review
         # FIXME: imports are delayed because of a circular import problem buried in portality.decorators
-        from portality.tasks.application_annotations import ApplicationAnnotations
+        from portality.tasks.application_autochecks import ApplicationAutochecks
         from portality.tasks.helpers import background_helper
-        background_helper.submit_by_bg_task_type(ApplicationAnnotations,
-                                                  application=self.target.id,
-                                                  status_on_complete=constants.APPLICATION_STATUS_UPDATE_REQUEST)
+        background_helper.submit_by_bg_task_type(ApplicationAutochecks,
+                                                 application=self.target.id,
+                                                 status_on_complete=constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
         # email the publisher to tell them we received their update request
         if email_alert:

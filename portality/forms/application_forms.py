@@ -273,7 +273,7 @@ class FieldDefinitions:
                 },
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-                    "annotation",  # ~~^-> Annotation:FormWidget~~
+                    "autocheck",  # ~~^-> Autocheck:FormWidget~~
                 ]
             },
             "editor": {
@@ -344,7 +344,7 @@ class FieldDefinitions:
                 },
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-                    "annotation",  # ~~^-> Annotation:FormWidget~~
+                    "autocheck",  # ~~^-> Autocheck:FormWidget~~
                 ]
             },
             "editor": {
@@ -1203,7 +1203,7 @@ class FieldDefinitions:
         "contexts" : {
             "admin": {
                 "widgets": [
-                    "annotation",  # ~~^-> Annotation:FormWidget~~
+                    "autocheck",  # ~~^-> Autocheck:FormWidget~~
                 ]
             }
         }
@@ -2955,7 +2955,7 @@ JAVASCRIPT_FUNCTIONS = {
     "load_editors" : "formulaic.widgets.newLoadEditors",    # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
     "note_modal" : "formulaic.widgets.newNoteModal", # ~~-> NoteModal:FormWidget~~
-    "annotation": "formulaic.widgets.newAnnotation" # ~~-> Annotation:FormWidget~~
+    "autocheck": "formulaic.widgets.newAutocheck" # ~~-> Autocheck:FormWidget~~
 }
 
 

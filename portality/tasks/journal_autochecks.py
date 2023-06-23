@@ -1,16 +1,16 @@
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
-from portality.annotation.resource_bundle import ResourceBundle
+from portality.autocheck.resource_bundle import ResourceBundle
 from portality.crosswalks.application_form import JournalFormXWalk
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import long_running
 from portality.bll import DOAJ
 
-from portality.annotation.annotators.issn_active import ISSNActive
+from portality.autocheck.checkers.issn_active import ISSNActive
 
-class JournalAnnotations(BackgroundTask):
+class JournalAutochecks(BackgroundTask):
 
-    __action__ = "journal_annotations"
+    __action__ = "journal_autochecks"
 
     def run(self):
         """
@@ -28,10 +28,10 @@ class JournalAnnotations(BackgroundTask):
 
         journal = models.Journal.pull(journal_id)
 
-        job.add_audit_message("Running journal annotation for journal with id {id}".format(id=journal_id))
+        job.add_audit_message("Running journal autocheck for journal with id {id}".format(id=journal_id))
 
-        annoSvc = DOAJ.annotationsService()
-        annoSvc.annotate_journal(journal, logger=lambda x: job.add_audit_message(x))
+        annoSvc = DOAJ.autochecksService()
+        annoSvc.autocheck_journal(journal, logger=lambda x: job.add_audit_message(x))
 
     def cleanup(self):
         """
@@ -75,14 +75,14 @@ class JournalAnnotations(BackgroundTask):
         :return:
         """
         background_job.save()
-        journal_annotations.schedule(args=(background_job.id,), delay=10)
+        journal_autochecks.schedule(args=(background_job.id,), delay=10)
 
 
-huey_helper = JournalAnnotations.create_huey_helper(long_running)
+huey_helper = JournalAutochecks.create_huey_helper(long_running)
 
 
 @huey_helper.register_execute(is_load_config=True)
-def journal_annotations(job_id):
+def journal_autochecks(job_id):
     job = models.BackgroundJob.pull(job_id)
-    task = JournalAnnotations(job)
+    task = JournalAutochecks(job)
     BackgroundApi.execute(task)

@@ -46,17 +46,17 @@
 {% endblock %}
 
 {% block extra_js_bottom scoped %}
-    {% if annotations %}
+    {% if autochecks %}
     <script type="application/javascript">
-        doaj.annotations = {{ annotations.data|tojson }}
+        doaj.autochecks = {{ autochecks.data|tojson }}
     </script>
-    <script type="text/javascript" src="/static/js/annotators.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript" src="/js/autochecks.js?v={{config.get('DOAJ_VERSION')}}"></script>
     {% endif %}
     {% set factory = "journal" %}
     {% include "application_form/js/_form_js.html" %}
-    {% if annotations %}
+    {% if autochecks %}
     <script type="application/javascript">
-        doaj.annotators.dismissed = new doaj.annotators.DismissedAnnotations({})
+        doaj.autocheckers.dismissed = new doaj.autocheckers.DismissedAutochecks({})
     </script>
     {% endif %}
 {% endblock %}

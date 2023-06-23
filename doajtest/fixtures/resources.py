@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from portality.annotation.resources.issn_org import ISSNOrgData
+from portality.autocheck.resources.issn_org import ISSNOrgData
 
 class ResourcesFixtureFactory(object):
     @classmethod

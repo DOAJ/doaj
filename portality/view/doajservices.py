@@ -114,26 +114,26 @@ def group_status(group_id):
     return make_response(json.dumps(stats))
 
 
-@blueprint.route("/annotation/dismiss/<annotation_set_id>/<annotation_id>", methods=["GET", "POST"])
+@blueprint.route("/autocheck/dismiss/<autocheck_set_id>/<autocheck_id>", methods=["GET", "POST"])
 @jsonp
 @login_required
-def dismiss_annotation(annotation_set_id, annotation_id):
+def dismiss_autocheck(autocheck_set_id, autocheck_id):
     if not current_user.has_role("admin"):
         abort(404)
-    svc = DOAJ.annotationsService()
-    done = svc.dismiss(annotation_set_id, annotation_id)
+    svc = DOAJ.autochecksService()
+    done = svc.dismiss(autocheck_set_id, autocheck_id)
     if not done:
         abort(404)
     return make_response(json.dumps({"status": "success"}))
 
-@blueprint.route("/annotation/undismiss/<annotation_set_id>/<annotation_id>", methods=["GET", "POST"])
+@blueprint.route("/autocheck/undismiss/<autocheck_set_id>/<autocheck_id>", methods=["GET", "POST"])
 @jsonp
 @login_required
-def undismiss_annotation(annotation_set_id, annotation_id):
+def undismiss_autocheck(autocheck_set_id, autocheck_id):
     if not current_user.has_role("admin"):
         abort(404)
-    svc = DOAJ.annotationsService()
-    done = svc.undismiss(annotation_set_id, annotation_id)
+    svc = DOAJ.autochecksService()
+    done = svc.undismiss(autocheck_set_id, autocheck_id)
     if not done:
         abort(404)
     return make_response(json.dumps({"status": "success"}))

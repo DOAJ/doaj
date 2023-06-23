@@ -211,7 +211,7 @@ def journal_page(journal_id):
         return render_template("admin/journal_locked.html", journal=journal, lock=l.lock)
 
     fc = JournalFormFactory.context("admin", extra_param=exparam_editing_user())
-    annotations = models.Autocheck.for_journal(journal_id)
+    autochecks = models.Autocheck.for_journal(journal_id)
 
     if request.method == "GET":
         job = None
@@ -223,7 +223,7 @@ def journal_page(journal_id):
             url = url_for("admin.background_jobs_search") + "?source=" + dao.Facetview2.url_encode_query(dao.Facetview2.make_query(job_id))
             Messages.flash_with_url(Messages.ADMIN__WITHDRAW_REINSTATE.format(url=url), "success")
         fc.processor(source=journal)
-        return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree, annotations=annotations)
+        return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree, autochecks=autochecks)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=journal)
@@ -238,7 +238,7 @@ def journal_page(journal_id):
                 flash(str(e))
                 return redirect(url_for("admin.journal_page", journal_id=journal.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree, annotations=annotations)
+            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree, autochecks=autochecks)
 
 ######################################################
 # Endpoints for reinstating/withdrawing journals from the DOAJ
@@ -370,12 +370,12 @@ def application(application_id):
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
 
-    annotations = models.Autocheck.for_application(application_id)
+    autochecks = models.Autocheck.for_application(application_id)
 
     if request.method == "GET":
         fc.processor(source=ap)
         return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
-                                  current_journal=current_journal, lcc_tree=lcc_jstree, annotations=annotations)
+                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
@@ -395,7 +395,7 @@ def application(application_id):
                 flash(str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree, annotations=annotations)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])

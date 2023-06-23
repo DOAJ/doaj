@@ -1,4 +1,4 @@
-from portality.annotation.resource_bundle import Resource
+from portality.autocheck.resource_bundle import Resource
 import requests
 import json
 from bs4 import BeautifulSoup

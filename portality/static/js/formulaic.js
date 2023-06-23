@@ -1102,26 +1102,26 @@ var formulaic = {
             return elements.find(containerSelector);
         },
 
-        newAnnotation : function(params) {
-            return edges.instantiate(formulaic.widgets.Annotation, params);
+        newAutocheck : function(params) {
+            return edges.instantiate(formulaic.widgets.Autocheck, params);
         },
-        Annotation: function(params) {
+        Autocheck: function(params) {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
 
-            this.namespace = "formulaic-annotation-" + this.fieldDef.name;
+            this.namespace = "formulaic-autocheck-" + this.fieldDef.name;
 
             this.init = function() {
-                let annos = this._getAnnotationsForField();
+                let annos = this._getAutochecksForField();
                 if (annos.length === 0) {
                     return;
                 }
 
-                let cont = formulaic.widgets._make_empty_container(this.namespace, "annotations", this.form, this.fieldDef);
+                let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef);
 
                 let frag = "";
                 for (let anno of annos) {
-                    frag += this._renderAnnotation(anno)
+                    frag += this._renderAutocheck(anno)
                 }
 
                 let listClass = edges.css_classes(this.namespace, "list")
@@ -1136,15 +1136,15 @@ var formulaic = {
                 let undismissSelector = edges.css_class_selector(this.namespace, "undismiss");
                 edges.on(undismissSelector, "click", this, "undismiss");
 
-                edges.on(window, "doaj:annotations-undismiss", this, "undismissHandler");
+                edges.on(window, "doaj:autochecks-undismiss", this, "undismissHandler");
             }
 
-            this._getAnnotationsForField = function() {
-                if (!doaj.annotations) {
+            this._getAutochecksForField = function() {
+                if (!doaj.autochecks) {
                     return [];
                 }
                 let applicable = [];
-                for (let anno of doaj.annotations.annotations) {
+                for (let anno of doaj.autochecks.autochecks) {
                     if (anno.field && anno.field === this.fieldDef.name) {
                         applicable.push(anno);
                     }
@@ -1152,98 +1152,98 @@ var formulaic = {
                 return applicable;
             }
 
-            this._renderAnnotation = function(annotation) {
+            this._renderAutocheck = function(autocheck) {
                 let frag = "<li>";
 
-                if (annotation.hasOwnProperty("dismissed") && annotation.dismissed) {
+                if (autocheck.hasOwnProperty("dismissed") && autocheck.dismissed) {
                     let undismissClass = edges.css_classes(this.namespace, "undismiss");
-                    frag += `Annotation ${annotation.id} was dismissed <button data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${undismissClass}">Undismiss</button>`;
+                    frag += `Automated check ${autocheck.id} was dismissed <button data-autocheck-set="${doaj.autochecks.id}" data-autocheck="${autocheck.id}" class="${undismissClass}">Undismiss</button>`;
 
                 } else {
-                    if (annotation.annotator && doaj.annotators &&
-                        doaj.annotators.registry.hasOwnProperty(annotation.annotator)) {
-                        frag += (new doaj.annotators.registry[annotation.annotator]()).draw(annotation)
+                    if (autocheck.checked_by && doaj.autocheckers &&
+                        doaj.autocheckers.registry.hasOwnProperty(autocheck.checked_by)) {
+                        frag += (new doaj.autocheckers.registry[autocheck.checked_by]()).draw(autocheck)
                     } else {
-                        frag += this._defaultRender(annotation);
+                        frag += this._defaultRender(autocheck);
                     }
                     let dismissClass = edges.css_classes(this.namespace, "dismiss");
-                    frag += `<button data-annotation-set="${doaj.annotations.id}" data-annotation="${annotation.id}" class="${dismissClass}">Dismiss <span data-feather="x" aria-hidden="true"></span></button>`;
+                    frag += `<button data-autocheck-set="${doaj.autochecks.id}" data-autocheck="${autocheck.id}" class="${dismissClass}">Dismiss <span data-feather="x" aria-hidden="true"></span></button>`;
                 }
 
                 frag += `</li>`;
                 return frag;
             }
 
-            this._defaultRender = function(annotation) {
+            this._defaultRender = function(autocheck) {
                 let frag = "";
-                if (annotation.advice) {
-                    frag += `${annotation.advice}<br>`
+                if (autocheck.advice) {
+                    frag += `${autocheck.advice}<br>`
                 }
-                if (annotation.reference_url) {
-                    frag += `<a href="${annotation.reference_url}" target="_blank">${annotation.reference_url}</a><br>`
+                if (autocheck.reference_url) {
+                    frag += `<a href="${autocheck.reference_url}" target="_blank">${autocheck.reference_url}</a><br>`
                 }
-                if (annotation.suggested_value) {
-                    frag += `Suggested Value(s): ${annotation.suggested_value.join(", ")}<br>`
+                if (autocheck.suggested_value) {
+                    frag += `Suggested Value(s): ${autocheck.suggested_value.join(", ")}<br>`
                 }
-                if (annotation.original_value) {
-                    frag += `(Original value when automated checks ran: ${annotation.original_value})`
+                if (autocheck.original_value) {
+                    frag += `(Original value when automated checks ran: ${autocheck.original_value})`
                 }
                 return frag;
             }
 
             this.dismiss = function(element) {
                 let el = $(element);
-                let annotationSet = el.attr("data-annotation-set")
-                let annotationId = el.attr("data-annotation");
-                let url = "/service/annotation/dismiss/" + annotationSet + "/" + annotationId;
+                let autocheckSet = el.attr("data-autocheck-set")
+                let autocheckId = el.attr("data-autocheck");
+                let url = "/service/autocheck/dismiss/" + autocheckSet + "/" + autocheckId;
                 let that = this;
                 $.ajax({
                     method: "post",
                     url: url,
                     error: function(data) {
-                        alert("There was an error dismissing the annotation, please try again");
+                        alert("There was an error dismissing the autocheck, please try again");
                     },
                     success: function(data) {
-                        that.dismissSuccess(annotationId);
+                        that.dismissSuccess(autocheckId);
                     }
                 })
             }
 
-            this.dismissSuccess = function(annotationId) {
-                for (let anno of doaj.annotations.annotations) {
-                    if (anno.id === annotationId) {
+            this.dismissSuccess = function(autocheckId) {
+                for (let anno of doaj.autochecks.autochecks) {
+                    if (anno.id === autocheckId) {
                         anno.dismissed = true;
                     }
                 }
-                $(window).trigger("doaj:annotations-dismiss")
+                $(window).trigger("doaj:autochecks-dismiss")
                 this.init();
             }
 
             this.undismiss = function(element) {
                 let el = $(element);
-                let annotationSet = el.attr("data-annotation-set")
-                let annotationId = el.attr("data-annotation");
-                let url = "/service/annotation/undismiss/" + annotationSet + "/" + annotationId;
+                let autocheckSet = el.attr("data-autocheck-set")
+                let autocheckId = el.attr("data-autocheck");
+                let url = "/service/autocheck/undismiss/" + autocheckSet + "/" + autocheckId;
                 let that = this;
                 $.ajax({
                     method: "post",
                     url: url,
                     error: function(data) {
-                        alert("There was an error undismissing the annotation, please try again");
+                        alert("There was an error undismissing the autocheck, please try again");
                     },
                     success: function(data) {
-                        that.undismissSuccess(annotationId);
+                        that.undismissSuccess(autocheckId);
                     }
                 })
             }
 
-            this.undismissSuccess = function(annotationId) {
-                for (let anno of doaj.annotations.annotations) {
-                    if (anno.id === annotationId) {
+            this.undismissSuccess = function(autocheckId) {
+                for (let anno of doaj.autochecks.autochecks) {
+                    if (anno.id === autocheckId) {
                         anno.dismissed = false;
                     }
                 }
-                $(window).trigger("doaj:annotations-undismiss")
+                $(window).trigger("doaj:autochecks-undismiss")
                 // this.init();
             }
 

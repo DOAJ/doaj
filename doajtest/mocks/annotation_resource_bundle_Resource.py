@@ -1,6 +1,6 @@
 from doajtest.fixtures.resources import ResourcesFixtureFactory
 
-from portality.annotation.resource_bundle import ResourceUnavailable
+from portality.autocheck.resource_bundle import ResourceUnavailable
 
 
 class ResourceBundleResourceMockFactory(object):
