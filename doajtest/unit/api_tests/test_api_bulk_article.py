@@ -1,11 +1,12 @@
-from doajtest.helpers import DoajTestCase, with_es
-from portality.api.current import ArticlesBulkApi, Api401Error, Api400Error
-from portality import models
-from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
-from copy import deepcopy
-from flask import url_for
 import json
 import time
+
+from flask import url_for
+
+from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
+from doajtest.helpers import DoajTestCase, with_es
+from portality import models
+from portality.api.current import ArticlesBulkApi, Api401Error, Api400Error
 
 
 class TestBulkArticle(DoajTestCase):
@@ -19,29 +20,8 @@ class TestBulkArticle(DoajTestCase):
     @with_es(indices=[models.Article.__type__, models.Journal.__type__],
              warm_mappings=[models.Article.__type__])
     def test_01_create_articles_success(self):
-        def find_dict_in_list(lst, key, value):
-            for i, dic in enumerate(lst):
-                if dic[key] == value:
-                    return i
-            return -1
 
-        # set up all the bits we need - 10 articles
-        dataset = []
-        for i in range(1, 11):
-            data = ArticleFixtureFactory.make_incoming_api_article()
-            # change the DOI and fulltext URLs to escape duplicate detection
-            # and try with multiple articles
-            doi_ix = find_dict_in_list(data['bibjson']['identifier'], 'type', 'doi')
-            if doi_ix == -1:
-                data['bibjson']['identifier'].append({"type": "doi"})
-            data['bibjson']['identifier'][doi_ix]['id'] = '10.0000/SOME.IDENTIFIER.{0}'.format(i)
-
-            fulltext_url_ix = find_dict_in_list(data['bibjson']['link'], 'type', 'fulltext')
-            if fulltext_url_ix == -1:
-                data['bibjson']['link'].append({"type": "fulltext"})
-            data['bibjson']['link'][fulltext_url_ix]['url'] = 'http://www.example.com/article_{0}'.format(i)
-
-            dataset.append(deepcopy(data))
+        dataset = list(ArticleFixtureFactory.make_bulk_incoming_api_article(10))
 
         # create an account that we'll do the create as
         account = models.Account()
@@ -130,7 +110,8 @@ class TestBulkArticle(DoajTestCase):
         # set up all the bits we need
         dataset = []
         for i in range(10):
-            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i), fulltext="http://example.com/" + str(i))
+            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i),
+                                                                   fulltext="http://example.com/" + str(i))
             dataset.append(data)
 
         # create the account we're going to work as
@@ -169,7 +150,8 @@ class TestBulkArticle(DoajTestCase):
         # set up all the bits we need
         dataset = []
         for i in range(10):
-            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i), fulltext="http://example.com/" + str(i))
+            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i),
+                                                                   fulltext="http://example.com/" + str(i))
             dataset.append(data)
 
         # create the main account we're going to work as
@@ -256,7 +238,6 @@ class TestBulkArticle(DoajTestCase):
 
         with self.app_test.test_request_context():
             with self.app_test.test_client() as t_client:
-
                 # Bulk create
                 # The wrong owner can't create articles
                 resp = t_client.post(url_for('api_v3.bulk_article_create', api_key=somebody_else.api_key),
@@ -441,11 +422,13 @@ class TestBulkArticle(DoajTestCase):
                 resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=somebody_else.api_key),
                                        data=json.dumps([first_art['id']]))
                 assert resp.status_code == 400
+
     def test_09_article_unacceptable(self):
         # set up all the bits we need
         dataset = []
         for i in range(10):
-            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i), fulltext="http://example.com/" + str(i))
+            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i),
+                                                                   fulltext="http://example.com/" + str(i))
             dataset.append(data)
 
         # create the account we're going to work as

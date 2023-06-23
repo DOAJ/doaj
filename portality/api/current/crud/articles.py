@@ -1,5 +1,6 @@
 # ~~APICrudArticles:Feature->APICrud:Feature~~
 import json
+from typing import Dict
 
 from portality.api.current.crud.common import CrudApi
 from portality.api.current import Api400Error, Api401Error, Api403Error, Api404Error, Api500Error
@@ -77,20 +78,18 @@ class ArticlesCrudApi(CrudApi):
             raise Api401Error()
 
         # convert the data into a suitable article model (raises Api400Error if doesn't conform to struct)
-        am = cls.prep_article(data, account)
+        am = cls.prep_article_for_api(data, account)
 
         # ~~-> Article:Service~~
         articleService = DOAJ.articleService()
         try:
             result = articleService.create_article(am, account, add_journal_info=True)
-        except ArticleMergeConflict as e:
-            raise Api400Error(str(e))
-        except ArticleNotAcceptable as e:
+        except (
+                ArticleMergeConflict, ArticleNotAcceptable, IngestException,
+        ) as e:
             raise Api400Error(str(e))
         except DuplicateArticleException as e:
             raise Api403Error(str(e))
-        except IngestException as e:
-            raise Api400Error(str(e))
 
 
         # Check we are allowed to create an article for this journal
@@ -99,14 +98,24 @@ class ArticlesCrudApi(CrudApi):
 
         return am
 
+    @classmethod
+    def prep_article_for_api(cls, data, account)->models.Article:
+        try:
+            return cls.prep_article(data, account)
+        except (
+                dataobj.DataStructureException,
+                dataobj.ScriptTagFoundException,
+        ) as e:
+            raise Api400Error(str(e))
+
 
     @classmethod
-    def prep_article(cls, data, account) -> models.Article:
+    def prep_article(cls, data: Dict, account: models.Account) -> models.Article:
         # first thing to do is a structural validation, by instantiating the data object
         try:
             ia = IncomingArticleDO(data)
         except dataobj.DataStructureException as e:
-            raise Api400Error(str(e))
+            raise e  # let caller know there could have dataobj.DataStructureException
         except dataobj.ScriptTagFoundException as e:
             # ~~->Email:ExternalService~~
             email_data = {"article": data, "account": account.__dict__}
@@ -125,7 +134,7 @@ class ArticlesCrudApi(CrudApi):
                                      data=jdata)
             except app_email.EmailException:
                 app.logger.exception('Error sending script tag detection email - ' + jdata)
-            raise Api400Error(str(e))
+            raise e
 
         # if that works, convert it to an Article object
         am = ia.to_article_model()

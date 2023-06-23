@@ -75,7 +75,7 @@ class ArticlesBulkApi(Api):
             raise Api401Error()
 
         # convert the data into a suitable article models
-        articles = [ArticlesCrudApi.prep_article(data, account) for data in articles]
+        articles = [ArticlesCrudApi.prep_article_for_api(data, account) for data in articles]
 
         # ~~->Article:Service~~
         articleService = DOAJ.articleService()
@@ -92,9 +92,7 @@ class ArticlesBulkApi(Api):
 
     @classmethod
     def create_async(cls, income_articles: List[dict], account: models.Account):
-        # KTODO test and make sure `prep_article` and `prepare` will not tool slow with large data
-        articles = [ArticlesCrudApi.prep_article(data, account).data for data in income_articles]
-        job = ArticleBulkCreateBackgroundTask.prepare(account.id, articles=articles)
+        job = ArticleBulkCreateBackgroundTask.prepare(account.id, incoming_articles=income_articles)
         ArticleBulkCreateBackgroundTask.submit(job)
 
     @classmethod

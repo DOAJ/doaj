@@ -3,8 +3,11 @@ from pathlib import Path
 from typing import List
 
 from portality import models
+from portality.api.current import ArticlesCrudApi
 from portality.background import BackgroundTask
 from portality.core import app
+from portality.crosswalks.exceptions import CrosswalkException
+from portality.lib import dataobj
 from portality.models.uploads import BulkArticles
 from portality.tasks.helpers import background_helper, articles_upload_helper
 from portality.tasks.redis_huey import long_running
@@ -19,6 +22,15 @@ def get_upload_path(upload: BulkArticles) -> Path:
 #########################################################
 # Background task implementation
 
+def prep_article(data, account) -> models.Article:
+    try:
+        return ArticlesCrudApi.prep_article(data, account)
+    except (
+            dataobj.DataStructureException,
+            dataobj.ScriptTagFoundException,
+    ) as e:
+        raise CrosswalkException(message=str(e))
+
 
 class ArticleBulkCreateBackgroundTask(BackgroundTask):
     __action__ = "article_bulk_create"
@@ -27,9 +39,11 @@ class ArticleBulkCreateBackgroundTask(BackgroundTask):
         job = self.background_job
         bulk_articles = BulkArticles.pull(self.get_param(job.params, "upload_id"))
         articles_path = get_upload_path(bulk_articles)
+        uploader = models.Account.pull(job.user) or {}
 
         def _articles_factory(path):
-            return [models.Article(**raw) for raw in json.loads(Path(path).read_text())]
+            articles = (prep_article(d, uploader) for d in json.loads(Path(path).read_text()))
+            return [models.Article(**raw) for raw in articles]
 
         articles_upload_helper.upload_process(bulk_articles, job, articles_path, _articles_factory)
         bulk_articles.save()
@@ -38,7 +52,7 @@ class ArticleBulkCreateBackgroundTask(BackgroundTask):
         pass
 
     @classmethod
-    def prepare(cls, username, articles: List[dict] = None, **kwargs):
+    def prepare(cls, username, incoming_articles: List[dict] = None, **kwargs):
         bulk_articles = BulkArticles()
         bulk_articles.incoming(username)
         bulk_articles.save()
@@ -48,7 +62,7 @@ class ArticleBulkCreateBackgroundTask(BackgroundTask):
         if articles_json_path.exists():
             app.logger.warning(f'bulk_articles file already exist. -- {articles_json_path.as_posix()}')
             articles_json_path.unlink()
-        articles_json_path.write_text(json.dumps(articles))
+        articles_json_path.write_text(json.dumps(incoming_articles))
 
         params = {}
         cls.set_param(params, "upload_id", bulk_articles.id)
