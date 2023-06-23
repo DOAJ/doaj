@@ -389,11 +389,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
             raise BackgroundException("Failed to upload file - please contact an administrator")
 
-        xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(schema)
-        try:
-            xwalk = plugin.load_class(xwalk_name)()
-        except IngestException:
-            raise RetryException(u"Unable to load schema {}".format(xwalk_name))
+        xwalk = load_xwalk(schema)
 
         # now we have the record in the index and on disk, we can attempt to
         # validate it
