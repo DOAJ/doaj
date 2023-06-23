@@ -1387,10 +1387,30 @@ var formulaic = {
             this.init = function() {
                 var viewClass = edges.css_classes(this.ns, "view");
                 var closeClass = edges.css_classes(this.ns, "close");
-                var textarea = $("div[name='" + this.fieldDef["name"] + "__group']").find("textarea");
+                let group = $("div[name='" + this.fieldDef["name"] + "__group']")
+                var textarea = group.find("textarea");
+
+                let inputs = group.find("input[type=text]")
+                for (let i = 0; i < inputs.length; i++) {
+                    let jqin = $(inputs[i]);
+                    let iid = jqin.attr("id");
+                    if (iid.endsWith("_author")) {
+                        let val = jqin.val()
+                        if (val === "") {
+                            jqin.hide();
+                        }
+                    }
+                }
 
                 for (var i = 0; i < textarea.length; i++) {
                     var container = $(textarea[i]);
+
+                    let contentHeight = container[0].scrollHeight;
+                    if (contentHeight > 200) {
+                        contentHeight = 200;
+                    }
+                    container.css("height", (contentHeight + 5) + "px");
+
                     var modalId = "modal-" + this.fieldDef["name"] + "-" + i;
 
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
