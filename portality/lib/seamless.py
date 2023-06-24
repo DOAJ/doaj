@@ -681,6 +681,7 @@ class Construct(object):
 
     @classmethod
     def merge(cls, target, *args):
+        # TODO: add an override or mode argument so we can perform a merge with replacements
         if not isinstance(target, Construct):
             merged = Construct(deepcopy(target), None, None)
         else:

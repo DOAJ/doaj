@@ -142,7 +142,7 @@ class TestAssedAppReview(DoajTestCase):
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
 
-        time.sleep(2)
+        time.sleep(1)
 
         # now check that a provenance record was recorded
         prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
@@ -198,7 +198,7 @@ class TestAssedAppReview(DoajTestCase):
         eg.add_associate("contextuser")
         eg.save()
 
-        time.sleep(2)
+        time.sleep(1)
 
         # construct a context from a form submission
         source = deepcopy(APPLICATION_FORM)
@@ -209,7 +209,7 @@ class TestAssedAppReview(DoajTestCase):
         fc = formulaic_context.processor(source=models.Application(**APPLICATION_SOURCE), formdata=fd)
 
         fc.finalise()
-        time.sleep(2)
+        time.sleep(1)
 
         # now check that a provenance record was recorded
         count = 0
