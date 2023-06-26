@@ -46,11 +46,11 @@ class AutocheckService(object):
         if created_date is not None:
             new_autochecks.set_created(created_date)
 
-        for j, a, anno in self._autocheck_plugins:
+        for j, a, klazz in self._autocheck_plugins:
             if not a:
                 continue
 
-            checker = anno()
+            checker = klazz()
             logger("Running autocheck plugin {x}".format(x=checker.name()))
             checker.check(application_form, application, new_autochecks, resource_bundle, logger)
 
@@ -80,11 +80,11 @@ class AutocheckService(object):
         new_autochecks = models.Autocheck()
         new_autochecks.journal = journal.id
 
-        for j, a, anno in self._autocheck_plugins:
+        for j, a, klazz in self._autocheck_plugins:
             if not j:
                 continue
 
-            checker = anno()
+            checker = klazz()
             logger("Running autocheck plugin {x}".format(x=checker.name()))
             checker.check(journal_form, journal, new_autochecks, resource_bundle, logger)
 
