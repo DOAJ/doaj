@@ -295,6 +295,8 @@ class ArticleService(object):
         if eissn is not None:
             if journal[0].bibjson().eissn != eissn:
                 raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
+
+        return journal[0]
     @staticmethod
     def is_legitimate_owner(article, owner):
         """
