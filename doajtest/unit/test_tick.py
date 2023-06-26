@@ -47,7 +47,7 @@ class TestTick(DoajTestCase):
         # Refresh the type to force changes in the index, then wait for it to be done
         models.Journal.refresh()
         models.Suggestion.refresh()
-        time.sleep(2)
+        time.sleep(1)
 
     def tearDown(self):
         super(TestTick, self).tearDown()
