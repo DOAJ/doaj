@@ -266,10 +266,10 @@ class ArticleService(object):
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_DOI_NO_FULLTEXT)
 
         self._validate_issns(bj)
-        self.does_article_match_journal(bj)
+        journal = self.does_article_match_journal(bj)
 
         # is journal in doaj (we do this check last as it has more performance impact)
-        journal = article.get_journal()
+        # journal = article.get_journal()
         if journal is None or not journal.is_in_doaj():
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL)
 
