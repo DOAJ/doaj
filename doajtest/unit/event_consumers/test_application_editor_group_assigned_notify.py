@@ -44,7 +44,7 @@ class TestApplicationEditorGroupAssignedNotify(DoajTestCase):
         event = models.Event(constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED, context={"application" : app.data})
         ApplicationEditorGroupAssignedNotify.consume(event)
 
-        time.sleep(2)
+        time.sleep(1)
         ns = models.Notification.all()
         assert len(ns) == 1
 
