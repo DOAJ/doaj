@@ -8,6 +8,9 @@
         {% if f.help("long_help") %}
             <span class="form__long-help" data-feather="help-circle" aria-hidden="true" data-toggle="modal" data-target="#modal-{{ f.name }}"></span><span class="sr-only">More help</span>
         {% endif %}
+        {% if f.has_widget("click_to_copy") %}
+            <span class="form__click-to-copy" data-feather="copy" aria-hidden="true"></span><span class="sr-only">Copy value</span>
+        {% endif %}
         {% if f.optional %}<span class="form__question--optional">(Optional)</span>{% endif %}
     </label>
     {% endset %}

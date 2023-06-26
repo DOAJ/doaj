@@ -108,7 +108,10 @@ class FieldDefinitions:
                 "validate" : [],
                 "disabled": True
             }
-        }
+        },
+        "widgets": [
+            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+        ],
     }
 
     # ~~->$ OAStatementURL:FormField~~
@@ -2922,6 +2925,7 @@ PYTHON_FUNCTIONS = {
 
 JAVASCRIPT_FUNCTIONS = {
     "clickable_url": "formulaic.widgets.newClickableUrl",   # ~~-> ClickableURL:FormWidget~~
+    "click_to_copy": "formulaic.widgets.newClickToCopy", # ~~-> ClickToCopy:FormWidget~~
     "clickable_owner": "formulaic.widgets.newClickableOwner",   # ~~-> ClickableOwner:FormWidget~~
     "select": "formulaic.widgets.newSelect",    # ~~-> SelectBox:FormWidget~~
     "taglist": "formulaic.widgets.newTagList",  # ~~-> TagList:FormWidget~~

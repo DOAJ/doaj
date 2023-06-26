@@ -1195,7 +1195,9 @@ var formulaic = {
 
             this.init();
         },
-
+        newClickToCopy : function(params) {
+            return
+        },
         newClickableOwner : function(params) {
             return edges.instantiate(formulaic.widgets.ClickableOwner, params)
         },
