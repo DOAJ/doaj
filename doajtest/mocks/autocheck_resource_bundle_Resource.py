@@ -5,7 +5,7 @@ from portality.autocheck.resource_bundle import ResourceUnavailable
 
 class ResourceBundleResourceMockFactory(object):
     @classmethod
-    def no_contact_resource_fetch(cls, version=None):
+    def no_contact_resource_fetch(cls, version=None, archive_components=None):
         def mock(self, *args, **kwargs):
             if self.__identity__ == "issn_org":
                 issn = None
@@ -13,7 +13,7 @@ class ResourceBundleResourceMockFactory(object):
                     issn = kwargs["issn"]
                 if len(args) > 0:
                     issn = args[0]
-                return ResourcesFixtureFactory.issn_org(issn=issn, version=version)
+                return ResourcesFixtureFactory.issn_org(issn=issn, version=version, archive_components=archive_components)
 
             return None
 

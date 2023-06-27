@@ -1,32 +1,28 @@
 import time
 
-from portality import constants
 from doajtest.helpers import DoajTestCase
-from portality.core import app
 from portality import models
-from portality.tasks.application_autochecks import ApplicationAutochecks
-from portality.background import BackgroundApi
 from portality.bll import DOAJ
 
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
-from doajtest.mocks.annotation_resource_bundle_Resource import ResourceBundleResourceMockFactory
-from doajtest.mocks.annotation_annotators import AnnotatorsMockFactory
+from doajtest.mocks.autocheck_resource_bundle_Resource import ResourceBundleResourceMockFactory
+from doajtest.mocks.autocheck_checkers import AnnotatorsMockFactory
 
 from portality.autocheck.resource_bundle import Resource
 
 
-class TestBLLAnnotations(DoajTestCase):
+class TestBLLAutochecks(DoajTestCase):
 
     def setUp(self):
         mock_fetch = ResourceBundleResourceMockFactory.no_contact_resource_fetch()
         self.old_fetch = Resource.fetch
         Resource.fetch = mock_fetch
 
-        super(TestBLLAnnotations, self).setUp()
+        super(TestBLLAutochecks, self).setUp()
 
     def tearDown(self):
         Resource.fetch = self.old_fetch
-        super(TestBLLAnnotations, self).tearDown()
+        super(TestBLLAutochecks, self).tearDown()
 
     def test_01_annotate_application(self):
         source = ApplicationFixtureFactory.make_application_source()
@@ -40,14 +36,14 @@ class TestBLLAnnotations(DoajTestCase):
         time.sleep(2)
 
         application = models.Application.pull(application.id)
-        annotation = models.Autocheck.for_application(application.id)
+        autocheck = models.Autocheck.for_application(application.id)
 
         # assert application.application_status == constants.APPLICATION_STATUS_PENDING
-        assert annotation is not None
-        assert annotation.application == application.id
-        assert len(annotation.checks) == 1
+        assert autocheck is not None
+        assert autocheck.application == application.id
+        assert len(autocheck.checks) == 1
 
-    def test_01_annotate_journal(self):
+    def test_02_annotate_journal(self):
         source = JournalFixtureFactory.make_journal_source()
         journal = models.Journal(**source)
         journal.save(blocking=True)
@@ -59,11 +55,30 @@ class TestBLLAnnotations(DoajTestCase):
         time.sleep(2)
 
         journal = models.Journal.pull(journal.id)
-        annotation = models.Autocheck.for_journal(journal.id)
+        autocheck = models.Autocheck.for_journal(journal.id)
 
         # assert application.application_status == constants.APPLICATION_STATUS_PENDING
-        assert annotation is not None
-        assert annotation.journal == journal.id
-        assert len(annotation.checks) == 1
+        assert autocheck is not None
+        assert autocheck.journal == journal.id
+        assert len(autocheck.checks) == 1
 
+    def test_03_dismiss_undismiss(self):
+        autocheck = models.Autocheck()
+        autocheck.application = "test_application"
+        check = autocheck.add_check("field", "original", "suggested", "advice", "reference", {"context": "here"}, "test")
+        autocheck.save(blocking=True)
 
+        anno_svc = DOAJ.autochecksService()
+        anno_svc.dismiss(autocheck.id, check.get("id"))
+
+        time.sleep(2)
+
+        ac2 = models.Autocheck.for_application("test_application")
+        assert ac2.checks[0].get("dismissed") is True
+
+        anno_svc.undismiss(autocheck.id, check.get("id"))
+
+        time.sleep(2)
+
+        ac3 = models.Autocheck.for_application("test_application")
+        assert ac3.checks[0].get("dismissed", False) is False

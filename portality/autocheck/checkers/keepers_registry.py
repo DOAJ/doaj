@@ -65,7 +65,7 @@ class KeepersRegistry(ISSNChecker):
                 continue
 
             coverage = ad.get(id)
-            if not coverage:
+            if coverage is None:
                 # the archive is not mentioned in issn.org
                 logger("Service {x} is not registered at issn.org for this record".format(x=service))
                 autochecks.add_check(

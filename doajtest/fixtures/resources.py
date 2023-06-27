@@ -1,11 +1,14 @@
 from copy import deepcopy
+from datetime import datetime
 
 from portality.autocheck.resources.issn_org import ISSNOrgData
 
+
 class ResourcesFixtureFactory(object):
     @classmethod
-    def issn_org(cls, issn=None, version=None):
+    def issn_org(cls, issn=None, version=None, archive_components=None):
         record = deepcopy(ISSN_ORG)
+
         if issn is not None:
             record["@id"] = "https://portal.issn.org/resource/ISSN/" + issn
             record["exampleOfWork"]["@id"] = record["@id"]
@@ -15,11 +18,54 @@ class ResourcesFixtureFactory(object):
             record["identifier"][1]["value"] = issn
             record["mainEntityOfPage"]["@id"] = record["@id"] + "#Record"
             record["mainEntityOfPage"]["mainEntity"] = record["@id"]
+
         if version is not None:
             record["mainEntityOfPage"]["version"] = version
 
+        if archive_components is not None:
+            record["subjectOf"] = []
+            for service, in_time in archive_components.items():
+                ac_base = deepcopy(SUBJECT_OF)
+                service_url = ID_MAP.get(service)
+                ac_base["holdingArchive"]["@id"] = service_url
+                ac_base["holdingArchive"]["name"] = service
+                if in_time:
+                    now = datetime.utcnow()
+                    last = now.year - 1
+                    first = now.year - 3
+                    ac_base["temporalCoverage"] = "{x}/{y}".format(x=first, y=last)
+                else:
+                    now = datetime.utcnow()
+                    last = now.year - 4
+                    first = now.year - 6
+                    ac_base["temporalCoverage"] = "{x}/{y}".format(x=first, y=last)
+
+                record["subjectOf"].append(ac_base)
+
         return ISSNOrgData(record)
 
+
+ID_MAP = {
+    "CLOCKSS": "http://issn.org/organization/keepers#clockss",
+    "LOCKSS": "http://issn.org/organization/keepers#lockss",
+    "Internet Archive": "http://issn.org/organization/keepers#internetarchive",
+    "PKP PN": "http://issn.org/organization/keepers#pkppln",
+    "Portico": "http://issn.org/organization/keepers#portico"
+}
+
+SUBJECT_OF = {
+    "@type": "ArchiveComponent",
+    "creativeWorkStatus": "Preserved",
+    "description": "1 to 3",
+    "holdingArchive": {
+        "@type": "ArchiveOrganization",
+        "@id": "http://issn.org/organization/keepers#clockss",
+        "name": "CLOCKSS Archive"
+    },
+    "abstract": "1 to 3",
+    "dateModified": "2023-06-19",
+    "temporalCoverage": ""
+}
 
 ISSN_ORG = {
     "@context": "http://schema.org/",

@@ -1,5 +1,6 @@
 from portality.autocheck.checker import Checker
 
+
 class AnnotatorsMockFactory(object):
     @classmethod
     def mock_annotator(cls):

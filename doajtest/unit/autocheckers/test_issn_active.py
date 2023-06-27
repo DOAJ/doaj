@@ -1,6 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import ApplicationFixtureFactory
-from doajtest.mocks.annotation_resource_bundle_Resource import ResourceBundleResourceMockFactory
+from doajtest.mocks.autocheck_resource_bundle_Resource import ResourceBundleResourceMockFactory
 
 from portality.autocheck.checkers.issn_active import ISSNActive
 from portality import models
@@ -29,13 +29,13 @@ class TestISSNActive(DoajTestCase):
         source = ApplicationFixtureFactory.make_application_source()
         app = models.Application(**source)
 
-        annotations = models.Autocheck()
+        autochecks = models.Autocheck()
         resources = ResourceBundle()
 
-        issn_active.check(form, app, annotations, resources, logger=lambda x: x)
+        issn_active.check(form, app, autochecks, resources, logger=lambda x: x)
 
-        assert len(annotations.checks) == 2
-        for anno in annotations.checks:
+        assert len(autochecks.checks) == 2
+        for anno in autochecks.checks:
             assert anno.get("advice") == issn_active.UNABLE_TO_ACCESS
 
     def test_02_not_found(self):
@@ -51,13 +51,13 @@ class TestISSNActive(DoajTestCase):
         source = ApplicationFixtureFactory.make_application_source()
         app = models.Application(**source)
 
-        annotations = models.Autocheck()
+        autochecks = models.Autocheck()
         resources = ResourceBundle()
 
-        issn_active.check(form, app, annotations, resources, logger=lambda x: x)
+        issn_active.check(form, app, autochecks, resources, logger=lambda x: x)
 
-        assert len(annotations.checks) == 2
-        for anno in annotations.checks:
+        assert len(autochecks.checks) == 2
+        for anno in autochecks.checks:
             assert anno.get("advice") == issn_active.NOT_FOUND
 
     def test_03_fully_validated(self):
@@ -73,13 +73,13 @@ class TestISSNActive(DoajTestCase):
         source = ApplicationFixtureFactory.make_application_source()
         app = models.Application(**source)
 
-        annotations = models.Autocheck()
+        autochecks = models.Autocheck()
         resources = ResourceBundle()
 
-        issn_active.check(form, app, annotations, resources, logger=lambda x: x)
+        issn_active.check(form, app, autochecks, resources, logger=lambda x: x)
 
-        assert len(annotations.checks) == 2
-        for anno in annotations.checks:
+        assert len(autochecks.checks) == 2
+        for anno in autochecks.checks:
             assert anno.get("advice") == issn_active.FULLY_VALIDATED
 
     def test_04_not_validated(self):
@@ -95,11 +95,11 @@ class TestISSNActive(DoajTestCase):
         source = ApplicationFixtureFactory.make_application_source()
         app = models.Application(**source)
 
-        annotations = models.Autocheck()
+        autochecks = models.Autocheck()
         resources = ResourceBundle()
 
-        issn_active.check(form, app, annotations, resources, logger=lambda x: x)
+        issn_active.check(form, app, autochecks, resources, logger=lambda x: x)
 
-        assert len(annotations.checks) == 2
-        for anno in annotations.checks:
+        assert len(autochecks.checks) == 2
+        for anno in autochecks.checks:
             assert anno.get("advice") == issn_active.NOT_VALIDATED

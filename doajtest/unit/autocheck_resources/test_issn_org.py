@@ -1,6 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import ApplicationFixtureFactory, IssnOrgFixtureFactory
-from doajtest.mocks.annotation_resource_bundle_Resource import ResourceBundleResourceMockFactory
+from doajtest.mocks.autocheck_resource_bundle_Resource import ResourceBundleResourceMockFactory
 
 from portality.autocheck.checkers.issn_active import ISSNActive
 from portality import models

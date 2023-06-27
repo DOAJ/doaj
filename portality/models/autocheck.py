@@ -128,6 +128,9 @@ class Autocheck(SeamlessMixin, DomainObject):
             obj["id"] = self.makeid()
             self.__seamless__.add_to_list_with_struct("checks", obj)
 
+        # return the constructed object, in case the caller could use it
+        return obj
+
     @property
     def checks(self):
         annos = self.__seamless__.get_list("checks")
