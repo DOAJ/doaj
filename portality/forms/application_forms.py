@@ -236,6 +236,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                          "Use the link under the ISSN you provided to check it.",
                           "The ISSN must match what is given on the journal website."],
             "short_help": "For example, 2049-3630",
             "doaj_criteria": "ISSN must be provided"
@@ -249,7 +250,8 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "full_contents" # ~~^->FullContents:FormWidget~~
+            "full_contents", # ~~^->FullContents:FormWidget~~
+            "issn_link" # ~~^->IssnLink:FormWidget~~
         ],
         "contexts": {
             "public" : {
@@ -310,6 +312,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
+                          "Use the link under the ISSN your provided to check it.",
                           "The ISSN must match what is given on the journal website."],
             "short_help": "For example, 0378-5955",
             "doaj_criteria": "ISSN must be provided"
@@ -322,6 +325,7 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "issn_link"  # ~~^->IssnLink:FormWidget~~
         ],
         "contexts": {
             "public" : {
@@ -1825,10 +1829,7 @@ class FieldDefinitions:
         "name": "note_author",
         "group": "notes",
         "input": "text",
-        "disabled": True,
-        "help": {
-            "placeholder": "Original author unknown",
-        },
+        "disabled": True
     }
 
     # ~~->$ NoteDate:FormField~~
@@ -2955,7 +2956,8 @@ JAVASCRIPT_FUNCTIONS = {
     "load_editors" : "formulaic.widgets.newLoadEditors",    # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
     "note_modal" : "formulaic.widgets.newNoteModal", # ~~-> NoteModal:FormWidget~~
-    "autocheck": "formulaic.widgets.newAutocheck" # ~~-> Autocheck:FormWidget~~
+    "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
+        "issn_link" : "formulaic.widgets.newIssnLink" # ~~-> IssnLink:FormWidget~~,
 }
 
 

@@ -31,7 +31,7 @@ class TestBulkApplication(DoajTestCase):
         assert len(ids) == 10
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # check that each id was actually created
         for _id in ids:
@@ -82,14 +82,14 @@ class TestBulkApplication(DoajTestCase):
         ids = ApplicationsBulkApi.create(dataset, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # now delete half of them
         dels = ids[:5]
         ApplicationsBulkApi.delete(dels, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         for _id in dels:
             ap = models.Suggestion.pull(_id)
@@ -115,7 +115,7 @@ class TestBulkApplication(DoajTestCase):
         ids = ApplicationsBulkApi.create(dataset, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # call delete on the object in various context that will fail
 
@@ -138,7 +138,7 @@ class TestBulkApplication(DoajTestCase):
         created = models.Suggestion.pull(ids[3])
         created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         created.save()
-        time.sleep(2)
+        time.sleep(1)
 
         with self.assertRaises(Api400Error):
             ApplicationsBulkApi.delete(ids, account)

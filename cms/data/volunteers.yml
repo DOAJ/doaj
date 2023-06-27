@@ -641,6 +641,14 @@ ass_ed:
   country: Georgia
   language: Georgian, English
   photo: "NatiaGabedava.jpg"
+  
+- name: Nizameddin Koca
+  area: Internal Medicine
+  year_since:
+  city: Bursa
+  country: Turkey
+  language: English, Turkish
+  photo: "Nizameddin.jpg"
 
 - name: Nour El Houda Belhamel
   area: Science, Technology, Medicine

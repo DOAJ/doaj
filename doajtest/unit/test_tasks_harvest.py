@@ -72,7 +72,7 @@ class TestHarvester(DoajTestCase):
         task = HarvesterBackgroundTask(job)
         BackgroundApi.execute(task)
 
-        time.sleep(2)
+        time.sleep(1)
 
         print(job.pretty_audit)
         articles_saved = [a for a in self.journal.all_articles()]
@@ -124,7 +124,7 @@ class TestHarvester(DoajTestCase):
 
         assert not mock_query.called, "mock_query was called when it shouldn't have been"
 
-        time.sleep(2)
+        time.sleep(1)
 
         job3 = models.BackgroundJob.pull(job2.id)
         assert job3.status == "error", "expected 'error', got '{x}'".format(x=job3.status)
