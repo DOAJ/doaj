@@ -159,9 +159,6 @@ class ArticleService(object):
         if len(pissn) > 1 or len(eissn) > 1:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
 
-        pissn = article_bibjson.get_one_identifier("pissn")
-        eissn = article_bibjson.get_one_identifier("eissn")
-
         # no pissn or eissn
         if not pissn and not eissn:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_ISSNS)
@@ -274,9 +271,11 @@ class ArticleService(object):
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL)
 
     @staticmethod
-    def does_article_match_journal(article_bibjson: models.ArticleBibJSON):
+    def match_journal_with_validation(article_bibjson: models.ArticleBibJSON):
         pissn = article_bibjson.get_one_identifier("pissn")
         eissn = article_bibjson.get_one_identifier("eissn")
+
+        issns = []
 
         if pissn is not None:
             issns.append(pissn)
