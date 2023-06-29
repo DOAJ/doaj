@@ -66,8 +66,8 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Created Date','field':'created_date'},
                         {'display':'Last Modified Date','field':'last_updated'},
-                        {'display':'User ID','field':'id'},
-                        {'display':'Email address','field':'email'}
+                        {'display':'User ID','field':'id.exact'},
+                        {'display':'Email address','field':'email.exact'}
                     ],
                     fieldOptions: [
                         {'display':'User ID','field':'id'},
