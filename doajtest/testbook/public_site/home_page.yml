@@ -120,19 +120,22 @@ tests:
       bottom right-hand corner.
     results:
     - You are returned to the top of the home page
-- title: Accessibility - Skip to main content button
-    - step: Refresh the page
-    - step: Click tab key on the keyboard once
-      results:
-        - Skip to the main content button is unfolded and focused
-    - step: Click enter
-      results:
+- title: Skip to main content button (Accessibility)
+  context:
+    role: anonymous
+  steps:
+  - step: Refresh the page
+  - step: Click tab key on the keyboard once
+    results:
+      - Skip to the main content button is unfolded and focused
+  - step: Click enter
+    results:
+    - Focus is moved to the main content
+  - step: Turn on screen reader
+  - step: With the keyboard navigate to Skip to main content button
+    results:
+      - Screen reader reads the button title
+  - step: Click enter
+    results:
       - Focus is moved to the main content
-    - step: Turn on screen reader
-    - step: With the keyboard navigate to Skip to main content button
-      results:
-        - Screen reader reads the button title
-    - step: Click enter
-      results:
-        - Focus is moved to the main content
 
