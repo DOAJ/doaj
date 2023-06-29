@@ -236,7 +236,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = re.escape(self.svc.short_notification(ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in processor.source.bibjson().issns())))# "an application assigned to you has not passed review."
+        assoc_editor_subject = re.escape(self.svc.short_notification(ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in processor.source.bibjson().issns())) + "\n")# "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
                                                info_stream_contents,
                                                re.DOTALL)
@@ -304,7 +304,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = re.escape(self.svc.short_notification(ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in processor.source.bibjson().issns())))  # "an application assigned to you has not passed review."
+        assoc_editor_subject = re.escape(self.svc.short_notification(ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in processor.source.bibjson().issns())) + "\n")  # "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(
             email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
             info_stream_contents,
@@ -823,7 +823,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
         assoc_editor_subject = re.escape(self.svc.short_notification(
-            ApplicationAssedInprogressNotify.ID.replace("{issns}", ", ".join(issn for issn in processor.source.bibjson().issns()))))  # "an application assigned to you has not passed review."
+            ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in processor.target.bibjson().issns())) + "\n")  # "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(
             email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
             info_stream_contents,
@@ -894,7 +894,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
         assoc_editor_subject = re.escape(self.svc.short_notification(
-            ApplicationAssedInprogressNotify.ID.replace("{issns}", ", ".join(issn for issn in processor.source.bibjson().issns()))))  # "an application assigned to you has not passed review."
+            ApplicationAssedInprogressNotify.ID).replace("{issns}", ", ".join(issn for issn in processor.source.bibjson().issns())) + "\n")  # "an application assigned to you has not passed review."
         assoc_editor_email_matched = re.search(
             email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
             info_stream_contents,
