@@ -2930,7 +2930,7 @@ PYTHON_FUNCTIONS = {
             "no_script_tag": NoScriptTagBuilder.wtforms,
             "year": YearBuilder.wtforms,
             "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
-            "current_iso_language": CurrentISOLanguageBuilder
+            "current_iso_language": CurrentISOLanguageBuilder.wtforms
         }
     }
 }
