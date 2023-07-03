@@ -40,6 +40,10 @@ def only_in_doaj(q):
     q.add_must_filter({"term": {"admin.in_doaj": True}})
     return q
 
+def search_all_meta(q):
+    """Search by all_meta field, which is a concatenation of all the fields in the record"""
+    q.add_default_field("all_meta")
+    return q
 
 def owner(q):
     q.clear_match_all()

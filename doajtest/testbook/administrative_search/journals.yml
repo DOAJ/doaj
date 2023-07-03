@@ -134,3 +134,22 @@ tests:
     results:
     - A new browser window opens containing the edit form for the journal
   - step: Click "Unlock and Close"
+- title: Test notes searchable for admin and not for public
+  context:
+    role: admin
+  steps:
+  - step: In the admin search, select Journal search, search for a journal and click on the "Edit Journal" button to edit the journal
+    results:
+      - The journal edit form is displayed
+  - step: Add a note to a journal record by clicking on the "Add" button in the "Notes" section of the journal record and click on "save" button to save the new note
+    results:
+      - The note is added to the journal record
+  - step: Go to the admin journal search again and search for the journal you added the note with the words given in the note
+    results:
+      - The journal record is displayed in the search results
+  - step: Search for the journal from public search page with same words given in the note
+    results:
+      - The journal record is not displayed in the search results
+  - step: Search for the journal from api search with same words given in the note
+    results:
+      - The journal record is not displayed in the search results

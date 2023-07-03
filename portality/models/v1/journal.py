@@ -1282,10 +1282,32 @@ MAPPING_OPTS = {
     "dynamic": None,
     "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
     "exceptions": {
+        "admin.notes.id": {
+                "type": "text",
+                "fields": {
+                    "exact": {
+                        "type": "keyword",
+                        "store": True
+                    }
+                }
+        },
         "admin.notes.note": {
-            "type": "text",
-            "index": False,
-            #"include_in_all": False        # Removed in es6 fixme: do we need to look at copy_to for the mapping?
+                "type": "text",
+                "fields": {
+                    "exact": {
+                        "type": "keyword",
+                        "store": True
+                    }
+                }
+        },
+        "admin.notes.author_id": {
+                "type": "text",
+                "fields": {
+                    "exact": {
+                        "type": "keyword",
+                        "store": True
+                    }
+                }
         }
     }
 }

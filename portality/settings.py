@@ -484,7 +484,8 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
 #                "index": False,
                 "store": True
             }
-        }
+        },
+        "copy_to": ["all_meta"]
     },
     "str": {
         "type": "text",
@@ -494,7 +495,8 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
 #                "index": False,
                 "store": True
             }
-        }
+        },
+        "copy_to": ["all_meta"]
     },
     "unicode_upper": {
         "type": "text",
@@ -504,7 +506,8 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
 #                "index": False,
                 "store": True
             }
-        }
+        },
+        "copy_to": ["all_meta"]
     },
     "unicode_lower": {
         "type": "text",
@@ -514,7 +517,8 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
 #                "index": False,
                 "store": True
             }
-        }
+        },
+        "copy_to": ["all_meta"]
     },
     "isolang": {
         "type": "text",
@@ -574,7 +578,8 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
 #                "index": False,
                 "store": True
             }
-        }
+        },
+        "copy_to": ["all_meta"]
     },
     "url": {
         "type": "text",
@@ -584,7 +589,8 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
 #                "index": False,
                 "store": True
             }
-        }
+        },
+        "copy_to": ["all_meta"]
     },
     "utcdatetimemicros": {
         "type": "date",
@@ -681,7 +687,7 @@ QUERY_ROUTE = {
             "auth" : False,
             "role" : None,
             "query_validator" : "public_query_validator",
-            "query_filters" : ["only_in_doaj", "last_update_fallback"],
+            "query_filters" : ["only_in_doaj", "last_update_fallback", "search_all_meta"],
             "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Journal", # ~~->Journal:Model~~
             "required_parameters" : {"ref" : ["ssw", "public_journal", "subject_page"]}
@@ -713,7 +719,7 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : True,
             "role" : "publisher",
-            "query_filters" : ["owner", "only_in_doaj"],
+            "query_filters" : ["owner", "only_in_doaj", "search_all_meta"],
             "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
         },
@@ -721,7 +727,7 @@ QUERY_ROUTE = {
         "applications" : {
             "auth" : True,
             "role" : "publisher",
-            "query_filters" : ["owner", "not_update_request"],
+            "query_filters" : ["owner", "not_update_request", "search_all_meta"],
             "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.AllPublisherApplications" # ~~->AllPublisherApplications:Model~~
         },
@@ -833,7 +839,7 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : False,
             "role" : None,
-            "query_filters" : ["only_in_doaj", "public_source"],
+            "query_filters" : ["only_in_doaj", "public_source", "search_all_meta"],
             "dao" : "portality.models.Journal", # ~~->Journal:Model~~
             "required_parameters" : None
         },
@@ -841,7 +847,7 @@ QUERY_ROUTE = {
         "application" : {
             "auth" : True,
             "role" : None,
-            "query_filters" : ["owner", "private_source"],
+            "query_filters" : ["owner", "private_source", "search_all_meta"],
             "dao" : "portality.models.Suggestion",  # ~~->Application:Model~~
             "required_parameters" : None
         }
@@ -873,6 +879,7 @@ QUERY_FILTERS = {
     "last_update_fallback" : "portality.lib.query_filters.last_update_fallback",
     "not_update_request" : "portality.lib.query_filters.not_update_request",
     "who_current_user" : "portality.lib.query_filters.who_current_user",    # ~~-> WhoCurrentUser:Query ~~
+    "search_all_meta" : "portality.lib.query_filters.search_all_meta",  # ~~-> SearchAllMeta:Query ~~
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",

@@ -56,6 +56,17 @@ QUERY_ROUTE = {
     }
 }
 
+JOURNAL_QUERY_ROUTE = {
+    "query" : {
+        "journal" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj", "search_all_meta"],
+            "dao" : "portality.models.Journal"
+        }
+    }
+}
+
 QUERY_FILTERS = {
     # query filters
     "only_in_doaj" : "portality.lib.query_filters.only_in_doaj",
@@ -65,7 +76,10 @@ QUERY_FILTERS = {
     "public_result_filter" : "portality.lib.query_filters.public_result_filter",
 
     # source filter
-    "public_source": "portality.lib.query_filters.public_source"
+    "public_source": "portality.lib.query_filters.public_source",
+
+    # search on all meta field
+    "search_all_meta" : "portality.lib.query_filters.search_all_meta",
 }
 
 def without_keys(d, keys):
@@ -90,11 +104,11 @@ class TestQuery(DoajTestCase):
     def test_01_auth(self):
         with self.app_test.test_client() as t_client:
             response = t_client.get('/query/journal')  # not in the settings above
-            assert response.status_code == 403, response.status_code
+            assert response.status_code == 404, response.status_code
 
             # theoretically should be a 404, but the code checks QUERY_ROUTE config first, so auth checks go first
             response = t_client.get('/query/nonexistent')
-            assert response.status_code == 403, response.status_code
+            assert response.status_code == 404, response.status_code
 
             response = t_client.get('/query/article')
             assert response.status_code == 200, response.status_code
@@ -339,3 +353,56 @@ class TestQuery(DoajTestCase):
             am = models.Article(**res)
             assert am.publisher_record_id() is None, am.publisher_record_id()
 
+    def test_public_query_notes(self):
+
+        self.app_test.config['QUERY_ROUTE'] = JOURNAL_QUERY_ROUTE
+
+        j = models.Journal()
+        j.set_id("aabbccdd")
+        j.set_created("2010-01-01T00:00:00Z")
+        j.set_last_updated("2012-01-01T00:00:00Z")
+        j.set_last_manual_update("2014-01-01T00:00:00Z")
+        j.set_seal(True)
+        j.set_owner("rama")
+        j.set_editor_group("worldwide")
+        j.set_editor("eddie")
+        j.add_contact("rama", "rama@email.com")
+        j.add_note("testing", "2015-01-01T00:00:00Z")
+        j.set_bibjson({"title": "test"})
+        j.save()
+
+        maned = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+        maned.save(blocking=True)
+        qsvc = QueryService()
+
+        res = qsvc.search('query', 'journal', {'query': {'query_string': {'query': 'testing',
+                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
+                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
+                                               'track_total_hits': True}, account=maned, additional_parameters={})
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
+
+    def test_admin_query_notes(self):
+
+        j = models.Journal()
+        j.set_id("aabbccdd")
+        j.set_created("2010-01-01T00:00:00Z")
+        j.set_last_updated("2012-01-01T00:00:00Z")
+        j.set_last_manual_update("2014-01-01T00:00:00Z")
+        j.set_seal(True)
+        j.set_owner("rama")
+        j.set_editor_group("worldwide")
+        j.set_editor("eddie")
+        j.add_contact("rama", "rama@email.com")
+        j.add_note("testing", "2015-01-01T00:00:00Z")
+        j.set_bibjson({"title": "test"})
+        j.save()
+
+        maned = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+        maned.save(blocking=True)
+        qsvc = QueryService()
+
+        res = qsvc.search('admin_query', 'journal', {'query': {'query_string': {'query': 'testing',
+                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
+                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
+                                               'track_total_hits': True}, account=maned, additional_parameters={})
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
