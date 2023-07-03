@@ -4,13 +4,15 @@ import hashlib
 import logging
 import os
 import shutil
+import time
 from glob import glob
 from unittest import TestCase
 
 import dictdiffer
 from flask_login import login_user
 
-from portality import core, dao
+from doajtest.fixtures import ArticleFixtureFactory, ApplicationFixtureFactory
+from portality import core, dao, models
 from portality.core import app
 from portality.lib import paths, dates
 from portality.lib.dates import FMT_DATE_STD
@@ -120,6 +122,7 @@ class DoajTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        upload_async_path = paths.create_tmp_dir(is_auto_mkdir=True)
         cls.originals = patch_config(app, {
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
@@ -135,7 +138,8 @@ class DoajTestCase(TestCase):
             'ENABLE_EMAIL': False,
             "FAKER_SEED": 1,
             "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
-            'CMS_BUILD_ASSETS_ON_STARTUP': False
+            'CMS_BUILD_ASSETS_ON_STARTUP': False,
+            'UPLOAD_ASYNC_DIR': upload_async_path.as_posix(),
         })
 
         # some unittest will capture log for testing, therefor log level must be DEBUG
@@ -199,6 +203,18 @@ class DoajTestCase(TestCase):
             login_user(acc)
 
         return ctx
+
+    @staticmethod
+    def fix_es_mapping():
+        """
+        you need to call this method if you get some errors like:
+        ESMappingMissingError - 'reason': 'No mapping found for [field]
+
+        :return:
+        """
+        models.Article(**ArticleFixtureFactory.make_article_source()).save()
+        models.Application(**ApplicationFixtureFactory.make_application_source()).save()
+        models.Notification().save()
 
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
@@ -379,3 +395,24 @@ def login(app_client, username, password, follow_redirects=True):
 
 def logout(app_client, follow_redirects=True):
     return app_client.get(url_for('account.logout'), follow_redirects=follow_redirects)
+
+
+def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1,
+              timeout_msg="wait_unit but exit_cond timeout"):
+    start = time.time()
+    while (time.time() - start) < timeout:
+        if exit_cond_fn():
+            return
+        time.sleep(check_interval)
+    raise TimeoutError(timeout_msg)
+
+
+def save_all_block_last(model_list):
+    model_list = list(model_list)
+    if not model_list:
+        return
+
+    *model_list, last = model_list
+    for model in model_list:
+        model.save()
+    last.save(blocking=True)
