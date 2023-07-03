@@ -13,8 +13,12 @@ from portality.tasks.helpers import background_helper, articles_upload_helper
 from portality.tasks.redis_huey import long_running
 
 
+def get_upload_dir_path() -> Path:
+    return Path(app.config.get("UPLOAD_ASYNC_DIR", "."))
+
+
 def get_upload_path(upload: BulkArticles) -> Path:
-    p = Path(app.config.get("UPLOAD_ASYNC_DIR", "."))
+    p = get_upload_dir_path()
     p.mkdir(parents=True, exist_ok=True)
     return p / upload.local_filename
 

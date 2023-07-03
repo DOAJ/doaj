@@ -100,6 +100,10 @@ class BgjobOutcomeStatus(ConstantList):
     Fail = 'fail'
 
 
+class BaseArticlesUploadStatus(ConstantList):
+    Processed = 'processed'
+
+
 # Storage scopes
 STORE__SCOPE__PUBLIC_DATA_DUMP = "public_data_dump"
 

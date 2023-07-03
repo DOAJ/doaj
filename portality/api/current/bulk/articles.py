@@ -1,6 +1,6 @@
 # ~~APIBulkArticles:Feature->APIBulk:Feature~~
 from copy import deepcopy
-from typing import List
+from typing import List, Dict
 
 from portality import models
 from portality.api.common import Api, Api404Error, Api400Error, Api403Error, Api401Error
@@ -91,7 +91,7 @@ class ArticlesBulkApi(Api):
             raise Api400Error(str(e))
 
     @classmethod
-    def create_async(cls, income_articles: List[dict], account: models.Account):
+    def create_async(cls, income_articles: List[Dict], account: models.Account):
         job = ArticleBulkCreateBackgroundTask.prepare(account.id, incoming_articles=income_articles)
         ArticleBulkCreateBackgroundTask.submit(job)
 
