@@ -712,13 +712,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -749,13 +749,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -801,7 +801,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         # this assumes that huey is in always eager mode, and thus this immediately calls the async task,
         # which in turn calls execute, which ultimately calls run
@@ -838,13 +838,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -889,13 +889,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -941,13 +941,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -983,13 +983,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1031,13 +1031,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1077,13 +1077,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1125,13 +1125,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1180,13 +1180,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1236,13 +1236,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1291,13 +1291,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1347,13 +1347,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1401,7 +1401,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id2)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task1 = ingestarticles.IngestArticlesBackgroundTask(job1)
         task2 = ingestarticles.IngestArticlesBackgroundTask(job2)
@@ -1410,7 +1410,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task2.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu1 = models.FileUpload.pull(id1)
         fu2 = models.FileUpload.pull(id2)
@@ -1446,13 +1446,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1494,13 +1494,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1543,13 +1543,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1592,13 +1592,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None, 'expected FileUpload is not None, received: {}'.format(fu)
@@ -1642,13 +1642,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None

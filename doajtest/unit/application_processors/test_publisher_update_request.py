@@ -154,7 +154,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         afc.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
         afc.finalise(account=acc)
 
-        time.sleep(2)
+        time.sleep(1)
 
         # unreject the update request
         ur = models.Application.pull(ur.id)
@@ -162,7 +162,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         urfc.form.application_status.data = constants.APPLICATION_STATUS_PENDING
         urfc.finalise(account=acc)
 
-        time.sleep(2)
+        time.sleep(1)
 
         # accept the update request
         ur = models.Application.pull(ur.id)
@@ -171,7 +171,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         afc.finalise(account=acc)
 
         # check that we only have one journal
-        time.sleep(2)
+        time.sleep(1)
         all = models.Journal.all()
         assert len(all) == 1
         assert all[0].bibjson().publication_time_weeks == 1
@@ -221,7 +221,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         fc.finalise()
 
         ur = fc.target
-        time.sleep(2)
+        time.sleep(1)
 
         # accept the update request
         ur = models.Application.pull(ur.id)
@@ -230,7 +230,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         afc.finalise(account=acc)
 
         # check that we only have one journal
-        time.sleep(2)
+        time.sleep(1)
         all = models.Journal.all()
         assert len(all) == 1
         assert all[0].bibjson().publication_time_weeks == 2
@@ -282,7 +282,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         fc.finalise()
 
         ur2 = fc.target
-        time.sleep(2)
+        time.sleep(1)
 
         # now unreject the first one
         ur1 = models.Application.pull(ur1.id)
@@ -292,7 +292,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert len(urfc.alert) == 1, len(urfc.alert)
 
         # check that we were not successful in unrejecting the application
-        time.sleep(2)
+        time.sleep(1)
         ur1 = models.Application.pull(ur1.id)
         assert ur1.application_status == constants.APPLICATION_STATUS_REJECTED
 
@@ -349,7 +349,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         afc2.form.application_status.data = constants.APPLICATION_STATUS_REJECTED
         afc2.finalise(account=acc)
 
-        time.sleep(2)
+        time.sleep(1)
 
         # now unreject the first one (and at the same time accept it)
         ur1 = models.Application.pull(ur1.id)
@@ -358,7 +358,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         urfc.finalise(account=acc)
 
         # check that we were successful in both unrejecting and accepting the application
-        time.sleep(2)
+        time.sleep(1)
         ur1 = models.Application.pull(ur1.id)
         assert ur1.application_status == constants.APPLICATION_STATUS_ACCEPTED
 

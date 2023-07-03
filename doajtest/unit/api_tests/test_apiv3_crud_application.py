@@ -146,7 +146,7 @@ class TestCrudApplication(DoajTestCase):
         assert "LOCKSS" in preservation.get("service")
         assert "A safe place" in preservation.get("service")
 
-        time.sleep(2)
+        time.sleep(1)
 
         s = models.Application.pull(a.id)
         assert s is not None
@@ -169,7 +169,7 @@ class TestCrudApplication(DoajTestCase):
         # check that it got created successfully
         assert isinstance(a, models.Application)
 
-        time.sleep(2)
+        time.sleep(1)
 
         s = models.Application.pull(a.id)
         assert s is not None
@@ -307,7 +307,7 @@ class TestCrudApplication(DoajTestCase):
         # call create on the object, with the dry_run flag set
         a = ApplicationsCrudApi.create(data, account, dry_run=True)
 
-        time.sleep(2)
+        time.sleep(1)
 
         # now check that the application index remains empty
         ss = [x for x in models.Application.iterall()]
@@ -428,7 +428,7 @@ class TestCrudApplication(DoajTestCase):
         data = ApplicationFixtureFactory.make_update_request_source()
         ap = models.Application(**data)
         ap.save()
-        time.sleep(2)
+        time.sleep(1)
 
         # no user
         with self.assertRaises(Api401Error):
@@ -460,7 +460,7 @@ class TestCrudApplication(DoajTestCase):
         a = ApplicationsCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # get a copy of the newly created version for use in assertions later
         created = models.Application.pull(a.id)
@@ -475,7 +475,7 @@ class TestCrudApplication(DoajTestCase):
         assert a2 != a
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # get a copy of the updated version
         updated = models.Application.pull(a.id)
@@ -497,7 +497,7 @@ class TestCrudApplication(DoajTestCase):
         a = ApplicationsCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # get a copy of the newly created version for use in assertions later
         created = models.Application.pull(a.id)
@@ -526,7 +526,7 @@ class TestCrudApplication(DoajTestCase):
         # on one with a disallowed workflow status
         created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         created.save()
-        time.sleep(2)
+        time.sleep(1)
         account.add_role("publisher")
 
         with self.assertRaises(Api403Error):
@@ -546,13 +546,13 @@ class TestCrudApplication(DoajTestCase):
         a = ApplicationsCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # now delete it
         ApplicationsCrudApi.delete(a.id, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         ap = models.Application.pull(a.id)
         assert ap is None
@@ -571,7 +571,7 @@ class TestCrudApplication(DoajTestCase):
         a = ApplicationsCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # get a copy of the newly created version for use in test later
         created = models.Application.pull(a.id)
@@ -595,7 +595,7 @@ class TestCrudApplication(DoajTestCase):
         # on one with a disallowed workflow status
         created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         created.save()
-        time.sleep(2)
+        time.sleep(1)
 
         with self.assertRaises(Api403Error):
             ApplicationsCrudApi.delete(a.id, account)
@@ -614,13 +614,13 @@ class TestCrudApplication(DoajTestCase):
         a = ApplicationsCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # now delete it with the dry run flag
         ApplicationsCrudApi.delete(a.id, account, dry_run=True)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         ap = models.Application.pull(a.id)
         assert ap is not None
@@ -663,7 +663,7 @@ class TestCrudApplication(DoajTestCase):
         assert "LOCKSS" in preservation_services
         assert "A safe place" in preservation_services, "Expected: 'A safe place', found: {}".format(preservation_services)
 
-        time.sleep(2)
+        time.sleep(1)
 
         s = models.Application.pull(a.id)
         assert s is not None
@@ -712,7 +712,7 @@ class TestCrudApplication(DoajTestCase):
         # call create on the object, with the dry_run flag set
         a = ApplicationsCrudApi.create(data, account, dry_run=True)
 
-        time.sleep(2)
+        time.sleep(1)
 
         # now check that the application index remains empty
         ss = [x for x in models.Application.iterall()]
@@ -739,7 +739,7 @@ class TestCrudApplication(DoajTestCase):
         a = ApplicationsCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # get a copy of the newly created version for use in assertions later
         created = models.Application.pull(a.id)
@@ -754,7 +754,7 @@ class TestCrudApplication(DoajTestCase):
         assert a2 != a
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # get a copy of the updated version
         updated = models.Application.pull(a.id)
@@ -785,7 +785,7 @@ class TestCrudApplication(DoajTestCase):
         a = ApplicationsCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # get a copy of the newly created version for use in assertions later
         created = models.Application.pull(a.id)
