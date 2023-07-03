@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 import requests
 from lxml import etree
 
+from doajtest import helpers
 from doajtest.fixtures.accounts import AccountFixtureFactory
 from doajtest.fixtures.article import ArticleFixtureFactory
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
@@ -24,16 +25,6 @@ from portality.crosswalks import article_doaj_xml
 from portality.models.uploads import BaseArticlesUpload
 from portality.tasks import ingestarticles
 from portality.ui.messages import Messages
-
-
-def create_unmatched_journal():
-    j = models.Journal()
-    j.set_owner("testowner")
-    bj = j.bibjson()
-    bj.add_identifier(bj.P_ISSN, "1234-5678")
-    bj.add_identifier(bj.E_ISSN, "9876-5432")
-    j.set_in_doaj(True)
-    j.save(blocking=True)
 
 
 def assert_fail_shared_issn(fu):
@@ -102,21 +93,27 @@ def assert_processed(fu, target_issns=None, n_abstract=None):
             assert len(found[0].bibjson().abstract) == n_abstract
 
 
-def create_journal_fail_shared_issn():
-    j1 = models.Journal()
-    j1.set_owner("testowner1")
-    bj1 = j1.bibjson()
-    bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-    bj1.add_identifier(bj1.E_ISSN, "9876-5432")
-    j1.set_in_doaj(True)
-    j1.save()
-    j2 = models.Journal()
-    j2.set_owner("testowner2")
-    j2.set_in_doaj(True)
-    bj2 = j2.bibjson()
-    bj2.add_identifier(bj2.P_ISSN, "1234-5678")
-    bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-    j2.save(blocking=True)
+def create_simple_journal(owner, pissn=None, eissn=None, in_doaj=True, blocking=None):
+    j = models.Journal()
+    j.set_owner(owner)
+    bj1 = j.bibjson()
+    if pissn is not None:
+        bj1.add_identifier(bj1.P_ISSN, pissn)
+    if eissn is not None:
+        bj1.add_identifier(bj1.E_ISSN, eissn)
+    j.set_in_doaj(in_doaj)
+    if blocking is not None:
+        j.save(blocking=blocking)
+    return j
+
+
+def create_simple_publisher(user_id, blocking=None):
+    asource = AccountFixtureFactory.make_publisher_source()
+    account = models.Account(**asource)
+    account.set_id(user_id)
+    if blocking is not None:
+        account.save(blocking=blocking)
+    return account
 
 
 def assert_unmatched_upload(upload: BaseArticlesUpload):
@@ -654,18 +651,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert_failed_by_reasons(file_upload, expected_details=False)
 
     def test_23_doaj_process_success(self):
-
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal('testowner', pissn='1234-5678'),
+            create_simple_publisher("testowner"),
+        ])
 
         job = models.BackgroundJob()
 
@@ -690,11 +679,9 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert_processed(file_upload)
 
     def test_24_process_invalid_file(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal('testowner', pissn='1234-5678'),
+        ])
 
         job = models.BackgroundJob()
 
@@ -720,11 +707,9 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_25_process_filesystem_error(self):
         articleSvc.ArticleService.batch_create_articles = BLLArticleMockFactory.batch_create
 
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal('testowner', pissn='1234-5678'),
+        ])
 
         job = models.BackgroundJob()
 
@@ -748,17 +733,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert_failed_by_reasons(file_upload, expected_details=False)
 
     def test_26_run_validated(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal('testowner', pissn='1234-5678'),
+            create_simple_publisher("testowner"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         f = FileMockFactory(stream=handle)
@@ -787,17 +765,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         requests.head = ResponseMockFactory.head_fail
         requests.get = ResponseMockFactory.doaj_get_success
 
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal('testowner', pissn='1234-5678'),
+            create_simple_publisher("testowner"),
+        ])
 
         url = "http://valid"
 
@@ -839,17 +810,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
             task.run()
 
     def test_29_submit_success(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal('testowner', pissn='1234-5678'),
+            create_simple_publisher("testowner"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         f = FileMockFactory(stream=handle)
@@ -878,12 +842,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # article, but the article also contains an issn which doesn't match the journal
         # We expect a failed ingest
 
-        create_unmatched_journal()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678", eissn="9876-5432"),
+            create_simple_publisher("testowner"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_ambiguous()
         f = FileMockFactory(stream=handle)
@@ -906,13 +868,11 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_32_run_doaj_fail_shared_issn(self):
         # Create 2 journals with the same issns but different owners, which match the issns on the article
         # We expect an ingest failure
-
-        create_journal_fail_shared_issn()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner1", pissn="1234-5678", eissn="9876-5432"),
+            create_simple_journal("testowner2", pissn="1234-5678", eissn="9876-5432"),
+            create_simple_publisher("testowner1"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
@@ -939,24 +899,11 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # article match each of the journals respectively
         # We expect an ingest failure
 
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        j2 = models.Journal()
-        j2.set_owner("testowner2")
-        j2.set_in_doaj(True)
-        bj2 = j2.bibjson()
-        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-        j2.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner1", pissn="1234-5678"),
+            create_simple_journal("testowner2", eissn="9876-5432"),
+            create_simple_publisher("testowner"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
@@ -981,12 +928,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_34_doaj_journal_2_article_2_success(self):
         # Create a journal with two issns both of which match the 2 issns in the article
         # we expect a successful article ingest
-        create_unmatched_journal()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678", eissn="9876-5432"),
+            create_simple_publisher("testowner"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
@@ -1012,18 +957,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create a journal with 2 issns, one of which is present in the article as the
         # only issn
         # We expect a successful article ingest
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        bj.add_identifier(bj.E_ISSN, "9876-5432")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678", eissn="9876-5432"),
+            create_simple_publisher("testowner"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         f = FileMockFactory(stream=handle)
@@ -1047,17 +984,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_37_doaj_journal_1_article_1_success(self):
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678"),
+            create_simple_publisher("testowner"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         f = FileMockFactory(stream=handle)
@@ -1082,18 +1012,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create a journal with 2 issns, one of which is the same as an issn on the
         # article, but the article also contains an issn which doesn't match the journal
         # We expect a failed ingest
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        bj.add_identifier(bj.E_ISSN, "9876-5432")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678", eissn="9876-5432"),
+            create_simple_publisher("testowner"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_ambiguous()
         f = FileMockFactory(stream=handle)
@@ -1121,26 +1043,11 @@ class TestIngestArticlesDoajXML(DoajTestCase):
     def test_39_doaj_2_journals_different_owners_both_issns_fail(self):
         # Create 2 journals with the same issns but different owners, which match the issns on the article
         # We expect an ingest failure
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "9876-5432")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        j2 = models.Journal()
-        j2.set_owner("testowner2")
-        j2.set_in_doaj(True)
-        bj2 = j2.bibjson()
-        bj2.add_identifier(bj2.P_ISSN, "1234-5678")
-        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-        j2.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner1", pissn="1234-5678", eissn="9876-5432"),
+            create_simple_journal("testowner2", pissn="1234-5678", eissn="9876-5432"),
+            create_simple_publisher("testowner1"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
@@ -1169,29 +1076,18 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create 2 journals with different owners and one different issn each.  The two issns in the
         # article match each of the journals respectively
         # We expect an ingest failure
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        j1.set_in_doaj(True)
-        j1.save()
 
-        j2 = models.Journal()
-        j2.set_owner("testowner2")
-        j2.set_in_doaj(True)
-        bj2 = j2.bibjson()
-        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-        j2.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
+        user_id = "testowner1"
+        helpers.save_all_block_last([
+            create_simple_journal(user_id, pissn="1234-5678"),
+            create_simple_journal("testowner2", eissn="9876-5432"),
+            create_simple_publisher(user_id),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
 
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare(user_id, schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
         self.cleanup_ids.append(id)
 
@@ -1215,24 +1111,11 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create 2 journals with the same owner, each with one different issn.  The article's 2 issns
         # match each of these issns
         # We expect a successful article ingest
-        j1 = models.Journal()
-        j1.set_owner("testowner")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        j2 = models.Journal()
-        j2.set_owner("testowner")
-        j2.set_in_doaj(True)
-        bj2 = j2.bibjson()
-        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-        j2.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678"),
+            create_simple_journal("testowner", eissn="9876-5432"),
+            create_simple_publisher("testowner"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
@@ -1258,26 +1141,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create 2 different journals with different owners and different issns (2 each).
         # The article's issns match one issn in each journal
         # We expect an ingest failure
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "2345-6789")
-        j1.set_in_doaj(True)
-        j1.save()
 
-        j2 = models.Journal()
-        j2.set_owner("testowner2")
-        j2.set_in_doaj(True)
-        bj2 = j2.bibjson()
-        bj2.add_identifier(bj2.P_ISSN, "8765-4321")
-        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-        j2.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner1", pissn="1234-5678", eissn="2345-6789"),
+            create_simple_journal("testowner2", pissn="8765-4321", eissn="9876-5432"),
+            create_simple_publisher("testowner1"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
@@ -1303,18 +1172,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert len(found) == 0
 
     def test_43_doaj_duplication(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        bj.add_identifier(bj.E_ISSN, "9876-5432")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678", eissn="9876-5432"),
+            create_simple_publisher("testowner")
+        ])
 
         # make both handles, as we want as little gap as possible between requests in a moment
         handle1 = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
@@ -1357,17 +1218,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
         # But it's just shy of 30000 unicode characters long!
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678"),
+            create_simple_publisher("testowner"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_superlong_should_not_clip()
         f = FileMockFactory(stream=handle)
@@ -1392,17 +1246,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create a journal with 1 issn, which is the same 1 issn on the article
         # we expect a successful article ingest
         # But it's over 40k unicode characters long!
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678"),
+            create_simple_publisher("testowner"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_superlong_should_clip()
         f = FileMockFactory(stream=handle)
@@ -1427,18 +1274,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # Create one journal and ingest one article.  The Journal has two issns, and the article
         # has two issns, but one of the journal's issns is unknown
         # We expect an ingest failure
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "2222-2222")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner1", pissn="1234-5678", eissn="2222-2222"),
+            create_simple_publisher("testowner1"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
@@ -1474,10 +1313,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j1.set_in_doaj(True)
         j1.save()
 
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            j1,
+            create_simple_publisher("testowner1"),
+        ])
 
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
         f = FileMockFactory(stream=handle)
@@ -1506,17 +1345,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_48_doaj_unknown_journal_issn(self):
         # create a journal with one of the ISSNs specified
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        j1.set_in_doaj(True)
-        j1.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner1", pissn="1234-5678"),
+            create_simple_publisher("testowner1"),
+        ])
 
         # take an article with 2 issns, but one of which is not in the index
         handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
@@ -1539,16 +1371,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert_failed_by_reasons(fu, reason_size={"unmatched": 1})
 
     def test_49_doaj_noids(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678"),
+            create_simple_publisher("testowner"),
+        ])
 
         job = models.BackgroundJob()
 
@@ -1706,16 +1532,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert os.path.exists(fad)
 
     def test_59_same_issns(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678"),
+            create_simple_publisher("testowner"),
+        ])
 
         job = models.BackgroundJob()
 
@@ -1742,17 +1562,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
             Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, file_upload.error)
 
     def test_60_doaj_no_issns(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678"),
+            create_simple_publisher("testowner"),
+        ])
 
         job = models.BackgroundJob()
 
@@ -1779,17 +1592,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_61_journal_not_indoaj(self):
         """ You can't upload an article for a journal that's been withdrawn"""
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(False)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            create_simple_journal("testowner", pissn="1234-5678", in_doaj=False),
+            create_simple_publisher("testowner"),
+        ])
 
         job = models.BackgroundJob()
 
