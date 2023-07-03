@@ -104,11 +104,11 @@ class TestQuery(DoajTestCase):
     def test_01_auth(self):
         with self.app_test.test_client() as t_client:
             response = t_client.get('/query/journal')  # not in the settings above
-            assert response.status_code == 404, response.status_code
+            assert response.status_code == 403, response.status_code
 
             # theoretically should be a 404, but the code checks QUERY_ROUTE config first, so auth checks go first
             response = t_client.get('/query/nonexistent')
-            assert response.status_code == 404, response.status_code
+            assert response.status_code == 403, response.status_code
 
             response = t_client.get('/query/article')
             assert response.status_code == 200, response.status_code
