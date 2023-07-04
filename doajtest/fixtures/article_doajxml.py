@@ -4,6 +4,7 @@ from io import BytesIO, StringIO
 from lxml import etree
 
 from doajtest import test_constants
+from portality.crosswalks.article_doaj_xml import DOAJXWalk
 
 ARTICLES = test_constants.PATH_RESOURCES / "doajxml_article_uploads.xml"
 
@@ -44,11 +45,13 @@ class DoajXmlArticleFixtureFactory(object):
 
     @classmethod
     def upload_1_issn_superlong_should_not_clip(cls):
-        return cls._response_from_xpath("//record[journalTitle='PISSN Correct Superlong Abstract Expected to Not be Clipped']")
+        return cls._response_from_xpath(
+            "//record[journalTitle='PISSN Correct Superlong Abstract Expected to Not be Clipped']")
 
     @classmethod
     def upload_1_issn_superlong_should_clip(cls):
-        return cls._response_from_xpath("//record[journalTitle='PISSN Correct Superlong Abstract Expected to be Clipped']")
+        return cls._response_from_xpath(
+            "//record[journalTitle='PISSN Correct Superlong Abstract Expected to be Clipped']")
 
     @classmethod
     def invalid_schema_xml(cls):
@@ -97,3 +100,8 @@ class DoajXmlArticleFixtureFactory(object):
     @classmethod
     def upload_the_same_issns(cls):
         return cls._response_from_xpath("//record[journalTitle='2 The Same ISSNs']")
+
+
+def to_articles(article_file_handle: BytesIO):
+    articles = DOAJXWalk().crosswalk_file(file_handle=article_file_handle, add_journal_info=False)
+    return articles

@@ -1,5 +1,7 @@
 from copy import deepcopy
 
+from portality import models
+
 
 class AccountFixtureFactory(object):
     @staticmethod
@@ -25,6 +27,7 @@ class AccountFixtureFactory(object):
     @staticmethod
     def make_assed3_source():
         return deepcopy(ASSED_SOURCE3)
+
 
 PUBLISHER_SOURCE = {
     "email": "pub@example.com",
@@ -67,3 +70,12 @@ ASSED_SOURCE3 = {
     "role": ["associate_editor"],
     "id": "associate_3"
 }
+
+
+def create_publisher_account__a(acc_id="testowner", is_save=True, blocking=True) -> models.Account:
+    acc_src = AccountFixtureFactory.make_publisher_source()
+    account = models.Account(**acc_src)
+    account.set_id(acc_id)
+    if is_save:
+        account.save(blocking=blocking)
+    return account
