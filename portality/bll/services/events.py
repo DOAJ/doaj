@@ -57,6 +57,7 @@ class EventsService(object):
         for consumer in self.EVENT_CONSUMERS:
             try:
                 if consumer.consumes(event):
+                    pass
                     consumer.consume(event)
             except Exception as e:
                 app.logger.error("Error in consumer {x}: {e}".format(e=str(e), x=consumer.ID))
