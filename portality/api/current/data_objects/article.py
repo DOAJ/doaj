@@ -244,7 +244,7 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
         # check if orcid id is valid
         for author in self.bibjson.author:
             if author.orcid_id is not None and regex.ORCID_COMPILED.match(author.orcid_id) is None:
-                raise dataobj.DataStructureException("Invalid ORCID iD format. Please use url format, eg: https://orcid.org/0001-1111-1111-1111")
+                raise dataobj.DataStructureException("Invalid ORCID iD. Please enter your ORCID iD structured as: https://orcid.org/0000-0000-0000-0000. URLs must start with https.")
 
         for x in self.bibjson.identifier:
             if x.type == "doi":

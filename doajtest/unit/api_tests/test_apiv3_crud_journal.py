@@ -62,7 +62,7 @@ class TestCrudJournal(DoajTestCase):
         data = JournalFixtureFactory.make_journal_source(in_doaj=True)
         j = models.Journal(**data)
         j.save()
-        time.sleep(2)
+        time.sleep(1)
         
         a = JournalsCrudApi.retrieve(j.id, account=None)
         # check that we got back the object we expected

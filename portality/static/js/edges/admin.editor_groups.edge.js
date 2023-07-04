@@ -75,8 +75,8 @@ $.extend(true, doaj, {
                     sortOptions: [
                         {'display':'Created Date','field':'created_date'},
                         {'display':'Last Modified Date','field':'last_updated'},
-                        {'display':'Managing Editor ID','field':'maned'},
-                        {'display':'Editor ID','field':'editor'},
+                        {'display':'Managing Editor ID','field':'maned.exact'},
+                        {'display':'Editor ID','field':'editor.exact'},
                         {'display':'Group Name','field':'name.exact'}
                     ],
                     fieldOptions: [

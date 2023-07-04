@@ -45,7 +45,7 @@ class TestApplicationPublisherAssignedNotify(DoajTestCase):
         event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application" : app.data, "old_editor": "", "new_editor": app.editor})
         UpdateRequestPublisherAssignedNotify.consume(event)
 
-        time.sleep(2)
+        time.sleep(1)
         ns = models.Notification.all()
         assert len(ns) == 1
 
