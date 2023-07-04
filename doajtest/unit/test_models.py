@@ -1628,7 +1628,21 @@ class TestModels(DoajTestCase):
         a2 = models.Application(**asource)
         assert a2.bibjson().apc.pop() == {'currency': 'bananas', 'price': 2}
 
-    def test_38_autochecks(self):
+    def test_38_language_lax(self):
+        """ Check we can open a journal / application model with an invalid currency but can't save it """
+        asource = ApplicationFixtureFactory.make_application_source()
+
+        # FARSI exists in the index as legacy data, but we usually accept it as Persian. It's supposed to be a code.
+        asource['bibjson']['language'] = ['FARSI']
+        a = models.Application(**asource)
+        assert a.bibjson().language_name() == ['FARSI']
+
+        # We could actually put complete nonsense in here if we wanted
+        asource['bibjson']['language'][0] = 'interpretive dance'
+        a2 = models.Application(**asource)
+        assert a2.bibjson().language.pop() == 'interpretive dance'
+
+    def test_39_autochecks(self):
         a = models.Autocheck()
         a.application = "1234"
         a.journal = "9876"
@@ -1664,7 +1678,7 @@ class TestModels(DoajTestCase):
         check = a.checks[0]
         assert "dismissed" not in check
 
-    def test_39_autocheck_retrieves(self):
+    def test_40_autocheck_retrieves(self):
         a = models.Autocheck()
         a.application = "1234"
         a.add_check("field", "original", "suggested", "advice", "http://ref.com", {"context": "here"}, "checker")
@@ -1680,7 +1694,6 @@ class TestModels(DoajTestCase):
 
         ap2 = models.Autocheck.for_journal("9876")
         assert ap2.journal == "9876"
-
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):
