@@ -122,7 +122,6 @@ class DoajTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        upload_async_path = paths.create_tmp_dir(is_auto_mkdir=True)
         cls.originals = patch_config(app, {
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
@@ -139,7 +138,7 @@ class DoajTestCase(TestCase):
             "FAKER_SEED": 1,
             "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
             'CMS_BUILD_ASSETS_ON_STARTUP': False,
-            'UPLOAD_ASYNC_DIR': upload_async_path.as_posix(),
+            'UPLOAD_ASYNC_DIR': paths.create_tmp_dir(is_auto_mkdir=True).as_posix(),
         })
 
         # some unittest will capture log for testing, therefor log level must be DEBUG

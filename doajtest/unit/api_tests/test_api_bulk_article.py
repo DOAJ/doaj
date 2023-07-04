@@ -1,10 +1,12 @@
 import json
 import time
+from pathlib import Path
+from unittest.mock import patch
 
 from flask import url_for
 
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
-from doajtest.helpers import DoajTestCase, with_es
+from doajtest.helpers import DoajTestCase, with_es, wait_unit
 from portality import models
 from portality.api.current import ArticlesBulkApi, Api401Error, Api400Error
 
@@ -444,3 +446,33 @@ class TestBulkArticle(DoajTestCase):
         # check that 400 is raised
         with self.assertRaises(Api400Error):
             ids = ArticlesBulkApi.create(dataset, account)
+
+    def test_create_async__success(self):
+        income_articles = list(ArticleFixtureFactory.make_bulk_incoming_api_article(10))
+        self.assert_create_async(income_articles, 1, 1)
+
+    def test_create_async__invalid_income_articles_format(self):
+        income_articles = [{'invalid_input': 1}]
+        self.assert_create_async(income_articles, 1, 1)
+
+    def test_create_async__invalid_json_format(self):
+        income_articles = [{'invalid_input': set()}]
+        with self.assertRaises(TypeError):
+            ArticlesBulkApi.create_async(income_articles, models.Account())
+
+    def assert_create_async(self, income_articles, offset_articles, offset_files):
+        def _count_files():
+            return len(list(Path(self.app_test.config.get("UPLOAD_ASYNC_DIR", "/tmp")).glob("*.json")))
+
+        n_org_articles = models.BulkArticles.count()
+        n_org_files = _count_files()
+        with patch_bgtask_submit() as mock_submit:
+            ArticlesBulkApi.create_async(income_articles, models.Account())
+            mock_submit.assert_called_once()
+
+        assert _count_files() == n_org_files + offset_files
+        wait_unit(lambda: models.BulkArticles.count() == n_org_articles + offset_articles, 5, 0.5)
+
+
+def patch_bgtask_submit():
+    return patch('portality.tasks.article_bulk_create.ArticleBulkCreateBackgroundTask.submit')

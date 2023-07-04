@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import List
 
 from portality import models
-from portality.api.current import ArticlesCrudApi
 from portality.background import BackgroundTask
 from portality.core import app
 from portality.crosswalks.exceptions import CrosswalkException
@@ -27,6 +26,7 @@ def get_upload_path(upload: BulkArticles) -> Path:
 # Background task implementation
 
 def prep_article(data, account) -> models.Article:
+    from portality.api.current import ArticlesCrudApi
     try:
         return ArticlesCrudApi.prep_article(data, account)
     except (
