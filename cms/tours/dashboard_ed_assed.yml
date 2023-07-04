@@ -1,0 +1,28 @@
+steps:
+  - selector: header h1
+    title: Welcome to your dashboard!
+    content: You will now come to this page after you log in.  This is where you can see all the applications you have to process, and the activity of your groups.
+
+  - selector: nav.vertical-nav
+    title: Navigation,
+    content: The old Admin navigation has moved from the top to the left-hand side
+
+  - selector: "#primary-nav ul li:first-of-type"
+    title: Notifications
+    content: there is a new notifications button in the top nav
+
+  - selector: "main section:first-of-type"
+    title: Cards
+    content: Each application is a card on your dashboard, and the cards are arranged in priority order, from left to right. Clicking a card will open up the application in a new tab
+
+  - selector: "main section:first-of-type"
+    title: Card components
+    content: "each card has six components: date of submission, status, what action needs to be taken, Information about the group and who the application is assigned to"
+
+  - selector: "main a svc.feather-log-out"
+    title: Log out
+    content: "Logout has moved to the bottom of the dashboard"
+
+  - selector: "#primary-nav svg.feather-home"
+    title: "DOAJ Home"
+    content: "to get back to the main DOAJ website, click 'DOAJ HOME' in the top right corner"
