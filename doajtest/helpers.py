@@ -212,9 +212,13 @@ class DoajTestCase(TestCase):
 
         :return:
         """
-        models.Article(**ArticleFixtureFactory.make_article_source()).save()
-        models.Application(**ApplicationFixtureFactory.make_application_source()).save()
-        models.Notification().save()
+        article = models.Article(**ArticleFixtureFactory.make_article_source())
+        save_all_block_last([
+            article,
+            models.Application(**ApplicationFixtureFactory.make_application_source()),
+            models.Notification(),
+        ])
+        models.Article.pull(article.id).delete()
 
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
