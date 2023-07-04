@@ -7,10 +7,10 @@ from portality import models
 from portality.models.uploads import BaseArticlesUpload
 
 
-def assert_failed_by_reasons(fu: BaseArticlesUpload,
-                             reason_cases: Dict[str, List] = None,
-                             reason_size: Dict[str, int] = None,
-                             expected_details=None):
+def assert_failed(fu: BaseArticlesUpload,
+                  reason_cases: Dict[str, List] = None,
+                  reason_size: Dict[str, int] = None,
+                  expected_details=None):
     assert fu is not None
     assert fu.status == "failed"
     assert fu.imported == 0
@@ -92,10 +92,6 @@ def create_simple_publisher(user_id, blocking=None):
     return account
 
 
-def assert_unmatched_upload(upload: BaseArticlesUpload):
-    assert_failed_by_reasons(upload, reason_cases={"unmatched": ["2345-6789"]})
-
-
 def test_lcc_spelling_error(run_background_process_fn):
     # create a journal with a broken subject classification
     j1 = models.Journal()
@@ -135,10 +131,8 @@ def test_one_journal_one_article_2_issns_one_unknown(run_background_process_fn):
 
     handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
     fu = run_background_process_fn("testowner1", handle)
-    assert_failed_by_reasons(fu, reason_cases={"unmatched": ["9876-5432"]})
-    target_issns = ["1234-5678", "9876-5432"]
-    found = [a for a in models.Article.find_by_issns(target_issns)]
-    assert len(found) == 0
+    assert_failed(fu, reason_cases={"unmatched": ["9876-5432"]})
+    assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 0
 
 
 def test_unknown_journal_issn(run_background_process_fn):
@@ -151,7 +145,7 @@ def test_unknown_journal_issn(run_background_process_fn):
     # take an article with 2 issns, but one of which is not in the index
     handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
     fu = run_background_process_fn("testowner1", handle)
-    assert_failed_by_reasons(fu, reason_size={"unmatched": 1})
+    assert_failed(fu, reason_size={"unmatched": 1})
 
 
 def test_2_journals_different_owners_different_issns_mixed_article_fail(run_background_process_fn):
@@ -167,11 +161,9 @@ def test_2_journals_different_owners_different_issns_mixed_article_fail(run_back
 
     handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
     fu = run_background_process_fn("testowner1", handle)
-    assert_failed_by_reasons(fu, reason_cases={'unowned': ['9876-5432']})
+    assert_failed(fu, reason_cases={'unowned': ['9876-5432']})
 
-    target_issns = ["1234-5678", "9876-5432"]
-    found = [a for a in models.Article.find_by_issns(target_issns)]
-    assert len(found) == 0
+    assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 0
 
 
 def test_2_journals_same_owner_issn_each_success(run_background_process_fn):
@@ -205,10 +197,8 @@ def test_2_journals_different_owners_issn_each_fail(run_background_process_fn):
     handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
     fu = run_background_process_fn(user_id, handle)
 
-    assert_failed_by_reasons(fu, reason_cases={'unowned': ['9876-5432']})
-    target_issns = ["1234-5678", "9876-5432"]
-    found = [a for a in models.Article.find_by_issns(target_issns)]
-    assert len(found) == 0
+    assert_failed(fu, reason_cases={'unowned': ['9876-5432']})
+    assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 0
 
 
 def test_2_journals_different_owners_both_issns_fail(run_background_process_fn):
@@ -223,10 +213,8 @@ def test_2_journals_different_owners_both_issns_fail(run_background_process_fn):
     handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
     fu = run_background_process_fn("testowner1", handle)
     target_issns = ["1234-5678", "9876-5432"]
-    assert_failed_by_reasons(fu, reason_cases={'shared': target_issns})
-
-    found = [a for a in models.Article.find_by_issns(target_issns)]
-    assert len(found) == 0
+    assert_failed(fu, reason_cases={'shared': target_issns})
+    assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 0
 
 
 def test_journal_2_article_2_1_different_success(run_background_process_fn):
@@ -240,11 +228,8 @@ def test_journal_2_article_2_1_different_success(run_background_process_fn):
 
     handle = DoajXmlArticleFixtureFactory.upload_2_issns_ambiguous()
     fu = run_background_process_fn("testowner", handle)
-    assert_failed_by_reasons(fu, reason_size={"unmatched": 1})
-
-    target_issns = ["1234-5678", "2345-6789"]
-    found = [a for a in models.Article.find_by_issns(target_issns)]
-    assert len(found) == 0
+    assert_failed(fu, reason_size={"unmatched": 1})
+    assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 0
 
 
 def test_journal_1_article_1_success(run_background_process_fn):
@@ -332,8 +317,8 @@ def test_fail_unowned_issn(run_background_process_fn):
 
     handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
     fu = run_background_process_fn("testowner", handle)
-    assert_failed_by_reasons(fu, expected_details=False,
-                             reason_cases={"unowned": ["9876-5432", '1234-5678']})
+    assert_failed(fu, expected_details=False,
+                  reason_cases={"unowned": ["9876-5432", '1234-5678']})
 
 
 def test_fail_shared_issn(run_background_process_fn):
@@ -347,7 +332,7 @@ def test_fail_shared_issn(run_background_process_fn):
 
     handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
     fu = run_background_process_fn("testowner1", handle)
-    assert_failed_by_reasons(fu, expected_details=False, reason_cases={"shared": ["1234-5678", "9876-5432"]})
+    assert_failed(fu, expected_details=False, reason_cases={"shared": ["1234-5678", "9876-5432"]})
 
 
 def test_submit_success(run_background_process_fn):
@@ -373,4 +358,4 @@ def test_fail_unmatched_issn(run_background_process_fn):
 
     handle = DoajXmlArticleFixtureFactory.upload_2_issns_ambiguous()
     fu = run_background_process_fn("testowner", handle)
-    assert_unmatched_upload(fu)
+    assert_failed(fu, reason_cases={"unmatched": ["2345-6789"]})

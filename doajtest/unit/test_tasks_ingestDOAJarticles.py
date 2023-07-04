@@ -150,7 +150,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
-        article_upload_tester.assert_failed_by_reasons(fu, expected_details=True)
+        article_upload_tester.assert_failed(fu, expected_details=True)
 
         # file should have been removed from upload dir
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
@@ -177,7 +177,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        article_upload_tester.assert_failed_by_reasons(fu, expected_details=False)
+        article_upload_tester.assert_failed(fu, expected_details=False)
 
         # file should have been removed from disk
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
@@ -229,7 +229,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        article_upload_tester.assert_failed_by_reasons(fu, expected_details=False)
+        article_upload_tester.assert_failed(fu, expected_details=False)
 
         # now try again with an invalid url
         requests.head = ResponseMockFactory.head_success
@@ -244,7 +244,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        article_upload_tester.assert_failed_by_reasons(fu, expected_details=False)
+        article_upload_tester.assert_failed(fu, expected_details=False)
 
     def test_06_doaj_url_upload_ftp_success(self):
         ftplib.FTP = FTPMockFactory.create("doaj")
@@ -276,7 +276,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        article_upload_tester.assert_failed_by_reasons(fu, expected_details=False)
+        article_upload_tester.assert_failed(fu, expected_details=False)
 
     def test_08_doajxml_prepare_file_upload_success(self):
 
@@ -412,7 +412,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         result = ingestarticles.ftp_upload(job, path, parsed_url, file_upload)
 
         assert result is False
-        article_upload_tester.assert_failed_by_reasons(file_upload, expected_details=False)
+        article_upload_tester.assert_failed(file_upload, expected_details=False)
 
     def test_15_http_upload_success(self):
         requests.head = ResponseMockFactory.head_fail
@@ -482,7 +482,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        article_upload_tester.assert_failed_by_reasons(file_upload, expected_details=True)
+        article_upload_tester.assert_failed(file_upload, expected_details=True)
 
     def test_19_download_http_error(self):
         requests.head = ResponseMockFactory.head_fail
@@ -505,7 +505,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         result = task._download(file_upload)
 
         assert result is False
-        article_upload_tester.assert_failed_by_reasons(file_upload, expected_details=False)
+        article_upload_tester.assert_failed(file_upload, expected_details=False)
 
     def test_20_download_ftp_valid(self):
         ftplib.FTP = FTPMockFactory.create("doaj")
@@ -549,7 +549,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        article_upload_tester.assert_failed_by_reasons(file_upload, expected_details=True)
+        article_upload_tester.assert_failed(file_upload, expected_details=True)
 
     def test_22_download_ftp_error(self):
         ftplib.FTP = FTPMockFactory.create("doaj")
@@ -571,7 +571,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         result = task._download(file_upload)
 
         assert result is False
-        article_upload_tester.assert_failed_by_reasons(file_upload, expected_details=False)
+        article_upload_tester.assert_failed(file_upload, expected_details=False)
 
     def test_23_doaj_process_success(self):
         helpers.save_all_block_last([
@@ -625,7 +625,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task._process(file_upload)
 
         assert not os.path.exists(path)
-        article_upload_tester.assert_failed_by_reasons(file_upload, expected_details=True)
+        article_upload_tester.assert_failed(file_upload, expected_details=True)
 
     def test_25_process_filesystem_error(self):
         articleSvc.ArticleService.batch_create_articles = BLLArticleMockFactory.batch_create
@@ -653,7 +653,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task._process(file_upload)
 
         assert not os.path.exists(path)
-        article_upload_tester.assert_failed_by_reasons(file_upload, expected_details=False)
+        article_upload_tester.assert_failed(file_upload, expected_details=False)
 
     def test_27_run_exists(self):
         requests.head = ResponseMockFactory.head_fail
@@ -782,8 +782,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu2.status == "processed", "received status: {}".format(fu2.status)
 
         # now let's check that only one article got created
-        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1, "found: {}".format(len(found))
+        assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 1
 
     def test_44_doaj_journal_1_article_1_superlong_noclip(self):
         article_upload_tester.test_journal_1_article_1_superlong_noclip(self.run_background_process_simple)
@@ -951,7 +950,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
-        article_upload_tester.assert_failed_by_reasons(fu, expected_details=True)
+        article_upload_tester.assert_failed(fu, expected_details=True)
 
         # file should have been removed from upload dir
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
