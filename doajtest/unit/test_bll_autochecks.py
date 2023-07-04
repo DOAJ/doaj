@@ -6,7 +6,7 @@ from portality.bll import DOAJ
 
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.mocks.autocheck_resource_bundle_Resource import ResourceBundleResourceMockFactory
-from doajtest.mocks.autocheck_checkers import AnnotatorsMockFactory
+from doajtest.mocks.autocheck_checkers import AutocheckMockFactory
 
 from portality.autocheck.resource_bundle import Resource
 
@@ -29,7 +29,7 @@ class TestBLLAutochecks(DoajTestCase):
         application = models.Application(**source)
         application.save(blocking=True)
 
-        ma = AnnotatorsMockFactory.mock_annotator()
+        ma = AutocheckMockFactory.mock_autochecker()
         anno_svc = DOAJ.autochecksService([(True, True, ma)])
         anno_svc.autocheck_application(application)
 
@@ -48,7 +48,7 @@ class TestBLLAutochecks(DoajTestCase):
         journal = models.Journal(**source)
         journal.save(blocking=True)
 
-        ma = AnnotatorsMockFactory.mock_annotator()
+        ma = AutocheckMockFactory.mock_autochecker()
         anno_svc = DOAJ.autochecksService([(True, True, ma)])
         anno_svc.autocheck_journal(journal)
 

@@ -1,9 +1,9 @@
 from portality.autocheck.checker import Checker
 
 
-class AnnotatorsMockFactory(object):
+class AutocheckMockFactory(object):
     @classmethod
-    def mock_annotator(cls):
+    def mock_autochecker(cls):
         return MockChecker
 
 
