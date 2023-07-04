@@ -106,13 +106,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         return models.FileUpload.pull(id)
 
