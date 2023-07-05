@@ -99,7 +99,7 @@ class ArticlesCrudApi(CrudApi):
         return am
 
     @classmethod
-    def prep_article_for_api(cls, data, account)->models.Article:
+    def prep_article_for_api(cls, data, account) -> models.Article:
         try:
             return cls.prep_article(data, account)
         except (

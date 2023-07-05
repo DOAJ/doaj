@@ -4,7 +4,6 @@ from io import BytesIO, StringIO
 from lxml import etree
 
 from doajtest import test_constants
-from portality.crosswalks.article_doaj_xml import DOAJXWalk
 
 ARTICLES = test_constants.PATH_RESOURCES / "doajxml_article_uploads.xml"
 
@@ -103,5 +102,6 @@ class DoajXmlArticleFixtureFactory(object):
 
 
 def to_articles(article_file_handle: BytesIO):
+    from portality.crosswalks.article_doaj_xml import DOAJXWalk
     articles = DOAJXWalk().crosswalk_file(file_handle=article_file_handle, add_journal_info=False)
     return articles

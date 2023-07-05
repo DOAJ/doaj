@@ -413,9 +413,11 @@ def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1,
 def save_all_block_last(model_list):
     model_list = list(model_list)
     if not model_list:
-        return
+        return model_list
 
     *model_list, last = model_list
     for model in model_list:
         model.save()
     last.save(blocking=True)
+
+    return model_list

@@ -1,7 +1,6 @@
 import json
 
 from doajtest.fixtures import article_doajxml
-from doajtest.fixtures.accounts import create_publisher_account__a
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
@@ -14,12 +13,16 @@ def load_json_by_handle(handle) -> str:
     return data_json_str
 
 
+def create_user_with_api_key():
+    acc = models.Account.make_account(email="a1@example.com", roles=["user", "api"])
+    acc.save(blocking=True)
+    return acc
+
+
 class TestBulkArticles(DoajTestCase):
 
     def test_bulk_article_create_async__201(self):
-        acc = models.Account.make_account(email="a1@example.com", roles=["user", "api"])
-        acc.save(blocking=True)
-
+        acc = create_user_with_api_key()
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         with self.app_test.test_client() as t_client:
             response = t_client.post(url_for('api_v3.bulk_article_create_async', api_key=acc.api_key),
@@ -28,9 +31,7 @@ class TestBulkArticles(DoajTestCase):
             assert response.status_code == 201
 
     def test_bulk_article_create_async__invalid_input(self):
-        acc = models.Account.make_account(email="a1@example.com", roles=["user", "api"])
-        acc.save(blocking=True)
-
+        acc = create_user_with_api_key()
         with self.app_test.test_client() as t_client:
             response = t_client.post(url_for('api_v3.bulk_article_create_async', api_key=acc.api_key),
                                      data='{invalid json forma]',
