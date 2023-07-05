@@ -1166,6 +1166,11 @@ GA_ACTION_JOURNALCSV = 'Download'
 # ~~->OpenURL:Feature~~
 GA_CATEGORY_OPENURL = 'OpenURL'
 
+# GA for PublicDataDump
+# ~~->PublicDataDump:Feature~~
+GA_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
+GA_ACTION_PUBLICDATADUMP = 'Download'
+
 # GA for API
 # ~~-> API:Feature~~
 GA_CATEGORY_API = 'API Hit'
