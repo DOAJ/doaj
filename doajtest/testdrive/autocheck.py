@@ -22,6 +22,7 @@ class Autocheck(TestDrive):
 
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
+        ap.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
         ap.remove_current_journal()
         ap.remove_related_journal()
         ap.set_id(ap.makeid())
@@ -118,10 +119,10 @@ class Autocheck(TestDrive):
             }
         }
 
-    def teardown(self, params) -> dict:
+    def teardown(self, params):
         models.Account.remove_by_id(params["account"]["username"])
-        models.EditorGroup.remove_by_id(params["editor_group"]["id"])
-        for nature, details in params["applications"].items():
-            for detail in details:
-                models.Application.remove_by_id(detail["id"])
+        models.Application.remove_by_id(params["application"]["id"])
+        models.Journal.remove_by_id(params["journal"]["id"])
+        models.Autocheck.remove_by_id(params["autocheck"]["application"])
+        models.Autocheck.remove_by_id(params["autocheck"]["journal"])
         return {"status": "success"}
