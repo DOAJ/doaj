@@ -68,6 +68,7 @@ BACKGROUND_JOB_FINISHED = "bg:job_finished"
 PROCESS__QUICK_REJECT = "quick_reject"
 
 # Role
+ROLE_ADMIN = "admin"
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
 

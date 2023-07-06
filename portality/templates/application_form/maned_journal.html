@@ -50,7 +50,7 @@
     <script type="application/javascript">
         doaj.autochecks = {{ autochecks.data|tojson }}
     </script>
-    <script type="text/javascript" src="/js/autochecks.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript" src="/static/js/autochecks.js?v={{config.get('DOAJ_VERSION')}}"></script>
     {% endif %}
     {% set factory = "journal" %}
     {% include "application_form/js/_form_js.html" %}

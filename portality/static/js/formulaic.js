@@ -1144,7 +1144,7 @@ var formulaic = {
                     return [];
                 }
                 let applicable = [];
-                for (let anno of doaj.autochecks.autochecks) {
+                for (let anno of doaj.autochecks.checks) {
                     if (anno.field && anno.field === this.fieldDef.name) {
                         applicable.push(anno);
                     }
@@ -1210,7 +1210,7 @@ var formulaic = {
             }
 
             this.dismissSuccess = function(autocheckId) {
-                for (let anno of doaj.autochecks.autochecks) {
+                for (let anno of doaj.autochecks.checks) {
                     if (anno.id === autocheckId) {
                         anno.dismissed = true;
                     }
@@ -1238,7 +1238,7 @@ var formulaic = {
             }
 
             this.undismissSuccess = function(autocheckId) {
-                for (let anno of doaj.autochecks.autochecks) {
+                for (let anno of doaj.autochecks.checks) {
                     if (anno.id === autocheckId) {
                         anno.dismissed = false;
                     }

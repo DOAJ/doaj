@@ -1,4 +1,4 @@
-from flask import Blueprint, make_response, abort, url_for, request
+from flask import Blueprint, make_response, abort, url_for, request, render_template
 from flask_login import current_user, login_required
 from doajtest.testdrive.factory import TestFactory
 from portality import util
@@ -21,9 +21,11 @@ def testdrive(test_id):
     params = test.setup()
     teardown = app.config.get("BASE_URL") + url_for("testdrive.teardown", test_id=test_id) + "?d=" + parse.quote_plus(json.dumps(params))
     params["teardown"] = teardown
-    resp = make_response(json.dumps(params))
-    resp.mimetype = "application/json"
-    return resp
+
+    return render_template("testdrive/testdrive.html", params=params, name=test_id)
+    # resp = make_response(json.dumps(params))
+    # resp.mimetype = "application/json"
+    # return resp
 
 
 @blueprint.route("/<test_id>/teardown")

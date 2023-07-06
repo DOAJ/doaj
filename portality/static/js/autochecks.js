@@ -22,7 +22,7 @@ doaj.autocheckers.ISSNActive = class {
         let message = this.MESSAGES[autocheck.advice];
 
         let frag = `<div><span class="icon-container icon-container--${autocheck.advice}"><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    ${message} (<a href="${autocheck.reference_url}">see record</a>).</div>`;
+                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>).</div>`;
         return frag;
     }
 }
@@ -48,7 +48,7 @@ doaj.autocheckers.KeepersRegistry = class {
         message = message.replace("{service}", context.service);
 
         let frag = `<div><span class="icon-container icon-container--${autocheck.advice}"><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    ${message} (<a href="${autocheck.reference_url}">see record</a>).</div>`;
+                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>).</div>`;
         return frag;
     }
 }
@@ -68,17 +68,24 @@ doaj.autocheckers.DismissedAutochecks = class {
     }
 
     draw() {
-        if (!doaj.autochecks || !doaj.autochecks.autochecks) {
+        if (!doaj.autochecks || !doaj.autochecks.checks) {
             return
         }
 
         let frag = "<h2>Dismissed Autochecks</h2><ul class='unstyled-list'>";
-        for (let anno of doaj.autochecks.autochecks) {
+        let empty = true;
+        for (let anno of doaj.autochecks.checks) {
             if (!anno.dismissed) {
                 continue
             }
             frag += this._renderDismissed(anno)
+            empty = false;
         }
+
+        if (empty) {
+            frag += "<li class='alert'>No dismissed autochecks</li>"
+        }
+
         frag += "</ul>"
 
         $(this.selector).html(frag);
@@ -142,7 +149,7 @@ doaj.autocheckers.DismissedAutochecks = class {
     }
 
     undismissSuccess(autocheckId) {
-        for (let anno of doaj.autochecks.autochecks) {
+        for (let anno of doaj.autochecks.checks) {
             if (anno.id === autocheckId) {
                 anno.dismissed = false;
             }

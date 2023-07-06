@@ -56,6 +56,7 @@ class AutocheckService(object):
 
         new_autochecks.save()
         logger("Saved new autocheck document {id}".format(id=new_autochecks.id))
+        return new_autochecks
 
     def autocheck_journals(self, journal_ids=None):
         """
@@ -90,6 +91,7 @@ class AutocheckService(object):
 
         new_autochecks.save()
         logger("Saved new autocheck document {id}".format(id=new_autochecks.id))
+        return new_autochecks
 
     def dismiss(self, autocheck_set_id, autocheck_id):
         autochecks = models.Autocheck.pull(autocheck_set_id)
