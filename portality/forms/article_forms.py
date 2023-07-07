@@ -516,7 +516,7 @@ ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
 DATE_ERROR = "Date must be supplied in the form YYYY-MM-DD"
 DOI_ERROR = 'Invalid DOI. A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
-ORCID_ERROR = "Invalid ORCID iD. Please enter your ORCID iD as a full URL of the form https://orcid.org/0000-0000-0000-0000"
+ORCID_ERROR = "Invalid ORCID iD. Please enter your ORCID iD structured as: https://orcid.org/0000-0000-0000-0000. URLs must start with https."
 IDENTICAL_ISSNS_ERROR = "The Print and Online ISSNs supplied are identical. If you supply 2 ISSNs they must be different."
 
 start_year = app.config.get("METADATA_START_YEAR", dates.now().year - 15)

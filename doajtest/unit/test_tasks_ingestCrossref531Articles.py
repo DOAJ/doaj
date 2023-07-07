@@ -764,13 +764,13 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -810,13 +810,13 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -855,7 +855,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         # scheduling does not result in immidiate execution for huey version > 2
         # always eager mode is replaced by immediate mode
@@ -896,13 +896,13 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1

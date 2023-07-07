@@ -39,6 +39,10 @@ silver:
 - name: MDPI
   url: https://www.mdpi.com/
   logo: mdpi.svg  
+
+- name: OA.Works
+  url: https://oa.works/
+  logo: oaworks.png
   
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
