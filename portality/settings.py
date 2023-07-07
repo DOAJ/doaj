@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.3.6"
+DOAJ_VERSION = "6.3.9"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -126,10 +126,10 @@ VALID_FEATURES = ['api1', 'api2', 'api3']
 # File Path and URL Path settings
 
 # root of the git repo
-ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+ROOT_DIR = paths.rel2abs(__file__, "..")
 
 # base path, to the directory where this settings file lives
-BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
+BASE_FILE_PATH = paths.abs_dir_path(__file__)
 
 BASE_URL = "https://doaj.org"
 if BASE_URL.startswith('https://'):
@@ -157,8 +157,8 @@ PROXIED = False
 
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
-FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "failed_articles")
+UPLOAD_DIR = os.path.join(ROOT_DIR, "upload")
+FAILED_ARTICLE_DIR = os.path.join(ROOT_DIR, "failed_articles")
 
 # directory where reports are output
 REPORTS_BASE_DIR = "/home/cloo/reports/"
@@ -526,7 +526,17 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "isolang_2letter": {
+    "isolang_2letter_strict": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+#                "index": False,
+                "store": True
+            }
+        }
+    },
+    "isolang_2letter_lax": {
         "type": "text",
         "fields": {
             "exact": {
@@ -546,7 +556,17 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "currency_code": {
+    "currency_code_strict": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+#                "index": False,
+                "store": True
+            }
+        }
+    },
+    "currency_code_lax": {
         "type": "text",
         "fields": {
             "exact": {

@@ -45,12 +45,12 @@ class TestWithdrawReinstate(DoajTestCase):
             UPDATE_REQUEST_SOURCE_TEST_1 = ApplicationFixtureFactory.make_update_request_source()
             application = models.Application(**UPDATE_REQUEST_SOURCE_TEST_1)
 
-        time.sleep(2)
+        time.sleep(1)
 
         job = SetInDOAJBackgroundTask.prepare(account.id, journal_ids=ids, in_doaj=False)
         SetInDOAJBackgroundTask.submit(job)
 
-        time.sleep(2)
+        time.sleep(1)
 
         for id in ids:
             j = models.Journal.pull(id)
@@ -76,12 +76,12 @@ class TestWithdrawReinstate(DoajTestCase):
             a.save()
             articles.append(a.id)
 
-        time.sleep(2)
+        time.sleep(1)
 
         job = SetInDOAJBackgroundTask.prepare("testuser", journal_ids=ids, in_doaj=True)
         SetInDOAJBackgroundTask.submit(job)
 
-        time.sleep(2)
+        time.sleep(1)
 
         for id in ids:
             j = models.Journal.pull(id)
@@ -113,7 +113,7 @@ class TestWithdrawReinstate(DoajTestCase):
             a.save()
             articles.append(a.id)
 
-        time.sleep(2)
+        time.sleep(1)
 
         change_in_doaj(ids, False)
 
@@ -149,7 +149,7 @@ class TestWithdrawReinstate(DoajTestCase):
             a.save()
             articles.append(a.id)
 
-        time.sleep(2)
+        time.sleep(1)
 
         change_in_doaj(ids, True)
 
@@ -176,12 +176,12 @@ class TestWithdrawReinstate(DoajTestCase):
         application = models.Application(**UPDATE_REQUEST_SOURCE)
         application.save()
 
-        time.sleep(2)
+        time.sleep(1)
 
         job = SetInDOAJBackgroundTask.prepare(account.id, journal_ids=[j.id], in_doaj=False)
         SetInDOAJBackgroundTask.submit(job)
 
-        time.sleep(2)
+        time.sleep(1)
 
         j = models.Journal.pull(j.id)
         assert j.is_in_doaj() is False
