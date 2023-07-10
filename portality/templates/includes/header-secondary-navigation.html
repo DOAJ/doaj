@@ -11,7 +11,7 @@
         <span data-feather="chevron-down" aria-hidden="true"></span>
     </a>
 
-    <ul class="dropdown__menu" aria-labelledby="menu-{{ selected_nav.id }}" aria-label="{{ selected_nav.label }}" role="menu">
+    <ul class="dropdown__menu dropdown__on-hover" aria-labelledby="menu-{{ selected_nav.id }}" aria-label="{{ selected_nav.label }}" role="menu">
         {% for entry in selected_nav.entries %}
             {% set url = entry.url %}
             {% set urlAttrs = 'rel="noopener" target="_blank"' %}

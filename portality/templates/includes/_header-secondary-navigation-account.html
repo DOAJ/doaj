@@ -9,7 +9,7 @@
                 Dashboard
                 <span data-feather="chevron-down" aria-hidden="true"></span>
             </a>
-        <ul class="dropdown__menu" aria-labelledby="menu-account">
+        <ul class="dropdown__menu dropdown__on-hover" aria-labelledby="menu-account">
             {% if current_user.has_role("admin") %}
                 <li>
                     <a href="{{ url_for('dashboard.top_todo') }}" class="dropdown__link">

@@ -72,7 +72,7 @@
 
 @media (min-width: 769px) {
   // Only display dropdown menu on hover in desktop
-  .dropdown:hover .dropdown__menu {
+  .dropdown:hover .dropdown__on-hover {
     display: block;
   }
 }
