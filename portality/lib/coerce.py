@@ -24,7 +24,7 @@ def date_str(in_format=None, out_format=None):
     return datify
 
 
-def to_isolang(output_format=None):
+def to_isolang(output_format=None, fail_if_not_found=True):
     """
     :param output_format: format from input source to putput.  Must be one of:
         * alpha3
@@ -33,6 +33,7 @@ def to_isolang(output_format=None):
         * name
         * fr
     Can be a list in order of preference, too
+    :param fail_if_not_found: Whether to raise ValueError if there's no match or return the input unchanged
     ~~-> Languages:Data~~
     :return:
     """
@@ -49,8 +50,15 @@ def to_isolang(output_format=None):
         if val is None:
             return None
         l = dataset.find(val)
+
+        # If we didn't find the language, either raise an error or return the provided value
         if l is None:
-            raise ValueError("Unable to find iso code for language {x}".format(x=val))
+            if fail_if_not_found is True:
+                raise ValueError("Unable to find iso code for language {x}".format(x=val))
+            else:
+                return val
+
+        # Retrieve the correct output format from a successful match
         for f in output_format:
             v = l.get(f)
             if v is None or v == "":
@@ -64,6 +72,7 @@ def to_currency_code(fail_if_not_found=True):
     """
     ~~-> Currencies:Data~~
     :param val:
+    :param fail_if_not_found:
     :return:
     """
     def codify(val):
@@ -129,7 +138,8 @@ COERCE_MAP = {
     "utcdatetimemicros" : date_str(out_format=FMT_DATETIME_MS_STD),
     "bigenddate" : date_str(out_format=FMT_DATE_STD),
     "isolang": to_isolang(),
-    "isolang_2letter": to_isolang(output_format="alpha2"),
+    "isolang_2letter_strict": to_isolang(output_format="alpha2", fail_if_not_found=True),
+    "isolang_2letter_lax": to_isolang(output_format="alpha2", fail_if_not_found=False),
     "country_code": to_country_code,
     "issn" : to_issn,
     "currency_code_strict": to_currency_code(fail_if_not_found=True),
