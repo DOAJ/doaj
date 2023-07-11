@@ -37,7 +37,8 @@ from portality.forms.validate import (
     OwnerExists,
     NoScriptTag,
     Year,
-    CurrentISOCurrency
+    CurrentISOCurrency,
+    CurrentISOLanguage
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
@@ -253,7 +254,8 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "full_contents" # ~~^->FullContents:FormWidget~~
+            "full_contents", # ~~^->FullContents:FormWidget~~
+            "issn_link" # ~~^->IssnLink:FormWidget~~
         ],
         "contexts": {
             "public" : {
@@ -323,7 +325,8 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "full_contents" # ~~^->FullContents:FormWidget~~
+            "full_contents", # ~~^->FullContents:FormWidget~~
+            "issn_link"  # ~~^->IssnLink:FormWidget~~
         ],
         "contexts": {
             "public" : {
@@ -423,7 +426,8 @@ class FieldDefinitions:
             "initial": 5
         },
         "validate": [
-            {"required": {"message": "Enter <strong>at least one</strong> language"}}
+            {"required": {"message": "Enter <strong>at least one</strong> language"}},
+            "current_iso_language"
         ],
         "widgets": [
             {"select": {}},
@@ -2856,6 +2860,16 @@ class CurrentISOCurrencyBuilder:
     def wtforms(field, settings):
         return CurrentISOCurrency(settings.get("message"))
 
+
+class CurrentISOLanguageBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        pass
+
+    @staticmethod
+    def wtforms(field, settings):
+        return CurrentISOLanguage(settings.get("message"))
+
 #########################################################
 # Crosswalks
 #########################################################
@@ -2918,7 +2932,8 @@ PYTHON_FUNCTIONS = {
             "owner_exists" : OwnerExistsBuilder.wtforms,
             "no_script_tag": NoScriptTagBuilder.wtforms,
             "year": YearBuilder.wtforms,
-            "current_iso_currency": CurrentISOCurrencyBuilder.wtforms
+            "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
+            "current_iso_language": CurrentISOLanguageBuilder.wtforms
         }
     }
 }
@@ -2937,7 +2952,8 @@ JAVASCRIPT_FUNCTIONS = {
     "full_contents" : "formulaic.widgets.newFullContents",  # ~~^->FullContents:FormWidget~~
     "load_editors" : "formulaic.widgets.newLoadEditors",    # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
-    "note_modal" : "formulaic.widgets.newNoteModal" # ~~-> NoteModal:FormWidget~~
+    "note_modal" : "formulaic.widgets.newNoteModal", # ~~-> NoteModal:FormWidget~~,
+    "issn_link" : "formulaic.widgets.newIssnLink" # ~~-> IssnLink:FormWidget~~,
 }
 
 

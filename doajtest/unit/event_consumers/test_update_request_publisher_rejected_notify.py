@@ -43,7 +43,7 @@ class TestUpdateRequestPublisherRejectedNotify(DoajTestCase):
         event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : source, "old_status": "in progress", "new_status": "rejected"})
         UpdateRequestPublisherRejectedNotify.consume(event)
 
-        time.sleep(2)
+        time.sleep(1)
         ns = models.Notification.all()
         assert len(ns) == 1
 
@@ -71,7 +71,7 @@ class TestUpdateRequestPublisherRejectedNotify(DoajTestCase):
             "new_status": "rejected"
         })
         UpdateRequestPublisherRejectedNotify.consume(event)
-        time.sleep(2)
+        time.sleep(1)
         ns = models.Notification.all()
         assert len(ns) == 0
 

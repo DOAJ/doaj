@@ -2072,6 +2072,56 @@ var formulaic = {
             };
 
             this.init()
-        }
+        },
+        newIssnLink : function(params) {
+            return edges.instantiate(formulaic.widgets.IssnLink, params)
+        },
+        IssnLink : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+            this.issn = params.issn;
+
+            this.ns = "formulaic-issnlink";
+
+            this.link = false;
+            this.url = "https://portal.issn.org/resource/ISSN/";
+
+            this.init = function() {
+                var elements = this.form.controlSelect.input(
+                    {name: this.fieldDef.name});
+                edges.on(elements, "keyup.IssnLink", this, "updateUrl");
+
+                for (var i = 0; i < elements.length; i++) {
+                    this.updateUrl(elements[i]);
+                }
+            };
+
+            this.updateUrl = function(element) {
+                var that = $(element);
+                var val = that.val();
+                var id = edges.css_id(this.ns, this.fieldDef.name);
+
+                var match = val.match(/[d0-9]{4}-{0,1}[0-9]{3}[0-9xX]{1}/);
+                var url = this.url + val;
+
+                if (val && match) {
+                    if (this.link) {
+                        this.link.text(url);
+                        this.link.attr("href", url);
+                    } else {
+                        var classes = edges.css_classes(this.ns, "visit");
+                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + url + '">' + url + '</a></small></p>');
+
+                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                        this.link = $(selector, this.form.context);
+                    }
+                } else if (this.link) {
+                    this.link.remove();
+                    this.link = false;
+                }
+            };
+
+            this.init();
+        },
     }
 };
