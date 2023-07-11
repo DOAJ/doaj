@@ -27,6 +27,11 @@ SESSION_COOKIE_SECURE=True
 REMEMBER_COOKIE_SECURE = True
 
 ####################################
+# Testdrive for setting up the test environment.
+# CAUTION - this can modify the index so should NEVER be used in production!
+TESTDRIVE_ENABLED = False
+
+####################################
 # Debug Mode
 
 # PyCharm debug settings
