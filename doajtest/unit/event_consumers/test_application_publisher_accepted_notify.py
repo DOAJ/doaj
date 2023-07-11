@@ -46,7 +46,7 @@ class TestApplicationPublisherAcceptedNotify(DoajTestCase):
         event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : app.data, "old_status": "in progress", "new_status": "accepted"})
         ApplicationPublisherAcceptedNotify.consume(event)
 
-        time.sleep(2)
+        time.sleep(1)
         ns = models.Notification.all()
         assert len(ns) == 1
 

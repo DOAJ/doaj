@@ -1,10 +1,11 @@
 import os
-from lxml import etree
-from io import BytesIO,StringIO
-from copy import deepcopy
+from io import BytesIO, StringIO
 
-RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "doajxml_article_uploads.xml")
+from lxml import etree
+
+from doajtest import test_constants
+
+ARTICLES = test_constants.PATH_RESOURCES / "doajxml_article_uploads.xml"
 
 
 class DoajXmlArticleFixtureFactory(object):
