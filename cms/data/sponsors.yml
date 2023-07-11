@@ -106,6 +106,10 @@ bronze:
   url: https://www.keaipublishing.com/
   logo: keai.svg
 
+- name: OASPA
+  url: https://oaspa.org/
+  logo: oaspa.png
+
 - name: OCLC
   url: https://www.oclc.org/
   logo: oclc.svg

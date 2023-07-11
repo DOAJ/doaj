@@ -68,6 +68,14 @@ ed:
   featured: true
   photo: "napa.jpg"
 
+- name: Pablo Hernandez
+  area: Medical Sciences
+  year_since:
+  city: Caracas
+  country: Venezuela
+  language: Spanish, English
+  photo: "Pablo.jpg"
+
 - name: Paola Galimberti
   area: Research Evaluation
   year_since:
@@ -456,6 +464,14 @@ ass_ed:
   country:
   language: Korean, English
 
+- name: Kadri Kıran
+  area: Systematic Entomology
+  year_since:
+  city: Tekirdag
+  country: Turkey
+  language: English, Turkish, German
+  photo: "Kadri Kiran.jpg"
+
 - name: Kâmil B. Varınca
   area: Science
   year_since:
@@ -686,14 +702,6 @@ ass_ed:
   city: Donostia
   country: Spain
   language: Euskera, Spanish, English
-
-- name: Pablo Hernandez
-  area: Science
-  year_since:
-  city: Caracas
-  country: Venezuela
-  language: Spanish, English
-  photo: "pablohernandez.jpg"
 
 - name: Paula Carina de Araújo
   area: Library and Information Science
