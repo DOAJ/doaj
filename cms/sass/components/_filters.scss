@@ -49,7 +49,7 @@
 .filter__choices {
   max-height: $spacing-07;
   height: auto;
-  overflow-y: visible;
+  overflow-y: auto;
   @include unstyled-list;
 
   li {
