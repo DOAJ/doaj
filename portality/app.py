@@ -47,7 +47,7 @@ from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 from portality.view.dashboard import blueprint as dashboard
 
-if app.config.get("DEBUG", False):
+if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False):
     from portality.view.testdrive import blueprint as testdrive
 
 app.register_blueprint(account, url_prefix='/account') #~~->Account:Blueprint~~
@@ -79,8 +79,9 @@ app.register_blueprint(openurl) # ~~-> OpenURL:Blueprint~~
 app.register_blueprint(atom) # ~~-> Atom:Blueprint~~
 app.register_blueprint(doaj) # ~~-> DOAJ:Blueprint~~
 
-if app.config.get("DEBUG", False):
-    app.register_blueprint(testdrive, url_prefix="/testdrive") # ~~-> Testdrive:Feature ~~
+if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False):
+    app.logger.warning('Enabling TESTDRIVE at /testdrive')
+    app.register_blueprint(testdrive, url_prefix="/testdrive")  # ~~-> Testdrive:Feature ~~
 
 # initialise the index - don't put into if __name__ == '__main__' block,
 # because that does not run if gunicorn is loading the app, as opposed
