@@ -401,9 +401,6 @@ class FieldDefinitions:
             {"stop_words": {"disallowed": STOP_WORDS}}, # ~~^->StopWords:FormValidator~~
             {"max_tags": {"max": 6}}
         ],
-        "postprocessing": [
-            "to_lower"  # FIXME: this might just be a feature of the crosswalk
-        ],
         "widgets": [
             {
                 "taglist": {
@@ -942,9 +939,6 @@ class FieldDefinitions:
             {"required": {"message": "Enter an average number of weeks"}},
             {"int_range": {"gte": 1, "lte": 100}}
         ],
-        "asynchronous_warning": [
-            {"int_range": {"lte": 2}}
-        ],
         "attr": {
             "min": "1",
             "max": "100"
@@ -1236,9 +1230,6 @@ class FieldDefinitions:
                 }
             }
         ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
-        ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             "multiple_field"
@@ -1261,9 +1252,6 @@ class FieldDefinitions:
                 "message": "Enter the name of another archiving policy"
                 }
             }
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
         ],
         "widgets" : [
             "trim_whitespace"   # ~~^-> TrimWhitespace:FormWidget~~
@@ -1360,9 +1348,6 @@ class FieldDefinitions:
                 "message": "Enter the name of another repository policy"
                 }
             }
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
         ],
         "widgets" : [
             "trim_whitespace"   # ~~^-> TrimWhitespace:FormWidget~~
@@ -1467,9 +1452,6 @@ class FieldDefinitions:
                 "message": "Enter the name of another type of identifier"
                 }
             }
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
         ],
         "widgets" : [
             "trim_whitespace"   # ~~^-> TrimWhitespace:FormWidget~~
