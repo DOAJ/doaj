@@ -1379,3 +1379,10 @@ PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
 # Pages under maintenance
 
 PRESERVATION_PAGE_UNDER_MAINTENANCE = False
+
+
+##################################################
+# Autocheck Resource configurations
+
+AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
+AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests

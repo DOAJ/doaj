@@ -85,6 +85,20 @@ class Autocheck(SeamlessMixin, DomainObject):
             return res[0]
         return None
 
+    @classmethod
+    def delete_all_but_latest(cls, journal_id=None, application_id=None):
+        if journal_id is not None:
+            q = JournalQuery(journal_id)
+        elif application_id is not None:
+            q = ApplicationQuery(application_id)
+        else:
+            return
+
+        res = cls.object_query(q.query())
+        if len(res) > 1:
+            for r in res[1:]:
+                r.delete()
+
     @property
     def application(self):
         return self.__seamless__.get_single("application")

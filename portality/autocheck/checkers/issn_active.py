@@ -10,7 +10,8 @@ class ISSNChecker(Checker):
     UNABLE_TO_ACCESS = "unable_to_access"
 
     def retrieve_from_source(self, form, resources, autochecks, logger):
-        source = ISSNOrg(resources)
+        source = resources.resource(ISSNOrg)
+        # source = ISSNOrg(resources)
 
         eissn = form.get("eissn")
         pissn = form.get("pissn")

@@ -20,26 +20,29 @@ class AutocheckService(object):
     def __init__(self, autocheck_plugins=None):
         self._autocheck_plugins = autocheck_plugins if autocheck_plugins is not None else AUTOCHECK_PLUGINS
 
-    def autocheck_applications(self, application_ids=None):
+    def autocheck_applications(self, application_ids=None, logger=None):
         """
         ~~Autochecks:Service->DOAJ:Service~~
         """
+        resource_bundle = ResourceBundle()
         if application_ids is None:
             for application in models.Application.iterate():
-                self.autocheck_application(application)
+                self.autocheck_application(application, logger=logger, resource_bundle=resource_bundle)
         else:
             for application_id in application_ids:
                 application = models.Application.pull(application_id)
                 if application is None:
                     continue
-                self.autocheck_application(application)
+                self.autocheck_application(application, logger=logger, resource_bundle=resource_bundle)
 
-    def autocheck_application(self, application: models.Application, created_date=None, logger=None):
+    def autocheck_application(self, application: models.Application, created_date=None, logger=None, resource_bundle=None):
         if logger is None:
             logger = lambda x: x    # does nothing, just swallows the logs
 
+        if resource_bundle is None:
+            resource_bundle = ResourceBundle()
+
         application_form = ApplicationFormXWalk.obj2form(application)
-        resource_bundle = ResourceBundle()
         new_autochecks = models.Autocheck()
         new_autochecks.application = application.id
 
@@ -56,28 +59,34 @@ class AutocheckService(object):
 
         new_autochecks.save()
         logger("Saved new autocheck document {id}".format(id=new_autochecks.id))
+
+        models.Autocheck.delete_all_but_latest(application_id=application.id)
+
         return new_autochecks
 
-    def autocheck_journals(self, journal_ids=None):
+    def autocheck_journals(self, journal_ids=None, logger=None):
         """
         ~~autochecks:Service->DOAJ:Service~~
         """
+        resource_bundle = ResourceBundle()
         if journal_ids is None:
             for journal in models.Journal.iterate():
-                self.autocheck_journal(journal)
+                self.autocheck_journal(journal, logger=logger, resource_bundle=resource_bundle)
         else:
             for journal_id in journal_ids:
                 journal = models.Journal.pull(journal_id)
                 if journal is None:
                     continue
-                self.autocheck_journal(journal)
+                self.autocheck_journal(journal, logger=logger, resource_bundle=resource_bundle)
 
-    def autocheck_journal(self, journal: models.Journal, logger=None):
+    def autocheck_journal(self, journal: models.Journal, logger=None, resource_bundle=None):
         if logger is None:
             logger = lambda x: x  # does nothing, just swallows the logs
 
+        if resource_bundle is None:
+            resource_bundle = ResourceBundle()
+
         journal_form = JournalFormXWalk.obj2form(journal)
-        resource_bundle = ResourceBundle()
         new_autochecks = models.Autocheck()
         new_autochecks.journal = journal.id
 
@@ -91,6 +100,9 @@ class AutocheckService(object):
 
         new_autochecks.save()
         logger("Saved new autocheck document {id}".format(id=new_autochecks.id))
+
+        models.Autocheck.delete_all_but_latest(journal_id=journal.id)
+
         return new_autochecks
 
     def dismiss(self, autocheck_set_id, autocheck_id):

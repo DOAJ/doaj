@@ -1,11 +1,22 @@
+from datetime import datetime
+
 from portality.autocheck.resource_bundle import Resource
+from portality.core import app
+
 import requests
 import json
+import time
 from bs4 import BeautifulSoup
 
 
 class ISSNOrg(Resource):
     __identity__ = "issn_org"
+
+    def __init__(self, resource_bundle):
+        super(ISSNOrg, self).__init__(resource_bundle)
+        self._timeout = app.config.get("AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT", 10)
+        self._throttle = app.config.get("AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE", 0)
+        self._last_request = None
 
     def make_resource_id(self, issn):
         return self.name() + "_" + issn
@@ -14,7 +25,15 @@ class ISSNOrg(Resource):
         return "https://portal.issn.org/resource/ISSN/" + issn
 
     def fetch_fresh(self, issn):
-        resp = requests.get(self.reference_url(issn))
+        if self._last_request is not None:
+            now = datetime.utcnow()
+            since_last = (now - self._last_request).total_seconds()
+            if since_last < self._throttle:
+                time.sleep(self._throttle - since_last)
+
+        resp = requests.get(self.reference_url(issn), timeout=self._timeout)
+        self._last_request = datetime.utcnow()
+
         page = BeautifulSoup(resp.text, features="lxml")
 
         scripts = page.find_all("script", type="application/ld+json")
