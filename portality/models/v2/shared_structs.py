@@ -17,7 +17,7 @@ JOURNAL_BIBJSON = {
             "lists" : {
                 "is_replaced_by" : {"coerce" : "issn", "contains" : "field", "set__allow_coerce_failure" : True},
                 "keywords" : {"contains" : "field", "coerce" : "unicode_lower"},
-                "language" : {"contains" : "field", "coerce" : "isolang_2letter"},
+                "language" : {"contains" : "field", "coerce" : "isolang_2letter_lax"},
                 "license" : {"contains" : "object"},
                 "replaces" : {"contains" : "field", "coerce" : "issn", "set__allow_coerce_failure" : True},
                 "subject" : {"contains" : "object"}
@@ -49,7 +49,7 @@ JOURNAL_BIBJSON = {
                     "structs" : {
                         "max" : {
                             "fields" : {
-                                "currency" : {"coerce" : "currency_code"},
+                                "currency" : {"coerce" : "currency_code_lax"},
                                 "price" : {"coerce" : "integer"}
                             }
                         }
@@ -206,7 +206,8 @@ SHARED_JOURNAL_LIKE = {
                     "fields" : {
                         "id" : {"coerce" : "unicode"},
                         "note" : {"coerce" : "unicode"},
-                        "date" : {"coerce" : "utcdatetime"}
+                        "date" : {"coerce" : "utcdatetime"},
+                        "author_id" : {"coerce" : "unicode"},  # account_id of the note's author
                     }
                 },
             }

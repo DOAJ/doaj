@@ -394,7 +394,7 @@ class ApplicationService(object):
         if application.editor_group is not None:
             journal.set_editor_group(application.editor_group)
         for note in notes:
-            journal.add_note(note.get("note"), note.get("date"), note.get("id"))
+            journal.add_note_by_dict(note)
         if application.owner is not None:
             journal.set_owner(application.owner)
         journal.set_seal(application.has_seal())
@@ -425,7 +425,7 @@ class ApplicationService(object):
                 # bring forward any notes from the old journal record
                 old_notes = cj.notes
                 for note in old_notes:
-                    journal.add_note(note.get("note"), note.get("date"), note.get("id"))
+                    journal.add_note_by_dict(note)
 
                 # bring forward any related applications
                 related = cj.related_applications
