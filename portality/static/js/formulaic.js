@@ -1203,243 +1203,266 @@ var formulaic = {
             this.form = params.formulaic;
             this.ns = "formulaic-clicktocopy"
             this.init = function() {
-                var elements = $(".form__click-to-copy");
+                var elements = $("#click-to-copy--" + this.fieldDef.name);
                 edges.on(elements, "click", this, "copy");
             };
             this.copy = function(element) {
-                var field = $("input[name=" + this.fieldDef.name + "]")
-                value_def = this.fieldDef.options.filter(item => item.value === field.val());
-                value_to_copy = value_def[0]["display"];
-                navigator.clipboard.writeText(value_to_copy)
-                console.log("text copied: " + value_to_copy)
-                var confirmation = $("#copy-confirmation--" + this.fieldDef.name);
-                confirmation.text("Value copied: " + value_to_copy);
-                confirmation.show().delay(3000).fadeOut();
-            };
-            this.init();
-        },
-        newClickableOwner : function(params) {
-            return edges.instantiate(formulaic.widgets.ClickableOwner, params)
-        },
-        ClickableOwner : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-
-            this.ns = "formulaic-clickableowner";
-
-            this.link = false;
-
-            this.init = function() {
-                var elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                edges.on(elements, "change.ClickableOwner", this, "updateOwner");
-                for (var i = 0; i < elements.length; i++) {
-                    this.updateOwner(elements[i]);
+                // todo: multiple fields!
+                if (this.fieldDef.input == "radio") {
+                    var field = $("input[name=" + this.fieldDef.name + "]:checked");
+                    value_def = this.fieldDef.options.filter(item => item.value === field.val());
+                    value_to_copy = value_def[0]["display"];
                 }
-            };
-
-            this.updateOwner = function(element) {
-                var that = $(element);
-                var val = that.val();
-
-                if (val) {
-                    if (this.link) {
-                        this.link.attr("href", "/account/" + val);
-                    } else {
-                        var classes = edges.css_classes(this.ns, "visit");
-                        var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">See this account’s profile</a></small></p>');
-
-                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
-                        this.link = $(selector, this.form.context);
+                else if (this.fieldDef.input == "checkbox") {
+                    value_to_copy = ""
+                    $( "input[name=" + this.fieldDef.name + "]:checked" ).each(function() {
+                        value_to_copy = value_to_copy + " " + $(this)[0].value;
+                    });
+                    console.log(value_to_copy)
+                }
+                else if (this.fieldDef.input == "taglist") {
+                        var field = $("#" + this.fieldDef.name);
+                        value_to_copy = field.val()
                     }
-                } else if (this.link) {
-                    this.link.remove();
-                    this.link = false;
-                }
-            };
-
-            this.init();
-        },
-
-        newTrimWhitespace : function(params) {
-            return edges.instantiate(formulaic.widgets.TrimWhitespace, params)
-        },
-        TrimWhitespace : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-
-            this.ns = "formulaic-trimwhitespace";
-
-            this.link = false;
-
-            this.init = function () {
-                var elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                edges.on(elements, "focus.TrimWhitespace", this, "trim");
-                edges.on(elements, "blur.TrimWhitespace", this, "trim");
-
-                for (var i = 0; i < elements.length; i++) {
-                    this.trim(elements[i]);
-                }
-            };
-
-            this.trim = function(element) {
-                var that = $(element);
-                var val = that.val();
-                var nv = val.trim();
-                if (nv !== val) {
-                    that.val(nv);
-                }
-            };
-
-            this.init();
-        },
-
-        newClickableUrl : function(params) {
-            return edges.instantiate(formulaic.widgets.ClickableUrl, params)
-        },
-        ClickableUrl : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-
-            this.ns = "formulaic-clickableurl";
-
-            this.link = false;
-
-            this.init = function() {
-                var elements = this.form.controlSelect.input(
-                    {name: this.fieldDef.name});
-                // TODO: should work as-you-type by changing "change" to "keyup" event; doesn't work in edges
-                //edges.on(elements, "change.ClickableUrl", this, "updateUrl");
-                edges.on(elements, "keyup.ClickableUrl", this, "updateUrl");
-
-                for (var i = 0; i < elements.length; i++) {
-                    this.updateUrl(elements[i]);
-                }
-            };
-
-            this.updateUrl = function(element) {
-                var that = $(element);
-                var val = that.val();
-                var id = edges.css_id(this.ns, this.fieldDef.name);
-
-                if (val && (val.substring(0,7) === "http://" || val.substring(0,8) === "https://") && val.length > 10) {
-                    if (this.link) {
-                        this.link.text(val);
-                        this.link.attr("href", val);
-                    } else {
-                        var classes = edges.css_classes(this.ns, "visit");
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + val + '">' + val + '</a></small></p>');
-
-                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
-                        this.link = $(selector, this.form.context);
+                    else if (this.fieldDef.input == "select") {
+                        // todo: countries value instead of code!
+                        var field = $("select[name=" + this.fieldDef.name + "]");
+                        value_to_copy = field.val()
                     }
-                } else if (this.link) {
-                    this.link.remove();
-                    this.link = false;
-                }
-            };
-
-            this.init();
-        },
-
-        newFullContents : function(params) {
-            return edges.instantiate(formulaic.widgets.FullContents, params)
-        },
-        FullContents : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-            this.args = params.args;
-
-            this.ns = "formulaic-fullcontents";
-
-            this.container = false;
-
-            this.init = function() {
-                var elements = this.form.controlSelect.input({name: this.fieldDef.name});
-                edges.on(elements, "keyup.FullContents", this, "updateContents");
-
-                for (var i = 0; i < elements.length; i++) {
-                    this.updateContents(elements[i]);
-                }
-            };
-
-            this.updateContents = function(element) {
-                var that = $(element);
-                var val = that.val();
-
-                // if there is a behaviour for when the field is empty and disabled, then check if it is, and if
-                // it is include the desired alternative text
-                if (this.args && this.args.empty_disabled) {
-                    if (val === "" && that.prop("disabled")) {
-                        val = this.args.empty_disabled;
+                    else {
+                        var field = $("input[name=" + this.fieldDef.name + "]");
+                        value_to_copy = field.val()
                     }
-                }
+                    navigator.clipboard.writeText(value_to_copy)
+                    console.log("text copied: " + value_to_copy)
+                    var confirmation = $("#copy-confirmation--" + this.fieldDef.name);
+                    confirmation.text("Value copied: " + value_to_copy);
+                    confirmation.show().delay(3000).fadeOut();
+                };
+                this.init();
+            },
+                newClickableOwner : function(params) {
+                return edges.instantiate(formulaic.widgets.ClickableOwner, params)
+            },
+            ClickableOwner : function(params) {
+                this.fieldDef = params.fieldDef;
+                this.form = params.formulaic;
 
-                if (val) {
-                    if (this.container) {
-                        this.container.html('<small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small>');
-                    } else {
-                        var classes = edges.css_classes(this.ns, "contents");
-                        var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p id="' + id + '" class="' + classes + '"><small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small></p>');
+                this.ns = "formulaic-clickableowner";
 
-                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
-                        this.container = $(selector, this.form.context);
+                this.link = false;
+
+                this.init = function() {
+                    var elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                    edges.on(elements, "change.ClickableOwner", this, "updateOwner");
+                    for (var i = 0; i < elements.length; i++) {
+                        this.updateOwner(elements[i]);
                     }
-                } else if (this.container) {
-                    this.container.remove();
-                    this.container = false;
-                }
-            };
+                };
 
-            this.init();
-        },
+                this.updateOwner = function(element) {
+                    var that = $(element);
+                    var val = that.val();
 
-        newNoteModal : function(params) {
-            return edges.instantiate(formulaic.widgets.NoteModal, params)
-        },
-        NoteModal : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
+                    if (val) {
+                        if (this.link) {
+                            this.link.attr("href", "/account/" + val);
+                        } else {
+                            var classes = edges.css_classes(this.ns, "visit");
+                            var id = edges.css_id(this.ns, this.fieldDef.name);
+                            that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">See this account’s profile</a></small></p>');
 
-            this.ns = "formulaic-notemodal";
+                            var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                            this.link = $(selector, this.form.context);
+                        }
+                    } else if (this.link) {
+                        this.link.remove();
+                        this.link = false;
+                    }
+                };
 
-            this.container = false;
+                this.init();
+            },
 
-            this.init = function() {
-                var viewClass = edges.css_classes(this.ns, "view");
-                var closeClass = edges.css_classes(this.ns, "close");
-                let group = $("div[name='" + this.fieldDef["name"] + "__group']")
-                var textarea = group.find("textarea");
+            newTrimWhitespace : function(params) {
+                return edges.instantiate(formulaic.widgets.TrimWhitespace, params)
+            },
+            TrimWhitespace : function(params) {
+                this.fieldDef = params.fieldDef;
+                this.form = params.formulaic;
 
-                let inputs = group.find("input[type=text]")
-                for (let i = 0; i < inputs.length; i++) {
-                    let jqin = $(inputs[i]);
-                    let iid = jqin.attr("id");
-                    if (iid.endsWith("_author")) {
-                        let val = jqin.val()
-                        if (val === "") {
-                            jqin.hide();
+                this.ns = "formulaic-trimwhitespace";
+
+                this.link = false;
+
+                this.init = function () {
+                    var elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                    edges.on(elements, "focus.TrimWhitespace", this, "trim");
+                    edges.on(elements, "blur.TrimWhitespace", this, "trim");
+
+                    for (var i = 0; i < elements.length; i++) {
+                        this.trim(elements[i]);
+                    }
+                };
+
+                this.trim = function(element) {
+                    var that = $(element);
+                    var val = that.val();
+                    var nv = val.trim();
+                    if (nv !== val) {
+                        that.val(nv);
+                    }
+                };
+
+                this.init();
+            },
+
+            newClickableUrl : function(params) {
+                return edges.instantiate(formulaic.widgets.ClickableUrl, params)
+            },
+            ClickableUrl : function(params) {
+                this.fieldDef = params.fieldDef;
+                this.form = params.formulaic;
+
+                this.ns = "formulaic-clickableurl";
+
+                this.link = false;
+
+                this.init = function() {
+                    var elements = this.form.controlSelect.input(
+                        {name: this.fieldDef.name});
+                    // TODO: should work as-you-type by changing "change" to "keyup" event; doesn't work in edges
+                    //edges.on(elements, "change.ClickableUrl", this, "updateUrl");
+                    edges.on(elements, "keyup.ClickableUrl", this, "updateUrl");
+
+                    for (var i = 0; i < elements.length; i++) {
+                        this.updateUrl(elements[i]);
+                    }
+                };
+
+                this.updateUrl = function(element) {
+                    var that = $(element);
+                    var val = that.val();
+                    var id = edges.css_id(this.ns, this.fieldDef.name);
+
+                    if (val && (val.substring(0,7) === "http://" || val.substring(0,8) === "https://") && val.length > 10) {
+                        if (this.link) {
+                            this.link.text(val);
+                            this.link.attr("href", val);
+                        } else {
+                            var classes = edges.css_classes(this.ns, "visit");
+                            that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + val + '">' + val + '</a></small></p>');
+
+                            var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                            this.link = $(selector, this.form.context);
+                        }
+                    } else if (this.link) {
+                        this.link.remove();
+                        this.link = false;
+                    }
+                };
+
+                this.init();
+            },
+
+            newFullContents : function(params) {
+                return edges.instantiate(formulaic.widgets.FullContents, params)
+            },
+            FullContents : function(params) {
+                this.fieldDef = params.fieldDef;
+                this.form = params.formulaic;
+                this.args = params.args;
+
+                this.ns = "formulaic-fullcontents";
+
+                this.container = false;
+
+                this.init = function() {
+                    var elements = this.form.controlSelect.input({name: this.fieldDef.name});
+                    edges.on(elements, "keyup.FullContents", this, "updateContents");
+
+                    for (var i = 0; i < elements.length; i++) {
+                        this.updateContents(elements[i]);
+                    }
+                };
+
+                this.updateContents = function(element) {
+                    var that = $(element);
+                    var val = that.val();
+
+                    // if there is a behaviour for when the field is empty and disabled, then check if it is, and if
+                    // it is include the desired alternative text
+                    if (this.args && this.args.empty_disabled) {
+                        if (val === "" && that.prop("disabled")) {
+                            val = this.args.empty_disabled;
                         }
                     }
-                }
 
-                for (var i = 0; i < textarea.length; i++) {
-                    var container = $(textarea[i]);
+                    if (val) {
+                        if (this.container) {
+                            this.container.html('<small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small>');
+                        } else {
+                            var classes = edges.css_classes(this.ns, "contents");
+                            var id = edges.css_id(this.ns, this.fieldDef.name);
+                            that.after('<p id="' + id + '" class="' + classes + '"><small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small></p>');
 
-                    let contentHeight = container[0].scrollHeight;
-                    if (contentHeight > 200) {
-                        contentHeight = 200;
+                            var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                            this.container = $(selector, this.form.context);
+                        }
+                    } else if (this.container) {
+                        this.container.remove();
+                        this.container = false;
                     }
-                    container.css("height", (contentHeight + 5) + "px");
+                };
 
-                    var modalId = "modal-" + this.fieldDef["name"] + "-" + i;
+                this.init();
+            },
 
-                    var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
-                    var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
-                    var author = $("#" + this.fieldDef["name"] + "-" + i + "-note_author");
+            newNoteModal : function(params) {
+                return edges.instantiate(formulaic.widgets.NoteModal, params)
+            },
+            NoteModal : function(params) {
+                this.fieldDef = params.fieldDef;
+                this.form = params.formulaic;
 
-                    $(`<button class="button ` + viewClass + `" style="margin: 0 1rem 1rem 0;">View note</button>
+                this.ns = "formulaic-notemodal";
+
+                this.container = false;
+
+                this.init = function() {
+                    var viewClass = edges.css_classes(this.ns, "view");
+                    var closeClass = edges.css_classes(this.ns, "close");
+                    let group = $("div[name='" + this.fieldDef["name"] + "__group']")
+                    var textarea = group.find("textarea");
+
+                    let inputs = group.find("input[type=text]")
+                    for (let i = 0; i < inputs.length; i++) {
+                        let jqin = $(inputs[i]);
+                        let iid = jqin.attr("id");
+                        if (iid.endsWith("_author")) {
+                            let val = jqin.val()
+                            if (val === "") {
+                                jqin.hide();
+                            }
+                        }
+                    }
+
+                    for (var i = 0; i < textarea.length; i++) {
+                        var container = $(textarea[i]);
+
+                        let contentHeight = container[0].scrollHeight;
+                        if (contentHeight > 200) {
+                            contentHeight = 200;
+                        }
+                        container.css("height", (contentHeight + 5) + "px");
+
+                        var modalId = "modal-" + this.fieldDef["name"] + "-" + i;
+
+                        var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
+                        var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
+                        var author = $("#" + this.fieldDef["name"] + "-" + i + "-note_author");
+
+                        $(`<button class="button ` + viewClass + `" style="margin: 0 1rem 1rem 0;">View note</button>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
                             <div class="modal__dialog" role="document">
                               <header class="flex-space-between modal__heading">
@@ -1455,693 +1478,693 @@ var formulaic = {
                         </div>
                         </div>
                     `).insertAfter(container);
-                }
-
-                var viewSelector = edges.css_class_selector(this.ns, "view");
-                edges.on(viewSelector, "click", this, "showModal");
-
-                var closeSelector = edges.css_class_selector(this.ns, "close");
-                edges.on(closeSelector, "click", this, "closeModal");
-            };
-
-            this.showModal = function(element) {
-                var that = $(element);
-                var modal = that.siblings(".modal");
-                modal.show();
-            };
-
-            this.closeModal = function(element) {
-                var that = $(element);
-                var modal = that.parents(".modal");
-                modal.hide();
-            };
-
-            this.init();
-        },
-
-        newInfiniteRepeat : function(params) {
-            return edges.instantiate(formulaic.widgets.InfiniteRepeat, params)
-        },
-        InfiniteRepeat: function(params) {
-            this.fieldDef = params.fieldDef;
-            this.args = params.args;
-
-            this.idRx = /(.+?-)(\d+)(-.+)/;
-            this.template = "";
-            this.container = false;
-            this.divs = false;
-
-            this.init = function() {
-                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
-                for (var i = 0 ; i < this.divs.length; i++) {
-                    var div = $(this.divs[i]);
-                    div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 0 1rem 0; border: 0; float: right;">Remove<span data-feather="x" aria-hidden="true"/></button>'));
-                    feather.replace();
-                }
-
-                this.template = $(this.divs[0]).html();
-                this.container = $(this.divs[0]).parents(".removable-fields");
-
-                if (this.divs.length === 1) {
-                    let div = $(this.divs[0]);
-                    let inputs = div.find(":input");
-                    let tripwire = false;
-                    for (var i = 0; i < inputs.length; i++) {
-                        if ($(inputs[i]).val()) {
-                            tripwire = true;
-                            break;
-                        }
                     }
-                    if (!tripwire) {
-                        // the field is empty
-                        $(this.divs[0]).remove();
-                        this.divs = [];
+
+                    var viewSelector = edges.css_class_selector(this.ns, "view");
+                    edges.on(viewSelector, "click", this, "showModal");
+
+                    var closeSelector = edges.css_class_selector(this.ns, "close");
+                    edges.on(closeSelector, "click", this, "closeModal");
+                };
+
+                this.showModal = function(element) {
+                    var that = $(element);
+                    var modal = that.siblings(".modal");
+                    modal.show();
+                };
+
+                this.closeModal = function(element) {
+                    var that = $(element);
+                    var modal = that.parents(".modal");
+                    modal.hide();
+                };
+
+                this.init();
+            },
+
+            newInfiniteRepeat : function(params) {
+                return edges.instantiate(formulaic.widgets.InfiniteRepeat, params)
+            },
+            InfiniteRepeat: function(params) {
+                this.fieldDef = params.fieldDef;
+                this.args = params.args;
+
+                this.idRx = /(.+?-)(\d+)(-.+)/;
+                this.template = "";
+                this.container = false;
+                this.divs = false;
+
+                this.init = function() {
+                    this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
+                    for (var i = 0 ; i < this.divs.length; i++) {
+                        var div = $(this.divs[i]);
+                        div.append($('<button type="button" data-id="' + i + '" id="remove_field__' + this.fieldDef["name"] + '--id_' + i + '" class="remove_field__button" style="display:none; margin: 0 0 1rem 0; border: 0; float: right;">Remove<span data-feather="x" aria-hidden="true"/></button>'));
+                        feather.replace();
                     }
-                }
 
-                this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
-                this.removeFieldBtns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                    this.template = $(this.divs[0]).html();
+                    this.container = $(this.divs[0]).parents(".removable-fields");
 
-                edges.on(this.addFieldBtn, "click", this, "addField");
-                edges.on(this.removeFieldBtns, "click", this, "removeField");
-
-                // show or hide the remove buttons
-                for (let i = 0; i < this.divs.length; i++) {
-                    let cur_div = $(this.divs[i]);
-                    if (!cur_div.find('textarea').is(':disabled')) {
-                        cur_div.find('[id^="remove_field__"]').show();
-                    }
-                }
-
-            };
-
-            this.addField = function() {
-                var currentLargest = -1;
-                for (var i = 0; i < this.divs.length; i++) {
-                    var div = $(this.divs[i]);
-                    var id = div.find(":input").attr("id");
-                    var match = id.match(this.idRx);
-                    var thisId = parseInt(match[2]);
-                    if (thisId > currentLargest) {
-                        currentLargest = thisId;
-                    }
-                }
-                var newId = currentLargest + 1;
-
-                var frag = '<div name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
-                var jqt = $(frag);
-                var that = this;
-                jqt.find(":input").each(function() {
-                    var el = $(this);
-                    var id = el.attr("id");
-
-                    var match = id.match(that.idRx);
-                    if (match) {
-                        var bits = id.split(that.idRx);
-                        var newName = bits[1] + newId + bits[3];
-                        el.attr("id", newName).attr("name", newName).val("");
-                    } else {
-                        // could be the remove button
-                        if (id.substring(0, "remove_field".length) === "remove_field") {
-                            el.attr("id", "remove_field__" + that.fieldDef["name"] + "--id_" + newId);
-                            el.show();
-                        }
-                    }
-                });
-                if (this.args.enable_on_repeat) {
-                    for (var i = 0; i < this.args.enable_on_repeat.length; i++) {
-                        var enables = jqt.find(that.args.enable_on_repeat[i]);
-                        enables.removeAttr("disabled");
-                    }
-                }
-
-                var topPlacement = this.fieldDef.repeatable.add_button_placement === "top";
-                if (this.divs.length > 0) {
-                    if (topPlacement) {
-                        $(this.divs[0]).before(jqt);
-                    } else {
-                        $(this.divs[this.divs.length - 1]).after(jqt);
-                    }
-                } else {
-                    this.container.append(jqt);
-                }
-
-
-                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
-                this.removeFieldBtns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
-                edges.on(this.removeFieldBtns, "click", this, "removeField");
-            };
-
-            this.removeField = function(element) {
-                var container = $(element).parents("div[name='" + this.fieldDef["name"] + "__group']");
-                container.remove();
-                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
-            };
-
-            this.init();
-        },
-
-        newMultipleField : function(params) {
-            return edges.instantiate(formulaic.widgets.MultipleField, params)
-        },
-        MultipleField: function(params) {
-            this.fieldDef = params.fieldDef;
-            this.max = this.fieldDef["repeatable"]["initial"] - 1;
-
-            this.init = () => {
-                if (this.fieldDef["input"] === "group") {
-                    this._setupRepeatingGroup();
-                } else {
-                    this._setupRepeatingIndividual();
-                }
-                feather.replace();
-            };
-
-            this._setupIndividualSelect2 = function() {
-                for (var idx = 0; idx < this.fields.length; idx++) {
-                    let f = this.fields[idx];
-                    let s2_input = $($(f).select2());
-                    $(f).on("focus", formulaic.widgets._select2_shift_focus);
-                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="tag remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
-                    if (idx !== 0) {
-                        s2_input.attr("required", false);
-                        s2_input.attr("data-parsley-validate-if-empty", "true");
-                        if (!s2_input.val()) {
-                            s2_input.closest('li').hide();
-                        } else {
-                            this.count++;
-                        }
-                    }
-                }
-
-                this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
-                if (this.count === 0) {
-                    $(this.remove_btns[0]).hide();
-                }
-
-                this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
-                this.addFieldBtn.on("click", () => {
-                    $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').show();
-                    this.count++;
-                    if (this.count > 0) {
-                        $(this.remove_btns[0]).show();
-                    }
-                    if (this.count >= this.max) {
-                        $(this.addFieldBtn).hide();
-                    }
-                });
-
-                if (this.count >= this.max) {
-                    this.addFieldBtn.hide();
-                }
-
-                $(this.remove_btns).each((idx, btn) => {
-                    $(btn).on("click", (event) => {
-                        for (let i = idx; i < this.count; i++) {
-                            let data = $(this.fields[i + 1]).select2('data');
-                            if (data === null) {
-                                data = {id: i, text: ""};
-                            }
-                            $(this.fields[i]).select2('data', {id: data.id, text: data.text});
-                        }
-                        this.count--;
-                        $(this.fields[this.count + 1]).select2('data', {id: this.count + 1, text: ""});
-                        $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').hide();
-                        if (this.count === 0) {
-                            $(this.remove_btns[0]).hide();
-                        }
-                        if (this.count < this.max) {
-                            $(this.addFieldBtn).show();
-                        }
-                    })
-                })
-            };
-
-            this._setupIndividualField = function() {
-                for (var idx = 0; idx < this.fields.length; idx++) {
-                    let f = this.fields[idx];
-                    let jqf = $(f);
-                    jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
-                    if (idx !== 0) {
-                        jqf.attr("required", false);
-                        jqf.attr("data-parsley-validate-if-empty", "true");
-                        if (!jqf.val()) {
-                            jqf.parent().hide();
-                        } else {
-                            this.count++;
-                        }
-                    }
-                }
-
-                this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '-"]');
-                if (this.count === 0) {
-                    $(this.remove_btns[0]).hide();
-                }
-
-                this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
-                this.addFieldBtn.on("click", () => {
-                    let next_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
-                    // TODO: why .show() does not work?
-                    $(next_input).show();
-                    this.count++;
-                    if (this.count > 0) {
-                        $(this.remove_btns[0]).show();
-                    }
-                    if (this.count >= this.max) {
-                        $(this.addFieldBtn).hide();
-                    }
-                });
-
-                if (this.count >= this.max) {
-                    this.addFieldBtn.hide();
-                }
-
-                $(this.remove_btns).each((idx, btn) => {
-                    $(btn).on("click", (event) => {
-                        for (let i = idx; i < this.count; i++) {
-                            let data = $(this.fields[i + 1]).val();
-                            if (data === null) {
-                                data = "";
-                            }
-                            $(this.fields[i]).val(data);
-                        }
-
-                        this.count--;
-                        $(this.fields[this.count + 1]).val("");
-                        let last_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
-                        $(last_input).hide();
-                        if (this.count === 0) {
-                            $(this.remove_btns[0]).hide();
-                        }
-                        if (this.count < this.max) {
-                            $(this.addFieldBtn).show();
-                        }
-                    })
-                });
-            };
-
-            this._setupRepeatingIndividual = function() {
-                let tag = this.fieldDef["input"] === "select" ? "select" : "input";
-                this.fields = $(tag + '[id^="' + this.fieldDef["name"] + '-"]');
-                this.count = 0;
-
-                if (tag === "select"){
-                    this._setupIndividualSelect2();
-                } else {
-                    this._setupIndividualField();
-                }
-            };
-
-            this._setupRepeatingGroup = function() {
-                this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
-                this.count = 0;
-
-                for (var idx = 0; idx < this.divs.length; idx++) {
-                    let div = $(this.divs[idx]);
-                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="tag remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
-
-                    if (idx !== 0) {
+                    if (this.divs.length === 1) {
+                        let div = $(this.divs[0]);
                         let inputs = div.find(":input");
-                        var hasVal = false;
-                        for (var j = 0; j < inputs.length; j++) {
-                            $(inputs[j]).attr("required", false)
-                                .attr("data-parsley-required-if", false)
-                                .attr("data-parsley-validate-if-empty", "true");
-                            if ($(inputs[j]).val()) {
-                                hasVal = true;
+                        let tripwire = false;
+                        for (var i = 0; i < inputs.length; i++) {
+                            if ($(inputs[i]).val()) {
+                                tripwire = true;
+                                break;
                             }
                         }
-                        if (!hasVal) {
-                            div.hide();
-                        } else {
-                            this.count++;
+                        if (!tripwire) {
+                            // the field is empty
+                            $(this.divs[0]).remove();
+                            this.divs = [];
                         }
                     }
-                }
 
-                this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
-                if (this.count === 0) {
-                    $(this.remove_btns[0]).hide();
-                }
+                    this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+                    this.removeFieldBtns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
 
-                this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
-                this.addFieldBtn.on("click", () => {
-                    $(this.divs[this.count + 1]).show();
-                    this.count++;
-                    if (this.count > 0) {
-                        $(this.remove_btns[0]).show();
+                    edges.on(this.addFieldBtn, "click", this, "addField");
+                    edges.on(this.removeFieldBtns, "click", this, "removeField");
+
+                    // show or hide the remove buttons
+                    for (let i = 0; i < this.divs.length; i++) {
+                        let cur_div = $(this.divs[i]);
+                        if (!cur_div.find('textarea').is(':disabled')) {
+                            cur_div.find('[id^="remove_field__"]').show();
+                        }
                     }
-                    if (this.count === this.max) {
-                        $(this.addFieldBtn).hide();
+
+                };
+
+                this.addField = function() {
+                    var currentLargest = -1;
+                    for (var i = 0; i < this.divs.length; i++) {
+                        var div = $(this.divs[i]);
+                        var id = div.find(":input").attr("id");
+                        var match = id.match(this.idRx);
+                        var thisId = parseInt(match[2]);
+                        if (thisId > currentLargest) {
+                            currentLargest = thisId;
+                        }
                     }
-                });
+                    var newId = currentLargest + 1;
 
-                if (this.count >= this.max) {
-                    this.addFieldBtn.hide();
-                }
+                    var frag = '<div name="' + this.fieldDef["name"] + '__group">' + this.template + '</div>';
+                    var jqt = $(frag);
+                    var that = this;
+                    jqt.find(":input").each(function() {
+                        var el = $(this);
+                        var id = el.attr("id");
 
-                $(this.remove_btns).each((idx, btn) => {
-                    $(btn).on("click", () => {
-                        let thisDiv = $(btn).parent();
-                        let nextDiv = $(thisDiv);
-                        for (let i = idx; i < this.count; i++) {
-                            thisDiv = nextDiv;
-                            nextDiv = nextDiv.next();
-                            let thisInputs = $(thisDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
-                            let nextInputs = $(nextDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
-                            for (let j = 0; j < thisInputs.length; j++){
-                                let thisInput = $(thisInputs[j]);
-                                let nextInput = $(nextInputs[j]);
-                                if (thisInput.is("select")){
-                                    let data = $(nextInput).select2('data');
-                                    if (data === null) {
-                                        data = {id: i, text: ""};
+                        var match = id.match(that.idRx);
+                        if (match) {
+                            var bits = id.split(that.idRx);
+                            var newName = bits[1] + newId + bits[3];
+                            el.attr("id", newName).attr("name", newName).val("");
+                        } else {
+                            // could be the remove button
+                            if (id.substring(0, "remove_field".length) === "remove_field") {
+                                el.attr("id", "remove_field__" + that.fieldDef["name"] + "--id_" + newId);
+                                el.show();
+                            }
+                        }
+                    });
+                    if (this.args.enable_on_repeat) {
+                        for (var i = 0; i < this.args.enable_on_repeat.length; i++) {
+                            var enables = jqt.find(that.args.enable_on_repeat[i]);
+                            enables.removeAttr("disabled");
+                        }
+                    }
+
+                    var topPlacement = this.fieldDef.repeatable.add_button_placement === "top";
+                    if (this.divs.length > 0) {
+                        if (topPlacement) {
+                            $(this.divs[0]).before(jqt);
+                        } else {
+                            $(this.divs[this.divs.length - 1]).after(jqt);
+                        }
+                    } else {
+                        this.container.append(jqt);
+                    }
+
+
+                    this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
+                    this.removeFieldBtns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                    edges.on(this.removeFieldBtns, "click", this, "removeField");
+                };
+
+                this.removeField = function(element) {
+                    var container = $(element).parents("div[name='" + this.fieldDef["name"] + "__group']");
+                    container.remove();
+                    this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
+                };
+
+                this.init();
+            },
+
+            newMultipleField : function(params) {
+                return edges.instantiate(formulaic.widgets.MultipleField, params)
+            },
+            MultipleField: function(params) {
+                this.fieldDef = params.fieldDef;
+                this.max = this.fieldDef["repeatable"]["initial"] - 1;
+
+                this.init = () => {
+                    if (this.fieldDef["input"] === "group") {
+                        this._setupRepeatingGroup();
+                    } else {
+                        this._setupRepeatingIndividual();
+                    }
+                    feather.replace();
+                };
+
+                this._setupIndividualSelect2 = function() {
+                    for (var idx = 0; idx < this.fields.length; idx++) {
+                        let f = this.fields[idx];
+                        let s2_input = $($(f).select2());
+                        $(f).on("focus", formulaic.widgets._select2_shift_focus);
+                        s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="tag remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
+                        if (idx !== 0) {
+                            s2_input.attr("required", false);
+                            s2_input.attr("data-parsley-validate-if-empty", "true");
+                            if (!s2_input.val()) {
+                                s2_input.closest('li').hide();
+                            } else {
+                                this.count++;
+                            }
+                        }
+                    }
+
+                    this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                    if (this.count === 0) {
+                        $(this.remove_btns[0]).hide();
+                    }
+
+                    this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+                    this.addFieldBtn.on("click", () => {
+                        $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').show();
+                        this.count++;
+                        if (this.count > 0) {
+                            $(this.remove_btns[0]).show();
+                        }
+                        if (this.count >= this.max) {
+                            $(this.addFieldBtn).hide();
+                        }
+                    });
+
+                    if (this.count >= this.max) {
+                        this.addFieldBtn.hide();
+                    }
+
+                    $(this.remove_btns).each((idx, btn) => {
+                        $(btn).on("click", (event) => {
+                            for (let i = idx; i < this.count; i++) {
+                                let data = $(this.fields[i + 1]).select2('data');
+                                if (data === null) {
+                                    data = {id: i, text: ""};
+                                }
+                                $(this.fields[i]).select2('data', {id: data.id, text: data.text});
+                            }
+                            this.count--;
+                            $(this.fields[this.count + 1]).select2('data', {id: this.count + 1, text: ""});
+                            $('#s2id_' + this.fieldDef["name"] + '-' + (this.count + 1)).closest('li').hide();
+                            if (this.count === 0) {
+                                $(this.remove_btns[0]).hide();
+                            }
+                            if (this.count < this.max) {
+                                $(this.addFieldBtn).show();
+                            }
+                        })
+                    })
+                };
+
+                this._setupIndividualField = function() {
+                    for (var idx = 0; idx < this.fields.length; idx++) {
+                        let f = this.fields[idx];
+                        let jqf = $(f);
+                        jqf.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
+                        if (idx !== 0) {
+                            jqf.attr("required", false);
+                            jqf.attr("data-parsley-validate-if-empty", "true");
+                            if (!jqf.val()) {
+                                jqf.parent().hide();
+                            } else {
+                                this.count++;
+                            }
+                        }
+                    }
+
+                    this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '-"]');
+                    if (this.count === 0) {
+                        $(this.remove_btns[0]).hide();
+                    }
+
+                    this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+                    this.addFieldBtn.on("click", () => {
+                        let next_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
+                        // TODO: why .show() does not work?
+                        $(next_input).show();
+                        this.count++;
+                        if (this.count > 0) {
+                            $(this.remove_btns[0]).show();
+                        }
+                        if (this.count >= this.max) {
+                            $(this.addFieldBtn).hide();
+                        }
+                    });
+
+                    if (this.count >= this.max) {
+                        this.addFieldBtn.hide();
+                    }
+
+                    $(this.remove_btns).each((idx, btn) => {
+                        $(btn).on("click", (event) => {
+                            for (let i = idx; i < this.count; i++) {
+                                let data = $(this.fields[i + 1]).val();
+                                if (data === null) {
+                                    data = "";
+                                }
+                                $(this.fields[i]).val(data);
+                            }
+
+                            this.count--;
+                            $(this.fields[this.count + 1]).val("");
+                            let last_input = $('[id="' + this.fieldDef["name"] + '-' + (this.count + 1)  +'"]').parent();
+                            $(last_input).hide();
+                            if (this.count === 0) {
+                                $(this.remove_btns[0]).hide();
+                            }
+                            if (this.count < this.max) {
+                                $(this.addFieldBtn).show();
+                            }
+                        })
+                    });
+                };
+
+                this._setupRepeatingIndividual = function() {
+                    let tag = this.fieldDef["input"] === "select" ? "select" : "input";
+                    this.fields = $(tag + '[id^="' + this.fieldDef["name"] + '-"]');
+                    this.count = 0;
+
+                    if (tag === "select"){
+                        this._setupIndividualSelect2();
+                    } else {
+                        this._setupIndividualField();
+                    }
+                };
+
+                this._setupRepeatingGroup = function() {
+                    this.divs = $("div[name='" + this.fieldDef["name"] + "__group']");
+                    this.count = 0;
+
+                    for (var idx = 0; idx < this.divs.length; idx++) {
+                        let div = $(this.divs[idx]);
+                        div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="tag remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
+
+                        if (idx !== 0) {
+                            let inputs = div.find(":input");
+                            var hasVal = false;
+                            for (var j = 0; j < inputs.length; j++) {
+                                $(inputs[j]).attr("required", false)
+                                    .attr("data-parsley-required-if", false)
+                                    .attr("data-parsley-validate-if-empty", "true");
+                                if ($(inputs[j]).val()) {
+                                    hasVal = true;
+                                }
+                            }
+                            if (!hasVal) {
+                                div.hide();
+                            } else {
+                                this.count++;
+                            }
+                        }
+                    }
+
+                    this.remove_btns = $('[id^="remove_field__' + this.fieldDef["name"] + '"]');
+                    if (this.count === 0) {
+                        $(this.remove_btns[0]).hide();
+                    }
+
+                    this.addFieldBtn = $("#add_field__" + this.fieldDef["name"]);
+                    this.addFieldBtn.on("click", () => {
+                        $(this.divs[this.count + 1]).show();
+                        this.count++;
+                        if (this.count > 0) {
+                            $(this.remove_btns[0]).show();
+                        }
+                        if (this.count === this.max) {
+                            $(this.addFieldBtn).hide();
+                        }
+                    });
+
+                    if (this.count >= this.max) {
+                        this.addFieldBtn.hide();
+                    }
+
+                    $(this.remove_btns).each((idx, btn) => {
+                        $(btn).on("click", () => {
+                            let thisDiv = $(btn).parent();
+                            let nextDiv = $(thisDiv);
+                            for (let i = idx; i < this.count; i++) {
+                                thisDiv = nextDiv;
+                                nextDiv = nextDiv.next();
+                                let thisInputs = $(thisDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
+                                let nextInputs = $(nextDiv).find("select, input[id^='" + this.fieldDef["name"] + "']");
+                                for (let j = 0; j < thisInputs.length; j++){
+                                    let thisInput = $(thisInputs[j]);
+                                    let nextInput = $(nextInputs[j]);
+                                    if (thisInput.is("select")){
+                                        let data = $(nextInput).select2('data');
+                                        if (data === null) {
+                                            data = {id: i, text: ""};
+                                        }
+                                        $(thisInput).select2('data', {id: data.id, text: data.text});
+
                                     }
-                                    $(thisInput).select2('data', {id: data.id, text: data.text});
-
+                                    else {
+                                        $(thisInputs[j]).val($(nextInputs[j]).val());
+                                    }
+                                }
+                            }
+                            this.count--;
+                            $(this.divs[this.count + 1]).find("select, input[id^='" + this.fieldDef["name"] + "']").each((idx, inp) => {
+                                if ($(inp).is("select")){
+                                    $(inp).select2('data', {id: this.count + 1, text: ""});
                                 }
                                 else {
-                                    $(thisInputs[j]).val($(nextInputs[j]).val());
+                                    $(inp).val("");
                                 }
+                            });
+                            $(this.divs[this.count + 1]).hide();
+                            if (this.count === 0) {
+                                $(this.remove_btns[0]).hide();
                             }
-                        }
-                        this.count--;
-                        $(this.divs[this.count + 1]).find("select, input[id^='" + this.fieldDef["name"] + "']").each((idx, inp) => {
-                            if ($(inp).is("select")){
-                                $(inp).select2('data', {id: this.count + 1, text: ""});
+                            if (this.count < this.max) {
+                                $(this.addFieldBtn).show();
                             }
-                            else {
-                                $(inp).val("");
-                            }
-                        });
-                        $(this.divs[this.count + 1]).hide();
-                        if (this.count === 0) {
-                            $(this.remove_btns[0]).hide();
-                        }
-                        if (this.count < this.max) {
-                            $(this.addFieldBtn).show();
-                        }
+                        })
                     })
-                })
-            };
-
-            this.init()
-        },
-
-        newSelect : function(params) {
-            return edges.instantiate(formulaic.widgets.Select, params);
-        },
-        Select : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-            this.args = params.args;
-
-            this.ns = "formulaic-select";
-            this.elements = false;
-
-            this.init = function() {
-                let allow_clear = this.args.allow_clear || false;
-                this.elements = $("select[name$='" + this.fieldDef.name + "']");
-                this.elements.select2({
-                    allowClear: allow_clear,
-                    newOption: true,
-                    placeholder: "Start typing…"
-                });
-                $(this.elements).on("focus", formulaic.widgets._select2_shift_focus);
-            };
-
-            this.init();
-        },
-
-        newTagList : function(params) {
-            return edges.instantiate(formulaic.widgets.TagList, params);
-        },
-        TagList : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-            this.args = params.args;
-
-            this.ns = "formulaic-taglist";
-
-            this.init = function() {
-                var stopWords = edges.getParam(this.args.stopWords, []);
-
-                var ajax = {
-                    url: current_scheme + "//" + current_domain + "/autocomplete/journal/" + this.args["field"],
-                    dataType: 'json',
-                    data: function (term, page) {
-                        return {
-                            q: term
-                        };
-                    },
-                    results: function (data, page) {
-                        return {results: data["suggestions"].filter((x) => $.inArray(x.text.toLowerCase(), stopWords) === -1)};
-                    }
                 };
 
-                var csc = function (term) {
-                    if ($.inArray(term.toLowerCase(), stopWords) !== -1) {
-                        return null;
-                    }
-                    return {id: $.trim(term), text: $.trim(term)};
+                this.init()
+            },
+
+            newSelect : function(params) {
+                return edges.instantiate(formulaic.widgets.Select, params);
+            },
+            Select : function(params) {
+                this.fieldDef = params.fieldDef;
+                this.form = params.formulaic;
+                this.args = params.args;
+
+                this.ns = "formulaic-select";
+                this.elements = false;
+
+                this.init = function() {
+                    let allow_clear = this.args.allow_clear || false;
+                    this.elements = $("select[name$='" + this.fieldDef.name + "']");
+                    this.elements.select2({
+                        allowClear: allow_clear,
+                        newOption: true,
+                        placeholder: "Start typing…"
+                    });
+                    $(this.elements).on("focus", formulaic.widgets._select2_shift_focus);
                 };
 
+                this.init();
+            },
 
-                var initSel = function (element, callback) {
-                    var initial = element.val();
-                    var entries = initial.split(",").map(x => x.trim()).filter(x => x !== "");
-                    var data = [];
-                    for (var i = 0; i < entries.length; i++) {
-                        data.push({id: entries[i], text: entries[i]});
-                    }
-                    callback(data);
-                };
+            newTagList : function(params) {
+                return edges.instantiate(formulaic.widgets.TagList, params);
+            },
+            TagList : function(params) {
+                this.fieldDef = params.fieldDef;
+                this.form = params.formulaic;
+                this.args = params.args;
 
-                // apply the create search choice
-                let selector = "[name='" + this.fieldDef.name + "']";
-                $(selector).select2({
-                    multiple: true,
-                    minimumInputLength: 1,
-                    ajax: ajax,
-                    createSearchChoice: csc,
-                    initSelection: initSel,
-                    placeholder: "Start typing…",
-                    allowClear: false,
-                    tags: true,
-                    tokenSeparators: [',', ";"],
-                    maximumSelectionSize: this.args["maximumSelectionSize"],
-                    width: 'resolve'
-                });
+                this.ns = "formulaic-taglist";
 
-                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
+                this.init = function() {
+                    var stopWords = edges.getParam(this.args.stopWords, []);
 
-            };
-
-            this.init();
-        },
-
-        newTagEntry : function(params) {
-            return edges.instantiate(formulaic.widgets.TagEntry, params);
-        },
-        TagEntry : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-            this.args = params.args;
-
-            this.ns = "formulaic-tagentry";
-
-            this.init = function() {
-                let selector = "[name='" + this.fieldDef.name + "']";
-                $(selector).select2({
-                    minimumInputLength: 1,
-                    tags: [],
-                    tokenSeparators: [','],
-                    width: 'resolve'
-                });
-                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
-            };
-
-            this.init();
-        },
-
-
-
-        newLoadEditors: function(params) {
-            return edges.instantiate(formulaic.widgets.LoadEditors, params);
-        },
-
-        LoadEditors: function(params) {
-            this.fieldDef = params.fieldDef;
-            this.params = params.args;
-
-            this.groupField = false;
-            this.editorField = false;
-
-            this.init = function() {
-                this.groupField = $("[name='" + this.fieldDef.name + "']");
-                this.editorField = $("[name='" + this.params.field + "']");
-                edges.on(this.groupField, "change", this, "updateEditors");
-            };
-
-            this.updateEditors = function(element) {
-                var ed_group_name = $(element).val();
-                var ed_query_url = "/admin/dropdown/eg_associates";
-
-                // var ed_group_name = $("#s2id_editor_group").find('span').text();
-                var that = this;
-                $.ajax({
-                    type : "GET",
-                    data : {egn : ed_group_name},
-                    dataType: "json",
-                    url: ed_query_url,
-                    success: function(resp)
-                    {
-                        // Get the options for the drop-down from our ajax request
-                        var assoc_options = [];
-                        if (resp != null)
-                        {
-                            assoc_options = [["", "No editor assigned"]];
-
-                            for (var i=0; i<resp.length; i++)
-                            {
-                                assoc_options = assoc_options.concat([[resp[i], resp[i]]]);
-                            }
+                    var ajax = {
+                        url: current_scheme + "//" + current_domain + "/autocomplete/journal/" + this.args["field"],
+                        dataType: 'json',
+                        data: function (term, page) {
+                            return {
+                                q: term
+                            };
+                        },
+                        results: function (data, page) {
+                            return {results: data["suggestions"].filter((x) => $.inArray(x.text.toLowerCase(), stopWords) === -1)};
                         }
-                        else
-                        {
-                            assoc_options = [["", ""]];
+                    };
+
+                    var csc = function (term) {
+                        if ($.inArray(term.toLowerCase(), stopWords) !== -1) {
+                            return null;
                         }
+                        return {id: $.trim(term), text: $.trim(term)};
+                    };
 
-                        // Set the editor drop-down options to be the chosen group's associates
-                        // var ed_field = $("#editor");
-                        that.editorField.empty();
 
-                        for (var j=0; j < assoc_options.length; j++) {
-                            that.editorField.append(
-                                $("<option></option>").attr("value", assoc_options[j][0]).text(assoc_options[j][1])
-                            );
+                    var initSel = function (element, callback) {
+                        var initial = element.val();
+                        var entries = initial.split(",").map(x => x.trim()).filter(x => x !== "");
+                        var data = [];
+                        for (var i = 0; i < entries.length; i++) {
+                            data.push({id: entries[i], text: entries[i]});
                         }
-                    }
-                })
-            };
+                        callback(data);
+                    };
 
-            this.init();
-        },
-
-        newAutocomplete: function(params){
-            return edges.instantiate(formulaic.widgets.Autocomplete, params);
-        },
-
-        Autocomplete: function(params){
-            this.fieldDef = params.fieldDef;
-            this.params = params.args;
-
-            this.init = function() {
-                let doc_type = this.params.type || "journal";
-                let doc_field = this.params.field;
-                let mininput = this.params.min_input === undefined ? 3 : this.params.min_input;
-                let include_input = this.params.include === undefined ? true : this.params.include;
-                let allow_clear = this.params.allow_clear_input === undefined ? true : this.params.allow_clear_input;
-
-                let ajax = {
-                    url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
-                    dataType: 'json',
-                    data: function (term, page) {
-                        return {
-                            q: term
-                        };
-                    },
-                    results: function (data, page) {
-                        return { results: data["suggestions"] };
-                    }
-                };
-
-                var csc = function(term) {return {"id":term, "text": term};};
-
-                var initSel = function (element, callback) {
-                    var data = {id: element.val(), text: element.val()};
-                    callback(data);
-                };
-
-                let selector = "[name='" + this.fieldDef.name + "']";
-
-                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
-
-                if (include_input) {
                     // apply the create search choice
+                    let selector = "[name='" + this.fieldDef.name + "']";
                     $(selector).select2({
-                        minimumInputLength: mininput,
+                        multiple: true,
+                        minimumInputLength: 1,
                         ajax: ajax,
                         createSearchChoice: csc,
-                        initSelection : initSel,
-                        allowClear: allow_clear,
+                        initSelection: initSel,
+                        placeholder: "Start typing…",
+                        allowClear: false,
+                        tags: true,
+                        tokenSeparators: [',', ";"],
+                        maximumSelectionSize: this.args["maximumSelectionSize"],
                         width: 'resolve'
                     });
-                } else {
-                    // go without the create search choice option
+
+                    $(selector).on("focus", formulaic.widgets._select2_shift_focus);
+
+                };
+
+                this.init();
+            },
+
+            newTagEntry : function(params) {
+                return edges.instantiate(formulaic.widgets.TagEntry, params);
+            },
+            TagEntry : function(params) {
+                this.fieldDef = params.fieldDef;
+                this.form = params.formulaic;
+                this.args = params.args;
+
+                this.ns = "formulaic-tagentry";
+
+                this.init = function() {
+                    let selector = "[name='" + this.fieldDef.name + "']";
                     $(selector).select2({
-                        minimumInputLength: mininput,
-                        ajax: ajax,
-                        initSelection : initSel,
-                        allowClear: allow_clear,
+                        minimumInputLength: 1,
+                        tags: [],
+                        tokenSeparators: [','],
                         width: 'resolve'
                     });
-                }
+                    $(selector).on("focus", formulaic.widgets._select2_shift_focus);
+                };
 
-                $(selector).on("focus", formulaic.widgets._select2_shift_focus);
-            };
+                this.init();
+            },
 
-            this.init()
-        },
-        newIssnLink : function(params) {
-            return edges.instantiate(formulaic.widgets.IssnLink, params)
-        },
-        IssnLink : function(params) {
-            this.fieldDef = params.fieldDef;
-            this.form = params.formulaic;
-            this.issn = params.issn;
 
-            this.ns = "formulaic-issnlink";
 
-            this.link = false;
-            this.url = "https://portal.issn.org/resource/ISSN/";
+            newLoadEditors: function(params) {
+                return edges.instantiate(formulaic.widgets.LoadEditors, params);
+            },
 
-            this.init = function() {
-                var elements = this.form.controlSelect.input(
-                    {name: this.fieldDef.name});
-                edges.on(elements, "keyup.IssnLink", this, "updateUrl");
+            LoadEditors: function(params) {
+                this.fieldDef = params.fieldDef;
+                this.params = params.args;
 
-                for (var i = 0; i < elements.length; i++) {
-                    this.updateUrl(elements[i]);
-                }
-            };
+                this.groupField = false;
+                this.editorField = false;
 
-            this.updateUrl = function(element) {
-                var that = $(element);
-                var val = that.val();
-                var id = edges.css_id(this.ns, this.fieldDef.name);
+                this.init = function() {
+                    this.groupField = $("[name='" + this.fieldDef.name + "']");
+                    this.editorField = $("[name='" + this.params.field + "']");
+                    edges.on(this.groupField, "change", this, "updateEditors");
+                };
 
-                var match = val.match(/[d0-9]{4}-{0,1}[0-9]{3}[0-9xX]{1}/);
-                var url = this.url + val;
+                this.updateEditors = function(element) {
+                    var ed_group_name = $(element).val();
+                    var ed_query_url = "/admin/dropdown/eg_associates";
 
-                if (val && match) {
-                    if (this.link) {
-                        this.link.text(url);
-                        this.link.attr("href", url);
+                    // var ed_group_name = $("#s2id_editor_group").find('span').text();
+                    var that = this;
+                    $.ajax({
+                        type : "GET",
+                        data : {egn : ed_group_name},
+                        dataType: "json",
+                        url: ed_query_url,
+                        success: function(resp)
+                        {
+                            // Get the options for the drop-down from our ajax request
+                            var assoc_options = [];
+                            if (resp != null)
+                            {
+                                assoc_options = [["", "No editor assigned"]];
+
+                                for (var i=0; i<resp.length; i++)
+                                {
+                                    assoc_options = assoc_options.concat([[resp[i], resp[i]]]);
+                                }
+                            }
+                            else
+                            {
+                                assoc_options = [["", ""]];
+                            }
+
+                            // Set the editor drop-down options to be the chosen group's associates
+                            // var ed_field = $("#editor");
+                            that.editorField.empty();
+
+                            for (var j=0; j < assoc_options.length; j++) {
+                                that.editorField.append(
+                                    $("<option></option>").attr("value", assoc_options[j][0]).text(assoc_options[j][1])
+                                );
+                            }
+                        }
+                    })
+                };
+
+                this.init();
+            },
+
+            newAutocomplete: function(params){
+                return edges.instantiate(formulaic.widgets.Autocomplete, params);
+            },
+
+            Autocomplete: function(params){
+                this.fieldDef = params.fieldDef;
+                this.params = params.args;
+
+                this.init = function() {
+                    let doc_type = this.params.type || "journal";
+                    let doc_field = this.params.field;
+                    let mininput = this.params.min_input === undefined ? 3 : this.params.min_input;
+                    let include_input = this.params.include === undefined ? true : this.params.include;
+                    let allow_clear = this.params.allow_clear_input === undefined ? true : this.params.allow_clear_input;
+
+                    let ajax = {
+                        url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
+                        dataType: 'json',
+                        data: function (term, page) {
+                            return {
+                                q: term
+                            };
+                        },
+                        results: function (data, page) {
+                            return { results: data["suggestions"] };
+                        }
+                    };
+
+                    var csc = function(term) {return {"id":term, "text": term};};
+
+                    var initSel = function (element, callback) {
+                        var data = {id: element.val(), text: element.val()};
+                        callback(data);
+                    };
+
+                    let selector = "[name='" + this.fieldDef.name + "']";
+
+                    $(selector).on("focus", formulaic.widgets._select2_shift_focus);
+
+                    if (include_input) {
+                        // apply the create search choice
+                        $(selector).select2({
+                            minimumInputLength: mininput,
+                            ajax: ajax,
+                            createSearchChoice: csc,
+                            initSelection : initSel,
+                            allowClear: allow_clear,
+                            width: 'resolve'
+                        });
                     } else {
-                        var classes = edges.css_classes(this.ns, "visit");
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + url + '">' + url + '</a></small></p>');
-
-                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
-                        this.link = $(selector, this.form.context);
+                        // go without the create search choice option
+                        $(selector).select2({
+                            minimumInputLength: mininput,
+                            ajax: ajax,
+                            initSelection : initSel,
+                            allowClear: allow_clear,
+                            width: 'resolve'
+                        });
                     }
-                } else if (this.link) {
-                    this.link.remove();
-                    this.link = false;
-                }
-            };
 
-            this.init();
-        },
-    }
-};
+                    $(selector).on("focus", formulaic.widgets._select2_shift_focus);
+                };
+
+                this.init()
+            },
+            newIssnLink : function(params) {
+                return edges.instantiate(formulaic.widgets.IssnLink, params)
+            },
+            IssnLink : function(params) {
+                this.fieldDef = params.fieldDef;
+                this.form = params.formulaic;
+                this.issn = params.issn;
+
+                this.ns = "formulaic-issnlink";
+
+                this.link = false;
+                this.url = "https://portal.issn.org/resource/ISSN/";
+
+                this.init = function() {
+                    var elements = this.form.controlSelect.input(
+                        {name: this.fieldDef.name});
+                    edges.on(elements, "keyup.IssnLink", this, "updateUrl");
+
+                    for (var i = 0; i < elements.length; i++) {
+                        this.updateUrl(elements[i]);
+                    }
+                };
+
+                this.updateUrl = function(element) {
+                    var that = $(element);
+                    var val = that.val();
+                    var id = edges.css_id(this.ns, this.fieldDef.name);
+
+                    var match = val.match(/[d0-9]{4}-{0,1}[0-9]{3}[0-9xX]{1}/);
+                    var url = this.url + val;
+
+                    if (val && match) {
+                        if (this.link) {
+                            this.link.text(url);
+                            this.link.attr("href", url);
+                        } else {
+                            var classes = edges.css_classes(this.ns, "visit");
+                            that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + url + '">' + url + '</a></small></p>');
+
+                            var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                            this.link = $(selector, this.form.context);
+                        }
+                    } else if (this.link) {
+                        this.link.remove();
+                        this.link = false;
+                    }
+                };
+
+                this.init();
+            },
+        }
+    };
