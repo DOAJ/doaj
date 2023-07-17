@@ -1196,7 +1196,25 @@ var formulaic = {
             this.init();
         },
         newClickToCopy : function(params) {
-            return
+            return edges.instantiate(formulaic.widgets.ClickToCopy, params)
+        },
+        ClickToCopy : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+            this.ns = "formulaic-clicktocopy"
+            this.init = function() {
+                var elements = $(".form__click-to-copy");
+                edges.on(elements, "click", this, "copy");
+            };
+            this.copy = function(element) {
+                var field = $("input[name=" + this.fieldDef.name + "]")
+                value_def = this.fieldDef.options.filter(item => item.value === field.val());
+                value_to_copy = value_def[0]["display"];
+                navigator.clipboard.writeText(value_to_copy)
+                console.log("text copied: " + value_to_copy)
+
+            };
+            this.init();
         },
         newClickableOwner : function(params) {
             return edges.instantiate(formulaic.widgets.ClickableOwner, params)
