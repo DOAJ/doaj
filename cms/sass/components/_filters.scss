@@ -51,7 +51,7 @@
   height: auto;
   overflow-y: auto;
   //add minimal padding to ensure visible outline
-  padding-top: .2rem;
+  padding-top: $spacing-01;
   @include unstyled-list;
 
   li {
