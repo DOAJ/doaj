@@ -1226,8 +1226,8 @@ var formulaic = {
                     }
                     else if (this.fieldDef.input == "select") {
                         // todo: countries value instead of code!
-                        var field = $("select[name=" + this.fieldDef.name + "]");
-                        value_to_copy = field.val()
+                        var field = $("select[name=" + this.fieldDef.name + "] option:selected");
+                        value_to_copy = field.text()
                     }
                     else {
                         var field = $("input[name=" + this.fieldDef.name + "]");
