@@ -10,6 +10,7 @@
         {% endif %}
         {% if f.has_widget("click_to_copy") %}
             <span class="form__click-to-copy" id="click-to-copy--{{ f.name }}" data-feather="copy" aria-hidden="true"></span><span class="sr-only">Copy value</span>
+            <span class="tag" style="display:none" id="copy-confirmation--{{ f.name }}">Value copied!</span>
         {% endif %}
         {% if f.optional %}<span class="form__question--optional">(Optional)</span>{% endif %}
     </label>

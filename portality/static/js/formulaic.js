@@ -1212,7 +1212,9 @@ var formulaic = {
                 value_to_copy = value_def[0]["display"];
                 navigator.clipboard.writeText(value_to_copy)
                 console.log("text copied: " + value_to_copy)
-
+                var confirmation = $("#copy-confirmation--" + this.fieldDef.name);
+                confirmation.text("Value copied: " + value_to_copy);
+                confirmation.show().delay(3000).fadeOut();
             };
             this.init();
         },
