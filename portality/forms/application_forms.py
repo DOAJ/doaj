@@ -167,19 +167,25 @@ class FieldDefinitions:
             "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "contexts": {
-            "editor": {
-                "disabled": True
-            },
-            "associate_editor": {
-                "disabled": True
-            },
-            "update_request": {
-                "disabled": True
-            },
             "admin": {
                 "widgets": [
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
+            },
+            "editor": {
+                "disabled": True,
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "disabled": True,
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "update_request": {
+                "disabled": True
             }
         }
     }
@@ -205,6 +211,16 @@ class FieldDefinitions:
                 "disabled": True
             },
             "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
                 "widgets": [
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
@@ -472,6 +488,16 @@ class FieldDefinitions:
                 "widgets": [
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
         }
     }
@@ -522,6 +548,16 @@ class FieldDefinitions:
         },
         "contexts" : {
             "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
                 "widgets": [
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
@@ -1399,7 +1435,6 @@ class FieldDefinitions:
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
         ],
         "contexts" : {
             "public" : {
