@@ -117,7 +117,7 @@ doaj.af.BaseApplicationForm = class {
         });
     };
 
-    determineFieldsValue(name) {
+    static determineFieldsValue(name) {
         let inputs = this.jq(":input[id='" + name + "']");
         if (inputs.length === 0) {
             inputs = this.jq(":input[id^='" + name + "-']");
@@ -150,7 +150,7 @@ doaj.af.BaseApplicationForm = class {
         return result;
     };
 
-    convertValueToText(value){
+    static convertValueToText(value){
         value = value.filter(v=>(v!=="" && v!==" "));
         let result = "";
         if (value.length > 0){

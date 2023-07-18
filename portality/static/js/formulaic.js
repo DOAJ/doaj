@@ -1207,39 +1207,16 @@ var formulaic = {
                 edges.on(elements, "click", this, "copy");
             };
             this.copy = function(element) {
-                // todo: multiple fields!
-                if (this.fieldDef.input == "radio") {
-                    var field = $("input[name=" + this.fieldDef.name + "]:checked");
-                    value_def = this.fieldDef.options.filter(item => item.value === field.val());
-                    value_to_copy = value_def[0]["display"];
-                }
-                else if (this.fieldDef.input == "checkbox") {
-                    value_to_copy = ""
-                    $( "input[name=" + this.fieldDef.name + "]:checked" ).each(function() {
-                        value_to_copy = value_to_copy + " " + $(this)[0].value;
-                    });
-                    console.log(value_to_copy)
-                }
-                else if (this.fieldDef.input == "taglist") {
-                        var field = $("#" + this.fieldDef.name);
-                        value_to_copy = field.val()
-                    }
-                    else if (this.fieldDef.input == "select") {
-                        // todo: countries value instead of code!
-                        var field = $("select[name=" + this.fieldDef.name + "] option:selected");
-                        value_to_copy = field.text()
-                    }
-                    else {
-                        var field = $("input[name=" + this.fieldDef.name + "]");
-                        value_to_copy = field.val()
-                    }
-                    navigator.clipboard.writeText(value_to_copy)
-                    console.log("text copied: " + value_to_copy)
-                    var confirmation = $("#copy-confirmation--" + this.fieldDef.name);
-                    confirmation.text("Value copied: " + value_to_copy);
-                    confirmation.show().delay(3000).fadeOut();
-                };
-                this.init();
+                let value = doaj.af.BaseApplicationForm.determineFieldsValue(this.fieldDef.name)
+                let value_to_copy = doaj.af.BaseApplicationForm.convertValueToText(value);
+                navigator.clipboard.writeText(value_to_copy)
+                console.log("text copied: " + value_to_copy)
+                var confirmation = $("#copy-confirmation--" + this.fieldDef.name);
+                confirmation.text("Value copied: " + value_to_copy);
+                confirmation.show().delay(3000).fadeOut();
+            };
+            this.init();
+
             },
                 newClickableOwner : function(params) {
                 return edges.instantiate(formulaic.widgets.ClickableOwner, params)
