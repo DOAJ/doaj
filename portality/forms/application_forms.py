@@ -109,10 +109,7 @@ class FieldDefinitions:
                 "validate" : [],
                 "disabled": True
             }
-        },
-        "widgets": [
-            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
-        ],
+        }
     }
 
     # ~~->$ OAStatementURL:FormField~~
@@ -141,8 +138,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url",     # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy"
+            "clickable_url"     # ~~^-> ClickableURL:FormWidget~~
         ],
         "attr": {
             "type": "url"
@@ -179,11 +175,13 @@ class FieldDefinitions:
             },
             "update_request": {
                 "disabled": True
+            },
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
-        },
-        "widgets": [
-            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
-        ]
+        }
     }
 
     # ~~->$ AlternativeTitle:FormField~~
@@ -205,11 +203,13 @@ class FieldDefinitions:
         "contexts": {
             "update_request": {
                 "disabled": True
+            },
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
-        },
-        "widgets": [
-            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
-        ]
+        }
     }
 
     # ~~->$ JournalURL:FormField~~
@@ -236,10 +236,7 @@ class FieldDefinitions:
                     "journal_url_in_public_doaj"  # ~~^-> JournalURLInPublicDOAJ:FormValidator~~
                 ],
             }
-        },
-        "widgets": [
-            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
-        ]
+        }
     }
 
     #~~->$ PISSN:FormField~~
@@ -265,8 +262,7 @@ class FieldDefinitions:
         "widgets" : [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             "full_contents", # ~~^->FullContents:FormWidget~~
-            "issn_link", # ~~^->IssnLink:FormWidget~~
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            "issn_link" # ~~^->IssnLink:FormWidget~~
         ],
         "contexts": {
             "public" : {
@@ -337,8 +333,7 @@ class FieldDefinitions:
         "widgets" : [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             "full_contents", # ~~^->FullContents:FormWidget~~
-            "issn_link",  # ~~^->IssnLink:FormWidget~~
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            "issn_link"  # ~~^->IssnLink:FormWidget~~
         ],
         "contexts": {
             "public" : {
@@ -419,8 +414,7 @@ class FieldDefinitions:
                     "stopWords": STOP_WORDS,
                     "field": "bibjson.keywords"
                 }
-            },
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            }
         ],
         "attr": {
             "class": "input-xlarge"
@@ -444,8 +438,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             {"select": {}},
-            "multiple_field",
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            "multiple_field"
         ],
         "help": {
             "placeholder": "Type or select the language"
@@ -466,8 +459,7 @@ class FieldDefinitions:
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             {"autocomplete": {"type" : "journal", "field": "bibjson.publisher.name.exact"}},
-            "full_contents", # ~~^->FullContents:FormWidget~~
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "help": {
             "placeholder": "Type or select the publisher’s name"
@@ -475,6 +467,11 @@ class FieldDefinitions:
         "contexts" : {
             "bulk_edit" : {
                 "validate" : []
+            },
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
         }
     }
@@ -495,8 +492,7 @@ class FieldDefinitions:
             {"required": {"message": "Enter the <strong>country</strong> where the publisher carries out its business operations and is registered"}}
         ],
         "widgets": [
-            {"select": {}},
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            {"select": {}}
         ],
         "attr": {
             "class": "input-xlarge"
@@ -524,11 +520,17 @@ class FieldDefinitions:
                           "a society or other type of institution, enter that here."],
             "placeholder": "Type or select the society or institution’s name"
         },
+        "contexts" : {
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            }
+        },
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}},
-            "full_contents", # ~~^->FullContents:FormWidget~~
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            "full_contents" # ~~^->FullContents:FormWidget~~
         ]
     }
 
@@ -545,8 +547,7 @@ class FieldDefinitions:
             "placeholder": "Type or select the country"
         },
         "widgets": [
-            {"select": {"allow_clear" : True}},
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            {"select": {"allow_clear" : True}}
         ],
         "attr": {
             "class": "input-xlarge"
@@ -597,9 +598,6 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> type of license"}}
-        ],
-        "widgets": [
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
         ]
     }
 
@@ -620,10 +618,7 @@ class FieldDefinitions:
         ],
         "help": {
             "doaj_criteria": "Content must be licensed"
-        },
-        "widgets": [
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
-        ]
+        }
     }
 
     # ~~->$ LicenseTermsURL:FormField~~
@@ -643,8 +638,7 @@ class FieldDefinitions:
         },
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -666,9 +660,6 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Select Yes or No"}}
-        ],
-        "widgets": [
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
         ]
     }
 
@@ -695,8 +686,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -721,10 +711,7 @@ class FieldDefinitions:
                           "under any license allowed by the journal "
                           "retain all rights."],
             "seal_criteria": "The author must retain the copyright"
-        },
-        "widgets": [
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
-        ]
+        }
     }
 
     # ~~->$ CopyrightURL:FormField~~
@@ -742,8 +729,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ],
         "contexts": {
             "public": {
@@ -785,9 +771,6 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> type of review process"}}
-        ],
-        "widgets": [
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
         ]
     }
 
@@ -809,8 +792,7 @@ class FieldDefinitions:
             }
         ],
         "widgets" : [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "click_to_copy" # ~~^-> ClickToCopy:FormWidget~~
+            "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -833,8 +815,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -857,10 +838,7 @@ class FieldDefinitions:
         "attr": {
             "min": app.config.get('MINIMAL_OA_START_DATE', 1900),
             "max": dates.now().year
-        },
-        "widgets": [
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
-        ]
+        }
     }
 
     # ~~->$ PlagiarismDetection:FormField~~
@@ -880,9 +858,6 @@ class FieldDefinitions:
         ],
         "validate": [
             {"required": {"message": "Select Yes or No"}}
-        ],
-        "widgets": [
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
         ]
     }
 
@@ -911,8 +886,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -931,8 +905,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -951,8 +924,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -971,8 +943,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -992,10 +963,7 @@ class FieldDefinitions:
         "attr": {
             "min": "1",
             "max": "100"
-        },
-        "widgets": [
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
-        ]
+        }
     }
 
     # ~~->$ APC:FormField~~
@@ -1016,9 +984,6 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Select Yes or No"}}
-        ],
-        "widgets": [
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
         ]
     }
 
@@ -1047,8 +1012,7 @@ class FieldDefinitions:
         "template": "application_form/_list.html",
         "entry_template": "application_form/_entry_group_horizontal.html",
         "widgets": [
-            "multiple_field",
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "multiple_field"
         ]
     }
 
@@ -1064,8 +1028,7 @@ class FieldDefinitions:
             "placeholder": "Currency"
         },
         "widgets": [
-            {"select": {}},
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            {"select": {}}
         ],
         "attr": {
             "class": "input-xlarge"
@@ -1103,10 +1066,7 @@ class FieldDefinitions:
         ],
         "attr": {
             "min": "1"
-        },
-        "widgets":[
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
-        ]
+        }
     }
 
     # ~~->$ APCURL:FormField~~
@@ -1128,8 +1088,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -1153,9 +1112,6 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Select Yes or No"}}
-        ],
-        "widgets": [
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
         ]
     }
 
@@ -1184,8 +1140,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -1206,9 +1161,6 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Select Yes or No"}}
-        ],
-        "widgets": [
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
         ]
     }
 
@@ -1236,8 +1188,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -1269,9 +1220,6 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}
-        ],
-        "widgets": [
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
         ]
     }
 
@@ -1301,8 +1249,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "multiple_field",
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "multiple_field"
         ],
         "attr": {
             "class": "input-xlarge unstyled-list"
@@ -1327,8 +1274,7 @@ class FieldDefinitions:
             {"warn_on_value": {"value": "None"}}
         ],
         "widgets" : [
-            "trim_whitespace",   # ~~^-> TrimWhitespace:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "trim_whitespace"   # ~~^-> TrimWhitespace:FormWidget~~
         ]
     }
 
@@ -1375,8 +1321,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
         ]
     }
 
@@ -1407,9 +1352,6 @@ class FieldDefinitions:
                           ]},
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}
-        ],
-        "widgets": [
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
         ]
     }
 
@@ -1431,8 +1373,7 @@ class FieldDefinitions:
             {"warn_on_value": {"value": "None"}}
         ],
         "widgets" : [
-            "trim_whitespace",   # ~~^-> TrimWhitespace:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "trim_whitespace"   # ~~^-> TrimWhitespace:FormWidget~~
         ]
     }
 
@@ -1518,9 +1459,6 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}
-        ],
-        "widgets": [
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
         ]
     }
 
@@ -1542,8 +1480,7 @@ class FieldDefinitions:
             {"warn_on_value": {"value": "None"}}
         ],
         "widgets" : [
-            "trim_whitespace",   # ~~^-> TrimWhitespace:FormWidget~~
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
+            "trim_whitespace"   # ~~^-> TrimWhitespace:FormWidget~~
         ]
     }
 
@@ -1572,10 +1509,7 @@ class FieldDefinitions:
                     {"required": {"message": "Select Yes or No"}}
                 ]
             }
-        },
-        "widgets": [
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
-        ]
+        }
     }
 
     # ~~->$ OpenCitations:FormField~~
@@ -1602,10 +1536,7 @@ class FieldDefinitions:
                     {"required": {"message": "Select Yes or No"}}
                 ]
             }
-        },
-        "widgets": [
-            "click_to_copy"  # ~~^-> ClickToCopy:FormWidget~~
-        ]
+        }
     }
 
     #######################################

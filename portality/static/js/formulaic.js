@@ -1205,8 +1205,9 @@ var formulaic = {
                 edges.on(elements, "click", this, "copy");
             };
             this.copy = function(element) {
-                let value = doaj.af.BaseApplicationForm.determineFieldsValue(this.fieldDef.name)
-                let value_to_copy = doaj.af.BaseApplicationForm.convertValueToText(value);
+                let form = new doaj.af.BaseApplicationForm()
+                let value = form.determineFieldsValue(this.fieldDef.name)
+                let value_to_copy = form.convertValueToText(value);
                 navigator.clipboard.writeText(value_to_copy)
                 var confirmation = $("#copy-confirmation--" + this.fieldDef.name);
                 confirmation.text("Value copied: " + value_to_copy);
