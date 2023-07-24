@@ -14,12 +14,11 @@
   @media (min-width: 992px) {
     position: -webkit-sticky;
     position: sticky;
-    top: 55px; // sticky header + 5px
+    top: 100px;
 
     &__content {
       max-height: 70vh;
       overflow-y: scroll;
-      margin-top: $spacing-02;
 
       select, textarea, input {
         display: block;
