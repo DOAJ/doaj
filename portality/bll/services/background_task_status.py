@@ -61,7 +61,8 @@ class BackgroundTaskStatusService:
         err_msgs = []
         limited_oldest_date = dates.before_now(oldest)
         if oldest_job and oldest_job.created_timestamp < limited_oldest_date:
-            err_msgs.append('outdated job found. created_timestamp[{} < {}]'.format(
+            err_msgs.append('outdated queued job found[{}]. created_timestamp[{} < {}]'.format(
+                oldest_job.id,
                 oldest_job.created_timestamp,
                 limited_oldest_date
             ))
