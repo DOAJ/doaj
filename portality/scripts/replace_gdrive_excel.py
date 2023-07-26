@@ -18,7 +18,9 @@ def main():
     # df = pd.DataFrame(data[1:], columns=data[0])
     df = pd.DataFrame(worksheet.get_all_values())
     print(df)
-    # return
+
+    worksheet.update_acell('A1', f'=HYPERLINK("https://www.google.com", "Google")')
+    return
 
     # Modify the data
     # Replace 'A' with the column name that you want to edit
@@ -29,6 +31,7 @@ def main():
 
     # Load the modified data
     set_with_dataframe(worksheet, df)
+
 
 
 if __name__ == '__main__':
