@@ -133,7 +133,7 @@ class TestManEdAppReview(DoajTestCase):
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise(acc)
 
-        time.sleep(2)
+        time.sleep(1)
 
         # now check that a provenance record was recorded
         prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
@@ -307,7 +307,7 @@ class TestManEdAppReview(DoajTestCase):
         )
 
         fc.finalise(acc)
-        time.sleep(2)
+        time.sleep(1)
 
         # now check that a provenance record was recorded
         count = 0
@@ -348,7 +348,7 @@ class TestManEdAppReview(DoajTestCase):
         )
 
         fc.finalise(acc)
-        time.sleep(2)
+        time.sleep(1)
 
         # now check that a provenance record was recorded
         count = 0

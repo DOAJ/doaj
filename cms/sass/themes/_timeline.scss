@@ -19,23 +19,18 @@
 }
 
 .timeline {
-  @extend .unstyled-list; 
-
-  // The dates headings
-  h3 {
-
-  }
-
   // The contents for each section
-  ul {
-    @extend .unstyled-list; 
+  &.tabular-list > li > ul {
+    width: 75%;
+
+    > li {
+      margin-bottom: $spacing-03;
+    }
 
     > li:first-child {
-      // styles for heading here 
-
-      + li {
-        // styles for paragraph/content here
-      }
+      list-style: none;
+      margin-left: 0;
+      @include typescale-02;
     }
   }
 }
@@ -53,17 +48,12 @@
     flex: 30%;
     padding: .75em;
     border-radius: .25em;
+    @include box-shadow;
 
-    &:nth-child(1) {
-      background-color: $yellow;
-    }
-
-    &:nth-child(2) {
-      background-color: $light-green;
-    }
-
-    &:nth-child(3) {
-      background-color: $mid-green;
+    svg {
+      margin-bottom: $spacing-03;
+      height: $spacing-04;
+      width: auto;
     }
 
     ul {

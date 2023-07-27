@@ -52,7 +52,7 @@ class TestApplicationPublisherQuickRejectNotify(DoajTestCase):
         })
         ApplicationPublisherQuickRejectNotify.consume(event)
 
-        time.sleep(2)
+        time.sleep(1)
         ns = models.Notification.all()
         assert len(ns) == 1
 
@@ -82,6 +82,6 @@ class TestApplicationPublisherQuickRejectNotify(DoajTestCase):
             "note": "my note"
         })
         ApplicationPublisherQuickRejectNotify.consume(event)
-        time.sleep(2)
+        time.sleep(1)
         ns = models.Notification.all()
         assert len(ns) == 0

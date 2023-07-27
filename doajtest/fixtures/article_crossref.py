@@ -1,10 +1,11 @@
 import os
-import re
-from lxml import etree
 from io import BytesIO, StringIO
-from copy import deepcopy
 
-RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
+from lxml import etree
+
+from doajtest import test_constants
+
+RESOURCES = test_constants.PATH_RESOURCES
 
 class Crossref442ArticleFixtureFactory(object):
     """

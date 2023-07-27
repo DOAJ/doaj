@@ -32,8 +32,11 @@ class GithubReqSender:
             req_kwargs['auth'] = HTTPBasicAuth(self.username, self.password)
         return req_kwargs
 
-    def get(self, url):
-        return requests.get(url, **self.req_kwargs)
+    def get(self, url, **req_kwargs):
+        final_req_kwargs = self.req_kwargs.copy()
+        final_req_kwargs.update(req_kwargs)
+        req_kwargs = req_kwargs or {}
+        return requests.get(url, **final_req_kwargs)
 
 
 class Rule(TypedDict):
@@ -144,15 +147,21 @@ def _get_column_issues(project, col, sender: GithubReqSender):
     column_record = [c for c in col_data if c.get("name") == col][0]
     cards_url = column_record.get("cards_url")
 
-    resp = sender.get(cards_url)
-    cards_data = resp.json()
-
+    params = {"per_page": 100, "page": 1}
     issues = []
-    for card_data in cards_data:
-        content_url = card_data.get("content_url")
-        resp = sender.get(content_url)
-        issue_data = resp.json()
-        issues.append(issue_data)
+
+    while True:
+        resp = sender.get(cards_url, params=params)
+        cards_data = resp.json()
+        if len(cards_data) == 0:
+            break
+        params["page"] += 1
+
+        for card_data in cards_data:
+            content_url = card_data.get("content_url")
+            resp = sender.get(content_url)
+            issue_data = resp.json()
+            issues.append(issue_data)
 
     COLUMN_CACHE[col] = issues
     print("Column issues {x}".format(x=[i.get("url") for i in issues]))

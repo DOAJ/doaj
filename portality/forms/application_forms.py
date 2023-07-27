@@ -34,7 +34,11 @@ from portality.forms.validate import (
     BigEndDate,
     ReservedUsernames,
     CustomRequired,
-    OwnerExists, NoScriptTag, Year
+    OwnerExists,
+    NoScriptTag,
+    Year,
+    CurrentISOCurrency,
+    CurrentISOLanguage
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
@@ -233,6 +237,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal.</a>",
+                          "Use the link under the ISSN you provided to check it.",
                           "The ISSN must match what is given on the journal website."],
             "short_help": "For example, 2049-3630",
             "doaj_criteria": "ISSN must be provided"
@@ -246,7 +251,8 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "full_contents" # ~~^->FullContents:FormWidget~~
+            "full_contents", # ~~^->FullContents:FormWidget~~
+            "issn_link" # ~~^->IssnLink:FormWidget~~
         ],
         "contexts": {
             "public" : {
@@ -303,6 +309,7 @@ class FieldDefinitions:
         "help": {
             "long_help": ["Must be a valid ISSN, fully registered and confirmed at the "
                           "<a href='https://portal.issn.org/' target='_blank' rel='noopener'> ISSN Portal</a>",
+                          "Use the link under the ISSN your provided to check it.",
                           "The ISSN must match what is given on the journal website."],
             "short_help": "For example, 0378-5955",
             "doaj_criteria": "ISSN must be provided"
@@ -315,7 +322,8 @@ class FieldDefinitions:
         ],
         "widgets" : [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "full_contents" # ~~^->FullContents:FormWidget~~
+            "full_contents", # ~~^->FullContents:FormWidget~~
+            "issn_link"  # ~~^->IssnLink:FormWidget~~
         ],
         "contexts": {
             "public" : {
@@ -415,7 +423,8 @@ class FieldDefinitions:
             "initial": 5
         },
         "validate": [
-            {"required": {"message": "Enter <strong>at least one</strong> language"}}
+            {"required": {"message": "Enter <strong>at least one</strong> language"}},
+            "current_iso_language"
         ],
         "widgets": [
             {"select": {}},
@@ -1003,12 +1012,14 @@ class FieldDefinitions:
             "class": "input-xlarge"
         },
         "validate": [
-            {"required_if": {
-                "field": "apc",
-                "value": "y",
-                "message": "Enter the currency or currencies for the journal’s publishing fees"
+            {
+                "required_if": {
+                    "field": "apc",
+                    "value": "y",
+                    "message": "Enter the currency or currencies for the journal’s publishing fees"
                 }
-            }
+            },
+            "current_iso_currency"
         ]
     }
 
@@ -1023,10 +1034,11 @@ class FieldDefinitions:
             "placeholder": "Highest fee charged"
         },
         "validate":[
-            {"required_if": {
-                "field": "apc",
-                "value": "y",
-                "message": "Enter the value of the highest publishing fee the journal has charged"
+            {
+                "required_if": {
+                    "field": "apc",
+                    "value": "y",
+                    "message": "Enter the value of the highest publishing fee the journal has charged"
                 }
             }
         ],
@@ -1356,8 +1368,7 @@ class FieldDefinitions:
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
             "doaj_criteria": "You must provide a URL",
-            "short_help": "Link to the policy in a directory or on the "
-                          "publisher’s site",
+            "short_help": "Provide the link to the policy in the selected directory. Or select 'Other' and provide a link to the information on your website.",
             "placeholder": "https://www.my-journal.com/about#repository_policy"
         },
         "validate": [
@@ -1805,10 +1816,7 @@ class FieldDefinitions:
         "name": "note_author",
         "group": "notes",
         "input": "text",
-        "disabled": True,
-        "help": {
-            "placeholder": "Original author unknown",
-        },
+        "disabled": True
     }
 
     # ~~->$ NoteDate:FormField~~
@@ -2834,9 +2842,29 @@ class YearBuilder:
         html_attrs["data-parsley-year"] = app.config.get('MINIMAL_OA_START_DATE', 1900)
         html_attrs["data-parsley-year-message"] = "<p><small>" + settings["message"] + "</small></p>"
 
+    @staticmethod
     def wtforms(field, settings):
         return Year(settings.get("message"))
 
+
+class CurrentISOCurrencyBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        pass
+
+    @staticmethod
+    def wtforms(field, settings):
+        return CurrentISOCurrency(settings.get("message"))
+
+
+class CurrentISOLanguageBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        pass
+
+    @staticmethod
+    def wtforms(field, settings):
+        return CurrentISOLanguage(settings.get("message"))
 
 #########################################################
 # Crosswalks
@@ -2900,6 +2928,8 @@ PYTHON_FUNCTIONS = {
             "owner_exists" : OwnerExistsBuilder.wtforms,
             "no_script_tag": NoScriptTagBuilder.wtforms,
             "year": YearBuilder.wtforms,
+            "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
+            "current_iso_language": CurrentISOLanguageBuilder.wtforms
         }
     }
 }
@@ -2917,7 +2947,8 @@ JAVASCRIPT_FUNCTIONS = {
     "full_contents" : "formulaic.widgets.newFullContents",  # ~~^->FullContents:FormWidget~~
     "load_editors" : "formulaic.widgets.newLoadEditors",    # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
-    "note_modal" : "formulaic.widgets.newNoteModal" # ~~-> NoteModal:FormWidget~~
+    "note_modal" : "formulaic.widgets.newNoteModal", # ~~-> NoteModal:FormWidget~~,
+    "issn_link" : "formulaic.widgets.newIssnLink" # ~~-> IssnLink:FormWidget~~,
 }
 
 
