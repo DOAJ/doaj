@@ -61,6 +61,16 @@ def priorities(priorities_file,
 
 
 def main():
+    """
+    you need github and google drive api key to run this script
+    DOAJ_GITHUB_KEY is github api key
+
+    DOAJ_PRILIST_KEY_PATH is json file path for google drive api
+    the DOAJ_PRILIST_KEY_PATH should be enabled for
+    * 'google drive api'
+    * 'google sheet api'
+
+    """
     import argparse
 
     parser = argparse.ArgumentParser()
