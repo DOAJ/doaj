@@ -57,11 +57,12 @@ setup(
         "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger",
 
 
-        'gspread',
-        'oauth2client',
+        # pri list
+        'gspread~=5.10.0',
+        'oauth2client~=4.1.3',
         'pandas~=2.0.1',# pandas lets us generate URLs for linkcheck
-        'gspread_dataframe',
-
+        'gspread-dataframe~=3.3.1',
+        'gspread-formatting~=1.1.2',
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
         "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium==3.141",  # prevent backtracking through all versions

@@ -16,19 +16,18 @@ HEADERS = {"Accept": "application/vnd.github+json"}
 
 
 class GithubReqSender:
-    def __init__(self, username=None, password=None):
+    def __init__(self, api_key=None, username=None, password=None):
         self.username = username
         self.password = password
+        self.api_key = api_key
+        if self.api_key is None and self.username is None:
+            raise ValueError("api_key or username must be provided")
         self.req_kwargs = self.create_github_request_kwargs()
 
     def create_github_request_kwargs(self) -> dict:
         req_kwargs = {'headers': dict(HEADERS)}
-        if self.username is None or self.password is None:
-            api_key = os.environ.get("DOAJ_GITHUB_KEY")
-            if api_key:
-                req_kwargs['headers']['Authorization'] = f'Bearer {api_key}'
-            else:
-                raise ValueError("No username or password provided and no GITHUB_USERNAME env variable set")
+        if self.api_key:
+            req_kwargs['headers']['Authorization'] = f'Bearer {self.api_key}'
         else:
             req_kwargs['auth'] = HTTPBasicAuth(self.username, self.password)
         return req_kwargs
@@ -71,7 +70,7 @@ def load_rules(rules_file) -> List[Rule]:
     return rules
 
 
-def create_priorities_excel_data(priorities_file, username=None, password=None) -> pd.DataFrame:
+def create_priorities_excel_data(priorities_file, sender:GithubReqSender) -> Dict[str, pd.DataFrame]:
     """
 
     ENV VARIABLE `DOAJ_GITHUB_KEY` will be used if username and password are not provided
@@ -81,7 +80,6 @@ def create_priorities_excel_data(priorities_file, username=None, password=None) 
     :param password:
     :return:
     """
-    sender = GithubReqSender(username=username, password=password)
     resp = sender.get(PROJECTS)
     if resp.status_code >= 400:
         raise ConnectionError(f'Error fetching github projects: {resp.status_code} {resp.text}')
@@ -95,21 +93,21 @@ def create_priorities_excel_data(priorities_file, username=None, password=None) 
         for user, issues in issues_by_user.items():
             issues: List[GithubIssue]
             pri_issues = [PriIssue(rule_id=priority.get("id", 1),
-                                   title='[{}][{}] {}'.format(github_issue['issue_number'], github_issue['status'],
-                                                              github_issue['title']),
-                                   issue_url=_ui_url(github_issue['api_url']), ) for github_issue in issues]
+                                   title='[{}] {}'.format(github_issue['issue_number'], github_issue['title']),
+                                   issue_url=_ui_url(github_issue['api_url']),
+                                   status=github_issue['status'],
+                                   )
+                          for github_issue in issues]
             pri_issues = [i for i in pri_issues if
                           i['issue_url'] not in {u['issue_url'] for u in user_priorities[user]}]
             print("Novel issues for rule for user {x} {y}".format(x=user, y=pri_issues))
             user_priorities[user] += pri_issues
 
-    df_list = []
+    df_list = {}
     for user, pri_issues in user_priorities.items():
-        df_list.append(pd.DataFrame(pri_issues))
+        df_list[user] = pd.DataFrame(pri_issues)
 
-    merged_df = pd.concat({user: pd.DataFrame(values) for user, values in user_priorities.items()},
-                          axis=1)
-    return merged_df
+    return df_list
 
 
 def _issues_by_user(project, priority, sender) -> Dict[str, List[GithubIssue]]:
