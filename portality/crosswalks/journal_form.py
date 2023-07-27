@@ -295,12 +295,22 @@ class JournalGenericXWalk(object):
     def bibjson2form(cls, bibjson, forminfo):
         from portality.models import JournalLikeBibJSON
         from portality.forms.application_forms import ApplicationFormFactory
+        from portality.datasets import get_currency_code
+
         assert isinstance(bibjson, JournalLikeBibJSON)
 
         forminfo['alternative_title'] = bibjson.alternative_title
 
+        # when we crosswalk the apc currency we also have to check that it is current
+        # so that we only present information to the form is the form is capable of
+        # presenting it on to the user
         forminfo["apc_charges"] = []
         for apc_record in bibjson.apc:
+            currency = apc_record.get("currency")
+            check = get_currency_code(currency, fail_if_not_found=True)
+            if check is None:
+                continue
+
             forminfo["apc_charges"].append({
                 "apc_currency" : apc_record.get("currency"),
                 "apc_max" : apc_record.get("price")
@@ -434,7 +444,7 @@ class JournalGenericXWalk(object):
         forminfo['notes'] = []
         for n in obj.ordered_notes:
             author_id = n.get('author_id', '')
-            note_author_name = f'{Account.get_name_safe(author_id)}({author_id})' if author_id else ''
+            note_author_name = f'{Account.get_name_safe(author_id)} ({author_id})' if author_id else ''
             note_obj = {'note': n['note'], 'note_date': n['date'], 'note_id': n['id'],
                         'note_author': note_author_name,
                         'note_author_id': author_id,

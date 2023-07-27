@@ -1,10 +1,11 @@
 import os
 import rstr
+
+from doajtest import test_constants
 from portality.regex import ISSN_COMPILED, DOI_COMPILED
 from copy import deepcopy
 
-RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "article_uploads.xml")
+ARTICLES = test_constants.PATH_RESOURCES / "article_uploads.xml"
 
 
 class ArticleFixtureFactory(object):
