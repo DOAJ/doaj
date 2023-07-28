@@ -12,6 +12,7 @@ from portality.models import Journal, EditorGroup, Account
 from datetime import datetime
 from portality import regex
 from portality.datasets import get_currency_code
+from portality.lib import isolang
 
 
 class MultiFieldValidator(object):
@@ -640,5 +641,18 @@ class CurrentISOCurrency(object):
     def __call__(self, form, field):
         if field.data is not None and field.data != '':
             check = get_currency_code(field.data, fail_if_not_found=True)
+            if check is None:
+                raise validators.ValidationError(self.message)
+
+
+class CurrentISOLanguage(object):
+    def __init__(self, message=None):
+        if not message:
+            message = "Language is not in the currently supported ISO list"
+        self.message = message
+
+    def __call__(self, form, field):
+        if field.data is not None and field.data != '':
+            check = isolang.find(field.data)
             if check is None:
                 raise validators.ValidationError(self.message)
