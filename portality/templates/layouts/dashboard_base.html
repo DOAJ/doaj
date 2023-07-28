@@ -26,7 +26,7 @@
         <ul class="unstyled-list flex-center">
             {% include "includes/_tourist_nav.html" %}
             {# ~~->Notifications:Feature~~ #}
-          <li class="dropdown flex-center">
+          <li class="dropdown flex-center" id="notifications_nav">
             <a href="/dashboard/notifications" class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
               <span><span data-feather="bell" aria-hidden="true"></span> Notifications <span class="js-notifications-count"></span></span>
             </a>
@@ -46,7 +46,7 @@
                         </a>
                     </li>
                 {% endif %}
-            <li class="flex-center">
+            <li class="flex-center" id="doaj_home">
               <a href="/" class="label">
                 <span><span data-feather="home" aria-hidden="true"></span> DOAJ home</span>
               </a>
@@ -161,7 +161,7 @@
 
             <p>
                 <small>
-                    <a href="{{ url_for('account.logout') }}" class="tag">
+                    <a href="{{ url_for('account.logout') }}" class="tag" id="logout">
                         <span data-feather="log-out" aria-hidden="true"></span>
                         Log out
                     </a>

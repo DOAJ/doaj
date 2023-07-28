@@ -1393,16 +1393,18 @@ TOUR_COOKIE_PREFIX = "doaj_tour_"
 TOUR_COOKIE_MAX_AGE = 31536000
 
 TOURS = {
-    "/dashboard/": [
+    "/editor/": [
         {
-            "roles": ["admin"],
+            "roles": ["editor", "associate_editor"],
             "content_id": "dashboard_ed_assed",
-            "name": "Welcome to the dashboard",
+            "name": "Welcome to your dashboard!",
             "description": "The new dashboard gives you a way to see all your priority work, take a look at what's new.",
-        } # ,
-        # {
-        #     "roles": ["admin"],
-        #     "content_id": "dashboard_ed"
-        # }
+        },
+        {
+            "roles": ["editor"],
+            "content_id": "dashboard_ed",
+            "name": "Your group activity",
+            "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
+        }
     ]
 }

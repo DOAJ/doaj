@@ -1,34 +1,45 @@
 steps:
   - selector: header h1
     title: Welcome to your dashboard!
-    content: You will now come to <strong>this page</strong> after you log in.  This is where you can see all the applications you have to process, and the activity of your groups.
+    content: You will now come to this page after you log in.  This is where you can see all the applications you have to process, and the activity of your groups.
 
   - selector: nav.vertical-nav
-    title: Navigation,
-    content: The old Admin navigation has moved from the top to the left-hand side
+    title: Navigation
+    content: The old Admin navigation has moved from the top to the left-hand side.
 
-  - selector: "#primary-nav ul li:first-of-type"
+  - selector: nav dl
+    title: Your groups
+    content: The groups that you are a member of are shown at the top right of your dashboard.
+
+  - selector: "#notifications_nav"
     title: Notifications
-    content: there is a new notifications button in the top nav
+    content: There is a new notifications button in the top nav.
 
-  - selector: "main section:first-of-type"
-    title: Cards
-    content: Each application is a card on your dashboard, and the cards are arranged in priority order, from left to right. Clicking a card will open up the application in a new tab
+  - selector: "header h1"
+    title: Your priority list
+    content: Each application is a card on your dashboard, and the cards are arranged in priority order, from left to 
+      right. Clicking a card will open up the application in a new tab.
 
-  - selector: "main section:first-of-type"
+  - selector: "header h1"
     title: Card components
-    content: 'each card has six components: 
-      <ul>
-        <li>date of submission</li>
-        <li>status</li>
-        <li>what action needs to be taken</li>
-        <li>Information about the group and who the application is assigned to</li>
-      </ul>'
+    content: 'Each card has six components: 
+      <ol>
+        <li>The date of submission</li>
+        <li>The status of the application</li>
+        <li>What action needs to be taken</li>
+        <li>The title of the application</li>
+        <li>The review group</li>
+        <li>Who the application is assigned to</li>
+      </ol>'
 
-  - selector: "main a svc.feather-log-out"
+  - selector: "#logout"
     title: Log out
     content: "Logout has moved to the bottom of the dashboard"
 
-  - selector: "#primary-nav svg.feather-home"
+  - selector: "#doaj_home"
     title: "DOAJ Home"
-    content: "to get back to the main DOAJ website, click 'DOAJ HOME' in the top right corner"
+    content: "To get back to the main DOAJ website, click 'DOAJ HOME' in the top right corner"
+
+  - selector: "#feature_tour_nav"
+    title: Want to see the tour again?
+    content: You can re-take this tour again at any point by selecting it from the Feature Tours menu

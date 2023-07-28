@@ -13,6 +13,7 @@ class TourService(object):
                         for r in tour.get("roles"):
                             if user.has_role(r):
                                 active_tours.append(tour)
+                                break
                     else:
                         active_tours.append(tour)
         return active_tours
