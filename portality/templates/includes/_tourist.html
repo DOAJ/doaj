@@ -1,0 +1,13 @@
+{% set tourservice = services.tourService() %}
+{% set tours = tourservice.activeTours(request.path, current_user) %}
+{% if tours|length > 0 %}
+    <script type="text/javascript" src="/static/vendor/tourguide-1.1.2/tourguide.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    <script type="text/javascript" src="/static/js/tourist.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+    <script type="text/javascript">
+    jQuery(document).ready(function() {
+        doaj.tourist.init({ tours: {{ tours|tojson|safe }}, cookie_prefix: "{{ app.config.get("TOUR_COOKIE_PREFIX") }}" });
+    });
+    </script>
+
+{% endif %}

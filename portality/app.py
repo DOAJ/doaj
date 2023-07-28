@@ -46,6 +46,7 @@ if 'api3' in app.config['FEATURES']:
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 from portality.view.dashboard import blueprint as dashboard
+from portality.view.tours import blueprint as tours
 
 if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False):
     from portality.view.testdrive import blueprint as testdrive
@@ -73,6 +74,8 @@ app.register_blueprint(status, name='_status', url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
 app.register_blueprint(jct, url_prefix="/jct") # ~~-> JCT:Blueprint~~
 app.register_blueprint(dashboard, url_prefix="/dashboard") #~~-> Dashboard:Blueprint~~
+app.register_blueprint(tours, url_prefix="/tours")  # ~~-> Tours:Blueprint~~
+
 app.register_blueprint(oaipmh) # ~~-> OAIPMH:Blueprint~~
 app.register_blueprint(openurl) # ~~-> OpenURL:Blueprint~~
 app.register_blueprint(atom) # ~~-> Atom:Blueprint~~

@@ -24,6 +24,7 @@
           {% include "includes/svg/doaj-icon.svg" %}
         </a>
         <ul class="unstyled-list flex-center">
+            {% include "includes/_tourist_nav.html" %}
             {# ~~->Notifications:Feature~~ #}
           <li class="dropdown flex-center">
             <a href="/dashboard/notifications" class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
@@ -186,6 +187,8 @@
             });
         </script>
     {% endif %}
+
+    {% include "includes/_tourist.html" %}
 
     </body>
 {% endblock %}

@@ -1385,3 +1385,24 @@ PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
 # Pages under maintenance
 
 PRESERVATION_PAGE_UNDER_MAINTENANCE = False
+
+##################################################
+# Feature tours currently active
+
+TOUR_COOKIE_PREFIX = "doaj_tour_"
+TOUR_COOKIE_MAX_AGE = 31536000
+
+TOURS = {
+    "/dashboard/": [
+        {
+            "roles": ["admin"],
+            "content_id": "dashboard_ed_assed",
+            "name": "Welcome to the dashboard",
+            "description": "The new dashboard gives you a way to see all your priority work, take a look at what's new.",
+        } # ,
+        # {
+        #     "roles": ["admin"],
+        #     "content_id": "dashboard_ed"
+        # }
+    ]
+}
