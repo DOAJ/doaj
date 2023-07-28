@@ -1,7 +1,7 @@
 steps:
   - selector: header h1
     title: Welcome to your dashboard!
-    content: You will now come to this page after you log in.  This is where you can see all the applications you have to process, and the activity of your groups.
+    content: You will now come to <strong>this page</strong> after you log in.  This is where you can see all the applications you have to process, and the activity of your groups.
 
   - selector: nav.vertical-nav
     title: Navigation,
@@ -17,7 +17,13 @@ steps:
 
   - selector: "main section:first-of-type"
     title: Card components
-    content: "each card has six components: date of submission, status, what action needs to be taken, Information about the group and who the application is assigned to"
+    content: 'each card has six components: 
+      <ul>
+        <li>date of submission</li>
+        <li>status</li>
+        <li>what action needs to be taken</li>
+        <li>Information about the group and who the application is assigned to</li>
+      </ul>'
 
   - selector: "main a svc.feather-log-out"
     title: Log out

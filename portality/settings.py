@@ -1376,7 +1376,9 @@ TOURS = {
     "/dashboard/": [
         {
             "roles": ["admin"],
-            "content_id": "dashboard_ed_assed"
+            "content_id": "dashboard_ed_assed",
+            "name": "Welcome to the dashboard",
+            "description": "The new dashboard gives you a way to see all your priority work, take a look at what's new.",
         } # ,
         # {
         #     "roles": ["admin"],

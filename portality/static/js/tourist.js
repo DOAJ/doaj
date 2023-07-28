@@ -18,6 +18,8 @@ doaj.tourist.init = function(params) {
         }
     }
 
+    $(".trigger_tour").on("click", doaj.tourist.triggerTour);
+
     if (first) {
         doaj.tourist.start(first);
     }
@@ -27,7 +29,8 @@ doaj.tourist.start = function (tour) {
     doaj.tourist.contentId = tour.content_id;
     doaj.tourist.currentTour = new Tourguide({
         src: `/tours/${tour.content_id}`,
-        onStart: doaj.tourist.startCallback
+        onStart: doaj.tourist.startCallback,
+        keyboardControls: true
     });
     doaj.tourist.currentTour.start()
 }
@@ -42,4 +45,10 @@ doaj.tourist.seen = function(params) {
         url: `/tours/${doaj.tourist.contentId}/seen`,
         success: function() {}
     })
+}
+
+doaj.tourist.triggerTour = function(event) {
+    event.preventDefault();
+    let tour_id = $(event.currentTarget).attr("data-tour-id");
+    doaj.tourist.start({content_id: tour_id});
 }
