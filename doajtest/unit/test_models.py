@@ -932,9 +932,7 @@ class TestModels(DoajTestCase):
         bjp2 = past2.bibjson()
         bjp2.is_replaced_by = ["1111-1111"]
         bjp2.add_identifier(bj.E_ISSN, "4444-4444")
-        past2.save()
-
-        time.sleep(2)
+        past2.save(blocking=True)
 
         past = journal.get_past_continuations()
         future = journal.get_future_continuations()
@@ -1039,9 +1037,7 @@ class TestModels(DoajTestCase):
         bj.add_identifier(bj.E_ISSN, "0000-0000")
         bj.add_identifier(bj.P_ISSN, "1111-1111")
         bj.title = "First Journal"
-        journal.save()
-
-        time.sleep(2)
+        journal.save(blocking=True)
 
         cont = journal.make_continuation("is_replaced_by", eissn="2222-2222", pissn="3333-3333", title="Second Journal")
 
@@ -1067,9 +1063,7 @@ class TestModels(DoajTestCase):
         bj.add_identifier(bj.E_ISSN, "0000-0000")
         bj.add_identifier(bj.P_ISSN, "1111-1111")
         bj.title = "First Journal"
-        journal.save()
-
-        time.sleep(2)
+        journal.save(blocking=True)
 
         with self.assertRaises(models.ContinuationException):
             cont = journal.make_continuation("sideways", eissn="2222-2222", pissn="3333-3333", title="Second Journal")
@@ -1085,9 +1079,7 @@ class TestModels(DoajTestCase):
         bj.add_identifier(bj.E_ISSN, "0000-0000")
         bj.add_identifier(bj.P_ISSN, "1111-1111")
         bj.title = "First Journal"
-        journal.save()
-
-        time.sleep(2)
+        journal.save(blocking=True)
 
         # first do it with an eissn
         cont = journal.make_continuation("replaces", eissn="2222-2222", title="Second Journal")
@@ -1232,7 +1224,7 @@ class TestModels(DoajTestCase):
 
         models.Provenance.make(acc, "act1", obj1)
 
-        time.sleep(2)
+        time.sleep(1)
 
         prov = models.Provenance.get_latest_by_resource_id("obj1")
         assert prov.type == "suggestion"
@@ -1254,14 +1246,14 @@ class TestModels(DoajTestCase):
         eg2.set_editor(acc.id)
         eg2.save()
 
-        time.sleep(2)
+        time.sleep(1)
 
         obj2 = models.Suggestion()
         obj2.set_id("obj2")
 
         models.Provenance.make(acc, "act2", obj2, "sub")
 
-        time.sleep(2)
+        time.sleep(1)
 
         prov = models.Provenance.get_latest_by_resource_id("obj2")
         assert prov.type == "suggestion"
@@ -1422,7 +1414,7 @@ class TestModels(DoajTestCase):
         models.Cache.cache_sitemap("sitemap.xml")
 
         models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article", 100, "jc", "jf", "http://example.com/journal", 200)
-        
+
         time.sleep(1)
 
         stats = models.Cache.get_site_statistics()
@@ -1622,4 +1614,50 @@ class TestModels(DoajTestCase):
         assert n2.is_seen()
         assert n2.seen_date is not None
 
+    def test_37_currency_code_lax(self):
+        """ Check we can open a journal / application model with an invalid currency but can't save it """
+        asource = ApplicationFixtureFactory.make_application_source()
+
+        # VEF is a deprecated currency - we should be able to read it out
+        asource['bibjson']['apc']['max'][0]['currency'] = 'VEF'
+        a = models.Application(**asource)
+        assert a.bibjson().apc[0] == {'currency': 'VEF', 'price': 2}
+
+        # We could actually put complete nonsense in here if we wanted
+        asource['bibjson']['apc']['max'][0]['currency'] = 'bananas'
+        a2 = models.Application(**asource)
+        assert a2.bibjson().apc.pop() == {'currency': 'bananas', 'price': 2}
+
+    def test_38_language_lax(self):
+        """ Check we can open a journal / application model with an invalid currency but can't save it """
+        asource = ApplicationFixtureFactory.make_application_source()
+
+        # FARSI exists in the index as legacy data, but we usually accept it as Persian. It's supposed to be a code.
+        asource['bibjson']['language'] = ['FARSI']
+        a = models.Application(**asource)
+        assert a.bibjson().language_name() == ['FARSI']
+
+        # We could actually put complete nonsense in here if we wanted
+        asource['bibjson']['language'][0] = 'interpretive dance'
+        a2 = models.Application(**asource)
+        assert a2.bibjson().language.pop() == 'interpretive dance'
+
+
+class TestAccount(DoajTestCase):
+    def test_get_name_safe(self):
+
+        # have name
+        acc = models.Account.make_account(email='user@example.com')
+        acc_name = 'Account Name'
+        acc.set_name(acc_name)
+        acc.save(blocking=True)
+        assert models.Account.get_name_safe(acc.id) == acc_name
+
+        # no name
+        acc = models.Account.make_account(email='user2@example.com')
+        acc.save(blocking=True)
+        assert models.Account.get_name_safe(acc.id) == ''
+
+        # account does not exist
+        assert models.Account.get_name_safe('not existing account id') == ''
 

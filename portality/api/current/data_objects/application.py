@@ -36,13 +36,13 @@ OUTGOING_APPLICATION_STRUCT = {
 }
 
 INTERNAL_APPLICATION_STRUCT = {
-"fields": {
-    "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
-    "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
-    "last_updated": {"coerce": "utcdatetime"}, # to the real object
-    "last_manual_update": {"coerce": "utcdatetime"},
-    "es_type": {"coerce": "unicode"}
-},
+    "fields": {
+        "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
+        "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
+        "last_updated": {"coerce": "utcdatetime"}, # to the real object
+        "last_manual_update": {"coerce": "utcdatetime"},
+        "es_type": {"coerce": "unicode"}
+    },
     "objects": ["admin", "bibjson"],
     "structs": {
         "admin" : {
@@ -66,6 +66,10 @@ INCOMING_APPLICATION_REQUIREMENTS = {
 
     "structs": {
         "bibjson": {
+            "lists": {
+                # override for lax language enforcement in the core, making it strict for incoming applications
+                "language": {"contains": "field", "coerce": "isolang_2letter_strict"}
+            },
             "required": [
                 "copyright",
                 "deposit_policy",
@@ -81,7 +85,6 @@ INCOMING_APPLICATION_REQUIREMENTS = {
                 "preservation",
                 "publication_time_weeks",
                 "publisher",
-                "ref",
                 "oa_start",
                 "other_charges",
                 "waiver",
@@ -102,6 +105,20 @@ INCOMING_APPLICATION_REQUIREMENTS = {
                 },
                 "ref": {
                     "required" : ["journal"]
+                },
+                # override for lax currency code enforcement in the core, making it strict for incoming applications
+                "apc" : {
+                    "lists" : {
+                        "max" : {"contains" : "object"}
+                    },
+                    "structs" : {
+                        "max" : {
+                            "fields" : {
+                                "currency" : {"coerce" : "currency_code_strict"},
+                                "price" : {"coerce" : "integer"}
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -114,15 +131,16 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     ~~APIIncomingApplication:Model->Seamless:Library~~
     """
     __type__ = "application"
-    __SEAMLESS_COERCE__ = COERCE_MAP
+    __SEAMLESS_COERCE__ = dict(COERCE_MAP)
     __SEAMLESS_STRUCT__ = [
+        # FIXME: Struct merge isn't an OVERRIDE, so we apply the strict checks first since they'll persist
+        # FIXME: can we live without specifying required fields, since the form validation will handle this?
+        INCOMING_APPLICATION_REQUIREMENTS,
         OUTGOING_APPLICATION_STRUCT,
         # FIXME: should this be here? It looks like it allows users to send administrative data to the system
         # I have removed it as it was exposing incorrect data in the auto-generated documentation
         # INTERNAL_APPLICATION_STRUCT,
-        _SHARED_STRUCT,
-        # FIXME: can we live without specifying required fields, since the form validation will handle this?
-        INCOMING_APPLICATION_REQUIREMENTS
+        _SHARED_STRUCT
     ]
 
     def __init__(self, raw=None, **kwargs):
@@ -299,10 +317,10 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
     def remove_editor(self):
         self.__seamless__.delete('admin.editor')
 
-    def add_note(self, note, date=None, id=None):
+    def add_note(self, note, date=None, id=None, author_id=None,):
         if date is None:
             date = dates.now_str()
-        obj = {"date": date, "note": note, "id": id}
+        obj = {"date": date, "note": note, "id": id, "author_id": author_id}
         self.__seamless__.delete_from_list("admin.notes", matchsub=obj)
         if id is None:
             obj["id"] = uuid.uuid4()
@@ -354,7 +372,7 @@ class OutgoingApplication(OutgoingCommonJournalApplication):
     ~~APIOutgoingApplication:Model->APIOutgoingCommonJournalApplication:Model~~
     ~~->Seamless:Library~~
     """
-    __SEAMLESS_COERCE__ = COERCE_MAP
+    __SEAMLESS_COERCE__ = dict(COERCE_MAP)
     __SEAMLESS_STRUCT__ = [
         OUTGOING_APPLICATION_STRUCT,
         _SHARED_STRUCT

@@ -1,35 +1,32 @@
-from doajtest.helpers import DoajTestCase
-from doajtest.mocks.bll_article import BLLArticleMockFactory
-from portality.constants import BgjobOutcomeStatus
-
-from portality.tasks import ingestarticles
-from doajtest.fixtures.article_crossref import Crossref531ArticleFixtureFactory
-from doajtest.fixtures.accounts import AccountFixtureFactory
-from doajtest.fixtures.article import ArticleFixtureFactory
-from doajtest.mocks.file import FileMockFactory
-from doajtest.mocks.response import ResponseMockFactory
-from doajtest.mocks.ftp import FTPMockFactory
-from doajtest.mocks.xwalk import XwalkMockFactory
-
-from portality.bll.exceptions import IngestException
-
+import ftplib
+import os
+import requests
 import time
-from portality.crosswalks import article_crossref_xml
-from portality.bll.services import article as articleSvc
-
-from portality import models
-from portality.core import app
-
-from portality.background import BackgroundException, BackgroundTask
-
-import ftplib, os, requests
 from urllib.parse import urlparse
+
 from lxml import etree
 
+from doajtest import test_constants
+from doajtest.fixtures.accounts import AccountFixtureFactory
+from doajtest.fixtures.article import ArticleFixtureFactory
+from doajtest.fixtures.article_crossref import Crossref531ArticleFixtureFactory
+from doajtest.helpers import DoajTestCase
+from doajtest.mocks.bll_article import BLLArticleMockFactory
+from doajtest.mocks.file import FileMockFactory
+from doajtest.mocks.ftp import FTPMockFactory
+from doajtest.mocks.response import ResponseMockFactory
+from doajtest.mocks.xwalk import XwalkMockFactory
+from portality import models
+from portality.background import BackgroundException, BackgroundTask
+from portality.bll.exceptions import IngestException
+from portality.bll.services import article as articleSvc
+from portality.constants import BgjobOutcomeStatus
+from portality.core import app
+from portality.crosswalks import article_crossref_xml
+from portality.tasks import ingestarticles
 from portality.ui.messages import Messages
 
-RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "crossref531_article_uploads.xml")
+ARTICLES = test_constants.PATH_RESOURCES / "crossref531_article_uploads.xml"
 
 
 def assert_outcome_fail_by_task(task: BackgroundTask):
@@ -767,13 +764,13 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -813,13 +810,13 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -858,7 +855,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         # scheduling does not result in immidiate execution for huey version > 2
         # always eager mode is replaced by immediate mode
@@ -899,13 +896,13 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1
