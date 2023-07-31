@@ -17,7 +17,7 @@ BIG_END_DATE = r'^\d{4}-\d{2}-\d{2}$'
 BIG_END_DATE_COMPILED = re.compile(BIG_END_DATE)
 
 #~~URL:Regex~~
-HTTP_URL = r'^https?://([^/:]+\.[a-z]{2,63}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$'
+HTTP_URL = r'^https?://([^/:]+\.[a-z]{2,63}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?(#.*)?$'
 HTTP_URL_COMPILED = re.compile(HTTP_URL, re.IGNORECASE)
 
 
