@@ -5,7 +5,7 @@ from portality import models
 from portality.util import url_for
 
 
-def test_toc_uses_both_issns_when_available(app_test, url_name):
+def _test_toc_uses_both_issns_when_available(app_test, url_name):
     j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
     pissn = j.bibjson().first_pissn
     eissn = j.bibjson().first_eissn
@@ -20,7 +20,7 @@ def test_toc_uses_both_issns_when_available(app_test, url_name):
         assert eissn in response.data.decode()
 
 
-def toc_correctly_uses_pissn(app_test, url_name):
+def _test_toc_correctly_uses_pissn(app_test, url_name):
     j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
     pissn = j.bibjson().first_pissn
     # remove eissn
@@ -35,7 +35,7 @@ def toc_correctly_uses_pissn(app_test, url_name):
         assert pissn in response.data.decode()
 
 
-def toc_correctly_uses_eissn(app_test, url_name):
+def _test_toc_correctly_uses_eissn(app_test, url_name):
     j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
     eissn = j.bibjson().first_eissn
     # remove pissn
@@ -131,21 +131,21 @@ class TestTOC(DoajTestCase):
         assert a.data['index']['date_toc_fv_month'] == a.data['index']['date'] == "1991-01-01T00:00:00Z"
 
     def test_03_toc_uses_both_issns_when_available(self):
-        test_toc_uses_both_issns_when_available(self.app_test, 'doaj.toc')
+        _test_toc_uses_both_issns_when_available(self.app_test, 'doaj.toc')
 
     def test_04_toc_correctly_uses_pissn(self):
-        toc_correctly_uses_pissn(self.app_test, 'doaj.toc')
+        _test_toc_correctly_uses_pissn(self.app_test, 'doaj.toc')
 
     def test_05_toc_correctly_uses_eissn(self):
-        toc_correctly_uses_eissn(self.app_test, 'doaj.toc')
+        _test_toc_correctly_uses_eissn(self.app_test, 'doaj.toc')
 
 
 class TestTOCArticles(DoajTestCase):
     def test_03_toc_uses_both_issns_when_available(self):
-        test_toc_uses_both_issns_when_available(self.app_test, 'doaj.toc_articles')
+        _test_toc_uses_both_issns_when_available(self.app_test, 'doaj.toc_articles')
 
     def test_04_toc_correctly_uses_pissn(self):
-        toc_correctly_uses_pissn(self.app_test, 'doaj.toc_articles')
+        _test_toc_correctly_uses_pissn(self.app_test, 'doaj.toc_articles')
 
     def test_05_toc_correctly_uses_eissn(self):
-        toc_correctly_uses_eissn(self.app_test, 'doaj.toc_articles')
+        _test_toc_correctly_uses_eissn(self.app_test, 'doaj.toc_articles')
