@@ -17,7 +17,9 @@ async def handle_event(stream):
     with doajapp.test_request_context("/"):
         svc = DOAJ.eventsService()
         async for event in stream:
-            svc.consume(Event(raw=json.loads(event)))
+            pass
+            # TODO uncomment the following line once the Event model is fixed to Kafka
+            # svc.consume(Event(raw=json.loads(event)))
 
 
 if __name__ == '__main__':
