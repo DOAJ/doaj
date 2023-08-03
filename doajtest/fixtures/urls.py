@@ -9,5 +9,8 @@ VALID_URL_LISTS = [
 INVALID_URL_LISTS = [
     "ht:www",
     "nonexistent.com",
-    "https://www.doaj.org and https://www.reddit.com"
+    "https://www.doaj.org and https://www.reddit.com",
+    "http://www.doaj.org and www.doaj.org",
+"http://www.doaj.org, www.doaj.org",
+"http://www.doaj.org, https://www.doaj.org"
 ]
