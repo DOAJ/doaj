@@ -18,7 +18,7 @@ BIG_END_DATE_COMPILED = re.compile(BIG_END_DATE)
 
 #~~URL:Regex~~
 HTTP_URL = (
-    r'^(?:https?|ftp)://'     # Scheme: http(s) or ftp
+    r'^(?:https?)://'     # Scheme: http(s) or ftp
     r'(?:[\w-]+\.)*[\w-]+'    # Domain name (optional subdomains)
     r'(?:\.[a-z]{2,})'        # Top-level domain (e.g., .com, .org)
     r'(?:\/[^\/\s]*)*'        # Path (optional)
