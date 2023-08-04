@@ -120,6 +120,7 @@ class DoajTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        import portality.app  # noqa, needed to registing routes
         cls.originals = patch_config(app, {
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),

@@ -1,9 +1,9 @@
 """ Gather and test DOAJ regexes here """
 
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import dois, issns
+from doajtest.fixtures import dois, issns, urls
 
-from portality.regex import DOI_COMPILED, ISSN_COMPILED
+from portality.regex import DOI_COMPILED, ISSN_COMPILED, HTTP_URL_COMPILED
 
 import re
 
@@ -41,3 +41,13 @@ class TestRegexes(DoajTestCase):
 
         for x in issns.INVLAID_ISSN_LIST:
             assert not issn_regex.match(x), x
+
+    def test_03_URL_regex(self):
+        """ Check that the URL regex performs correctly. """
+        url_regex = HTTP_URL_COMPILED
+
+        for i in urls.VALID_URL_LISTS:
+            assert url_regex.match(i), i
+
+        for x in urls.INVALID_URL_LISTS:
+            assert not url_regex.match(x), x

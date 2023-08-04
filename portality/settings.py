@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.3.5"
+DOAJ_VERSION = "6.3.10"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -25,6 +25,11 @@ CMS_BUILD_ASSETS_ON_STARTUP = False
 SESSION_COOKIE_SAMESITE='Strict'
 SESSION_COOKIE_SECURE=True
 REMEMBER_COOKIE_SECURE = True
+
+####################################
+# Testdrive for setting up the test environment.
+# CAUTION - this can modify the index so should NEVER be used in production!
+TESTDRIVE_ENABLED = False
 
 ####################################
 # Debug Mode
@@ -526,7 +531,17 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "isolang_2letter": {
+    "isolang_2letter_strict": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+#                "index": False,
+                "store": True
+            }
+        }
+    },
+    "isolang_2letter_lax": {
         "type": "text",
         "fields": {
             "exact": {
@@ -546,7 +561,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "currency_code": {
+    "currency_code_strict": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1155,6 +1170,11 @@ GA_ACTION_JOURNALCSV = 'Download'
 # GA for OpenURL
 # ~~->OpenURL:Feature~~
 GA_CATEGORY_OPENURL = 'OpenURL'
+
+# GA for PublicDataDump
+# ~~->PublicDataDump:Feature~~
+GA_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
+GA_ACTION_PUBLICDATADUMP = 'Download'
 
 # GA for API
 # ~~-> API:Feature~~

@@ -47,7 +47,7 @@ class TestBLLNotificationSeen(DoajTestCase):
         ns = svc.notification_seen(acc, n.id)
         assert ns
 
-        time.sleep(2)
+        time.sleep(1)
         n2 = models.Notification.pull(n.id)
         assert n2.is_seen()
 
@@ -68,6 +68,6 @@ class TestBLLNotificationSeen(DoajTestCase):
         ns = svc.notification_seen(acc, n.id)
         assert not ns
 
-        time.sleep(2)
+        time.sleep(1)
         n2 = models.Notification.pull(n.id)
         assert not n2.is_seen()
