@@ -2348,9 +2348,8 @@ $.extend(true, doaj, {
 
                 var value = false;
                 if (ft === "terms" || ft === "term") {
-                    // value = el.attr("data-value");
-                    values = sf.mustFilters[field].values;
-                    idx = el.attr("data-value-idx")
+                    let values = sf.mustFilters[field].values;
+                    let idx = el.attr("data-value-idx")
                     value = values[idx].val
                 } else if (ft === "range") {
                     value = {};
