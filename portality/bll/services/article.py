@@ -170,7 +170,7 @@ class ArticleService(object):
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True,
                        limit_to_account=True, add_journal_info=False, dry_run=False, update_article_id=None):
 
-        """# no need to check eissn, if pissn matches, pissn and eissn are different and only 1 journal has been found - then eissn matches too
+        """
         Create an individual article in the database
 
         This method will check and merge any duplicates, and report back on successes and failures in a manner consistent with
@@ -249,7 +249,8 @@ class ArticleService(object):
     def is_acceptable(self, article: models.Article):
         """
         conduct some deep validation on the article to make sure we will accept it
-        or the moment, this just means making sure it has a DOI and a fulltext
+        this just means making sure it has a DOI and a fulltext, and that its ISSNs
+        match a single journal
         """
         try:
             bj = article.bibjson()
@@ -266,7 +267,6 @@ class ArticleService(object):
         journal = self.match_journal_with_validation(bj)
 
         # is journal in doaj (we do this check last as it has more performance impact)
-        # journal = article.get_journal()
         if journal is None or not journal.is_in_doaj():
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL)
 
@@ -296,6 +296,7 @@ class ArticleService(object):
                 raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
 
         return journal[0]
+
     @staticmethod
     def is_legitimate_owner(article, owner):
         """
