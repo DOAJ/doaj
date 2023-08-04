@@ -65,12 +65,13 @@ def editor_account_pull(self, _id):
 ACTUAL_ACCOUNT_PULL = models.Account.pull
 
 # A regex string for searching the log entries
-email_log_regex = 'template.*%s.*to:\[u{0,1}\'%s.*subject:.*%s'
+email_log_regex = r'template.*%s.*to:\[u{0,1}\'%s.*subject:.*%s'
 
 # A string present in each email log entry (for counting them)
 email_count_string = 'Email template'
 
 NOTIFICATIONS_INTERCEPT = []
+
 
 class TestPublicApplicationEmails(DoajTestCase):
     def setUp(self):
