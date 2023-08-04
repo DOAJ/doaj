@@ -444,7 +444,8 @@ class FieldDefinitions:
         "label": "Publisher’s name",
         "input": "text",
         "validate": [
-            {"required": {"message": "Enter the name of the journal’s publisher"}}
+            {"required": {"message": "Enter the name of the journal’s publisher"}},
+                        {"different_to": {"field": "institution_name", "message": "This field must be different than 'Society or institution’s name'"}}  # ~~^-> DifferetTo:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -505,6 +506,10 @@ class FieldDefinitions:
                           "a society or other type of institution, enter that here."],
             "placeholder": "Type or select the society or institution’s name"
         },
+        "validate": [
+            {"different_to": {"field": "publisher_name",
+                              "message": "This field must be different than 'Publisher’s name'"}} # ~~^-> DifferetTo:FormValidator~~
+            ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}},
@@ -2743,6 +2748,7 @@ class DifferentToBuilder:
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-different-to"] = settings.get("field")
+        html_attrs["data-parsley-different-to-message"] = "<p><small>" + settings.get("message") + "</small></p>"
 
     @staticmethod
     def wtforms(field, settings):
