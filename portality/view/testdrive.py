@@ -23,9 +23,6 @@ def testdrive(test_id):
     params["teardown"] = teardown
 
     return render_template("testdrive/testdrive.html", params=params, name=test_id)
-    # resp = make_response(json.dumps(params))
-    # resp.mimetype = "application/json"
-    # return resp
 
 
 @blueprint.route("/<test_id>/teardown")

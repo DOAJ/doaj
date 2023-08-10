@@ -44,6 +44,7 @@ from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
 from portality.models import EditorGroup
 from portality.regex import ISSN, ISSN_COMPILED
+from portality.ui.messages import Messages
 
 # Stop words used in the keywords field
 STOP_WORDS = [
@@ -2423,9 +2424,9 @@ def application_statuses(field, formulaic_context):
     # ~~-> ApplicationStatuses:Config~~
     _application_status_base = [  # This is all the Associate Editor sees
         ('', ' '),
-        (constants.APPLICATION_STATUS_PENDING, 'Pending'),
-        (constants.APPLICATION_STATUS_IN_PROGRESS, 'In Progress'),
-        (constants.APPLICATION_STATUS_COMPLETED, 'Completed')
+        (constants.APPLICATION_STATUS_PENDING, Messages.FORMS__APPLICATION_STATUS__PENDING),
+        (constants.APPLICATION_STATUS_IN_PROGRESS, Messages.FORMS__APPLICATION_STATUS__IN_PROGRESS),
+        (constants.APPLICATION_STATUS_COMPLETED, Messages.FORMS__APPLICATION_STATUS__COMPLETED)
     ]
 
     # Note that an admin is given the Post Submission Automation status, as technically they
@@ -2433,17 +2434,17 @@ def application_statuses(field, formulaic_context):
     # It would be nice to be able to somehow disable it being changed, perhaps we can do that
     # via a widget
     _application_status_admin = _application_status_base + [
-        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW, 'Post Submission Automation'),
-        (constants.APPLICATION_STATUS_UPDATE_REQUEST, 'Update Request'),
-        (constants.APPLICATION_STATUS_REVISIONS_REQUIRED, 'Revisions Required'),
-        (constants.APPLICATION_STATUS_ON_HOLD, 'On Hold'),
-        (constants.APPLICATION_STATUS_READY, 'Ready'),
-        (constants.APPLICATION_STATUS_REJECTED, 'Rejected'),
-        (constants.APPLICATION_STATUS_ACCEPTED, 'Accepted')
+        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW, Messages.FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW),
+        (constants.APPLICATION_STATUS_UPDATE_REQUEST, Messages.FORMS__APPLICATION_STATUS__UPDATE_REQUEST),
+        (constants.APPLICATION_STATUS_REVISIONS_REQUIRED, Messages.FORMS__APPLICATION_STATUS__REVISIONS_REQUIRED),
+        (constants.APPLICATION_STATUS_ON_HOLD, Messages.FORMS__APPLICATION_STATUS__ON_HOLD),
+        (constants.APPLICATION_STATUS_READY, Messages.FORMS__APPLICATION_STATUS__READY),
+        (constants.APPLICATION_STATUS_REJECTED, Messages.FORMS__APPLICATION_STATUS__REJECTED),
+        (constants.APPLICATION_STATUS_ACCEPTED, Messages.FORMS__APPLICATION_STATUS__ACCEPTED)
     ]
 
     _application_status_editor = _application_status_base + [
-        (constants.APPLICATION_STATUS_READY, 'Ready'),
+        (constants.APPLICATION_STATUS_READY, Messages.FORMS__APPLICATION_STATUS__READY),
     ]
 
     formulaic_context_name = None
@@ -2456,7 +2457,7 @@ def application_statuses(field, formulaic_context):
     elif formulaic_context_name == "editor":
         status_list = _application_status_editor
     elif formulaic_context_name == "accepted":
-        status_list = [(constants.APPLICATION_STATUS_ACCEPTED, 'Accepted')]  # just the one status - Accepted
+        status_list = [(constants.APPLICATION_STATUS_ACCEPTED, Messages.FORMS__APPLICATION_STATUS__ACCEPTED)]  # just the one status - Accepted
     else:
         status_list = _application_status_base
 

@@ -6,7 +6,7 @@ from portality.autocheck.checkers.issn_active import ISSNActive
 from portality.autocheck.checkers.keepers_registry import KeepersRegistry
 
 AUTOCHECK_PLUGINS = [
-    # (journal, application, plugin)
+    # (Active on Journal?, Active on Application?, Plugin Class)
     (True, True, ISSNActive),
     (True, True, KeepersRegistry)
 ]

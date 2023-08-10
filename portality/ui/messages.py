@@ -110,6 +110,18 @@ class Messages(object):
 
     NOTIFY__DEFAULT_SHORT_NOTIFICATION = "You have a new notification"
 
+    FORMS__APPLICATION_STATUS__PENDING = "Pending"
+    FORMS__APPLICATION_STATUS__IN_PROGRESS = 'In Progress'
+    FORMS__APPLICATION_STATUS__COMPLETED = 'Completed'
+    FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW = 'Post Submission Automation'
+    FORMS__APPLICATION_STATUS__UPDATE_REQUEST = 'Update Request'
+    FORMS__APPLICATION_STATUS__REVISIONS_REQUIRED = 'Revisions Required'
+    FORMS__APPLICATION_STATUS__ON_HOLD = 'On Hold'
+    FORMS__APPLICATION_STATUS__READY = 'Ready'
+    FORMS__APPLICATION_STATUS__REJECTED = 'Rejected'
+    FORMS__APPLICATION_STATUS__ACCEPTED = 'Accepted'
+
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):

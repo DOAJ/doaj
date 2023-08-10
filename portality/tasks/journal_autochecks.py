@@ -1,12 +1,15 @@
 from portality import models
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
-from portality.autocheck.resource_bundle import ResourceBundle
-from portality.crosswalks.application_form import JournalFormXWalk
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import long_running
 from portality.bll import DOAJ
 
-from portality.autocheck.checkers.issn_active import ISSNActive
+#######################################
+# NOTE: this background task is currently not in use, it is prepped for being used with
+# autocheck-on-demand from the administrators via the user interface, which is not yet implemented
+#
+# When we implement that functionality we will also need to implement tests for this
+#######################################
 
 class JournalAutochecks(BackgroundTask):
 
