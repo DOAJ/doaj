@@ -58,7 +58,7 @@ doaj.notifications.notificationsReceived = function(data) {
     }
 
     $(".notification_action_link").on("click", doaj.notifications.notificationClicked);
-    $("#dropdown__trigger--notifications").hoverIntent(doaj.notifications.showDropdown, doaj.notifications.hideDropdown);
+    $(".dropdown--notifications").hoverIntent(doaj.notifications.showDropdown, doaj.notifications.hideDropdown);
 }
 
 doaj.notifications.showDropdown = function(e) {
