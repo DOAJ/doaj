@@ -1,13 +1,12 @@
 steps:
   - selector: '#group-tab'
     title: Your group activity
-    content: An interactive progress bar for your group(s) allows you, at a glance, to see which Associates need 
-      more applications and how fast each group is working.
+    content: This panel allows you to see how many applications your group has and their status, and which Associates need more applications.
 
   - selector: '#group-tab ul.progress-bar'
     title: Progress bar
-    content: Clicking each status will take you to those applications
+    content: Click any coloured block to open the list of applications.
 
   - selector: "#feature_tour_nav"
     title: Want to see the tour again?
-    content: You can re-take this tour again at any point by selecting it from the Feature Tours menu
+    content: Take the tour again by selecting it from the Feature Tours menu.
