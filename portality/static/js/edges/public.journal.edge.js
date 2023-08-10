@@ -169,7 +169,7 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.country.exact",
                     display: "Publishers' countries",
-                    size: 100,
+                    size: 200,
                     syncCounts: false,
                     lifecycle: "update",
                     updateType: "fresh",

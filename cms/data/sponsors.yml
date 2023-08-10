@@ -39,6 +39,10 @@ silver:
 - name: MDPI
   url: https://www.mdpi.com/
   logo: mdpi.svg  
+
+- name: OA.Works
+  url: https://oa.works/
+  logo: oaworks.png
   
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
@@ -101,6 +105,10 @@ bronze:
 - name: KeAI Communications
   url: https://www.keaipublishing.com/
   logo: keai.svg
+
+- name: OASPA
+  url: https://oaspa.org/
+  logo: oaspa.png
 
 - name: OCLC
   url: https://www.oclc.org/
