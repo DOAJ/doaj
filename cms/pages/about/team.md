@@ -8,4 +8,3 @@ featuremap: ~~Team:Fragment->TeamData:Template~~
 
 ---
 
-## Past team members
