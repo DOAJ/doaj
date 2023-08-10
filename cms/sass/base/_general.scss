@@ -261,20 +261,7 @@ select {
 
 input[type="checkbox"],
 input[type="radio"] {
-  opacity: 0;
-  width: 0.8em;
-  height: 0.8em;
-  margin-left: -0.8rem;
-
-  &:focus  + label {
-    outline: dashed 2px lightgrey;
-    outline-offset: 1px;
-  }
-
-  &:focus:not(:focus-visible){
-    outline: none;
-  }
-
+  display: none;
 
   + label {
     margin: 0 0 $spacing-03 0;

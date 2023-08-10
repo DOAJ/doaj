@@ -166,25 +166,3 @@ tests:
     results:
     - You are taken to the full text of this article on the Web. It opens in a new
       tab
-- title: 'Test Public Search Results Display: Accessibility'
-  context:
-    role: anonymous
-  steps:
-  - step: Go to the DOAJ search page at /search/articles
-  - step: Turn on a screen reader
-    results:
-    - Extendable facets are focusable and focus is marked with an orange solid border
-    - The screenreader gives the header role ("button")
-    - The screenreader gives the state of the facet ("extended" or "folded")
-  - step: click spacebar to fold/unfold the facet
-    resuts:
-      - screenreader gives correct state of the facet ("extended" or "folded")
-  - step: click tab
-    results:
-      - focus is on the list of checkboxes
-    results:
-      - focus is clearly marked by the outline
-  - step: click spacebar to check the filter
-    results:
-      - filter is applied
-
