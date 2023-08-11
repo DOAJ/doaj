@@ -244,36 +244,8 @@ class AllPublisherApplications(DomainObject):
 
 MAPPING_OPTS = {
     "dynamic": None,
-    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
-    "exceptions": {
-        "admin.notes.id": {
-                "type": "text",
-                "fields": {
-                    "exact": {
-                        "type": "keyword",
-                        "store": True
-                    }
-                }
-        },
-        "admin.notes.note": {
-                "type": "text",
-                "fields": {
-                    "exact": {
-                        "type": "keyword",
-                        "store": True
-                    }
-                }
-        },
-        "admin.notes.author_id": {
-                "type": "text",
-                "fields": {
-                    "exact": {
-                        "type": "keyword",
-                        "store": True
-                    }
-                }
-        }
-    }
+    "coerces": Journal.add_mapping_extensions(app.config["DATAOBJ_TO_MAPPING_DEFAULTS"]),
+    "exceptions": app.config["ADMIN_NOTES_SEARCH_MAPPING"]
 }
 
 

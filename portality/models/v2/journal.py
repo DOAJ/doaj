@@ -564,6 +564,15 @@ class Journal(JournalLikeObject):
         # finally issue a delete request against the journals
         cls.delete_by_query(query)
 
+    @classmethod
+    def add_mapping_extensions(cls, default_mappings: dict):
+        default_mappings_copy = deepcopy(default_mappings)
+        mapping_extensions = app.config.get("DATAOBJ_TO_MAPPING_EXTENSIONS")
+        for key, value in mapping_extensions.items():
+            if key in default_mappings_copy:
+                default_mappings_copy[key] = {**default_mappings_copy[key], **value}
+        return default_mappings_copy
+
     def all_articles(self):
         from portality.models import Article
         return Article.find_by_issns(self.known_issns())
@@ -891,36 +900,8 @@ class Journal(JournalLikeObject):
 
 MAPPING_OPTS = {
     "dynamic": None,
-    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
-    "exceptions": {
-        "admin.notes.id": {
-                "type": "text",
-                "fields": {
-                    "exact": {
-                        "type": "keyword",
-                        "store": True
-                    }
-                }
-        },
-        "admin.notes.note": {
-                "type": "text",
-                "fields": {
-                    "exact": {
-                        "type": "keyword",
-                        "store": True
-                    }
-                }
-        },
-        "admin.notes.author_id": {
-                "type": "text",
-                "fields": {
-                    "exact": {
-                        "type": "keyword",
-                        "store": True
-                    }
-                }
-        }
-    }
+    "coerces": Journal.add_mapping_extensions(app.config["DATAOBJ_TO_MAPPING_DEFAULTS"]),
+    "exceptions": app.config["ADMIN_NOTES_SEARCH_MAPPING"]
 }
 
 

@@ -29,21 +29,34 @@ def public_query_validator(q):
     return True
 
 
+def non_public_fields_validator(q):
+    exclude_fields = app.config.get("EXCLUDED_FIELDS", {})
+    context = q.get_field_context()
+    if context:
+        if "default_field" in context:
+            field_value = context["default_field"]
+            if field_value in exclude_fields:
+                return False
+    return True
+
 # query filters
 ###############
 
 def remove_search_limits(query: dict):
     return remove_fields(query, ['size', 'from'])
 
+
 def only_in_doaj(q):
     q.clear_match_all()
     q.add_must_filter({"term": {"admin.in_doaj": True}})
     return q
 
+
 def search_all_meta(q):
     """Search by all_meta field, which is a concatenation of all the fields in the record"""
     q.add_default_field("all_meta")
     return q
+
 
 def owner(q):
     q.clear_match_all()

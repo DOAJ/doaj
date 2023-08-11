@@ -175,8 +175,7 @@ SHARED_JOURNAL_LIKE = {
         "created_date" : {"coerce" : "utcdatetime"},
         "last_updated" : {"coerce" : "utcdatetime"},
         "last_manual_update" : {"coerce" : "utcdatetime"},
-        "es_type": {"coerce": "unicode"},
-        "all_meta" : {"coerce" : "unicode"}
+        "es_type": {"coerce": "unicode"}
     },
     "objects" : [
         "admin",

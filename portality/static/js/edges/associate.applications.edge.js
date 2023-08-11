@@ -158,7 +158,8 @@ $.extend(true, doaj, {
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal language','field':'index.language'},
                         {'display':'Publisher','field':'bibjson.publisher.name'},
-                        {'display':'Alternative Title','field':'bibjson.alternative_title'}
+                        {'display':'Alternative Title','field':'bibjson.alternative_title'},
+                        {'display':'Notes','field':'admin.notes.note'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({

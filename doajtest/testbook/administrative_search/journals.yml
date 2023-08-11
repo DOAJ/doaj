@@ -153,3 +153,47 @@ tests:
   - step: Search for the journal from api search with same words given in the note
     results:
       - The journal record is not displayed in the search results
+
+- title: Test notes not searchable for public
+  context:
+    role: anonymous
+  steps:
+  - step: Search for the keyword which is given in a notes.
+    results: No results displayed
+  - step: Modify the search url to add the notes keyword and the default field 'admin.notes.note' and then hit the url
+    results: Error message displayed
+
+- title: Test notes searchable for Editor
+  context:
+    role: Editor
+  steps:
+  - step: Make sure the editor group is assigned for the journal / application which is under test and assigned to the user
+  - step: Go to the tab 'Your group’s journals'
+    results: Group's journals page displayed
+  - step: Search for the keyword which is given in a notes in a journal
+    results: The journal record is displayed in the search results
+  - step: Go to the tab 'Your group’s applications'
+    results: Group's applications page displayed
+  - step: Search for the keyword which is given in a notes in an application
+    results: The application is displayed in the search results
+  - step: Go to the tab 'Journals assigned to you'
+    results: Journals assigned to you page displayed
+  - step: Search for the keyword which is given in a notes in a journal
+    results: The journal record is displayed in the search results
+  - step: Go to the tab 'Applications assigned to you'
+    results: Applications assigned to you page displayed
+  - step: Search for the keyword which is given in a notes in an application
+    results: The application is displayed in the search results
+
+- title: Test notes searchable for Associate Editor
+  context:
+    role: AssociateEditor
+  steps:
+  - step: Go to the tab 'Journals assigned to you'
+    results: 'Journals assigned to you page' displayed
+  - step: Search for the keyword which is given in a notes in a journal
+    results: The journal record is displayed in the search results
+  - step: Go to the tab 'Applications assigned to you'
+    results: 'Applications assigned to you' page displayed
+  - step: Search for the keyword which is given in a notes in an application
+    results: The application is displayed in the search results
