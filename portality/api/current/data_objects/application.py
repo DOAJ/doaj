@@ -66,6 +66,10 @@ INCOMING_APPLICATION_REQUIREMENTS = {
 
     "structs": {
         "bibjson": {
+            "lists": {
+                # override for lax language enforcement in the core, making it strict for incoming applications
+                "language": {"contains": "field", "coerce": "isolang_2letter_strict"}
+            },
             "required": [
                 "copyright",
                 "deposit_policy",

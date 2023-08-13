@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.3.9"
+DOAJ_VERSION = "6.3.12"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -25,6 +25,11 @@ CMS_BUILD_ASSETS_ON_STARTUP = False
 SESSION_COOKIE_SAMESITE='Strict'
 SESSION_COOKIE_SECURE=True
 REMEMBER_COOKIE_SECURE = True
+
+####################################
+# Testdrive for setting up the test environment.
+# CAUTION - this can modify the index so should NEVER be used in production!
+TESTDRIVE_ENABLED = False
 
 ####################################
 # Debug Mode
@@ -434,6 +439,7 @@ HUEY_SCHEDULE = {
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"}
 }
 
 HUEY_TASKS = {
@@ -526,7 +532,17 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "isolang_2letter": {
+    "isolang_2letter_strict": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+#                "index": False,
+                "store": True
+            }
+        }
+    },
+    "isolang_2letter_lax": {
         "type": "text",
         "fields": {
             "exact": {
@@ -546,7 +562,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "currency_code": {
+    "currency_code_strict": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1222,6 +1238,11 @@ GA_ACTION_JOURNALCSV = 'Download'
 # ~~->OpenURL:Feature~~
 GA_CATEGORY_OPENURL = 'OpenURL'
 
+# GA for PublicDataDump
+# ~~->PublicDataDump:Feature~~
+GA_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
+GA_ACTION_PUBLICDATADUMP = 'Download'
+
 # GA for API
 # ~~-> API:Feature~~
 GA_CATEGORY_API = 'API Hit'
@@ -1431,3 +1452,6 @@ PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
 # Pages under maintenance
 
 PRESERVATION_PAGE_UNDER_MAINTENANCE = False
+
+# report journals that discontinue in ... days (eg. 1 = tomorrow)
+DISCONTINUED_DATE_DELTA = 0
