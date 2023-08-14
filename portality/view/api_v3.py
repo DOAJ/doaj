@@ -24,7 +24,7 @@ GA_ACTIONS = app.config.get('GA_ACTIONS_API', {})
 
 
 @blueprint.route('/')
-def api_v3_root():
+def api_root():
     return redirect(url_for('.api_spec'))
 
 
@@ -36,7 +36,7 @@ def docs():
                               _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
     return render_template('api/current/api_docs.html',
                            api_version=API_VERSION_NUMBER,
-                           base_url=app.config.get("BASE_API_URL", url_for('.api_v3_root')),
+                           base_url=app.config.get("BASE_API_URL", url_for('.api_root')),
                            contact_us_url=url_for('doaj.contact'),
                            account_url=account_url)
 
@@ -380,22 +380,6 @@ def bulk_article_create():
 
     # respond with a suitable Created response
     return bulk_created(inl)
-
-
-@blueprint.route("/bulk/articles/async", methods=["POST"])
-@api_key_required
-@write_required(api=True)
-@swag(swag_summary='Bulk article creation asynchronously <span class="red">[Authenticated, not public]</span>',
-      swag_spec=ArticlesBulkApi.create_async_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('bulk_article_create_async',
-                                                       'Bulk article create asynchronously'))
-def bulk_article_create_async():
-    data = _load_income_articles_json(request)
-    ArticlesBulkApi.create_async(data, current_user._get_current_object())
-
-    d = {'msg': 'articles are being created asynchronously'}
-    d = json.dumps(d)
-    return respond(d, 201)
 
 
 @blueprint.route("/bulk/articles", methods=["DELETE"])

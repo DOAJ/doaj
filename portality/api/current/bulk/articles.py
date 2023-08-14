@@ -59,7 +59,7 @@ class ArticlesBulkApi(Api):
             }
         )
         template['parameters'].append(cls.SWAG_API_KEY_REQ_PARAM)
-        template['responses']['201'] = cls.R201_BULK
+        template['responses']['202'] = cls.R202_BULK
         template['responses']['400'] = cls.R400
         return cls._build_swag_response(template)
 

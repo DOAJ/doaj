@@ -124,8 +124,8 @@ OFFLINE_MODE = False
 
 # List the features we want to be active (API v1 and v2 remain with redirects to v3)
 # ~~->API:Feature~~
-FEATURES = ['api1', 'api2', 'api3']
-VALID_FEATURES = ['api1', 'api2', 'api3']
+FEATURES = ['api1', 'api2', 'api3', 'api4', 'api_current']
+VALID_FEATURES = ['api1', 'api2', 'api3', 'api4', 'api_current']
 
 ########################################
 # File Path and URL Path settings
