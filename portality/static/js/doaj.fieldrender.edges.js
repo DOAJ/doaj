@@ -1551,13 +1551,12 @@ $.extend(true, doaj, {
                 var textIdSelector = edges.css_id_selector(this.namespace, "text", this);
                 var text = this.component.jq(textIdSelector).val();
 
-                if (text === "") {
-                    return;
-                }
-
                 // if there is search text, then proceed to run the search
                 var val = this.component.jq(element).val();
                 this.component.setSearchField(val, false);
+                if (text === "") {
+                    return;
+                }
                 this.component.setSearchText(text);
             };
 

@@ -52,7 +52,7 @@ with open("application_2_journal.csv", "wb") as f:
             app_created = application.created_timestamp
             for journal in related_journals:
                 almu = application.last_manual_update_timestamp
-                almu_adjusted = dates.after(almu, 3600)
+                almu_adjusted = dates.seconds_after(almu, 3600)
 
                 # do a load of reporting prep
                 jc_ac_diff = int((journal.created_timestamp - app_created).total_seconds())
