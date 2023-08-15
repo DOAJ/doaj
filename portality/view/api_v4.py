@@ -60,16 +60,14 @@ def bulk_article_create_status():
     if bulk_article is None or bulk_article.owner != current_user.id:
         raise Api400Error("upload_id is invalid")
 
-    resp_results = {
-        "imported": bulk_article.imported,
-        "failed": bulk_article.failed_imports,
-        "update": bulk_article.updates,
-        "new": bulk_article.new,
-    }
-
     resp_content = json.dumps({
         'status': bulk_article.status,
-        'results': resp_results,
+        'results': {
+            "imported": bulk_article.imported,
+            "failed": bulk_article.failed_imports,
+            "update": bulk_article.updates,
+            "new": bulk_article.new,
+        },
     })
     return respond(resp_content, 200)
 
