@@ -72,6 +72,11 @@ Instructions for reviewers:
   - [ ] Developer
   - [ ] Reviewer
 
+- Have CSS/style changes been implemented?  If they are of a global scope (e.g. on base HTML elements) have the downstream impacts of the change in other areas of the system been considered?
+  - [ ] N/A
+  - [ ] Developer
+  - [ ] Reviewer
+
 ### Documentation
 
 - FeatureMap annotations have been added
