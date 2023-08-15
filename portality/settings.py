@@ -1199,6 +1199,7 @@ GA_ACTIONS_API = {
     'bulk_application_create': 'Bulk application create',
     'bulk_application_delete': 'Bulk application delete',
     'bulk_article_create': 'Bulk article create',
+    'bulk_article_create_status': 'Bulk article create status',
     'bulk_article_delete': 'Bulk article delete'
 }
 

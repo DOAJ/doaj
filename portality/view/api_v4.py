@@ -1,4 +1,3 @@
-import re
 import json
 import re
 
@@ -8,10 +7,12 @@ from flask_login import current_user
 from flask_swagger import swagger
 
 from portality.api import respond
+from portality.api.common import Api400Error
 from portality.api.current import ArticlesBulkApi
 from portality.core import app
 from portality.decorators import api_key_required, swag, write_required
 from portality.lib import plausible
+from portality.models import BulkArticles
 from portality.view import api_v3
 
 # Google Analytics category for API events
@@ -37,11 +38,40 @@ def bulk_article_create():
     :return:
     """
     data = api_v3._load_income_articles_json(request)
-    ArticlesBulkApi.create_async(data, current_user._get_current_object())
+    upload_id = ArticlesBulkApi.create_async(data, current_user._get_current_object())
+    resp_content = json.dumps({'msg': 'articles are being created asynchronously',
+                               'upload_id': upload_id})
+    return respond(resp_content, 202)
 
-    d = {'msg': 'articles are being created asynchronously'}
-    d = json.dumps(d)
-    return respond(d, 202)
+
+@blueprint.route("/bulk/articles/status", methods=["GET"])
+@api_key_required
+@write_required(api=True)
+@swag(swag_summary='Get bulk article creation status <span class="red">[Authenticated, not public]</span>',
+      swag_spec=ArticlesBulkApi.get_status_swag())
+@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('bulk_article_create_status',
+                                                       'Get bulk article creation status'))
+def bulk_article_create_status():
+    upload_id = request.values.get("upload_id", None)
+    if not upload_id:
+        raise Api400Error("upload_id is required")
+
+    bulk_article = BulkArticles.pull(upload_id)
+    if bulk_article is None or bulk_article.owner != current_user.id:
+        raise Api400Error("upload_id is invalid")
+
+    resp_results = {
+        "imported": bulk_article.imported,
+        "failed": bulk_article.failed_imports,
+        "update": bulk_article.updates,
+        "new": bulk_article.new,
+    }
+
+    resp_content = json.dumps({
+        'status': bulk_article.status,
+        'results': resp_results,
+    })
+    return respond(resp_content, 200)
 
 
 @blueprint.route('/docs')

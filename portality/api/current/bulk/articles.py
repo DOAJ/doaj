@@ -36,34 +36,6 @@ class ArticlesBulkApi(Api):
         return cls._build_swag_response(template)
 
     @classmethod
-    def create_async_swag(cls):
-        template = deepcopy(cls.SWAG_TEMPLATE)
-        description = """
-        <div class=\"search-query-docs\">
-        A list/array of article JSON objects that you would like to create or update. 
-        The contents should be a list, and each object in the list should comply with 
-        the schema displayed in the 
-        <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. 
-        Partial updates are not allowed, you have to supply the full JSON.
-        
-        This api is asynchronously, response will be a task id, you can use this id to query the task status.
-        </div>
-        """
-        template['parameters'].append(
-            {
-                "description": description,
-                "required": True,
-                "schema": {"type": "string"},
-                "name": "article_json",
-                "in": "body"
-            }
-        )
-        template['parameters'].append(cls.SWAG_API_KEY_REQ_PARAM)
-        template['responses']['202'] = cls.R202_BULK
-        template['responses']['400'] = cls.R400
-        return cls._build_swag_response(template)
-
-    @classmethod
     def create(cls, articles, account):
         # We run through the articles once, validating in dry-run mode
         # and deduplicating as we go. Then we .save() everything once
@@ -91,9 +63,111 @@ class ArticlesBulkApi(Api):
             raise Api400Error(str(e))
 
     @classmethod
+    def create_async_swag(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        description = """
+        <div class=\"search-query-docs\">
+        A list/array of article JSON objects that you would like to create or update. 
+        The contents should be a list, and each object in the list should comply with 
+        the schema displayed in the 
+        <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. 
+        Partial updates are not allowed, you have to supply the full JSON.
+        
+        This api is asynchronously, response will be a task id, you can use this id to query the task status.
+        </div>
+        """
+        template['parameters'].append(
+            {
+                "description": description,
+                "required": True,
+                "schema": {"type": "string"},
+                "name": "article_json",
+                "in": "body"
+            }
+        )
+        template['parameters'].append(cls.SWAG_API_KEY_REQ_PARAM)
+        template['responses']['202'] = {
+            "schema": {
+                "properties": {
+                    "msg": {"type": "string", },
+                    "upload_id": {"type": "string",
+                                  "description": "The upload id of the task, "
+                                                 "User can use this id to check the bulk upload status."},
+                },
+                "type": "object"
+            },
+            "description": "Resources are being created asynchronously, response contains the task IDs "
+        }
+        template['responses']['400'] = cls.R400
+        return cls._build_swag_response(template)
+
+    @classmethod
     def create_async(cls, income_articles: List[Dict], account: models.Account):
         job = ArticleBulkCreateBackgroundTask.prepare(account.id, incoming_articles=income_articles)
         ArticleBulkCreateBackgroundTask.submit(job)
+        upload_id = next(v for k, v in job.params.items() if k.endswith('__upload_id'))
+        return upload_id
+
+    @classmethod
+    def get_status_swag(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['parameters'].append(
+            {
+                "description": "<div class=\"search-query-docs\">The upload id of the task, "
+                               "User can use this id to check the bulk upload status.</div>",
+                "required": True,
+                "schema": {"type": "string"},
+                "name": "upload_id",
+                "in": "query"
+            }
+        )
+        template['parameters'].append(cls.SWAG_API_KEY_REQ_PARAM)
+        template['responses']['200'] = {
+            "schema": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "The status of the task",
+                        "enum": ["incoming", "validated", "falied", "processed", "partial"]
+
+                    },
+                    "results": {
+                        'type': 'object',
+                        'description': 'The result of the upload',
+                        "properties": {
+                            "imported": {
+                                "type": "integer",
+                                "description": "The number of articles imported",
+                            },
+                            "failed": {
+                                "type": "integer",
+                                "description": "The number of articles failed to import",
+                            },
+                            "update": {
+                                "type": "integer",
+                                "description": "The number of articles updated",
+                            },
+                            "new": {
+                                "type": "integer",
+                                "description": "The number of articles created",
+                            },
+                        },
+                    }
+
+                },
+                "type": "object"
+            },
+            "description": "Return status of upload ids"
+        }
+        template['responses']['400'] = {
+            "schema": {
+                "properties": {
+                    "msg": {"type": "string", "description": "The error message"},
+                },
+                "type": "object"
+            },
+        }
+        return cls._build_swag_response(template)
 
     @classmethod
     def delete_swag(cls):

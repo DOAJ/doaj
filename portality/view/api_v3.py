@@ -1,10 +1,8 @@
 import json
 
-from flask import Blueprint, jsonify, url_for, request, make_response, render_template, redirect
+from flask import Blueprint, url_for, request, redirect
 from flask_login import current_user
-from flask_swagger import swagger
 
-from portality.api import respond
 from portality.api.current import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi, ApplicationsBulkApi, \
     ArticlesBulkApi
 from portality.api.current import DiscoveryApi, DiscoveryException
@@ -13,6 +11,7 @@ from portality.api.current import jsonify_models, jsonify_data_object, Api400Err
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional, swag, write_required
 from portality.lib import plausible
+from portality.view import api_v4
 
 blueprint = Blueprint('api_v3', __name__)
 
@@ -28,28 +27,8 @@ def api_root():
     return redirect(url_for('.api_spec'))
 
 
-@blueprint.route('/docs')
-def docs():
-    account_url = None
-    if current_user.is_authenticated:
-        account_url = url_for('account.username', username=current_user.id, _external=True,
-                              _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
-    return render_template('api/current/api_docs.html',
-                           api_version=API_VERSION_NUMBER,
-                           base_url=app.config.get("BASE_API_URL", url_for('.api_root')),
-                           contact_us_url=url_for('doaj.contact'),
-                           account_url=account_url)
-
-
-@blueprint.route('/swagger.json')
-def api_spec():
-    swag = swagger(app)
-    swag['info']['title'] = ""
-    swag['info']['version'] = API_VERSION_NUMBER
-
-    # Strip out the duplicate versioned route from the swagger so we only show latest as /api/
-    [swag['paths'].pop(p) for p in list(swag['paths'].keys()) if p.startswith('/api/v3/')]
-    return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
+blueprint.route('/docs')(api_v4.docs)
+blueprint.route('/swagger.json')(api_v4.api_spec)
 
 
 # Handle wayward paths by raising an API404Error

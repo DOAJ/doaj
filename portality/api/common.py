@@ -27,8 +27,6 @@ class Api(object):
     R201_BULK = {"schema": {"items": {"properties" : CREATED_TEMPLATE, "type" : "object"}, "type" : "array"},
                             "description": "Resources created successfully, response contains the new resource IDs "
                                            "and locations."}
-    R202_BULK = {"schema": {"items": {"properties" : CREATED_TEMPLATE, "type" : "object"}, "type" : "array"},
-                 "description": "Resources are being created asynchronously, response contains the task IDs "}
     R204 = {"description": "OK (Request succeeded), No Content"}
     R400 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Bad Request. Your request body was missing a "
                                                                      "required field, or the data in one of the "

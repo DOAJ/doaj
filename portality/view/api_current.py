@@ -30,3 +30,4 @@ blueprint.route("/bulk/applications", methods=["POST"])(api_v3.bulk_application_
 blueprint.route("/bulk/applications", methods=["DELETE"])(api_v3.delete_application)
 blueprint.route("/bulk/articles", methods=["POST"])(api_v4.bulk_article_create)
 blueprint.route("/bulk/articles", methods=["DELETE"])(api_v3.bulk_article_delete)
+blueprint.route("/bulk/articles/status", methods=["GET"])(api_v4.bulk_article_create_status)
