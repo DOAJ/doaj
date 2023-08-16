@@ -14,6 +14,8 @@ PROJECT_NAME = "DOAJ Kanban"
 DEFAULT_COLUMNS = ["Review", "In progress", "To Do"]
 HEADERS = {"Accept": "application/vnd.github+json"}
 
+DEFAULT_USER = 'Claimable'
+
 
 class GithubReqSender:
     def __init__(self, username=None, password_key=None):
@@ -183,7 +185,7 @@ def _filter_issues_by_label(issues, labels):
 def _split_by_user(registry: defaultdict, issues: dict, status: str):
     for issue in issues:
         assignees = issue.get("assignees")
-        assignees = [a.get("login") for a in assignees] if assignees else ['Claimable']
+        assignees = [a.get("login") for a in assignees] if assignees else [DEFAULT_USER]
         github_issue = GithubIssue(api_url=issue.get("url"),
                                    issue_number=issue.get("number"),
                                    status=status,
