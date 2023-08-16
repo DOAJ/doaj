@@ -16,26 +16,24 @@ HEADERS = {"Accept": "application/vnd.github+json"}
 
 
 class GithubReqSender:
-    def __init__(self, api_key=None, username=None, password=None):
+    def __init__(self, username=None, password_key=None):
+        """
+        :param password_key: 
+        password of username or github api key
+        """
         self.username = username
-        self.password = password
-        self.api_key = api_key
-        if self.api_key is None and self.username is None:
-            raise ValueError("api_key or username must be provided")
-        self.req_kwargs = self.create_github_request_kwargs()
+        self.password_key = password_key
+        if self.password_key is None:
+            raise ValueError("api_key or password must be provided")
 
     def create_github_request_kwargs(self) -> dict:
         req_kwargs = {'headers': dict(HEADERS)}
-        if self.api_key:
-            req_kwargs['headers']['Authorization'] = f'Bearer {self.api_key}'
-        else:
-            req_kwargs['auth'] = HTTPBasicAuth(self.username, self.password)
+        req_kwargs['auth'] = HTTPBasicAuth(self.username, self.password_key)
         return req_kwargs
 
     def get(self, url, **req_kwargs):
-        final_req_kwargs = self.req_kwargs.copy()
+        final_req_kwargs = self.create_github_request_kwargs()
         final_req_kwargs.update(req_kwargs)
-        req_kwargs = req_kwargs or {}
         return requests.get(url, **final_req_kwargs)
 
 
@@ -73,7 +71,7 @@ def load_rules(rules_file) -> List[Rule]:
     return rules
 
 
-def create_priorities_excel_data(priorities_file, sender:GithubReqSender) -> Dict[str, pd.DataFrame]:
+def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Dict[str, pd.DataFrame]:
     """
 
     ENV VARIABLE `DOAJ_GITHUB_KEY` will be used if username and password are not provided
