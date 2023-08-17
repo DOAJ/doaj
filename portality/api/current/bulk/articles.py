@@ -1,4 +1,5 @@
 # ~~APIBulkArticles:Feature->APIBulk:Feature~~
+import warnings
 from copy import deepcopy
 from typing import List, Dict
 
@@ -37,6 +38,7 @@ class ArticlesBulkApi(Api):
 
     @classmethod
     def create(cls, articles, account):
+        warnings.warn("This method is deprecated, use create_async instead", DeprecationWarning)
         # We run through the articles once, validating in dry-run mode
         # and deduplicating as we go. Then we .save() everything once
         # we know all incoming articles are valid.

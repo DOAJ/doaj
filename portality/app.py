@@ -66,10 +66,8 @@ if 'api3' in app.config['FEATURES']:
     app.register_blueprint(api_v3, name='api_v3', url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
 if 'api4' in app.config['FEATURES']:
     from portality.view.api_v4 import blueprint as api_v4
-    app.register_blueprint(api_v4, name='api_v4', url_prefix='/api/v4') # ~~-> APIv3:Blueprint~~
-if 'api_current' in app.config['FEATURES']:
-    from portality.view.api_current import blueprint as api_current
-    app.register_blueprint(api_current, name='api', url_prefix='/api') # ~~-> APICurrent:Blueprint~~
+    app.register_blueprint(api_v4, name='api_v4', url_prefix='/api/v4') # ~~-> APIv4:Blueprint~~
+    app.register_blueprint(api_v4, name='api', url_prefix='/api')  # ~~-> APIv4:Blueprint~~
 
 app.register_blueprint(status, name='status', url_prefix='/status') # ~~-> Status:Blueprint~~
 app.register_blueprint(status, name='_status', url_prefix='/_status')
