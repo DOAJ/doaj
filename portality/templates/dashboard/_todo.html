@@ -32,7 +32,7 @@
         constants.TODO_EDITOR_STALLED: {
             "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Chase Associate Editor</span>",
             "show_status": true,
-            "colour" : "var(--yellow)",
+            "colour" : "var(--salmon)",
             "feather": "inbox",
         },
         constants.TODO_EDITOR_FOLLOW_UP_OLD: {
@@ -43,7 +43,7 @@
         },
         constants.TODO_EDITOR_COMPLETED: {
             "text" : "<strong>Completed</strong> <span class='todo-list__status'>Review and set to Ready</span>",
-            "colour" : "var(--yellow)",
+            "colour" : "var(--mid-green)",
             "feather": "inbox",
             "link" : url_for('editor.group_suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"completed"}])
         },
@@ -56,7 +56,7 @@
         constants.TODO_ASSOCIATE_PROGRESS_STALLED: {
             "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Complete as soon as possible</span>",
             "show_status": true,
-            "colour" : "var(--yellow)",
+            "colour" : "var(--salmon)",
             "feather": "inbox",
         },
         constants.TODO_ASSOCIATE_FOLLOW_UP_OLD: {
