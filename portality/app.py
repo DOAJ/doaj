@@ -285,6 +285,10 @@ def form_diff_table_subject_expand(val):
 
     return ", ".join(results)
 
+@app.template_filter("is_in_the_past")
+def is_in_the_past(dttm):
+    return dates.is_before(dttm, dates.today())
+
 
 #######################################################
 
