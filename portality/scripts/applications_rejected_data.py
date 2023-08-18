@@ -119,8 +119,8 @@ def write_applications_data_to_file(year, record):
     writer.writerow(["", "continued", index["continued"]])
     writer.writerow(["", "has_editor_group", index["has_editor_group"]])
     writer.writerow(["", "has_editor", index["has_editor"]])
-    writer.writerow(["", "issn", index["issn"]])
-    writer.writerow(["", "subject", index["subject"]])
+    writer.writerow(["", "issn", index.get("issn", '')])
+    writer.writerow(["", "subject", index.get("subject", '')])
     if "schema_subject" in index:
         writer.writerow(["", "schema_subject", index["schema_subject"]])
     if "classification" in index:
@@ -195,7 +195,7 @@ def write_applications_data_to_file(year, record):
         writer.writerow(["", "waiver-has_waiver", has_waiver])
         if has_waiver:
             writer.writerow(["", "waiver-url", bibjson["waiver"]["url"]])
-    writer.writerow(["", "keywords", bibjson["keywords"]])
+    writer.writerow(["", "keywords", bibjson.get("keywords", '')])
     writer.writerow(["", "language", bibjson["language"]])
     if "license" in bibjson:
         for license_data in bibjson["license"]:
