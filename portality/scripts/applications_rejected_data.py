@@ -151,7 +151,7 @@ def write_applications_data_to_file(year, record):
         if "max" in apc:
             for max_data in apc["max"]:
                 writer.writerow(["", "apc-max-currency", max_data["currency"]])
-                writer.writerow(["", "apc-max-price", max_data["price"]])
+                writer.writerow(["", "apc-max-price", max_data.get("price", '')])
     if "article" in bibjson:
         article = bibjson["article"]
         if "license_display_example_url" in article:
