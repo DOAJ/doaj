@@ -12,6 +12,7 @@ APP_RECORD_COUNTER = {}
 UR_RECORD_COUNTER = {}
 BASE_DIR_PATH = None
 
+
 def application_query(date_year_from, date_year_to):
     return {
           "query": {
@@ -66,6 +67,7 @@ def provenance_query(resource_id):
           "track_total_hits": True
         }
 
+
 def get_file_handler(year, application_type):
     global APP_FILE_HANDLES
     global UR_FILE_HANDLES
@@ -77,6 +79,7 @@ def get_file_handler(year, application_type):
     else:
         filename = os.path.join(BASE_DIR_PATH, "rejected_update_requests_" + str(year) + ".csv")
         return csv.writer(UR_FILE_HANDLES.setdefault(year, open(filename, 'w')))
+
 
 def get_record_counter(year, application_type):
     global APP_RECORD_COUNTER
@@ -93,6 +96,7 @@ def get_record_counter(year, application_type):
         record_number += 1
         UR_RECORD_COUNTER[year] = record_number
         return record_number
+
 
 def write_applications_data_to_file(year, record):
 
@@ -162,12 +166,12 @@ def write_applications_data_to_file(year, record):
         copyright = bibjson["copyright"]
         if "author_retains" in copyright:
             writer.writerow(["", "copyright-author_retains", copyright["author_retains"]])
-            writer.writerow(["", "copyright-url", copyright["url"]])
+            writer.writerow(["", "copyright-url", copyright.get("url", '')])
     if "deposit_policy" in bibjson and "has_policy" in bibjson["deposit_policy"]:
         writer.writerow(["", "deposit_policy-has_policy", bibjson["deposit_policy"]["has_policy"]])
     if "editorial" in bibjson:
-        writer.writerow(["", "editorial-review_url", bibjson["editorial"]["review_url"]])
-        writer.writerow(["", "editorial-board_url", bibjson["editorial"]["board_url"]])
+        writer.writerow(["", "editorial-review_url", bibjson["editorial"].get("review_url", '')])
+        writer.writerow(["", "editorial-board_url", bibjson["editorial"].get("board_url", '')])
         writer.writerow(["", "editorial-review_process", bibjson["editorial"]["review_process"]])
     if "pid_scheme" in bibjson:
         pid_scheme = bibjson["pid_scheme"]["has_pid_scheme"]
@@ -176,7 +180,7 @@ def write_applications_data_to_file(year, record):
             writer.writerow(["", "pid_scheme-scheme", bibjson["pid_scheme"]["scheme"]])
     if "plagiarism" in bibjson:
         writer.writerow(["", "plagiarism-detection", bibjson["plagiarism"]["detection"]])
-        writer.writerow(["", "plagiarism-url", bibjson["plagiarism"]["url"]])
+        writer.writerow(["", "plagiarism-url", bibjson["plagiarism"].get('url', '')])
     has_preservation = bibjson["preservation"]["has_preservation"]
     writer.writerow(["", "preservation-has_preservation", has_preservation])
     writer.writerow(["", "publisher-name", bibjson["publisher"]["name"]])
@@ -185,7 +189,7 @@ def write_applications_data_to_file(year, record):
     writer.writerow(["", "ref-journal", bibjson["ref"]["journal"]])
     writer.writerow(["", "ref-aims_scope", bibjson["ref"]["aims_scope"]])
     writer.writerow(["", "ref-author_instructions", bibjson["ref"]["author_instructions"]])
-    writer.writerow(["", "ref-license_terms", bibjson["ref"]["license_terms"]])
+    writer.writerow(["", "ref-license_terms", bibjson["ref"].get("license_terms", '')])
     if "waiver" in bibjson:
         has_waiver = bibjson["waiver"]["has_waiver"]
         writer.writerow(["", "waiver-has_waiver", has_waiver])
@@ -196,11 +200,11 @@ def write_applications_data_to_file(year, record):
     if "license" in bibjson:
         for license_data in bibjson["license"]:
             writer.writerow(["", "license-type", license_data["type"]])
-            writer.writerow(["", "license-BY", license_data["BY"]])
-            writer.writerow(["", "license-NC", license_data["NC"]])
-            writer.writerow(["", "license-ND", license_data["ND"]])
-            writer.writerow(["", "license-SA", license_data["SA"]])
-            writer.writerow(["", "license-url", license_data["url"]])
+            writer.writerow(["", "license-BY", license_data.get('BY', '')])
+            writer.writerow(["", "license-NC", license_data.get('NC', '')])
+            writer.writerow(["", "license-ND", license_data.get('ND', '')])
+            writer.writerow(["", "license-SA", license_data.get('SA', '')])
+            writer.writerow(["", "license-url", license_data.get("url", '')])
     if "subject" in bibjson:
         for subject_data in bibjson["subject"]:
             writer.writerow(["", "subject-code", subject_data["code"]])
@@ -212,6 +216,7 @@ def write_applications_data_to_file(year, record):
         writer.writerow(["", "is_replaced_by", bibjson["is_replaced_by"]])
     writer.writerow([])
     writer.writerow([])
+
 
 def execute(args):
     try:
@@ -234,6 +239,7 @@ def execute(args):
         for file_handle in UR_FILE_HANDLES.values():
             file_handle.close()
 
+
 if __name__ == "__main__":
 
     import argparse
@@ -245,8 +251,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     execute(args)
-
-
-
-
-
