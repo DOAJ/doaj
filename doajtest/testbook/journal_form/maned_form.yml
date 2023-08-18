@@ -120,3 +120,29 @@ tests:
     - step: Attempt to click the "Remove" button
       results:
         - You are unable to delete the note
+- title: Withdraw all
+  depends:
+    - suite: New Application Form
+    - suite: Continuations
+  context:
+    role: admin
+  steps:
+    - step: Go to admin journal search page at /admin/journals
+    - step: From the facet "In DOAJ?" on the left choose True
+    - step: Click "Edit this journal" link at the bottom of any journal - note the id
+        of the edited journal for future reference
+      results:
+        - Page /admin/journal/<id> is open in a new browser window/tab (<id> is id of
+          the chosen journal)
+        - All the field are initially filled in with correct values
+    - step: Click red "Withdraw" button at the top of the functions panel on the right
+      results:
+        - Message pop-up appears over the page asking you to confirm if you want to withdraw
+          the journal and shows you the journal's ID.
+        - All Older and Newer continuations journal will be listed in the pop-up
+    - step: Click "Withdraw all" button
+      results:
+        - following messages appear "Job to withdraw/reinstate journal has been submitted"
+    - step: Click that message
+      results:
+        - related background job is displayed
