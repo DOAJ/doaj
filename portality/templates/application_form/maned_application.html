@@ -51,7 +51,8 @@
     {% include "application_form/js/_form_js.html" %}
     {% if autochecks %}
     <script type="application/javascript">
-        doaj.autocheckers.dismissed = new doaj.autocheckers.DismissedAutochecks({})
+        // doaj.autocheckers.dismissed = new doaj.autocheckers.DismissedAutochecks({})
+        doaj.autocheckers.manager = new doaj.autocheckers.AutochecksManager({})
     </script>
     {% endif %}
 {% endblock %}

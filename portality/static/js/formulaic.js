@@ -1081,7 +1081,11 @@ var formulaic = {
             $(select2_elem).focus();
         },
 
-        _make_empty_container: function(namespace, containerName, form, fieldDef) {
+        _make_empty_container: function(namespace, containerName, form, fieldDef, additionalClasses) {
+            if (!additionalClasses) {
+                additionalClasses = "";
+            }
+
             let containerSelector = edges.css_class_selector(namespace, containerName);
             let elements = form.controlSelect.widgetsContainer({name: fieldDef.name});
             let existing = false;
@@ -1096,7 +1100,7 @@ var formulaic = {
 
             if (!existing) {
                 let containerClass = edges.css_classes(namespace, containerName);
-                elements.append(`<div class="${containerClass}"></div>`);
+                elements.append(`<div class="${containerClass} ${additionalClasses}"></div>`);
             }
 
             return elements.find(containerSelector);
@@ -1117,7 +1121,8 @@ var formulaic = {
                     return;
                 }
 
-                let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef);
+                let generalClass = "formulaic-autocheck-container";
+                let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef, generalClass);
 
                 let frag = "";
                 for (let anno of annos) {
@@ -1130,13 +1135,13 @@ var formulaic = {
 
                 feather.replace();
 
-                let dismissSelector = edges.css_class_selector(this.namespace, "dismiss");
-                edges.on(dismissSelector, "click", this, "dismiss");
-
-                let undismissSelector = edges.css_class_selector(this.namespace, "undismiss");
-                edges.on(undismissSelector, "click", this, "undismiss");
-
-                edges.on(window, "doaj:autochecks-undismiss", this, "undismissHandler");
+                // let dismissSelector = edges.css_class_selector(this.namespace, "dismiss");
+                // edges.on(dismissSelector, "click", this, "dismiss");
+                //
+                // let undismissSelector = edges.css_class_selector(this.namespace, "undismiss");
+                // edges.on(undismissSelector, "click", this, "undismiss");
+                //
+                // edges.on(window, "doaj:autochecks-undismiss", this, "undismissHandler");
             }
 
             this._getAutochecksForField = function() {
@@ -1166,8 +1171,8 @@ var formulaic = {
                     } else {
                         frag += this._defaultRender(autocheck);
                     }
-                    let dismissClass = edges.css_classes(this.namespace, "dismiss");
-                    frag += `<button data-autocheck-set="${doaj.autochecks.id}" data-autocheck="${autocheck.id}" class="${dismissClass}">Dismiss <span data-feather="x" aria-hidden="true"></span></button>`;
+                    // let dismissClass = edges.css_classes(this.namespace, "dismiss");
+                    // frag += `<button data-autocheck-set="${doaj.autochecks.id}" data-autocheck="${autocheck.id}" class="${dismissClass}">Dismiss <span data-feather="x" aria-hidden="true"></span></button>`;
                 }
 
                 frag += `</li>`;
@@ -1191,65 +1196,65 @@ var formulaic = {
                 return frag;
             }
 
-            this.dismiss = function(element) {
-                let el = $(element);
-                let autocheckSet = el.attr("data-autocheck-set")
-                let autocheckId = el.attr("data-autocheck");
-                let url = "/service/autocheck/dismiss/" + autocheckSet + "/" + autocheckId;
-                let that = this;
-                $.ajax({
-                    method: "post",
-                    url: url,
-                    error: function(data) {
-                        alert("There was an error dismissing the autocheck, please try again");
-                    },
-                    success: function(data) {
-                        that.dismissSuccess(autocheckId);
-                    }
-                })
-            }
-
-            this.dismissSuccess = function(autocheckId) {
-                for (let anno of doaj.autochecks.checks) {
-                    if (anno.id === autocheckId) {
-                        anno.dismissed = true;
-                    }
-                }
-                $(window).trigger("doaj:autochecks-dismiss")
-                this.init();
-            }
-
-            this.undismiss = function(element) {
-                let el = $(element);
-                let autocheckSet = el.attr("data-autocheck-set")
-                let autocheckId = el.attr("data-autocheck");
-                let url = "/service/autocheck/undismiss/" + autocheckSet + "/" + autocheckId;
-                let that = this;
-                $.ajax({
-                    method: "post",
-                    url: url,
-                    error: function(data) {
-                        alert("There was an error undismissing the autocheck, please try again");
-                    },
-                    success: function(data) {
-                        that.undismissSuccess(autocheckId);
-                    }
-                })
-            }
-
-            this.undismissSuccess = function(autocheckId) {
-                for (let anno of doaj.autochecks.checks) {
-                    if (anno.id === autocheckId) {
-                        anno.dismissed = false;
-                    }
-                }
-                $(window).trigger("doaj:autochecks-undismiss")
-                // this.init();
-            }
-
-            this.undismissHandler = function() {
-                this.init();
-            }
+            // this.dismiss = function(element) {
+            //     let el = $(element);
+            //     let autocheckSet = el.attr("data-autocheck-set")
+            //     let autocheckId = el.attr("data-autocheck");
+            //     let url = "/service/autocheck/dismiss/" + autocheckSet + "/" + autocheckId;
+            //     let that = this;
+            //     $.ajax({
+            //         method: "post",
+            //         url: url,
+            //         error: function(data) {
+            //             alert("There was an error dismissing the autocheck, please try again");
+            //         },
+            //         success: function(data) {
+            //             that.dismissSuccess(autocheckId);
+            //         }
+            //     })
+            // }
+            //
+            // this.dismissSuccess = function(autocheckId) {
+            //     for (let anno of doaj.autochecks.checks) {
+            //         if (anno.id === autocheckId) {
+            //             anno.dismissed = true;
+            //         }
+            //     }
+            //     $(window).trigger("doaj:autochecks-dismiss")
+            //     this.init();
+            // }
+            //
+            // this.undismiss = function(element) {
+            //     let el = $(element);
+            //     let autocheckSet = el.attr("data-autocheck-set")
+            //     let autocheckId = el.attr("data-autocheck");
+            //     let url = "/service/autocheck/undismiss/" + autocheckSet + "/" + autocheckId;
+            //     let that = this;
+            //     $.ajax({
+            //         method: "post",
+            //         url: url,
+            //         error: function(data) {
+            //             alert("There was an error undismissing the autocheck, please try again");
+            //         },
+            //         success: function(data) {
+            //             that.undismissSuccess(autocheckId);
+            //         }
+            //     })
+            // }
+            //
+            // this.undismissSuccess = function(autocheckId) {
+            //     for (let anno of doaj.autochecks.checks) {
+            //         if (anno.id === autocheckId) {
+            //             anno.dismissed = false;
+            //         }
+            //     }
+            //     $(window).trigger("doaj:autochecks-undismiss")
+            //     // this.init();
+            // }
+            //
+            // this.undismissHandler = function() {
+            //     this.init();
+            // }
 
             this.init();
         },
