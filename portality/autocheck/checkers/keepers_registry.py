@@ -19,6 +19,7 @@ class KeepersRegistry(ISSNChecker):
     MISSING = "missing"
     PRESENT = "present"
     OUTDATED = "outdated"
+    NOT_RECORDED = "not_recorded"
 
     def _get_archive_components(self, eissn_data, pissn_data):
         acs = []
@@ -62,6 +63,14 @@ class KeepersRegistry(ISSNChecker):
         for service in services:
             id = self.ID_MAP.get(service)
             if not id:
+                logger("Service {x} is not recorded by Keepers Registry".format(x=service))
+                autochecks.add_check(
+                    field="preservation_service",
+                    advice=self.NOT_RECORDED,
+                    reference_url=url,
+                    context={"service": service},
+                    checked_by=self.__identity__
+                )
                 continue
 
             coverage = ad.get(id)

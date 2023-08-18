@@ -17,13 +17,22 @@ doaj.autocheckers.ISSNActive = class {
         "not_validated": "x-circle"
     }
 
+    STYLE = {
+        "unable_to_access": "error",
+        "not_found": "error",
+        "fully_validated": "success",
+        "not_validated": "warn"
+    }
+
     draw(autocheck) {
         let icon = this.ICONS[autocheck.advice];
         let message = this.MESSAGES[autocheck.advice];
         message = message.replace("{{ISSN}}", autocheck.original_value);
 
-        let frag = `<div><span class="icon-container icon-container--${autocheck.advice}"><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>).</div>`;
+        let style = this.STYLE[autocheck.advice];
+
+        let frag = `<div><span class="icon-container icon-container--${autocheck.advice} icon-container--${style}"><span data-feather="${icon}" aria-hidden="true"></span></span>
+                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>)</div>`;
         return frag;
     }
 }
@@ -32,13 +41,22 @@ doaj.autocheckers.KeepersRegistry = class {
     MESSAGES = {
         "missing": "Keepers does not show any content archived in {service}.",
         "present": "The journal content is actively archived in {service}.",
-        "outdated": "The journal has content archived in {service} but it's not current."
+        "outdated": "The journal has content archived in {service} but it's not current.",
+        "not_recorded": "Keepers Registry does not currently record information about {service}."
     }
 
     ICONS = {
         "missing": "x-circle",
         "present": "check-circle",
-        "outdated": "x-circle"
+        "outdated": "x-circle",
+        "not_recorded": "info"
+    }
+
+    STYLE = {
+        "missing": "error",
+        "present": "success",
+        "outdated": "error",
+        "not_recorded": "info"
     }
 
     draw(autocheck) {
@@ -48,8 +66,10 @@ doaj.autocheckers.KeepersRegistry = class {
         let context = JSON.parse(autocheck.context);
         message = message.replace("{service}", context.service);
 
-        let frag = `<div><span class="icon-container icon-container--${autocheck.advice}"><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>).</div>`;
+        let style = this.STYLE[autocheck.advice];
+
+        let frag = `<div><span class="icon-container icon-container--${autocheck.advice} icon-container--${style}""><span data-feather="${icon}" aria-hidden="true"></span></span>
+                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>)</div>`;
         return frag;
     }
 }

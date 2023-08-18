@@ -20,11 +20,22 @@ class Autocheck(TestDrive):
         acc.set_password(pw)
         acc.save()
 
+        ##################################################
+        ## Setup and Application with the following features
+        ##
+        ## - Print ISSN registered at ISSN.org
+        ## - Electronic ISSN not registered at ISSN.org
+        ## - 3 preservation services:
+        ##    - CLOCKSS - currently archived
+        ##    - LOCKSS - not currently archived
+        ##    - PMC - not registered
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
         ap.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
         ap.remove_current_journal()
         ap.remove_related_journal()
+        apbj = ap.bibjson()
+        apbj.set_preservation(["CLOCKSS", "LOCKSS", "PMC", "PKP PN"], "http://policy.example.com")
         ap.set_id(ap.makeid())
         ap.save()
 
@@ -34,9 +45,9 @@ class Autocheck(TestDrive):
 
         thisyear = datetime.utcnow().year
 
-        issn_data = ISSNOrgData({
+        pissn_data = ISSNOrgData({
             "mainEntityOfPage": {
-                "version": "Register"
+                "version": "Register"   # this means the ISSN is registered at ISSN.org
             },
             "subjectOf": [
                 {
@@ -51,7 +62,29 @@ class Autocheck(TestDrive):
                     "holdingArchive": {
                         "@id": "http://issn.org/organization/keepers#lockss"
                     },
+                    "temporalCoverage": "2019/2020"
+                }
+            ]
+        })
+
+        eissn_data = ISSNOrgData({
+            "mainEntityOfPage": {
+                "version": "Pending"    # this means the ISSN is not registered at ISSN.org
+            },
+            "subjectOf": [
+                {
+                    "@type": "ArchiveComponent",
+                    "holdingArchive": {
+                        "@id": "http://issn.org/organization/keepers#clockss"
+                    },
                     "temporalCoverage": "2022/" + str(thisyear)
+                },
+                {
+                    "@type": "ArchiveComponent",
+                    "holdingArchive": {
+                        "@id": "http://issn.org/organization/keepers#lockss"
+                    },
+                    "temporalCoverage": "2019/2020"
                 }
             ]
         })
@@ -60,11 +93,11 @@ class Autocheck(TestDrive):
         ISSNChecker.retrieve_from_source = lambda *args, **kwargs: (
             eissn,
             "https://portal.issn.org/resource/ISSN/2682-4396",
-            issn_data,
+            eissn_data,
             False,
             pissn,
             "https://portal.issn.org/resource/ISSN/2682-4396",
-            issn_data,
+            pissn_data,
             False)
 
         acSvc = DOAJ.autochecksService(
@@ -75,6 +108,16 @@ class Autocheck(TestDrive):
             ]
         )
         ac1 = acSvc.autocheck_application(ap)
+
+        ##################################################
+        ## Setup a Journal with the following features
+        ##
+        ## - Print ISSN registered at ISSN.org
+        ## - Electronic ISSN not found
+        ## - 3 preservation services:
+        ##    - CLOCKSS - currently archived
+        ##    - LOCKSS - not currently archived
+        ##    - PMC - not registered
 
         source = JournalFixtureFactory.make_journal_source()
         j = models.Journal(**source)
@@ -88,12 +131,12 @@ class Autocheck(TestDrive):
 
         ISSNChecker.retrieve_from_source = lambda *args, **kwargs: (
             eissn,
-            "https://portal.issn.org/resource/ISSN/2682-4396",
-            issn_data,
+            "https://portal.issn.org/resource/ISSN/9999-000X",
+            None,   # Don't pass in any data, so we get the Not Found response
             False,
             pissn,
             "https://portal.issn.org/resource/ISSN/2682-4396",
-            issn_data,
+            pissn_data,
             False)
 
         ac2 = acSvc.autocheck_journal(j)

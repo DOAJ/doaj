@@ -109,21 +109,37 @@
     color: $white;
   }
 
-  .icon-container--unable_to_access {
-    background: $grapefruit;
+  .icon-container--success {
+    background: $mid-green;
   }
 
-  .icon-container--not_found,
-  .icon-container--not_validated,
-  .icon-container--missing,
-  .icon-container--outdated {
+  .icon-container--error {
     background: $sanguine;
   }
 
-  .icon-container--fully_validated,
-  .icon-container--present {
-    background: $mid-green;
+  .icon-container--warn {
+    background: $grapefruit;
   }
+
+  .icon-container--info {
+    background: $mid-grey;
+  }
+
+  //.icon-container--unable_to_access {
+  //  background: $grapefruit;
+  //}
+  //
+  //.icon-container--not_found,
+  //.icon-container--not_validated,
+  //.icon-container--missing,
+  //.icon-container--outdated {
+  //  background: $sanguine;
+  //}
+  //
+  //.icon-container--fully_validated,
+  //.icon-container--present {
+  //  background: $mid-green;
+  //}
 
   .parsley-errors-list {
     padding: $spacing-03;
