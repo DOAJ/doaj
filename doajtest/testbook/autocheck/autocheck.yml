@@ -33,44 +33,38 @@ tests:
     - You are looking at a test Application created for this test
   - step: Scroll down to find the ISSN (print) and ISSN (online) fields
     results:
-      - Both fields are annotated with a green tick, and text which says that ISSN
+      - The Print ISSN field is annotated with a green tick, and text which says that ISSN
         is fully registered at ISSN.org
+      - The Electronic ISSN field is annotated with an orange cross, which says the ISSN is not
+        registered at ISSN.org
   - step: Click on one of the "see record" links in the annotation
     results:
       - The link is opened in a new window/tab
       - You are taken to the ISSN.org record.  Note that for the purposes of this test, this
         is a random record on ISSN.org, unrelated to the actual record in DOAJ.
-  - step: close the ISSN.org window/tab and return to the application form
-  - step: Click the "Dismiss" button on both annotations by the ISSN fields
-    results:
-      - The annotations are removed from the form, and replaced with text indicating that the
-        check was dismissed
-      - On the right-hand side of the form, beneath the notes, there is a section "Dismissed Autochecks"
-        which lists both annotations you just dismissed.  This section is beneath the scrolling notes section,
-        you may need to hover and scroll the notes section to see it.
-  - step: Click "Undismiss" by the text on the form for the ISSN (print) field which indicates that a check was dismissed
-    results:
-      - The annotation is restored to the form
-      - The annotation disappears from the "Dismissed Autochecks" section, leaving only one record there now
-  - step: Click "Undismiss" by the record in the "Dismissed Autochecks" section
-    results:
-      - The annotation is restored to the form
-      - The annotation disappears from the "Dismissed Autochecks" section, leaving no records there now
+  - step: Close the ISSN.org window/tab and return to the application form
   - step: Scroll to the "Best Practice" section of the application form, and look at the "Long-term preservation services" question
     results:
-      - 2 checks are visible attached to this question, one for CLOCKSS and one for LOCKSS, indicating that they
-        are present in Keepers Registry
+      - "4 checks are visible attached to this question, for: CLOCKSS, LOCKSS, PMC and PKP PN"
+      - CLOCKSS is annotated with a green tick, saying it is archived
+      - LOCKSS is annotated with a red cross, saying it is not current
+      - PMC is annotated with a grey info symbol, saying it is not currently recorded by Keepers
+      - PKP PN is annotated with a red cross, saying it is not archived
   - step: Click on one of the "see record" links in the annotation
     results:
       - The link is opened in a new window/tab
       - You are taken to the ISSN.org record.  Note that for the purposes of this test, this
         is a random record on ISSN.org, unrelated to the actual record in DOAJ.
-  - step: close the ISSN.org window/tab and return to the application form
-  - step: Click "Dismiss" by both notifications
+  - step: Close the ISSN.org window/tab and return to the application form
+  - step: Scroll to the top of the application form
     results:
-      - The annotations are removed from the form, and replaced with text indicating that the
-        check was dismissed
-      - The "Dismissed Autochecks" section lists both checks you just dismissed
+      - There is text which tells you when the Autochecks were made, and an option to Hide All Autochecks
+  - step: Click "Hide All Autochecks", then scroll through the form
+    results:
+      - The autochecks are all hidden
+  - step: Return to the top of the application form and click "Show All Autochecks", then scroll through the form
+    results:
+      - The autochecks are all visible again
 
 - title: Journal autochecks
   context:
@@ -85,44 +79,38 @@ tests:
     - You are looking at a test Journal created for this test
   - step: Scroll down to find the ISSN (print) and ISSN (online) fields
     results:
-      - Both fields are annotated with a green tick, and text which says that ISSN
+      - The Print ISSN field is annotated with a green tick, and text which says that ISSN
         is fully registered at ISSN.org
+      - The Electronic ISSN field is annotated with an red cross, which says the ISSN is not
+        found at ISSN.org
   - step: Click on one of the "see record" links in the annotation
     results:
       - The link is opened in a new window/tab
       - You are taken to the ISSN.org record.  Note that for the purposes of this test, this
         is a random record on ISSN.org, unrelated to the actual record in DOAJ.
-  - step: close the ISSN.org window/tab and return to the journal form
-  - step: Click the "Dismiss" button on both annotations by the ISSN fields
-    results:
-      - The annotations are removed from the form, and replaced with text indicating that the
-        check was dismissed
-      - On the right-hand side of the form, beneath the notes, there is a section "Dismissed Autochecks"
-        which lists both annotations you just dismissed.  This section is beneath the scrolling notes section,
-        you may need to hover and scroll the notes section to see it.
-  - step: Click "Undismiss" by the text on the form for the ISSN (print) field which indicates that a check was dismissed
-    results:
-      - The annotation is restored to the form
-      - The annotation disappears from the "Dismissed Autochecks" section, leaving only one record there now
-  - step: Click "Undismiss" by the record in the "Dismissed Autochecks" section
-    results:
-      - The annotation is restored to the form
-      - The annotation disappears from the "Dismissed Autochecks" section, leaving no records there now
+  - step: Close the ISSN.org window/tab and return to the journal form
   - step: Scroll to the "Best Practice" section of the application form, and look at the "Long-term preservation services" question
     results:
-      - 2 checks are visible attached to this question, one for CLOCKSS and one for LOCKSS, indicating that they
-        are present in Keepers Registry
+      - "4 checks are visible attached to this question, for: CLOCKSS, LOCKSS, PMC and PKP PN"
+      - CLOCKSS is annotated with a green tick, saying it is archived
+      - LOCKSS is annotated with a red cross, saying it is not current
+      - PMC is annotated with a grey info symbol, saying it is not currently recorded by Keepers
+      - PKP PN is annotated with a red cross, saying it is not archived
   - step: Click on one of the "see record" links in the annotation
     results:
       - The link is opened in a new window/tab
       - You are taken to the ISSN.org record.  Note that for the purposes of this test, this
         is a random record on ISSN.org, unrelated to the actual record in DOAJ.
-  - step: close the ISSN.org window/tab and return to the journal form
-  - step: Click "Dismiss" by both notifications
+  - step: Close the ISSN.org window/tab and return to the journal form
+  - step: Scroll to the top of the journal form
     results:
-      - The annotations are removed from the form, and replaced with text indicating that the
-        check was dismissed
-      - The "Dismissed Autochecks" section lists both checks you just dismissed
+      - There is text which tells you when the Autochecks were made, and an option to Hide All Autochecks
+  - step: Click "Hide All Autochecks", then scroll through the form
+    results:
+      - The autochecks are all hidden
+  - step: Return to the top of the journal form and click "Show All Autochecks", then scroll through the form
+    results:
+      - The autochecks are all visible again
 
 - title: Teardown
   context:
