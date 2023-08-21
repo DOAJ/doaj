@@ -8,6 +8,8 @@ from portality.lib import dates
 
 APP_FILE_HANDLES = {}
 UR_FILE_HANDLES = {}
+APP_WRITERS = {}
+UR_WRITERS = {}
 APP_RECORD_COUNTER = {}
 UR_RECORD_COUNTER = {}
 BASE_DIR_PATH = None
@@ -71,14 +73,23 @@ def provenance_query(resource_id):
 def get_file_handler(year, application_type):
     global APP_FILE_HANDLES
     global UR_FILE_HANDLES
+    global APP_WRITERS
+    global UR_WRITERS
     # applications file handle
     if application_type == constants.APPLICATION_TYPE_NEW_APPLICATION:
-        filename = os.path.join(BASE_DIR_PATH, "rejected_applications_" + str(year) + ".csv")
-        return csv.writer(APP_FILE_HANDLES.setdefault(year, open(filename, 'w')))
-    # update requests file handle
+        if year not in APP_WRITERS:
+            filename = os.path.join(BASE_DIR_PATH, "rejected_applications_" + str(year) + ".csv")
+            file_handle = open(filename, 'w')
+            APP_FILE_HANDLES[year] = file_handle
+            APP_WRITERS[year] = csv.writer(file_handle)
+        return APP_WRITERS[year]
     else:
-        filename = os.path.join(BASE_DIR_PATH, "rejected_update_requests_" + str(year) + ".csv")
-        return csv.writer(UR_FILE_HANDLES.setdefault(year, open(filename, 'w')))
+        if year not in UR_WRITERS:
+            filename = os.path.join(BASE_DIR_PATH, "rejected_update_requests_" + str(year) + ".csv")
+            file_handle = open(filename, 'w')
+            UR_FILE_HANDLES[year] = file_handle
+            UR_WRITERS[year] = csv.writer(file_handle)
+        return UR_WRITERS[year]
 
 
 def get_record_counter(year, application_type):
