@@ -49,11 +49,6 @@ def upload_process(articles_upload: BaseArticlesUpload,
     articles = []
     try:
         articles = articles_factory(articles_path)
-
-        # KTODO should that only for FileUpload?
-        for article in articles:
-            article.set_upload_id(articles_upload.id)  # KTODO how to handle this for BulkArticles?
-
         account = models.Account.pull(articles_upload.owner)
         result = DOAJ.articleService().batch_create_articles(articles, account, add_journal_info=True)
     except (IngestException, CrosswalkException) as e:
