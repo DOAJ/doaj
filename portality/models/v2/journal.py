@@ -567,7 +567,7 @@ class Journal(JournalLikeObject):
     @classmethod
     def add_mapping_extensions(cls, default_mappings: dict):
         default_mappings_copy = deepcopy(default_mappings)
-        mapping_extensions = app.config.get("DATAOBJ_TO_MAPPING_EXTENSIONS")
+        mapping_extensions = app.config.get("DATAOBJ_TO_MAPPING_COPY_TO_EXTENSIONS")
         for key, value in mapping_extensions.items():
             if key in default_mappings_copy:
                 default_mappings_copy[key] = {**default_mappings_copy[key], **value}

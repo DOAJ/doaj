@@ -30,7 +30,7 @@ def public_query_validator(q):
 
 
 def non_public_fields_validator(q):
-    exclude_fields = app.config.get("EXCLUDED_FIELDS", {})
+    exclude_fields = app.config.get("PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS", {})
     context = q.get_field_context()
     if context:
         if "default_field" in context:

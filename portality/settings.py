@@ -630,7 +630,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
 # This is useful when some extensions required for some objects additional to defaults.
 # ~~->DataObj:Library~~
 # ~~->Seamless:Library~~
-DATAOBJ_TO_MAPPING_EXTENSIONS = {
+DATAOBJ_TO_MAPPING_COPY_TO_EXTENSIONS = {
     "unicode": {"copy_to": ["all_meta"]},
     "str": {"copy_to": ["all_meta"]},
     "unicode_upper": {"copy_to": ["all_meta"]},
@@ -922,7 +922,7 @@ QUERY_FILTERS = {
 }
 # Exclude the fields that doesn't want to be searched by public queries
 # This is part of non_public_fields_validator.
-EXCLUDED_FIELDS = [
+PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS = [
     "admin.notes.note",
     "admin.notes.id",
     "admin.notes.author_id"
