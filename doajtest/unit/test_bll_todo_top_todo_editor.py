@@ -12,7 +12,7 @@ from portality.lib import dates
 
 
 def load_cases():
-    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_todo_assed"), "top_todo_assed", "test_id",
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_todo_editor"), "top_todo_editor", "test_id",
                                {"test_id" : []})
 
 
@@ -21,14 +21,14 @@ EXCEPTIONS = {
 }
 
 
-class TestBLLTopTodoAssed(DoajTestCase):
+class TestBLLTopTodoEditor(DoajTestCase):
 
     def setUp(self):
-        super(TestBLLTopTodoAssed, self).setUp()
+        super(TestBLLTopTodoEditor, self).setUp()
         self.svc = DOAJ.todoService()
 
     def tearDown(self):
-        super(TestBLLTopTodoAssed, self).tearDown()
+        super(TestBLLTopTodoEditor, self).tearDown()
 
     @parameterized.expand(load_cases)
     def test_top_todo(self, name, kwargs):
@@ -37,10 +37,10 @@ class TestBLLTopTodoAssed(DoajTestCase):
         raises_arg = kwargs.get("raises")
 
         categories = [
-            "todo_associate_follow_up_old",
-            "todo_associate_progress_stalled",
-            "todo_associate_start_pending",
-            "todo_associate_all_applications"
+            "todo_editor_follow_up_old",
+            "todo_editor_stalled",
+            "todo_editor_completed",
+            "todo_editor_assign_pending"
         ]
 
         category_args = {
@@ -60,12 +60,12 @@ class TestBLLTopTodoAssed(DoajTestCase):
         if account_arg == "admin":
             asource = AccountFixtureFactory.make_managing_editor_source()
             account = models.Account(**asource)
-            eg_source = EditorGroupFixtureFactory.make_editor_group_source(maned=account.id)
-            eg = models.EditorGroup(**eg_source)
-            eg.save(blocking=True)
         elif account_arg == "editor":
             asource = AccountFixtureFactory.make_editor_source()
             account = models.Account(**asource)
+            eg_source = EditorGroupFixtureFactory.make_editor_group_source(editor=account.id)
+            eg = models.EditorGroup(**eg_source)
+            eg.save(blocking=True)
         elif account_arg == "assed":
             asource = AccountFixtureFactory.make_assed1_source()
             account = models.Account(**asource)
@@ -76,17 +76,20 @@ class TestBLLTopTodoAssed(DoajTestCase):
         # Applications that we expect to see reported for some tests
         ############################################################
 
-        # an application created more than 6 weeks ago
-        self.build_application("assed_follow_up_old", 2 * w, 7 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
+        # an application created more than 8 weeks ago
+        self.build_application("editor_follow_up_old", 2 * w, 9 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
 
-        # an application that was last updated over 3 weeks ago
-        self.build_application("assed_stalled", 4 * w, 4 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
+        # an application that was last updated over 6 weeks ago
+        self.build_application("editor_stalled", 7 * w, 7 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
 
-        # an application that was modifed recently into the pending status
-        self.build_application("assed_start_pending", 2 * w, 2 * w, constants.APPLICATION_STATUS_PENDING, apps)
+        # an application that was modifed recently into the completed status
+        self.build_application("editor_completed", 2 * w, 2 * w, constants.APPLICATION_STATUS_COMPLETED, apps)
 
-        # an application that is otherwise normal
-        self.build_application("assed_all_applications", 2 * w, 2 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
+        # an application that is pending without an editor assigned
+        def assign_pending(ap):
+            ap.remove_editor()
+
+        self.build_application("editor_assign_pending", 2 * w, 2 * w, constants.APPLICATION_STATUS_PENDING, apps, additional_fn=assign_pending)
 
         models.Application.blockall([(ap.id, ap.last_updated) for ap in apps])
 

@@ -1,7 +1,3 @@
-# import itertools
-# from collections import Counter
-# from datetime import datetime
-
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
@@ -11,8 +7,6 @@ from portality import constants
 from portality import models
 from portality.bll import DOAJ
 from portality.bll import exceptions
-# from portality.constants import TODO_ASSOCIATE_PROGRESS_STALLED, TODO_ASSOCIATE_START_PENDING, \
-#     TODO_ASSOCIATE_FOLLOW_UP_OLD, TODO_ASSOCIATE_ALL_APPLICATIONS
 from portality.lib.paths import rel2abs
 from portality.lib import dates
 
@@ -29,10 +23,6 @@ EXCEPTIONS = {
 
 class TestBLLTopTodoManed(DoajTestCase):
 
-    # @classmethod
-    # def setUpClass(cls) -> None:
-    #     super(TestBLLTopTodo, cls).setUpClass()
-
     def setUp(self):
         super(TestBLLTopTodoManed, self).setUp()
         self.svc = DOAJ.todoService()
@@ -40,16 +30,10 @@ class TestBLLTopTodoManed(DoajTestCase):
     def tearDown(self):
         super(TestBLLTopTodoManed, self).tearDown()
 
-    # @classmethod
-    # def tearDownClass(cls) -> None:
-    #     cls.reset_db_record()
-    #     super().tearDownClass()
-
     @parameterized.expand(load_cases)
     def test_top_todo(self, name, kwargs):
 
         account_arg = kwargs.get("account")
-        # size_arg = kwargs.get("size")
         raises_arg = kwargs.get("raises")
 
         categories = [
@@ -207,30 +191,6 @@ class TestBLLTopTodoManed(DoajTestCase):
                     assert v[1] in positions.get(k, [])
                 else:   # the todo item is not positioned at all
                     assert len(positions.get(k, [])) == 0
-
-
-    # def test_todo__assed_normal(self):
-    #     account = self.make_account_by_type('assed')
-    #     size = 100
-    #
-    #
-    #     todos = self.svc.top_todo(account, size)
-    #
-    #     app_action_dict = {
-    #         t['object_id']: set(t['action_id']) for t in todos
-    #     }
-    #
-    #     # breakpoint()
-    #     excepted_app_action_dict = {
-    #         "maned_stalled__maned_old": {TODO_ASSOCIATE_PROGRESS_STALLED,
-    #                                      TODO_ASSOCIATE_FOLLOW_UP_OLD, TODO_ASSOCIATE_ALL_APPLICATIONS},
-    #         "unstalled": {TODO_ASSOCIATE_ALL_APPLICATIONS},
-    #         "maned_old": {TODO_ASSOCIATE_FOLLOW_UP_OLD, TODO_ASSOCIATE_ALL_APPLICATIONS},
-    #         "not_old": {TODO_ASSOCIATE_ALL_APPLICATIONS},
-    #         "pending_12": {TODO_ASSOCIATE_START_PENDING, TODO_ASSOCIATE_PROGRESS_STALLED, TODO_ASSOCIATE_FOLLOW_UP_OLD, TODO_ASSOCIATE_ALL_APPLICATIONS},
-    #     }
-    #
-    #     self.assertEqual(app_action_dict, excepted_app_action_dict)
 
     def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None):
         source = ApplicationFixtureFactory.make_application_source()
