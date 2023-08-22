@@ -49,12 +49,15 @@ class TestBLLTopTodoManed(DoajTestCase):
     def test_top_todo(self, name, kwargs):
 
         account_arg = kwargs.get("account")
-        size_arg = kwargs.get("size")
+        # size_arg = kwargs.get("size")
         raises_arg = kwargs.get("raises")
 
         categories = [
             "todo_maned_stalled",
-            "todo_maned_follow_up_old"
+            "todo_maned_follow_up_old",
+            "todo_maned_ready",
+            "todo_maned_completed",
+            "todo_maned_assign_pending"
         ]
 
         category_args = {
