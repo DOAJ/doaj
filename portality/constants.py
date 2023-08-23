@@ -44,6 +44,17 @@ TODO_MANED_FOLLOW_UP_OLD = "todo_maned_follow_up_old"
 TODO_MANED_READY = "todo_maned_ready"
 TODO_MANED_COMPLETED = "todo_maned_completed"
 TODO_MANED_ASSIGN_PENDING = "todo_maned_assign_pending"
+TODO_EDITOR_STALLED = "todo_editor_stalled"
+TODO_EDITOR_FOLLOW_UP_OLD = "todo_editor_follow_up_old"
+TODO_EDITOR_COMPLETED = "todo_editor_completed"
+TODO_EDITOR_ASSIGN_PENDING = "todo_editor_assign_pending"
+TODO_ASSOCIATE_PROGRESS_STALLED = "todo_associate_progress_stalled"
+TODO_ASSOCIATE_FOLLOW_UP_OLD = "todo_associate_follow_up_old"
+TODO_ASSOCIATE_START_PENDING = "todo_associate_start_pending"
+TODO_ASSOCIATE_ALL_APPLICATIONS = "todo_associate_all_applications"
+
+# Roles
+ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 
 EVENT_ACCOUNT_CREATED = "account:created"
 EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
