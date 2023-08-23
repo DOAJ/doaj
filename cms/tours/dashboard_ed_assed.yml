@@ -43,10 +43,6 @@ steps:
     title: "DOAJ Home"
     content: "To get back to the main DOAJ website, click 'DOAJ HOME' in the top right corner"
 
-  - selector: "._hj_feedback_container"
-    title: Feedback
-    content: Submit feedback via the Feedback button
-
   - selector: "#feature_tour_nav"
     title: Want to see the tour again?
     content: Take the tour again by selecting it from the Feature Tours menu.
