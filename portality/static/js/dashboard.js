@@ -13,7 +13,8 @@ doaj.dashboard = {
     ]
 };
 
-doaj.dashboard.init = function() {
+doaj.dashboard.init = function(context) {
+    doaj.dashboard.context = context;
     $(".js-group-tab").on("click", doaj.dashboard.groupTabClick);
 
     // trigger a click on the first one, so there is something for the user to look at
@@ -53,9 +54,13 @@ doaj.dashboard.renderGroupInfo = function(data) {
     // ~~-> EditorGroup:Model~~
 
     // first remove the editor from the associates list if they are there
-    let edInAssEd = data.editor_group.associates.indexOf(data.editor_group.editor)
-    if (edInAssEd > -1) {
-        data.editor_group.associates.splice(edInAssEd, 1);
+    if (data.editor_group.associates && data.editor_group.associates.length > 0) {
+        let edInAssEd = data.editor_group.associates.indexOf(data.editor_group.editor)
+        if (edInAssEd > -1) {
+            data.editor_group.associates.splice(edInAssEd, 1);
+        }
+    } else {
+        data.editor_group.associates = [];  // just to avoid having to keep checking it below
     }
 
     let allEditors = [data.editor_group.editor].concat(data.editor_group.associates);
@@ -85,20 +90,23 @@ doaj.dashboard.renderGroupInfo = function(data) {
             urCount = data.by_editor[ed].update_requests || 0;
         }
 
-        let isEd = "";
-        if (i === 0) {  // first one in the list is always the editor
-            isEd = " (Ed.)"
-        }
-        editorListFrag += `<li>`
-        if (data.editors[ed].email) {
-            editorListFrag += `<a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>`
-        }
-        else {
-            editorListFrag += `<span class="label tag">${ed}${isEd} (no email)</span>`
-        }
+        if (data.editors[ed]) {
+            let isEd = "";
+            if (i === 0) {  // first one in the list is always the editor
+                isEd = " (Editor)"
+            }
 
-        editorListFrag += `<a href="/admin/applications?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a>
-        </li>`;
+            editorListFrag += `<li>`
+            if (data.editors[ed].email) {
+                editorListFrag += `<a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>`
+            }
+            else {
+                editorListFrag += `<span class="label tag">${ed}${isEd} (no email)</span>`
+            }
+
+            editorListFrag += `<a href= "${doaj.dashboard.context.applicationsSearchBase}?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a>
+            </li>`;
+        }
     }
 
     // ~~-> ApplicationSearch:Page~~
@@ -118,7 +126,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
     // ]})
     editorListFrag += `<li>
         <span class="label tag tag--featured">Unassigned</span>
-        <a href="/admin/applications?source=${appUnassignedSource}" class="tag tag--tertiary" title="See unassigned applications">${data.unassigned.applications} <span class="sr-only">applications</span></a>
+        <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appUnassignedSource}" class="tag tag--tertiary" title="See unassigned applications">${data.unassigned.applications} <span class="sr-only">applications</span></a>
     </li>`;
 
     let appStatusProgressBar = "";
@@ -137,7 +145,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
                     "sort": [{"admin.date_applied": {"order": "asc"}}]
                 })
                 appStatusProgressBar += `<li class="progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications/data.total.applications)*100}%;">
-                    <a href="/admin/applications?source=${appStatusSource}" class="progress-bar__link" title="See ${data.by_status[status].applications} ${status} application(s)">
+                    <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appStatusSource}" class="progress-bar__link" title="See ${data.by_status[status].applications} ${status} application(s)">
                         <strong>${data.by_status[status].applications}</strong>
                     </a></li>`;
             }
@@ -160,7 +168,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
     let frag = `<div class="tabs__content card">
         <h3>
           ${data.editor_group.name}’s open applications
-          <a href="/admin/applications?source=${appGroupSource}" class="tag tag--secondary" title="See all ${data.editor_group.name}’s open applications ">${data.total.applications}<span class="sr-only"> applications</span></a>
+          <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appGroupSource}" class="tag tag--secondary" title="See all ${data.editor_group.name}’s open applications ">${data.total.applications}<span class="sr-only"> applications</span></a>
         </h3>
 
         <section>
