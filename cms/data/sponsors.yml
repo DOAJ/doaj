@@ -94,6 +94,10 @@ bronze:
   url: https://www.iop.org/
   logo: iop.jpg
   
+- name: International Union for Conservation of Nature
+  url: https://iucn.org/
+  logo: IUCN.svg
+  
 - name: JMIR Publications
   url: https://jmirpublications.com/
   logo: jmir.svg
