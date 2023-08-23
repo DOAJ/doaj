@@ -1,0 +1,224 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "account",
+      "type": "generated",
+      "values": {
+        "none": {},
+        "no_role": {},
+        "assed": {},
+        "editor": {}
+      }
+    },
+    {
+      "name": "raises",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "ArgumentException": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_editor_follow_up_old",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        },
+        "0": {
+          "conditions": [
+            {
+              "account": {
+                "nor": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_editor_stalled",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        },
+        "0": {
+          "conditions": [
+            {
+              "account": {
+                "nor": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_editor_completed",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        },
+        "0": {
+          "conditions": [
+            {
+              "account": {
+                "nor": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_editor_assign_pending",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        },
+        "0": {
+          "conditions": [
+            {
+              "account": {
+                "nor": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_editor_follow_up_old_order",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "3": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_editor_stalled_order",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "4": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_editor_completed_order",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_editor_assign_pending_order",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "2": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "editor"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
