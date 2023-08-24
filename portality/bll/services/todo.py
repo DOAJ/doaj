@@ -85,8 +85,16 @@ class TodoService(object):
 
         if account.has_role("editor"):
             groups = [g for g in models.EditorGroup.groups_by_editor(account.id)]
-            if len(groups) > 0:
+            regular_groups = [g for g in groups if g.maned != account.id]
+            maned_groups = [g for g in groups if g.maned == account.id]
+            if len(regular_groups) > 0:
                 queries.append(TodoRules.editor_follow_up_old(groups, size))
+                queries.append(TodoRules.editor_stalled(groups, size))
+                queries.append(TodoRules.editor_completed(groups, size))
+                queries.append(TodoRules.editor_assign_pending(groups, size))
+            if len(maned_groups) > 0:
+                queries.append(TodoRules.editor_follow_up_old(groups, size))
+                queries[-1][3] = -2
                 queries.append(TodoRules.editor_stalled(groups, size))
                 queries.append(TodoRules.editor_completed(groups, size))
                 queries.append(TodoRules.editor_assign_pending(groups, size))
