@@ -1,4 +1,3 @@
-# ~~ AdminArticleMetadata:FunctionalTest -> AdminArticleMetadata:Page~~
 suite: Autocheck
 testset: Autocheck
 tests:
