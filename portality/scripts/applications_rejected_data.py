@@ -2,6 +2,8 @@ import csv
 import os
 from portality import models, constants
 from portality.lib import dates
+from portality.crosswalks.application_form import ApplicationFormXWalk
+from portality.forms.application_forms import FieldDefinitions as field
 
 
 """This script generates files with the detailed information of applications which are rejected."""
@@ -13,7 +15,30 @@ UR_WRITERS = {}
 APP_RECORD_COUNTER = {}
 UR_RECORD_COUNTER = {}
 BASE_DIR_PATH = None
+FIELDS = [
+    field.TITLE,
+    {"name": "application_type", "label": "Type", "input": "text"},
+    {"name": "last_updated", "label": "Date", "input": "text"},
+    {"name": "notes", "label": "Notes", "input": "text"},
+    field.BOAI, field.OA_STATEMENT_URL, field.ALTERNATIVE_TITLE, field.JOURNAL_URL, field.PISSN, field.EISSN,
+    field.KEYWORDS, field.LANGUAGE, field.PUBLISHER_NAME, field.PUBLISHER_COUNTRY, field.INSTITUTION_NAME,
+    field.INSTITUTION_COUNTRY, field.LICENSE, field.LICENSE_TERMS_URL, field.LICENSE_DISPLAY,
+    field.LICENSE_DISPLAY_EXAMPLE_URL,
+    field.COPYRIGHT_AUTHOR_RETAINS, field.COPYRIGHT_URL, field.REVIEW_PROCESS, field.REVIEW_URL,
+    field.PLAGIARISM_DETECTION, field.PLAGIARISM_URL, field.AIMS_SCOPE_URL, field.EDITORIAL_BOARD_URL,
+    field.AUTHOR_INSTRUCTIONS_URL, field.PUBLICATION_TIME_WEEKS, field.APC, field.APC_CHARGES,
+    field.APC_URL, field.HAS_WAIVER, field.WAIVER_URL, field.HAS_OTHER_CHARGES, field.OTHER_CHARGES_URL,
+    field.PRESERVATION_SERVICE, field.PRESERVATION_SERVICE_URL, field.DEPOSIT_POLICY, field.DEPOSIT_POLICY_OTHER,
+    field.DEPOSIT_POLICY_URL, field.PERSISTENT_IDENTIFIERS, field.ORCID_IDS, field.OPEN_CITATIONS,
+    {"name": "id", "label": "Id", "input": "text"},
+]
+FIELD_NAMES = {"application_type":"admin.application_type", "last_updated":"last_updated", "notes":"admin.notes",
+               "publisher_name":"bibjson.publisher.name", "publisher_country": "bibjson.publisher.country",
+               "institution_name" : "bibjson.institution.name", "institution_country" : "bibjson.institution.country",
+                "other_charges_url": "bibjson.other_charges.url", "deposit_policy" : "bibjson.deposit_policy.has_policy"
+               }
 
+COLUMN_HEADINGS = [""]
 
 def application_query(date_year_from, date_year_to):
     return {
@@ -81,16 +106,19 @@ def get_file_handler(year, application_type):
             filename = os.path.join(BASE_DIR_PATH, "rejected_applications_" + str(year) + ".csv")
             file_handle = open(filename, 'w')
             APP_FILE_HANDLES[year] = file_handle
-            APP_WRITERS[year] = csv.writer(file_handle)
+            csv_writer = csv.writer(file_handle)
+            csv_writer.writerow(COLUMN_HEADINGS)
+            APP_WRITERS[year] = csv_writer
         return APP_WRITERS[year]
     else:
         if year not in UR_WRITERS:
             filename = os.path.join(BASE_DIR_PATH, "rejected_update_requests_" + str(year) + ".csv")
             file_handle = open(filename, 'w')
             UR_FILE_HANDLES[year] = file_handle
-            UR_WRITERS[year] = csv.writer(file_handle)
+            csv_writer = csv.writer(file_handle)
+            csv_writer.writerow(COLUMN_HEADINGS)
+            UR_WRITERS[year] = csv_writer
         return UR_WRITERS[year]
-
 
 def get_record_counter(year, application_type):
     global APP_RECORD_COUNTER
@@ -108,131 +136,93 @@ def get_record_counter(year, application_type):
         UR_RECORD_COUNTER[year] = record_number
         return record_number
 
+def get_param_obj(obj, param):
+    if isinstance(obj, list):
+        value = ""
+        for k in obj:
+            if param in k:
+                value += str(k[param]) + ","
+        return value
+    elif param in obj:
+        return obj[param]
+    else:
+        return None
+
+def get_value(obj, key_field):
+
+    param_with_sub_fields = ""
+    if isinstance(key_field, list):
+        for k in key_field:
+            param_value = obj
+            params = k.split(".")
+            for param in params:
+                param_value = get_param_obj(param_value, param)
+                if param_value is None:
+                    param_value = ""
+            param_with_sub_fields += str(param_value) + " "
+        return param_with_sub_fields
+    else:
+        param_value = obj
+        params = key_field.split(".")
+        for param in params:
+            param_value = get_param_obj(param_value, param)
+            if param_value is None:
+                return ""
+
+        return param_value
+
+def get_notes(record):
+    admin = record["admin"]
+    notes = ""
+    if "notes" in admin:
+        for note in admin["notes"]:
+            notes += note["date"] + " : " + note["note"] + "\n"
+    return notes
+
+def get_field_value(record, field_obj):
+    if "name" in field_obj:
+        name = field_obj["name"]
+        sub_field_names = []
+        if "subfields" in field_obj:
+            sub_field_names = field_obj["subfields"]
+        sub_fields = []
+        if name == "notes":
+            return get_notes(record)
+        if name in FIELD_NAMES:
+            field_name = FIELD_NAMES[name]
+        else:
+            field_name = ApplicationFormXWalk.formField2objectField(name)
+            for sub_field in sub_field_names:
+                sub_fields.append(ApplicationFormXWalk.formField2objectField(name+"."+sub_field))
+        kay_field = sub_fields if len(sub_fields) > 0 else field_name
+        field_value = get_value(record, kay_field)
+        if isinstance(field_value, bool):
+            return "Yes" if field_value else "No"
+        return field_value
+    raise Exception("Field name not found")
+
+def create_header():
+    for f in FIELDS:
+        COLUMN_HEADINGS.append(f["label"])
 
 def write_applications_data_to_file(year, record):
 
-    bibjson = record["bibjson"]
-    admin = record["admin"]
-    index = record["index"]
-
-    application_type = admin["application_type"]
+    application_type = record["admin"]["application_type"]
     writer = get_file_handler(year, application_type)
     record_number = get_record_counter(year, application_type)
 
-    writer.writerow([record_number, "Title", bibjson["title"]])
-    writer.writerow(["", "Application Type", admin["application_type"]])
-    writer.writerow(["", "last_updated", record["last_updated"]])
-    if "notes" in admin:
-        writer.writerow(["","Notes",""])
-        for note in admin["notes"]:
-            writer.writerow(["", note["date"], note["note"]])
-    writer.writerow(["", "country", index["country"]])
-    writer.writerow(["", "continued", index["continued"]])
-    writer.writerow(["", "has_editor_group", index["has_editor_group"]])
-    writer.writerow(["", "has_editor", index["has_editor"]])
-    writer.writerow(["", "issn", index.get("issn", '')])
-    writer.writerow(["", "subject", index.get("subject", '')])
-    if "schema_subject" in index:
-        writer.writerow(["", "schema_subject", index["schema_subject"]])
-    if "classification" in index:
-        writer.writerow(["", "classification", index["classification"]])
-    writer.writerow(["", "language", index["language"]])
-    if "license" in index:
-        writer.writerow(["", "license", index["license"]])
-    if "classification_paths" in index:
-        writer.writerow(["", "classification_paths", index["classification_paths"]])
-    if "schema_code" in index:
-        writer.writerow(["", "schema_code", index["schema_code"]])
-    if "schema_codes_tree" in index:
-        writer.writerow(["", "schema_codes_tree", index["schema_codes_tree"]])
-    if "boai" in bibjson:
-        writer.writerow(["", "boai", bibjson["boai"]])
-    if "eissn" in bibjson:
-        writer.writerow(["", "eissn", bibjson["eissn"]])
-    if "publication_time_weeks" in bibjson:
-        writer.writerow(["", "publication_time_weeks", bibjson["publication_time_weeks"]])
-    if "oa_start" in bibjson:
-        writer.writerow(["", "oa_start", bibjson["oa_start"]])
-    if "apc" in bibjson:
-        apc = bibjson["apc"]
-        if "has_apc" in apc:
-            writer.writerow(["", "apc-has_apc", apc["has_apc"]])
-        if "url" in apc:
-            writer.writerow(["", "apc-url", apc["url"]])
-        if "max" in apc:
-            for max_data in apc["max"]:
-                writer.writerow(["", "apc-max-currency", max_data["currency"]])
-                writer.writerow(["", "apc-max-price", max_data.get("price", '')])
-    if "article" in bibjson:
-        article = bibjson["article"]
-        if "license_display_example_url" in article:
-            writer.writerow(["", "article-license_display_example_url", article["license_display_example_url"]])
-        if "orcid" in article:
-            writer.writerow(["", "article-orcid", article["orcid"]])
-        if "i4oc_open_citations" in article:
-            writer.writerow(["", "article-i4oc_open_citations", article["i4oc_open_citations"]])
-        if "license_display_example_url" in article:
-            writer.writerow(["", "article-license_display", article["license_display"]])
-    if "copyright" in bibjson:
-        copyright = bibjson["copyright"]
-        if "author_retains" in copyright:
-            writer.writerow(["", "copyright-author_retains", copyright["author_retains"]])
-            writer.writerow(["", "copyright-url", copyright.get("url", '')])
-    if "deposit_policy" in bibjson and "has_policy" in bibjson["deposit_policy"]:
-        writer.writerow(["", "deposit_policy-has_policy", bibjson["deposit_policy"]["has_policy"]])
-    if "editorial" in bibjson:
-        writer.writerow(["", "editorial-review_url", bibjson["editorial"].get("review_url", '')])
-        writer.writerow(["", "editorial-board_url", bibjson["editorial"].get("board_url", '')])
-        writer.writerow(["", "editorial-review_process", bibjson["editorial"]["review_process"]])
-    if "pid_scheme" in bibjson:
-        pid_scheme = bibjson["pid_scheme"]["has_pid_scheme"]
-        writer.writerow(["", "pid_scheme-has_pid_scheme", "yes" if pid_scheme else "no"])
-        if pid_scheme:
-            writer.writerow(["", "pid_scheme-scheme", bibjson["pid_scheme"]["scheme"]])
-    if "plagiarism" in bibjson:
-        writer.writerow(["", "plagiarism-detection", bibjson["plagiarism"]["detection"]])
-        writer.writerow(["", "plagiarism-url", bibjson["plagiarism"].get('url', '')])
-    has_preservation = bibjson["preservation"]["has_preservation"]
-    writer.writerow(["", "preservation-has_preservation", has_preservation])
-    writer.writerow(["", "publisher-name", bibjson["publisher"]["name"]])
-    writer.writerow(["", "publisher-country", bibjson["publisher"]["country"]])
-    writer.writerow(["", "ref-oa_statement", bibjson["ref"]["oa_statement"]])
-    writer.writerow(["", "ref-journal", bibjson["ref"]["journal"]])
-    writer.writerow(["", "ref-aims_scope", bibjson["ref"]["aims_scope"]])
-    writer.writerow(["", "ref-author_instructions", bibjson["ref"]["author_instructions"]])
-    writer.writerow(["", "ref-license_terms", bibjson["ref"].get("license_terms", '')])
-    if "waiver" in bibjson:
-        has_waiver = bibjson["waiver"]["has_waiver"]
-        writer.writerow(["", "waiver-has_waiver", has_waiver])
-        if has_waiver:
-            writer.writerow(["", "waiver-url", bibjson["waiver"]["url"]])
-    writer.writerow(["", "keywords", bibjson.get("keywords", '')])
-    writer.writerow(["", "language", bibjson["language"]])
-    if "license" in bibjson:
-        for license_data in bibjson["license"]:
-            writer.writerow(["", "license-type", license_data["type"]])
-            writer.writerow(["", "license-BY", license_data.get('BY', '')])
-            writer.writerow(["", "license-NC", license_data.get('NC', '')])
-            writer.writerow(["", "license-ND", license_data.get('ND', '')])
-            writer.writerow(["", "license-SA", license_data.get('SA', '')])
-            writer.writerow(["", "license-url", license_data.get("url", '')])
-    if "subject" in bibjson:
-        for subject_data in bibjson["subject"]:
-            writer.writerow(["", "subject-code", subject_data["code"]])
-            writer.writerow(["", "subject-scheme", subject_data["scheme"]])
-            writer.writerow(["", "subject-term", subject_data["term"]])
-    if "replaces" in bibjson:
-        writer.writerow(["", "replaces", bibjson["replaces"]])
-    if "is_replaced_by" in bibjson:
-        writer.writerow(["", "is_replaced_by", bibjson["is_replaced_by"]])
-    writer.writerow([])
-    writer.writerow([])
-
+    row = [record_number]
+    for f in FIELDS:
+        row.append(get_field_value(record, f))
+    writer.writerow(row)
 
 def execute(args):
     try:
         global BASE_DIR_PATH
         BASE_DIR_PATH = args.out
+
+        # create file header
+        create_header()
 
         # Application id is saved as resource_id in Provenance model
         # Iterate through all the applications and query Provenance with application id and status
