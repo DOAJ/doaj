@@ -55,6 +55,10 @@ Instructions for reviewers:
   - [ ] Developer
   - [ ] Reviewer
 
+- Urls are constructed with `url_for` not hard-coded
+  - [ ] N/A
+  - [ ] Developer
+  - [ ] Reviewer
 ### Testing
 
 - Unit tests have been added/modified
