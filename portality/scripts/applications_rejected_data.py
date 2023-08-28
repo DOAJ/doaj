@@ -194,8 +194,8 @@ def get_field_value(record, field_obj):
             field_name = ApplicationFormXWalk.formField2objectField(name)
             for sub_field in sub_field_names:
                 sub_fields.append(ApplicationFormXWalk.formField2objectField(name+"."+sub_field))
-        kay_field = sub_fields if len(sub_fields) > 0 else field_name
-        field_value = get_value(record, kay_field)
+        key_field = sub_fields if len(sub_fields) > 0 else field_name
+        field_value = get_value(record, key_field)
         if isinstance(field_value, bool):
             return "Yes" if field_value else "No"
         return field_value
