@@ -87,17 +87,21 @@ class TodoService(object):
             groups = [g for g in models.EditorGroup.groups_by_editor(account.id)]
             regular_groups = [g for g in groups if g.maned != account.id]
             maned_groups = [g for g in groups if g.maned == account.id]
+            if len(groups) > 0:
+                queries.append(TodoRules.editor_follow_up_old(groups, size))
+                queries.append(TodoRules.editor_stalled(groups, size))
+                queries.append(TodoRules.editor_completed(groups, size))
+
+            # for groups where the user is not the maned for a group, given them the assign
+            # pending todos at the regular priority
             if len(regular_groups) > 0:
-                queries.append(TodoRules.editor_follow_up_old(groups, size))
-                queries.append(TodoRules.editor_stalled(groups, size))
-                queries.append(TodoRules.editor_completed(groups, size))
-                queries.append(TodoRules.editor_assign_pending(groups, size))
+                queries.append(TodoRules.editor_assign_pending(regular_groups, size))
+
+            # for groups where the user IS the maned for a group, give them the assign
+            # pending todos at a lower priority
             if len(maned_groups) > 0:
-                queries.append(TodoRules.editor_follow_up_old(groups, size))
-                queries[-1][3] = -2
-                queries.append(TodoRules.editor_stalled(groups, size))
-                queries.append(TodoRules.editor_completed(groups, size))
-                queries.append(TodoRules.editor_assign_pending(groups, size))
+                qi = TodoRules.editor_assign_pending(maned_groups, size)
+                queries.append((qi[0], qi[1], qi[2], -2))
 
         if account.has_role(constants.ROLE_ASSOCIATE_EDITOR):
             queries.extend([
