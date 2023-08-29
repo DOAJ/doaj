@@ -13,11 +13,11 @@ tests:
     path: /account/login
   - step: Go to the application form
     path: /apply/
-  - step: "Complete the application form as you like, but ensure to set the following values:
-    * ISSN (print): 1848-3380,
-    * ISSN (online): 0005-1144,
-    * Archiving policy: CLOCKSS, LOCKSS
-    "
+  - step: | 
+      Complete the application form as you like, but ensure to set the following values:
+      * ISSN (print): 1848-3380
+      * ISSN (online): 0005-1144
+      * Archiving policy: CLOCKSS, LOCKSS
   - step: Submit the application
     results:
       - The application is successfully submitted
