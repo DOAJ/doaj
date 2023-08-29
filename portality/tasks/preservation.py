@@ -5,7 +5,6 @@ import os
 import shutil
 import tarfile
 from copy import deepcopy
-from datetime import datetime
 from zipfile import ZipFile
 
 import requests
@@ -209,7 +208,7 @@ class PreservationBackgroundTask(BackgroundTask):
         :return: background job
         """
 
-        created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
+        created_time = dates.now()
         dir_name = username + "-" + created_time
         local_dir = os.path.join(Preservation.UPLOAD_DIR, dir_name)
         file = kwargs.get("upload_file")
@@ -727,7 +726,7 @@ class PreservationPackage:
         self.preservation_dir = preservation_dir
         self.journal_dir = journal_dir
         self.package_dir = os.path.join(self.preservation_dir, journal_dir)
-        self.created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
+        self.created_time = dates.now()
         self.tar_file = self.package_dir + "_" + self.created_time + ".tar.gz"
         self.tar_file_name = os.path.basename(self.tar_file)
         self.__owner = owner
