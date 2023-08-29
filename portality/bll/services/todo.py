@@ -196,7 +196,7 @@ class TodoRules(object):
             sort="last_manual_update",
             size=size
         )
-        return constants.TODO_MANED_READY, ready, "last_manual_update", 1
+        return constants.TODO_MANED_READY, ready, "created_date", 1
 
     @classmethod
     def maned_completed(cls, size, maned_of):
