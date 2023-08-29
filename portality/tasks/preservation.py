@@ -612,7 +612,7 @@ class Preservation:
 
                 is_owner = self.owner_of_article(article)
 
-                if not isinstance(is_owner, bool) and is_owner == True:
+                if isinstance(is_owner, bool) and is_owner == True:
                     issn, article_id, metadata_json = self.get_article_info(article_data)
                     try:
                         package = ArticlePackage(dir_path, files)
