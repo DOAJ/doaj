@@ -5,6 +5,7 @@ import esprit
 from datetime import datetime, timedelta
 from portality.core import app, initialise_index
 from portality.dao import DomainObject
+from portality.lib import dates
 
 # Source                doaj-new-index-1                         doaj-new-index-2
 ES_1_HOSTS = [{'host': '10.131.99.251', 'port': 9200}, {'host': '10.131.35.67', 'port': 9200}]
@@ -62,7 +63,7 @@ def copy_idx(index_name: str, s_conn: esprit.raw.Connection, t_conn: elasticsear
     total = 0
     first_page = esprit.raw.search(s_conn, index_name)
     max = first_page.json().get("hits", {}).get("total", 0)
-    type_start = datetime.now()
+    type_start = dates.now()
 
     default_query = {
         "query": {"match_all": {}}
@@ -73,13 +74,13 @@ def copy_idx(index_name: str, s_conn: esprit.raw.Connection, t_conn: elasticsear
             batch.append(result)
             if len(batch) >= batch_size:
                 total += len(batch)
-                print(datetime.now(), f'Writing {len(batch)} to {index_name}; {total} of {max}')
+                print(dates.now(), f'Writing {len(batch)} to {index_name}; {total} of {max}')
                 resp = send_batch(batch, index_name, t_conn)
                 print(f'Success: {not resp["errors"]}')
 
                 batch = []
                 # do some timing predictions
-                batch_tick = datetime.now()
+                batch_tick = dates.now()
                 time_so_far = batch_tick - type_start
                 seconds_so_far = time_so_far.total_seconds()
                 estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
@@ -90,7 +91,7 @@ def copy_idx(index_name: str, s_conn: esprit.raw.Connection, t_conn: elasticsear
         # Try to write the part-batch to index
         if len(batch) > 0:
             total += len(batch)
-            print(datetime.now(), f'Scroll timed out / writing {len(batch)} to {index_name}; {total} of {max}')
+            print(dates.now(), f'Scroll timed out / writing {len(batch)} to {index_name}; {total} of {max}')
             resp = send_batch(batch, index_name, t_conn)
             print(f'Success: {not resp["errors"]}')
             batch = []
@@ -103,7 +104,7 @@ def copy_idx(index_name: str, s_conn: esprit.raw.Connection, t_conn: elasticsear
     # Write the last part-batch to index
     if len(batch) > 0:
         total += len(batch)
-        print(datetime.now(), f'final result set / writing {len(batch)} to {index_name}; {total} of {max}')
+        print(dates.now(), f'final result set / writing {len(batch)} to {index_name}; {total} of {max}')
         resp = send_batch(batch, index_name, t_conn)
         print(f'Success: {not resp["errors"]}')
 

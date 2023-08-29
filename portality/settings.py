@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.2.25"
+DOAJ_VERSION = "6.3.13"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -25,6 +25,11 @@ CMS_BUILD_ASSETS_ON_STARTUP = False
 SESSION_COOKIE_SAMESITE='Strict'
 SESSION_COOKIE_SECURE=True
 REMEMBER_COOKIE_SECURE = True
+
+####################################
+# Testdrive for setting up the test environment.
+# CAUTION - this can modify the index so should NEVER be used in production!
+TESTDRIVE_ENABLED = False
 
 ####################################
 # Debug Mode
@@ -126,10 +131,10 @@ VALID_FEATURES = ['api1', 'api2', 'api3']
 # File Path and URL Path settings
 
 # root of the git repo
-ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+ROOT_DIR = paths.rel2abs(__file__, "..")
 
 # base path, to the directory where this settings file lives
-BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
+BASE_FILE_PATH = paths.abs_dir_path(__file__)
 
 BASE_URL = "https://doaj.org"
 if BASE_URL.startswith('https://'):
@@ -157,8 +162,8 @@ PROXIED = False
 
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
-FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "failed_articles")
+UPLOAD_DIR = os.path.join(ROOT_DIR, "upload")
+FAILED_ARTICLE_DIR = os.path.join(ROOT_DIR, "failed_articles")
 
 # directory where reports are output
 REPORTS_BASE_DIR = "/home/cloo/reports/"
@@ -434,6 +439,7 @@ HUEY_SCHEDULE = {
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"}
 }
 
 HUEY_TASKS = {
@@ -526,7 +532,17 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "isolang_2letter": {
+    "isolang_2letter_strict": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+#                "index": False,
+                "store": True
+            }
+        }
+    },
+    "isolang_2letter_lax": {
         "type": "text",
         "fields": {
             "exact": {
@@ -546,7 +562,17 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "currency_code": {
+    "currency_code_strict": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+#                "index": False,
+                "store": True
+            }
+        }
+    },
+    "currency_code_lax": {
         "type": "text",
         "fields": {
             "exact": {
@@ -1046,32 +1072,7 @@ BITLY_OAUTH_TOKEN = ""
 
 ###############################################
 # Date handling
-#
-# when dates.format is called without a format argument, what format to use?
-# FIXME: this is actually wrong - should really use the timezone correctly
-DEFAULT_DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
-
-# date formats that we know about, and should try, in order, when parsing
-DATE_FORMATS = [
-    "%Y-%m-%dT%H:%M:%S.%fZ",   # e.g. 2010-01-01T00:00:00.000Z
-    "%Y-%m-%dT%H:%M:%SZ",   # e.g. 2014-09-23T11:30:45Z
-    "%Y-%m-%d",             # e.g. 2014-09-23
-    "%d/%m/%y",             # e.g. 29/02/80
-    "%d/%m/%Y",             # e.g. 29/02/1980
-    "%d-%m-%Y",             # e.g. 01-01-2015
-    "%Y.%m.%d",             # e.g. 2014.09.12
-    "%d.%m.%Y",             # e.g. 12.9.2014
-    "%d.%m.%y",             # e.g. 12.9.14
-    "%d %B %Y",             # e.g. 21 June 2014
-    "%d-%b-%Y",             # e.g. 31-Jul-13
-    "%d-%b-%y",             # e.g. 31-Jul-2013
-    "%b-%y",                # e.g. Aug-13
-    "%B %Y",                # e.g. February 2014
-    "%Y"                    # e.g. 1978
-]
-
-# The last_manual_update field was initialised to this value. Used to label as 'never'.
-DEFAULT_TIMESTAMP = "1970-01-01T00:00:00Z"
+# See portality.lib.dates   - moved to prevent circular import
 
 #################################################
 # API configuration
@@ -1170,6 +1171,11 @@ GA_ACTION_JOURNALCSV = 'Download'
 # GA for OpenURL
 # ~~->OpenURL:Feature~~
 GA_CATEGORY_OPENURL = 'OpenURL'
+
+# GA for PublicDataDump
+# ~~->PublicDataDump:Feature~~
+GA_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
+GA_ACTION_PUBLICDATADUMP = 'Download'
 
 # GA for API
 # ~~-> API:Feature~~
@@ -1380,3 +1386,29 @@ PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
 # Pages under maintenance
 
 PRESERVATION_PAGE_UNDER_MAINTENANCE = False
+
+# report journals that discontinue in ... days (eg. 1 = tomorrow)
+DISCONTINUED_DATE_DELTA = 0
+
+##################################################
+# Feature tours currently active
+
+TOUR_COOKIE_PREFIX = "doaj_tour_"
+TOUR_COOKIE_MAX_AGE = 31536000
+
+TOURS = {
+    "/editor/": [
+        {
+            "roles": ["editor", "associate_editor"],
+            "content_id": "dashboard_ed_assed",
+            "name": "Welcome to your dashboard!",
+            "description": "The new dashboard gives you a way to see all your priority work, take a look at what's new.",
+        },
+        {
+            "roles": ["editor"],
+            "content_id": "dashboard_ed",
+            "name": "Your group activity",
+            "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
+        }
+    ]
+}

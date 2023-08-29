@@ -4,7 +4,6 @@ from portality.api.current import DiscoveryApi, DiscoveryException
 from portality.api.common import generate_link_headers
 from portality.lib import dates
 import time
-from datetime import datetime
 from flask import url_for
 
 class TestAPIDiscovery(DoajTestCase):
@@ -238,11 +237,11 @@ class TestAPIDiscovery(DoajTestCase):
 
     def test_03_applications(self):
         # populate the index with some suggestions owned by this owner
-        now = datetime.utcnow()
+        now = dates.now()
         for i in range(5):
             a = models.Suggestion()
             a.set_owner("owner")
-            a.set_created(dates.format(dates.after(now, i)))
+            a.set_created(dates.format(dates.seconds_after(now, i)))
             bj = a.bibjson()
             bj.title = "Test Suggestion {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
@@ -257,7 +256,7 @@ class TestAPIDiscovery(DoajTestCase):
         for i in range(5):
             a = models.Suggestion()
             a.set_owner("stranger")
-            a.set_created(dates.format(dates.after(now, i + 5)))
+            a.set_created(dates.format(dates.seconds_after(now, i + 5)))
             bj = a.bibjson()
             bj.title = "Test Suggestion {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))

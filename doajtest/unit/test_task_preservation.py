@@ -1,4 +1,5 @@
 import os
+from doajtest import test_constants
 import requests
 from io import BytesIO
 from unittest.mock import patch
@@ -53,12 +54,12 @@ class TestPreservationSetup(DoajTestCase):
     def initial_setup(self, package_name):
         super(TestPreservationSetup, self).setUp()
         resources = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-        articles_zip_path = os.path.join(resources, package_name)
+        articles_zip_path = test_constants.PATH_RESOURCES / "articles.zip"
         with open(articles_zip_path, 'rb') as zf:
             self.zip_file = FileStorage(BytesIO(zf.read()), filename=package_name)
 
         self.upload_dir = app.config.get("UPLOAD_DIR", ".")
-        created_time = dates.now()
+        created_time = dates.now_str("%Y-%m-%d-%H-%M-%S")
         self.owner = "rama"
         self.journal_dir = "2051-5960"
         dir_name = self.owner + "-" + created_time

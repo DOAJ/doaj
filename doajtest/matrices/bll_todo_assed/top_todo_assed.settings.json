@@ -1,0 +1,223 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "account",
+      "type": "generated",
+      "values": {
+        "none": {},
+        "no_role": {},
+        "assed": {}
+      }
+    },
+    {
+      "name": "raises",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "ArgumentException": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "none"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_associate_follow_up_old",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        },
+        "0": {
+          "conditions": [
+            {
+              "account": {
+                "nor": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_associate_progress_stalled",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        },
+        "0": {
+          "conditions": [
+            {
+              "account": {
+                "nor": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_associate_start_pending",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        },
+        "0": {
+          "conditions": [
+            {
+              "account": {
+                "nor": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_associate_all_applications",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "4": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        },
+        "0": {
+          "conditions": [
+            {
+              "account": {
+                "nor": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_associate_follow_up_old_order",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_associate_progress_stalled_order",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "2": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_associate_start_pending_order",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "3": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "todo_associate_all_applications_order",
+      "type": "conditional",
+      "default": "",
+      "values": {
+        "4": {
+          "conditions": [
+            {
+              "account": {
+                "or": [
+                  "assed"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

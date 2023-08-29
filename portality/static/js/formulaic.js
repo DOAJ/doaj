@@ -1387,14 +1387,35 @@ var formulaic = {
             this.init = function() {
                 var viewClass = edges.css_classes(this.ns, "view");
                 var closeClass = edges.css_classes(this.ns, "close");
-                var textarea = $("div[name='" + this.fieldDef["name"] + "__group']").find("textarea");
+                let group = $("div[name='" + this.fieldDef["name"] + "__group']")
+                var textarea = group.find("textarea");
+
+                let inputs = group.find("input[type=text]")
+                for (let i = 0; i < inputs.length; i++) {
+                    let jqin = $(inputs[i]);
+                    let iid = jqin.attr("id");
+                    if (iid.endsWith("_author")) {
+                        let val = jqin.val()
+                        if (val === "") {
+                            jqin.hide();
+                        }
+                    }
+                }
 
                 for (var i = 0; i < textarea.length; i++) {
                     var container = $(textarea[i]);
+
+                    let contentHeight = container[0].scrollHeight;
+                    if (contentHeight > 200) {
+                        contentHeight = 200;
+                    }
+                    container.css("height", (contentHeight + 5) + "px");
+
                     var modalId = "modal-" + this.fieldDef["name"] + "-" + i;
 
                     var date = $("#" + this.fieldDef["name"] + "-" + i + "-note_date");
                     var note = $("#" + this.fieldDef["name"] + "-" + i + "-note");
+                    var author = $("#" + this.fieldDef["name"] + "-" + i + "-note_author");
 
                     $(`<button class="button ` + viewClass + `" style="margin: 0 1rem 1rem 0;">View note</button>
                         <div class="modal" id="` + modalId + `" tabindex="-1" role="dialog" style="display: none; padding-right: 0px; overflow-y: scroll">
@@ -1402,9 +1423,8 @@ var formulaic = {
                               <header class="flex-space-between modal__heading">
                                 <span>
                                   <p class="label">Note</p>
-                                  <h3 class="modal__title">
-                                      ` + date.val() + `
-                                  </h3>
+                                  <h3 class="modal__title"> ${author.val()} </h3>
+                                  <h3 class="modal__title"> ${date.val()} </h3>
                                 </span>
                                 <span type="button" data-dismiss="modal" class="type-01 ` + closeClass + `"><span class="sr-only">Close</span>&times;</span>
                               </header>
@@ -1483,9 +1503,14 @@ var formulaic = {
                 edges.on(this.addFieldBtn, "click", this, "addField");
                 edges.on(this.removeFieldBtns, "click", this, "removeField");
 
-                if (this.args.allow_delete) {
-                    this.removeFieldBtns.show();
+                // show or hide the remove buttons
+                for (let i = 0; i < this.divs.length; i++) {
+                    let cur_div = $(this.divs[i]);
+                    if (!cur_div.find('textarea').is(':disabled')) {
+                        cur_div.find('[id^="remove_field__"]').show();
+                    }
                 }
+
             };
 
             this.addField = function() {
@@ -2045,6 +2070,56 @@ var formulaic = {
             };
 
             this.init()
-        }
+        },
+        newIssnLink : function(params) {
+            return edges.instantiate(formulaic.widgets.IssnLink, params)
+        },
+        IssnLink : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+            this.issn = params.issn;
+
+            this.ns = "formulaic-issnlink";
+
+            this.link = false;
+            this.url = "https://portal.issn.org/resource/ISSN/";
+
+            this.init = function() {
+                var elements = this.form.controlSelect.input(
+                    {name: this.fieldDef.name});
+                edges.on(elements, "keyup.IssnLink", this, "updateUrl");
+
+                for (var i = 0; i < elements.length; i++) {
+                    this.updateUrl(elements[i]);
+                }
+            };
+
+            this.updateUrl = function(element) {
+                var that = $(element);
+                var val = that.val();
+                var id = edges.css_id(this.ns, this.fieldDef.name);
+
+                var match = val.match(/[d0-9]{4}-{0,1}[0-9]{3}[0-9xX]{1}/);
+                var url = this.url + val;
+
+                if (val && match) {
+                    if (this.link) {
+                        this.link.text(url);
+                        this.link.attr("href", url);
+                    } else {
+                        var classes = edges.css_classes(this.ns, "visit");
+                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + url + '">' + url + '</a></small></p>');
+
+                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                        this.link = $(selector, this.form.context);
+                    }
+                } else if (this.link) {
+                    this.link.remove();
+                    this.link = false;
+                }
+            };
+
+            this.init();
+        },
     }
 };

@@ -174,7 +174,7 @@ def create_application():
     a = ApplicationsCrudApi.create(data, current_user._get_current_object())
 
     # respond with a suitable Created response
-    return created(a, url_for("api_v2.retrieve_application", application_id=a.id))
+    return created(a, url_for("api_v3.retrieve_application", application_id=a.id))
 
 
 @blueprint.route("/applications/<application_id>", methods=["GET"])
@@ -241,7 +241,7 @@ def create_article():
     a = ArticlesCrudApi.create(data, current_user._get_current_object())
 
     # respond with a suitable Created response
-    return created(a, url_for("api_v2.retrieve_article", article_id=a.id))
+    return created(a, url_for("api_v3.retrieve_article", article_id=a.id))
 
 
 @blueprint.route("/articles/<article_id>", methods=["GET"])
@@ -323,7 +323,7 @@ def bulk_application_create():
     # get all the locations for the ids
     inl = []
     for id in ids:
-        inl.append((id, url_for("api_v2.retrieve_application", application_id=id)))
+        inl.append((id, url_for("api_v3.retrieve_application", application_id=id)))
 
     # respond with a suitable Created response
     return bulk_created(inl)
@@ -369,7 +369,7 @@ def bulk_article_create():
     # get all the locations for the ids
     inl = []
     for id in ids:
-        inl.append((id, url_for("api_v2.retrieve_article", article_id=id)))
+        inl.append((id, url_for("api_v3.retrieve_article", article_id=id)))
 
     # respond with a suitable Created response
     return bulk_created(inl)

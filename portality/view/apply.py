@@ -8,6 +8,7 @@ from portality import models
 from portality.decorators import write_required
 
 from portality.forms.application_forms import ApplicationFormFactory
+from portality.view.view_helper import exparam_editing_user
 
 blueprint = Blueprint('apply', __name__)
 
@@ -44,8 +45,8 @@ def public_application(draft_id=None):
         if draft_application is not None and draft_application.owner != current_user.id:
             abort(404)
 
+    fc = ApplicationFormFactory.context("public", extra_param=exparam_editing_user())
     if request.method == "GET":
-        fc = ApplicationFormFactory.context("public")
         if draft_application is not None:
             fc.processor(source=draft_application)
 
@@ -56,8 +57,6 @@ def public_application(draft_id=None):
         return fc.render_template(obj=draft_application, draft_data=draft_data)
 
     elif request.method == "POST":
-
-        fc = ApplicationFormFactory.context("public")
 
         draft = request.form.get("draft")
         async_def = request.form.get("async")

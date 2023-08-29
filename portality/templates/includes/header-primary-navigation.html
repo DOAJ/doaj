@@ -1,5 +1,5 @@
 {% set selected_nav = data.nav.entries|selectattr("id", "equalto", section_id)|first %}
-<li class="dropdown primary-nav__item_desktop">
+<li class="dropdown primary-nav__item_desktop" role="menuitem">
     <a href="#" data-toggle="dropdown" class="dropdown__trigger nav-bar__link label" id="action-menu-{{ selected_nav.id }}" role="button" aria-haspopup="true" aria-expanded="false" role="menuitem">
         {{ selected_nav.label }}
         {% if selected_nav.feather %}

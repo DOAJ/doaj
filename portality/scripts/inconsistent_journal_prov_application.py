@@ -13,18 +13,19 @@ Script which attempts to identify journals, applications and provenance records 
 """
 
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import csv
 import esprit
 
 from portality import constants
 from portality.core import es_connection
+from portality.lib import dates
 from portality.util import ipt_prefix
 from portality.models import Suggestion, Provenance, Journal, Account
 
-APP_TIMEZONE_CUTOFF = datetime.strptime("2017-05-18T14:02:08Z", "%Y-%m-%dT%H:%M:%SZ")
-JOURNAL_TIMEZONE_CUTOFF = datetime.strptime("2017-09-21T08:54:05Z", "%Y-%m-%dT%H:%M:%SZ")
+APP_TIMEZONE_CUTOFF = dates.parse("2017-05-18T14:02:08Z")
+JOURNAL_TIMEZONE_CUTOFF = dates.parse("2017-09-21T08:54:05Z")
 THRESHOLD = 20.0
 
 local = es_connection
@@ -133,7 +134,7 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, out
             reapp = journal.last_update_request
             print(counter, journal.id, reapp)
             if reapp is not None:
-                jcreated = datetime.strptime(reapp, "%Y-%m-%dT%H:%M:%SZ")
+                jcreated = dates.parse(reapp)
             jcreated = adjust_timestamp(jcreated, JOURNAL_TIMEZONE_CUTOFF)
 
             app_lustamp = adjust_timestamp(latest.last_updated_timestamp, APP_TIMEZONE_CUTOFF)
@@ -194,7 +195,7 @@ PROV_QUERY = {
 }
 
 if __name__ == "__main__":
-    print('Starting {0}.'.format(datetime.now()))
+    print('Starting {0}.'.format(dates.now()))
     applications_inconsistencies("apps_with_prov.csv", "apps_accepted_without_journals.csv", local)
     journals_applications_provenance("journals_applications_provenance.csv", "journals_no_accounts.csv", "journals_reapp_fails.csv", local)
-    print('Finished {0}.'.format(datetime.now()))
+    print('Finished {0}.'.format(dates.now()))

@@ -2,6 +2,8 @@ import requests, time
 from lxml import etree
 from datetime import datetime, timedelta
 
+from portality.lib import dates
+
 # FIXME: in an ideal world, the functional tests would also be wrapped by doaj.helpers.DoajTestCase
 # Plus, this test requires a non-empty index, so providing it with a blank index isn't useful
 #from doajtest.bootstrap import prepare_for_test
@@ -28,7 +30,7 @@ def harvest(base_url, verb="ListRecords", metadata_prefix="oai_dc", rate_limit=0
         idents = []
 
     # Apply our rate limiting for requests
-    now = datetime.utcnow()
+    now = dates.now()
     if now - last_req < req_period:
         time.sleep((req_period - (now - last_req)).total_seconds())
 
@@ -89,7 +91,7 @@ def run(config):
         last_req=None
         idents = []
         while True:
-            request_time = datetime.utcnow()
+            request_time = dates.now()
             rt = harvest(
                 config.get("base_url") + endpoint.get("endpoint"),
                 verb=endpoint.get("verb", "ListRecords"),

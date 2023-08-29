@@ -105,7 +105,7 @@ class HarvestState(dataobj.DataObj, DomainObject):
     def set_harvested(self, harvester_name, last_harvest_date=None):
         # first ensure we have a last harvest date, and that it's in the right format
         if last_harvest_date is None:
-            last_harvest_date = dates.now()
+            last_harvest_date = dates.now_str()
         last_harvest_date = dates.reformat(last_harvest_date)
 
         self._delete_from_list("last_harvest", matchsub={"plugin" : harvester_name})
@@ -125,7 +125,7 @@ class HarvesterProgressReport(object):
     last_harvest_dates_at_start_of_harvester = {}
     articles_processed = {}
     articles_saved_successfully = {}
-    harvester_started = dates.now()
+    harvester_started = dates.now_str()
     error_messages = []
 
     @classmethod
@@ -159,7 +159,7 @@ class HarvesterProgressReport(object):
 
     @classmethod
     def write_report(cls):
-        report = ["Harvester ran from {d1} to {d2}.".format(d1=cls.harvester_started, d2=dates.now())]
+        report = ["Harvester ran from {d1} to {d2}.".format(d1=cls.harvester_started, d2=dates.now_str())]
         for p_name in cls.last_harvest_dates_at_start_of_harvester.keys():
             report.append("Plugin {p} harvested {n_total} articles. "
                           "{n_succ} saved successfully to DOAJ; {n_fail} failed.".format(
