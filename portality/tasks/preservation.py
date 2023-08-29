@@ -610,10 +610,9 @@ class Preservation:
             if article:
                 article_data = article.data
 
-                if not self.owner_of_article(article):
-                    articles_list.add_unowned_articles(package)
+                is_owner = self.owner_of_article(article)
 
-                else:
+                if not isinstance(is_owner, bool) and is_owner == True:
                     issn, article_id, metadata_json = self.get_article_info(article_data)
                     try:
                         package = ArticlePackage(dir_path, files)
@@ -633,6 +632,8 @@ class Preservation:
                     except Exception:
                         articles_list.add_unbagged_articles(package)
                         app.logger.exception(f"Error while create article ( {article_id} ) package")
+                else:
+                    articles_list.add_unowned_articles(package)
 
             else:
                 # skip the article if not found
