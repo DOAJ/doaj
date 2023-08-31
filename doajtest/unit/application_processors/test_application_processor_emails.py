@@ -120,11 +120,11 @@ class TestPublicApplicationEmails(DoajTestCase):
         #   * to the applicant, informing them the application was received
         public_template = re.escape('notification_email.jinja2')
         public_to = re.escape(account.email)
-        public_subject = re.escape("Directory of Open Access Journals - Your application to DOAJ has been received (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ")")
+        public_subject = re.escape("Directory of Open Access Journals - Your application (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ") to DOAJ has been received")
         public_email_matched = re.search(email_log_regex % (public_template, public_to, public_subject),
                                          info_stream_contents,
                                          re.DOTALL)
-        assert bool(public_email_matched)
+        assert bool(public_email_matched), info_stream_contents
         assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
 
@@ -220,7 +220,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         editor_template = re.escape('notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape("Application reverted to 'In Progress' by Managing Editor (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ")\n")
+        editor_subject = re.escape("Application (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ") reverted to 'In Progress' by Managing Editor\n")
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
                                          re.DOTALL)
@@ -288,7 +288,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape("Directory of Open Access Journals - Application reverted to 'In Progress' by Managing Editor (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ")")
+        editor_subject = re.escape("Directory of Open Access Journals - Application ({}) reverted to 'In Progress' by Managing Editor".format(', '.join(issn for issn in processor.source.bibjson().issns())))
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
                                          re.DOTALL)
@@ -345,7 +345,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * and to the publisher informing them there's an editor assigned.
         assEd_template = re.escape('email/notification_email.jinja2')
         assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('Directory of Open Access Journals - New application assigned to you (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        assEd_subject = re.escape('Directory of Open Access Journals - New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -354,7 +354,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         publisher_template = re.escape('email/notification_email.jinja2')
         publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Directory of Open Access Journals - Your application has been assigned an editor for review (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        publisher_subject = re.escape('Directory of Open Access Journals - Your application ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -386,7 +386,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * to the AssEd who's been assigned
         editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape('Directory of Open Access Journals - New application assigned to your group (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        editor_subject = re.escape('Directory of Open Access Journals - New application ({}) assigned to your group'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
@@ -395,8 +395,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         assEd_template = re.escape('email/notification_email.jinja2')
         assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('Directory of Open Access Journals - New application assigned to you (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
-
+        assEd_subject = re.escape('Directory of Open Access Journals - New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
                                         re.DOTALL)
@@ -435,7 +434,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * to the ManEd in charge of the assigned Editor Group, saying an application is ready
         manEd_template = re.escape('email/notification_email.jinja2')
         manEd_to = re.escape(acc.email)
-        manEd_subject = re.escape('Directory of Open Access Journals - Application marked as ready (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        manEd_subject = re.escape('Directory of Open Access Journals - Application ({}) marked as ready'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
                                         info_stream_contents,
@@ -460,7 +459,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * to the publisher, informing them of the journal's acceptance
         publisher_template = re.escape('email/notification_email.jinja2')
         publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Directory of Open Access Journals - Your journal has been accepted (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        publisher_subject = re.escape('Directory of Open Access Journals - Your journal ({}) has been accepted'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -511,7 +510,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * to the ManEds, saying an application is ready
         manEd_template = 'email/notification_email.jinja2'
         manEd_to = re.escape("maned@example.com")
-        manEd_subject = re.escape('Application marked as ready (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        manEd_subject = re.escape('Application ({}) marked as ready'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
                                         info_stream_contents,
@@ -546,7 +545,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * and to the publisher informing them there's an editor assigned.
         assEd_template = 'email/notification_email.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('New application assigned to you (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -555,7 +554,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         publisher_template = 'email/notification_email.jinja2'
         publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your update request has been assigned an editor for review (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -584,7 +583,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * to the AssEd who's been assigned,
         assEd_template = 'email/notification_email.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_2').email)
-        assEd_subject = re.escape('New application assigned to you (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -626,7 +625,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * to the editor telling them an application has reverted to in progress
         assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = re.escape("One of your applications has not passed review (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ")")
+        assoc_editor_subject = re.escape('One of your applications ({}) has not passed review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
         assoc_editor_email_matched = re.search(
             email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
             info_stream_contents,
@@ -668,7 +667,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * to the publisher, notifying that an editor is viewing their application
         publisher_template = re.escape('email/notification_email.jinja2')
         publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Directory of Open Access Journals - Your submission is under review (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        publisher_subject = re.escape('Directory of Open Access Journals - Your submission ({}) is under review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -689,7 +688,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * to the editor, informing them an application has been completed by an Associate Editor
         editor_template = re.escape('notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape('Directory of Open Access Journals - Application marked as completed (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        editor_subject = re.escape('Directory of Open Access Journals - Application ({}) marked as completed'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
                                          re.DOTALL)
@@ -805,7 +804,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape("Application reverted to 'In Progress' by Managing Editor (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ")")
+        editor_subject = re.escape("Application ({}) reverted to 'In Progress' by Managing Editor".format(', '.join(issn for issn in processor.source.bibjson().issns())))
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
                                          re.DOTALL)
@@ -876,7 +875,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape("Application reverted to 'In Progress' by Managing Editor (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ")")
+        editor_subject = re.escape("Application ({}) reverted to 'In Progress' by Managing Editor".format(', '.join(issn for issn in processor.source.bibjson().issns())))
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
                                          re.DOTALL)
@@ -929,7 +928,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * and to the publisher informing them there's an editor assigned.
         assEd_template = 'email/notification_email.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('New application assigned to you (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -938,7 +937,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         publisher_template = 'email/notification_email.jinja2'
         publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your update request has been assigned an editor for review (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -970,7 +969,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * to the AssEd who's been assigned
         editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape('New application assigned to your group (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        editor_subject = re.escape('New application ({}) assigned to your group'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
@@ -979,7 +978,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         assEd_template = 'email/notification_email.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('New application assigned to you (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -1007,7 +1006,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * to the ManEds, saying an application is ready
         manEd_template = 'email/notification_email.jinja2'
         manEd_to = re.escape("maned@example.com")
-        manEd_subject = re.escape('Application marked as ready (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        manEd_subject = re.escape('Application ({}) marked as ready'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
                                         info_stream_contents,
@@ -1034,7 +1033,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * to the journal contact, informing them of the journal's acceptance
         publisher_template = 'email/notification_email.jinja2'
         publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Update request accepted (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        publisher_subject = re.escape('Update request ({}) accepted'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -1084,7 +1083,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * to the ManEds, saying an application is ready
         manEd_template = 'email/notification_email.jinja2'
         manEd_to = re.escape("maned@example.com")
-        manEd_subject = re.escape('Application marked as ready (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        manEd_subject = re.escape('Application ({}) marked as ready'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
                                         info_stream_contents,
@@ -1118,7 +1117,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * and to the publisher informing them there's an editor assigned.
         assEd_template = 'email/notification_email.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('New application assigned to you (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -1127,7 +1126,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
 
         publisher_template = 'email/notification_email.jinja2'
         publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your update request has been assigned an editor for review (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        publisher_subject = re.escape('Your update request ({}) has been assigned to an editor for review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -1156,7 +1155,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * to the AssEd who's been assigned,
         assEd_template = 'email/notification_email.jinja2'
         assEd_to = re.escape(models.Account.pull('associate_2').email)
-        assEd_subject = re.escape('New application assigned to you (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        assEd_subject = re.escape('New application ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -1197,7 +1196,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * to the associate editor, informing them the application has been bounced back to in progress.
         assoc_editor_template = re.escape('email/notification_email.jinja2')
         assoc_editor_to = re.escape('associate@example.com')
-        assoc_editor_subject = re.escape("One of your applications has not passed review (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ")")
+        assoc_editor_subject = re.escape('One of your applications ({}) has not passed review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
         assoc_editor_email_matched = re.search(
             email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
             info_stream_contents,
@@ -1243,7 +1242,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * to the publisher, notifying that an editor is viewing their application
         publisher_template = re.escape('email/notification_email.jinja2')
         publisher_to = re.escape(owner.email)
-        publisher_subject = re.escape('Your submission is under review (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        publisher_subject = re.escape('Your submission ({}) is under review'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
@@ -1264,7 +1263,7 @@ class TestUpdateRequestReviewEmails(DoajTestCase):
         #   * to the editor, informing them an application has been completed by an Associate Editor
         editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape("Application marked as completed (" + ", ".join(issn for issn in processor.source.bibjson().issns()) + ")")
+        editor_subject = re.escape("Application ({}) marked as completed".format(', '.join(issn for issn in processor.source.bibjson().issns())))
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
                                          re.DOTALL)
@@ -1332,7 +1331,7 @@ class TestJournalReviewEmails(DoajTestCase):
         #   * to the AssEd who's been assigned,
         editor_template = re.escape('email/notification_email.jinja2')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = re.escape('Directory of Open Access Journals - New journal assigned to your group (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        editor_subject = re.escape('Directory of Open Access Journals - New journal ({}) assigned to your group'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
@@ -1341,7 +1340,7 @@ class TestJournalReviewEmails(DoajTestCase):
 
         assEd_template = re.escape('email/notification_email.jinja2')
         assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = re.escape('Directory of Open Access Journals - New journal assigned to you (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        assEd_subject = re.escape('Directory of Open Access Journals - New journal ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -1372,7 +1371,7 @@ class TestJournalReviewEmails(DoajTestCase):
         #   * to the AssEd who's been assigned
         assEd_template = re.escape('email/notification_email.jinja2')
         assEd_to = re.escape(models.Account.pull('associate_2').email)
-        assEd_subject = re.escape('Directory of Open Access Journals - New journal assigned to you (' + ', '.join(issn for issn in processor.source.bibjson().issns()) + ')')
+        assEd_subject = re.escape('Directory of Open Access Journals - New journal ({}) assigned to you'.format(', '.join(issn for issn in processor.source.bibjson().issns())))
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
