@@ -726,7 +726,7 @@ class PreservationPackage:
         self.preservation_dir = preservation_dir
         self.journal_dir = journal_dir
         self.package_dir = os.path.join(self.preservation_dir, journal_dir)
-        self.created_time = dates.now()
+        self.created_time = dates.now_str("%Y-%m-%d-%H-%M-%S")
         self.tar_file = self.package_dir + "_" + self.created_time + ".tar.gz"
         self.tar_file_name = os.path.basename(self.tar_file)
         self.__owner = owner

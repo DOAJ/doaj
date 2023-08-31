@@ -53,8 +53,7 @@ class TestPreservationSetup(DoajTestCase):
 
     def initial_setup(self, package_name):
         super(TestPreservationSetup, self).setUp()
-        resources = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-        articles_zip_path = test_constants.PATH_RESOURCES / "articles.zip"
+        articles_zip_path = test_constants.PATH_RESOURCES / package_name
         with open(articles_zip_path, 'rb') as zf:
             self.zip_file = FileStorage(BytesIO(zf.read()), filename=package_name)
 
@@ -162,7 +161,7 @@ class TestPreservationMultipleJournals(TestPreservationSetup):
         super(TestPreservationMultipleJournals, self).tearDown()
 
     @patch.object(Article, 'pull_by_key', mock_pull_by_key)
-    @patch.object(requests,"post", mock_requests_post)
+    @patch.object(requests, "post", mock_requests_post)
     @patch.object(preservation.Preservation, 'owner_of_article', mock_owner_of_article)
     def test_preservation_multiple_journals(self):
         self.preserve.save_file(self.zip_file)
