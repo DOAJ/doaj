@@ -58,7 +58,7 @@ application:publisher:assigned:notify:
   long: |
     Your application for **{application_title}** submitted on {application_date} has been assigned to an editor for review for inclusion in the DOAJ. Please look out for further communications about the application. These may come from someone who is not using a DOAJ email address: [{volunteers_url}]({volunteers_url})
   short:
-    Your application ({issns}) has been assigned an editor for review
+    Your application ({issns}) has been assigned to an editor for review
 
 application:publisher:created:notify:
   long: |
@@ -130,7 +130,7 @@ update_request:publisher:assigned:notify:
 
     Thank you for helping to keep the DOAJ database up-to-date.
   short:
-    Your update request ({issns}) has been assigned an editor for review
+    Your update request ({issns}) has been assigned to an editor for review
 
 update_request:publisher:rejected:notify:
   long: |
