@@ -1,0 +1,61 @@
+suite: Dashboard
+testset: ManEd Todo List
+
+tests:
+  - title: ManEd Todo List
+    context:
+      role: admin
+      testdrive: todo_maned_editor_associate
+    setup:
+      - Use the todo_maned_editor_associate testdrive to setup for this test, OR follow the next steps
+      - You should set up a user account which has the admin, editor and associate editor roles, and is the maned of at least one editorial group, and
+        editor of at least one other editorial group
+      - "The user account should be assigned at least 4 applications which meet the following criteria: one that was created over 6 weeks ago, 
+         one that has not been modified for 3 weeks, one which has recently been assigned to the user and is in the pending state, and one
+         recent application"
+      - "The user account should be assigned another 4 applications which meet the following criteria: one that is in the completed state and assigned
+         to your editorial group, one that is assigned to your editorial group in the pending state but with no associate editor assigned, one that
+         is in your editorial group which was created less than 8 weeks ago but which hasn't been updated for 6 weeks, and one that is
+         in your editorial group which was created more than 8 weeks ago"
+      - "The user account should be assigned another 5 applications which meet the following criteria: an application in your maned group which is 
+         in the ready state, an application in your maned group which is in the completed state, an application in your maned group which has
+         not had an associate editor assigned, an application created over 10 weeks ago in your maned group, an application in your maned
+         group which has not been updated for 8 weeks."
+    steps:
+      - step: log in as a managing editor
+      - step: Go to the maned dashboard page
+        path: /dashboard
+        results:
+          - You can see 13 applications in your priority list
+          - Your priority list contains a mixture of managing editor items (actions related to teams you are the managing editor for), 
+            editor items (actions related to teams you are the editor for) and associate items (actions related to applications which
+            are assigned specifically to you for review).
+          - At least one of your priority items is for an application which is older than 10 weeks (it should indicate that it is for your maned group)
+          - At least one of your priority items is for an application which has been inactive (stalled) for more than 8 weeks (it should indicate that it is for your maned group)
+          - At least one of your priority items is for an application in the state ready (it should indicate that it is for your maned group)
+          - At least one of your priority items is for an application in the completed state which has not been updated for more than 2 weeks (it should indicate that it is for your maned group)
+          - At least one of your priority items is for an application in the pending state which has not been updated for more than 2 weeks (it should indicate that it is for your maned group)
+      - step: click on the managing editor's ready application
+      - step: Change the application status to "Accepted" and save
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - You can see 12 applications in your priority list
+          - The application you have just edited has disappeared from your priority list
+      - step: click on the [in progress] stalled managing editor's application
+      - step: make any minor adjustment to the metadata and save
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - You can see 11 applications in your priority list
+          - The application you just edited has disappeared from your priority list
+      - step: click on the "completed" maned application
+      - step: Change the application to "ready" status
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - You can still see 11 applications in your priority list
+          - The completed application you just moved to ready is now in your priority list as a ready application
+      - step: click on the pending managing editor's application
+      - step: Assign the item to an editor in the selected group (there should be a test editor available to you to select)
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - You have 10 applications left in your todo list
+          - The pending application you just edited is no longer visible

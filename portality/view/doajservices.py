@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 from portality.core import app
 from portality.decorators import ssl_required, write_required, restrict_to_role
 from portality.util import jsonp
-from portality import lock
+from portality import lock, models
 from portality.bll import DOAJ
 
 blueprint = Blueprint('doajservices', __name__)
@@ -107,7 +107,7 @@ def group_status(group_id):
     :param group_id:
     :return:
     """
-    if not current_user.has_role("admin"):
+    if (not (current_user.has_role("editor") and models.EditorGroup.pull(group_id).editor == current_user.id)) and (not current_user.has_role("admin")):
         abort(404)
     svc = DOAJ.todoService()
     stats = svc.group_stats(group_id)
