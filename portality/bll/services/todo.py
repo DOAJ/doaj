@@ -85,11 +85,23 @@ class TodoService(object):
 
         if account.has_role("editor"):
             groups = [g for g in models.EditorGroup.groups_by_editor(account.id)]
+            regular_groups = [g for g in groups if g.maned != account.id]
+            maned_groups = [g for g in groups if g.maned == account.id]
             if len(groups) > 0:
                 queries.append(TodoRules.editor_follow_up_old(groups, size))
                 queries.append(TodoRules.editor_stalled(groups, size))
                 queries.append(TodoRules.editor_completed(groups, size))
-                queries.append(TodoRules.editor_assign_pending(groups, size))
+
+            # for groups where the user is not the maned for a group, given them the assign
+            # pending todos at the regular priority
+            if len(regular_groups) > 0:
+                queries.append(TodoRules.editor_assign_pending(regular_groups, size))
+
+            # for groups where the user IS the maned for a group, give them the assign
+            # pending todos at a lower priority
+            if len(maned_groups) > 0:
+                qi = TodoRules.editor_assign_pending(maned_groups, size)
+                queries.append((constants.TODO_EDITOR_ASSIGN_PENDING_LOW_PRIORITY, qi[1], qi[2], -2))
 
         if account.has_role(constants.ROLE_ASSOCIATE_EDITOR):
             queries.extend([
@@ -184,7 +196,7 @@ class TodoRules(object):
             sort="last_manual_update",
             size=size
         )
-        return constants.TODO_MANED_READY, ready, "last_manual_update", 1
+        return constants.TODO_MANED_READY, ready, "created_date", 1
 
     @classmethod
     def maned_completed(cls, size, maned_of):
@@ -221,7 +233,8 @@ class TodoRules(object):
         stalled = TodoQuery(
             musts=[
                 TodoQuery.lmu_older_than(6),
-                TodoQuery.editor_groups(groups)
+                TodoQuery.editor_groups(groups),
+                TodoQuery.is_new_application()
             ],
             must_nots=[
                 TodoQuery.status([
@@ -240,7 +253,8 @@ class TodoRules(object):
         follow_up_old = TodoQuery(
             musts=[
                 TodoQuery.cd_older_than(8),
-                TodoQuery.editor_groups(groups)
+                TodoQuery.editor_groups(groups),
+                TodoQuery.is_new_application()
             ],
             must_nots=[
                 TodoQuery.status([
@@ -259,7 +273,8 @@ class TodoRules(object):
         completed = TodoQuery(
             musts=[
                 TodoQuery.status([constants.APPLICATION_STATUS_COMPLETED]),
-                TodoQuery.editor_groups(groups)
+                TodoQuery.editor_groups(groups),
+                TodoQuery.is_new_application()
             ],
             sort="last_manual_update",
             size=size
@@ -271,7 +286,8 @@ class TodoRules(object):
         assign_pending = TodoQuery(
             musts=[
                 TodoQuery.editor_groups(groups),
-                TodoQuery.status([constants.APPLICATION_STATUS_PENDING])
+                TodoQuery.status([constants.APPLICATION_STATUS_PENDING]),
+                TodoQuery.is_new_application()
             ],
             must_nots=[
                 TodoQuery.exists("admin.editor")
@@ -287,7 +303,8 @@ class TodoRules(object):
         stalled = TodoQuery(
             musts=[
                 TodoQuery.lmu_older_than(3),
-                TodoQuery.editor(acc_id)
+                TodoQuery.editor(acc_id),
+                TodoQuery.is_new_application()
             ],
             must_nots=[
                 TodoQuery.status([
@@ -308,7 +325,8 @@ class TodoRules(object):
         follow_up_old = TodoQuery(
             musts=[
                 TodoQuery.cd_older_than(6),
-                TodoQuery.editor(acc_id)
+                TodoQuery.editor(acc_id),
+                TodoQuery.is_new_application()
             ],
             must_nots=[
                 TodoQuery.status([
@@ -329,7 +347,8 @@ class TodoRules(object):
         assign_pending = TodoQuery(
             musts=[
                 TodoQuery.editor(acc_id),
-                TodoQuery.status([constants.APPLICATION_STATUS_PENDING])
+                TodoQuery.status([constants.APPLICATION_STATUS_PENDING]),
+                TodoQuery.is_new_application()
             ],
             sort=sort_field,
             size=size
@@ -341,7 +360,8 @@ class TodoRules(object):
         sort_field = "created_date"
         all = TodoQuery(
             musts=[
-                TodoQuery.editor(acc_id)
+                TodoQuery.editor(acc_id),
+                TodoQuery.is_new_application()
             ],
             must_nots=[
                 TodoQuery.status([
@@ -386,6 +406,14 @@ class TodoQuery(object):
             "size" : self._size
         }
         return q
+
+    @classmethod
+    def is_new_application(cls):
+        return {
+            "term": {
+                "admin.application_type.exact": constants.APPLICATION_TYPE_NEW_APPLICATION
+            }
+        }
 
     @classmethod
     def editor_group(cls, groups):
