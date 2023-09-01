@@ -67,7 +67,9 @@ class ApplicationPublisherAcceptedNotify(EventConsumer):
             publisher_dashboard_url=app.config.get("BASE_URL") + url_for("publisher.journals"),
             faq_url=app.config.get("BASE_URL") + url_for("doaj.faq")
         )
-        notification.short = svc.short_notification(cls.ID)
+        notification.short = svc.short_notification(cls.ID).format(
+            issns=", ".join(issn for issn in application.bibjson().issns())
+        )
 
         notification.action = url_for("publisher.journals")
 

@@ -515,15 +515,15 @@ $.extend(true, doaj, {
                     fieldDisplays: {
                         "es_type.exact": "Showing",
                         "admin.in_doaj" : "In DOAJ?",
-                        "index.language.exact" : "Journal language",
+                        "index.language.exact" : "Language",
                         "bibjson.publisher.name.exact" : "Publisher",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",
-                        "index.country.exact" : "Country of publisher",
-                        "index.license.exact" : "Journal license",
+                        "index.country.exact" : "Country",
+                        "index.license.exact" : "License",
                         "bibjson.year.exact" : "Year of publication",
-                        "bibjson.journal.title.exact" : "Journal title",
-                        "index.has_apc.exact" : "Publication charges?"
+                        "bibjson.journal.title.exact" : "Title",
+                        "index.has_apc.exact" : "Charges?"
                     },
                     valueMaps : {
                         "es_type.exact" : {
