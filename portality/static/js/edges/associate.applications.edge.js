@@ -27,6 +27,8 @@ $.extend(true, doaj, {
                 doaj.components.searchingNotification(),
 
                 // facets
+                doaj.facets.openOrClosed(),
+
                 edges.newRefiningANDTermSelector({
                     id: "application_status",
                     category: "facet",
@@ -302,6 +304,7 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays: {
                         'admin.application_status.exact': 'Status',
+                        'index.application_type.exact': "Record type",
                         'index.classification.exact' : 'Classification',
                         'index.language.exact' : 'Language',
                         'index.country.exact' : 'Country',
