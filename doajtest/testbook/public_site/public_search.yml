@@ -166,3 +166,11 @@ tests:
     results:
     - You are taken to the full text of this article on the Web. It opens in a new
       tab
+  - step: Click tab
+    results:
+      - focus is on the list of checkboxes
+    results:
+      - focus is clearly marked by the outline
+      - step: click spacebar to check the filter
+        results:
+          - filter is applied
