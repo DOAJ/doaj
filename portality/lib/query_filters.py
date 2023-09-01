@@ -58,6 +58,31 @@ def search_all_meta(q):
     return q
 
 
+def journal_article_filter(q):
+    """Search by all_meta field for journal and all fields for article"""
+    search_text = None
+    context = q.get_field_context()
+    if isinstance(context, list):
+        for item in context:
+            if "query_string" in item:
+                search_text = item["query_string"]["query"]
+                if "default_field" in item["query_string"]:
+                    return q
+    elif isinstance(context, dict):
+        if "query_string" in context:
+            search_text = context["query_string"]["query"]
+            if "default_field" in context["query_string"]:
+                return q
+    q.convert_to_bool()
+    if search_text:
+        filter = [{"bool": {"must": [{"term": {"es_type.exact": "article"}},
+                            {"query_string": {"default_field": "*", "query": search_text}}]}},
+                  {"bool": {"must": [{"term": {"es_type.exact": "journal"}},
+                            {"query_string": {"default_field": "all_meta", "query": search_text}}]}}]
+        q.add_should(filter)
+    return q
+
+
 def owner(q):
     q.clear_match_all()
     q.add_must_filter({"term" : {"admin.owner.exact" : current_user.id}})

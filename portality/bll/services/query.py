@@ -225,6 +225,17 @@ class Query(object):
                             item["query_string"]["default_field"] = value
                             break
 
+    def add_should(self, filter, minimum_should_match=1):
+        self.convert_to_bool()
+        context = self.q["query"]["bool"]
+        if "should" not in context:
+            context["should"] = []
+        if isinstance(filter, list):
+            context["should"].extend(filter)
+        else:
+            context["should"].append(filter)
+        context["minimum_should_match"] = minimum_should_match
+
     def add_must_filter(self, filter):
         self.convert_to_bool()
         context = self.q["query"]["bool"]

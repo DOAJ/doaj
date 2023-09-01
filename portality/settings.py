@@ -731,7 +731,7 @@ QUERY_ROUTE = {
             "auth" : False,
             "role" : None,
             "query_validators" : ["non_public_fields_validator", "public_query_validator"],
-            "query_filters" : ["only_in_doaj", "strip_facets", "es_type_fix"],
+            "query_filters" : ["only_in_doaj", "strip_facets", "es_type_fix", "journal_article_filter"],
             "result_filters" : ["public_result_filter", "add_fqw_facets", "fqw_back_compat"],
             "dao" : "portality.models.JournalArticle",  # ~~->JournalArticle:Model~~
             "required_parameters" : {"ref" : ["fqw"]}
@@ -909,6 +909,7 @@ QUERY_FILTERS = {
     "not_update_request" : "portality.lib.query_filters.not_update_request",
     "who_current_user" : "portality.lib.query_filters.who_current_user",    # ~~-> WhoCurrentUser:Query ~~
     "search_all_meta" : "portality.lib.query_filters.search_all_meta",  # ~~-> SearchAllMeta:Query ~~
+    "journal_article_filter" : "portality.lib.query_filters.journal_article_filter", # ~~-> JournalArticleFilter:Query ~~
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",

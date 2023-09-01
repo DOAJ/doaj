@@ -535,3 +535,23 @@ class TestQuery(DoajTestCase):
                             {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
                                                'track_total_hits': True}, account=med, additional_parameters={})
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+    def test_journal_article_query_notes(self):
+
+        self.app_test.config['QUERY_ROUTE'] = self.OLD_QUERY_ROUTE
+
+        self.app_test.config['QUERY_FILTERS'] = self.OLD_QUERY_FILTERS
+
+        self.article11 = models.Article(
+            **ArticleFixtureFactory.make_article_source(pissn="1111-1111", eissn="2222-2222", doi="10.0000/article-11",
+                                                        fulltext="https://www.article11.com"))
+        self.article11.save(blocking=True)
+
+        self.get_journal_with_notes()
+
+        qsvc = QueryService()
+
+        res = qsvc.search('query', 'journal,article', {'query': {'query_string':
+                            {'query': 'application test','default_operator': 'AND'}},
+                            'size': 0, 'track_total_hits': True}, account=None, additional_parameters={"ref":"fqw"})
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
