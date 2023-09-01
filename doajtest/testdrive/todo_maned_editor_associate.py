@@ -13,45 +13,55 @@ class TodoManedEditorAssociate(TestDrive):
     def setup(self) -> dict:
         un = self.create_random_str()
         pw = self.create_random_str()
-        acc = models.Account.make_account(un + "@example.com", un, "TodoManedEditorAssociate " + un, ["admin", "editor", constants.ROLE_ASSOCIATE_EDITOR])
-        acc.set_password(pw)
-        acc.save()
+        admin = models.Account.make_account(un + "@example.com", un, "TodoManedEditorAssociate " + un, ["admin", "editor", constants.ROLE_ASSOCIATE_EDITOR])
+        admin.set_password(pw)
+        admin.save()
 
         oun = self.create_random_str()
         owner = models.Account.make_account(oun + "@example.com", oun, "Owner " + un, ["publisher"])
         owner.save()
 
         eun = self.create_random_str()
-        editor = models.Account.make_account(eun + "@example.com", eun, "Associate Editor " + un, ["associate_editor"])
-        editor.save()
+        assed = models.Account.make_account(eun + "@example.com", eun, "Associate Editor " + un, ["associate_editor"])
+        assed.save()
 
         gn1 = "Maned Group " + un
         eg1 = models.EditorGroup(**{
             "name": gn1
         })
-        eg1.set_maned(acc.id)
-        eg1.add_associate(editor.id)
+        eg1.set_maned(admin.id)
+        eg1.add_associate(assed.id)
         eg1.save()
 
         gn2 = "Editor Group " + un
         eg2 = models.EditorGroup(**{
             "name": gn2
         })
-        eg2.set_editor(acc.id)
+        eg2.set_editor(admin.id)
         eg2.save()
+
+        # the eponymous group
+        eg3 = models.EditorGroup(**{
+            "name": admin.id
+        })
+        eg3.set_maned(admin.id)
+        eg3.set_editor(admin.id)
+        eg3.add_associate(admin.id)
+        eg3.save()
 
         aapps = build_associate_applications(un)
         eapps = build_editor_applications(un, eg2)
-        mapps = build_maned_applications(un, eg1, owner.id)
+        mapps = build_maned_applications(un, eg1, owner.id, eg3)
+
 
         return {
             "account": {
-                "username": acc.id,
+                "username": admin.id,
                 "password": pw
             },
             "users": [
                 owner.id,
-                editor.id
+                assed.id
             ],
             "editor_group": {
                 "id": eg2.id,
@@ -86,7 +96,7 @@ class TodoManedEditorAssociate(TestDrive):
         return {"status": "success"}
 
 
-def build_maned_applications(un, eg, owner):
+def build_maned_applications(un, eg, owner, eponymous_group):
     w = 7 * 24 * 60 * 60
 
     apps = {}
@@ -130,6 +140,16 @@ def build_maned_applications(un, eg, owner):
     apps["pending"] = [{
         "id": app.id,
         "title": un + " Maned Pending Application"
+    }]
+
+    app = build_application(un + " Maned Low Priority Pending Application", 1 * w, 1 * w,
+                            constants.APPLICATION_STATUS_PENDING,
+                            editor_group=eponymous_group.name, owner=owner)
+    app.remove_editor()
+    app.save()
+    apps["low_priority_pending"] = [{
+        "id": app.id,
+        "title": un + " Maned Low Priority Pending Application"
     }]
 
     return apps

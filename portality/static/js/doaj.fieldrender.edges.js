@@ -2276,7 +2276,7 @@ $.extend(true, doaj, {
 
                             // the remove block looks different, depending on the kind of filter to remove
                             if (def.filter === "term" || def.filter === "terms") {
-                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" alt="Remove" title="Remove">';
+                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" data-value-idx="' + j + '" alt="Remove" title="Remove">';
                                 filters += def.display + valDisplay;
                                 filters += ' <span data-feather="x" aria-hidden="true"></span>';
                                 filters += "</a>";
@@ -2331,6 +2331,7 @@ $.extend(true, doaj, {
 
             this.removeFilter = function (element) {
                 var el = this.component.jq(element);
+                var sf = this.component;
 
                 // if this is a compound filter, remove it by id
                 var compound = el.attr("data-compound");
@@ -2346,20 +2347,9 @@ $.extend(true, doaj, {
 
                 var value = false;
                 if (ft === "terms" || ft === "term") {
-                    val = el.attr("data-value");
-                    // translate string value to a type required by a model
-                    if (val === "true"){
-                        value = true;
-                    }
-                    else if (val === "false"){
-                        value = false;
-                    }
-                    else if (!isNaN(parseInt(val))){
-                        value = parseInt(val);
-                    }
-                    else {
-                        value = val;
-                    }
+                    let values = sf.mustFilters[field].values;
+                    let idx = el.attr("data-value-idx")
+                    value = values[idx].val
                 } else if (ft === "range") {
                     value = {};
 
