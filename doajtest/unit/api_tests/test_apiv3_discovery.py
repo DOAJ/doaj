@@ -241,7 +241,7 @@ class TestAPIDiscovery(DoajTestCase):
         for i in range(5):
             a = models.Suggestion()
             a.set_owner("owner")
-            a.set_created(dates.format(dates.after(now, i)))
+            a.set_created(dates.format(dates.seconds_after(now, i)))
             bj = a.bibjson()
             bj.title = "Test Suggestion {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
@@ -256,7 +256,7 @@ class TestAPIDiscovery(DoajTestCase):
         for i in range(5):
             a = models.Suggestion()
             a.set_owner("stranger")
-            a.set_created(dates.format(dates.after(now, i + 5)))
+            a.set_created(dates.format(dates.seconds_after(now, i + 5)))
             bj = a.bibjson()
             bj.title = "Test Suggestion {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))

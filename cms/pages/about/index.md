@@ -14,7 +14,7 @@ OPEN - DOAJ is a vital part of the global open access infrastructure.
 
 GLOBAL – DOAJ is a global community, with [team members](/about/team/), [ambassadors](/about/ambassadors/) and [volunteers](/about/volunteers/) based in 45 countries around the world, speaking 36 languages.
 
-TRUSTED – Globally DOAJ's [standards](/apply/guide/#basic-criteria-for-inclusion) have become a gold standard for open access publishing.
+TRUSTED – Globally, DOAJ's [criteria](/apply/guide/#basic-criteria-for-inclusion) have become a gold standard for open access publishing.
 
 ## Our mission
 
@@ -24,13 +24,13 @@ DOAJ is committed to being 100% independent and maintaining all of its primary s
 
 ## Our vision
 
-DOAJ works to build an equitable and diverse scholarly ecosystem where trusted research can be accessed without barriers across the world.
+DOAJ works to build an equitable and diverse scholarly ecosystem where trusted research can be accessed globally without barriers.
 
 ## Constitution
 
 DOAJ is an independent, non-profit organisation managed by [Infrastructure Services for Open Access C.I.C.](https://is4oa.org/) (IS4OA), a  [community interest company](https://en.wikipedia.org/wiki/Community_interest_company) registered in the United Kingdom and with a branch in Denmark. 
 
-DOAJ relies entirely on the voluntary donations of its supporters. Neither DOAJ or IS4OA receive grants or funding from any other source.
+DOAJ relies entirely on the voluntary donations of its supporters. Neither DOAJ nor IS4OA receive grants or funding from any other source.
 
 DOAJ has an [Advisory Board and Council](/about/advisory-board-council), the members of which carry out their duties voluntarily.
 
@@ -51,18 +51,18 @@ We expect the members of our Team, our volunteers and our Ambassadors to always 
 
 ## Partnerships and collaborations
 
-DOAJ partners with many organisations. The nature of the partnerships vary and may include membership, contracts for work, exchanges of information or services, initiative signatories, or access to information resources that assist DOAJ with our application review process.
+DOAJ partners with many organisations. The nature of the partnerships varies and may include membership, contracts for work, exchanges of information or services, initiative signatories, or access to information resources that assist DOAJ with our application review process.
 
 {:.stretch-list}
 + [Creative Commons Global Network](https://network.creativecommons.org/)
-  {:.stretch-list__item} 
+  {:.stretch-list__item}
++ [Crossref](https://crossref.org/)
+  {:.stretch-list__item}   
 + [COPE](https://publicationethics.org/)
   {:.stretch-list__item} 
 + [Cottage Labs LLP](https://cottagelabs.com/)
   {:.stretch-list__item} 
 + [DOAB (Directory of Open Access Books)](https://www.doabooks.org/)
-  {:.stretch-list__item} 
-+ [Federation of Finnish Learned Societies](https://tsv.fi/en)
   {:.stretch-list__item} 
 + [Helsinki Initiative on Multilingualism](https://www.helsinki-initiative.org/)
   {:.stretch-list__item} 
@@ -73,7 +73,9 @@ DOAJ partners with many organisations. The nature of the partnerships vary and m
 + [OASPA](https://oaspa.org/)
   {:.stretch-list__item} 
 + [OCLC](https://www.oclc.org/en/home.html)
-  {:.stretch-list__item} 
+  {:.stretch-list__item}
++ [OpenAIRE](https://www.openaire.eu/)
+  {:.stretch-list__item}    
 + [Redalyc](https://www.redalyc.org/)
   {:.stretch-list__item} 
 + [Research4Life](https://www.research4life.org/)

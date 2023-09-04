@@ -9,7 +9,7 @@ from jinja2 import FileSystemLoader
 from lxml import etree
 
 from portality import settings, constants, datasets
-from portality.bll import exceptions
+from portality.bll import exceptions, DOAJ
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping, dates, paths
 from portality.ui.debug_toolbar import DoajDebugToolbar
@@ -257,6 +257,8 @@ def setup_jinja(app):
     app.jinja_env.globals['dates'] = dates
     #~~->Datasets:Data~~
     app.jinja_env.globals['datasets'] = datasets
+    # ~~->DOAJ:Service~~
+    app.jinja_env.globals['services'] = DOAJ
     _load_data(app)
     #~~->CMS:DataStore~~
     app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates',

@@ -40,7 +40,7 @@ class TestBGJobFinishedNotify(DoajTestCase):
         event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job" : bj.data})
         BGJobFinishedNotify.consume(event)
 
-        time.sleep(2)
+        time.sleep(1)
         ns = models.Notification.all()
         assert len(ns) == 1
 
