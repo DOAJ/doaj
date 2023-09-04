@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.3.12"
+DOAJ_VERSION = "6.3.15"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -1389,3 +1389,26 @@ PRESERVATION_PAGE_UNDER_MAINTENANCE = False
 
 # report journals that discontinue in ... days (eg. 1 = tomorrow)
 DISCONTINUED_DATE_DELTA = 0
+
+##################################################
+# Feature tours currently active
+
+TOUR_COOKIE_PREFIX = "doaj_tour_"
+TOUR_COOKIE_MAX_AGE = 31536000
+
+TOURS = {
+    "/editor/": [
+        {
+            "roles": ["editor", "associate_editor"],
+            "content_id": "dashboard_ed_assed",
+            "name": "Welcome to your dashboard!",
+            "description": "The new dashboard gives you a way to see all your priority work, take a look at what's new.",
+        },
+        {
+            "roles": ["editor"],
+            "content_id": "dashboard_ed",
+            "name": "Your group activity",
+            "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
+        }
+    ]
+}

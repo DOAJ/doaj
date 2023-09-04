@@ -1,0 +1,48 @@
+steps:
+  - selector: header h1
+    title: Welcome to your dashboard!
+    content: Your dashboard is the starting point for your work and shows you a prioritised list of the applications that you have to work on.
+
+  - selector: "nav.vertical-nav a[href='/editor/']"
+    title: Navigation
+    content: Use the buttons here on the left to navigate around.
+
+  - selector: nav dl
+    title: Your groups
+    content: The groups that you are a member of and the email address of your Editor or Managing Editor are shown here.
+
+  - selector: "#notifications_nav"
+    title: Notifications
+    content: Notifications that you receive by email can also be found here. Click 'See all notifications' to find old notifications.
+
+  - selector: "header h1"
+    title: Your prioritised list
+    content: Each application is shown as a "card". The cards are arranged in date and priority order, from left to right. 
+      They are also categorised by colour. Click a card to open the application so you can start your work.
+
+  - selector: "header h1"
+    title: "Each card contains:"
+    content: |
+      <div>
+      <div><img src="/assets/img/tours/dashboard-ed-assed/card.png" alt="Dashboard card screenshot"></div>
+      <div><ol>
+        <li>The date the application was submitted.</li>
+        <li>The application's status.</li>
+        <li>What you need to do with the application.</li>
+        <li>The journal's title.</li>
+        <li>Which group the application is assigned to.</li>
+        <li>To who the application is assigned.</li>
+      </ol></div>
+      </div>
+
+  - selector: "#logout"
+    title: Log out
+    content: "You can now log out or update your account from the bottom of your dashboard."
+
+  - selector: "#doaj_home"
+    title: "DOAJ Home"
+    content: "To get back to the main DOAJ website, click 'DOAJ HOME' in the top right corner"
+
+  - selector: "#feature_tour_nav"
+    title: Want to see the tour again?
+    content: Take the tour again by selecting it from the Feature Tours menu.

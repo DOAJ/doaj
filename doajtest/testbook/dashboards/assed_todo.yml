@@ -1,0 +1,52 @@
+suite: Dashboard
+testset: Associate Editor Todo List
+
+tests:
+  - title: Associate Editor Todo List
+    context:
+      role: associate editor
+      testdrive: todo_associate
+    setup:
+      - Use the todo_associate testdrive to setup for this test, of follow the next steps
+      - You should set up a user account which has only the associate editor role
+      - "The user account should be assigned at least 4 applications which meet the following criteria: one that was created over 6 weeks ago, 
+         one that has not been modified for 3 weeks, one which has recently been assigned to the user and is in the pending state, and one
+         recent application"
+    steps:
+      - step: log in as an associate editor
+      - step: Go to the editor's dashboard page
+        path: /editor
+        results:
+          - You can see 4 applications in your priority list
+          - The highest priority application is for an old application
+          - The second priority is for a stalled application
+          - The third priority is for a recently assigned/pending application
+          - The lowest priority is for an open application
+      - step: click on the highest priority application
+        results:
+          - The application opens in a new browser tab/window
+      - step: Edit the application in some minor way and save
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - Your priority list is unchanged
+      - step: Click on the highest priority application again
+      - step: Change the application status to "Completed" and save
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - You can see 3 applications in your priority list
+          - The application you have just edited as disappeared from your priority list
+      - step: click on the new highest priority application (stalled)
+      - step: Edit the application in some minor way and save
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - You can still see 3 applications in your priority list
+          - The stalled application you modified in the previous steps is no longer your highest priority, it is now
+            listed only as an "open application"
+          - Your new highest priority is a pending application
+      - step: click on the new highest priority application (pending)
+      - step: Change the application status to "In Progress" and save
+      - step: close the tab, return to the dashboard and reload the page
+        results:
+          - You can still see 3 applications in your priority list
+          - All your applications are now "open applications"
+          - They are ordered by created date, with the oldest first

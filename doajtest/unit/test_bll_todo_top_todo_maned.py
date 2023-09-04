@@ -3,16 +3,16 @@ from combinatrix.testintegration import load_parameter_sets
 
 from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
 from doajtest.helpers import DoajTestCase
+from portality import constants
+from portality import models
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality import models
-from portality import constants
 from portality.lib.paths import rel2abs
 from portality.lib import dates
 
 
 def load_cases():
-    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_todo"), "top_todo", "test_id",
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "bll_todo_maned"), "top_todo_maned", "test_id",
                                {"test_id" : []})
 
 
@@ -21,14 +21,14 @@ EXCEPTIONS = {
 }
 
 
-class TestBLLTopTodo(DoajTestCase):
+class TestBLLTopTodoManed(DoajTestCase):
 
     def setUp(self):
-        super(TestBLLTopTodo, self).setUp()
+        super(TestBLLTopTodoManed, self).setUp()
         self.svc = DOAJ.todoService()
 
     def tearDown(self):
-        super(TestBLLTopTodo, self).tearDown()
+        super(TestBLLTopTodoManed, self).tearDown()
 
     @parameterized.expand(load_cases)
     def test_top_todo(self, name, kwargs):
@@ -38,7 +38,10 @@ class TestBLLTopTodo(DoajTestCase):
 
         categories = [
             "todo_maned_stalled",
-            "todo_maned_follow_up_old"
+            "todo_maned_follow_up_old",
+            "todo_maned_ready",
+            "todo_maned_completed",
+            "todo_maned_assign_pending"
         ]
 
         category_args = {
@@ -52,7 +55,7 @@ class TestBLLTopTodo(DoajTestCase):
         ## set up
 
         apps = []
-        w = 7*24*60*60
+        w = 7 * 24 * 60 * 60
 
         account = None
         if account_arg == "admin":
@@ -75,7 +78,7 @@ class TestBLLTopTodo(DoajTestCase):
         ############################################################
 
         # an application stalled for more than 8 weeks (todo_maned_stalled)
-        self.build_application("maned_stalled", 9*w, 9*w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
+        self.build_application("maned_stalled", 9 * w, 9 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
 
         # an application that was created over 10 weeks ago (but updated recently) (todo_maned_follow_up_old)
         self.build_application("maned_follow_up_old", 2 * w, 11 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
@@ -87,8 +90,11 @@ class TestBLLTopTodo(DoajTestCase):
         self.build_application("maned_completed", 3 * w, 3 * w, constants.APPLICATION_STATUS_COMPLETED, apps)
 
         # an application that was modifed recently into the ready status (todo_maned_assign_pending)
-        def assign_pending(ap): ap.remove_editor()
-        self.build_application("maned_assign_pending", 4 * w, 4 * w, constants.APPLICATION_STATUS_PENDING, apps, assign_pending)
+        def assign_pending(ap):
+            ap.remove_editor()
+
+        self.build_application("maned_assign_pending", 4 * w, 4 * w, constants.APPLICATION_STATUS_PENDING, apps,
+                               assign_pending)
 
         # Applications that should never be reported
         ############################################
@@ -99,7 +105,7 @@ class TestBLLTopTodo(DoajTestCase):
         #           maned_ready
         #           maned_completed
         #           maned_assign_pending
-        self.build_application("not_stalled__not_old", 2*w, 2*w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
+        self.build_application("not_stalled__not_old", 2 * w, 2 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
 
         # an application that is old but rejected
         # counter to maned_stalled
@@ -131,7 +137,8 @@ class TestBLLTopTodo(DoajTestCase):
         #           maned_ready
         #           maned_completed
         #           maned_assign_pending
-        self.build_application("not_assign_pending", 1 * w, 1 * w, constants.APPLICATION_STATUS_PENDING, apps, assign_pending)
+        self.build_application("not_assign_pending", 1 * w, 1 * w, constants.APPLICATION_STATUS_PENDING, apps,
+                               assign_pending)
 
         # pending application with assed assigned
         # counter to maned_assign_pending
@@ -139,14 +146,20 @@ class TestBLLTopTodo(DoajTestCase):
 
         # pending application with no editor group assigned
         # counter to maned_assign_pending
-        def noeditorgroup(ap): ap.remove_editor_group()
-        self.build_application("pending_assed_assigned", 3 * w, 3 * w, constants.APPLICATION_STATUS_PENDING, apps, noeditorgroup)
+        def noeditorgroup(ap):
+            ap.remove_editor_group()
+
+        self.build_application("pending_assed_assigned", 3 * w, 3 * w, constants.APPLICATION_STATUS_PENDING, apps,
+                               noeditorgroup)
 
         # application with no assed, but not pending
         # counter to maned_assign_pending
         self.build_application("no_assed", 3 * w, 3 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps, assign_pending)
 
         models.Application.blockall([(ap.id, ap.last_updated) for ap in apps])
+
+        # size = int(size_arg)
+        size=25
 
         raises = None
         if raises_arg:
@@ -157,9 +170,9 @@ class TestBLLTopTodo(DoajTestCase):
 
         if raises is not None:
             with self.assertRaises(raises):
-                todos = self.svc.top_todo(account, 25)
+                self.svc.top_todo(account, size)
         else:
-            todos = self.svc.top_todo(account, 25)
+            todos = self.svc.top_todo(account, size)
 
             actions = {}
             positions = {}
@@ -172,8 +185,6 @@ class TestBLLTopTodo(DoajTestCase):
                         positions[aid] = []
                     positions[aid].append(i + 1)
 
-            # this is where we look through all the categories, look for the expectations on the
-            # action counts and positions in the result set and test them
             for k, v in category_args.items():
                 assert actions.get(k, 0) == v[0]
                 if v[1] > -1:
@@ -188,7 +199,9 @@ class TestBLLTopTodo(DoajTestCase):
         ap.set_last_manual_update(dates.before_now(lmu_diff))
         ap.set_created(dates.before_now(cd_diff))
         ap.set_application_status(status)
+
         if additional_fn is not None:
             additional_fn(ap)
+
         ap.save()
         app_registry.append(ap)
