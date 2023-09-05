@@ -19,18 +19,16 @@ IN_DOAJ = {
 
 if __name__ == "__main__":
 
-    # import argparse
-    #
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("-o", "--out", help="output file path")
-    # args = parser.parse_args()
-    #
-    # if not args.out:
-    #     print("Please specify an output file path with the -o option")
-    #     parser.print_help()
-    #     exit()
+    import argparse
 
-    out = "out.csv"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-o", "--out", help="output file path")
+    args = parser.parse_args()
+
+    if not args.out:
+        print("Please specify an output file path with the -o option")
+        parser.print_help()
+        exit()
 
     with open(out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
