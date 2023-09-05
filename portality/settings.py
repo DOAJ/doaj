@@ -947,6 +947,8 @@ FEED_LOGO = "https://doaj.org/static/doaj/images/favicon.ico"
 # OAI-PMH SETTINGS
 # ~~->OAIPMH:Feature~~
 
+OAI_ADMIN_EMAIL = 'helpdesk+oai@doaj.org'
+
 # ~~->OAIAriticleXML:Crosswalk~~
 # ~~->OAIJournalXML:Crosswalk~~
 OAI_DC_METADATA_FORMAT = {
