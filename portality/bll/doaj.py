@@ -11,6 +11,7 @@ class DOAJ(object):
     applicationService = DOAJ.applicationService()
     applicationService.application_2_journal(....)
     """
+
     @classmethod
     def applicationService(cls):
         """
@@ -106,3 +107,22 @@ class DOAJ(object):
         """
         from portality.bll.services import todo
         return todo.TodoService()
+
+    @classmethod
+    def backgroundTaskStatusService(cls):
+        """
+        Obtain an instance of the background_task_status service
+        ~~->BackgroundTask:Monitoring~~
+        :return:  BackgroundTaskStatusService
+        """
+        from portality.bll.services import background_task_status
+        return background_task_status.BackgroundTaskStatusService()
+
+    @classmethod
+    def tourService(cls):
+        """
+        Obtain an instance of the tour service  ~~->Tour:Service~~
+        :return:  SiteService
+        """
+        from portality.bll.services import tour
+        return tour.TourService()

@@ -302,15 +302,15 @@ $.extend(true, doaj, {
                     id: "selected-filters",
                     category: "selected-filters",
                     fieldDisplays: {
-                        'admin.application_status.exact': 'Application Status',
+                        'admin.application_status.exact': 'Status',
                         'index.application_type.exact': "Record type",
                         'index.classification.exact' : 'Classification',
-                        'index.language.exact' : 'Journal language',
-                        'index.country.exact' : 'Country of publisher',
+                        'index.language.exact' : 'Language',
+                        'index.country.exact' : 'Country',
                         'index.subject.exact' : 'Subject',
                         'bibjson.publisher.name.exact' : 'Publisher',
-                        'index.license.exact' : 'Journal license',
-                        "index.has_apc.exact" : "Publication charges?"
+                        'index.license.exact' : 'License',
+                        "index.has_apc.exact" : "Charges?"
                     }
                 })
             ];

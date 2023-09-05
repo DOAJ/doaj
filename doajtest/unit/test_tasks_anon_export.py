@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 from doajtest.helpers import DoajTestCase
+from doajtest.unit_tester import bgtask_tester
 from portality.models import BackgroundJob, Account
 from portality.store import StoreLocal
 from portality.tasks.anon_export import AnonExportBackgroundTask
@@ -62,3 +63,6 @@ class TestAnonExport(DoajTestCase):
                 self.assertIn(test_data_list[0].id, [json.loads(j)['id'] for j in json_rows])
             else:
                 print(f'empty archive {target_name}')
+
+    def test_prepare__queue_id(self):
+        bgtask_tester.test_queue_id_assigned(AnonExportBackgroundTask)

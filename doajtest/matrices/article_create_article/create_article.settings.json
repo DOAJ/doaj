@@ -40,6 +40,11 @@
                 "false"
               ]
             },
+            "journal_in_doaj": {
+              "or": [
+                "false"
+              ]
+            },
             "dry_run": {
               "or": [
                 "false"
@@ -141,6 +146,11 @@
                 "false"
               ]
             },
+            "journal_in_doaj": {
+              "or": [
+                "true"
+              ]
+            },
             "dry_run": {
               "or": [
                 "false"
@@ -170,6 +180,11 @@
                 "true"
               ]
             },
+            "journal_in_doaj": {
+              "or": [
+                "true"
+              ]
+            },
             "dry_run": {
               "or": [
                 "false"
@@ -177,6 +192,14 @@
             }
           }
         },
+        "false": {}
+      }
+    },
+    {
+      "name": "journal_in_doaj",
+      "type": "generated",
+      "values": {
+        "true": {},
         "false": {}
       }
     },
@@ -371,23 +394,6 @@
       "type": "conditional",
       "default": "",
       "values": {
-        "ArgumentExeption": {},
-        "DuplicateArticleException": {
-          "conditions": [
-            {
-              "article": {
-                "or": [
-                  "exists"
-                ]
-              },
-              "get_duplicate_result": {
-                "or": [
-                  "different"
-                ]
-              }
-            }
-          ]
-        },
         "ArgumentException": {
           "conditions": [
             {
@@ -429,6 +435,43 @@
               "dry_run": {
                 "or": [
                   "none"
+                ]
+              }
+            }
+          ]
+        },
+        "DuplicateArticleException": {
+          "conditions": [
+            {
+              "article": {
+                "or": [
+                  "exists"
+                ]
+              },
+              "get_duplicate_result": {
+                "or": [
+                  "different"
+                ]
+              },
+              "journal_in_doaj": {
+                "or": [
+                  "true"
+                ]
+              }
+            }
+          ]
+        },
+        "ArticleNotAcceptable": {
+          "conditions": [
+            {
+              "article": {
+                "or": [
+                  "exists"
+                ]
+              },
+              "journal_in_doaj": {
+                "or": [
+                  "false"
                 ]
               }
             }

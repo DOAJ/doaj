@@ -1,35 +1,30 @@
-from doajtest.helpers import DoajTestCase
-from doajtest.mocks.bll_article import BLLArticleMockFactory
-
-from portality.tasks import ingestarticles
-from doajtest.fixtures.article_crossref import Crossref442ArticleFixtureFactory
-from doajtest.fixtures.accounts import AccountFixtureFactory
-from doajtest.fixtures.article import ArticleFixtureFactory
-from doajtest.mocks.file import FileMockFactory
-from doajtest.mocks.response import ResponseMockFactory
-from doajtest.mocks.ftp import FTPMockFactory
-from doajtest.mocks.xwalk import XwalkMockFactory
-
-from portality.bll.exceptions import IngestException
-
+import ftplib
+import os
+import requests
 import time
-from portality.crosswalks import article_crossref_xml
-from portality.bll.services import article as articleSvc
-
-from portality import models
-from portality.core import app
-
-from portality.background import BackgroundException
-
-import ftplib, os, requests
 from urllib.parse import urlparse
+
 from lxml import etree
 
+from doajtest import test_constants
+from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory
+from doajtest.fixtures.article_crossref import Crossref442ArticleFixtureFactory
+from doajtest.helpers import DoajTestCase
+from doajtest.mocks.bll_article import BLLArticleMockFactory
+from doajtest.mocks.file import FileMockFactory
+from doajtest.mocks.ftp import FTPMockFactory
+from doajtest.mocks.response import ResponseMockFactory
+from doajtest.mocks.xwalk import XwalkMockFactory
+from portality import models
+from portality.background import BackgroundException
+from portality.bll.exceptions import IngestException
+from portality.bll.services import article as articleSvc
+from portality.core import app
+from portality.crosswalks import article_crossref_xml
+from portality.tasks import ingestarticles
 from portality.ui.messages import Messages
 
-
-RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "crossref442_article_uploads.xml")
+ARTICLES = test_constants.PATH_RESOURCES / "crossref442_article_uploads.xml"
 
 class TestIngestArticlesCrossref442XML(DoajTestCase):
 
@@ -619,6 +614,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -730,6 +726,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -755,13 +752,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -776,6 +773,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -800,13 +798,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -818,6 +816,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -843,7 +842,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         # scheduling does not result in immidiate execution for huey version > 2
         # always eager mode is replaced by immediate mode
@@ -862,6 +861,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -877,13 +877,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -902,11 +902,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "9876-5432")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.P_ISSN, "1234-5678")
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
@@ -927,13 +928,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -956,11 +957,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
         j2.save(blocking=True)
@@ -978,13 +980,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1003,6 +1005,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1025,13 +1028,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1056,6 +1059,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1078,13 +1082,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1107,6 +1111,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1129,13 +1134,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1159,6 +1164,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1174,13 +1180,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1204,11 +1210,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "9876-5432")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.P_ISSN, "1234-5678")
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
@@ -1227,13 +1234,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1261,11 +1268,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
         j2.save()
@@ -1283,13 +1291,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1317,11 +1325,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j1.set_owner("testowner")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
         j2.save()
@@ -1346,13 +1355,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1380,11 +1389,12 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "2345-6789")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.P_ISSN, "8765-4321")
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
@@ -1403,13 +1413,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1434,6 +1444,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1464,7 +1475,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id2)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task1 = ingestarticles.IngestArticlesBackgroundTask(job1)
         task2 = ingestarticles.IngestArticlesBackgroundTask(job2)
@@ -1473,7 +1484,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         task2.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu1 = models.FileUpload.pull(id1)
         fu2 = models.FileUpload.pull(id2)
@@ -1495,6 +1506,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1517,13 +1529,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
 
@@ -1553,6 +1565,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1575,13 +1588,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1610,6 +1623,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "2222-2222")
+        j1.set_in_doaj(True)
         j1.save(blocking=True)
 
         saved = models.Journal.find_by_issn("1234-5678")
@@ -1627,13 +1641,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1661,6 +1675,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj1.add_identifier(bj1.E_ISSN, "9876-5432")
         bj1.add_subject("LCC", "Whatever", "WHATEVA")
         bj1.add_subject("LCC", "Aquaculture. Fisheries. Angling", "SH1-691")
+        j1.set_in_doaj(True)
         j1.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1683,13 +1698,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1717,6 +1732,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1733,13 +1749,13 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1795,6 +1811,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1843,21 +1860,16 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
             id = job.params.get("ingest_articles__file_upload_id")
             self.cleanup_ids.append(id)
             models.FileUpload.block(id)
-            # because file upload gets created and saved by prepare
-            # time.sleep(2)
 
             task = ingestarticles.IngestArticlesBackgroundTask(job)
             task.run()
-
-            # because file upload needs to be re-saved
-            # time.sleep(2)
 
             fu = models.FileUpload.pull(id)
 
             assert fu.status == "processed", "expected 'processed', received: {}, , error code: {}, for: {}".format(file_upload.status, file_upload.error, m)
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         found = [a for a in models.Article.find_by_issns(["9876-5432", "1234-5678"])]
 
@@ -2004,6 +2016,7 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         # push an article to initialise the mappings
@@ -2032,20 +2045,20 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
         assert fu.status == "processed", "fu.status expected processed, received: {}".format(fu.status)
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         found = [a for a in models.Article.find_by_issns(["9876-5432", "1234-5678"])]
 
@@ -2119,3 +2132,48 @@ class TestIngestArticlesCrossref442XML(DoajTestCase):
 
         assert file_upload.status == "failed"
         assert file_upload.error == "Unable to validate document with identified schema"
+
+    def test_61_journal_not_indoaj(self):
+        """ You can't upload an article for a journal that's been withdrawn"""
+        etree.XMLSchema = self.mock_load_schema
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(False)
+        j.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("crossref442")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = Crossref442ArticleFixtureFactory.upload_1_issn_correct()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed"
+        assert file_upload.error == Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL

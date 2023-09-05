@@ -1,0 +1,13 @@
+{
+    "batch" : 10000,
+	"types": [
+		{
+			"type" : "journal",
+			"init_with_model" : false,
+			"keepalive" : "10m",
+			"functions" : [
+				"portality.migrate.903_remove_blanks.functions.remove_blanks"
+			]
+		}
+	]
+}

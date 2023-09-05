@@ -1,23 +1,19 @@
-from copy import deepcopy
 import json
+from copy import deepcopy
 
 from flask_login import current_user
 
 from portality import models
-
-from portality.tasks.redis_huey import main_queue
-from portality.decorators import write_required
-from portality.util import batch_up
-
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
+from portality.tasks.redis_huey import main_queue
+from portality.util import batch_up
 
 
 def article_bulk_delete_manage(selection_query, dry_run=True):
-
     if dry_run:
         ArticleBulkDeleteBackgroundTask.check_admin_privilege(current_user.id)
         estimate = ArticleBulkDeleteBackgroundTask.estimate_delete_counts(selection_query)
-        return BackgroundSummary(None, affected={"articles" : estimate})
+        return BackgroundSummary(None, affected={"articles": estimate})
 
     ids = ArticleBulkDeleteBackgroundTask.resolve_selection_query(selection_query)
     job = ArticleBulkDeleteBackgroundTask.prepare(
@@ -31,11 +27,10 @@ def article_bulk_delete_manage(selection_query, dry_run=True):
     job_id = None
     if job is not None:
         job_id = job.id
-    return BackgroundSummary(job_id, affected={"articles" : affected})
+    return BackgroundSummary(job_id, affected={"articles": affected})
 
 
 class ArticleBulkDeleteBackgroundTask(AdminBackgroundTask):
-
     BATCH_SIZE = 1000
 
     __action__ = "article_bulk_delete"
@@ -115,6 +110,7 @@ class ArticleBulkDeleteBackgroundTask(AdminBackgroundTask):
             raise BackgroundException("{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
+        job.queue_id = huey_helper.queue_id
 
         return job
 
@@ -130,8 +126,10 @@ class ArticleBulkDeleteBackgroundTask(AdminBackgroundTask):
         article_bulk_delete.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.task()
-@write_required(script=True)
+huey_helper = ArticleBulkDeleteBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_execute(is_load_config=False)
 def article_bulk_delete(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = ArticleBulkDeleteBackgroundTask(job)

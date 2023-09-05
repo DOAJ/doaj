@@ -114,7 +114,8 @@ $.extend(true, doaj, {
                         open: false,
                         togglable: true,
                         countFormat: countFormat,
-                        hideInactive: false
+                        hideInactive: false,
+                        hideEmpty: true
                     })
                 }),
 

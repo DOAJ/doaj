@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.2.8"
+DOAJ_VERSION = "6.3.15"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -27,6 +27,11 @@ SESSION_COOKIE_SECURE=True
 REMEMBER_COOKIE_SECURE = True
 
 ####################################
+# Testdrive for setting up the test environment.
+# CAUTION - this can modify the index so should NEVER be used in production!
+TESTDRIVE_ENABLED = False
+
+####################################
 # Debug Mode
 
 # PyCharm debug settings
@@ -37,6 +42,9 @@ DEBUG_PYCHARM_PORT = 6000
 #~~->DebugToolbar:Framework~~
 DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
 DEBUG_TB_INTERCEPT_REDIRECTS = False
+
+# set to True to enable the env list panel in the debug toolbar
+DEBUG_TB_ENV_LIST_ENABLED = False
 
 #######################################
 # Elasticsearch configuration
@@ -123,10 +131,10 @@ VALID_FEATURES = ['api1', 'api2', 'api3']
 # File Path and URL Path settings
 
 # root of the git repo
-ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+ROOT_DIR = paths.rel2abs(__file__, "..")
 
 # base path, to the directory where this settings file lives
-BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
+BASE_FILE_PATH = paths.abs_dir_path(__file__)
 
 BASE_URL = "https://doaj.org"
 if BASE_URL.startswith('https://'):
@@ -154,8 +162,8 @@ PROXIED = False
 
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
-FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "failed_articles")
+UPLOAD_DIR = os.path.join(ROOT_DIR, "upload")
+FAILED_ARTICLE_DIR = os.path.join(ROOT_DIR, "failed_articles")
 
 # directory where reports are output
 REPORTS_BASE_DIR = "/home/cloo/reports/"
@@ -164,10 +172,15 @@ REPORTS_BASE_DIR = "/home/cloo/reports/"
 # File store
 # ~~->FileStore:Feature~~
 
-# put this in your production.cfg, to store on S3:
+# put this in your production.cfg, to store everything on S3:
 # STORE_IMPL = "portality.store.StoreS3"
 
 STORE_IMPL = "portality.store.StoreLocal"
+STORE_SCOPE_IMPL = {
+# Enable this by scope in order to have different scopes store via different storage implementations
+#     constants.STORE__SCOPE__PUBLIC_DATA_DUMP: "portality.store.StoreS3"
+}
+
 STORE_TMP_IMPL = "portality.store.TempStore"
 
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
@@ -196,7 +209,7 @@ STORE_S3_SCOPES = {
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     },
     # Used by the api_export script to dump data from the api
-    "public_data_dump" : {
+    constants.STORE__SCOPE__PUBLIC_DATA_DUMP : {
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     },
@@ -237,7 +250,6 @@ STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 # Service Descriptive Text
 
 SERVICE_NAME = "Directory of Open Access Journals"
-SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
 
 ###################################
 # Cookie settings
@@ -276,7 +288,16 @@ PASSWORD_RESET_TIMEOUT = 86400
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 #"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
-TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api", "ultra_bulk_delete", "preservation"]
+TOP_LEVEL_ROLES = [
+    "admin",
+    "publisher",
+    "editor",
+    "associate_editor",
+    "api",
+    "ultra_bulk_delete",
+    "preservation",
+    constants.ROLE_PUBLIC_DATA_DUMP
+]
 
 ROLE_MAP = {
     "editor": [
@@ -288,11 +309,13 @@ ROLE_MAP = {
         "assign_to_associate",
         "list_group_journals",
         "list_group_suggestions",
+        "read_notifications"
     ],
     "associate_editor": [
         "edit_journal",
         "edit_suggestion",
         "editor_area",
+        "read_notifications"
     ]
 }
 
@@ -414,6 +437,9 @@ HUEY_SCHEDULE = {
     "public_data_dump": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "harvest": {"month": "*", "day": "*", "day_of_week": "*", "hour": "5", "minute": "30"},
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
+    "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
+    "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"}
 }
 
 HUEY_TASKS = {
@@ -506,7 +532,17 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "isolang_2letter": {
+    "isolang_2letter_strict": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+#                "index": False,
+                "store": True
+            }
+        }
+    },
+    "isolang_2letter_lax": {
         "type": "text",
         "fields": {
             "exact": {
@@ -526,7 +562,17 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "currency_code": {
+    "currency_code_strict": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+#                "index": False,
+                "store": True
+            }
+        }
+    },
+    "currency_code_lax": {
         "type": "text",
         "fields": {
             "exact": {
@@ -748,6 +794,13 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "admin",
             "dao" : "portality.models.BackgroundJob"     # ~~->BackgroundJob:Model~~
+        },
+        # ~~->APINotificationQuery:Endpoint~~
+        "notifications" : {
+            "auth" : False,
+            "role" : "admin",
+            "dao" : "portality.models.Notification", # ~~->Notification:Model~~
+            "required_parameters" : None
         }
     },
     "associate_query" : {
@@ -808,6 +861,16 @@ QUERY_ROUTE = {
             "dao" : "portality.models.Suggestion",  # ~~->Application:Model~~
             "required_parameters" : None
         }
+    },
+    "dashboard_query": {
+        # ~~->APINotificationQuery:Endpoint~~
+        "notifications" : {
+            "auth" : False,
+            "role" : "read_notifications",
+            "query_filters" : ["who_current_user"], # ~~-> WhoCurrentUser:Query
+            "dao" : "portality.models.Notification", # ~~->Notification:Model~~
+            "required_parameters" : None
+        }
     }
 }
 
@@ -825,6 +888,7 @@ QUERY_FILTERS = {
     "es_type_fix" : "portality.lib.query_filters.es_type_fix",
     "last_update_fallback" : "portality.lib.query_filters.last_update_fallback",
     "not_update_request" : "portality.lib.query_filters.not_update_request",
+    "who_current_user" : "portality.lib.query_filters.who_current_user",    # ~~-> WhoCurrentUser:Query ~~
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
@@ -882,6 +946,8 @@ FEED_LOGO = "https://doaj.org/static/doaj/images/favicon.ico"
 ###########################################
 # OAI-PMH SETTINGS
 # ~~->OAIPMH:Feature~~
+
+OAI_ADMIN_EMAIL = 'helpdesk+oai@doaj.org'
 
 # ~~->OAIAriticleXML:Crosswalk~~
 # ~~->OAIJournalXML:Crosswalk~~
@@ -1008,32 +1074,7 @@ BITLY_OAUTH_TOKEN = ""
 
 ###############################################
 # Date handling
-#
-# when dates.format is called without a format argument, what format to use?
-# FIXME: this is actually wrong - should really use the timezone correctly
-DEFAULT_DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
-
-# date formats that we know about, and should try, in order, when parsing
-DATE_FORMATS = [
-    "%Y-%m-%dT%H:%M:%S.%fZ",   # e.g. 2010-01-01T00:00:00.000Z
-    "%Y-%m-%dT%H:%M:%SZ",   # e.g. 2014-09-23T11:30:45Z
-    "%Y-%m-%d",             # e.g. 2014-09-23
-    "%d/%m/%y",             # e.g. 29/02/80
-    "%d/%m/%Y",             # e.g. 29/02/1980
-    "%d-%m-%Y",             # e.g. 01-01-2015
-    "%Y.%m.%d",             # e.g. 2014.09.12
-    "%d.%m.%Y",             # e.g. 12.9.2014
-    "%d.%m.%y",             # e.g. 12.9.14
-    "%d %B %Y",             # e.g. 21 June 2014
-    "%d-%b-%Y",             # e.g. 31-Jul-13
-    "%d-%b-%y",             # e.g. 31-Jul-2013
-    "%b-%y",                # e.g. Aug-13
-    "%B %Y",                # e.g. February 2014
-    "%Y"                    # e.g. 1978
-]
-
-# The last_manual_update field was initialised to this value. Used to label as 'never'.
-DEFAULT_TIMESTAMP = "1970-01-01T00:00:00Z"
+# See portality.lib.dates   - moved to prevent circular import
 
 #################################################
 # API configuration
@@ -1132,6 +1173,11 @@ GA_ACTION_JOURNALCSV = 'Download'
 # GA for OpenURL
 # ~~->OpenURL:Feature~~
 GA_CATEGORY_OPENURL = 'OpenURL'
+
+# GA for PublicDataDump
+# ~~->PublicDataDump:Feature~~
+GA_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
+GA_ACTION_PUBLICDATADUMP = 'Download'
 
 # GA for API
 # ~~-> API:Feature~~
@@ -1246,6 +1292,13 @@ TASKS_ANON_EXPORT_LIMIT = None
 TASKS_ANON_EXPORT_BATCH_SIZE = 100000
 TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
 
+#########################################################
+# Background tasks --- old_data_cleanup
+TASK_DATA_RETENTION_DAYS = {
+    "notification": 180, # ~~-> Notifications:Feature ~~
+    "background_job": 180, # ~~-> BackgroundJobs:Feature ~~
+}
+
 ########################################
 # Editorial Dashboard - set to-do list size
 TODO_LIST_SIZE = 48
@@ -1254,8 +1307,110 @@ TODO_LIST_SIZE = 48
 # Plausible analytics
 # root url of plausible
 PLAUSIBLE_URL = "https://plausible.io"
-PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/plausible.js"
-PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event/"
+PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/script.outbound-links.file-downloads.js"
+PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event"
 # site name / domain name that used to register in plausible
 PLAUSIBLE_SITE_NAME = BASE_DOMAIN
 PLAUSIBLE_LOG_DIR = None
+
+#########################################################
+# Background tasks --- monitor_bgjobs
+TASKS_MONITOR_BGJOBS_TO = ["helpdesk@doaj.org",]
+TASKS_MONITOR_BGJOBS_FROM = "helpdesk@doaj.org"
+
+
+##################################
+# Background monitor
+# ~~->BackgroundMonitor:Feature~~
+
+# Configures the age of the last completed job on the queue before the queue is marked as unstable
+# (in seconds)
+BG_MONITOR_LAST_COMPLETED = {
+    'main_queue': 7200,     # 2 hours
+    'long_running': 93600,  # 26 hours
+}
+
+# Configures the monitoring period and the allowed number of errors in that period before a queue is marked
+# as unstable
+BG_MONITOR_ERRORS_CONFIG = {
+    # Main queue
+    'journal_csv': {
+        'check_sec': 3600,  # 1 hour, time period between scheduled runs
+        'allowed_num_err': 0,
+    },
+    'ingest_articles': {
+        'check_sec': 86400,
+        'allowed_num_err': 0
+    },
+
+    # Long running
+    'harvest': {
+        'check_sec': 86400,
+        'allowed_num_err': 0,
+    },
+    'public_data_dump': {
+        'check_sec': 86400 * 7,
+        'allowed_num_err': 0
+    }
+}
+
+# Configures the total number of queued items and the age of the oldest of those queued items allowed
+# before the queue is marked as unstable.  This is provided by type, so we can monitor all types separately
+BG_MONITOR_QUEUED_CONFIG = {
+    # Main queue
+    'journal_csv': {
+        'total': 2,
+        'oldest': 1200,     # 20 mins
+    },
+    'ingest_articles': {
+        'total': 250,
+        'oldest': 86400
+    },
+
+    # Long running
+    'harvest': {
+        'total': 1,
+        'oldest': 86400
+    },
+    'public_data_dump': {
+        'total': 1,
+        'oldest': 86400
+    }
+}
+
+##################################################
+## Public data dump settings
+
+# how long should the temporary URL for public data dumps last
+PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
+
+##################################################
+# Pages under maintenance
+
+PRESERVATION_PAGE_UNDER_MAINTENANCE = False
+
+# report journals that discontinue in ... days (eg. 1 = tomorrow)
+DISCONTINUED_DATE_DELTA = 0
+
+##################################################
+# Feature tours currently active
+
+TOUR_COOKIE_PREFIX = "doaj_tour_"
+TOUR_COOKIE_MAX_AGE = 31536000
+
+TOURS = {
+    "/editor/": [
+        {
+            "roles": ["editor", "associate_editor"],
+            "content_id": "dashboard_ed_assed",
+            "name": "Welcome to your dashboard!",
+            "description": "The new dashboard gives you a way to see all your priority work, take a look at what's new.",
+        },
+        {
+            "roles": ["editor"],
+            "content_id": "dashboard_ed",
+            "name": "Your group activity",
+            "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
+        }
+    ]
+}

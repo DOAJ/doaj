@@ -75,6 +75,7 @@ $.extend(true, doaj, {
                     id : "see_journals",
                     category: "facet",
                     filters : [
+                        doaj.filters.noCharges(),
                         {
                             id: "with_seal",
                             display: "With a DOAJ Seal&nbsp;&nbsp;<span data-feather=\"check-circle\" aria-hidden=\"true\"></span>",
@@ -86,16 +87,12 @@ $.extend(true, doaj, {
                             ]
                         },
                         {
-                            id : "no_charges",
-                            display: "Without article processing charges (APCs)",
+                            id : "retains_copyrigths",
+                            display: "Author retains all rights",
                             must : [
                                 es.newTermFilter({
-                                    field: "bibjson.apc.has_apc",
-                                    value: false
-                                }),
-                                es.newTermFilter({
-                                    field: "bibjson.other_charges.has_other_charges",
-                                    value: false
+                                    field: "bibjson.copyright.author_retains",
+                                    value: true
                                 })
                             ]
                         }
@@ -172,7 +169,7 @@ $.extend(true, doaj, {
                     category: "facet",
                     field: "index.country.exact",
                     display: "Publishers' countries",
-                    size: 100,
+                    size: 200,
                     syncCounts: false,
                     lifecycle: "update",
                     updateType: "fresh",
@@ -288,6 +285,7 @@ $.extend(true, doaj, {
                         "index.country.exact" : "Publishers' countries",
                         "index.language.exact" : "Languages",
                         "bibjson.editorial.review_process.exact" : "Peer review",
+                        "bibjson.copyright.author_retains" : "Author retains all rights",
                         "created_date" : "Date added"
                     },
                     rangeFunctions : {
@@ -298,7 +296,8 @@ $.extend(true, doaj, {
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         hideValues : [
-                            "index.has_seal.exact"
+                            "index.has_seal.exact",
+                            "bibjson.copyright.author_retains"
                         ],
                         omit : [
                             "bibjson.apc.has_apc",

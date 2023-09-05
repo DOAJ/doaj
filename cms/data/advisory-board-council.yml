@@ -29,6 +29,8 @@ board:
 - name: Leslie Chan
   institution: University of Toronto
   country: Canada
+  coi:
+    2023: https://drive.google.com/file/d/12GGWk1D6zb0YlPhSmFwCvp8ApnXOKekG/view?usp=sharing
 
 - name: Lisa Schiff
   institution: California Digital Library
@@ -134,12 +136,6 @@ council:
   country: Switzerland
   coi:
     2019: https://drive.google.com/file/d/1S2H8XZwWkZzB8oYjRFxuKX6A2AQKh-2O/view?usp=sharing
-
-- name: Shelley Allen
-  institution: Emerald Publishing
-  country: United Kingdom
-  coi:
-    2019: https://drive.google.com/file/d/1Mp4vRvmB3Layl9EiaKVXZZjjpxvXWskX/view?usp=sharing
 
 - name: Stephanie Savage
   institution: University of British Columbia

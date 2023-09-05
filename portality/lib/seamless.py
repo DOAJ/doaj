@@ -1,7 +1,11 @@
 import locale
-from urllib.parse import urlparse
 from copy import deepcopy
-from datetime import datetime
+from typing import Type
+from urllib.parse import urlparse
+
+from portality.constants import ConstantList
+from portality.lib import dates
+
 
 ###############################################
 ## Common coerce functions
@@ -120,7 +124,7 @@ def to_bool(val):
 
 def to_datetime(val):
     try:
-        datetime.strptime(val, "%Y-%m-%dT%H:%M:%SZ")
+        dates.parse(val)
         return val
     except:
         raise ValueError("Could not convert string {val} to UTC Datetime".format(val=val))
@@ -677,6 +681,7 @@ class Construct(object):
 
     @classmethod
     def merge(cls, target, *args):
+        # TODO: add an override or mode argument so we can perform a merge with replacements
         if not isinstance(target, Construct):
             merged = Construct(deepcopy(target), None, None)
         else:
@@ -1039,3 +1044,9 @@ class Construct(object):
             return True
 
         recurse(self, "[root]")
+
+
+def create_allowed_values_by_constant(constant_class: Type[ConstantList]):
+    return {
+        'allowed_values': list(constant_class.all_constants())
+    }

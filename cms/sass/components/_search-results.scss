@@ -66,14 +66,10 @@
     }
   }
 
-  ul {
-    @include unstyled-list;
-
-    &:last-of-type {
-      @media (max-width: 768px) {
-        padding-bottom: $spacing-03;
-        border-bottom: 1px solid rgba($dark-grey, 0.25);
-      }
+  ul:last-of-type {
+    @media (max-width: 768px) {
+      padding-bottom: $spacing-03;
+      border-bottom: 1px solid rgba($dark-grey, 0.25);
     }
   }
 }

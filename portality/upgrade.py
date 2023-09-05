@@ -6,19 +6,22 @@ import json, os, dictdiffer
 from datetime import datetime, timedelta
 from copy import deepcopy
 from collections import OrderedDict
+from typing import TypedDict, List, Dict
+
 from portality import models
 from portality.dao import ScrollTimeoutException
-from portality.lib import plugin
+from portality.lib import plugin, dates
 from portality.lib.dataobj import DataStructureException
 from portality.lib.seamless import SeamlessException
 from portality.dao import ScrollTimeoutException
 
 MODELS = {
-    "journal": models.Journal,  #~~->Journal:Model~~
-    "article": models.Article,  #~~->Article:Model~~
-    "suggestion": models.Suggestion,    #~~->Application:Model~~
+    "journal": models.Journal,  # ~~->Journal:Model~~
+    "article": models.Article,  # ~~->Article:Model~~
+    "suggestion": models.Suggestion,  # ~~->Application:Model~~
     "application": models.Application,
-    "account": models.Account   #~~->Account:Model~~
+    "account": models.Account,  # ~~->Account:Model~~
+    "background_job": models.BackgroundJob  # ~~->BackgroundJob:Model~~
 }
 
 
@@ -28,7 +31,42 @@ class UpgradeTask(object):
         pass
 
 
-def do_upgrade(definition, verbose, save_batches=None):
+class UpgradeType(TypedDict):
+    type: str  # name / key of the MODELS class
+    action: str  # default is update
+    query: dict  # ES query to use to find the records to upgrade
+    keepalive: str  # ES keepalive time for the scroll, default 1m
+    scroll_size: int  # ES scroll size, default 1000
+
+    """
+    python path of functions to run on the record
+    interface of the function should be:
+      my_function(instance: DomainObject | dict) -> DomainObject | dict
+    """
+    functions: List[str]
+
+    """
+    instance would be a DomainObject if True, otherwise a dict
+    default is True
+    """
+    init_with_model: bool  #
+
+    """
+    tasks to run on the record
+    that will only work if init_with_model is True
+    
+    format of each task:
+    { function name of model : kwargs }
+    """
+    tasks: List[Dict[str, dict]]
+
+
+class Definition(TypedDict):
+    batch: int
+    types: List[UpgradeType]
+
+
+def do_upgrade(definition: Definition, verbose, save_batches=None):
     # get the source and target es definitions
     # ~~->Elasticsearch:Technology~~
 
@@ -40,7 +78,7 @@ def do_upgrade(definition, verbose, save_batches=None):
         batch = []
         total = 0
         batch_num = 0
-        type_start = datetime.now()
+        type_start = dates.now()
 
         default_query = {
             "query": {"match_all": {}}
@@ -53,7 +91,8 @@ def do_upgrade(definition, verbose, save_batches=None):
 
         # Iterate through all of the records in the model class
         try:
-            for result in model_class.iterate(q=tdef.get("query", default_query), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), wrap=False):
+            for result in model_class.iterate(q=tdef.get("query", default_query), keepalive=tdef.get("keepalive", "1m"),
+                                              page_size=tdef.get("scroll_size", 1000), wrap=False):
 
                 original = deepcopy(result)
                 if tdef.get("init_with_model", True):
@@ -82,7 +121,8 @@ def do_upgrade(definition, verbose, save_batches=None):
                         result.prep()
                     except AttributeError:
                         if verbose:
-                            print(tdef.get("type"), result.id, "has no prep method - no, pre-save preparation being done")
+                            print(tdef.get("type"), result.id,
+                                  "has no prep method - no, pre-save preparation being done")
                         pass
 
                     data = result.data
@@ -104,18 +144,18 @@ def do_upgrade(definition, verbose, save_batches=None):
                     total += len(batch)
                     batch_num += 1
 
-                    print(datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
+                    print(dates.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
 
                     if save_batches:
                         fn = os.path.join(save_batches, tdef.get("type") + "." + str(batch_num) + ".json")
                         with open(fn, "w") as f:
                             f.write(json.dumps(batch, indent=2))
-                            print(datetime.now(), "wrote batch to file {x}".format(x=fn))
+                            print(dates.now(), "wrote batch to file {x}".format(x=fn))
 
                     model_class.bulk(batch, action=action, req_timeout=120)
                     batch = []
                     # do some timing predictions
-                    batch_tick = datetime.now()
+                    batch_tick = dates.now()
                     time_so_far = batch_tick - type_start
                     seconds_so_far = time_so_far.total_seconds()
                     estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
@@ -131,9 +171,10 @@ def do_upgrade(definition, verbose, save_batches=None):
                     fn = os.path.join(save_batches, tdef.get("type") + "." + str(batch_num) + ".json")
                     with open(fn, "w") as f:
                         f.write(json.dumps(batch, indent=2))
-                        print(datetime.now(), "wrote batch to file {x}".format(x=fn))
+                        print(dates.now(), "wrote batch to file {x}".format(x=fn))
 
-                print(datetime.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
+                print(dates.now(), "scroll timed out / writing ", len(batch), "to",
+                      tdef.get("type"), ";", total, "of", max)
                 model_class.bulk(batch, action=action, req_timeout=120)
                 batch = []
 
@@ -146,9 +187,9 @@ def do_upgrade(definition, verbose, save_batches=None):
                 fn = os.path.join(save_batches, tdef.get("type") + "." + str(batch_num) + ".json")
                 with open(fn, "w") as f:
                     f.write(json.dumps(batch, indent=2))
-                    print(datetime.now(), "wrote batch to file {x}".format(x=fn))
+                    print(dates.now(), "wrote batch to file {x}".format(x=fn))
 
-            print(datetime.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
+            print(dates.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max)
             model_class.bulk(batch, action=action, req_timeout=120)
 
 
@@ -179,6 +220,7 @@ def _diff(original, current):
 if __name__ == "__main__":
     # ~~->Migrate:Script~~
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--upgrade", help="path to upgrade definition")
     parser.add_argument("-v", "--verbose", action="store_true", help="verbose output to stdout during processing")
@@ -193,7 +235,7 @@ if __name__ == "__main__":
         print(args.upgrade, "does not exist or is not a file")
         exit()
 
-    print('Starting {0}.'.format(datetime.now()))
+    print('Starting {0}.'.format(dates.now()))
 
     with open(args.upgrade) as f:
         try:
@@ -204,4 +246,4 @@ if __name__ == "__main__":
 
         do_upgrade(instructions, args.verbose, args.save)
 
-    print('Finished {0}.'.format(datetime.now()))
+    print('Finished {0}.'.format(dates.now()))

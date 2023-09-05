@@ -1,8 +1,23 @@
-# redirect to SSL version
+# redirect to SSL version (except xsd schemas)
 server {
     listen          80;
     server_name     testdoaj.cottagelabs.com testdoajes.cottagelabs.com staticdoaj.cottagelabs.com;
-    return 301 https://$host$request_uri;
+
+    location =/static/doaj/doajArticle.xsd {
+        alias /home/cloo/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location =/static/doaj/iso_639-2b.xsd {
+        alias /home/cloo/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
+    }
+
+    location /static/crossref {
+        alias /home/cloo/doaj/src/doaj/portality/static/crossref;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
 }
 
 upstream doaj_apps {

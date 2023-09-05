@@ -182,6 +182,13 @@
   margin: 0;
 }
 
+// Hiding content for smaller screens
+.hidden-sm {
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
 // For content that overflows outside of its container
 .bleed {
   z-index: 10;

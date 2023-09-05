@@ -14,6 +14,7 @@ from portality import constants
 from portality.crosswalks.application_form import ApplicationFormXWalk
 
 from portality.util import flash_with_url
+from portality.view.view_helper import exparam_editing_user
 
 blueprint = Blueprint('editor', __name__)
 
@@ -86,7 +87,7 @@ def journal_page(journal_id):
     except lock.Locked as l:
         return render_template("editor/journal_locked.html", journal=journal, lock=l.lock, lcc_tree=lcc_jstree)
 
-    fc = JournalFormFactory.context(role)
+    fc = JournalFormFactory.context(role, extra_param=exparam_editing_user())
 
     if request.method == "GET":
         fc.processor(source=journal)
@@ -134,7 +135,7 @@ def application(application_id):
     # Edit role is either associate_editor or editor, depending whether the user is group leader
     eg = models.EditorGroup.pull_by_key("name", ap.editor_group)
     role = 'editor' if eg is not None and eg.editor == current_user.id else 'associate_editor'
-    fc = ApplicationFormFactory.context(role)
+    fc = ApplicationFormFactory.context(role, extra_param=exparam_editing_user())
 
     if request.method == "GET":
         fc.processor(source=ap)

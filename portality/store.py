@@ -4,9 +4,12 @@ from portality.lib import plugin
 import os, shutil, boto3
 from urllib.parse import quote_plus
 from boto3.s3.transfer import TransferConfig
+from botocore.config import Config
+
 
 class StoreException(Exception):
     pass
+
 
 class StoreFactory(object):
 
@@ -16,6 +19,9 @@ class StoreFactory(object):
         Returns an implementation of the base Store class
         """
         si = app.config.get("STORE_IMPL")
+        if scope is not None and scope in app.config.get("STORE_SCOPE_IMPL", {}):
+            si = app.config.get["STORE_SCOPE_IMPL"][scope]
+
         sm = plugin.load_class(si)
         return sm(scope)
 
@@ -53,6 +59,9 @@ class Store(object):
     def url(self, container_id, target_name):
         pass
 
+    def temporary_url(self, container_id, target_name, timeout=3600):
+        return self.url(container_id, target_name)
+
     def delete_container(self, container_id):
         pass
 
@@ -67,20 +76,34 @@ class StoreS3(Store):
     ~~!FileStoreS3:Feature->S3:Technology~~
     """
     def __init__(self, scope):
-        cfg = app.config.get("STORE_S3_SCOPES", {}).get(scope)
+        self._cfg = app.config.get("STORE_S3_SCOPES", {}).get(scope)
         multipart_threshold = app.config.get("STORE_S3_MULTIPART_THRESHOLD", 5 * 1024**3)
-        access_key = cfg.get("aws_access_key_id")
-        secret = cfg.get("aws_secret_access_key")
+
+        self.client = self._make_client()
+
+        # NOTE: we disabled use_threads due to the background server failing to execute the public_data_dump task.
+        self.config = TransferConfig(multipart_threshold=multipart_threshold, use_threads=False)
+
+    def _make_client(self, region_name=None):
+        access_key = self._cfg.get("aws_access_key_id")
+        secret = self._cfg.get("aws_secret_access_key")
+
         if access_key is None or secret is None:
             raise StoreException("'aws_access_key_id' and 'aws_secret_access_key' must be set in STORE_S3_SCOPE for scope '{x}'".format(x=scope))
 
-        self.client = boto3.client(
+        kwargs = {
+            "aws_access_key_id": access_key,
+            "aws_secret_access_key": secret,
+            "config": Config(signature_version='s3v4')
+        }
+
+        if region_name is not None:
+            kwargs["region_name"] = region_name
+
+        return boto3.client(
             's3',
-            aws_access_key_id=access_key,
-            aws_secret_access_key=secret
+            **kwargs
         )
-        # NOTE: we disabled use_threads due to the background server failing to execute the public_data_dump task.
-        self.config = TransferConfig(multipart_threshold=multipart_threshold, use_threads=False)
 
     def store(self, container_id, target_name, source_path=None, source_stream=None):
         # Note that this assumes the container (bucket) exists
@@ -119,6 +142,14 @@ class StoreS3(Store):
         bucket_location = self.client.get_bucket_location(Bucket=container_id)
         location = bucket_location['LocationConstraint']
         return "https://s3.{0}.amazonaws.com/{1}/{2}".format(location, container_id, quote_plus(target_name))
+
+    def temporary_url(self, container_id, target_name, timeout=3600):
+        bucket_location = self.client.get_bucket_location(Bucket=container_id)
+        location = bucket_location['LocationConstraint']
+        location_client = self._make_client(region_name=location)
+        return location_client.generate_presigned_url('get_object',
+                                           Params={"Bucket": container_id, "Key": target_name},
+                                           ExpiresIn=timeout)
 
     def delete_container(self, container_id):
         """

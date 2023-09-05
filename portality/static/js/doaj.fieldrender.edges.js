@@ -1,4 +1,22 @@
 $.extend(true, doaj, {
+    filters : {
+        noCharges : function() {
+            return {
+                id: "no_charges",
+                display: "Without fees",
+                must: [
+                    es.newTermFilter({
+                        field: "bibjson.apc.has_apc",
+                        value: false
+                    }),
+                    es.newTermFilter({
+                        field: "bibjson.other_charges.has_other_charges",
+                        value: false
+                    })
+                ]
+            }
+        }
+    },
     facets : {
         inDOAJ : function() {
             return edges.newRefiningANDTermSelector({
@@ -278,6 +296,16 @@ $.extend(true, doaj, {
             return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
         },
 
+        displayYearMonthPeriod : function(params) {
+            var from = params.from;
+            var to = params.to;
+            var field = params.field;
+
+            let d = new Date(parseInt(from))
+            let display = d.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(d.getUTCMonth() + 1);
+            return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
+        },
+
         schemaCodeToNameClosure : function(tree) {
             var nameMap = {};
             function recurse(ctx) {
@@ -304,8 +332,11 @@ $.extend(true, doaj, {
         countFormat : edges.numFormat({
             thousandsSeparator: ","
         }),
-    },
 
+        monthPadding: edges.numFormat({
+            zeroPadding: 2
+        })
+    },
     components : {
         pager : function(id, category) {
             return edges.newPager({
@@ -421,6 +452,12 @@ $.extend(true, doaj, {
                               <ul class="collapse filters__list" id="filters" aria-expanded="false">\
                                   {{FACETS}}\
                               </ul>\
+                              <aside class="hidden-sm">\
+                                <h2 class="sr-only">Celebrating 20 years of DOAJ</h2>\
+                                <a href="https://blog.doaj.org/2023/02/20/doaj20-open-global-and-trusted-since-2003/" target="_blank" rel="noopener" style="display: block;">\
+                                  <img src="/assets/img/20yrs-stacked.png"/>\
+                                </a>\
+                              </aside>\
                             </aside>\
                         </div>\
                             \
@@ -1514,13 +1551,12 @@ $.extend(true, doaj, {
                 var textIdSelector = edges.css_id_selector(this.namespace, "text", this);
                 var text = this.component.jq(textIdSelector).val();
 
-                if (text === "") {
-                    return;
-                }
-
                 // if there is search text, then proceed to run the search
                 var val = this.component.jq(element).val();
                 this.component.setSearchField(val, false);
+                if (text === "") {
+                    return;
+                }
                 this.component.setSearchText(text);
             };
 
@@ -1843,7 +1879,7 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < openBits.length; j++) {
                     //    i.removeClass(openBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.addClass(closeBits[j]);
                     //}
@@ -1855,9 +1891,9 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.removeClass(closeBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < openBits.length; j++) {
-                     //   i.addClass(openBits[j]);
+                    //   i.addClass(openBits[j]);
                     //}
                     //results.hide();
 
@@ -1903,6 +1939,7 @@ $.extend(true, doaj, {
 
             // whether to hide or just disable the facet if not active
             this.hideInactive = edges.getParam(params.hideInactive, false);
+            this.hideEmpty = edges.getParam(params.hideEmpty, false)
 
             // whether the facet should be open or closed
             // can be initialised and is then used to track internal state
@@ -1967,6 +2004,9 @@ $.extend(true, doaj, {
                     // render each value, if it is not also a filter that has been set
                     for (var i = 0; i < ts.values.length; i++) {
                         var val = ts.values[i];
+                        if (val.count === 0 && this.hideEmpty) {
+                            continue
+                        }
                         if ($.inArray(val.display, filterTerms) === -1) {
 
                             var ltData = "";
@@ -2101,7 +2141,7 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < openBits.length; j++) {
                     //    i.removeClass(openBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.addClass(closeBits[j]);
                     //}
@@ -2113,9 +2153,9 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.removeClass(closeBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < openBits.length; j++) {
-                     //   i.addClass(openBits[j]);
+                    //   i.addClass(openBits[j]);
                     //}
                     //results.hide();
 
@@ -2236,7 +2276,7 @@ $.extend(true, doaj, {
 
                             // the remove block looks different, depending on the kind of filter to remove
                             if (def.filter === "term" || def.filter === "terms") {
-                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" alt="Remove" title="Remove">';
+                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" data-value-idx="' + j + '" alt="Remove" title="Remove">';
                                 filters += def.display + valDisplay;
                                 filters += ' <span data-feather="x" aria-hidden="true"></span>';
                                 filters += "</a>";
@@ -2291,6 +2331,7 @@ $.extend(true, doaj, {
 
             this.removeFilter = function (element) {
                 var el = this.component.jq(element);
+                var sf = this.component;
 
                 // if this is a compound filter, remove it by id
                 var compound = el.attr("data-compound");
@@ -2306,7 +2347,9 @@ $.extend(true, doaj, {
 
                 var value = false;
                 if (ft === "terms" || ft === "term") {
-                    value = el.attr("data-value");
+                    let values = sf.mustFilters[field].values;
+                    let idx = el.attr("data-value-idx")
+                    value = values[idx].val
                 } else if (ft === "range") {
                     value = {};
 
@@ -2549,7 +2592,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                    subjects = "<li>" + resultobj.index.classification_paths.join("</li><li>") + "</li>";
+                    subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                    subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                    subjects += '</ul>';
                 }
 
                 var update_or_added = "";
@@ -2585,6 +2630,15 @@ $.extend(true, doaj, {
                     apcs += "<strong>No</strong> charges";
                 }
                 apcs += '</li>';
+
+                var rights = "";
+                if (resultobj.bibjson.copyright) {
+                    var copyright_url = resultobj.bibjson.copyright.url;
+                    rights += '<a href="' + copyright_url + '" target="_blank" rel="noopener">';
+                    rights += resultobj.bibjson.copyright.author_retains ? 'Author <strong> retains </strong> all rights' : 'Author <strong> doesn\'t retain </strong> all rights';
+                    rights += '</a>';
+                }
+
 
                 var licenses = "";
                 if (resultobj.bibjson.license && resultobj.bibjson.license.length > 0) {
@@ -2648,6 +2702,20 @@ $.extend(true, doaj, {
                 }
 
 
+                let externalLink = "";
+                if (resultobj.bibjson.ref && resultobj.bibjson.ref.journal) {
+                    externalLink = '<li><a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website ';
+
+                    if (this.widget){
+                        externalLink += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
+                    }
+                    else {
+                        externalLink += '<i data-feather="external-link" aria-hidden="true"></i>'
+                    }
+
+                    externalLink += '</a></li>';
+                }
+
                 frag +='</sup>\
                             </a>\
                             ' + subtitle + '\
@@ -2660,9 +2728,7 @@ $.extend(true, doaj, {
                             </li>\
                             ' + language + '\
                           </ul>\
-                          <ul>\
-                            ' + subjects + '\
-                          </ul>\
+                          ' + subjects + '\
                         </div>\
                       </div>\
                       <aside class="col-sm-4 search-results__aside">\
@@ -2672,21 +2738,12 @@ $.extend(true, doaj, {
                             ' + update_or_added + '\
                           </li>\
                           ' + articles + '\
-                          <li>\
-                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website '
-
-                if (this.widget){
-                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
-                }
-                else {
-                    frag += '<i data-feather="external-link" aria-hidden="true"></i>'
-                }
-
-
-
-                frag += '</a></li>\
-                          <li>\
+                          ' + externalLink + '\
+                        <li>\
                             ' + apcs + '\
+                          </li>\
+                          <li>\
+                            ' + rights + '\
                           </li>\
                           <li>\
                             ' + licenses + '\
@@ -2743,8 +2800,8 @@ $.extend(true, doaj, {
 
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                    subjects = '<h4>Journal subjects</h4><ul>';
-                    subjects += "<li>" + resultobj.index.classification_paths.join("<br>") + "</li>";
+                    subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                    subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
                     subjects += '</ul>';
                 }
 
@@ -2859,11 +2916,11 @@ $.extend(true, doaj, {
                         </ul>\
                       </aside>\
                     </article></li>';
-                        /*
-                         <li>\
-                            ' + license + '\
-                         </li>\
-                         */
+                /*
+                 <li>\
+                    ' + license + '\
+                 </li>\
+                 */
                 // close off the result and return
                 return frag;
             };
@@ -3016,7 +3073,7 @@ $.extend(true, doaj, {
                 var deleteLinkUrl = deleteLinkTemplate.replace("__application_id__", resultobj.id);
                 var deleteClass = edges.css_classes(this.namespace, "delete", this);
                 if (resultobj.es_type === "draft_application" ||
-                        resultobj.admin.application_status === "update_request") {
+                    resultobj.admin.application_status === "update_request") {
                     deleteLink = '<li class="tag">\
                         <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-application" class="' + deleteClass + '"\
                             data-title="' + titleText + '">\
@@ -3287,7 +3344,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                    subjects = "<li>" + resultobj.index.classification_paths.join("</li><li>") + "</li>";
+                    subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                    subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                    subjects += '</ul>';
                 }
 
                 var update_or_added = "";

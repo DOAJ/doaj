@@ -1,8 +1,10 @@
 from portality import models
-from datetime import datetime
+
+from portality.lib import dates
+
 """ All this does is scroll through all Journals and run prep(), which includes a check for the tick. """
 
-start = datetime.now()
+start = dates.now()
 
 batch_size = 1000
 total = 0
@@ -24,6 +26,6 @@ if len(batch) > 0:
     print("writing", len(batch), "; total so far", total)
     models.Journal.bulk(batch)
 
-end = datetime.now()
+end = dates.now()
 
 print(start, "-", end)

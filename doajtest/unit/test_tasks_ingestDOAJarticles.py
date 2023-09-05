@@ -593,6 +593,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -693,6 +694,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -710,13 +712,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -730,6 +732,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -746,13 +749,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -780,6 +783,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -797,7 +801,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         # this assumes that huey is in always eager mode, and thus this immediately calls the async task,
         # which in turn calls execute, which ultimately calls run
@@ -818,6 +822,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -833,13 +838,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -860,11 +865,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "9876-5432")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.P_ISSN, "1234-5678")
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
@@ -883,13 +889,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -912,11 +918,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
         j2.save(blocking=True)
@@ -934,13 +941,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -960,6 +967,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -975,13 +983,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1007,6 +1015,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1022,13 +1031,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1052,6 +1061,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1067,13 +1077,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1099,6 +1109,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1114,13 +1125,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1145,11 +1156,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "9876-5432")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.P_ISSN, "1234-5678")
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
@@ -1168,13 +1180,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1201,11 +1213,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
         j2.save()
@@ -1223,13 +1236,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1255,11 +1268,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j1.set_owner("testowner")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
         j2.save()
@@ -1277,13 +1291,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1309,11 +1323,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "2345-6789")
+        j1.set_in_doaj(True)
         j1.save()
 
         j2 = models.Journal()
         j2.set_owner("testowner2")
-        j2.set_in_doaj(False)
+        j2.set_in_doaj(True)
         bj2 = j2.bibjson()
         bj2.add_identifier(bj2.P_ISSN, "8765-4321")
         bj2.add_identifier(bj2.E_ISSN, "9876-5432")
@@ -1332,13 +1347,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1362,6 +1377,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
         bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1385,7 +1401,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id2)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task1 = ingestarticles.IngestArticlesBackgroundTask(job1)
         task2 = ingestarticles.IngestArticlesBackgroundTask(job2)
@@ -1394,7 +1410,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task2.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu1 = models.FileUpload.pull(id1)
         fu2 = models.FileUpload.pull(id2)
@@ -1414,6 +1430,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1429,13 +1446,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1461,6 +1478,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1476,13 +1494,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1509,6 +1527,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
         bj1.add_identifier(bj1.E_ISSN, "2222-2222")
+        j1.set_in_doaj(True)
         j1.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1524,13 +1543,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1557,6 +1576,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         bj1.add_identifier(bj1.E_ISSN, "9876-5432")
         bj1.add_subject("LCC", "Whatever", "WHATEVA")
         bj1.add_subject("LCC", "Aquaculture. Fisheries. Angling", "SH1-691")
+        j1.set_in_doaj(True)
         j1.save()
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1572,13 +1592,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None, 'expected FileUpload is not None, received: {}'.format(fu)
@@ -1605,6 +1625,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j1.set_owner("testowner1")
         bj1 = j1.bibjson()
         bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        j1.set_in_doaj(True)
         j1.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1621,13 +1642,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -1852,6 +1873,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(True)
         j.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
@@ -1881,3 +1903,40 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         assert file_upload.status == "failed"
         assert file_upload.error == Messages.EXCEPTION_NO_ISSNS
+
+    def test_61_journal_not_indoaj(self):
+        """ You can't upload an article for a journal that's been withdrawn"""
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.set_in_doaj(False)
+        j.save(blocking=True)
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save(blocking=True)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("doaj")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed"
+        assert file_upload.error == Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL

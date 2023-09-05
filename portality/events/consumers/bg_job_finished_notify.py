@@ -1,4 +1,4 @@
-# from flask import url_for
+# ~~BGJobFinishedNotifiy:Consumer~~
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -32,6 +32,7 @@ class BGJobFinishedNotify(EventConsumer):
         if acc is None or not acc.has_role("admin"):
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         # don't make the escaped query, as url_for is also going to escape it, and it will wind up double-escaped!

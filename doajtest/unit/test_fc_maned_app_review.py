@@ -24,14 +24,18 @@ def editor_group_pull(cls, field, value):
     eg.set_name("editorgroup")
     return eg
 
+
 mock_lcc_choices = [
     ('H', 'Social Sciences'),
-    ('HB1-3840', '--Economic theory. Demography')
+    ('HB1-3840', '--Economic theory. Demography'),
+    ('SF600-1100', 'Veterinary medicine')
 ]
+
 
 def mock_lookup_code(code):
     if code == "H": return "Social Sciences"
     if code == "HB1-3840": return "Economic theory. Demography"
+    if code == "SF600-1100": return 'Veterinary medicine'
     return None
 
 
@@ -129,7 +133,7 @@ class TestManEdAppReview(DoajTestCase):
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise(acc)
 
-        time.sleep(2)
+        time.sleep(1)
 
         # now check that a provenance record was recorded
         prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
@@ -303,7 +307,7 @@ class TestManEdAppReview(DoajTestCase):
         )
 
         fc.finalise(acc)
-        time.sleep(2)
+        time.sleep(1)
 
         # now check that a provenance record was recorded
         count = 0
@@ -344,7 +348,7 @@ class TestManEdAppReview(DoajTestCase):
         )
 
         fc.finalise(acc)
-        time.sleep(2)
+        time.sleep(1)
 
         # now check that a provenance record was recorded
         count = 0

@@ -1,35 +1,37 @@
-from doajtest.helpers import DoajTestCase
-from doajtest.mocks.bll_article import BLLArticleMockFactory
-
-from portality.tasks import ingestarticles
-from doajtest.fixtures.article_crossref import Crossref531ArticleFixtureFactory
-from doajtest.fixtures.accounts import AccountFixtureFactory
-from doajtest.fixtures.article import ArticleFixtureFactory
-from doajtest.mocks.file import FileMockFactory
-from doajtest.mocks.response import ResponseMockFactory
-from doajtest.mocks.ftp import FTPMockFactory
-from doajtest.mocks.xwalk import XwalkMockFactory
-
-from portality.bll.exceptions import IngestException
-
+import ftplib
+import os
+import requests
 import time
-from portality.crosswalks import article_crossref_xml
-from portality.bll.services import article as articleSvc
-
-from portality import models
-from portality.core import app
-
-from portality.background import BackgroundException
-
-import ftplib, os, requests
 from urllib.parse import urlparse
+
 from lxml import etree
 
+from doajtest import test_constants
+from doajtest.fixtures.accounts import AccountFixtureFactory
+from doajtest.fixtures.article import ArticleFixtureFactory
+from doajtest.fixtures.article_crossref import Crossref531ArticleFixtureFactory
+from doajtest.helpers import DoajTestCase
+from doajtest.mocks.bll_article import BLLArticleMockFactory
+from doajtest.mocks.file import FileMockFactory
+from doajtest.mocks.ftp import FTPMockFactory
+from doajtest.mocks.response import ResponseMockFactory
+from doajtest.mocks.xwalk import XwalkMockFactory
+from portality import models
+from portality.background import BackgroundException, BackgroundTask
+from portality.bll.exceptions import IngestException
+from portality.bll.services import article as articleSvc
+from portality.constants import BgjobOutcomeStatus
+from portality.core import app
+from portality.crosswalks import article_crossref_xml
+from portality.tasks import ingestarticles
 from portality.ui.messages import Messages
 
+ARTICLES = test_constants.PATH_RESOURCES / "crossref531_article_uploads.xml"
 
-RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = os.path.join(RESOURCES, "crossref531_article_uploads.xml")
+
+def assert_outcome_fail_by_task(task: BackgroundTask):
+    assert task.background_job.outcome_status == BgjobOutcomeStatus.Fail
+
 
 class TestIngestArticlesCrossref531XML(DoajTestCase):
 
@@ -328,7 +330,8 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
 
         previous = []
 
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="crossref531", previous=previous)
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="crossref531",
+                                                                  previous=previous)
 
         assert job is not None
         assert "ingest_articles__file_upload_id" in job.params
@@ -374,7 +377,8 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         # upload dir not configured
         del app.config["UPLOAD_DIR"]
         with self.assertRaises(BackgroundException):
-            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url="http://whatever", schema="doaj", previous=[])
+            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url="http://whatever", schema="doaj",
+                                                                      previous=[])
 
     def test_13_ftp_upload_success(self):
 
@@ -388,7 +392,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
 
-        url= "ftp://upload"
+        url = "ftp://upload"
         parsed_url = urlparse(url)
 
         job = models.BackgroundJob()
@@ -431,7 +435,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         requests.head = ResponseMockFactory.head_fail
         requests.get = ResponseMockFactory.crossref531_get_success
 
-        url= "http://upload"
+        url = "http://upload"
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -616,6 +620,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
 
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -656,6 +661,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         assert file_upload.status == "processed"
         assert file_upload.imported == 1
         assert file_upload.new == 1
+        assert task.background_job.outcome_status == BgjobOutcomeStatus.Pending
 
     def test_24_process_invalid_file(self):
 
@@ -678,7 +684,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
 
         stream = Crossref531ArticleFixtureFactory.invalid_schema_xml()
         with open(path, "w") as f:
-           f.write(stream.read())
+            f.write(stream.read())
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task._process(file_upload)
@@ -688,6 +694,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is not None and file_upload.error_details != ""
         assert list(file_upload.failure_reasons.keys()) == []
+        assert_outcome_fail_by_task(task)
 
     def test_25_process_filesystem_error(self):
 
@@ -723,10 +730,12 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         assert file_upload.error is not None and file_upload.error != ""
         assert file_upload.error_details is None
         assert list(file_upload.failure_reasons.keys()) == []
+        assert_outcome_fail_by_task(task)
 
     def test_26_run_validated(self):
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -755,13 +764,13 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
@@ -773,6 +782,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         requests.get = ResponseMockFactory.crossref531_get_success
 
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -800,21 +810,23 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
         assert fu.status == "processed"
+        assert job.outcome_status == BgjobOutcomeStatus.Pending
 
     def test_29_submit_success(self):
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -843,7 +855,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         # scheduling does not result in immidiate execution for huey version > 2
         # always eager mode is replaced by immediate mode
@@ -858,6 +870,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
     def test_29_submit_multiple_affs(self):
         etree.XMLSchema = self.mock_load_schema
         j = models.Journal()
+        j.set_in_doaj(True)
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
@@ -883,16 +896,62 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         # because file upload gets created and saved by prepare
-        time.sleep(2)
+        time.sleep(1)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         task.run()
 
         # because file upload needs to be re-saved
-        time.sleep(2)
+        time.sleep(1)
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1
         abib = found[0].bibjson()
-        assert len(abib.author)  == 2
+        assert len(abib.author) == 2
         assert abib.author[0]["affiliation"] == "Cottage Labs University"
+
+    def test_30_journal_not_indoaj(self):
+        """ You can't upload an article for a journal that's been withdrawn"""
+        etree.XMLSchema = self.mock_load_schema
+        j = models.Journal()
+        j.set_in_doaj(False)
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save()
+
+        asource = AccountFixtureFactory.make_publisher_source()
+        account = models.Account(**asource)
+        account.set_id("testowner")
+        account.save()
+
+        # push an article to initialise the mappings
+        source = ArticleFixtureFactory.make_article_source()
+        article = models.Article(**source)
+        article.save(blocking=True)
+        article.delete()
+        models.Article.blockdeleted(article.id)
+
+        job = models.BackgroundJob()
+
+        file_upload = models.FileUpload()
+        file_upload.set_id()
+        file_upload.set_schema("crossref531")
+        file_upload.upload("testowner", "filename.xml")
+
+        upload_dir = app.config.get("UPLOAD_DIR")
+        path = os.path.join(upload_dir, file_upload.local_filename)
+        self.cleanup_paths.append(path)
+
+        stream = Crossref531ArticleFixtureFactory.upload_1_issn_correct()
+        with open(path, "wb") as f:
+            f.write(stream.read())
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task._process(file_upload)
+
+        assert not os.path.exists(path)
+
+        assert file_upload.status == "failed"
+        assert file_upload.error == Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL
+        assert_outcome_fail_by_task(task)

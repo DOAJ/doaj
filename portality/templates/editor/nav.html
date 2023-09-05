@@ -4,12 +4,17 @@
 {% set ass_apps = url_for('editor.associate_suggestions') %}
 {% set ass_journals = url_for('editor.associate_journals') %}
 
+
+{#
+Tabs removed for https://github.com/DOAJ/doajPM/issues/3422
+(ass_journals, "Journals assigned to you", None, "book-open")
+(group_journals, "Your group’s journals", "list_group_journals", "book")
+#}
+
 {% set tabs = [
     (index, "Dashboard", None, "list"),
     (group_apps, "Your group’s applications", "list_group_suggestions", "users"),
-    (group_journals, "Your group’s journals", "list_group_journals", "book"),
-    (ass_apps, "Applications assigned to you", None, "file-text"),
-    (ass_journals, "Journals assigned to you", None, "book-open")
+    (ass_apps, "Applications assigned to you", None, "file-text")
     ]
 %}
 

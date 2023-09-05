@@ -1,17 +1,15 @@
-from copy import deepcopy
 import json
+from copy import deepcopy
 from datetime import datetime
 
 from flask_login import current_user
 
 from portality import models, lock
+from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 from portality.bll import DOAJ
 from portality.core import app
-
+from portality.lib import dates
 from portality.tasks.redis_huey import main_queue
-from portality.decorators import write_required
-
-from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 from portality.ui.messages import Messages
 
 
@@ -70,7 +68,6 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         account = models.Account.pull(job.user)
         # ~~->Application:Service~~
         svc = DOAJ.applicationService()
-        date_after = datetime.utcnow()
         urs_ids = svc.reject_update_request_of_journals(ids, account)
         if len(urs_ids) > 0:
             job.add_audit_message(Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID.format(urid=urs_ids))
@@ -137,6 +134,7 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
             raise BackgroundException("{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
+        job.queue_id = huey_helper.queue_id
 
         # now ensure that we have the locks for all the records, if they are lockable
         # will raise an exception if this fails
@@ -156,8 +154,10 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         journal_bulk_delete.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.task()
-@write_required(script=True)
+huey_helper = JournalBulkDeleteBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.register_execute(is_load_config=False)
 def journal_bulk_delete(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = JournalBulkDeleteBackgroundTask(job)

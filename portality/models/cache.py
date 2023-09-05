@@ -2,8 +2,9 @@
  for the front page """
 
 from portality.dao import DomainObject
-from datetime import datetime
 from portality.core import app
+from portality.lib import dates
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 
 
 class Cache(DomainObject):
@@ -69,10 +70,21 @@ class Cache(DomainObject):
         return rec.get("filename")
 
     @classmethod
-    def cache_public_data_dump(cls, article_url, article_size, journal_url, journal_size):
+    def cache_public_data_dump(cls, article_container, article_filename, article_url, article_size,
+                                    journal_container, journal_filename, journal_url, journal_size):
         cobj = cls(**{
-            "article": { "url" : article_url, "size" : article_size },
-            "journal": { "url" : journal_url, "size" : journal_size }
+            "article": {
+                "container": article_container,
+                "filename": article_filename,
+                "url" : article_url,
+                "size" : article_size
+            },
+            "journal": {
+                "container": journal_container,
+                "filename": journal_filename,
+                "url" : journal_url,
+                "size" : journal_size
+            }
         })
         cobj.set_id("public_data_dump")
         cobj.save()
@@ -83,12 +95,12 @@ class Cache(DomainObject):
 
     def is_stale(self):
         if not self.last_updated:
-            lu = '1970-01-01T00:00:00Z'
+            lu = DEFAULT_TIMESTAMP_VAL
         else:
             lu = self.last_updated
 
-        lu = datetime.strptime(lu, "%Y-%m-%dT%H:%M:%SZ")
-        now = datetime.utcnow()
+        lu = dates.parse(lu)
+        now = dates.now()
         dt = now - lu
 
         # compatibility with Python 2.6

@@ -3,7 +3,7 @@ from portality import models, lock
 from portality.lib import dates
 from doajtest.fixtures import JournalFixtureFactory
 import time
-from datetime import datetime, timedelta
+from datetime import timedelta
 from copy import deepcopy
 
 class TestLock(DoajTestCase):
@@ -11,9 +11,7 @@ class TestLock(DoajTestCase):
     def test_01_lock_success_fail(self):
         source = JournalFixtureFactory.make_journal_source()
         j = models.Journal(**source)
-        j.save()
-
-        time.sleep(2)
+        j.save(blocking=True)
 
         # first set a lock
         l = lock.lock("journal", j.id, "testuser")
@@ -22,7 +20,7 @@ class TestLock(DoajTestCase):
         assert l.username == "testuser"
         assert not l.is_expired()
 
-        time.sleep(2)
+        time.sleep(1)
 
         # now try and set the lock again for the same thing by the same user
         l2 = lock.lock("journal", j.id, "testuser")
@@ -39,14 +37,12 @@ class TestLock(DoajTestCase):
 
         source = JournalFixtureFactory.make_journal_source()
         j = models.Journal(**source)
-        j.save()
-
-        time.sleep(2)
+        j.save(blocking=True)
 
         # first set a lock
         l = lock.lock("journal", j.id, "testuser")
 
-        time.sleep(2)
+        time.sleep(1)
 
         # try and unlock as a different user
         unlocked = lock.unlock("journal", j.id, "otheruser")
@@ -113,7 +109,7 @@ class TestLock(DoajTestCase):
 
         time.sleep(2)
 
-        after = datetime.utcnow() + timedelta(seconds=2300)
+        after = dates.now() + timedelta(seconds=2300)
 
         # set a lock with a longer timout
         l = lock.lock("journal", j.id, "testuser", 2400)

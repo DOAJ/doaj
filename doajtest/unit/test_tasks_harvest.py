@@ -2,22 +2,21 @@ import itertools
 import json
 import os
 import time
-from datetime import datetime
-
 from unittest.mock import Mock, patch
 
+from doajtest import test_constants
 from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase, with_es
-from portality.core import app
-from portality.tasks.harvester import HarvesterBackgroundTask
 from portality import models
+from portality.background import BackgroundApi
+from portality.core import app
+from portality.lib import dates
+from portality.tasks.harvester import HarvesterBackgroundTask
 from portality.tasks.harvester_helpers.epmc import models as h_models
 from portality.tasks.harvester_helpers.epmc.client import EuropePMC, EuropePMCException
 from portality.tasks.harvester_helpers.epmc.models import EPMCMetadata
-from portality.background import BackgroundApi
-from portality.lib import dates
 
-RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources/")
+PATH_HARVESTER_RESP = test_constants.PATH_RESOURCES / 'harvester_resp.json'
 
 
 class TestHarvester(DoajTestCase):
@@ -38,7 +37,7 @@ class TestHarvester(DoajTestCase):
 
         app.config['HARVEST_ACCOUNTS'] = [self.publisher.id]
 
-        self.today = datetime.today().strftime('%Y-%m-%d')
+        self.today = dates.today()
         app.config["INITIAL_HARVEST_DATE"] = self.today
 
     def tearDown(self):
@@ -54,11 +53,11 @@ class TestHarvester(DoajTestCase):
         # new job
         zombie = HarvesterBackgroundTask.prepare("testuser")
         zombie.start()
-        cd = dates.format(dates.before(datetime.utcnow(), app.config.get("HARVESTER_ZOMBIE_AGE") * 2))
+        cd = dates.format(dates.before_now(app.config.get("HARVESTER_ZOMBIE_AGE") * 2))
         zombie.set_created(cd)
         zombie.save(blocking=True)
 
-        with open(os.path.join(RESOURCES, 'harvester_resp.json')) as json_file:
+        with open(PATH_HARVESTER_RESP) as json_file:
             articles = json.load(json_file)
 
         articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + self.today + ' sort_date:"y"',
@@ -73,7 +72,7 @@ class TestHarvester(DoajTestCase):
         task = HarvesterBackgroundTask(job)
         BackgroundApi.execute(task)
 
-        time.sleep(2)
+        time.sleep(1)
 
         print(job.pretty_audit)
         articles_saved = [a for a in self.journal.all_articles()]
@@ -84,7 +83,7 @@ class TestHarvester(DoajTestCase):
     @patch('portality.lib.httputil.get')
     def test_query(self, mock_get):
 
-        with open(os.path.join(RESOURCES, 'harvester_resp.json')) as json_file:
+        with open(PATH_HARVESTER_RESP) as json_file:
             articles = json.load(json_file)
 
         articles["request"]["queryString"] = 'ISSN:"1234-5678" OPEN_ACCESS:"y" UPDATE_DATE:' + self.today + ' sort_date:"y"',
@@ -125,7 +124,7 @@ class TestHarvester(DoajTestCase):
 
         assert not mock_query.called, "mock_query was called when it shouldn't have been"
 
-        time.sleep(2)
+        time.sleep(1)
 
         job3 = models.BackgroundJob.pull(job2.id)
         assert job3.status == "error", "expected 'error', got '{x}'".format(x=job3.status)

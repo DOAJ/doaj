@@ -1,10 +1,12 @@
-from datetime import datetime
+# ~~UpdateRequestPublisherRejectedNotify:Consumer~~
 
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
 from portality.bll import DOAJ, exceptions
 from portality.core import app
+from portality.lib import dates
+from portality.lib.dates import FMT_DATE_HUMAN_A
 
 
 class UpdateRequestPublisherRejectedNotify(EventConsumer):
@@ -50,19 +52,22 @@ class UpdateRequestPublisherRejectedNotify(EventConsumer):
         if not application.owner:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
         notification.who = application.owner
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
-        datetime_object = datetime.strptime(application.date_applied, '%Y-%m-%dT%H:%M:%SZ')
-        date_applied = datetime_object.strftime("%d/%b/%Y")
+        datetime_object = dates.parse(application.date_applied)
+        date_applied = datetime_object.strftime(FMT_DATE_HUMAN_A)
         notification.long = svc.long_notification(cls.ID).format(
             title=application.bibjson().title,
             date_applied=date_applied,
         )
-        notification.short = svc.short_notification(cls.ID)
+        notification.short = svc.short_notification(cls.ID).format(
+            issns=", ".join(issn for issn in application.bibjson().issns())
+        )
 
         # there is no action url associated with this notification
 

@@ -1,6 +1,5 @@
-# from flask import url_for
+# ~~ApplicationPublisherInProgressNotify:Consumer~~
 from portality.util import url_for
-
 from portality.core import app
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -30,6 +29,7 @@ class ApplicationPublisherInprogressNotify(EventConsumer):
         if application.owner is None:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
@@ -46,6 +46,8 @@ class ApplicationPublisherInprogressNotify(EventConsumer):
             date_applied=date_applied,
             volunteers=volunteers
         )
-        notification.short = svc.short_notification(cls.ID)
+        notification.short = svc.short_notification(cls.ID).format(
+            issns=", ".join(issn for issn in application.bibjson().issns())
+        )
 
         svc.notify(notification)

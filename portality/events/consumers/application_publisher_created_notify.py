@@ -1,6 +1,5 @@
-# from flask import url_for
+# ~~ApplicationPublisherCreatedNotify:Notifications~~
 from portality.util import url_for
-
 from portality.lib import dates
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -31,6 +30,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
         if not application.owner:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
@@ -41,6 +41,8 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
                                                                  journal_url=application.bibjson().journal_url,
                                                                  application_date=dates.human_date(application.date_applied),
                                                                  volunteers_url=url_for("doaj.volunteers"))
-        notification.short = svc.short_notification(cls.ID)
+        notification.short = svc.short_notification(cls.ID).format(
+            issns=", ".join(issn for issn in application.bibjson().issns())
+        )
 
         svc.notify(notification)

@@ -1,5 +1,4 @@
 import string
-import warnings
 
 from unidecode import unidecode
 from functools import reduce
@@ -8,10 +7,11 @@ from datetime import datetime
 
 from portality import datasets, constants
 from portality.dao import DomainObject
+from portality.lib.dates import FMT_DATETIME_STD
 from portality.models import Journal
 from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article specifically uses the v1 BibJSON
 from portality.models.v1 import shared_structs
-from portality.lib import normalise
+from portality.lib import normalise, dates
 
 
 class NoJournalException(Exception):
@@ -146,14 +146,18 @@ class Article(DomainObject):
         """Deprecated"""
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
         if date is None:
-            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            date = dates.now_str()
         snobj = {"date": date, "bibjson": bibjson}
         if "history" not in self.data:
             self.data["history"] = []
         self.data["history"].append(snobj)
 
     def is_in_doaj(self):
-        return self.data.get("admin", {}).get("in_doaj", False)
+        try:
+            return self.data['admin'].get("in_doaj", False)
+        except KeyError:
+            # If we have no admin section, return None instead
+            return None
 
     def set_in_doaj(self, value):
         if "admin" not in self.data:
@@ -161,7 +165,11 @@ class Article(DomainObject):
         self.data["admin"]["in_doaj"] = value
 
     def has_seal(self):
-        return self.data.get("admin", {}).get("seal", False)
+        try:
+            return self.data['admin'].get("seal", False)
+        except KeyError:
+            # If we have no admin section, return None instead
+            return None
 
     def set_seal(self, value):
         if "admin" not in self.data:
@@ -420,10 +428,8 @@ class Article(DomainObject):
         if len(cbib.journal_language) > 0:
             langs = [datasets.name_for_lang(l) for l in cbib.journal_language]
 
-        # copy the country
-        if jindex.get('country'):
-            country = jindex.get('country')
-        elif cbib.journal_country:
+        # Get the country name from the bibjson country code
+        if cbib.journal_country:
             country = datasets.get_country_name(cbib.journal_country)
 
         # copy the publisher/provider
@@ -476,7 +482,6 @@ class Article(DomainObject):
             # if we can't normalise the DOI, just store it as-is.
             doi = source_doi
 
-
         # create a normalised version of the fulltext URL for deduplication
         fulltexts = cbib.get_urls(constants.LINK_TYPE_FULLTEXT)
         if len(fulltexts) > 0:
@@ -486,8 +491,6 @@ class Article(DomainObject):
             except ValueError as e:
                 # if we can't normalise the fulltext store it as-is
                 fulltext = source_fulltext
-
-
 
         # build the index part of the object
         self.data["index"] = {}
@@ -527,7 +530,7 @@ class Article(DomainObject):
 
     def prep(self):
         self._generate_index()
-        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.data['last_updated'] = dates.now_str()
 
     def save(self, *args, **kwargs):
         self._generate_index()
@@ -692,7 +695,7 @@ class ArticleBibJSON(GenericBibJSON):
     def author(self, authors):
         self._set_with_struct("author", authors)
 
-    def get_publication_date(self, date_format='%Y-%m-%dT%H:%M:%SZ'):
+    def get_publication_date(self, date_format=FMT_DATETIME_STD):
         # work out what the date of publication is
         date = ""
         if self.year is not None:
@@ -707,9 +710,9 @@ class ArticleBibJSON(GenericBibJSON):
                         return date
 
                     # In the case of truncated years, assume it's this century if before the current year
-                    if intyear <= int(str(datetime.utcnow().year)[:-2]):
+                    if intyear <= int(str(dates.now().year)[:-2]):
                         self.year = "20" + self.year          # For readability over long-lasting code, I have refrained
-                    else:                                     # from using str(datetime.utcnow().year)[:2] here.
+                    else:                                     # from using str(dates.now().year)[:2] here.
                         self.year = "19" + self.year          # But don't come crying to me 90-ish years from now.
 
                 # if we still don't have a 4 digit year, forget it
@@ -747,7 +750,7 @@ class ArticleBibJSON(GenericBibJSON):
 
             # attempt to confirm the format of our datestamp
             try:
-                datecheck = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+                datecheck = dates.parse(date)
                 date = datecheck.strftime(date_format)
             except:
                 return ""

@@ -4,7 +4,6 @@ import hashlib
 import logging
 import os
 import shutil
-from datetime import datetime
 from glob import glob
 from unittest import TestCase
 
@@ -12,9 +11,11 @@ import dictdiffer
 from flask_login import login_user
 
 from portality import core, dao
-from portality.app import app
-from portality.lib import paths
+from portality.core import app
+from portality.lib import paths, dates
+from portality.lib.dates import FMT_DATE_STD
 from portality.tasks.redis_huey import main_queue, long_running
+from portality.util import url_for
 
 
 def patch_config(inst, properties):
@@ -119,6 +120,7 @@ class DoajTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        import portality.app  # noqa, needed to registing routes
         cls.originals = patch_config(app, {
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
@@ -137,7 +139,7 @@ class DoajTestCase(TestCase):
             'CMS_BUILD_ASSETS_ON_STARTUP': False
         })
 
-        # some unittest will capture log for testing, therefor log level must be debug
+        # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)
 
         # always_eager has been replaced by immediate
@@ -189,10 +191,10 @@ class DoajTestCase(TestCase):
             CREATED_INDICES = []
 
     def list_today_article_history_files(self):
-        return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
+        return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], dates.now_str(FMT_DATE_STD), '*'))
 
     def list_today_journal_history_files(self):
-        return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
+        return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], dates.now_str(FMT_DATE_STD), '*'))
 
     def _make_and_push_test_context(self, path="/", acc=None):
         ctx = self.app_test.test_request_context(path)
@@ -345,3 +347,40 @@ class StoreLocalPatcher:
         shutil.rmtree(self.new_store_tmp_dir)
         cur_app.config["STORE_LOCAL_DIR"] = self.org_store_local_dir
         cur_app.config["STORE_TMP_DIR"] = self.org_store_tmp_dir
+
+
+def apply_test_case_config(new_config):
+    def decorator(fn):
+        @functools.wraps(fn)
+        def wrapper(self, *args, **kwargs):
+            # apply new_config
+            _app = getattr(self, 'app_test', None)
+            originals = None
+            if _app:
+                originals = patch_config(_app, new_config)
+
+            # run function
+            fn(self, *args, **kwargs)
+
+            # restore
+            if originals:
+                patch_config(_app, originals)
+
+        return wrapper
+
+    return decorator
+
+
+def assert_expected_dict(test_case: TestCase, target, expected: dict):
+    actual = {key: getattr(target, key) for key in expected.keys()}
+    test_case.assertDictEqual(actual, expected)
+
+
+def login(app_client, username, password, follow_redirects=True):
+    return app_client.post(url_for('account.login'),
+                           data=dict(user=username, password=password),
+                           follow_redirects=follow_redirects)
+
+
+def logout(app_client, follow_redirects=True):
+    return app_client.get(url_for('account.logout'), follow_redirects=follow_redirects)

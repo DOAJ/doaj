@@ -48,6 +48,7 @@ TODO_EDITOR_STALLED = "todo_editor_stalled"
 TODO_EDITOR_FOLLOW_UP_OLD = "todo_editor_follow_up_old"
 TODO_EDITOR_COMPLETED = "todo_editor_completed"
 TODO_EDITOR_ASSIGN_PENDING = "todo_editor_assign_pending"
+TODO_EDITOR_ASSIGN_PENDING_LOW_PRIORITY = "todo_editor_assign_pending_low_priority"
 TODO_ASSOCIATE_PROGRESS_STALLED = "todo_associate_progress_stalled"
 TODO_ASSOCIATE_FOLLOW_UP_OLD = "todo_associate_follow_up_old"
 TODO_ASSOCIATE_START_PENDING = "todo_associate_start_pending"
@@ -64,7 +65,9 @@ EVENT_APPLICATION_CREATED = "application:created"
 EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED = "application:editor_group:assigned"
 EVENT_JOURNAL_ASSED_ASSIGNED = "journal:assed:assigned"
 EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED = "journal:editor_group:assigned"
+EVENT_JOURNAL_DISCONTINUING_SOON = "journal:discontinuing_soon"
 
+NOTIFICATION_CLASSIFICATION_STATUS = "alert"
 NOTIFICATION_CLASSIFICATION_STATUS_CHANGE = "status_change"
 NOTIFICATION_CLASSIFICATION_ASSIGN = "assign"
 NOTIFICATION_CLASSIFICATION_CREATE = "create"
@@ -76,3 +79,46 @@ PROCESS__QUICK_REJECT = "quick_reject"
 
 # Role
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
+ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
+
+CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
+
+# ~~-> BackgroundTask:Monitoring~~
+# BackgroundJob.status
+BGJOB_STATUS_QUEUED = 'queued'
+BGJOB_STATUS_ERROR = 'error'
+BGJOB_STATUS_COMPLETE = 'complete'
+
+# BackgroundJob.queue_id
+# ~~->BackgroundTasks:Feature~~
+BGJOB_QUEUE_ID_LONG = 'long_running'
+BGJOB_QUEUE_ID_MAIN = 'main_queue'
+BGJOB_QUEUE_ID_UNKNOWN = 'unknown'
+
+# Background monitor status
+BG_STATUS_STABLE = 'stable'
+BG_STATUS_UNSTABLE = 'unstable'
+
+
+class ConstantList:
+    @classmethod
+    def all_constants(cls):
+        att_names = cls.__dict__
+        att_names = (i for i in att_names if not (i.startswith('__') and i.endswith('__')))
+        return (getattr(cls, n) for n in att_names)
+
+
+class BgjobOutcomeStatus(ConstantList):
+    Pending = 'pending'
+    Success = 'success'
+    Fail = 'fail'
+
+
+# Storage scopes
+STORE__SCOPE__PUBLIC_DATA_DUMP = "public_data_dump"
+
+# OAI
+SUBJECTS_SCHEMA = "LCC:"
+
+# Extra params
+EXPARAM_EDITING_USER = 'editing_user'

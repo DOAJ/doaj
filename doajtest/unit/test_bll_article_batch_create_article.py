@@ -13,15 +13,20 @@ from portality.dao import ESMappingMissingError
 
 import time
 
+
 def load_cases():
-    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_batch_create_article"), "batch_create_article", "test_id",
-                               {"test_id" : []})
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_batch_create_article"),
+                               "batch_create_article", "test_id",
+                               {"test_id": []})
+
 
 EXCEPTIONS = {
-    "ArgumentException" : exceptions.ArgumentException,
-    "DuplicateArticleException" : exceptions.DuplicateArticleException,
-    "IngestException" : exceptions.IngestException
+    "ArgumentException": exceptions.ArgumentException,
+    "DuplicateArticleException": exceptions.DuplicateArticleException,
+    "IngestException": exceptions.IngestException,
+    "ArticleNotAcceptable": exceptions.ArticleNotAcceptable
 }
+
 
 class TestBLLArticleBatchCreateArticle(DoajTestCase):
 
@@ -32,7 +37,6 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         self._get_duplicate = self.svc.get_duplicate
         self._issn_ownership_status = self.svc.issn_ownership_status
         self._get_journal = Article.get_journal
-
 
     def tearDown(self):
         self.svc.is_legitimate_owner = self._is_legitimate_owner
@@ -52,6 +56,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         merge_duplicate_arg = kwargs.get("merge_duplicate")
         limit_to_account_arg = kwargs.get("limit_to_account")
         add_journal_info_arg = kwargs.get("add_journal_info")
+        journal_in_doaj_arg = kwargs.get("journal_in_doaj")
 
         raises_arg = kwargs.get("raises")
         success_arg = kwargs.get("success")
@@ -85,6 +90,8 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         add_journal_info = None
         if add_journal_info_arg != "none":
             add_journal_info = True if add_journal_info_arg == "true" else False
+
+        journal_in_doaj = True if journal_in_doaj_arg == "true" else False
 
         account = None
         if account_arg != "none":
@@ -213,9 +220,9 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
 
         self.svc._doi_or_fulltext_updated = BLLArticleMockFactory.doi_or_fulltext_updated(False,False)
 
-        if add_journal_info:
-            gj_mock = ModelArticleMockFactory.get_journal(journal_specs)
-            Article.get_journal = gj_mock
+        #if add_journal_info:  now we need a journal fixture no matter whether we're adding j info or not
+        gj_mock = ModelArticleMockFactory.get_journal(journal_specs, in_doaj=journal_in_doaj)
+        Article.get_journal = gj_mock
 
         ###########################################################
         # Execution

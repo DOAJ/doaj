@@ -4,11 +4,11 @@ from portality.models import Journal
 class ModelArticleMockFactory(object):
 
     @classmethod
-    def get_journal(cls, specs):
+    def get_journal(cls, specs, in_doaj=True):
         journals = []
 
         for spec in specs:
-            source = JournalFixtureFactory.make_journal_source(in_doaj=True)
+            source = JournalFixtureFactory.make_journal_source(in_doaj=in_doaj)
             j = Journal(**source)
             bj = j.bibjson()
             bj.title = spec.get("title", "Journal Title")

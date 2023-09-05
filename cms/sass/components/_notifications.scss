@@ -1,0 +1,31 @@
+.notifications {
+  overflow-y: scroll;
+  height: 300px;
+  width: 300px;
+  @include typescale-06;
+}
+
+.notifications__item {
+  a {
+    white-space: normal;
+  }
+}
+
+.notifications__date {
+  display: block;
+  margin-top: $spacing-02;
+}
+
+.notifications__unseen {
+  background-color: $dark-green;
+
+  &::before {
+    display: inline-block;
+    margin: 0 $spacing-01 $spacing-01 0;
+    background-color: $light-green;
+    content: " ";
+    height: $spacing-02;
+    width: $spacing-02;
+    border-radius: $spacing-02;
+  }
+}

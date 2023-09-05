@@ -1,6 +1,5 @@
-# from flask import url_for
+# ~~ AccountCreatedEmail:Consumer ~~
 from portality.util import url_for
-
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import app_email
@@ -26,6 +25,7 @@ class AccountCreatedEmail(EventConsumer):
 
     @classmethod
     def _send_account_created_email(cls, account: models.Account):
+        # ~~->AccountCreated:Email~~
         forgot_pw_url = app.config.get('BASE_URL', "https://doaj.org") + url_for('account.forgot')
         reset_url = forgot_pw_url
 
@@ -40,6 +40,7 @@ class AccountCreatedEmail(EventConsumer):
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
         subject = app.config.get("SERVICE_NAME", "") + " - account created, please verify your email address"
 
+        # ~~-> Email:Library ~~
         app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,

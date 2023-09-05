@@ -1,3 +1,5 @@
+import re
+
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
@@ -27,9 +29,11 @@ APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
 # Mocks
 ######################################################################
 
+
 def mock_lookup_code(code):
     if code == "H": return "Social Sciences"
     if code == "HB1-3840": return "Economic theory. Demography"
+    if code == "SF600-1100": return 'Veterinary medicine'
     return None
 
 
@@ -48,6 +52,9 @@ class TestCrosswalks(DoajTestCase):
         form = pc.wtform(JOURNAL_FORM)
 
         obj = JournalFormXWalk.form2obj(form)
+
+        form_author_id_list = {v for k, v in JOURNAL_FORM.items() if re.match(r'notes-\d+-note_author_id', k)}
+        assert form_author_id_list == {n['author_id'] for n in obj['admin']['notes']}
 
         assert isinstance(obj, Journal)
 

@@ -1,6 +1,5 @@
-# from flask import url_for
+# ~~ApplicationPublisherAssignedNotify:Consumer~~
 from portality.util import url_for
-
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
@@ -53,6 +52,7 @@ class ApplicationPublisherAssignedNotify(EventConsumer):
         if not application.owner:
             raise exceptions.NoSuchPropertyException("Application {x} does not have property `owner`".format(x=application.id))
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
@@ -64,7 +64,9 @@ class ApplicationPublisherAssignedNotify(EventConsumer):
             application_date=dates.human_date(application.date_applied),
             volunteers_url=app.config.get('BASE_URL', "https://doaj.org") + url_for("doaj.volunteers"),
         )
-        notification.short = svc.short_notification(cls.ID)
+        notification.short = svc.short_notification(cls.ID).format(
+            issns=", ".join(issn for issn in application.bibjson().issns())
+        )
         # note that there is no action url
 
         svc.notify(notification)

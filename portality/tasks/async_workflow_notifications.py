@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from flask import render_template
 
@@ -7,6 +7,9 @@ from portality import models, app_email
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.core import app
 from portality.dao import Facetview2
+from portality.lib import dates
+from portality.lib.dates import FMT_DATETIME_STD
+from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import main_queue, schedule
 
 
@@ -190,8 +193,8 @@ def managing_editor_notifications(emails_dict):
 
     # First note - records not touched for so long
     X_WEEKS = app.config.get('MAN_ED_IDLE_WEEKS', 2)
-    newest_date = datetime.now() - timedelta(weeks=X_WEEKS)
-    newest_date_stamp = newest_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+    newest_date = dates.now() - timedelta(weeks=X_WEEKS)
+    newest_date_stamp = newest_date.strftime(FMT_DATETIME_STD)
 
     age_query = AgeQuery(newest_date_stamp, status_filters)
     idle_res = models.Suggestion.query(q=age_query.query())
@@ -257,8 +260,8 @@ def editor_notifications(emails_dict, limit=None):
 
     # Second note - records within editor group not touched for so long
     X_WEEKS = app.config.get('ED_IDLE_WEEKS', 2)
-    newest_date = datetime.now() - timedelta(weeks=X_WEEKS)
-    newest_date_stamp = newest_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+    newest_date = dates.now() - timedelta(weeks=X_WEEKS)
+    newest_date_stamp = newest_date.strftime(FMT_DATETIME_STD)
 
     ed_age_query = EdAgeQuery(newest_date_stamp, status_filters)
 
@@ -298,11 +301,11 @@ def associate_editor_notifications(emails_dict, limit=None):
     # Get our thresholds from settings
     X_DAYS = app.config.get('ASSOC_ED_IDLE_DAYS', 2)
     Y_WEEKS = app.config.get('ASSOC_ED_IDLE_WEEKS', 2)
-    now = datetime.now()
+    now = dates.now()
     idle_date = now - timedelta(days=X_DAYS)
     very_idle_date = now - timedelta(weeks=Y_WEEKS)
-    idle_date_stamp = idle_date.strftime("%Y-%m-%dT%H:%M:%SZ")
-    very_idle_date_stamp = very_idle_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+    idle_date_stamp = idle_date.strftime(FMT_DATETIME_STD)
+    very_idle_date_stamp = very_idle_date.strftime(FMT_DATETIME_STD)
 
     relevant_statuses = app.config.get("ASSOC_ED_NOTIFICATION_STATUSES")
     term = "admin.application_status.exact"
@@ -414,10 +417,7 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
             raise BackgroundException("Email has been disabled in config. Set ENABLE_EMAIL to True to run this task.")
 
         # first prepare a job record
-        job = models.BackgroundJob()
-        job.user = username
-        job.action = cls.__action__
-        return job
+        return background_helper.create_job(username, cls.__action__, queue_id=huey_helper.queue_id)
 
     @classmethod
     def submit(cls, background_job):
@@ -429,14 +429,17 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
         async_workflow_notifications.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.periodic_task(schedule("async_workflow_notifications"))
+huey_helper = AsyncWorkflowBackgroundTask.create_huey_helper(main_queue)
+
+
+@huey_helper.task_queue.periodic_task(schedule("async_workflow_notifications"))
 def scheduled_async_workflow_notifications():
     user = app.config.get("SYSTEM_USERNAME")
     job = AsyncWorkflowBackgroundTask.prepare(user)
     AsyncWorkflowBackgroundTask.submit(job)
 
 
-@main_queue.task()
+@huey_helper.task_queue.task()
 def async_workflow_notifications(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = AsyncWorkflowBackgroundTask(job)

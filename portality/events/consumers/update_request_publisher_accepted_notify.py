@@ -1,4 +1,4 @@
-# from flask import url_for
+# ~~UpdateRequestPublisherAcceptedNotify:Consumer~~
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -54,6 +54,7 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
         if not application.owner:
             return
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
@@ -66,7 +67,9 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
             application_date=dates.human_date(application.date_applied),
             publisher_dashboard_url=app.config.get('BASE_URL', "https://doaj.org") + url_for("publisher.journals")
         )
-        notification.short = svc.short_notification(cls.ID)
+        notification.short = svc.short_notification(cls.ID).format(
+            issns=", ".join(issn for issn in application.bibjson().issns())
+        )
 
         notification.action = url_for("publisher.journals")
 

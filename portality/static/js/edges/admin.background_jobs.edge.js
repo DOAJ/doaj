@@ -100,7 +100,9 @@ $.extend(true, doaj, {
                     result += "<div class='row-fluid'><div class='span12'>";
 
                     result += firstRow + "<br>";
+                    result += `Outcome Status: ${resultobj.outcome_status}<br />`
                     result += "Job ID: " + resultobj.id + "<br>";
+                    result += 'On Queue: ' + resultobj.queue_id + '<br>';
                     result += dateRow + "<br>";
 
                     result += '<a href="#" data-id="' + resultobj.id + '" class="' + toggleClass + '">More Information</a><br>';
@@ -186,6 +188,34 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
+                edges.newRefiningANDTermSelector({
+                    id: "queue_id",
+                    category: "facet",
+                    field: "queue_id.exact",
+                    display: "On Queue",
+                    deactivateThreshold : 1,
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: false,
+                        togglable: true,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
+                edges.newRefiningANDTermSelector({
+                    id: "outcome_status",
+                    category: "facet",
+                    field: "outcome_status.exact",
+                    display: "Outcome Status",
+                    deactivateThreshold : 1,
+                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                        controls: true,
+                        open: false,
+                        togglable: true,
+                        countFormat: countFormat,
+                        hideInactive: true
+                    })
+                }),
 
                 // configure the search controller
                 edges.newFullSearchController({
@@ -199,7 +229,8 @@ $.extend(true, doaj, {
                         {'display':'ID','field':'id.exact'},
                         {'display':'Action','field':'action.exact'},
                         {'display':'Submitted By','field':'user.exact'},
-                        {'display':'Status','field':'status.exact'}
+                        {'display':'Status','field':'status.exact'},
+                        {'display':'Outcome Status','field':'outcome_status.exact'},
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
@@ -243,7 +274,9 @@ $.extend(true, doaj, {
                     fieldDisplays: {
                         'action.exact': 'Action',
                         'user.exact' : 'Submitted By',
-                        'status.exact' : 'Status'
+                        'status.exact' : 'Status',
+                        'outcome_status.exact' : 'Outcome Status',
+                        'queue_id.exact' : 'On Queue',
                     }
                 })
             ];

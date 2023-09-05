@@ -68,6 +68,14 @@ ed:
   featured: true
   photo: "napa.jpg"
 
+- name: Pablo Hernandez
+  area: Medical Sciences
+  year_since:
+  city: Caracas
+  country: Venezuela
+  language: Spanish, English
+  photo: "Pablo.jpg"
+
 - name: Paola Galimberti
   area: Research Evaluation
   year_since:
@@ -75,6 +83,7 @@ ed:
   country: Italy
   language: Italian, German, English
   featured: true
+  photo: "pg.png"
 
 - name: Rasoul Zavaraqi
   area: Knowledge and Information Science
@@ -116,7 +125,15 @@ ass_ed:
   city: Florence
   country: Italy
   language: Italian, English, Spanish
-
+  
+- name: Amir Reza Asnafi
+  area: Library and Information Science, Scientometrics
+  year_since:
+  city: Tehran
+  country: I.R.Iran
+  language: Persian (Farsi), English
+  photo: "Amir Reza Asnafi.jpg"
+  
 - name: Ana Fresco-Santalla
   area: Humanities
   year_since:
@@ -322,6 +339,14 @@ ass_ed:
   city: Minneapolis, MN
   country: USA
   language: English
+  
+- name: Emrah Kaya
+  area: Social Sciences, Humanities
+  year_since:
+  city: Sakarya
+  country: Turkey
+  language: English
+  photo: "Emrah Kaya.jpg"
 
 - name: Francesca Soldati
   area: Science
@@ -439,6 +464,14 @@ ass_ed:
   country:
   language: Korean, English
 
+- name: Kadri Kıran
+  area: Systematic Entomology
+  year_since:
+  city: Edirne
+  country: Türkiye
+  language: English, Turkish, German
+  photo: "Kadri Kiran.jpg"
+
 - name: Kâmil B. Varınca
   area: Science
   year_since:
@@ -542,7 +575,6 @@ ass_ed:
   language: Spanish, English
   photo: "MarianoCorujo.jpeg"
   
-  
 - name: Marie-Eve Dugas
   area: Library Science, Social Sciences
   year_since:
@@ -550,7 +582,6 @@ ass_ed:
   country: Canada
   language: French, English
   
-
 - name: Mario Alejandro Marín
   area:
   year_since:
@@ -596,15 +627,14 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Muhamad Taufik
+- name: Muhamad Taufik Hidayat
   area: Humanities, Social Sciences
   year_since:
-  city:
+  city: Tegal
   country: Indonesia
   language: Indonesian, English
   photo: "MuhamadTaufik.jpg"
   
- 
 - name: Nataliia Kaliuzhna
   area: Library and Information Science
   year_since:
@@ -613,7 +643,6 @@ ass_ed:
   language: Ukranian, Russian, English, Polish
   photo: "Nataliia.jpg"
  
-
 - name: Nathalia Avila
   area:
   year_since:
@@ -628,6 +657,14 @@ ass_ed:
   country: Georgia
   language: Georgian, English
   photo: "NatiaGabedava.jpg"
+  
+- name: Nizameddin Koca
+  area: Internal Medicine
+  year_since:
+  city: Bursa
+  country: Turkey
+  language: English, Turkish
+  photo: "Nizameddin.jpg"
 
 - name: Nour El Houda Belhamel
   area: Science, Technology, Medicine
@@ -659,30 +696,12 @@ ass_ed:
   country:
   language:
 
-- name: Orhan Canpolat
-  area: Engineering
-  year_since:
-  city: Istanbul
-  country: Türkiye
-  language: Turkish, English
-  photo: "Orhan CANPOLAT.jpg"
-
-
 - name: Oskia Agirre
   area: Library and Information Science
   year_since:
   city: Donostia
   country: Spain
   language: Euskera, Spanish, English
-
-
-- name: Pablo Hernandez
-  area: Science
-  year_since:
-  city: Caracas
-  country: Venezuela
-  language: Spanish, English
-  photo: "pablohernandez.jpg"
 
 - name: Paula Carina de Araújo
   area: Library and Information Science
@@ -699,6 +718,14 @@ ass_ed:
   country:
   language: English
   photo: "princessnwafor.jpg"
+  
+- name: Priya Rangra
+  area: Open Source Software, Open Science, Information Seeking Behaviour, Applications of ICT and AI in Libraries, Bibliometric Analysis
+  year_since:
+  city: Himachal Pradesh
+  country: India
+  language: English
+  photo: "Priya.jpg"
 
 - name: Prof. Dr. Sudarmin
   area: Science
@@ -729,7 +756,6 @@ ass_ed:
   city:
   country: Mexico
   language: Spanish, English
-
 
 - name: Remedios Melero (Reme)
   area: Social Sciences
@@ -781,6 +807,14 @@ ass_ed:
   city: Milan
   country: Italy
   language: Italian, English, German
+  
+- name: Sridhar Gutam
+  area: Plant Physiology, Tree Phenology and Open Science
+  year_since:
+  city: Bengaluru
+  country: India
+  language: Telugu, English, Hindi, Kannada
+  photo: "Sridhar_photo.png"
 
 - name: Sofia Fagiolo
   area: Librarianship
@@ -812,7 +846,6 @@ ass_ed:
   language: French
   photo: "sogoba1.jpg"
 
-
 - name: Swasti Maharani
   area: Mathematics
   year_since:
@@ -842,6 +875,14 @@ ass_ed:
   language: Bahasa Indonesian, English
   photo: "utiyah.jpg"
   
+- name: Vasanth N
+  area: Librarianship
+  year_since:
+  city: Mysore
+  country: India
+  language: Kannada, English
+  photo: "Vasanth.jpg"
+  
 - name: Weldy St-Fleur
   area: Social Sciences
   year_since:
@@ -857,13 +898,6 @@ ass_ed:
   country: Türkiye
   language: Turkish, English
   photo: "yalcin.jpg"
-
-- name: Yaping Liu
-  area: Medical and Healthcare Management
-  year_since:
-  city: Sydney
-  country: Australia
-  language: Chinese, English
 
 - name: Yulingga Nanda Hanief
   area: Sports Science

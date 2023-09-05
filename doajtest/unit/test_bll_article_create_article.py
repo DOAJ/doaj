@@ -16,6 +16,7 @@ EXCEPTIONS = {
     "ArticleNotAcceptable": exceptions.ArticleNotAcceptable
 }
 
+
 def create_article_load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "create_article",
                                "test_id",
@@ -54,6 +55,7 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         role_arg = kwargs.get("role")
         merge_duplicate_arg = kwargs.get("merge_duplicate")
         add_journal_info_arg = kwargs.get("add_journal_info")
+        journal_in_doaj_arg = kwargs.get("journal_in_doaj")
         dry_run_arg = kwargs.get("dry_run")
         update_article_id_arg = kwargs.get("update_article_id")
         has_ft_doi_changed_arg = kwargs.get("has_ft_doi_changed_arg")
@@ -78,6 +80,8 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         if add_journal_info_arg != "none":
             add_journal_info = True if add_journal_info_arg == "true" else False
 
+        journal_in_doaj = True if journal_in_doaj_arg == "true" else False
+
         dry_run = None
         if dry_run_arg != "none":
             dry_run = True if dry_run_arg == "true" else False
@@ -98,16 +102,16 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         original_id = None
         update_article_id = None
 
-        if add_journal_info:
-            jsource = JournalFixtureFactory.make_journal_source(in_doaj=True)
-            j = Journal(**jsource)
-            bj = j.bibjson()
-            bj.title = "Add Journal Info Title"
-            del bj.eissn
-            del bj.pissn
-            bj.add_identifier(bj.P_ISSN, pissn)
-            bj.add_identifier(bj.E_ISSN, eissn)
-            j.save(blocking=True)
+        #if add_journal_info:   now we need a journal fixture no matter whether we're adding j info or not
+        jsource = JournalFixtureFactory.make_journal_source(in_doaj=journal_in_doaj)
+        j = Journal(**jsource)
+        bj = j.bibjson()
+        bj.title = "Add Journal Info Title"
+        del bj.eissn
+        del bj.pissn
+        bj.add_identifier(bj.P_ISSN, pissn)
+        bj.add_identifier(bj.E_ISSN, eissn)
+        j.save(blocking=True)
 
         if get_duplicate_result_arg == 'different':
             source = ArticleFixtureFactory.make_article_source(eissn=another_eissn, pissn=another_pissn, doi=doi,

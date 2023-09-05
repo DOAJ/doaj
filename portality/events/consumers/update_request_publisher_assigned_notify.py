@@ -1,3 +1,4 @@
+# ~~UpdateRequestPublisherAssignedNotify:Consumer~~
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
@@ -50,6 +51,7 @@ class UpdateRequestPublisherAssignedNotify(EventConsumer):
         if not application.owner:
             raise exceptions.NoSuchPropertyException("Application {x} does not have property `owner`".format(x=application.id))
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
@@ -60,7 +62,9 @@ class UpdateRequestPublisherAssignedNotify(EventConsumer):
             application_title=application.bibjson().title,
             application_date=dates.human_date(application.date_applied)
         )
-        notification.short = svc.short_notification(cls.ID)
+        notification.short = svc.short_notification(cls.ID).format(
+            issns=", ".join(issn for issn in application.bibjson().issns())
+        )
         # note that there is no action url
 
         svc.notify(notification)

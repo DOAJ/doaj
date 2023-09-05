@@ -15,6 +15,7 @@ We do not check metadata quality as we ingest it — this is the publisher's res
 ## Uploading an XML file
 
 + First convert your article metadata into an accepted XML format: DOAJ or Crossref.
+  + We accept DOAJ Native XML, Crossref 4.4.2 XML, or Crossref 5.3.1 XML
   + It must be structured correctly.
   + Its format must follow a set of rules laid out in the [DOAJ XML schema file](http://doaj.org/static/doaj/doajArticles.xsd), or the rules laid out in [Crossref’s schema file](https://www.crossref.org/documentation/schema-library/xsd-schema-quick-reference/).
 + If you are creating DOAJ XML manually, try [formatting](https://jsonformatter.org/xml-formatter) and [validating](https://www.xmlvalidation.com/) the file before you upload it to us.

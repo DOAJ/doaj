@@ -7,6 +7,7 @@ from portality.bll import exceptions
 from portality.core import app
 from portality import lock
 from portality.bll.doaj import DOAJ
+from portality.lib.dates import FMT_DATETIME_SHORT
 from portality.store import StoreFactory, prune_container
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
 
@@ -71,11 +72,11 @@ class JournalService(object):
             # NOTE: we keep the same id for notes between journal and application, since ids only matter within
             # the scope of a record there are no id clashes, and at the same time it may be useful in future to
             # check the origin of some journal notes by comparing ids to application notes.
-            application.add_note(n.get("note"), n.get("date"), n.get("id"))
+            application.add_note_by_dict(n)
         application.set_owner(journal.owner)
         application.set_seal(journal.has_seal())
         application.set_bibjson(bj)
-        application.date_applied = dates.now()
+        application.date_applied = dates.now_str()
 
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed journal_2_application; return application object")
         return application
@@ -130,7 +131,7 @@ class JournalService(object):
         ], exceptions.ArgumentException)
 
         # ~~->FileStoreTemp:Feature~~
-        filename = 'journalcsv__doaj_' + datetime.strftime(datetime.utcnow(), '%Y%m%d_%H%M') + '_utf8.csv'
+        filename = 'journalcsv__doaj_' + dates.now_str(FMT_DATETIME_SHORT) + '_utf8.csv'
         container_id = app.config.get("STORE_CACHE_CONTAINER")
         tmpStore = StoreFactory.tmp()
         out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)
@@ -150,7 +151,7 @@ class JournalService(object):
         if prune:
             def sort(filelist):
                 rx = "journalcsv__doaj_(.+?)_utf8.csv"
-                return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], '%Y%m%d_%H%M'), reverse=True)
+                return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], FMT_DATETIME_SHORT), reverse=True)
 
             def _filter(f_name):
                 return f_name.startswith("journalcsv__")
@@ -161,17 +162,20 @@ class JournalService(object):
         models.Cache.cache_csv(url)
         return url, action_register
 
-    def admin_csv(self, file_path, account_sub_length=8, obscure_accounts=True):
+    def admin_csv(self, file_path, account_sub_length=8, obscure_accounts=True, add_sensitive_account_info=False):
         """
         ~~AdminJournalCSV:Feature->JournalCSV:Feature~~
 
-        :param file_path:
-        :param account_sub_length:
-        :param obscure_accounts:
-        :return:
+        :param file_path: where to put the CSV
+        :param account_sub_length: the length in characters for the substituted string
+        :param obscure_accounts: anonymise the account data with consistent random strings
+        :param add_sensitive_account_info: augment the CSV with account information - account ID, account name, account email addr
         """
         # create a closure for substituting owners for consistently used random strings
         unmap = {}
+
+        if obscure_accounts and add_sensitive_account_info:
+            raise Exception("These arguments are mutually exclusive, no point to both add and obscure the account info")
 
         def usernames(j):
             o = j.owner
@@ -185,8 +189,22 @@ class JournalService(object):
             else:
                 return [("Owner", o)]
 
+        def acc_name(j):
+            o = j.owner
+            a = models.Account.pull(o)
+            return [("Account Name", a.name)] if a is not None else ""
+
+        def acc_email(j):
+            o = j.owner
+            a = models.Account.pull(o)
+            return [("Account Email", a.email)] if a is not None else ""
+
+        extra_cols = [usernames]
+        if add_sensitive_account_info:
+            extra_cols += [acc_name, acc_email]
+
         with open(file_path, "w", encoding="utf-8") as f:
-            self._make_journals_csv(f, [usernames])
+            self._make_journals_csv(f, extra_cols)
 
     @staticmethod
     def _make_journals_csv(file_object, additional_columns=None):

@@ -9,11 +9,13 @@
   "base/spacing",
   "base/typescale",
   "base/fonts",
+  "base/utils",
   "base/body",
   "base/general",
   "base/grid",
-  "base/utils",
   "base/highlight",
+  
+  "vendors/swagger",
 
   "layout/editorial-panel",
   "layout/nav-bar",
@@ -40,6 +42,7 @@
   "components/loading",
   "components/logo",
   "components/modal",
+  "components/notifications",
   "components/numbered-table",
   "components/pager-buttons",
   "components/pagination",
@@ -63,6 +66,8 @@
   "pages/journal-details",
   "pages/search",
   "pages/sponsors",
+  "pages/uploadmetadata",
 
-  "themes/dashboard"
+  "themes/dashboard",
+  "themes/timeline"
 ;

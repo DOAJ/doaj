@@ -23,6 +23,7 @@ import portality.models as models
 from portality.core import app, es_connection, initialise_index
 from portality import settings
 from portality.lib import edges, dates
+from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -45,18 +46,20 @@ if 'api3' in app.config['FEATURES']:
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 from portality.view.dashboard import blueprint as dashboard
+from portality.view.tours import blueprint as tours
 
-if app.config.get("DEBUG", False):
+if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False):
     from portality.view.testdrive import blueprint as testdrive
 
 app.register_blueprint(account, url_prefix='/account') #~~->Account:Blueprint~~
 app.register_blueprint(admin, url_prefix='/admin') #~~-> Admin:Blueprint~~
 app.register_blueprint(publisher, url_prefix='/publisher') #~~-> Publisher:Blueprint~~
-app.register_blueprint(query, url_prefix='/query') # ~~-> Query:Blueprint~~
-app.register_blueprint(query, url_prefix="/admin_query")
-app.register_blueprint(query, url_prefix="/publisher_query")
-app.register_blueprint(query, url_prefix="/editor_query")
-app.register_blueprint(query, url_prefix="/associate_query")
+app.register_blueprint(query, name='query', url_prefix='/query') # ~~-> Query:Blueprint~~
+app.register_blueprint(query, name='admin_query', url_prefix='/admin_query')
+app.register_blueprint(query, name='publisher_query', url_prefix='/publisher_query')
+app.register_blueprint(query, name='editor_query', url_prefix='/editor_query')
+app.register_blueprint(query, name='associate_query', url_prefix='/associate_query')
+app.register_blueprint(query, name='dashboard_query', url_prefix="/dashboard_query")
 app.register_blueprint(editor, url_prefix='/editor') # ~~-> Editor:Blueprint~~
 app.register_blueprint(services, url_prefix='/service') # ~~-> Services:Blueprint~~
 if 'api1' in app.config['FEATURES']:
@@ -64,20 +67,23 @@ if 'api1' in app.config['FEATURES']:
 if 'api2' in app.config['FEATURES']:
     app.register_blueprint(api_v2, url_prefix='/api/v2') # ~~-> APIv2:Blueprint~~
 if 'api3' in app.config['FEATURES']:
-    app.register_blueprint(api_v3, url_prefix='/api') # ~~-> APIv3:Blueprint~~
-    app.register_blueprint(api_v3, url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
-app.register_blueprint(status, url_prefix='/status') # ~~-> Status:Blueprint~~
-app.register_blueprint(status, url_prefix='/_status')
+    app.register_blueprint(api_v3, name='api', url_prefix='/api') # ~~-> APIv3:Blueprint~~
+    app.register_blueprint(api_v3, name='api_v3', url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
+app.register_blueprint(status, name='status', url_prefix='/status') # ~~-> Status:Blueprint~~
+app.register_blueprint(status, name='_status', url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
 app.register_blueprint(jct, url_prefix="/jct") # ~~-> JCT:Blueprint~~
 app.register_blueprint(dashboard, url_prefix="/dashboard") #~~-> Dashboard:Blueprint~~
+app.register_blueprint(tours, url_prefix="/tours")  # ~~-> Tours:Blueprint~~
+
 app.register_blueprint(oaipmh) # ~~-> OAIPMH:Blueprint~~
 app.register_blueprint(openurl) # ~~-> OpenURL:Blueprint~~
 app.register_blueprint(atom) # ~~-> Atom:Blueprint~~
 app.register_blueprint(doaj) # ~~-> DOAJ:Blueprint~~
 
-if app.config.get("DEBUG", False):
-    app.register_blueprint(testdrive, url_prefix="/testdrive") # ~~-> Testdrive:Feature ~~
+if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False):
+    app.logger.warning('Enabling TESTDRIVE at /testdrive')
+    app.register_blueprint(testdrive, url_prefix="/testdrive")  # ~~-> Testdrive:Feature ~~
 
 # initialise the index - don't put into if __name__ == '__main__' block,
 # because that does not run if gunicorn is loading the app, as opposed
@@ -175,7 +181,7 @@ def set_current_context():
         'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
         "app": app,
-        "current_year": datetime.now().strftime('%Y'),
+        "current_year": dates.now_str(FMT_YEAR),
         "base_url": app.config.get('BASE_URL'),
         }
 
@@ -194,7 +200,7 @@ def bytes_to_filesize(size):
 
 
 @app.template_filter('utc_timestamp')
-def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
+def utc_timestamp(stamp, string_format=FMT_DATETIME_STD):
     """
     Format a local time datetime object to UTC
     :param stamp: a datetime object
@@ -208,9 +214,7 @@ def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
     return utcdt.strftime(string_format)
 
 
-@app.template_filter("human_date")
-def human_date(stamp, string_format="%d %B %Y"):
-    return dates.reformat(stamp, out_format=string_format)
+human_date = app.template_filter("human_date")(dates.human_date)
 
 
 @app.template_filter('doi_url')
@@ -282,6 +286,10 @@ def form_diff_table_subject_expand(val):
             results.append(v)
 
     return ", ".join(results)
+
+@app.template_filter("is_in_the_past")
+def is_in_the_past(dttm):
+    return dates.is_before(dttm, dates.today())
 
 
 #######################################################

@@ -1,4 +1,4 @@
-# from flask import url_for
+# ~~JournalEditorGroupAssignedNotify:Consumer~~
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -33,6 +33,7 @@ class JournalEditorGroupAssignedNotify(EventConsumer):
         if not editor_group.editor:
             raise exceptions.NoSuchPropertyException("Editor Group {x} does not have property `editor`".format(x=editor_group.id))
 
+        # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
@@ -43,7 +44,9 @@ class JournalEditorGroupAssignedNotify(EventConsumer):
         notification.long = svc.long_notification(cls.ID).format(
             journal_name=journal.bibjson().title
         )
-        notification.short = svc.short_notification(cls.ID)
+        notification.short = svc.short_notification(cls.ID).format(
+            issns=", ".join(issn for issn in journal.bibjson().issns())
+        )
         notification.action = url_for("editor.journal_page", journal_id=journal.id)
 
         svc.notify(notification)
