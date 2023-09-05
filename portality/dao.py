@@ -136,7 +136,7 @@ class DomainObject(UserDict, object):
         :return:
         """
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, save command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, save command cannot run")
             return
 
         if retries > app.config.get("ES_RETRY_HARD_LIMIT", 1000):   # an arbitrary large number
@@ -220,7 +220,7 @@ class DomainObject(UserDict, object):
 
     def delete(self):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, delete command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, delete command cannot run")
             return
 
         # r = requests.delete(self.target() + self.id)
@@ -313,7 +313,7 @@ class DomainObject(UserDict, object):
         """
         # ~~->ReadOnlyMode:Feature~~
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, bulk command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, bulk command cannot run")
             return
 
         if action not in ['index', 'update', 'delete']:
@@ -363,7 +363,7 @@ class DomainObject(UserDict, object):
         :return:
         """
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, refresh command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, refresh command cannot run")
             return
 
         # r = requests.post(cls.target() + '_refresh',  headers=CONTENT_TYPE_JSON)
@@ -449,7 +449,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def remove_by_id(cls, id):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, delete_by_id command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, delete_by_id command cannot run")
             return
 
         # r = requests.delete(cls.target() + id)
@@ -461,7 +461,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def delete_by_query(cls, query):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, delete_by_query command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, delete_by_query command cannot run")
             return
 
         #r = requests.delete(cls.target() + "_query", data=json.dumps(query))
@@ -472,7 +472,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def destroy_index(cls):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, destroy_index command cannot run")
             return
 
         # if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
