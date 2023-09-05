@@ -55,6 +55,10 @@ Instructions for reviewers:
   - [ ] Developer
   - [ ] Reviewer
 
+- Urls are constructed with `url_for` not hard-coded
+  - [ ] N/A
+  - [ ] Developer
+  - [ ] Reviewer
 ### Testing
 
 - Unit tests have been added/modified
@@ -68,6 +72,11 @@ Instructions for reviewers:
   - [ ] Reviewer
   
 - Code has been run manually in development, and functional tests followed locally
+  - [ ] N/A
+  - [ ] Developer
+  - [ ] Reviewer
+
+- Have CSS/style changes been implemented?  If they are of a global scope (e.g. on base HTML elements) have the downstream impacts of the change in other areas of the system been considered?
   - [ ] N/A
   - [ ] Developer
   - [ ] Reviewer
