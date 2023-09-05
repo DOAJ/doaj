@@ -1252,7 +1252,7 @@ var formulaic = {
                 let value_to_copy = form.convertValueToText(value);
                 navigator.clipboard.writeText(value_to_copy)
                 var confirmation = $("#copy-confirmation--" + this.fieldDef.name);
-                confirmation.text("Value copied: " + value_to_copy);
+                confirmation.text("Copied: " + value_to_copy);
                 confirmation.show().delay(3000).fadeOut();
             };
             this.init();
