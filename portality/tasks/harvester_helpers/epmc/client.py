@@ -37,9 +37,9 @@ def check_epmc_version(resp_json):
         received_ver = resp_json['version']
         configured_ver = app.config.get("EPMC_TARGET_VERSION")
         if received_ver != configured_ver:
-            app.logger.warn("Mismatching EPMC API version; recommend checking for changes. Expected '{0}' Found '{1}'".format(configured_ver, received_ver))
+            app.logger.warning("Mismatching EPMC API version; recommend checking for changes. Expected '{0}' Found '{1}'".format(configured_ver, received_ver))
     except KeyError:
-        app.logger.warn("Couldn't check EPMC API version; did not find 'version' key in response. Proceed with caution as the EPMC API may have changed.")
+        app.logger.warning("Couldn't check EPMC API version; did not find 'version' key in response. Proceed with caution as the EPMC API may have changed.")
 
 
 def to_keywords(s):
