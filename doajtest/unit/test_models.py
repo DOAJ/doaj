@@ -1628,6 +1628,20 @@ class TestModels(DoajTestCase):
         a2 = models.Application(**asource)
         assert a2.bibjson().apc.pop() == {'currency': 'bananas', 'price': 2}
 
+    def test_38_language_lax(self):
+        """ Check we can open a journal / application model with an invalid currency but can't save it """
+        asource = ApplicationFixtureFactory.make_application_source()
+
+        # FARSI exists in the index as legacy data, but we usually accept it as Persian. It's supposed to be a code.
+        asource['bibjson']['language'] = ['FARSI']
+        a = models.Application(**asource)
+        assert a.bibjson().language_name() == ['FARSI']
+
+        # We could actually put complete nonsense in here if we wanted
+        asource['bibjson']['language'][0] = 'interpretive dance'
+        a2 = models.Application(**asource)
+        assert a2.bibjson().language.pop() == 'interpretive dance'
+
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):
