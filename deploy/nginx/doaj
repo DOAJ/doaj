@@ -166,8 +166,8 @@ server {
         proxy_buffering off;
     }
 
-    # prefer the editor machine for application form work
-    location /admin/application {
+    # prefer the editor machine for application form work (but application_quick_reject goes to background async)
+    location ~* /admin/application/ {
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_ed_failover;
         proxy_redirect off;
