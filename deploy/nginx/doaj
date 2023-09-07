@@ -36,17 +36,27 @@ map $http_user_agent $block_ua {
     ~*curl              1;
 }
 
+# the public server (deprecated, use failover)
 upstream doaj_apps {
-    server 10.131.191.139:5050;
+    server 10.131.191.139:5050;   #doaj-public-app-1
 }
+
+# Background server runs async tasks
 upstream doaj_bg_apps {
-    #server 10.131.56.133:5050;  #old bg machine
-    server 10.131.12.33:5050;
+    server 10.131.12.33:5050;     #doaj-background-app-1
 }
+
+# Editor and admin site components
+upstream doaj_ed_failover {
+    server 10.131.56.133:5050;    #doaj-editor-app-1
+    server 10.131.12.33:5050;     #doaj-background-app-1
+}
+
+# For public site components, try all servers
 upstream doaj_apps_failover {
-    server 10.131.191.139:5050;
-    #server 10.131.56.133:5050 backup;  #old bg machine
-    server 10.131.12.33:5050 backup;
+    server 10.131.191.139:5050;       #doaj-public-app-1
+    server 10.131.12.33:5050 backup;  #doaj-background-app-1
+    server 10.131.56.133:5050;        #doaj-editor-app-1
 }
 upstream doaj_index {
     server 10.131.191.132:9200;
@@ -144,9 +154,7 @@ server {
         proxy_buffering off;
     }
 
-    # for now we are going to send all login functions to the bg machine
-    # technically ONLY the routes that require file upload need to go to the bg machine
-    # but we think it is handy to separate them out, and later we could send them to other machines
+    # technically only the routes that require file upload need to go to the bg machine, but separate for consistency
     location /account {
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_bg_apps;
@@ -157,6 +165,19 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
+
+    # prefer the editor machine for application form work
+    location /admin/application {
+        limit_req zone=general burst=10 nodelay;
+        proxy_pass http://doaj_ed_failover;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
     location /admin { # there are admin bulk actions that MUST go to bg machine
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_bg_apps;
@@ -167,9 +188,10 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
+
     location /editor {
         limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
+        proxy_pass http://doaj_ed_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -177,9 +199,10 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
+
     location /journal/readonly {
         limit_req zone=general burst=10 nodelay;
-        proxy_pass http://doaj_bg_apps;
+        proxy_pass http://doaj_ed_failover;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
