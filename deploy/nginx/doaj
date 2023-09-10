@@ -49,14 +49,14 @@ upstream doaj_bg_apps {
 # Editor and admin site components
 upstream doaj_ed_failover {
     server 10.131.56.133:5050;    #doaj-editor-app-1
-    server 10.131.12.33:5050;     #doaj-background-app-1
+    server 10.131.12.33:5050 backup;     #doaj-background-app-1
 }
 
 # For public site components, try all servers
 upstream doaj_apps_failover {
-    server 10.131.191.139:5050;       #doaj-public-app-1
-    server 10.131.12.33:5050 backup;  #doaj-background-app-1
-    server 10.131.56.133:5050;        #doaj-editor-app-1
+    server 10.131.191.139:5050;        #doaj-public-app-1
+    server 10.131.12.33:5050 backup;   #doaj-background-app-1
+    server 10.131.56.133:5050 backup;  #doaj-editor-app-1
 }
 upstream doaj_index {
     server 10.131.191.132:9200;
@@ -131,6 +131,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
+
     location /search {
         if ($block_ua) {return 403;}
         limit_req zone=general burst=10 nodelay;
@@ -210,7 +211,8 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
-    location /publisher { # only /publisher/uploadfile MUST go to bg, and /publisher/uploadFile
+
+    location /publisher {   # only /publisher/uploadfile MUST go to background
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_bg_apps;
         proxy_redirect off;
@@ -220,7 +222,8 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
-    location /service {
+
+    location /service {    # performs locks etc - handle on the background server
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_bg_apps;
         proxy_redirect off;
@@ -244,6 +247,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
+
     location /csv {
         limit_req zone=general burst=10 nodelay;
         proxy_pass http://doaj_bg_apps;
@@ -258,6 +262,7 @@ server {
     location =/robots.txt {
         alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
     }
+
     location /static/ {
         alias /home/cloo/doaj/src/doaj/portality/static/;
         autoindex off;
