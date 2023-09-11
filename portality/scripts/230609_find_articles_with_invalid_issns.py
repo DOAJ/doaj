@@ -1,16 +1,13 @@
 from portality import models
 from portality.bll.services import article as articlesvc
 from portality.bll import exceptions
-from portality.core import es_connection
-from portality.util import ipt_prefix
-import esprit
 import csv
 
 IN_DOAJ = {
     "query": {
         "bool": {
             "must": [
-                {"term" : {"admin.in_doaj":True}}
+                {"term": {"admin.in_doaj": True}}
             ]
         }
     }
@@ -22,15 +19,10 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--out", help="output file path")
+    parser.add_argument("-o", "--out", help="output file path", required=True)
     args = parser.parse_args()
 
-    if not args.out:
-        print("Please specify an output file path with the -o option")
-        parser.print_help()
-        exit()
-
-    with open(out, "w", encoding="utf-8") as f:
+    with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID", "PISSN", "EISSN", "Journals found with article's PISSN", "In doaj?", "Journals found with article's EISSN", "In doaj?", "Error"])
 
