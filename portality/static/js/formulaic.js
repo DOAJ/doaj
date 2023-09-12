@@ -1483,16 +1483,14 @@ var formulaic = {
 
                 if (val && (val.substring(0,7) === "http://" || val.substring(0,8) === "https://") && val.length > 10) {
                     if (this.link) {
-                        this.link.text(val);
                         this.link.attr("href", val);
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p><a id="' + id + '" class="' + classes + ' button" rel="noopener noreferrer" target="_blank" title="Open URL in a new tab" href="' + val + '">\
+                        that.after('<p><a id="' + id + '" class="' + classes + ' button" style="margin: 0; height: 100%" rel="noopener noreferrer" target="_blank" title="Open URL in a new tab" href="' + val + '">\
                                         Open link\
                                         <span data-feather="external-link" aria-hidden="true"></span>\
                                     </a></p>');
-
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
                     }
