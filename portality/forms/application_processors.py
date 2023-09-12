@@ -1,9 +1,8 @@
 import uuid
-from datetime import datetime
 
-import portality.notifications.application_emails as emails
 from portality.core import app
 from portality import models, constants, app_email
+from portality.lib import dates
 from portality.lib.formulaic import FormProcessor
 from portality.ui.messages import Messages
 from portality.crosswalks.application_form import ApplicationFormXWalk
@@ -11,7 +10,7 @@ from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll import exceptions
 from portality.bll.doaj import DOAJ
 
-from flask import url_for, request, has_request_context
+from flask import url_for, has_request_context
 from flask_login import current_user
 
 from wtforms import FormField, FieldList
@@ -24,11 +23,16 @@ class ApplicationProcessor(FormProcessor):
         # chain
         super(ApplicationProcessor, self).pre_validate()
 
+    def patch_target(self):
+        super().patch_target()
+
+        self._patch_target_note_id()
+
     def _carry_fixed_aspects(self):
         if self.source is None:
             raise Exception("Cannot carry data from a non-existent source")
 
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        now = dates.now_str()
 
         # copy over any important fields from the previous version of the object
         created_date = self.source.created_date if self.source.created_date else now
@@ -188,6 +192,15 @@ class ApplicationProcessor(FormProcessor):
                     "You are not permitted to revert the application status from {0} to {1}.".format(source_status,
                                                                                                      target_status))
 
+    def _patch_target_note_id(self):
+        if self.target.notes:
+            # set author_id on the note if it's a new note
+            for note in self.target.notes:
+                note_date = dates.parse(note['date'])
+                if not note.get('author_id') and note_date > dates.before_now(60):
+                    note['author_id'] = current_user.id
+
+
 
 class NewApplication(ApplicationProcessor):
     """
@@ -235,7 +248,7 @@ class NewApplication(ApplicationProcessor):
         super(NewApplication, self).finalise()
 
         # set some administrative data
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        now = dates.now_str()
         self.target.date_applied = now
         self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
         self.target.set_owner(account.id)
@@ -293,6 +306,7 @@ class AdminApplication(ApplicationProcessor):
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
+
 
     def finalise(self, account, save_target=True, email_alert=True):
         """
@@ -615,6 +629,7 @@ class AssociateApplication(ApplicationProcessor):
         if self.source is None:
             raise Exception("You cannot patch a target from a non-existent source")
 
+        super().patch_target()
         self._carry_fixed_aspects()
         self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
@@ -671,6 +686,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
         if self.source is None:
             raise Exception("You cannot patch a target from a non-existent source")
 
+        super().patch_target()
         self._carry_subjects_and_seal()
         self._carry_fixed_aspects()
         self._merge_notes_forward()
@@ -789,12 +805,14 @@ class ManEdJournalReview(ApplicationProcessor):
         if self.source is None:
             raise Exception("You cannot patch a target from a non-existent source")
 
+        super().patch_target()
         self._carry_fixed_aspects()
         self._merge_notes_forward(allow_delete=True)
 
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
+
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
@@ -863,6 +881,7 @@ class EditorJournalReview(ApplicationProcessor):
         if self.source is None:
             raise Exception("You cannot patch a target from a non-existent source")
 
+        super().patch_target()
         self._carry_fixed_aspects()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
@@ -920,6 +939,7 @@ class AssEdJournalReview(ApplicationProcessor):
         if self.source is None:
             raise Exception("You cannot patch a target from a non-existent source")
 
+        super().patch_target()
         self._carry_fixed_aspects()
         self._merge_notes_forward()
         self.target.set_owner(self.source.owner)

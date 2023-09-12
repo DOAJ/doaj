@@ -15,7 +15,20 @@ $.extend(true, doaj, {
 
             var components = [
                 doaj.components.searchingNotification(),
-
+                // filters
+                edges.newFilterSetter({
+                    id : "see_applications",
+                    category: "facet",
+                    filters : [
+                        doaj.filters.noCharges()
+                    ],
+                    renderer : doaj.renderers.newFacetFilterSetterRenderer({
+                        facetTitle : "",
+                        open: true,
+                        togglable: false,
+                        showCount: false
+                    })
+                }),
                 // facets
                 doaj.facets.openOrClosed(),
                 doaj.facets.applicationStatus(),
@@ -177,21 +190,36 @@ $.extend(true, doaj, {
                 edges.newSelectedFilters({
                     id: "selected-filters",
                     category: "selected-filters",
+                    compoundDisplays : [
+                        {
+                            filters : [
+                                es.newTermFilter({
+                                    field: "bibjson.apc.has_apc",
+                                    value: false
+                                }),
+                                es.newTermFilter({
+                                    field: "bibjson.other_charges.has_other_charges",
+                                    value: false
+                                })
+                            ],
+                            display : "Without article processing charges (APCs)"
+                        }
+                    ],
                     fieldDisplays: {
-                        'admin.application_status.exact': 'Application status',
+                        'admin.application_status.exact': 'Status',
                         'index.application_type.exact' : 'Application',
-                        'index.has_editor_group.exact' : 'Has editor group?',
-                        'index.has_editor.exact' : 'Has Associate Editor?',
+                        'index.has_editor_group.exact' : 'Editor group',
+                        'index.has_editor.exact' : 'Associate Editor',
                         'admin.editor_group.exact' : 'Editor group',
                         'admin.editor.exact' : 'Editor',
                         'index.classification.exact' : 'Classification',
-                        'index.language.exact' : 'Journal language',
-                        'index.country.exact' : 'Country of publisher',
+                        'index.language.exact' : 'Language',
+                        'index.country.exact' : 'Country',
                         'index.subject.exact' : 'Subject',
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
-                        "index.has_apc.exact" : "Publication charges?",
-                        'index.license.exact' : 'Journal license'
+                        "index.has_apc.exact" : "Charges?",
+                        'index.license.exact' : 'License'
                     },
                     valueMaps : {
                         "index.application_type.exact" : {
@@ -199,7 +227,13 @@ $.extend(true, doaj, {
                             "update request": "Open",
                             "new application": "Open"
                         }
-                    }
+                    },
+                    renderer : doaj.renderers.newSelectedFiltersRenderer({
+                        omit : [
+                            "bibjson.apc.has_apc",
+                            "bibjson.other_charges.has_other_charges"
+                        ]
+                    })
                 })
             ];
 

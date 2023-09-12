@@ -68,6 +68,14 @@ ed:
   featured: true
   photo: "napa.jpg"
 
+- name: Pablo Hernandez
+  area: Medical Sciences
+  year_since:
+  city: Caracas
+  country: Venezuela
+  language: Spanish, English
+  photo: "Pablo.jpg"
+
 - name: Paola Galimberti
   area: Research Evaluation
   year_since:
@@ -75,6 +83,7 @@ ed:
   country: Italy
   language: Italian, German, English
   featured: true
+  photo: "pg.png"
 
 - name: Rasoul Zavaraqi
   area: Knowledge and Information Science
@@ -116,7 +125,15 @@ ass_ed:
   city: Florence
   country: Italy
   language: Italian, English, Spanish
-
+  
+- name: Amir Reza Asnafi
+  area: Library and Information Science, Scientometrics
+  year_since:
+  city: Tehran
+  country: I.R.Iran
+  language: Persian (Farsi), English
+  photo: "Amir Reza Asnafi.jpg"
+  
 - name: Ana Fresco-Santalla
   area: Humanities
   year_since:
@@ -322,6 +339,14 @@ ass_ed:
   city: Minneapolis, MN
   country: USA
   language: English
+  
+- name: Emrah Kaya
+  area: Social Sciences, Humanities
+  year_since:
+  city: Sakarya
+  country: Turkey
+  language: English
+  photo: "Emrah Kaya.jpg"
 
 - name: Francesca Soldati
   area: Science
@@ -438,6 +463,14 @@ ass_ed:
   city:
   country:
   language: Korean, English
+
+- name: Kadri Kıran
+  area: Systematic Entomology
+  year_since:
+  city: Edirne
+  country: Türkiye
+  language: English, Turkish, German
+  photo: "Kadri Kiran.jpg"
 
 - name: Kâmil B. Varınca
   area: Science
@@ -624,6 +657,14 @@ ass_ed:
   country: Georgia
   language: Georgian, English
   photo: "NatiaGabedava.jpg"
+  
+- name: Nizameddin Koca
+  area: Internal Medicine
+  year_since:
+  city: Bursa
+  country: Turkey
+  language: English, Turkish
+  photo: "Nizameddin.jpg"
 
 - name: Nour El Houda Belhamel
   area: Science, Technology, Medicine
@@ -655,28 +696,12 @@ ass_ed:
   country:
   language:
 
-- name: Orhan Canpolat
-  area: Engineering
-  year_since:
-  city: Istanbul
-  country: Türkiye
-  language: Turkish, English
-  photo: "Orhan CANPOLAT.jpg"
-
 - name: Oskia Agirre
   area: Library and Information Science
   year_since:
   city: Donostia
   country: Spain
   language: Euskera, Spanish, English
-
-- name: Pablo Hernandez
-  area: Science
-  year_since:
-  city: Caracas
-  country: Venezuela
-  language: Spanish, English
-  photo: "pablohernandez.jpg"
 
 - name: Paula Carina de Araújo
   area: Library and Information Science

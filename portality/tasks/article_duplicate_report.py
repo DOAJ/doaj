@@ -65,14 +65,14 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         with open(tmp_csvpath, 'r', encoding='utf-8') as t:
             article_reader = csv.reader(t)
 
-            start = datetime.now()
+            start = dates.now()
             estimated_finish = ""
             for a in article_reader:
                 if a_count > 1 and a_count % 100 == 0:
-                    n = datetime.now()
+                    n = dates.now()
                     diff = (n - start).total_seconds()
                     expected_total = ((diff / a_count) * total)
-                    estimated_finish = dates.format(dates.after(start, expected_total))
+                    estimated_finish = dates.format(dates.seconds_after(start, expected_total))
                 a_count += 1
 
                 article = models.Article(_source={'id': a[0], 'created_date': a[1], 'bibjson': {'identifier': json.loads(a[2]), 'link': json.loads(a[3]), 'title': a[4]}, 'admin': {'in_doaj': json.loads(a[5])}})

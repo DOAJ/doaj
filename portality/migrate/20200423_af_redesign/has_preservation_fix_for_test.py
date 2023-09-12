@@ -1,7 +1,7 @@
 import esprit
-from portality.core import app, es_connection
-from portality import models
-from datetime import datetime
+
+from portality.core import es_connection
+from portality.lib import dates
 
 m = {
     "embed" : "Embed",
@@ -24,10 +24,10 @@ for ct in types:
         batch.append(result)
 
         if len(batch) >= batch_size:
-            print(datetime.now(), "writing ", len(batch), "to", ct)
+            print(dates.now(), "writing ", len(batch), "to", ct)
             esprit.raw.bulk(es_connection, batch, idkey="id", type_=ct, bulk_type="index")
             batch = []
 
     if len(batch) > 0:
-        print(datetime.now(), "final result set / writing ", len(batch), "to", ct)
+        print(dates.now(), "final result set / writing ", len(batch), "to", ct)
         esprit.raw.bulk(es_connection, batch, idkey="id", type_=ct, bulk_type="index")

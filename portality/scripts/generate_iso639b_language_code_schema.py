@@ -5,9 +5,10 @@ import pycountry
 import difflib
 from lxml import etree
 from lxml.builder import ElementMaker
-from portality.lib import paths
-from datetime import datetime
+from portality.lib import paths, dates
 from glob import glob
+
+from portality.lib.dates import FMT_DATE_STD
 
 SCHEMA_TEMPLATE = '''\
 <xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.doaj.org/schemas/iso_639-2b/{schema_version}" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -127,7 +128,7 @@ if __name__ == '__main__':
     # Retain our current languages file if we are overwriting it
     if os.path.exists(dest_path):
         print('Schema already exists with name {n} - replace? [y/N]'.format(n=args.filename))
-        today = datetime.utcnow().strftime("%Y-%m-%d")
+        today = dates.now_str(FMT_DATE_STD)
         resp = input('Your existing file will be retained as {fn}.old.{td} : '.format(fn=args.filename, td=today))
         if resp.lower() == 'y':
             os.rename(dest_path, dest_path + '.old.' + today)

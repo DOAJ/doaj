@@ -8,6 +8,7 @@ from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, Appl
 from doajtest.helpers import DoajTestCase, load_from_matrix
 from portality.bll import DOAJ
 from portality.bll import exceptions
+from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 from portality.models import Journal, Account, Suggestion
 
 EXCEPTIONS = {
@@ -146,7 +147,7 @@ class TestBLLObjectConversions(DoajTestCase):
             assert related is not None
 
             if manual_update_arg == "true":
-                assert journal.last_manual_update is not None and journal.last_manual_update != "1970-01-01T00:00:00Z"
+                assert journal.last_manual_update is not None and journal.last_manual_update != DEFAULT_TIMESTAMP_VAL
 
             if app_key_properties == "yes":
                 assert journal.editor_group == "appeditorgroup"

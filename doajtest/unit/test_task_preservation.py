@@ -1,7 +1,7 @@
 import os
+from doajtest import test_constants
 import requests
 from io import BytesIO
-from datetime import datetime
 from unittest.mock import patch
 from doajtest.helpers import DoajTestCase
 from doajtest.mocks.preservation import PreservationMock
@@ -16,13 +16,12 @@ class TestPreservation(DoajTestCase):
 
     def setUp(self):
         super(TestPreservation, self).setUp()
-        resources = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-        articles_zip_path = os.path.join(resources, "articles.zip")
+        articles_zip_path = test_constants.PATH_RESOURCES / "articles.zip"
         with open(articles_zip_path, 'rb') as zf:
             self.zip_file = FileStorage(BytesIO(zf.read()), filename="articles.zip")
 
         self.upload_dir = app.config.get("UPLOAD_DIR", ".")
-        created_time = dates.format(datetime.utcnow(), "%Y-%m-%d-%H-%M-%S")
+        created_time = dates.now_str("%Y-%m-%d-%H-%M-%S")
         owner = "rama"
         dir_name = owner + "-" + created_time
         self.local_dir = os.path.join(preservation.Preservation.UPLOAD_DIR, dir_name)

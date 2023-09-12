@@ -3,7 +3,7 @@
 
 - name: Adrian Stanley
   region: North America
-  bio: "Adrian is past President of the <a href='https://www.sspnet.org/' target='_blank'>Society for Scholarly Publishing</a> (SSP). He has previously lived and worked in China and is well connected with the global publishing community, especially in places like Brazil (<a href='https://scielo.org/en/' target='_blank'>SciELO</a>) and Japan (<a href='https://www.jstage.jst.go.jp/' target='_blank'>J-STAGE</a>). He was also Managing Director, Publishers for <a href='https://www.digital-science.com/about-us/' target='_blank'>Digital Science</a>. Adrian serves on NISO’s <a href='https://www.niso.org/topic-committees/information-discovery-interchange' target='_blank'>Information Discovery and Interchange Topic Committee</a>, and he is currently the General Manager at <a href='https://www.jmirpublications.com/' target='_blank'>JMIR Publications</a>."
+  bio: "Adrian is past President of the <a href='https://www.sspnet.org/' target='_blank'>Society for Scholarly Publishing</a> (SSP). He has previously lived and worked in China and is well connected with the global publishing community, especially in places like Brazil (<a href='https://scielo.org/en/SciELO' target='_blank'>Scielo</a>) and Japan (<a href='https://www.jstage.jst.go.jp/' target='_blank'>J-STAGE</a>). He was also Managing Director, Publishers for <a href='https://www.digital-science.com/about-us/' target='_blank'>Digital Science</a>. Adrian serves on the <a href='https://www.oaswitchboard.org/about' target='_blank'>OA Switchboard</a> Client Advisor Group, and is the Chair of the <a href='https://fullyoapublishers.org/' target='_blank'>Fully OA Publishers Group</a> (a sub group formed out of OASPA working group), he is currently an Independent Contractor, and advisor for <a href='https://www.jmirpublications.com/' target='_blank'>JMIR Publications</a>, <a href='http://dataseer.ai/' target='_blank'>DataSeer.ai</a> and <a href='http://underline.io/' target='_blank'>Underline.io</a>."
   photo: "Adrian.png"
   coi:
     2022: https://drive.google.com/file/d/1CC6bqk_JF_kovY6Z-SVhv01epY7dcYWq/view?usp=sharing
@@ -41,6 +41,13 @@
   bio: "Hyun Jung Yi holds a PhD in Library and Information Science from Chung-Ang University and is a librarian at Hanyang University Guri Hospital. Currently, she also serves as a member of the Scholarly Committee at the Korean Medical Library Association and as a vice chair of the Committee of Information Management at the <a href='https://www.kcse.org/' target='_blank'>Korean Council of Science Editors</a> (KCSE). Her interests include observing trends in the scholarly publishing market, disseminating open access journals, and enhancing the publishing environment for researchers."
   photo: "hyun-jung-yi.png"
   coi:
+
+- name: Ikhwan Arief
+  region: Indonesia
+  bio: "Ikhwan is a faculty member in the Industrial Engineering Department at Universitas Andalas, Indonesia. He is an enthusiastic photography hobbyist. He joined DOAJ in 2018 as an ambassador and gradually became a volunteer editor. He used to manage the university's library information system, including establishing the online public access catalogue (OPAC) and the repository servers. He is keenly interested in data science, primarily in industrial and manufacturing systems research. He has been assisting Indonesian journal managers in their application to DOAJ."
+  photo: "ikhwan.jpg"
+  coi:
+    2022: https://drive.google.com/file/d/1bmVVvMAPToLQCHGOfNz0D80xi4WyZhwn/view?usp=sharing
 
 - name: Ina Smith
   region: Southern Africa

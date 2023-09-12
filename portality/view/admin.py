@@ -27,6 +27,7 @@ from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_p
 from portality.view.forms import EditorGroupForm, MakeContinuation
 
 from portality.bll.services.query import Query
+from portality.view.view_helper import exparam_editing_user
 
 # ~~Admin:Blueprint~~
 blueprint = Blueprint('admin', __name__)
@@ -67,7 +68,7 @@ def journals_list():
         try:
             query = json.loads(request.values.get("q"))
         except:
-            app.logger.warn("Bad Request at admin/journals: " + str(request.values.get("q")))
+            app.logger.warning("Bad Request at admin/journals: " + str(request.values.get("q")))
             abort(400)
 
         # get the total number of journals to be affected
@@ -88,7 +89,7 @@ def journals_list():
         try:
             query = json.loads(request.data)
         except:
-            app.logger.warn("Bad Request at admin/journals: " + str(request.data))
+            app.logger.warning("Bad Request at admin/journals: " + str(request.data))
             abort(400)
 
         # get only the query part
@@ -122,7 +123,7 @@ def articles_list():
         try:
             query = json.loads(request.data)
         except:
-            app.logger.warn("Bad Request at admin/journals: " + str(request.data))
+            app.logger.warning("Bad Request at admin/journals: " + str(request.data))
             abort(400)
 
         # get only the query part
@@ -209,7 +210,7 @@ def journal_page(journal_id):
     except lock.Locked as l:
         return render_template("admin/journal_locked.html", journal=journal, lock=l.lock)
 
-    fc = JournalFormFactory.context("admin")
+    fc = JournalFormFactory.context("admin", extra_param=exparam_editing_user())
     if request.method == "GET":
         job = None
         job_id = request.values.get("job")
@@ -325,16 +326,17 @@ def journal_continue(journal_id):
 @login_required
 @ssl_required
 def suggestions():
-    fc = ApplicationFormFactory.context("admin")
+    fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
     return render_template("admin/applications.html",
                            admin_page=True,
                            application_status_choices=application_statuses(None, fc))
+
 
 @blueprint.route("/update_requests", methods=["GET"])
 @login_required
 @ssl_required
 def update_requests():
-    fc = ApplicationFormFactory.context("admin")
+    fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
     return render_template("admin/update_requests.html",
                            admin_page=True,
                            application_status_choices=application_statuses(None, fc))
@@ -363,7 +365,7 @@ def application(application_id):
     except lock.Locked as l:
         return render_template("admin/application_locked.html", application=ap, lock=l.lock)
 
-    fc = ApplicationFormFactory.context("admin")
+    fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
 
     if request.method == "GET":
@@ -389,7 +391,8 @@ def application(application_id):
                 flash(str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
+                                      lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])
@@ -397,7 +400,6 @@ def application(application_id):
 @ssl_required
 @write_required()
 def application_quick_reject(application_id):
-
     # extract the note information from the request
     canned_reason = request.values.get("quick_reject", "")
     additional_info = request.values.get("quick_reject_details", "")
@@ -416,7 +418,8 @@ def application_quick_reject(application_id):
     # retrieve the application and an edit lock on that application
     application = None
     try:
-        application, alock = applicationService.application(application_id, lock_application=True, lock_account=current_user._get_current_object())
+        application, alock = applicationService.application(application_id, lock_application=True,
+                                                            lock_account=current_user._get_current_object())
     except lock.Locked as e:
         abort(409)
 
@@ -459,9 +462,9 @@ def application_quick_reject(application_id):
 @login_required
 @ssl_required
 def admin_site_search():
-    #edit_formcontext = formcontext.ManEdBulkEdit()
-    #edit_form = edit_formcontext.render_template()
-    edit_formulaic_context = JournalFormFactory.context("bulk_edit")
+    # edit_formcontext = formcontext.ManEdBulkEdit()
+    # edit_form = edit_formcontext.render_template()
+    edit_formulaic_context = JournalFormFactory.context("bulk_edit", extra_param=exparam_editing_user())
     edit_form = edit_formulaic_context.render_template()
 
     return render_template("admin/admin_site_search.html",
@@ -474,6 +477,7 @@ def admin_site_search():
 @ssl_required
 def editor_group_search():
     return render_template("admin/editor_group_search.html", admin_page=True)
+
 
 @blueprint.route("/background_jobs")
 @login_required
@@ -683,6 +687,7 @@ def bulk_add_note(doaj_type):
 
     return make_json_resp(summary.as_dict(), status_code=200)
 
+
 @blueprint.route("/journals/bulk/edit_metadata", methods=["POST"])
 @login_required
 @ssl_required
@@ -695,7 +700,7 @@ def bulk_edit_journal_metadata():
         raise BulkAdminEndpointException("key 'metadata' not present in request json")
 
     formdata = MultiDict(payload["metadata"])
-    formulaic_context = JournalFormFactory.context("bulk_edit")
+    formulaic_context = JournalFormFactory.context("bulk_edit", extra_param=exparam_editing_user())
     fc = formulaic_context.processor(formdata=formdata)
 
     if not fc.validate():

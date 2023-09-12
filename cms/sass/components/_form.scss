@@ -55,6 +55,13 @@
   input[type="radio"] + label {
     font-size: 1rem;
   }
+
+  textarea:disabled {
+    height: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
 }
 
 .form__question--optional {
@@ -75,7 +82,7 @@
   border-left: 1px solid $sanguine;
 }
 
-.form__long-help {
+.form__long-help, .form__click-to-copy {
   cursor: pointer;
 
   &:hover {

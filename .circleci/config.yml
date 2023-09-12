@@ -4,6 +4,7 @@ orbs:
 
 jobs:
   build-and-test:
+
     docker:
       - image: cimg/python:3.8.10
         environment:
@@ -13,6 +14,8 @@ jobs:
           - xpack.security.enabled: false
           - transport.host: localhost
           - discovery.type: single-node
+    parallelism: 4
+
     steps:
       - checkout
       - run: git submodule update --init --recursive
@@ -24,7 +27,11 @@ jobs:
           echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
           python portality/cms/build_fragments.py
           python portality/cms/build_sass.py
-          pytest -v --color=yes --code-highlight=yes --log-level=DEBUG doajtest/unit
+          TESTS=$(circleci tests glob "doajtest/unit/**/*.py" | circleci tests split)
+          pytest -v --color=yes --code-highlight=yes --log-level=DEBUG $TESTS
+
+    working_directory: ~/doaj
+
 
 workflows:
   unit_tests:

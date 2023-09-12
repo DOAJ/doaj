@@ -1,4 +1,22 @@
 $.extend(true, doaj, {
+    filters : {
+        noCharges : function() {
+            return {
+                id: "no_charges",
+                display: "Without fees",
+                must: [
+                    es.newTermFilter({
+                        field: "bibjson.apc.has_apc",
+                        value: false
+                    }),
+                    es.newTermFilter({
+                        field: "bibjson.other_charges.has_other_charges",
+                        value: false
+                    })
+                ]
+            }
+        }
+    },
     facets : {
         inDOAJ : function() {
             return edges.newRefiningANDTermSelector({
@@ -319,7 +337,6 @@ $.extend(true, doaj, {
             zeroPadding: 2
         })
     },
-
     components : {
         pager : function(id, category) {
             return edges.newPager({
@@ -1534,13 +1551,12 @@ $.extend(true, doaj, {
                 var textIdSelector = edges.css_id_selector(this.namespace, "text", this);
                 var text = this.component.jq(textIdSelector).val();
 
-                if (text === "") {
-                    return;
-                }
-
                 // if there is search text, then proceed to run the search
                 var val = this.component.jq(element).val();
                 this.component.setSearchField(val, false);
+                if (text === "") {
+                    return;
+                }
                 this.component.setSearchText(text);
             };
 
@@ -1863,7 +1879,7 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < openBits.length; j++) {
                     //    i.removeClass(openBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.addClass(closeBits[j]);
                     //}
@@ -1875,9 +1891,9 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.removeClass(closeBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < openBits.length; j++) {
-                     //   i.addClass(openBits[j]);
+                    //   i.addClass(openBits[j]);
                     //}
                     //results.hide();
 
@@ -2125,7 +2141,7 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < openBits.length; j++) {
                     //    i.removeClass(openBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.addClass(closeBits[j]);
                     //}
@@ -2137,9 +2153,9 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.removeClass(closeBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < openBits.length; j++) {
-                     //   i.addClass(openBits[j]);
+                    //   i.addClass(openBits[j]);
                     //}
                     //results.hide();
 
@@ -2260,7 +2276,7 @@ $.extend(true, doaj, {
 
                             // the remove block looks different, depending on the kind of filter to remove
                             if (def.filter === "term" || def.filter === "terms") {
-                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" alt="Remove" title="Remove">';
+                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" data-value-idx="' + j + '" alt="Remove" title="Remove">';
                                 filters += def.display + valDisplay;
                                 filters += ' <span data-feather="x" aria-hidden="true"></span>';
                                 filters += "</a>";
@@ -2315,6 +2331,7 @@ $.extend(true, doaj, {
 
             this.removeFilter = function (element) {
                 var el = this.component.jq(element);
+                var sf = this.component;
 
                 // if this is a compound filter, remove it by id
                 var compound = el.attr("data-compound");
@@ -2330,20 +2347,9 @@ $.extend(true, doaj, {
 
                 var value = false;
                 if (ft === "terms" || ft === "term") {
-                    val = el.attr("data-value");
-                    // translate string value to a type required by a model
-                    if (val === "true"){
-                        value = true;
-                    }
-                    else if (val === "false"){
-                        value = false;
-                    }
-                    else if (!isNaN(parseInt(val))){
-                        value = parseInt(val);
-                    }
-                    else {
-                        value = val;
-                    }
+                    let values = sf.mustFilters[field].values;
+                    let idx = el.attr("data-value-idx")
+                    value = values[idx].val
                 } else if (ft === "range") {
                     value = {};
 
@@ -2586,9 +2592,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                  subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
-                  subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
-                  subjects += '</ul>';
+                    subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                    subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                    subjects += '</ul>';
                 }
 
                 var update_or_added = "";
@@ -2910,11 +2916,11 @@ $.extend(true, doaj, {
                         </ul>\
                       </aside>\
                     </article></li>';
-                        /*
-                         <li>\
-                            ' + license + '\
-                         </li>\
-                         */
+                /*
+                 <li>\
+                    ' + license + '\
+                 </li>\
+                 */
                 // close off the result and return
                 return frag;
             };
@@ -3067,7 +3073,7 @@ $.extend(true, doaj, {
                 var deleteLinkUrl = deleteLinkTemplate.replace("__application_id__", resultobj.id);
                 var deleteClass = edges.css_classes(this.namespace, "delete", this);
                 if (resultobj.es_type === "draft_application" ||
-                        resultobj.admin.application_status === "update_request") {
+                    resultobj.admin.application_status === "update_request") {
                     deleteLink = '<li class="tag">\
                         <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-application" class="' + deleteClass + '"\
                             data-title="' + titleText + '">\
@@ -3338,9 +3344,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                  subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
-                  subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
-                  subjects += '</ul>';
+                    subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                    subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                    subjects += '</ul>';
                 }
 
                 var update_or_added = "";

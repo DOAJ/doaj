@@ -2,24 +2,12 @@
 
 {% block body_class %}article-details{% endblock %}
 
-{%- block page_title -%}
-    {% set bibjson = article.bibjson() %}
-    {%- if bibjson.title -%}
-        {% set metatitle = bibjson.title %}
-    {% else %}
-        {% set metatitle = app.config['SERVICE_NAME'] %}
-    {%- endif -%}
-    {{ metatitle }}
-{%- endblock -%}
-
-{%- block meta_description -%}
-    {% set bibjson = article.bibjson() %}
-    {%- if bibjson.abstract -%}
-        {{ bibjson.abstract | striptags | truncate(160) }}
-    {% else %}
-        More about this open access article on DOAJ. DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals.
-    {%- endif -%}
-{%- endblock -%}
+{% block page_title %}{% include "doaj/includes/_article_meta_title.html" %}{% endblock %}
+{% block meta_og_title %}{% include "doaj/includes/_article_meta_title.html" %}{% endblock %}
+{% block meta_twitter_title %}{% include "doaj/includes/_article_meta_title.html" %}{% endblock %}
+{%- block meta_description -%}{% include "doaj/includes/_article_meta_description.html" %}{%- endblock -%}
+{%- block meta_og_description -%}{% include "doaj/includes/_article_meta_description.html" %}{%- endblock -%}
+{%- block meta_twitter_description -%}{% include "doaj/includes/_article_meta_description.html" %}{%- endblock -%}
 
 {% block extra_meta_tags %}
     {% set bibjson = article.bibjson() %}

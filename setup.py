@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.2.26',
+    version='6.3.16',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -40,8 +40,8 @@ setup(
         "psutil==5.6.3",
         #"pycountry==22.3.5",  # FIXME: pycountry on pypi is quite outdated (2022-03-05, missing e.g. Türkiye)
         "pycountry @ git+https://github.com/DOAJ/pycountry.git@30a23571951cf4eb98939a961ac96d1c2b64a3d8#egg=pycountry",
-        "python-dateutil==2.8.0",  # something else already installs this, so just note we need it without an explicit version freeze
-        "pytz==2019.3",
+        "python-dateutil==2.8.2",  # something else already installs this, so just note we need it without an explicit version freeze
+        "pytz==2020.1",
         "redis==3.3.11",
         "requests~=2.29.0",
         "responses==0.10.6",
@@ -62,7 +62,10 @@ setup(
                  "pytest-cov~=4.0.0",
                  "pytest-xdist~=3.2.1",
                  "selenium==4.12.0",
-                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
+                 "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix",
+                 "bs4==0.0.1",  # beautifulsoup for HTML parsing
+                 "pandas==2.0.1",  # pandas lets us generate URLs for linkcheck
+                 ],
         "docs": [
             "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@cb52c345b942e50726767b1a7190f1a01b81e722#egg=featuremap",
             "testbook @ git+https://github.com/CottageLabs/testbook.git@15a7c0cc25d951d989504d84c2ef3e24caaf56e9#egg=testbook"]

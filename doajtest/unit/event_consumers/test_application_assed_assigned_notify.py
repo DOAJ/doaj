@@ -39,7 +39,7 @@ class TestApplicationAssedAssignedNotify(DoajTestCase):
         event = models.Event(constants.EVENT_APPLICATION_ASSED_ASSIGNED, context={"application" : app.data})
         ApplicationAssedAssignedNotify.consume(event)
 
-        time.sleep(2)
+        time.sleep(1)
         ns = models.Notification.all()
         assert len(ns) == 1
 

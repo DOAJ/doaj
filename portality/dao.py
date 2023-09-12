@@ -8,11 +8,12 @@ import urllib.parse
 
 from collections import UserDict
 from copy import deepcopy
-from datetime import datetime, timedelta
+from datetime import timedelta
 from typing import List
 
 from portality.core import app, es_connection as ES
-
+from portality.lib import dates
+from portality.lib.dates import FMT_DATETIME_STD
 
 # All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 # You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
@@ -105,7 +106,7 @@ class DomainObject(UserDict, object):
     
     def set_created(self, date=None):
         if date is None:
-            self.data['created_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            self.data['created_date'] = dates.now_str()
         else:
             self.data['created_date'] = date
 
@@ -115,7 +116,7 @@ class DomainObject(UserDict, object):
 
     @property
     def created_timestamp(self):
-        return datetime.strptime(self.data.get("created_date"), "%Y-%m-%dT%H:%M:%SZ")
+        return dates.parse(self.data.get("created_date"))
     
     @property
     def last_updated(self):
@@ -123,7 +124,7 @@ class DomainObject(UserDict, object):
 
     @property
     def last_updated_timestamp(self):
-        return datetime.strptime(self.last_updated, "%Y-%m-%dT%H:%M:%SZ")
+        return dates.parse(self.last_updated)
 
     def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False, block_wait=0.25):
         """
@@ -135,7 +136,7 @@ class DomainObject(UserDict, object):
         :return:
         """
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, save command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, save command cannot run")
             return
 
         if retries > app.config.get("ES_RETRY_HARD_LIMIT", 1000):   # an arbitrary large number
@@ -149,14 +150,14 @@ class DomainObject(UserDict, object):
 
         self.data['es_type'] = self.__type__
 
-        now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        now = dates.now_str()
         if (blocking or differentiate) and "last_updated" in self.data:
-            diff = datetime.now() - datetime.strptime(self.data["last_updated"], "%Y-%m-%dT%H:%M:%SZ")
+            diff = dates.now() - dates.parse(self.data["last_updated"])
 
             # we need the new last_updated time to be later than the new one
             if diff.total_seconds() < 1:
-                soon = datetime.utcnow() + timedelta(seconds=1)
-                now = soon.strftime("%Y-%m-%dT%H:%M:%SZ")
+                soon = dates.now() + timedelta(seconds=1)
+                now = soon.strftime(FMT_DATETIME_STD)
 
         self.data['last_updated'] = now
 
@@ -219,7 +220,7 @@ class DomainObject(UserDict, object):
 
     def delete(self):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, delete command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, delete command cannot run")
             return
 
         # r = requests.delete(self.target() + self.id)
@@ -312,7 +313,7 @@ class DomainObject(UserDict, object):
         """
         # ~~->ReadOnlyMode:Feature~~
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, bulk command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, bulk command cannot run")
             return
 
         if action not in ['index', 'update', 'delete']:
@@ -362,7 +363,7 @@ class DomainObject(UserDict, object):
         :return:
         """
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, refresh command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, refresh command cannot run")
             return
 
         # r = requests.post(cls.target() + '_refresh',  headers=CONTENT_TYPE_JSON)
@@ -448,7 +449,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def remove_by_id(cls, id):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, delete_by_id command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, delete_by_id command cannot run")
             return
 
         # r = requests.delete(cls.target() + id)
@@ -460,7 +461,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def delete_by_query(cls, query):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, delete_by_query command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, delete_by_query command cannot run")
             return
 
         #r = requests.delete(cls.target() + "_query", data=json.dumps(query))
@@ -478,7 +479,7 @@ class DomainObject(UserDict, object):
         es_kwargs = default_es_kwargs
 
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, destroy_index command cannot run")
             return
 
         # if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
@@ -857,7 +858,7 @@ class DomainObject(UserDict, object):
             sleep = app.config["ES_BLOCK_WAIT_OVERRIDE"]
 
         q = BlockQuery(id)
-        start_time = datetime.now()
+        start_time = dates.now()
         while True:
             res = cls.query(q=q.query())
             hits = res.get("hits", {}).get("hits", [])
@@ -867,14 +868,14 @@ class DomainObject(UserDict, object):
                     if "last_updated" in obj:
                         lu = obj["last_updated"]
                         if len(lu) > 0:
-                            threshold = datetime.strptime(last_updated, "%Y-%m-%dT%H:%M:%SZ")
-                            lud = datetime.strptime(lu[0], "%Y-%m-%dT%H:%M:%SZ")
+                            threshold = dates.parse(last_updated)
+                            lud = dates.parse(lu[0])
                             if lud >= threshold:
                                 return
                 else:
                     return
             else:
-                if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
+                if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
                     raise BlockTimeOutException("Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
 
             time.sleep(sleep)
@@ -890,14 +891,14 @@ class DomainObject(UserDict, object):
             sleep = app.config["ES_BLOCK_WAIT_OVERRIDE"]
 
         q = BlockQuery(id)
-        start_time = datetime.now()
+        start_time = dates.now()
         while True:
             res = cls.query(q=q.query())
             hits = res.get("hits", {}).get("hits", [])
             if len(hits) == 0:
                 return
             else:
-                if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
+                if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
                     raise BlockTimeOutException(
                         "Attempting to block until record with id {id} deleted from Elasticsearch, but this has not happened after {limit}".format(
                             id=id, limit=max_retry_seconds))

@@ -1,33 +1,27 @@
-import os
 from io import BytesIO, StringIO
+from pathlib import Path
 
 from lxml import etree
 
+from doajtest import test_constants
 from portality.lib import paths
 
-from os.path import join
+ARTICLES = test_constants.PATH_RESOURCES / "doajxml_article_uploads.xml"
+PATH_XML = Path(paths.get_project_root()) / 'doajtest/xml_upload_test_package/'
+NON_XML_FILE = PATH_XML / 'non_xml_file.txt'
 
-RESOURCES = join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
-ARTICLES = join(RESOURCES, "doajxml_article_uploads.xml")
-
-PATH_XML = join(paths.get_project_root(), 'doajtest/xml_upload_test_package/')
-NON_XML_FILE = join(PATH_XML, 'non_xml_file.txt')
-
-PATH_XML_DOAJ = join(PATH_XML, 'DOAJ')
-ARTICLE_UPLOAD_SUCCESSFUL = join(PATH_XML_DOAJ, 'successful.xml')
-ARTICLE_UPLOAD_UPDATE = join(PATH_XML_DOAJ, 'update.xml')
-SCHEMA_INVALID = join(PATH_XML_DOAJ, 'schema_invalid.xml')
-XML_MALFORMED = join(PATH_XML_DOAJ, 'not_xml.xml')
-NO_ISSN = join(PATH_XML_DOAJ, 'no_issn.xml')
-IDENTICAL_ISSNS = join(PATH_XML_DOAJ, 'identical_issns.xml')
-DUPLICATE_IN_FILE = join(PATH_XML_DOAJ, 'duplicate_in_file.xml')
-UNOWNED_ISSN = join(PATH_XML_DOAJ, 'unowned_issn.xml')
-WITHDRAWN_JOURNAL = join(PATH_XML_DOAJ, 'withdrawn_journal.xml')
-UNMATCHED_ISSN = join(PATH_XML_DOAJ, 'unmatched_issn.xml')
-SHARED_ISSN = join(PATH_XML_DOAJ, 'shared_issn.xml')
-
-
-
+PATH_XML_DOAJ = PATH_XML / 'DOAJ'
+ARTICLE_UPLOAD_SUCCESSFUL = PATH_XML_DOAJ / 'successful.xml'
+ARTICLE_UPLOAD_UPDATE = PATH_XML_DOAJ / 'update.xml'
+SCHEMA_INVALID = PATH_XML_DOAJ / 'schema_invalid.xml'
+XML_MALFORMED = PATH_XML_DOAJ / 'not_xml.xml'
+NO_ISSN = PATH_XML_DOAJ / 'no_issn.xml'
+IDENTICAL_ISSNS = PATH_XML_DOAJ / 'identical_issns.xml'
+DUPLICATE_IN_FILE = PATH_XML_DOAJ / 'duplicate_in_file.xml'
+UNOWNED_ISSN = PATH_XML_DOAJ / 'unowned_issn.xml'
+WITHDRAWN_JOURNAL = PATH_XML_DOAJ / 'withdrawn_journal.xml'
+UNMATCHED_ISSN = PATH_XML_DOAJ / 'unmatched_issn.xml'
+SHARED_ISSN = PATH_XML_DOAJ / 'shared_issn.xml'
 
 
 class DoajXmlArticleFixtureFactory(object):
@@ -66,11 +60,13 @@ class DoajXmlArticleFixtureFactory(object):
 
     @classmethod
     def upload_1_issn_superlong_should_not_clip(cls):
-        return cls._response_from_xpath("//record[journalTitle='PISSN Correct Superlong Abstract Expected to Not be Clipped']")
+        return cls._response_from_xpath(
+            "//record[journalTitle='PISSN Correct Superlong Abstract Expected to Not be Clipped']")
 
     @classmethod
     def upload_1_issn_superlong_should_clip(cls):
-        return cls._response_from_xpath("//record[journalTitle='PISSN Correct Superlong Abstract Expected to be Clipped']")
+        return cls._response_from_xpath(
+            "//record[journalTitle='PISSN Correct Superlong Abstract Expected to be Clipped']")
 
     @classmethod
     def invalid_schema_xml(cls):

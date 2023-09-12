@@ -128,7 +128,7 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
 
         filename = type_ + ".bulk"
         output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
-        logger_fn((dates.now() + " " + type_ + " => " + output_file + ".*"))
+        logger_fn((dates.now_str() + " " + type_ + " => " + output_file + ".*"))
         iter_q = {"query": {"match_all": {}}, "sort": [{"_id": {"order": "asc"}}]}
         transform = None
         if type_ in anonymisation_procedures:
@@ -140,7 +140,7 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
         _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
                        out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], scroll_keepalive=app.config.get('TASKS_ANON_EXPORT_SCROLL_TIMEOUT', '5m'))
 
-        logger_fn((dates.now() + " done\n"))
+        logger_fn((dates.now_str() + " done\n"))
 
     tmpStore.delete_container(container)
 

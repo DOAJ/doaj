@@ -14,6 +14,7 @@ But an index-per-project connection above as will work too.
 """
 
 from portality.core import app, es_connection, initialise_index
+from portality.lib import dates
 from portality.util import ipt_prefix
 
 from portality.models.v1.suggestion import Suggestion as SuggestionV1
@@ -27,7 +28,7 @@ from portality.models.v2.journal import Journal as JournalV2
 from portality.models.search import JournalArticle
 
 import esprit
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 CC_URLS = {
     "CC BY": "https://creativecommons.org/licenses/by/4.0/",
@@ -569,7 +570,7 @@ for ct in copy_types:
     total = 0
     first_page = esprit.raw.search(sconn, ct)
     max = first_page.json().get("hits", {}).get("total", 0)
-    type_start = datetime.now()
+    type_start = dates.now()
 
     default_query = {
         "query": {"match_all": {}}
@@ -581,11 +582,11 @@ for ct in copy_types:
             batch.append(result)
             if len(batch) >= batch_size:
                 total += len(batch)
-                print(datetime.now(), "writing ", len(batch), "to", tt, ";", total, "of", max)
+                print(dates.now(), "writing ", len(batch), "to", tt, ";", total, "of", max)
                 esprit.raw.bulk(tconn, batch, idkey="id", type_=tt, bulk_type="create")
                 batch = []
                 # do some timing predictions
-                batch_tick = datetime.now()
+                batch_tick = dates.now()
                 time_so_far = batch_tick - type_start
                 seconds_so_far = time_so_far.total_seconds()
                 estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
@@ -596,7 +597,7 @@ for ct in copy_types:
         # Try to write the part-batch to index
         if len(batch) > 0:
             total += len(batch)
-            print(datetime.now(), "scroll timed out / writing ", len(batch), "to", tt, ";", total,
+            print(dates.now(), "scroll timed out / writing ", len(batch), "to", tt, ";", total,
                   "of", max)
             esprit.raw.bulk(tconn, batch, idkey="id", type_=tt, bulk_type="create")
             batch = []
@@ -606,7 +607,7 @@ for ct in copy_types:
     # Write the last part-batch to index
     if len(batch) > 0:
         total += len(batch)
-        print(datetime.now(), "final result set / writing ", len(batch), "to", tt, ";", total,
+        print(dates.now(), "final result set / writing ", len(batch), "to", tt, ";", total,
               "of", max)
         esprit.raw.bulk(tconn, batch, idkey="id", type_=tt, bulk_type="create")
 
@@ -618,7 +619,7 @@ for smt, tmt, source_model, target_model, processor in migrate_types:
     total = 0
     first_page = esprit.raw.search(sconn, smt)
     max = first_page.json().get("hits", {}).get("total", 0)
-    type_start = datetime.now()
+    type_start = dates.now()
 
     default_query = {
         "query": {"match_all": {}}
@@ -640,11 +641,11 @@ for smt, tmt, source_model, target_model, processor in migrate_types:
             batch.append(target.data)
             if len(batch) >= batch_size:
                 total += len(batch)
-                print(datetime.now(), "writing ", len(batch), "to", tt, ";", total, "of", max)
+                print(dates.now(), "writing ", len(batch), "to", tt, ";", total, "of", max)
                 esprit.raw.bulk(tconn, batch, idkey="id", type_=tt, bulk_type="create")
                 batch = []
                 # do some timing predictions
-                batch_tick = datetime.now()
+                batch_tick = dates.now()
                 time_so_far = batch_tick - type_start
                 seconds_so_far = time_so_far.total_seconds()
                 estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
@@ -655,7 +656,7 @@ for smt, tmt, source_model, target_model, processor in migrate_types:
         # Try to write the part-batch to index
         if len(batch) > 0:
             total += len(batch)
-            print(datetime.now(), "scroll timed out / writing ", len(batch), "to", tt, ";", total,
+            print(dates.now(), "scroll timed out / writing ", len(batch), "to", tt, ";", total,
                   "of", max)
             esprit.raw.bulk(tconn, batch, idkey="id", type_=tt, bulk_type="create")
             batch = []
@@ -665,7 +666,7 @@ for smt, tmt, source_model, target_model, processor in migrate_types:
     # Write the last part-batch to index
     if len(batch) > 0:
         total += len(batch)
-        print(datetime.now(), "final result set / writing ", len(batch), "to", tt, ";", total, "of", max)
+        print(dates.now(), "final result set / writing ", len(batch), "to", tt, ";", total, "of", max)
         esprit.raw.bulk(tconn, batch, idkey="id", type_=tt, bulk_type="create")
 
 # Renew the site statistics since their structure has changed

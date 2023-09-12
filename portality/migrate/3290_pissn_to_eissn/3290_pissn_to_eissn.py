@@ -11,11 +11,12 @@ Script for issue 3290 - https://github.com/DOAJ/doajPM/issues/3290
 """
 
 import csv
-from datetime import datetime
+
+from portality.lib import dates
 from portality.models import Journal
 
 if __name__ == '__main__':
-    print('Starting {0}.'.format(datetime.now()))
+    print('Starting {0}.'.format(dates.now()))
 
     import argparse
     parser = argparse.ArgumentParser()
@@ -52,4 +53,4 @@ if __name__ == '__main__':
 
                 writer.writerow(row)
 
-    print('Finished {0}.'.format(datetime.now()))
+    print('Finished {0}.'.format(dates.now()))
