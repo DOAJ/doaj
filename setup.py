@@ -61,7 +61,7 @@ setup(
         "test": ["pytest~=7.3.1",
                  "pytest-cov~=4.0.0",
                  "pytest-xdist~=3.2.1",
-                 "selenium~=4.9.0",
+                 "selenium==4.12.0",
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix"],
         "docs": [
             "featuremap @ git+https://github.com/CottageLabs/FeatureMap.git@cb52c345b942e50726767b1a7190f1a01b81e722#egg=featuremap",

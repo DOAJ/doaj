@@ -51,7 +51,6 @@ def fix_index_not_found_exception(app):
 
 class SeleniumTestCase(DoajTestCase):
     doaj_process = None
-    SELENIUM_URL = 'http://localhost:4444/wd/hub'
     selenium = None  # selenium driver
 
     DOAJ_HOST = app.app.config.get('SELENIUM_DOAJ_HOST', 'localhost')
@@ -88,13 +87,8 @@ class SeleniumTestCase(DoajTestCase):
         self.doaj_process.start()
 
         # prepare selenium driver
-        path_chrome_driver = self.app_test.config.get('SELENIUM_CHROME_DRIVER_PATH')
-        if path_chrome_driver:
-            # run selenium with your local browser
-            options = webdriver.ChromeOptions()
-            options.add_argument('--start-maximized')  # maximize browser window
-            browser_driver = webdriver.Chrome(path_chrome_driver, options=options)
-        else:
+        selenium_remote_url = self.app_test.config.get('SELENIUM_REMOTE_URL')
+        if selenium_remote_url:
             # run selenium with docker remote browser
             options = webdriver.ChromeOptions()
             options.add_argument("no-sandbox")
@@ -102,10 +96,14 @@ class SeleniumTestCase(DoajTestCase):
             options.add_argument("--window-size=800,600")
             options.add_argument("--disable-dev-shm-usage")
             browser_driver = webdriver.Remote(
-                command_executor=self.SELENIUM_URL,
-                desired_capabilities=DesiredCapabilities.CHROME,
+                command_executor=selenium_remote_url,
                 options=options,
             )
+        else:
+            # run selenium with your local browser
+            options = webdriver.ChromeOptions()
+            options.add_argument('--start-maximized')  # maximize browser window
+            browser_driver = webdriver.Chrome(options=options)
 
         self.selenium = browser_driver
         self.selenium.maximize_window()  # avoid something is not clickable

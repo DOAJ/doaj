@@ -44,19 +44,34 @@ See: Testbook section from ../docs/README.md
 
 Developer can run selenium testcases with docker OR local chrome.
 
-### [Option 1] prepare selenium with docker
+### [Option 1] prepare selenium with docker (remote selenium server)
 
+* run docker-compose to start selenium server
 ```shell
 docker-compose -f $DOAJ_CODE_HOME/docker/docker-compose.yml up
 ```
+* you can check selenium server is ready, by open http://localhost:4444/wd/hub on your browser
+* set environment variable SELENIUM_REMOTE_URL to docker url in dev.cfg, for
+  example `SELENIUM_REMOTE_URL='http://localhost:4444/wd/hub'`
 
 ### [Option 2] prepare selenium with local chrome
 
-* download chromedriver of you version from https://sites.google.com/chromium.org/driver/
-* set environment variable in dev.cfg
+* set environment variable SELENIUM_REMOTE_URL to empty, for example `SELENIUM_REMOTE_URL=''`
+
+### update ip of doaj server for test
+* selenium testcases will run doaj server for test. 
+* if you use docker selenium browser container, ip should be a ip of docker network interface such as 172.17.0.1
+* otherwise, localhost should be fine
+```
+SELENIUM_DOAJ_HOST = '172.17.0.1'
+```
+
+* you can found ip of docker network interface by following command
 
 ```shell
-SELENIUM_CHROME_DRIVER_PATH = '<YOUR_CHROMEDIRVER_PATH>/chromedriver'
+ip a | grep docker -A 2
+# or
+docker network inspect bridge
 ```
 
 ### after your selenium setup is ready, run selenium testcases
@@ -66,13 +81,5 @@ SELENIUM_CHROME_DRIVER_PATH = '<YOUR_CHROMEDIRVER_PATH>/chromedriver'
 
 ```shell
 $DOAJ_VENV/bin/pytest --color=yes --code-highlight=yes $DOAJ_CODE_HOME/doajtest/seleniumtest 
-```
-
-### doajtest login keep fail
-
-set dev.cfg, the testing ip to localhost could be able to fix the issue
-
-```
-SELENIUM_DOAJ_HOST = 'localhost'
 ```
 

@@ -42,7 +42,8 @@ services:
     volumes:
       - /dev/shm:/dev/shm
     shm_size: 4gb
-    network_mode: "host"
+    ports:
+      - '4444:4444'
     environment:
       - SE_NODE_MAX_SESSIONS=100
       - SE_NODE_OVERRIDE_MAX_SESSIONS=true
