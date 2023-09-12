@@ -17,6 +17,9 @@
               "Dulcinea" : "https://www.accesoabierto.net/dulcinea/lista/REVISTA/",
             } %}
 
+            {% if bibjson.discontinued_date is not none and bibjson.discontinued_date | is_in_the_past %}
+                <p>Ceased publication on <strong>{{ bibjson.discontinued_datestamp.strftime("%d %B %Y") }}</strong></p>
+            {% endif %}
 
 
     <section id="about-journal" class="tabs__panel" role="tabpanel" aria-hidden="false">

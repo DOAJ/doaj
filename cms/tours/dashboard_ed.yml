@@ -1,0 +1,12 @@
+steps:
+  - selector: '#group-tab'
+    title: Your group activity
+    content: This panel allows you to see how many applications your group has and their status, and which Associates need more applications.
+
+  - selector: '#group-tab ul.progress-bar'
+    title: Progress bar
+    content: Click any coloured block to open the list of applications.
+
+  - selector: "#feature_tour_nav"
+    title: Want to see the tour again?
+    content: Take the tour again by selecting it from the Feature Tours menu.

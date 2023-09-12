@@ -51,7 +51,9 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
             note=note if note is not None else "",
             doaj_guide_url=app.config.get('BASE_URL', "https://doaj.org") + url_for("doaj.guide")
         )
-        notification.short = svc.short_notification(cls.ID)
+        notification.short = svc.short_notification(cls.ID).format(
+            issns=", ".join(issn for issn in application.bibjson().issns())
+        )
 
         # there is no action url for this notification
 
