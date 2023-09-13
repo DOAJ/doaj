@@ -1,0 +1,24 @@
+name: Sync Feature Branch with Develop
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  sync-with-develop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Fetch and rebase develop
+        run: |
+          git fetch origin
+          git rebase origin/develop
+
+      - name: Push changes back to feature branch
+        run: |
+          git push origin HEAD
