@@ -99,6 +99,9 @@ BGJOB_QUEUE_ID_UNKNOWN = 'unknown'
 BG_STATUS_STABLE = 'stable'
 BG_STATUS_UNSTABLE = 'unstable'
 
+# Redis Keys Constants
+KAFKA_ACTIVE_STATUS = 'KAFKA_ACTIVE_STATUS'
+
 
 class ConstantList:
     @classmethod

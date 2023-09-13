@@ -102,6 +102,8 @@ EVENT_SEND_FUNCTION = "portality.events.kafka_producer.send_event"
 KAFKA_BROKER = "kafka://localhost:9092"
 KAFKA_EVENTS_TOPIC = "events"
 KAFKA_BOOTSTRAP_SERVER = "localhost:9092"
+# Time gap interval in seconds to query redis server
+TIME_GAP_REDIS_KAFKA = 60 * 60
 
 ###########################################
 # Read Only Mode
