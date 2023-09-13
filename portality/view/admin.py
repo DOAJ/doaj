@@ -71,7 +71,7 @@ def journals_list():
         try:
             query = json.loads(request.values.get("q"))
         except:
-            app.logger.warn("Bad Request at admin/journals: " + str(request.values.get("q")))
+            app.logger.warning("Bad Request at admin/journals: " + str(request.values.get("q")))
             abort(400)
 
         # get the total number of journals to be affected
@@ -92,7 +92,7 @@ def journals_list():
         try:
             query = json.loads(request.data)
         except:
-            app.logger.warn("Bad Request at admin/journals: " + str(request.data))
+            app.logger.warning("Bad Request at admin/journals: " + str(request.data))
             abort(400)
 
         # get only the query part
@@ -126,7 +126,7 @@ def articles_list():
         try:
             query = json.loads(request.data)
         except:
-            app.logger.warn("Bad Request at admin/journals: " + str(request.data))
+            app.logger.warning("Bad Request at admin/journals: " + str(request.data))
             abort(400)
 
         # get only the query part
