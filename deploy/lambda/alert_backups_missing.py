@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Steven Eardley 2020-02-07 for DOAJ - uploaded manually (todo: we should upload this in the release script) """
+""" Steven Eardley 2023-09-15 for DOAJ - uploaded manually (todo: we should upload this in the release script) """
 
 # ~~BackupsMissing:Monitoring->Lambda:Technology~~
 
@@ -8,22 +8,24 @@ import botocore
 import json
 from datetime import datetime, timezone, timedelta
 
-from portality.lib.dates import FMT_DATETIME_STD
-
 s3 = boto3.client('s3')
 
 # Check the doaj elasticsearch snapshot bucket has been updated today (should happen daily at 0600 via background job)
-buckets = ['doaj-index-backups']
+buckets = ['doaj-index-ipt-backups']
+
 
 # Check the doaj-nginx logs bucket has been updated today (should happen daily at 0630 via cron logrotate)
-buckets += ['doaj-nginx-logs']
+# buckets += ['doaj-nginx-logs']
 
 
 def lambda_handler(event, context):
     """ The main function executed by Lambda"""
 
+    start = datetime.utcnow()
     summary = {'success': [], 'fail': []}
     for b in buckets:
+
+        print('Checking bucket {0} was updated today'.format(b))
 
         # First check the bucket actually exists
         try:
@@ -32,11 +34,13 @@ def lambda_handler(event, context):
             error_code = int(e.response['Error']['Code'])
             if error_code == 404:
                 send_alert_email(b, last_mod=None)
+            raise
 
         # Then check the expected entry exists in the bucket's objects.
         files = list_bucket_keys(bucket_name=b)
         old_to_new = sorted(files, key=lambda f: f['LastModified'])
         newest = old_to_new[-1]
+        print('Latest backup is', newest)
 
         # If the newest file is older than 1 day old, our backups are not up to date.
         if datetime.now(timezone.utc) - newest['LastModified'] > timedelta(days=1):
@@ -47,6 +51,8 @@ def lambda_handler(event, context):
             summary['success'].append(b)
 
     print(summary)  # For the CloudWatch logs
+    print('Completed in', str(datetime.utcnow() - start))
+
     return str(summary)
 
 
@@ -86,8 +92,8 @@ def send_alert_email(bucket, last_mod):
                 msg = 'AWS backup error: bucket {b} is missing.'.format(b=bucket)
             else:
                 msg = 'AWS backup error: bucket {b} has not been updated today - it was last modified on {t}.' \
-                      '\nYou may wish to check the corresponding logs.'.format(b=bucket,
-                                                                               t=last_mod.strftime(FMT_DATETIME_STD))
+                      '\nYou may wish to check the corresponding logs.'.format(b=bucket, t=last_mod.strftime(
+                    '%Y-%m-%dT%H:%M:%SZ'))
 
             r = botocore.vendored.requests.post('https://api.mailgun.net/v3/doaj.org/messages',
                                                 auth=('api', credentials.get('ERROR_MAIL_API_KEY', '')),
