@@ -69,21 +69,21 @@ class SeleniumTestCase(DoajTestCase):
     def find_eles_by_css(self, css_selector: str) -> 'WebElement':
         return find_eles_by_css(self.selenium, css_selector)
 
+    # run doaj server in a background process
+    def _run_doaj_server(self):
+        try:
+            app.run_server(host=self.DOAJ_HOST, port=self.DOAJ_PORT)
+        except Exception as e:
+            if isinstance(e, ESMappingMissingError):
+                log.error(f'es index could be removed by TestCase: {str(e)}')
+                return
+
+            raise e
+
     def setUp(self):
         super().setUp()
 
-        # run doaj server in a background process
-        def _run():
-            try:
-                app.run_server(host=self.DOAJ_HOST, port=self.DOAJ_PORT)
-            except Exception as e:
-                if isinstance(e, ESMappingMissingError):
-                    log.error(f'es index could be removed by TestCase: {str(e)}')
-                    return
-
-                raise e
-
-        self.doaj_process = Process(target=_run, daemon=True)
+        self.doaj_process = Process(target=self._run_doaj_server, daemon=True)
         self.doaj_process.start()
 
         # prepare selenium driver
