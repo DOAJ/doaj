@@ -9,7 +9,7 @@ from jinja2 import FileSystemLoader
 from lxml import etree
 
 from portality import settings, constants, datasets
-from portality.bll import exceptions
+from portality.bll import exceptions, DOAJ
 from portality.error_handler import setup_error_logging
 from portality.lib import es_data_mapping, dates, paths
 from portality.ui.debug_toolbar import DoajDebugToolbar
@@ -227,11 +227,11 @@ def initialise_index(app, conn, only_mappings=None):
     :return:
     """
     if not app.config['INITIALISE_INDEX']:
-        app.logger.warn('INITIALISE_INDEX config var is not True, initialise_index command cannot run')
+        app.logger.warning('INITIALISE_INDEX config var is not True, initialise_index command cannot run')
         return
 
     if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-        app.logger.warn("System is in READ-ONLY mode, initialise_index command cannot run")
+        app.logger.warning("System is in READ-ONLY mode, initialise_index command cannot run")
         return
 
     # get the app mappings
@@ -294,6 +294,8 @@ def setup_jinja(app):
     app.jinja_env.globals['dates'] = dates
     #~~->Datasets:Data~~
     app.jinja_env.globals['datasets'] = datasets
+    # ~~->DOAJ:Service~~
+    app.jinja_env.globals['services'] = DOAJ
     _load_data(app)
     #~~->CMS:DataStore~~
     app.jinja_env.loader = FileSystemLoader([app.config['BASE_FILE_PATH'] + '/templates',

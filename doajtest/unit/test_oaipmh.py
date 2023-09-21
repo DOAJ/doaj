@@ -245,7 +245,7 @@ class TestClient(DoajTestCase):
                 records = t.xpath('/oai:OAI-PMH/oai:Identify', namespaces=self.oai_ns)
             assert len(records) == 1
             assert records[0].xpath('//oai:repositoryName', namespaces=self.oai_ns)[0].text == 'Directory of Open Access Journals'
-            assert records[0].xpath('//oai:adminEmail', namespaces=self.oai_ns)[0].text == 'sysadmin@cottagelabs.com'
+            assert records[0].xpath('//oai:adminEmail', namespaces=self.oai_ns)[0].text == 'helpdesk+oai@doaj.org'
             assert records[0].xpath('//oai:granularity', namespaces=self.oai_ns)[0].text == 'YYYY-MM-DDThh:mm:ssZ'
 
     def test_07_bad_verb(self):

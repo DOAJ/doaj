@@ -915,3 +915,70 @@ class TestCrudApplication(DoajTestCase):
                                      data=json.dumps(data))
                 assert resp.status_code == 400, resp.status_code
                 assert resp.json['error'].startswith("Field 'title' is required but not present at '[root]bibjson.'")
+
+    def test_19_applications_language_validator(self):
+        """ Ensure we get the correct validation messages via the API """
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        account.set_role(["publisher", "api"])
+        api_key = account.generate_api_key()
+        account.save(blocking=True)
+
+        data = ApplicationFixtureFactory.incoming_application()
+
+        # Invalid language error comes from the model
+        data['bibjson']['language'][0] = 'mumbling quietly'
+        with self.assertRaises(Api400Error) as e2:
+            ApplicationsCrudApi.create(data, account=account)
+        assert str(e2.exception).startswith("Coerce with '<function to_isolang.")
+
+        # If you make a new application via tha API route a bad currency is caught by the model too:
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.post(url_for('api_v3.create_application') + f'?api_key={api_key}',
+                                     data=json.dumps(data))
+                assert resp.status_code == 400, resp.status_code
+                assert resp.json['error'].startswith("Coerce with '<function to_isolang.")
+
+        # But an outgoing application with the same problem is ok (we can read but not write these to the index)
+        assert data['bibjson']['language'][0] == 'mumbling quietly'
+        out_A = OutgoingApplication(data)
+        assert out_A.verify_against_struct() is None  # None means there's no verification errors
+
+        # An application already in the index can only be updated with a valid currency by API
+        grandfathered_app = ApplicationFixtureFactory.make_application_source()
+        del grandfathered_app['admin']['current_journal']
+        del grandfathered_app['admin']['related_journal']
+        grandfathered_app['admin']['application_type'] = 'new_application'
+        grandfathered_app['bibjson']['language'][0] = 'an old language we dont recognise'
+        grandfathered_app['admin']['owner'] = account.id
+        appl = models.Application(**grandfathered_app)
+        appl_id = appl.id
+        appl.save(blocking=True)
+
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.get(url_for('api_v3.retrieve_application', application_id=appl_id) + f'?api_key={api_key}',
+                                     data=json.dumps(data))
+                assert resp.status_code == 200, resp.status_code
+
+        retrieved_app = resp.json
+        assert retrieved_app['bibjson']['language'][0] == 'an old language we dont recognise'
+
+        # The same application is rejected when sent with the same invalid currency
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.put(url_for('api_v3.update_application', application_id=appl_id) + f'?api_key={api_key}',
+                                     data=json.dumps(retrieved_app))
+                assert resp.status_code == 400, resp.status_code
+                assert resp.json['error'].startswith("Coerce with '<function to_isolang.")
+
+        # Updated currency is fine
+        retrieved_app['bibjson']['language'][0] = 'EN'
+        with self.app_test.test_request_context():
+            with self.app_test.test_client() as t_client:
+                resp = t_client.put(url_for('api_v3.update_application', application_id=appl_id) + f'?api_key={api_key}',
+                                     data=json.dumps(retrieved_app))
+                assert resp.status_code == 204, resp.status_code

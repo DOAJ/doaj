@@ -40,7 +40,7 @@ class ApplicationFormXWalk(JournalGenericXWalk):
         "oa_statement_url" : "bibjson.ref.oa_statement",
         "journal_url" : "bibjson.ref.journal",
         "aims_scope_url" : "bibjson.ref.aims_scope",
-        "editorial_board_url" : "bibjon.editorial.board_url",
+        "editorial_board_url" : "bibjson.editorial.board_url",
         "author_instructions_url" : "bibjson.ref.author_instructions",
         "waiver_url" : "bibjson.waiver.url",
         "persistent_identifiers" : "bibjson.pid_scheme.scheme",
