@@ -19,6 +19,8 @@ if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
 
 log = logging.getLogger(__name__)
+DOAJ_HOST = app.app.config.get('SELENIUM_DOAJ_HOST', 'localhost')
+DOAJ_PORT = app.app.config.get('SELENIUM_DOAJ_PORT', 5014)
 
 
 def find_ele_by_css(driver, css_selector: str) -> 'WebElement':
@@ -49,12 +51,21 @@ def fix_index_not_found_exception(app):
     core.put_mappings(core.es_connection, missing_mappings)
 
 
+# run doaj server in a background process
+def _run_doaj_server():
+    try:
+        app.run_server(host=DOAJ_HOST, port=DOAJ_PORT)
+    except Exception as e:
+        if isinstance(e, ESMappingMissingError):
+            log.error(f'es index could be removed by TestCase: {str(e)}')
+            return
+
+        raise e
+
+
 class SeleniumTestCase(DoajTestCase):
     doaj_process = None
     selenium = None  # selenium driver
-
-    DOAJ_HOST = app.app.config.get('SELENIUM_DOAJ_HOST', 'localhost')
-    DOAJ_PORT = app.app.config.get('SELENIUM_DOAJ_PORT', 5014)
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -69,21 +80,10 @@ class SeleniumTestCase(DoajTestCase):
     def find_eles_by_css(self, css_selector: str) -> 'WebElement':
         return find_eles_by_css(self.selenium, css_selector)
 
-    # run doaj server in a background process
-    def _run_doaj_server(self):
-        try:
-            app.run_server(host=self.DOAJ_HOST, port=self.DOAJ_PORT)
-        except Exception as e:
-            if isinstance(e, ESMappingMissingError):
-                log.error(f'es index could be removed by TestCase: {str(e)}')
-                return
-
-            raise e
-
     def setUp(self):
         super().setUp()
 
-        self.doaj_process = Process(target=self._run_doaj_server, daemon=True)
+        self.doaj_process = Process(target=_run_doaj_server, daemon=True)
         self.doaj_process.start()
 
         # prepare selenium driver
@@ -162,7 +162,7 @@ class SeleniumTestCase(DoajTestCase):
 
     @classmethod
     def get_doaj_url(cls) -> str:
-        return f'http://{cls.DOAJ_HOST}:{cls.DOAJ_PORT}'
+        return f'http://{DOAJ_HOST}:{DOAJ_PORT}'
 
     def js_click(self, selector):
         script = f"document.querySelector('{selector}').click(); "

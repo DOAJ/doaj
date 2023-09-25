@@ -41,6 +41,8 @@ class ArticleXmlUploadCommonSTC(SeleniumTestCase):
         return publisher
 
     def upload_submit_file(self, file_path):
+        if isinstance(file_path, Path):
+            file_path = file_path.as_posix()
         self.selenium.find_element(By.ID, 'upload-xml-file').send_keys(file_path)
         self.selenium.find_element(By.ID, 'upload_form').submit()
 
