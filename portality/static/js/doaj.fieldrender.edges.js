@@ -645,7 +645,7 @@ $.extend(true, doaj, {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
                 var placeholder = 'Search ' + this.component.nodeCount + ' subjects';
-                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.title + toggle + '</button></h3>\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading"><button class="aria-button" aria-expanded="false" aria-controls="' + resultsId + '" id="' + toggleId + '">' + this.title + toggle + '</button></h3>\
                     <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <label for="' + searchId + '" class="sr-only">' + placeholder + '</label>\
                         <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '">\
@@ -1832,7 +1832,7 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.component.display + toggle + '</button></h3>\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading"><button class="aria-button" aria-expanded="false" aria-controls="' + resultsId + '" id="' + toggleId + '">' + this.component.display + toggle + '</button></h3>\
                     <div class="filter__body collapse"  style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
                     </div></div>';
@@ -1887,6 +1887,7 @@ $.extend(true, doaj, {
 
                     results.addClass("in").attr("aria-expanded", "true").css({"height": ""});
                     toggle.removeClass("collapsed").attr("aria-expanded", "true");
+
                 } else {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < closeBits.length; j++) {
@@ -1894,7 +1895,7 @@ $.extend(true, doaj, {
                     // }
                     //for (var j = 0; j < openBits.length; j++) {
                     //   i.addClass(openBits[j]);
-                    //}
+                    //}s
                     //results.hide();
 
                     results.removeClass("in").attr("aria-expanded", "false").css({"height" : "0px"});
@@ -2083,15 +2084,14 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.component.display + toggle + '</button></h3>\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading"><button class="aria-button" aria-expanded="false" aria-controls="' + resultsId + '" id="' + toggleId + '">' + this.component.display + toggle + '</button></h3>\
                     <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
                     </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, filterFrag + results);
-
-                // now render it into the page
+                // now render it into the pages
                 ts.context.html(frag);
                 feather.replace();
 
