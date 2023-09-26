@@ -333,7 +333,7 @@ def associate_editor_notifications(emails_dict, limit=None):
             assoc_email = assoc.email
         except AttributeError:
             # There isn't an account for that id
-            app.logger.warn("No account found for ID {0}".format(assoc_id))
+            app.logger.warning("No account found for ID {0}".format(assoc_id))
             continue
 
         text = render_template('email/workflow_reminder_fragments/assoc_ed_age_frag', num_idle=idle, x_days=X_DAYS, num_very_idle=very_idle, y_weeks=Y_WEEKS, url=url)

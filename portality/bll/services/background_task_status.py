@@ -95,7 +95,7 @@ class BackgroundTaskStatusService:
         # prepare for err_msgs
         limited_sec = app.config.get('BG_MONITOR_LAST_COMPLETED', {}).get(queue_name)
         if limited_sec is None:
-            app.logger.warn(f'BG_MONITOR_LAST_COMPLETED for {queue_name} not found ')
+            app.logger.warning(f'BG_MONITOR_LAST_COMPLETED for {queue_name} not found ')
 
         err_msgs = []
         if limited_sec is not None and last_completed_date:

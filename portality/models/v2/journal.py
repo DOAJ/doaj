@@ -71,6 +71,22 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return records
 
     @classmethod
+    def find_by_issn_exact(cls, issns, in_doaj=None, max=2):
+        """
+        Finds journal that matches given issns exactly - if no data problems should always be only 1
+        """
+        if not isinstance(issns, list):
+            issns = [issns]
+        if len(issns) > 2:
+            return []
+        q = JournalQuery()
+        q.find_by_issn_exact(issns, in_doaj=in_doaj, max=max)
+        result = cls.query(q=q.query)
+        # create an array of objects, using cls rather than Journal, which means subclasses can use it too
+        records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+
+    @classmethod
     def issns_by_owner(cls, owner, in_doaj=None):
         q = IssnQuery(owner, in_doaj=in_doaj)
         res = cls.query(q=q.query())
@@ -925,6 +941,16 @@ class JournalQuery(object):
         }
     }
 
+    must_query = {
+        "track_total_hits": True,
+        "query": {
+            "bool": {
+                "must": [
+                ]
+            }
+        }
+    }
+
     all_doaj = {
         "track_total_hits": True,
         "query": {
@@ -946,6 +972,14 @@ class JournalQuery(object):
     def find_by_issn(self, issns, in_doaj=None, max=10):
         self.query = deepcopy(self.issn_query)
         self.query["query"]["bool"]["must"][0]["terms"]["index.issn.exact"] = issns
+        if in_doaj is not None:
+            self.query["query"]["bool"]["must"].append({"term": {"admin.in_doaj": in_doaj}})
+        self.query["size"] = max
+
+    def find_by_issn_exact(self, issns, in_doaj=None, max=10):
+        self.query = deepcopy(self.must_query)
+        for issn in issns:
+            self.query["query"]["bool"]["must"].append({"term": {"index.issn.exact": issn}})
         if in_doaj is not None:
             self.query["query"]["bool"]["must"].append({"term": {"admin.in_doaj": in_doaj}})
         self.query["size"] = max

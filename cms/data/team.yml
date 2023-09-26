@@ -6,7 +6,6 @@
   photo: alejandra.png
   bio: 'Alejandra has a Bachelor’s degree in Information Science and a Master’s degree in Digital Media. She has around ten years of experience in information management, knowledge management and scholarly communication at national and international level.'
   coi:
-    2016: https://drive.google.com/file/d/0ByRf6PVViI-mVFhjdkZWaFJZOTQ/view?usp=sharing&resourcekey=0-gMdxxHXyyJB9zFZIuh99QQ
     2018: https://drive.google.com/file/d/0ByRf6PVViI-mRlRYTDBPRlZiWTRxQ3VMTUZpQnZ5ZkwyLVQ4/view?usp=sharing&resourcekey=0-mlQ6rSCEnr6RfpCwh_4SMw
     2020: https://drive.google.com/file/d/1PF7Cc9vGAwWGqpqDo7nRULjxWIF2NR_Q/view?usp=sharing
     2022: https://drive.google.com/file/d/1E45ycyctDfYkh65ZCM8PMtQsYym_eP6L/view?usp=sharing
@@ -16,7 +15,6 @@
   photo: cenyu.jpg
   bio: 'Cenyu holds a PhD in Information Systems Science at Hanken School of Economics in Finland. She has spent around seven years on Open Access research with a particular focus on gold OA publishing concerning journals and publishers outside the mainstream. She was one of three DOAJ ambassadors for China from 2016 to 2017.'
   coi:
-    2016: https://drive.google.com/file/d/0B0fPCpIPjZlmNHZCQmxpUmN6bUEtYUx2VHZnbjVySS1fRTlr/view?usp=sharing&resourcekey=0-1TRIV1MEQMhdGbmCd7CbOA
     2020: https://drive.google.com/file/d/1rm9fjOF3OHJ9lR9wEUyQBQTO2KdoNQcE/view?usp=sharing
     2022: https://drive.google.com/file/d/1Mn_CR0twKxyFbbHxsLSrgeU984BNOLlS/view?usp=sharing
 
@@ -25,7 +23,6 @@
   photo: clara.jpg
   bio: 'Clara has 10 years experience in the scholarly publishing industry. She worked at Cambridge University Press as an Open Access Project Manager until 2015. She also works in science communication as a freelancer at the University Pompeu Fabra, Barcelona. Clara speaks Spanish, Catalan, English and some German and French. She loves cetaceans, freediving, cycling, and is an enthusiastic cook.'
   coi:
-    2016: https://drive.google.com/file/d/0ByRf6PVViI-mbDFybndLbldEbFE/view?usp=sharing&resourcekey=0-lKZNFwvUNdVAGKatvnKiPg
     2018: https://drive.google.com/file/d/1LHmZSZ6bwf6U71fNvIibJa6R1lquNhfR/view?usp=sharing
     2020: https://drive.google.com/file/d/1v4duxnoTcNo4UbL_GBa5D1T8JtTl7oY1/view?usp=sharing
     2022: https://drive.google.com/file/d/1hevYxG1102llDy-_i-onwKbDuOlBguA_/view?usp=sharing
@@ -33,9 +30,8 @@
 - name: Dominic Mitchell
   role: Operations Manager
   photo: dominic.jpg
-  bio: 'Dominic has over 25 years experience working with publisher and library communities. He is responsible for operations and development of the DOAJ platform. He acts as Committee chair for the Think. Check. Submit. initiative, of which DOAJ is a founding organisation. He represents DOAJ in Project JASPER, a cross-industry project working to ensure that journals are preserved for the long term. He also sits on the OASPA Board of Directors and serves as Secretary. Outside of work, he is reluctantly becoming an expert in the playparks of Stockholm with his twin sons.'
+  bio: 'Dominic has over 25 years of experience working with publisher and library communities. He is responsible for operations and development of the DOAJ platform. He acts as Committee chair for the Think. Check. Submit. initiative, of which DOAJ is a founding organisation. He represents DOAJ in Project JASPER, a cross-industry project working to ensure that journals are preserved for the long term. He also sits on the OASPA Board of Directors and serves as Secretary. Outside of work, he is reluctantly becoming an expert in the playparks of Stockholm with his twin sons.'
   coi:
-    2016: https://drive.google.com/file/d/0ByRf6PVViI-mWmU0UHZqZm1xcDQ/view?usp=sharing&resourcekey=0-BmQKwWn6Vb9ot73Xie66aA
     2018: https://drive.google.com/file/d/13XX_GUrw2xRmXARjRrTxegULPT8Redka/view?usp=sharing
     2020: https://drive.google.com/file/d/1nxFOuAdXLb8A-LulhNpz9i5vSmr5DBwF/view?usp=sharing
     2022: https://drive.google.com/file/d/1HBF9RLaIt3lFNG6WDcV08fQSMS_C6zwA/view?usp=sharing
@@ -43,7 +39,7 @@
 - name: Gala García Reátegui
   role: Managing Editor
   photo: gala.jpg
-  bio: 'Gala holds a Masters Degree in Information and Documentation from Lyon 3 University in France. Prior to joining DOAJ, she worked for the Digital Strategy and Data Directorate at The French National Research Agency (ANR) and for the Open Archive HAL at the Center for Direct Scientific Communication (CCSD). Gala is Peruvian but lived for more than ten years in France. Today, she is based in Denmark. She loves meeting people from other cultures, trying local dishes or experiences: currently Gala goes winter bathing in the Limfjord, Denmark! She also loves running.'
+  bio: "Gala holds a Master's Degree in Information and Documentation from Lyon 3 University in France. Prior to joining DOAJ, she worked for the Digital Strategy and Data Directorate at The French National Research Agency (ANR) and for the Open Archive HAL at the Center for Direct Scientific Communication (CCSD). Gala is Peruvian but lived for more than ten years in France. Today, she is based in Denmark. She loves meeting people from other cultures, trying local dishes or experiences. Currently Gala goes winter bathing in the Limfjord, Denmark! She also loves running."
   coi:
     2023: https://drive.google.com/file/d/1R7XquFauefdmtjPIsfGfAWQoAw7NLIci/view?usp=sharing
 
@@ -58,16 +54,15 @@
 - name: Joanna Ball
   role: Managing Director
   photo: joba.jpg
-  bio: 'Joanna has had over 25 years experience of working within research libraries in the UK and Denmark, most recently as Head of Roskilde University Library, before joining DOAJ in 2022. She has also been involved with UKSG as Chair of Insights Editorial Board and a Trustee, and is currently Vice Chair. Joanna lives with her family in Roskilde and enjoys running in her spare time.'
+  bio: 'Joanna has over 25 years of experience working within research libraries in the UK and Denmark, most recently as Head of Roskilde University Library, before joining DOAJ in 2022. She has also been involved with UKSG as Chair of Insights Editorial Board and a Trustee, and is currently Vice Chair. Joanna lives with her family in Roskilde and enjoys running in her spare time.'
   coi:
     2022: https://drive.google.com/file/d/1-3xzwkHMclREgLhj_XNF5n6Nr4q2_bnw/view?usp=sharing
 
 - name: Judith Barnsby
-  role: Senior Managing Editor
+  role: Head of Editorial
   photo: judith.jpg
-  bio: 'Judith has 25 years experience in the scholarly publishing industry, working for a range of non-profit society publishers and service providers before joining DOAJ. She has a keen interest in publishing standards and protocols, and has served on the board of CLOCKSS and as chair of the PALS (publisher and library solutions) working group in the UK. Judith loves books, especially detective fiction, and volunteers in her local library.'
+  bio: 'Judith has 25 years of experience in the scholarly publishing industry, working for a range of non-profit society publishers and service providers before joining DOAJ. She has a keen interest in publishing standards and protocols, and has served on the board of CLOCKSS and as chair of the PALS (publisher and library solutions) working group in the UK. Judith loves books, especially detective fiction, and volunteers in her local library.'
   coi:
-    2016: https://drive.google.com/file/d/0B0fPCpIPjZlmb3JmVkFYbjN5aTh1OUhLd2lZaEV0ZlFwbTZV/view?usp=sharing&resourcekey=0-o_PXKLk5UFbPk_-4B61jVA
     2018: https://drive.google.com/file/d/0ByRf6PVViI-mV2lfMjByQjYxUkpMcXhuc2l5Q3ZDWlpiYUtZ/view?usp=sharing&resourcekey=0-6eiGIRal00eXvgJUTeN_lw
     2020: https://drive.google.com/file/d/18MWTsze4cDQQRPHJl2XrYgHQvlxhsPZa/view?usp=sharing
     2023: https://drive.google.com/file/d/1hUsVIY09N6WceSx1edTM-h516CJGkHcu/view?usp=share_link
@@ -77,7 +72,6 @@
   photo: Kamel.jpg
   bio: 'Kamel is Full Professor of Chemistry at the University of Bejaia, Algeria (<a href="https://orcid.org/0000-0002-9099-8040"  target="_blank">ORCID</a>). He gained his PhD in Process Engineering and Chemistry of Materials Science at the University of Setif, Algeria. Kamel joined DOAJ in 2016 as an Ambassador for North Africa. He is currently Creative Commons Algeria Chapter lead, director of the Laboratory of Organic Materials at the University of Bejaia and editor-in-chief of Algerian Journal of Natural Products. His scientific activity is focused on chemistry of Natural Products, scholarly communications and new developments in academic publishing. Father of 3 daughters, he likes travelling, healthy local foods & home-made snacks.'
   coi:
-    2016: https://drive.google.com/file/d/0B0fPCpIPjZlmVEN4X1Q0RDdCams1NXhveW1HQmtMYU56bDE4/view?usp=sharing&resourcekey=0-wA1CGAbjB6FAX33gCDQmrA
     2018: https://drive.google.com/file/d/1JdF2kh-fLXz8kPGN_3ijDt5y9K6s0hOQ/view?usp=sharing
     2020: https://drive.google.com/file/d/1iXrjwLTNBXwKD2TwrPD9ApKL7O6uZ8Z7/view?usp=sharing
     2022: https://drive.google.com/file/d/1cl18h_mYnNogYs8Rk-fhBTW6WKOTC2IF/view?usp=sharing
@@ -85,7 +79,7 @@
 - name: Katrine Sundsbø
   role: Community Manager
   photo: katrine.jpeg
-  bio: 'Katrine holds a Master’s degree in Cognitive Neuroscience, and has five years of experience in the field of scholarly communications. She has been an advocate for open access and visibility of research through various working groups, projects and through gamification of scholarly communications. Though Katrine is half Danish and half Norwegian, her son is named after a Swedish singer - and her British husband suggested the name!'
+  bio: "Katrine holds a Master’s degree in Cognitive Neuroscience, and has five years of experience in the field of scholarly communications. She has been an advocate for open access and visibility of research through various working groups, projects and through gamification of scholarly communications. Though Katrine is half Danish and half Norwegian, her son is named after a Swedish singer - and her British husband suggested the name!"
   coi:
     2023: https://drive.google.com/file/d/1yqK-Znq62T_QR_JjtcpQl6W_Ian2Ti4F/view?usp=share_link
 
@@ -94,7 +88,6 @@
   photo: lars.jpg
   bio: 'Lars worked at Danish university libraries for two decades and was Director of Libraries at Lund University, Sweden from 2001 to 2011. He founded the DOAJ in 2003, and was Managing Director from 2013-2021. He has vast experience in change management, re-engineering of academic libraries, and development of information services for research & higher education. For two decades Lars has been a strong advocate of open access and for providing services to the open access movement. He is co-founder of <a href="http://www.opendoar.org/" target="_blank">OpenDOAR</a>, the <a href="https://www.doabooks.org/" target="_blank">Directory of Open Access Books</a> and <a href="https://thinkchecksubmit.org" target="_blank">Think. Check. Submit.</a> Lars lives outside Copenhagen, and is married with 4 children and 4 grandchildren. He enjoys vegetable gardening, growing cacti and succulents, and playing internet chess.'
   coi:
-    2016: https://drive.google.com/file/d/0ByRf6PVViI-mbmo2aU9NWkx5dGs/view?usp=sharing&resourcekey=0-mpdRgVU9UlFjC614-woDvg
     2018: https://drive.google.com/file/d/1mm1a8nbY5MQX9loqIs2ZQuVN-73RfPuN/view?usp=sharing
     2021: https://drive.google.com/file/d/1bNj5sqUsu4sRLmm_YOuh3JCSMERzQ1Ro/view?usp=sharing
     2022: https://drive.google.com/file/d/1fRJtvci2_j4vad0C5N1pfqm2sHZQkFz3/view?usp=sharing
@@ -104,7 +97,6 @@
   photo: leena.jpg
   bio: "Leena joined the DOAJ team in 2016 as an Ambassador for India before becoming a Managing Editor.  Prior to joining DOAJ she worked as a science librarian at Nanyang Technological University, Singapore, where she developed a keen interest in scholarly communication & open science. A recent addition to her interests is artificial intelligence in scholarly communication. Leena holds a Master’s degree in Information Studies and lives in Singapore. She loves watching sci-fi shows and is enthusiastic about travelling to new places."
   coi:
-    2016: https://drive.google.com/file/d/0B0fPCpIPjZlmTHZuaEtMSDNIeUpKT2Fid19jVjVFTkRoUmdj/view?usp=sharing&resourcekey=0-KqvRVa30bQEUfqO-YA1L-g
     2018: https://drive.google.com/file/d/1tifEjAIlU3txBw9DjIcRW9cZL7YG7_nU/view?usp=sharing
     2020: https://drive.google.com/file/d/1zU-lLB5W54E_QUm5uto5tqB6cZl83TAJ/view?usp=sharing
     2022: https://drive.google.com/file/d/19rw-naMJqHkI5T7aDIDPUkwPutBdDpDm/view?usp=sharing
@@ -151,7 +143,6 @@
   photo: Rikard.jpg
   bio: 'Rikard has a Bachelor of Arts degree with a Major in Cultural Sciences and a specialization in publishing. He enjoys reading about philosophy and religion.'
   coi:
-    2016: https://drive.google.com/file/d/0ByRf6PVViI-mdnJPdldOM0hUMFU/view?usp=sharing&resourcekey=0-8dJAtvm2n7vXV9NhqZYckw
     2018: https://drive.google.com/file/d/1tOnW8L6TwolyLpIXwMKTITf9wGh_ukLb/view?usp=sharing
     2020: https://drive.google.com/file/d/14c0RgpyD2Slzyh5s8LGvj5OwWbL4H8NX/view?usp=sharing
     2023: https://drive.google.com/file/d/1HQIh1DlfhEutTWniXDGLYFVa9VxJ4OT9/view?usp=share_link
@@ -161,7 +152,6 @@
   photo: sonja.jpg
   bio: 'Sonja is a former Information Librarian from Lund University Library. She has a B.A. in English, Bulgarian and Russian from Lund University and specialises in applications for journals in the Slavonic languages.'
   coi:
-    2016: https://drive.google.com/file/d/0ByRf6PVViI-mNUFoZWV4YnZ3bDg/view?usp=sharing&resourcekey=0-1JRid_DHRMKbgdzmVYL7NQ
     2018: https://drive.google.com/file/d/1M5AGEDP79uk2olCcmVYjKCsmzL7tG2Vc/view?usp=sharing
     2020: https://drive.google.com/file/d/1-4RJYScTs_zMBeD5zESNvCoIBCWTOWHR/view?usp=sharing
     2022: https://drive.google.com/file/d/1soZtiW6gyVJPl7P_J60j2TL2Fqzl0QAs/view?usp=sharing
@@ -178,7 +168,6 @@
   photo: tom.jpg
   bio: 'Tom has a PhD in molecular microbiology and spent several years in Africa doing research on malaria, sleeping sickness and meningococcal epidemics. He has been actively advocating open access and open science since 2012 when he joined the Open Knowledge community and became a member of the DOAJ advisory board. His current research interests are development of quality systems for the assessment of scholarly journals and articles, and research in the area of soil microbiology in relation to soil health and human health.'
   coi:
-    2016: https://drive.google.com/file/d/0ByRf6PVViI-mYUFZNDRISTZodUU/view?usp=sharing&resourcekey=0-g13FJaUJpdR_t2rMLEyzEQ
     2018: https://drive.google.com/file/d/1x0w-a1TWQdJDKPtQpGhmDZSdA4BhFSpI/view?usp=sharing
     2020: https://drive.google.com/file/d/1VyirUdc6FBNOujl938bHf1JCL1jLNwXV/view?usp=sharing
     2022: https://drive.google.com/file/d/1ww7WHQEg1395bPn20Arb7LJn9lIROdBl/view?usp=sharing
