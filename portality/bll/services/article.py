@@ -159,9 +159,6 @@ class ArticleService(object):
         if len(pissn) > 1 or len(eissn) > 1:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_TOO_MANY_ISSNS)
 
-        pissn = article_bibjson.get_one_identifier("pissn")
-        eissn = article_bibjson.get_one_identifier("eissn")
-
         # no pissn or eissn
         if not pissn and not eissn:
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_ISSNS)
@@ -252,7 +249,8 @@ class ArticleService(object):
     def is_acceptable(self, article: models.Article):
         """
         conduct some deep validation on the article to make sure we will accept it
-        or the moment, this just means making sure it has a DOI and a fulltext
+        this just means making sure it has a DOI and a fulltext, and that its ISSNs
+        match a single journal
         """
         try:
             bj = article.bibjson()
@@ -266,11 +264,38 @@ class ArticleService(object):
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_DOI_NO_FULLTEXT)
 
         self._validate_issns(bj)
+        journal = self.match_journal_with_validation(bj)
 
         # is journal in doaj (we do this check last as it has more performance impact)
-        journal = article.get_journal()
         if journal is None or not journal.is_in_doaj():
             raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_ADDING_ARTICLE_TO_WITHDRAWN_JOURNAL)
+
+    @staticmethod
+    def match_journal_with_validation(article_bibjson: models.ArticleBibJSON):
+        pissn = article_bibjson.get_one_identifier("pissn")
+        eissn = article_bibjson.get_one_identifier("eissn")
+
+        issns = []
+
+        if pissn is not None:
+            issns.append(pissn)
+        if eissn is not None:
+            issns.append(eissn)
+
+        journal = models.Journal.find_by_issn_exact(issns, True)
+
+        # check if only one journal matches pissn and eissn and if they are in the correct fields
+        # no need to check eissn, if pissn matches, pissn and eissn are different and only 1 journal has been found - then eissn matches too
+        if len(journal) != 1:
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
+        if pissn is not None:
+            if journal[0].bibjson().pissn != pissn:
+                raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
+        if eissn is not None:
+            if journal[0].bibjson().eissn != eissn:
+                raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_MISMATCHED_ISSNS)
+
+        return journal[0]
 
     @staticmethod
     def is_legitimate_owner(article, owner):
