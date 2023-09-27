@@ -46,8 +46,14 @@ class BulkException(Exception):
 class DomainObject(UserDict, object):
     """
     ~~DomainObject:Model->Elasticsearch:Technology~~
+
+    base models class for Elasticsearch(ES) index,
+    which provide interaction with ES index such as (save, delete, query, etc.)
     """
-    __type__ = None                                                       # set the type on the model that inherits this
+
+    # set the type on the model that inherits this
+    # which also is ES index name of the model
+    __type__ = None
 
     def __init__(self, **kwargs):
         # if self.data is already set, don't do anything here
@@ -634,8 +640,8 @@ class DomainObject(UserDict, object):
                     yield r
     
     @classmethod
-    def iterall(cls, page_size=1000, limit=None):
-        return cls.iterate(MatchAllQuery().query(), page_size, limit)
+    def iterall(cls, page_size=1000, limit=None, **kwargs):
+        return cls.iterate(MatchAllQuery().query(), page_size, limit, **kwargs)
 
     # an alias for the iterate function
     scroll = iterate
