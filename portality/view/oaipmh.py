@@ -305,7 +305,7 @@ def get_record(dao, base_url, specified_oai_endpoint, identifier=None, metadata_
 
 def identify(dao, base_url):
     repo_name = app.config.get("SERVICE_NAME")
-    admin_email = app.config.get("ADMIN_EMAIL")
+    admin_email = app.config.get("OAI_ADMIN_EMAIL", app.config.get("ADMIN_EMAIL"))
     idobj = Identify(base_url, repo_name, admin_email)
     idobj.earliest_datestamp = dao.earliest_datestamp()
     return idobj

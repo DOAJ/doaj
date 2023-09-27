@@ -82,7 +82,7 @@
   border-left: 1px solid $sanguine;
 }
 
-.form__long-help {
+.form__long-help, .form__click-to-copy {
   cursor: pointer;
 
   &:hover {
