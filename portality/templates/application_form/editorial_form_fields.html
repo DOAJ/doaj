@@ -1,13 +1,5 @@
 <fieldset>
     <legend class="form__legend"><div><span data-feather="settings" aria-hidden="true"></span> Administrative</div></legend>
-    {% if withdrawable %}
-        {% set withdraw_reinstate = "Withdraw" if obj.is_in_doaj() else "Reinstate" %}
-        {% if job %}
-            {% set withdraw_reinstate = "Withdrawing" if obj.is_in_doaj() else "Reinstating" %}
-        {% endif %}
-        <button class="button button--primary" type="button" id="open_withdraw_reinstate" data-toggle="modal" data-target="#modal-withdraw_reinstate">{{ withdraw_reinstate }}</button>
-    {% endif %}
-
     {% set fs = formulaic_context.fieldset("reviewers") %}
     {% if fs %}
         <h2 class="form__header">{{ fs.label }}</h2>

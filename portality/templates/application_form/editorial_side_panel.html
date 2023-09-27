@@ -8,6 +8,16 @@
     <input type="hidden" name="id" value="{{ obj.id }}">
 {% endif %}
 
+{% if withdrawable %}
+    <div>
+        {% set withdraw_reinstate = "Withdraw" if obj.is_in_doaj() else "Reinstate" %}
+        {% if job %}
+            {% set withdraw_reinstate = "Withdrawing" if obj.is_in_doaj() else "Reinstating" %}
+        {% endif %}
+        <button class="button button--primary" type="button" id="open_withdraw_reinstate" data-toggle="modal" data-target="#modal-withdraw_reinstate">{{ withdraw_reinstate }}</button>
+    </div>
+{% endif %}
+
 {% if quick_reject and obj.application_status not in ["accepted", "rejected"] and obj.current_journal == None %}
     <div>
         <button class="button" type="button" id="open_quick_reject" data-toggle="modal" data-target="#modal-quick_reject">Quick Reject</button>
