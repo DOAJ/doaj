@@ -2,10 +2,10 @@
 {% set tours = tourservice.activeTours(request.path, current_user) %}
 
 {% if tours|length > 0 %}
-<li class="dropdown--tour_nav flex-center">
-    <span id="feature_tour_nav" class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
+<li class="dropdown flex-center" id="dropdown--tour_nav">
+    <a id="feature_tour_nav" class="dropdown__trigger label" role="button" aria-haspopup="true" aria-expanded="false">
       <span><span data-feather="navigation" aria-hidden="true"></span> Feature Tours</span>
-    </span>
+    </a>
     <ul class="dropdown__menu notifications" id="feature_tours">
         {% for tour in tours %}
             {% set seen = namespace(val="[new] ") %}

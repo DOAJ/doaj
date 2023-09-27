@@ -16,13 +16,16 @@ doaj.tourist.init = function(params) {
         doaj.tourist.start(first);
     }
 
-    $(".dropdown--notifications").hoverIntent(doaj.notifications.showDropdown, doaj.notifications.hideDropdown);
-    doaj.notifications.showDropdown = function(e) {
-        $("#feature_tours").show();
-    }
-    doaj.notifications.hideDropdown = function() {
-        $("#feature_tours").hide();
-    }
+    $("#dropdown--tour_nav").hoverIntent(doaj.tourist.showDropdown, doaj.tourist.hideDropdown);
+}
+
+doaj.tourist.showDropdown = function(e) {
+    console.log("showDropdown` called")
+    $("#feature_tours").show();
+}
+doaj.tourist.hideDropdown = function() {
+    console.log("showDropdown` called")
+    $("#feature_tours").hide();
 }
 
 doaj.tourist.findNextTour = function() {
