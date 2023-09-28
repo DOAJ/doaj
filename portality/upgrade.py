@@ -49,7 +49,7 @@ class UpgradeType(TypedDict):
     instance would be a DomainObject if True, otherwise a dict
     default is True
     """
-    init_with_model: bool  #
+    init_with_model: bool
 
     """
     tasks to run on the record
