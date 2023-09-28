@@ -1,7 +1,6 @@
-import datetime
-
 from portality.dao import DomainObject
-from portality.lib import dates, coerce
+from portality.lib import coerce
+from portality.lib.coerce import COERCE_MAP
 from portality.lib.seamless import SeamlessMixin
 
 
@@ -14,13 +13,18 @@ class DatalogJournalAdded(SeamlessMixin, DomainObject):
             "id": {"coerce": "unicode"},
             "title": {"coerce": "unicode"},
             "issn": {"coerce": "unicode"},
-            "date_added": {"coerce": "datetime"},
+            "date_added": {"coerce": "utcdatetime-datalog"},
             "has_seal": {"coerce": "bool"},
             "has_continuations": {"coerce": "bool"},
-            "created_date": {"coerce": "datetime"},
-            "last_updated": {"coerce": "datetime"},
+            "created_date": {"coerce": "utcdatetime"},
+            "last_updated": {"coerce": "utcdatetime"},
             'es_type': {'coerce': 'unicode'},
         },
+    }
+
+    __SEAMLESS_COERCE__ = {
+        **COERCE_MAP,
+        "utcdatetime-datalog": coerce.date_str(in_format=DATE_FMT),
     }
 
     def __init__(self, **kwargs):
@@ -52,7 +56,7 @@ class DatalogJournalAdded(SeamlessMixin, DomainObject):
 
     @date_added.setter
     def date_added(self, val):
-        self.__seamless__.set_single('date_added', val, coerce=coerce.date_str(in_format=self.DATE_FMT))
+        self.__seamless__.set_with_struct('date_added', val)
 
     @property
     def date_added_str(self):
