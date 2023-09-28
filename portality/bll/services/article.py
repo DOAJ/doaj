@@ -282,7 +282,8 @@ class ArticleService(object):
         if eissn is not None:
             issns.append(eissn)
 
-        journal = models.Journal.find_by_issn_exact(issns, True)
+        # Find an exact match, whether in_doaj or not
+        journal = models.Journal.find_by_issn_exact(issns)
 
         # check if only one journal matches pissn and eissn and if they are in the correct fields
         # no need to check eissn, if pissn matches, pissn and eissn are different and only 1 journal has been found - then eissn matches too
