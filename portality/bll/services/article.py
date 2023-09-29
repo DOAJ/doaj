@@ -56,8 +56,8 @@ class ArticleService(object):
         all_unowned = set()
         all_unmatched = set()
 
-        # Generic error message if we don't have a specific reason
-        error_msg = Messages.EXCEPTION_ARTICLE_BATCH_FAIL
+        # Hold on to the exception so we can raise it later
+        e_not_acceptable = None
 
         for article in articles:
             try:
@@ -72,7 +72,7 @@ class ArticleService(object):
                 raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
             except exceptions.ArticleNotAcceptable as e:
                 # The ArticleNotAcceptable exception is a superset of reasons we can't match a journal to this article
-                error_msg = e.message
+                e_not_acceptable = e
                 result = {'fail': 1, 'unmatched': set(article.bibjson().issns())}
 
             success += result.get("success", 0)
@@ -97,7 +97,9 @@ class ArticleService(object):
             # return some stats on the import
             return report
         else:
-            raise exceptions.IngestException(message=error_msg, result=report)
+            if e_not_acceptable is not None:
+                raise exceptions.ArticleNotAcceptable(message=e_not_acceptable.message, result=report)
+            raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_FAIL, result=report)
 
     @staticmethod
     def _batch_contains_duplicates(articles):
