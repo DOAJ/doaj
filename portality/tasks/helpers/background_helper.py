@@ -49,7 +49,7 @@ def create_job(username, action,
 
 
 def submit_by_bg_task_type(background_task: Type[BackgroundTask], **prepare_kwargs):
-    """ Common way to submit task by BackgroundTask Class
+    """ Common way for BackgroundTask register_schedule
     """
     user = app.config.get("SYSTEM_USERNAME")
     job = background_task.prepare(user, **prepare_kwargs)

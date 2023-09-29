@@ -61,7 +61,7 @@ def scheduled_find_discontinued_soon():
 HUEY_SCHEDULE = {
     ...
 "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
-"journal_public_list_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "50"},
+"datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "50"},
 }
 ```
 

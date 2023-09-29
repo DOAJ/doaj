@@ -439,7 +439,8 @@ HUEY_SCHEDULE = {
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"}
+    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
+    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "50"},
 }
 
 HUEY_TASKS = {
@@ -1414,3 +1415,14 @@ TOURS = {
         }
     ]
 }
+
+
+
+
+#############################################
+# Google Sheet
+# ~~->GoogleSheet:ExternalService~~
+
+# Google Sheet API
+# value should be key file path of json, empty string means disabled
+GOOGLE_KEY_PATH = ''

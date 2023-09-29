@@ -1,8 +1,8 @@
 import argparse
-from pathlib import Path
 
 from openpyxl.reader.excel import load_workbook
 
+from portality import dao
 from portality.models.datalog_journal_added import DatalogJournalAdded
 
 
@@ -24,8 +24,7 @@ def to_datalog_journal_added(row):
         has_seal=has_seal,
         has_continuations=has_continuations,
     )
-    obj.data['es_type'] = obj.__type__
-    obj.data['id'] = obj.makeid()
+    dao.patch_model_for_bulk(obj)
     return obj
 
 

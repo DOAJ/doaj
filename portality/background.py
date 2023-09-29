@@ -178,11 +178,10 @@ class BackgroundTask(object):
             cls.set_param(new_param, k, v)
         return new_param
 
-    @classmethod
-    def create_raw_param_dict(cls, job_params: dict, key_list: Iterable[str]):
-        raw_param_dict = {k: cls.get_param(job_params, k)
-                          for k in key_list}
-        return raw_param_dict
+    def get_bgjob_params(self) -> dict:
+        keys = self.background_job.params.keys()
+        keys = (k.replace('{}__'.format(self.__action__), '') for k in keys)
+        return {k: self.get_param(self.background_job.params, k) for k in keys}
 
     @classmethod
     def set_reference(cls, refs, ref_name, value):
