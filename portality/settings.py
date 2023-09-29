@@ -1426,3 +1426,13 @@ TOURS = {
 # Google Sheet API
 # value should be key file path of json, empty string means disabled
 GOOGLE_KEY_PATH = ''
+
+
+
+#############################################
+# Datalog
+# ~~->Datalog:Feature~~
+
+### Datalog for Journal Added
+DATALOG_JA_FILENAME = 'DOAJ: journals added and withdrawn'
+DATALOG_JA_WORKSHEET_NAME = 'Added'
