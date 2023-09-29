@@ -1,0 +1,19 @@
+field,test_id,eissn,pissn,validated
+type,index,generated,generated,conditional
+deafult,,,,no
+,,,,
+values,,eissn_in_doaj,eissn_in_doaj,yes
+values,,pissn_in_doaj,pissn_in_doaj,no
+values,,eissn_not_in_doaj,eissn_not_in_doaj,
+values,,pissn_not_in_doaj,pissn_not_in_doaj,
+,,,,
+,,,,
+conditional validated,,eissn_in_doaj,pissn_in_doaj,yes
+constraint eissn,,eissn_in_doaj,!eissn_in_doaj,
+constraint eissn,,eissn_not_in_doaj,!eissn_not_in_doaj,
+constraint eissn,,pissn_not_in_doaj,!pissn_not_in_doaj,
+constraint eissn,,pissn_in_doaj,!pissn_in_doaj,
+constraint pissn,,eissn_in_doaj,!eissn_in_doaj,
+constraint pissn,,eissn_not_in_doaj,!eissn_not_in_doaj,
+constraint pissn,,pissn_not_in_doaj,!pissn_not_in_doaj,
+constraint pissn,,pissn_in_doaj,!pissn_in_doaj,
