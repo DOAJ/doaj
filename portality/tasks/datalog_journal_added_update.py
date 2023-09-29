@@ -122,6 +122,20 @@ def find_first_issn(rows):
     return None
 
 
+def find_new_xlsx_rows(last_issn, page_size=400):
+    new_records = DatalogJournalAdded.iterate(LatestDatalogJournalQuery().query(), page_size=page_size)
+    new_records = itertools.takewhile(lambda r: r.issn != last_issn, new_records)
+    new_records = list(new_records)
+    new_xlsx_rows = [
+        [j.title, j.issn,
+         dates.reformat(j.date_added, out_format=DatalogJournalAdded.DATE_FMT),
+         'Seal' if j.has_seal else '',
+         'Yes' if j.has_continuations else '']
+        for j in new_records
+    ]
+    return new_xlsx_rows
+
+
 def records_new_journals(filename,
                          worksheet_name,
                          google_key_path,
@@ -130,18 +144,17 @@ def records_new_journals(filename,
     if logger_fn is None:
         logger_fn = print
 
-    # latest_date = get_latest_date_added()
-    latest_date = datetime.datetime(2023, 1, 20)  # TOBEREMOVE
+    latest_date = get_latest_date_added()
     new_datalog_list = find_new_datalog_journals(latest_date)
     new_datalog_list = (dao.patch_model_for_bulk(r) for r in new_datalog_list)
     new_datalog_list = list(new_datalog_list)
-    if not new_datalog_list:
+    if new_datalog_list:
+        # save new records to DB
+        DatalogJournalAdded.bulk([r.data for r in new_datalog_list], )
+        logger_fn(f'saved new records to datalog [{len(new_datalog_list)}]')
+        time.sleep(6)  # wait for bulk save to complete
+    else:
         logger_fn('No new records found')
-        return
-
-    # save new records to DB
-    DatalogJournalAdded.bulk([r.data for r in new_datalog_list], )
-    logger_fn(f'saved new records to datalog [{len(new_datalog_list)}]')
 
     # save new records to google sheet
     client = gsheet.load_client(google_key_path)
@@ -156,30 +169,20 @@ def records_new_journals(filename,
         logger_fn(f'No worksheet named "{worksheet_name}" found')
         return
 
-    records = list(worksheet.get_all_values())
-    latest_row_idx = find_latest_row_index(records)
-    last_issn = find_first_issn(records[latest_row_idx:])
+    org_rows = worksheet.get_all_values()
+    org_rows = list(org_rows)
+    latest_row_idx = find_latest_row_index(org_rows)
+    last_issn = find_first_issn(org_rows[latest_row_idx:])
     logger_fn(f'last_issn: {last_issn}')
 
-    time.sleep(6)  # wait for bulk save to complete
-
-    new_records = DatalogJournalAdded.iterate(LatestDatalogJournalQuery().query(), page_size=400)
-    new_records = itertools.takewhile(lambda r: r.issn != last_issn, new_records)
-    new_records = list(new_records)
-    new_xlsx_rows = [
-        [j.title, j.issn,
-         dates.reformat(j.date_added, out_format=DatalogJournalAdded.DATE_FMT),
-         'Seal' if j.has_seal else '',
-         'Yes' if j.has_continuations else '']
-        for j in new_records
-    ]
+    new_xlsx_rows = find_new_xlsx_rows(last_issn)
     worksheet.insert_rows(new_xlsx_rows, latest_row_idx + 1)
     logger_fn(f'inserted rows to google sheet [{len(new_xlsx_rows)}]')
 
 
 class DatalogJournalAddedUpdate(BackgroundTask):
     """
-    ~~JournalPublicListUpdate:Feature->BackgroundTask:Process~~
+    ~~DatalogJournalAddedUpdate:Feature->BackgroundTask:Process~~
     """
     __action__ = "datalog_journal_added_update"
 
@@ -187,11 +190,6 @@ class DatalogJournalAddedUpdate(BackgroundTask):
         kwargs = self.get_bgjob_params()
         kwargs['logger_fn'] = self.background_job.add_audit_message
 
-        # tmpStore = StoreFactory.tmp()
-        # mainStore = StoreFactory.get("anon_data")
-        # container = app.config.get("STORE_ANON_DATA_CONTAINER")
-        # run_anon_export(tmpStore, mainStore, container, **kwargs)
-        # self.background_job.add_audit_message("Anon export completed")
         records_new_journals(kwargs.get('filename'),
                              kwargs.get('worksheet_name'),
                              kwargs.get('google_key_path'),
