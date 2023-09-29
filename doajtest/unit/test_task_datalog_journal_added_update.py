@@ -20,6 +20,7 @@ input_google_key_path = 'fake_google_key_path'
 
 
 class TestDatalogJournalAddedUpdate(DoajTestCase):
+    @classmethod
     def setUpClass(cls) -> None:
         DatalogJournalAdded(title='titlea',
                             issn='1234-4321',
