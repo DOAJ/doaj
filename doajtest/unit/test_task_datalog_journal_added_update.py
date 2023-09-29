@@ -1,27 +1,63 @@
 import gzip
 import json
 from pathlib import Path
+from unittest.mock import patch
 
 from doajtest.helpers import DoajTestCase
 from doajtest.unit_tester import bgtask_tester
 from portality.app import app
 from portality.models import BackgroundJob, Account
+from portality.models.datalog_journal_added import DatalogJournalAdded
 from portality.store import StoreLocal
 from portality.tasks.anon_export import AnonExportBackgroundTask
 from portality.tasks.datalog_journal_added_update import DatalogJournalAddedUpdate
 from portality.tasks.helpers import background_helper
+from unittest.mock import MagicMock
+
+input_filename = 'fake_filename'
+input_worksheet_name = 'fake_worksheet_name'
+input_google_key_path = 'fake_google_key_path'
 
 
 class TestDatalogJournalAddedUpdate(DoajTestCase):
+    def setUpClass(cls) -> None:
+        DatalogJournalAdded(title='titlea',
+                            issn='1234-4321',
+                            date_added='2021-01-01',
+                            has_seal=True,
+                            has_continuations=True,
+                            ).save()
 
     def test_execute(self):
+        worksheet = MagicMock()
+        worksheet.get_all_values.return_value = [
+            ['Journal Title', ''],
+            ['titlea', '1234-4321']
+        ]
+
+        # Replace the real worksheet with the mock
+        with patch('portality.lib.gsheet.load_client') as mock_client:
+            mock_client.return_value.open.return_value.worksheet.return_value = worksheet
+
+            background_task = background_helper.execute_by_bg_task_type(DatalogJournalAddedUpdate,
+                                                                        filename=input_filename,
+                                                                        worksheet_name=input_worksheet_name,
+                                                                        google_key_path=input_google_key_path)
+
+        worksheet.get_all_values.assert_called()
+        x = worksheet.insert_rows.call_args
+        print('-------------')
+        print(x)
+
+        # worksheet.get_all_values.assert_not_called()
+        #     # Now, when you use the worksheet object, it will behave like the mock
+        #     result = worksheet.some_method()
+        #
+        # # Assertions or further testing using the mock
+        # assert result == "Mocked result"
+        # worksheet.some_method.assert_called_once_with()
+
         # run execute
-        background_task = background_helper.execute_by_bg_task_type(DatalogJournalAddedUpdate,
-                                                                    filename=app.config.get("DATALOG_JA_FILENAME"),
-                                                                    worksheet_name=app.config.get(
-                                                                        "DATALOG_JA_WORKSHEET_NAME"),
-                                                                    google_key_path=app.config.get("GOOGLE_KEY_PATH"),
-                                                                    )
 
         # # prepare test data
         # for _ in range(3):
@@ -75,3 +111,7 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
     #
     # def test_prepare__queue_id(self):
     #     bgtask_tester.test_queue_id_assigned(AnonExportBackgroundTask)
+
+
+if __name__ == '__main__':
+    TestDatalogJournalAddedUpdate().test_execute()
