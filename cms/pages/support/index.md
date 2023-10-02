@@ -15,8 +15,6 @@ Support of DOAJ by academic organisations is vital and we are proud to acknowled
 
 We depend on support from libraries and organisations to maintain and develop our services. For 2024, we have revised and simplified our supporter model to align with the levels recommended by SCOSS. This new model enables us to invest in the organisation's future, and to continue to provide a high-quality service to our community.
 
-{:.numbered-table .numbered-table--labels}
-| | | |
 | --- | --- | --- |
 |   | Euros (€) | USDs ($) | GBPs (£) |
 |   | Large organisations | 4,000 | 4,400 | 3,440 |
