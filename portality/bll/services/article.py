@@ -56,6 +56,9 @@ class ArticleService(object):
         all_unowned = set()
         all_unmatched = set()
 
+        # Hold on to the exception so we can raise it later
+        e_not_acceptable = None
+
         for article in articles:
             try:
                 # ~~!ArticleBatchCreate:Feature->ArticleCreate:Feature~~
@@ -67,6 +70,10 @@ class ArticleService(object):
                                              dry_run=True)
             except (exceptions.ArticleMergeConflict, exceptions.ConfigurationException):
                 raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_CONFLICT)
+            except exceptions.ArticleNotAcceptable as e:
+                # The ArticleNotAcceptable exception is a superset of reasons we can't match a journal to this article
+                e_not_acceptable = e
+                result = {'fail': 1, 'unmatched': set(article.bibjson().issns())}
 
             success += result.get("success", 0)
             fail += result.get("fail", 0)
@@ -90,6 +97,8 @@ class ArticleService(object):
             # return some stats on the import
             return report
         else:
+            if e_not_acceptable is not None:
+                raise exceptions.ArticleNotAcceptable(message=e_not_acceptable.message, result=report)
             raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_FAIL, result=report)
 
     @staticmethod
@@ -201,17 +210,17 @@ class ArticleService(object):
             {"arg": update_article_id, "instance": str, "allow_none": True, "arg_name": "update_article_id"}
         ], exceptions.ArgumentException)
 
-        # quickly validate that the article is acceptable - it must have a DOI and/or a fulltext
-        # this raises an exception if the article is not acceptable, containing all the relevant validation details
+        has_permissions_result = self.has_permissions(account, article, limit_to_account)
+        if isinstance(has_permissions_result, dict):
+            return has_permissions_result
 
+        # Validate that the article is acceptable: it must have a DOI and/or a fulltext & match only one in_doaj journal
+        # this raises an exception if the article is not acceptable, containing all the relevant validation details
+        # We do this after the permissions check because that gives a detailed result whereas this throws an exception
         try:
             self.is_acceptable(article)
         except Exception as e:
             raise e
-
-        has_permissions_result = self.has_permissions(account, article, limit_to_account)
-        if isinstance(has_permissions_result,dict):
-            return has_permissions_result
 
         is_update = 0
         if duplicate_check:
@@ -282,7 +291,8 @@ class ArticleService(object):
         if eissn is not None:
             issns.append(eissn)
 
-        journal = models.Journal.find_by_issn_exact(issns, True)
+        # Find an exact match, whether in_doaj or not
+        journal = models.Journal.find_by_issn_exact(issns)
 
         # check if only one journal matches pissn and eissn and if they are in the correct fields
         # no need to check eissn, if pissn matches, pissn and eissn are different and only 1 journal has been found - then eissn matches too
@@ -393,6 +403,10 @@ class ArticleService(object):
         b = article.bibjson()
         issns = b.get_identifiers(b.P_ISSN)
         issns += b.get_identifiers(b.E_ISSN)
+
+        # FIXME: Duplicate check due to inconsistent control flow (result vs exception)
+        if len(issns) == 0:
+            raise exceptions.ArticleNotAcceptable(message=Messages.EXCEPTION_NO_ISSNS)
 
         owned = []
         shared = []
