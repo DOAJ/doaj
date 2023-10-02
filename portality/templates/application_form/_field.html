@@ -29,9 +29,7 @@
           </p>
         </div>
     {% else %}
-        <div style="display: flex;">
-            {{ f.render_form_control() }}
-        </div>
+        {{ f.render_form_control() }}
     {% endif %}
 
     {% if f.wtfield.__class__.__name__ == "BooleanField"  %}
