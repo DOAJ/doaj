@@ -44,7 +44,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         self.svc.get_duplicate = self._get_duplicate
         self.svc.issn_ownership_status = self._issn_ownership_status
         Article.get_journal = self._get_journal
-        Journal.find_by_issn = self._find_by_issn_exact
+        Journal.find_by_issn_exact = self._find_by_issn_exact
         super(TestBLLArticleBatchCreateArticle, self).tearDown()
 
     @parameterized.expand(load_cases)
