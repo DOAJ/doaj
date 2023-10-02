@@ -35,7 +35,6 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         self.prepare_update_admin = self.svc._prepare_update_admin
         self.prepare_update_publisher = self.svc._prepare_update_publisher
 
-
     def tearDown(self):
 
         super(TestBLLArticleCreateArticle, self).tearDown()
