@@ -27,4 +27,19 @@ We always have a wishlist of development projects for which we require additiona
 
 ### Why you should support us
 
+- We are a community-led and -governed service. Support from libraries and institutions enables our commitment to being 100% independent.
+- Supporting open infrastructure is a strategic choice for libraries and institutions, demonstrating a commitment to open research and sustaining open infrastructure.
+- We are reliant on community support to meet an increase in demand: the number of applications we receive each year has gone up by 60% since 2018, and our investigations into questionable publishing practices are becoming more complex.
+- Help us deliver our role in driving standards and best practice in open access publishing, for example through the [Principles of transparency and best practice in scholarly publishing](/apply/transparency/) and the [OA Journals Toolkit](https://www.oajournals-toolkit.org/).
+- You rely extensively on our metadata as a source of trusted journals, integrating it into discovery systems and open access services.
+
+By supporting us, your organisation will join [a growing family of like-minded institutions](/supporters/) committed to ensuring quality content is available online for everyone. Supporting DOAJ is a statement of belief in equitable open knowledge and science.
+
+### Benefits for institutional and library supporters
+
+- We will add your institution’s name to [our Supporters page](/supporters/)
+- you can include details of your DOAJ support in marketing activities
+- you can use our logo on your institution’s websites and in other communications
+- you can integrate the DOAJ metadata, via our OAI/PMH service, our API or the public datadump, into your services
+
 ---
