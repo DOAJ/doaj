@@ -56,9 +56,9 @@ entries:
     secondary_mobile: true
     route: doaj.support               # ~~->Support:WebRoute~~
     entries:
-      - label: Institutional and library supporters
+      - label: Institutions and libraries
         route: doaj.support           # ~~->Support:WebRoute~~
-      - label: Publisher supporters
+      - label: Publishers
         route: doaj.publisher_supporters      # ~~->PublisherSupporters:WebRoute~~
       - label: Supporters
         route: doaj.supporters        # ~~->Supporters:WebRoute~~
