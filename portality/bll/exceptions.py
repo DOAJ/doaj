@@ -66,6 +66,7 @@ class ArticleNotAcceptable(Exception):
     """
     def __init__(self, *args, **kwargs):
         self.message = kwargs.get("message", "")
+        self.result = kwargs.get("result", {})
         super(ArticleNotAcceptable, self).__init__(*args)
 
     def __str__(self):
