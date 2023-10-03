@@ -11,9 +11,9 @@ featuremap:
 
 ---
 
-Support of DOAJ by academic organisations is vital and we are proud to acknowledge that over 80% of our support comes to us this way. We are very grateful to all our supporting academic organisations worldwide.
+Support of DOAJ by academic organisations is vital, and we are proud to acknowledge that over 80% of our support comes to us this way. We are very grateful to all our supporting academic organisations worldwide.
 
-We depend on support from libraries and organisations to maintain and develop our services. For 2024, we have revised and simplified our supporter model to align with the levels recommended by SCOSS. This new model enables us to invest in the organisation's future, and to continue to provide a high-quality service to our community.
+For 2024, we have revised and simplified our supporter model to align with the levels recommended by SCOSS. This new model enables us to invest in the organisation's future and to continue to provide a high-quality service to our community.
 
 |                     | Euros (€) | USDs ($)  | GBPs (£)  |
 |---------------------|-----------|-----------|-----------|
@@ -27,9 +27,9 @@ We always have a wishlist of development projects for which we require additiona
 
 ### Why you should support us
 
-- We are a community-led and -governed service. Support from libraries and institutions enables our commitment to being 100% independent.
-- Supporting open infrastructure is a strategic choice for libraries and institutions, demonstrating a commitment to open research and sustaining open infrastructure.
-- We are reliant on community support to meet an increase in demand: the number of applications we receive each year has gone up by 60% since 2018, and our investigations into questionable publishing practices are becoming more complex.
+- We are community-led and -governed. Your support enables our commitment to being 100% independent.
+- Supporting open infrastructure is a strategic choice for libraries and institutions, demonstrating your commitment to open research and sustaining open infrastructure.
+- We are seeing a steady increase in demand: the number of applications we receive each year has increased by 60% since 2018, and our investigations into questionable publishing practices are becoming more complex.
 - Help us deliver our role in driving standards and best practice in open access publishing, for example through the [Principles of transparency and best practice in scholarly publishing](/apply/transparency/) and the [OA Journals Toolkit](https://www.oajournals-toolkit.org/).
 - You rely extensively on our metadata as a source of trusted journals, integrating it into discovery systems and open access services.
 
