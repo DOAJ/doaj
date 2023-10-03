@@ -1,0 +1,119 @@
+{
+  "parameters": [
+    {
+      "name": "test_id",
+      "type": "index"
+    },
+    {
+      "name": "eissn",
+      "type": "generated",
+      "values": {
+        "eissn_in_doaj": {
+          "constraints": {
+            "pissn": {
+              "nor": [
+                "eissn_in_doaj"
+              ]
+            }
+          }
+        },
+        "pissn_in_doaj": {
+          "constraints": {
+            "pissn": {
+              "nor": [
+                "pissn_in_doaj"
+              ]
+            }
+          }
+        },
+        "eissn_not_in_doaj": {
+          "constraints": {
+            "pissn": {
+              "nor": [
+                "eissn_not_in_doaj"
+              ]
+            }
+          }
+        },
+        "pissn_not_in_doaj": {
+          "constraints": {
+            "pissn": {
+              "nor": [
+                "pissn_not_in_doaj"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "pissn",
+      "type": "generated",
+      "values": {
+        "eissn_in_doaj": {},
+        "pissn_in_doaj": {},
+        "eissn_not_in_doaj": {},
+        "pissn_not_in_doaj": {},
+        "!eissn_in_doaj": {
+          "constraints": {
+            "eissn": {
+              "or": [
+                "eissn_in_doaj"
+              ]
+            }
+          }
+        },
+        "!eissn_not_in_doaj": {
+          "constraints": {
+            "eissn": {
+              "or": [
+                "eissn_not_in_doaj"
+              ]
+            }
+          }
+        },
+        "!pissn_not_in_doaj": {
+          "constraints": {
+            "eissn": {
+              "or": [
+                "pissn_not_in_doaj"
+              ]
+            }
+          }
+        },
+        "!pissn_in_doaj": {
+          "constraints": {
+            "eissn": {
+              "or": [
+                "pissn_in_doaj"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "validated",
+      "type": "conditional",
+      "values": {
+        "yes": {
+          "conditions": [
+            {
+              "eissn": {
+                "or": [
+                  "eissn_in_doaj"
+                ]
+              },
+              "pissn": {
+                "or": [
+                  "pissn_in_doaj"
+                ]
+              }
+            }
+          ]
+        },
+        "no": {}
+      }
+    }
+  ]
+}
