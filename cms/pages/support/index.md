@@ -13,6 +13,8 @@ featuremap:
 
 Support of DOAJ by academic organisations is vital, and we are proud to acknowledge that over 80% of our support comes to us this way. We are very grateful to all our supporting academic organisations worldwide.
 
+### 2024 pricing
+
 For 2024, we have revised and simplified our supporter model to align with the levels recommended by SCOSS. This new model enables us to invest in the organisation's future and to continue to provide a high-quality service to our community.
 
 |                     | Euros(€) | USDs($) | GBPs(£) |
