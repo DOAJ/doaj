@@ -33,13 +33,13 @@ We always have a wishlist of development projects for which we require additiona
 - Help us deliver our role in driving standards and best practice in open access publishing, for example through the [Principles of transparency and best practice in scholarly publishing](/apply/transparency/) and the [OA Journals Toolkit](https://www.oajournals-toolkit.org/).
 - You rely extensively on our metadata as a source of trusted journals, integrating it into discovery systems and open access services.
 
-By supporting us, your organisation will join [a growing family of like-minded institutions](/supporters/) committed to ensuring quality content is available online for everyone. Supporting DOAJ is a statement of belief in equitable open knowledge and science.
+By supporting us, your organisation will join [a growing family of like-minded institutions](/support/supporters/) committed to ensuring quality content is available online for everyone. Supporting DOAJ is a statement of belief in equitable open knowledge and science.
 
 ### Benefits for institutional and library supporters
 
-- We will add your institution’s name to [our Supporters page](/supporters/)
+- We will add your institution’s name to [our Supporters page](/support/supporters/)
 - you can include details of your DOAJ support in marketing activities
 - you can use our logo on your institution’s websites and in other communications
-- you can integrate the DOAJ metadata, via our OAI/PMH service, our API or the public datadump, into your services
+- you can integrate into your services the DOAJ metadata via our OAI/PMH service, our API or the public data dump
 
 ---
