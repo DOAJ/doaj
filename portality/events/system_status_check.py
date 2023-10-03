@@ -4,6 +4,10 @@ from portality.core import app
 from portality.lib import dates
 
 class KafkaStatusCheck:
+    """
+    useful to set Kafka status to false when there is any issue connecting to Kafka.
+    If kafka status set to false in Redis, it has to be set to true manually in Radis after fixing the issue.
+    """
 
     def __init__(self):
         self.is_kafka_active = True
@@ -14,11 +18,11 @@ class KafkaStatusCheck:
         self.redis_conn = redis.StrictRedis(host=redis_host, port=redis_port, db=0)
 
     def is_active(self):
-        if self.can_check_in_redis():
+        if self.can_check_redis():
             self.is_kafka_active = self.is_kafka_active_redis()
         return self.is_kafka_active
 
-    def can_check_in_redis(self):
+    def can_check_redis(self):
         time_diff = dates.now() - self.last_time
         if time_diff.seconds > self.time_gap:
             self.last_time = dates.now()

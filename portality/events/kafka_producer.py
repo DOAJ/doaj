@@ -1,5 +1,5 @@
 import json
-from kafka import KafkaProducer
+import kafka
 from portality.core import app
 from portality import app_email
 from portality.events.shortcircuit import send_event as shortcircuit_send_event
@@ -23,7 +23,7 @@ def kafka_producer():
     global producer
     try:
         if producer is None:
-            producer = KafkaProducer(bootstrap_servers=bootstrap_server, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+            producer = kafka.KafkaProducer(bootstrap_servers=bootstrap_server, value_serializer=lambda v: json.dumps(v).encode('utf-8'))
     except Exception as exp:
         producer = None
         handle_exception("Error in setting up kafka connection", exp)
