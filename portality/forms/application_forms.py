@@ -167,11 +167,22 @@ class FieldDefinitions:
             "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "contexts": {
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
             "editor": {
-                "disabled": True
+                "disabled": True,
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             },
             "associate_editor": {
-                "disabled": True
+                "disabled": True,
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             },
             "update_request": {
                 "disabled": True
@@ -198,6 +209,21 @@ class FieldDefinitions:
         "contexts": {
             "update_request": {
                 "disabled": True
+            },
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
         }
     }
@@ -458,6 +484,21 @@ class FieldDefinitions:
         "contexts" : {
             "bulk_edit" : {
                 "validate" : []
+            },
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
         }
     }
@@ -506,10 +547,27 @@ class FieldDefinitions:
                           "a society or other type of institution, enter that here."],
             "placeholder": "Type or select the society or institution’s name"
         },
+        "contexts" : {
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            }
+        },
         "validate": [
             {"different_to": {"field": "publisher_name",
                               "message": "This field must be different than 'Publisher’s name'"}} # ~~^-> DifferetTo:FormValidator~~
-            ],
+        ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}},
@@ -775,7 +833,7 @@ class FieldDefinitions:
             }
         ],
         "widgets" : [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -1381,7 +1439,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
+            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
         ],
         "contexts" : {
             "public" : {
@@ -2942,6 +3000,7 @@ PYTHON_FUNCTIONS = {
 
 JAVASCRIPT_FUNCTIONS = {
     "clickable_url": "formulaic.widgets.newClickableUrl",   # ~~-> ClickableURL:FormWidget~~
+    "click_to_copy": "formulaic.widgets.newClickToCopy", # ~~-> ClickToCopy:FormWidget~~
     "clickable_owner": "formulaic.widgets.newClickableOwner",   # ~~-> ClickableOwner:FormWidget~~
     "select": "formulaic.widgets.newSelect",    # ~~-> SelectBox:FormWidget~~
     "taglist": "formulaic.widgets.newTagList",  # ~~-> TagList:FormWidget~~
