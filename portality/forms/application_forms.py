@@ -169,18 +169,21 @@ class FieldDefinitions:
         "contexts": {
             "admin": {
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             },
             "editor": {
                 "disabled": True,
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             },
             "associate_editor": {
                 "disabled": True,
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             },
@@ -212,16 +215,19 @@ class FieldDefinitions:
             },
             "admin": {
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             },
             "associate_editor": {
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             },
             "editor": {
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             }
@@ -486,16 +492,22 @@ class FieldDefinitions:
             },
             "admin": {
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}},
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             },
             "associate_editor": {
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}},
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             },
             "editor": {
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}},
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             }
