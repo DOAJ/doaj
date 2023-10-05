@@ -365,6 +365,29 @@ def metadata():
 
         return fc.render_template(validated=validated)
 
+@blueprint.route("/journal-csv", methods=["GET"])
+@login_required
+@ssl_required
+@write_required()
+def journal_csv():
+    return render_template('publisher/journal_csv.html')
+
+@blueprint.route("/journal-csv/validate", methods=["POST"])
+@login_required
+@ssl_required
+@write_required()
+def journal_csv_validate():
+    if "journal_csv" not in request.files:
+        abort(400)
+    file = request.files["journal_csv"]
+    if file.size() > app.config.get("JOURNAL_CSV_UPLOAD__MAX_FILE_SIZE", 1000000):
+        abort(400)
+
+    report = DOAJ.applicationService().validate_update_csv(file)
+    resp = make_response(report.json())
+    resp.mimetype = "application/json"
+    return resp
+
 
 @blueprint.route("/help")
 @login_required

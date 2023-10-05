@@ -1,0 +1,64 @@
+<!--~~JournalCSV:Page~~-->
+<!--~~->JournalCSV:Feature-->
+
+{% extends "publisher/publisher_base.html" %}
+
+{% block page_title %}Validate your Journal CSV{% endblock %}
+
+{% block publisher_content %}
+    <div class="row">
+        <header class="col-md-4">
+            <h2>Validate your Journal CSV</h2>
+
+            <div class="alert">
+                <p>Uploaded files must be in the same format in which they were supplied to you, and follow
+                    the data entry rules <a href="#">LINK TO THE RULES HERE</a></p>
+            </div>
+        </header>
+
+        <form id="upload_form" class="col-md-8 form form--compact" method="POST" action="{{ url_for("publisher.journal_csv_validate") }}" enctype="multipart/form-data">
+            <fieldset>
+                <h3 class="form__header">Journal CSV</h3>
+                <div class="form__question">
+                    <label for="upload-csv-file">Select a file</label>
+                    <input type="file" id="upload-csv-file" name="file">
+                    <p><small>Must be less than 1MB (TBC).</small></p>
+                    {% if error %}
+                        <p><small class="error">You must specify the file or upload from a link</small></p>
+                    {% endif %}
+                </div>
+            </fieldset>
+            <button type="submit" id="upload" class="button button--primary">Validate</button>
+        </form>
+    </div>
+
+    <div id="validation-results"></div>
+{% endblock %}
+
+{% block extra_js_bottom %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#upload").on("click", function(event) {
+                event.preventDefault();
+
+                let fd = new FormData();
+                let file = $('#upload-csv-file')[0].files[0];
+                fd.append("journal_csv", file);
+
+                $.ajax({
+                   url: "/publisher/journal-csv/validate",
+                   type: "POST",
+                   data: fd,
+                   processData: false,
+                   contentType: false,
+                   success: function(response) {
+                       alert("success");
+                   },
+                   error: function(jqXHR, textStatus, errorMessage) {
+                       console.log(errorMessage); // Optional
+                   }
+                });
+            })
+        })
+    </script>
+{% endblock %}

@@ -5,6 +5,7 @@
 {% set metadata = url_for('publisher.metadata') %}
 {% set preservation = url_for('publisher.preservation') %}
 {% set help = url_for('publisher.help') %}
+{% set csv = url_for('publisher.journal_csv') %}
 
 {% set tabs = [
     (index, "My drafts", 0),
@@ -13,7 +14,8 @@
     (xml, "Upload article XML", 3),
     (metadata, "Enter article metadata", 4),
     (preservation, "Upload preservation file", 5),
-    (help, "Help", 6),
+    (csv, "Upload journal CSV", 6),
+    (help, "Help", 7),
     ]
 %}
 
