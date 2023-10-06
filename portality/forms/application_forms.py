@@ -37,7 +37,8 @@ from portality.forms.validate import (
     OwnerExists,
     NoScriptTag,
     Year,
-    CurrentISOCurrency
+    CurrentISOCurrency,
+    CurrentISOLanguage
 )
 from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
@@ -166,11 +167,22 @@ class FieldDefinitions:
             "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "contexts": {
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
             "editor": {
-                "disabled": True
+                "disabled": True,
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             },
             "associate_editor": {
-                "disabled": True
+                "disabled": True,
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             },
             "update_request": {
                 "disabled": True
@@ -197,6 +209,21 @@ class FieldDefinitions:
         "contexts": {
             "update_request": {
                 "disabled": True
+            },
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
         }
     }
@@ -422,7 +449,8 @@ class FieldDefinitions:
             "initial": 5
         },
         "validate": [
-            {"required": {"message": "Enter <strong>at least one</strong> language"}}
+            {"required": {"message": "Enter <strong>at least one</strong> language"}},
+            "current_iso_language"
         ],
         "widgets": [
             {"select": {}},
@@ -455,6 +483,21 @@ class FieldDefinitions:
         "contexts" : {
             "bulk_edit" : {
                 "validate" : []
+            },
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
         }
     }
@@ -502,6 +545,23 @@ class FieldDefinitions:
                           "for publishing it. The publisher can be a separate organisation. If your journal is linked to "
                           "a society or other type of institution, enter that here."],
             "placeholder": "Type or select the society or institution’s name"
+        },
+        "contexts" : {
+            "admin": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            }
         },
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -768,7 +828,7 @@ class FieldDefinitions:
             }
         ],
         "widgets" : [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -1374,7 +1434,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
+            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
         ],
         "contexts" : {
             "public" : {
@@ -2854,6 +2914,16 @@ class CurrentISOCurrencyBuilder:
     def wtforms(field, settings):
         return CurrentISOCurrency(settings.get("message"))
 
+
+class CurrentISOLanguageBuilder:
+    @staticmethod
+    def render(settings, html_attrs):
+        pass
+
+    @staticmethod
+    def wtforms(field, settings):
+        return CurrentISOLanguage(settings.get("message"))
+
 #########################################################
 # Crosswalks
 #########################################################
@@ -2916,13 +2986,15 @@ PYTHON_FUNCTIONS = {
             "owner_exists" : OwnerExistsBuilder.wtforms,
             "no_script_tag": NoScriptTagBuilder.wtforms,
             "year": YearBuilder.wtforms,
-            "current_iso_currency": CurrentISOCurrencyBuilder.wtforms
+            "current_iso_currency": CurrentISOCurrencyBuilder.wtforms,
+            "current_iso_language": CurrentISOLanguageBuilder.wtforms
         }
     }
 }
 
 JAVASCRIPT_FUNCTIONS = {
     "clickable_url": "formulaic.widgets.newClickableUrl",   # ~~-> ClickableURL:FormWidget~~
+    "click_to_copy": "formulaic.widgets.newClickToCopy", # ~~-> ClickToCopy:FormWidget~~
     "clickable_owner": "formulaic.widgets.newClickableOwner",   # ~~-> ClickableOwner:FormWidget~~
     "select": "formulaic.widgets.newSelect",    # ~~-> SelectBox:FormWidget~~
     "taglist": "formulaic.widgets.newTagList",  # ~~-> TagList:FormWidget~~

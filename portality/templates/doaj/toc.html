@@ -42,7 +42,7 @@
         }
     %}
 
-    <main class="container page-content">
+    <div class="container page-content">
         <header>
           {% if journal.last_manually_updated_since(days=30) %}
           <span class="label label--secondary">
@@ -75,7 +75,7 @@
                 </span>
             </p>
 
-            {% if bibjson.discontinued_date %}
+            {% if bibjson.discontinued_date is not none and bibjson.discontinued_date | is_in_the_past %}
                 <p>Ceased publication on <strong>{{ bibjson.discontinued_datestamp.strftime("%d %B %Y") }}</strong></p>
             {% endif %}
 
@@ -450,7 +450,7 @@
             </p>
         </footer>
 
-    </main>
+    </div>
     {% include "includes/_hotjar.html" %}
 
 {% endblock %}

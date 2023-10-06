@@ -624,7 +624,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         j.set_owner("testowner")
         bj = j.bibjson()
         bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save()
+        j.save(blocking=True)
 
         asource = AccountFixtureFactory.make_publisher_source()
         account = models.Account(**asource)
@@ -634,6 +634,7 @@ class TestIngestArticlesCrossref531XML(DoajTestCase):
         # push an article to initialise the mappings
         source = ArticleFixtureFactory.make_article_source()
         article = models.Article(**source)
+        article.bibjson().add_identifier(bj.P_ISSN, "1234-5678")
         article.save(blocking=True)
         article.delete()
         models.Article.blockdeleted(article.id)

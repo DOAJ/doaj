@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.3.9"
+DOAJ_VERSION = "6.4.2"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -25,6 +25,11 @@ CMS_BUILD_ASSETS_ON_STARTUP = False
 SESSION_COOKIE_SAMESITE='Strict'
 SESSION_COOKIE_SECURE=True
 REMEMBER_COOKIE_SECURE = True
+
+####################################
+# Testdrive for setting up the test environment.
+# CAUTION - this can modify the index so should NEVER be used in production!
+TESTDRIVE_ENABLED = False
 
 ####################################
 # Debug Mode
@@ -422,7 +427,7 @@ CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minut
 HUEY_SCHEDULE = {
     "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
     "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
-    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "35"},
+    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
     "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
     "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
     "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
@@ -434,6 +439,7 @@ HUEY_SCHEDULE = {
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"}
 }
 
 HUEY_TASKS = {
@@ -526,7 +532,17 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "isolang_2letter": {
+    "isolang_2letter_strict": {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+#                "index": False,
+                "store": True
+            }
+        }
+    },
+    "isolang_2letter_lax": {
         "type": "text",
         "fields": {
             "exact": {
@@ -546,7 +562,7 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
             }
         }
     },
-    "currency_code": {
+    "currency_code_strict": {
         "type": "text",
         "fields": {
             "exact": {
@@ -931,6 +947,8 @@ FEED_LOGO = "https://doaj.org/static/doaj/images/favicon.ico"
 # OAI-PMH SETTINGS
 # ~~->OAIPMH:Feature~~
 
+OAI_ADMIN_EMAIL = 'helpdesk+oai@doaj.org'
+
 # ~~->OAIAriticleXML:Crosswalk~~
 # ~~->OAIJournalXML:Crosswalk~~
 OAI_DC_METADATA_FORMAT = {
@@ -1156,6 +1174,11 @@ GA_ACTION_JOURNALCSV = 'Download'
 # ~~->OpenURL:Feature~~
 GA_CATEGORY_OPENURL = 'OpenURL'
 
+# GA for PublicDataDump
+# ~~->PublicDataDump:Feature~~
+GA_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
+GA_ACTION_PUBLICDATADUMP = 'Download'
+
 # GA for API
 # ~~-> API:Feature~~
 GA_CATEGORY_API = 'API Hit'
@@ -1365,3 +1388,29 @@ PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
 # Pages under maintenance
 
 PRESERVATION_PAGE_UNDER_MAINTENANCE = False
+
+# report journals that discontinue in ... days (eg. 1 = tomorrow)
+DISCONTINUED_DATE_DELTA = 0
+
+##################################################
+# Feature tours currently active
+
+TOUR_COOKIE_PREFIX = "doaj_tour_"
+TOUR_COOKIE_MAX_AGE = 31536000
+
+TOURS = {
+    "/editor/": [
+        {
+            "roles": ["editor", "associate_editor"],
+            "content_id": "dashboard_ed_assed",
+            "name": "Welcome to your dashboard!",
+            "description": "The new dashboard gives you a way to see all your priority work, take a look at what's new.",
+        },
+        {
+            "roles": ["editor"],
+            "content_id": "dashboard_ed",
+            "name": "Your group activity",
+            "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
+        }
+    ]
+}

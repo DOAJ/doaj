@@ -5,7 +5,7 @@ from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory, Jour
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.models import Article, Account,Journal
+from portality.models import Article, Account, Journal
 from portality.lib.paths import rel2abs
 from doajtest.mocks.bll_article import BLLArticleMockFactory
 from doajtest.mocks.model_Article import ModelArticleMockFactory
@@ -37,12 +37,14 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         self._get_duplicate = self.svc.get_duplicate
         self._issn_ownership_status = self.svc.issn_ownership_status
         self._get_journal = Article.get_journal
+        self._find_by_issn_exact = Journal.find_by_issn_exact
 
     def tearDown(self):
         self.svc.is_legitimate_owner = self._is_legitimate_owner
         self.svc.get_duplicate = self._get_duplicate
         self.svc.issn_ownership_status = self._issn_ownership_status
         Article.get_journal = self._get_journal
+        Journal.find_by_issn_exact = self._find_by_issn_exact
         super(TestBLLArticleBatchCreateArticle, self).tearDown()
 
     @parameterized.expand(load_cases)
@@ -118,8 +120,8 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                 article = Article(**source)
                 article.set_id()
                 articles.append(article)
-                if add_journal_info:
-                    journal_specs.append({"title" : "0", "pissn" : "0000-0000", "eissn" : "0000-0001"})
+                # We always need a journal to exist for an article to be created
+                journal_specs.append({"title" : "0", "pissn" : "0000-0000", "eissn" : "0000-0001"})
 
                 # another with a DOI and no fulltext
                 source = ArticleFixtureFactory.make_article_source(
@@ -132,8 +134,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                 article = Article(**source)
                 article.set_id()
                 articles.append(article)
-                if add_journal_info:
-                    journal_specs.append({"title" : "1", "pissn" : "1111-1112", "eissn" : "1111-1111"})
+                journal_specs.append({"title" : "1", "pissn" : "1111-1112", "eissn" : "1111-1111"})
 
                 # one with a fulltext and no DOI
                 source = ArticleFixtureFactory.make_article_source(
@@ -146,8 +147,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                 article = Article(**source)
                 article.set_id()
                 articles.append(article)
-                if add_journal_info:
-                    journal_specs.append({"title" : "2", "pissn" : "2222-2222", "eissn" : "2222-2223"})
+                journal_specs.append({"title" : "2", "pissn" : "2222-2222", "eissn" : "2222-2223"})
 
                 # another one with a fulltext and no DOI
                 source = ArticleFixtureFactory.make_article_source(
@@ -160,8 +160,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                 article = Article(**source)
                 article.set_id()
                 articles.append(article)
-                if add_journal_info:
-                    journal_specs.append({"title" : "3", "pissn" : "3333-3333", "eissn" : "3333-3334"})
+                journal_specs.append({"title" : "3", "pissn" : "3333-3333", "eissn" : "3333-3334"})
 
                 last_issn = "3333-3333"
                 last_doi = "10.123/abc/1"
@@ -180,8 +179,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                     article = Article(**source)
                     article.set_id()
                     articles.append(article)
-                    if add_journal_info:
-                        journal_specs.append({"title" : "4", "pissn" : "4444-4444", "eissn" : "4444-4445"})
+                    journal_specs.append({"title" : "4", "pissn" : "4444-4444", "eissn" : "4444-4445"})
 
                     # one with a duplicated Fulltext
                     source = ArticleFixtureFactory.make_article_source(
@@ -194,8 +192,7 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
                     article = Article(**source)
                     article.set_id()
                     articles.append(article)
-                    if add_journal_info:
-                        journal_specs.append({"title" : "5", "pissn" : "5555-5555", "eissn" : "5555-5556"})
+                    journal_specs.append({"title" : "5", "pissn" : "5555-5555", "eissn" : "5555-5556"})
 
         ilo_mock = None
         if account_arg == "owner":
@@ -223,6 +220,18 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         #if add_journal_info:  now we need a journal fixture no matter whether we're adding j info or not
         gj_mock = ModelArticleMockFactory.get_journal(journal_specs, in_doaj=journal_in_doaj)
         Article.get_journal = gj_mock
+
+        # We need the journal to be in the index for the ArticleAcceptable checks  FIXME: too slow, mock this
+        #[Journal(**js['instance']).save(blocking=True) for js in journal_specs]
+
+        # We need to retrieve the correct Journal by its ISSNs
+        def mock_find(issns: list, in_doaj=None, max=2):
+            for j in journal_specs:
+                if sorted([j['eissn'], j['pissn']]) == sorted(issns):
+                    return [j['instance']]
+            return []
+
+        Journal.find_by_issn_exact = mock_find
 
         ###########################################################
         # Execution

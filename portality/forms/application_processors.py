@@ -198,8 +198,11 @@ class ApplicationProcessor(FormProcessor):
             for note in self.target.notes:
                 note_date = dates.parse(note['date'])
                 if not note.get('author_id') and note_date > dates.before_now(60):
-                    note['author_id'] = current_user.id
-
+                    try:
+                        note['author_id'] = current_user.id
+                    except AttributeError:
+                        # Skip if we don't have a current_user
+                        pass
 
 
 class NewApplication(ApplicationProcessor):
@@ -307,7 +310,6 @@ class AdminApplication(ApplicationProcessor):
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
 
-
     def finalise(self, account, save_target=True, email_alert=True):
         """
         account is the administrator account carrying out the action
@@ -325,7 +327,6 @@ class AdminApplication(ApplicationProcessor):
                 raise Exception(Messages.EXCEPTION_EDITING_DELETED_JOURNAL)
             elif not j.is_in_doaj():
                 raise Exception(Messages.EXCEPTION_EDITING_WITHDRAWN_JOURNAL)
-
 
         # if we are allowed to finalise, kick this up to the superclass
         super(AdminApplication, self).finalise()
@@ -812,7 +813,6 @@ class ManEdJournalReview(ApplicationProcessor):
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
-
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this

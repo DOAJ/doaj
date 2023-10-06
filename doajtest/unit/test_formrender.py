@@ -6,11 +6,16 @@ from wtforms import Form, StringField, SelectMultipleField, widgets
 # Form context for basic test
 ################################################################
 
+
 class TestForm(Form):
+    __test__ = False    # Prevent collection by PyTest
     one = StringField("One")
     two = StringField("Two")
 
+
 class TestRenderer(Renderer):
+    __test__ = False    # Prevent collection by PyTest
+
     def __init__(self):
         super(TestRenderer, self).__init__()
         self.FIELD_GROUPS = {
@@ -20,7 +25,10 @@ class TestRenderer(Renderer):
             ]
         }
 
+
 class TestContext(FormContext):
+    __test__ = False    # Prevent collection by PyTest
+
     def data2form(self):
         self.form = TestForm(formdata=self.form_data)
 
