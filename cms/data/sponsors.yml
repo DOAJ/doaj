@@ -74,6 +74,10 @@ bronze:
   url: https://www.digital-science.com/
   logo: ds.svg
 
+- name: De Gruyter
+  url: https://www.degruyter.com/
+  logo: degruyter.svg
+  
 - name: eLife Sciences Publications
   url: https://elifesciences.org/
   logo: elife.svg
