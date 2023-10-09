@@ -1,44 +1,70 @@
-import gzip
-import json
-from pathlib import Path
+import time
+import unittest
+from unittest.mock import MagicMock
 from unittest.mock import patch
 
 from doajtest.helpers import DoajTestCase
-from doajtest.unit_tester import bgtask_tester
-from portality.app import app
-from portality.models import BackgroundJob, Account
 from portality.models.datalog_journal_added import DatalogJournalAdded
-from portality.store import StoreLocal
-from portality.tasks.anon_export import AnonExportBackgroundTask
-from portality.tasks.datalog_journal_added_update import DatalogJournalAddedUpdate
+from portality.tasks import datalog_journal_added_update
+from portality.tasks.datalog_journal_added_update import DatalogJournalAddedUpdate, to_display_data
 from portality.tasks.helpers import background_helper
-from unittest.mock import MagicMock
 
 input_filename = 'fake_filename'
 input_worksheet_name = 'fake_worksheet_name'
 input_google_key_path = 'fake_google_key_path'
 
+testdata_datalog_list = [
+    DatalogJournalAdded(title='titlec',
+                        issn='1234-3000',
+                        date_added='2021-01-01',
+                        has_seal=True,
+                        has_continuations=True,
+                        ),
+    DatalogJournalAdded(title='titleb',
+                        issn='1234-2000',
+                        date_added='2021-01-01',
+                        has_seal=True,
+                        has_continuations=True,
+                        ),
+    DatalogJournalAdded(title='titlea',
+                        issn='1234-1000',
+                        date_added='2020-01-01',
+                        has_seal=True,
+                        has_continuations=True,
+                        ),
+]
+
 
 class TestDatalogJournalAddedUpdate(DoajTestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        DatalogJournalAdded(title='titlea',
-                            issn='1234-4321',
-                            date_added='2021-01-01',
-                            has_seal=True,
-                            has_continuations=True,
-                            ).save()
+        super(TestDatalogJournalAddedUpdate, cls).setUpClass()
+        for t in testdata_datalog_list:
+            t.save()
 
-    def test_execute(self):
+        time.sleep(2)
+        # test_data_list[-1].save(blocking=True)
+        # print('hihih')
+
+    def test_execute__normal(self):
+        """
+        test background job execute
+
+        Returns
+        -------
+
+        """
         worksheet = MagicMock()
         worksheet.get_all_values.return_value = [
             ['Journal Title', ''],
-            ['titlea', '1234-4321']
+            ['titlea', '1234-1000'],
         ]
 
         # Replace the real worksheet with the mock
         with patch('portality.lib.gsheet.load_client') as mock_client:
-            mock_client.return_value.open.return_value.worksheet.return_value = worksheet
+            (mock_client.return_value
+             .open.return_value
+             .worksheet.return_value) = worksheet
 
             background_task = background_helper.execute_by_bg_task_type(DatalogJournalAddedUpdate,
                                                                         filename=input_filename,
@@ -46,9 +72,46 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
                                                                         google_key_path=input_google_key_path)
 
         worksheet.get_all_values.assert_called()
-        x = worksheet.insert_rows.call_args
-        print('-------------')
-        print(x)
+        values, row_idx, *_ = worksheet.insert_rows.call_args.args
+
+        assert values == [
+            to_display_data(d) for d in testdata_datalog_list[:-1]
+        ]
+
+        assert row_idx == 2
+
+    def test_find_new_xlsx_rows(self):
+        values = datalog_journal_added_update.find_new_xlsx_rows(testdata_datalog_list[-1].issn)
+        assert values == [
+            to_display_data(d) for d in testdata_datalog_list[:-1]
+        ]
+
+        values = datalog_journal_added_update.find_new_xlsx_rows(testdata_datalog_list[1].issn)
+        assert values == [
+            to_display_data(d) for d in testdata_datalog_list[:1]
+        ]
+
+    def test_to_display_data(self):
+        assert ['titleg', '1234-7000', '01-January-2222', 'Seal', 'Yes', ] == to_display_data(
+            DatalogJournalAdded(title='titleg',
+                                issn='1234-7000',
+                                date_added='2222-01-01',
+                                has_seal=True,
+                                has_continuations=True,
+                                ),
+        )
+
+        assert ['titlexxx', '1234-9999', '02-January-2222', '', ''] == to_display_data(
+            DatalogJournalAdded(title='titlexxx',
+                                issn='1234-9999',
+                                date_added='2222-01-02',
+                                has_seal=False,
+                                has_continuations=False,
+                                ),
+        )
+
+        # print('-------------')
+        # print(values)
 
         # worksheet.get_all_values.assert_not_called()
         #     # Now, when you use the worksheet object, it will behave like the mock
@@ -115,4 +178,5 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
 
 
 if __name__ == '__main__':
-    TestDatalogJournalAddedUpdate().test_execute()
+    unittest.main()
+    # TestDatalogJournalAddedUpdate().test_execute()

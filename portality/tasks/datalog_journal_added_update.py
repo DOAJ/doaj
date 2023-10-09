@@ -122,18 +122,34 @@ def find_first_issn(rows):
     return None
 
 
-def find_new_xlsx_rows(last_issn, page_size=400):
+def find_new_xlsx_rows(last_issn, page_size=400) -> list:
+    """
+    find new datalog records and convert to xlsx display format
+
+    Parameters
+    ----------
+    last_issn
+    page_size
+
+    Returns
+    -------
+        list of datalog as xlsx display format
+
+
+    """
+
     new_records = DatalogJournalAdded.iterate(LatestDatalogJournalQuery().query(), page_size=page_size)
     new_records = itertools.takewhile(lambda r: r.issn != last_issn, new_records)
     new_records = list(new_records)
-    new_xlsx_rows = [
-        [j.title, j.issn,
-         dates.reformat(j.date_added, out_format=DatalogJournalAdded.DATE_FMT),
-         'Seal' if j.has_seal else '',
-         'Yes' if j.has_continuations else '']
-        for j in new_records
-    ]
+    new_xlsx_rows = [to_display_data(j) for j in new_records]
     return new_xlsx_rows
+
+
+def to_display_data(datalog: DatalogJournalAdded) -> list:
+    return [datalog.title, datalog.issn,
+            dates.reformat(datalog.date_added, out_format=DatalogJournalAdded.DATE_FMT),
+            'Seal' if datalog.has_seal else '',
+            'Yes' if datalog.has_continuations else '']
 
 
 def records_new_journals(filename,
