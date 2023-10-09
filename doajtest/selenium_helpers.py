@@ -1,7 +1,7 @@
 import datetime
 import logging
 import time
-from multiprocessing import Process
+from multiprocessing import Process, freeze_support
 from typing import TYPE_CHECKING
 
 import selenium
@@ -83,6 +83,7 @@ class SeleniumTestCase(DoajTestCase):
     def setUp(self):
         super().setUp()
 
+        freeze_support()
         self.doaj_process = Process(target=_run_doaj_server, daemon=True)
         self.doaj_process.start()
 
