@@ -120,9 +120,8 @@ class DoajTestCase(TestCase):
     originals = {}
 
     @classmethod
-    def setUpClass(cls) -> None:
-        import portality.app  # noqa, needed to registing routes
-        cls.originals = patch_config(app, {
+    def create_app_patch(cls):
+        return {
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
             "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp", cls.__name__.lower()),
@@ -138,7 +137,13 @@ class DoajTestCase(TestCase):
             "FAKER_SEED": 1,
             "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
             'CMS_BUILD_ASSETS_ON_STARTUP': False
-        })
+        }
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import portality.app  # noqa, needed to registing routes
+
+        cls.originals = patch_config(app, cls.create_app_patch())
 
         # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)

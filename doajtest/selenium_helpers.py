@@ -1,6 +1,7 @@
 import datetime
 import logging
 import time
+import multiprocessing
 from multiprocessing import Process, freeze_support
 from typing import TYPE_CHECKING
 
@@ -17,6 +18,8 @@ from portality.dao import ESMappingMissingError
 
 if TYPE_CHECKING:
     from selenium.webdriver.remote.webdriver import WebDriver
+
+multiprocessing.set_start_method('fork')
 
 log = logging.getLogger(__name__)
 DOAJ_HOST = app.app.config.get('SELENIUM_DOAJ_HOST', 'localhost')
