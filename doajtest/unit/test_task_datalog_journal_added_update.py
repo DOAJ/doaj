@@ -1,12 +1,17 @@
 import time
 import unittest
+from typing import List
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
+from doajtest.fixtures import JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
+from portality.lib import dates
+from portality.models import Journal
 from portality.models.datalog_journal_added import DatalogJournalAdded
 from portality.tasks import datalog_journal_added_update
-from portality.tasks.datalog_journal_added_update import DatalogJournalAddedUpdate, to_display_data
+from portality.tasks.datalog_journal_added_update import DatalogJournalAddedUpdate, to_display_data, \
+    to_datalog_journal_added
 from portality.tasks.helpers import background_helper
 
 input_filename = 'fake_filename'
@@ -36,15 +41,6 @@ testdata_datalog_list = [
 
 
 class TestDatalogJournalAddedUpdate(DoajTestCase):
-    @classmethod
-    def setUpClass(cls) -> None:
-        super(TestDatalogJournalAddedUpdate, cls).setUpClass()
-        for t in testdata_datalog_list:
-            t.save()
-
-        time.sleep(2)
-        # test_data_list[-1].save(blocking=True)
-        # print('hihih')
 
     def test_execute__normal(self):
         """
@@ -54,10 +50,15 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
         -------
 
         """
+
+        save_test_datalog()
+
+        journals = save_test_journals(3)
+
         worksheet = MagicMock()
         worksheet.get_all_values.return_value = [
             ['Journal Title', ''],
-            ['titlea', '1234-1000'],
+            [journals[-1].bibjson().title, journals[-1].bibjson().eissn],
         ]
 
         # Replace the real worksheet with the mock
@@ -72,15 +73,16 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
                                                                         google_key_path=input_google_key_path)
 
         worksheet.get_all_values.assert_called()
-        values, row_idx, *_ = worksheet.insert_rows.call_args.args
+        new_rows_added_to_excels, row_idx, *_ = worksheet.insert_rows.call_args.args
 
-        assert values == [
-            to_display_data(d) for d in testdata_datalog_list[:-1]
+        assert new_rows_added_to_excels == [
+            to_display_data(to_datalog_journal_added(d)) for d in journals[:-1]
         ]
 
         assert row_idx == 2
 
     def test_find_new_xlsx_rows(self):
+        save_test_datalog()
         values = datalog_journal_added_update.find_new_xlsx_rows(testdata_datalog_list[-1].issn)
         assert values == [
             to_display_data(d) for d in testdata_datalog_list[:-1]
@@ -110,71 +112,65 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
                                 ),
         )
 
-        # print('-------------')
-        # print(values)
+    def test_latest_row_index(self):
+        values = [
+            ['xxxx', 'ddd'],
+            ['Journal Title', ''],
+            ['titlea', '1234-1000'],
+            ['titleb', '1234-2000'],
+            ['titlec', '1234-3000'],
+        ]
 
-        # worksheet.get_all_values.assert_not_called()
-        #     # Now, when you use the worksheet object, it will behave like the mock
-        #     result = worksheet.some_method()
-        #
-        # # Assertions or further testing using the mock
-        # assert result == "Mocked result"
-        # worksheet.some_method.assert_called_once_with()
+        assert datalog_journal_added_update.find_latest_row_index(values) == 2
 
-        # run execute
+        values = [
+            ['Journal Title', ''],
+            ['titlea', '1234-1000'],
+        ]
 
-        # # prepare test data
-        # for _ in range(3):
-        #     BackgroundJob().save()
-        # for _ in range(2):
-        #     Account().save(blocking=True)
+        assert datalog_journal_added_update.find_latest_row_index(values) == 1
 
-        # new_background_jobs = list(BackgroundJob.scroll())
-        # new_accounts = list(Account.scroll())
+    def test_find_new_datalog_journals(self):
+        save_test_journals(3)
 
-        # # run execute
-        # background_task = background_helper.execute_by_bg_task_type(AnonExportBackgroundTask)
+        def _find_new_datalog_journals(latest_date_str):
+            datalog_list = datalog_journal_added_update.find_new_datalog_journals(
+                dates.parse(latest_date_str)
+            )
+            datalog_list = list(datalog_list)
+            return len(datalog_list)
 
-    #     # assert audit messages
-    #     self.assertIn('audit', background_task.background_job.data)
-    #     msgs = {l.get('message') for l in background_task.background_job.data['audit']}
-    #     self.assertTrue(any('Compressing temporary file' in m for m in msgs))
-    #     self.assertTrue(any('account.bulk.1' in m for m in msgs))
-    #
-    #     main_store = StoreLocal(None)
-    #     container_id = self.app_test.config.get("STORE_ANON_DATA_CONTAINER")
-    #     target_names = main_store.list(container_id)
-    #
-    #     # must have some file in main store
-    #     self.assertGreater(len(target_names), 0)
-    #
-    #     for target_name in target_names:
-    #
-    #         # load data from store
-    #         _target_path = Path(main_store.get(container_id, target_name).name)
-    #         data_str = gzip.decompress(_target_path.read_bytes()).decode(errors='ignore')
-    #         if data_str:
-    #             rows = data_str.strip().split('\n')
-    #
-    #             # Filter out the index: directives, leaving the actual record data
-    #             json_rows = list(filter(lambda j: len(json.loads(j).keys()) > 1, rows))
-    #
-    #             if target_name.startswith('background_job'):
-    #                 test_data_list = new_background_jobs
-    #             elif target_name.startswith('account'):
-    #                 test_data_list = new_accounts
-    #             else:
-    #                 print(f'unexpected data dump for target_name[{target_name}]')
-    #                 continue
-    #
-    #             print(f'number of rows have been saved to store: [{target_name}] {len(json_rows)}')
-    #             self.assertEqual(len(json_rows), len(test_data_list))
-    #             self.assertIn(test_data_list[0].id, [json.loads(j)['id'] for j in json_rows])
-    #         else:
-    #             print(f'empty archive {target_name}')
-    #
-    # def test_prepare__queue_id(self):
-    #     bgtask_tester.test_queue_id_assigned(AnonExportBackgroundTask)
+        assert _find_new_datalog_journals('2101-01-01') == 2
+        assert _find_new_datalog_journals('2102-01-01') == 1
+        assert _find_new_datalog_journals('2103-01-01') == 0
+        assert _find_new_datalog_journals('2104-01-01') == 0
+
+
+def save_test_datalog():
+    for t in testdata_datalog_list:
+        t.save()
+
+    time.sleep(2)
+
+
+def save_test_journals(n_journals: int) -> List[Journal]:
+    journals = JournalFixtureFactory.make_many_journal_sources(count=n_journals, in_doaj=True)
+    journals = map(lambda d: Journal(**d), journals)
+    journals = list(journals)
+    assert len(journals) == n_journals
+    journals[0]['created_date'] = '2103-01-01'
+    journals[1]['created_date'] = '2102-01-01'
+    journals[2]['created_date'] = '2101-01-01'
+    save_and_block_last(journals)
+
+    return journals
+
+
+def save_and_block_last(journals: List[Journal]):
+    sub_journals, last_journal = journals[:-1], journals[-1]
+    for j in sub_journals:
+        j.save()
+    last_journal.save(blocking=True)
 
 
 if __name__ == '__main__':

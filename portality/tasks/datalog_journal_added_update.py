@@ -3,7 +3,7 @@ import itertools
 import logging
 import re
 import time
-from typing import Callable, NoReturn
+from typing import Callable, NoReturn, List, Iterable
 
 import gspread
 
@@ -52,25 +52,28 @@ class LatestDatalogJournalQuery:
         }
 
 
-def find_new_datalog_journals(latest_date):
+def find_new_datalog_journals(latest_date: datetime.datetime) -> Iterable[DatalogJournalAdded]:
     records = Journal.iterate(NewDatalogJournalQuery(latest_date).query())
-    for journal in records:
-        bibjson = journal.bibjson()
-        title = bibjson.title
-        issn = bibjson.eissn or bibjson.pissn
-        has_seal = journal.has_seal()
-        try:
-            has_continuations = any([journal.get_future_continuations() + journal.get_past_continuations()])
-        except RecursionError:
-            has_continuations = False
+    return (to_datalog_journal_added(j) for j in records)
 
-        record = DatalogJournalAdded(title=title, issn=issn,
-                                     date_added=journal.created_timestamp,
-                                     has_seal=has_seal,
-                                     has_continuations=has_continuations,
-                                     journal_id=journal.id)
 
-        yield record
+def to_datalog_journal_added(journal: Journal) -> DatalogJournalAdded:
+    bibjson = journal.bibjson()
+    title = bibjson.title
+    issn = bibjson.eissn or bibjson.pissn
+    has_seal = journal.has_seal()
+    try:
+        has_continuations = any([journal.get_future_continuations() + journal.get_past_continuations()])
+    except RecursionError:
+        has_continuations = False
+
+    record = DatalogJournalAdded(title=title, issn=issn,
+                                 date_added=journal.created_timestamp,
+                                 has_seal=has_seal,
+                                 has_continuations=has_continuations,
+                                 journal_id=journal.id)
+
+    return record
 
 
 class LastDatalogJournalAddedQuery:
@@ -101,7 +104,7 @@ def get_latest_date_added():
         return dates.parse(record.date_added)
 
 
-def find_latest_row_index(records):
+def find_latest_row_index(records: List[List[str]]):
     records = iter(records)
     latest_row_index = 0
     while next(records, ['Journal Title'])[0] != 'Journal Title':

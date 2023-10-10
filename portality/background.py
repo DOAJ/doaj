@@ -1,3 +1,4 @@
+import logging
 import traceback
 from copy import deepcopy
 from typing import Iterable
@@ -15,6 +16,8 @@ from portality import constants
 from portality import models
 from portality.bll import DOAJ
 from portality.core import app
+
+log = logging.getLogger(__name__)
 
 
 class BackgroundException(Exception):
@@ -75,6 +78,7 @@ class BackgroundApi(object):
             job.save()
             raise
         except Exception as e:
+            log.error(f"Error in Background Task: {e}")
             job.fail()
             job.add_audit_message("Error in Job Run")
             job.add_audit_message("Caught in job runner during run: " + traceback.format_exc())
