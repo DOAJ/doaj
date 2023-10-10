@@ -52,8 +52,9 @@ def fix_index_not_found_exception(app):
 
 
 # run doaj server in a background process
-def _run_doaj_server():
+def _run_doaj_server(app_batch):
     try:
+        patch_config(app.app, app_batch)
         app.run_server(host=DOAJ_HOST, port=DOAJ_PORT)
     except Exception as e:
         if isinstance(e, ESMappingMissingError):
@@ -84,7 +85,7 @@ class SeleniumTestCase(DoajTestCase):
         super().setUp()
 
         freeze_support()
-        self.doaj_process = Process(target=_run_doaj_server, daemon=True)
+        self.doaj_process = Process(target=_run_doaj_server, args=(self.create_app_patch(),), daemon=True)
         self.doaj_process.start()
 
         # prepare selenium driver
