@@ -20,7 +20,7 @@ We only accept support through our publisher supporter model from publishers wit
 
 Please contact [supporters@doaj.org](mailto:supporters@doaj.org) if you want to contribute to DOAJ’s operating costs as a publisher supporter.
 
-## Commercial publishers
+### Commercial publishers
 
 | Band | Number of journals in DOAJ | GBPs (£)* |
 |------|----------------------------|-----------|
@@ -33,7 +33,7 @@ Please contact [supporters@doaj.org](mailto:supporters@doaj.org) if you want to 
 | G    | 10-29                      | 5000      |
 | H    | 1-9                        | 3500      |
 
-## Non-commercial / institutional publishers
+### Non-commercial / institutional publishers
 
 | Band | Number of journals in DOAJ | GBPs (£)* |
 |------|----------------------------|-----------|
