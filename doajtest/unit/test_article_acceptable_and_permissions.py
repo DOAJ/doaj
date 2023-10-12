@@ -14,6 +14,11 @@ def is_acceptable_load_cases():
                                "test_id",
                                {"test_id": []})
 
+def issn_validation_against_journal_load_sets():
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "issn_validation_against_journal",
+                               "test_id",
+                               {"test_id": []})
+
 
 class TestBLLPrepareUpdatePublisher(DoajTestCase):
 
@@ -111,3 +116,72 @@ class TestBLLPrepareUpdatePublisher(DoajTestCase):
         # assert failed_result == {'success': 0, 'fail': 1, 'update': 0, 'new': 0, 'shared': [],
         #                          'unowned': [pissn, eissn],
         #                          'unmatched': []}, "received: {}".format(failed_result)
+
+
+    @parameterized.expand(issn_validation_against_journal_load_sets)
+    def test_issn_validation_against_journal_load_sets(self, value, kwargs):
+        kwpissn = kwargs.get("pissn")
+        kweissn = kwargs.get("eissn")
+        validated = kwargs.get("validated")
+
+        js = JournalFixtureFactory.make_many_journal_sources(2)
+        journal_in_doaj = Journal(**js[0])
+        journal_in_doaj.set_in_doaj(True)
+        journal_in_doaj.bibjson().pissn = "1111-1111"
+        journal_in_doaj.bibjson().eissn = "2222-2222"
+        journal_in_doaj.save(blocking=True)
+
+        journal_not_in_doaj = Journal(**js[1])
+        journal_not_in_doaj.set_in_doaj(False)
+        journal_not_in_doaj.bibjson().pissn = "3333-3333"
+        journal_not_in_doaj.bibjson().eissn = "4444-4444"
+        journal_not_in_doaj.save(blocking=True)
+
+        if (kwpissn == "pissn_in_doaj"):
+            pissn = journal_in_doaj.bibjson().pissn
+        elif (kwpissn == "eissn_in_doaj"):
+            pissn = journal_in_doaj.bibjson().eissn
+        elif (kwpissn == "pissn_not_in_doaj"):
+            pissn = journal_not_in_doaj.bibjson().pissn
+        else:
+            pissn = journal_not_in_doaj.bibjson().eissn
+
+        if (kweissn == "pissn_in_doaj"):
+            eissn = journal_in_doaj.bibjson().pissn
+        elif (kweissn == "eissn_in_doaj"):
+            eissn = journal_in_doaj.bibjson().eissn
+        elif (kweissn == "pissn_not_in_doaj"):
+            eissn = journal_not_in_doaj.bibjson().pissn
+        else:
+            eissn = journal_not_in_doaj.bibjson().eissn
+
+
+        art_source = ArticleFixtureFactory.make_article_source(pissn=pissn, eissn=eissn)
+        article = Article(**art_source)
+
+        if validated:
+            self.assertIsNone(self.svc.is_acceptable(article))
+
+        else:
+            with self.assertRaises(exceptions.ArticleNotAcceptable):
+                self.svc.is_acceptable(article)
+
+    def test_check_validation_for_2_journals(self):
+
+        js = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
+        journal_in_doaj = Journal(**js[0])
+        journal_in_doaj.bibjson().pissn = "1111-1111"
+        journal_in_doaj.bibjson().eissn = "2222-2222"
+        journal_in_doaj.save(blocking=True)
+
+        journal_not_in_doaj = Journal(**js[1])
+        journal_not_in_doaj.bibjson().pissn = "3333-3333"
+        journal_not_in_doaj.bibjson().eissn = "4444-4444"
+        journal_not_in_doaj.save(blocking=True)
+
+
+        art_source = ArticleFixtureFactory.make_article_source(pissn="1111-1111", eissn="4444-4444")
+        article = Article(**art_source)
+
+        with self.assertRaises(exceptions.ArticleNotAcceptable):
+            self.svc.is_acceptable(article)

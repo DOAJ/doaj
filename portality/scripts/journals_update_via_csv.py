@@ -82,6 +82,7 @@ if __name__ == "__main__":
             reader = csv.DictReader(g, fieldnames=header_row)
 
             # verify header row with current CSV headers, report errors
+            # TODO: Include 'Owner' field - but we should probably base this process off the AdminCSV too.
             expected_headers = JournalFixtureFactory.csv_headers()
 
             # Always perform a match check on supplied headers, not counting order
@@ -155,6 +156,14 @@ if __name__ == "__main__":
                     if len(updates) > 0:
                         [print(upd) for upd in updates]
 
+                        # Check we have the expected owner (if supplied) before proceeding to create an update request
+                        own = row.get('Owner')
+                        if own is not None:
+                            if own.strip().lower() != j.owner.strip().lower():
+                                print('ABORTING - supplied owner {0} mismatches journal owner {1}.'.format(own, j.owner))
+                                writer.writerow([j.id, ' | '.join(updates), 'COULD NOT UPDATE - Owner mismatch. Expected {0} Got {1}'.format(own, j.owner)])
+                                continue
+
                         # Create an update request for this journal
                         update_req = None
                         jlock = None
@@ -204,7 +213,7 @@ if __name__ == "__main__":
 
                                 # Add note to UR if supplied
                                 if note:
-                                    fc.target.add_note(note)
+                                    fc.target.add_note(note, author_id=sys_acc.id)
 
                                 if not args.manual_review:
                                     # This is the update request, in 'update request' state
