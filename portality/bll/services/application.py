@@ -12,6 +12,7 @@ from portality import lock
 from portality.bll.doaj import DOAJ
 from portality.ui.messages import Messages
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
+from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll.exceptions import AuthoriseException
 from portality.forms.application_forms import ApplicationFormFactory
 
@@ -568,7 +569,7 @@ class ApplicationService(object):
 
         return
 
-    def validate_update_csv(self, file):
+    def validate_update_csv(self, file, account: models.Account):
         # Open with encoding that deals with the Byte Order Mark since we're given files from Windows.
         reader = csv.DictReader(file)
         header_row = reader.fieldnames
@@ -586,28 +587,6 @@ class ApplicationService(object):
                 else:
                     validation.header(validation.ERROR, i, f'"{h}" is not a valid header.')
 
-        # Strict check for CSV being exactly the same as exported, including order
-        # if not args.skip_strict:
-        #     if header_row[1:] != expected_headers:
-        #         print("\nWARNING: CSV input file is the wrong format. "
-        #               "Expected ID column followed by the JournalCSV columns.\n")
-        #         for i in range(0, len(expected_headers)):
-        #             try:
-        #                 if expected_headers[i] != header_row[i + 1]:
-        #                     print('At column no {0} expected "{1}", found "{2}"'.format(i + 1, expected_headers[i],
-        #                                                                                 header_row[i + 1]))
-        #             except IndexError:
-        #                 print('At column no {0} expected "{1}", found <NO DATA>'.format(i + 1, expected_headers[i]))
-        #         if not args.force:
-        #             print(
-        #                 "\nERROR - CSV is wrong shape, exiting. Use --force to do this update anyway (and you know the consequences)")
-        #             exit(1)
-        #     else:
-        #         print("\nCSV structure check passed.\n")
-        #     print('\nContinuing to update records...\n')
-        # else:
-        #     print('\nSkipping CSV headings check.\n')
-
         # Talking about spreadsheets, so we start at 1
         row_ix = 1
 
@@ -618,10 +597,10 @@ class ApplicationService(object):
 
             # Skip empty rows
             if not any(row.values()):
-                validation.log("Skipping empty row.")
+                validation.log("Skipping empty row {x}.".format(x=row_ix))
                 continue
 
-            # Pull by ID, If that column is missing, parse ID from the ToC URL
+            # Pull by ISSNs
             issns = [
                 row.get(Journal2QuestionXwalk.q("pissn")),
                 row.get(Journal2QuestionXwalk.q("eissn"))
@@ -632,21 +611,42 @@ class ApplicationService(object):
 
             try:
                 j = models.Journal.find_by_issn(issns, in_doaj=True, max=1).pop(0)
-                if j.bibjson().title != row[title_field]:
-                    validation.value(validation.ERROR, row_ix, title_pos, f'"{row[title_field]}" does not match journal title "{j.bibjson().title}"')
-                    continue
             except IndexError:
                 validation.value(validation.ERROR, row_ix, pissn_pos, "Could not find journal record for ISSN(s) {0}".format(", ".join(issns)))
                 continue
 
+            # Confirm that the account is allowed to update the journal (is admin or owner)
+            if not account.is_super and account.id != j.owner:
+                validation.value(validation.ERROR, row_ix, pissn_pos, "Account {0} is not allowed to update journal {1}".format(account.id, ", ".join(issns)))
+                continue
+
+            # By this point the issns are confirmed as matching a journal that belongs to the publisher
             validation.log('Validating update for journal with ID ' + j.id)
 
             # Load remaining rows into application form as an update
             # ~~ ^->JournalQuestions:Crosswalk ~~
             update_form, updates = Journal2QuestionXwalk.question2form(j, row)
+            journal_form = JournalFormXWalk.obj2form(j)
 
             if len(updates) > 0:
                 [validation.log(upd) for upd in updates]
+
+                # If a field is disabled in the UR Form Context, then we must confirm that the form data from the
+                # file has not changed from that provided in the source
+                formulaic_context = ApplicationFormFactory.context("update_request")
+                disabled_fields = formulaic_context.disabled_fields()
+                trip_wire = False
+                for field in disabled_fields:
+                    field_name = field.get("name")
+                    update_value = update_form.get(field_name)
+                    journal_value = journal_form.get(field_name)
+                    if update_value != journal_value:
+                        trip_wire = True
+                        validation.value(validation.ERROR, row_ix, header_row.index(field_name),
+                                         f'"{field_name}" cannot be changed.')
+
+                if trip_wire:
+                    continue
 
                 # Create an update request for this journal
                 update_req = None
@@ -666,15 +666,13 @@ class ApplicationService(object):
 
                 # validate update_form - portality.forms.application_processors.PublisherUpdateRequest
                 # ~~ ^->UpdateRequest:FormContext ~~
-                formulaic_context = ApplicationFormFactory.context("update_request")
                 fc = formulaic_context.processor(
                     formdata=update_form,
                     source=update_req
                 )
 
                 if not fc.validate():
-                    validation.general('Failed validation - {0}'.format(fc.form.errors))
-                    # todo: ignore validation on fields that aren't supplied
+                    validation.general(validation.ERROR, 'Failed validation - {0}'.format(fc.form.errors))
 
             else:
                 validation.log("No updates to do")

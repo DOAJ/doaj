@@ -383,7 +383,7 @@ def journal_csv_validate():
     if file.size() > app.config.get("JOURNAL_CSV_UPLOAD__MAX_FILE_SIZE", 1000000):
         abort(400)
 
-    report = DOAJ.applicationService().validate_update_csv(file)
+    report = DOAJ.applicationService().validate_update_csv(file, current_user)
     resp = make_response(report.json())
     resp.mimetype = "application/json"
     return resp
