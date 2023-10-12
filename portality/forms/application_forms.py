@@ -480,7 +480,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            {"autocomplete": {"type" : "journal", "field": "bibjson.publisher.name.exact"}},
+            {"autocomplete": {"type" : "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
             "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "help": {
@@ -493,21 +493,21 @@ class FieldDefinitions:
             "admin": {
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}},
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             },
             "associate_editor": {
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}},
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             },
             "editor": {
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}},
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             }
@@ -577,7 +577,7 @@ class FieldDefinitions:
         },
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}},
+            {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
             "full_contents" # ~~^->FullContents:FormWidget~~
         ]
     }
@@ -1651,7 +1651,7 @@ class FieldDefinitions:
             "owner_exists"
         ],
         "widgets": [
-            {"autocomplete": {"type" : "account", "field": "id", "include" : False}},
+            {"autocomplete": {"type" : "account", "field": "id", "include" : False}}, # ~~^-> Autocomplete:FormWidget~~
             "clickable_owner"
         ],
         "contexts" : {
@@ -1709,7 +1709,7 @@ class FieldDefinitions:
         "label": "Group",
         "input": "text",
         "widgets": [
-            {"autocomplete": {"type" : "editor_group", "field": "name", "include" : False}}
+            {"autocomplete": {"type" : "editor_group", "field": "name", "include" : False}} # ~~^-> Autocomplete:FormWidget~~
         ],
         "contexts" : {
             "editor" : {
@@ -1717,7 +1717,7 @@ class FieldDefinitions:
             },
             "admin" : {
                 "widgets" : [
-                    {"autocomplete": {"type": "editor_group", "field": "name", "include" : False}},
+                    {"autocomplete": {"type": "editor_group", "field": "name", "include" : False}}, # ~~^-> Autocomplete:FormWidget~~
                     {"load_editors" : {"field" : "editor"}}
                 ]
             }
