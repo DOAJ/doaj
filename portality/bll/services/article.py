@@ -219,6 +219,8 @@ class ArticleService(object):
         # We do this after the permissions check because that gives a detailed result whereas this throws an exception
         try:
             self.is_acceptable(article)
+        except exceptions.ArticleNotAcceptable as e:
+            raise exceptions.ArticleNotAcceptable(message=e.message)
         except Exception as e:
             raise e
 
