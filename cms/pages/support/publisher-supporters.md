@@ -14,7 +14,7 @@ DOAJ relies on the support of publishers and [libraries](/support/) to ensure th
 
 ## 2024 pricing
 
-We are introducing a revised and simplified model for publishers to support DOAJ for 2024 and publishing this openly in line with [our commitment to the Principles of Open Scholarly Infrastructure[(https://blog.doaj.org/2022/10/06/doaj-commits-to-the-principles-of-open-scholarly-infrastructure-posi/).  We are also relaunching the set of benefits for publishers choosing to support us.
+We are introducing a revised and simplified model for publishers to support DOAJ for 2024 and publishing this openly in line with [our commitment to the Principles of Open Scholarly Infrastructure](https://blog.doaj.org/2022/10/06/doaj-commits-to-the-principles-of-open-scholarly-infrastructure-posi/).  We are also relaunching the set of benefits for publishers choosing to support us.
 
 We only accept support through our publisher supporter model from publishers with journals already indexed in DOAJ. Other routes to support DOAJ are as [an institution](/support/) or as [an individual via Paypal](https://www.paypal.com/donate/?campaign_id=4VXR4TJ69MDJJ). Non-commercial/institutional rates are only available to community-led, smaller publishers with limited funding. Please contact [supporters@doaj.org](mailto:supporters@doaj.org) if unsure which category applies.
 
