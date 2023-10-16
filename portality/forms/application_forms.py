@@ -1763,7 +1763,7 @@ class FieldDefinitions:
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
-            {"different_to": {"field": "continued_by"}},       # ~~^-> DifferetTo:FormValidator~~
+            {"different_to": {"field": "continued_by", "message": "The ISSN provided in both fields must be different. Please make sure to enter the ISSN of an older journal for the first field and the ISSN of a newer journal for the second field. They cannot be the same."}},       # ~~^-> DifferetTo:FormValidator~~
             {
                 "not_if" : {
                     "fields" : [{"field" : "discontinued_date"}],
@@ -1786,7 +1786,7 @@ class FieldDefinitions:
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
-            {"different_to": {"field": "continues"}}, # ~~^-> DifferetTo:FormValidator~~
+            {"different_to": {"field": "continues", "message": "The ISSN provided in both fields must be different. Please make sure to enter the ISSN of an older journal for the first field and the ISSN of a newer journal for the second field. They cannot be the same."}}, # ~~^-> DifferetTo:FormValidator~~
             {
                 "not_if": {
                     "fields": [{"field": "discontinued_date"}],
