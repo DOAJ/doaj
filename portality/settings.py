@@ -824,14 +824,14 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : True,
             "role" : "associate_editor",
-            "query_filters" : ["associate"],
+            "query_filters" : ["associate", "search_all_meta"],
             "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->AssEdApplicationQuery:Endpoint~~
         "suggestion" : {
             "auth" : True,
             "role" : "associate_editor",
-            "query_filters" : ["associate"],
+            "query_filters" : ["associate", "search_all_meta"],
             "dao" : "portality.models.Application"  # ~~->Application:Model~~
         }
     },
@@ -840,14 +840,14 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : True,
             "role" : "editor",
-            "query_filters" : ["editor"],
+            "query_filters" : ["editor", "search_all_meta"],
             "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->EditorApplicationQuery:Endpoint~~
         "suggestion" : {
             "auth" : True,
             "role" : "editor",
-            "query_filters" : ["editor"],
+            "query_filters" : ["editor", "search_all_meta"],
             "dao" : "portality.models.Application"  # ~~->Application:Model~~
         }
     },
