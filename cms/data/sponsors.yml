@@ -4,7 +4,7 @@
 - name: Royal Society of Chemistry
   url: https://www.rsc.org/
   logo: rsc.png
-  
+
 - name: Georg Thieme Verlag KG
   url: https://www.thieme.com/
   logo: thieme.svg
@@ -16,7 +16,7 @@
 - name: Cappelen Damm Akademisk
   url: https://www.cappelendammundervisning.no/
   logo: cda.jpg
-  
+
 - name: Copernicus Publications
   url: https://publications.copernicus.org
   logo: copernicus.svg
@@ -28,7 +28,7 @@
 - name: Frontiers
   url: https://www.frontiersin.org/
   logo: frontiers.svg
-  
+
 - name: Knowledge E
   url: https://knowledgee.com/
   logo: knowledgee.png
@@ -40,7 +40,7 @@
 - name: OA.Works
   url: https://oa.works/
   logo: oaworks.png
-  
+
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
   logo: sage.svg
@@ -48,7 +48,7 @@
 - name: Taylor & Francis Group
   url: https://www.taylorandfrancisgroup.com/
   logo: tf.svg  
-  
+
 - name: John Wiley and Sons LTD
   url: https://www.wiley.com/en-us 
   logo: Wiley_Wordmark_black.png
@@ -56,11 +56,11 @@
 - name: American Chemical Society
   url: https://pubs.acs.org/
   logo: acs.jpg
-  
+
 - name: American Psychological Association
   url: https://www.apa.org/pubs
   logo: apa.png
-  
+
 - name: Cambridge University Press
   url: https://www.cambridge.org/
   logo: cambridge.svg
@@ -72,7 +72,7 @@
 - name: De Gruyter
   url: https://www.degruyter.com/
   logo: Degruyter.svg
-  
+
 - name: eLife Sciences Publications
   url: https://elifesciences.org/
   logo: elife.svg
@@ -80,7 +80,7 @@
 - name: Elsevier
   url: https://www.elsevier.com/
   logo: elsevier.svg
-  
+
 - name: Emerald Publishing
   url: https://emeraldpublishing.com/
   logo: emerald.svg
@@ -88,15 +88,15 @@
 - name: IEEE
   url: https://www.ieee.org/
   logo: ieee.png
-  
+
 - name: Institute of Physics
   url: https://www.iop.org/
   logo: iop.jpg
-  
+
 - name: International Union for Conservation of Nature
   url: https://iucn.org/
   logo: IUCN.svg
-  
+
 - name: JMIR Publications
   url: https://jmirpublications.com/
   logo: jmir.svg
@@ -128,12 +128,11 @@
 - name: SciFree
   url: https://scifree.se/
   logo: scifree.svg
-  
+
 - name: The IET
   url: https://www.theiet.org/
   logo: iet.svg
 
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
-  logo: ubiquity.svg  
-   
+  logo: ubiquity.svg 
