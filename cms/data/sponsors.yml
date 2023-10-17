@@ -1,7 +1,6 @@
 # List of sponsors separated by tiers (premier, sustaining, basic)
 # ~~Sponsors:Data~~
 
-gold:
 - name: Royal Society of Chemistry
   url: https://www.rsc.org/
   logo: rsc.png
@@ -10,8 +9,6 @@ gold:
   url: https://www.thieme.com/
   logo: thieme.svg
 
-
-silver:
 - name: AOSIS
   url: https://aosis.co.za/
   logo: aosis.png
@@ -56,8 +53,6 @@ silver:
   url: https://www.wiley.com/en-us 
   logo: Wiley_Wordmark_black.png
 
-
-bronze:
 - name: American Chemical Society
   url: https://pubs.acs.org/
   logo: acs.jpg
