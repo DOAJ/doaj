@@ -14,15 +14,15 @@ from portality.crosswalks.journal_questions import Journal2QuestionXwalk
 from portality.lib import dates
 from portality.lib.argvalidate import argvalidate
 from portality.lib.dates import FMT_DATETIME_SHORT
-from portality.store import StoreFactory, prune_container
+from portality.store import StoreFactory, prune_container, StoreException
 
 
 class JournalService(object):
     """
     ~~Journal:Service~~
     """
-
-    def journal_2_application(self, journal, account=None, keep_editors=False):
+    @staticmethod
+    def journal_2_application(journal, account=None, keep_editors=False):
         """
         Function to convert a given journal into an application object.
 
@@ -35,6 +35,7 @@ class JournalService(object):
 
         :param journal: a journal to convert
         :param account: an account doing the action - optional, if specified the application will only be created if the account is allowed to
+        :param keep_editors: maintain the same editor assigned to the resulting application
         :return: Suggestion object
         """
 
@@ -86,18 +87,20 @@ class JournalService(object):
             "Completed journal_2_application; return application object")
         return application
 
-    def journal(self, journal_id, lock_journal=False, lock_account=None, lock_timeout=None):
+    @staticmethod
+    def journal(journal_id, lock_journal=False, lock_account=None, lock_timeout=None):
         """
         Function to retrieve a journal by its id, and to optionally lock the resource
 
         May raise a Locked exception, if a lock is requested but can't be obtained.
 
         :param journal_id: the id of the journal
-        :param: lock_journal: should we lock the resource on retrieval
-        :param: lock_account: which account is doing the locking?  Must be present if lock_journal=True
-        :param: lock_timeout: how long to lock the resource for.  May be none, in which case it will default
-        :return: Tuple of (Journal Object, Lock Object)
+        :param lock_journal: should we lock the resource on retrieval
+        :param lock_account: which account is doing the locking?  Must be present if lock_journal=True
+        :param lock_timeout: how long to lock the resource for.  May be none, in which case it will default
+        :return Tuple of (Journal Object, Lock Object)
         """
+
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("journal", [
             {"arg": journal_id, "allow_none": False, "arg_name": "journal_id"},
@@ -126,10 +129,6 @@ class JournalService(object):
         Generate the Journal CSV
 
         ~~-> JournalCSV:Feature~~
-
-        :param set_cache: whether to update the cache
-        :param out_dir: the directory to output the file to.  If set_cache is True, this argument will be overridden by the cache container
-        :return: Tuple of (attachment_name, URL)
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("csv", [
@@ -206,7 +205,7 @@ class JournalService(object):
                     sub = unmap[o]
                 else:
                     sub = "".join(
-                        random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in
+                        random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for _ in
                         range(account_sub_length))
                     unmap[o] = sub
                 return [("Owner", sub)]
