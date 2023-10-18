@@ -186,3 +186,30 @@ def get_full_url_safe(endpoint):
     except werkzeug.routing.BuildError:
         app.logger.warning(f'endpoint not found -- [{endpoint}]')
         return None
+
+def custom_timed_rotating_logger(file_name):
+    """Custom Logger to log to specified file name"""
+    import os
+    import logging
+    from logging.handlers import TimedRotatingFileHandler
+    # Create a logger
+    logger = logging.getLogger(os.path.splitext(file_name)[0])
+    logger.setLevel(logging.DEBUG)  # Set the logging level
+
+    # Get the user's home directory
+    user_home = os.path.expanduser("~")
+    log_dir = os.path.join(user_home, 'doaj_logs')
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+    log_filename = os.path.join(log_dir, file_name)
+    # Rotate every day. Keep 30 days worth of backup.
+    handler = TimedRotatingFileHandler(log_filename, when="D", interval=1, backupCount=30)
+
+    # Create a formatter and add it to the handler
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+
+    # Add the handler to the logger
+    logger.addHandler(handler)
+
+    return logger

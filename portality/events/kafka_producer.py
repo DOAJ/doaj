@@ -1,7 +1,7 @@
 import json
 import kafka
 from portality.core import app
-from portality import app_email
+from portality import app_email, util
 from portality.events.shortcircuit import send_event as shortcircuit_send_event
 from portality.events.system_status_check import KafkaStatusCheck
 
@@ -18,6 +18,7 @@ def handle_exception(error_msg, exception):
     )
 
 producer = None
+event_logger = util.custom_timed_rotating_logger('producer_log.log')
 
 def kafka_producer():
     global producer
@@ -38,6 +39,7 @@ except Exception as exp:
 
 def send_event(event):
     try:
+        event_logger.info(event.data)
         if kafka_status and kafka_status.is_active() and kafka_producer():
             future = producer.send('events', value=event.serialise())
             future.get(timeout=60)
