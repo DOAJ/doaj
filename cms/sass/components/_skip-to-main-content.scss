@@ -1,0 +1,35 @@
+/* Back to main content button */
+
+.skip-to-main {
+  position: absolute;
+  z-index: 10000;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-width: min-content;
+  padding: 5px;
+  top: 10px;
+  left: 10px;
+  background-color: $grapefruit;
+
+  svg {
+    display: block;
+    margin: 0 auto;
+    stroke: $warm-black;
+    margin-rigth: 10px;
+  }
+  &:hover, &:focus {
+    svg {
+      margin-right: 10px;
+    }
+  }
+  &:hover:after, &:focus:after {
+    content: "  Skip to main content";
+    color: $warm-black;
+    vertical-align: bottom;
+    -webkit-font-feature-settings: 'liga' 1;
+    -moz-font-feature-settings: 'liga' 1;
+    font-feature-settings: 'liga' 1;
+    transition: 0.5 smooth;
+  }
+}
