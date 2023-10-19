@@ -198,8 +198,13 @@ def public_data_dump_redirect(record_type):
     if not current_user.has_role(constants.ROLE_PUBLIC_DATA_DUMP):
         abort(404)
 
-    target_data = models.Cache.get_public_data_dump().get(record_type, {})
-    if target_data is None:
+    # Make sure the PDD exists
+    pdd = models.Cache.get_public_data_dump()
+    if pdd is None:
+        abort(404)
+
+    target_data = pdd.get(record_type, {})
+    if not target_data:
         abort(404)
 
     main_store = store.StoreFactory.get(constants.STORE__SCOPE__PUBLIC_DATA_DUMP)

@@ -645,13 +645,13 @@ $.extend(true, doaj, {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
                 var placeholder = 'Search ' + this.component.nodeCount + ' subjects';
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.title + toggle + '</button></h3>\
+                    <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <label for="' + searchId + '" class="sr-only">' + placeholder + '</label>\
                         <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '">\
                         <ul class="filter__choices" id="' + filteredId + '" style="display:none"></ul>\
                         <ul class="filter__choices" id="' + mainListId + '">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, treeFrag);
@@ -1832,10 +1832,10 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.component.display + toggle + '</button></h3>\
+                    <div class="filter__body collapse"  style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, filterFrag + results);
@@ -2083,10 +2083,10 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.component.display + toggle + '</button></h3>\
+                    <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, filterFrag + results);
@@ -2276,7 +2276,7 @@ $.extend(true, doaj, {
 
                             // the remove block looks different, depending on the kind of filter to remove
                             if (def.filter === "term" || def.filter === "terms") {
-                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" alt="Remove" title="Remove">';
+                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" data-value-idx="' + j + '" alt="Remove" title="Remove">';
                                 filters += def.display + valDisplay;
                                 filters += ' <span data-feather="x" aria-hidden="true"></span>';
                                 filters += "</a>";
@@ -2331,6 +2331,7 @@ $.extend(true, doaj, {
 
             this.removeFilter = function (element) {
                 var el = this.component.jq(element);
+                var sf = this.component;
 
                 // if this is a compound filter, remove it by id
                 var compound = el.attr("data-compound");
@@ -2346,20 +2347,9 @@ $.extend(true, doaj, {
 
                 var value = false;
                 if (ft === "terms" || ft === "term") {
-                    val = el.attr("data-value");
-                    // translate string value to a type required by a model
-                    if (val === "true"){
-                        value = true;
-                    }
-                    else if (val === "false"){
-                        value = false;
-                    }
-                    else if (!isNaN(parseInt(val))){
-                        value = parseInt(val);
-                    }
-                    else {
-                        value = val;
-                    }
+                    let values = sf.mustFilters[field].values;
+                    let idx = el.attr("data-value-idx")
+                    value = values[idx].val
                 } else if (ft === "range") {
                     value = {};
 

@@ -735,8 +735,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         article_upload_tester.test_2_journals_different_owners_issn_each_fail(
             self.run_background_process_simple)
 
-    def test_41_doaj_2_journals_same_owner_issn_each_success(self):
-        article_upload_tester.test_2_journals_same_owner_issn_each_success(self.run_background_process_simple)
+    def test_41_doaj_2_journals_same_owner_issn_each_fail(self):
+        article_upload_tester.test_2_journals_same_owner_issn_each_fail(self.run_background_process_simple)
 
     def test_42_doaj_2_journals_different_owners_different_issns_mixed_article_fail(self):
         article_upload_tester.test_2_journals_different_owners_different_issns_mixed_article_fail(

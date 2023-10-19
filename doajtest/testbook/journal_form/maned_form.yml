@@ -120,3 +120,9 @@ tests:
     - step: Attempt to click the "Remove" button
       results:
         - You are unable to delete the note
+    - step: Click "copy" button next to one of the fields (eg. Title)
+      results:
+        - Confirmation with fields value is displayed for 3 seconds
+    - step: Attempt to paste the value (use separate editor)
+      results:
+        - Correct value is pasted

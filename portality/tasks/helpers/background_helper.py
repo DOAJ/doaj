@@ -26,7 +26,7 @@ def get_queue_id_by_task_queue(task_queue: RedisHuey):
     elif task_queue.name == main_queue.name:
         return constants.BGJOB_QUEUE_ID_MAIN
     else:
-        app.logger.warn(f'unknown task_queue[{task_queue}]')
+        app.logger.warning(f'unknown task_queue[{task_queue}]')
         return constants.BGJOB_QUEUE_ID_UNKNOWN
 
 
@@ -156,7 +156,7 @@ def get_all_background_task_specs() -> Iterable[Tuple[str, str, Type]]:
             return _mi.module_finder.find_spec(_mi.name).loader.load_module(_mi.name)
         except RuntimeError as e:
             if 'No configuration for scheduled action' in str(e):
-                app.logger.warn(f'config for {_mi.name} not found')
+                app.logger.warning(f'config for {_mi.name} not found')
                 return None
             raise e
 

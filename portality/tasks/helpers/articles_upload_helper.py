@@ -51,15 +51,21 @@ def upload_process(articles_upload: BaseArticlesUpload,
         articles = articles_factory(articles_path)
         account = models.Account.pull(articles_upload.owner)
         result = DOAJ.articleService().batch_create_articles(articles, account, add_journal_info=True)
-    except (IngestException, CrosswalkException) as e:
+    except (IngestException, CrosswalkException, ArticleNotAcceptable) as e:
+        if hasattr(e, 'inner_message'):
+            msg = "{exception}: {msg}. Inner message: {inner}. Stack: {x}".format(
+                exception=e.__class__.__name__, msg=e.message, inner=e.inner_message, x=e.trace())
+            upload_detail = e.inner_message
+        else:
+            msg = "{exception}: {msg}.".format(exception=e.__class__.__name__, msg=e.message)
+            upload_detail = None
+
         result = e.result
-        msg = "IngestException: {msg}. Inner message: {inner}.  Stack: {x}".format(
-            msg=e.message, inner=e.inner_message, x=e.trace())
-        mark_fail_status(job, articles_upload, msg=msg, upload_msg=e.message, upload_detail=e.inner_message)
+        mark_fail_status(job, articles_upload, msg=msg, upload_msg=e.message, upload_detail=upload_detail)
         if mv_failed_file(articles_path, job):
             ingest_exception = True
 
-    except (DuplicateArticleException, ArticleNotAcceptable) as e:
+    except DuplicateArticleException as e:
         mark_fail_status(job, articles_upload, msg=str(e))
         if not mv_failed_file(articles_path, job):
             return
