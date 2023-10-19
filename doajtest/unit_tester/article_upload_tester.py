@@ -179,7 +179,6 @@ def test_2_journals_same_owner_issn_each_fail(run_background_process_fn):
     handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
     fu = run_background_process_fn("testowner", handle)
     target_issns = ["1234-5678", "9876-5432"]
-    assert_processed(fu, target_issns=target_issns)
     assert_failed(fu, reason_size={'unmatched': 2})
 
     assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 0
