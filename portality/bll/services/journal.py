@@ -259,10 +259,18 @@ class JournalService(object):
             return kvs
 
         # ~~!JournalCSV:Feature->Journal:Model~~
-        cols = {}
+        logger("Loading journal ids")
+        journal_ids = []
         for j in models.Journal.all_in_doaj(page_size=1000):     #Fixme: limited by ES, this may not be sufficient
+            journal_ids.append(j.id)
+        logger("Journal ids loaded: {x}".format(x=len(journal_ids)))
+
+        cols = {}
+        for jid in journal_ids:
             export_start = datetime.utcnow()
-            logger("Exporting journal {x}".format(x=j.id))
+            logger("Exporting journal {x}".format(x=jid))
+
+            j = models.Journal.pull(jid)
 
             time_log = []
             bj = j.bibjson()
