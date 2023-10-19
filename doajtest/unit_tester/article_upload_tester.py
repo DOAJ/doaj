@@ -166,10 +166,10 @@ def test_2_journals_different_owners_different_issns_mixed_article_fail(run_back
     assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 0
 
 
-def test_2_journals_same_owner_issn_each_success(run_background_process_fn):
+def test_2_journals_same_owner_issn_each_fail(run_background_process_fn):
     # Create 2 journals with the same owner, each with one different issn.  The article's 2 issns
     # match each of these issns
-    # We expect a successful article ingest
+    # We expect a failed article ingest
     helpers.save_all_block_last([
         create_simple_journal("testowner", pissn="1234-5678"),
         create_simple_journal("testowner", eissn="9876-5432"),
@@ -180,6 +180,9 @@ def test_2_journals_same_owner_issn_each_success(run_background_process_fn):
     fu = run_background_process_fn("testowner", handle)
     target_issns = ["1234-5678", "9876-5432"]
     assert_processed(fu, target_issns=target_issns)
+    assert_failed(fu, reason_size={'unmatched': 2})
+
+    assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 0
 
 
 def test_2_journals_different_owners_issn_each_fail(run_background_process_fn):

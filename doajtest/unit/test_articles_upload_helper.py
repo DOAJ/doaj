@@ -43,8 +43,8 @@ class TestArticlesUploadHelper(DoajTestCase):
         article_upload_tester.test_2_journals_different_owners_issn_each_fail(
             run_background_process_common)
 
-    def test_2_journals_same_owner_issn_each_success(self):
-        article_upload_tester.test_2_journals_same_owner_issn_each_success(run_background_process_common)
+    def test_2_journals_same_owner_issn_each_fail(self):
+        article_upload_tester.test_2_journals_same_owner_issn_each_fail(run_background_process_common)
 
     def test_2_journals_different_owners_different_issns_mixed_article_fail(self):
         article_upload_tester.test_2_journals_different_owners_different_issns_mixed_article_fail(
