@@ -11,7 +11,7 @@ from portality.lib.dates import FMT_DATETIME_SHORT
 from portality.store import StoreFactory, prune_container, StoreException
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import re, csv, random, string
 
 
@@ -256,29 +256,43 @@ class JournalService(object):
         # ~~!JournalCSV:Feature->Journal:Model~~
         cols = {}
         for j in models.Journal.all_in_doaj(page_size=1000):     #Fixme: limited by ES, this may not be sufficient
+            export_start = datetime.utcnow()
             logger("Exporting journal {x}".format(x=j.id))
 
+            time_log = []
             bj = j.bibjson()
             issn = bj.get_one_identifier(idtype=bj.P_ISSN)
             if issn is None:
                 issn = bj.get_one_identifier(idtype=bj.E_ISSN)
+            time_log.append("{x} - got issn".format(x=datetime.utcnow()))
+
             if issn is None:
                 continue
 
             # ~~!JournalCSV:Feature->JournalQuestions:Crosswalk~~
             kvs = Journal2QuestionXwalk.journal2question(j)
+            time_log.append("{x} - crosswalked questions".format(x=datetime.utcnow()))
             meta_kvs = _get_doaj_meta_kvs(j)
+            time_log.append("{x} - got meta kvs".format(x=datetime.utcnow()))
             article_kvs = _get_article_kvs(j)
+            time_log.append("{x} - got article kvs".format(x=datetime.utcnow()))
             additionals = []
             if additional_columns is not None:
                 for col in additional_columns:
                     additionals += col(j)
+            time_log.append("{x} - got additionals".format(x=datetime.utcnow()))
             cols[issn] = kvs + meta_kvs + article_kvs + additionals
 
             # Get the toc URL separately from the meta kvs because it needs to be inserted earlier in the CSV
             # ~~-> ToC:WebRoute~~
             toc_kv = _get_doaj_toc_kv(j)
             cols[issn].insert(2, toc_kv)
+            time_log.append("{x} - got toc kvs".format(x=datetime.utcnow()))
+
+            export_end = datetime.utcnow()
+            if export_end - export_start > timedelta(seconds=10):
+                for l in time_log:
+                    logger(l)
 
         logger("All journals exported")
         issns = cols.keys()
