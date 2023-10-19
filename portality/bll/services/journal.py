@@ -1,27 +1,25 @@
-import csv
 import logging
-import random
-import re
-import string
-from datetime import datetime
 
-from portality import lock
+from portality.lib.argvalidate import argvalidate
+from portality.lib import dates
 from portality import models, constants
 from portality.bll import exceptions
-from portality.bll.doaj import DOAJ
 from portality.core import app
-from portality.crosswalks.journal_questions import Journal2QuestionXwalk
-from portality.lib import dates
-from portality.lib.argvalidate import argvalidate
+from portality import lock
+from portality.bll.doaj import DOAJ
 from portality.lib.dates import FMT_DATETIME_SHORT
-from portality.store import StoreFactory, prune_container
+from portality.store import StoreFactory, prune_container, StoreException
+from portality.crosswalks.journal_questions import Journal2QuestionXwalk
+from portality.util import no_op
+
+from datetime import datetime, timedelta
+import re, csv, random, string
 
 
 class JournalService(object):
     """
     ~~Journal:Service~~
     """
-
     def journal_2_application(self, journal, account=None, keep_editors=False):
         """
         Function to convert a given journal into an application object.
@@ -40,8 +38,8 @@ class JournalService(object):
 
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("journal_2_application", [
-            {"arg": journal, "instance": models.Journal, "allow_none": False, "arg_name": "journal"},
-            {"arg": account, "instance": models.Account, "arg_name": "account"}
+            {"arg": journal, "instance" : models.Journal, "allow_none" : False, "arg_name" : "journal"},
+            {"arg" : account, "instance" : models.Account, "arg_name" : "account"}
         ], exceptions.ArgumentException)
 
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Entering journal_2_application")
@@ -52,10 +50,9 @@ class JournalService(object):
         # if an account is specified, check that it is allowed to perform this action
         if account is not None:
             try:
-                authService.can_create_update_request(account, journal)  # throws exception if not allowed
+                authService.can_create_update_request(account, journal)    # throws exception if not allowed
             except exceptions.AuthoriseException as e:
-                msg = "Account {x} is not permitted to create an update request on journal {y}".format(x=account.id,
-                                                                                                       y=journal.id)
+                msg = "Account {x} is not permitted to create an update request on journal {y}".format(x=account.id, y=journal.id)
                 app.logger.info(msg)
                 e.args += (msg,)
                 raise
@@ -64,7 +61,7 @@ class JournalService(object):
         bj = journal.bibjson()
         notes = journal.notes
 
-        application = models.Suggestion()  # ~~-> Application:Model~~
+        application = models.Suggestion()   # ~~-> Application:Model~~
         application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
         application.set_current_journal(journal.id)
         if keep_editors is True:
@@ -82,8 +79,7 @@ class JournalService(object):
         application.set_bibjson(bj)
         application.date_applied = dates.now_str()
 
-        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug(
-            "Completed journal_2_application; return application object")
+        if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed journal_2_application; return application object")
         return application
 
     def journal(self, journal_id, lock_journal=False, lock_account=None, lock_timeout=None):
@@ -100,10 +96,10 @@ class JournalService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("journal", [
-            {"arg": journal_id, "allow_none": False, "arg_name": "journal_id"},
-            {"arg": lock_journal, "instance": bool, "allow_none": False, "arg_name": "lock_journal"},
-            {"arg": lock_account, "instance": models.Account, "allow_none": True, "arg_name": "lock_account"},
-            {"arg": lock_timeout, "instance": int, "allow_none": True, "arg_name": "lock_timeout"}
+            {"arg": journal_id, "allow_none" : False, "arg_name" : "journal_id"},
+            {"arg": lock_journal, "instance" : bool, "allow_none" : False, "arg_name" : "lock_journal"},
+            {"arg": lock_account, "instance" : models.Account, "allow_none" : True, "arg_name" : "lock_account"},
+            {"arg": lock_timeout, "instance" : int, "allow_none" : True, "arg_name" : "lock_timeout"}
         ], exceptions.ArgumentException)
 
         # retrieve the journal
@@ -116,12 +112,11 @@ class JournalService(object):
                 # ~~->Lock:Feature~~
                 the_lock = lock.lock(constants.LOCK_JOURNAL, journal_id, lock_account.id, lock_timeout)
             else:
-                raise exceptions.ArgumentException(
-                    "If you specify lock_journal on journal retrieval, you must also provide lock_account")
+                raise exceptions.ArgumentException("If you specify lock_journal on journal retrieval, you must also provide lock_account")
 
         return journal, the_lock
 
-    def csv(self, prune=True):
+    def csv(self, prune=True, logger=None):
         """
         Generate the Journal CSV
 
@@ -133,43 +128,55 @@ class JournalService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("csv", [
-            {"arg": prune, "allow_none": False, "arg_name": "prune"}
+            {"arg": prune, "allow_none" : False, "arg_name" : "prune"},
+            {"arg": logger, "allow_none": True, "arg_name": "logger"}
         ], exceptions.ArgumentException)
+
+        # None isn't executable, so convert logger to NO-OP
+        if logger is None:
+            logger = no_op
 
         # ~~->FileStoreTemp:Feature~~
         filename = 'journalcsv__doaj_' + dates.now_str(FMT_DATETIME_SHORT) + '_utf8.csv'
         container_id = app.config.get("STORE_CACHE_CONTAINER")
         tmpStore = StoreFactory.tmp()
-        out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)
+        try:
+            out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)
+            logger("Temporary CSV will be written to {x}".format(x=out))
+        except StoreException as e:
+            logger("Could not create temporary CSV file: {x}".format(x=e))
+            raise e
 
         with open(out, 'w', encoding='utf-8') as csvfile:
-            self._make_journals_csv(csvfile)
+            self._make_journals_csv(csvfile, logger=logger)
+        logger("Wrote CSV to output file {x}".format(x=out))
 
         # ~~->FileStore:Feature~~
         mainStore = StoreFactory.get("cache")
         try:
             mainStore.store(container_id, filename, source_path=out)
             url = mainStore.url(container_id, filename)
+            logger("Stored CSV in main cache store at {x}".format(x=url))
         finally:
-            tmpStore.delete_file(container_id,
-                                 filename)  # don't delete the container, just in case someone else is writing to it
+            tmpStore.delete_file(container_id, filename) # don't delete the container, just in case someone else is writing to it
+            logger("Deleted file from tmp store")
 
         action_register = []
         if prune:
+            logger("Pruning old CSVs from store")
             def sort(filelist):
                 rx = "journalcsv__doaj_(.+?)_utf8.csv"
-                return sorted(filelist,
-                              key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], FMT_DATETIME_SHORT),
-                              reverse=True)
+                return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], FMT_DATETIME_SHORT), reverse=True)
 
             def _filter(f_name):
                 return f_name.startswith("journalcsv__")
-
-            action_register = prune_container(mainStore, container_id, sort, filter=_filter, keep=2)
+            action_register = prune_container(mainStore, container_id, sort, filter=_filter, keep=2, logger=logger)
+            logger("Pruned old CSVs from store")
 
         # update the ES record to point to the new file
         # ~~-> Cache:Model~~
         models.Cache.cache_csv(url)
+        logger("Stored CSV URL in ES Cache")
         return url, action_register
 
     def admin_csv(self, file_path, account_sub_length=8, obscure_accounts=True, add_sensitive_account_info=False):
@@ -193,9 +200,7 @@ class JournalService(object):
                 if o in unmap:
                     sub = unmap[o]
                 else:
-                    sub = "".join(
-                        random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in
-                        range(account_sub_length))
+                    sub = "".join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in range(account_sub_length))
                     unmap[o] = sub
                 return [("Owner", sub)]
             else:
@@ -219,11 +224,12 @@ class JournalService(object):
             self._make_journals_csv(f, extra_cols)
 
     @staticmethod
-    def _make_journals_csv(file_object, additional_columns=None):
+    def _make_journals_csv(file_object, additional_columns=None, logger=None):
         """
         Make a CSV file of information for all journals.
         :param file_object: a utf8 encoded file object.
         """
+        logger = logger if logger is not None else lambda x: x
         YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
 
         def _get_doaj_meta_kvs(journal):
@@ -254,29 +260,46 @@ class JournalService(object):
 
         # ~~!JournalCSV:Feature->Journal:Model~~
         cols = {}
-        for j in models.Journal.all_in_doaj(page_size=1000):  # Fixme: limited by ES, this may not be sufficient
+        for j in models.Journal.all_in_doaj(page_size=1000):     #Fixme: limited by ES, this may not be sufficient
+            export_start = datetime.utcnow()
+            logger("Exporting journal {x}".format(x=j.id))
+
+            time_log = []
             bj = j.bibjson()
             issn = bj.get_one_identifier(idtype=bj.P_ISSN)
             if issn is None:
                 issn = bj.get_one_identifier(idtype=bj.E_ISSN)
+            time_log.append("{x} - got issn".format(x=datetime.utcnow()))
+
             if issn is None:
                 continue
 
             # ~~!JournalCSV:Feature->JournalQuestions:Crosswalk~~
             kvs = Journal2QuestionXwalk.journal2question(j)
+            time_log.append("{x} - crosswalked questions".format(x=datetime.utcnow()))
             meta_kvs = _get_doaj_meta_kvs(j)
+            time_log.append("{x} - got meta kvs".format(x=datetime.utcnow()))
             article_kvs = _get_article_kvs(j)
+            time_log.append("{x} - got article kvs".format(x=datetime.utcnow()))
             additionals = []
             if additional_columns is not None:
                 for col in additional_columns:
                     additionals += col(j)
+            time_log.append("{x} - got additionals".format(x=datetime.utcnow()))
             cols[issn] = kvs + meta_kvs + article_kvs + additionals
 
             # Get the toc URL separately from the meta kvs because it needs to be inserted earlier in the CSV
             # ~~-> ToC:WebRoute~~
             toc_kv = _get_doaj_toc_kv(j)
             cols[issn].insert(2, toc_kv)
+            time_log.append("{x} - got toc kvs".format(x=datetime.utcnow()))
 
+            export_end = datetime.utcnow()
+            if export_end - export_start > timedelta(seconds=10):
+                for l in time_log:
+                    logger(l)
+
+        logger("All journals exported")
         issns = cols.keys()
 
         csvwriter = csv.writer(file_object)
@@ -287,3 +310,5 @@ class JournalService(object):
                 csvwriter.writerow(qs)
             vs = [v for _, v in cols[i]]
             csvwriter.writerow(vs)
+        logger("CSV Written")
+
