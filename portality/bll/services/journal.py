@@ -254,8 +254,12 @@ class JournalService(object):
             return kvs
 
         # ~~!JournalCSV:Feature->Journal:Model~~
-        cols = {}
+        journals = []
         for j in models.Journal.all_in_doaj(page_size=1000):     #Fixme: limited by ES, this may not be sufficient
+            journals.append(j)
+
+        cols = {}
+        for j in journals:
             export_start = datetime.utcnow()
             logger("Exporting journal {x}".format(x=j.id))
 
