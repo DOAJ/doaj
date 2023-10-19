@@ -7,7 +7,7 @@ from typing import Callable, NoReturn, List, Iterable
 
 import gspread
 
-from portality import dao
+from portality import dao, regex
 from portality.background import BackgroundTask
 from portality.core import app
 from portality.lib import dates, gsheet
@@ -120,7 +120,7 @@ def find_latest_row_index(records: List[List[str]]):
 def find_first_issn(rows):
     for row in rows:
         for c in row:
-            if re.match(r'[0-9X]{4}-[0-9X]{4}', c):
+            if re.match(regex.ISSN, c):
                 return c
     return None
 
