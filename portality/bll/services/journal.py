@@ -1,29 +1,26 @@
-import csv
 import logging
-import random
-import re
-import string
-from datetime import datetime, timedelta
 
-from portality import lock
+from portality.lib.argvalidate import argvalidate
+from portality.lib import dates
 from portality import models, constants
 from portality.bll import exceptions
-from portality.bll.doaj import DOAJ
 from portality.core import app
-from portality.crosswalks.journal_questions import Journal2QuestionXwalk
-from portality.lib import dates
-from portality.lib.argvalidate import argvalidate
+from portality import lock
+from portality.bll.doaj import DOAJ
 from portality.lib.dates import FMT_DATETIME_SHORT
 from portality.store import StoreFactory, prune_container, StoreException
+from portality.crosswalks.journal_questions import Journal2QuestionXwalk
 from portality.util import no_op
+
+from datetime import datetime, timedelta
+import re, csv, random, string
 
 
 class JournalService(object):
     """
     ~~Journal:Service~~
     """
-    @staticmethod
-    def journal_2_application(journal, account=None, keep_editors=False):
+    def journal_2_application(self, journal, account=None, keep_editors=False):
         """
         Function to convert a given journal into an application object.
 
@@ -36,7 +33,6 @@ class JournalService(object):
 
         :param journal: a journal to convert
         :param account: an account doing the action - optional, if specified the application will only be created if the account is allowed to
-        :param keep_editors: maintain the same editor assigned to the resulting application
         :return: Suggestion object
         """
 
@@ -86,20 +82,18 @@ class JournalService(object):
         if app.logger.isEnabledFor(logging.DEBUG): app.logger.debug("Completed journal_2_application; return application object")
         return application
 
-    @staticmethod
-    def journal(journal_id, lock_journal=False, lock_account=None, lock_timeout=None):
+    def journal(self, journal_id, lock_journal=False, lock_account=None, lock_timeout=None):
         """
         Function to retrieve a journal by its id, and to optionally lock the resource
 
         May raise a Locked exception, if a lock is requested but can't be obtained.
 
         :param journal_id: the id of the journal
-        :param lock_journal: should we lock the resource on retrieval
-        :param lock_account: which account is doing the locking?  Must be present if lock_journal=True
-        :param lock_timeout: how long to lock the resource for.  May be none, in which case it will default
-        :return Tuple of (Journal Object, Lock Object)
+        :param: lock_journal: should we lock the resource on retrieval
+        :param: lock_account: which account is doing the locking?  Must be present if lock_journal=True
+        :param: lock_timeout: how long to lock the resource for.  May be none, in which case it will default
+        :return: Tuple of (Journal Object, Lock Object)
         """
-
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("journal", [
             {"arg": journal_id, "allow_none" : False, "arg_name" : "journal_id"},
@@ -127,10 +121,14 @@ class JournalService(object):
         Generate the Journal CSV
 
         ~~-> JournalCSV:Feature~~
+
+        :param set_cache: whether to update the cache
+        :param out_dir: the directory to output the file to.  If set_cache is True, this argument will be overridden by the cache container
+        :return: Tuple of (attachment_name, URL)
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("csv", [
-            {"arg": prune, "allow_none": False, "arg_name": "prune"},
+            {"arg": prune, "allow_none" : False, "arg_name" : "prune"},
             {"arg": logger, "allow_none": True, "arg_name": "logger"}
         ], exceptions.ArgumentException)
 
@@ -160,8 +158,7 @@ class JournalService(object):
             url = mainStore.url(container_id, filename)
             logger("Stored CSV in main cache store at {x}".format(x=url))
         finally:
-            # don't delete the container, just in case someone else is writing to it
-            tmpStore.delete_file(container_id, filename)
+            tmpStore.delete_file(container_id, filename) # don't delete the container, just in case someone else is writing to it
             logger("Deleted file from tmp store")
 
         action_register = []
@@ -169,13 +166,10 @@ class JournalService(object):
             logger("Pruning old CSVs from store")
             def sort(filelist):
                 rx = "journalcsv__doaj_(.+?)_utf8.csv"
-                return sorted(filelist,
-                              key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], FMT_DATETIME_SHORT),
-                              reverse=True)
+                return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], FMT_DATETIME_SHORT), reverse=True)
 
             def _filter(f_name):
                 return f_name.startswith("journalcsv__")
-
             action_register = prune_container(mainStore, container_id, sort, filter=_filter, keep=2, logger=logger)
             logger("Pruned old CSVs from store")
 
@@ -206,8 +200,7 @@ class JournalService(object):
                 if o in unmap:
                     sub = unmap[o]
                 else:
-                    sub = "".join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits)
-                                  for _ in range(account_sub_length))
+                    sub = "".join(random.choice(string.ascii_lowercase + string.ascii_uppercase + string.digits) for i in range(account_sub_length))
                     unmap[o] = sub
                 return [("Owner", sub)]
             else:
@@ -266,13 +259,21 @@ class JournalService(object):
             return kvs
 
         # ~~!JournalCSV:Feature->Journal:Model~~
+        logger("Loading journal ids")
+        journal_ids = []
+        for j in models.Journal.all_in_doaj(page_size=1000):     #Fixme: limited by ES, this may not be sufficient
+            journal_ids.append(j.id)
+        logger("Journal ids loaded: {x}".format(x=len(journal_ids)))
+
         cols = {}
-        for j in models.Journal.all_in_doaj(page_size=1000):  # Fixme: limited by ES, this may not be sufficient
+        for jid in journal_ids:
             export_start = datetime.utcnow()
-            logger("Exporting journal {x}".format(x=j.id))
-            bj = j.bibjson()
+            logger("Exporting journal {x}".format(x=jid))
+
+            j = models.Journal.pull(jid)
 
             time_log = []
+            bj = j.bibjson()
             issn = bj.get_one_identifier(idtype=bj.P_ISSN)
             if issn is None:
                 issn = bj.get_one_identifier(idtype=bj.E_ISSN)
