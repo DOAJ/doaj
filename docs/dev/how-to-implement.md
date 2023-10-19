@@ -54,7 +54,7 @@ def scheduled_find_discontinued_soon():
     )
 ```
 
-* Update config file, add a new entry in `HUEY_SCHEDULE` of `portality/settings.py` and `portality/dev.cfg` , the key is
+* Update config file, add a new entry in `HUEY_SCHEDULE` of `portality/settings.py` and `dev.cfg` , the key is
   the value of your new `BackgroundTask.__action__`
 
 ```python
@@ -62,6 +62,14 @@ HUEY_SCHEDULE = {
     ...
 "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
 "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "50"},
+}
+```
+* add your new task in `HUEY_SCHEDULE` of `test.cfg` with `CRON_NEVER` value
+
+```python
+HUEY_SCHEDULE = {
+  ...
+    "datalog_journal_added_update": CRON_NEVER,
 }
 ```
 
