@@ -10,6 +10,7 @@ from portality.bll.doaj import DOAJ
 from portality.lib.dates import FMT_DATETIME_SHORT
 from portality.store import StoreFactory, prune_container, StoreException
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
+from portality.util import no_op
 
 from datetime import datetime, timedelta
 import re, csv, random, string
@@ -130,6 +131,10 @@ class JournalService(object):
             {"arg": prune, "allow_none" : False, "arg_name" : "prune"},
             {"arg": logger, "allow_none": True, "arg_name": "logger"}
         ], exceptions.ArgumentException)
+
+        # None isn't executable, so convert logger to NO-OP
+        if logger is None:
+            logger = no_op
 
         # ~~->FileStoreTemp:Feature~~
         filename = 'journalcsv__doaj_' + dates.now_str(FMT_DATETIME_SHORT) + '_utf8.csv'
