@@ -254,18 +254,11 @@ class JournalService(object):
             return kvs
 
         # ~~!JournalCSV:Feature->Journal:Model~~
-        logger("Loading journal ids")
-        journal_ids = []
-        for j in models.Journal.all_in_doaj(page_size=1000):     #Fixme: limited by ES, this may not be sufficient
-            journal_ids.append(j.id)
-        logger("Journal ids loaded: {x}".format(x=len(journal_ids)))
-
-        cols = {}
-        for jid in journal_ids:
+        csvwriter = csv.writer(file_object)
+        first = True
+        for j in models.Journal.all_in_doaj(page_size=100):
             export_start = datetime.utcnow()
-            logger("Exporting journal {x}".format(x=jid))
-
-            j = models.Journal.pull(jid)
+            logger("Exporting journal {x}".format(x=j.id))
 
             time_log = []
             bj = j.bibjson()
@@ -289,29 +282,36 @@ class JournalService(object):
                 for col in additional_columns:
                     additionals += col(j)
             time_log.append("{x} - got additionals".format(x=datetime.utcnow()))
-            cols[issn] = kvs + meta_kvs + article_kvs + additionals
+            row = kvs + meta_kvs + article_kvs + additionals
 
             # Get the toc URL separately from the meta kvs because it needs to be inserted earlier in the CSV
             # ~~-> ToC:WebRoute~~
             toc_kv = _get_doaj_toc_kv(j)
-            cols[issn].insert(2, toc_kv)
+            row.insert(2, toc_kv)
             time_log.append("{x} - got toc kvs".format(x=datetime.utcnow()))
+
+            if first is True:
+                qs = [q for q, _ in row]
+                csvwriter.writerow(qs)
+                first = False
+
+            vs = [v for _, v in row]
+            csvwriter.writerow(vs)
+            time_log.append("{x} - written row to csv".format(x=datetime.utcnow()))
 
             export_end = datetime.utcnow()
             if export_end - export_start > timedelta(seconds=10):
                 for l in time_log:
                     logger(l)
 
-        logger("All journals exported")
-        issns = cols.keys()
-
-        csvwriter = csv.writer(file_object)
-        qs = None
-        for i in sorted(issns):
-            if qs is None:
-                qs = [q for q, _ in cols[i]]
-                csvwriter.writerow(qs)
-            vs = [v for _, v in cols[i]]
-            csvwriter.writerow(vs)
-        logger("CSV Written")
+        logger("All journals exported and CSV written")
+        # issns = cols.keys()
+        # qs = None
+        # for i in sorted(issns):
+        #     if qs is None:
+        #         qs = [q for q, _ in cols[i]]
+        #         csvwriter.writerow(qs)
+        #     vs = [v for _, v in cols[i]]
+        #     csvwriter.writerow(vs)
+        # logger("CSV Written")
 
