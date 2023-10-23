@@ -43,11 +43,12 @@ setup(
         "python-dateutil==2.8.2",  # something else already installs this, so just note we need it without an explicit version freeze
         "pytz==2020.1",
         "redis==3.3.11",
-        "requests==2.22.0",
+        "requests==2.31.0",
         "responses==0.10.6",
         "rstr==2.2.6",
         "tzlocal==2.0.0",
         "Unidecode==1.1.1",
+        "urllib3==1.26.18",
 
         # Flask2 required >=2.0.*, Flask-Login required <=2.0.*
         "Werkzeug~=2.0.0",
