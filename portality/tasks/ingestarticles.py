@@ -312,11 +312,16 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 for article in articles:
                     article.set_upload_id(file_upload.id)
                 result = articleService.batch_create_articles(articles, account, add_journal_info=True)
-        except (IngestException, CrosswalkException) as e:
-            job.add_audit_message("IngestException: {msg}. Inner message: {inner}.  Stack: {x}"
-                                  .format(msg=e.message, inner=e.inner_message, x=e.trace()))
+        except (IngestException, CrosswalkException, ArticleNotAcceptable) as e:
+            if hasattr(e, 'inner_message'):
+                job.add_audit_message("{exception}: {msg}. Inner message: {inner}. Stack: {x}"
+                                      .format(exception=e.__class__.__name__, msg=e.message, inner=e.inner_message, x=e.trace()))
+                file_upload.failed(e.message, e.inner_message)
+            else:
+                job.add_audit_message("{exception}: {msg}.".format(exception=e.__class__.__name__, msg=e.message))
+                file_upload.failed(e.message)
+
             job.outcome_fail()
-            file_upload.failed(e.message, e.inner_message)
             result = e.result
             try:
                 file_failed(path)
@@ -324,7 +329,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             except:
                 job.add_audit_message("Error cleaning up file which caused IngestException: {x}"
                                       .format(x=traceback.format_exc()))
-        except (DuplicateArticleException, ArticleNotAcceptable) as e:
+        except DuplicateArticleException as e:
             job.add_audit_message(str(e))
             job.outcome_fail()
             file_upload.failed(str(e))

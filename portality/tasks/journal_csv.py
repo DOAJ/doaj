@@ -15,12 +15,16 @@ class JournalCSVBackgroundTask(BackgroundTask):
         Execute the task as specified by the background_job 
         :return:
         """
+
+        def logger(msg):
+            self.background_job.add_audit_message(msg)
+
         job = self.background_job
 
         journalService = DOAJ.journalService()
-        url, action_register = journalService.csv()
-        for ar in action_register:
-            job.add_audit_message(ar)
+        url, action_register = journalService.csv(logger=logger)
+        # for ar in action_register:
+        #     job.add_audit_message(ar)
         job.add_audit_message("CSV generated; will be served from {y}".format(y=url))
 
     def cleanup(self):

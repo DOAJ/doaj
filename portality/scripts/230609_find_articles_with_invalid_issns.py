@@ -31,6 +31,7 @@ if __name__ == "__main__":
             bibjson = article.bibjson()
             try:
                 articlesvc.ArticleService._validate_issns(bibjson)
+                articlesvc.ArticleService.match_journal_with_validation(bibjson)
             except exceptions.ArticleNotAcceptable as e:
                 id = article.id
                 pissn = bibjson.get_identifiers("pissn")

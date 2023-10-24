@@ -4,7 +4,7 @@ from flask_login import current_user, login_required
 
 from portality.app_email import EmailException
 from portality import models
-from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
+from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException, ArticleNotAcceptable
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.dao import ESMappingMissingError
 from portality.forms.application_forms import ApplicationFormFactory
@@ -363,7 +363,8 @@ def metadata():
                 Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
             except DuplicateArticleException:
                 Messages.flash(Messages.ARTICLE_METADATA_UPDATE_CONFLICT)
-
+            except ArticleNotAcceptable as e:
+                Messages.flash_with_param(e.message, "error")
         return fc.render_template(validated=validated)
 
 @blueprint.route("/journal-csv", methods=["GET"])

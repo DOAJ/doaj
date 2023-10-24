@@ -56,11 +56,11 @@ entries:
     secondary_mobile: true
     route: doaj.support               # ~~->Support:WebRoute~~
     entries:
-      - label: Support DOAJ
+      - label: Institutions and libraries
         route: doaj.support           # ~~->Support:WebRoute~~
-      - label: Publisher supporters
+      - label: Publishers
         route: doaj.publisher_supporters      # ~~->PublisherSupporters:WebRoute~~
-      - label: Supporters
+      - label: Institutional and library supporters
         route: doaj.supporters        # ~~->Supporters:WebRoute~~
   - id: apply
     label: Apply
