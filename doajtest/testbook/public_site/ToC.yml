@@ -13,3 +13,18 @@ tests:
     results:
     - On the ToC of the journal with discontinued date in the past or today - the discontinued date is displayed
     - On the ToC of the journal with discontinued date in the future - the discontinued date is not displayed
+- title: Test articles journal's page
+  context:
+    role: anonymous
+  steps:
+  - step: To prepare for this test, ensure that a journal is publicly available in DOAJ, containing a minimum of 4 articles, with 2 from one month and 2 from another, and these months must not be consecutive (e.g. 2 articles from January and 2 from March).
+  - step: Search for the above journal
+    results:
+    - On the "Articles" tab in the ToC of the journal, the articles are displayed.
+    - On the left, the "Month" facet is displayed.
+  - step: Select one of the months from the list
+    results:
+    - On the "Articles" tab in the ToC of the journal, the articles from the selected month are displayed.
+    - On the left, the "Month" facet is displayed.
+    - The selected month is displayed as selected in the "Month" facet.
+
