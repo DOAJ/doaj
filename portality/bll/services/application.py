@@ -12,7 +12,7 @@ from portality import constants
 from portality import lock
 from portality.bll.doaj import DOAJ
 from portality.ui.messages import Messages
-from portality.crosswalks.journal_questions import Journal2QuestionXwalk, Journal2PublisherUploadQuestionsXwalk
+from portality.crosswalks.journal_questions import Journal2PublisherUploadQuestionsXwalk
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll.exceptions import AuthoriseException
 from portality.forms.application_forms import ApplicationFormFactory
@@ -323,7 +323,7 @@ class ApplicationService(object):
         # first retrieve the journal, and return empty if there isn't one.
         # We don't attempt to obtain a lock at this stage, as we want to check that the user is authorised first
         journal_lock = None
-        journal, _ = journalService.journal(journal_id, lock_journal=lock_records, lock_timeout=lock_timeout)
+        journal, _ = journalService.journal(journal_id)
         if journal is None:
             app.logger.info("Request for journal {x} did not find anything in the database".format(x=journal_id))
             return None, None, None
@@ -345,7 +345,8 @@ class ApplicationService(object):
             application = journalService.journal_2_application(journal, account=account)
             application.set_is_update_request(True)
             if account is not None:
-                journal_lock = lock.lock("journal", journal_id, account.id)
+                if lock_records:
+                    journal_lock = lock.lock("journal", journal_id, account.id)
 
         # otherwise check that the user (if given) has the rights to edit the application
         # then lock the application and journal to the account.
@@ -645,7 +646,6 @@ class ApplicationService(object):
 
                 [validation.log(upd) for upd in updates]
 
-
                 # If a field is disabled in the UR Form Context, then we must confirm that the form data from the
                 # file has not changed from that provided in the source
                 formulaic_context = ApplicationFormFactory.context("update_request")
@@ -718,21 +718,35 @@ class CSVValidationReport:
         self._row = {}
         self._values = {}
         self._log = []
+        self._errors = False
+        self._warnings = False
+
+    def has_errors_or_warnings(self):
+        return self._errors or self._warnings
+
+    def record_error_type(self, error_type):
+        if error_type == self.WARN:
+            self._warnings = True
+        elif error_type == self.ERROR:
+            self._errors = True
 
     def general(self, error_type, msg):
         msg = self._cleanhtml(msg)
         self.log("[" + error_type + "] " + msg)
         self._general.append((error_type, msg))
+        self.record_error_type(error_type)
 
     def header(self, error_type, pos, msg):
         msg = self._cleanhtml(msg)
         self.log("[" + error_type + "] " + msg)
         self._headers[pos] = (error_type, msg)
+        self.record_error_type(error_type)
 
     def row(self, error_type, row, msg):
         msg = self._cleanhtml(msg)
         self.log("[" + error_type + "] " + msg)
         self._row[row] = (error_type, msg)
+        self.record_error_type(error_type)
 
     def value(self, error_type, row, pos, msg, was, now):
         msg = self._cleanhtml(msg)
@@ -740,6 +754,7 @@ class CSVValidationReport:
             self._values[row] = {}
         self.log("[" + error_type + "] " + msg)
         self._values[row][pos] = (error_type, msg, was, now)
+        self.record_error_type(error_type)
 
     def log(self, msg):
         msg = self._cleanhtml(msg)
@@ -749,7 +764,7 @@ class CSVValidationReport:
         cleantext = re.sub(self.CLEANR, '', raw_html)
         return cleantext
 
-    def json(self):
+    def json(self, indent=None):
         repr = {
             "general": self._general,
             "headers": self._headers,
@@ -757,4 +772,4 @@ class CSVValidationReport:
             "values": self._values,
             "log": self._log
         }
-        return json.dumps(repr)
+        return json.dumps(repr, indent=indent)
