@@ -1,6 +1,7 @@
 import logging
 import csv
 import json
+import re
 
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
@@ -11,7 +12,7 @@ from portality import constants
 from portality import lock
 from portality.bll.doaj import DOAJ
 from portality.ui.messages import Messages
-from portality.crosswalks.journal_questions import Journal2QuestionXwalk
+from portality.crosswalks.journal_questions import Journal2QuestionXwalk, Journal2PublisherUploadQuestionsXwalk
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll.exceptions import AuthoriseException
 from portality.forms.application_forms import ApplicationFormFactory
@@ -569,67 +570,81 @@ class ApplicationService(object):
 
         return
 
-    def validate_update_csv(self, file, account: models.Account):
+    def validate_update_csv(self, file_path, account: models.Account):
         # Open with encoding that deals with the Byte Order Mark since we're given files from Windows.
-        reader = csv.DictReader(file)
-        header_row = reader.fieldnames
+        with open(file_path, "r") as file:
+            reader = csv.DictReader(file)
+            validation = CSVValidationReport()
 
-        # verify header row with current CSV headers, report errors
-        expected_headers = Journal2QuestionXwalk.question_list()
-        lower_case_expected_headers = map(str.lower, expected_headers)
-        validation = CSVValidationReport()
+            # verify header row with current CSV headers, report errors
+            header_row = reader.fieldnames
+            allowed_headers = Journal2PublisherUploadQuestionsXwalk.question_list()
+            lower_case_allowed_headers = map(str.lower, allowed_headers)
+            required_headers = Journal2PublisherUploadQuestionsXwalk.required_questions()
 
-        # Always perform a match check on supplied headers, not counting order
-        for i, h in enumerate(header_row):
-            if h and h not in expected_headers:
-                if h.lower() in lower_case_expected_headers:
-                    validation.header(validation.WARN, i, f'"{h}" has mismatching case to expected header.')
-                else:
-                    validation.header(validation.ERROR, i, f'"{h}" is not a valid header.')
+            # Always perform a match check on supplied headers, not counting order
+            for i, h in enumerate(header_row):
+                if h and h not in allowed_headers:
+                    if h.lower() in lower_case_allowed_headers:
+                        validation.header(validation.WARN, i, f'"{h}" has mismatching case to expected header "{allowed_headers[i]}".')
+                    else:
+                        validation.header(validation.ERROR, i, f'"{h}" is not a valid header.')
 
-        # Talking about spreadsheets, so we start at 1
-        row_ix = 1
+            missing_required = False
+            for rh in required_headers:
+                if rh not in header_row:
+                    validation.general(validation.ERROR, f'"{rh}" is a required header, and is missing from this upload.')
+                    missing_required = True
+            if missing_required:
+                return validation
 
-        # ~~ ->$JournalUpdateByCSV:Feature ~~
-        for row in reader:
-            row_ix += 1
-            validation.log(f'CSV row {row_ix}')
+            # Talking about spreadsheets, so we start at 1
+            row_ix = 1
 
-            # Skip empty rows
-            if not any(row.values()):
-                validation.log("Skipping empty row {x}.".format(x=row_ix))
-                continue
+            # ~~ ->$JournalUpdateByCSV:Feature ~~
+            for row in reader:
+                row_ix += 1
+                validation.log(f'Processing CSV row {row_ix}')
 
-            # Pull by ISSNs
-            issns = [
-                row.get(Journal2QuestionXwalk.q("pissn")),
-                row.get(Journal2QuestionXwalk.q("eissn"))
-            ]
-            title_field = Journal2QuestionXwalk.q("title")
-            title_pos = header_row.index(title_field)
-            pissn_pos = header_row.index(Journal2QuestionXwalk.q("pissn"))
+                # Skip empty rows
+                if not any(row.values()):
+                    validation.log("Skipping empty row {x}.".format(x=row_ix))
+                    continue
 
-            try:
-                j = models.Journal.find_by_issn(issns, in_doaj=True, max=1).pop(0)
-            except IndexError:
-                validation.value(validation.ERROR, row_ix, pissn_pos, "Could not find journal record for ISSN(s) {0}".format(", ".join(issns)))
-                continue
+                # Pull by ISSNs
+                issns = [
+                    row.get(Journal2PublisherUploadQuestionsXwalk.q("pissn")),
+                    row.get(Journal2PublisherUploadQuestionsXwalk.q("eissn"))
+                ]
 
-            # Confirm that the account is allowed to update the journal (is admin or owner)
-            if not account.is_super and account.id != j.owner:
-                validation.value(validation.ERROR, row_ix, pissn_pos, "Account {0} is not allowed to update journal {1}".format(account.id, ", ".join(issns)))
-                continue
+                try:
+                    j = models.Journal.find_by_issn(issns, in_doaj=True, max=1).pop(0)
+                except IndexError:
+                    validation.row(validation.ERROR, row_ix, "No journal record in DOAJ for ISSN(s) {0}.  It may not be present, or may be withdrawn.".format(", ".join(issns)))
+                    continue
 
-            # By this point the issns are confirmed as matching a journal that belongs to the publisher
-            validation.log('Validating update for journal with ID ' + j.id)
+                # Confirm that the account is allowed to update the journal (is admin or owner)
+                if not account.is_super and account.id != j.owner:
+                    validation.row(validation.ERROR, row_ix, "Your account '{0}' is not the owner of the journal with ISSN(s) {1}".format(account.id, ", ".join(issns)))
+                    continue
 
-            # Load remaining rows into application form as an update
-            # ~~ ^->JournalQuestions:Crosswalk ~~
-            update_form, updates = Journal2QuestionXwalk.question2form(j, row)
-            journal_form = JournalFormXWalk.obj2form(j)
+                # By this point the issns are confirmed as matching a journal that belongs to the publisher
+                validation.log('Validating update for journal with ID ' + j.id)
 
-            if len(updates) > 0:
+                # Load remaining rows into application form as an update
+                # ~~ ^->JournalQuestions:Crosswalk ~~
+                update_form, updates = Journal2PublisherUploadQuestionsXwalk.question2form(j, row)
+                journal_form = JournalFormXWalk.obj2form(j)
+                journal_questions = Journal2PublisherUploadQuestionsXwalk.journal2question(j)
+
+                if len(updates) == 0:
+                    validation.row(validation.WARN, row_ix, "The data you supplied did not change any of the existing values in the journal record.  You may still submit this record, but no update will be made to the record in DOAJ.")
+                    continue
+
+                # if we get to here, then there are updates
+
                 [validation.log(upd) for upd in updates]
+
 
                 # If a field is disabled in the UR Form Context, then we must confirm that the form data from the
                 # file has not changed from that provided in the source
@@ -638,12 +653,14 @@ class ApplicationService(object):
                 trip_wire = False
                 for field in disabled_fields:
                     field_name = field.get("name")
+                    question = Journal2PublisherUploadQuestionsXwalk.q(field_name)
                     update_value = update_form.get(field_name)
                     journal_value = journal_form.get(field_name)
                     if update_value != journal_value:
                         trip_wire = True
-                        validation.value(validation.ERROR, row_ix, header_row.index(field_name),
-                                         f'"{field_name}" cannot be changed.')
+                        validation.value(validation.ERROR, row_ix, header_row.index(question),
+                                         f'"{question}" cannot be changed.',
+                                         was=journal_value, now=update_value)
 
                 if trip_wire:
                     continue
@@ -656,12 +673,12 @@ class ApplicationService(object):
                     # ~~ ^->UpdateRequest:Feature ~~
                     update_req, jlock, alock = self.update_request_for_journal(j.id, account=j.owner_account, lock_records=False)
                 except AuthoriseException as e:
-                    validation.general(validation.ERROR, 'Could not create update request: {0}'.format(e.reason))
+                    validation.row(validation.ERROR, row_ix, 'Could not create update request: {0}'.format(e.reason))
                     continue
 
                 # If we don't have a UR, we can't continue
                 if update_req is None:
-                    validation.log('Journal not in DOAJ - missing or not public')
+                    validation.row(validation.ERROR, row_ix,'Journal not in DOAJ - missing or not public')
                     continue
 
                 # validate update_form - portality.forms.application_processors.PublisherUpdateRequest
@@ -672,10 +689,18 @@ class ApplicationService(object):
                 )
 
                 if not fc.validate():
-                    validation.general(validation.ERROR, 'Failed validation - {0}'.format(fc.form.errors))
-
-            else:
-                validation.log("No updates to do")
+                    for k, v in fc.form.errors.items():
+                        question = Journal2PublisherUploadQuestionsXwalk.q(k)
+                        pos = header_row.index(question)
+                        now = row.get(question)
+                        was = [v for q, v in journal_questions if q == question][0]
+                        if isinstance(v[0], dict):
+                            for sk, sv in v[0].items():
+                                validation.value(validation.ERROR, row_ix, pos, ". ".join(sv),
+                                             was=was, now=now)
+                        else:
+                            validation.value(validation.ERROR, row_ix, pos, ". ".join(v),
+                                             was=was, now=now)
 
         return validation
 
@@ -685,30 +710,50 @@ class CSVValidationReport:
     WARN = "warn"
     ERROR = "error"
 
+    CLEANR = re.compile('<.*?>')
+
     def __init__(self):
         self._general = []
         self._headers = {}
+        self._row = {}
         self._values = {}
         self._log = []
 
     def general(self, error_type, msg):
+        msg = self._cleanhtml(msg)
+        self.log("[" + error_type + "] " + msg)
         self._general.append((error_type, msg))
 
     def header(self, error_type, pos, msg):
+        msg = self._cleanhtml(msg)
+        self.log("[" + error_type + "] " + msg)
         self._headers[pos] = (error_type, msg)
 
-    def value(self, error_type, row, pos, msg):
+    def row(self, error_type, row, msg):
+        msg = self._cleanhtml(msg)
+        self.log("[" + error_type + "] " + msg)
+        self._row[row] = (error_type, msg)
+
+    def value(self, error_type, row, pos, msg, was, now):
+        msg = self._cleanhtml(msg)
         if row not in self._values:
             self._values[row] = {}
-        self._values[row][pos] = (error_type, msg)
+        self.log("[" + error_type + "] " + msg)
+        self._values[row][pos] = (error_type, msg, was, now)
 
     def log(self, msg):
+        msg = self._cleanhtml(msg)
         self._log.append(msg)
+
+    def _cleanhtml(self, raw_html):
+        cleantext = re.sub(self.CLEANR, '', raw_html)
+        return cleantext
 
     def json(self):
         repr = {
             "general": self._general,
             "headers": self._headers,
+            "rows": self._row,
             "values": self._values,
             "log": self._log
         }

@@ -15,6 +15,7 @@ from portality import lock
 from portality.models import DraftApplication
 from portality.lcc import lcc_jstree
 from portality.forms.article_forms import ArticleFormFactory
+from portality.store import StoreFactory
 
 from huey.exceptions import TaskException
 
@@ -380,10 +381,20 @@ def journal_csv_validate():
     if "journal_csv" not in request.files:
         abort(400)
     file = request.files["journal_csv"]
-    if file.size() > app.config.get("JOURNAL_CSV_UPLOAD__MAX_FILE_SIZE", 1000000):
-        abort(400)
+    # if file.size() > app.config.get("JOURNAL_CSV_UPLOAD__MAX_FILE_SIZE", 1000000):
+    #     abort(400)
 
-    report = DOAJ.applicationService().validate_update_csv(file, current_user)
+    tmpStore = StoreFactory.tmp()
+    container_id = app.config.get("JOURNAL_CSV_UPLOAD__TMP_CONTAINER", "publisher_csvs_validation")
+    filename = current_user.id + "_" + dates.now_str() + ".csv"
+    out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)
+    file.save(out)
+
+    try:
+        report = DOAJ.applicationService().validate_update_csv(out, current_user)
+    finally:
+        tmpStore.delete_file(container_id, filename)
+
     resp = make_response(report.json())
     resp.mimetype = "application/json"
     return resp

@@ -28,7 +28,7 @@
                     {% endif %}
                 </div>
             </fieldset>
-            <button type="submit" id="upload" class="button button--primary">Validate</button>
+            <button type="submit" id="validate" class="button button--primary">Validate</button>
         </form>
     </div>
 
@@ -36,29 +36,10 @@
 {% endblock %}
 
 {% block extra_js_bottom %}
+    <script type="text/javascript" src="/static/js/publisher_csv.js?v={{config.get('DOAJ_VERSION')}}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $("#upload").on("click", function(event) {
-                event.preventDefault();
-
-                let fd = new FormData();
-                let file = $('#upload-csv-file')[0].files[0];
-                fd.append("journal_csv", file);
-
-                $.ajax({
-                   url: "/publisher/journal-csv/validate",
-                   type: "POST",
-                   data: fd,
-                   processData: false,
-                   contentType: false,
-                   success: function(response) {
-                       alert("success");
-                   },
-                   error: function(jqXHR, textStatus, errorMessage) {
-                       console.log(errorMessage); // Optional
-                   }
-                });
-            })
+            doaj.publisher_csvs.init()
         })
     </script>
 {% endblock %}
