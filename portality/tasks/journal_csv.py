@@ -19,12 +19,18 @@ class JournalCSVBackgroundTask(BackgroundTask):
         def logger(msg):
             self.background_job.add_audit_message(msg)
 
+        _l = logger if app.config.get('EXTRA_JOURNALCSV_LOGGING', False) else None
+
         job = self.background_job
 
         journalService = DOAJ.journalService()
-        url, action_register = journalService.csv(logger=logger)
-        # for ar in action_register:
-        #     job.add_audit_message(ar)
+        url, action_register = journalService.csv(logger=_l)
+
+        # Log directly to the task if we don't have extra logging configured
+        if _l is None:
+            for ar in action_register:
+                job.add_audit_message(ar)
+
         job.add_audit_message("CSV generated; will be served from {y}".format(y=url))
 
     def cleanup(self):
