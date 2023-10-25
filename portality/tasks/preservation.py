@@ -5,7 +5,6 @@ import os
 import shutil
 import tarfile
 from copy import deepcopy
-from datetime import datetime
 from zipfile import ZipFile
 
 import requests
@@ -125,10 +124,14 @@ class ArticlesList:
         self.__unbagged_articles = []
         self.__not_found_articles = []
         self.__no_files_articles = []
+        self.__uploaded_journals = []
         self.has_errors = False
 
     def add_successful_article(self, article: ArticlePackage):
         self.__successful_articles.append(os.path.basename(article.article_dir))
+
+    def add_uploaded_journal(self, journal_package):
+        self.__uploaded_journals.append(journal_package)
 
     def add_unowned_articles(self, article: ArticlePackage):
         self.has_errors = True
@@ -166,6 +169,9 @@ class ArticlesList:
 
     def no_files_articles(self):
         return self.__no_files_articles
+
+    def uploaded_journals(self):
+        return self.__uploaded_journals
 
     def get_count(self):
         return len(self.__successful_articles) + \
@@ -242,24 +248,50 @@ class PreservationBackgroundTask(BackgroundTask):
 
             job.add_audit_message("Create Package structure")
             articles_list = preserv.create_package_structure()
-            self.save_articles_list(articles_list, preserve_model)
+
             app.logger.debug("Created package structure")
 
             if len(articles_list.successful_articles()) > 0:
-                package = PreservationPackage(preserv.preservation_dir, job.user)
-                job.add_audit_message("Create preservation package")
-                tar_file = package.create_package()
-                app.logger.debug(f"Created tar file {tar_file}")
+                # Each subdirectory is a jornal and the directory name is ISSN of the journal
+                # iterate through the directories and upload each journal as an individual package
+                dirs = [f.name for f in os.scandir(preserv.preservation_dir) if f.is_dir()]
+                upload_failed = False
+                for sub_dir in dirs:
 
-                job.add_audit_message("Create shasum")
-                sha256 = package.sha256()
+                    package = PreservationPackage(preserv.preservation_dir, sub_dir, job.user)
+                    job.add_audit_message("Create preservation package for " + sub_dir)
+                    tar_file = package.create_package()
 
-                job.add_audit_message("Upload package")
-                response = package.upload_package(sha256)
-                app.logger.debug(f"Uploaded. Response{response.text}")
+                    app.logger.debug(f"Created tar file {tar_file}")
 
-                job.add_audit_message("Validate response")
-                self.validate_response(response, tar_file, sha256, preserve_model)
+                    job.add_audit_message("Create shasum for " + sub_dir)
+                    sha256 = package.sha256(package.tar_file)
+
+                    job.add_audit_message("Upload package " + sub_dir)
+                    response = package.upload_package(sha256, package.tar_file)
+                    app.logger.debug(f"Uploaded. Response{response.text}")
+
+                    job.add_audit_message("Validate response")
+                    self.validate_response(response, tar_file, sha256, preserve_model)
+
+                    if preserve_model.status == 'failed':
+                        upload_failed = True
+                        break
+                    else:
+                        articles_list.add_uploaded_journal(package.tar_file_name)
+
+                        # Upload the identifier file
+                        job.add_audit_message("Create shasum for identifier")
+                        sha256 = package.sha256(package.identifier_file)
+
+                        identifier_file_name = os.path.basename(package.identifier_file)
+                        job.add_audit_message("Upload identifier file " + identifier_file_name)
+                        package.upload_package(sha256, package.identifier_file)
+                        articles_list.add_uploaded_journal(identifier_file_name)
+                        app.logger.debug(f"Uploaded identifier file " + identifier_file_name)
+
+                if not upload_failed:
+                    preserve_model.uploaded_to_ia()
 
                 # Check if the only few articles are successful
                 if articles_list.is_partial_success():
@@ -276,6 +308,8 @@ class PreservationBackgroundTask(BackgroundTask):
                     else:
                         preserve_model.failed(FailedReasons.no_valid_article_available)
                         preserve_model.save()
+
+            self.save_articles_list(articles_list, preserve_model)
 
         except (PreservationException, Exception) as exp:
             # ~~-> PreservationException:Exception~~
@@ -304,6 +338,8 @@ class PreservationBackgroundTask(BackgroundTask):
             model.unbagged_articles(articles_list.unbagged_articles())
         if len(articles_list.no_files_articles()) > 0:
             model.no_files_articles(articles_list.no_files_articles())
+        if len(articles_list.uploaded_journals()) > 0:
+            model.uploaded_journals(articles_list.uploaded_journals())
         model.save()
 
     def cleanup(self):
@@ -344,8 +380,7 @@ class PreservationBackgroundTask(BackgroundTask):
 
                 if res_filename and res_filename == tar_file:
                     if res_shasum and res_shasum == sha256:
-                        app.logger.info("successfully uploaded")
-                        model.uploaded_to_ia()
+                        app.logger.info("successfully uploaded " + tar_file)
                     else:
                         model.failed(FailedReasons.checksum_doesnot_match)
                 else:
@@ -378,7 +413,7 @@ class PreservationBackgroundTask(BackgroundTask):
 
             model.save()
         else:
-            app.logger.error(f"Upload failed {response.text}")
+            app.logger.error(f"Upload failed for {tar_file}. Reason - {response.text}")
             model.failed(response.text)
             model.save()
 
@@ -534,11 +569,13 @@ class Preservation:
 
             # Fetch identifiers at the root directory
             if os.path.dirname(dir) == self.__local_dir:
-                if Preservation.IDENTIFIERS_CSV in files:
-                    # Get articles info from csv file
-                    # ~~-> CSVReader:Feature~~
-                    csv_reader = CSVReader(os.path.join(dir, Preservation.IDENTIFIERS_CSV))
-                    self.__csv_articles_dict = csv_reader.articles_info()
+                for file in files:
+                    if Preservation.IDENTIFIERS_CSV.lower() == file.lower():
+                        # Get articles info from csv file
+                        # ~~-> CSVReader:Feature~~
+                        csv_reader = CSVReader(os.path.join(dir, file))
+                        self.__csv_articles_dict = csv_reader.articles_info()
+                        break
             # process only the directories that has articles
             else:
                 self.__process_article(dir, files, articles_list)
@@ -557,10 +594,12 @@ class Preservation:
                 return
 
         # check if identifier file exist
-        if Preservation.IDENTIFIER_FILE in files:
-            with open(os.path.join(dir_path, Preservation.IDENTIFIER_FILE)) as file:
-                identifiers = file.read().splitlines()
-        elif self.__csv_articles_dict:
+        for file in files:
+            if Preservation.IDENTIFIER_FILE.lower() == file.lower():
+                with open(os.path.join(dir_path, file)) as identifier_file:
+                    identifiers = identifier_file.read().splitlines()
+
+        if not identifiers and self.__csv_articles_dict:
             if dir_name in self.__csv_articles_dict:
                 identifiers = self.__csv_articles_dict[dir_name]
 
@@ -570,10 +609,9 @@ class Preservation:
             if article:
                 article_data = article.data
 
-                if not self.owner_of_article(article):
-                    articles_list.add_unowned_articles(package)
+                is_owner = self.owner_of_article(article)
 
-                else:
+                if isinstance(is_owner, bool) and is_owner == True:
                     issn, article_id, metadata_json = self.get_article_info(article_data)
                     try:
                         package = ArticlePackage(dir_path, files)
@@ -584,10 +622,17 @@ class Preservation:
 
                         package.create_article_bagit_structure()
 
+                        # Create and update the  identifier file for all articles in the journal
+                        with open(os.path.join(self.__preservation_dir, issn + ".txt"), 'a') as identifier_file:
+                            identifier_file.write(os.path.basename(dir_path) + "," + article_id + "," +
+                                                  ','.join(identifiers) + "\n")
+
                         articles_list.add_successful_article(package)
                     except Exception:
                         articles_list.add_unbagged_articles(package)
                         app.logger.exception(f"Error while create article ( {article_id} ) package")
+                else:
+                    articles_list.add_unowned_articles(package)
 
             else:
                 # skip the article if not found
@@ -677,11 +722,20 @@ class PreservationPackage:
     Creates preservation package and upload to Internet Server
     """
 
-    def __init__(self, directory, owner):
-        self.package_dir = directory
-        self.tar_file = self.package_dir + ".tar.gz"
+    def __init__(self, preservation_dir, journal_dir, owner):
+        self.preservation_dir = preservation_dir
+        self.journal_dir = journal_dir
+        self.package_dir = os.path.join(self.preservation_dir, journal_dir)
+        self.created_time = dates.now_str("%Y-%m-%d-%H-%M-%S")
+        self.tar_file = self.package_dir + "_" + self.created_time + ".tar.gz"
         self.tar_file_name = os.path.basename(self.tar_file)
         self.__owner = owner
+        self.identifier_file = self.package_dir + "_" + self.created_time + ".txt"
+        try:
+            # Rename the identifier file to match the tar file
+            shutil.move(self.package_dir + ".txt", self.identifier_file)
+        except Exception as e:
+            app.logger.exception(e)
 
     def create_package(self):
         """
@@ -697,7 +751,7 @@ class PreservationPackage:
 
         return self.tar_file_name
 
-    def upload_package(self, sha256sum):
+    def upload_package(self, sha256sum, file):
 
         url = app.config.get("PRESERVATION_URL")
         username = app.config.get("PRESERVATION_USERNAME")
@@ -707,7 +761,7 @@ class PreservationPackage:
         collection = params[0]
         collection_id = params[1]
 
-        file_name = os.path.basename(self.tar_file)
+        file_name = os.path.basename(file)
 
         # payload for upload request
         payload = {
@@ -727,7 +781,7 @@ class PreservationPackage:
         headers = {}
         # get the file to upload
         try:
-            with open(self.tar_file, "rb") as f:
+            with open(file, "rb") as f:
                 files = {'file_field': (file_name, f)}
                 response = requests.post(url, headers=headers, auth=(username, password), files=files, data=payload)
         except (IOError, Exception) as exp:
@@ -736,13 +790,13 @@ class PreservationPackage:
 
         return response
 
-    def sha256(self):
+    def sha256(self, file):
         """
         Creates sha256 hash for the tar file
         """
         sha256_hash = hashlib.sha256()
 
-        with open(self.tar_file, "rb") as f:
+        with open(file, "rb") as f:
             # Read and update hash string value in blocks of 64K
             for byte_block in iter(lambda: f.read(65536), b""):
                 sha256_hash.update(byte_block)
