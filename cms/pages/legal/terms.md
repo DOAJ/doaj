@@ -32,7 +32,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
   + In our [OAI-PMH feed](/docs/oai-pmh)
   + In the [full data dump of all article metadata](/docs/public-data-dump/).
 
-4. The *open source software* that DOAJ is built with is licensed under [an Apache license Version 2](https://github.com/DOAJ/doaj/blob/a6fc2bee499b5a8a1f24fb098acfb8e10bd72503/portality/static/vendor/select2-3.5.4/LICENSE).
+4. The *open source software* that DOAJ is built with is licensed under [an Apache license Version 2](https://github.com/DOAJ/doaj/blob/develop/LICENSE).
 
 ---
 

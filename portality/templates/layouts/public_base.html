@@ -2,6 +2,7 @@
 
 {% block base_content %}
 <body class="{% block body_class %}{% endblock %}" data-spy="scroll" data-offset="70">
+<a href="#maincontent" class="skip-to-main"><span aria-hidden="true" data-feather="arrow-down"></span></a>
 
     <header class="page-header">
         {% include "includes/header.html" %}
@@ -17,7 +18,9 @@
     {% endif %}
 
     {% block main_panel %}
-        {% block content %}{% endblock %}
+        <main id="maincontent">
+            {% block content %}{% endblock %}
+        </main>
     {% endblock %}
 
     {% include "includes/footer.html" %}

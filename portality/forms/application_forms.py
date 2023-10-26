@@ -167,11 +167,25 @@ class FieldDefinitions:
             "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "contexts": {
+            "admin": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
             "editor": {
-                "disabled": True
+                "disabled": True,
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             },
             "associate_editor": {
-                "disabled": True
+                "disabled": True,
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             },
             "update_request": {
                 "disabled": True
@@ -198,6 +212,24 @@ class FieldDefinitions:
         "contexts": {
             "update_request": {
                 "disabled": True
+            },
+            "admin": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
         }
     }
@@ -448,7 +480,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            {"autocomplete": {"type" : "journal", "field": "bibjson.publisher.name.exact"}},
+            {"autocomplete": {"type" : "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
             "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "help": {
@@ -457,6 +489,27 @@ class FieldDefinitions:
         "contexts" : {
             "bulk_edit" : {
                 "validate" : []
+            },
+            "admin": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
         }
     }
@@ -507,9 +560,35 @@ class FieldDefinitions:
         },
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}},
+            {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
             "full_contents" # ~~^->FullContents:FormWidget~~
-        ]
+        ],
+        "contexts": {
+            "admin": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.institution.name.exact"}},
+                    # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.institution.name.exact"}},
+                    # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.institution.name.exact"}},
+                    # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            }
+        }
     }
 
     # ~~->$ InstitutionCountry:FormField~~
@@ -770,7 +849,7 @@ class FieldDefinitions:
             }
         ],
         "widgets" : [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -1376,7 +1455,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
+            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
         ],
         "contexts" : {
             "public" : {
@@ -1581,7 +1660,7 @@ class FieldDefinitions:
             "owner_exists"
         ],
         "widgets": [
-            {"autocomplete": {"type" : "account", "field": "id", "include" : False}},
+            {"autocomplete": {"type" : "account", "field": "id", "include" : False}}, # ~~^-> Autocomplete:FormWidget~~
             "clickable_owner"
         ],
         "contexts" : {
@@ -1639,7 +1718,7 @@ class FieldDefinitions:
         "label": "Group",
         "input": "text",
         "widgets": [
-            {"autocomplete": {"type" : "editor_group", "field": "name", "include" : False}}
+            {"autocomplete": {"type" : "editor_group", "field": "name", "include" : False}} # ~~^-> Autocomplete:FormWidget~~
         ],
         "contexts" : {
             "editor" : {
@@ -1647,7 +1726,7 @@ class FieldDefinitions:
             },
             "admin" : {
                 "widgets" : [
-                    {"autocomplete": {"type": "editor_group", "field": "name", "include" : False}},
+                    {"autocomplete": {"type": "editor_group", "field": "name", "include" : False}}, # ~~^-> Autocomplete:FormWidget~~
                     {"load_editors" : {"field" : "editor"}}
                 ]
             }
@@ -2936,6 +3015,7 @@ PYTHON_FUNCTIONS = {
 
 JAVASCRIPT_FUNCTIONS = {
     "clickable_url": "formulaic.widgets.newClickableUrl",   # ~~-> ClickableURL:FormWidget~~
+    "click_to_copy": "formulaic.widgets.newClickToCopy", # ~~-> ClickToCopy:FormWidget~~
     "clickable_owner": "formulaic.widgets.newClickableOwner",   # ~~-> ClickableOwner:FormWidget~~
     "select": "formulaic.widgets.newSelect",    # ~~-> SelectBox:FormWidget~~
     "taglist": "formulaic.widgets.newTagList",  # ~~-> TagList:FormWidget~~

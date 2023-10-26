@@ -292,7 +292,8 @@ class TempStore(StoreLocal):
         return [x for x in os.listdir(self.dir) if os.path.isdir(os.path.join(self.dir, x))]
 
 
-def prune_container(storage, container_id, sort, filter=None, keep=1):
+def prune_container(storage, container_id, sort, filter=None, keep=1, logger=None):
+    logger = logger if logger is not None else lambda x: x
     action_register = []
 
     filelist = storage.list(container_id)
@@ -316,7 +317,9 @@ def prune_container(storage, container_id, sort, filter=None, keep=1):
     #action_register.append("Considering files for retention in the following order: " + ", ".join(filtered_sorted))
 
     remove = filtered_sorted[keep:]
-    action_register.append("Removed old files: " + ", ".join(remove))
+    msg = "Removed old files: " + ", ".join(remove)
+    action_register.append(msg)
+    logger(msg)
 
     for fn in remove:
         storage.delete_file(container_id, fn)
