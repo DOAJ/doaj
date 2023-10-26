@@ -291,8 +291,8 @@ def preservation():
         # check if collection has been assigned for the user
         # collection must be in the format {"user_id1",["collection_name1","collection_id1"],
         #                                     "user_id2",["collection_name2","collection_id2"]}
-        collection_available = True
-        collection_dict = app.config.get("PRESERVATION_COLLECTION")
+        collection_dict = app.config.get("PRESERVATION_COLLECTION", {})
+        collection_available = True if collection_dict else False
         if collection_dict and not current_user.id in collection_dict:
             collection_available = False
         elif collection_dict:
