@@ -382,8 +382,8 @@ def journal_csv_validate():
     if "journal_csv" not in request.files:
         abort(400)
     file = request.files["journal_csv"]
-    # if file.size() > app.config.get("JOURNAL_CSV_UPLOAD__MAX_FILE_SIZE", 1000000):
-    #     abort(400)
+    if not file.filename.endswith(".csv"):
+        abort(400)
 
     tmpStore = StoreFactory.tmp()
     container_id = app.config.get("JOURNAL_CSV_UPLOAD__TMP_CONTAINER", "publisher_csvs_validation")

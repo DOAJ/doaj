@@ -3,11 +3,21 @@ doaj.publisher_csvs = {};
 doaj.publisher_csvs.init = function() {
     $("#validate").on("click", function(event) {
         event.preventDefault();
-        $("#validation-results").html("Validating your file, please wait ...");
 
         let fd = new FormData();
         let file = $('#upload-csv-file')[0].files[0];
+        if (!file) {
+            alert("You must select a file to validate");
+            return;
+        }
+        if (!file.name.endsWith(".csv")) {
+            alert("You must provide a CSV file");
+            return;
+        }
+
         fd.append("journal_csv", file);
+
+        $("#validation-results").html("Validating your file, please wait ...");
 
         $.ajax({
            url: "/publisher/journal-csv/validate",
@@ -72,8 +82,12 @@ doaj.publisher_csvs.render_validation_results = function(response) {
     }
 
     let successFrag = "";
-    if (generalFrag === "" && headerFrag === "" && rowsFrag === "" && valuesFrag === "") {
-        successFrag = "<h3>File validated successfully!</h3>You can now go ahead and send this file to us for processing.";
+    if (!response.has_errors) {
+        if (response.has_warnings) {
+            successFrag = "<h3>File validated with warnings!</h3>You can now go ahead and send this file to us for processing, but please check the warnings below.";
+        } else {
+            successFrag = "<h3>File validated successfully!</h3>You can now go ahead and send this file to us for processing.";
+        }
     }
 
     let frag = successFrag + generalFrag + headerFrag + rowsFrag + valuesFrag;

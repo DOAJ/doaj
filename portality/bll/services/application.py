@@ -580,14 +580,15 @@ class ApplicationService(object):
             # verify header row with current CSV headers, report errors
             header_row = reader.fieldnames
             allowed_headers = Journal2PublisherUploadQuestionsXwalk.question_list()
-            lower_case_allowed_headers = map(str.lower, allowed_headers)
+            lower_case_allowed_headers = list(map(str.lower, allowed_headers))
             required_headers = Journal2PublisherUploadQuestionsXwalk.required_questions()
 
             # Always perform a match check on supplied headers, not counting order
             for i, h in enumerate(header_row):
                 if h and h not in allowed_headers:
                     if h.lower() in lower_case_allowed_headers:
-                        validation.header(validation.WARN, i, f'"{h}" has mismatching case to expected header "{allowed_headers[i]}".')
+                        expected = allowed_headers[lower_case_allowed_headers.index(h.lower())]
+                        validation.header(validation.WARN, i, f'"{h}" has mismatching case to expected header "{expected}".')
                     else:
                         validation.header(validation.ERROR, i, f'"{h}" is not a valid header.')
 
@@ -766,6 +767,8 @@ class CSVValidationReport:
 
     def json(self, indent=None):
         repr = {
+            "has_errors": self._errors,
+            "has_warnings": self._warnings,
             "general": self._general,
             "headers": self._headers,
             "rows": self._row,
