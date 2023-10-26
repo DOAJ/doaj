@@ -558,28 +558,37 @@ class FieldDefinitions:
                           "a society or other type of institution, enter that here."],
             "placeholder": "Type or select the society or institution’s name"
         },
-        "contexts" : {
+        "widgets": [
+            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
+            "full_contents" # ~~^->FullContents:FormWidget~~
+        ],
+        "contexts": {
             "admin": {
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.institution.name.exact"}},
+                    # ~~^-> Autocomplete:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             },
             "associate_editor": {
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.institution.name.exact"}},
+                    # ~~^-> Autocomplete:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             },
             "editor": {
                 "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.institution.name.exact"}},
+                    # ~~^-> Autocomplete:FormWidget~~
                     "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
                 ]
             }
-        },
-        "widgets": [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
-            "full_contents" # ~~^->FullContents:FormWidget~~
-        ]
+        }
     }
 
     # ~~->$ InstitutionCountry:FormField~~
