@@ -1,11 +1,10 @@
-from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory, ApplicationFixtureFactory
-from flask_login import current_user
+import time
 
+from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory, ApplicationFixtureFactory
+from doajtest.helpers import DoajTestCase
 from portality import models, constants
 from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask, change_in_doaj
 
-import time
 
 class TestWithdrawReinstate(DoajTestCase):
 
@@ -14,7 +13,6 @@ class TestWithdrawReinstate(DoajTestCase):
 
     def tearDown(self):
         super(TestWithdrawReinstate, self).tearDown()
-
 
     @staticmethod
     def make_account():
@@ -71,7 +69,8 @@ class TestWithdrawReinstate(DoajTestCase):
 
             pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
             eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
-            asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False, in_doaj=False)
+            asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False,
+                                                                in_doaj=False)
             a = models.Article(**asource)
             a.save()
             articles.append(a.id)
@@ -97,23 +96,7 @@ class TestWithdrawReinstate(DoajTestCase):
         acc.set_name("testuser")
         ctx = self._make_and_push_test_context(acc=acc)
 
-        sources = JournalFixtureFactory.make_many_journal_sources(10, in_doaj=True)
-        ids = []
-        articles = []
-        for source in sources:
-            source["admin"]["current_application"] = ""
-            j = models.Journal(**source)
-            j.save()
-            ids.append(j.id)
-
-            pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
-            eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
-            asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False)
-            a = models.Article(**asource)
-            a.save()
-            articles.append(a.id)
-
-        time.sleep(1)
+        articles, ids = make_journals_for_withdraw()
 
         change_in_doaj(ids, False)
 
@@ -144,7 +127,8 @@ class TestWithdrawReinstate(DoajTestCase):
 
             pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
             eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
-            asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False, in_doaj=False)
+            asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False,
+                                                                in_doaj=False)
             a = models.Article(**asource)
             a.save()
             articles.append(a.id)
@@ -187,4 +171,65 @@ class TestWithdrawReinstate(DoajTestCase):
         assert j.is_in_doaj() is False
 
         ur = models.Application.pull(application.id)
-        assert ur.application_status == constants.APPLICATION_STATUS_REJECTED, "application status: {}, expected: {}".format(ur.application_status, constants.APPLICATION_STATUS_REJECTED)
+        assert ur.application_status == constants.APPLICATION_STATUS_REJECTED, "application status: {}, expected: {}".format(
+            ur.application_status, constants.APPLICATION_STATUS_REJECTED)
+
+    def test_06_withdraw_with_trigger_by_jid(self):
+        with self._make_and_push_test_context_manager(acc=self.make_account()):
+            _, journal_ids = make_journals_for_withdraw()
+
+            trigger_by_jid = journal_ids[0]
+            change_in_doaj(journal_ids, False, trigger_by_jid=trigger_by_jid)
+            assert_journals_withdrawn(journal_ids, trigger_by_jid)
+
+    def test_07_withdraw_without_trigger_by_jid(self):
+        with self._make_and_push_test_context_manager(acc=self.make_account()):
+            _, journal_ids = make_journals_for_withdraw()
+
+            trigger_by_jid = None
+            change_in_doaj(journal_ids, False, trigger_by_jid=trigger_by_jid)
+            assert_journals_withdrawn(journal_ids, trigger_by_jid)
+
+
+def make_test_account():
+    acc = models.Account()
+    acc.set_name("testuser")
+    return acc
+
+
+def make_journals_for_withdraw():
+    sources = JournalFixtureFactory.make_many_journal_sources(10, in_doaj=True)
+    ids = []
+    articles = []
+    for source in sources:
+        source["admin"]["current_application"] = ""
+        j = models.Journal(**source)
+        j.save()
+        ids.append(j.id)
+
+        pissn = j.bibjson().get_identifiers(j.bibjson().P_ISSN)
+        eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)
+        asource = ArticleFixtureFactory.make_article_source(pissn=pissn[0], eissn=eissn[0], with_id=False)
+        a = models.Article(**asource)
+        a.save()
+        articles.append(a.id)
+    time.sleep(1)
+    return articles, ids
+
+
+def has_auto_msg(j):
+    return any(['Journal automatically withdrawn due to' in n['note'] for n in j.notes])
+
+
+def assert_journals_withdrawn(journal_ids, trigger_by_jid):
+    for id in journal_ids:
+        j = models.Journal.pull(id)
+        if trigger_by_jid is None:
+            assert not has_auto_msg(j)
+        else:
+            if id == trigger_by_jid:
+                assert not has_auto_msg(j)
+            else:
+                assert has_auto_msg(j)
+
+        assert j.is_in_doaj() is False

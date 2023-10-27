@@ -4,6 +4,7 @@ import hashlib
 import logging
 import os
 import shutil
+from contextlib import contextmanager
 from glob import glob
 from unittest import TestCase
 
@@ -204,6 +205,13 @@ class DoajTestCase(TestCase):
             login_user(acc)
 
         return ctx
+
+    @contextmanager
+    def _make_and_push_test_context_manager(self, path="/", acc=None):
+        ctx = self._make_and_push_test_context(path=path, acc=acc)
+        yield ctx
+
+        ctx.pop()
 
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
