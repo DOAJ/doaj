@@ -23,11 +23,11 @@
     {% if cont_list %}
         <span>{{ cont_name }}</span>
         <ul>
-            {% for issn, jid in cont_list %}
+            {% for issn, jid, title in cont_list %}
                 <li>
                     {% if jid %}
-                    <a href="{{ url_for("admin.journal_page", journal_id=jid ) }}">
-                        {{ issn }} ( {{ jid }} )
+                    <a href="{{ url_for("admin.journal_page", journal_id=jid ) }}" target="_blank">
+                        [{{ issn }}]{{ title }} ( {{ jid }} )
                     </a>
                     {% else %}
                     {{ issn }} ( Related journal not found )

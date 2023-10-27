@@ -1,5 +1,6 @@
 import itertools
 import json
+from collections import namedtuple
 from typing import Iterable, List
 
 from flask import Blueprint, request, flash, abort, make_response
@@ -251,17 +252,22 @@ def journal_page(journal_id):
             return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
 
 
-def create_cont_list(continuations: Iterable[Journal], continuation_issns: List[str]):
+DisplayContData = namedtuple('DisplayContData', ['issn', 'title', 'id'])
+
+
+def create_cont_list(continuations: Iterable[Journal],
+                     continuation_issns: List[str]) -> List[DisplayContData]:
     def _issn_id_tuple(j: Journal):
         bibjson = j.bibjson()
-        return bibjson.pissn or bibjson.eissn, j.id
+        return DisplayContData(bibjson.pissn or bibjson.eissn, j.id, bibjson.title)
 
-    cont_list = dict(map(_issn_id_tuple, continuations))
+    cont_list = map(_issn_id_tuple, continuations)
+    cont_list = {data.issn: data for data in cont_list}
     cont_list.update({
-        issn: None for issn in continuation_issns
+        issn: DisplayContData(issn, None, None) for issn in continuation_issns
         if issn not in cont_list
     })
-    return cont_list.items()
+    return cont_list.values()
 
 
 ######################################################
