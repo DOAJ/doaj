@@ -29,7 +29,8 @@ def change_by_query(query, in_doaj_new_val, dry_run=True):
     # return len(ids)
 
 def change_in_doaj(journal_ids, in_doaj_new_val, **kwargs):
-    job = SetInDOAJBackgroundTask.prepare(current_user.id, journal_ids=journal_ids, in_doaj=in_doaj_new_val, **kwargs)
+    job = SetInDOAJBackgroundTask.prepare(current_user.id, journal_ids=journal_ids,
+                                          in_doaj=in_doaj_new_val, **kwargs)
     SetInDOAJBackgroundTask.submit(job)
     return job
 
@@ -72,7 +73,8 @@ class SetInDOAJBackgroundTask(BackgroundTask):
                     job.add_audit_message(Messages.NO_UPDATE_REQUESTS)
 
             if trigger_by_jid and j.id != trigger_by_jid:
-                j.add_note(f"Journal automatically withdrawn due to {trigger_by_jid} being withdrawn by a ManEd.")
+                action = 'reinstated' if in_doaj else 'withdrawn'
+                j.add_note(f"Journal automatically {action} due to {trigger_by_jid} being {action} by a ManEd.")
 
 
             j.bibjson().active = in_doaj
