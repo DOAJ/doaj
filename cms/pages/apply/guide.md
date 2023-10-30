@@ -102,7 +102,8 @@ Journals that publish special issues or other content curated by guest editors m
 
 - The Editor-in-Chief must be responsible for the content of the entire journal, including all special issues, which must fall within the scope of the journal
 - Special issue articles must have the same editorial oversight as regular papers, including external peer review, and be clearly labelled
-- Journals must ensure that guest editors’ credentials are checked and approved and that they are overseen by the Editor-in-Chief or dedicated board members
+- Journals must ensure that guest editors’ credentials are checked and approved
+- The Editor-in-Chief or dedicated board members must oversee the guest editors
 - Papers submitted to a special issue by the guest editor(s) must be handled under an independent review process and make up no more than 25% of the issue's total
 
 DOAJ will not accept a journal if all content in the last year/volume is published as special issues.
