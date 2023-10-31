@@ -64,11 +64,11 @@ The following information must be available online and easily accessible from th
     - article processing charges (APCs)
     - page charges
     - colour charges
-  - Any fee waiver must be clearly specified with the conditions of waiver e.g. amount, time period.
+  - Any fee waiver must be clearly specified with the conditions of waiver, e.g. amount, time period.
   - If there are charges for withdrawing the article after submission, they cannot exceed the author charges. 
 - Contact details
   - Include the name of a contact person and the journal's dedicated email address.
-  - The country in the application and on the journal website must be the country where the publisher is registered and carries out its business activities.
+  - The country in the application and on the journal website must be where the publisher is registered and carries out its business activities.
 
 ---
 
@@ -88,11 +88,11 @@ The following information must be available online and easily accessible from th
   - Journals that display a list of reviewers must include their names and affiliations.
   - The editorial board for the journal should consist of at least five editors with appropriate qualifications and expertise. It is recommended that board members should not all come from the same institution.
 - All articles must pass through a quality control system (peer review) before publication.
-  - The type and details of the peer review process must be stated clearly on the website.
+  - The type and details of the peer review process must be stated clearly on the website, including the process for special issues, if applicable.
   - At least two independent reviewers should review each article.
 - Use of a plagiarism checking service is highly recommended but not required for inclusion in DOAJ.
 - Endogeny should be minimised.
-  - The proportion of published research papers where at least one of the authors is an editor, editorial board member or reviewer must not exceed 25% in either of the latest two issues.
+  - The proportion of published research papers where at least one of the authors is an editor, editorial board member, or reviewer must not exceed 25% in either of the latest two issues.
 
 ---
 
