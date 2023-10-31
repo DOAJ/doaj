@@ -12,7 +12,7 @@ featuremap:
 
 DOAJ relies on the support of publishers and [libraries](/support/) to ensure that its metadata and services remain free for all. The publishers on this page have chosen to show their commitment to quality, peer-reviewed open access by supporting DOAJ. We thank them as without them, our work would not be possible.
 
-## 2024 pricing
+## Pricing
 
 We are introducing a revised and simplified model for publishers to support DOAJ for 2024 and publishing this openly in line with [our commitment to the Principles of Open Scholarly Infrastructure](https://blog.doaj.org/2022/10/06/doaj-commits-to-the-principles-of-open-scholarly-infrastructure-posi/).  We are also relaunching the set of benefits for publishers choosing to support us.
 
@@ -46,7 +46,7 @@ Please contact [supporters@doaj.org](mailto:supporters@doaj.org) if you want to 
 
 *A 50% discount is available for supporters in Low- and Middle-Income Countries according to the World Bank classification.
 
-## 2024 publisher benefits
+## Benefits
 
 1. Your logo on the DOAJ website
 2. A post from all our social media platforms (Twitter, Facebook, LinkedIn, Mastodon, Instagram) acknowledging your organisation as a Supporter
