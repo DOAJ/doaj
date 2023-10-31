@@ -65,6 +65,8 @@ We are particularly grateful to those publishers who can contribute over and abo
 
 Please get in touch to discuss.
 
+## Publisher supporters
+
 <div>{% include '/data/sponsors.html' %}</div>
 
 ## Other publisher supporters
