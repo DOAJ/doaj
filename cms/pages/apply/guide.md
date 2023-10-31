@@ -96,7 +96,7 @@ The following information must be available online and easily accessible from th
 
 ---
 
-### Journals publishing special issues
+### Special issues
 
 Journals that publish special issues or other content curated by guest editors must adhere to these additional criteria:
 
