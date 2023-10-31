@@ -214,7 +214,7 @@ No further communication will be entered into after the appeal is heard and the 
 
 ## Updating your journal record
 
-For journals that have been accepted into DOAJ, it is important that the information we hold about them is up to date. 
+For journals accepted into DOAJ, it is important that the information we hold about them is up to date. 
 
 You can update the journal information via our API or by logging into your account and going to your Publisher dashboard. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button next to each journal record to submit an update request to us.
 
@@ -222,7 +222,7 @@ A journal update request form will open with the current answers pre-filled. Cha
 
 Once you have amended and reviewed the answers, submit the update request to us.
 
-Update requests are reviewed by the DOAJ editorial team for accuracy and we aim to process them within six weeks of submission.
+The DOAJ editorial team reviews update requests for accuracy and we aim to process them within six weeks of submission.
 
 ---
 
@@ -250,9 +250,10 @@ Our criteria are in:
 
 ## Change log
 
-This is Version 1.3 of the Guide to applying.
+This is Version 2.0 of the Guide to applying.
 
-*Version: 1.3 (April 2023 - further clarification to endogeny, displaying journal rankings, information about author charges and reviewers, flipped journals and journals/publishers with multiple exclusions )*<br>
+*Version 2.0 (November 2023 - addition of new criteria around special issues, smaller changes for clarity and plain English.)*
+<s>Version: 1.3 (April 2023 - further clarification to endogeny, displaying journal rankings, information about author charges and reviewers, flipped journals and journals/publishers with multiple exclusions )</s><br>
 <s>Version: 1.2 (February 2022 - extra copyright and licensing information were moved to a separate page)</s><br>
 <s>Version: 1.1 (December 2021 - a clarification to endogeny criterion)</s><br>
 <s>Version 1.0 (November 1.0)
