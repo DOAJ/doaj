@@ -12,11 +12,11 @@ featuremap:
 
 DOAJ relies on the support of publishers and [libraries](/support/) to ensure that its metadata and services remain free for all. The publishers on this page have chosen to show their commitment to quality, peer-reviewed open access by supporting DOAJ. We thank them as without them, our work would not be possible.
 
-## 2024 pricing
+## Pricing
 
 We are introducing a revised and simplified model for publishers to support DOAJ for 2024 and publishing this openly in line with [our commitment to the Principles of Open Scholarly Infrastructure](https://blog.doaj.org/2022/10/06/doaj-commits-to-the-principles-of-open-scholarly-infrastructure-posi/).  We are also relaunching the set of benefits for publishers choosing to support us.
 
-We only accept support through our publisher supporter model from publishers with journals already indexed in DOAJ. Other routes to support DOAJ are as [an institution](/support/) or as [an individual via Paypal](https://www.paypal.com/donate/?campaign_id=4VXR4TJ69MDJJ). Non-commercial/institutional rates are only available to community-led, smaller publishers with limited funding. Please contact [supporters@doaj.org](mailto:supporters@doaj.org) if unsure which category applies.
+We only accept support through our publisher supporter model from publishers with journals already indexed in DOAJ. Non-commercial/institutional rates are only available to community-led, smaller publishers with limited funding. Please contact [supporters@doaj.org](mailto:supporters@doaj.org) if you are unsure which category applies.
 
 Please contact [supporters@doaj.org](mailto:supporters@doaj.org) if you want to contribute to DOAJ’s operating costs as a publisher supporter.
 
@@ -46,7 +46,7 @@ Please contact [supporters@doaj.org](mailto:supporters@doaj.org) if you want to 
 
 *A 50% discount is available for supporters in Low- and Middle-Income Countries according to the World Bank classification.
 
-## 2024 publisher benefits
+## Benefits
 
 1. Your logo on the DOAJ website
 2. A post from all our social media platforms (Twitter, Facebook, LinkedIn, Mastodon, Instagram) acknowledging your organisation as a Supporter
@@ -65,20 +65,7 @@ We are particularly grateful to those publishers who can contribute over and abo
 
 Please get in touch to discuss.
 
-## 2023 benefits for publisher supporters
-
-([A downloadable version](https://docs.google.com/document/d/1xTVxUvqLkh2-r53cYlWdSIHsPGSnhcE7gi7bRFCaJik/edit?usp=sharing) of these benefits is available.)
-
-| Basic contribution       | Sustaining contribution (25% higher than Basic) | Premier contribution (50% higher than Basic) |
-|--------------------------|-------------------------------------------------|----------------------------------------------|
-| Your logo on our website | Your logo on our website                        | Your logo on our website                     |
-| A Tweet from the DOAJ account (21,900 followers) acknowledging your organisation as a Supporter | An interview-style blog post on [blog.doaj.org](https://blog.doaj.org/) (12,000 views per month) acknowledging your organisation as a Contributor, with questions about the state of open access and other current developments in open access scholarly publishing | An interview-style blog post on [blog.doaj.org](https://blog.doaj.org/) (12,000 views per month) acknowledging your organisation as a Contributor with questions about the state of open access and other current developments in open access scholarly publishing|
-|                          | A one-pager for  journal editors explaining, in general terms, how article metadata is ingested, and then pulled downstream by discovery services. | A one-pager for journal editors explaining, in general terms, how article metadata is ingested, and then pulled downstream by discovery services.|
-|                          | General presentation or documentation, for raising awareness among your stakeholders, about the benefits of DOAJ, the work we do and how DOAJ benefits individual journal titles. | Dedicated presentation or documentation, tailored to your organisation, about the benefits of DOAJ, the work we do and how DOAJ benefits individual journal titles. Written as a joint document with the publisher. |
-|                          | A report, (a Google Sheet), collecting metadata errors, as reported to us by discovery services. | A report, (a Google Sheet), collecting metadata errors, as reported to us by discovery services. |
-|                          |                                                 | A yearly account review between the customer and DOAJ. The agenda can be determined by the publisher contact and a DOAJ representative. |
-|                          |                                                 | A CSV file, generated annually, for recording changes in and which DOAJ updates your live records with. |
-|                          |                                                 | Exposure across all our social media channels: Twitter, Instagram, LinkedIn, Facebook, WeChat. (Stats available.) | 
+## Publisher supporters
 
 <div>{% include '/data/sponsors.html' %}</div>
 
