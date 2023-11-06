@@ -17,59 +17,49 @@
         {% set fs = formulaic_context.fieldset("reassign") %}
         {% if fs %}
             {% for f in fs.fields() %}
-            <details>
-                <summary><h2 class="form__header">{{ fs.label }} +</h2></summary>
+                <h2 class="form__header">{{ fs.label }}</h2>
                 {% set field_template = f.template %}
-                {% include field_template %}
-            </details>
+                {%  include field_template %}
             {% endfor %}
         {% endif %}
 
         {% set fs = formulaic_context.fieldset("status") %}
         {% if fs %}
         {% for f in fs.fields() %}
-            <details>
-                <summary><h2 class="form__header">{{ fs.label }} +</h2></summary>
-                {% set field_template = f.template %}
-                {%  include field_template %}
-            </details>
+            <h2 class="form__header">{{ fs.label }}</h2>
+            {% set field_template = f.template %}
+            {%  include field_template %}
         {% endfor %}
         {% endif %}
     {% endif %}
 
     {% set fs = formulaic_context.fieldset("continuations") %}
     {% if fs %}
-        <details>
-            <summary><h2 class="form__header">{{ fs.label }} +</h2></summary>
-            {% for f in fs.fields() %}
-                {% set field_template = f.template %}
-                {% include field_template %}
-            {% endfor %}
-        </details>
+    <h2 class="form__header">{{ fs.label }}</h2>
+    {% for f in fs.fields() %}
+        {% set field_template = f.template %}
+        {% include field_template %}
+    {% endfor %}
     {% endif %}
 
     {% set fs = formulaic_context.fieldset("subject") %}
     {% if fs %}
-        <details>
-            <summary><h2 class="form__header">{{ fs.label }} +</h2></summary>
-            {% for f in fs.fields() %}
-                {% set field_template = f.template %}
-                {%  include field_template %}
-            {% endfor %}
-            <p>Selected: <strong class="admin_value_preview" id="subject-value" data-source="#subject"></strong></p>
-            <div id="subject_checkbox-errors"></div>
-        </details>
+        <h2 class="form__header">{{ fs.label }}</h2>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
+        <p>Selected: <strong class="admin_value_preview" id="subject-value" data-source="#subject"></strong></p>
+        <div id="subject_checkbox-errors"></div>
     {% endif %}
 
     {% set fs = formulaic_context.fieldset("seal") %}
     {% if fs %}
-        <details>
-            <summary><h2 class="form__header">{{ fs.label }} +</h2></summary>
-            <p>The journal has fulfilled all the criteria for the Seal. </p>
-            {% for f in fs.fields() %}
-                {% set field_template = f.template %}
-                {%  include field_template %}
-            {% endfor %}
-        </details>
+        <h2 class="form__header">{{ fs.label }}</h2>
+        <p>The journal has fulfilled all the criteria for the Seal. </p>
+        {% for f in fs.fields() %}
+            {% set field_template = f.template %}
+            {%  include field_template %}
+        {% endfor %}
     {% endif %}
 </fieldset>
