@@ -16,16 +16,14 @@ IN_DOAJ = {
 
 if __name__ == "__main__":
 
-    # import argparse
-    #
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("-o", "--out", help="output file path", required=True)
-    # args = parser.parse_args()
+    import argparse
 
-    out = "out"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-o", "--out", help="output file path", required=True)
+    args = parser.parse_args()
 
-    # with open(args.out+"notfound.csv", "w", encoding="utf-8") as f_notfound, open(args.out+"-identical.csv", "w", encoding="utf-8") as f_identical, open(args.out+"-others.csv", "w", encoding="utf-8") as f_others:
-    with open(out+"_notfound.csv", "w", encoding="utf-8") as f_notfound, open(out+"_identical.csv", "w", encoding="utf-8") as f_identical, open(out+"_others.csv", "w", encoding="utf-8") as f_others:
+
+    with open(args.out+"notfound.csv", "w", encoding="utf-8") as f_notfound, open(args.out+"-identical.csv", "w", encoding="utf-8") as f_identical, open(args.out+"-others.csv", "w", encoding="utf-8") as f_others:
         writer_notfound = csv.writer(f_notfound)
         writer_notfound.writerow(["ID", "PISSN", "EISSN", "Journals found with article's PISSN", "In doaj?",
                          "Journals found with article's EISSN", "In doaj?", "Error"])
