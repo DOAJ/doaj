@@ -144,6 +144,10 @@ journal directory
             {% endif %}
             {% if file.status == "uploaded" or file.status == "partial" and file.articles_info %}
             <div id="details_{{ file.id }}" style="display:none">
+              {% if file.articles_info.uploaded_journals %}
+                <p><strong class="label label--secondary">Uploaded packages</strong></p>
+                <p>{{file.articles_info.uploaded_journals}}</p>
+              {% endif %}
               {% if file.articles_info.successful_articles %}
                 <p><strong class="label label--secondary">Successful articles</strong></p>
                 <p>{{file.articles_info.successful_articles}}</p>

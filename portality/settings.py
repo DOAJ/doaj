@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.4.2"
+DOAJ_VERSION = "6.4.6"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -422,6 +422,9 @@ HUEY_EAGER = False
 
 # Crontab for never running a job - February 31st (use to disable tasks)
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
+
+# Additional Logging for scheduled JournalCSV
+EXTRA_JOURNALCSV_LOGGING = False
 
 #  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
 HUEY_SCHEDULE = {
