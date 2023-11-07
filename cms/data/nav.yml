@@ -60,7 +60,7 @@ entries:
         route: doaj.support           # ~~->Support:WebRoute~~
       - label: Publishers
         route: doaj.publisher_supporters      # ~~->PublisherSupporters:WebRoute~~
-      - label: Supporters
+      - label: Institutional and library supporters
         route: doaj.supporters        # ~~->Supporters:WebRoute~~
   - id: apply
     label: Apply
