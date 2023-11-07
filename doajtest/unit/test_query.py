@@ -86,13 +86,41 @@ QUERY_ROUTE = {
     }
 }
 
-JOURNAL_QUERY_ROUTE = {
+SEARCH_ALL_QUERY_ROUTE = {
     "query" : {
         "journal" : {
             "auth" : False,
             "role" : None,
-            "query_filters" : ["only_in_doaj", "search_all_meta"],
+            "query_filters" : ["search_all_meta"],
             "dao" : "portality.models.Journal"
+        }
+    },
+    "editor_query" : {
+        "journal" : {
+            "auth" : True,
+            "role" : "editor",
+            "query_filters" : ["search_all_meta"],
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : False,
+            "role" : "editor",
+            "query_filters" : ["search_all_meta"],
+            "dao" : "portality.models.Application"
+        }
+    },
+    "associate_query": {
+        "journal": {
+            "auth": False,
+            "role": "associate_editor",
+            "query_filters" : ["search_all_meta"],
+            "dao": "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : False,
+            "role" : "associate_editor",
+            "query_filters" : ["search_all_meta"],
+            "dao" : "portality.models.Application"
         }
     }
 }
@@ -412,7 +440,7 @@ class TestQuery(DoajTestCase):
 
     def test_public_query_notes(self):
 
-        self.app_test.config['QUERY_ROUTE'] = JOURNAL_QUERY_ROUTE
+        self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
 
         self.get_journal_with_notes()
 
@@ -440,6 +468,8 @@ class TestQuery(DoajTestCase):
 
     def test_editor_query_notes(self):
 
+        self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
+
         self.get_journal_with_notes()
 
         editor = models.Account(**AccountFixtureFactory.make_editor_source())
@@ -455,9 +485,11 @@ class TestQuery(DoajTestCase):
                             'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
                             {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
                                                'track_total_hits': True}, account=editor, additional_parameters={})
-        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
 
     def test_associate_editor_query_notes(self):
+
+        self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
 
         self.get_journal_with_notes()
 
@@ -474,9 +506,11 @@ class TestQuery(DoajTestCase):
                             'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
                             {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
                                                'track_total_hits': True}, account=associate, additional_parameters={})
-        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
 
     def test_associate_editor_application_query_notes(self):
+
+        self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
 
         app = self.get_application_with_notes()
 
@@ -494,9 +528,11 @@ class TestQuery(DoajTestCase):
                             'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
                             {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
                                                'track_total_hits': True}, account=associate, additional_parameters={})
-        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
 
     def test_editor_application_query_notes(self):
+
+        self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
 
         app = self.get_application_with_notes()
 
@@ -514,9 +550,9 @@ class TestQuery(DoajTestCase):
                             'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
                             {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
                                                'track_total_hits': True}, account=editor, additional_parameters={})
-        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
 
-    def test_editor_application_query_notes(self):
+    def test_admin_application_query_notes(self):
 
         app = self.get_application_with_notes()
 
