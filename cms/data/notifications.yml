@@ -1,7 +1,7 @@
 # ~~Notifications:Data~~
 application:assed:assigned:notify:
   long: |
-    An application, or update request for the journal **{journal_title}** has been assigned to you by the Editor of your group **{group_name}**. Please start work on this within 10 days.
+    An application for the journal **{journal_title}** has been assigned to you by the Editor of your group **{group_name}**. Please start work on this within 10 days.
   short:
     New application ({issns}) assigned to you
 

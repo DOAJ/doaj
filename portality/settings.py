@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.4.3"
+DOAJ_VERSION = "6.4.6"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -423,11 +423,14 @@ HUEY_EAGER = False
 # Crontab for never running a job - February 31st (use to disable tasks)
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
+# Additional Logging for scheduled JournalCSV
+EXTRA_JOURNALCSV_LOGGING = False
+
 #  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
 HUEY_SCHEDULE = {
     "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
     "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
-    "journal_csv": CRON_NEVER,  # {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
+    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
     "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
     "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
     "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},

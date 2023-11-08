@@ -254,16 +254,7 @@ def autocomplete(doc_type, field_name):
     # http://flask.pocoo.org/docs/security/#json-security
 
 
-@blueprint.route("/toc/<identifier>")
-@blueprint.route("/toc/<identifier>/<volume>")
-@blueprint.route("/toc/<identifier>/<volume>/<issue>")
-def toc(identifier=None, volume=None, issue=None):
-    """ Table of Contents page for a journal. identifier may be the journal id or an issn """
-    # If this route is changed, update JOURNAL_TOC_URL_FRAG in settings.py (partial ToC page link for journal CSV)
-
-    journal = None
-    issn_ref = False
-
+def find_toc_journal_by_identifier(identifier):
     if identifier is None:
         abort(404)
 
@@ -279,44 +270,40 @@ def toc(identifier=None, volume=None, issue=None):
         if journal is None:
             abort(400)
 
-        issn_ref = True  # just a flag so we can check if we were requested via issn
+        return journal
+
     elif len(identifier) == 32:
         js = models.Journal.pull(identifier)  # Returns None on fail
 
         if js is None or not js.is_in_doaj():
             abort(404)
-        journal = js
-    else:
-        abort(400)
+        return js
 
-    # get the bibjson record that we're going to render
-    bibjson = journal.bibjson()
+    abort(400)
 
-    # The issn we are using to build the TOC
-    issn = bibjson.get_preferred_issn()
 
-    # now redirect to the canonical E-ISSN if one is available
+def is_issn_by_identifier(identifier):
+    return len(identifier) == 9
 
-    if issn_ref:  # the journal is referred to by an ISSN
+def find_correct_redirect_identifier(identifier, bibjson) -> str:
+    """
+    return None if identifier is correct and no redirect is needed
+
+    :param identifier:
+    :param bibjson:
+    :return:
+    """
+    if is_issn_by_identifier(identifier):  # the journal is referred to by an ISSN
         # if there is an E-ISSN (and it's not the one in the request), redirect to it
         eissn = bibjson.get_one_identifier(bibjson.E_ISSN)
         if eissn and identifier != eissn:
-            return redirect(url_for('doaj.toc', identifier=eissn, volume=volume, issue=issue), 301)
+            return eissn
 
         # if there's no E-ISSN, but there is a P-ISSN (and it's not the one in the request), redirect to the P-ISSN
         if not eissn:
             pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
             if pissn and identifier != pissn:
-                return redirect(url_for('doaj.toc', identifier=pissn, volume=volume, issue=issue), 301)
-
-        # Add the volume and issue to query if present in path
-        if volume:
-            filters = [dao.Facetview2.make_term_filter('bibjson.journal.volume.exact', volume)]
-            if issue:
-                filters += [dao.Facetview2.make_term_filter('bibjson.journal.number.exact', issue)]
-            q = dao.Facetview2.make_query(filters=filters)
-
-            return redirect(url_for('doaj.toc', identifier=issn) + '?source=' + dao.Facetview2.url_encode_query(q))
+                return pissn
 
         # The journal has neither a PISSN or an EISSN. Yet somehow
         # issn_ref is True, the request was referring to the journal
@@ -333,22 +320,52 @@ def toc(identifier=None, volume=None, issue=None):
         if not issn:
             issn = bibjson.get_one_identifier(bibjson.P_ISSN)
         if issn:
-            return redirect(url_for('doaj.toc', identifier=issn, volume=volume, issue=issue), 301)
+            return issn
 
         # let it continue loading if we only have the hex UUID for the journal (no ISSNs)
         # and the user is referring to the toc page via that ID
 
-    # get the continuations for this journal, future and past
-    future_journals = journal.get_future_continuations()
-    past_journals = journal.get_past_continuations()
+@blueprint.route("/toc/<identifier>")
+def toc(identifier=None):
+    """ Table of Contents page for a journal. identifier may be the journal id or an issn """
+    # If this route is changed, update JOURNAL_TOC_URL_FRAG in settings.py (partial ToC page link for journal CSV)
 
-    # extract the bibjson, which is what the template is after, and whether the record is in doaj
-    #future = [j.bibjson() j for j in future_journals]
-    #past = [j.bibjson() for j in past_journals]
+    journal = find_toc_journal_by_identifier(identifier)
+    bibjson = journal.bibjson()
+    real_identifier = find_correct_redirect_identifier(identifier, bibjson)
+    if real_identifier:
+        return redirect(url_for('doaj.toc', identifier=real_identifier), 301)
+    else:
+        # now render all that information
+        return render_template('doaj/toc.html', journal=journal, bibjson=bibjson )
 
-    # now render all that information
-    return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future_journals, past=past_journals,
-                           toc_issns=journal.bibjson().issns())
+
+@blueprint.route("/toc/articles/<identifier>")
+@blueprint.route("/toc/articles/<identifier>/<volume>")
+@blueprint.route("/toc/articles/<identifier>/<volume>/<issue>")
+def toc_articles(identifier=None, volume=None, issue=None):
+    journal = find_toc_journal_by_identifier(identifier)
+    bibjson = journal.bibjson()
+    real_identifier = find_correct_redirect_identifier(identifier, bibjson)
+    if real_identifier:
+        return redirect(url_for('doaj.toc_articles', identifier=real_identifier,
+                                volume=volume, issue=issue), 301)
+    else:
+
+        if is_issn_by_identifier(identifier) and volume:
+            filters = [dao.Facetview2.make_term_filter('bibjson.journal.volume.exact', volume)]
+            if issue:
+                filters += [dao.Facetview2.make_term_filter('bibjson.journal.number.exact', issue)]
+            q = dao.Facetview2.make_query(filters=filters)
+
+            # The issn we are using to build the TOC
+            issn = bibjson.get_preferred_issn()
+            return redirect(url_for('doaj.toc', identifier=issn)
+                            + '?source=' + dao.Facetview2.url_encode_query(q))
+
+        # now render all that information
+        return render_template('doaj/toc_articles.html', journal=journal, bibjson=bibjson )
+
 
 
 #~~->Article:Page~~

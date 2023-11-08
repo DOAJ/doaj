@@ -4,7 +4,7 @@ from flask_login import current_user, login_required
 
 from portality.app_email import EmailException
 from portality import models
-from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException
+from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException, ArticleNotAcceptable
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.dao import ESMappingMissingError
 from portality.forms.application_forms import ApplicationFormFactory
@@ -290,8 +290,8 @@ def preservation():
         # check if collection has been assigned for the user
         # collection must be in the format {"user_id1",["collection_name1","collection_id1"],
         #                                     "user_id2",["collection_name2","collection_id2"]}
-        collection_available = True
-        collection_dict = app.config.get("PRESERVATION_COLLECTION")
+        collection_dict = app.config.get("PRESERVATION_COLLECTION", {})
+        collection_available = True if collection_dict else False
         if collection_dict and not current_user.id in collection_dict:
             collection_available = False
         elif collection_dict:
@@ -362,7 +362,8 @@ def metadata():
                 Messages.flash(Messages.ARTICLE_METADATA_MERGE_CONFLICT)
             except DuplicateArticleException:
                 Messages.flash(Messages.ARTICLE_METADATA_UPDATE_CONFLICT)
-
+            except ArticleNotAcceptable as e:
+                Messages.flash_with_param(e.message, "error")
         return fc.render_template(validated=validated)
 
 

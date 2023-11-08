@@ -274,7 +274,7 @@ $.extend(true, doaj, {
                                     value: false
                                 })
                             ],
-                            display : "Without article processing charges (APCs)"
+                            display : "Without any fees"
                         }
                     ],
                     fieldDisplays : {
