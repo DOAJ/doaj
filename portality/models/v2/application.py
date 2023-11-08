@@ -245,7 +245,8 @@ class AllPublisherApplications(DomainObject):
 MAPPING_OPTS = {
     "dynamic": None,
     "coerces": Journal.add_mapping_extensions(app.config["DATAOBJ_TO_MAPPING_DEFAULTS"]),
-    "exceptions": app.config["ADMIN_NOTES_SEARCH_MAPPING"]
+    "exceptions": app.config["ADMIN_NOTES_SEARCH_MAPPING"],
+    "additional_mappings": app.config["ADMIN_NOTES_INDEX_ONLY_FIELDS"]
 }
 
 

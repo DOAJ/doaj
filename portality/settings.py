@@ -929,8 +929,20 @@ PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS = [
     "admin.notes.author_id"
 ]
 
+ADMIN_NOTES_INDEX_ONLY_FIELDS = {
+    "all_meta" : {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+                "store": True
+            }
+        }
+    }
+}
+
 ADMIN_NOTES_SEARCH_MAPPING = {
-        "all_meta" : {
+    "admin.notes.id": {
             "type": "text",
             "fields": {
                 "exact": {
@@ -938,35 +950,26 @@ ADMIN_NOTES_SEARCH_MAPPING = {
                     "store": True
                 }
             }
-        },
-        "admin.notes.id": {
-                "type": "text",
-                "fields": {
-                    "exact": {
-                        "type": "keyword",
-                        "store": True
-                    }
+    },
+    "admin.notes.note": {
+            "type": "text",
+            "fields": {
+                "exact": {
+                    "type": "keyword",
+                    "store": True
                 }
-        },
-        "admin.notes.note": {
-                "type": "text",
-                "fields": {
-                    "exact": {
-                        "type": "keyword",
-                        "store": True
-                    }
+            }
+    },
+    "admin.notes.author_id": {
+            "type": "text",
+            "fields": {
+                "exact": {
+                    "type": "keyword",
+                    "store": True
                 }
-        },
-        "admin.notes.author_id": {
-                "type": "text",
-                "fields": {
-                    "exact": {
-                        "type": "keyword",
-                        "store": True
-                    }
-                }
-        }
+            }
     }
+}
 
 ####################################################
 # Autocomplete
