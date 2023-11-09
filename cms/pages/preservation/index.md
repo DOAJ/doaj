@@ -28,12 +28,12 @@ _*References_
 
 The premise of the JASPER process is that all journals are different, with different needs, different priorities and different resources. The workflow offers viable alternatives to journals so that they engage with one or more archiving services that meet their requirements and capacities. The JASPER process is simple:
 
-1 work out which archiving option might be the best fit for the publisher
-2 establish the level where the amount of effort is manageable by the publisher, based on:
-  a platform
-  b ability to send article metadata to DOAJ
-  c the ability to export and zip full text, images etc
-3 direct the journal to the most appropriate archiving option
+1. work out which archiving option might be the best fit for the publisher
+2. establish the level where the amount of effort is manageable by the publisher, based on:
+  * platform
+  * ability to send article metadata to DOAJ
+  * the ability to export and zip full text, images etc
+3. direct the journal to the most appropriate archiving option
 
 ## For publishers
 
