@@ -52,6 +52,10 @@ We will analyse the financial status of journals or publishers quite closely. We
 
 If your journal meets the criteria above, [you may apply here](https://www.surveymonkey.com/r/JASPERPRESERVATION). If you have any questions about these criteria, don't hesitate to [get in touch](mailto:preservation@doaj.org).
 
+## Presentar solicitud
+
+Si su revista cumple con los criterios anteriores, [puede presentar su solicitud aquí](https://www.surveymonkey.com/r/ProyectoJASPER). Si tiene alguna pregunta sobre estos criterios, no dude en ponerse en contacto.
+
 ## Different archiving options
 1. *The OJS route*: OJS journals can use [the PKP PN preservation](https://docs.pkp.sfu.ca/pkp-pn/en/) service which is built on LOCKSS software. You must enable a plugin in the journal's dashboard and agree to some simple terms. However, your journal must be on the right version of the OJS software to take part. JASPER will ensure that the journals are pointed to the guidance they need to upgrade and become compliant. Journals on OJS may also choose to have their content preserved via the upload route below.
 
