@@ -55,47 +55,47 @@ def unlocked():
     return render_template("unlocked.html")
 
 
-@blueprint.route("/shorten", methods=["POST"])
-@jsonp
-def shorten():
-    # Enable this if you are testing and you want to see the front end work, without working bit.ly credentials
-    # return make_response(json.dumps({"url" : "testing url"}))
-    try:
-        # parse the json
-        d = json.loads(request.data)
-        p = d['page']
-        q = d['query']
-
-        # re-serialise the query, and url encode it
-        source = urllib.parse.quote(json.dumps(q))
-
-        # assemble the DOAJ url
-        doajurl = p + "?source=" + source
-
-        # assemble the bitly url.  Note that we re-encode the doajurl to include in the
-        # query arguments, so by this point it is double-encoded
-        bitly = app.config.get("BITLY_SHORTENING_API_URL")
-        bitly_oauth = app.config.get("BITLY_OAUTH_TOKEN")
-
-        # Set an Auth Bearer token (Bitly 4.0)
-        headers = {'Authorization': 'Bearer ' + bitly_oauth}
-
-        # Add the long url as a payload
-        payload = {'long_url': doajurl}
-
-        # make the request
-        resp = requests.post(bitly, headers=headers, data=json.dumps(payload))
-        shorturl = resp.json().get('link')
-
-        if not shorturl:
-            abort(400)
-
-        # make the response
-        answer = make_response(json.dumps({"url": shorturl}))
-        answer.mimetype = "application/json"
-        return answer
-    except:
-        abort(400)
+# @blueprint.route("/shorten", methods=["POST"])
+# @jsonp
+# def shorten():
+#     # Enable this if you are testing and you want to see the front end work, without working bit.ly credentials
+#     # return make_response(json.dumps({"url" : "testing url"}))
+#     try:
+#         # parse the json
+#         d = json.loads(request.data)
+#         p = d['page']
+#         q = d['query']
+#
+#         # re-serialise the query, and url encode it
+#         source = urllib.parse.quote(json.dumps(q))
+#
+#         # assemble the DOAJ url
+#         doajurl = p + "?source=" + source
+#
+#         # assemble the bitly url.  Note that we re-encode the doajurl to include in the
+#         # query arguments, so by this point it is double-encoded
+#         bitly = app.config.get("BITLY_SHORTENING_API_URL")
+#         bitly_oauth = app.config.get("BITLY_OAUTH_TOKEN")
+#
+#         # Set an Auth Bearer token (Bitly 4.0)
+#         headers = {'Authorization': 'Bearer ' + bitly_oauth}
+#
+#         # Add the long url as a payload
+#         payload = {'long_url': doajurl}
+#
+#         # make the request
+#         resp = requests.post(bitly, headers=headers, data=json.dumps(payload))
+#         shorturl = resp.json().get('link')
+#
+#         if not shorturl:
+#             abort(400)
+#
+#         # make the response
+#         answer = make_response(json.dumps({"url": shorturl}))
+#         answer.mimetype = "application/json"
+#         return answer
+#     except:
+#         abort(400)
 
 
 @blueprint.route("/groupstatus/<group_id>", methods=["GET"])
