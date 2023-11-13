@@ -40,7 +40,7 @@ fragments:
       - Your API Key at the top of the page is updated
       - You receive a flash message saying your record is updated and the API key has
         changed
-    - step: Click "Copy to click" icon next to your API key
+    - step: Click "Click to Copy" icon next to your API key
       results:
       - The API key is copied to your clipboard
       - Confirmation message appears and dissapears after a moment
