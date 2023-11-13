@@ -1069,11 +1069,11 @@ BACKGROUND_TASK_LOCK_TIMEOUT = 3600
 # ~~->Bitly:ExternalService~~
 
 # bit,ly api shortening service
-BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v4/shorten"
+#BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v4/shorten"
 
 # bitly oauth token
 # ENTER YOUR OWN TOKEN IN APPROPRIATE .cfg FILE
-BITLY_OAUTH_TOKEN = ""
+#BITLY_OAUTH_TOKEN = ""
 
 ###############################################
 # Date handling
