@@ -4,14 +4,19 @@ This script is useful to create new index with any new mapping changes if applic
 
 import json
 import time
+import elasticsearch
 from elasticsearch import helpers
 from elasticsearch.exceptions import NotFoundError, RequestError, ConnectionError, AuthorizationException
 
-from portality.core import app, es_connection, put_mappings
+from portality.core import app
 from portality.lib import es_data_mapping
 
 
 def do_import(config):
+    # create a connection with timeout
+    es_connection = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'],
+                                                verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True),
+                                                timeout=60*10)
 
     # get the versions
     version = config.get("new_version")
