@@ -1,5 +1,28 @@
+# ~~ESReindex:CLI~~
 """
 This script is useful to create new index with any new mapping changes if applicable and copy the content from old index to new index
+run the script:
+portality/scripts/es_reindex.py <json file path>
+ex:
+portality/scripts/es_reindex.py -u <full path>/portality/migrate/3575_make_notes_searchable/migrate.json
+
+example json file:
+{
+	"new_version": "-20231109", #new index version
+	"old_version": "-20230901", #old index version
+	"types": [
+		{
+			"type" : "application", #model type
+			"migrate": true,  #if migration required true or false
+			"set_alias": false #set to true if alias has to be set with base name ex: doaj-application
+		},
+		{
+			"type": "journal",
+			"migrate": true,
+			"set_alias": false
+		}
+	]
+}
 """
 
 import json
