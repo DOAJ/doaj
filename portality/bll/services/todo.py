@@ -158,6 +158,7 @@ class TodoService(object):
 class TodoRules(object):
     @classmethod
     def maned_stalled(cls, size, maned_of):
+        sort_date = "created_date"
         stalled = TodoQuery(
             musts=[
                 TodoQuery.lmu_older_than(8),
@@ -166,13 +167,14 @@ class TodoRules(object):
             must_nots=[
                 TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
             ],
-            sort="last_manual_update",
+            sort=sort_date,
             size=size
         )
-        return constants.TODO_MANED_STALLED, stalled, "last_manual_update", 0
+        return constants.TODO_MANED_STALLED, stalled, sort_date, 0
 
     @classmethod
     def maned_follow_up_old(cls, size, maned_of):
+        sort_date = "created_date"
         follow_up_old = TodoQuery(
             musts=[
                 TodoQuery.cd_older_than(10),
@@ -181,38 +183,41 @@ class TodoRules(object):
             must_nots=[
                 TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
             ],
-            sort="created_date",
+            sort=sort_date,
             size=size
         )
-        return constants.TODO_MANED_FOLLOW_UP_OLD, follow_up_old, "created_date", 0
+        return constants.TODO_MANED_FOLLOW_UP_OLD, follow_up_old, sort_date, 0
 
     @classmethod
     def maned_ready(cls, size, maned_of):
+        sort_date = "created_date"
         ready = TodoQuery(
             musts=[
                 TodoQuery.status([constants.APPLICATION_STATUS_READY]),
                 TodoQuery.editor_group(maned_of)
             ],
-            sort="last_manual_update",
+            sort=sort_date,
             size=size
         )
-        return constants.TODO_MANED_READY, ready, "created_date", 1
+        return constants.TODO_MANED_READY, ready, sort_date, 1
 
     @classmethod
     def maned_completed(cls, size, maned_of):
+        sort_date = "created_date"
         completed = TodoQuery(
             musts=[
                 TodoQuery.status([constants.APPLICATION_STATUS_COMPLETED]),
                 TodoQuery.lmu_older_than(2),
                 TodoQuery.editor_group(maned_of)
             ],
-            sort="last_manual_update",
+            sort=sort_date,
             size=size
         )
-        return constants.TODO_MANED_COMPLETED, completed, "last_manual_update", 0
+        return constants.TODO_MANED_COMPLETED, completed, sort_date, 0
 
     @classmethod
     def maned_assign_pending(cls, size, maned_of):
+        sort_date = "created_date"
         assign_pending = TodoQuery(
             musts=[
                 TodoQuery.exists("admin.editor_group"),
@@ -223,13 +228,14 @@ class TodoRules(object):
             must_nots=[
                 TodoQuery.exists("admin.editor")
             ],
-            sort="created_date",
+            sort=sort_date,
             size=size
         )
-        return constants.TODO_MANED_ASSIGN_PENDING, assign_pending, "last_manual_update", 0
+        return constants.TODO_MANED_ASSIGN_PENDING, assign_pending, sort_date, 0
 
     @classmethod
     def editor_stalled(cls, groups, size):
+        sort_date = "created_date"
         stalled = TodoQuery(
             musts=[
                 TodoQuery.lmu_older_than(6),
@@ -243,13 +249,14 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_READY
                 ])
             ],
-            sort="last_manual_update",
+            sort=sort_date,
             size=size
         )
-        return constants.TODO_EDITOR_STALLED, stalled, "last_manual_update", 0
+        return constants.TODO_EDITOR_STALLED, stalled, sort_date, 0
 
     @classmethod
     def editor_follow_up_old(cls, groups, size):
+        sort_date = "created_date"
         follow_up_old = TodoQuery(
             musts=[
                 TodoQuery.cd_older_than(8),
@@ -263,26 +270,28 @@ class TodoRules(object):
                     constants.APPLICATION_STATUS_READY
                 ])
             ],
-            sort="created_date",
+            sort=sort_date,
             size=size
         )
-        return constants.TODO_EDITOR_FOLLOW_UP_OLD, follow_up_old, "created_date", 0
+        return constants.TODO_EDITOR_FOLLOW_UP_OLD, follow_up_old, sort_date, 0
 
     @classmethod
     def editor_completed(cls, groups, size):
+        sort_date = "created_date"
         completed = TodoQuery(
             musts=[
                 TodoQuery.status([constants.APPLICATION_STATUS_COMPLETED]),
                 TodoQuery.editor_groups(groups),
                 TodoQuery.is_new_application()
             ],
-            sort="last_manual_update",
+            sort=sort_date,
             size=size
         )
-        return constants.TODO_EDITOR_COMPLETED, completed, "last_manual_update", 1
+        return constants.TODO_EDITOR_COMPLETED, completed, sort_date, 1
 
     @classmethod
     def editor_assign_pending(cls, groups, size):
+        sort_date = "created_date"
         assign_pending = TodoQuery(
             musts=[
                 TodoQuery.editor_groups(groups),
@@ -292,14 +301,14 @@ class TodoRules(object):
             must_nots=[
                 TodoQuery.exists("admin.editor")
             ],
-            sort="created_date",
+            sort=sort_date,
             size=size
         )
-        return constants.TODO_EDITOR_ASSIGN_PENDING, assign_pending, "created_date", 1
+        return constants.TODO_EDITOR_ASSIGN_PENDING, assign_pending, sort_date, 1
 
     @classmethod
     def associate_stalled(cls,  acc_id, size):
-        sort_field = "last_manual_update"
+        sort_field = "created_date"
         stalled = TodoQuery(
             musts=[
                 TodoQuery.lmu_older_than(3),
@@ -383,7 +392,10 @@ class TodoQuery(object):
     ~~^->Elasticsearch:Technology~~
     """
     lmu_sort = {"last_manual_update" : {"order" : "asc"}}
-    cd_sort = {"created_date" : {"order" : "asc"}}
+    # cd_sort = {"created_date" : {"order" : "asc"}}
+    # NOTE that admin.date_applied and created_date should be the same for applications, but for some reason this is not always the case
+    # therefore, we take a created_date sort to mean a date_applied sort
+    cd_sort = {"admin.date_applied": {"order": "asc"}}
 
     def __init__(self, musts=None, must_nots=None, sort="last_manual_update", size=10):
         self._musts = [] if musts is None else musts
