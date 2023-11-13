@@ -1434,5 +1434,9 @@ GOOGLE_KEY_PATH = ''
 # ~~->Datalog:Feature~~
 
 ### Datalog for Journal Added
+
+# google sheet filename for datalog ja
 DATALOG_JA_FILENAME = 'DOAJ: journals added and withdrawn'
+
+# worksheet name or tab name that datalog will write to
 DATALOG_JA_WORKSHEET_NAME = 'Added'
