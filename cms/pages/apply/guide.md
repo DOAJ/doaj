@@ -230,7 +230,9 @@ The DOAJ editorial team reviews update requests for accuracy and we aim to proce
 
 We are always looking for volunteers to translate our criteria. If you would like to volunteer to do this, please [contact us](mailto:helpdesk@doaj.org).
 
-Our criteria are in:
+Please note that these translations may not include the latest changes made to the Guide in November 2023.
+
+Our criteria are available in:
 
 - [Arabic](https://drive.google.com/file/d/1UrY8p8KV4hBaYlYuyH1MGUOsHhEABtSE/view?usp=sharing)
 - [Chinese (application form)](https://zenodo.org/record/4350096)
@@ -252,7 +254,7 @@ Our criteria are in:
 
 This is Version 2.0 of the Guide to applying.
 
-*Version 2.0 (November 2023 - addition of new criteria around special issues, smaller changes for clarity and plain English.)*
+*Version 2.0 (November 2023 - addition of new criteria around special issues, smaller changes for clarity and plain English.)*<br>
 <s>Version: 1.3 (April 2023 - further clarification to endogeny, displaying journal rankings, information about author charges and reviewers, flipped journals and journals/publishers with multiple exclusions )</s><br>
 <s>Version: 1.2 (February 2022 - extra copyright and licensing information were moved to a separate page)</s><br>
 <s>Version: 1.1 (December 2021 - a clarification to endogeny criterion)</s><br>
