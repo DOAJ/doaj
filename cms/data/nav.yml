@@ -77,7 +77,7 @@ entries:
         route: doaj.seal              # ~~->Seal:WebRoute~~
       - label: Transparency & best practice
         route: doaj.transparency      # ~~->Transparency:WebRoute~~
-      - label: Why index your journal in DOAJ?
+      - label: Publisher information
         route: doaj.why_index         # ~~->WhyIndex:WebRoute~~
       - label: Licensing & copyright
         route: doaj.copyright_and_licensing         # ~~->CopyrightAndLicensing:WebRoute~~
