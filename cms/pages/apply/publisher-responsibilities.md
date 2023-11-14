@@ -21,7 +21,7 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 
 - You will [respond to questions](https://doaj.org/apply/guide/#the-application-process) from our editorial team promptly.
 - You will [keep your contact details up to date](https://docs.google.com/document/d/17hv4Wz7l_5jC0FwXEB8DlEQjkFxtd5ZOa_6GsfrUqPk/edit#heading=h.eieqb2mmewak).
-- You will inform us of changes to your journals and [keep your journal records up to date](https://docs.google.com/document/d/17hv4Wz7l_5jC0FwXEB8DlEQjkFxtd5ZOa_6GsfrUqPk/edit#heading=h.ydj8hbjlzlzx)https://docs.google.com/document/d/17hv4Wz7l_5jC0FwXEB8DlEQjkFxtd5ZOa_6GsfrUqPk/edit#heading=h.ydj8hbjlzlzx.
+- You will inform us of changes to your journals and [keep your journal records up to date](https://docs.google.com/document/d/17hv4Wz7l_5jC0FwXEB8DlEQjkFxtd5ZOa_6GsfrUqPk/edit#heading=h.ydj8hbjlzlzx).
 - You will [upload article metadata](https://doaj.org/publisher/uploadfile) to us if you are able to.
 
 We have [a zero-tolerance policy](https://doaj.org/about/#zero-tolerance-policy). We will treat you with respect and courtesy. We expect you to do the same.
