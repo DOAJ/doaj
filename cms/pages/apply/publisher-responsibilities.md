@@ -53,6 +53,7 @@ If we reject your application, you will receive an email explaining why and how 
 ### Accepted applications
 
 If we accept your application, you will receive an automated email that includes:
+
 - The URL of your journal record in DOAJ
 - Information on how to log into your publisher dashboard
 - Details on why it is helpful to upload article metadata to DOAJ
