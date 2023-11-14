@@ -27,7 +27,7 @@ entries:
         route: doaj.openurl           # ~~->OpenURLDocumentation:WebRoute~~
       - label: XML
         route: doaj.xml               # ~~->XMLDocumentation:WebRoute~~
-      - label: FAQs
+      - label: Metadata help
         route: doaj.faq               # ~~->FAQ:WebRoute~~
   - id: about
     label: About
