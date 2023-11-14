@@ -62,7 +62,7 @@ If you found your journal in DOAJ but didn’t get an email from us, there are [
 
 During the review process, we might correct some of the information in your application.
 
-You can [submit an update request]() if something about your journal has changed since you applied.
+You can [submit an update request](/apply/guide/#updating-your-journal-record) if something about your journal has changed since you applied.
 
 ## Your DOAJ account
 
@@ -75,7 +75,7 @@ You can access your dashboard and account settings by logging into your account.
 On [your dashboard](/publisher/), you can
 
 - See [a list of your journals](/publisher/journal) indexed in DOAJ
-- [Submit an update request]() when journal details change
+- [Submit an update request](/apply/guide/#updating-your-journal-record) when journal details change
 - [Upload](/publisher/uploadfile) or [enter](/publisher/metadata) article metadata for your journals
 - Download the Seal logo (only for journals awarded the DOAJ Seal).
 - Upload your full-text content (only for journals preserved via JASPER).
@@ -98,7 +98,7 @@ The Settings button allows you to:
 
 If you cannot log in, you can [reset your password](/account/forgot). We will send an email containing a reset link. The link is valid for 24 hours. 
 
-If you don’t get the email, check your Spam folder and check which address you registered with us. If you haven’t received the email after three hours, [contact us](mailto:helpdesk@doaj.org).
+If you don’t get the email, check your Spam folder and which address you registered with us. If you haven’t received the email after three hours, [contact us](mailto:helpdesk@doaj.org).
 
 ## Your indexed journals
 
@@ -106,8 +106,8 @@ If you don’t get the email, check your Spam folder and check which address you
 
 To show that your journal is indexed in DOAJ or has the DOAJ Seal:
 
-- You may use the DOAJ or the Seal logo on your journal’s website but not on individual articles
-- You may only use the DOAJ or Seal logo on a platform or portal website if all of the platform’s journals are indexed or have been awarded the Seal
+- You may use the DOAJ or the Seal logo on your journal's website but not on individual articles
+- You may only use the DOAJ or Seal logo on a platform or portal website if all of the platform's journals are indexed or have been awarded the Seal
 - You can [download the DOAJ logos](https://doaj-kit.netlify.app/building-blocks/logotype/)
 - If awarded, you can download the Seal logo from [your publisher dashboard](/publisher/journal)
 
@@ -153,13 +153,14 @@ If a journal is moving to or from another publisher, let us know as soon as poss
 
 ## Journal queries
 
-### Journal is not listed in DOAJ
-We have to withdraw your journal from DOAJ if it no longer adheres to our criteria or to publishing best practices. Furthermore, we have to withdraw the journal if it is inactive (ceased publishing) or the website is unavailable.
+### Journal is not listed (is withdrawn)
 
-When we withdraw your journal, we will send you an email; remind yourself of the email address attached to your DOAJ account and check your Spam folder if you haven’t received anything.
+When we withdraw your journal, we will send you an email. Remind yourself of the email address attached to your DOAJ account and check your Spam folder if you haven’t received anything. The email may include information on how long you must wait before you can apply again.
 
-- Check [our list of withdrawn journals](https://docs.google.com/spreadsheets/d/183mRBRqs2jOyP0qZWXN8dUd02D4vL0Mov_kgYF8HORM/edit#gid=1650882189).
-- You can ask for more information by [contacting our Help Desk](mailto:helpdesk@doaj.org).
+- We have to withdraw your journal from DOAJ if it no longer adheres to our criteria or to publishing best practices.
+- We have to withdraw the journal if it is inactive (ceased publishing) or the website is unavailable.
+
+You can also check our [list of withdrawn journals](https://docs.google.com/spreadsheets/d/183mRBRqs2jOyP0qZWXN8dUd02D4vL0Mov_kgYF8HORM/edit#gid=1650882189) and ask for more information by [contacting our Help Desk](mailto:helpdesk@doaj.org).
 
 ### Journal is not listed on my dashboard
 
