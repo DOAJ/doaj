@@ -134,22 +134,34 @@ We aim to process update requests within one month.
 - We will review the two records alongside each other to determine if the new title meets our basic criteria. If not, we will reject the application and withdraw the previous title.
 
 ### Ceased journals
-If one of your indexed journals will be ceasing publication, let us know as soon as possible by contacting our Help Desk. When you contact us, include the ISSN and the title of your journal.
-If another title is continuing the journal, you must submit a continuation.
-Journal transfers
-If a journal is moving to or from another publisher, let us know as soon as possible by contacting our Help Desk. We need the following information from you:
-Journal title
-ISSN
-Transfer date
-Name and email address of the old publisher
-Name and email address of the new publisher
-Journal queries
-Journal is not listed in DOAJ
-We might have withdrawn your journal from DOAJ if it no longer adheres to our criteria or to publishing best practices. Furthermore, we might have withdrawn the journal if it is inactive (ceased publishing) or the website is unavailable.
+
+- If one of your indexed journals will be ceasing publication, let us know as soon as possible by [contacting our Help Desk](mailto:helpdesk@doaj.org). When you contact us, include the ISSN and the title of your journal.
+- If another title is continuing the journal, you must [submit a continuation](https://docs.google.com/document/d/17hv4Wz7l_5jC0FwXEB8DlEQjkFxtd5ZOa_6GsfrUqPk/edit#heading=h.yjpqoy71fmiy).
+
+### Journal transfers
+
+If a journal is moving to or from another publisher, let us know as soon as possible by [contacting our Help Desk](mailto:helpdesk@doaj.org). We need the following information from you:
+
+- Journal title
+- ISSN
+- Transfer date
+- Name and email address of the old publisher
+- Name and email address of the new publisher
+
+## Journal queries
+
+### Journal is not listed in DOAJ
+We have to withdraw your journal from DOAJ if it no longer adheres to our criteria or to publishing best practices. Furthermore, we have to withdraw the journal if it is inactive (ceased publishing) or the website is unavailable.
+
 When we withdraw your journal, we will send you an email; remind yourself of the email address attached to your DOAJ account and check your Spam folder if you haven’t received anything.
-Check our list of withdrawn journals.
-You can ask for more information by contacting our Help Desk.
-Journal is not listed on my dashboard
-Contact our Help Desk with the journal title and ISSN; they will help you.
-Unknown journal on my dashboard
-Contact our Help Desk with the journal title and ISSN; they will help you.
+
+- Check [our list of withdrawn journals](https://docs.google.com/spreadsheets/d/183mRBRqs2jOyP0qZWXN8dUd02D4vL0Mov_kgYF8HORM/edit#gid=1650882189).
+- You can ask for more information by [contacting our Help Desk](mailto:helpdesk@doaj.org).
+
+### Journal is not listed on my dashboard
+
+- [Contact our Help Desk](mailto:helpdesk@doaj.org) with the journal title and ISSN; they will help you.
+
+### Unknown journal on my dashboard
+
+- [Contact our Help Desk](mailto:helpdesk@doaj.org) with the journal title and ISSN; they will help you.
