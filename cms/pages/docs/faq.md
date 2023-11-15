@@ -53,7 +53,7 @@ Choose how you want to upload article metadata to us.
 
 - **Speed and efficiency**: medium
 - **Level**: medium
-- **Formats accepted**: JSON
+- **Formats accepted**: DOAJ and Crossref XML
 - **Maximum upload limit**: 50MB
 - **Requirements**:
   - A way to generate structured XML and validate it against the required XSD file.
