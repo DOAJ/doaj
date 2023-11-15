@@ -99,6 +99,14 @@ Choose how you want to upload article metadata to us.
 - **Documentation** No
 - **Troubleshooting**: you must be careful to enter the Print ISSN and Electronic ISSN in the right field.
 
-## FAQs for metadata uploads
+## Help with metadata uploads
 
-When you upload article XML to us, we will let you know if there are problems with the file
+### My authors have multiple affiliations
+
+We are currently unable to display more than one affiliation per author. We are investigating how we can change this. More information will be posted on our blog.
+
+### My article abstracts are in more than one language
+
+Our XML format only supports one language for Article Title and Abstract. We are working on a solution that will allow multiple languages to be uploaded to us and displayed.
+
+Metadata containing multiple languages can still be uploaded to us. However, you cannot choose which language is displayed. Please only send us one language to avoid your articles being displayed in a mixture of languages.
