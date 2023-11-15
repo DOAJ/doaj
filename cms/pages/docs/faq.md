@@ -41,10 +41,28 @@ Choose how you want to upload article metadata to us.
 - **Maximum upload limit**: 50 MB
 - **Requirements**:
   - An API that will connect to ours
-  - An API key from your DOAJ account [link]
-- **Help available?** Yes, via one of our API groups. [link]
-- **Testing available**: only for Premier Supporters [link]
-- **Documentation** Yes [link]
-- **FAQS** Yes [link]
-- **OJS plugin available?** Yes. Refer to the admin area of your journal.
-- **OJS support**: for help, refer to the OJS Technical Forum
+  - The API key from [your DOAJ account](/account/login)
+- **Help available?** Yes, via one of our API groups; search for 'Google Group DOAJ API' in your browser.
+- **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
+- **Documentation** [Yes](/docs/api/)
+- **FAQS** [Yes](/api/v3/docs#api-faq)
+- **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin)https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin.
+- **OJS support**: for help, refer to [the OJS Technical Forum](https://forum.pkp.sfu.ca/c/questions/5)https://forum.pkp.sfu.ca/c/questions/5
+
+### XML
+
+- **Speed and efficiency**: medium
+- **Level**: medium
+- **Formats accepted**: JSON
+- **Maximum upload limit**: [DOAJ XML](/docs/xml/), [Crossref 5.3.1 XML](https://www.crossref.org/documentation/schema-library/metadata-deposit-schema-5-3-1/), [Crossref 4.4.2 XML](https://www.crossref.org/documentation/schema-library/resource-only-deposit-schema-4-4-2/)
+- **Requirements**:
+  - A way to generate structured XML and validate it against the required XSD file.
+  - The XSD files: [DOAJ](/static/doaj/doajArticles.xsd), [Crossref 5.3.1](/static/crossref/crossref5.3.1.xsd), [Crossref 4.4.2](/static/crossref/crossref4.4.2.xsd)
+- **Help available?**
+  - For [DOAJ XML](/docs/xml/)
+  - For Crossref XML, contact [Crossref support](mailto:support@crossref.org)
+- **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
+- **Documentation** [Yes](/docs/xml/)
+- **FAQS** No
+- **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin)https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin.
+- **OJS support**: for help, refer to [the OJS Technical Forum](https://forum.pkp.sfu.ca/c/questions/5)https://forum.pkp.sfu.ca/c/questions/5
