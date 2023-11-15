@@ -48,6 +48,13 @@ Choose how you want to upload article metadata to us.
 - **FAQS** [Yes](/api/v3/docs#api-faq)
 - **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin)https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin.
 - **OJS support**: for help, refer to [the OJS Technical Forum](https://forum.pkp.sfu.ca/c/questions/5)https://forum.pkp.sfu.ca/c/questions/5
+- **Troubleshooting uploads**: please [submit a bug report](https://github.com/DOAJ/doaj/issues/new/choose) (via GitHub) or [contact us](mailto:helpdesk@doaj.org) with the following details:
+  - The time of the file upload. (If you saw the error more than 12 hours ago, please try the upload again before you contact us.)
+  - Whether the error happened once or repeatedly
+  - The exact error message as it appeared during the upload. Include a screenshot.
+  - The DOAJ account ID that you are logged in with. You will find this under 'Settings' in the Dashboard dropdown menu.
+  - The file(s) you had problems with
+  - The ISSN(s) of the journal
 
 ### XML
 
@@ -59,13 +66,23 @@ Choose how you want to upload article metadata to us.
   - A way to generate structured XML and validate it against the required XSD file.
   - The XSD files: [DOAJ](/static/doaj/doajArticles.xsd), [Crossref 5.3.1](/static/crossref/crossref5.3.1.xsd), [Crossref 4.4.2](/static/crossref/crossref4.4.2.xsd)
 - **Help available?** Yes
-  - For [DOAJ XML](/docs/xml/)
-  - For Crossref XML, contact [Crossref support](mailto:support@crossref.org)
+  - For creating XML, see our [DOAJ XML](/docs/xml/) documentation
+  - For help with [error messages when uploading XML](/publisher/help#explanations)
+  - For help with Crossref XML, contact [Crossref support](mailto:support@crossref.org)
 - **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
 - **Documentation** [DOAJ XML](/docs/xml/), [Crossref 5.3.1 XML](https://www.crossref.org/documentation/schema-library/metadata-deposit-schema-5-3-1/), [Crossref 4.4.2 XML](https://www.crossref.org/documentation/schema-library/resource-only-deposit-schema-4-4-2/)
 - **FAQS** No
 - **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin)https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin.
 - **OJS support**: for help, refer to [the OJS Technical Forum](https://forum.pkp.sfu.ca/c/questions/5)https://forum.pkp.sfu.ca/c/questions/5
+- **Troubleshooting uploads**: please [submit a bug report](https://github.com/DOAJ/doaj/issues/new/choose) (via GitHub) or [contact us](mailto:helpdesk@doaj.org) with the following details:
+  - The time of the file upload. (If you saw the error more than 12 hours ago, please try the upload again before you contact us.)
+  - Whether the error happened once or repeatedly
+  - Whether you are uploading DOAJ or Crossref XML
+  - Whether you are uploading a file or uploading from a link
+  - The exact error message as it appears in the “Notes” column of the [History of uploads section](/publisher/uploadfile), including the detail under the 'show error details' link.
+  - A screenshot of the error message with the 'show error details' link expanded.
+  - The DOAJ account ID that you are logged in with
+  - The file(s) you had problems with 
 
 ### Enter article metadata manually
 
@@ -76,7 +93,12 @@ Choose how you want to upload article metadata to us.
 - **Requirements**:
   - Plain text only
   - No email addresses
-  - The abstract metadata for the article: title, full text URL, DOI (if applicable), author names, ORCiD (if applicable), affiliations, publication date, ISSN(s), Volume/Issue/Page (if applicable), abstract 
+  - The abstract metadata for the article: title, full-text URL, DOI (if applicable), author names, ORCiD (if applicable), affiliations, publication date, ISSN(s), Volume/Issue/Page (if applicable), abstract 
 - **Help available?** Yes. [Contact our Help Desk](mailto:helpdesk@doaj.org).
 - **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
 - **Documentation** No
+- **Troubleshooting**: you must be careful to enter the Print ISSN and Online ISSN in the right field.
+
+## FAQs for metadata uploads
+
+When you upload article XML to us, we will let you know if there are problems with the file
