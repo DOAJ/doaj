@@ -51,7 +51,7 @@ Choose how you want to upload article metadata to us.
 - **Troubleshooting uploads**: please [submit a bug report](https://github.com/DOAJ/doaj/issues/new/choose) (via GitHub) or [contact us](mailto:helpdesk@doaj.org) with the following details:
   - The time of the file upload. (If you saw the error more than 12 hours ago, please try the upload again before you contact us.)
   - Whether the error happened once or repeatedly
-  - The exact error message as it appeared during the upload. Include a screenshot.
+  - The exact error message that appeared during the upload. Include a screenshot.
   - The DOAJ account ID that you are logged in with. You will find this under 'Settings' in the Dashboard dropdown menu.
   - The file(s) you had problems with
   - The ISSN(s) of the journal
@@ -79,7 +79,7 @@ Choose how you want to upload article metadata to us.
   - Whether the error happened once or repeatedly
   - Whether you are uploading DOAJ or Crossref XML
   - Whether you are uploading a file or uploading from a link
-  - The exact error message as it appears in the “Notes” column of the [History of uploads section](/publisher/uploadfile), including the detail under the 'show error details' link.
+  - The exact error message shown in the 'Notes' column of the [History of uploads section](/publisher/uploadfile), including the detail under the 'show error details' link.
   - A screenshot of the error message with the 'show error details' link expanded.
   - The DOAJ account ID that you are logged in with
   - The file(s) you had problems with 
@@ -97,7 +97,7 @@ Choose how you want to upload article metadata to us.
 - **Help available?** Yes. [Contact our Help Desk](mailto:helpdesk@doaj.org).
 - **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
 - **Documentation** No
-- **Troubleshooting**: you must be careful to enter the Print ISSN and Online ISSN in the right field.
+- **Troubleshooting**: you must be careful to enter the Print ISSN and Electronic ISSN in the right field.
 
 ## FAQs for metadata uploads
 
