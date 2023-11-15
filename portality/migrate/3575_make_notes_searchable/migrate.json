@@ -1,0 +1,16 @@
+{
+	"new_version": "-20231114",
+	"old_version": "",
+	"types": [
+		{
+			"type" : "application",
+			"migrate": true,
+			"set_alias": false
+		},
+		{
+			"type": "journal",
+			"migrate": true,
+			"set_alias": false
+		}
+	]
+}
