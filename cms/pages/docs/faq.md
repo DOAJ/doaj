@@ -38,7 +38,7 @@ Choose how you want to upload article metadata to us.
 - **Speed and efficiency**: high
 - **Level**: difficult
 - **Formats accepted**: JSON
-- **Maximum upload limit**: 50 MB
+- **Maximum upload limit**: 50MB
 - **Requirements**:
   - An API that will connect to ours
   - The API key from [your DOAJ account](/account/login)
@@ -54,15 +54,29 @@ Choose how you want to upload article metadata to us.
 - **Speed and efficiency**: medium
 - **Level**: medium
 - **Formats accepted**: JSON
-- **Maximum upload limit**: [DOAJ XML](/docs/xml/), [Crossref 5.3.1 XML](https://www.crossref.org/documentation/schema-library/metadata-deposit-schema-5-3-1/), [Crossref 4.4.2 XML](https://www.crossref.org/documentation/schema-library/resource-only-deposit-schema-4-4-2/)
+- **Maximum upload limit**: 50MB
 - **Requirements**:
   - A way to generate structured XML and validate it against the required XSD file.
   - The XSD files: [DOAJ](/static/doaj/doajArticles.xsd), [Crossref 5.3.1](/static/crossref/crossref5.3.1.xsd), [Crossref 4.4.2](/static/crossref/crossref4.4.2.xsd)
-- **Help available?**
+- **Help available?** Yes
   - For [DOAJ XML](/docs/xml/)
   - For Crossref XML, contact [Crossref support](mailto:support@crossref.org)
 - **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
-- **Documentation** [Yes](/docs/xml/)
+- **Documentation** [DOAJ XML](/docs/xml/), [Crossref 5.3.1 XML](https://www.crossref.org/documentation/schema-library/metadata-deposit-schema-5-3-1/), [Crossref 4.4.2 XML](https://www.crossref.org/documentation/schema-library/resource-only-deposit-schema-4-4-2/)
 - **FAQS** No
 - **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin)https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin.
 - **OJS support**: for help, refer to [the OJS Technical Forum](https://forum.pkp.sfu.ca/c/questions/5)https://forum.pkp.sfu.ca/c/questions/5
+
+### Enter article metadata manually
+
+- **Speed and efficiency**: low
+- **Level**: easy
+- **Formats accepted**: text, entered via [our webform](/publisher/metadata)
+- **Maximum upload limit**: N/A
+- **Requirements**:
+  - Plain text only
+  - No email addresses
+  - The abstract metadata for the article: title, full text URL, DOI (if applicable), author names, ORCiD (if applicable), affiliations, publication date, ISSN(s), Volume/Issue/Page (if applicable), abstract 
+- **Help available?** Yes. [Contact our Help Desk](mailto:helpdesk@doaj.org).
+- **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
+- **Documentation** No
