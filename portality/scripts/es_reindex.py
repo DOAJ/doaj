@@ -4,7 +4,7 @@ This script is useful to create new index with any new mapping changes if applic
 run the script:
 portality/scripts/es_reindex.py <json file path>
 ex:
-portality/scripts/es_reindex.py -u <full path>/portality/migrate/3575_make_notes_searchable/migrate.json
+DOAJENV=dev python portality/scripts/es_reindex.py portality/migrate/3575_make_notes_searchable/migrate.json
 
 example json file:
 {
@@ -46,7 +46,7 @@ def do_import(config):
     previous_version = config.get("old_version")
 
     # get the types we are going to work with
-    print("==Carrying out the following import==")
+    print("\n==Reindexing the following types / indices==")
     for s in config.get("types", []):
         if s.get("migrate", False) is True:
             print(s.get("type"))
@@ -63,7 +63,7 @@ def do_import(config):
     # Iterate through the types then
     # 1. create new index
     # 2. re index with old index
-    # 3. set alias for new index
+    # 3. set alias for new index (if requested)
     for s in config.get("types", []):
         import_type = s["type"]
         if import_type in mappings:
@@ -130,6 +130,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     with open(args.config, "r", encoding="utf-8") as f:
-        config = json.loads(f.read())
+        config = json.load(f)
 
     do_import(config)
