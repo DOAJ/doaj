@@ -110,3 +110,29 @@ We are currently unable to display more than one affiliation per author. We are 
 Our XML format only supports one language for Article Title and Abstract. We are working on a solution that will allow multiple languages to be uploaded to us and displayed.
 
 Metadata containing multiple languages can still be uploaded to us. However, you cannot choose which language is displayed. Please only send us one language to avoid your articles being displayed in a mixture of languages.
+
+### I am seeing a 403 forbidden error when I try to upload article metadata
+
+You may see the 403 forbidden error for different reasons. These apply to both the API and uploading XML.
+
+- ISSNs
+  - You may be sending us an extra ISSN that we don’t have in your journal record.
+  - You may be sending only one ISSN, but we have two in the journal record.
+  - We may have the journal's ISSNs in an old version of your journal record.
+- Wrong account
+  - You may be sending us an ISSN that belongs to a journal attached to a different account.
+- You are trying to update an article's Full Text URL (FTUs) or DOI
+  - Two articles with the same FTU or DOI are not allowed.
+  - Please contact us if you want to update the URLs or DOIs of your articles. We need to delete the old versions first.
+
+### I am seeing a timeout error or a 'blocked' message from Cloudflare
+
+If you see a timeout error, please try splitting your upload into smaller files, even if your file is under our 50MB limit. Many may be uploading content to us, and the server is taking longer than usual to collect your file.
+
+If you see a screen from Cloudflare that says you have been blocked, please [contact us](mailto:helpdesk@doaj.org). Include a screenshot that shows the Ray ID at the very bottom of the page. We need this to troubleshoot the problem.
+
+## Downloading your metadata
+
+You can download our metadata about your journal by [downloading our CSV](https://doaj.org/csv).
+
+You can download your article metadata by [using our API](https://doaj.org/docs/api/) or by using our [public data dump service](https://doaj.org/docs/public-data-dump/)https://doaj.org/docs/public-data-dump/.
