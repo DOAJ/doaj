@@ -1,43 +1,14 @@
 {% extends "publisher/publisher_base.html" %}
 
-{% block page_title %}Help for publishers{% endblock %}
+{% block page_title %}Explanations of XML errors{% endblock %}
 
 {% block publisher_content %}
 
-<h1>Help for publishers</h1>
+<h1 id="explanations">Explanation of XML errors</h1>
 
-<h2>Uploading metadata/article content</h2>
+<p>The table below explains the different error messages that may appear when uploading article XML. Use the detailed information in the 'Notes' column of your <a href="{{ url_for('publisher.upload_file') }}"><em>History of uploads</em></a> table to correct your XML.</p>
 
-  <p>There are three ways to upload article metadata to DOAJ:</p>
-
-  <ol>
-    <li><a href="{{ url_for('doaj.docs') }}">API</a> (you will need an API key to do this),</li>
-    <li><a href="{{ url_for('publisher.upload_file') }}">uploading XML</a>, or</li>
-    <li><a href="{{ url_for('publisher.metadata') }}">entering the metadata manually</a>.</li>
-  </ol>
-
-  <p>There are instructions and FAQs on how to send JSON using our API on our <a href="{{ url_for('doaj.docs') }}">API documentation page</a>.</p>
-
-  <p>There are instructions on how to prepare and upload your XML file on our <a href="{{ url_for('doaj.xml') }}">XML documentation page</a>.</p>
-
-<p>Are you receiving an error about one of your ISSNs you haven't seen before? We recently changed the rules for uploading article metadata. We now require that the correct ISSN is in the correct corresponding tag, i.e. the Print ISSN must be in the <em>issn</em> tag and the Electronic ISSN in the <em>eissn</em> tag. <a href="/docs/xml/#example-doaj-xml-file">See our sample XML file</a> for more information.</p>
-
-<h2 id="explanations">Failed XML uploads explained</h2>
-
-<p>This section explains the error messages you may see when uploading article XML. Use the message in the 'Notes' column of your <a href="{{ url_for('publisher.upload_file') }}"><em>History of uploads</em></a> table to correct your XML.</p>
-
-<p>If you cannot get the XML to upload, please <a href="https://github.com/DOAJ/doaj/issues/new/choose" target="_blank" rel="noopener">submit a bug report</a> or <a href="{{ url_for('doaj.contact') }}">contact us</a> with the following details:</p>
-
-<ul>
-  <li>The time of the file upload</li>
-  <li>Whether the error happened once or repeatedly</li>
-  <li>Whether you are uploading DOAJ or Crossref XML</li>
-  <li>Whether you are uploading a file or uploading from a link</li>
-  <li>The exact error message as it appears in the “Notes” column, including the detail under the 'show error details' link</li>
-  <li>A screenshot of the error message</li>
-  <li>The DOAJ account ID that you are logged in with</li>
-  <li>The file(s) you had problems with</li>
-</ul>
+<p>If you cannot get the XML to upload, please refer to our detailed <a href="https://doaj.org/docs/faq/">Metadata Help</a> page, which contains more information, including how to ask for help.</p>
 
 <table>
   <thead>
