@@ -135,4 +135,4 @@ If you see a screen from Cloudflare that says you have been blocked, please [con
 
 You can download our metadata about your journal by [downloading our CSV](https://doaj.org/csv).
 
-You can download your article metadata by [using our API](https://doaj.org/docs/api/) or by using our [public data dump service](https://doaj.org/docs/public-data-dump/)https://doaj.org/docs/public-data-dump/.
+You can download your article metadata by [using our API](https://doaj.org/docs/api/) or by using our [public data dump service](/docs/public-data-dump/).
