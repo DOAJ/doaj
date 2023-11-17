@@ -573,7 +573,7 @@ class ApplicationService(object):
 
     def validate_update_csv(self, file_path, account: models.Account):
         # Open with encoding that deals with the Byte Order Mark since we're given files from Windows.
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding='utf-8-sig') as file:
             reader = csv.DictReader(file)
             validation = CSVValidationReport()
 
@@ -588,14 +588,14 @@ class ApplicationService(object):
                 if h and h not in allowed_headers:
                     if h.lower() in lower_case_allowed_headers:
                         expected = allowed_headers[lower_case_allowed_headers.index(h.lower())]
-                        validation.header(validation.WARN, i, f'"{h}" has mismatching case to expected header "{expected}".')
+                        validation.header(validation.WARN, i, Messages.JOURNAL_CSV_VALIDATE__HEADER_CASE_MISMATCH.format(h=h, expected=expected))
                     else:
-                        validation.header(validation.ERROR, i, f'"{h}" is not a valid header.')
+                        validation.header(validation.ERROR, i, Messages.JOURNAL_CSV_VALIDATE__INVALID_HEADER.format(h=h))
 
             missing_required = False
             for rh in required_headers:
                 if rh not in header_row:
-                    validation.general(validation.ERROR, f'"{rh}" is a required header, and is missing from this upload.')
+                    validation.general(validation.ERROR, Messages.JOURNAL_CSV_VALIDATE__REQUIRED_HEADER_MISSING.format(h=rh))
                     missing_required = True
             if missing_required:
                 return validation
@@ -622,12 +622,12 @@ class ApplicationService(object):
                 try:
                     j = models.Journal.find_by_issn(issns, in_doaj=True, max=1).pop(0)
                 except IndexError:
-                    validation.row(validation.ERROR, row_ix, "No journal record in DOAJ for ISSN(s) {0}.  It may not be present, or may be withdrawn.".format(", ".join(issns)))
+                    validation.row(validation.ERROR, row_ix, Messages.JOURNAL_CSV_VALIDATE__MISSING_JOURNAL.format(issns=", ".join(issns)))
                     continue
 
                 # Confirm that the account is allowed to update the journal (is admin or owner)
                 if not account.is_super and account.id != j.owner:
-                    validation.row(validation.ERROR, row_ix, "Your account '{0}' is not the owner of the journal with ISSN(s) {1}".format(account.id, ", ".join(issns)))
+                    validation.row(validation.ERROR, row_ix, Messages.JOURNAL_CSV_VALIDATE__OWNER_MISMATCH.format(acc=account.id, issns=", ".join(issns)))
                     continue
 
                 # By this point the issns are confirmed as matching a journal that belongs to the publisher
@@ -640,7 +640,7 @@ class ApplicationService(object):
                 journal_questions = Journal2PublisherUploadQuestionsXwalk.journal2question(j)
 
                 if len(updates) == 0:
-                    validation.row(validation.WARN, row_ix, "The data you supplied did not change any of the existing values in the journal record.  You may still submit this record, but no update will be made to the record in DOAJ.")
+                    validation.row(validation.WARN, row_ix, Messages.JOURNAL_CSV_VALIDATE__NO_DATA_CHANGE)
                     continue
 
                 # if we get to here, then there are updates
@@ -660,7 +660,7 @@ class ApplicationService(object):
                     if update_value != journal_value:
                         trip_wire = True
                         validation.value(validation.ERROR, row_ix, header_row.index(question),
-                                         f'"{question}" cannot be changed.',
+                                         Messages.JOURNAL_CSV_VALIDATE__QUESTION_CANNOT_CHANGE.format(question=question),
                                          was=journal_value, now=update_value)
 
                 if trip_wire:
@@ -674,12 +674,12 @@ class ApplicationService(object):
                     # ~~ ^->UpdateRequest:Feature ~~
                     update_req, jlock, alock = self.update_request_for_journal(j.id, account=j.owner_account, lock_records=False)
                 except AuthoriseException as e:
-                    validation.row(validation.ERROR, row_ix, 'Could not create update request: {0}'.format(e.reason))
+                    validation.row(validation.ERROR, row_ix, Messages.JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR.format(reason=e.reason))
                     continue
 
                 # If we don't have a UR, we can't continue
                 if update_req is None:
-                    validation.row(validation.ERROR, row_ix,'Journal not in DOAJ - missing or not public')
+                    validation.row(validation.ERROR, row_ix, Messages.JOURNAL_CSV_VALIDATE__MISSING_JOURNAL.format(issns=", ".join(issns)))
                     continue
 
                 # validate update_form - portality.forms.application_processors.PublisherUpdateRequest
@@ -722,8 +722,30 @@ class CSVValidationReport:
         self._errors = False
         self._warnings = False
 
+    @property
+    def general_errors(self):
+        return self._general
+
+    @property
+    def header_errors(self):
+        return self._headers
+
+    @property
+    def row_errors(self):
+        return self._row
+
+    @property
+    def value_errors(self):
+        return self._values
+
     def has_errors_or_warnings(self):
         return self._errors or self._warnings
+
+    def has_errors(self):
+        return self._errors
+
+    def has_warnings(self):
+        return self._warnings
 
     def record_error_type(self, error_type):
         if error_type == self.WARN:

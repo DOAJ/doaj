@@ -116,6 +116,15 @@ class Messages(object):
     DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_ERROR_LOG = "Error sending notification with journals discontinuing soon."
     NO_DISCONTINUED_JOURNALS_FOUND_LOG = "No journals discontinuing soon found"
 
+    JOURNAL_CSV_VALIDATE__HEADER_CASE_MISMATCH = '"{h}" has mismatching case to expected header "{expected}".'
+    JOURNAL_CSV_VALIDATE__INVALID_HEADER = '"{h}" is not a valid header.'
+    JOURNAL_CSV_VALIDATE__REQUIRED_HEADER_MISSING = '"{h}" is a required header, and is missing from this upload.'
+    JOURNAL_CSV_VALIDATE__MISSING_JOURNAL = "No journal record in DOAJ for ISSN(s) {issns}.  It may not be present, or may be withdrawn."
+    JOURNAL_CSV_VALIDATE__OWNER_MISMATCH = "Your account '{acc}' is not the owner of the journal with ISSN(s) {issns}"
+    JOURNAL_CSV_VALIDATE__NO_DATA_CHANGE = "The data you supplied did not change any of the existing values in the journal record.  You may still submit this record, but no update will be made to the record in DOAJ."
+    JOURNAL_CSV_VALIDATE__QUESTION_CANNOT_CHANGE = '"{question}" cannot be changed.'
+    JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR = 'Could not create update request: {reason}'
+
 
     @classmethod
     def flash(cls, tup):
