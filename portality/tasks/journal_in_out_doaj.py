@@ -1,12 +1,15 @@
-import json
-
 from flask_login import current_user
-
 from portality import models, lock
-from portality.background import BackgroundTask, BackgroundApi, BackgroundSummary
 from portality.bll import DOAJ
 from portality.core import app
+
 from portality.tasks.redis_huey import main_queue
+from portality.decorators import write_required
+
+from portality.background import BackgroundTask, BackgroundApi, BackgroundSummary
+
+import json
+
 from portality.ui.messages import Messages
 
 
@@ -29,8 +32,7 @@ def change_by_query(query, in_doaj_new_val, dry_run=True):
     # return len(ids)
 
 def change_in_doaj(journal_ids, in_doaj_new_val, **kwargs):
-    job = SetInDOAJBackgroundTask.prepare(current_user.id, journal_ids=journal_ids,
-                                          in_doaj=in_doaj_new_val, **kwargs)
+    job = SetInDOAJBackgroundTask.prepare(current_user.id, journal_ids=journal_ids, in_doaj=in_doaj_new_val, **kwargs)
     SetInDOAJBackgroundTask.submit(job)
     return job
 
@@ -49,7 +51,6 @@ class SetInDOAJBackgroundTask(BackgroundTask):
 
         journal_ids = self.get_param(params, "journal_ids")
         in_doaj = self.get_param(params, "in_doaj")
-        trigger_by_jid = self.get_param(params, "trigger_by_jid")
 
         if journal_ids is None or len(journal_ids) == 0 or in_doaj is None:
             raise RuntimeError("SetInDOAJBackgroundTask.run run without sufficient parameters")
@@ -71,10 +72,6 @@ class SetInDOAJBackgroundTask(BackgroundTask):
                     job.add_audit_message(Messages.AUTOMATICALLY_REJECTED_UPDATE_REQUEST_WITH_ID.format(urid=ur))
                 else:
                     job.add_audit_message(Messages.NO_UPDATE_REQUESTS)
-
-            if trigger_by_jid and j.id != trigger_by_jid:
-                action = 'reinstated' if in_doaj else 'withdrawn'
-                j.add_note(f"Journal automatically {action} due to {trigger_by_jid} being {action} by a ManEd.")
 
 
             j.bibjson().active = in_doaj
@@ -102,10 +99,6 @@ class SetInDOAJBackgroundTask(BackgroundTask):
         Take an arbitrary set of keyword arguments and return an instance of a BackgroundJob,
         or fail with a suitable exception
 
-        job params
-            :trigger_by_jid: journal id that trigger this task, for example, Journal id could be
-               id of journal that clicked "withdraw all" by User
-
         :param kwargs: arbitrary keyword arguments pertaining to this task type
         :return: a BackgroundJob instance representing this task
         """
@@ -120,7 +113,6 @@ class SetInDOAJBackgroundTask(BackgroundTask):
         params = {}
         cls.set_param(params, "journal_ids", journal_ids)
         cls.set_param(params, "in_doaj", kwargs.get("in_doaj"))
-        cls.set_param(params, "trigger_by_jid", kwargs.get("trigger_by_jid"))
 
         if journal_ids is None or len(journal_ids) == 0 or kwargs.get("in_doaj") is None:
             raise RuntimeError("SetInDOAJBackgroundTask.prepare run without sufficient parameters")

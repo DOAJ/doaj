@@ -1,4 +1,3 @@
-import itertools
 import json
 from collections import namedtuple
 from typing import Iterable, List
@@ -288,14 +287,7 @@ def journal_activate(journal_id):
 @ssl_required
 @write_required()
 def journal_deactivate(journal_id):
-    is_cont_all = request.values.get('cont_all', False)
-
-    journal_ids = [journal_id]
-    if is_cont_all:
-        journal = Journal.pull(journal_id)
-        journal_ids += [j.id for j in journal.get_past_continuations() + journal.get_future_continuations()]
-
-    job = journal_in_out_doaj.change_in_doaj(journal_ids, False, trigger_by_jid=journal_id)
+    job = journal_in_out_doaj.change_in_doaj([journal_id], False)
     return redirect(url_for('.journal_page', journal_id=journal_id, job=job.id))
 
 
