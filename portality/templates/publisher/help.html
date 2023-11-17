@@ -6,7 +6,7 @@
 
 <h1>Help for publishers</h1>
 
-<h2>Uploading metadata/article content a file</h2>
+<h2>Uploading metadata/article content</h2>
 
   <p>There are three ways to upload article metadata to DOAJ:</p>
 
@@ -19,6 +19,8 @@
   <p>There are instructions and FAQs on how to send JSON using our API on our <a href="{{ url_for('doaj.docs') }}">API documentation page</a>.</p>
 
   <p>There are instructions on how to prepare and upload your XML file on our <a href="{{ url_for('doaj.xml') }}">XML documentation page</a>.</p>
+
+<p>Are you receiving an error about one of your ISSNs that you haven't seen before? We recently changed the rules for uploading article metadata. We now require that a Print ISSN is in an issn tag and the Online ISSN is in an eissn tag. [See our sample XML file](https://doaj.org/docs/xml/#example-doaj-xml-file) for more information.</p>
 
 <h2 id="explanations">Failed XML uploads explained</h2>
 

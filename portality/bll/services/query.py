@@ -43,18 +43,20 @@ class QueryService(object):
         return cfg
 
     def _validate_query(self, cfg, query):
-        validator = cfg.get("query_validator")
-        if validator is None:
-            return True
+        validators = cfg.get("query_validators")
+        if validators:
+            for validator in validators:
+                filters = app.config.get("QUERY_FILTERS", {})
+                validator_path = filters.get(validator)
+                fn = plugin.load_function(validator_path)
+                if fn is None:
+                    msg = "Unable to load query validator for {x}".format(x=validator)
+                    raise exceptions.ConfigurationException(msg)
 
-        filters = app.config.get("QUERY_FILTERS", {})
-        validator_path = filters.get(validator)
-        fn = plugin.load_function(validator_path)
-        if fn is None:
-            msg = "Unable to load query validator for {x}".format(x=validator)
-            raise exceptions.ConfigurationException(msg)
+                if not fn(query):
+                    return False
+        return True
 
-        return fn(query)
 
     def _pre_filter_search_query(self, cfg, query):
         # now run the query through the filters
@@ -196,6 +198,43 @@ class Query(object):
         if "must" not in context:
             context["must"] = []
         context["must"].append(filter)
+
+    def get_field_context(self):
+        """Get query string context"""
+        context = None
+        if "query_string" in self.q["query"]:
+            context = self.q["query"]["query_string"]
+
+        elif "bool" in self.q["query"]:
+            if "must" in self.q["query"]["bool"]:
+                context = self.q["query"]["bool"]["must"]
+        return context
+
+    def add_default_field(self, value: str):
+        """ Add a default field to the query string, if one is not already present"""
+        context = self.get_field_context()
+
+        if context:
+            if isinstance(context, dict):
+                if "default_field" not in context:
+                    context["default_field"] = value
+            elif isinstance(context, list):
+                for item in context:
+                    if "query_string" in item:
+                        if "default_field" not in item["query_string"]:
+                            item["query_string"]["default_field"] = value
+                            break
+
+    def add_should(self, filter, minimum_should_match=1):
+        self.convert_to_bool()
+        context = self.q["query"]["bool"]
+        if "should" not in context:
+            context["should"] = []
+        if isinstance(filter, list):
+            context["should"].extend(filter)
+        else:
+            context["should"].append(filter)
+        context["minimum_should_match"] = minimum_should_match
 
     def add_must_filter(self, filter):
         self.convert_to_bool()

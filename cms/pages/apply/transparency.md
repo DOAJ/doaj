@@ -23,13 +23,14 @@ These principles also acknowledge that publishers and editors are responsible fo
 
 ### JOURNAL CONTENT
 
-#### 1. Name of journal
+**1. Name of journal**
+
 The journal's name should:
 
 - Be unique and not be one that is easily confused with another journal.
 - Not mislead potential authors and readers about the journal's origin, scope, or association with other journals and organisations.
 
-#### 2. Website
+**2. Website**
 
 - Websites should be properly supported and maintained, with particular attention given to security aspects that help protect users from viruses and malware. 
 - As a minimum, websites should use https and not http, and all traffic should be redirected through https. Those responsible for the website should apply web standards and best ethical practices to the website's content, presentation, and application.
@@ -45,20 +46,22 @@ In addition to the requirements outlined above, the following items should be cl
 - Authorship criteria.
 - ISSNs (separate for print and electronic versions).
 
-#### 3. Publishing schedule
+**3. Publishing schedule**
+
 A journal's publishing frequency should be clearly described, and the journal must keep to its publishing schedule unless there are exceptional circumstances.
 
-#### 4. Archiving
+**4. Archiving**
+
 A journal's plan for electronic backup and long term digital preservation of the journal content, in the event that the journal and/or publisher stops operating, should be clearly indicated. Examples include PMC and those listed in [the Keepers Registry](https://keepers.issn.org/).
 
-#### 5. Copyright
+**5. Copyright**
 
 - The copyright terms for published content should be clearly stated on the website and in the content.
 - The copyright terms should be separate and distinct from the copyright of the website.
 - The copyright holder should be named on the full text of all published articles (HTML and PDF).
 - If the copyright terms are described in a separate form, this should be easy to find on the website and available to all. 
 
-#### 6. Licencing
+**6. Licencing**
 
 - Licencing information should be clearly described on the website.
 - Licencing terms should be indicated on the full text of all published articles (HTML and PDF).
@@ -69,7 +72,8 @@ If Creative Commons licences are used, then the terms of that licence should als
 
 ### JOURNAL PRACTICES
 
-#### 7. Publication ethics and related editorial policies
+**7. Publication ethics and related editorial policies**
+
 A journal should have policies on publication ethics (for example, [COPE's Core Practice guidance](https://publicationethics.org/core-practices)). These should be visible on its website, and should refer to:
 
 - Journal's policies on [authorship and contributorship](https://publicationethics.org/authorship).
@@ -84,7 +88,8 @@ A journal should have policies on publication ethics (for example, [COPE's Core 
 
 Editors and publishers are responsible for ensuring the integrity of the scholarly literature in their journals and should ensure they outline their policies and procedures for handling such issues when they arise. These issues include plagiarism, citation manipulation, and data falsification/fabrication, among others. Neither the journal’s policies nor the statements of its editors should encourage such misconduct, or knowingly allow such misconduct to take place. In the event that a journal's editors or publisher are made aware of any allegation of research misconduct relating to a submitted or published article in their journal, the editor or publisher should follow [COPE's guidance](https://publicationethics.org/guidance) (or equivalent) in dealing with allegations.
 
-#### 8. Peer review 
+**8. Peer review** 
+
 Peer review is defined as obtaining advice on manuscripts from reviewers/experts in the manuscript’s subject area. Those individuals should not be part of the journal's editorial team. However, the specific elements of peer review may differ by journal and discipline, so the following should be clearly stated on the website:
 
 -  Whether or not the content is peer reviewed.
@@ -105,30 +110,31 @@ Journals should not guarantee acceptance of initial manuscript submissions. Stat
 
 The date of publication should be published with all published research. Dates of submission and acceptance are preferred as well.
 
-#### 9. Access
+**9. Access**
+
 If any of the online content is not freely accessible to everyone, the method of gaining access (for example, registration, subscription, or pay-per-view fees) should be clearly described. If offline versions (for example, print) are available, this should be clearly described along with any associated charges.
 
 ### ORGANISATION
 
-#### 10. Ownership and management
+**10. Ownership and management**
 
 - Information about the ownership and management of a journal should be clearly indicated on the journal's website.
 - Organisational names should not be used in a way that could mislead potential authors and editors about the nature of the journal's owner.
 - If a journal is affiliated with a society, institution, or sponsor, links to their website(s) should be provided where available.
 
-#### 11. Advisory body
+**11. Advisory body**
 Journals should have editorial boards or other advisory bodies whose members are recognised experts in the subject areas stated in the journal's aims and scope.
 
 - The full names and affiliations of the members should be provided on the journal's website.
 - The list should be up to date, and members must agree to serve.
 - To avoid being associated with predatory or deceptive journals, journals should periodically review their board to ensure it is still relevant and appropriate.
 
-#### 12. Editorial team/contact information	
+**12. Editorial team/contact information**	
 Journals should provide the full names and affiliations of their editors as well as contact information for the editorial office, including a full mailing address, on the journal’s website.
 
 ### BUSINESS PRACTICES
 
-#### 13. Author fees
+**13. Author fees**
 
 - If author fees are charged (such as article processing charges, page charges, editorial processing charges, language editing fees, colour charges, submission fees, membership fees, or other supplementary charges), then the fees should be clearly stated on the website. 
 - If there are no such fees, this should be clearly stated.
@@ -141,14 +147,16 @@ Journals should provide the full names and affiliations of their editors as well
   - When and how to apply for a waiver.
 - Author fees or waiver status should not influence editorial decision making, and this should be clearly stated.
 
-#### 14. Other revenue
+**14. Other revenue**
+
 Business models or revenue sources should be clearly stated on the journal's website. 
 
 Examples include author fees (see section 13), subscriptions, sponsorships and subsidies, advertising (see section 15), reprints, supplements, or special issues.
 
 Business models or revenue sources (for example, reprint income, supplements, special issues, sponsorships) should not influence editorial decision making.
 
-#### 15. Advertising
+**15. Advertising**
+
 Journals should state whether they accept advertising. If they do, they should state their advertising policy, including:
 
 - Which types of advertisements will be considered.
@@ -157,7 +165,8 @@ Journals should state whether they accept advertising. If they do, they should s
 
 Advertisements should not be related in any way to editorial decision making and should be kept separate from the published content.
 
-#### 16. Direct marketing
+**16. Direct marketing**
+
 Any direct marketing activities, including solicitation of manuscripts, that are conducted on behalf of the journal should be appropriate, well targeted, and unobtrusive. Information provided about the publisher or journal should be truthful and not misleading for readers or authors.
 
 ## Version history
