@@ -77,3 +77,22 @@ tests:
     - step: Click 'Validate'
       results:
         - You are shown a validation message that says validation is successful
+    - step: If you are finished testing, you can teardown the testdrive using the link provided.  If you are going to continue
+        with the other tests in this suite you can leave the testdrive in place until the very end
+
+- title: Access to the feature
+  context:
+    role: Publisher
+    testdrive: publisher_csv_upload
+    setup:
+      - If you have not done so already, use the publisher_csv_upload testdrive to setup for this test at /testdrive/publisher_csv_upload
+    steps:
+      - step: Log in as the publisher account specified by the testdrive result
+        results:
+          - The "Validate your CSV" navigation tab is visible
+      - step: As an administrator, edit the user's account and remove the "journal_csv" role
+      - step: As the publisher again, reload the publisher home page
+        results:
+          - The "Validate your CSV" tab is no longer visible
+
+

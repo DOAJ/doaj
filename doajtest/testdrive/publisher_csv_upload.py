@@ -12,7 +12,7 @@ class PublisherCsvUpload(TestDrive):
     def setup(self) -> dict:
         un = self.create_random_str()
         pw = self.create_random_str()
-        acc = models.Account.make_account(un + "@example.com", un, "Publisher " + un, [constants.ROLE_PUBLISHER])
+        acc = models.Account.make_account(un + "@example.com", un, "Publisher " + un, [constants.ROLE_PUBLISHER, constants.ROLE_PUBLISHER_JOURNAL_CSV])
         acc.set_password(pw)
         acc.save()
 

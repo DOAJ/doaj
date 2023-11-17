@@ -2,6 +2,7 @@ from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, flash
 from flask_login import current_user, login_required
 
+import constants
 from portality.app_email import EmailException
 from portality import models
 from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException, ArticleNotAcceptable
@@ -372,13 +373,17 @@ def metadata():
 @ssl_required
 @write_required()
 def journal_csv():
-    return render_template('publisher/journal_csv.html')
+    if current_user.has_role(constants.ROLE_PUBLISHER_JOURNAL_CSV):
+        return render_template('publisher/journal_csv.html')
+    abort(403)
 
 @blueprint.route("/journal-csv/validate", methods=["POST"])
 @login_required
 @ssl_required
 @write_required()
 def journal_csv_validate():
+    if not current_user.has_role(constants.ROLE_PUBLISHER_JOURNAL_CSV):
+        abort(403)
     if "journal_csv" not in request.files:
         abort(400)
     file = request.files["journal_csv"]
