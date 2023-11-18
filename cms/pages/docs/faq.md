@@ -136,3 +136,22 @@ If you see a screen from Cloudflare that says you have been blocked, please [con
 You can download our metadata about your journal by [downloading our CSV](https://doaj.org/csv).
 
 You can download your article metadata by [using our API](https://doaj.org/docs/api/) or by using our [public data dump service](/docs/public-data-dump/).
+
+## Using a CSV file to update your journal metadata
+
+If you received a CSV file from us, please complete it as soon as possible. The file sent to you contains a cover sheet with instructions. 
+
+Before you send us the file, you will need to [validate it](/publisher/journal-csv) first. Some changes will cause the validation to fail:
+
+- don't save the file in any format other than CSV
+- don't change an ISSN or the Title of a journal. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
+- don't add a new journal to the file. To do this, [submit a new application](/apply/).
+- don't change the title of a column
+- don't include anything in the column other than what is required
+
+Deleting a journal from the file will mean no update happens; it will not remove a journal from your account. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
+
+### Validating your file
+
+Before emailing your file to us, you will need to validate it. Do this in your Publisher Dashboard on the 'Validate your Journal' CSV tab. If you do not see the tab, contact [Help Desk](mailto:helpdesk@doaj.org).
+
