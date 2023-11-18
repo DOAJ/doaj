@@ -118,6 +118,7 @@ When something changes, you must keep your journal records in DOAJ up to date.
 
 - [Contact our Help Desk](mailto:helpdesk@doaj.org) if you want to change the Title or ISSN of your journal, but [read this section first]().
 - [Contact our Help Desk](mailto:helpdesk@doaj.org) if your journal qualifies for the Seal.
+- Request a CSV file from us that allows you to update multiple journals and values at the same time and in spreadsheet format.
 - For all other changes, log into your DOAJ account to [submit an update request](/publisher/journal). Use the black ‘Update’ button.
 
 ### When should I submit an update?
@@ -126,6 +127,8 @@ When something changes, you must keep your journal records in DOAJ up to date.
 - When you change the fees/APCs
 - When journal information or policies change
 - When your journal is included in a digital archive, starts using DOIs, or has an entry in Sherpa/RoMEO
+
+If a member of the DOAJ Team has sent you a CSV file, we ask that you complete it as quickly as possible. Full details are available on our [Metadata Help](/docs/faq/) page.
 
 We aim to process update requests within one month.
 
