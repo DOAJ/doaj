@@ -1216,6 +1216,69 @@ DISCOVERY_RECORDS_PER_FILE = 100000
 # hotjar id - only activate this in production
 HOTJAR_ID = ""
 
+
+######################################################
+# Google Analytics configuration
+# specify in environment .cfg file - avoids sending live analytics
+# events from test and dev environments
+# ~~->GoogleAnalytics:ExternalService~~
+
+# Google Analytics custom dimensions. These are configured in the GA interface.
+PLAUSIBLE_DIMENSIONS = {
+    'oai_res_id': 'dimension1',                                                                    # In GA as OAI:Record
+}
+
+# Plausible for OAI-PMH
+# ~~-> OAIPMH:Feature~~
+PLAUSIBLE_CATEGORY_OAI = 'OAI-PMH'
+
+# Plausible for Atom
+# ~~-> Atom:Feature~~
+PLAUSIBLE_CATEGORY_ATOM = 'Atom'
+PLAUSIBLE_ACTION_ACTION = 'Feed request'
+
+# Plausible for JournalCSV
+# ~~-> JournalCSV:Feature~~
+PLAUSIBLE_CATEGORY_JOURNALCSV = 'JournalCSV'
+PLAUSIBLE_ACTION_JOURNALCSV = 'Download'
+
+# Plausible for OpenURL
+# ~~->OpenURL:Feature~~
+PLAUSIBLE_CATEGORY_OPENURL = 'OpenURL'
+
+# Plausible for PublicDataDump
+# ~~->PublicDataDump:Feature~~
+PLAUSIBLE_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
+GA_ACTION_PUBLICDATADUMP = 'Download'
+
+# Plausible for API
+# ~~-> API:Feature~~
+PLAUSIBLE_CATEGORY_API = 'API Hit'
+PLAUSIBLE_ACTIONS_API = {
+    'search_applications': 'Search applications',
+    'search_journals': 'Search journals',
+    'search_articles': 'Search articles',
+    'create_application': 'Create application',
+    'retrieve_application': 'Retrieve application',
+    'update_application': 'Update application',
+    'delete_application': 'Delete application',
+    'create_article': 'Create article',
+    'retrieve_article': 'Retrieve article',
+    'update_article': 'Update article',
+    'delete_article': 'Delete article',
+    'retrieve_journal': 'Retrieve journal',
+    'bulk_application_create': 'Bulk application create',
+    'bulk_application_delete': 'Bulk application delete',
+    'bulk_article_create': 'Bulk article create',
+    'bulk_article_delete': 'Bulk article delete'
+}
+
+
+# Plausible for fixed query widget
+# ~~->FixedQueryWidget:Feature~~
+PLAUSIBLE_CATEGORY_FQW = 'FQW'
+PLAUSIBLE_ACTION_FQW = 'Hit'
+
 #####################################################
 # Anonymised data export (for dev) configuration
 # ~~->AnonExport:Feature~~

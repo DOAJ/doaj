@@ -29,7 +29,7 @@ def openurl():
         return redirect(parser_response, 301)
 
     # Log this request to analytics
-    plausible.send_event(app.config.get('GA_CATEGORY_OPENURL', 'OpenURL'),
+    plausible.send_event(app.config.get('PLAUSIBLE_CATEGORY_OPENURL', 'OpenURL'),
                          action=parser_response.genre,
                          label=qs)
 

@@ -11,8 +11,8 @@ blueprint = Blueprint('api_v1', __name__)
 API_VERSION_NUMBER = '1.0.0'
 
 # Google Analytics category for API events
-GA_CATEGORY = app.config.get('GA_CATEGORY_API', 'API Hit')
-GA_ACTIONS = app.config.get('GA_ACTIONS_API', {})
+GA_CATEGORY = app.config.get('PLAUSIBLE_CATEGORY_API', 'API Hit')
+GA_ACTIONS = app.config.get('PLAUSIBLE_ACTIONS_API', {})
 
 API_UNSUPPORTED_ERROR = "Version 1 is no longer supported."
 
