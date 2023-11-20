@@ -153,5 +153,9 @@ Deleting a journal from the file will mean no update happens; it will not remove
 
 ### Validating your file
 
-Before emailing your file to us, you will need to validate it. Do this in your Publisher Dashboard on the 'Validate your Journal' CSV tab. If you do not see the tab, contact [Help Desk](mailto:helpdesk@doaj.org).
+Before emailing your file to us, you will need to validate it. Do this in your Publisher Dashboard on the 'Validate your CSV' tab. If you do not see the tab, contact [Help Desk](mailto:helpdesk@doaj.org).
 
+As well as the five points above, here are some tips to help you produce a valid CSV file:
+
+- be careful not to add spaces before or after the information you put into the spreadsheet. This can cause the validation to fail.
+- 
