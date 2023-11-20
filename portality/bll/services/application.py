@@ -692,7 +692,13 @@ class ApplicationService(object):
                 if not fc.validate():
                     for k, v in fc.form.errors.items():
                         question = Journal2PublisherUploadQuestionsXwalk.q(k)
-                        pos = header_row.index(question)
+                        try:
+                            pos = header_row.index(question)
+                        except:
+                            # this is because the validation is on a field which is not in the csv, so it must
+                            # be due to an existing validation error in the data, and not something the publisher
+                            # can do anything about
+                            continue
                         now = row.get(question)
                         was = [v for q, v in journal_questions if q == question][0]
                         if isinstance(v[0], dict):
