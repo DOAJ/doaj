@@ -345,8 +345,11 @@ class Journal2QuestionXwalk(object):
 
 
 class Journal2PublisherUploadQuestionsXwalk(Journal2QuestionXwalk):
-    QTUP = Journal2QuestionXwalk.QTUP
-    QTUP[[i for i, v in enumerate(QTUP) if v[0] == "other_charges_url"][0]] = ("other_charges_url", "Other fees information URL (only if answer is in Column J is 'Yes')")
+    # NOTE: This change was put in originally because the test data had a changed header from the regular
+    # journal csv.  That has been reversed now, but I'm leaving this in as a reminder that we can
+    # patch over the questions as we need in future.
+    # QTUP = Journal2QuestionXwalk.QTUP
+    # QTUP[[i for i, v in enumerate(QTUP) if v[0] == "other_charges_url"][0]] = ("other_charges_url", "Other fees information URL (only if answer is in Column J is 'Yes')")
 
     REQUIRED = [
         "pissn",
