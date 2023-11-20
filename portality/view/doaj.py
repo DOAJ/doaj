@@ -193,7 +193,7 @@ def sitemap():
 @blueprint.route("/public-data-dump/<record_type>")
 @api_key_required
 @plausible.pa_event(app.config.get('PLAUSIBLE_CATEGORY_PUBLICDATADUMP', 'PublicDataDump'),
-                    action=app.config.get('GA_ACTION_PUBLICDATADUMP', 'Download'))
+                    action=app.config.get('PLAUSIBLE_ACTION_PUBLICDATADUMP', 'Download'))
 def public_data_dump_redirect(record_type):
     if not current_user.has_role(constants.ROLE_PUBLIC_DATA_DUMP):
         abort(404)

@@ -1223,7 +1223,7 @@ HOTJAR_ID = ""
 # events from test and dev environments
 # ~~->GoogleAnalytics:ExternalService~~
 
-# Google Analytics custom dimensions. These are configured in the GA interface.
+# Plausible custom dimensions. These are configured in the GA interface. # legacy
 PLAUSIBLE_DIMENSIONS = {
     'oai_res_id': 'dimension1',                                                                    # In GA as OAI:Record
 }
@@ -1249,7 +1249,7 @@ PLAUSIBLE_CATEGORY_OPENURL = 'OpenURL'
 # Plausible for PublicDataDump
 # ~~->PublicDataDump:Feature~~
 PLAUSIBLE_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
-GA_ACTION_PUBLICDATADUMP = 'Download'
+PLAUSIBLE_ACTION_PUBLICDATADUMP = 'Download'
 
 # Plausible for API
 # ~~-> API:Feature~~
