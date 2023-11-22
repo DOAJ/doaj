@@ -114,6 +114,13 @@ tests:
   - step: Click the X next to it
     results:
     - It disappears
+  - step:  Enter the same value  in Publisher's Name and Publisher's Country
+  - step: Click Next
+    results:
+    - "You see the error message: The value of this field and the Publisher's Country field must be different."
+  - step: Repeat previous step checking if the validator is case insensitive (e.g. "Publisher's name" and "publisher's Name")
+    results:
+      - The error message is still displayed
   - step: Repeat steps X to X for the Publisher's Name, Country, Society name, Country
   - step: Delete the values from Society name and country, click Next
     results:
