@@ -1218,43 +1218,51 @@ HOTJAR_ID = ""
 
 
 ######################################################
-# Google Analytics configuration
-# specify in environment .cfg file - avoids sending live analytics
-# events from test and dev environments
-# ~~->GoogleAnalytics:ExternalService~~
+# Analytics configuration
+# specify in environment .cfg file - avoids sending live analytics events from test and dev environments
 
-# Plausible custom dimensions. These are configured in the GA interface. # legacy
-PLAUSIBLE_DIMENSIONS = {
-    'oai_res_id': 'dimension1',                                                                    # In GA as OAI:Record
+# ~~->PlausibleAnalytics:ExternalService~~
+# Plausible analytics
+# root url of plausible
+PLAUSIBLE_URL = "https://plausible.io"
+PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/script.outbound-links.file-downloads.js"
+PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event"
+# site name / domain name that used to register in plausible
+PLAUSIBLE_SITE_NAME = BASE_DOMAIN
+PLAUSIBLE_LOG_DIR = None
+
+# Analytics custom dimensions. These are configured in the interface. #fixme: are these still configured since the move from GA?
+ANALYTICS_DIMENSIONS = {
+    'oai_res_id': 'dimension1',                                                             # In analytics as OAI:Record
 }
 
 # Plausible for OAI-PMH
 # ~~-> OAIPMH:Feature~~
-PLAUSIBLE_CATEGORY_OAI = 'OAI-PMH'
+ANALYTICS_CATEGORY_OAI = 'OAI-PMH'
 
 # Plausible for Atom
 # ~~-> Atom:Feature~~
-PLAUSIBLE_CATEGORY_ATOM = 'Atom'
-PLAUSIBLE_ACTION_ACTION = 'Feed request'
+ANALYTICS_CATEGORY_ATOM = 'Atom'
+ANALYTICS_ACTION_ACTION = 'Feed request'
 
 # Plausible for JournalCSV
 # ~~-> JournalCSV:Feature~~
-PLAUSIBLE_CATEGORY_JOURNALCSV = 'JournalCSV'
-PLAUSIBLE_ACTION_JOURNALCSV = 'Download'
+ANALYTICS_CATEGORY_JOURNALCSV = 'JournalCSV'
+ANALYTICS_ACTION_JOURNALCSV = 'Download'
 
 # Plausible for OpenURL
 # ~~->OpenURL:Feature~~
-PLAUSIBLE_CATEGORY_OPENURL = 'OpenURL'
+ANALYTICS_CATEGORY_OPENURL = 'OpenURL'
 
 # Plausible for PublicDataDump
 # ~~->PublicDataDump:Feature~~
-PLAUSIBLE_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
-PLAUSIBLE_ACTION_PUBLICDATADUMP = 'Download'
+ANALYTICS_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
+ANALYTICS_ACTION_PUBLICDATADUMP = 'Download'
 
 # Plausible for API
 # ~~-> API:Feature~~
-PLAUSIBLE_CATEGORY_API = 'API Hit'
-PLAUSIBLE_ACTIONS_API = {
+ANALYTICS_CATEGORY_API = 'API Hit'
+ANALYTICS_ACTIONS_API = {
     'search_applications': 'Search applications',
     'search_journals': 'Search journals',
     'search_articles': 'Search articles',
@@ -1276,8 +1284,8 @@ PLAUSIBLE_ACTIONS_API = {
 
 # Plausible for fixed query widget
 # ~~->FixedQueryWidget:Feature~~
-PLAUSIBLE_CATEGORY_FQW = 'FQW'
-PLAUSIBLE_ACTION_FQW = 'Hit'
+ANALYTICS_CATEGORY_FQW = 'FQW'
+ANALYTICS_ACTION_FQW = 'Hit'
 
 #####################################################
 # Anonymised data export (for dev) configuration
@@ -1375,15 +1383,6 @@ TASK_DATA_RETENTION_DAYS = {
 # Editorial Dashboard - set to-do list size
 TODO_LIST_SIZE = 48
 
-#######################################################
-# Plausible analytics
-# root url of plausible
-PLAUSIBLE_URL = "https://plausible.io"
-PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/script.outbound-links.file-downloads.js"
-PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event"
-# site name / domain name that used to register in plausible
-PLAUSIBLE_SITE_NAME = BASE_DOMAIN
-PLAUSIBLE_LOG_DIR = None
 
 #########################################################
 # Background tasks --- monitor_bgjobs

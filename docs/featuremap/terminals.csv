@@ -25,6 +25,7 @@ LCC:SourceData
 OpenURL:Fragment
 Plagiarism:FieldSet
 PlagiarismDetection:FormField
+PlausibleAnalytics:ExternalService
 Privacy:Fragment
 Promo:Data
 PublisherSupporters:Data
