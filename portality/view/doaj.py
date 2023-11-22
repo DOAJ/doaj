@@ -68,8 +68,8 @@ def news():
 def fqw_hit():
     page = request.form.get('embedding_page')
     if page is not None:
-        plausible.send_event(app.config.get('GA_CATEGORY_FQW', 'FQW'),
-                             action=app.config.get('GA_ACTION_FQW', 'hit'),
+        plausible.send_event(app.config.get('ANALYTICS_CATEGORY_FQW', 'FQW'),
+                             action=app.config.get('ANALYTICS_ACTION_FQW', 'hit'),
                              label=request.form.get('embedding_page'))
 
     # No content response, whether data there or not.
@@ -166,8 +166,8 @@ def journal_readonly(journal_id):
 
 
 @blueprint.route("/csv")
-@plausible.pa_event(app.config.get('GA_CATEGORY_JOURNALCSV', 'JournalCSV'),
-                    action=app.config.get('GA_ACTION_JOURNALCSV', 'Download'))
+@plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_JOURNALCSV', 'JournalCSV'),
+                    action=app.config.get('ANALYTICS_ACTION_JOURNALCSV', 'Download'))
 def csv_data():
     csv_info = models.Cache.get_latest_csv()
     if csv_info is None:
@@ -192,8 +192,8 @@ def sitemap():
 
 @blueprint.route("/public-data-dump/<record_type>")
 @api_key_required
-@plausible.pa_event(app.config.get('GA_CATEGORY_PUBLICDATADUMP', 'PublicDataDump'),
-                    action=app.config.get('GA_ACTION_PUBLICDATADUMP', 'Download'))
+@plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_PUBLICDATADUMP', 'PublicDataDump'),
+                    action=app.config.get('ANALYTICS_ACTION_PUBLICDATADUMP', 'Download'))
 def public_data_dump_redirect(record_type):
     if not current_user.has_role(constants.ROLE_PUBLIC_DATA_DUMP):
         abort(404)

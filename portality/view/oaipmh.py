@@ -32,14 +32,14 @@ def oaipmh(specified=None):
     # Add the identifier to the event if there is one
     ident = request.values.get('identifier', None)
     if ident is not None:
-        event_payload[app.config.get('GA_DIMENSIONS')['oai_res_id']] = ident
+        event_payload[app.config.get('ANALYTICS_DIMENSIONS')['oai_res_id']] = ident
 
     # work out the verb and associated parameters
     verb = request.values.get("verb")
     event_payload['action'] = verb
 
     # Now we have enough information about the request to send to analytics.
-    plausible.send_event(app.config.get('GA_CATEGORY_OAI', 'OAI-PMH'),
+    plausible.send_event(app.config.get('ANALYTICS_CATEGORY_OAI', 'OAI-PMH'),
                          **event_payload)
 
     # call the appropriate protocol operation:

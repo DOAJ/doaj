@@ -104,7 +104,6 @@ Volunteer records must include a name and an email address so that we can assign
 
 When you use DOAJ, cookies are set on your machine. The cookies we set are:
 
-*   Google Analytics - we track usage of this site using Google Analytics. We do not track individuals but general paths through the site. (Being retired as of August 2023.)
 *   jquery - we use jquery.com to load the javascript framework.
 *   doaj.org - a small number of required cookies for the application to function, for example when you log in and when you click away the cookie consent banner.
 *   schema - if you upload article metadata to us via the Upload Article XML tab, we place a cookie on your machine which allows us to remember which XSD schema you used the last time you uploaded XML to us: doaj or Crossref
