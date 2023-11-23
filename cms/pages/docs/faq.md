@@ -158,4 +158,3 @@ Before emailing your file to us, you will need to validate it. Do this in your P
 As well as the five points above, here are some tips to help you produce a valid CSV file:
 
 - be careful not to add spaces before or after the information you put into the spreadsheet. This can cause the validation to fail.
-- 
