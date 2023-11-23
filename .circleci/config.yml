@@ -46,7 +46,7 @@ jobs:
       - run:
             name: DEBUGGING
             command: |
-                cat 'docker/docker-compose.yml up -d'                
+                cat 'docker/docker-compose.yml'                
                 which docker-compose
       - run:
           name: Run docker for selenium tests
