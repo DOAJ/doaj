@@ -14,6 +14,7 @@ jobs:
           - xpack.security.enabled: false
           - transport.host: localhost
           - discovery.type: single-node
+
     parallelism: 4
 
     steps:
@@ -35,10 +36,18 @@ jobs:
             TESTS=$(circleci tests glob "doajtest/unit/test_lib*.py" | circleci tests split)
             pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-unit.xml $TESTS
       - run:
+          name: Run docker for selenium tests
+          command: |
+            docker-compose -f docker/docker-compose.yml up -d
+      - run:
           name: Run selenium tests
           command: |
             TESTS=$(circleci tests glob "$DOAJ_CODE_HOME/doajtest/seleniumtest/**/*.py" | circleci tests split)
             pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml $TESTS
+      - run:
+          name: Shutdown docker
+          command: |
+            docker-compose -f docker/docker-compose.yml down
       - store_test_results:
           path: test-results
     working_directory: ~/doaj
