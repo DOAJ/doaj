@@ -82,10 +82,10 @@ jobs:
           command: |
             TESTS=$(circleci tests glob "doajtest/seleniumtest/**/*.py" | circleci tests split)
             pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml $TESTS
-      - run:
-          name: Shutdown docker
-          command: |
-            docker-compose -f docker/docker-compose.yml down
+#      - run:
+#          name: Shutdown docker
+#          command: |
+#            docker-compose -f docker/docker-compose.yml down
       - store_test_results:
           path: test-results
     working_directory: ~/doaj

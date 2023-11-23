@@ -109,9 +109,12 @@ class SeleniumTestCase(DoajTestCase):
             options = webdriver.ChromeOptions()
             options.add_argument('--start-maximized')  # maximize browser window
             options.add_argument('--ignore-certificate-errors')
+            options.add_argument('--ignore-ssl-errors')
+            options.add_argument('--allow-insecure-localhost')
             if self.app_test.config.get('SELENIUM_HEADLESS', False):
                 options.add_argument('--headless')
-            browser_driver = webdriver.Chrome(options=options)
+            options.capabilities['acceptInsecureCerts'] = True
+            browser_driver = webdriver.Chrome(options=options, )
 
         self.selenium = browser_driver
         self.selenium.maximize_window()  # avoid something is not clickable
