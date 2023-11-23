@@ -44,6 +44,11 @@ jobs:
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
       - run:
+            name: DEBUGGING
+            command: |
+                cat 'docker/docker-compose.yml up -d'                
+                which docker-compose
+      - run:
           name: Run docker for selenium tests
           command: |
             docker-compose -f docker/docker-compose.yml up -d
