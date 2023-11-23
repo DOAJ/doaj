@@ -449,7 +449,7 @@ class TodoQuery(object):
     def cd_older_than(cls, weeks):
         return {
             "range": {
-                "created_date": {
+                "admin.date_applied": {
                     "lte": "now-" + str(weeks) + "w"
                 }
             }
