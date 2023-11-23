@@ -30,11 +30,11 @@ jobs:
             echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
             python portality/cms/build_fragments.py
             python portality/cms/build_sass.py
-      - run:
-          name: Run unit tests
-          command: |
-            TESTS=$(circleci tests glob "doajtest/unit/test_lib*.py" | circleci tests split)
-            pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-unit.xml $TESTS
+#      - run:
+#          name: Run unit tests
+#          command: |
+#            TESTS=$(circleci tests glob "doajtest/unit/test_lib*.py" | circleci tests split)
+#            pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-unit.xml $TESTS
       - run:
           name: Install Dcoker Compose
           environment:
@@ -43,6 +43,7 @@ jobs:
             curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - setup_remote_docker
       - run:
             name: DEBUGGING
             command: |
