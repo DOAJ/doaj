@@ -49,6 +49,11 @@ jobs:
 #            TESTS=$(circleci tests glob "doajtest/unit/test_lib*.py" | circleci tests split)
 #            pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-unit.xml $TESTS
       - run:
+        name: Env for selenium
+        command: |
+          echo "SELENIUM_REMOTE_URL = ''" >> test.cfg
+          echo "SELENIUM_DOAJ_HOST = '127.0.0.1'" >> test.cfg
+      - run:
           name: Install Dcoker Compose
           environment:
             COMPOSE_VERSION: 1.29.2
@@ -57,6 +62,7 @@ jobs:
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
       # - setup_remote_docker
+
       - run:
             name: DEBUGGING
             command: |
