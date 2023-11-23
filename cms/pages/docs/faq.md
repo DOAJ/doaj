@@ -17,6 +17,7 @@ After your journal is indexed in DOAJ and you start to upload article metadata t
 - On our website
 
 Our metadata is collected and incorporated into commercial discovery systems, library discovery portals and search engines around the world. Here are some of them:
+
 - OCLC
 - EBSCO products
 - Clarivate's Proquest and Ex Libris products
@@ -107,7 +108,7 @@ We are currently unable to display more than one affiliation per author. We are 
 
 ### My article abstracts are in more than one language
 
-Our XML format only supports one language for Article Title and Abstract. We are working on a solution that will allow multiple languages to be uploaded to us and displayed.
+Our XML format only supports one language for 'Article Title' and 'Abstract'. We are researching a solution that allows multiple languages to be uploaded to us and displayed.
 
 Metadata containing multiple languages can still be uploaded to us. However, you cannot choose which language is displayed. Please only send us one language to avoid your articles being displayed in a mixture of languages.
 
