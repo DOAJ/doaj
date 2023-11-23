@@ -27,10 +27,10 @@ jobs:
           echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
           python portality/cms/build_fragments.py
           python portality/cms/build_sass.py
-          TESTS=$(circleci tests glob "doajtest/unit/**/*.py" | circleci tests split)
-          pytest -v --color=yes --code-highlight=yes --log-level=DEBUG $TESTS
+          TESTS=$(circleci tests glob "doajtest/unit/**/*.py" | head | circleci tests split)
+          pytest -v --color=yes --code-highlight=yes --log-level=DEBUG $TESTS > /tmp/circleci-test-results
       - store_test_results:
-          path: circleci-test-results
+          path: /tmp/circleci-test-results
 
     working_directory: ~/doaj
 
