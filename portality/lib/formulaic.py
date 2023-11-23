@@ -108,6 +108,7 @@ from typing import Optional, Dict, Iterable
 from flask import render_template
 from wtforms import Form
 from wtforms.fields.core import UnboundField, FieldList, FormField, Field
+from wtforms.validators import ValidationError
 
 from portality.lib import plugin
 
@@ -795,6 +796,9 @@ class FormulaicField(object):
                 vfn = plugin.load_function(vfn)
             validators.append(vfn(field, args))
 
+        # if len(field.get("conditional", [])) > 0:
+        #     validators.append(ConditionalValidator(field["conditional"], formulaic_context))
+
         wtargs = {
             "label": field.get("label"),
             "validators": validators,
@@ -1053,3 +1057,36 @@ class WTFormsBuilder:
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
         return None
+
+# This code can be used to (partially) solve the conditional fields validation issue
+#
+# class AugmentedValidationError(ValidationError):
+#     def __init__(self, error_type, parameters, message='', *args, **kwargs):
+#         super(AugmentedValidationError, self).__init__(message, *args, **kwargs)
+#
+# class ConditionalValidator:
+#     def __init__(self, conditions, context, message=None):
+#         self.conditions = conditions
+#         self.context = context
+#         self.message = message
+#
+#     def __call__(self, form, field):
+#         for c in self.conditions:
+#             other_field = c.get("field")
+#             expected_value = c.get("value")
+#             if other_field in form:
+#                 other_value = form[other_field].data
+#                 if other_value != expected_value:
+#                     ff = self.context.get(other_field)
+#                     # NOTE: this only works on fields with explicitly declared options.  Dynamic options cannot be handled in the same way.
+#                     # so we treat those as just regular text values
+#                     if len(ff.explicit_options) > 0:
+#                         for o in ff.explicit_options:
+#                             if o.get("value") == expected_value:
+#                                 expected_value = o.get("display")
+#                                 break
+#                     msg = self.message or "Field may only contain data if '{x}' has the value '{y}'".format(x=ff.label, y=expected_value)
+#                     parameters = {
+#                         "other_field": other_field,
+#                     }
+#                     raise ValidationError("conditional", message=msg)
