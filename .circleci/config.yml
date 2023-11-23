@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   python: circleci/python@2.1.1
+  browser-tools: circleci/browser-tools@1.2.3
 
 jobs:
   build-and-test:
@@ -62,13 +63,14 @@ jobs:
 #            chmod +x ~/docker-compose
 #            sudo mv ~/docker-compose /usr/local/bin/docker-compose
       # - setup_remote_docker
-
+      - browser-tools/install-chrome
       - run:
             name: DEBUGGING
             command: |
                 cat 'docker/docker-compose.yml'                
                 which docker-compose
                 cat test.cfg
+                google-chrome --version
       # - run:
       #     name: Run docker for selenium tests
       #     command: |
