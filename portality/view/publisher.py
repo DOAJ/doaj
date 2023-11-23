@@ -2,9 +2,8 @@ from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, flash
 from flask_login import current_user, login_required
 
-import constants
 from portality.app_email import EmailException
-from portality import models
+from portality import models, constants
 from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException, ArticleNotAcceptable
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.dao import ESMappingMissingError
