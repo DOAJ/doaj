@@ -53,6 +53,7 @@ jobs:
           name: Run docker for selenium tests
           command: |
             docker-compose -f docker/docker-compose.yml up -d
+            sleep 5
       - run:
           name: Run selenium tests
           command: |
