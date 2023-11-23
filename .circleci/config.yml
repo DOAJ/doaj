@@ -62,6 +62,7 @@ jobs:
             command: |
                 cat 'docker/docker-compose.yml'                
                 which docker-compose
+                cat test.cfg
       # - run:
       #     name: Run docker for selenium tests
       #     command: |
