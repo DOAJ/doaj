@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Run unit tests
           command: |
-            TESTS=$(circleci tests glob "doajtest/unit/test_background_*.py" | circleci tests split)
+            TESTS=$(circleci tests glob "doajtest/unit/test_lib*.py" | circleci tests split)
             pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-unit.xml $TESTS
       - store_test_results:
           path: test-results
