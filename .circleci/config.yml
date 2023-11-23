@@ -54,6 +54,7 @@ jobs:
           command: |
             echo "SELENIUM_REMOTE_URL = ''" >> test.cfg
             echo "SELENIUM_DOAJ_HOST = '127.0.0.1'" >> test.cfg
+            echo "SELENIUM_HEADLESS = True" >> test.cfg
 #      - run:
 #          name: Install Dcoker Compose
 #          environment:
