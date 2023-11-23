@@ -108,6 +108,7 @@ class SeleniumTestCase(DoajTestCase):
             # run selenium with your local browser
             options = webdriver.ChromeOptions()
             options.add_argument('--start-maximized')  # maximize browser window
+            options.add_argument('--ignore-certificate-errors')
             if self.app_test.config.get('SELENIUM_HEADLESS', False):
                 options.add_argument('--headless')
             browser_driver = webdriver.Chrome(options=options)
