@@ -36,6 +36,14 @@ jobs:
             TESTS=$(circleci tests glob "doajtest/unit/test_lib*.py" | circleci tests split)
             pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-unit.xml $TESTS
       - run:
+          name: Install Dcoker Compose
+          environment:
+            COMPOSE_VERSION: 1.29.2
+          command: |
+            curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - run:
           name: Run docker for selenium tests
           command: |
             docker-compose -f docker/docker-compose.yml up -d
