@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Run selenium tests
           command: |
-            TESTS=$(circleci tests glob "$DOAJ_CODE_HOME/doajtest/seleniumtest/**/*.py" | circleci tests split)
+            TESTS=$(circleci tests glob "doajtest/seleniumtest/**/*.py" | circleci tests split)
             pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml $TESTS
       - run:
           name: Shutdown docker
