@@ -15,18 +15,18 @@ jobs:
           - transport.host: localhost
           - discovery.type: single-node
       - image: selenium/standalone-chrome:110.0
-        logging:
-          driver: none
-        volumes:
-          - /dev/shm:/dev/shm
-        shm_size: 4gb
-        ports:
-          - '4444:4444'
-        environment:
-          - SE_NODE_MAX_SESSIONS=100
-          - SE_NODE_OVERRIDE_MAX_SESSIONS=true
-          - SE_SESSION_REQUEST_TIMEOUT=400
-          - SE_SESSION_RETRY_INTERVAL=2
+      #   logging:
+      #     driver: none
+      #   volumes:
+      #     - /dev/shm:/dev/shm
+      #     shm_size: 4gb
+      #   ports:
+      #     - '4444:4444'
+      #   environment:
+      #     - SE_NODE_MAX_SESSIONS=100
+      #     - SE_NODE_OVERRIDE_MAX_SESSIONS=true
+      #     - SE_SESSION_REQUEST_TIMEOUT=400
+      #     - SE_SESSION_RETRY_INTERVAL=2
 
     parallelism: 4
 
