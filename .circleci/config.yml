@@ -29,7 +29,9 @@ jobs:
           python portality/cms/build_sass.py
       - run: |
           TESTS=$(circleci tests glob "doajtest/unit/test_background*.py" | circleci tests split)
-          pytest -v --color=yes --code-highlight=yes --log-level=DEBUG $TESTS
+          pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-unit.xml $TESTS
+      - store_test_results:
+          path: test-results
 
     working_directory: ~/doaj
 
