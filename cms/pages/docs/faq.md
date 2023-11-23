@@ -47,8 +47,8 @@ Choose how you want to upload article metadata to us.
 - **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
 - **Documentation** [Yes](/docs/api/)
 - **FAQS** [Yes](/api/v3/docs#api-faq)
-- **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin)https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin.
-- **OJS support**: for help, refer to [the OJS Technical Forum](https://forum.pkp.sfu.ca/c/questions/5)https://forum.pkp.sfu.ca/c/questions/5
+- **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin).
+- **OJS support**: for help, refer to [the OJS Technical Forum](https://forum.pkp.sfu.ca/c/questions/5)
 - **Troubleshooting uploads**: please [submit a bug report](https://github.com/DOAJ/doaj/issues/new/choose) (via GitHub) or [contact us](mailto:helpdesk@doaj.org) with the following details:
   - The time of the file upload. (If you saw the error more than 12 hours ago, please try the upload again before you contact us.)
   - Whether the error happened once or repeatedly
@@ -69,8 +69,8 @@ Choose how you want to upload article metadata to us.
 - **Testing available**: on a case-by-case basis and only for [publisher supporters](/support/publisher-supporters/)
 - **Documentation** [DOAJ XML](/docs/xml/), [Crossref 5.3.1 XML](https://www.crossref.org/documentation/schema-library/metadata-deposit-schema-5-3-1/), [Crossref 4.4.2 XML](https://www.crossref.org/documentation/schema-library/resource-only-deposit-schema-4-4-2/)
 - **FAQS** No
-- **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin)https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin.
-- **OJS support**: for help, refer to [the OJS Technical Forum](https://forum.pkp.sfu.ca/c/questions/5)https://forum.pkp.sfu.ca/c/questions/5
+- **OJS plugin available?** Yes. Refer to [PKP documentation](https://docs.pkp.sfu.ca/admin-guide/3.3/en/data-import-and-export#doaj-export-plugin).
+- **OJS support**: for help, refer to [the OJS Technical Forum](https://forum.pkp.sfu.ca/c/questions/5)
 - **Help available?** Yes
   - For creating XML, see our [DOAJ XML](/docs/xml/) documentation
   - For explanations of [specific error messages when uploading XML](/publisher/help#explanations)
