@@ -1,17 +1,16 @@
 ---
 layout: sidenav
-sidenav_include: /includes/_sidenav_donation.html
-include: /includes/contribution_rates.html
 title: Institutional and library supporter model
 section: Support
 sticky_sidenav: true
+toc: true
 featuremap:
  - ~~Support:Fragment->DonationSidenav:Template~~
  - ~~->ContributionRates:Template~~
 
 ---
 
-Support of DOAJ by academic organisations is vital, and we are proud to acknowledge that over 80% of our support comes to us this way. We are very grateful to all our supporting academic organisations worldwide.
+Support of DOAJ by academic organisations is vital, and we are proud that we can state that over 80% of our support comes to us this way. We are very grateful to all our supporting academic organisations worldwide.
 
 ### 2024 pricing
 
