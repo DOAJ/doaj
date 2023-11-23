@@ -287,7 +287,7 @@ class Journal2QuestionXwalk(object):
             'review_process': _comma_to_list,
             'plagiarism_detection': _y_n_or_blank,
             'publication_time_weeks': lambda x: round(float(x)),
-            'apc': _y_or_blank,
+            'apc': _y_n_or_blank,
             'apc_charges': _unfurl_apc,
             'has_waiver': _y_n_or_blank,
             'has_other_charges': _y_n_or_blank,
