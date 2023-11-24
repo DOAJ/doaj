@@ -85,10 +85,15 @@ jobs:
             pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml doajtest/seleniumtest/test_public.py
 
       - run:
-          name: Run selenium tests
+          name: "[DEBUG] Run selenium tests circleci"
           command: |
-            TESTS=$(circleci tests glob "doajtest/seleniumtest/**/*.py" | circleci tests split)
-            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml $TESTS
+            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml doajtest/seleniumtest/test_circleci.py
+
+#      - run:
+#          name: Run selenium tests
+#          command: |
+#            TESTS=$(circleci tests glob "doajtest/seleniumtest/**/*.py" | circleci tests split)
+#            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml $TESTS
 
 #      - run:
 #          name: Shutdown docker
