@@ -82,7 +82,7 @@ jobs:
       - run:
           name: "[DEBUG] Run selenium tests"
           command: |
-            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml doajtest/seleniumtest/test_public.py
+            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml doajtest/seleniumtest/test_google.py
 
       - run:
           name: "[DEBUG] Run selenium tests circleci"
