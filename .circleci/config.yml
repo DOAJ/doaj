@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
-  python: circleci/python@2.1.1
-  browser-tools: circleci/browser-tools@1.2.3
+  python: circleci/python@2.1.1-browsers
+#  browser-tools: circleci/browser-tools@1.2.3
 
 jobs:
   build-and-test:
@@ -64,7 +64,7 @@ jobs:
 #            chmod +x ~/docker-compose
 #            sudo mv ~/docker-compose /usr/local/bin/docker-compose
       # - setup_remote_docker
-      - browser-tools/install-chrome
+#      - browser-tools/install-chrome
       - run:
             name: DEBUGGING
             command: |

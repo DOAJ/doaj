@@ -99,7 +99,7 @@ class SeleniumTestCase(DoajTestCase):
             options = webdriver.ChromeOptions()
             options.add_argument("no-sandbox")
             options.add_argument("--disable-gpu")
-            options.add_argument("--window-size=800,600")
+            options.add_argument("--window-size=1400,1000")
             options.add_argument("--disable-dev-shm-usage")
             browser_driver = webdriver.Remote(
                 command_executor=selenium_remote_url,
