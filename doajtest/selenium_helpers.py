@@ -76,6 +76,7 @@ class SeleniumTestCase(DoajTestCase):
         super().setUpClass()
         cls.originals = patch_config(cls.app_test, {
             "DEBUG": False,
+            'SSL': False,  # avoid /login redirect to https
         })
 
     def find_ele_by_css(self, css_selector: str) -> 'WebElement':
