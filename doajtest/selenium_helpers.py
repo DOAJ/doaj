@@ -184,6 +184,7 @@ def goto(driver: 'WebDriver', url_path: str):
     if not url_path.startswith('/'):
         url_path = '/' + url_path
     url = SeleniumTestCase.get_doaj_url() + url_path
+    log.info(f'goto: {url}')
     driver.get(url)
 
 
