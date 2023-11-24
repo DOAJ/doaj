@@ -109,16 +109,14 @@ class SeleniumTestCase(DoajTestCase):
             # run selenium with your local browser
             options = webdriver.ChromeOptions()
             options.add_argument('--start-maximized')  # maximize browser window
-            options.add_argument('--ignore-certificate-errors')
-            options.add_argument('--ignore-ssl-errors')
-            options.add_argument('--allow-insecure-localhost')
             if self.app_test.config.get('SELENIUM_HEADLESS', False):
                 options.add_argument('--headless')
-            options.capabilities['acceptInsecureCerts'] = True
+                options.add_argument("--window-size=1400,600")
             browser_driver = webdriver.Chrome(options=options, )
 
         self.selenium = browser_driver
         self.selenium.maximize_window()  # avoid something is not clickable
+        self.selenium.set_window_size(1400, 600)  # avoid something is not clickable
 
         # wait for server to start
         wait_unit(self._is_doaj_server_running, 10, 1.5, timeout_msg='doaj server not started')
