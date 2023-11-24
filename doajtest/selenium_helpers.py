@@ -111,12 +111,12 @@ class SeleniumTestCase(DoajTestCase):
             options.add_argument('--start-maximized')  # maximize browser window
             if self.app_test.config.get('SELENIUM_HEADLESS', False):
                 options.add_argument('--headless')
-                options.add_argument("--window-size=1400,600")
+                options.add_argument("--window-size=1400,1000")
             browser_driver = webdriver.Chrome(options=options, )
 
         self.selenium = browser_driver
         self.selenium.maximize_window()  # avoid something is not clickable
-        self.selenium.set_window_size(1400, 600)  # avoid something is not clickable
+        self.selenium.set_window_size(1400, 1000)  # avoid something is not clickable
 
         # wait for server to start
         wait_unit(self._is_doaj_server_running, 10, 1.5, timeout_msg='doaj server not started')
