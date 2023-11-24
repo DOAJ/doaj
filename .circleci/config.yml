@@ -1,7 +1,7 @@
 version: 2.1
 orbs:
-  python: circleci/python@2.1.1-browsers
-#  browser-tools: circleci/browser-tools@1.2.3
+  python: circleci/python@2.1.1
+  browser-tools: circleci/browser-tools@1.2.3
 
 jobs:
   build-and-test:
@@ -15,19 +15,6 @@ jobs:
           - xpack.security.enabled: false
           - transport.host: localhost
           - discovery.type: single-node
-#      - image: selenium/standalone-chrome:110.0
-      #   logging:
-      #     driver: none
-      #   volumes:
-      #     - /dev/shm:/dev/shm
-      #     shm_size: 4gb
-      #   ports:
-      #     - '4444:4444'
-      #   environment:
-      #     - SE_NODE_MAX_SESSIONS=100
-      #     - SE_NODE_OVERRIDE_MAX_SESSIONS=true
-      #     - SE_SESSION_REQUEST_TIMEOUT=400
-      #     - SE_SESSION_RETRY_INTERVAL=2
 
     parallelism: 4
 
@@ -44,6 +31,7 @@ jobs:
             echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
             python portality/cms/build_fragments.py
             python portality/cms/build_sass.py
+
 #      - run:
 #          name: Run unit tests
 #          command: |
@@ -55,55 +43,35 @@ jobs:
             echo "SELENIUM_REMOTE_URL = ''" >> test.cfg
             echo "SELENIUM_DOAJ_HOST = 'localhost'" >> test.cfg
             echo "SELENIUM_HEADLESS = True" >> test.cfg
-#      - run:
-#          name: Install Docker Compose
-#          environment:
-#            COMPOSE_VERSION: 1.29.2
-#          command: |
-#            curl -L "https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o ~/docker-compose
-#            chmod +x ~/docker-compose
-#            sudo mv ~/docker-compose /usr/local/bin/docker-compose
-      # - setup_remote_docker
-#      - browser-tools/install-chrome
+      - browser-tools/install-chrome
+
       - run:
-            name: DEBUGGING
+            name: List current env
             command: |
-                cat 'docker/docker-compose.yml'                
-                which docker-compose
                 cat test.cfg
                 google-chrome --version
-      # - run:
-      #     name: Run docker for selenium tests
-      #     command: |
-      #       docker-compose -f docker/docker-compose.yml up -d
-      #       sleep 5
-
-
-      - run:
-          name: "[DEBUG] Run selenium tests"
-          command: |
-            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml doajtest/seleniumtest/test_google.py
-
-      - run:
-          name: "[DEBUG] Run selenium tests circleci"
-          command: |
-            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml doajtest/seleniumtest/test_circleci.py
 
 #      - run:
-#          name: Run selenium tests
+#          name: "[DEBUG] Run selenium tests"
 #          command: |
-#            TESTS=$(circleci tests glob "doajtest/seleniumtest/**/*.py" | circleci tests split)
-#            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml $TESTS
+#            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml doajtest/seleniumtest/test_google.py
+#
+#      - run:
+#          name: "[DEBUG] Run selenium tests circleci"
+#          command: |
+#            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml doajtest/seleniumtest/test_circleci.py
 
       - run:
-          name: "[DEBUG] Run selenium tests"
+          name: Run selenium tests
           command: |
-            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml doajtest/seleniumtest
+            TESTS=$(circleci tests glob "doajtest/seleniumtest/**/*.py" | circleci tests split)
+            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml $TESTS
 
 #      - run:
-#          name: Shutdown docker
+#          name: "[DEBUG] Run selenium tests"
 #          command: |
-#            docker-compose -f docker/docker-compose.yml down
+#            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml doajtest/seleniumtest
+
       - store_test_results:
           path: test-results
     working_directory: ~/doaj
