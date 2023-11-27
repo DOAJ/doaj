@@ -1,0 +1,44 @@
+{% extends "layouts/toc_base.html" %}
+
+{% block toc_content %}
+
+    <section id="all-articles" class="row tabs__panel" role="tabpanel">
+        <div class="col-md-12">
+            <div id="journal_toc_articles"></div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+
+    <script type="text/javascript">
+        {% set toc_issns_js_str = '"' + journal.bibjson().issns() | join('","') + '"' %}
+        $.extend(true, doaj, {
+            publicToCConfig: {
+                publicSearchPath: '{{ url_for("query.query", path="article/_search") }}?ref=toc',
+                tocIssns: [{{ toc_issns_js_str | safe }}]
+            }
+        });
+
+        $(document).ready(function () {
+            $("#journal_details").hide();
+            $("#journal_details_toggle").click(function (event) {
+                event.preventDefault();
+                $("#journal_details").toggle();
+                var jd = $("#journal_details_toggle");
+                if (jd.html() === "More") {
+                    jd.html("Less")
+                } else {
+                    jd.html("More")
+                }
+            });
+        });
+        console.log('hwwiwwww')
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript"
+            src="/static/js/edges/public.toc.edge.js?v={{ config.get('DOAJ_VERSION') }}"></script>
+
+{% endblock extra_js_bottom %}

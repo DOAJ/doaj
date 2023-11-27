@@ -187,6 +187,12 @@ def get_full_url_safe(endpoint):
         app.logger.warning(f'endpoint not found -- [{endpoint}]')
         return None
 
+
+def no_op(*args, **kwargs):
+    """ noop (no operation) function """
+    pass
+
+
 def custom_timed_rotating_logger(file_name):
     """Custom Logger to log to specified file name"""
     import os

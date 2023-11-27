@@ -7,11 +7,14 @@ featuremap: ~~ContactUs:Fragment~~
 
 ---
 
-We welcome your feedback, comments and questions about the DOAJ web site and our services, or if you have feedback on a journal in the index.
+Use this page to:
 
-All communication with us is treated as confidential.
+- send feedback and questions about our website or services
+- send feedback about a journal in our index
+- submit a complaint about our website or services
 
-Read our [FAQs](/docs/faq/) before you contact us. If you cannot find the answer to your question, send an email to [the DOAJ helpdesk](mailto:helpdesk@doaj.org). If your email is about a journal, please include the title and ISSN(s).
- 
-  
-   
+Both complaints and feedback sent to us about specific journals are treated as confidential.
+
+If you're a publisher and need help, read our [publisher help page](/publisher/help/).
+
+Send an email to [the DOAJ helpdesk](mailto:helpdesk@doaj.org). If you're emailing about a journal or application, please include the title and ISSN(s).

@@ -58,15 +58,6 @@ tests:
     results:
     - The search/embed box is shown with a URL and an HTML/JS snippet displayed in
       each box
-  - step: Click "shorten url" (Note that this may not work in test, due to configuration
-      requirements, you may receive an error instead)
-    results:
-    - The long search url is replaced with a bit.ly url
-    - '"shorten url" is replaced by "original url"'
-  - step: Click "original url"
-    results:
-    - The bit.ly url is replaced by the original long search url
-    - '"original url" is replaced by "shorten url"'
   - step: Close the "Share | Embed" section by clicking the Close button at the bottom
       of the box, or clicking the "Share | Embed" button again
     results:

@@ -29,15 +29,57 @@ def public_query_validator(q):
     return True
 
 
+def non_public_fields_validator(q):
+    exclude_fields = app.config.get("PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS", {})
+    context = q.get_field_context()
+    if context:
+        if "default_field" in context:
+            field_value = context["default_field"]
+            if field_value in exclude_fields:
+                return False
+    return True
+
 # query filters
 ###############
 
 def remove_search_limits(query: dict):
     return remove_fields(query, ['size', 'from'])
 
+
 def only_in_doaj(q):
     q.clear_match_all()
     q.add_must_filter({"term": {"admin.in_doaj": True}})
+    return q
+
+
+def search_all_meta(q):
+    """Search by all_meta field, which is a concatenation of all the fields in the record"""
+    q.add_default_field("all_meta")
+    return q
+
+
+def journal_article_filter(q):
+    """Search by all_meta field for journal and all fields for article"""
+    search_text = None
+    context = q.get_field_context()
+    if isinstance(context, list):
+        for item in context:
+            if "query_string" in item:
+                search_text = item["query_string"]["query"]
+                if "default_field" in item["query_string"]:
+                    return q
+    elif isinstance(context, dict):
+        if "query_string" in context:
+            search_text = context["query_string"]["query"]
+            if "default_field" in context["query_string"]:
+                return q
+    q.convert_to_bool()
+    if search_text:
+        filter = [{"bool": {"must": [{"term": {"es_type.exact": "article"}},
+                            {"query_string": {"default_field": "*", "query": search_text}}]}},
+                  {"bool": {"must": [{"term": {"es_type.exact": "journal"}},
+                            {"query_string": {"default_field": "all_meta", "query": search_text}}]}}]
+        q.add_should(filter)
     return q
 
 
