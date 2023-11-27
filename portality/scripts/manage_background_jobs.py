@@ -18,10 +18,13 @@ kind of job, you need to add it there.
 
 TODO: this should be a script calling functionality inside a business logic layer with a fuller understanding of jobs.
 """
+import json
+from typing import Dict, Type, List
+
 from portality import models
+from portality.background import BackgroundApi, BackgroundTask
 from portality.lib import dates
 from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
-
 from portality.tasks.anon_export import AnonExportBackgroundTask
 from portality.tasks.article_bulk_delete import ArticleBulkDeleteBackgroundTask
 from portality.tasks.article_cleanup_sync import ArticleCleanupSyncBackgroundTask
@@ -43,10 +46,8 @@ from portality.tasks.reporting import ReportingBackgroundTask
 from portality.tasks.sitemap import SitemapBackgroundTask
 from portality.tasks.suggestion_bulk_edit import SuggestionBulkEditBackgroundTask
 
-from portality.background import BackgroundApi
-
 # dict of {task_name: task_class} so we can interact with the jobs
-HANDLERS = {
+HANDLERS: Dict[str, Type[BackgroundTask]] = {
     AnonExportBackgroundTask.__action__: AnonExportBackgroundTask,
     ArticleBulkDeleteBackgroundTask.__action__: ArticleBulkDeleteBackgroundTask,
     ArticleCleanupSyncBackgroundTask.__action__: ArticleCleanupSyncBackgroundTask,
@@ -60,7 +61,7 @@ HANDLERS = {
     JournalBulkEditBackgroundTask.__action__: JournalBulkEditBackgroundTask,
     JournalCSVBackgroundTask.__action__: JournalCSVBackgroundTask,
     SetInDOAJBackgroundTask.__action__: SetInDOAJBackgroundTask,
-    PreservationBackgroundTask.__action__:PreservationBackgroundTask,
+    PreservationBackgroundTask.__action__: PreservationBackgroundTask,
     PruneESBackupsBackgroundTask.__action__: PruneESBackupsBackgroundTask,
     PublicDataDumpBackgroundTask.__action__: PublicDataDumpBackgroundTask,
     ReadNewsBackgroundTask.__action__: ReadNewsBackgroundTask,
@@ -73,7 +74,11 @@ HANDLERS = {
 def manage_jobs(verb, action, status, from_date, to_date, prompt=True):
     q = JobsQuery(action, status, from_date, to_date)
 
-    jobs = models.BackgroundJob.q2obj(q=q.query())
+    jobs: List[models.BackgroundJob] = models.BackgroundJob.q2obj(q=q.query())
+    if len(jobs) == 0:
+        print('No jobs found by query: ')
+        print(json.dumps(q.query(), indent=4))
+        return
 
     print('You are about to {verb} {count} job(s)'.format(verb=verb, count=len(jobs)))
 
@@ -81,29 +86,32 @@ def manage_jobs(verb, action, status, from_date, to_date, prompt=True):
     if prompt:
         doit = input('Proceed? [y\\N] ')
 
-    if doit.lower() == 'y':
-        print('Please wait...')
-        for job in jobs:
-            if job.action not in HANDLERS:
-                print('This script is not set up to {0} task type {1}. Skipping.'.format(verb, job.action))
-                continue
-
-            job.add_audit_message("Job {pp} from job management script.".format(
-                pp={'requeue': 'requeued', 'cancel': 'cancelled', "process": "processed"}[verb]))
-
-            if verb == 'requeue':                                                     # Re-queue and execute immediately
-                job.queue()
-                HANDLERS[job.action].submit(job)
-            elif verb == 'cancel':                                                         # Just apply cancelled status
-                job.cancel()
-                job.save()
-            elif verb == 'process':
-                task = HANDLERS[job.action](job)    # Just execute immediately without going through huey
-                BackgroundApi.execute(task)
-
-            print('done.')
-    else:
+    if doit.lower() != 'y':
         print('No action.')
+        return
+
+    print('Please wait...')
+    for job in jobs:
+        if job.action not in HANDLERS:
+            print('This script is not set up to {0} task type {1}. Skipping.'.format(verb, job.action))
+            continue
+
+        job.add_audit_message("Job {pp} from job management script.".format(
+            pp={'requeue': 'requeued', 'cancel': 'cancelled', "process": "processed"}[verb]))
+
+        if verb == 'requeue':  # Re-queue and execute immediately
+            job.queue()
+            HANDLERS[job.action].submit(job)
+
+        elif verb == 'cancel':  # Just apply cancelled status
+            job.cancel()
+            job.save()
+
+        elif verb == 'process':
+            task = HANDLERS[job.action](job)  # Just execute immediately without going through huey
+            BackgroundApi.execute(task)
+
+    print('done.')
 
 
 def requeue_jobs(action, status, from_date, to_date, prompt=True):
@@ -112,6 +120,7 @@ def requeue_jobs(action, status, from_date, to_date, prompt=True):
 
 def cancel_jobs(action, status, from_date, to_date, prompt=True):
     manage_jobs('cancel', action, status, from_date, to_date, prompt=prompt)
+
 
 def process_jobs(action, status, from_date, to_date, prompt=True):
     manage_jobs("process", action, status, from_date, to_date, prompt=prompt)
@@ -146,6 +155,7 @@ class JobsQuery(object):
 
 if __name__ == '__main__':
     import argparse
+
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-r', '--requeue',
