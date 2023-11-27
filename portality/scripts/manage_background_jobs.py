@@ -18,6 +18,7 @@ kind of job, you need to add it there.
 
 TODO: this should be a script calling functionality inside a business logic layer with a fuller understanding of jobs.
 """
+import argparse
 import json
 from typing import Dict, Type, List
 
@@ -71,8 +72,38 @@ HANDLERS: Dict[str, Type[BackgroundTask]] = {
 }
 
 
-def manage_jobs(verb, action, status, from_date, to_date, prompt=True):
-    q = JobsQuery(action, status, from_date, to_date)
+def handle_requeue(job: models.BackgroundJob):
+    if job.action not in HANDLERS:
+        print('This script is not set up to {0} task type {1}. Skipping.'.format('requeue', job.action))
+        return
+
+    job.queue()
+    HANDLERS[job.action].submit(job)
+
+
+def handle_cancel(job: models.BackgroundJob):
+    job.cancel()
+    job.save()
+
+
+def handle_process(job: models.BackgroundJob):
+    if job.action not in HANDLERS:
+        print('This script is not set up to {0} task type {1}. Skipping.'.format('process', job.action))
+        return
+
+    task = HANDLERS[job.action](job)  # Just execute immediately without going through huey
+    BackgroundApi.execute(task)
+
+
+cmd_handlers = {
+    'requeue': handle_requeue,
+    'cancel': handle_cancel,
+    'process': handle_process,
+}
+
+
+def manage_jobs(verb, action, status, from_date, to_date, prompt=True, size=10000):
+    q = JobsQuery(action, status, from_date, to_date, size=size)
 
     jobs: List[models.BackgroundJob] = models.BackgroundJob.q2obj(q=q.query())
     if len(jobs) == 0:
@@ -81,6 +112,9 @@ def manage_jobs(verb, action, status, from_date, to_date, prompt=True):
         return
 
     print('You are about to {verb} {count} job(s)'.format(verb=verb, count=len(jobs)))
+    print('The first 5 are:')
+    for j in jobs[:5]:
+        print(f'Id: {j.id}, Status: {j.status}, Action: {j.action}, Created: {j.created_date}')
 
     doit = "y"
     if prompt:
@@ -90,48 +124,27 @@ def manage_jobs(verb, action, status, from_date, to_date, prompt=True):
         print('No action.')
         return
 
+    job_handler = cmd_handlers.get(verb)
+    if job_handler is None:
+        print(f'Unknown verb: {verb}')
+        return
+
     print('Please wait...')
     for job in jobs:
-        if job.action not in HANDLERS:
-            print('This script is not set up to {0} task type {1}. Skipping.'.format(verb, job.action))
-            continue
-
-        job.add_audit_message("Job {pp} from job management script.".format(
+        job.add_audit_message("Job [{pp}] from job management script.".format(
             pp={'requeue': 'requeued', 'cancel': 'cancelled', "process": "processed"}[verb]))
-
-        if verb == 'requeue':  # Re-queue and execute immediately
-            job.queue()
-            HANDLERS[job.action].submit(job)
-
-        elif verb == 'cancel':  # Just apply cancelled status
-            job.cancel()
-            job.save()
-
-        elif verb == 'process':
-            task = HANDLERS[job.action](job)  # Just execute immediately without going through huey
-            BackgroundApi.execute(task)
+        job_handler(job)
 
     print('done.')
 
 
-def requeue_jobs(action, status, from_date, to_date, prompt=True):
-    manage_jobs('requeue', action, status, from_date, to_date, prompt=prompt)
-
-
-def cancel_jobs(action, status, from_date, to_date, prompt=True):
-    manage_jobs('cancel', action, status, from_date, to_date, prompt=prompt)
-
-
-def process_jobs(action, status, from_date, to_date, prompt=True):
-    manage_jobs("process", action, status, from_date, to_date, prompt=prompt)
-
-
 class JobsQuery(object):
-    def __init__(self, action, status, from_date, to_date):
+    def __init__(self, action, status, from_date, to_date, size=10000):
         self.action = action
         self.status = status
         self.from_date = from_date
         self.to_date = to_date
+        self.size = size
 
     def query(self):
         q = {
@@ -144,7 +157,7 @@ class JobsQuery(object):
                     ]
                 }
             },
-            "size": 10000
+            "size": self.size
         }
 
         if self.action is not None:
@@ -153,41 +166,58 @@ class JobsQuery(object):
         return q
 
 
-if __name__ == '__main__':
-    import argparse
-
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('-r', '--requeue',
-                        help='Add these jobs back on the job queue for processing', action='store_true')
-    parser.add_argument('-c', '--cancel',
-                        help='Cancel these jobs (set their status to "cancelled")', action='store_true')
-    parser.add_argument("-p", "--process",
-                        help="Immediately process these jobs on the command line", action="store_true")
-    parser.add_argument('-s', '--status',
-                        help='Filter for job status. Default is "queued"',
-                        default='queued')
-    parser.add_argument('-a', '--action',
-                        help='Background job action. Leave empty for all actions (not recommended)',
-                        default=None)
-    parser.add_argument('-f', '--from_date',
-                        help='Date from which to look for jobs in the given type and status',
-                        default=DEFAULT_TIMESTAMP_VAL)
-    parser.add_argument('-t', '--to_date',
-                        help='Date to which to look for jobs in the given type and status',
-                        default=dates.now_str())
+def add_common_arguments(parser: argparse.ArgumentParser):
+    # common options
     parser.add_argument("-y", "--yes", help="Answer yes to all prompts", action="store_true")
+
+    # query options
+    query_options = parser.add_argument_group('Query options')
+
+    query_options.add_argument('-s', '--status',
+                               help='Filter for job status. Default is "queued"',
+                               default='queued')
+    query_options.add_argument('-a', '--action',
+                               help='Background job action. Leave empty for all actions (not recommended)',
+                               default=None)
+    query_options.add_argument('-f', '--from_date',
+                               help='Date from which to look for jobs in the given type and status',
+                               default=DEFAULT_TIMESTAMP_VAL)
+    query_options.add_argument('-t', '--to_date',
+                               help='Date to which to look for jobs in the given type and status',
+                               default=dates.now_str()
+                               )
+
+    default_size = 10000
+    query_options.add_argument('--size',
+                               help=f'Number of jobs to process at a time, default is {default_size}',
+                               type=int, default=default_size, )
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Manage background jobs in the DOAJ database and redis')
+    sp = parser.add_subparsers(dest='cmdname', help='Actions')
+
+    sp_p = sp.add_parser('requeue', help='Add these jobs back on the job queue for processing')
+    add_common_arguments(sp_p)
+
+    sp_p = sp.add_parser('cancel', help='Cancel these jobs (set their status to "cancelled")')
+    add_common_arguments(sp_p)
+
+    sp_p = sp.add_parser('process', help='Immediately process these jobs on the command line')
+    add_common_arguments(sp_p)
+
     args = parser.parse_args()
 
-    if args.requeue and args.cancel:
-        print('Use only --requeue OR --cancel, not both.')
-        exit(1)
-    elif args.requeue:
-        requeue_jobs(args.action, args.status, args.from_date, args.to_date, prompt=False if args.yes else True)
-    elif args.cancel:
-        cancel_jobs(args.action, args.status, args.from_date, args.to_date, prompt=False if args.yes else True)
-    elif args.process:
-        process_jobs(args.action, args.status, args.from_date, args.to_date, prompt=False if args.yes else True)
+    cmdname = args.__dict__.get('cmdname')
+    if cmdname in ['requeue', 'cancel', 'process']:
+        manage_jobs(cmdname,
+                    args.action, args.status,
+                    args.from_date, args.to_date,
+                    prompt=not args.yes)
     else:
-        print('You must supply one of --requeue, --cancel or --process to run this script')
+        parser.print_help()
         exit(1)
+
+
+if __name__ == '__main__':
+    main()
