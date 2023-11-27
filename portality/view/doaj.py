@@ -340,9 +340,9 @@ def toc(identifier=None):
         return render_template('doaj/toc.html', journal=journal, bibjson=bibjson )
 
 
-@blueprint.route("/toc/articles/<identifier>")
-@blueprint.route("/toc/articles/<identifier>/<volume>")
-@blueprint.route("/toc/articles/<identifier>/<volume>/<issue>")
+@blueprint.route("/toc/<identifier>/articles")
+@blueprint.route("/toc/<identifier>/<volume>/articles")
+@blueprint.route("/toc/<identifier>/<volume>/<issue>/articles")
 def toc_articles(identifier=None, volume=None, issue=None):
     journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
