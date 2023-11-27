@@ -26,7 +26,7 @@
         <ul class="unstyled-list flex-center">
             {% include "includes/_tourist_nav.html" %}
             {# ~~->Notifications:Feature~~ #}
-          <li class="dropdown flex-center" id="notifications_nav">
+          <li class="dropdown dropdown--notifications flex-center" id="notifications_nav">
             <a href="/dashboard/notifications" class="dropdown__trigger label" id="dropdown__trigger--notifications" role="button" aria-haspopup="true" aria-expanded="false">
               <span><span data-feather="bell" aria-hidden="true"></span> Notifications <span class="js-notifications-count"></span></span>
             </a>
@@ -34,7 +34,7 @@
           </li>
                 {% if (current_user.has_role("editor") or current_user.has_role("associate_editor")) and not current_user.has_role("admin") %}
                     <li class="flex-center">
-                        <a href="{{ url_for("editor.index") }}" class="tag">
+                        <a href="{{ url_for('editor.index') }}" class="label">
                             <span><span data-feather="list" aria-hidden="true"></span> Editor dashboard</span>
                         </a>
                     </li>
@@ -42,7 +42,7 @@
 
                 {% if current_user.has_role("admin") %}
                     <li class="flex-center">
-                        <a href="{{ url_for("dashboard.top_todo") }}" class="tag">
+                        <a href="{{ url_for('dashboard.top_todo') }}" class="label">
                             <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>
                         </a>
                     </li>
