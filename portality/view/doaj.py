@@ -340,6 +340,12 @@ def toc(identifier=None):
         return render_template('doaj/toc.html', journal=journal, bibjson=bibjson )
 
 
+@blueprint.route("/toc/articles/<identifier>")
+@blueprint.route("/toc/articles/<identifier>/<volume>")
+@blueprint.route("/toc/articles/<identifier>/<volume>/<issue>")
+def toc_articles_legacy(identifier=None, volume=None, issue=None):
+    return redirect(url_for('doaj.toc_articles', identifier=identifier, volume=volume, issue=issue), 301)
+
 @blueprint.route("/toc/<identifier>/articles")
 @blueprint.route("/toc/<identifier>/<volume>/articles")
 @blueprint.route("/toc/<identifier>/<volume>/<issue>/articles")
