@@ -22,7 +22,7 @@ tests:
     results:
     - On the "Articles" tab in the ToC of the journal, the articles are displayed.
     - On the left, the "Month" facet is displayed.
-  - step: Select on of the years from the Year facet
+  - step: Select one of the years from the Year facet
   - step: Select one of the months from the list
     results:
     - On the "Articles" tab in the ToC of the journal, the articles from the selected month are displayed.
