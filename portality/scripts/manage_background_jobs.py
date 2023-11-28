@@ -18,13 +18,17 @@ kind of job, you need to add it there.
 
 TODO: this should be a script calling functionality inside a business logic layer with a fuller understanding of jobs.
 """
+import itertools
+import re
 import argparse
 import json
 import pickle
 import typing
 from typing import Dict, Type, List
+from collections import Counter
 
-from portality.lib import dates, color_text
+from portality.constants import BGJOB_STATUS_COMPLETE, BGJOB_STATUS_ERROR
+from portality.lib import dates, color_text, es_queries
 from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 
 if typing.TYPE_CHECKING:
@@ -173,7 +177,7 @@ class JobsQuery(object):
 
 
 def job_to_str(job: 'BackgroundJob'):
-    return f'Id: {job.id}, Status: {job.status}, Action: {job.action}, Created: {job.created_date}'
+    return f'{job.action:30} {job.id} {job.status:10} {job.created_date}'
 
 
 def add_arguments_yes(parser: argparse.ArgumentParser):
@@ -213,13 +217,84 @@ def create_redis_client():
     return client
 
 
-def report():
+class HueyJobData:
+
+    def __init__(self, data: tuple):
+        self.data = data
+        self.huey_id, self.queue_name, self.schedule_time, self.retries, self.retry_delay, self.args, *_ = data
+
+    @property
+    def is_scheduled(self):
+        return self.schedule_time is None
+
+    @property
+    def bgjob_name(self):
+        return re.sub(r'^queue_task_(scheduled_)?', '', self.queue_name)
+
+    @property
+    def bgjob_id(self):
+        if self.args:
+            return self.args[0][0]
+        return None
+
+    @classmethod
+    def from_redis(cls, redis_row):
+        return HueyJobData(pickle.loads(redis_row))
+
+
+def print_huey_jobs_counter(counter):
+    for k, v in sorted(counter.items(), key=lambda x: x[0]):
+        print(f'{k:30} {v}')
+
+
+def print_huey_job_data(job_data: HueyJobData):
+    print(f'{job_data.bgjob_name:30} {job_data.bgjob_id} {dates.format(job_data.schedule_time)}')
+
+
+def report(example_size=10):
     client = create_redis_client()
-    records = client.lrange('huey.redis.doajmainqueue', 0, -1)
-    for r in records:
-        d = pickle.loads(r)
-        print(type(d))
-        print(d)
+    huey_rows = itertools.chain.from_iterable((client.lrange(k, 0, -1)
+                                               for k in ['huey.redis.doajmainqueue', 'huey.redis.doajlongrunning', ]))
+    huey_rows = (HueyJobData.from_redis(r) for r in huey_rows)
+    huey_rows = list(huey_rows)
+
+    scheduled = Counter(r.bgjob_name for r in huey_rows if r.is_scheduled)
+    unscheduled = Counter(r.bgjob_name for r in huey_rows if not r.is_scheduled)
+
+    print('# Huey jobs:')
+    print('### Scheduled:')
+    print_huey_jobs_counter(scheduled)
+    print()
+
+    print('### Unscheduled:')
+    print_huey_jobs_counter(unscheduled)
+    print()
+
+    print(f'### last {example_size} unscheduled jobs:')
+    unscheduled_jobs = sorted((r for r in huey_rows if not r.is_scheduled),
+                              key=lambda x: x.schedule_time, reverse=True)
+    for r in unscheduled_jobs[:example_size]:
+        print_huey_job_data(r)
+    print()
+
+    print('# DB records:')
+    from portality import models
+    from portality.models.background import BackgroundJobQueryBuilder
+    bgjobs: List[BackgroundJob] = models.BackgroundJob.q2obj(
+        q=BackgroundJobQueryBuilder()
+        .status_excludes([BGJOB_STATUS_COMPLETE, BGJOB_STATUS_ERROR])
+        .build_query_dict())
+
+    print('### Summary')
+    counter = Counter((j.action, j.status) for j in bgjobs)
+    for k, v in sorted(counter.items(), key=lambda x: x[0]):
+        print(f'{k[0]:30} {k[1]:10} {v}')
+    print()
+
+    print(f'### last {example_size} jobs:')
+    for j in sorted(bgjobs, key=lambda j: j.created_date, reverse=True)[:example_size]:
+        print(job_to_str(j))
+    print()
 
 
 def clean_all():
@@ -231,7 +306,7 @@ def clean_all():
     from portality import models
 
     print('Remove all jobs from DB')
-    models.BackgroundJob.delete_by_query({"query": {"match_all": {}}})
+    models.BackgroundJob.delete_by_query(es_queries.query_all())
 
     print('Remove all jobs from redis')
     client = create_redis_client()
