@@ -261,12 +261,12 @@ select {
 
 input[type="checkbox"],
 input[type="radio"] {
-  //display: none;
+  display: none;
 
   opacity: 0;
   width: 0.8em;
   height: 0.8em;
-  margin-left: -0.8rem;
+  //margin-left: -0.8rem;
 
   &:focus  + label {
     outline: dashed 2px lightgrey;
