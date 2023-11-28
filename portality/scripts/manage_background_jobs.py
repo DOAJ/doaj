@@ -317,7 +317,7 @@ def report(example_size=10):
         print(job_to_str(j))
     print()
 
-    print('# Queue Delta between DB and redis:')
+    print('# Queued delta between DB and redis:')
     queued_huey = {i.bgjob_id: i.bgjob_action for i in unscheduled_huey_jobs}
     queued_db = {j.id: j.action for j in bgjobs if j.status == BGJOB_STATUS_QUEUED}
     print_job_delta('### DB only', queued_db, queued_huey)
