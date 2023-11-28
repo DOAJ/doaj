@@ -20,78 +20,87 @@ TODO: this should be a script calling functionality inside a business logic laye
 """
 import argparse
 import json
+import pickle
+import typing
 from typing import Dict, Type, List
 
-from portality import models
-from portality.background import BackgroundApi, BackgroundTask
-from portality.lib import dates
+from portality.lib import dates, color_text
 from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
-from portality.tasks.anon_export import AnonExportBackgroundTask
-from portality.tasks.article_bulk_delete import ArticleBulkDeleteBackgroundTask
-from portality.tasks.article_cleanup_sync import ArticleCleanupSyncBackgroundTask
-from portality.tasks.article_duplicate_report import ArticleDuplicateReportBackgroundTask
-from portality.tasks.async_workflow_notifications import AsyncWorkflowBackgroundTask
-from portality.tasks.check_latest_es_backup import CheckLatestESBackupBackgroundTask
-# from portality.tasks.find_discontinued_soon import FindDiscontinuedSoonBackgroundTask
-from portality.tasks.harvester import HarvesterBackgroundTask
-from portality.tasks.ingestarticles import IngestArticlesBackgroundTask
-from portality.tasks.journal_bulk_delete import JournalBulkDeleteBackgroundTask
-from portality.tasks.journal_bulk_edit import JournalBulkEditBackgroundTask
-from portality.tasks.journal_csv import JournalCSVBackgroundTask
-from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask
-from portality.tasks.preservation import PreservationBackgroundTask
-from portality.tasks.prune_es_backups import PruneESBackupsBackgroundTask
-from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
-from portality.tasks.read_news import ReadNewsBackgroundTask
-from portality.tasks.reporting import ReportingBackgroundTask
-from portality.tasks.sitemap import SitemapBackgroundTask
-from portality.tasks.suggestion_bulk_edit import SuggestionBulkEditBackgroundTask
 
-# dict of {task_name: task_class} so we can interact with the jobs
-HANDLERS: Dict[str, Type[BackgroundTask]] = {
-    AnonExportBackgroundTask.__action__: AnonExportBackgroundTask,
-    ArticleBulkDeleteBackgroundTask.__action__: ArticleBulkDeleteBackgroundTask,
-    ArticleCleanupSyncBackgroundTask.__action__: ArticleCleanupSyncBackgroundTask,
-    ArticleDuplicateReportBackgroundTask.__action__: ArticleDuplicateReportBackgroundTask,
-    AsyncWorkflowBackgroundTask.__action__: AsyncWorkflowBackgroundTask,
-    CheckLatestESBackupBackgroundTask.__action__: CheckLatestESBackupBackgroundTask,
-    # FindDiscontinuedSoonBackgroundTask.__action__: FindDiscontinuedSoonBackgroundTask,
-    HarvesterBackgroundTask.__action__: HarvesterBackgroundTask,
-    IngestArticlesBackgroundTask.__action__: IngestArticlesBackgroundTask,
-    JournalBulkDeleteBackgroundTask.__action__: JournalBulkDeleteBackgroundTask,
-    JournalBulkEditBackgroundTask.__action__: JournalBulkEditBackgroundTask,
-    JournalCSVBackgroundTask.__action__: JournalCSVBackgroundTask,
-    SetInDOAJBackgroundTask.__action__: SetInDOAJBackgroundTask,
-    PreservationBackgroundTask.__action__: PreservationBackgroundTask,
-    PruneESBackupsBackgroundTask.__action__: PruneESBackupsBackgroundTask,
-    PublicDataDumpBackgroundTask.__action__: PublicDataDumpBackgroundTask,
-    ReadNewsBackgroundTask.__action__: ReadNewsBackgroundTask,
-    ReportingBackgroundTask.__action__: ReportingBackgroundTask,
-    SitemapBackgroundTask.__action__: SitemapBackgroundTask,
-    SuggestionBulkEditBackgroundTask.__action__: SuggestionBulkEditBackgroundTask
-}
+if typing.TYPE_CHECKING:
+    from portality.models import BackgroundJob
 
 
-def handle_requeue(job: models.BackgroundJob):
-    if job.action not in HANDLERS:
+def get_action_handler(action):
+    from portality.background import BackgroundTask
+    from portality.tasks.anon_export import AnonExportBackgroundTask
+    from portality.tasks.article_bulk_delete import ArticleBulkDeleteBackgroundTask
+    from portality.tasks.article_cleanup_sync import ArticleCleanupSyncBackgroundTask
+    from portality.tasks.article_duplicate_report import ArticleDuplicateReportBackgroundTask
+    from portality.tasks.async_workflow_notifications import AsyncWorkflowBackgroundTask
+    from portality.tasks.check_latest_es_backup import CheckLatestESBackupBackgroundTask
+    from portality.tasks.harvester import HarvesterBackgroundTask
+    from portality.tasks.ingestarticles import IngestArticlesBackgroundTask
+    from portality.tasks.journal_bulk_delete import JournalBulkDeleteBackgroundTask
+    from portality.tasks.journal_bulk_edit import JournalBulkEditBackgroundTask
+    from portality.tasks.journal_csv import JournalCSVBackgroundTask
+    from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask
+    from portality.tasks.preservation import PreservationBackgroundTask
+    from portality.tasks.prune_es_backups import PruneESBackupsBackgroundTask
+    from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
+    from portality.tasks.read_news import ReadNewsBackgroundTask
+    from portality.tasks.reporting import ReportingBackgroundTask
+    from portality.tasks.sitemap import SitemapBackgroundTask
+    from portality.tasks.suggestion_bulk_edit import SuggestionBulkEditBackgroundTask
+    # dict of {task_name: task_class} so we can interact with the jobs
+    HANDLERS: Dict[str, Type[BackgroundTask]] = {
+        AnonExportBackgroundTask.__action__: AnonExportBackgroundTask,
+        ArticleBulkDeleteBackgroundTask.__action__: ArticleBulkDeleteBackgroundTask,
+        ArticleCleanupSyncBackgroundTask.__action__: ArticleCleanupSyncBackgroundTask,
+        ArticleDuplicateReportBackgroundTask.__action__: ArticleDuplicateReportBackgroundTask,
+        AsyncWorkflowBackgroundTask.__action__: AsyncWorkflowBackgroundTask,
+        CheckLatestESBackupBackgroundTask.__action__: CheckLatestESBackupBackgroundTask,
+        # FindDiscontinuedSoonBackgroundTask.__action__: FindDiscontinuedSoonBackgroundTask,
+        HarvesterBackgroundTask.__action__: HarvesterBackgroundTask,
+        IngestArticlesBackgroundTask.__action__: IngestArticlesBackgroundTask,
+        JournalBulkDeleteBackgroundTask.__action__: JournalBulkDeleteBackgroundTask,
+        JournalBulkEditBackgroundTask.__action__: JournalBulkEditBackgroundTask,
+        JournalCSVBackgroundTask.__action__: JournalCSVBackgroundTask,
+        SetInDOAJBackgroundTask.__action__: SetInDOAJBackgroundTask,
+        PreservationBackgroundTask.__action__: PreservationBackgroundTask,
+        PruneESBackupsBackgroundTask.__action__: PruneESBackupsBackgroundTask,
+        PublicDataDumpBackgroundTask.__action__: PublicDataDumpBackgroundTask,
+        ReadNewsBackgroundTask.__action__: ReadNewsBackgroundTask,
+        ReportingBackgroundTask.__action__: ReportingBackgroundTask,
+        SitemapBackgroundTask.__action__: SitemapBackgroundTask,
+        SuggestionBulkEditBackgroundTask.__action__: SuggestionBulkEditBackgroundTask
+    }
+    return HANDLERS.get(action)
+
+
+def handle_requeue(job: 'BackgroundJob'):
+    handler = get_action_handler(job.action)
+    if handler is None:
         print('This script is not set up to {0} task type {1}. Skipping.'.format('requeue', job.action))
         return
 
     job.queue()
-    HANDLERS[job.action].submit(job)
+    handler.submit(job)
 
 
-def handle_cancel(job: models.BackgroundJob):
+def handle_cancel(job: 'BackgroundJob'):
     job.cancel()
     job.save()
 
 
-def handle_process(job: models.BackgroundJob):
-    if job.action not in HANDLERS:
+def handle_process(job: 'BackgroundJob'):
+    from portality.background import BackgroundApi
+    handler = get_action_handler(job.action)
+    if handler is None:
         print('This script is not set up to {0} task type {1}. Skipping.'.format('process', job.action))
         return
 
-    task = HANDLERS[job.action](job)  # Just execute immediately without going through huey
+    task = handler(job)  # Just execute immediately without going through huey
     BackgroundApi.execute(task)
 
 
@@ -103,6 +112,7 @@ cmd_handlers = {
 
 
 def manage_jobs(verb, action, status, from_date, to_date, prompt=True, size=10000):
+    from portality import models
     q = JobsQuery(action, status, from_date, to_date, size=size)
 
     jobs: List[models.BackgroundJob] = models.BackgroundJob.q2obj(q=q.query())
@@ -114,13 +124,9 @@ def manage_jobs(verb, action, status, from_date, to_date, prompt=True, size=1000
     print('You are about to {verb} {count} job(s)'.format(verb=verb, count=len(jobs)))
     print('The first 5 are:')
     for j in jobs[:5]:
-        print(f'Id: {j.id}, Status: {j.status}, Action: {j.action}, Created: {j.created_date}')
+        print(job_to_str(j))
 
-    doit = "y"
-    if prompt:
-        doit = input('Proceed? [y\\N] ')
-
-    if doit.lower() != 'y':
+    if prompt and input('Proceed? [y\\N] ').lower() != 'y':
         print('No action.')
         return
 
@@ -166,13 +172,20 @@ class JobsQuery(object):
         return q
 
 
-def add_common_arguments(parser: argparse.ArgumentParser):
-    # common options
+def job_to_str(job: 'BackgroundJob'):
+    return f'Id: {job.id}, Status: {job.status}, Action: {job.action}, Created: {job.created_date}'
+
+
+def add_arguments_yes(parser: argparse.ArgumentParser):
     parser.add_argument("-y", "--yes", help="Answer yes to all prompts", action="store_true")
+
+
+def add_arguments_common(parser: argparse.ArgumentParser):
+    # common options
+    add_arguments_yes(parser)
 
     # query options
     query_options = parser.add_argument_group('Query options')
-
     query_options.add_argument('-s', '--status',
                                help='Filter for job status. Default is "queued"',
                                default='queued')
@@ -193,18 +206,55 @@ def add_common_arguments(parser: argparse.ArgumentParser):
                                type=int, default=default_size, )
 
 
+def create_redis_client():
+    import redis
+    from portality.core import app
+    client = redis.StrictRedis(host=app.config['HUEY_REDIS_HOST'], port=app.config['HUEY_REDIS_PORT'], db=0)
+    return client
+
+
+def report():
+    client = create_redis_client()
+    records = client.lrange('huey.redis.doajmainqueue', 0, -1)
+    for r in records:
+        d = pickle.loads(r)
+        print(type(d))
+        print(d)
+
+
+def clean_all():
+    if input(color_text.apply_color(
+            'WARNING: This will delete all jobs from redis and the database. Proceed? [y\\N] ',
+            background=color_text.Color.red)).lower() != 'y':
+        print('No action.')
+        return
+    from portality import models
+
+    print('Remove all jobs from DB')
+    models.BackgroundJob.delete_by_query({"query": {"match_all": {}}})
+
+    print('Remove all jobs from redis')
+    client = create_redis_client()
+    client.delete('huey.redis.doajmainqueue')
+    client.delete('huey.redis.doajlongrunning')
+
+
 def main():
     parser = argparse.ArgumentParser(description='Manage background jobs in the DOAJ database and redis')
-    sp = parser.add_subparsers(dest='cmdname', help='Actions')
+    sp = parser.add_subparsers(dest='cmdname', help='Actions', )
 
     sp_p = sp.add_parser('requeue', help='Add these jobs back on the job queue for processing')
-    add_common_arguments(sp_p)
+    add_arguments_common(sp_p)
 
     sp_p = sp.add_parser('cancel', help='Cancel these jobs (set their status to "cancelled")')
-    add_common_arguments(sp_p)
+    add_arguments_common(sp_p)
 
     sp_p = sp.add_parser('process', help='Immediately process these jobs on the command line')
-    add_common_arguments(sp_p)
+    add_arguments_common(sp_p)
+
+    sp_p = sp.add_parser('report', help='Report status of jobs, e.g. out sync job on redis and db ')
+
+    sp_p = sp.add_parser('clean-all', help='Remove all Jobs from redis and DB')
 
     args = parser.parse_args()
 
@@ -214,6 +264,10 @@ def main():
                     args.action, args.status,
                     args.from_date, args.to_date,
                     prompt=not args.yes)
+    elif cmdname == 'report':
+        report()
+    elif cmdname == 'clean-all':
+        clean_all()
     else:
         parser.print_help()
         exit(1)
@@ -221,3 +275,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    # report()
