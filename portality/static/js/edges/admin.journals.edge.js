@@ -307,7 +307,8 @@ $.extend(true, doaj, {
                         {'display':'ISSN', 'field':'index.issn.exact'},
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal language','field':'index.language'},
-                        {'display':'Publisher','field':'bibjson.publisher.name'}
+                        {'display':'Publisher','field':'bibjson.publisher.name'},
+                        {'display':'Notes','field':'admin.notes.note'}
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
@@ -469,21 +470,21 @@ $.extend(true, doaj, {
                     category: "selected-filters",
                     fieldDisplays: {
                         "admin.in_doaj" : "In DOAJ?",
-                        "index.has_seal.exact" : "DOAJ Seal",
+                        "index.has_seal.exact" : "Seal?",
                         "admin.owner.exact" : "Owner",
-                        "index.has_editor_group.exact" : "Has editor group?",
-                        "index.has_editor.exact" : "Has Associate Editor?",
+                        "index.has_editor_group.exact" : "Editor group?",
+                        "index.has_editor.exact" : "Associate Editor?",
                         "admin.editor_group.exact" : "Editor group",
                         "admin.editor.exact" : "Associate Editor",
-                        "index.license.exact" : "Journal license",
+                        "index.license.exact" : "License",
                         "bibjson.publisher.name.exact" : "Publisher",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",
-                        "index.language.exact" : "Journal language",
-                        "index.country.exact" : "Country of publisher",
+                        "index.language.exact" : "Language",
+                        "index.country.exact" : "Country",
                         "index.continued.exact" : "Continued",
                         "bibjson.discontinued_date" : "Discontinued Year",
-                        "index.has_apc.exact" : "Publication charges?"
+                        "index.has_apc.exact" : "Charges?"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {

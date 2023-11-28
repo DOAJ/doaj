@@ -11,7 +11,11 @@ src*
 build/*
 dist/*
 tmp/*
+
 *.zip
+!doajtest/unit/resources/*.zip
+!doajtest/preservation_upload_test_package/*.zip
+
 scratch.py
 .coverage
 htmlcov/*

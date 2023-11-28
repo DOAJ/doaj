@@ -167,11 +167,25 @@ class FieldDefinitions:
             "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "contexts": {
+            "admin": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
             "editor": {
-                "disabled": True
+                "disabled": True,
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             },
             "associate_editor": {
-                "disabled": True
+                "disabled": True,
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             },
             "update_request": {
                 "disabled": True
@@ -198,6 +212,24 @@ class FieldDefinitions:
         "contexts": {
             "update_request": {
                 "disabled": True
+            },
+            "admin": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
         }
     }
@@ -385,8 +417,8 @@ class FieldDefinitions:
         "input": "taglist",
         "help": {
             "long_help": ["Choose upto 6 keywords that describe the subject matter of the journal. "
-                          "Keywords must be in English.", "Use single words or short phrases (2 to 3 words) " 
-                          "that describe the journal's main topic.", "Do not add acronyms, abbreviations or descriptive sentences.",
+                          "Keywords must be in English.", "Use single words or short phrases (2 to 3 words) "
+                                                          "that describe the journal's main topic.", "Do not add acronyms, abbreviations or descriptive sentences.",
                           "Note that the keywords may be edited by DOAJ editorial staff." ],
         },
         "validate": [
@@ -444,11 +476,12 @@ class FieldDefinitions:
         "label": "Publisher’s name",
         "input": "text",
         "validate": [
-            {"required": {"message": "Enter the name of the journal’s publisher"}}
+            {"required": {"message": "Enter the name of the journal’s publisher"}},
+            {"different_to": {"field": "institution_name", "message": "Publisher and Society/Institution names cannot be the same."}}  # ~~^-> DifferetTo:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            {"autocomplete": {"type" : "journal", "field": "bibjson.publisher.name.exact"}},
+            {"autocomplete": {"type" : "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
             "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "help": {
@@ -457,6 +490,27 @@ class FieldDefinitions:
         "contexts" : {
             "bulk_edit" : {
                 "validate" : []
+            },
+            "admin": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.publisher.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
             }
         }
     }
@@ -507,9 +561,40 @@ class FieldDefinitions:
         },
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}},
+            {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
             "full_contents" # ~~^->FullContents:FormWidget~~
-        ]
+        ],
+        "validate": [
+            {"different_to": {"field": "publisher_name",
+                              "message": "Publisher and Society/Institution names cannot be the same."}}
+            # ~~^-> DifferetTo:FormValidator~~
+        ],
+        "contexts": {
+            "admin": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.institution.name.exact"}},
+                    # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "associate_editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.institution.name.exact"}},
+                    # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            },
+            "editor": {
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    {"autocomplete": {"type": "journal", "field": "bibjson.institution.name.exact"}},
+                    # ~~^-> Autocomplete:FormWidget~~
+                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+                ]
+            }
+        }
     }
 
     # ~~->$ InstitutionCountry:FormField~~
@@ -658,7 +743,7 @@ class FieldDefinitions:
                 "field": "license_display",
                 "value": "y",
                 "message": "Enter the URL for any recent article that displays or embeds a license"
-                }
+            }
             },
             "is_url"    # ~~^->IsURL:FormValidator~~
         ],
@@ -766,11 +851,11 @@ class FieldDefinitions:
                 "field": "review_process",
                 "value": "other",
                 "message": "Enter the name of another type of peer review"
-                }
+            }
             }
         ],
         "widgets" : [
-            "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+            "trim_whitespace"  # ~~^-> TrimWhitespace:FormWidget~~
         ],
         "asynchronous_warning": [
             {"warn_on_value": {"value": "None"}}
@@ -805,8 +890,8 @@ class FieldDefinitions:
         "datatype": "integer",
         "help": {
             "long_help": ["Please enter the year that the journal started to publish all content as true open access, according to DOAJ's <a href='https://blog.doaj.org/2020/11/17/what-does-doaj-define-as-open-access/' target='_blank' rel='nofollow'>definition</a>.",
-            "For journals that have flipped to open access, enter the year that the journal flipped, not the original launch date of the journal.",
-            "For journals that have made digitised backfiles freely available, enter the year that the journal started publishing as a fully open access title, not the date of the earliest free content."]
+                          "For journals that have flipped to open access, enter the year that the journal flipped, not the original launch date of the journal.",
+                          "For journals that have made digitised backfiles freely available, enter the year that the journal started publishing as a fully open access title, not the date of the earliest free content."]
         },
         "validate": [
             {"required": {"message": "Enter the Year (YYYY)."}},
@@ -858,7 +943,7 @@ class FieldDefinitions:
                 "field": "plagiarism_detection",
                 "value": "y",
                 "message": "Enter the URL for the journal’s <strong>plagiarism policy</strong> page"
-                }
+            }
             },
             "is_url"    # ~~^->IsURL:FormValidator~~
         ],
@@ -1105,14 +1190,14 @@ class FieldDefinitions:
         "help": {
             "short_help": "Link to the journal’s waiver information.",
             "doaj_criteria": "You must provide a URL",
-             "placeholder": "https://www.my-journal.com/about#waiver"
+            "placeholder": "https://www.my-journal.com/about#waiver"
         },
         "validate": [
             {"required_if": {
                 "field": "has_waiver",
                 "value": "y",
                 "message": "Enter the URL for the journal’s <strong>waiver information</strong> page"
-                }
+            }
             },
             "is_url"    # ~~^->IsURL:FormValidator~~
         ],
@@ -1160,7 +1245,7 @@ class FieldDefinitions:
                 "field": "has_other_charges",
                 "value": "y",
                 "message": "Enter the URL for the journal’s <strong>fees<strong> information page"
-                }
+            }
             },
             "is_url"    # ~~^->IsURL:FormValidator~~
         ],
@@ -1219,7 +1304,7 @@ class FieldDefinitions:
                 "field": "preservation_service",
                 "value": "national_library",
                 "message": "Enter the name(s) of the national library or libraries where the journal is archived"
-                }
+            }
             }
         ],
         "asynchronous_warning": [
@@ -1245,7 +1330,7 @@ class FieldDefinitions:
                 "field": "preservation_service",
                 "value": "other",
                 "message": "Enter the name of another archiving policy"
-                }
+            }
             }
         ],
         "asynchronous_warning": [
@@ -1344,7 +1429,7 @@ class FieldDefinitions:
                 "field": "deposit_policy",
                 "value": "other",
                 "message": "Enter the name of another repository policy"
-                }
+            }
             }
         ],
         "asynchronous_warning": [
@@ -1376,7 +1461,7 @@ class FieldDefinitions:
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
-            "clickable_url" # ~~^-> ClickableURL:FormWidget~~
+            "clickable_url", # ~~^-> ClickableURL:FormWidget~~
         ],
         "contexts" : {
             "public" : {
@@ -1431,8 +1516,8 @@ class FieldDefinitions:
         ],
         "help": {
             "long_help": ["A persistent article identifier (PID) is used to find the article no matter where it is "
-                         "located. The most common type of PID is the digital object identifier (DOI). ",
-                         "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>"],
+                          "located. The most common type of PID is the digital object identifier (DOI). ",
+                          "<a href='https://en.wikipedia.org/wiki/Persistent_identifier' target='_blank' rel='noopener'>Read more about PIDs.</a>"],
         },
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}
@@ -1450,7 +1535,7 @@ class FieldDefinitions:
                 "field": "persistent_identifiers",
                 "value": "other",
                 "message": "Enter the name of another type of identifier"
-                }
+            }
             }
         ],
         "asynchronous_warning": [
@@ -1473,7 +1558,7 @@ class FieldDefinitions:
         "default" : "",
         "help": {
             "long_help": ["An <a href='https://orcid.org/' target='_blank' rel='noopener'>ORCID</a> (Open Researcher and Contributor) iD is an alphanumeric code to uniquely identify "
-                         "authors."],
+                          "authors."],
         },
         "contexts" : {
             "public" : {
@@ -1564,7 +1649,7 @@ class FieldDefinitions:
         "input": "textarea",
         "help": {
             "long_help": ["The selected reason for rejection, and any additional information you include, "
-                         "are sent to the journal contact with the rejection email."]
+                          "are sent to the journal contact with the rejection email."]
         },
         "validate": [
             {"required_if": {"field": "quick_reject", "value": "other"}}
@@ -1581,7 +1666,7 @@ class FieldDefinitions:
             "owner_exists"
         ],
         "widgets": [
-            {"autocomplete": {"type" : "account", "field": "id", "include" : False}},
+            {"autocomplete": {"type" : "account", "field": "id", "include" : False}}, # ~~^-> Autocomplete:FormWidget~~
             "clickable_owner"
         ],
         "contexts" : {
@@ -1614,7 +1699,7 @@ class FieldDefinitions:
                 "help" : {
                     "render_error_box": False,
                     "short_help" : "Set the status to 'In Progress' to signal to the applicant that you have started your review."
-                                    "Set the status to 'Completed' to alert the Editor that you have completed your review.",
+                                   "Set the status to 'Completed' to alert the Editor that you have completed your review.",
                     "update_requests_diff": False
                 }
             },
@@ -1622,7 +1707,7 @@ class FieldDefinitions:
                 "help" : {
                     "render_error_box" : False,
                     "short_help" : "Revert the status to 'In Progress' to signal to the Associate Editor that further work is needed."
-                                    "Set the status to 'Ready' to alert the Managing Editor that you have completed your review.",
+                                   "Set the status to 'Ready' to alert the Managing Editor that you have completed your review.",
                     "update_requests_diff": False
                 }
             }
@@ -1639,7 +1724,7 @@ class FieldDefinitions:
         "label": "Group",
         "input": "text",
         "widgets": [
-            {"autocomplete": {"type" : "editor_group", "field": "name", "include" : False}}
+            {"autocomplete": {"type" : "editor_group", "field": "name", "include" : False}} # ~~^-> Autocomplete:FormWidget~~
         ],
         "contexts" : {
             "editor" : {
@@ -1647,7 +1732,7 @@ class FieldDefinitions:
             },
             "admin" : {
                 "widgets" : [
-                    {"autocomplete": {"type": "editor_group", "field": "name", "include" : False}},
+                    {"autocomplete": {"type": "editor_group", "field": "name", "include" : False}}, # ~~^-> Autocomplete:FormWidget~~
                     {"load_editors" : {"field" : "editor"}}
                 ]
             }
@@ -1700,7 +1785,7 @@ class FieldDefinitions:
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
-            {"different_to": {"field": "continued_by"}},       # ~~^-> DifferetTo:FormValidator~~
+            {"different_to": {"field": "continued_by", "message": "The ISSN provided in both fields must be different. Please make sure to enter the ISSN of an older journal for the first field and the ISSN of a newer journal for the second field. They cannot be the same."}},       # ~~^-> DifferetTo:FormValidator~~
             {
                 "not_if" : {
                     "fields" : [{"field" : "discontinued_date"}],
@@ -1723,7 +1808,7 @@ class FieldDefinitions:
         "input": "taglist",
         "validate": [
             {"is_issn_list": {"message": "This is not a valid ISSN"}},  # ~~^-> IsISSN:FormValidator~~
-            {"different_to": {"field": "continues"}}, # ~~^-> DifferetTo:FormValidator~~
+            {"different_to": {"field": "continues", "message": "The ISSN provided in both fields must be different. Please make sure to enter the ISSN of an older journal for the first field and the ISSN of a newer journal for the second field. They cannot be the same."}}, # ~~^-> DifferetTo:FormValidator~~
             {
                 "not_if": {
                     "fields": [{"field": "discontinued_date"}],
@@ -1751,18 +1836,18 @@ class FieldDefinitions:
         "validate": [
             {"required_if" : {
                 "field" : "application_status",
-                    "value" : [
-                        constants.APPLICATION_STATUS_READY,
-                        constants.APPLICATION_STATUS_COMPLETED,
-                        constants.APPLICATION_STATUS_ACCEPTED
-                    ],
-                    "message" : "This field is required when setting the Application Status to {y}, {z} or {a}".format(
-                      y=constants.APPLICATION_STATUS_READY,
-                      z=constants.APPLICATION_STATUS_COMPLETED,
-                      a=constants.APPLICATION_STATUS_ACCEPTED
-                    )
-                }
-             }
+                "value" : [
+                    constants.APPLICATION_STATUS_READY,
+                    constants.APPLICATION_STATUS_COMPLETED,
+                    constants.APPLICATION_STATUS_ACCEPTED
+                ],
+                "message" : "This field is required when setting the Application Status to {y}, {z} or {a}".format(
+                    y=constants.APPLICATION_STATUS_READY,
+                    z=constants.APPLICATION_STATUS_COMPLETED,
+                    a=constants.APPLICATION_STATUS_ACCEPTED
+                )
+            }
+            }
         ],
         "widgets": [
             "subject_tree"
@@ -2743,6 +2828,7 @@ class DifferentToBuilder:
     @staticmethod
     def render(settings, html_attrs):
         html_attrs["data-parsley-different-to"] = settings.get("field")
+        html_attrs["data-parsley-different-to-message"] = "<p><small>" + settings.get("message") + "</small></p>"
 
     @staticmethod
     def wtforms(field, settings):
@@ -2936,6 +3022,7 @@ PYTHON_FUNCTIONS = {
 
 JAVASCRIPT_FUNCTIONS = {
     "clickable_url": "formulaic.widgets.newClickableUrl",   # ~~-> ClickableURL:FormWidget~~
+    "click_to_copy": "formulaic.widgets.newClickToCopy", # ~~-> ClickToCopy:FormWidget~~
     "clickable_owner": "formulaic.widgets.newClickableOwner",   # ~~-> ClickableOwner:FormWidget~~
     "select": "formulaic.widgets.newSelect",    # ~~-> SelectBox:FormWidget~~
     "taglist": "formulaic.widgets.newTagList",  # ~~-> TagList:FormWidget~~
@@ -3012,7 +3099,7 @@ class MultiCheckboxBuilder(WTFormsBuilder):
     @staticmethod
     def match(field):
         return field.get("input") == "checkbox" and \
-               (len(field.get("options", [])) > 0 or field.get("options_fn") is not None)
+            (len(field.get("options", [])) > 0 or field.get("options_fn") is not None)
 
     @staticmethod
     def wtform(formulaic_context, field, wtfargs):
