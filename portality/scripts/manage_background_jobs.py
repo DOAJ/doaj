@@ -27,6 +27,7 @@ import typing
 from collections import Counter
 from typing import Dict, Type, List
 
+from portality import constants
 from portality.constants import BGJOB_STATUS_COMPLETE, BGJOB_STATUS_ERROR, BGJOB_STATUS_QUEUED
 from portality.lib import dates, color_text, es_queries
 from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
@@ -88,6 +89,7 @@ def handle_requeue(job: 'BackgroundJob'):
         print('This script is not set up to {0} task type {1}. Skipping.'.format('requeue', job.action))
         return
 
+    # KTODO remove redundant jobs first
     job.queue()
     handler.submit(job)
 
@@ -259,8 +261,24 @@ def print_huey_jobs_counter(counter):
 def print_huey_job_data(job_data: HueyJobData):
     print(f'{job_data.bgjob_action:30} {job_data.bgjob_id} {dates.format(job_data.schedule_time)}')
 
+
 def total_counter(counter):
     return sum(counter.values())
+
+
+def query_bgjobs_by_status(status) -> List['BackgroundJob']:
+    from portality import models
+    bgjobs = models.BackgroundJob.q2obj(
+        q=models.background.BackgroundJobQueryBuilder()
+        .status_includes([status])
+        .size(10000)
+        .build_query_dict())
+    return bgjobs
+
+
+def title(s):
+    return color_text.apply_color(s, front=color_text.Color.black, background=color_text.Color.green)
+
 
 def report(example_size=10):
     client = create_redis_client()
@@ -272,16 +290,16 @@ def report(example_size=10):
     scheduled = Counter(r.bgjob_action for r in huey_rows if r.is_scheduled)
     unscheduled = Counter(r.bgjob_action for r in huey_rows if not r.is_scheduled)
 
-    print('# Huey jobs:')
-    print(f'### Scheduled ({total_counter(scheduled)})')
+    print(title('# Huey jobs:'))
+    print(title(f'### Scheduled ({total_counter(scheduled)})'))
     print_huey_jobs_counter(scheduled)
     print()
 
-    print(f'### Unscheduled ({total_counter(unscheduled)})')
+    print(title(f'### Unscheduled ({total_counter(unscheduled)})'))
     print_huey_jobs_counter(unscheduled)
     print()
 
-    print(f'### last {example_size} unscheduled jobs:')
+    print(title(f'### last {example_size} unscheduled jobs:'))
     unscheduled_huey_jobs = sorted((r for r in huey_rows if not r.is_scheduled),
                                    key=lambda x: x.schedule_time, reverse=True)
     for r in unscheduled_huey_jobs[:example_size]:
@@ -291,47 +309,44 @@ def report(example_size=10):
     counter = Counter(r.bgjob_id for r in huey_rows if not r.is_scheduled)
     counter = {k: v for k, v in counter.items() if v > 1}
     if counter:
-        print(f'### Duplicated jobs ({total_counter(counter)})')
+        print(title(f'### Duplicated jobs ({total_counter(counter)})'))
         for k, v in counter.items():
             print(f'{k} {v}')
 
     print_huey_jobs_counter(counter)
 
-    print('# DB records:')
-    from portality import models
-    from portality.models.background import BackgroundJobQueryBuilder
-    bgjobs: List[BackgroundJob] = models.BackgroundJob.q2obj(
-        q=BackgroundJobQueryBuilder()
-        .status_excludes([BGJOB_STATUS_COMPLETE, BGJOB_STATUS_ERROR])
-        .size(10000)
-        .build_query_dict())
+    print(title('# DB records'))
+    print(title(f'### Processing'))
+    for j in query_bgjobs_by_status(constants.BGJOB_STATUS_PROCESSING):
+        print(job_to_str(j))
+    print()
 
+    bgjobs: List[BackgroundJob] = query_bgjobs_by_status(BGJOB_STATUS_QUEUED)
     counter = Counter((j.action, j.status) for j in bgjobs)
-    print(f'### Uncompleted ({sum(counter.values())})')
+    print(title(f'### Queued ({sum(counter.values())})'))
     for k, v in sorted(counter.items(), key=lambda x: x[0]):
         print(f'{k[0]:30} {k[1]:10} {v}')
     print()
 
-    print(f'### last {example_size} jobs:')
+    print(title(f'### last {example_size} jobs'))
     for j in sorted(bgjobs, key=lambda j: j.created_date, reverse=True)[:example_size]:
         print(job_to_str(j))
     print()
 
-    print('# Queued delta between DB and redis:')
+    print(title('# Queued delta between DB and redis:'))
     queued_huey = {i.bgjob_id: i.bgjob_action for i in unscheduled_huey_jobs}
     queued_db = {j.id: j.action for j in bgjobs if j.status == BGJOB_STATUS_QUEUED}
     print_job_delta('### DB only', queued_db, queued_huey)
     print_job_delta('### Redis only', queued_huey, queued_db)
 
 
-def print_job_delta(title, id_action_a: Dict, id_action_b: Dict):
+def print_job_delta(title_val, id_action_a: Dict, id_action_b: Dict):
     id_action_list = (i for i in id_action_a.items() if i[0] not in id_action_b)
     id_action_list = sorted(id_action_list, key=lambda x: x[1])
-    print(f'{title} ({len(id_action_list)})')
+    print(title(f'{title_val} ({len(id_action_list)})'))
     for id, action in id_action_list:
         print(f'{action:30} {id}')
     print()
-
 
 
 def clean_all():
@@ -366,7 +381,8 @@ def main():
 
     sp_p = sp.add_parser('report', help='Report status of jobs, e.g. out sync job on redis and db ')
 
-    sp_p = sp.add_parser('clean-all', help='Remove all Jobs from redis and DB')
+    sp_p = sp.add_parser('rm-all', help='Remove all Jobs from redis and DB')
+    # KTODO rm-old-processing, rm-redundant
 
     args = parser.parse_args()
 
@@ -379,7 +395,7 @@ def main():
                     prompt=not args.yes)
     elif cmdname == 'report':
         report()
-    elif cmdname == 'clean-all':
+    elif cmdname == 'rm-all':
         clean_all()
     else:
         parser.print_help()
