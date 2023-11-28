@@ -645,13 +645,13 @@ $.extend(true, doaj, {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
                 var placeholder = 'Search ' + this.component.nodeCount + ' subjects';
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.title + toggle + '</button></h3>\
+                    <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <label for="' + searchId + '" class="sr-only">' + placeholder + '</label>\
                         <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '">\
                         <ul class="filter__choices" id="' + filteredId + '" style="display:none"></ul>\
                         <ul class="filter__choices" id="' + mainListId + '">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, treeFrag);
@@ -1302,15 +1302,15 @@ $.extend(true, doaj, {
 
                 var comp = this.component;
 
-                var shareButtonFrag = "";
                 var shareButtonClass = edges.css_classes(this.namespace, "toggle-share", this);
                 var modalId = edges.css_id(this.namespace, "modal", this);
-                shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--tertiary" role="button">' + this.shareLinkText + '</button>';
+                let shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--tertiary" role="button">' + this.shareLinkText + '</button>';
 
-                var shorten = "";
+                let shorten = "";
                 if (this.component.urlShortener) {
                     var shortenClass = edges.css_classes(this.namespace, "shorten", this);
-                    shorten = '<p>Share a link to this search</p>'
+                    var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this)
+                    shorten = '<p><button class="' + shortenButtonClass + '">shorten url</button></p>';
                 }
                 var embed = "";
                 if (this.component.embedSnippet) {
@@ -1320,11 +1320,11 @@ $.extend(true, doaj, {
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
-                var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this);
+
                 var shareFrag = '<div class="' + shareBoxClass + '">\
-                    ' + shorten + '\
+                    <p>Share a link to this search</p>\
                     <textarea style="width: 100%; height: 150px" readonly class="' + shareUrlClass + '"></textarea>\
-                    <p><button class="' + shortenButtonClass + '">shorten url</button></p>\
+                    ' + shorten + '\
                     ' + embed + '\
                 </div>';
 
@@ -1832,10 +1832,10 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.component.display + toggle + '</button></h3>\
+                    <div class="filter__body collapse"  style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, filterFrag + results);
@@ -2083,10 +2083,10 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.component.display + toggle + '</button></h3>\
+                    <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, filterFrag + results);

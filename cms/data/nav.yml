@@ -27,7 +27,7 @@ entries:
         route: doaj.openurl           # ~~->OpenURLDocumentation:WebRoute~~
       - label: XML
         route: doaj.xml               # ~~->XMLDocumentation:WebRoute~~
-      - label: FAQs
+      - label: Metadata help
         route: doaj.faq               # ~~->FAQ:WebRoute~~
   - id: about
     label: About
@@ -60,7 +60,7 @@ entries:
         route: doaj.support           # ~~->Support:WebRoute~~
       - label: Publishers
         route: doaj.publisher_supporters      # ~~->PublisherSupporters:WebRoute~~
-      - label: Supporters
+      - label: Institutional and library supporters
         route: doaj.supporters        # ~~->Supporters:WebRoute~~
   - id: apply
     label: Apply
@@ -77,8 +77,8 @@ entries:
         route: doaj.seal              # ~~->Seal:WebRoute~~
       - label: Transparency & best practice
         route: doaj.transparency      # ~~->Transparency:WebRoute~~
-      - label: Why index your journal in DOAJ?
-        route: doaj.why_index         # ~~->WhyIndex:WebRoute~~
+      - label: Publisher information
+        route: doaj.publisher_responsibilities         # ~~->PublisherResponsibilities:WebRoute~~
       - label: Licensing & copyright
         route: doaj.copyright_and_licensing         # ~~->CopyrightAndLicensing:WebRoute~~
       # Uncomment once this page is ready to be published

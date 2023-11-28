@@ -50,4 +50,9 @@ def create_mapping(struct, mapping_opts, path=()):
     for struct_name, struct_body in struct.get("structs", {}).items():
         result["properties"][struct_name] = create_mapping(struct_body, mapping_opts, path + (struct_name,))
 
+    dotpath = '.'.join(path)
+    for field, additional_mapping in mapping_opts.get("additional_mappings", {}).items():
+        if field.startswith(dotpath) and "." not in field[len(dotpath) + 1:]:
+            result["properties"][field[len(dotpath):]] = additional_mapping
+
     return result
