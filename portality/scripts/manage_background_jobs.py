@@ -18,16 +18,16 @@ kind of job, you need to add it there.
 
 TODO: this should be a script calling functionality inside a business logic layer with a fuller understanding of jobs.
 """
-import itertools
-import re
 import argparse
+import itertools
 import json
 import pickle
+import re
 import typing
-from typing import Dict, Type, List
 from collections import Counter
+from typing import Dict, Type, List
 
-from portality.constants import BGJOB_STATUS_COMPLETE, BGJOB_STATUS_ERROR
+from portality.constants import BGJOB_STATUS_COMPLETE, BGJOB_STATUS_ERROR, BGJOB_STATUS_QUEUED
 from portality.lib import dates, color_text, es_queries
 from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 
@@ -115,14 +115,20 @@ cmd_handlers = {
 }
 
 
-def manage_jobs(verb, action, status, from_date, to_date, prompt=True, size=10000):
+def manage_jobs(verb, action, status, from_date, to_date, job_id, prompt=True, size=10000):
     from portality import models
-    q = JobsQuery(action, status, from_date, to_date, size=size)
+    if job_id is not None:
+        j = models.BackgroundJob.pull(job_id)
+        jobs: List[models.BackgroundJob] = [] if j is None else [j]
+        query_ref = job_id
+    else:
+        q = JobsQuery(action, status, from_date, to_date, size=size)
+        jobs: List[models.BackgroundJob] = models.BackgroundJob.q2obj(q=q.query())
+        query_ref = json.dumps(q.query(), indent=4)
 
-    jobs: List[models.BackgroundJob] = models.BackgroundJob.q2obj(q=q.query())
     if len(jobs) == 0:
         print('No jobs found by query: ')
-        print(json.dumps(q.query(), indent=4))
+        print(query_ref)
         return
 
     print('You are about to {verb} {count} job(s)'.format(verb=verb, count=len(jobs)))
@@ -203,6 +209,9 @@ def add_arguments_common(parser: argparse.ArgumentParser):
                                help='Date to which to look for jobs in the given type and status',
                                default=dates.now_str()
                                )
+    query_options.add_argument('-i', '--id',
+                               help='Background Job id',
+                               default=None)
 
     default_size = 10000
     query_options.add_argument('--size',
@@ -228,7 +237,7 @@ class HueyJobData:
         return self.schedule_time is None
 
     @property
-    def bgjob_name(self):
+    def bgjob_action(self):
         return re.sub(r'^queue_task_(scheduled_)?', '', self.queue_name)
 
     @property
@@ -248,8 +257,10 @@ def print_huey_jobs_counter(counter):
 
 
 def print_huey_job_data(job_data: HueyJobData):
-    print(f'{job_data.bgjob_name:30} {job_data.bgjob_id} {dates.format(job_data.schedule_time)}')
+    print(f'{job_data.bgjob_action:30} {job_data.bgjob_id} {dates.format(job_data.schedule_time)}')
 
+def total_counter(counter):
+    return sum(counter.values())
 
 def report(example_size=10):
     client = create_redis_client()
@@ -258,24 +269,33 @@ def report(example_size=10):
     huey_rows = (HueyJobData.from_redis(r) for r in huey_rows)
     huey_rows = list(huey_rows)
 
-    scheduled = Counter(r.bgjob_name for r in huey_rows if r.is_scheduled)
-    unscheduled = Counter(r.bgjob_name for r in huey_rows if not r.is_scheduled)
+    scheduled = Counter(r.bgjob_action for r in huey_rows if r.is_scheduled)
+    unscheduled = Counter(r.bgjob_action for r in huey_rows if not r.is_scheduled)
 
     print('# Huey jobs:')
-    print('### Scheduled:')
+    print(f'### Scheduled ({total_counter(scheduled)})')
     print_huey_jobs_counter(scheduled)
     print()
 
-    print('### Unscheduled:')
+    print(f'### Unscheduled ({total_counter(unscheduled)})')
     print_huey_jobs_counter(unscheduled)
     print()
 
     print(f'### last {example_size} unscheduled jobs:')
-    unscheduled_jobs = sorted((r for r in huey_rows if not r.is_scheduled),
-                              key=lambda x: x.schedule_time, reverse=True)
-    for r in unscheduled_jobs[:example_size]:
+    unscheduled_huey_jobs = sorted((r for r in huey_rows if not r.is_scheduled),
+                                   key=lambda x: x.schedule_time, reverse=True)
+    for r in unscheduled_huey_jobs[:example_size]:
         print_huey_job_data(r)
     print()
+
+    counter = Counter(r.bgjob_id for r in huey_rows if not r.is_scheduled)
+    counter = {k: v for k, v in counter.items() if v > 1}
+    if counter:
+        print(f'### Duplicated jobs ({total_counter(counter)})')
+        for k, v in counter.items():
+            print(f'{k} {v}')
+
+    print_huey_jobs_counter(counter)
 
     print('# DB records:')
     from portality import models
@@ -283,10 +303,11 @@ def report(example_size=10):
     bgjobs: List[BackgroundJob] = models.BackgroundJob.q2obj(
         q=BackgroundJobQueryBuilder()
         .status_excludes([BGJOB_STATUS_COMPLETE, BGJOB_STATUS_ERROR])
+        .size(10000)
         .build_query_dict())
 
-    print('### Summary')
     counter = Counter((j.action, j.status) for j in bgjobs)
+    print(f'### Uncompleted ({sum(counter.values())})')
     for k, v in sorted(counter.items(), key=lambda x: x[0]):
         print(f'{k[0]:30} {k[1]:10} {v}')
     print()
@@ -295,6 +316,22 @@ def report(example_size=10):
     for j in sorted(bgjobs, key=lambda j: j.created_date, reverse=True)[:example_size]:
         print(job_to_str(j))
     print()
+
+    print('# Queue Delta between DB and redis:')
+    queued_huey = {i.bgjob_id: i.bgjob_action for i in unscheduled_huey_jobs}
+    queued_db = {j.id: j.action for j in bgjobs if j.status == BGJOB_STATUS_QUEUED}
+    print_job_delta('### DB only', queued_db, queued_huey)
+    print_job_delta('### Redis only', queued_huey, queued_db)
+
+
+def print_job_delta(title, id_action_a: Dict, id_action_b: Dict):
+    id_action_list = (i for i in id_action_a.items() if i[0] not in id_action_b)
+    id_action_list = sorted(id_action_list, key=lambda x: x[1])
+    print(f'{title} ({len(id_action_list)})')
+    for id, action in id_action_list:
+        print(f'{action:30} {id}')
+    print()
+
 
 
 def clean_all():
@@ -338,6 +375,7 @@ def main():
         manage_jobs(cmdname,
                     args.action, args.status,
                     args.from_date, args.to_date,
+                    job_id=args.id,
                     prompt=not args.yes)
     elif cmdname == 'report':
         report()
