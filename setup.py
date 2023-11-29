@@ -74,4 +74,10 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
     ],
+    entry_points={
+        'console_scripts': [
+            'manage-bgjobs = portality.scripts.manage_background_jobs:main',
+        ],
+    },
+
 )
