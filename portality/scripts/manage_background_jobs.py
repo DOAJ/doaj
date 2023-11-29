@@ -23,6 +23,7 @@ import itertools
 import json
 import pickle
 import re
+import time
 import typing
 from collections import Counter
 from typing import Dict, Type, List, Iterator
@@ -400,7 +401,7 @@ def rm_redundant():
     from portality import models
 
     target_actions = app.config.get('BGJOB_MANAGE_REDUNDANT_ACTIONS', [])
-    print(f'following actions will be cleaned up for redundant jobs: {target_actions}')
+    print(f'Following actions will be cleaned up for redundant jobs: {target_actions}')
     client = create_redis_client()
     huey_rows = list(find_queued_huey_jobs())
     for action in target_actions:
@@ -414,7 +415,7 @@ def rm_redundant():
         if not bgjobs:
             continue
 
-        print(f'remove redundant jobs: [{action}][{len(bgjobs)}]')
+        print(f'Remove redundant jobs: [{action}][{len(bgjobs)}]')
         # remove from db
         models.BackgroundJob.bulk_delete(b.id for b in bgjobs)
 
@@ -466,6 +467,8 @@ def rm_huey_job_from_redis(redis_client, huey_job_data: HueyJobData):
 def cleanup():
     rm_redundant()
     rm_old_processing()
+
+    time.sleep(5)  # wait DB records to be deleted
     rm_async_queued_jobs()
 
 
