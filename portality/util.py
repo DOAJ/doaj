@@ -204,7 +204,7 @@ def custom_timed_rotating_logger(file_name):
 
     # Get the user's home directory
     user_home = os.path.expanduser("~")
-    log_dir = os.path.join(user_home, 'doaj_logs')
+    log_dir = os.path.join(user_home, 'appdata', 'doaj')
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
     log_filename = os.path.join(log_dir, file_name)
