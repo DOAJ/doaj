@@ -25,13 +25,15 @@
   .form__legend {
     margin: 0;
     width: 100%;
+    @include typescale-06;
 
     div {
       margin: 0 (-$spacing-04) $spacing-04 (-$spacing-04);
-      padding: $spacing-04;
+      padding: $spacing-02;
       border-radius: $spacing-02 $spacing-02 0 0;
-      background: $warm-black;
+      background: $dark-grey;
       color: $white;
+      text-align: center;
     }
 
     + .form__header,
