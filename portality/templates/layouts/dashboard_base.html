@@ -35,13 +35,13 @@
           {% if (current_user.has_role("editor") or current_user.has_role("associate_editor")) and not current_user.has_role("admin") %}
             <li class="flex-center">
                <a href="{{ url_for('editor.index') }}" class="label">
-                  <span><span data-feather="list" aria-hidden="true"></span> Dashboard</span>
+                  <span><span data-feather="list" aria-hidden="true"></span> Editor dashboard</span>
                 </a>
             </li>
             {% if current_user.has_role("admin") %}
               <li class="flex-center">
                 <a href="{{ url_for('dashboard.top_todo') }}" class="label">
-                  <span><span data-feather="list" aria-hidden="true"></span> Dashboard</span>
+                  <span><span data-feather="list" aria-hidden="true"></span> Admin dashboard</span>
                 </a>
               </li>
             {% endif %}
