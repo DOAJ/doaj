@@ -1,18 +1,6 @@
 """
 Script to allow us to re-queue or cancel background jobs of certain kinds.
 
-To use, do:
-
-python portality/scripts/requeue_background_job.py [-r] [-c] [-a <action>] [-s <status>] [-f <from date>] [-t <to date>]
-
-One of -r, -c is required. -r requeues jobs, -c cancels them.
--a, -s, -f and -t are optional, with the following default values:
-
--a : None (for running through all job types supported below, others will be skipped)
--s : queued
--f : 1970-01-01T00:00:00Z
--t : the current timestamp
-
 This script supports managing the following background job types listed in HANDLERS; if you need to re-queue any other
 kind of job, you need to add it there.
 
@@ -429,7 +417,25 @@ def add_arguments_common(parser: argparse.ArgumentParser):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Manage background jobs in the DOAJ database and redis')
+    epilog = """
+    
+Example
+------------
+
+### Requeue all 'read_news' jobs from 1970-01-0 to 2020-01-01
+manage-bgjobs requeue -a read_news -f 1970-01-01T00:00:00Z -t 2020-01-01T00:00:00Z
+
+### Cancel job with id abcd12 without confirmation prompt
+manage-bgjobs cancel -i abcd12 -y
+
+### cleanup outdated jobs
+manage-bgjobs cleanup
+    
+    """
+
+    parser = argparse.ArgumentParser(description='Manage background jobs in the DOAJ database and redis',
+                                     epilog=epilog,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
     sp = parser.add_subparsers(dest='cmdname', help='Actions', )
 
     sp_p = sp.add_parser('requeue', help='Add these jobs back on the job queue for processing')
