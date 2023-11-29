@@ -25,10 +25,10 @@ import pickle
 import re
 import typing
 from collections import Counter
-from typing import Dict, Type, List
+from typing import Dict, Type, List, Iterator
 
 from portality import constants
-from portality.constants import BGJOB_STATUS_COMPLETE, BGJOB_STATUS_ERROR, BGJOB_STATUS_QUEUED
+from portality.constants import BGJOB_STATUS_QUEUED
 from portality.lib import dates, color_text, es_queries
 from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 
@@ -282,7 +282,7 @@ def title(s):
     return color_text.apply_color(s, front=color_text.Color.black, background=color_text.Color.green)
 
 
-def query_all_huey_jobs():
+def find_all_huey_jobs() -> Iterator[HueyJobData]:
     client = create_redis_client()
     huey_rows = itertools.chain.from_iterable((client.lrange(k, 0, -1)
                                                for k in ['huey.redis.doajmainqueue', 'huey.redis.doajlongrunning', ]))
@@ -290,8 +290,12 @@ def query_all_huey_jobs():
     return huey_rows
 
 
+def find_queued_huey_jobs() -> Iterator[HueyJobData]:
+    return (r for r in find_all_huey_jobs() if not r.is_scheduled)
+
+
 def report(example_size=10):
-    huey_rows = list(query_all_huey_jobs())
+    huey_rows = list(find_all_huey_jobs())
 
     scheduled = Counter(r.bgjob_action for r in huey_rows if r.is_scheduled)
     unscheduled = Counter(r.bgjob_action for r in huey_rows if not r.is_scheduled)
@@ -397,6 +401,8 @@ def rm_redundant():
 
     target_actions = app.config.get('BGJOB_MANAGE_REDUNDANT_ACTIONS', [])
     print(f'following actions will be cleaned up for redundant jobs: {target_actions}')
+    client = create_redis_client()
+    huey_rows = list(find_queued_huey_jobs())
     for action in target_actions:
         bgjobs = models.BackgroundJob.q2obj(q=models.background.BackgroundJobQueryBuilder()
                                             .status_includes([BGJOB_STATUS_QUEUED])
@@ -405,15 +411,26 @@ def rm_redundant():
                                             .size(10000)
                                             .build_query_dict())
         bgjobs = bgjobs[:-1]
-        if bgjobs:
-            print(f'remove redundant jobs: [{action}][{len(bgjobs)}]')
-            models.BackgroundJob.bulk_delete(b.id for b in bgjobs)
+        if not bgjobs:
+            continue
+
+        print(f'remove redundant jobs: [{action}][{len(bgjobs)}]')
+        # remove from db
+        models.BackgroundJob.bulk_delete(b.id for b in bgjobs)
+
+        # remove from redis
+        for j in bgjobs:
+            for h in iter(huey_rows):
+                if h.bgjob_id == j.id:
+                    rm_huey_job_from_redis(client, h)
+                    huey_rows.remove(h)
+                    break
 
 
 def find_huey_bgjob_delta(huey_rows: List[HueyJobData] = None,
                           bgjobs: List['BackgroundJob'] = None
                           ) -> (List[HueyJobData], List['BackgroundJob']):
-    huey_rows: List[HueyJobData] = ([r for r in query_all_huey_jobs() if not r.is_scheduled]
+    huey_rows: List[HueyJobData] = (list(find_queued_huey_jobs())
                                     if huey_rows is None else list(huey_rows))
     bgjobs: List[BackgroundJob] = (query_bgjobs_by_status(BGJOB_STATUS_QUEUED)
                                    if bgjobs is None else list(bgjobs))
@@ -437,10 +454,13 @@ def rm_async_queued_jobs():
     print_job_delta('### Redis only', ((i.bgjob_id, i.bgjob_action) for i in huey_only))
     client = create_redis_client()
     for i in huey_only:
-        i: HueyJobData
-        for key in ['huey.redis.doajmainqueue', 'huey.redis.doajlongrunning']:
-            if client.lrem(key, 1, i.as_redis()):
-                break
+        rm_huey_job_from_redis(client, i)
+
+
+def rm_huey_job_from_redis(redis_client, huey_job_data: HueyJobData):
+    for key in ['huey.redis.doajmainqueue', 'huey.redis.doajlongrunning']:
+        if redis_client.lrem(key, 1, huey_job_data.as_redis()):
+            break
 
 
 def cleanup():
