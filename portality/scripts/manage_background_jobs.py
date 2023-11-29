@@ -349,7 +349,7 @@ def print_job_delta(title_val, id_action_a: Dict, id_action_b: Dict):
     print()
 
 
-def clean_all():
+def rm_all():
     if input(color_text.apply_color(
             'WARNING: This will delete all jobs from redis and the database. Proceed? [y\\N] ',
             background=color_text.Color.red)).lower() != 'y':
@@ -364,6 +364,31 @@ def clean_all():
     client = create_redis_client()
     client.delete('huey.redis.doajmainqueue')
     client.delete('huey.redis.doajlongrunning')
+
+
+def rm_old_processing(is_all=False):
+    from portality import models
+    from portality.constants import BGJOB_STATUS_PROCESSING
+    from portality.models.background import BackgroundJobQueryBuilder
+
+    bgjobs = models.BackgroundJob.q2obj(q=BackgroundJobQueryBuilder()
+                                        .status_includes([BGJOB_STATUS_PROCESSING])
+                                        .order_by('created_date', 'asc')
+                                        .size(10000)
+                                        .build_query_dict())
+
+    if not is_all:
+        if len(bgjobs) == 1:
+            print('Only one processing job found. No action.')
+            print(job_to_str(bgjobs[0]))
+            return
+        bgjobs = bgjobs[:-1]
+
+    print(f'Following {len(bgjobs)} jobs will be removed:')
+    for j in bgjobs:
+        print(job_to_str(j))
+
+    models.BackgroundJob.bulk_delete(b.id for b in bgjobs)
 
 
 def main():
@@ -382,6 +407,10 @@ def main():
     sp_p = sp.add_parser('report', help='Report status of jobs, e.g. out sync job on redis and db ')
 
     sp_p = sp.add_parser('rm-all', help='Remove all Jobs from redis and DB')
+
+    sp_p = sp.add_parser('rm-old-processing', help='Remove processing Jobs except the last one')
+    sp_p.add_argument('-a', '--all', help='Remove all processing Jobs', action="store_true")
+
     # KTODO rm-old-processing, rm-redundant
 
     args = parser.parse_args()
@@ -396,7 +425,9 @@ def main():
     elif cmdname == 'report':
         report()
     elif cmdname == 'rm-all':
-        clean_all()
+        rm_all()
+    elif cmdname == 'rm-old-processing':
+        rm_old_processing(args.all)
     else:
         parser.print_help()
         exit(1)
