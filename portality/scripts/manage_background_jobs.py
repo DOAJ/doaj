@@ -89,7 +89,6 @@ def handle_requeue(job: 'BackgroundJob'):
         print('This script is not set up to {0} task type {1}. Skipping.'.format('requeue', job.action))
         return
 
-    # KTODO remove redundant jobs first
     job.queue()
     handler.submit(job)
 
@@ -252,6 +251,9 @@ class HueyJobData:
     def from_redis(cls, redis_row):
         return HueyJobData(pickle.loads(redis_row))
 
+    def as_redis(self):
+        return pickle.dumps(self.data)
+
 
 def print_huey_jobs_counter(counter):
     for k, v in sorted(counter.items(), key=lambda x: x[0]):
@@ -280,12 +282,16 @@ def title(s):
     return color_text.apply_color(s, front=color_text.Color.black, background=color_text.Color.green)
 
 
-def report(example_size=10):
+def query_all_huey_jobs():
     client = create_redis_client()
     huey_rows = itertools.chain.from_iterable((client.lrange(k, 0, -1)
                                                for k in ['huey.redis.doajmainqueue', 'huey.redis.doajlongrunning', ]))
     huey_rows = (HueyJobData.from_redis(r) for r in huey_rows)
-    huey_rows = list(huey_rows)
+    return huey_rows
+
+
+def report(example_size=10):
+    huey_rows = list(query_all_huey_jobs())
 
     scheduled = Counter(r.bgjob_action for r in huey_rows if r.is_scheduled)
     unscheduled = Counter(r.bgjob_action for r in huey_rows if not r.is_scheduled)
@@ -334,14 +340,12 @@ def report(example_size=10):
     print()
 
     print(title('# Queued delta between DB and redis:'))
-    queued_huey = {i.bgjob_id: i.bgjob_action for i in unscheduled_huey_jobs}
-    queued_db = {j.id: j.action for j in bgjobs if j.status == BGJOB_STATUS_QUEUED}
-    print_job_delta('### DB only', queued_db, queued_huey)
-    print_job_delta('### Redis only', queued_huey, queued_db)
+    huey_only, db_only = find_huey_bgjob_delta(unscheduled_huey_jobs, bgjobs)
+    print_job_delta('### DB only', ((j.id, j.action) for j in db_only))
+    print_job_delta('### Redis only', ((i.bgjob_id, i.bgjob_action) for i in huey_only))
 
 
-def print_job_delta(title_val, id_action_a: Dict, id_action_b: Dict):
-    id_action_list = (i for i in id_action_a.items() if i[0] not in id_action_b)
+def print_job_delta(title_val, id_action_list: typing.Iterable[tuple]):
     id_action_list = sorted(id_action_list, key=lambda x: x[1])
     print(title(f'{title_val} ({len(id_action_list)})'))
     for id, action in id_action_list:
@@ -378,17 +382,71 @@ def rm_old_processing(is_all=False):
                                         .build_query_dict())
 
     if not is_all:
-        if len(bgjobs) == 1:
-            print('Only one processing job found. No action.')
-            print(job_to_str(bgjobs[0]))
-            return
         bgjobs = bgjobs[:-1]
 
-    print(f'Following {len(bgjobs)} jobs will be removed:')
-    for j in bgjobs:
-        print(job_to_str(j))
+    if bgjobs:
+        print(f'Following {len(bgjobs)} jobs will be removed:')
+        for j in bgjobs:
+            print(job_to_str(j))
+        models.BackgroundJob.bulk_delete(b.id for b in bgjobs)
 
-    models.BackgroundJob.bulk_delete(b.id for b in bgjobs)
+
+def rm_redundant():
+    from portality.core import app
+    from portality import models
+
+    target_actions = app.config.get('BGJOB_MANAGE_REDUNDANT_ACTIONS', [])
+    print(f'following actions will be cleaned up for redundant jobs: {target_actions}')
+    for action in target_actions:
+        bgjobs = models.BackgroundJob.q2obj(q=models.background.BackgroundJobQueryBuilder()
+                                            .status_includes([BGJOB_STATUS_QUEUED])
+                                            .action(action)
+                                            .order_by('created_date', 'asc')
+                                            .size(10000)
+                                            .build_query_dict())
+        bgjobs = bgjobs[:-1]
+        if bgjobs:
+            print(f'remove redundant jobs: [{action}][{len(bgjobs)}]')
+            models.BackgroundJob.bulk_delete(b.id for b in bgjobs)
+
+
+def find_huey_bgjob_delta(huey_rows: List[HueyJobData] = None,
+                          bgjobs: List['BackgroundJob'] = None
+                          ) -> (List[HueyJobData], List['BackgroundJob']):
+    huey_rows: List[HueyJobData] = ([r for r in query_all_huey_jobs() if not r.is_scheduled]
+                                    if huey_rows is None else list(huey_rows))
+    bgjobs: List[BackgroundJob] = (query_bgjobs_by_status(BGJOB_STATUS_QUEUED)
+                                   if bgjobs is None else list(bgjobs))
+
+    huey_ids = {i.bgjob_id for i in huey_rows}
+    db_ids = {j.id for j in bgjobs}
+
+    huey_only = [i for i in huey_rows if i.bgjob_id not in db_ids]
+    db_only = [j for j in bgjobs if j.id not in huey_ids]
+    return huey_only, db_only
+
+
+def rm_async_queued_jobs():
+    huey_only, db_only = find_huey_bgjob_delta()
+    print('Remove async queued jobs')
+    print_job_delta('### DB only', ((j.id, j.action) for j in db_only))
+    if db_only:
+        from portality import models
+        models.BackgroundJob.bulk_delete(d.id for d in db_only)
+
+    print_job_delta('### Redis only', ((i.bgjob_id, i.bgjob_action) for i in huey_only))
+    client = create_redis_client()
+    for i in huey_only:
+        i: HueyJobData
+        for key in ['huey.redis.doajmainqueue', 'huey.redis.doajlongrunning']:
+            if client.lrem(key, 1, i.as_redis()):
+                break
+
+
+def cleanup():
+    rm_redundant()
+    rm_old_processing()
+    rm_async_queued_jobs()
 
 
 def main():
@@ -408,10 +466,9 @@ def main():
 
     sp_p = sp.add_parser('rm-all', help='Remove all Jobs from redis and DB')
 
-    sp_p = sp.add_parser('rm-old-processing', help='Remove processing Jobs except the last one')
-    sp_p.add_argument('-a', '--all', help='Remove all processing Jobs', action="store_true")
-
-    # KTODO rm-old-processing, rm-redundant
+    sp_p = sp.add_parser('cleanup',
+                         help=('Remove all outdated / async records, include old processing job,'
+                               'redundant queued jobs, async queued jobs'))
 
     args = parser.parse_args()
 
@@ -426,8 +483,8 @@ def main():
         report()
     elif cmdname == 'rm-all':
         rm_all()
-    elif cmdname == 'rm-old-processing':
-        rm_old_processing(args.all)
+    elif cmdname == 'cleanup':
+        cleanup()
     else:
         parser.print_help()
         exit(1)

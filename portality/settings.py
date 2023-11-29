@@ -1485,3 +1485,12 @@ TOURS = {
         }
     ]
 }
+
+
+##################################################
+# Background jobs Management settings
+
+# list of actions name that will be cleaned up if they are redundant
+BGJOB_MANAGE_REDUNDANT_ACTIONS = [
+    'read_news', 'journal_csv',
+]
