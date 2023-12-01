@@ -32,14 +32,14 @@ def oaipmh(specified=None):
     # Add the identifier to the event if there is one
     ident = request.values.get('identifier', None)
     if ident is not None:
-        event_payload[app.config.get('GA_DIMENSIONS')['oai_res_id']] = ident
+        event_payload[app.config.get('ANALYTICS_DIMENSIONS')['oai_res_id']] = ident
 
     # work out the verb and associated parameters
     verb = request.values.get("verb")
     event_payload['action'] = verb
 
     # Now we have enough information about the request to send to analytics.
-    plausible.send_event(app.config.get('GA_CATEGORY_OAI', 'OAI-PMH'),
+    plausible.send_event(app.config.get('ANALYTICS_CATEGORY_OAI', 'OAI-PMH'),
                          **event_payload)
 
     # call the appropriate protocol operation:
@@ -305,7 +305,7 @@ def get_record(dao, base_url, specified_oai_endpoint, identifier=None, metadata_
 
 def identify(dao, base_url):
     repo_name = app.config.get("SERVICE_NAME")
-    admin_email = app.config.get("ADMIN_EMAIL")
+    admin_email = app.config.get("OAI_ADMIN_EMAIL", app.config.get("ADMIN_EMAIL"))
     idobj = Identify(base_url, repo_name, admin_email)
     idobj.earliest_datestamp = dao.earliest_datestamp()
     return idobj

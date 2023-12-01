@@ -119,6 +119,15 @@ class DOAJ(object):
         return background_task_status.BackgroundTaskStatusService()
 
     @classmethod
+    def tourService(cls):
+        """
+        Obtain an instance of the tour service  ~~->Tour:Service~~
+        :return:  SiteService
+        """
+        from portality.bll.services import tour
+        return tour.TourService()
+
+    @classmethod
     def autochecksService(cls, autocheck_plugins=None):
         from portality.bll.services import autochecks
         return autochecks.AutocheckService(autocheck_plugins=autocheck_plugins)

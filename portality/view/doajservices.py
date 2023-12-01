@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 from portality.core import app
 from portality.decorators import ssl_required, write_required, restrict_to_role
 from portality.util import jsonp
-from portality import lock
+from portality import lock, models
 from portality.bll import DOAJ
 
 blueprint = Blueprint('doajservices', __name__)
@@ -55,47 +55,47 @@ def unlocked():
     return render_template("unlocked.html")
 
 
-@blueprint.route("/shorten", methods=["POST"])
-@jsonp
-def shorten():
-    # Enable this if you are testing and you want to see the front end work, without working bit.ly credentials
-    # return make_response(json.dumps({"url" : "testing url"}))
-    try:
-        # parse the json
-        d = json.loads(request.data)
-        p = d['page']
-        q = d['query']
-
-        # re-serialise the query, and url encode it
-        source = urllib.parse.quote(json.dumps(q))
-
-        # assemble the DOAJ url
-        doajurl = p + "?source=" + source
-
-        # assemble the bitly url.  Note that we re-encode the doajurl to include in the
-        # query arguments, so by this point it is double-encoded
-        bitly = app.config.get("BITLY_SHORTENING_API_URL")
-        bitly_oauth = app.config.get("BITLY_OAUTH_TOKEN")
-
-        # Set an Auth Bearer token (Bitly 4.0)
-        headers = {'Authorization': 'Bearer ' + bitly_oauth}
-
-        # Add the long url as a payload
-        payload = {'long_url': doajurl}
-
-        # make the request
-        resp = requests.post(bitly, headers=headers, data=json.dumps(payload))
-        shorturl = resp.json().get('link')
-
-        if not shorturl:
-            abort(400)
-
-        # make the response
-        answer = make_response(json.dumps({"url": shorturl}))
-        answer.mimetype = "application/json"
-        return answer
-    except:
-        abort(400)
+# @blueprint.route("/shorten", methods=["POST"])
+# @jsonp
+# def shorten():
+#     # Enable this if you are testing and you want to see the front end work, without working bit.ly credentials
+#     # return make_response(json.dumps({"url" : "testing url"}))
+#     try:
+#         # parse the json
+#         d = json.loads(request.data)
+#         p = d['page']
+#         q = d['query']
+#
+#         # re-serialise the query, and url encode it
+#         source = urllib.parse.quote(json.dumps(q))
+#
+#         # assemble the DOAJ url
+#         doajurl = p + "?source=" + source
+#
+#         # assemble the bitly url.  Note that we re-encode the doajurl to include in the
+#         # query arguments, so by this point it is double-encoded
+#         bitly = app.config.get("BITLY_SHORTENING_API_URL")
+#         bitly_oauth = app.config.get("BITLY_OAUTH_TOKEN")
+#
+#         # Set an Auth Bearer token (Bitly 4.0)
+#         headers = {'Authorization': 'Bearer ' + bitly_oauth}
+#
+#         # Add the long url as a payload
+#         payload = {'long_url': doajurl}
+#
+#         # make the request
+#         resp = requests.post(bitly, headers=headers, data=json.dumps(payload))
+#         shorturl = resp.json().get('link')
+#
+#         if not shorturl:
+#             abort(400)
+#
+#         # make the response
+#         answer = make_response(json.dumps({"url": shorturl}))
+#         answer.mimetype = "application/json"
+#         return answer
+#     except:
+#         abort(400)
 
 
 @blueprint.route("/groupstatus/<group_id>", methods=["GET"])
@@ -107,7 +107,7 @@ def group_status(group_id):
     :param group_id:
     :return:
     """
-    if not current_user.has_role("admin"):
+    if (not (current_user.has_role("editor") and models.EditorGroup.pull(group_id).editor == current_user.id)) and (not current_user.has_role("admin")):
         abort(404)
     svc = DOAJ.todoService()
     stats = svc.group_stats(group_id)

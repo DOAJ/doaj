@@ -61,6 +61,7 @@ class Messages(object):
     EXCEPTION_NO_CONTRIBUTORS_EXPLANATION = "DOAJ requires at least one author for each article."
 
     EXCEPTION_TOO_MANY_ISSNS = "Too many ISSNs. Only 2 ISSNs are allowed: one Print ISSN and one Online ISSN."
+    EXCEPTION_MISMATCHED_ISSNS = "ISSNs provided don't match any journal."
     EXCEPTION_ISSNS_OF_THE_SAME_TYPE = "Both ISSNs have the same type: {type}"
     EXCEPTION_IDENTICAL_PISSN_AND_EISSN = "The Print and Online ISSNs supplied are identical. If you supply 2 ISSNs they must be different."
     EXCEPTION_NO_ISSNS = "Neither Print ISSN nor Online ISSN has been supplied. DOAJ requires at least one ISSN."
@@ -110,6 +111,11 @@ class Messages(object):
 
     NOTIFY__DEFAULT_SHORT_NOTIFICATION = "You have a new notification"
 
+    DISCONTINUED_JOURNAL_FOUND_LOG = "Journal discontinuing soon found: {id}"
+    DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_SENT_LOG = "Notification with journals discontinuing soon sent."
+    DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_ERROR_LOG = "Error sending notification with journals discontinuing soon."
+    NO_DISCONTINUED_JOURNALS_FOUND_LOG = "No journals discontinuing soon found"
+
     FORMS__APPLICATION_STATUS__PENDING = "Pending"
     FORMS__APPLICATION_STATUS__IN_PROGRESS = 'In Progress'
     FORMS__APPLICATION_STATUS__COMPLETED = 'Completed'
@@ -120,7 +126,6 @@ class Messages(object):
     FORMS__APPLICATION_STATUS__READY = 'Ready'
     FORMS__APPLICATION_STATUS__REJECTED = 'Rejected'
     FORMS__APPLICATION_STATUS__ACCEPTED = 'Accepted'
-
 
     @classmethod
     def flash(cls, tup):

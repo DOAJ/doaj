@@ -1378,7 +1378,6 @@ var formulaic = {
 
             this.init();
         },
-
         newClickableOwner : function(params) {
             return edges.instantiate(formulaic.widgets.ClickableOwner, params)
         },
@@ -1422,7 +1421,27 @@ var formulaic = {
 
             this.init();
         },
+        newClickToCopy : function(params) {
+            return edges.instantiate(formulaic.widgets.ClickToCopy, params)
+        },
+        ClickToCopy : function(params) {
+            this.fieldDef = params.fieldDef;
+            this.init = function() {
+                var elements = $("#click-to-copy--" + this.fieldDef.name);
+                edges.on(elements, "click", this, "copy");
+            };
+            this.copy = function(element) {
+                let form = new doaj.af.BaseApplicationForm()
+                let value = form.determineFieldsValue(this.fieldDef.name)
+                let value_to_copy = form.convertValueToText(value);
+                navigator.clipboard.writeText(value_to_copy)
+                var confirmation = $("#copy-confirmation--" + this.fieldDef.name);
+                confirmation.text("Copied: " + value_to_copy);
+                confirmation.show().delay(3000).fadeOut();
+            };
+            this.init();
 
+        },
         newTrimWhitespace : function(params) {
             return edges.instantiate(formulaic.widgets.TrimWhitespace, params)
         },
