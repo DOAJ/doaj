@@ -15,6 +15,17 @@ doaj.tourist.init = function(params) {
     if (first) {
         doaj.tourist.start(first);
     }
+
+    $("#dropdown--tour_nav").hoverIntent(doaj.tourist.showDropdown, doaj.tourist.hideDropdown);
+}
+
+doaj.tourist.showDropdown = function(e) {
+    console.log("showDropdown` called")
+    $("#feature_tours").show();
+}
+doaj.tourist.hideDropdown = function() {
+    console.log("showDropdown` called")
+    $("#feature_tours").hide();
 }
 
 doaj.tourist.findNextTour = function() {

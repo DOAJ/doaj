@@ -224,7 +224,7 @@ $.extend(true, doaj, {
                 edges.newFullSearchController({
                     id: "share_embed",
                     category: "controller",
-                    urlShortener : doaj.bitlyShortener,
+                    // urlShortener : doaj.bitlyShortener,
                     embedSnippet : doaj.publicSearch.embedSnippet,
                     renderer: doaj.renderers.newShareEmbedRenderer({
                         shareLinkText: '<span data-feather="share-2" aria-hidden="true"></span> Share or embed'
@@ -274,7 +274,7 @@ $.extend(true, doaj, {
                                     value: false
                                 })
                             ],
-                            display : "Without article processing charges (APCs)"
+                            display : "Without any fees"
                         }
                     ],
                     fieldDisplays : {

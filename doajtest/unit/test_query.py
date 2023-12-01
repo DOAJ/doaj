@@ -1,6 +1,7 @@
 from portality import models
 
-from doajtest.fixtures import AccountFixtureFactory, ArticleFixtureFactory
+from doajtest.fixtures import AccountFixtureFactory, ArticleFixtureFactory, EditorGroupFixtureFactory, \
+    ApplicationFixtureFactory
 from doajtest.helpers import DoajTestCase, deep_sort
 
 from portality.bll.services.query import QueryService, Query
@@ -30,7 +31,12 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "admin",
             "dao" : "portality.models.Journal"
-        }
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.Application"
+        },
     },
     "api_query" : {
         "article" : {
@@ -53,19 +59,89 @@ QUERY_ROUTE = {
             "query_filters" : ["owner", "private_source"],
             "dao" : "portality.models.Suggestion"
         }
+    },
+    "editor_query" : {
+        "journal" : {
+            "auth" : True,
+            "role" : "editor",
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : "editor",
+            "dao" : "portality.models.Application"
+        }
+    },
+    "associate_query": {
+        "journal": {
+            "auth": True,
+            "role": "associate_editor",
+            "dao": "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : "associate_editor",
+            "dao" : "portality.models.Application"
+        }
+    }
+}
+
+SEARCH_ALL_QUERY_ROUTE = {
+    "query" : {
+        "journal" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["search_all_meta"],
+            "dao" : "portality.models.Journal"
+        }
+    },
+    "editor_query" : {
+        "journal" : {
+            "auth" : True,
+            "role" : "editor",
+            "query_filters" : ["search_all_meta"],
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : False,
+            "role" : "editor",
+            "query_filters" : ["search_all_meta"],
+            "dao" : "portality.models.Application"
+        }
+    },
+    "associate_query": {
+        "journal": {
+            "auth": False,
+            "role": "associate_editor",
+            "query_filters" : ["search_all_meta"],
+            "dao": "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : False,
+            "role" : "associate_editor",
+            "query_filters" : ["search_all_meta"],
+            "dao" : "portality.models.Application"
+        }
     }
 }
 
 QUERY_FILTERS = {
+    "non_public_fields_validator" : "portality.lib.query_filters.non_public_fields_validator",
+
     # query filters
     "only_in_doaj" : "portality.lib.query_filters.only_in_doaj",
     "owner" : "portality.lib.query_filters.owner",
+    "associate" : "portality.lib.query_filters.associate",
+    "editor" : "portality.lib.query_filters.editor",
 
     # result filters
     "public_result_filter" : "portality.lib.query_filters.public_result_filter",
 
     # source filter
-    "public_source": "portality.lib.query_filters.public_source"
+    "public_source": "portality.lib.query_filters.public_source",
+
+    # search on all meta field
+    "search_all_meta" : "portality.lib.query_filters.search_all_meta",
 }
 
 def without_keys(d, keys):
@@ -86,6 +162,29 @@ class TestQuery(DoajTestCase):
         super(TestQuery, self).tearDown()
         self.app_test.config['QUERY_ROUTE'] = self.OLD_QUERY_ROUTE
         self.app_test.config['QUERY_FILTERS'] = self.OLD_QUERY_FILTERS
+
+    def get_application_with_notes(self):
+        source = ApplicationFixtureFactory.make_application_source()
+        app = models.Application(**source)
+        app.add_note("application test", "2015-01-01T00:00:00Z")
+        app.save()
+        return app
+
+    def get_journal_with_notes(self):
+        j = models.Journal()
+        j.set_id("aabbccdd")
+        j.set_created("2010-01-01T00:00:00Z")
+        j.set_last_updated("2012-01-01T00:00:00Z")
+        j.set_last_manual_update("2014-01-01T00:00:00Z")
+        j.set_seal(True)
+        j.set_owner("rama")
+        j.set_editor_group("worldwide")
+        j.set_editor("eddie")
+        j.add_contact("rama", "rama@email.com")
+        j.add_note("testing", "2015-01-01T00:00:00Z")
+        j.set_bibjson({"title": "test"})
+        j.save()
+        return j
 
     def test_01_auth(self):
         with self.app_test.test_client() as t_client:
@@ -339,3 +438,156 @@ class TestQuery(DoajTestCase):
             am = models.Article(**res)
             assert am.publisher_record_id() is None, am.publisher_record_id()
 
+    def test_public_query_notes(self):
+
+        self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
+
+        self.get_journal_with_notes()
+
+        qsvc = QueryService()
+
+        res = qsvc.search('query', 'journal', {'query': {'query_string': {'query': 'testing',
+                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
+                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
+                                               'track_total_hits': True}, account=None, additional_parameters={})
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
+
+    def test_admin_query_notes(self):
+
+        self.get_journal_with_notes()
+
+        maned = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+        maned.save(blocking=True)
+        qsvc = QueryService()
+
+        res = qsvc.search('admin_query', 'journal', {'query': {'query_string': {'query': 'testing',
+                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
+                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
+                                               'track_total_hits': True}, account=maned, additional_parameters={})
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+    def test_editor_query_notes(self):
+
+        self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
+
+        self.get_journal_with_notes()
+
+        editor = models.Account(**AccountFixtureFactory.make_editor_source())
+        editor.save(blocking=True)
+
+        eg_source = EditorGroupFixtureFactory.make_editor_group_source(maned=editor.id)
+        eg = models.EditorGroup(**eg_source)
+        eg.save(blocking=True)
+
+        qsvc = QueryService()
+
+        res = qsvc.search('editor_query', 'journal', {'query': {'query_string': {'query': 'testing',
+                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
+                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
+                                               'track_total_hits': True}, account=editor, additional_parameters={})
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
+
+    def test_associate_editor_query_notes(self):
+
+        self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
+
+        self.get_journal_with_notes()
+
+        associate = models.Account(**AccountFixtureFactory.make_assed1_source())
+        associate.save(blocking=True)
+
+        eg_source = EditorGroupFixtureFactory.make_editor_group_source(maned=associate.id)
+        eg = models.EditorGroup(**eg_source)
+        eg.save(blocking=True)
+
+        qsvc = QueryService()
+
+        res = qsvc.search('associate_query', 'journal', {'query': {'query_string': {'query': 'testing',
+                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
+                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
+                                               'track_total_hits': True}, account=associate, additional_parameters={})
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
+
+    def test_associate_editor_application_query_notes(self):
+
+        self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
+
+        app = self.get_application_with_notes()
+
+        associate = models.Account(**AccountFixtureFactory.make_assed1_source())
+        associate.save(blocking=True)
+
+        eg_source = EditorGroupFixtureFactory.make_editor_group_source(maned=associate.id)
+        eg = models.EditorGroup(**eg_source)
+        eg.set_name(app.editor_group)
+        eg.save(blocking=True)
+
+        qsvc = QueryService()
+
+        res = qsvc.search('associate_query', 'suggestion', {'query': {'query_string': {'query': 'application test',
+                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
+                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
+                                               'track_total_hits': True}, account=associate, additional_parameters={})
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
+
+    def test_editor_application_query_notes(self):
+
+        self.app_test.config['QUERY_ROUTE'] = SEARCH_ALL_QUERY_ROUTE
+
+        app = self.get_application_with_notes()
+
+        editor = models.Account(**AccountFixtureFactory.make_editor_source())
+        editor.save(blocking=True)
+
+        eg_source = EditorGroupFixtureFactory.make_editor_group_source(maned=editor.id)
+        eg = models.EditorGroup(**eg_source)
+        eg.set_name(app.editor_group)
+        eg.save(blocking=True)
+
+        qsvc = QueryService()
+
+        res = qsvc.search('editor_query', 'suggestion', {'query': {'query_string': {'query': 'application test',
+                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
+                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
+                                               'track_total_hits': True}, account=editor, additional_parameters={})
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
+
+    def test_admin_application_query_notes(self):
+
+        app = self.get_application_with_notes()
+
+        med = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+        med.save(blocking=True)
+
+        eg_source = EditorGroupFixtureFactory.make_editor_group_source(maned=med.id)
+        eg = models.EditorGroup(**eg_source)
+        eg.set_name(app.editor_group)
+        eg.save(blocking=True)
+
+        qsvc = QueryService()
+
+        res = qsvc.search('admin_query', 'suggestion', {'query': {'query_string': {'query': 'application test',
+                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
+                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
+                                               'track_total_hits': True}, account=med, additional_parameters={})
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+    def test_journal_article_query_notes(self):
+
+        self.app_test.config['QUERY_ROUTE'] = self.OLD_QUERY_ROUTE
+
+        self.app_test.config['QUERY_FILTERS'] = self.OLD_QUERY_FILTERS
+
+        self.article11 = models.Article(
+            **ArticleFixtureFactory.make_article_source(pissn="1111-1111", eissn="2222-2222", doi="10.0000/article-11",
+                                                        fulltext="https://www.article11.com"))
+        self.article11.save(blocking=True)
+
+        self.get_journal_with_notes()
+
+        qsvc = QueryService()
+
+        res = qsvc.search('query', 'journal,article', {'query': {'query_string':
+                            {'query': 'application test','default_operator': 'AND'}},
+                            'size': 0, 'track_total_hits': True}, account=None, additional_parameters={"ref":"fqw"})
+        assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
