@@ -41,6 +41,9 @@ class ApplicationValidateCSVFixtureFactory(object):
         # validation failure
         validation_fail = make_journal("Validation Failure", "0000-0015", "0000-0016", owner=acc.id)
 
+        # invalid data failure
+        invalid_fail = make_journal("Malformed Field", "0000-0017", "0000-0018", owner=acc.id)
+
         return {
             "account": acc,
             "journals": {
@@ -50,6 +53,7 @@ class ApplicationValidateCSVFixtureFactory(object):
                 "no_updates": no_updates,
                 "changed_title": changed_title,
                 "withdrawn": withdrawn,
-                "validation_fail": validation_fail
+                "validation_fail": validation_fail,
+                "invalid_fail": invalid_fail
             }
         }

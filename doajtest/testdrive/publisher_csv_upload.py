@@ -34,7 +34,9 @@ class PublisherCsvUpload(TestDrive):
             "0000-0013",
             "0000-0014",
             "0000-0015",
-            "0000-0016"
+            "0000-0016",
+            "0000-0017",
+            "0000-0018"
         ])
 
         for k, v in artefacts["journals"].items():
@@ -52,7 +54,8 @@ class PublisherCsvUpload(TestDrive):
                 "no_updates": artefacts["journals"]["no_updates"].id,
                 "changed_title": artefacts["journals"]["changed_title"].id,
                 "withdrawn": artefacts["journals"]["withdrawn"].id,
-                "validation_fail": artefacts["journals"]["validation_fail"].id
+                "validation_fail": artefacts["journals"]["validation_fail"].id,
+                "invalid_fail": artefacts["journals"]["invalid_fail"].id
             }
         }
 

@@ -75,6 +75,9 @@ class TestApplicationValidateCSV(DoajTestCase):
         assert 9 in validation_response.value_errors[7]
         assert 10 not in validation_response.value_errors[7]  # because it is a conditional field which will be excluded
 
+        # invalid data check
+        assert 6 in validation_response.value_errors[8]
+
     def test_03_upload_warnings(self):
         test_file = os.path.join(EXAMPLE_FILES_DIR, "publisher_csv_upload_warnings.csv")
         app_svc = DOAJ.applicationService()

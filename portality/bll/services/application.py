@@ -12,7 +12,7 @@ from portality import constants
 from portality import lock
 from portality.bll.doaj import DOAJ
 from portality.ui.messages import Messages
-from portality.crosswalks.journal_questions import Journal2PublisherUploadQuestionsXwalk
+from portality.crosswalks.journal_questions import Journal2PublisherUploadQuestionsXwalk, QuestionTransformError
 from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll.exceptions import AuthoriseException
 from portality.forms.application_forms import ApplicationFormFactory
@@ -636,9 +636,20 @@ class ApplicationService(object):
 
                 # Load remaining rows into application form as an update
                 # ~~ ^->JournalQuestions:Crosswalk ~~
-                update_form, updates = Journal2PublisherUploadQuestionsXwalk.question2form(j, row)
                 journal_form = JournalFormXWalk.obj2form(j)
                 journal_questions = Journal2PublisherUploadQuestionsXwalk.journal2question(j)
+
+                try:
+                    update_form, updates = Journal2PublisherUploadQuestionsXwalk.question2form(j, row)
+                except QuestionTransformError as e:
+                    question = Journal2PublisherUploadQuestionsXwalk.q(e.key)
+                    journal_value = [y for x, y in journal_questions if x == question][0]
+                    validation.value(validation.ERROR, row_ix, header_row.index(question),
+                                     Messages.JOURNAL_CSV_VALIDATE__INVALID_DATA.format(question=question),
+                                     was=journal_value, now=e.value)
+                    continue
+
+
 
                 if len(updates) == 0:
                     validation.row(validation.WARN, row_ix, Messages.JOURNAL_CSV_VALIDATE__NO_DATA_CHANGE)

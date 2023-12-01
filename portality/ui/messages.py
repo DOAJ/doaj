@@ -124,7 +124,7 @@ class Messages(object):
     JOURNAL_CSV_VALIDATE__NO_DATA_CHANGE = "The data you supplied did not change any of the existing values in the journal record.  You may still submit this record, but no update will be made to the record in DOAJ."
     JOURNAL_CSV_VALIDATE__QUESTION_CANNOT_CHANGE = '"{question}" cannot be changed.'
     JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR = 'Could not create update request: {reason}'
-
+    JOURNAL_CSV_VALIDATE__INVALID_DATA = "Unable to understand the value in '{question}'"
 
     @classmethod
     def flash(cls, tup):

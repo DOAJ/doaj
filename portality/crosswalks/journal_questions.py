@@ -7,6 +7,11 @@ from portality.forms.application_forms import ApplicationFormFactory
 class JournalXwalkException(Exception):
     pass
 
+class QuestionTransformError(JournalXwalkException):
+    def __init__(self, key, value, message):
+        self.key = key
+        self.value = value
+        super(QuestionTransformError, self).__init__(message)
 
 class Journal2QuestionXwalk(object):
     """
@@ -310,6 +315,8 @@ class Journal2QuestionXwalk(object):
             except KeyError:
                 # This field doesn't appear in the map, return unchanged.
                 return value
+            except ValueError:
+                raise QuestionTransformError(key, value, message="Could not transform value")
 
         # start by converting the object to the forminfo version
         # ~~->JournalForm:Crosswalk~~
