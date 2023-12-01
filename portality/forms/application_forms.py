@@ -310,6 +310,7 @@ class FieldDefinitions:
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                     "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "issn_link"  # ~~^->IssnLink:FormWidget~~
                 ]
             },
             "editor": {
@@ -383,6 +384,7 @@ class FieldDefinitions:
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                     "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "issn_link"  # ~~^->IssnLink:FormWidget~~
                 ]
             },
             "editor": {
