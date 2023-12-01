@@ -1081,9 +1081,12 @@ var formulaic = {
             $(select2_elem).focus();
         },
 
-        _make_empty_container: function(namespace, containerName, form, fieldDef, additionalClasses) {
+        _make_empty_container: function(namespace, containerName, form, fieldDef, additionalClasses, additionalStyles) {
             if (!additionalClasses) {
                 additionalClasses = "";
+            }
+            if (!additionalStyles) {
+                additionalStyles = "";
             }
 
             let containerSelector = edges.css_class_selector(namespace, containerName);
@@ -1100,7 +1103,7 @@ var formulaic = {
 
             if (!existing) {
                 let containerClass = edges.css_classes(namespace, containerName);
-                elements.append(`<div class="${containerClass} ${additionalClasses}"></div>`);
+                elements.append(`<div class="${containerClass} ${additionalClasses}" ${additionalStyles}></div>`);
             }
 
             return elements.find(containerSelector);
@@ -1122,7 +1125,8 @@ var formulaic = {
                 }
 
                 let generalClass = "formulaic-autocheck-container";
-                let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef, generalClass);
+                let defaultDisplay = "style='display: none'";
+                let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef, generalClass, defaultDisplay);
 
                 let frag = "";
                 for (let anno of annos) {
@@ -1134,14 +1138,6 @@ var formulaic = {
                 cont.html(frag);
 
                 feather.replace();
-
-                // let dismissSelector = edges.css_class_selector(this.namespace, "dismiss");
-                // edges.on(dismissSelector, "click", this, "dismiss");
-                //
-                // let undismissSelector = edges.css_class_selector(this.namespace, "undismiss");
-                // edges.on(undismissSelector, "click", this, "undismiss");
-                //
-                // edges.on(window, "doaj:autochecks-undismiss", this, "undismissHandler");
             }
 
             this._getAutochecksForField = function() {
@@ -1159,22 +1155,14 @@ var formulaic = {
 
             this._renderAutocheck = function(autocheck) {
                 let frag = "<li>";
-
-                if (autocheck.hasOwnProperty("dismissed") && autocheck.dismissed) {
-                    let undismissClass = edges.css_classes(this.namespace, "undismiss");
-                    frag += `Automated check ${autocheck.id} was dismissed <button data-autocheck-set="${doaj.autochecks.id}" data-autocheck="${autocheck.id}" class="${undismissClass}">Undismiss</button>`;
-
+                
+                if (autocheck.checked_by && doaj.autocheckers &&
+                    doaj.autocheckers.registry.hasOwnProperty(autocheck.checked_by)) {
+                    frag += (new doaj.autocheckers.registry[autocheck.checked_by]()).draw(autocheck)
                 } else {
-                    if (autocheck.checked_by && doaj.autocheckers &&
-                        doaj.autocheckers.registry.hasOwnProperty(autocheck.checked_by)) {
-                        frag += (new doaj.autocheckers.registry[autocheck.checked_by]()).draw(autocheck)
-                    } else {
-                        frag += this._defaultRender(autocheck);
-                    }
-                    // let dismissClass = edges.css_classes(this.namespace, "dismiss");
-                    // frag += `<button data-autocheck-set="${doaj.autochecks.id}" data-autocheck="${autocheck.id}" class="${dismissClass}">Dismiss <span data-feather="x" aria-hidden="true"></span></button>`;
+                    frag += this._defaultRender(autocheck);
                 }
-
+                
                 frag += `</li>`;
                 return frag;
             }
@@ -1195,66 +1183,6 @@ var formulaic = {
                 }
                 return frag;
             }
-
-            // this.dismiss = function(element) {
-            //     let el = $(element);
-            //     let autocheckSet = el.attr("data-autocheck-set")
-            //     let autocheckId = el.attr("data-autocheck");
-            //     let url = "/service/autocheck/dismiss/" + autocheckSet + "/" + autocheckId;
-            //     let that = this;
-            //     $.ajax({
-            //         method: "post",
-            //         url: url,
-            //         error: function(data) {
-            //             alert("There was an error dismissing the autocheck, please try again");
-            //         },
-            //         success: function(data) {
-            //             that.dismissSuccess(autocheckId);
-            //         }
-            //     })
-            // }
-            //
-            // this.dismissSuccess = function(autocheckId) {
-            //     for (let anno of doaj.autochecks.checks) {
-            //         if (anno.id === autocheckId) {
-            //             anno.dismissed = true;
-            //         }
-            //     }
-            //     $(window).trigger("doaj:autochecks-dismiss")
-            //     this.init();
-            // }
-            //
-            // this.undismiss = function(element) {
-            //     let el = $(element);
-            //     let autocheckSet = el.attr("data-autocheck-set")
-            //     let autocheckId = el.attr("data-autocheck");
-            //     let url = "/service/autocheck/undismiss/" + autocheckSet + "/" + autocheckId;
-            //     let that = this;
-            //     $.ajax({
-            //         method: "post",
-            //         url: url,
-            //         error: function(data) {
-            //             alert("There was an error undismissing the autocheck, please try again");
-            //         },
-            //         success: function(data) {
-            //             that.undismissSuccess(autocheckId);
-            //         }
-            //     })
-            // }
-            //
-            // this.undismissSuccess = function(autocheckId) {
-            //     for (let anno of doaj.autochecks.checks) {
-            //         if (anno.id === autocheckId) {
-            //             anno.dismissed = false;
-            //         }
-            //     }
-            //     $(window).trigger("doaj:autochecks-undismiss")
-            //     // this.init();
-            // }
-            //
-            // this.undismissHandler = function() {
-            //     this.init();
-            // }
 
             this.init();
         },

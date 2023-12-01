@@ -1493,5 +1493,8 @@ TOURS = {
 ##################################################
 # Autocheck Resource configurations
 
+# Should we autocheck incoming applications and update requests
+AUTOCHECK_INCOMING = False
+
 AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
 AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests

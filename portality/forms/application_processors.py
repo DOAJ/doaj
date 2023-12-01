@@ -253,7 +253,10 @@ class NewApplication(ApplicationProcessor):
         # set some administrative data
         now = dates.now_str()
         self.target.date_applied = now
-        self.target.set_application_status(constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW)
+        if app.config.get("AUTOCHECK_INCOMING", False):
+            self.target.set_application_status(constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW)
+        else:
+            self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
         self.target.set_owner(account.id)
         self.target.set_last_manual_update()
 
@@ -281,12 +284,13 @@ class NewApplication(ApplicationProcessor):
             }))
 
             # Kick off the post-submission review
-            # FIXME: imports are delayed because of a circular import problem buried in portality.decorators
-            from portality.tasks.application_autochecks import ApplicationAutochecks
-            from portality.tasks.helpers import background_helper
-            background_helper.submit_by_bg_task_type(ApplicationAutochecks,
-                                                     application=self.target.id,
-                                                     status_on_complete=constants.APPLICATION_STATUS_PENDING)
+            if app.config.get("AUTOCHECK_INCOMING", False):
+                # FIXME: imports are delayed because of a circular import problem buried in portality.decorators
+                from portality.tasks.application_autochecks import ApplicationAutochecks
+                from portality.tasks.helpers import background_helper
+                background_helper.submit_by_bg_task_type(ApplicationAutochecks,
+                                                         application=self.target.id,
+                                                         status_on_complete=constants.APPLICATION_STATUS_PENDING)
 
 
 class AdminApplication(ApplicationProcessor):
@@ -717,7 +721,10 @@ class PublisherUpdateRequest(ApplicationProcessor):
         super(PublisherUpdateRequest, self).finalise()
 
         # set the status to post submission review (will be updated again later after the review job runs)
-        self.target.set_application_status(constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW)
+        if app.config.get("AUTOCHECK_INCOMING", False):
+            self.target.set_application_status(constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW)
+        else:
+            self.target.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -743,12 +750,13 @@ class PublisherUpdateRequest(ApplicationProcessor):
                 self.target.remove_current_journal()
 
         # Kick off the post-submission review
-        # FIXME: imports are delayed because of a circular import problem buried in portality.decorators
-        from portality.tasks.application_autochecks import ApplicationAutochecks
-        from portality.tasks.helpers import background_helper
-        background_helper.submit_by_bg_task_type(ApplicationAutochecks,
-                                                 application=self.target.id,
-                                                 status_on_complete=constants.APPLICATION_STATUS_UPDATE_REQUEST)
+        if app.config.get("AUTOCHECK_INCOMING", False):
+            # FIXME: imports are delayed because of a circular import problem buried in portality.decorators
+            from portality.tasks.application_autochecks import ApplicationAutochecks
+            from portality.tasks.helpers import background_helper
+            background_helper.submit_by_bg_task_type(ApplicationAutochecks,
+                                                     application=self.target.id,
+                                                     status_on_complete=constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
         # email the publisher to tell them we received their update request
         if email_alert:
