@@ -69,11 +69,11 @@ class TestApplicationValidateCSV(DoajTestCase):
         # validation errors are hard to check, we're just going to make sure they are there
         assert 4 in validation_response.value_errors[7]
         assert 5 in validation_response.value_errors[7]
-        assert 6 in validation_response.value_errors[7]
+        assert 6 not in validation_response.value_errors[7] # because it is a conditional field which will be excluded
         assert 7 in validation_response.value_errors[7]
-        assert 8 in validation_response.value_errors[7]
+        assert 8 not in validation_response.value_errors[7]  # because it is a conditional field which will be excluded
         assert 9 in validation_response.value_errors[7]
-        assert 10 in validation_response.value_errors[7]
+        assert 10 not in validation_response.value_errors[7]  # because it is a conditional field which will be excluded
 
     def test_03_upload_warnings(self):
         test_file = os.path.join(EXAMPLE_FILES_DIR, "publisher_csv_upload_warnings.csv")

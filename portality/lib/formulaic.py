@@ -394,6 +394,19 @@ class FormulaicContext(object):
 
         return disableds
 
+    def conditional_fields(self, parent=None):
+        if parent is None:
+            parent = self
+
+        conditionals = []
+        for fs in self._definition.get("fieldsets", []):
+            for f in fs.get("fields", []):
+                field = FormulaicField(f, parent)
+                if field.has_conditional:
+                    conditionals.append(field)
+
+        return conditionals
+
     def fieldset(self, fieldset_name):
         for fs in self._definition.get("fieldsets", []):
             if fs.get("name") == fieldset_name:
@@ -1005,6 +1018,41 @@ class FormProcessor(object):
                 else:
                     wtf = dis.wtfield
                     wtf.data = other_form._fields[dis.get("name")].data
+
+        # remove any conditional fields where the conditions are not met
+        conditionals = self._formulaic.conditional_fields()
+        if len(conditionals) > 0:
+            for field in conditionals:
+                condition_met = False
+                for c in field.get("conditional"):
+                    other_field = c.get("field")
+                    expected_value = c.get("value")
+                    if other_field in self.form:
+                        other_value = self.form[other_field].data
+                        if isinstance(other_value, list):
+                            if expected_value in other_value:
+                                condition_met = True
+                                break
+                        elif other_value == expected_value:
+                            condition_met = True
+                            break
+                if not condition_met:
+                    fi = field.wtfield
+                    self._reset_field_to_default(fi)
+
+    def _reset_field_to_default(self, field):
+        if isinstance(field, FormField):
+            for subfield in field.form:
+                self._reset_field_to_default(subfield)
+        elif isinstance(field, FieldList):
+            for sub in field:
+                if isinstance(sub, FormField):
+                    for subfield in sub:
+                        self._reset_field_to_default(sub)
+                else:
+                    sub.data = sub.default
+        else:
+            field.data = field.default
 
     def _merge_disabled(self, disabled, other_form):
         fnref = disabled.get("merge_disabled")
