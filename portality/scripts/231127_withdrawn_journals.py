@@ -12,6 +12,16 @@ NOT_IN_DOAJ = {
     }
 }
 
+IN_DOAJ = {
+    "query" : {
+        "bool" : {
+            "must" : [
+                {"term" : {"admin.in_doaj" : True}}
+            ]
+        }
+    }
+}
+
 if __name__ == "__main__":
 
     import argparse
@@ -33,15 +43,24 @@ if __name__ == "__main__":
                          "P-ISSN"
                          ])
 
+        in_doaj_issns = set()
+        for journal in Journal.iterate(q=IN_DOAJ, keepalive='5m', wrap=True):
+            bibjson = journal.bibjson()
+            in_doaj_issns.add(bibjson.get_one_identifier(bibjson.E_ISSN))
+            in_doaj_issns.add(bibjson.get_one_identifier(bibjson.P_ISSN))
+
+
         for journal in Journal.iterate(q=NOT_IN_DOAJ, keepalive='5m', wrap=True):
             bibjson = journal.bibjson()
-
-            writer.writerow([journal.id,
-                             bibjson.title,
-                             bibjson.get_single_url(urltype="homepage"),
-                             bibjson.get_one_identifier(bibjson.E_ISSN),
-                             bibjson.get_one_identifier(bibjson.P_ISSN),
-                             ])
+            eissn = bibjson.get_one_identifier(bibjson.E_ISSN)
+            pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
+            if (eissn not in in_doaj_issns and pissn not in in_doaj_issns):
+                writer.writerow([journal.id,
+                                 bibjson.title,
+                                 bibjson.get_single_url(urltype="homepage"),
+                                 eissn,
+                                 pissn,
+                                 ])
 
 
 
