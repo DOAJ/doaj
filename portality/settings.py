@@ -1487,6 +1487,15 @@ TOURS = {
             "name": "Your group activity",
             "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
         }
+    ],
+    "/admin/journal/*": [
+        {
+            "roles": ["admin"],
+            "selectors": [".autochecks-manager-toggle"],
+            "content_id": "admin_journal_autochecks",
+            "name": "Autochecks",
+            "description": "Autochecks are available on some journals, and can help you to identify potential problems with the journal's metadata."
+        }
     ]
 }
 
