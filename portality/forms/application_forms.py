@@ -1787,31 +1787,13 @@ class FieldDefinitions:
                 }
             }
         ],
-        "widgets" : [
-            "tagentry"
+        "widgets": [
+            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+            "full_contents",  # ~~^->FullContents:FormWidget~~
+            "tagentry"  # ~~-> TagEntry:FormWidget~~
         ],
         "help" : {
             "render_error_box": False
-        },
-        "contexts": {
-            "admin": {
-                "widgets": [
-                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
-                    "full_contents"  # ~~^->FullContents:FormWidget~~
-                ]
-            },
-            "editor": {
-                "widgets": [
-                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
-                    "full_contents"  # ~~^->FullContents:FormWidget~~
-                ]
-            },
-            "associate_editor": {
-                "widgets": [
-                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
-                    "full_contents"  # ~~^->FullContents:FormWidget~~
-                ]
-            }
         }
     }
 
@@ -1830,32 +1812,14 @@ class FieldDefinitions:
                 }
             }
         ],
-        "widgets" : [
-            "tagentry"
-        ],
         "help" : {
             "render_error_box": False
         },
-        "contexts": {
-            "admin": {
-                "widgets": [
-                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
-                    "full_contents"  # ~~^->FullContents:FormWidget~~
-                ]
-            },
-            "editor": {
-                "widgets": [
-                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
-                    "full_contents"  # ~~^->FullContents:FormWidget~~
-                ]
-            },
-            "associate_editor": {
-                "widgets": [
-                    "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
-                    "full_contents"  # ~~^->FullContents:FormWidget~~
-                ]
-            }
-        }
+        "widgets": [
+            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+            "full_contents",  # ~~^->FullContents:FormWidget~~
+            "tagentry"  # ~~-> TagEntry:FormWidget~~
+        ]
     }
 
     # ~~->$ Subject:FormField~~
