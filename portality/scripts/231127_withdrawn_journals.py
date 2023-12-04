@@ -12,6 +12,16 @@ NOT_IN_DOAJ = {
     }
 }
 
+IN_DOAJ = {
+    "query" : {
+        "bool" : {
+            "must" : [
+                {"term" : {"admin.in_doaj" : True}}
+            ]
+        }
+    }
+}
+
 if __name__ == "__main__":
 
     import argparse
@@ -19,12 +29,12 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--out", help="output file path")
     args = parser.parse_args()
 
-    if not args.out:
-        print("Please specify an output file path with the -o option")
-        parser.print_help()
-        exit()
+    # if not args.out:
+    #     print("Please specify an output file path with the -o option")
+    #     parser.print_help()
+    #     exit()
 
-    with open(args.out, "w", encoding="utf-8") as f:
+    with open("out.csv", "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID",
                          "Journal Name",
@@ -33,15 +43,23 @@ if __name__ == "__main__":
                          "P-ISSN"
                          ])
 
+        in_doaj_issns = []
+        for journal in Journal.iterate(q=IN_DOAJ, keepalive='5m', wrap=True):
+            bibjson = journal.bibjson()
+            in_doaj_issns.append({bibjson.get_one_identifier(bibjson.E_ISSN), bibjson.get_one_identifier(bibjson.P_ISSN)})
+
+
         for journal in Journal.iterate(q=NOT_IN_DOAJ, keepalive='5m', wrap=True):
             bibjson = journal.bibjson()
-
-            writer.writerow([journal.id,
-                             bibjson.title,
-                             bibjson.get_single_url(urltype="homepage"),
-                             bibjson.get_one_identifier(bibjson.E_ISSN),
-                             bibjson.get_one_identifier(bibjson.P_ISSN),
-                             ])
+            eissn = bibjson.get_one_identifier(bibjson.E_ISSN)
+            pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
+            if ({eissn, pissn} not in in_doaj_issns):
+                writer.writerow([journal.id,
+                                 bibjson.title,
+                                 bibjson.get_single_url(urltype="homepage"),
+                                 eissn,
+                                 pissn,
+                                 ])
 
 
 
