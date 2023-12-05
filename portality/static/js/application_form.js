@@ -844,8 +844,8 @@ window.Parsley.addValidator("optionalIf", {
 });
 
 window.Parsley.addValidator("differentTo", {
-    validateString : function(value, requirement) {
-      return (!value || ($("[name = " + requirement + "]")).val() !== value);
+    validateString : function(value, requirement, message) {
+      return (!value || ($("[name = " + requirement + "]")).val().toLowerCase() !== value.toLowerCase());
     },
     messages: {
         en: 'Value of this field and %s field must be different'

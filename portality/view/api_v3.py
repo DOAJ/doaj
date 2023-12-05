@@ -17,8 +17,8 @@ blueprint = Blueprint('api_v3', __name__)
 API_VERSION_NUMBER = '3.0.1'  # OA start added 2022-03-21
 
 # Google Analytics category for API events
-GA_CATEGORY = app.config.get('GA_CATEGORY_API', 'API Hit')
-GA_ACTIONS = app.config.get('GA_ACTIONS_API', {})
+ANALYTICS_CATEGORY = app.config.get('ANALYTICS_CATEGORY_API', 'API Hit')
+ANALYTICS_ACTIONS = app.config.get('ANALYTICS_ACTIONS_API', {})
 
 
 @blueprint.route('/')
@@ -46,7 +46,7 @@ def missing_resource(invalid_path):
       swag_spec=DiscoveryApi.get_application_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @blueprint.route("/search/applications/<path:search_query>")
 @api_key_required
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('search_applications', 'Search applications'),
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('search_applications', 'Search applications'),
                     record_value_of_which_arg='search_query')
 def search_applications(search_query):
     return api_v4.search_applications(search_query)
@@ -55,7 +55,7 @@ def search_applications(search_query):
 @swag(swag_summary='Search journals',
       swag_spec=DiscoveryApi.get_journal_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @blueprint.route('/search/journals/<path:search_query>')
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('search_journals', 'Search journals'),
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('search_journals', 'Search journals'),
                     record_value_of_which_arg='search_query')
 def search_journals(search_query):
     return api_v4.search_journals(search_query)
@@ -64,7 +64,7 @@ def search_journals(search_query):
 @swag(swag_summary='Search articles',
       swag_spec=DiscoveryApi.get_article_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @blueprint.route('/search/articles/<path:search_query>')
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('search_articles', 'Search articles'),
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('search_articles', 'Search articles'),
                     record_value_of_which_arg='search_query')
 def search_articles(search_query):
     return api_v4.search_articles(search_query)
@@ -78,7 +78,7 @@ def search_articles(search_query):
 @write_required(api=True)
 @swag(swag_summary='Create an application <span class="red">[Authenticated, not public]</span>',
       swag_spec=ApplicationsCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('create_application', 'Create application'))
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('create_application', 'Create application'))
 def create_application():
     return api_v4.create_application()
 
@@ -87,7 +87,7 @@ def create_application():
 @api_key_required
 @swag(swag_summary='Retrieve an application <span class="red">[Authenticated, not public]</span>',
       swag_spec=ApplicationsCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('retrieve_application', 'Retrieve application'),
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('retrieve_application', 'Retrieve application'),
                     record_value_of_which_arg='application_id')
 def retrieve_application(application_id):
     return api_v4.retrieve_application(application_id)
@@ -98,7 +98,7 @@ def retrieve_application(application_id):
 @write_required(api=True)
 @swag(swag_summary='Update an application <span class="red">[Authenticated, not public]</span>',
       swag_spec=ApplicationsCrudApi.update_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('update_application', 'Update application'),
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('update_application', 'Update application'),
                     record_value_of_which_arg='application_id')
 def update_application(application_id):
     return api_v4.update_application(application_id)
@@ -109,7 +109,7 @@ def update_application(application_id):
 @write_required(api=True)
 @swag(swag_summary='Delete an application <span class="red">[Authenticated, not public]</span>',
       swag_spec=ApplicationsCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('delete_application', 'Delete application'),
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('delete_application', 'Delete application'),
                     record_value_of_which_arg='application_id')
 def delete_application(application_id):
     return api_v4.delete_application(application_id)
@@ -123,7 +123,7 @@ def delete_application(application_id):
 @write_required(api=True)
 @swag(swag_summary='Create an article <span class="red">[Authenticated, not public]</span>',
       swag_spec=ArticlesCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('create_article', 'Create article'))
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('create_article', 'Create article'))
 def create_article():
     return api_v4.create_article()
 
@@ -132,7 +132,7 @@ def create_article():
 @api_key_optional
 @swag(swag_summary='Retrieve an article',
       swag_spec=ArticlesCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('retrieve_article', 'Retrieve article'),
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('retrieve_article', 'Retrieve article'),
                     record_value_of_which_arg='article_id')
 def retrieve_article(article_id):
     return api_v4.retrieve_article(article_id)
@@ -143,7 +143,7 @@ def retrieve_article(article_id):
 @write_required(api=True)
 @swag(swag_summary='Update an article <span class="red">[Authenticated, not public]</span>',
       swag_spec=ArticlesCrudApi.update_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('update_article', 'Update article'),
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('update_article', 'Update article'),
                     record_value_of_which_arg='article_id')
 def update_article(article_id):
     return api_v4.update_article(article_id)
@@ -154,7 +154,7 @@ def update_article(article_id):
 @write_required(api=True)
 @swag(swag_summary='Delete an article <span class="red">[Authenticated, not public]</span>',
       swag_spec=ArticlesCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('delete_article', 'Delete article'),
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('delete_article', 'Delete article'),
                     record_value_of_which_arg='article_id')
 def delete_article(article_id):
     return api_v4.delete_article(article_id)
@@ -167,7 +167,7 @@ def delete_article(article_id):
 @api_key_optional
 @swag(swag_summary='Retrieve a journal by ID',
       swag_spec=JournalsCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('retrieve_journal', 'Retrieve journal'),
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('retrieve_journal', 'Retrieve journal'),
                     record_value_of_which_arg='journal_id')
 def retrieve_journal(journal_id):
     return api_v4.retrieve_journal(journal_id)
@@ -181,7 +181,7 @@ def retrieve_journal(journal_id):
 @write_required(api=True)
 @swag(swag_summary='Create applications in bulk <span class="red">[Authenticated, not public]</span>',
       swag_spec=ApplicationsBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('bulk_application_create', 'Bulk application create'))
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('bulk_application_create', 'Bulk application create'))
 def bulk_application_create():
     return api_v4.bulk_application_create()
 
@@ -191,7 +191,7 @@ def bulk_application_create():
 @write_required(api=True)
 @swag(swag_summary='Delete applications in bulk <span class="red">[Authenticated, not public]</span>',
       swag_spec=ApplicationsBulkApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('bulk_application_delete', 'Bulk application delete'))
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('bulk_application_delete', 'Bulk application delete'))
 def bulk_application_delete():
     return api_v4.bulk_application_delete()
 
@@ -212,7 +212,7 @@ def _load_income_articles_json(request):
 @write_required(api=True)
 @swag(swag_summary='Bulk article creation <span class="red">[Authenticated, not public]</span>',
       swag_spec=ArticlesBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('bulk_article_create', 'Bulk article create'))
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('bulk_article_create', 'Bulk article create'))
 def bulk_article_create():
     data = _load_income_articles_json(request)
 
@@ -233,6 +233,6 @@ def bulk_article_create():
 @write_required(api=True)
 @swag(swag_summary='Bulk article delete <span class="red">[Authenticated, not public]</span>',
       swag_spec=ArticlesBulkApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('bulk_article_delete', 'Bulk article delete'))
+@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('bulk_article_delete', 'Bulk article delete'))
 def bulk_article_delete():
     return api_v4.bulk_article_delete()

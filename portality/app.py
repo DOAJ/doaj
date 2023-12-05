@@ -109,9 +109,8 @@ def custom_static(path):
             return send_from_directory(os.path.dirname(target), os.path.basename(target))
     abort(404)
 
-
-# Configure the Google Analytics tracker
-# ~~-> GoogleAnalytics:ExternalService~~
+# Configure Analytics
+# ~~-> PlausibleAnalytics:ExternalService~~
 from portality.lib import plausible
 plausible.create_logfile(app.config.get('PLAUSIBLE_LOG_DIR', None))
 
