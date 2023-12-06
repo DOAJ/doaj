@@ -123,7 +123,7 @@ class Messages(object):
     JOURNAL_CSV_VALIDATE__OWNER_MISMATCH = "Your account '{acc}' doesn't own the journal with ISSN(s) {issns}. You may not update it."
     JOURNAL_CSV_VALIDATE__NO_DATA_CHANGE = "The data you supplied didn't change anything in the journal record."
     JOURNAL_CSV_VALIDATE__QUESTION_CANNOT_CHANGE = 'You may not change "{question}". Please revert it to match what was sent to you in the original file.'
-    JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR = 'We couldn't create an update for this journal because: {reason}'
+    JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR = "We couldn't create an update for this journal because: {reason}"
     JOURNAL_CSV_VALIDATE__INVALID_DATA = "We couldn't understand the information in '{question}'"
 
     @classmethod

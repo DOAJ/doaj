@@ -49,7 +49,7 @@ doaj.publisher_csvs.render_validation_results = function(response) {
 
     let headerFrag = "";
     if (response.headers && Object.keys(response.headers).length > 0) {
-        headerFrag = `<h3>Issues with Header Row</h3><ul>`;
+        headerFrag = `<h3>Issues with column titles</h3><ul>`;
         for (let pos in response.headers) {
             let column_name = doaj.publisher_csvs.column_to_sheet_reference(pos);
             headerFrag += `<li>Column ${column_name} [${response.headers[pos][0]}]: ${response.headers[pos][1]}</li>`
@@ -59,7 +59,7 @@ doaj.publisher_csvs.render_validation_results = function(response) {
 
     let rowsFrag = "";
     if (response.rows && Object.keys(response.rows).length > 0) {
-        rowsFrag = `<h3>Issues with Journal Records</h3><ul>`;
+        rowsFrag = `<h3>Issues with journal records</h3><ul>`;
         for (let pos in response.rows) {
             rowsFrag += `<li>Row ${pos} [${response.rows[pos][0]}]: ${response.rows[pos][1]}</li>`
         }
@@ -68,7 +68,7 @@ doaj.publisher_csvs.render_validation_results = function(response) {
 
     let valuesFrag = "";
     if (response.values && Object.keys(response.values).length > 0) {
-        valuesFrag = `<h3>Issues with Supplied Values</h3><ul>`;
+        valuesFrag = `<h3>Issues with individual cells</h3><ul>`;
         for (let row in response.values) {
             for (let pos in response.values[row]) {
                 let column_name = doaj.publisher_csvs.column_to_sheet_reference(pos);
