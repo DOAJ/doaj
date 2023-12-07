@@ -296,7 +296,8 @@ TOP_LEVEL_ROLES = [
     "api",
     "ultra_bulk_delete",
     "preservation",
-    constants.ROLE_PUBLIC_DATA_DUMP
+    constants.ROLE_PUBLIC_DATA_DUMP,
+    constants.ROLE_PUBLISHER_JOURNAL_CSV
 ]
 
 ROLE_MAP = {
