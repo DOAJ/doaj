@@ -10,9 +10,7 @@ tests:
   - step: Go to the application form
   - step: Click the question mark next to the questions.
     results:
-    - 'A pop-up help box appears
-
-      You can click the link in the help box'
+    - A pop-up help box appears 'You can click the link in the help box'
   - step: Click close
     results:
     - The pop-up box disappears
@@ -170,7 +168,7 @@ tests:
   - step: Unclick Other
     results:
     - It disappears
-  - step: 'Plagiarism: click Yes'
+  - step: "Plagiarism: click 'Yes'"
     results:
     - The URL box appears
   - step: Write a number in the Average weeks box,
@@ -182,7 +180,7 @@ tests:
   context:
     role: publisher
   steps:
-  - step: 'Publication fees' question, click Yes
+  - step: In 'Publication fees' question, click Yes
     results:
     - The 'Highest fee charged' field appears.
   - step: Click No
