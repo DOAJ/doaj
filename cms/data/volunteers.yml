@@ -687,14 +687,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Ran Dang
-  area: Biology, Medical Sciences
-  year_since:
-  city: Zhengzhou
-  country: China
-  language: Chinese, English
-  photo: "randang.jpg"
-
 - name: Raúl Sampieri
   area: Science
   year_since:
