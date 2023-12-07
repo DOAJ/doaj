@@ -138,24 +138,40 @@ You can download our metadata about your journal by [downloading our CSV](https:
 
 You can download your article metadata by [using our API](https://doaj.org/docs/api/) or by using our [public data dump service](/docs/public-data-dump/).
 
-## Using a CSV file to update your journal metadata
+## Using a spreadsheet to update your journal metadata
 
-If you received a CSV file from us, please complete it as soon as possible. The file sent to you contains a cover sheet with instructions. 
+If you received a spreadsheet from us, please complete it as soon as possible. The file sent to you contains a cover sheet with instructions, and more help is below. Once you have validated your file, you may email it back to us.
 
-Before you send us the file, you will need to [validate it](/publisher/journal-csv) first. Some changes will cause the validation to fail:
+Before you send us the file, you must do two things:
 
-- don't save the file in any format other than CSV
-- don't change an ISSN or the Title of a journal. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
+1. Convert the spreadsheet to a CSV. To do this, you will need to first delete the instructions tab and then Save as CSV.
+2. [Validate it](/publisher/journal-csv).
+
+Here are some tips on how to ensure that your CSV file will pass validation:
+
+- don't change an ISSN or Title of a journal. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
 - don't add a new journal to the file. To do this, [submit a new application](/apply/).
 - don't change the title of a column
-- don't include anything in the column other than what is required
+- don't include anything in the column other than what is asked for on the instructions tab
+- ensure no spaces are accidentally added before or after the information in each cell. This can cause the validation to fail.
 
 Deleting a journal from the file will mean no update happens; it will not remove a journal from your account. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
 
 ### Validating your file
 
-Before emailing your file to us, you will need to validate it. Do this in your Publisher Dashboard on the 'Validate your CSV' tab. If you do not see the tab, contact [Help Desk](mailto:helpdesk@doaj.org).
+Before emailing the CSV to us, you must validate it. Do this in your Publisher Dashboard on the 'Validate your CSV' tab. If you do not see the tab, contact [Help Desk](mailto:helpdesk@doaj.org).
 
-As well as the five points above, here are some tips to help you produce a valid CSV file:
+The following warnings may be seen after validating your CSV:
 
-- be careful not to add spaces before or after the information you put into the spreadsheet. This can cause the validation to fail.
+| Warning                                                                                                                | Explanation                                                                                                                                                                                                                         |
+|------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| _Column name_ has mismatching case to expected header                                                                  | During editing, the case used in the column name has been changed. This is just a warning and does not need to be corrected for us to process the CSV correctly.                                                                    |
+| _Column name_ is not a valid column header. Please revert it to match what was sent to you in the original file.       | During editing, the column name has been changed. The name must match exactly the column name in the spreadsheet sent to you.                                                                                                       |
+| _Column name_ is a required column missing from this upload. Please refer to the original file and restore the column. | During editing, the column has been deleted. Please refer to the original spreadsheet and restore the column.                                                                                                                       |
+| There is no journal record in DOAJ for ISSN(s) _issns_.  The record may not exist, or it may be withdrawn.             | The ISSN doesn't match a journal in DOAJ. Check it against the spreadsheet sent to you. You cannot add ISSNs to journals. If you think an ISSN is missing, contact Help Desk.                                                       | 
+| Your account _account ID_ doesn't own the journal with ISSN(s) {issns}. You may not update it.                         | The journal may have transferred to another owner since you received your spreadsheet or you have accidentally changed the ISSN, which matches another journal in DOAJ. Refer to the spreadsheet sent to you and correct the ISSN.  |
+| The data you supplied didn't change anything in the journal record.                                                    | You can ignore this message if you haven't updated anything for this journal.                                                                                                                                                       |
+| You may not change _question_. Please revert it to match what was sent to you in the spreadsheet.                      | During editing, the question has been changed. The question must be exactly as it is in the spreadsheet sent to you. Please change it.                                                                                              |
+| We couldn't understand the information in _question_ |                                                                 | The information in the cell doesn't match the formatting requirements. Check the Instructions tab in the spreadsheet sent to you.                                                                                                   |
+
+From time to time, other validation errors might be seen if one of the cells contains completely incorrect information. For example, the cell should contain a URL but it contains text. These error messages are self-explanatory,, but contact Help Desk if you require help.
