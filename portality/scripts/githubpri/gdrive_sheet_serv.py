@@ -38,7 +38,7 @@ def apply_prilist_styles(worksheet, display_df):
                                  borders=gspfmt.Borders(bottom=gspfmt.Border('SOLID_MEDIUM'))))
     # set col width
     col_width_map = {
-        'rule_id': 50,
+        'rule_id': 60,
         'issue_number': 50,
         'title': 400,
         'status': 80,

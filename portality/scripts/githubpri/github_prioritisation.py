@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 def to_ordered_df_by_user_pri_map(user_pri_map):
     user_pri_map = user_pri_map.copy()
     claimable_df = user_pri_map.pop(pri_data_serv.DEFAULT_USER, None)
-    user_pri_map = OrderedDict(sorted(user_pri_map.items(), key=lambda x: x[0]))
+    user_pri_map = OrderedDict(sorted(user_pri_map.items(), key=lambda x: x[0].lower()))
     if claimable_df is not None:
         user_pri_map[pri_data_serv.DEFAULT_USER] = claimable_df
     return pd.concat(user_pri_map, axis=1)
