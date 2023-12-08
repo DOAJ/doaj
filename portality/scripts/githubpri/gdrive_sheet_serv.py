@@ -57,7 +57,7 @@ def create_or_load_worksheet(sh, n_row=50, n_col=30):
             rows=n_row + 5, cols=n_col + 5,
         )
 
-    worksheet_name = f'priority list -- {datetime.datetime.now().strftime(dates.FMT_DATE_STD)}'
+    worksheet_name = f'Individual Priorities {datetime.datetime.now().strftime(dates.FMT_DATE_STD)}'
     try:
         worksheet = _create_worksheet(worksheet_name)
     except gspread.exceptions.APIError as e:
