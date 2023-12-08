@@ -1,6 +1,6 @@
 # ~~ ArticlesPreservation:FunctionalTest -> Preservation:Feature ~~
 suite: Articles Preservation
-testset: User Test Script
+testset: Upload Preservation Files
 tests:
 - title: Publisher without preservation role
   context:
@@ -22,7 +22,8 @@ tests:
   steps:
   - step: Ensure that the archive package has been created with correct structure
   - step: Go to preservation area /publisher/preservation
-  - step: Select 'Browse' and select the paaackage zip file
+  - step: Select 'Browse' and select the package zip file
+    resource: /preservation_upload_test_package/valid_article.zip
   - step: click 'Upload'
     results:
     - 'A flash message appears at the top of the screen: File uploaded and waiting
@@ -40,7 +41,8 @@ tests:
   steps:
   - step: Create a incorrect or junk file that does not have articles
   - step: Go to preservation area /publisher/preservation
-  - step: Select 'Browse' and select the paaackage zip file
+  - step: Select 'Browse' and select the package zip file
+    resource: /preservation_upload_test_package/invalid_article.zip
   - step: click 'Upload'
     results:
     - 'A flash message appears at the top of the screen: File uploaded and waiting
@@ -56,9 +58,11 @@ tests:
   context:
     role: publisher
   steps:
-  - step: Create a incorrect or junk file that does not have articles
+  - step: Make sure not to login as admin user as admin does not have restrictions. Login as publisher.
+  - step: Ensure that the archive package has been created with correct structure but the article does not own by the logged in user.
   - step: Go to preservation area /publisher/preservation
-  - step: Select 'Browse' and select the paaackage zip file
+  - step: Select 'Browse' and select the package zip file
+    resource: /preservation_upload_test_package/valid_article.zip
   - step: click 'Upload'
     results:
     - 'A flash message appears at the top of the screen: File uploaded and waiting
@@ -75,6 +79,42 @@ tests:
     - if the status is 'partially success', show details link will be displayed. When
       clicked on the link details of how many articles successful and how many not
       successful will be displayed
+- title: Upload correctly structured file with multiple journals and it is processed correctly
+  context:
+    role: publisher
+  setup:
+    - Have a publisher account which is the owner of 3 journals that are in DOAJ, and which have articles
+      uploaded for them
+    - Select 1 article from each journal and note its DOI
+    - Download the multi_journals.zip test package (see link below in second step)
+    - Unzip the multi_journals.zip test package
+    - In the identifiers.csv file in the root of the test package, put each of the DOIs from your articles
+      next to one of the article directory names listed (removing the existing test DOIs that are present in that
+      file already).  For example you will have a line which reads "article1,10.1224/mydoi/3" where the DOI
+      is the one from your article.
+    - Re-zip the multi_journals.zip package.  This wil be the file you will upload for testing in the below script
+  steps:
+  - step: Ensure that the archive package has been created with correct structure
+  - step: Ensure that the archive package contains more than one article with different journals. 
+          A sample zip file is available for testing purpose. If there are no articles with the DOIs specified in the indentifiers.csv
+          file in your DSoace instance, 
+          the results may not be as expected. In that case unzip the file and update the identifiers.csv file with appropriate identifiers for the articles.
+    resource: /preservation_upload_test_package/multi_journals.zip
+  - step: Go to preservation area /publisher/preservation
+  - step: Select 'Browse' and select the package zip file
+  - step: click 'Upload'
+    results:
+    - 'A flash message appears at the top of the screen: File uploaded and waiting
+      to be processed.'
+    - Upload status is shown in 'History of uploads' with status processing
+  - step: wait a short amount of time for the job to process, then reload the page
+      (do not re-submit the form data).  If the job remains in "pending", reload the
+      page until the status changes.
+    results:
+    - Upload status in 'History of uploads' changes to 'successfully processed' and
+      the 'Notes' shows as 'uploaded to archive server'
+    - The 'Notes' has the label 'UPLOADED PACKAGES'
+    - Under the label 'UPLOADED PACKAGES', details of the packages that were uploaded are displayed in the format <journal_id>_<Date>.tar.gz
 - title: Test maintenance mode for 'Upload preservation file' tab
   context:
     role: publisher

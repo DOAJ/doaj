@@ -364,17 +364,17 @@ $.extend(true, doaj, {
                     fieldDisplays: {
                         "admin.in_doaj" : "In DOAJ?",
                         "admin.owner.exact" : "Owner",
-                        "index.has_editor.exact" : "Has Associate Editor?",
+                        "index.has_editor.exact" : "Associate Editor?",
                         "admin.editor_group.exact" : "Editor group",
                         "admin.editor.exact" : "Associate Editor",
-                        "index.license.exact" : "Journal license",
+                        "index.license.exact" : "License",
                         "bibjson.publisher.name.exact" : "Publisher",
                         "index.classification.exact" : "Classification",
                         "index.subject.exact" : "Subject",
-                        "index.language.exact" : "Journal language",
-                        "index.country.exact" : "Country of publisher",
-                        "index.title.exact" : "Journal title",
-                        "index.has_apc.exact" : "Publication charges?"
+                        "index.language.exact" : "Language",
+                        "index.country.exact" : "Country",
+                        "index.title.exact" : "Title",
+                        "index.has_apc.exact" : "Charges?"
                     },
                     valueMaps : {
                         "admin.in_doaj" : {

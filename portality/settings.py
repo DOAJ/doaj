@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.3.9"
+DOAJ_VERSION = "6.5.4"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -423,11 +423,14 @@ HUEY_EAGER = False
 # Crontab for never running a job - February 31st (use to disable tasks)
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
+# Additional Logging for scheduled JournalCSV
+EXTRA_JOURNALCSV_LOGGING = False
+
 #  Crontab schedules must be for unique times to avoid delays due to perceived race conditions
 HUEY_SCHEDULE = {
     "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
     "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
-    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "35"},
+    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
     "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
     "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
     "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
@@ -439,6 +442,7 @@ HUEY_SCHEDULE = {
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
+    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"}
 }
 
 HUEY_TASKS = {
@@ -625,6 +629,19 @@ DATAOBJ_TO_MAPPING_DEFAULTS = {
     }
 }
 
+# Extension Map from dataobj coercion declarations to ES mappings.
+# This is useful when some extensions required for some objects additional to defaults.
+# ~~->DataObj:Library~~
+# ~~->Seamless:Library~~
+DATAOBJ_TO_MAPPING_COPY_TO_EXTENSIONS = {
+    "unicode": {"copy_to": ["all_meta"]},
+    "str": {"copy_to": ["all_meta"]},
+    "unicode_upper": {"copy_to": ["all_meta"]},
+    "unicode_lower": {"copy_to": ["all_meta"]},
+    "issn": {"copy_to": ["all_meta"]},
+    "url": {"copy_to": ["all_meta"]}
+}
+
 # TODO: we may want a big-type and little-type setting
 DEFAULT_INDEX_SETTINGS = \
     {
@@ -695,8 +712,8 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : False,
             "role" : None,
-            "query_validator" : "public_query_validator",
-            "query_filters" : ["only_in_doaj", "last_update_fallback"],
+            "query_validators" : ["non_public_fields_validator", "public_query_validator"],
+            "query_filters" : ["only_in_doaj", "last_update_fallback", "search_all_meta"],
             "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Journal", # ~~->Journal:Model~~
             "required_parameters" : {"ref" : ["ssw", "public_journal", "subject_page"]}
@@ -705,7 +722,7 @@ QUERY_ROUTE = {
         "article" : {
             "auth" : False,
             "role" : None,
-            "query_validator" : "public_query_validator",
+            "query_validators" : ["non_public_fields_validator", "public_query_validator"],
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Article", # ~~->Article:Model~~
@@ -716,8 +733,8 @@ QUERY_ROUTE = {
         "journal,article" : {
             "auth" : False,
             "role" : None,
-            "query_validator" : "public_query_validator",
-            "query_filters" : ["only_in_doaj", "strip_facets", "es_type_fix"],
+            "query_validators" : ["non_public_fields_validator", "public_query_validator"],
+            "query_filters" : ["only_in_doaj", "strip_facets", "es_type_fix", "journal_article_filter"],
             "result_filters" : ["public_result_filter", "add_fqw_facets", "fqw_back_compat"],
             "dao" : "portality.models.JournalArticle",  # ~~->JournalArticle:Model~~
             "required_parameters" : {"ref" : ["fqw"]}
@@ -728,7 +745,8 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : True,
             "role" : "publisher",
-            "query_filters" : ["owner", "only_in_doaj"],
+            "query_validators" : ["non_public_fields_validator"],
+            "query_filters" : ["owner", "only_in_doaj", "search_all_meta"],
             "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
         },
@@ -736,7 +754,8 @@ QUERY_ROUTE = {
         "applications" : {
             "auth" : True,
             "role" : "publisher",
-            "query_filters" : ["owner", "not_update_request"],
+            "query_validators" : ["non_public_fields_validator"],
+            "query_filters" : ["owner", "not_update_request", "search_all_meta"],
             "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.AllPublisherApplications" # ~~->AllPublisherApplications:Model~~
         },
@@ -744,7 +763,8 @@ QUERY_ROUTE = {
         "update_requests" : {
             "auth" : True,
             "role" : "publisher",
-            "query_filters" : ["owner", "update_request"],
+            "query_validators" : ["non_public_fields_validator"],
+            "query_filters" : ["owner", "update_request", "search_all_meta"],
             "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.Application"  # ~~->Application:Model~~
         }
@@ -807,14 +827,16 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : True,
             "role" : "associate_editor",
-            "query_filters" : ["associate"],
+            "query_validators" : ["non_public_fields_validator"],
+            "query_filters" : ["associate", "search_all_meta"],
             "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->AssEdApplicationQuery:Endpoint~~
         "suggestion" : {
             "auth" : True,
             "role" : "associate_editor",
-            "query_filters" : ["associate"],
+            "query_validators" : ["non_public_fields_validator"],
+            "query_filters" : ["associate", "search_all_meta"],
             "dao" : "portality.models.Application"  # ~~->Application:Model~~
         }
     },
@@ -823,14 +845,16 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : True,
             "role" : "editor",
-            "query_filters" : ["editor"],
+            "query_validators" : ["non_public_fields_validator"],
+            "query_filters" : ["editor", "search_all_meta"],
             "dao" : "portality.models.Journal"  # ~~->Journal:Model~~
         },
         # ~~->EditorApplicationQuery:Endpoint~~
         "suggestion" : {
             "auth" : True,
             "role" : "editor",
-            "query_filters" : ["editor"],
+            "query_validators" : ["non_public_fields_validator"],
+            "query_filters" : ["editor", "search_all_meta"],
             "dao" : "portality.models.Application"  # ~~->Application:Model~~
         }
     },
@@ -848,7 +872,8 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : False,
             "role" : None,
-            "query_filters" : ["only_in_doaj", "public_source"],
+            "query_validators": ["non_public_fields_validator"],
+            "query_filters" : ["only_in_doaj", "public_source", "search_all_meta"],
             "dao" : "portality.models.Journal", # ~~->Journal:Model~~
             "required_parameters" : None
         },
@@ -856,7 +881,8 @@ QUERY_ROUTE = {
         "application" : {
             "auth" : True,
             "role" : None,
-            "query_filters" : ["owner", "private_source"],
+            "query_validators": ["non_public_fields_validator"],
+            "query_filters" : ["owner", "private_source", "search_all_meta"],
             "dao" : "portality.models.Suggestion",  # ~~->Application:Model~~
             "required_parameters" : None
         }
@@ -876,6 +902,7 @@ QUERY_ROUTE = {
 QUERY_FILTERS = {
     # sanitisers
     "public_query_validator" : "portality.lib.query_filters.public_query_validator",
+    "non_public_fields_validator" : "portality.lib.query_filters.non_public_fields_validator",
 
     # query filters
     "only_in_doaj" : "portality.lib.query_filters.only_in_doaj",
@@ -888,6 +915,8 @@ QUERY_FILTERS = {
     "last_update_fallback" : "portality.lib.query_filters.last_update_fallback",
     "not_update_request" : "portality.lib.query_filters.not_update_request",
     "who_current_user" : "portality.lib.query_filters.who_current_user",    # ~~-> WhoCurrentUser:Query ~~
+    "search_all_meta" : "portality.lib.query_filters.search_all_meta",  # ~~-> SearchAllMeta:Query ~~
+    "journal_article_filter" : "portality.lib.query_filters.journal_article_filter", # ~~-> JournalArticleFilter:Query ~~
 
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
@@ -898,6 +927,55 @@ QUERY_FILTERS = {
     # source filters
     "private_source": "portality.lib.query_filters.private_source",
     "public_source": "portality.lib.query_filters.public_source",
+}
+# Exclude the fields that doesn't want to be searched by public queries
+# This is part of non_public_fields_validator.
+PUBLIC_QUERY_VALIDATOR__EXCLUDED_FIELDS = [
+    "admin.notes.note",
+    "admin.notes.id",
+    "admin.notes.author_id"
+]
+
+ADMIN_NOTES_INDEX_ONLY_FIELDS = {
+    "all_meta" : {
+        "type": "text",
+        "fields": {
+            "exact": {
+                "type": "keyword",
+                "store": True
+            }
+        }
+    }
+}
+
+ADMIN_NOTES_SEARCH_MAPPING = {
+    "admin.notes.id": {
+            "type": "text",
+            "fields": {
+                "exact": {
+                    "type": "keyword",
+                    "store": True
+                }
+            }
+    },
+    "admin.notes.note": {
+            "type": "text",
+            "fields": {
+                "exact": {
+                    "type": "keyword",
+                    "store": True
+                }
+            }
+    },
+    "admin.notes.author_id": {
+            "type": "text",
+            "fields": {
+                "exact": {
+                    "type": "keyword",
+                    "store": True
+                }
+            }
+    }
 }
 
 ####################################################
@@ -945,6 +1023,8 @@ FEED_LOGO = "https://doaj.org/static/doaj/images/favicon.ico"
 ###########################################
 # OAI-PMH SETTINGS
 # ~~->OAIPMH:Feature~~
+
+OAI_ADMIN_EMAIL = 'helpdesk+oai@doaj.org'
 
 # ~~->OAIAriticleXML:Crosswalk~~
 # ~~->OAIJournalXML:Crosswalk~~
@@ -1063,11 +1143,11 @@ BACKGROUND_TASK_LOCK_TIMEOUT = 3600
 # ~~->Bitly:ExternalService~~
 
 # bit,ly api shortening service
-BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v4/shorten"
+#BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v4/shorten"
 
 # bitly oauth token
 # ENTER YOUR OWN TOKEN IN APPROPRIATE .cfg FILE
-BITLY_OAUTH_TOKEN = ""
+#BITLY_OAUTH_TOKEN = ""
 
 ###############################################
 # Date handling
@@ -1138,48 +1218,51 @@ HOTJAR_ID = ""
 
 
 ######################################################
-# Google Analytics configuration
-# specify in environment .cfg file - avoids sending live analytics
-# events from test and dev environments
-# ~~->GoogleAnalytics:ExternalService~~
+# Analytics configuration
+# specify in environment .cfg file - avoids sending live analytics events from test and dev environments
 
-GOOGLE_ANALYTICS_ID = ''
+# ~~->PlausibleAnalytics:ExternalService~~
+# Plausible analytics
+# root url of plausible
+PLAUSIBLE_URL = "https://plausible.io"
+PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/script.outbound-links.file-downloads.js"
+PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event"
+# site name / domain name that used to register in plausible
+PLAUSIBLE_SITE_NAME = BASE_DOMAIN
+PLAUSIBLE_LOG_DIR = None
 
-# Where to put the google analytics logs
-GOOGLE_ANALTYICS_LOG_DIR = None
-
-# Google Analytics custom dimensions. These are configured in the GA interface.
-GA_DIMENSIONS = {
-    'oai_res_id': 'dimension1',                                                                    # In GA as OAI:Record
+# Analytics custom dimensions. These are configured in the interface. #fixme: are these still configured since the move from GA?
+ANALYTICS_DIMENSIONS = {
+    'oai_res_id': 'dimension1',                                                             # In analytics as OAI:Record
 }
 
-# GA for OAI-PMH
+# Plausible for OAI-PMH
 # ~~-> OAIPMH:Feature~~
-GA_CATEGORY_OAI = 'OAI-PMH'
+ANALYTICS_CATEGORY_OAI = 'OAI-PMH'
 
-# GA for Atom
+# Plausible for Atom
 # ~~-> Atom:Feature~~
-GA_CATEGORY_ATOM = 'Atom'
-GA_ACTION_ACTION = 'Feed request'
+ANALYTICS_CATEGORY_ATOM = 'Atom'
+ANALYTICS_ACTION_ACTION = 'Feed request'
 
-# GA for JournalCSV
+# Plausible for JournalCSV
 # ~~-> JournalCSV:Feature~~
-GA_CATEGORY_JOURNALCSV = 'JournalCSV'
-GA_ACTION_JOURNALCSV = 'Download'
+ANALYTICS_CATEGORY_JOURNALCSV = 'JournalCSV'
+ANALYTICS_ACTION_JOURNALCSV = 'Download'
 
-# GA for OpenURL
+# Plausible for OpenURL
 # ~~->OpenURL:Feature~~
-GA_CATEGORY_OPENURL = 'OpenURL'
+ANALYTICS_CATEGORY_OPENURL = 'OpenURL'
 
-# GA for PublicDataDump
+# Plausible for PublicDataDump
 # ~~->PublicDataDump:Feature~~
-GA_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
-GA_ACTION_PUBLICDATADUMP = 'Download'
+ANALYTICS_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
+ANALYTICS_ACTION_PUBLICDATADUMP = 'Download'
 
-# GA for API
+# Plausible for API
 # ~~-> API:Feature~~
-GA_CATEGORY_API = 'API Hit'
-GA_ACTIONS_API = {
+ANALYTICS_CATEGORY_API = 'API Hit'
+ANALYTICS_ACTIONS_API = {
     'search_applications': 'Search applications',
     'search_journals': 'Search journals',
     'search_articles': 'Search articles',
@@ -1199,10 +1282,10 @@ GA_ACTIONS_API = {
 }
 
 
-# GA for fixed query widget
+# Plausible for fixed query widget
 # ~~->FixedQueryWidget:Feature~~
-GA_CATEGORY_FQW = 'FQW'
-GA_ACTION_FQW = 'Hit'
+ANALYTICS_CATEGORY_FQW = 'FQW'
+ANALYTICS_ACTION_FQW = 'Hit'
 
 #####################################################
 # Anonymised data export (for dev) configuration
@@ -1300,15 +1383,6 @@ TASK_DATA_RETENTION_DAYS = {
 # Editorial Dashboard - set to-do list size
 TODO_LIST_SIZE = 48
 
-#######################################################
-# Plausible analytics
-# root url of plausible
-PLAUSIBLE_URL = "https://plausible.io"
-PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/script.outbound-links.file-downloads.js"
-PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event"
-# site name / domain name that used to register in plausible
-PLAUSIBLE_SITE_NAME = BASE_DOMAIN
-PLAUSIBLE_LOG_DIR = None
 
 #########################################################
 # Background tasks --- monitor_bgjobs
@@ -1385,3 +1459,29 @@ PUBLIC_DATA_DUMP_URL_TIMEOUT = 3600
 # Pages under maintenance
 
 PRESERVATION_PAGE_UNDER_MAINTENANCE = False
+
+# report journals that discontinue in ... days (eg. 1 = tomorrow)
+DISCONTINUED_DATE_DELTA = 0
+
+##################################################
+# Feature tours currently active
+
+TOUR_COOKIE_PREFIX = "doaj_tour_"
+TOUR_COOKIE_MAX_AGE = 31536000
+
+TOURS = {
+    "/editor/": [
+        {
+            "roles": ["editor", "associate_editor"],
+            "content_id": "dashboard_ed_assed",
+            "name": "Welcome to your dashboard!",
+            "description": "The new dashboard gives you a way to see all your priority work, take a look at what's new.",
+        },
+        {
+            "roles": ["editor"],
+            "content_id": "dashboard_ed",
+            "name": "Your group activity",
+            "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
+        }
+    ]
+}

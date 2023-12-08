@@ -1,0 +1,15 @@
+suite: Public Site
+testset: ToC
+tests:
+- title: Test Correctly Displayed Discontinued Date
+  context:
+    role: anonymous
+  steps:
+  - step: To prepare to do this test make sure there are 3 journals publically available in DOAJ 
+        one with discontinued date in the past 
+        one with discontinued date in the future
+        one with discontinued date today
+  - step: Search for every journal from the list above
+    results:
+    - On the ToC of the journal with discontinued date in the past or today - the discontinued date is displayed
+    - On the ToC of the journal with discontinued date in the future - the discontinued date is not displayed

@@ -46,6 +46,7 @@ if 'api3' in app.config['FEATURES']:
 from portality.view.status import blueprint as status
 from portality.lib.normalise import normalise_doi
 from portality.view.dashboard import blueprint as dashboard
+from portality.view.tours import blueprint as tours
 
 if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False):
     from portality.view.testdrive import blueprint as testdrive
@@ -73,6 +74,7 @@ app.register_blueprint(status, name='_status', url_prefix='/_status')
 app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
 app.register_blueprint(jct, url_prefix="/jct") # ~~-> JCT:Blueprint~~
 app.register_blueprint(dashboard, url_prefix="/dashboard") #~~-> Dashboard:Blueprint~~
+app.register_blueprint(tours, url_prefix="/tours")  # ~~-> Tours:Blueprint~~
 
 app.register_blueprint(oaipmh) # ~~-> OAIPMH:Blueprint~~
 app.register_blueprint(openurl) # ~~-> OpenURL:Blueprint~~
@@ -106,9 +108,8 @@ def custom_static(path):
             return send_from_directory(os.path.dirname(target), os.path.basename(target))
     abort(404)
 
-
-# Configure the Google Analytics tracker
-# ~~-> GoogleAnalytics:ExternalService~~
+# Configure Analytics
+# ~~-> PlausibleAnalytics:ExternalService~~
 from portality.lib import plausible
 plausible.create_logfile(app.config.get('PLAUSIBLE_LOG_DIR', None))
 
@@ -285,6 +286,10 @@ def form_diff_table_subject_expand(val):
 
     return ", ".join(results)
 
+@app.template_filter("is_in_the_past")
+def is_in_the_past(dttm):
+    return dates.is_before(dttm, dates.today())
+
 
 #######################################################
 
@@ -308,6 +313,32 @@ def maned_of_wrapper():
         return egs, assignments
     return dict(maned_of=maned_of)
 
+
+@app.context_processor
+def editor_of_wrapper():
+    def editor_of():
+        # ~~-> EditorGroup:Model ~~
+        egs = []
+        assignments = {}
+        if current_user.has_role("editor"):
+            egs = models.EditorGroup.groups_by_editor(current_user.id)
+            if len(egs) > 0:
+                assignments = models.Application.assignment_to_editor_groups(egs)
+        return egs, assignments
+    return dict(editor_of=editor_of)
+
+@app.context_processor
+def associate_of_wrapper():
+    def associate_of():
+        # ~~-> EditorGroup:Model ~~
+        egs = []
+        assignments = {}
+        if current_user.has_role("associate_editor"):
+            egs = models.EditorGroup.groups_by_associate(current_user.id)
+            if len(egs) > 0:
+                assignments = models.Application.assignment_to_editor_groups(egs)
+        return egs, assignments
+    return dict(associate_of=associate_of)
 
 # ~~-> Account:Model~~
 # ~~-> AuthNZ:Feature~~

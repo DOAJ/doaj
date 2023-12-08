@@ -5,6 +5,7 @@ import sys
 import pandas as pd
 from gspread.utils import ValueInputOption
 
+from portality.lib import gsheet
 from portality.scripts.githubpri import pri_data_serv, gdrive_sheet_serv
 from portality.scripts.githubpri.gdrive_sheet_serv import create_or_load_worksheet
 from collections import OrderedDict
@@ -46,12 +47,12 @@ def priorities(priorities_file,
         user: pri_df.drop('issue_url', axis=1)
         for user, pri_df in user_pri_map.items()
     })
-    client = gdrive_sheet_serv.load_client(gdrive_key_path)
+    client = gsheet.load_client(gdrive_key_path)
     sh = client.open(gdrive_filename)
 
     worksheet = create_or_load_worksheet(sh)
 
-    gdrive_sheet_serv.update_sheet_by_df(worksheet, display_df)
+    gsheet.update_sheet_by_df(worksheet, display_df)
 
     # assign title to issue_url's hyperlink
     for col_idx, (column_keys, titles) in enumerate(display_df.items()):

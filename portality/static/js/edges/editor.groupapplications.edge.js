@@ -27,6 +27,8 @@ $.extend(true, doaj, {
                 doaj.components.searchingNotification(),
 
                 // facets
+                doaj.facets.openOrClosed(),
+
                 edges.newRefiningANDTermSelector({
                     id: "application_status",
                     category: "facet",
@@ -42,20 +44,20 @@ $.extend(true, doaj, {
                         hideInactive: true
                     })
                 }),
-                edges.newRefiningANDTermSelector({
-                    id: "application_type",
-                    category: "facet",
-                    field: "index.application_type.exact",
-                    display: "Record type",
-                    deactivateThreshold: 1,
-                    renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
-                        controls: true,
-                        open: false,
-                        togglable: true,
-                        countFormat: countFormat,
-                        hideInactive: true
-                    })
-                }),
+                // edges.newRefiningANDTermSelector({
+                //     id: "application_type",
+                //     category: "facet",
+                //     field: "index.application_type.exact",
+                //     display: "Record type",
+                //     deactivateThreshold: 1,
+                //     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                //         controls: true,
+                //         open: false,
+                //         togglable: true,
+                //         countFormat: countFormat,
+                //         hideInactive: true
+                //     })
+                // }),
                 edges.newRefiningANDTermSelector({
                     id: "has_editor",
                     category: "facet",

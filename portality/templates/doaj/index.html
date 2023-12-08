@@ -51,7 +51,7 @@
                     {% set source = search_query_source(term=[{"bibjson.apc.has_apc":False},{"bibjson.other_charges.has_other_charges":False}]) %}
                     <a href='{{ url_for('doaj.journals_search') }}?source={{ source }}'>
                         <span class="stat__number">{{ statistics.no_apc }}</span>
-                        <span class="stat__description">journals without APC<span style="text-transform: lowercase;">s</span></span>
+                        <span class="stat__description">journals without fees</span>
                     </a>
                 </p>
                 <p class="col-md-2 stat">
@@ -74,20 +74,24 @@
 {% endblock %}
 
 {% block content %}
-<main class="page-content">
+<div class="page-content">
     <!-- About -->
     <section class="highlight bg-black homepage__about">
       <div class="container">
           <div class="row">
               <article class="col-sm-6">
                   <h2 class="label">About the directory</h2>
-                  <p>DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is freely available online for everyone.</p>
-                  <p>All DOAJ services are free of charge including being indexed. All data is freely available.</p>
+                  <p>DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, and is committed to ensuring quality content is freely available online for everyone.</p>
+                  <p>DOAJ is committed to keeping its services free of charge, including being indexed, and its data freely available.</p>
                   <p>&rarr; <a href="{{ url_for('doaj.about') }}">About DOAJ</a></p>
                   <p>&rarr; <a href="{{ url_for('doaj.guide') }}">How to apply</a></p>
                   <p>
                       <a href="{{ url_for('apply.public_application') }}" class="button">Apply now</a>
                   </p>
+                 <p>DOAJ is twenty years old in 2023.</p>
+                 <p>
+                      <a href="{{ url_for('doaj.at_20') }}" class="button">Fund our 20th anniversary campiagn</a>
+                  </p>  
               </article>
 
               <article class="col-sm-6">
@@ -143,8 +147,8 @@
                 {# Twitter feed #}
                 <aside class="col-md-4">
                     <div class="card" style="max-height: 50vh; overflow-y: scroll;">
-                        <h2 class="label"><a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">Tweets by @doajplus</a></h2>
-                        <a class="twitter-timeline" data-chrome="transparent noheader" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Tweets by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                        <h2 class="label"><a href="https://twitter.com/DOAJplus" target="_blank" rel="noopener">Posts by @doajplus</a></h2>
+                        <a class="twitter-timeline" data-chrome="transparent noheader" href="https://twitter.com/DOAJplus?ref_src=twsrc%5Etfw">Posts by DOAJplus</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                     </div>
                 </aside>
             </div>
@@ -242,6 +246,6 @@
             </div>
         </div>
     </section>
-</main>
+</div>
 
 {% endblock %}
