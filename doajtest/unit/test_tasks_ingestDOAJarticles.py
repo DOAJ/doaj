@@ -1260,10 +1260,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0
 
-    def test_41_doaj_2_journals_same_owner_issn_each_success(self):
+    def test_41_doaj_2_journals_same_owner_issn_each_fail(self):
         # Create 2 journals with the same owner, each with one different issn.  The article's 2 issns
         # match each of these issns
-        # We expect a successful article ingest
+        # We expect a failed article ingest - articles must match only ONE journal
         j1 = models.Journal()
         j1.set_owner("testowner")
         bj1 = j1.bibjson()
@@ -1301,18 +1301,18 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
-        assert fu.status == "processed"
-        assert fu.imported == 1
+        assert fu.status == "failed"
+        assert fu.imported == 0
         assert fu.updates == 0
-        assert fu.new == 1
+        assert fu.new == 0
 
         fr = fu.failure_reasons
         assert len(fr.get("shared", [])) == 0
         assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 0
+        assert len(fr.get("unmatched", [])) == 2  # error message for each article
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1
+        assert len(found) == 0
 
     def test_42_doaj_2_journals_different_owners_different_issns_mixed_article_fail(self):
         # Create 2 different journals with different owners and different issns (2 each).

@@ -53,10 +53,13 @@
     &[type="number"] {
       width: 25%;
     }
+    &[type="radio"], &[type="checkbox"] {
+      width: 0.8rem;
+    }
   }
 
   input[type="checkbox"] + label {
-    display: table;
+    display: unset;
   }
 
   input[type="checkbox"] + label,
@@ -90,7 +93,7 @@
   border-left: 1px solid $sanguine;
 }
 
-.form__long-help {
+.form__long-help, .form__click-to-copy {
   cursor: pointer;
 
   &:hover {

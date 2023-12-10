@@ -45,8 +45,8 @@
                     "journal": {
                         "title": "My Journal",
                         "medlineAbbreviation": "My Jour",
-                        "essn": "1234-5678",
-                        "issn": "9876-5432",
+                        "issn": "1234-5678",
+                        "essn": "9876-5432",
                         "isoabbreviation": "My Jour",
                         "nlmid": "123456789"
                     }
@@ -143,8 +143,8 @@
                     "journal": {
                         "title": "My Journal",
                         "medlineAbbreviation": "My Jour",
-                        "essn": "1234-5678",
-                        "issn": "9876-5432",
+                        "issn": "1234-5678",
+                        "essn": "9876-5432",
                         "isoabbreviation": "My Jour",
                         "nlmid": "123456789"
                     }

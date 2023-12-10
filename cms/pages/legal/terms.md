@@ -32,7 +32,7 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
   + In our [OAI-PMH feed](/docs/oai-pmh)
   + In the [full data dump of all article metadata](/docs/public-data-dump/).
 
-4. The *open source software* that DOAJ is built with is licensed under [an Apache license Version 2](https://github.com/DOAJ/doaj/blob/a6fc2bee499b5a8a1f24fb098acfb8e10bd72503/portality/static/vendor/select2-3.5.4/LICENSE).
+4. The *open source software* that DOAJ is built with is licensed under [an Apache license Version 2](https://github.com/DOAJ/doaj/blob/develop/LICENSE).
 
 ---
 
@@ -62,8 +62,16 @@ DOAJ uses a variety of licenses for the different parts of its website and the c
 
 ---
 
+### Licensing terms for content published on DOAJ News Service
+15. DOAJ News Service is the DOAJ blog, hosted on Wordpress: https://blog.doaj.org
+
+16. All content posted on the blog is licensed under the CC BY-NC Creative Commons license. See the blog footer for full details.
+
+---
+
 ### Version history
-1. **Version 1.3** (20 April 2023) - address and contact details added to Copyright (1). 'Other than as permitted in law...' added to Copyright (2). Notice period added to Conditions of using this website (3). Conditions of using this website (4) rewritten completely to make it clearer that the name and website are protected.
-2. **Version 1.2** (20 January 2022) - corrected ownership from DOAJ to IS4OA in Copyright (1). Simplified the language of Copyright (3). Corrected ownership from DOAJ to IS4OA in Conditions of using this website (4)
-3. **Version 1** (March 2021)
+1. **Version 1.4** (03 July 2023) - added details about the way we license content on our blog, DOAJ News Service.
+2. **Version 1.3** (20 April 2023) - address and contact details added to Copyright (1). 'Other than as permitted in law...' added to Copyright (2). Notice period added to Conditions of using this website (3). Conditions of using this website (4) rewritten completely to make it clearer that the name and website are protected.
+3. **Version 1.2** (20 January 2022) - corrected ownership from DOAJ to IS4OA in Copyright (1). Simplified the language of Copyright (3). Corrected ownership from DOAJ to IS4OA in Conditions of using this website (4)
+4. **Version 1** (March 2021)
 

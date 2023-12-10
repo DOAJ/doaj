@@ -120,6 +120,7 @@ class DoajTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
+        import portality.app  # noqa, needed to registing routes
         cls.originals = patch_config(app, {
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
@@ -180,6 +181,10 @@ class DoajTestCase(TestCase):
                 pass  # could be removed by other thread / process
         shutil.rmtree(paths.rel2abs(__file__, "..", "tmp"), ignore_errors=True)
 
+        self.reset_db_record()
+
+    @staticmethod
+    def reset_db_record():
         global CREATED_INDICES
         if len(CREATED_INDICES) > 0:
             dao.DomainObject.destroy_index()

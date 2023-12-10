@@ -2,6 +2,7 @@
 # It changes the logging configuration. If it's imported anywhere else in the app,
 # it will change the logging configuration for the entire app.
 import logging
+from portality.core import app
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -26,4 +27,8 @@ from portality.tasks.article_bulk_delete import article_bulk_delete  # noqa
 from portality.tasks.async_workflow_notifications import async_workflow_notifications  # noqa
 from portality.tasks.check_latest_es_backup import scheduled_check_latest_es_backup, check_latest_es_backup  # noqa
 from portality.tasks.request_es_backup import scheduled_request_es_backup, request_es_backup  # noqa
-from portality.tasks.application_autochecks import application_autochecks
+from portality.tasks.find_discontinued_soon import scheduled_find_discontinued_soon, find_discontinued_soon  # noqa
+
+# Conditionally enable new application autochecking
+if app.config.get("AUTOCHECK_INCOMING", False):
+    from portality.tasks.application_autochecks import application_autochecks
