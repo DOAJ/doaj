@@ -66,7 +66,11 @@ def send_event(goal: str, on_completed=None, **props_kwargs):
         if on_completed:
             on_completed(resp)
 
-    Thread(target=_send).start()
+    try:
+        Thread(target=_send).start()
+    except RuntimeError as e:
+        # When we can't create a thread; don't escalate further since we'd rather the app works than the analytics
+        logger.error(str(e))
 
 
 def pa_event(goal, action, label='',
