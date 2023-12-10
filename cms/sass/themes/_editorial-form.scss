@@ -57,7 +57,7 @@
 
   .form__header {
     margin: 0 (-$spacing-04);
-    padding: $spacing-03 $spacing-04;
+    padding: $spacing-03;
     width: auto;
     border: 0;
     border-top: 1px dotted $mid-grey;
@@ -65,14 +65,14 @@
   }
 
   .form__question {
-    padding: $spacing-04;
+    padding: $spacing-03;
     margin: 0;
     margin-left: -$spacing-04;
     margin-right: -$spacing-04;
     border-top: 1px dotted $mid-grey;
 
     input, select, textarea, .select2-container {
-      margin-bottom: $spacing-03;
+      margin-bottom: $spacing-02;
       width: 100% !important;
       border-color: $mid-grey;
     }
