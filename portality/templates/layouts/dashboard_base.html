@@ -38,6 +38,7 @@
                   <span><span data-feather="list" aria-hidden="true"></span> Editor dashboard</span>
                 </a>
             </li>
+            {% endif %}
             {% if current_user.has_role("admin") %}
               <li class="flex-center">
                 <a href="{{ url_for('dashboard.top_todo') }}" class="label">
