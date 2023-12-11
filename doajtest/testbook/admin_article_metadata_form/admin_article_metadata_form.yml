@@ -117,3 +117,20 @@ tests:
     - Confirm that Fulltext URL is changed to http://doaj.org/testing/500.pdf
     - Confirm only one article with DOI 10.1234/500 and fulltext URL http://doaj.org/testing/500.pdf
       exists
+
+- title: Check button linking to the article's page
+    - step: Click "See this article in doaj" button under the article's title on the left
+      results:
+      - The article's public page is opened in a new tab
+      - On the article's public page at the top the button "Edit this article" is shown
+    - step: Click "Edit this article" button
+      results:
+      - The artcile's admin metadata form is opened in a new tab with correct data
+    - step: Confirm above buttons are shown only for admin user. Log out from admin account and log in as publisher
+    - step: Navigate to the article's public page as a publisher
+      results:
+      - The button "Edit this article" is not displayed
+    - step: Log out
+    - step: Navigate to the article's public page as an anonymous user
+      results:
+      - The button "Edit this article" is not displayed
