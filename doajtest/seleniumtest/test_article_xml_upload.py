@@ -240,6 +240,7 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
 
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=False))
         journal.set_owner(publisher.id)
+        journal.bibjson().pissn = '0000-0000'
         journal.save(blocking=True)
 
         self.goto_upload_page(publisher)
@@ -304,7 +305,7 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
                                                             FileUploadStatus.Processed,
                                                             XML_FORMAT_DOAJ)
         self.assert_history_row_success(latest_history_row)
-        selenium_helpers.goto(self.selenium, url_path.url_toc(journal_issn))
+        selenium_helpers.goto(self.selenium, url_path.url_toc_articles(journal_issn))
         selenium_helpers.wait_unit(lambda: self.find_eles_by_css(article_title_selector))
         assert expected_title in [e.get_attribute('innerHTML').strip()
                                   for e in self.find_eles_by_css(article_title_selector)]

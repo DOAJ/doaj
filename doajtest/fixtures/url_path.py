@@ -13,3 +13,7 @@ def url_toc(identifier, volume=None, issue=None):
         if issue:
             url += f'/{issue}'
     return url
+
+
+def url_toc_articles(identifier):
+    return f'/toc/articles/{identifier}'
