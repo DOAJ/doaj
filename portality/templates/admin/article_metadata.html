@@ -17,7 +17,8 @@
       {{ heading_object_type }} &mdash; <br/>
       <em>{{form_context.source.bibjson().title}}</em>
     </h1>
-    <a class="button button--tertiary" href="/article/{{ form_context.source.id }}" target="_blank">See this article in DOAJ</a>
+
+    <a class="button button--tertiary" href="{{ url_for('doaj.article_page', identifier=form_context.source.id) }}" target="_blank">See this article in DOAJ</a>
     {% if form_context.source.current_journal %}
     <p>
       <a href="{{ url_for('doaj.journal_readonly', journal_id=form_context.source.current_journal) }}" target="_blank" class="button">View associated journal</a>

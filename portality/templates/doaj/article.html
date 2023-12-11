@@ -72,7 +72,7 @@
         <div class="hero">
             <header class="container">
                 {% if not current_user.is_anonymous and current_user.has_role("admin") %}
-                    <a class="button button--tertiary" href="/admin/article/{{ id }}" target="_blank">Edit this article</a>
+                    <a class="button button--tertiary" href="{{ url_for('admin.article_page', article_id=id) }}" target="_blank">Edit this article</a>
                 {% endif %}
                 <p class="label">
                     <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}">{{jtitle}}</a>
