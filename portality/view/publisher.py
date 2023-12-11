@@ -3,7 +3,7 @@ from flask import render_template, abort, redirect, url_for, flash
 from flask_login import current_user, login_required
 
 from portality.app_email import EmailException
-from portality import models
+from portality import models, constants
 from portality.bll.exceptions import AuthoriseException, ArticleMergeConflict, DuplicateArticleException, ArticleNotAcceptable
 from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.dao import ESMappingMissingError
@@ -15,6 +15,7 @@ from portality import lock
 from portality.models import DraftApplication
 from portality.lcc import lcc_jstree
 from portality.forms.article_forms import ArticleFormFactory
+from portality.store import StoreFactory
 
 from huey.exceptions import TaskException
 
@@ -290,8 +291,8 @@ def preservation():
         # check if collection has been assigned for the user
         # collection must be in the format {"user_id1",["collection_name1","collection_id1"],
         #                                     "user_id2",["collection_name2","collection_id2"]}
-        collection_available = True
-        collection_dict = app.config.get("PRESERVATION_COLLECTION")
+        collection_dict = app.config.get("PRESERVATION_COLLECTION", {})
+        collection_available = True if collection_dict else False
         if collection_dict and not current_user.id in collection_dict:
             collection_available = False
         elif collection_dict:
@@ -365,6 +366,43 @@ def metadata():
             except ArticleNotAcceptable as e:
                 Messages.flash_with_param(e.message, "error")
         return fc.render_template(validated=validated)
+
+@blueprint.route("/journal-csv", methods=["GET"])
+@login_required
+@ssl_required
+@write_required()
+def journal_csv():
+    if current_user.has_role(constants.ROLE_PUBLISHER_JOURNAL_CSV):
+        return render_template('publisher/journal_csv.html')
+    abort(403)
+
+@blueprint.route("/journal-csv/validate", methods=["POST"])
+@login_required
+@ssl_required
+@write_required()
+def journal_csv_validate():
+    if not current_user.has_role(constants.ROLE_PUBLISHER_JOURNAL_CSV):
+        abort(403)
+    if "journal_csv" not in request.files:
+        abort(400)
+    file = request.files["journal_csv"]
+    if not file.filename.endswith(".csv"):
+        abort(400)
+
+    tmpStore = StoreFactory.tmp()
+    container_id = app.config.get("JOURNAL_CSV_UPLOAD__TMP_CONTAINER", "publisher_csvs_validation")
+    filename = current_user.id + "_" + dates.now_str() + ".csv"
+    out = tmpStore.path(container_id, filename, create_container=True, must_exist=False)
+    file.save(out)
+
+    try:
+        report = DOAJ.applicationService().validate_update_csv(out, current_user)
+    finally:
+        tmpStore.delete_file(container_id, filename)
+
+    resp = make_response(report.json())
+    resp.mimetype = "application/json"
+    return resp
 
 
 @blueprint.route("/help")
