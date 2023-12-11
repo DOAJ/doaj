@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.5.3"
+DOAJ_VERSION = "6.5.5"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -296,7 +296,8 @@ TOP_LEVEL_ROLES = [
     "api",
     "ultra_bulk_delete",
     "preservation",
-    constants.ROLE_PUBLIC_DATA_DUMP
+    constants.ROLE_PUBLIC_DATA_DUMP,
+    constants.ROLE_PUBLISHER_JOURNAL_CSV
 ]
 
 ROLE_MAP = {
