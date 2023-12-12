@@ -128,16 +128,18 @@ class TestBLLDeleteApplication(DoajTestCase):
             with self.assertRaises(EXCEPTIONS[raises]):
                 time.sleep(1)
                 svc.delete_application(application_id, acc)
-            wait_all_unlocked(application, cj, rj, acc)
-            check_locks(application, cj, rj, acc)
+            if acc:
+                wait_all_unlocked(application, cj, rj, acc)
+                check_locks(application, cj, rj, acc)
         else:
             svc.delete_application(application_id, acc)
 
-            # we need to sleep, so the index catches up
-            wait_all_unlocked(application, cj, rj, acc)
+            if acc:
+                # we need to sleep, so the index catches up
+                wait_all_unlocked(application, cj, rj, acc)
 
-            # check that no locks remain set for this user
-            check_locks(application, cj, rj, acc)
+                # check that no locks remain set for this user
+                check_locks(application, cj, rj, acc)
 
             # check that the application actually is gone
             if application is not None:
@@ -157,6 +159,9 @@ class TestBLLDeleteApplication(DoajTestCase):
 
 
 def wait_all_unlocked(application, cj, rj, account):
+    if account is None:
+        return
+
     def all_unlocked():
         conds = []
 
