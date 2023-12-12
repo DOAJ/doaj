@@ -26,15 +26,15 @@ jobs:
       - run:
           name: Prepare doaj env for unittests
           command: |
-          echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
-          python portality/cms/build_fragments.py
-          python portality/cms/build_sass.py
+            echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
+            python portality/cms/build_fragments.py
+            python portality/cms/build_sass.py
 
       - run:
           name: Run unit tests
           command: |
-          TESTS=$(circleci tests glob "doajtest/unit/**/*.py" | circleci tests split)
-          pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-unit.xml $TESTS
+            TESTS=$(circleci tests glob "doajtest/unit/**/*.py" | circleci tests split)
+            pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-unit.xml $TESTS
 
       - store_test_results:
           path: test-results
