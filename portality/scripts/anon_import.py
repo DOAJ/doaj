@@ -4,16 +4,20 @@ Clear out the index and retrieve new anonymised data, according to a configurati
 Configure the target index in your *.cfg override file
 For now, this import script requires the same index pattern (prefix, 'types', index-per-type setting) as the exporter.
 
-E.g. for dev:
+Will ignore your setting STORE_IMPL in app.cfg - defaults to s3, alternatively use local storage via -l arg
 
-Ensure in dev.cfg you've set STORE_IMPL = "portality.store.StoreS3"
-python portality/scripts/anon_import.py data_import_settings/dev_basics.json
+E.g. for dev:
+DOAJENV=dev python portality/scripts/anon_import.py data_import_settings/dev_basics.json
+
+or for a test server:
+DOAJENV=test python portality/scripts/anon_import.py data_import_settings/test_server.json
 """
 
 import esprit, json, gzip, shutil, elasticsearch
 from portality.core import app, es_connection, initialise_index
 from portality.store import StoreFactory
 from portality.util import ipt_prefix
+from doajtest.helpers import patch_config
 
 
 # FIXME: monkey patch for esprit.bulk (but esprit's chunking is handy)
@@ -95,7 +99,8 @@ def do_import(config):
 
             print(("Importing from {x}".format(x=filename)))
             imported_count = esprit.tasks.bulk_load(es_connection, ipt_prefix(import_type), uncompressed_file,
-                                                    limit=limit, max_content_length=config.get("max_content_length", 100000000))
+                                                    limit=limit,
+                                                    max_content_length=config.get("max_content_length", 100000000))
             tempStore.delete_file(container, filename)
 
             if limit is not None and imported_count != -1:
@@ -115,6 +120,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument("config", help="Config file for import run")
+    parser.add_argument('-l', '--localstore',
+                        help="Use StoreLocal rather than S3 anon data source",
+                        action='store_true',
+                        required=False)
     args = parser.parse_args()
 
     with open(args.config, "r", encoding="utf-8") as f:
@@ -124,5 +133,15 @@ if __name__ == '__main__':
     unwanted_primate = esprit.raw.raw_bulk
     esprit.raw.raw_bulk = es_bulk
 
+    if args.localstore:
+        original_configs = patch_config(app, {
+            'STORE_IMPL': "portality.store.StoreLocal"
+        })
+    else:
+        original_configs = patch_config(app, {
+            'STORE_IMPL': "portality.store.StoreS3"
+        })
+
     do_import(config)
     esprit.raw.raw_bulk = unwanted_primate
+    patch_config(app, original_configs)
