@@ -116,7 +116,7 @@ class TodoService(object):
             applications = models.Application.object_query(q=q.query())
             for ap in applications:
                 todos.append({
-                    "date": ap.last_manual_update_timestamp if sort == "last_manual_update" else ap.created_timestamp,
+                    "date": ap.last_manual_update_timestamp if sort == "last_manual_update" else ap.date_applied_timestamp,
                     "date_type": sort,
                     "action_id" : [aid],
                     "title" : ap.bibjson().title,
