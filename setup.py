@@ -57,7 +57,7 @@ setup(
         "flask-swagger @ git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger"
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
     extras_require={
-        "test": ["pytest", "pytest-cov", "pytest-xdist", "selenium==3.141",  # prevent backtracking through all versions
+        "test": ["pytest", "pytest-cov", "pytest-xdist", "pytest-randomly", "selenium==3.141",  # prevent backtracking through all versions
                  "combinatrix @ git+https://github.com/CottageLabs/combinatrix.git@740d255f0050d53a20324df41c08981499bb292c#egg=combinatrix",
                  "bs4==0.0.1",   # beautifulsoup for HTML parsing
                  "pandas==2.0.1"],  # pandas lets us generate URLs for linkcheck
