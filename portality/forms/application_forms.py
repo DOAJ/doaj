@@ -477,7 +477,6 @@ class FieldDefinitions:
         "input": "text",
         "validate": [
             {"required": {"message": "Enter the name of the journal’s publisher"}},
-            {"different_to": {"field": "institution_name", "message": "Publisher and Society/Institution names cannot be the same."}}  # ~~^-> DifferetTo:FormValidator~~
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -563,11 +562,6 @@ class FieldDefinitions:
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
             "full_contents" # ~~^->FullContents:FormWidget~~
-        ],
-        "validate": [
-            {"different_to": {"field": "publisher_name",
-                              "message": "Publisher and Society/Institution names cannot be the same."}}
-            # ~~^-> DifferetTo:FormValidator~~
         ],
         "contexts": {
             "admin": {
