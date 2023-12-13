@@ -275,15 +275,15 @@ class TestAssedAppReview(DoajTestCase):
         self.assertRaises(Exception, fc.finalise)
 
         # Check that an application status can't be brought backwards in the review process
-        pending_source = make_application_source().copy()
+        progressing_source = make_application_source().copy()
+        progressing_source['admin']['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
-        progressing_form = make_application_form().copy()
-        progressing_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
+        pending_form = make_application_form().copy()
 
         # Construct the formcontext from form data (with a known source)
         formulaic_context = ApplicationFormFactory.context("associate_editor")
-        fc = formulaic_context.processor(source=models.Application(**pending_source),
-                                         formdata=MultiDict(progressing_form))
+        fc = formulaic_context.processor(source=models.Application(**progressing_source),
+                                         formdata=MultiDict(pending_form))
 
         # Finalise the formcontext. This should raise an exception because the application status can't go backwards.
         self.assertRaises(Exception, fc.finalise)
