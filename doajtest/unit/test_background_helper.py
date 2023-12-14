@@ -9,8 +9,6 @@ from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import long_running, main_queue
 
 
-# KTODO debugging  TOBEREMOVE
-
 class TestBackgroundHelper(TestCase):
 
     def test_get_queue_id_by_task_queue(self):
