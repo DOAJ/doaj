@@ -89,8 +89,7 @@ class TestBLLGetters(DoajTestCase):
                 def has_lock():
                     return lock.has_lock("journal", journal_id, account.id)
 
-                thread_utils.wait_until(has_lock, timeout=5)
-                assert has_lock()
+                assert thread_utils.wait_until(has_lock, timeout=5)
 
     @parameterized.expand(load_application_cases)
     def test_02_get_application(self, name, application, application_id, account, lock_application, raises=None):
@@ -125,5 +124,4 @@ class TestBLLGetters(DoajTestCase):
                 def has_lock():
                     return lock.has_lock(constants.LOCK_APPLICATION, application_id, account.id)
 
-                thread_utils.wait_until(has_lock, timeout=5)
-                assert has_lock()
+                assert thread_utils.wait_until(has_lock, timeout=5)
