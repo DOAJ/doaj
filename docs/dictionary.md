@@ -6,3 +6,4 @@
 | inst    | instance                     |
 | fmt     | format                       |
 | exparam | extra parameter              |
+| gsheet  | Google Sheet                 |
