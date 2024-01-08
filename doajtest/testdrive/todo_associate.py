@@ -95,6 +95,7 @@ def build_application(title, lmu_diff, cd_diff, status, editor=None):
     ap.set_id(ap.makeid())
     ap.set_last_manual_update(dates.before(datetime.utcnow(), lmu_diff))
     ap.set_created(dates.before(datetime.utcnow(), cd_diff))
+    ap.set_date_applied(dates.before(datetime.utcnow(), cd_diff))
     ap.set_application_status(status)
 
     if editor is not None:

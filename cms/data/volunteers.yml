@@ -463,6 +463,14 @@ ass_ed:
   country: Canada
   language: English
 
+- name: Kristen Totleben
+  area: Librarianship, Humanities, Social Sciences
+  year_since:
+  city: Rochester, New York
+  country: USA
+  language: English, Spanish
+  photo: "Kristen.jpg"
+
 - name: Lena Lönngren
   area:
   year_since:
@@ -686,14 +694,6 @@ ass_ed:
   city:
   country: Indonesia
   language: Indonesian, English
-
-- name: Ran Dang
-  area: Biology, Medical Sciences
-  year_since:
-  city: Zhengzhou
-  country: China
-  language: Chinese, English
-  photo: "randang.jpg"
 
 - name: Raúl Sampieri
   area: Science
