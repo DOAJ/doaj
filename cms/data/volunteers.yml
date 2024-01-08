@@ -271,6 +271,14 @@ ass_ed:
   country: Indonesia
   language: Bahasa Indonesia, English
   photo: "dh.jpg"  
+  
+- name: Dumitru Lisnic
+  area: History and Religious Studies, Ethnography, Anthropology
+  year_since:
+  city: Balți
+  country: Republic of Moldova
+  language: Romanian, Russian, Ukrainian, German
+  photo: "Dumitru.jpg"  
 
 - name: Dr. Eko Supraptono
   area: Technology
