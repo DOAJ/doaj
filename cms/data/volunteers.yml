@@ -121,7 +121,15 @@ ass_ed:
   city: Florence
   country: Italy
   language: Italian, English, Spanish
-  
+
+- name: Amber Osman
+  area: Open Science, Publication Ethics, Scholarly communication
+  year_since:
+  city: Karachi
+  country: Pakistan
+  language: Urdu, English
+  photo: "Amber.jpeg"
+
 - name: Amir Reza Asnafi
   area: Library and Information Science, Scientometrics
   year_since:
