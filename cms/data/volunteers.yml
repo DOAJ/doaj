@@ -63,6 +63,7 @@ ed:
   city: Caracas
   country: Venezuela
   language: Spanish, English
+  featured: true
   photo: "Pablo.jpg"
 
 - name: Paola Galimberti
@@ -446,6 +447,7 @@ ass_ed:
   city: Edirne
   country: Türkiye
   language: English, Turkish, German
+  featured: true
   photo: "Kadri Kiran.jpg"
 
 - name: Kâmil B. Varınca
@@ -618,6 +620,7 @@ ass_ed:
   city: Kyiv
   country: Ukraine
   language: Ukranian, Russian, English, Polish
+  featured: true
   photo: "Nataliia.jpg"
  
 - name: Nathalia Avila
