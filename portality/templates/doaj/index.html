@@ -213,6 +213,19 @@
                     </article>
                 {% endif %}
                 {% endfor %}
+                {% for volunteer in data.volunteers.ass_ed %}
+                {% if volunteer.featured == true %}
+                    <article class="col-md-3">
+                        {# TODO: Still need volunteer photos
+                        <figure class="portrait portrait__img--split">
+                            <div class="portrait__bg portrait__bg-img--3d" style="background-image: url('../../img/team/clara.jpg')" alt="Portrait of {{ volunteer.name }}"></div>
+                        </figure>#}
+                        <p class="label label--secondary"><small>{{ volunteer.area }}</small></p>
+                        <h3>{{ volunteer.name }}</h3>
+                        <p>{{ volunteer.city }}, {{ volunteer.country }} ({{ volunteer.language }})</p>
+                    </article>
+                {% endif %}
+                {% endfor %}
             </div>
         </div>
     </section>
