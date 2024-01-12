@@ -197,7 +197,7 @@ class TestBLLTopTodoManed(DoajTestCase):
         ap = models.Application(**source)
         ap.set_id(id)
         ap.set_last_manual_update(dates.before_now(lmu_diff))
-        ap.set_created(dates.before_now(cd_diff))
+        ap.set_date_applied(dates.before_now(cd_diff))
         ap.set_application_status(status)
 
         if additional_fn is not None:
