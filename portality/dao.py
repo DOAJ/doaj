@@ -169,7 +169,9 @@ class DomainObject(UserDict, object):
         r = None
         while attempt <= retries:
             try:
-                r = ES.index(self.index_name(), d, doc_type=self.doc_type(), id=self.data.get("id"), headers=CONTENT_TYPE_JSON)
+                r = ES.index(self.index_name(), d, doc_type=self.doc_type(), id=self.data.get("id"),
+                             headers=CONTENT_TYPE_JSON,
+                             timeout=app.config.get('ES_READ_TIMEOUT', '1m'), )
                 break
 
             except (elasticsearch.ConnectionError, elasticsearch.ConnectionTimeout):
@@ -432,7 +434,10 @@ class DomainObject(UserDict, object):
             try:
                 # ES 7.10 updated target to whole index, since specifying type for search is deprecated
                 # r = requests.post(cls.target_whole_index() + recid + "_search", data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
-                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(), headers=CONTENT_TYPE_JSON, **kwargs)
+                if kwargs.get('timeout') is None:
+                    kwargs['timeout'] = app.config.get('ES_READ_TIMEOUT', '1m')
+                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(),
+                              headers=CONTENT_TYPE_JSON, **kwargs)
                 break
             except Exception as e:
                 exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
