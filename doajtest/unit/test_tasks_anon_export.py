@@ -16,7 +16,7 @@ class TestAnonExport(DoajTestCase):
 
         # prepare test data
         for _ in range(3):
-            BackgroundJob().save()
+            BackgroundJob().save(blocking=True)
         for _ in range(2):
             Account().save(blocking=True)
 
