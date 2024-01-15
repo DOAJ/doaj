@@ -73,7 +73,7 @@ class TestHarvester(DoajTestCase):
         task = HarvesterBackgroundTask(job)
         BackgroundApi.execute(task)
 
-        wait_until(lambda: self.journal.count() > 0)
+        wait_until(lambda: len(list(self.journal.all_articles())) > 0)
 
         print(job.pretty_audit)
         articles_saved = [a for a in self.journal.all_articles()]
