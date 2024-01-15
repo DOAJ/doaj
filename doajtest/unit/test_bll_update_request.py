@@ -116,7 +116,7 @@ class TestBLLUpdateRequest(DoajTestCase):
             application, jlock, alock = svc.update_request_for_journal(jid, acc)
 
             # we need to sleep, so the index catches up
-            time.sleep(1)
+            time.sleep(3)
 
             if return_app == "none":
                 assert application is None
@@ -136,7 +136,6 @@ class TestBLLUpdateRequest(DoajTestCase):
             if db_jlock == "no" and acc is not None:
                 assert not lock.has_lock("journal", jid, acc.id)
             elif db_jlock == "yes" and acc is not None:
-                l = lock.has_lock("journal", jid, acc.id)
                 assert lock.has_lock("journal", jid, acc.id)
 
             if db_alock == "no" and application.id is not None and acc is not None:

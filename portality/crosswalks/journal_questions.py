@@ -7,6 +7,11 @@ from portality.forms.application_forms import ApplicationFormFactory
 class JournalXwalkException(Exception):
     pass
 
+class QuestionTransformError(JournalXwalkException):
+    def __init__(self, key, value, message):
+        self.key = key
+        self.value = value
+        super(QuestionTransformError, self).__init__(message)
 
 class Journal2QuestionXwalk(object):
     """
@@ -255,7 +260,7 @@ class Journal2QuestionXwalk(object):
 
         def _y_n_or_blank(x):
             """ Undoing yes_no_or_blank() to 'y' or 'n' ONLY """
-            return 'y' if x == 'Yes' else 'n' if x != '' else None
+            return 'y' if x == 'Yes' else 'n' if x == 'No' else ""
 
         def _comma_to_list(x):
             """ Comma separated string to list of stripped items """
@@ -287,7 +292,7 @@ class Journal2QuestionXwalk(object):
             'review_process': _comma_to_list,
             'plagiarism_detection': _y_n_or_blank,
             'publication_time_weeks': lambda x: round(float(x)),
-            'apc': _y_or_blank,
+            'apc': _y_n_or_blank,
             'apc_charges': _unfurl_apc,
             'has_waiver': _y_n_or_blank,
             'has_other_charges': _y_n_or_blank,
@@ -310,6 +315,8 @@ class Journal2QuestionXwalk(object):
             except KeyError:
                 # This field doesn't appear in the map, return unchanged.
                 return value
+            except ValueError:
+                raise QuestionTransformError(key, value, message="Could not transform value")
 
         # start by converting the object to the forminfo version
         # ~~->JournalForm:Crosswalk~~
@@ -342,3 +349,20 @@ class Journal2QuestionXwalk(object):
                         forminfo[form_key] = update_val
 
         return JournalFormXWalk.forminfo2multidict(forminfo), updates
+
+
+class Journal2PublisherUploadQuestionsXwalk(Journal2QuestionXwalk):
+    # NOTE: This change was put in originally because the test data had a changed header from the regular
+    # journal csv.  That has been reversed now, but I'm leaving this in as a reminder that we can
+    # patch over the questions as we need in future.
+    # QTUP = Journal2QuestionXwalk.QTUP
+    # QTUP[[i for i, v in enumerate(QTUP) if v[0] == "other_charges_url"][0]] = ("other_charges_url", "Other fees information URL (only if answer is in Column J is 'Yes')")
+
+    REQUIRED = [
+        "pissn",
+        "eissn"
+    ]
+
+    @classmethod
+    def required_questions(cls):
+        return [q for id, q in cls.QTUP if id in cls.REQUIRED]
