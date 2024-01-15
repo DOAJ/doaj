@@ -1,3 +1,5 @@
+from time import sleep
+
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
@@ -108,6 +110,7 @@ class TestBLLTopTodoEditor(DoajTestCase):
                 self.svc.top_todo(account, size)
         else:
             todos = self.svc.top_todo(account, size)
+            sleep(1)
 
             actions = {}
             positions = {}
