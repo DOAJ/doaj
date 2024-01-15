@@ -12,7 +12,7 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 
 ### Our commitment to you
 
-- **No charge** - we will never charge a fee for reviewing your applications in DOAJ
+- **No charge** - we do not charge fees for reviewing your applications
 - **Fairness** - we assess all journals using the same criteria. Our [Guide to applying](/apply/guide/) fully describes these criteria.
 - **Confidentiality** - we will only share or discuss details and information collected during the review process with the applicant or an entity authorised to represent the journal.
 - **Privacy** - we [will not share your personal data](https://doaj.org/privacy/) with third parties unless you have permitted us to do so. We will always ask you first.
@@ -20,8 +20,8 @@ featuremap: ~~PublisherResponsibilities:Fragment~~
 ### Your commitment to us
 
 - You will [respond to questions](/apply/guide/#the-application-process) from our editorial team promptly.
-- You will [keep your contact details up to date]().
-- You will inform us of changes to your journals and [keep your journal records up to date]().
+- You will [keep your contact details up to date](/apply/publisher-responsibilities/#settings).
+- You will inform us of changes to your journals and [keep your journal records up to date](/apply/publisher-responsibilities/#keeping-your-journal-records-up-to-date).
 - You will [upload article metadata](/publisher/uploadfile) to us if you are able to.
 
 We have [a zero-tolerance policy](/about/#zero-tolerance-policy). We will treat you with respect and courtesy. We expect you to do the same.
@@ -58,7 +58,7 @@ If we accept your application, you will receive an automated email that includes
 - Information on how to log into your publisher dashboard
 - Details on why it is helpful to upload article metadata to DOAJ
 
-If you found your journal in DOAJ but didn’t get an email from us, there are [steps you can take]() to ensure our emails are delivered.
+If you found your journal in DOAJ but didn’t get an email from us, there are [steps you can take](/apply/publisher-responsibilities/#emails-from-us) to ensure our emails are delivered.
 
 During the review process, we might correct some of the information in your application.
 
@@ -116,7 +116,7 @@ We have [guidelines](https://doaj-kit.netlify.app/building-blocks/logotype/) abo
 ### Keeping your journal records up to date
 When something changes, you must keep your journal records in DOAJ up to date.
 
-- [Contact our Help Desk](mailto:helpdesk@doaj.org) if you want to change the Title or ISSN of your journal, but [read this section first]().
+- [Contact our Help Desk](mailto:helpdesk@doaj.org) if you want to change the Title or ISSN of your journal, but [read this section first](/apply/publisher-responsibilities/#journal-title-changes-mergers-or-continuations).
 - [Contact our Help Desk](mailto:helpdesk@doaj.org) if your journal qualifies for the Seal.
 - Request a CSV file from us that allows you to update multiple journals and values at the same time and in spreadsheet format.
 - For all other changes, log into your DOAJ account to [submit an update request](/publisher/journal). Use the black ‘Update’ button.
@@ -142,7 +142,7 @@ We aim to process update requests within one month.
 ### Ceased journals
 
 - If one of your indexed journals will be ceasing publication, let us know as soon as possible by [contacting our Help Desk](mailto:helpdesk@doaj.org). When you contact us, include the ISSN and the title of your journal.
-- If another title is continuing the journal, you must [submit a continuation]().
+- If another title is continuing the journal, you must [submit a continuation](/apply/publisher-responsibilities/#journal-title-changes-mergers-or-continuations).
 
 ### Journal transfers
 

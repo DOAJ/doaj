@@ -107,7 +107,7 @@ $.extend(true, doaj, {
                     interval: "month",
                     display: "Month",
                     deactivateThreshold: 1,
-                    active: false,
+                    active: true,
                     displayFormatter : function(val) {
                         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                         var mi = (new Date(parseInt(val))).getUTCMonth();
@@ -120,7 +120,8 @@ $.extend(true, doaj, {
                         open: false,
                         togglable: true,
                         countFormat: countFormat,
-                        hideInactive: true
+                        hideInactive: true,
+                        hideEmpty: true
                     })
                 }),
                 
