@@ -45,6 +45,7 @@ def get_action_handler(action):
     from portality.tasks.reporting import ReportingBackgroundTask
     from portality.tasks.sitemap import SitemapBackgroundTask
     from portality.tasks.suggestion_bulk_edit import SuggestionBulkEditBackgroundTask
+    from portality.tasks.find_discontinued_soon import FindDiscontinuedSoonBackgroundTask
     # dict of {task_name: task_class} so we can interact with the jobs
     HANDLERS: Dict[str, Type[BackgroundTask]] = {
         AnonExportBackgroundTask.__action__: AnonExportBackgroundTask,
@@ -53,7 +54,7 @@ def get_action_handler(action):
         ArticleDuplicateReportBackgroundTask.__action__: ArticleDuplicateReportBackgroundTask,
         AsyncWorkflowBackgroundTask.__action__: AsyncWorkflowBackgroundTask,
         CheckLatestESBackupBackgroundTask.__action__: CheckLatestESBackupBackgroundTask,
-        # FindDiscontinuedSoonBackgroundTask.__action__: FindDiscontinuedSoonBackgroundTask,
+        FindDiscontinuedSoonBackgroundTask.__action__: FindDiscontinuedSoonBackgroundTask,
         HarvesterBackgroundTask.__action__: HarvesterBackgroundTask,
         IngestArticlesBackgroundTask.__action__: IngestArticlesBackgroundTask,
         JournalBulkDeleteBackgroundTask.__action__: JournalBulkDeleteBackgroundTask,
@@ -272,14 +273,15 @@ def rm_all():
         print('No action.')
         return
     from portality import models
+    from portality.bll.services.huey_job import HUEY_REDIS_DOAJMAINQUEUE, HUEY_REDIS_DOAJLONGRUNNING
 
     print('Remove all jobs from DB')
     models.BackgroundJob.delete_by_query(es_queries.query_all())
 
     print('Remove all jobs from redis')
     client = DOAJ.hueyJobService().create_redis_client()
-    client.delete('huey.redis.doajmainqueue')
-    client.delete('huey.redis.doajlongrunning')
+    client.delete(HUEY_REDIS_DOAJMAINQUEUE )
+    client.delete(HUEY_REDIS_DOAJLONGRUNNING )
 
 
 def rm_old_processing(is_all=False):
