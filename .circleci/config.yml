@@ -27,7 +27,6 @@ jobs:
           name: Prepare doaj env for unittests
           command: |
             echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
-            echo "ES_READ_TIMEOUT = '5m'" >> test.cfg
             python portality/cms/build_fragments.py
             python portality/cms/build_sass.py
 

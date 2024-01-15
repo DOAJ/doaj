@@ -220,6 +220,7 @@ class DomainObject(UserDict, object):
 
         return r
 
+
     def delete(self):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warning("System is in READ-ONLY mode, delete command cannot run")
@@ -907,6 +908,17 @@ class DomainObject(UserDict, object):
     def blockalldeleted(cls, ids, sleep=0.05, individual_max_retry_seconds=30):
         for id in ids:
             cls.blockdeleted(id, sleep, individual_max_retry_seconds)
+
+    @classmethod
+    def save_all(cls, models, blocking=False):
+        for m in models:
+            m.save()
+        if blocking:
+            cls.blockall((m.id, getattr(m, "last_updated", None)) for m in models)
+
+
+
+
 
 
 class BlockTimeOutException(Exception):

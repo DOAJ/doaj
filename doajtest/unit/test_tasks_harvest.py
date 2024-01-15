@@ -11,6 +11,7 @@ from portality import models
 from portality.background import BackgroundApi
 from portality.core import app
 from portality.lib import dates
+from portality.lib.thread_utils import wait_until
 from portality.tasks.harvester import HarvesterBackgroundTask
 from portality.tasks.harvester_helpers.epmc import models as h_models
 from portality.tasks.harvester_helpers.epmc.client import EuropePMC, EuropePMCException
@@ -72,7 +73,7 @@ class TestHarvester(DoajTestCase):
         task = HarvesterBackgroundTask(job)
         BackgroundApi.execute(task)
 
-        time.sleep(1)
+        wait_until(lambda: self.journal.count() > 0)
 
         print(job.pretty_audit)
         articles_saved = [a for a in self.journal.all_articles()]
@@ -124,7 +125,7 @@ class TestHarvester(DoajTestCase):
 
         assert not mock_query.called, "mock_query was called when it shouldn't have been"
 
-        time.sleep(1)
+        wait_until(lambda: models.BackgroundJob.pull(job2.id).status == "error")
 
         job3 = models.BackgroundJob.pull(job2.id)
         assert job3.status == "error", "expected 'error', got '{x}'".format(x=job3.status)
