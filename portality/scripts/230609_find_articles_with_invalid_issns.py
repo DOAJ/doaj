@@ -23,19 +23,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
 
-    with open(args.out+"notfound.csv", "w", encoding="utf-8") as f_notfound, open(args.out+"-identical.csv", "w", encoding="utf-8") as f_identical, open(args.out+"-others.csv", "w", encoding="utf-8") as f_others:
-        writer_notfound = csv.writer(f_notfound)
-        writer_notfound.writerow(["ID", "PISSN", "EISSN", "Journals found with article's PISSN", "In doaj?",
-                         "Journals found with article's EISSN", "In doaj?", "Error"])
+    with open(args.out + "--identical.csv", "w", encoding="utf-8") as f_identical:
 
         writer_identical = csv.writer(f_identical)
-        writer_identical.writerow(["ID", "PISSN", "EISSN", "Journals found with article's PISSN", "In doaj?",
-                         "Journals found with article's EISSN", "In doaj?", "Error"])
-
-        writer_others = csv.writer(f_others)
-        writer_others.writerow(["ID", "PISSN", "EISSN", "Journals found with article's PISSN", "In doaj?",
-                         "Journals found with article's EISSN", "In doaj?", "Error"])
-
+        writer_identical.writerow(["ID", "ISSNs", "Journals found with article's ISSNs", "In doaj?", "Journal's PISSN", "Journal's EISSN"])
+        prev_id = "";
         for a in models.Article.iterate(q=IN_DOAJ, page_size=100, keepalive='5m'):
             article = models.Article(_source=a)
             bibjson = article.bibjson()
@@ -44,29 +36,18 @@ if __name__ == "__main__":
                 articlesvc.ArticleService.match_journal_with_validation(bibjson)
             except exceptions.ArticleNotAcceptable as e:
                 id = article.id
-                pissn = bibjson.get_identifiers("pissn")
-                eissn = bibjson.get_identifiers("eissn")
-                j_p = [j["id"] for j in models.Journal.find_by_issn(pissn)]
-                j_p_in_doaj = []
-                if (j_p):
-                    for j in j_p:
-                        jobj = models.Journal.pull(j)
-                        if (jobj):
-                            j_p_in_doaj.append(jobj.is_in_doaj())
-                        else:
-                            j_p_in_doaj.append("n/a")
-                j_e = [j["id"] for j in models.Journal.find_by_issn(eissn)]
-                j_e_in_doaj = []
-                if (j_e):
-                    for j in j_e:
-                        jobj = models.Journal.pull(j)
-                        if (jobj):
-                            j_e_in_doaj.append(jobj.is_in_doaj())
-                        else:
-                            j_e_in_doaj.append("n/a")
-                if (str(e) == "The Print and Online ISSNs supplied are identical. If you supply 2 ISSNs they must be different."):
-                    writer_identical.writerow([id, pissn, eissn, j_p, j_p_in_doaj, j_e, j_e_in_doaj, "Identical ISSNs"])
-                elif (str(e) == "ISSNs provided don't match any journal."):
-                    writer_notfound.writerow([id, pissn, eissn, j_p, j_p_in_doaj, j_e, j_e_in_doaj, "No matching journal found."])
-                else:
-                    writer_others.writerow([id, pissn, eissn, j_p, j_p_in_doaj, j_e, j_e_in_doaj, str(e)])
+                issn = bibjson.get_identifiers("pissn")
+                journal_info = []
+                for j in models.Journal.find_by_issn(issn):
+                    jobj = models.Journal.pull(j["id"])
+                    if (jobj):
+                        jid = j["id"]
+                        in_doaj = jobj.is_in_doaj()
+                        jbib = jobj.bibjson()
+                        jpissn = jbib.pissn
+                        jeissn = jbib.eissn
+                    else:
+                        journal_info.append("n/a")
+                    if (str(e) == "The Print and Online ISSNs supplied are identical. If you supply 2 ISSNs they must be different."):
+                        writer_identical.writerow([id, issn, jid, in_doaj, jpissn, jeissn])
+                    id = "As above";
