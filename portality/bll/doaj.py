@@ -126,3 +126,13 @@ class DOAJ(object):
         """
         from portality.bll.services import tour
         return tour.TourService()
+
+    @classmethod
+    def hueyJobService(cls):
+        """
+        Obtain an instance of the huey_job service  ~~->HueyJob:Service~~
+        :return:  HueyJobService
+        """
+        from portality.bll.services import huey_job
+        return huey_job.HueyJobService()
+

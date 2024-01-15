@@ -58,6 +58,3 @@ class HueyJobService:
 
     def find_queued_huey_jobs(self) -> Iterator[HueyJobData]:
         return (r for r in self.find_all_huey_jobs() if not r.is_scheduled)
-
-
-huey_job_service = HueyJobService()

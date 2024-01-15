@@ -14,6 +14,7 @@ from collections import Counter
 from typing import Dict, Type, List
 
 from portality import constants
+from portality.bll import DOAJ
 from portality.constants import BGJOB_STATUS_QUEUED
 from portality.lib import dates, color_text, es_queries
 from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
@@ -210,8 +211,7 @@ def title(s):
 
 
 def report(example_size=10):
-    from portality.bll.services.huey_job import huey_job_service
-    huey_rows = list(huey_job_service.find_all_huey_jobs())
+    huey_rows = list(DOAJ.hueyJobService().find_all_huey_jobs())
 
     scheduled = Counter(r.bgjob_action for r in huey_rows if r.is_scheduled)
     unscheduled = Counter(r.bgjob_action for r in huey_rows if not r.is_scheduled)
@@ -266,7 +266,6 @@ def report(example_size=10):
 
 
 def rm_all():
-    from portality.bll.services.huey_job import huey_job_service
     if input(color_text.apply_color(
             'WARNING: This will delete all jobs from redis and the database. Proceed? [y\\N] ',
             background=color_text.Color.red)).lower() != 'y':
@@ -278,7 +277,7 @@ def rm_all():
     models.BackgroundJob.delete_by_query(es_queries.query_all())
 
     print('Remove all jobs from redis')
-    client = huey_job_service.create_redis_client()
+    client = DOAJ.hueyJobService().create_redis_client()
     client.delete('huey.redis.doajmainqueue')
     client.delete('huey.redis.doajlongrunning')
 
@@ -307,10 +306,10 @@ def rm_old_processing(is_all=False):
 def rm_redundant():
     from portality.core import app
     from portality import models
-    from portality.bll.services.huey_job import huey_job_service
 
     target_actions = app.config.get('BGJOB_MANAGE_REDUNDANT_ACTIONS', [])
     print(f'Following actions will be cleaned up for redundant jobs: {target_actions}')
+    huey_job_service = DOAJ.hueyJobService()
     client = huey_job_service.create_redis_client()
     huey_rows = list(huey_job_service.find_queued_huey_jobs())
     for action in target_actions:
@@ -340,8 +339,7 @@ def rm_redundant():
 def find_huey_bgjob_delta(huey_rows: List['HueyJobData'] = None,
                           bgjobs: List['BackgroundJob'] = None
                           ) -> (List['HueyJobData'], List['BackgroundJob']):
-    from portality.bll.services.huey_job import huey_job_service
-    huey_rows: List['HueyJobData'] = (list(huey_job_service.find_queued_huey_jobs())
+    huey_rows: List['HueyJobData'] = (list(DOAJ.hueyJobService().find_queued_huey_jobs())
                                       if huey_rows is None else list(huey_rows))
     bgjobs: List[BackgroundJob] = (find_bgjobs_by_status(BGJOB_STATUS_QUEUED)
                                    if bgjobs is None else list(bgjobs))
@@ -355,7 +353,6 @@ def find_huey_bgjob_delta(huey_rows: List['HueyJobData'] = None,
 
 
 def rm_async_queued_jobs():
-    from portality.bll.services.huey_job import huey_job_service
     huey_only, db_only = find_huey_bgjob_delta()
     print('Remove async queued jobs')
     print_job_delta('### DB only', ((j.id, j.action) for j in db_only))
@@ -364,7 +361,7 @@ def rm_async_queued_jobs():
         models.BackgroundJob.bulk_delete(d.id for d in db_only)
 
     print_job_delta('### Redis only', ((i.bgjob_id, i.bgjob_action) for i in huey_only))
-    client = huey_job_service.create_redis_client()
+    client = DOAJ.hueyJobService().create_redis_client()
     for i in huey_only:
         rm_huey_job_from_redis(client, i)
 
