@@ -9,11 +9,12 @@ from unittest import TestCase
 
 import dictdiffer
 from flask_login import login_user
-
 from portality import core, dao
 from portality.core import app
+from portality.dao import any_pending_tasks, query_data_tasks
 from portality.lib import paths, dates
 from portality.lib.dates import FMT_DATE_STD
+from portality.lib.thread_utils import wait_until
 from portality.tasks.redis_huey import main_queue, long_running
 from portality.util import url_for
 
@@ -385,3 +386,21 @@ def login(app_client, username, password, follow_redirects=True):
 
 def logout(app_client, follow_redirects=True):
     return app_client.get(url_for('account.logout'), follow_redirects=follow_redirects)
+
+
+def wait_until_no_es_incomplete_tasks():
+    """
+
+    wait until no ES pending tasks and no data tasks is running
+
+    created for make sure model.save() or model.delete() is completed
+
+    if your data still can not be query, try Model.refresh()
+
+    """
+    def _cond_fn():
+        return not any_pending_tasks() and len(query_data_tasks(timeout='3m')) == 0
+
+    return wait_until(_cond_fn, 10, 0.2)
+
+

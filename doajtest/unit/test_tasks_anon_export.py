@@ -2,8 +2,9 @@ import gzip
 import json
 from pathlib import Path
 
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, wait_until_no_es_incomplete_tasks
 from doajtest.unit_tester import bgtask_tester
+from portality import dao
 from portality.models import BackgroundJob, Account
 from portality.store import StoreLocal
 from portality.tasks.anon_export import AnonExportBackgroundTask
@@ -15,8 +16,12 @@ class TestAnonExport(DoajTestCase):
     def test_execute(self):
 
         # prepare test data
-        BackgroundJob.save_all((BackgroundJob() for _ in range(3)), blocking=True)
-        Account.save_all((Account() for _ in range(2)), blocking=True)
+        for _ in range(3):
+            BackgroundJob().save()
+        for _ in range(2):
+            Account().save()
+        wait_until_no_es_incomplete_tasks()
+        dao.refresh()
 
         new_background_jobs = list(BackgroundJob.scroll())
         new_accounts = list(Account.scroll())
