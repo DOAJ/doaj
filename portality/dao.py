@@ -476,7 +476,14 @@ class DomainObject(UserDict, object):
 
 
     @classmethod
-    def destroy_index(cls):
+    def destroy_index(cls, **es_kwargs):
+        default_es_kwargs = {
+            'timeout': '5m',
+            'request_timeout': 1001,
+        }
+        default_es_kwargs.update(es_kwargs)
+        es_kwargs = default_es_kwargs
+
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warning("System is in READ-ONLY mode, destroy_index command cannot run")
             return
@@ -486,7 +493,7 @@ class DomainObject(UserDict, object):
         # else:
         #     return esprit.raw.delete_index(es_connection)
         print('Destroying indexes with prefix ' + app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
-        return ES.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
+        return ES.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*', **es_kwargs)
 
     @classmethod
     def check_es_raw_response(cls, res, extra_trace_info=''):

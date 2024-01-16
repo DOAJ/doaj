@@ -34,8 +34,3 @@ to open a pull request!
 <!-- ~~->DocSite:Documentation~~ -->
 * [DOAJ Auto-generated docs](https://doaj.github.io/doaj-docs/) - here you will find 
 data models, test coverage reports, form documentation and a map of the software
-  
-
-
-
- 

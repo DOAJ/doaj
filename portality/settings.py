@@ -1488,3 +1488,18 @@ TOURS = {
         }
     ]
 }
+
+
+#######################################################
+# Selenium test environment
+
+# url of selenium server, selenium remote will be used if it's not empty
+# usually it's a docker container and the url should be 'http://localhost:4444/wd/hub'
+SELENIUM_REMOTE_URL = 'http://localhost:4444/wd/hub'
+
+# host and port that used to run doaj server in background for selenium testcases
+# if you use docker selenium browser container, ip should be ip of docker network interface such as 172.17.0.1
+# SELENIUM_DOAJ_HOST = 'localhost'
+SELENIUM_DOAJ_HOST = '172.17.0.1'
+SELENIUM_DOAJ_PORT = 5014
+
