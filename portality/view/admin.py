@@ -1,4 +1,6 @@
 import json
+from collections import namedtuple
+from typing import Iterable, List
 
 from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
@@ -20,6 +22,7 @@ from portality.forms.application_forms import JournalFormFactory
 from portality.forms.article_forms import ArticleFormFactory
 from portality.lcc import lcc_jstree
 from portality.lib.query_filters import remove_search_limits, update_request, not_update_request
+from portality.models import Journal
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
     article_bulk_delete
 from portality.ui.messages import Messages
@@ -78,7 +81,7 @@ def journals_list():
         issns = models.Journal.issns_by_query(query)
         atotal = models.Article.count_by_issns(issns)
 
-        resp = make_response(json.dumps({"journals" : jtotal, "articles" : atotal}))
+        resp = make_response(json.dumps({"journals": jtotal, "articles": atotal}))
         resp.mimetype = "application/json"
         return resp
 
@@ -93,9 +96,9 @@ def journals_list():
             abort(400)
 
         # get only the query part
-        query = {"query" : query.get("query")}
+        query = {"query": query.get("query")}
         models.Journal.delete_selected(query=query, articles=True, snapshot_journals=True, snapshot_articles=True)
-        resp = make_response(json.dumps({"status" : "success"}))
+        resp = make_response(json.dumps({"status": "success"}))
         resp.mimetype = "application/json"
         return resp
 
@@ -113,7 +116,7 @@ def articles_list():
             print(request.values.get("q"))
             abort(400)
         total = models.Article.hit_count(query, consistent_order=False)
-        resp = make_response(json.dumps({"total" : total}))
+        resp = make_response(json.dumps({"total": total}))
         resp.mimetype = "application/json"
         return resp
     elif request.method == "DELETE":
@@ -127,9 +130,9 @@ def articles_list():
             abort(400)
 
         # get only the query part
-        query = {"query" : query.get("query")}
+        query = {"query": query.get("query")}
         models.Article.delete_selected(query=query, snapshot=True)
-        resp = make_response(json.dumps({"status" : "success"}))
+        resp = make_response(json.dumps({"status": "success"}))
         resp.mimetype = "application/json"
         return resp
 
@@ -150,9 +153,10 @@ def article_endpoint(article_id):
     a.snapshot()
     a.delete()
     # return a json response
-    resp = make_response(json.dumps({"success" : True}))
+    resp = make_response(json.dumps({"success": True}))
     resp.mimetype = "application/json"
     return resp
+
 
 @blueprint.route("/article/<article_id>", methods=["GET", "POST"])
 @login_required
@@ -218,10 +222,18 @@ def journal_page(journal_id):
             # ~~-> BackgroundJobs:Model~~
             job = models.BackgroundJob.pull(job_id)
             # ~~-> BackgroundJobs:Page~~
-            url = url_for("admin.background_jobs_search") + "?source=" + dao.Facetview2.url_encode_query(dao.Facetview2.make_query(job_id))
+            url = url_for("admin.background_jobs_search") + "?source=" + dao.Facetview2.url_encode_query(
+                dao.Facetview2.make_query(job_id))
             Messages.flash_with_url(Messages.ADMIN__WITHDRAW_REINSTATE.format(url=url), "success")
         fc.processor(source=journal)
-        return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree)
+
+        bibjson = journal.bibjson()
+        past_cont_list = create_cont_list(journal.get_past_continuations(), bibjson.replaces)
+        future_cont_list = create_cont_list(journal.get_future_continuations(), bibjson.is_replaced_by)
+
+        return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree,
+                                  past_cont_list=past_cont_list, future_cont_list=future_cont_list,
+                                  )
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=journal)
@@ -237,6 +249,25 @@ def journal_page(journal_id):
                 return redirect(url_for("admin.journal_page", journal_id=journal.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
+
+
+DisplayContData = namedtuple('DisplayContData', ['issn', 'title', 'id'])
+
+
+def create_cont_list(continuations: Iterable[Journal],
+                     continuation_issns: List[str]) -> List[DisplayContData]:
+    def _issn_id_tuple(j: Journal):
+        bibjson = j.bibjson()
+        return DisplayContData(bibjson.pissn or bibjson.eissn, j.id, bibjson.title)
+
+    cont_list = map(_issn_id_tuple, continuations)
+    cont_list = {data.issn: data for data in cont_list}
+    cont_list.update({
+        issn: DisplayContData(issn, None, None) for issn in continuation_issns
+        if issn not in cont_list
+    })
+    return cont_list.values()
+
 
 ######################################################
 # Endpoints for reinstating/withdrawing journals from the DOAJ
@@ -272,6 +303,7 @@ def journals_bulk_withdraw():
     summary = journal_in_out_doaj.change_by_query(q, False, dry_run=payload.get("dry_run", True))
     return make_json_resp(summary.as_dict(), status_code=200)
 
+
 @blueprint.route("/journals/bulk/reinstate", methods=["POST"])
 @login_required
 @ssl_required
@@ -283,6 +315,7 @@ def journals_bulk_reinstate():
     q = get_query_from_request(payload)
     summary = journal_in_out_doaj.change_by_query(q, True, dry_run=payload.get("dry_run", True))
     return make_json_resp(summary.as_dict(), status_code=200)
+
 
 #
 #####################################################################
@@ -314,11 +347,15 @@ def journal_continue(journal_id):
             abort(400)
 
         try:
-            cont = j.make_continuation(form.type.data, eissn=form.eissn.data, pissn=form.pissn.data, title=form.title.data)
+            cont = j.make_continuation(form.type.data, eissn=form.eissn.data, pissn=form.pissn.data,
+                                       title=form.title.data)
         except:
             abort(400)
 
-        flash("The continuation has been created (see below).  You may now edit the other metadata associated with it.  The original journal has also been updated with this continuation's ISSN(s).  Once you are happy with this record, you can publish it to the DOAJ", "success")
+        flash("The continuation has been created (see below).  You may now edit the other metadata associated with it."
+              "  The original journal has also been updated with this continuation's ISSN(s).  "
+              "Once you are happy with this record, you can publish it to the DOAJ",
+              "success")
         return redirect(url_for('.journal_page', journal_id=cont.id))
 
 
@@ -529,7 +566,7 @@ def editor_group(group_id=None):
             eg.delete()
 
             # return a json response
-            resp = make_response(json.dumps({"success" : True}))
+            resp = make_response(json.dumps({"success": True}))
             resp.mimetype = "application/json"
             return resp
 
@@ -561,7 +598,7 @@ def editor_group(group_id=None):
             if associates is not None:
                 for a in associates:
                     ae = models.Account.pull(a)
-                    if ae is not None:                                     # If the account has been deleted, pull fails
+                    if ae is not None:  # If the account has been deleted, pull fails
                         ae.add_role("associate_editor")
                         ae.save()
 
@@ -572,7 +609,9 @@ def editor_group(group_id=None):
                 eg.set_associates(associates)
             eg.save()
 
-            flash("Group was updated - changes may not be reflected below immediately.  Reload the page to see the update.", "success")
+            flash(
+                "Group was updated - changes may not be reflected below immediately.  Reload the page to see the update.",
+                "success")
             return redirect(url_for('admin.editor_group_search'))
         else:
             return render_template("admin/editor_group.html", admin_page=True, form=form)
@@ -633,7 +672,8 @@ def get_bulk_edit_background_task_manager(doaj_type):
     elif doaj_type in ['applications', 'update_requests']:
         return suggestion_bulk_edit.suggestion_manage
     else:
-        raise BulkAdminEndpointException('Unsupported DOAJ type - you can currently only bulk edit journals and applications/update_requests.')
+        raise BulkAdminEndpointException(
+            'Unsupported DOAJ type - you can currently only bulk edit journals and applications/update_requests.')
 
 
 def get_query_from_request(payload, doaj_type=None):
@@ -658,7 +698,8 @@ def bulk_assign_editor_group(doaj_type):
     task = get_bulk_edit_background_task_manager(doaj_type)
 
     payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query', 'editor_group'], error_to_raise=BulkAdminEndpointException)
+    validate_json(payload, fields_must_be_present=['selection_query', 'editor_group'],
+                  error_to_raise=BulkAdminEndpointException)
 
     summary = task(
         selection_query=get_query_from_request(payload, doaj_type),
@@ -677,7 +718,8 @@ def bulk_add_note(doaj_type):
     task = get_bulk_edit_background_task_manager(doaj_type)
 
     payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query', 'note'], error_to_raise=BulkAdminEndpointException)
+    validate_json(payload, fields_must_be_present=['selection_query', 'note'],
+                  error_to_raise=BulkAdminEndpointException)
 
     summary = task(
         selection_query=get_query_from_request(payload, doaj_type),
@@ -727,7 +769,8 @@ def applications_bulk_change_status(doaj_type):
     if doaj_type not in ["applications", "update_requests"]:
         abort(403)
     payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query', 'application_status'], error_to_raise=BulkAdminEndpointException)
+    validate_json(payload, fields_must_be_present=['selection_query', 'application_status'],
+                  error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload, doaj_type)
     summary = get_bulk_edit_background_task_manager('applications')(
