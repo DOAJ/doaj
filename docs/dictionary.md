@@ -1,9 +1,10 @@
-| Short | Description    |
-| ----- |----------------|
-| bgjob | background job |
-| noti | notification   |
-| noqa | NO-QA (NO Quality Assurance) |
+| Short   | Description                  |
+|---------|------------------------------|
+| bgjob   | background job               |
+| noti    | notification                 |
+| noqa    | NO-QA (NO Quality Assurance) |
 | inst    | instance                     |
 | fmt     | format                       |
 | exparam | extra parameter              |
-| maned | Managing Editor              |
+| maned   | Managing Editor              |
+| gsheet  | Google Sheet                 |

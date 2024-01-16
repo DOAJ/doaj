@@ -169,7 +169,9 @@ class DomainObject(UserDict, object):
         r = None
         while attempt <= retries:
             try:
-                r = ES.index(self.index_name(), d, doc_type=self.doc_type(), id=self.data.get("id"), headers=CONTENT_TYPE_JSON)
+                r = ES.index(self.index_name(), d, doc_type=self.doc_type(), id=self.data.get("id"),
+                             headers=CONTENT_TYPE_JSON,
+                             timeout=app.config.get('ES_READ_TIMEOUT', '1m'), )
                 break
 
             except (elasticsearch.ConnectionError, elasticsearch.ConnectionTimeout):
@@ -217,6 +219,7 @@ class DomainObject(UserDict, object):
                     continue
 
         return r
+
 
     def delete(self):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
@@ -432,7 +435,10 @@ class DomainObject(UserDict, object):
             try:
                 # ES 7.10 updated target to whole index, since specifying type for search is deprecated
                 # r = requests.post(cls.target_whole_index() + recid + "_search", data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
-                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(), headers=CONTENT_TYPE_JSON, **kwargs)
+                if kwargs.get('timeout') is None:
+                    kwargs['timeout'] = app.config.get('ES_READ_TIMEOUT', '1m')
+                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(),
+                              headers=CONTENT_TYPE_JSON, **kwargs)
                 break
             except Exception as e:
                 exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
@@ -909,6 +915,17 @@ class DomainObject(UserDict, object):
     def blockalldeleted(cls, ids, sleep=0.05, individual_max_retry_seconds=30):
         for id in ids:
             cls.blockdeleted(id, sleep, individual_max_retry_seconds)
+
+    @classmethod
+    def save_all(cls, models, blocking=False):
+        for m in models:
+            m.save()
+        if blocking:
+            cls.blockall((m.id, getattr(m, "last_updated", None)) for m in models)
+
+
+
+
 
 
 class BlockTimeOutException(Exception):

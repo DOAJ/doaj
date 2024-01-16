@@ -58,11 +58,12 @@ ed:
   photo: "napa.jpg"
 
 - name: Pablo Hernandez
-  area: Medical Sciences
+  area: Medical Sciences, Nutrition
   year_since:
   city: Caracas
   country: Venezuela
   language: Spanish, English
+  featured: true
   photo: "Pablo.jpg"
 
 - name: Paola Galimberti
@@ -121,7 +122,15 @@ ass_ed:
   city: Florence
   country: Italy
   language: Italian, English, Spanish
-  
+
+- name: Amber Osman
+  area: Open Science, Publication Ethics, Scholarly communication
+  year_since:
+  city: Karachi
+  country: Pakistan
+  language: Urdu, English
+  photo: "Amber.jpeg"
+
 - name: Amir Reza Asnafi
   area: Library and Information Science, Scientometrics
   year_since:
@@ -271,6 +280,14 @@ ass_ed:
   country: Indonesia
   language: Bahasa Indonesia, English
   photo: "dh.jpg"  
+  
+- name: Dumitru Lisnic
+  area: History and Religious Studies, Ethnography, Anthropology
+  year_since:
+  city: Balți
+  country: Republic of Moldova
+  language: Romanian, Russian, Ukrainian, German
+  photo: "Dumitru.jpg"  
 
 - name: Dr. Eko Supraptono
   area: Technology
@@ -430,6 +447,7 @@ ass_ed:
   city: Edirne
   country: Türkiye
   language: English, Turkish, German
+  featured: true
   photo: "Kadri Kiran.jpg"
 
 - name: Kâmil B. Varınca
@@ -462,6 +480,14 @@ ass_ed:
   city: Charlottetown
   country: Canada
   language: English
+
+- name: Kristen Totleben
+  area: Librarianship, Humanities, Social Sciences
+  year_since:
+  city: Rochester, New York
+  country: USA
+  language: English, Spanish
+  photo: "Kristen.jpg"
 
 - name: Lena Lönngren
   area:
@@ -594,6 +620,7 @@ ass_ed:
   city: Kyiv
   country: Ukraine
   language: Ukranian, Russian, English, Polish
+  featured: true
   photo: "Nataliia.jpg"
  
 - name: Nathalia Avila
@@ -672,7 +699,7 @@ ass_ed:
   language: English
   photo: "princessnwafor.jpg"
   
-- name: Priya Rangra
+- name: Priya
   area: Open Source Software, Open Science, Information Seeking Behaviour, Applications of ICT and AI in Libraries, Bibliometric Analysis
   year_since:
   city: Himachal Pradesh
