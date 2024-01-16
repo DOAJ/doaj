@@ -1,3 +1,5 @@
+from time import sleep
+
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
@@ -156,7 +158,7 @@ class TestBLLTopTodoManed(DoajTestCase):
         # counter to maned_assign_pending
         self.build_application("no_assed", 3 * w, 3 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps, assign_pending)
 
-        models.Application.blockall([(ap.id, ap.last_updated) for ap in apps])
+        sleep(2)
 
         # size = int(size_arg)
         size=25

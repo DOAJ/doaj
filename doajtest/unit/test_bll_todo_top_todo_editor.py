@@ -93,7 +93,7 @@ class TestBLLTopTodoEditor(DoajTestCase):
 
         self.build_application("editor_assign_pending", 2 * w, 2 * w, constants.APPLICATION_STATUS_PENDING, apps, additional_fn=assign_pending)
 
-        models.Application.blockall([(ap.id, ap.last_updated) for ap in apps])
+        sleep(2)
 
         # size = int(size_arg)
         size=25
@@ -110,7 +110,6 @@ class TestBLLTopTodoEditor(DoajTestCase):
                 self.svc.top_todo(account, size)
         else:
             todos = self.svc.top_todo(account, size)
-            sleep(1)
 
             actions = {}
             positions = {}

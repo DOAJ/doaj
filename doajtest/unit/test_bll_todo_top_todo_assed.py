@@ -1,3 +1,5 @@
+from time import sleep
+
 from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
 
@@ -88,7 +90,7 @@ class TestBLLTopTodoAssed(DoajTestCase):
         # an application that is otherwise normal
         self.build_application("assed_all_applications", 2 * w, 2 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
 
-        models.Application.blockall([(ap.id, ap.last_updated) for ap in apps])
+        sleep(2)
 
         # size = int(size_arg)
         size=25
