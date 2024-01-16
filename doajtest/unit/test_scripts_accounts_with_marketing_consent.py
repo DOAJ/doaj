@@ -5,7 +5,8 @@ import shutil
 from doajtest.fixtures.accounts import AccountFixtureFactory
 from doajtest.helpers import DoajTestCase, with_es
 from portality import models
-from portality.lib import paths
+from portality.lib import paths, thread_utils
+from portality.models import Account
 from portality.scripts.accounts_with_marketing_consent import publishers_with_consent
 
 
@@ -15,17 +16,19 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
     def test_01_publishers_with_consent(self):
 
         tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True)
+        num_new_records = 20
+        org_size = Account.count()
 
         # output file to save csv
         output_file = os.path.join(tmp_dir, 'accounts.csv')
         # Create accounts with marketing consent not set
-        for i in range(20):
+        for i in range(num_new_records):
             pubsource = AccountFixtureFactory.make_publisher_source()
             pubaccount = models.Account(**pubsource)
             pubaccount.set_id()
             pubaccount.save()
         # Create accounts with marketing consent set to False
-        for i in range(20):
+        for i in range(num_new_records):
             pubsource = AccountFixtureFactory.make_publisher_source()
             pubaccount = models.Account(**pubsource)
             pubaccount.set_id()
@@ -40,7 +43,7 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
             'Last Updated',
             'Updated Since Create?'
         ]]
-        for i in range(20):
+        for i in range(num_new_records):
             pubsource = AccountFixtureFactory.make_publisher_source()
             pubaccount = models.Account(**pubsource)
             pubaccount.set_id()
@@ -58,6 +61,7 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
                 str('False')
             ])
 
+        thread_utils.wait_until(lambda: org_size + num_new_records == Account.count(), sleep_time=0.4)
         publishers_with_consent(output_file)
 
         assert os.path.exists(output_file)
