@@ -1,0 +1,98 @@
+suite: Publisher CSV
+testset: Validate CSV
+tests:
+- title: Invalid headers in upload
+  context:
+    role: Publisher
+    testdrive: publisher_csv_upload
+  setup:
+    - Use the publisher_csv_upload testdrive to setup for this test at /testdrive/publisher_csv_upload
+    - At the end of the test please use the 'teardown' link provided by the testdrive to remove test assets from the system
+  steps:
+  - step: Log in as the publisher account specified by the testdrive result
+  - step: Go to the 'Validate your Journal CSV' tab in the publisher dashboard
+    path: publisher/journal-csv
+    results:
+    - There is a page that offers you documentation and an upload box for your Journal CSV
+  - step: Click 'Choose File' and select a CSV file with invalid headers
+    resource: /doajtest/example_files/publisher_csv_invalid_headers.csv
+  - step: Click 'Validate'
+    results:
+      - You are briefly shown a message to say that your file is being validated (this may appear only briefly, if you 
+        blink you may miss it)
+      - Shortly after, you are shown a set of validation errors.  The following are the expected errors
+      - A general error saying that "Journal ISSN (print version)" is a required header and is missing
+      - An issue with the header row in Column A, warning that the header case is different from the expected header
+      - An issue with the header row in Column K, saying "Extra unexpected header" is not a valid header
+  - step: If you are finished testing, you can teardown the testdrive using the link provided.  If you are going to continue 
+      with the other tests in this suite you can leave the testdrive in place until the very end
+
+- title: Invalid data in upload
+  context:
+    role: Publisher
+    testdrive: publisher_csv_upload
+  setup:
+    - If you have not done so already, use the publisher_csv_upload testdrive to setup for this test at /testdrive/publisher_csv_upload
+  steps:
+    - step: Log in as the publisher account specified by the testdrive result
+    - step: Go to the 'Validate your Journal CSV' tab in the publisher dashboard
+      path: publisher/journal-csv
+    - step: Click 'Choose File' and select a CSV file with invalid data
+      resource: /doajtest/example_files/publisher_csv_invalid_data.csv
+    - step: Click 'Validate'
+      results:
+        - You are shown a set of validation errors.  The following are the expected errors
+        - Row 2 and Row 6 were not found in DOAJ
+        - Row 3 is owned by another user
+        - Row 4 did not provide any updates to the journal
+        - Row 5 changed the journal title, which is not permitted
+        - Row 7 had a selection of validation errors.  The errors are identified, and the original and newly supplied
+          values are shown
+    - step: If you are finished testing, you can teardown the testdrive using the link provided.  If you are going to continue
+        with the other tests in this suite you can leave the testdrive in place until the very end
+
+- title: Valid uploads
+  context:
+    role: Publisher
+    testdrive: publisher_csv_upload
+  setup:
+    - If you have not done so already, use the publisher_csv_upload testdrive to setup for this test at /testdrive/publisher_csv_upload
+  steps:
+    - step: Log in as the publisher account specified by the testdrive result
+    - step: Go to the 'Validate your Journal CSV' tab in the publisher dashboard
+      path: publisher/journal-csv
+    - step: Click 'Validate' without selecting a file
+      results:
+        - You are shown a message saying that you must select a file to upload
+    - step: Click 'Choose File' and select a CSV file with valid data that will generate warnings
+      resource: /doajtest/example_files/publisher_csv_upload_warnings.csv
+    - step: Click 'Validate'
+      results:
+        - You are shown a validation message that says validation is successful with warnings
+        - You are shown a list of warnings.  The following are the expected warnings
+        - One of the headers is in the wrong case
+        - One of the rows does not provide an update to the data
+    - step: Click 'Choose File' and select a CSV file with valid data that will not generate any warnings
+      resource: /doajtest/example_files/publisher_csv_upload_success.csv
+    - step: Click 'Validate'
+      results:
+        - You are shown a validation message that says validation is successful
+    - step: If you are finished testing, you can teardown the testdrive using the link provided.  If you are going to continue
+        with the other tests in this suite you can leave the testdrive in place until the very end
+
+- title: Access to the feature
+  context:
+    role: Publisher
+    testdrive: publisher_csv_upload
+    setup:
+      - If you have not done so already, use the publisher_csv_upload testdrive to setup for this test at /testdrive/publisher_csv_upload
+    steps:
+      - step: Log in as the publisher account specified by the testdrive result
+        results:
+          - The "Validate your CSV" navigation tab is visible
+      - step: As an administrator, edit the user's account and remove the "journal_csv" role
+      - step: As the publisher again, reload the publisher home page
+        results:
+          - The "Validate your CSV" tab is no longer visible
+
+

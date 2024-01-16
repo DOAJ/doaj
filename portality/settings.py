@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.5.4"
+DOAJ_VERSION = "6.5.7"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -72,6 +72,8 @@ ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
+
+ES_READ_TIMEOUT = '1m'
 
 #####################################################
 # Elastic APM config  (MUST be configured in env file)
@@ -296,7 +298,8 @@ TOP_LEVEL_ROLES = [
     "api",
     "ultra_bulk_delete",
     "preservation",
-    constants.ROLE_PUBLIC_DATA_DUMP
+    constants.ROLE_PUBLIC_DATA_DUMP,
+    constants.ROLE_PUBLISHER_JOURNAL_CSV
 ]
 
 ROLE_MAP = {

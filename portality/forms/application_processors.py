@@ -430,10 +430,6 @@ class AdminApplication(ApplicationProcessor):
                 }))
 
             # ~~-> Email:Notifications~~
-            # if revisions were requested, email the publisher
-            if self.source.application_status != constants.APPLICATION_STATUS_REVISIONS_REQUIRED and self.target.application_status == constants.APPLICATION_STATUS_REVISIONS_REQUIRED:
-                self.add_alert(
-                    Messages.SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
 
             # if we need to email the editor and/or the associate, handle those here
             if is_editor_group_changed:

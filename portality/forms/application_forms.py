@@ -426,7 +426,7 @@ class FieldDefinitions:
         "label": "Up to 6 subject keywords in English",
         "input": "taglist",
         "help": {
-            "long_help": ["Choose upto 6 keywords that describe the subject matter of the journal. "
+            "long_help": ["Choose up to 6 keywords that describe the journal's subject matter. "
                           "Keywords must be in English.", "Use single words or short phrases (2 to 3 words) "
                                                           "that describe the journal's main topic.", "Do not add acronyms, abbreviations or descriptive sentences.",
                           "Note that the keywords may be edited by DOAJ editorial staff." ],
@@ -480,11 +480,10 @@ class FieldDefinitions:
     # ~~->$ PublisherName:FormField~~
     PUBLISHER_NAME = {
         "name": "publisher_name",
-        "label": "Publisher’s name",
+        "label": "Publisher's name",
         "input": "text",
         "validate": [
-            {"required": {"message": "Enter the name of the journal’s publisher"}},
-            {"different_to": {"field": "institution_name", "message": "Publisher and Society/Institution names cannot be the same."}}  # ~~^-> DifferetTo:FormValidator~~
+            {"required": {"message": "Enter the name of the journal's publisher"}},
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -492,7 +491,7 @@ class FieldDefinitions:
             "full_contents" # ~~^->FullContents:FormWidget~~
         ],
         "help": {
-            "placeholder": "Type or select the publisher’s name"
+            "placeholder": "Type or select the publisher's name"
         },
         "contexts" : {
             "bulk_edit" : {
@@ -525,7 +524,7 @@ class FieldDefinitions:
     # ~~->$ PublisherCountry:FormField~~
     PUBLISHER_COUNTRY = {
         "name": "publisher_country",
-        "label": "Publisher’s country",
+        "label": "Publisher's country",
         "input": "select",
         "default": "",
         "options_fn": "iso_country_list",
@@ -556,25 +555,20 @@ class FieldDefinitions:
     # ~~->$ InstitutionName:FormField~~
     INSTITUTION_NAME = {
         "name": "institution_name",
-        "label": "Society or institution’s name",
+        "label": "Other organisation's name",
         "input": "text",
         "optional": True,
         "help": {
-            "short_help": "The society or institution responsible for the journal",
-            "long_help": ["Some societies or institutions are linked to a journal in some way but are not responsible "
-                          "for publishing it. The publisher can be a separate organisation. If your journal is linked to "
-                          "a society or other type of institution, enter that here."],
-            "placeholder": "Type or select the society or institution’s name"
+            "short_help": "Any other organisation associated with the journal",
+            "long_help": ["The journal may be owned, funded, sponsored, or supported by another organisation that is not "
+                          "the publisher. If your journal is linked to "
+                          "a second organisation, enter its name here."],
+            "placeholder": "Type or select the other organisation's name"
         },
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
             {"autocomplete": {"type" : "journal", "field": "bibjson.institution.name.exact"}}, # ~~^-> Autocomplete:FormWidget~~
             "full_contents" # ~~^->FullContents:FormWidget~~
-        ],
-        "validate": [
-            {"different_to": {"field": "publisher_name",
-                              "message": "Publisher and Society/Institution names cannot be the same."}}
-            # ~~^-> DifferetTo:FormValidator~~
         ],
         "contexts": {
             "admin": {
@@ -607,13 +601,13 @@ class FieldDefinitions:
     # ~~->$ InstitutionCountry:FormField~~
     INSTITUTION_COUNTRY = {
         "name": "institution_country",
-        "label": "Society or institution’s country",
+        "label": "Other organisation's country",
         "input": "select",
         "default" : "",
         "options_fn": "iso_country_list",
         "optional": True,
         "help": {
-            "short_help": "The country in which the society or institution is based",
+            "short_help": "The country in which the other organisation is based",
             "placeholder": "Type or select the country"
         },
         "widgets": [
@@ -1997,7 +1991,7 @@ class FieldSetDefinitions:
     # ~~->$ Institution:FieldSet~~
     SOCIETY_OR_INSTITUTION = {
         "name": "society_or_institution",
-        "label": "Society or institution, if applicable",
+        "label": "Other organisation, if applicable",
         "fields": [
             FieldDefinitions.INSTITUTION_NAME["name"],
             FieldDefinitions.INSTITUTION_COUNTRY["name"]
