@@ -1402,6 +1402,11 @@ BG_MONITOR_LAST_COMPLETED = {
     'long_running': 93600,  # 26 hours
 }
 
+BG_MONITOR_DEFAULT_CONFIG = {
+    'total': 2,
+    'oldest': 1200,
+}
+
 # Configures the monitoring period and the allowed number of errors in that period before a queue is marked
 # as unstable
 BG_MONITOR_ERRORS_CONFIG = {
