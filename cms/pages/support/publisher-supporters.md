@@ -16,7 +16,7 @@ DOAJ relies on the support of publishers and [libraries](/support/) to ensure th
 
 We are introducing a revised and simplified model for publishers to support DOAJ for 2024 and publishing this openly in line with [our commitment to the Principles of Open Scholarly Infrastructure](https://blog.doaj.org/2022/10/06/doaj-commits-to-the-principles-of-open-scholarly-infrastructure-posi/).  We are also relaunching the set of benefits for publishers choosing to support us.
 
-We only accept support through our publisher supporter model from publishers with journals already indexed in DOAJ. Non-commercial/institutional rates are only available to community-led, smaller publishers with limited funding. [Contact us](/contact/) if unsure which category applies or if you want to discuss ways of contributing to DOAJ’s operating costs.
+We only accept support through our publisher supporter model from publishers with journals already indexed in DOAJ. Non-commercial/institutional rates are only available to community-led, smaller publishers with limited funding. [Contact us](/contact/) if you are unsure which category applies or if you want to discuss ways of further contributing to DOAJ’s operating costs.
 
 ### Commercial publishers
 
