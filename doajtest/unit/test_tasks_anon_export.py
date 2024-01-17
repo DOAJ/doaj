@@ -2,7 +2,7 @@ import gzip
 import json
 from pathlib import Path
 
-from doajtest.helpers import DoajTestCase, wait_until_no_es_incomplete_tasks
+from doajtest.helpers import DoajTestCase, wait_until_no_es_incomplete_tasks, StoreLocalPatcher
 from doajtest.unit_tester import bgtask_tester
 from portality import dao
 from portality.models import BackgroundJob, Account
@@ -13,15 +13,27 @@ from portality.tasks.helpers import background_helper
 
 class TestAnonExport(DoajTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.store_local_patcher = StoreLocalPatcher()
+        self.store_local_patcher.setUp(self.app_test)
+
+    def tearDown(self):
+        super().tearDown()
+        self.store_local_patcher.tearDown(self.app_test)
+
     def test_execute(self):
 
         # prepare test data
+        BackgroundJob.destroy_index()
+        Account.destroy_index()
         for _ in range(3):
             BackgroundJob().save()
         for _ in range(2):
             Account().save()
         wait_until_no_es_incomplete_tasks()
-        dao.refresh()
+        BackgroundJob.refresh()
+        Account.refresh()
 
         new_background_jobs = list(BackgroundJob.scroll())
         new_accounts = list(Account.scroll())

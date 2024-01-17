@@ -82,6 +82,10 @@ class WithES:
 CREATED_INDICES = []
 
 
+def initialise_index():
+    core.initialise_index(app, core.es_connection)
+
+
 def create_index(index_type):
     if index_type in CREATED_INDICES:
         return
@@ -398,9 +402,8 @@ def wait_until_no_es_incomplete_tasks():
     if your data still can not be query, try Model.refresh()
 
     """
+
     def _cond_fn():
         return not any_pending_tasks() and len(query_data_tasks(timeout='3m')) == 0
 
     return wait_until(_cond_fn, 10, 0.2)
-
-
