@@ -7,14 +7,25 @@ featuremap: ~~ContactUs:Fragment~~
 
 ---
 
-Use this page to:
+Please [contact our Help Desk](mailto:helpdesk@doaj.org) if:
 
-- send feedback and questions about our website or services
-- send feedback about a journal in our index
-- submit a complaint about our website or services
+- you want to send us feedback or have questions about our website or services, or if you have a complaint.
 
-Both complaints and feedback sent to us about specific journals are treated as confidential.
+Please don't submit articles to us for publication. You should [use our journal search](/search/journals) to find a journal that matches the area of your research and contact them directly.
 
-If you're a publisher and need help, read our [publisher help page](/publisher/help/).
+**Potential supporters**
+If you have a question about supporting DOAJ financially, please contact [our Supporters team](mailto:supporters@doaj.org).
 
-Send an email to [the DOAJ helpdesk](mailto:helpdesk@doaj.org). If you're emailing about a journal or application, please include the title and ISSN(s).
+**Providing us with information or updates about journals**
+If you want to provide confidential information about a journal we index, [contact our Help Desk](mailto:helpdesk@doaj.org). Please remember to include the journal title and ISSN.
+
+If you find that the information we hold about a journal is out of date, please use the 'Update this journal' tab on each journal record.
+
+If you are the publisher of the journal and have a DOAJ account, you can send an update request from the '[My journals](/publisher/journal)' tab on your Publisher dashboard. 
+
+**Publishers or journal editors**
+If you want us to index your journal, make sure your journal meets all of [our Basic criteria](/apply/guide/#basic-criteria-for-inclusion) and then you can [submit an application](/apply/).
+
+Publishers with journals in DOAJ will find information about their account and journals on [our Publisher information](/apply/publisher-responsibilities/) page. 
+
+If you need help with journal or article metadata, read [our Metadata help](/docs/faq/) page.
