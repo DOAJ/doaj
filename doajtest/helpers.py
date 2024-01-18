@@ -10,7 +10,8 @@ from unittest import TestCase
 import dictdiffer
 from flask_login import login_user
 
-from portality import core, dao
+from doajtest.fixtures import ArticleFixtureFactory, ApplicationFixtureFactory
+from portality import core, dao, models
 from portality.core import app
 from portality.lib import paths, dates
 from portality.lib.dates import FMT_DATE_STD
@@ -119,9 +120,8 @@ class DoajTestCase(TestCase):
     originals = {}
 
     @classmethod
-    def setUpClass(cls) -> None:
-        import portality.app  # noqa, needed to registing routes
-        cls.originals = patch_config(app, {
+    def create_app_patch(cls):
+        return {
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
             "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp", cls.__name__.lower()),
@@ -138,7 +138,13 @@ class DoajTestCase(TestCase):
             "FAKER_SEED": 1,
             "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
             'CMS_BUILD_ASSETS_ON_STARTUP': False
-        })
+        }
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import portality.app  # noqa, needed to registing routes
+
+        cls.originals = patch_config(app, cls.create_app_patch())
 
         # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)
@@ -205,6 +211,18 @@ class DoajTestCase(TestCase):
             login_user(acc)
 
         return ctx
+
+    @staticmethod
+    def fix_es_mapping():
+        """
+        you need to call this method if you get some errors like:
+        ESMappingMissingError - 'reason': 'No mapping found for [field]
+
+        :return:
+        """
+        models.Article(**ArticleFixtureFactory.make_article_source()).save()
+        models.Application(**ApplicationFixtureFactory.make_application_source()).save()
+        models.Notification().save()
 
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
