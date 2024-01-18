@@ -44,7 +44,7 @@ If you use an institutional email address, your institution may apply extra secu
 2. If you are applying for the first time, [register with us first](/account/register).
 3. If you already have a DOAJ account, [sign in](/account/login) to submit a new application.
 
-A [sample of the application form](/static/doaj/docs/2023-07-04-DOAJQuestions.pdf) (Downloads a PDF) is available. Details of the [application process](/apply/guide/#the-application-process) are in the guide.
+A [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for your reference. Details of the [application process](/apply/guide/#the-application-process) are in the guide.
 
 ### Rejected applications
 

@@ -7,7 +7,7 @@ sticky_sidenav: true
 featuremap: ~~GuideToApplying:Fragment~~
 
 ---
-Before you start the application process, you will be asked to log in or register. You can save your progress and review all your answers before you submit them. A [PDF version of the application form](/static/doaj/docs/2023-07-04-DOAJQuestions.pdf) is available for reference only.
+Before you start the application process, you will be asked to log in or register. You can save your progress and review all your answers before you submit them. To help you, a [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for download.
 
 ## Basic criteria for inclusion
 
