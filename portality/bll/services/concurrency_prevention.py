@@ -4,7 +4,7 @@ import redis
 
 class ConcurrencyPreventionService():
     def __init__(self):
-        self.rs = redis.Redis(host=app.config.get("HUEY_HOST"), port=app.config.get("HUEY_PORT"))
+        self.rs = redis.Redis(host=app.config.get("REDIS_HOST"), port=app.config.get("REDIS_PORT"))
 
     def checkConcurrency(self, key, id):
         """

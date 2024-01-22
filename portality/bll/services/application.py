@@ -26,9 +26,10 @@ class ApplicationService(object):
     def prevent_concurrent_ur_submission(self, ur, record_if_not_concurrent=True):
         """
         Prevent duplicated update request submission
-        ur: update request being submitted
+        :param ur:
+        :param record_if_not_concurrent:
+        :return:
         """
-
         cs = DOAJ.concurrencyPreventionService()
         if cs.checkConcurrency(ur.current_journal, ur.id):
             raise exceptions.ConcurrentUpdateRequestException(Messages.CONCURRENT_UPDATE_REQUEST)
