@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.5.5"
+DOAJ_VERSION = "6.6.0"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -72,6 +72,8 @@ ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
+
+ES_READ_TIMEOUT = '1m'
 
 #####################################################
 # Elastic APM config  (MUST be configured in env file)
@@ -1486,3 +1488,18 @@ TOURS = {
         }
     ]
 }
+
+
+#######################################################
+# Selenium test environment
+
+# url of selenium server, selenium remote will be used if it's not empty
+# usually it's a docker container and the url should be 'http://localhost:4444/wd/hub'
+SELENIUM_REMOTE_URL = 'http://localhost:4444/wd/hub'
+
+# host and port that used to run doaj server in background for selenium testcases
+# if you use docker selenium browser container, ip should be ip of docker network interface such as 172.17.0.1
+# SELENIUM_DOAJ_HOST = 'localhost'
+SELENIUM_DOAJ_HOST = '172.17.0.1'
+SELENIUM_DOAJ_PORT = 5014
+
