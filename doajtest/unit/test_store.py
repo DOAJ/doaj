@@ -1,3 +1,4 @@
+from doajtest import helpers
 from doajtest.helpers import DoajTestCase
 from portality.store import StoreFactory
 from io import StringIO, BytesIO
@@ -25,6 +26,18 @@ class SludgePump(object):
 
 
 class TestStore(DoajTestCase):
+
+    def setUp(self):
+        super(TestStore, self).setUp()
+
+        self.store_local_patcher = helpers.StoreLocalPatcher()
+        self.store_local_patcher.setUp(self.app_test)
+
+    def tearDown(self):
+        self.store_local_patcher.tearDown(self.app_test)
+
+        super(TestStore, self).tearDown()
+
 
     def test_01_local(self):
         local = StoreFactory.get(None)
