@@ -137,6 +137,7 @@ class DoajTestCase(TestCase):
             "ES_RETRY_HARD_LIMIT": 0,
             "ES_BLOCK_WAIT_OVERRIDE": 0.5,
             "ES_READ_TIMEOUT": '5m',
+            'ES_SOCKET_TIMEOUT': 5 * 60,
             "ELASTIC_SEARCH_DB": app.config.get('ELASTIC_SEARCH_TEST_DB'),
             'ELASTIC_SEARCH_DB_PREFIX': create_es_db_prefix(cls),
             "FEATURES": app.config['VALID_FEATURES'],
