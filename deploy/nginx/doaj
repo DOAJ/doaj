@@ -283,6 +283,19 @@ server {
         add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
     }
 
+    location /_status {
+        auth_basic "Restricted";                                    # Let's not let everyone see our monitoring endpoint
+        auth_basic_user_file /etc/nginx/htpasswd_live_monitor;
+
+        proxy_pass http://doaj_apps_failover;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+
     location / {
         limit_req zone=general burst=20 nodelay;
         proxy_pass http://doaj_apps_failover;
@@ -293,7 +306,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
-
 }
 
 server {
@@ -301,7 +313,7 @@ server {
     server_name     doajes.cottagelabs.com;
 
     auth_basic "Restricted";
-    auth_basic_user_file /etc/nginx/htpasswd;
+    auth_basic_user_file /etc/nginx/htpasswd_live_es;
 
     location / {
         proxy_pass http://doaj_index;

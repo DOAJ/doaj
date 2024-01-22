@@ -59,16 +59,31 @@ server {
         rewrite ^(.*)$ $new_uri permanent;
     }
 
-    location / {
-        proxy_pass http://doaj_apps;
+    location /_status {
+        auth_basic "Restricted";                                    # Let's not let everyone see our monitoring endpoint
+        auth_basic_user_file /etc/nginx/htpasswd_test_monitor;
+
+        proxy_pass http://doaj_apps_failover;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
     }
+
     location =/robots.txt {
         alias /home/cloo/doaj/src/doaj/deploy/robots-test.txt;
     }
+
     location /static/ {
         alias /home/cloo/doaj/src/doaj/portality/static/;
         autoindex off;
         expires max;
+    }
+
+    location / {
+        proxy_pass http://doaj_apps;
     }
 }
 
@@ -93,16 +108,22 @@ server {
         rewrite ^(.*)$ $new_uri permanent;
     }
 
-    location / {
-        proxy_pass http://doaj_static;
-    }
     location =/robots.txt {
         alias /home/cloo/doaj-static/src/doaj/deploy/robots-test.txt;
     }
+
     location /static/ {
         alias /home/cloo/doaj-static/src/doaj/portality/static/;
         autoindex off;
         expires max;
+    }
+
+    location /_status {                                                    # No need to monitor _status on static server
+        return 403;
+    }
+
+    location / {
+        proxy_pass http://doaj_static;
     }
 }
 
@@ -111,7 +132,7 @@ server {
     server_name     testdoajes.cottagelabs.com;
 
     auth_basic "Restricted";
-    auth_basic_user_file /etc/nginx/htpasswd;
+    auth_basic_user_file /etc/nginx/htpasswd_test_es;
 
     ssl_certificate /etc/letsencrypt/live/testdoaj.cottagelabs.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/testdoaj.cottagelabs.com/privkey.pem;
