@@ -248,6 +248,9 @@ CMS_EDIT_BASE_URL = "https://github.com/DOAJ/doaj/edit/static_pages/cms"
 # http://flask.pocoo.org/snippets/102/
 STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 
+# Display pop-up notification to admins on the template when there are CMS page errors (for static pages server)
+SHOW_ADMIN_PAGE_ERRORS = False
+
 ######################################
 # Service Descriptive Text
 

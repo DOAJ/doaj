@@ -323,10 +323,11 @@ def _load_data(app):
                 app.jinja_env.globals["data"][dataname] = data
             except yaml.error.MarkedYAMLError as e:
                 app.logger.error(e)
-                # Problem with loading our yaml - this should be reported to the frontend to allow admins to fix
-                if not "data_errors" in app.jinja_env.globals:
-                    app.jinja_env.globals["data_errors"] = {}
-                app.jinja_env.globals["data_errors"][dataname] = e
+                if app.config.get("SHOW_ADMIN_PAGE_ERRORS", False):
+                    # Problem with loading our yaml - this should be reported to the frontend to allow admins to fix
+                    if "data_errors" not in app.jinja_env.globals:
+                        app.jinja_env.globals["data_errors"] = {}
+                    app.jinja_env.globals["data_errors"][dataname] = e
 
 
 ##################################################
