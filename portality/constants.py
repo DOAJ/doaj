@@ -80,6 +80,9 @@ PROCESS__QUICK_REJECT = "quick_reject"
 # Role
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
+ROLE_PUBLISHER = "publisher"
+ROLE_PUBLISHER_JOURNAL_CSV = "journal_csv"
+ROLE_PUBLISHER_PRESERVATION = "preservation"
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
@@ -106,6 +109,13 @@ class ConstantList:
         att_names = cls.__dict__
         att_names = (i for i in att_names if not (i.startswith('__') and i.endswith('__')))
         return (getattr(cls, n) for n in att_names)
+
+
+class FileUploadStatus(ConstantList):
+    Processed = 'processed'
+    Failed = 'failed'
+    Incoming = 'incoming'
+    Validated = 'validated'
 
 
 class BgjobOutcomeStatus(ConstantList):

@@ -134,6 +134,7 @@ var doaj = {
                     <option value="issn">ISSN</option>
                     <option value="subject">Subject</option>
                     <option value="publisher">Publisher</option>
+                    <option value="country">Country of publisher</option>
                 `)
             } else {
                 fields.html(`
