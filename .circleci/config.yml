@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   python: circleci/python@2.1.1
+  browser-tools: circleci/browser-tools@1.2.3
 
 jobs:
   build-and-test:
@@ -15,6 +16,8 @@ jobs:
           - transport.host: localhost
           - discovery.type: single-node
 
+    parallelism: 4
+
     steps:
       - checkout
       - run: git submodule update --init --recursive
@@ -22,12 +25,44 @@ jobs:
           pkg-manager: pip-dist
           pip-dependency-file: setup.py
           path-args: .[test]
-      - run: |
-          echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
-          python portality/cms/build_fragments.py
-          python portality/cms/build_sass.py
-          pytest -v --color=yes --code-highlight=yes --log-level=DEBUG doajtest/unit
+      - run:
+          name: Prepare doaj env for unittests
+          command: |
+            echo "ELASTICSEARCH_HOSTS = [{'host': 'localhost', 'port': 9200}]" > test.cfg
+            python portality/cms/build_fragments.py
+            python portality/cms/build_sass.py
 
+      - run:
+          name: Run unit tests
+          command: |
+            TESTS=$(circleci tests glob "doajtest/unit/**/*.py" | circleci tests split)
+            pytest -v --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-unit.xml $TESTS
+
+      - store_test_results:
+          path: test-results
+
+      - run:
+          name: Env for selenium
+          command: |
+            echo "SELENIUM_REMOTE_URL = ''" >> test.cfg
+            echo "SELENIUM_DOAJ_HOST = 'localhost'" >> test.cfg
+            echo "SELENIUM_HEADLESS = True" >> test.cfg
+      - browser-tools/install-chrome
+
+      - run:
+            name: List current env
+            command: |
+                cat test.cfg
+                google-chrome --version
+
+      - run:
+          name: Run selenium tests
+          command: |
+            TESTS=$(circleci tests glob "doajtest/seleniumtest/**/*.py" | circleci tests split)
+            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml $TESTS
+
+      - store_test_results:
+          path: test-results
     working_directory: ~/doaj
 
 

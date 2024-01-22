@@ -120,3 +120,49 @@ tests:
       bottom right-hand corner.
     results:
     - You are returned to the top of the home page
+- title: Skip to main content button (Accessibility)
+  context:
+    role: anonymous
+  steps:
+  - step: Refresh the page
+  - step: Click tab key on the keyboard once
+    results:
+      - Skip to the main content button is unfolded and focused
+  - step: Click enter
+    results:
+    - Focus is moved to the main content
+  - step: Turn on screen reader
+  - step: With the keyboard navigate to Skip to main content button
+    results:
+      - Screen reader reads the button title
+  - step: Click enter
+    results:
+      - Focus is moved to the main content
+- title: Test minisearch section
+  context:
+    role: anonymous
+  steps:
+    - step: Go to the landing page
+    - step: Click "Journals" radio button
+    - step: Open "In all fields" dropdown
+      results:
+        - Options Title, ISSN, Subject, Publisher and Country of Publisher are available
+    - step: Choose "Articles" radio button
+    - step: Open "In all fields" dropdown
+      results:
+      - Options Title, Abstract, Subject and Author are available
+    - step: perform search of Journal (eg. "Medicine", "Title")
+      results:
+        - You are redirected to /search/journals results page
+        - The top search fields are filled with the current query
+        - Correct search results are displayed
+    - step: perform search of Article (eg. "Medicine", "Title")
+      results:
+        - You are redirected to /search/articles results page
+        - The top search fields are filled with the current query
+        - Correct search results are displayed
+    - step: repeat searches for different fields
+      results:
+        - Each time correct results page is displayed
+
+

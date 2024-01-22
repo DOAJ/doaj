@@ -127,3 +127,12 @@ class DOAJ(object):
         """
         from portality.bll.services import concurrency_prevention
         return concurrency_prevention.ConcurrencyPreventionService()
+
+    @classmethod
+    def tourService(cls):
+        """
+        Obtain an instance of the tour service  ~~->Tour:Service~~
+        :return:  SiteService
+        """
+        from portality.bll.services import tour
+        return tour.TourService()

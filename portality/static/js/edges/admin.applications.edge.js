@@ -61,7 +61,8 @@ $.extend(true, doaj, {
                         {'display':'Country of publisher','field':'index.country'},
                         {'display':'Journal language','field':'index.language'},
                         {'display':'Publisher','field':'bibjson.publisher.name'},
-                        {'display':'Journal: alternative title','field':'bibjson.alternative_title'}
+                        {'display':'Journal: alternative title','field':'bibjson.alternative_title'},
+                        {'display':'Notes','field':'admin.notes.note'},
                     ],
                     defaultOperator: "AND",
                     renderer: doaj.renderers.newFullSearchControllerRenderer({
@@ -206,20 +207,20 @@ $.extend(true, doaj, {
                         }
                     ],
                     fieldDisplays: {
-                        'admin.application_status.exact': 'Application status',
+                        'admin.application_status.exact': 'Status',
                         'index.application_type.exact' : 'Application',
-                        'index.has_editor_group.exact' : 'Has editor group?',
-                        'index.has_editor.exact' : 'Has Associate Editor?',
+                        'index.has_editor_group.exact' : 'Editor group',
+                        'index.has_editor.exact' : 'Associate Editor',
                         'admin.editor_group.exact' : 'Editor group',
                         'admin.editor.exact' : 'Editor',
                         'index.classification.exact' : 'Classification',
-                        'index.language.exact' : 'Journal language',
-                        'index.country.exact' : 'Country of publisher',
+                        'index.language.exact' : 'Language',
+                        'index.country.exact' : 'Country',
                         'index.subject.exact' : 'Subject',
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'bibjson.provider.exact' : 'Platform, Host, Aggregator',
-                        "index.has_apc.exact" : "Publication charges?",
-                        'index.license.exact' : 'Journal license'
+                        "index.has_apc.exact" : "Charges?",
+                        'index.license.exact' : 'License'
                     },
                     valueMaps : {
                         "index.application_type.exact" : {

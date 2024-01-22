@@ -152,13 +152,16 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
 
 class StdOutBackgroundJob(BackgroundJob):
 
-    def __init__(self, inner):
+    def __init__(self, inner, force_logging=False):
         super(StdOutBackgroundJob, self).__init__(**inner.data)
+        self._force_logging = force_logging
 
     def add_audit_message(self, msg, timestamp=None):
         super(StdOutBackgroundJob, self).add_audit_message(msg, timestamp)
-        if app.config.get("DOAJENV") == 'dev':
-            print(msg)
+        if app.config.get("DOAJENV") == 'dev' or self._force_logging:
+            if timestamp is None:
+                timestamp = dates.now_str_with_microseconds()
+            print("[" + timestamp + "] " + msg)
 
 
 # ~~-> DataObj:Library~~

@@ -21,9 +21,14 @@ from portality.events.consumers.journal_assed_assigned_notify import JournalAsse
 from portality.events.consumers.journal_editor_group_assigned_notify import JournalEditorGroupAssignedNotify
 from portality.events.consumers.application_publisher_inprogress_notify import ApplicationPublisherInprogressNotify
 from portality.events.consumers.update_request_publisher_rejected_notify import UpdateRequestPublisherRejectedNotify
+from portality.events.consumers.journal_discontinuing_soon_notify import JournalDiscontinuingSoonNotify
 
 
 class EventsService(object):
+    # disabled events - to enable move the event to EVENT_CONSUMENRS array
+    DISABLED_EVENTS = [
+        ApplicationPublisherRevisionNotify
+    ]
     EVENT_CONSUMERS = [
         ApplicationPublisherQuickRejectNotify,
         AccountCreatedEmail,
@@ -38,13 +43,13 @@ class EventsService(object):
         ApplicationPublisherInprogressNotify,
         ApplicationPublisherAcceptedNotify,
         ApplicationPublisherAssignedNotify,
-        ApplicationPublisherRevisionNotify,
         BGJobFinishedNotify,
         JournalAssedAssignedNotify,
         JournalEditorGroupAssignedNotify,
         UpdateRequestPublisherAcceptedNotify,
         UpdateRequestPublisherAssignedNotify,
-        UpdateRequestPublisherRejectedNotify
+        UpdateRequestPublisherRejectedNotify,
+        JournalDiscontinuingSoonNotify
     ]
 
     def __init__(self):

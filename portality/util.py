@@ -186,3 +186,7 @@ def get_full_url_safe(endpoint):
     except werkzeug.routing.BuildError:
         app.logger.warning(f'endpoint not found -- [{endpoint}]')
         return None
+
+def no_op(*args, **kwargs):
+    """ noop (no operation) function """
+    pass

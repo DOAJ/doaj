@@ -29,18 +29,14 @@ tests:
   - step: Select an editor from the "Individual" pull-down
     results:
     - The editor is selected
-  - step: Unset the Editor Group using the grey "X" in the "Editor Group" pull-down
-      box
+  - step: Open the Subject Classifier and assign two subject classifications
+  - step: Click Add subjects
     results:
-    - The editor group and associate editor are removed
-  - step: Assign a new editor group and associate editor
-  - step: Expand the tree and browse for values below the top level
+    - The two subjects you selected show as 'Selected'
+  - step: Open the subject classifier again and start typing a subject in the subject search box (eg Biology)
     results:
-    - Assign two subject classifications.
-  - step: Start typing a subject in the subject search box
-    results:
-    - Assign one subject that way
-  - step: Assign an owner to the application
+    - All terms that include your subject are shown and can be selected
+  - step: Assign one subject that way and then assign an owner to the application
   - step: Make a superficial modification to the application metadata
   - step: Click "Add new note" and enter some text into the new note textarea
   - step: Click "SAVE"
@@ -95,3 +91,9 @@ tests:
     - step: Attempt to click the "Remove" button
       results:
         - You are unable to delete the note
+    - step: Click "copy" button next to one of the fields (eg. Title)
+      results:
+        - Confirmation with fields value is displayed for 3 seconds
+    - step: Attempt to paste the value (use separate editor)
+      results:
+        - Correct value is pasted

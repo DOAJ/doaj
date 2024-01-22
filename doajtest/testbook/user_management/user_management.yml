@@ -40,6 +40,10 @@ fragments:
       - Your API Key at the top of the page is updated
       - You receive a flash message saying your record is updated and the API key has
         changed
+    - step: Click "Click to Copy" icon next to your API key
+      results:
+      - The API key is copied to your clipboard
+      - Confirmation message appears and dissapears after a moment
     - step: Enter mismatched passwords into the "Change your password" boxes and click
         "Update Account"
       results:
@@ -205,3 +209,12 @@ tests:
   - step: Click on the user's journals
     results:
     - All the same journals are still associated with the user
+
+- title: User account without API role
+  context:
+    role: admin
+  steps:
+  - step: Find (or create) a user account which does not have the API role
+  - step: View the user account page at /account/[account name]
+    results:
+    - The API key is not displayed

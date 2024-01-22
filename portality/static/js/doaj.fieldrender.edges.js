@@ -452,12 +452,6 @@ $.extend(true, doaj, {
                               <ul class="collapse filters__list" id="filters" aria-expanded="false">\
                                   {{FACETS}}\
                               </ul>\
-                              <aside class="hidden-sm">\
-                                <h2 class="sr-only">Celebrating 20 years of DOAJ</h2>\
-                                <a href="https://blog.doaj.org/2023/02/20/doaj20-open-global-and-trusted-since-2003/" target="_blank" rel="noopener" style="display: block;">\
-                                  <img src="/assets/img/20yrs-stacked.png"/>\
-                                </a>\
-                              </aside>\
                             </aside>\
                         </div>\
                             \
@@ -645,13 +639,13 @@ $.extend(true, doaj, {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
                 var placeholder = 'Search ' + this.component.nodeCount + ' subjects';
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.title + toggle + '</button></h3>\
+                    <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <label for="' + searchId + '" class="sr-only">' + placeholder + '</label>\
                         <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '">\
                         <ul class="filter__choices" id="' + filteredId + '" style="display:none"></ul>\
                         <ul class="filter__choices" id="' + mainListId + '">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, treeFrag);
@@ -1302,15 +1296,15 @@ $.extend(true, doaj, {
 
                 var comp = this.component;
 
-                var shareButtonFrag = "";
                 var shareButtonClass = edges.css_classes(this.namespace, "toggle-share", this);
                 var modalId = edges.css_id(this.namespace, "modal", this);
-                shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--tertiary" role="button">' + this.shareLinkText + '</button>';
+                let shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--tertiary" role="button">' + this.shareLinkText + '</button>';
 
-                var shorten = "";
+                let shorten = "";
                 if (this.component.urlShortener) {
                     var shortenClass = edges.css_classes(this.namespace, "shorten", this);
-                    shorten = '<p>Share a link to this search</p>'
+                    var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this)
+                    shorten = '<p><button class="' + shortenButtonClass + '">shorten url</button></p>';
                 }
                 var embed = "";
                 if (this.component.embedSnippet) {
@@ -1320,11 +1314,11 @@ $.extend(true, doaj, {
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
-                var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this);
+
                 var shareFrag = '<div class="' + shareBoxClass + '">\
-                    ' + shorten + '\
+                    <p>Share a link to this search</p>\
                     <textarea style="width: 100%; height: 150px" readonly class="' + shareUrlClass + '"></textarea>\
-                    <p><button class="' + shortenButtonClass + '">shorten url</button></p>\
+                    ' + shorten + '\
                     ' + embed + '\
                 </div>';
 
@@ -1551,13 +1545,12 @@ $.extend(true, doaj, {
                 var textIdSelector = edges.css_id_selector(this.namespace, "text", this);
                 var text = this.component.jq(textIdSelector).val();
 
-                if (text === "") {
-                    return;
-                }
-
                 // if there is search text, then proceed to run the search
                 var val = this.component.jq(element).val();
                 this.component.setSearchField(val, false);
+                if (text === "") {
+                    return;
+                }
                 this.component.setSearchText(text);
             };
 
@@ -1833,10 +1826,10 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.component.display + toggle + '</button></h3>\
+                    <div class="filter__body collapse"  style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, filterFrag + results);
@@ -2084,10 +2077,10 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.component.display + toggle + '</button></h3>\
+                    <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, filterFrag + results);
@@ -2277,7 +2270,7 @@ $.extend(true, doaj, {
 
                             // the remove block looks different, depending on the kind of filter to remove
                             if (def.filter === "term" || def.filter === "terms") {
-                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" alt="Remove" title="Remove">';
+                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" data-value-idx="' + j + '" alt="Remove" title="Remove">';
                                 filters += def.display + valDisplay;
                                 filters += ' <span data-feather="x" aria-hidden="true"></span>';
                                 filters += "</a>";
@@ -2332,6 +2325,7 @@ $.extend(true, doaj, {
 
             this.removeFilter = function (element) {
                 var el = this.component.jq(element);
+                var sf = this.component;
 
                 // if this is a compound filter, remove it by id
                 var compound = el.attr("data-compound");
@@ -2347,20 +2341,9 @@ $.extend(true, doaj, {
 
                 var value = false;
                 if (ft === "terms" || ft === "term") {
-                    val = el.attr("data-value");
-                    // translate string value to a type required by a model
-                    if (val === "true"){
-                        value = true;
-                    }
-                    else if (val === "false"){
-                        value = false;
-                    }
-                    else if (!isNaN(parseInt(val))){
-                        value = parseInt(val);
-                    }
-                    else {
-                        value = val;
-                    }
+                    let values = sf.mustFilters[field].values;
+                    let idx = el.attr("data-value-idx")
+                    value = values[idx].val
                 } else if (ft === "range") {
                     value = {};
 

@@ -136,7 +136,7 @@ class DomainObject(UserDict, object):
         :return:
         """
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, save command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, save command cannot run")
             return
 
         if retries > app.config.get("ES_RETRY_HARD_LIMIT", 1000):   # an arbitrary large number
@@ -169,7 +169,9 @@ class DomainObject(UserDict, object):
         r = None
         while attempt <= retries:
             try:
-                r = ES.index(self.index_name(), d, doc_type=self.doc_type(), id=self.data.get("id"), headers=CONTENT_TYPE_JSON)
+                r = ES.index(self.index_name(), d, doc_type=self.doc_type(), id=self.data.get("id"),
+                             headers=CONTENT_TYPE_JSON,
+                             timeout=app.config.get('ES_READ_TIMEOUT', '1m'), )
                 break
 
             except (elasticsearch.ConnectionError, elasticsearch.ConnectionTimeout):
@@ -218,9 +220,10 @@ class DomainObject(UserDict, object):
 
         return r
 
+
     def delete(self):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, delete command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, delete command cannot run")
             return
 
         # r = requests.delete(self.target() + self.id)
@@ -313,7 +316,7 @@ class DomainObject(UserDict, object):
         """
         # ~~->ReadOnlyMode:Feature~~
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, bulk command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, bulk command cannot run")
             return
 
         if action not in ['index', 'update', 'delete']:
@@ -363,7 +366,7 @@ class DomainObject(UserDict, object):
         :return:
         """
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, refresh command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, refresh command cannot run")
             return
 
         # r = requests.post(cls.target() + '_refresh',  headers=CONTENT_TYPE_JSON)
@@ -432,7 +435,10 @@ class DomainObject(UserDict, object):
             try:
                 # ES 7.10 updated target to whole index, since specifying type for search is deprecated
                 # r = requests.post(cls.target_whole_index() + recid + "_search", data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
-                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(), headers=CONTENT_TYPE_JSON, **kwargs)
+                if kwargs.get('timeout') is None:
+                    kwargs['timeout'] = app.config.get('ES_READ_TIMEOUT', '1m')
+                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(),
+                              headers=CONTENT_TYPE_JSON, **kwargs)
                 break
             except Exception as e:
                 exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
@@ -449,7 +455,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def remove_by_id(cls, id):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, delete_by_id command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, delete_by_id command cannot run")
             return
 
         # r = requests.delete(cls.target() + id)
@@ -461,7 +467,7 @@ class DomainObject(UserDict, object):
     @classmethod
     def delete_by_query(cls, query):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, delete_by_query command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, delete_by_query command cannot run")
             return
 
         #r = requests.delete(cls.target() + "_query", data=json.dumps(query))
@@ -470,9 +476,16 @@ class DomainObject(UserDict, object):
 
 
     @classmethod
-    def destroy_index(cls):
+    def destroy_index(cls, **es_kwargs):
+        default_es_kwargs = {
+            'timeout': '5m',
+            'request_timeout': 1001,
+        }
+        default_es_kwargs.update(es_kwargs)
+        es_kwargs = default_es_kwargs
+
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-            app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
+            app.logger.warning("System is in READ-ONLY mode, destroy_index command cannot run")
             return
 
         # if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
@@ -480,7 +493,7 @@ class DomainObject(UserDict, object):
         # else:
         #     return esprit.raw.delete_index(es_connection)
         print('Destroying indexes with prefix ' + app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
-        return ES.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
+        return ES.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*', **es_kwargs)
 
     @classmethod
     def check_es_raw_response(cls, res, extra_trace_info=''):
@@ -902,6 +915,17 @@ class DomainObject(UserDict, object):
     def blockalldeleted(cls, ids, sleep=0.05, individual_max_retry_seconds=30):
         for id in ids:
             cls.blockdeleted(id, sleep, individual_max_retry_seconds)
+
+    @classmethod
+    def save_all(cls, models, blocking=False):
+        for m in models:
+            m.save()
+        if blocking:
+            cls.blockall((m.id, getattr(m, "last_updated", None)) for m in models)
+
+
+
+
 
 
 class BlockTimeOutException(Exception):
