@@ -3,13 +3,13 @@ from pathlib import Path
 from typing import List
 
 from portality import models
-from portality.background import BackgroundTask
+from portality.background import BackgroundTask, BackgroundApi
 from portality.core import app
 from portality.crosswalks.exceptions import CrosswalkException
 from portality.lib import dataobj
 from portality.models.uploads import BulkArticles
 from portality.tasks.helpers import background_helper, articles_upload_helper
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import main_queue
 
 
 def get_upload_dir_path() -> Path:
@@ -81,6 +81,12 @@ class ArticleBulkCreateBackgroundTask(BackgroundTask):
         background_helper.submit_by_background_job(background_job, article_bulk_create)
 
 
-huey_helper = ArticleBulkCreateBackgroundTask.create_huey_helper(long_running)
+huey_helper = ArticleBulkCreateBackgroundTask.create_huey_helper(main_queue)
 
-article_bulk_create = huey_helper.create_common_execute_fn(is_load_config=False)
+# article_bulk_create = huey_helper.create_common_execute_fn(is_load_config=False)
+
+@huey_helper.register_execute(is_load_config=False)
+def article_bulk_create(job_id):
+    job = models.BackgroundJob.pull(job_id)
+    task = ArticleBulkCreateBackgroundTask(job)
+    BackgroundApi.execute(task)

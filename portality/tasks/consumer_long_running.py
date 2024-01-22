@@ -17,4 +17,3 @@ from portality.tasks.harvester import scheduled_harvest  # noqa
 from portality.tasks.anon_export import scheduled_anon_export, anon_export  # noqa
 from portality.tasks.old_data_cleanup import scheduled_old_data_cleanup, execute_old_data_cleanup  # noqa
 from portality.tasks.monitor_bgjobs import scheduled_monitor_bgjobs, execute_monitor_bgjobs  # noqa
-from portality.tasks.article_bulk_create import article_bulk_create  # noqa

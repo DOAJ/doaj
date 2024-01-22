@@ -24,6 +24,7 @@ from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
 
 from portality.tasks.anon_export import AnonExportBackgroundTask
 from portality.tasks.article_bulk_delete import ArticleBulkDeleteBackgroundTask
+from portality.tasks.article_bulk_create import ArticleBulkCreateBackgroundTask
 from portality.tasks.article_cleanup_sync import ArticleCleanupSyncBackgroundTask
 from portality.tasks.article_duplicate_report import ArticleDuplicateReportBackgroundTask
 from portality.tasks.async_workflow_notifications import AsyncWorkflowBackgroundTask
@@ -49,6 +50,7 @@ from portality.background import BackgroundApi
 HANDLERS = {
     AnonExportBackgroundTask.__action__: AnonExportBackgroundTask,
     ArticleBulkDeleteBackgroundTask.__action__: ArticleBulkDeleteBackgroundTask,
+    ArticleBulkCreateBackgroundTask.__action__: ArticleBulkCreateBackgroundTask,
     ArticleCleanupSyncBackgroundTask.__action__: ArticleCleanupSyncBackgroundTask,
     ArticleDuplicateReportBackgroundTask.__action__: ArticleDuplicateReportBackgroundTask,
     AsyncWorkflowBackgroundTask.__action__: AsyncWorkflowBackgroundTask,
