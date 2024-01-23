@@ -139,7 +139,7 @@ class DoajTestCase(TestCase):
             "FAKER_SEED": 1,
             "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
             'CMS_BUILD_ASSETS_ON_STARTUP': False,
-            'UPLOAD_ASYNC_DIR': paths.create_tmp_dir(is_auto_mkdir=True).as_posix(),
+            'UPLOAD_ASYNC_DIR': paths.create_tmp_path(is_auto_mkdir=True).as_posix(),
         }
 
     @classmethod
@@ -322,7 +322,7 @@ def patch_history_dir(dir_key):
             # setup new path
             org_config_val = DoajTestCase.app_test.config[dir_key]
             org_hist_dir = hist_class.SAVE_BASE_DIRECTORY
-            _new_path = paths.create_tmp_dir(is_auto_mkdir=True)
+            _new_path = paths.create_tmp_path(is_auto_mkdir=True)
             hist_class.SAVE_BASE_DIRECTORY = _new_path.as_posix()
             DoajTestCase.app_test.config[dir_key] = _new_path.as_posix()
 
@@ -353,8 +353,8 @@ class StoreLocalPatcher:
         self.org_store_local_dir = cur_app.config["STORE_LOCAL_DIR"]
         self.org_store_tmp_dir = cur_app.config["STORE_TMP_DIR"]
 
-        self.new_store_local_dir = paths.create_tmp_dir(is_auto_mkdir=True)
-        self.new_store_tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True)
+        self.new_store_local_dir = paths.create_tmp_path(is_auto_mkdir=True)
+        self.new_store_tmp_dir = paths.create_tmp_path(is_auto_mkdir=True)
 
         cur_app.config["STORE_IMPL"] = "portality.store.StoreLocal"
         cur_app.config["STORE_LOCAL_DIR"] = self.new_store_local_dir
