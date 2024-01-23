@@ -59,7 +59,7 @@ setup(
         # priorities list generation
         'gspread~=5.10.0',
         'oauth2client~=4.1.3',
-        'pandas~=2.0.1',# pandas lets us generate URLs for linkcheck
+        'pandas~=2.0.1',  # pandas lets us generate URLs for linkcheck
         'gspread-dataframe~=3.3.1',
         'gspread-formatting~=1.1.2',
     ] + (["setproctitle==1.1.10"] if "linux" in sys.platform else []),
