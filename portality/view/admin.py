@@ -1,5 +1,5 @@
-import itertools
 import json
+from collections import namedtuple
 from typing import Iterable, List
 
 from flask import Blueprint, request, flash, abort, make_response
@@ -251,17 +251,22 @@ def journal_page(journal_id):
             return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
 
 
-def create_cont_list(continuations: Iterable[Journal], continuation_issns: List[str]):
+DisplayContData = namedtuple('DisplayContData', ['issn', 'title', 'id'])
+
+
+def create_cont_list(continuations: Iterable[Journal],
+                     continuation_issns: List[str]) -> List[DisplayContData]:
     def _issn_id_tuple(j: Journal):
         bibjson = j.bibjson()
-        return bibjson.pissn or bibjson.eissn, j.id
+        return DisplayContData(bibjson.pissn or bibjson.eissn, j.id, bibjson.title)
 
-    cont_list = dict(map(_issn_id_tuple, continuations))
+    cont_list = map(_issn_id_tuple, continuations)
+    cont_list = {data.issn: data for data in cont_list}
     cont_list.update({
-        issn: None for issn in continuation_issns
+        issn: DisplayContData(issn, None, None) for issn in continuation_issns
         if issn not in cont_list
     })
-    return cont_list.items()
+    return cont_list.values()
 
 
 ######################################################
@@ -282,14 +287,7 @@ def journal_activate(journal_id):
 @ssl_required
 @write_required()
 def journal_deactivate(journal_id):
-    is_cont_all = request.values.get('cont_all', False)
-
-    journal_ids = [journal_id]
-    if is_cont_all:
-        journal = Journal.pull(journal_id)
-        journal_ids += [j.id for j in journal.get_past_continuations() + journal.get_future_continuations()]
-
-    job = journal_in_out_doaj.change_in_doaj(journal_ids, False)
+    job = journal_in_out_doaj.change_in_doaj([journal_id], False)
     return redirect(url_for('.journal_page', journal_id=journal_id, job=job.id))
 
 

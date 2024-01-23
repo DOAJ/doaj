@@ -23,11 +23,11 @@
     {% if cont_list %}
         <span>{{ cont_name }}</span>
         <ul>
-            {% for issn, jid in cont_list %}
+            {% for issn, jid, title in cont_list %}
                 <li>
                     {% if jid %}
-                    <a href="{{ url_for("admin.journal_page", journal_id=jid ) }}">
-                        {{ issn }} ( {{ jid }} )
+                    <a href="{{ url_for("admin.journal_page", journal_id=jid ) }}" target="_blank">
+                        [{{ issn }}]{{ title }} ( {{ jid }} )
                     </a>
                     {% else %}
                     {{ issn }} ( Related journal not found )
@@ -65,26 +65,20 @@
 
 
             {# withdraw or reinstate all continuations #}
-            {% set j_replaces = obj.bibjson().replaces %}
-            {% set j_is_replaced_by = obj.bibjson().is_replaced_by %}
-
-            {% if obj.is_in_doaj() and (j_replaces or j_is_replaced_by) %}
+            {% if obj.is_in_doaj() and (
+                obj.bibjson().replaces or obj.bibjson().is_replaced_by
+            ) %}
 
                 <p>
                     {% autoescape off %}
-                    Following are continuations journal, should we {{ action_label }} all ?
+                    This journal is connected to another/others by a continuation.
+                    Please remember to withdraw all affected records.
                     {% endautoescape %}
                 </p>
 
                 {{ show_cont_list(past_cont_list, "Older") }}
                 {{ show_cont_list(future_cont_list, "Newer") }}
 
-                <form method="post" action="{{ action }}" id="journal_witdraw_reinstate">
-                    <button class="button button--primary" type="submit" id="submit_quick_reject">
-                        <input type="hidden" name="cont_all" value="1">
-                        {{ action_label }} All
-                    </button>
-                </form>
             {% endif %}
         {% endif %}
         <button type="button" data-dismiss="modal" class="modal__close">Close</button>
