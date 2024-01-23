@@ -71,6 +71,22 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         return records
 
     @classmethod
+    def find_by_issn_exact(cls, issns, in_doaj=None, max=2):
+        """
+        Finds journal that matches given issns exactly - if no data problems should always be only 1
+        """
+        if not isinstance(issns, list):
+            issns = [issns]
+        if len(issns) > 2:
+            return []
+        q = JournalQuery()
+        q.find_by_issn_exact(issns, in_doaj=in_doaj, max=max)
+        result = cls.query(q=q.query)
+        # create an array of objects, using cls rather than Journal, which means subclasses can use it too
+        records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+
+    @classmethod
     def issns_by_owner(cls, owner, in_doaj=None):
         q = IssnQuery(owner, in_doaj=in_doaj)
         res = cls.query(q=q.query())
@@ -564,6 +580,15 @@ class Journal(JournalLikeObject):
         # finally issue a delete request against the journals
         cls.delete_by_query(query)
 
+    @classmethod
+    def add_mapping_extensions(cls, default_mappings: dict):
+        default_mappings_copy = deepcopy(default_mappings)
+        mapping_extensions = app.config.get("DATAOBJ_TO_MAPPING_COPY_TO_EXTENSIONS")
+        for key, value in mapping_extensions.items():
+            if key in default_mappings_copy:
+                default_mappings_copy[key] = {**default_mappings_copy[key], **value}
+        return default_mappings_copy
+
     def all_articles(self):
         from portality.models import Article
         return Article.find_by_issns(self.known_issns())
@@ -889,14 +914,9 @@ class Journal(JournalLikeObject):
 
 MAPPING_OPTS = {
     "dynamic": None,
-    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
-    "exceptions": {
-        "admin.notes.note": {
-            "type": "text",
-            "index": False,
-            # "include_in_all": False        # Removed in es6 fixme: do we need to look at copy_to for the mapping?
-        }
-    }
+    "coerces": Journal.add_mapping_extensions(app.config["DATAOBJ_TO_MAPPING_DEFAULTS"]),
+    "exceptions": app.config["ADMIN_NOTES_SEARCH_MAPPING"],
+    "additional_mappings": app.config["ADMIN_NOTES_INDEX_ONLY_FIELDS"]
 }
 
 
@@ -915,6 +935,16 @@ class JournalQuery(object):
                     {
                         "terms": {"index.issn.exact": "<issn>"}
                     }
+                ]
+            }
+        }
+    }
+
+    must_query = {
+        "track_total_hits": True,
+        "query": {
+            "bool": {
+                "must": [
                 ]
             }
         }
@@ -941,6 +971,14 @@ class JournalQuery(object):
     def find_by_issn(self, issns, in_doaj=None, max=10):
         self.query = deepcopy(self.issn_query)
         self.query["query"]["bool"]["must"][0]["terms"]["index.issn.exact"] = issns
+        if in_doaj is not None:
+            self.query["query"]["bool"]["must"].append({"term": {"admin.in_doaj": in_doaj}})
+        self.query["size"] = max
+
+    def find_by_issn_exact(self, issns, in_doaj=None, max=10):
+        self.query = deepcopy(self.must_query)
+        for issn in issns:
+            self.query["query"]["bool"]["must"].append({"term": {"index.issn.exact": issn}})
         if in_doaj is not None:
             self.query["query"]["bool"]["must"].append({"term": {"admin.in_doaj": in_doaj}})
         self.query["size"] = max

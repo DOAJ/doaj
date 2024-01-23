@@ -61,6 +61,7 @@ class Messages(object):
     EXCEPTION_NO_CONTRIBUTORS_EXPLANATION = "DOAJ requires at least one author for each article."
 
     EXCEPTION_TOO_MANY_ISSNS = "Too many ISSNs. Only 2 ISSNs are allowed: one Print ISSN and one Online ISSN."
+    EXCEPTION_MISMATCHED_ISSNS = "ISSNs provided don't match any journal."
     EXCEPTION_ISSNS_OF_THE_SAME_TYPE = "Both ISSNs have the same type: {type}"
     EXCEPTION_IDENTICAL_PISSN_AND_EISSN = "The Print and Online ISSNs supplied are identical. If you supply 2 ISSNs they must be different."
     EXCEPTION_NO_ISSNS = "Neither Print ISSN nor Online ISSN has been supplied. DOAJ requires at least one ISSN."
@@ -115,6 +116,15 @@ class Messages(object):
     DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_ERROR_LOG = "Error sending notification with journals discontinuing soon."
     NO_DISCONTINUED_JOURNALS_FOUND_LOG = "No journals discontinuing soon found"
 
+    JOURNAL_CSV_VALIDATE__HEADER_CASE_MISMATCH = '"{h}" has mismatching case to expected header "{expected}".'
+    JOURNAL_CSV_VALIDATE__INVALID_HEADER = '"{h}" is not a valid column header. Please revert it to match what was sent to you in the original file.'
+    JOURNAL_CSV_VALIDATE__REQUIRED_HEADER_MISSING = '"{h}" is a required column missing from this upload. Please refer to the original file and restore the column.'
+    JOURNAL_CSV_VALIDATE__MISSING_JOURNAL = "There is no journal record in DOAJ for ISSN(s) {issns}.  The record may not exist, or it may be withdrawn."
+    JOURNAL_CSV_VALIDATE__OWNER_MISMATCH = "Your account '{acc}' doesn't own the journal with ISSN(s) {issns}. You may not update it."
+    JOURNAL_CSV_VALIDATE__NO_DATA_CHANGE = "The data you supplied didn't change anything in the journal record."
+    JOURNAL_CSV_VALIDATE__QUESTION_CANNOT_CHANGE = 'You may not change "{question}". Please revert it to match what was sent to you in the original file.'
+    JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR = "We couldn't create an update for this journal because: {reason}"
+    JOURNAL_CSV_VALIDATE__INVALID_DATA = "We couldn't understand the information in '{question}'"
 
     @classmethod
     def flash(cls, tup):

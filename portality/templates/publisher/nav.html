@@ -5,24 +5,26 @@
 {% set metadata = url_for('publisher.metadata') %}
 {% set preservation = url_for('publisher.preservation') %}
 {% set help = url_for('publisher.help') %}
+{% set csv = url_for('publisher.journal_csv') %}
 
 {% set tabs = [
-    (index, "My drafts", 0),
-    (journals, "My journals", 1),
-    (urs, "My update requests", 2),
-    (xml, "Upload article XML", 3),
-    (metadata, "Enter article metadata", 4),
-    (preservation, "Upload preservation file", 5),
-    (help, "Help", 6),
+    (index, "My drafts", 0, constants.ROLE_PUBLISHER),
+    (journals, "My journals", 1, constants.ROLE_PUBLISHER),
+    (urs, "My update requests", 2, constants.ROLE_PUBLISHER),
+    (xml, "Upload article XML", 3, constants.ROLE_PUBLISHER),
+    (metadata, "Enter article metadata", 4, constants.ROLE_PUBLISHER),
+    (preservation, "Upload preservation file", 5, constants.ROLE_PUBLISHER_PRESERVATION),
+    (csv, "Validate your CSV", 6, constants.ROLE_PUBLISHER_JOURNAL_CSV),
+    (help, "Help", 7, constants.ROLE_PUBLISHER),
     ]
 %}
 
 <div class="tabs">
     <nav class="tabs__menu">
         <ul class="tabs__list" role="tablist">
-            {% for url, label, ix in tabs %}
+            {% for url, label, ix, role in tabs %}
                 {# Hide the preservation tab for publishers without preservation role (by ID in case label changes) #}
-                {% if ix == 5 and not current_user.has_role("preservation") %}
+                {% if not current_user.has_role(role) %}
                     {% continue %}
                 {% endif %}
                 {% set selected = url == request.path %}

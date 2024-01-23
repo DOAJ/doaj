@@ -134,3 +134,86 @@ tests:
     results:
     - A new browser window opens containing the edit form for the journal
   - step: Click "Unlock and Close"
+
+- title: Test notes searchable for admin and not for public
+  context:
+    role: admin
+  steps:
+  - step: In the admin search, select Journal search, search for a journal and click on the "Edit Journal" button to edit the journal
+    path: /admin
+    results:
+      - The journal edit form is displayed
+  - step: Add a note to a journal record by clicking on the "Add" button in the "Notes" section of the journal record.  Add a distinctive note
+      whose text is unlikely to appear in a journal title or other metadata.  Then click on "save" button to save the new note
+    results:
+      - The note is added to the journal record
+  - step: Go to the admin journal search again and search for the journal you added the note with the words given in the note
+    path: /admin
+    results:
+      - The journal record is displayed in the search results
+  - step: Search for the journal from public search page with the distinctive words from the note
+    path: /search/journals
+    results:
+      - The journal record is not displayed in the search results
+  - step: Go to the API documentation page
+    path: /api/docs
+  - step: Scroll to the section "Search" > "Search journals" and click on the row to expand it.
+  - step: in the section "search_query" enter the distinctive words from the note you created, then click on the "Try it Out!" button at the bottom of the section
+    results:
+      - The journal record is not displayed in the search results
+
+- title: Test notes not searchable for public
+  context:
+    role: anonymous
+  steps:
+  - step: go to the public journal search
+    path: /search/journals
+  - step: Search for the distinctive word you entered into a note in the previous test.
+    results: No results displayed
+  - step: Modify the search url in the following way.  Add the text '%2C"default_field"%3A"admin.notes.note"' in the URL bar immediately after where it says '"default_operator"%3A"AND"'.
+      This is to attempt to trick the public search into allowing you to search on notes.
+    results: An error message displayed
+
+- title: Test notes searchable for Editor
+  context:
+    role: Editor
+  steps:
+  - step: Make sure the editor group is assigned for the journal / application which is under test and assigned to the user
+  - step: Go to the tab 'Your group’s journals'
+    results: Group's journals page displayed
+  - step: Search for the keyword which is given in a notes in a journal
+    results: The journal record is displayed in the search results
+  - step: Go to the tab 'Your group’s applications'
+    results: Group's applications page displayed
+  - step: Search for the keyword which is given in a notes in an application
+    results: The application is displayed in the search results
+  - step: Go to the tab 'Journals assigned to you'
+    results: Journals assigned to you page displayed
+  - step: Search for the keyword which is given in a notes in a journal
+    results: The journal record is displayed in the search results
+  - step: Go to the tab 'Applications assigned to you'
+    results: Applications assigned to you page displayed
+  - step: Search for the keyword which is given in a notes in an application
+    results: The application is displayed in the search results
+
+- title: Test notes searchable for Associate Editor
+  context:
+    role: AssociateEditor
+  steps:
+  - step: Go to the tab 'Journals assigned to you'
+    results: Journals assigned to you page displayed
+  - step: Search for the keyword which is given in a notes in a journal
+    results: The journal record is displayed in the search results
+  - step: Go to the tab 'Applications assigned to you'
+    results: Applications assigned to you page displayed
+  - step: Search for the keyword which is given in a notes in an application
+    results: The application is displayed in the search results
+
+- title: Test notes not searchable for fixed query widget (joint journal/article search)
+  context:
+    role: anonymous
+  steps:
+  - step: 'Do a url search for the keyword which is given in a notes for journal,article index. Ex: <host url>/query/journal,article/_search?&source={"query":{"query_string":{"query":"Test Note","default_operator":"AND"}},"size":"20"}&ref=fqw'
+    results: No results displayed
+  - step: Modify the search url to add the notes keyword and the default field 'admin.notes.note' and then hit the url
+    results: Error message displayed

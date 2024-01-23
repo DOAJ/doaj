@@ -10,9 +10,7 @@ tests:
   - step: Go to the application form
   - step: Click the question mark next to the questions.
     results:
-    - 'A pop-up help box appears
-
-      You can click the link in the help box'
+    - A pop-up help box appears 'You can click the link in the help box'
   - step: Click close
     results:
     - The pop-up box disappears
@@ -41,14 +39,12 @@ tests:
   - step: Type 1800
   - step: Click Next
     results:
-    - 'You see the error message: ''OA Start Date must be a year in a 4 digit format
-      (eg. 1987) and must be bigger than 1900 but smaller than current year'''
+    - 'You see the error message: ''This value should be between 1900 and 2023'''
   - step: Type 2100
   - step: Click Next
     results:
-    - 'You see the error message: ''OA Start Date must be a year in a 4 digit format
-      (eg. 1987) and must be bigger than 1900 but smaller than current year'''
-  - step: Type 1800
+    - 'You see the error message: ''This value should be between 1900 and 2023'''
+  - step: Type 2000
   - step: Click Next
     results:
     - You're taken to the "About" page
@@ -78,14 +74,13 @@ tests:
   - step: Fill in the title field and the homepage URL
   - step: In the ISSN (print) field add xxxx-xxxx
     results:
-    - 'You see the error message: ''This value seems to be invalid'''
+    - 'You see the error message: ''This is not a valid ISSN'''
   - step: Repeat in the ISSN (online) field
     results:
     - You see the same error message
   - step: Enter the same ISSN in both fields
     results:
-    - 'You see the error message: The value of this field and the ISSN (print) field
-      must be different.'
+    - 'You see the error message: Value of this field and pissn field must be different'
   - step: Change the value of one ISSN
     results:
     - All error messages clear.
@@ -111,11 +106,18 @@ tests:
   - step: Click Add Another
     results:
     - Another language field appears
-  - step: Click the X next to it
+  - step: Click 'Remove' next to it
     results:
     - It disappears
+  - step:  Enter the same value in 'Publisher's name' and 'Society's name'
+  - step: Click Next
+    results:
+    - "You see the error message: The value of this field and the Publisher's Country field must be different."
+  - step: Repeat the previous step, checking if the validator is case insensitive (e.g. "Publisher's name" and "publisher's Name")
+    results:
+      - The error message is still displayed
   - step: Repeat steps X to X for the Publisher's Name, Country, Society name, Country
-  - step: Delete the values from Society name and country, click Next
+  - step: Delete the values from 'Society name' and 'Society country', click Next
     results:
     - You can submit the page without providing answers to optional questions.
 
@@ -131,20 +133,21 @@ tests:
     - You can select multiple items
   - step: With a CC license selected, choose Publisher's own license
     results:
-    - The CC license deselects automatically and the "attributes" choices appear.
+    - The CC license remains selected and the "attributes" choices appear.
   - step: Choose some attributes and try to click on a CC license
     results:
-    - The checkboxes are inactive
-  - step: Unclick Publisher own license
+    - The checkboxes are active
+  - step: Deselect 'Publisher's own license'
     results:
-    - '"Attributes" question disappears and you can select a CC license'
+    - '"Attributes" question disappears'
+  - step: Enter a URL in the license terms box
   - step: 'Embedded licences: click Yes'
     results:
     - The URL field appears.
   - step: Click No
     results:
     - The URL field disappears
-  - step: Scroll to the bottom and click the Previous button
+  - step: Scroll to the bottom and click the Back button
     results:
     - You are taken to Page 2.
   - step: ClickPage 3 Copyright & licensing on the progress bar
@@ -165,7 +168,7 @@ tests:
   - step: Unclick Other
     results:
     - It disappears
-  - step: 'Plagiraism: click Yes'
+  - step: "Plagiarism: click 'Yes'"
     results:
     - The URL box appears
   - step: Write a number in the Average weeks box,
@@ -177,15 +180,16 @@ tests:
   context:
     role: publisher
   steps:
-  - step: APC question, click Yes
+  - step: In 'Publication fees' question, click Yes
     results:
-    - The 'Highest APC charged' fields appear.
+    - The 'Highest fee charged' field appears.
   - step: Click No
     results:
-    - The boxes disappear but the URL fields remains
-  - step: Click Yes again and click Add Another
+    - The boxes disappear but the URL field remains
+  - step: Click Yes again and click 'Add'
     results:
     - A 2nd row appears. You can select different currencies and different amounts
+  - step: Complete the rest of the page, click Next
 
 - title: PAGE 6 - Best practice
   context:
@@ -197,7 +201,7 @@ tests:
   - step: Select 'The journal content isn't archived...' option
     results:
     - The others deselect and become inactive
-  - step: Select Other
+  - step: Deselect 'The journal content isn't archived...' and select Other
     results:
     - Other archiving policy  and URL boxes appear
   - step: Scroll to the bottom and press Next
@@ -218,7 +222,7 @@ tests:
   - step: Change the URL and click 'Review your answers' on the progress bar
     results:
     - The URL has updated.
-  - step: Click 'Edit this section', scroll to the bottom of the page and click Next
+  - step: Click the first 'Edit this section', scroll to the bottom of the page and click Next
     results:
     - You are taken to Page 2 About and all your answers are preserved
   - step: Click Review your answers on the Progress bar
@@ -230,9 +234,9 @@ tests:
   - step: Check the consent box
     results:
     - The Submit button goes red
-  - step: Unchedck the consent box again
+  - step: Uncheck the consent box again
     results:
     - The Submit button goes grey again
   - step: Check the consent box and click Submit
     results:
-    - The application submits and you are shown the confrmation page
+    - The application submits and you are shown the confirmation page
