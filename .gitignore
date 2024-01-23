@@ -129,4 +129,5 @@ portality/static/widget/fq_widget_build_info.txt
 doajtest/unit/resources/harvester_resp_temp.json
 
 
-_playground
+# playground dir for try things out
+portality/_playground/*

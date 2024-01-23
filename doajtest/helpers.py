@@ -121,9 +121,8 @@ class DoajTestCase(TestCase):
     originals = {}
 
     @classmethod
-    def setUpClass(cls) -> None:
-        import portality.app  # noqa, needed to registing routes
-        cls.originals = patch_config(app, {
+    def create_app_patch(cls):
+        return {
             "STORE_IMPL": "portality.store.StoreLocal",
             "STORE_LOCAL_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "main", cls.__name__.lower()),
             "STORE_TMP_DIR": paths.rel2abs(__file__, "..", "tmp", "store", "tmp", cls.__name__.lower()),
@@ -131,7 +130,8 @@ class DoajTestCase(TestCase):
             "STORE_ANON_DATA_CONTAINER": "doaj-anon-data-placeholder" + '-' + cls.__name__.lower(),
             "STORE_PUBLIC_DATA_DUMP_CONTAINER": "doaj-data-dump-placeholder" + '-' + cls.__name__.lower(),
             "ES_RETRY_HARD_LIMIT": 0,
-            "ES_BLOCK_WAIT_OVERRIDE": 0.1,
+            "ES_BLOCK_WAIT_OVERRIDE": 0.5,
+            "ES_READ_TIMEOUT": '5m',
             "ELASTIC_SEARCH_DB": app.config.get('ELASTIC_SEARCH_TEST_DB'),
             'ELASTIC_SEARCH_DB_PREFIX': create_es_db_prefix(cls),
             "FEATURES": app.config['VALID_FEATURES'],
@@ -140,7 +140,13 @@ class DoajTestCase(TestCase):
             "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
             'CMS_BUILD_ASSETS_ON_STARTUP': False,
             'UPLOAD_ASYNC_DIR': paths.create_tmp_dir(is_auto_mkdir=True).as_posix(),
-        })
+        }
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        import portality.app  # noqa, needed to registing routes
+
+        cls.originals = patch_config(app, cls.create_app_patch())
 
         # some unittest will capture log for testing, therefor log level must be DEBUG
         cls.app_test.logger.setLevel(logging.DEBUG)
@@ -216,13 +222,9 @@ class DoajTestCase(TestCase):
 
         :return:
         """
-        article = models.Article(**ArticleFixtureFactory.make_article_source())
-        save_all_block_last([
-            article,
-            models.Application(**ApplicationFixtureFactory.make_application_source()),
-            models.Notification(),
-        ])
-        models.Article.pull(article.id).delete()
+        models.Article(**ArticleFixtureFactory.make_article_source()).save()
+        models.Application(**ApplicationFixtureFactory.make_application_source()).save()
+        models.Notification().save()
 
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):

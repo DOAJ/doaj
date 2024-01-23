@@ -36,6 +36,13 @@ PUBLISHER_SOURCE = {
     "id": "publisher"
 }
 
+PUBLISHER_B_SOURCE = {
+    "email": "pub_b@example.com",
+    "name": "Publisher bbbbb",
+    "role": ['publisher', 'api'],
+    "id": "publisher_b"
+}
+
 MANED_SOURCE = {
     "email": "maned@example.com",
     "name": "Managing Editor / Administrator",
@@ -70,6 +77,18 @@ ASSED_SOURCE3 = {
     "role": ["associate_editor"],
     "id": "associate_3"
 }
+
+
+def create_publisher_a():
+    from portality import models
+    publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+    return publisher
+
+
+def create_maned_a():
+    from portality import models
+    maned = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+    return maned
 
 
 def create_publisher_account__a(acc_id="testowner", is_save=True, blocking=True) -> models.Account:

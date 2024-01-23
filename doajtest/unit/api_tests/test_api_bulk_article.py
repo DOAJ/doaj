@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from flask import url_for
+from portality.lib.thread_utils import wait_until
 
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase, with_es, wait_unit
@@ -261,17 +262,15 @@ class TestBulkArticle(DoajTestCase):
                 first_art = reply.pop()
                 assert first_art['status'] == 'created'
                 # Check we actually created new records
-                time.sleep(1)
-                assert len(models.Article.all()) == len(dataset)
+                assert wait_until(lambda: len(models.Article.all()) == len(dataset))
 
                 # Bulk delete
                 all_but_one = [new_art['id'] for new_art in reply]
                 resp = t_client.delete(url_for('api_v3.bulk_article_delete', api_key=article_owner.api_key),
                                        data=json.dumps(all_but_one))
                 assert resp.status_code == 204
-                time.sleep(1)
                 # we should have deleted all but one of the articles.
-                assert len(models.Article.all()) == 1
+                assert wait_until(lambda: len(models.Article.all()) == 1)
                 # And our other user isn't allowed to delete the remaining one.
                 resp = t_client.delete(url_for('api_v3.bulk_article_delete', api_key=somebody_else.api_key),
                                        data=json.dumps([first_art['id']]))
@@ -335,17 +334,15 @@ class TestBulkArticle(DoajTestCase):
                 first_art = reply.pop()
                 assert first_art['status'] == 'created'
                 # Check we actually created new records
-                time.sleep(1)
-                assert len(models.Article.all()) == len(dataset)
+                assert wait_until(lambda: len(models.Article.all()) == len(dataset))
 
                 # Bulk delete
                 all_but_one = [new_art['id'] for new_art in reply]
                 resp = t_client.delete(url_for('api_v1.bulk_article_delete', api_key=article_owner.api_key),
                                        data=json.dumps(all_but_one))
                 assert resp.status_code == 204
-                time.sleep(1)
                 # we should have deleted all but one of the articles.
-                assert len(models.Article.all()) == 1
+                assert wait_until(lambda: len(models.Article.all()) == 1)
                 # And our other user isn't allowed to delete the remaining one.
                 resp = t_client.delete(url_for('api_v1.bulk_article_delete', api_key=somebody_else.api_key),
                                        data=json.dumps([first_art['id']]))
@@ -409,17 +406,15 @@ class TestBulkArticle(DoajTestCase):
                 first_art = reply.pop()
                 assert first_art['status'] == 'created'
                 # Check we actually created new records
-                time.sleep(1)
-                assert len(models.Article.all()) == len(dataset)
+                assert wait_until(lambda: len(models.Article.all()) == len(dataset))
 
                 # Bulk delete
                 all_but_one = [new_art['id'] for new_art in reply]
                 resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=article_owner.api_key),
                                        data=json.dumps(all_but_one))
                 assert resp.status_code == 204
-                time.sleep(1)
                 # we should have deleted all but one of the articles.
-                assert len(models.Article.all()) == 1
+                wait_until(lambda: len(models.Article.all()) == 1)
                 # And our other user isn't allowed to delete the remaining one.
                 resp = t_client.delete(url_for('api_v2.bulk_article_delete', api_key=somebody_else.api_key),
                                        data=json.dumps([first_art['id']]))
@@ -446,6 +441,7 @@ class TestBulkArticle(DoajTestCase):
         # check that 400 is raised
         with self.assertRaises(Api400Error):
             ids = ArticlesBulkApi.create(dataset, account)
+
 
     def test_create_async__success(self):
         income_articles = list(ArticleFixtureFactory.make_bulk_incoming_api_article(10))

@@ -29,6 +29,7 @@ from portality.tasks.article_cleanup_sync import ArticleCleanupSyncBackgroundTas
 from portality.tasks.article_duplicate_report import ArticleDuplicateReportBackgroundTask
 from portality.tasks.async_workflow_notifications import AsyncWorkflowBackgroundTask
 from portality.tasks.check_latest_es_backup import CheckLatestESBackupBackgroundTask
+from portality.tasks.request_es_backup import RequestESBackupBackgroundTask
 # from portality.tasks.find_discontinued_soon import FindDiscontinuedSoonBackgroundTask
 from portality.tasks.harvester import HarvesterBackgroundTask
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask
@@ -55,6 +56,7 @@ HANDLERS = {
     ArticleDuplicateReportBackgroundTask.__action__: ArticleDuplicateReportBackgroundTask,
     AsyncWorkflowBackgroundTask.__action__: AsyncWorkflowBackgroundTask,
     CheckLatestESBackupBackgroundTask.__action__: CheckLatestESBackupBackgroundTask,
+    RequestESBackupBackgroundTask.__action__: RequestESBackupBackgroundTask,
     # FindDiscontinuedSoonBackgroundTask.__action__: FindDiscontinuedSoonBackgroundTask,
     HarvesterBackgroundTask.__action__: HarvesterBackgroundTask,
     IngestArticlesBackgroundTask.__action__: IngestArticlesBackgroundTask,
@@ -114,6 +116,7 @@ def requeue_jobs(action, status, from_date, to_date, prompt=True):
 
 def cancel_jobs(action, status, from_date, to_date, prompt=True):
     manage_jobs('cancel', action, status, from_date, to_date, prompt=prompt)
+
 
 def process_jobs(action, status, from_date, to_date, prompt=True):
     manage_jobs("process", action, status, from_date, to_date, prompt=prompt)
