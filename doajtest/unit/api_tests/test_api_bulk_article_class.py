@@ -1,3 +1,6 @@
+"""
+test the bulk article API by ArticlesBulkApi layer
+"""
 import json
 import time
 from pathlib import Path

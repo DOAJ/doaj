@@ -1,3 +1,6 @@
+"""
+test the bulk article API by web interface
+"""
 import json
 import time
 
