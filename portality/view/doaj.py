@@ -341,11 +341,11 @@ def toc(identifier=None):
 
 
 @blueprint.route("/toc/articles/<identifier>")
-def toc_articles_legacy(identifier=None, volume=None, issue=None):
+def toc_articles_legacy(identifier=None):
     return redirect(url_for('doaj.toc_articles', identifier=identifier, volume=volume, issue=issue), 301)
 
 @blueprint.route("/toc/<identifier>/articles")
-def toc_articles(identifier=None, volume=None, issue=None):
+def toc_articles(identifier=None):
     journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
