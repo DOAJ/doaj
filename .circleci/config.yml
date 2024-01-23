@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   python: circleci/python@2.1.1
+  browser-tools: circleci/browser-tools@1.2.3
 
 jobs:
   build-and-test:
@@ -14,6 +15,7 @@ jobs:
           - xpack.security.enabled: false
           - transport.host: localhost
           - discovery.type: single-node
+
     parallelism: 4
 
     steps:
@@ -39,6 +41,28 @@ jobs:
       - store_test_results:
           path: test-results
 
+      - run:
+          name: Env for selenium
+          command: |
+            echo "SELENIUM_REMOTE_URL = ''" >> test.cfg
+            echo "SELENIUM_DOAJ_HOST = 'localhost'" >> test.cfg
+            echo "SELENIUM_HEADLESS = True" >> test.cfg
+      - browser-tools/install-chrome
+
+      - run:
+            name: List current env
+            command: |
+                cat test.cfg
+                google-chrome --version
+
+      - run:
+          name: Run selenium tests
+          command: |
+            TESTS=$(circleci tests glob "doajtest/seleniumtest/**/*.py" | circleci tests split)
+            pytest -v -s --color=yes --code-highlight=yes --log-level=DEBUG --junitxml=test-results/doajtest-selenium.xml $TESTS
+
+      - store_test_results:
+          path: test-results
     working_directory: ~/doaj
 
 
