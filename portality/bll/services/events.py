@@ -25,6 +25,10 @@ from portality.events.consumers.journal_discontinuing_soon_notify import Journal
 
 
 class EventsService(object):
+    # disabled events - to enable move the event to EVENT_CONSUMENRS array
+    DISABLED_EVENTS = [
+        ApplicationPublisherRevisionNotify
+    ]
     EVENT_CONSUMERS = [
         ApplicationPublisherQuickRejectNotify,
         AccountCreatedEmail,
@@ -39,7 +43,6 @@ class EventsService(object):
         ApplicationPublisherInprogressNotify,
         ApplicationPublisherAcceptedNotify,
         ApplicationPublisherAssignedNotify,
-        ApplicationPublisherRevisionNotify,
         BGJobFinishedNotify,
         JournalAssedAssignedNotify,
         JournalEditorGroupAssignedNotify,

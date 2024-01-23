@@ -1,12 +1,21 @@
 from portality.models import Journal
 import csv
 
-
 NOT_IN_DOAJ = {
-    "query" : {
-        "bool" : {
-            "must" : [
-                {"term" : {"admin.in_doaj" : False}}
+    "query": {
+        "bool": {
+            "must": [
+                {"term": {"admin.in_doaj": False}}
+            ]
+        }
+    }
+}
+
+IN_DOAJ = {
+    "query": {
+        "bool": {
+            "must": [
+                {"term": {"admin.in_doaj": True}}
             ]
         }
     }
@@ -15,6 +24,7 @@ NOT_IN_DOAJ = {
 if __name__ == "__main__":
 
     import argparse
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--out", help="output file path")
     args = parser.parse_args()
@@ -27,22 +37,29 @@ if __name__ == "__main__":
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID",
-                         "Journal Name",
+                         "Journal Title",
                          "Journal URL",
                          "E-ISSN",
                          "P-ISSN"
                          ])
 
+        in_doaj_issns = set()
+        for journal in Journal.iterate(q=IN_DOAJ, keepalive='5m', wrap=True):
+            bibjson = journal.bibjson()
+            in_doaj_issns.add(bibjson.get_one_identifier(bibjson.E_ISSN))
+            in_doaj_issns.add(bibjson.get_one_identifier(bibjson.P_ISSN))
+
+        # Remove the value None so we don't match on all records
+        in_doaj_issns.discard(None)
+
         for journal in Journal.iterate(q=NOT_IN_DOAJ, keepalive='5m', wrap=True):
             bibjson = journal.bibjson()
-
-            writer.writerow([journal.id,
-                             bibjson.title,
-                             bibjson.get_single_url(urltype="homepage"),
-                             bibjson.get_one_identifier(bibjson.E_ISSN),
-                             bibjson.get_one_identifier(bibjson.P_ISSN),
-                             ])
-
-
-
-
+            eissn = bibjson.get_one_identifier(bibjson.E_ISSN)
+            pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
+            if eissn not in in_doaj_issns and pissn not in in_doaj_issns:
+                writer.writerow([journal.id,
+                                 bibjson.title,
+                                 bibjson.get_single_url(urltype="homepage"),
+                                 eissn,
+                                 pissn,
+                                 ])

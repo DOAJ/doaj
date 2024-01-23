@@ -6,70 +6,78 @@ tests:
   context:
     role: Publisher
   steps:
-  - step: Go to Your Journals
+  - step: Go to the My journals tab on the Publisher dashboard
     results:
-    - You see a list of journals each with a button "Update"
+    - You see a list of journals, each with a button "Update"
   - step: Click the "Update" button next to one of your journals
     results:
-    - a new browser tab opens, titled "Journal Update Request"
-  - step: Attempt to edit questions 1, 3, 4 & 5
+    - a new browser tab opens, titled "Journal update request form for ..."
+  - step: Attempt to edit the Journal title, Alternative title, ISSN (print), ISSN (online)
     results:
     - You cannot
   - step: Make some changes to the editable questions (make a note of what those changes are)
-  - step: submit the form
+  - step: Click on 'Review your answers' in the section stepper on the right and submit the form
     results:
-    - The form is submitted successfully
-    - A flash message tells you that your update has been submitted
+    - The form is submitted successfully and you are taken to the 'My update requests' tab 
+    - A flash message tells you that your update has been submitted. Another flash message says that a confirmation email has been sent.
   - step: clear the flash messages
-  - step: Close the Journal tab
-  - step: Refresh the "your journals" page
-    result:
+  - step: Click on the "My journals" tab
+    results:
     - The journal you submitted an update for now says "View update" by it
-  - step: Go to the "My Update Requests" tab
-    result:
-      The journal for which you submitted an update is listed here
+  - step: Go back to the "My Update Requests" tab
+    results:
+      - The journal for which you submitted an update is listed here
   - step: Click "Edit" on the update request you created above
-    result:
+    results:
       - You can see the edit form for the update request
       - Your changes implemented above are present
   - step: Make another change to the form and submit
-  - step: Go back to the "My update requests" form
-  - step: Click "Delete this update request"
+    results:
+    - Your changes are submitted successfully.
+  - step: Click "Delete"
+    results:
+    - A pop-up appears asking you if you are sure you want to delete the update request. 
+  - step: click 'No'
     result:
-    - The Update Request is successfully deleted
-  - step: Open a new session in a different browser or a private window
+    - The pop-up disappears
+  - step: Click 'Delete' and 'Yes, delete it'
+    results:
+    - You are shown a message 'Your application has been deleted'
+  - step: Click the link to take you back to the dashboard and click on 'My update requests'
+    results: 
+    - The update request no longer appears on this tab
+  - step: create a new update request for one of your journals and submit it
+  - step: Open a new session in a different browser or a private (incognito) window
   - step: Log in as an administrator and go to the dashboard
   - step: Go to the Update Requests Search page
-    result:
+    results:
     - The update request you submitted above is visible
   - step: Click "Review Update"
     results:
       - A new browser tab opens with the update request form
       - The top of the form contains a table showing the difference between the journal and the update request
       - The changes in the difference table match the changes you made when submitting the update request
-  - step: Click on one of the links in the difference table
+  - step: Click on one of the links in the left column of the difference table
     results:
-      - Something happens (TODO)
-  - step: Change the status to "In Progress" and save.  Do not make any other changes at this point
+      - You are scrolled down to the corresponding change and the change is highlighted in black under the question
+  - step: Go back to the top of the form and change the status to "In Progress" and save.  Do not make any other changes at this point
   - step: Go back to the other browser window, where you are signed in as a publisher
   - step: Go to the Publisher's Update Requests tab
     result:
-    - Your update request is no longer editable
+    - Your update request is no longer editable and the black button now says 'View'
   - step: Go back to the browser window where you are logged in as admin
   - step: Edit the update request, and change the status to "Revisions Required"
     results:
     - flash notification confirms that the publisher has been alerted
   - step: Go back to the other browser window, where you are signed in as a publisher
-  - step: Go to the Publisher's Update Requests tab
+  - step: Go to the 'My update requests' tab. You may need to reload the page.
     results:
-    - under the "Status" facet you have an update request listed under "Revisions Required"
-    - Your update request is editable again
+    - Your update request is editable again and the black button now says 'Edit'
   - step: Make an edit to the update request
   - step: Go back to the browser window where you are logged in as admin
   - step: Edit the update request, and Reject it
     result:
     - flash message confirms that the publisher has been notified
-  - step: Go back to the other browser window, where you are signed in as a publisher
-  - step: Go to the Publisher's Update Requests tab
+  - step: Go back to the My update requests tab in the other browser window, where you are signed in as a publisher
     results:
-    - todo - I think that the publisher can't see rejected update requests
+    - The status of the update requests has changed to 'Application rejected'.
