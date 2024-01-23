@@ -2,9 +2,8 @@ import gzip
 import json
 from pathlib import Path
 
-from doajtest.helpers import DoajTestCase, wait_until_no_es_incomplete_tasks, StoreLocalPatcher
+from doajtest.helpers import DoajTestCase, StoreLocalPatcher
 from doajtest.unit_tester import bgtask_tester
-from portality import dao
 from portality.models import BackgroundJob, Account
 from portality.store import StoreLocal
 from portality.tasks.anon_export import AnonExportBackgroundTask
