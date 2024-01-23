@@ -9,6 +9,7 @@ from portality.api.current.crud import ArticlesCrudApi
 from portality.bll import DOAJ
 from portality.bll import exceptions
 from portality.bll.exceptions import DuplicateArticleException
+from portality.models import BulkArticles
 from portality.tasks.article_bulk_create import ArticleBulkCreateBackgroundTask
 
 
@@ -111,7 +112,7 @@ class ArticlesBulkApi(Api):
         return upload_id
 
     @classmethod
-    def get_status_swag(cls):
+    def get_async_status_swag(cls):
         template = deepcopy(cls.SWAG_TEMPLATE)
         template['parameters'].append(
             {
@@ -170,6 +171,45 @@ class ArticlesBulkApi(Api):
             },
         }
         return cls._build_swag_response(template)
+
+    @classmethod
+    def get_async_status(cls, current_user_id, upload_id=None, ) -> Dict:
+        if not upload_id:
+            raise Api400Error("upload_id is required")
+
+        bulk_article = BulkArticles.pull(upload_id)
+        if bulk_article is None or bulk_article.owner != current_user_id:
+            raise Api400Error("upload_id is invalid")
+
+        internal_external_status_map = {
+            "incoming": "pending",
+            "partial": "processed_partial"
+        }
+
+        status = {
+            "id": upload_id,
+            "created": bulk_article.created_date,
+            'status': internal_external_status_map.get(bulk_article.status, bulk_article.status),
+        }
+
+        if bulk_article.status in ["processed", "partial"]:
+            status['results'] = {
+                "imported": bulk_article.imported,
+                "failed": bulk_article.failed_imports,
+                "update": bulk_article.updates,
+                "new": bulk_article.new,
+            }
+
+        if bulk_article.error:
+            status['error'] = bulk_article.error
+
+        if bulk_article.error_details:
+            status['error_details'] = bulk_article.error_details
+
+        if bulk_article.failure_reasons:
+            status['failure_reasons'] = bulk_article.failure_reasons
+
+        return status
 
     @classmethod
     def delete_swag(cls):

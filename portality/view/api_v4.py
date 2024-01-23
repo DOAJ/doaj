@@ -382,9 +382,10 @@ def bulk_article_create():
     """
     data = load_income_articles_json(request)
     upload_id = ArticlesBulkApi.create_async(data, current_user._get_current_object())
-    resp_content = json.dumps({'msg': 'Your article bulk upload is being processed.  Please check the status link for progress.',
-                               'upload_id': upload_id,
-                               "status": app.config.get("BASE_URL", "") + url_for("api_v4.bulk_article_create_status", upload_id=upload_id)})
+    resp_content = json.dumps(
+        {'msg': 'Your article bulk upload is being processed.  Please check the status link for progress.',
+         'upload_id': upload_id,
+         "status": app.config.get("BASE_URL", "") + url_for("api_v4.bulk_article_create_status", upload_id=upload_id)})
     return respond(resp_content, 202)
 
 
@@ -410,45 +411,10 @@ def bulk_article_delete():
 @api_key_required
 @write_required(api=True)
 @swag(swag_summary='Get bulk article creation status <span class="red">[Authenticated, not public]</span>',
-      swag_spec=ArticlesBulkApi.get_status_swag())
+      swag_spec=ArticlesBulkApi.get_async_status_swag())
 @plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('bulk_article_create_status',
                                                        'Get bulk article creation status'))
 def bulk_article_create_status(upload_id=None):
-    # upload_id = request.values.get("upload_id", None)
-    if not upload_id:
-        raise Api400Error("upload_id is required")
-
-    bulk_article = BulkArticles.pull(upload_id)
-    if bulk_article is None or bulk_article.owner != current_user.id:
-        raise Api400Error("upload_id is invalid")
-
-    internal_external_status_map = {
-        "incoming": "pending",
-        "partial": "processed_partial"
-    }
-
-    status = {
-        "id": upload_id,
-        "created": bulk_article.created_date,
-        'status': internal_external_status_map.get(bulk_article.status, bulk_article.status),
-    }
-
-    if bulk_article.status in ["processed", "partial"]:
-        status['results'] = {
-            "imported": bulk_article.imported,
-            "failed": bulk_article.failed_imports,
-            "update": bulk_article.updates,
-            "new": bulk_article.new,
-        }
-
-    if bulk_article.error:
-        status['error'] = bulk_article.error
-
-    if bulk_article.error_details:
-        status['error_details'] = bulk_article.error_details
-
-    if bulk_article.failure_reasons:
-        status['failure_reasons'] = bulk_article.failure_reasons
-
+    status = ArticlesBulkApi.get_async_status(current_user.id, upload_id)
     resp_content = json.dumps(status)
     return respond(resp_content, 200)
