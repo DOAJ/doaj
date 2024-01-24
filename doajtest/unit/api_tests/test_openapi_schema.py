@@ -12,4 +12,4 @@ class TestDoajOpenapiSchema(DoajTestCase):
         with self.app_test.test_client() as t_client:
             resp = t_client.get(url_for('api.api_spec'))
             api_json = json.loads(resp.data)
-        openapi_spec_validator.validate(api_json)
+        openapi_spec_validator.validate_spec(api_json)
