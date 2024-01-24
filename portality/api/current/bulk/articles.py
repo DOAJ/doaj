@@ -119,20 +119,21 @@ class ArticlesBulkApi(Api):
                 "description": "<div class=\"search-query-docs\">The upload id of the task, "
                                "User can use this id to check the bulk upload status.</div>",
                 "required": True,
-                "schema": {"type": "string"},
                 "name": "upload_id",
-                "in": "query"
+                "type": "string",
+                "in": "path",
             }
         )
         template['parameters'].append(cls.SWAG_API_KEY_REQ_PARAM)
         template['responses']['200'] = {
+            "description": "Return status of upload ids",
             "schema": {
+                "type": "object",
                 "properties": {
                     "status": {
                         "type": "string",
                         "description": "The status of the task",
                         "enum": ["incoming", "validated", "falied", "processed", "partial"]
-
                     },
                     "results": {
                         'type': 'object',
@@ -158,16 +159,15 @@ class ArticlesBulkApi(Api):
                     }
 
                 },
-                "type": "object"
             },
-            "description": "Return status of upload ids"
         }
         template['responses']['400'] = {
+            "description": "Fail get status reason",
             "schema": {
+                "type": "object",
                 "properties": {
                     "msg": {"type": "string", "description": "The error message"},
                 },
-                "type": "object"
             },
         }
         return cls._build_swag_response(template)
