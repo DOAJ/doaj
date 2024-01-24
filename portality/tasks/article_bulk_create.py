@@ -22,9 +22,6 @@ def get_upload_path(upload: BulkArticles) -> Path:
     return p / upload.local_filename
 
 
-#########################################################
-# Background task implementation
-
 def prep_article(data, account) -> models.Article:
     from portality.api.current import ArticlesCrudApi
     try:
@@ -83,10 +80,7 @@ class ArticleBulkCreateBackgroundTask(BackgroundTask):
 
 huey_helper = ArticleBulkCreateBackgroundTask.create_huey_helper(main_queue)
 
-# article_bulk_create = huey_helper.create_common_execute_fn(is_load_config=False)
 
 @huey_helper.register_execute(is_load_config=False)
 def article_bulk_create(job_id):
-    job = models.BackgroundJob.pull(job_id)
-    task = ArticleBulkCreateBackgroundTask(job)
-    BackgroundApi.execute(task)
+    background_helper.execute_by_job_id(job_id, ArticleBulkCreateBackgroundTask)

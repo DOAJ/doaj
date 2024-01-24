@@ -79,6 +79,7 @@ def register_execute(task_queue, task_name=None, script=True):
     """
     decorator for register background job execute function
     """
+
     def wrapper(fn):
         if task_name:
             conf = configure(task_name)
@@ -110,12 +111,6 @@ class RedisHueyTaskHelper:
     def register_execute(self, is_load_config=False):
         return register_execute(self.task_queue,
                                 self.task_name if is_load_config else None)
-
-    def create_common_execute_fn(self, is_load_config=False) -> Callable:
-        assert self.task_factory is not None, "task_factory is required"
-        execute_fn = create_execute_fn(self.task_queue, self.task_factory,
-                                       self.task_name if is_load_config else None)
-        return execute_fn
 
 
 def _get_background_task_spec(module):
@@ -183,13 +178,3 @@ def submit_by_background_job(background_job, execute_fn):
     """
     background_job.save()
     execute_fn.schedule(args=(background_job.id,), delay=10)
-
-
-def create_execute_fn(task_queue: RedisHuey, task_factory: TaskFactory, task_name=None, script=True):
-    """ Common way to create execute_fn for BackgroundTask """
-
-    @register_execute(task_queue, task_name=task_name, script=script)
-    def _execute_fn(job_id):
-        execute_by_job_id(job_id, task_factory)
-
-    return _execute_fn
