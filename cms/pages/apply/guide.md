@@ -106,8 +106,6 @@ Journals that publish special issues or other content curated by guest editors m
 - The Editor-in-Chief or dedicated board members must oversee the guest editors
 - Papers submitted to a special issue by the guest editor(s) must be handled under an independent review process and make up no more than 25% of the issue's total
 
-DOAJ will not accept a journal if all content in the last year/volume is published as special issues.
-
 ---
 
 ### Licensing
@@ -238,11 +236,12 @@ Our criteria are available in:
 
 ## Change log
 
-This is Version 2.1 of the Guide to applying.
+This is Version 2.2 of our Guide to applying.
 
-*Version 2.1 (November 2023 - changed Editor-in-Chief to Head of Editorial in the Appeals section; removed the 'Updating your journal record' section as this information is now on the Publisher information page.)*<br>
+*Version 2.2 (January 2024 - removed 'DOAJ will not accept a journal if all content in the last year/volume is published as special issues' from the Special Issues section of the Basic criteria.)*<br>
+<s>Version 2.1 (November 2023 - changed Editor-in-Chief to Head of Editorial in the Appeals section; removed the 'Updating your journal record' section as this information is now on the Publisher information page.)</s><br>
 <s>Version 2.0 (November 2023 - addition of new criteria around special issues, smaller changes for clarity and plain English.)</s><br>
 <s>Version: 1.3 (April 2023 - further clarification to endogeny, displaying journal rankings, information about author charges and reviewers, flipped journals and journals/publishers with multiple exclusions )</s><br>
 <s>Version: 1.2 (February 2022 - extra copyright and licensing information were moved to a separate page)</s><br>
 <s>Version: 1.1 (December 2021 - a clarification to endogeny criterion)</s><br>
-<s>Version 1.0 (November 1.0)
+<s>Version 1.0 (November 1.0)</s>
