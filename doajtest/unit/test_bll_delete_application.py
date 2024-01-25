@@ -8,18 +8,21 @@ from doajtest.helpers import DoajTestCase, load_from_matrix
 from portality import lock
 from portality.bll import DOAJ
 from portality.bll import exceptions
+from portality.lib import thread_utils
 from portality.models import Journal, Account, Suggestion
 
 
 def load_parameter_sets():
     return load_from_matrix("delete_application.csv", test_ids=[])
 
+
 EXCEPTIONS = {
-    "ArgumentException" : exceptions.ArgumentException,
-    "Locked" : lock.Locked,
-    "AuthoriseException" : exceptions.AuthoriseException,
-    "NoSuchObjectException" : exceptions.NoSuchObjectException
+    "ArgumentException": exceptions.ArgumentException,
+    "Locked": lock.Locked,
+    "AuthoriseException": exceptions.AuthoriseException,
+    "NoSuchObjectException": exceptions.NoSuchObjectException
 }
+
 
 def check_locks(application, cj, rj, account):
     if account is None:
@@ -39,6 +42,7 @@ def check_locks(application, cj, rj, account):
     if rj_id is not None:
         assert not lock.has_lock(constants.LOCK_JOURNAL, rj_id, account_id)
 
+
 class TestBLLDeleteApplication(DoajTestCase):
 
     def setUp(self):
@@ -50,7 +54,8 @@ class TestBLLDeleteApplication(DoajTestCase):
         Journal.save = self.old_journal_save
 
     @parameterized.expand(load_parameter_sets)
-    def test_01_delete_application(self, name, application_type, account_type, current_journal, related_journal, raises):
+    def test_01_delete_application(self, name, application_type, account_type, current_journal, related_journal,
+                                   raises):
 
         ###############################################
         ## set up
@@ -94,7 +99,6 @@ class TestBLLDeleteApplication(DoajTestCase):
                 application.set_related_journal(rj.id)
                 lock.lock(constants.LOCK_JOURNAL, rj.id, "otheruser")
 
-
         acc = None
         if account_type != "none":
             acc = Account(**AccountFixtureFactory.make_publisher_source())
@@ -124,16 +128,18 @@ class TestBLLDeleteApplication(DoajTestCase):
             with self.assertRaises(EXCEPTIONS[raises]):
                 time.sleep(1)
                 svc.delete_application(application_id, acc)
-            time.sleep(1)
-            check_locks(application, cj, rj, acc)
+            if acc:
+                wait_all_unlocked(application, cj, rj, acc)
+                check_locks(application, cj, rj, acc)
         else:
             svc.delete_application(application_id, acc)
 
-            # we need to sleep, so the index catches up
-            time.sleep(1)
+            if acc:
+                # we need to sleep, so the index catches up
+                wait_all_unlocked(application, cj, rj, acc)
 
-            # check that no locks remain set for this user
-            check_locks(application, cj, rj, acc)
+                # check that no locks remain set for this user
+                check_locks(application, cj, rj, acc)
 
             # check that the application actually is gone
             if application is not None:
@@ -152,3 +158,20 @@ class TestBLLDeleteApplication(DoajTestCase):
                 assert record["status"] == "deleted"
 
 
+def wait_all_unlocked(application, cj, rj, account):
+    if account is None:
+        return
+
+    def all_unlocked():
+        conds = []
+
+        account_id = account.id
+        if application is not None:
+            conds.append(not lock.has_lock(constants.LOCK_APPLICATION, application.id, account_id))
+        if cj is not None:
+            conds.append(not lock.has_lock(constants.LOCK_JOURNAL, cj.id, account_id))
+        if rj is not None:
+            conds.append(not lock.has_lock(constants.LOCK_JOURNAL, rj.id, account_id))
+        return all(conds)
+
+    thread_utils.wait_until(all_unlocked, 5, 0.1)
