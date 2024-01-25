@@ -310,13 +310,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Emma Molls
-  area: Librarianship
-  year_since:
-  city: Minneapolis, MN
-  country: USA
-  language: English
-  
 - name: Emrah Kaya
   area: Social Sciences, Humanities
   year_since:
@@ -764,14 +757,6 @@ ass_ed:
   country: Italy
   language: Italian, English, German
   
-- name: Sridhar Gutam
-  area: Plant Physiology, Tree Phenology and Open Science
-  year_since:
-  city: Bengaluru
-  country: India
-  language: Telugu, English, Hindi, Kannada
-  photo: "Sridhar_photo.png"
-
 - name: Sofia Fagiolo
   area: Librarianship
   year_since:

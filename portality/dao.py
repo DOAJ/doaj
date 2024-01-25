@@ -46,8 +46,13 @@ class BulkException(Exception):
 class DomainObject(UserDict, object):
     """
     ~~DomainObject:Model->Elasticsearch:Technology~~
+
+    base models class for Elasticsearch(ES) index,
+    which provide interaction with ES index such as (save, delete, query, etc.)
     """
-    __type__ = None  # set the type on the model that inherits this
+
+    # set the type on the model that inherits this# which also is ES index name of the model
+    __type__ = None
 
     def __init__(self, **kwargs):
         # if self.data is already set, don't do anything here
@@ -169,7 +174,8 @@ class DomainObject(UserDict, object):
         r = None
         while attempt <= retries:
             try:
-                r = ES.index(self.index_name(), d, doc_type=self.doc_type(), id=self.data.get("id"),
+                r = ES.index(self.index_name(), d, doc_type=self.doc_type(),
+                             id=self.data.get("id"),
                              headers=CONTENT_TYPE_JSON,
                              timeout=app.config.get('ES_READ_TIMEOUT', None), )
                 break
@@ -646,8 +652,8 @@ class DomainObject(UserDict, object):
                     yield r
 
     @classmethod
-    def iterall(cls, page_size=1000, limit=None):
-        return cls.iterate(MatchAllQuery().query(), page_size, limit)
+    def iterall(cls, page_size=1000, limit=None, **kwargs):
+        return cls.iterate(MatchAllQuery().query(), page_size, limit, **kwargs)
 
     # an alias for the iterate function
     scroll = iterate
@@ -885,7 +891,8 @@ class DomainObject(UserDict, object):
                 if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
                     raise (BlockTimeOutException(
                         "Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}"
-                        .format(id=id, limit=max_retry_seconds)))
+                        .format(
+                            id=id, limit=max_retry_seconds)))
 
             time.sleep(sleep)
 
@@ -1095,3 +1102,9 @@ class Facetview2(object):
     @staticmethod
     def url_encode_query(query):
         return urllib.parse.quote(json.dumps(query).replace(' ', ''))
+
+
+def patch_model_for_bulk(obj: DomainObject):
+    obj.data['es_type'] = obj.__type__
+    obj.data['id'] = obj.makeid()
+    return obj
