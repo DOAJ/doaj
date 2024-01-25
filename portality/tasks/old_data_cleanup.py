@@ -79,7 +79,7 @@ class OldDataCleanupBackgroundTask(BackgroundTask):
     @classmethod
     def submit(cls, background_job):
         background_helper.submit_by_background_job(
-            background_job, execute_old_data_cleanup
+            background_job, old_data_cleanup
         )
 
 
@@ -91,6 +91,6 @@ def scheduled_old_data_cleanup():
     background_helper.submit_by_bg_task_type(OldDataCleanupBackgroundTask)
 
 
-@huey_helper.register_execute
-def execute_old_data_cleanup(job_id):
+@huey_helper.register_execute(is_load_config=False)
+def old_data_cleanup(job_id):
     background_helper.execute_by_job_id(job_id, OldDataCleanupBackgroundTask)

@@ -81,7 +81,7 @@ class MonitorBgjobsBackgroundTask(BackgroundTask):
 huey_helper = MonitorBgjobsBackgroundTask.create_huey_helper(long_running)
 
 
-@huey_helper.register_schedule()
+@huey_helper.register_schedule
 def scheduled_monitor_bgjobs():
     background_helper.submit_by_bg_task_type(
         MonitorBgjobsBackgroundTask,
@@ -90,6 +90,6 @@ def scheduled_monitor_bgjobs():
     )
 
 
-@huey_helper.register_execute()
+@huey_helper.register_execute(is_load_config=False)
 def monitor_bgjobs(job_id):
     background_helper.execute_by_job_id(job_id, MonitorBgjobsBackgroundTask)
