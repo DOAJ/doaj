@@ -247,6 +247,7 @@ class DataObj(object):
     Class which provides services to other classes which store their internal data
     as a python data structure in the self.data field.
     """
+    warnings.warn("DEPRECATED - use `SeamlessMixin` instead.", DeprecationWarning)
 
     SCHEMA = None
 
