@@ -222,8 +222,12 @@ class DoajTestCase(TestCase):
 
         :return:
         """
-        models.Article(**ArticleFixtureFactory.make_article_source()).save()
-        models.Application(**ApplicationFixtureFactory.make_application_source()).save()
+        for m in [
+             models.Article(**ArticleFixtureFactory.make_article_source()),
+             models.Application(**ApplicationFixtureFactory.make_application_source()),
+        ]:
+            m.save(blocking=True)
+            m.delete()
         models.Notification().save()
 
 
