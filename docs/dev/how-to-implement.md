@@ -29,7 +29,7 @@ or, using a shortcut function
 ```python
 @huey_helper.register_execute(is_load_config=False)
 def journal_bulk_delete(job_id):
-    background_helper.execute_by_job_id(job_id, JournalBulkDeleteBackgroundTask)
+    huey_helper.execute_common(job_id)
 ```
 
 ### For Schedule job
@@ -49,8 +49,7 @@ or, using a shortcut function
 ```python
 @huey_helper.register_schedule
 def scheduled_find_discontinued_soon():
-    background_helper.submit_by_bg_task_type(
-        MonitorBgjobsBackgroundTask,
+    huey_helper.scheduled_common(
         to_address_list=app.config.get("TASKS_MONITOR_BGJOBS_TO", [get_system_email(), ]),
         from_address=app.config.get("TASKS_MONITOR_BGJOBS_FROM", get_system_email()),
     )

@@ -83,8 +83,7 @@ huey_helper = MonitorBgjobsBackgroundTask.create_huey_helper(long_running)
 
 @huey_helper.register_schedule
 def scheduled_monitor_bgjobs():
-    background_helper.submit_by_bg_task_type(
-        MonitorBgjobsBackgroundTask,
+    huey_helper.scheduled_common(
         to_address_list=app.config.get("TASKS_MONITOR_BGJOBS_TO", [get_system_email(), ]),
         from_address=app.config.get("TASKS_MONITOR_BGJOBS_FROM", get_system_email()),
     )
@@ -92,4 +91,4 @@ def scheduled_monitor_bgjobs():
 
 @huey_helper.register_execute(is_load_config=False)
 def monitor_bgjobs(job_id):
-    background_helper.execute_by_job_id(job_id, MonitorBgjobsBackgroundTask)
+    huey_helper.execute_common(job_id)

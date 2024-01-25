@@ -88,9 +88,9 @@ huey_helper = OldDataCleanupBackgroundTask.create_huey_helper(long_running)
 
 @huey_helper.register_schedule
 def scheduled_old_data_cleanup():
-    background_helper.submit_by_bg_task_type(OldDataCleanupBackgroundTask)
+    huey_helper.scheduled_common()
 
 
 @huey_helper.register_execute(is_load_config=False)
 def old_data_cleanup(job_id):
-    background_helper.execute_by_job_id(job_id, OldDataCleanupBackgroundTask)
+    huey_helper.scheduled_common(job_id)

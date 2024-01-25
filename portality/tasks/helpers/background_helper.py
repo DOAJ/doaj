@@ -49,24 +49,21 @@ def create_job(username, action,
 
 
 def submit_by_bg_task_type(background_task: Type[BackgroundTask], **prepare_kwargs):
-    """ Common way for BackgroundTask register_schedule
-    """
+    """ Common way for BackgroundTask register_schedule """
     user = app.config.get("SYSTEM_USERNAME")
     job = background_task.prepare(user, **prepare_kwargs)
     background_task.submit(job)
 
 
 def execute_by_job_id(job_id, task_factory: TaskFactory):
-    """ Common way to execute BackgroundTask by job_id
-    """
+    """ Common way to execute BackgroundTask by job_id """
     job = models.BackgroundJob.pull(job_id)
     task = task_factory(job)
     BackgroundApi.execute(task)
 
 
 def execute_by_bg_task_type(bg_task_type: Type[BackgroundTask], **prepare_kwargs):
-    """ wrapper for execute by BackgroundTask
-    """
+    """ wrapper for execute by BackgroundTask """
     user = app.config.get("SYSTEM_USERNAME")
     job = bg_task_type.prepare(user, **prepare_kwargs)
     task = bg_task_type(job)
@@ -94,6 +91,10 @@ def register_execute(task_queue, task_name=None, script=True):
 
 
 class RedisHueyTaskHelper:
+    """
+    some shortcut functions that help you implement functions that background job needed
+    """
+
     def __init__(self, task_queue: RedisHuey, bgtask: Type[BackgroundTask]):
         self.task_queue = task_queue
         self.task_name = bgtask.__action__
@@ -113,13 +114,12 @@ class RedisHueyTaskHelper:
                                 self.task_name if is_load_config else None)
 
     def execute_common(self, job_id):
-        """ Common way to execute BackgroundTask by job_id
-        """
+        """ Common way to execute BackgroundTask by job_id """
         execute_by_job_id(job_id, self.task_factory)
 
-    def scheduled_common(self):
-        pass
-
+    def scheduled_common(self, **prepare_kwargs):
+        """ Common way for BackgroundTask register_schedule """
+        submit_by_bg_task_type(self.task_factory, **prepare_kwargs)
 
 
 def _get_background_task_spec(module):
