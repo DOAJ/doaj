@@ -49,7 +49,7 @@ def create_job(username, action,
 
 
 def submit_by_bg_task_type(background_task: Type[BackgroundTask], **prepare_kwargs):
-    """ Common way to submit task by BackgroundTask Class
+    """ Common way for BackgroundTask register_schedule
     """
     user = app.config.get("SYSTEM_USERNAME")
     job = background_task.prepare(user, **prepare_kwargs)
@@ -111,6 +111,15 @@ class RedisHueyTaskHelper:
     def register_execute(self, is_load_config=False):
         return register_execute(self.task_queue,
                                 self.task_name if is_load_config else None)
+
+    def execute_common(self, job_id):
+        """ Common way to execute BackgroundTask by job_id
+        """
+        execute_by_job_id(job_id, self.task_factory)
+
+    def scheduled_common(self):
+        pass
+
 
 
 def _get_background_task_spec(module):

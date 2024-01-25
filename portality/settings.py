@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.6.0"
+DOAJ_VERSION = "6.6.1"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -447,6 +447,7 @@ HUEY_SCHEDULE = {
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
     "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
+    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "*/30"},
     "article_bulk_create": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
 }
 
@@ -1507,3 +1508,28 @@ SELENIUM_REMOTE_URL = 'http://localhost:4444/wd/hub'
 SELENIUM_DOAJ_HOST = '172.17.0.1'
 SELENIUM_DOAJ_PORT = 5014
 
+
+
+
+
+#############################################
+# Google Sheet
+# ~~->GoogleSheet:ExternalService~~
+
+# Google Sheet API
+# value should be key file path of json, empty string means disabled
+GOOGLE_KEY_PATH = ''
+
+
+
+#############################################
+# Datalog
+# ~~->Datalog:Feature~~
+
+### Datalog for Journal Added
+
+# google sheet filename for datalog ja
+DATALOG_JA_FILENAME = 'DOAJ: journals added and withdrawn'
+
+# worksheet name or tab name that datalog will write to
+DATALOG_JA_WORKSHEET_NAME = 'Added'

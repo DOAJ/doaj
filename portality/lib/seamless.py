@@ -164,6 +164,33 @@ class SeamlessException(Exception):
 
 
 class SeamlessMixin(object):
+    """
+    
+    remember merge data property if you Mixin with DomainObject
+
+    ------
+    Example
+    ```python
+    class DatalogJournalAdded(SeamlessMixin, DomainObject):
+        ...
+
+        @property
+        def data(self):
+            return self.__seamless__.data
+    ```
+
+    remember to setup __init__ like below, otherwise your object wrap in iterable will not work
+
+    ----
+    ```python
+    def __init__(self, **kwargs):
+        super(DatalogJournalAdded, self).__init__(raw=kwargs)
+
+    ```
+
+
+    
+    """
 
     __SEAMLESS_STRUCT__ = None
 
