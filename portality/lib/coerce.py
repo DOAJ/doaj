@@ -9,6 +9,7 @@ from portality.lib.dates import FMT_DATETIME_MS_STD, FMT_DATE_STD
 def to_datestamp(in_format=None):
     def stampify(val):
         return dates.parse(val, format=in_format)
+
     return stampify
 
 
@@ -75,6 +76,7 @@ def to_currency_code(fail_if_not_found=True):
     :param fail_if_not_found:
     :return:
     """
+
     def codify(val):
         if val is None:
             return None
@@ -127,21 +129,21 @@ def to_issn(issn):
 # ~~-> Seamless:Library~~
 COERCE_MAP = {
     "unicode": seamless.to_utf8_unicode,
-    "unicode_upper" : seamless.to_unicode_upper,
-    "unicode_lower" : seamless.to_unicode_lower,
+    "unicode_upper": seamless.to_unicode_upper,
+    "unicode_lower": seamless.to_unicode_lower,
     "integer": seamless.intify,
     "float": seamless.floatify,
     "url": seamless.to_url,
     "bool": seamless.to_bool,
-    "datetime" : seamless.to_datetime,
-    "utcdatetime" : date_str(),
-    "utcdatetimemicros" : date_str(out_format=FMT_DATETIME_MS_STD),
-    "bigenddate" : date_str(out_format=FMT_DATE_STD),
+    "datetime": seamless.to_datetime,
+    "utcdatetime": date_str(),
+    "utcdatetimemicros": date_str(out_format=FMT_DATETIME_MS_STD),
+    "bigenddate": date_str(out_format=FMT_DATE_STD),
     "isolang": to_isolang(),
     "isolang_2letter_strict": to_isolang(output_format="alpha2", fail_if_not_found=True),
     "isolang_2letter_lax": to_isolang(output_format="alpha2", fail_if_not_found=False),
     "country_code": to_country_code,
-    "issn" : to_issn,
+    "issn": to_issn,
     "currency_code_strict": to_currency_code(fail_if_not_found=True),
     "currency_code_lax": to_currency_code(fail_if_not_found=False)
 }

@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 from copy import deepcopy
+from typing import Iterable
 
 import rstr
 
@@ -16,7 +17,7 @@ class JournalFixtureFactory(object):
         return template
 
     @staticmethod
-    def make_many_journal_sources(count=2, in_doaj=False):
+    def make_many_journal_sources(count=2, in_doaj=False) -> Iterable[dict]:
         journal_sources = []
         for i in range(0, count):
             template = deepcopy(JOURNAL_SOURCE)
@@ -66,10 +67,10 @@ JOURNAL_SOURCE = {
         "editor_group": "editorgroup",
         "editor": "associate",
         "in_doaj": False,
-        "notes" : [
-            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z", "id" : "1234",
+        "notes": [
+            {"note": "Second Note", "date": "2014-05-22T00:00:00Z", "id": "1234",
              "author_id": "fake_account_id__b"},
-            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id" : "abcd",
+            {"note": "First Note", "date": "2014-05-21T14:02:45Z", "id": "abcd",
              "author_id": "fake_account_id__a"},
         ],
         "owner": "publisher",
@@ -92,6 +93,7 @@ JOURNAL_FORM_EXPANDED.update(NOTES_FORM_EXPANDED)
 JOURNAL_FORM_EXPANDED.update(OWNER_FORM_EXPANDED)
 
 from portality.crosswalks.journal_form import JournalFormXWalk
+
 JOURNAL_FORM = JournalFormXWalk.forminfo2multidict(JOURNAL_FORM_EXPANDED)
 
 JOURNAL_BULK_EDIT = {
@@ -157,7 +159,7 @@ CSV_HEADERS = [
     'DOAJ Seal',  # (added outside journal2questions)
     'Added on Date',  # (added outside journal2questions)
     'Last updated Date',  # (added outside journal2questions)
-    #'Tick: Accepted after March 2014', Removed 2020-12-11
+    # 'Tick: Accepted after March 2014', Removed 2020-12-11
     "Number of Article Records",  # (added outside journal2questions)
     "Most Recent Article Added"  # (added outside journal2questions)
 ]
