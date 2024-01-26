@@ -655,11 +655,11 @@ ass_ed:
   language: Ukrainian, Russian, English, Polish
   
 - name: Olena Zimba
-  area: Medicine, Science Communication
+  area: Medicine, Science Communication, Rheumatology, Public Health
   year_since:
   city: Lviv
   country: Ukraine
-  language: Ukrainian, Russian, English
+  language: Ukrainian, Russian, English, Polish
   photo: "OlenaZimba.jpg"
 
 - name: Olga Kirillova
