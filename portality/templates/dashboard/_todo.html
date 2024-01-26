@@ -29,6 +29,12 @@
             "feather": "inbox",
             "link" : url_for('admin.suggestions') + "?source=" + search_query_source(term=[{"admin.application_status.exact":"pending"}])
         },
+        constants.TODO_MANED_UPDATE_REQUEST: {
+            "text" : "<strong>Update Request</strong> <span class='todo-list__status'>Process Update</span>",
+            "colour" : "var(--grapefruit)",
+            "feather": "edit",
+            "show_status": true
+        },
         constants.TODO_EDITOR_STALLED: {
             "text" : "<strong>Stalled</strong> <span class='todo-list__status'>Chase Associate Editor</span>",
             "show_status": true,
@@ -88,6 +94,7 @@
 %}
 
 <section>
+
     {% if todos|length == 0 %}
         <div class="flex-center">
           <p class="card col-md-6">
