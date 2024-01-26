@@ -1,0 +1,12 @@
+{
+	"types": [
+		{
+			"type": "journal",
+			"init_with_model": true,
+			"keepalive": "1m",
+			"functions" : [
+				"portality.migrate.3751_turkey_search.operations.correct_turkey"
+			]
+		}
+	]
+}
