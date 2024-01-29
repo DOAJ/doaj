@@ -200,7 +200,7 @@ def print_huey_job_data(job_data: 'HueyJobData'):
 
 def print_job_delta(title_val, id_action_list: typing.Iterable[tuple]):
     id_action_list = sorted(id_action_list, key=lambda x: x[1])
-    print(title(f'{title_val} ({len(id_action_list)})'))
+    print(title(f'{title_val} ({len(id_action_list)})', background=color_text.Color.red))
     for id, action in id_action_list:
         print(f'{action:30} {id}')
     print()
@@ -210,8 +210,8 @@ def total_counter(counter):
     return sum(counter.values())
 
 
-def title(s):
-    return color_text.apply_color(s, front=color_text.Color.black, background=color_text.Color.green)
+def title(s, background=color_text.Color.green):
+    return color_text.apply_color(s, front=color_text.Color.black, background=background)
 
 
 def report(example_size=10):
@@ -229,10 +229,11 @@ def report(example_size=10):
     print_huey_jobs_counter(unscheduled)
     print()
 
-    print(title(f'### last {example_size} unscheduled jobs:'))
     unscheduled_huey_jobs = sorted((r for r in huey_rows if not r.is_scheduled),
                                    key=lambda x: x.schedule_time, reverse=True)
-    for r in unscheduled_huey_jobs[:example_size]:
+    display_size = min(example_size, len(unscheduled_huey_jobs))
+    print(title(f'### last {display_size} unscheduled jobs:'))
+    for r in unscheduled_huey_jobs[:display_size]:
         print_huey_job_data(r)
     print()
 
@@ -258,12 +259,13 @@ def report(example_size=10):
         print(f'{k[0]:30} {k[1]:10} {v}')
     print()
 
-    print(title(f'### last {example_size} jobs'))
-    for j in sorted(bgjobs, key=lambda j: j.created_date, reverse=True)[:example_size]:
+    display_size = min(example_size, len(bgjobs))
+    print(title(f'### last {display_size} jobs'))
+    for j in sorted(bgjobs, key=lambda j: j.created_date, reverse=True)[:display_size]:
         print(job_to_str(j))
     print()
 
-    print(title('# Queued delta between DB and redis:'))
+    print(title('# Queued delta between DB and redis:', background=color_text.Color.red))
     huey_only, db_only = find_huey_bgjob_delta(unscheduled_huey_jobs, bgjobs)
     print_job_delta('### DB only', ((j.id, j.action) for j in db_only))
     print_job_delta('### Redis only', ((i.bgjob_id, i.bgjob_action) for i in huey_only))
@@ -428,7 +430,7 @@ Example
 manage-bgjobs requeue -a read_news -f 1970-01-01T00:00:00Z -t 2020-01-01T00:00:00Z
 
 ### Cancel job with id abcd12 without confirmation prompt
-manage-bgjobs cancel -i abcd12 -y
+manage-bgjobs cancel -i fd1c22fac3844ad9a8e163c7d39306f4 -y
 
 ### cleanup outdated jobs
 manage-bgjobs cleanup
@@ -443,7 +445,7 @@ manage-bgjobs cleanup
     sp_p = sp.add_parser('requeue', help='Add these jobs back on the job queue for processing')
     add_arguments_common(sp_p)
 
-    sp_p = sp.add_parser('cancel', help='Cancel these jobs (set their status to "cancelled")')
+    sp_p = sp.add_parser('cancel', help='Cancel bgjobs (set their status to "cancelled"), also remove from redis')
     add_arguments_common(sp_p)
 
     sp_p = sp.add_parser('process', help='Immediately process these jobs on the command line')
