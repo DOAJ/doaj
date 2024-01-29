@@ -303,14 +303,13 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-
-
-
-
-
-
-
-  
+- name: Eduardo Enrique Chibas Muñoz
+  area: Health Sciences
+  year_since:
+  city: Guantánamo
+  country: Cuba
+  language: Spanish
+  photo: "Eduardo.jpg"
 
 - name: Eko Pramudya Laksana
   area: Social Sciences
@@ -319,14 +318,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Eduardo Enrique Chibas Muñoz
-  area: Health Sciences
-  year_since:
-  city: Guantánamo
-  country: Cuba
-  language: Spanish
-  photo: "Eduardo.jpg"
-  
 - name: Emrah Kaya
   area: Social Sciences, Humanities
   year_since:
