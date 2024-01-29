@@ -2,12 +2,13 @@
 some function for huey background job
 """
 import itertools
+import pickle
+import re
 from typing import Iterator
 
 import redis
+
 from portality.core import app
-import pickle
-import re
 
 
 class HueyJobData:
@@ -49,12 +50,19 @@ class HueyJobService:
         client = redis.StrictRedis(host=app.config['HUEY_REDIS_HOST'], port=app.config['HUEY_REDIS_PORT'], db=0)
         return client
 
-    def find_all_huey_jobs(self) -> Iterator[HueyJobData]:
-        client = self.create_redis_client()
+    def find_all_huey_jobs(self, client=None) -> Iterator[HueyJobData]:
+        client = client or self.create_redis_client()
         huey_rows = itertools.chain.from_iterable((client.lrange(k, 0, -1)
                                                    for k in HUEY_REDIS_KEYS))
         huey_rows = (HueyJobData.from_redis(r) for r in huey_rows)
         return huey_rows
 
-    def find_queued_huey_jobs(self) -> Iterator[HueyJobData]:
-        return (r for r in self.find_all_huey_jobs() if not r.is_scheduled)
+    def find_queued_huey_jobs(self, client=None) -> Iterator[HueyJobData]:
+        client = client or self.create_redis_client()
+        return (r for r in self.find_all_huey_jobs(client=client) if not r.is_scheduled)
+
+    def rm_huey_job_from_redis(self, huey_job_data: 'HueyJobData', client=None):
+        client = client or self.create_redis_client()
+        for key in ['huey.redis.doajmainqueue', 'huey.redis.doajlongrunning']:
+            if client.lrem(key, 1, huey_job_data.as_redis()):
+                break

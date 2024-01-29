@@ -86,8 +86,19 @@ def handle_requeue(job: 'BackgroundJob'):
 
 
 def handle_cancel(job: 'BackgroundJob'):
+    print(f'Cancel bgjob from db: [{job.id}]')
     job.cancel()
     job.save()
+
+    huey_job_serv = DOAJ.hueyJobService()
+    redis_client = huey_job_serv.create_redis_client()
+    huey_rows = huey_job_serv.find_queued_huey_jobs(client=redis_client)
+    huey_rows = (r for r in huey_rows if r.bgjob_id == job.id)
+    huey_job = next(huey_rows, None)
+    if huey_job is not None:
+        print(f'Remove job from redis: [{huey_job.bgjob_id}]')
+        huey_job_serv.rm_huey_job_from_redis(huey_job, client=redis_client)
+    redis_client.close()
 
 
 def handle_process(job: 'BackgroundJob'):
@@ -287,6 +298,7 @@ def rm_all():
     client = DOAJ.hueyJobService().create_redis_client()
     client.delete(HUEY_REDIS_DOAJMAINQUEUE)
     client.delete(HUEY_REDIS_DOAJLONGRUNNING)
+    client.close()
 
 
 def rm_old_processing(is_all=False):
@@ -318,7 +330,7 @@ def rm_redundant():
     print(f'Following actions will be cleaned up for redundant jobs: {target_actions}')
     huey_job_service = DOAJ.hueyJobService()
     client = huey_job_service.create_redis_client()
-    huey_rows = list(huey_job_service.find_queued_huey_jobs())
+    huey_rows = list(huey_job_service.find_queued_huey_jobs(client=client))
     for action in target_actions:
         bgjobs = models.BackgroundJob.q2obj(q=models.background.BackgroundJobQueryBuilder()
                                             .status_includes([BGJOB_STATUS_QUEUED])
@@ -338,9 +350,10 @@ def rm_redundant():
         for j in bgjobs:
             for h in iter(huey_rows):
                 if h.bgjob_id == j.id:
-                    rm_huey_job_from_redis(client, h)
+                    huey_job_service.rm_huey_job_from_redis(h, client=client)
                     huey_rows.remove(h)
                     break
+    client.close()
 
 
 def find_huey_bgjob_delta(huey_rows: List['HueyJobData'] = None,
@@ -368,15 +381,11 @@ def rm_async_queued_jobs():
         models.BackgroundJob.bulk_delete(d.id for d in db_only)
 
     print_job_delta('### Redis only', ((i.bgjob_id, i.bgjob_action) for i in huey_only))
-    client = DOAJ.hueyJobService().create_redis_client()
+    huey_job_serv = DOAJ.hueyJobService()
+    client = huey_job_serv.create_redis_client()
     for i in huey_only:
-        rm_huey_job_from_redis(client, i)
-
-
-def rm_huey_job_from_redis(redis_client, huey_job_data: 'HueyJobData'):
-    for key in ['huey.redis.doajmainqueue', 'huey.redis.doajlongrunning']:
-        if redis_client.lrem(key, 1, huey_job_data.as_redis()):
-            break
+        huey_job_serv.rm_huey_job_from_redis(i, client=client)
+    client.close()
 
 
 def cleanup():
