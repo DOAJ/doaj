@@ -1505,9 +1505,6 @@ SELENIUM_DOAJ_HOST = '172.17.0.1'
 SELENIUM_DOAJ_PORT = 5014
 
 
-
-
-
 #############################################
 # Google Sheet
 # ~~->GoogleSheet:ExternalService~~
@@ -1529,6 +1526,15 @@ DATALOG_JA_FILENAME = 'DOAJ: journals added and withdrawn'
 
 # worksheet name or tab name that datalog will write to
 DATALOG_JA_WORKSHEET_NAME = 'Added'
+
+
+##################################################
+# Background jobs Management settings
+
+# list of actions name that will be cleaned up if they are redundant
+BGJOB_MANAGE_REDUNDANT_ACTIONS = [
+    'read_news', 'journal_csv',
+]
 
 
 ##################################################
