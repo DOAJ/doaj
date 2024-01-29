@@ -1,3 +1,4 @@
+import logging
 import traceback
 from copy import deepcopy
 from typing import Iterable
@@ -15,6 +16,8 @@ from portality import constants
 from portality import models
 from portality.bll import DOAJ
 from portality.core import app
+
+log = logging.getLogger(__name__)
 
 
 class BackgroundException(Exception):
@@ -75,6 +78,7 @@ class BackgroundApi(object):
             job.save()
             raise
         except Exception as e:
+            log.error(f"Error in Background Task: {e}")
             job.fail()
             job.add_audit_message("Error in Job Run")
             job.add_audit_message("Caught in job runner during run: " + traceback.format_exc())
@@ -178,11 +182,10 @@ class BackgroundTask(object):
             cls.set_param(new_param, k, v)
         return new_param
 
-    @classmethod
-    def create_raw_param_dict(cls, job_params: dict, key_list: Iterable[str]):
-        raw_param_dict = {k: cls.get_param(job_params, k)
-                          for k in key_list}
-        return raw_param_dict
+    def get_bgjob_params(self) -> dict:
+        keys = self.background_job.params.keys()
+        keys = (k.replace('{}__'.format(self.__action__), '') for k in keys)
+        return {k: self.get_param(self.background_job.params, k) for k in keys}
 
     @classmethod
     def set_reference(cls, refs, ref_name, value):
@@ -191,7 +194,7 @@ class BackgroundTask(object):
     @classmethod
     def create_huey_helper(cls, task_queue: RedisHuey):
         from portality.tasks.helpers import background_helper
-        return background_helper.RedisHueyTaskHelper(task_queue, cls.__action__)
+        return background_helper.RedisHueyTaskHelper(task_queue, cls)
 
 
 class AdminBackgroundTask(BackgroundTask):
