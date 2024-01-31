@@ -788,7 +788,6 @@ class Journal(JournalLikeObject):
         irb = self.bibjson().is_replaced_by
         q = ContinuationQuery(irb)
 
-        future = []
         journals = self.q2obj(q=q.query())
         subjournals = []
         for j in journals:
@@ -801,7 +800,6 @@ class Journal(JournalLikeObject):
         replaces = self.bibjson().replaces
         q = ContinuationQuery(replaces)
 
-        past = []
         journals = self.q2obj(q=q.query())
         subjournals = []
         for j in journals:
