@@ -34,3 +34,12 @@ ol {
 .swagger-section a {
     width: 4rem !important;
 }
+
+.swagger-section .swagger-ui-wrap table tbody tr td {
+    width: auto;
+}
+
+.swagger-section .swagger-ui-wrap table thead tr th {
+    width: auto !important;
+    max-width: none !important;
+}

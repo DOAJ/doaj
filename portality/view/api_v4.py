@@ -369,7 +369,7 @@ def load_income_articles_json(request):
 @blueprint.route("/bulk/articles", methods=["POST"])
 @api_key_required
 @write_required(api=True)
-@swag(swag_summary='Bulk article creation asynchronously <span class="red">[Authenticated, not public]</span>',
+@swag(swag_summary='Bulk article creation (asynchronous) <span class="red">[Authenticated, not public]</span>',
       swag_spec=ArticlesBulkApi.create_async_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(GA_CATEGORY, action=GA_ACTIONS.get('bulk_article_create_async',
                                                        'Bulk article create asynchronously'))

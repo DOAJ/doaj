@@ -68,20 +68,9 @@ class ArticlesBulkApi(Api):
     @classmethod
     def create_async_swag(cls):
         template = deepcopy(cls.SWAG_TEMPLATE)
-        description = """
-        <div class=\"search-query-docs\">
-        A list/array of article JSON objects that you would like to create or update. 
-        The contents should be a list, and each object in the list should comply with 
-        the schema displayed in the 
-        <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. 
-        Partial updates are not allowed, you have to supply the full JSON.
-        
-        This api is asynchronously, response will be a task id, you can use this id to query the task status.
-        </div>
-        """
         template['parameters'].append(
             {
-                "description": description,
+                "description": "<div class=\"search-query-docs\"><p>A list/array of article JSON objects that you would like to create or update. The contents should be a list, and each object in the list should comply with the schema displayed in the <a href=\"/api/docs#CRUD_Articles_get_api_articles_article_id\"> GET (Retrieve) an article route</a>. Partial updates are not allowed, you have to supply the full JSON.</p><p>This request is asynchronous, the response will contain an upload_id, you can use this id to query the task status.</p></div>",
                 "required": True,
                 "schema": {"type": "string"},
                 "name": "article_json",
@@ -89,6 +78,7 @@ class ArticlesBulkApi(Api):
             }
         )
         template['parameters'].append(cls.SWAG_API_KEY_REQ_PARAM)
+
         template['responses']['202'] = {
             "schema": {
                 "properties": {
@@ -96,6 +86,7 @@ class ArticlesBulkApi(Api):
                     "upload_id": {"type": "string",
                                   "description": "The upload id of the task, "
                                                  "User can use this id to check the bulk upload status."},
+                    "status": {"type": "string", "description": "Link to the status URL for the task"}
                 },
                 "type": "object"
             },
@@ -130,10 +121,14 @@ class ArticlesBulkApi(Api):
             "schema": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "The status of the task",
+                    },
                     "status": {
                         "type": "string",
                         "description": "The status of the task",
-                        "enum": ["incoming", "validated", "falied", "processed", "partial"]
+                        "enum": ["pending", "validated", "falied", "processed", "processed_partial"]
                     },
                     "results": {
                         'type': 'object',
