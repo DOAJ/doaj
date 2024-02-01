@@ -25,6 +25,10 @@
   url: https://www.ebsco.com/
   logo: ebsco.svg
 
+- name: Springer Nature Ltd
+  url: https://www.springernature.com/gp
+  logo: SN_stack_logo.png
+
 - name: Frontiers
   url: https://www.frontiersin.org/
   logo: frontiers.svg
