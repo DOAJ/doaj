@@ -303,6 +303,14 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
+- name: Eduardo Enrique Chibas Muñoz
+  area: Health Sciences
+  year_since:
+  city: Guantánamo
+  country: Cuba
+  language: Spanish
+  photo: "Eduardo.jpg"
+
 - name: Eko Pramudya Laksana
   area: Social Sciences
   year_since:
@@ -591,14 +599,6 @@ ass_ed:
   language: Spanish, English
   photo: "MilagroCastro.jpg"
 
-- name: Milton Ramirez
-  area: Humanities and Social Sciences
-  year_since:
-  city:
-  country: New Jersey, USA
-  language: Spanish, English
-  photo: "MiltonRamirez.jpg"
-
 - name: Muhamad Taufik Hidayat
   area: Humanities, Social Sciences
   year_since:
@@ -655,11 +655,11 @@ ass_ed:
   language: Ukrainian, Russian, English, Polish
   
 - name: Olena Zimba
-  area: Medicine, Science Communication
+  area: Medicine, Science Communication, Rheumatology, Public Health
   year_since:
   city: Lviv
   country: Ukraine
-  language: Ukrainian, Russian, English
+  language: Ukrainian, Russian, English, Polish
   photo: "OlenaZimba.jpg"
 
 - name: Olga Kirillova
