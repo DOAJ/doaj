@@ -1787,8 +1787,10 @@ class FieldDefinitions:
                 }
             }
         ],
-        "widgets" : [
-            "tagentry"
+        "widgets": [
+            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+            "full_contents",  # ~~^->FullContents:FormWidget~~
+            "tagentry"  # ~~-> TagEntry:FormWidget~~
         ],
         "help" : {
             "render_error_box": False
@@ -1810,12 +1812,14 @@ class FieldDefinitions:
                 }
             }
         ],
-        "widgets" : [
-            "tagentry"
-        ],
         "help" : {
             "render_error_box": False
-        }
+        },
+        "widgets": [
+            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+            "full_contents",  # ~~^->FullContents:FormWidget~~
+            "tagentry"  # ~~-> TagEntry:FormWidget~~
+        ]
     }
 
     # ~~->$ Subject:FormField~~
