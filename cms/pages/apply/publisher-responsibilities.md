@@ -75,7 +75,7 @@ You can access your dashboard and account settings by logging into your account.
 On [your dashboard](/publisher/), you can
 
 - See [a list of your journals](/publisher/journal) indexed in DOAJ
-- [Submit an update request](/apply/guide/#updating-your-journal-record) when journal details change
+- [Submit an update request](/publisher-responsibilities/#keeping-your-journal-records-up-to-date) when journal details change
 - [Upload](/publisher/uploadfile) or [enter](/publisher/metadata) article metadata for your journals
 - Download the Seal logo (only for journals awarded the DOAJ Seal).
 - Upload your full-text content (only for journals preserved via JASPER).
