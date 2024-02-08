@@ -580,6 +580,15 @@ class Journal(JournalLikeObject):
         # finally issue a delete request against the journals
         cls.delete_by_query(query)
 
+    @classmethod
+    def add_mapping_extensions(cls, default_mappings: dict):
+        default_mappings_copy = deepcopy(default_mappings)
+        mapping_extensions = app.config.get("DATAOBJ_TO_MAPPING_COPY_TO_EXTENSIONS")
+        for key, value in mapping_extensions.items():
+            if key in default_mappings_copy:
+                default_mappings_copy[key] = {**default_mappings_copy[key], **value}
+        return default_mappings_copy
+
     def all_articles(self):
         from portality.models import Article
         return Article.find_by_issns(self.known_issns())
@@ -779,7 +788,6 @@ class Journal(JournalLikeObject):
         irb = self.bibjson().is_replaced_by
         q = ContinuationQuery(irb)
 
-        future = []
         journals = self.q2obj(q=q.query())
         subjournals = []
         for j in journals:
@@ -792,7 +800,6 @@ class Journal(JournalLikeObject):
         replaces = self.bibjson().replaces
         q = ContinuationQuery(replaces)
 
-        past = []
         journals = self.q2obj(q=q.query())
         subjournals = []
         for j in journals:
@@ -907,14 +914,9 @@ class Journal(JournalLikeObject):
 
 MAPPING_OPTS = {
     "dynamic": None,
-    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
-    "exceptions": {
-        "admin.notes.note": {
-            "type": "text",
-            "index": False,
-            # "include_in_all": False        # Removed in es6 fixme: do we need to look at copy_to for the mapping?
-        }
-    }
+    "coerces": Journal.add_mapping_extensions(app.config["DATAOBJ_TO_MAPPING_DEFAULTS"]),
+    "exceptions": app.config["ADMIN_NOTES_SEARCH_MAPPING"],
+    "additional_mappings": app.config["ADMIN_NOTES_INDEX_ONLY_FIELDS"]
 }
 
 

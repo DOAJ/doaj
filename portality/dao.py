@@ -47,8 +47,14 @@ class BulkException(Exception):
 class DomainObject(UserDict, object):
     """
     ~~DomainObject:Model->Elasticsearch:Technology~~
+
+    base models class for Elasticsearch(ES) index,
+    which provide interaction with ES index such as (save, delete, query, etc.)
     """
-    __type__ = None                                                       # set the type on the model that inherits this
+
+    # set the type on the model that inherits this
+    # which also is ES index name of the model
+    __type__ = None
 
     def __init__(self, **kwargs):
         # if self.data is already set, don't do anything here
@@ -79,7 +85,7 @@ class DomainObject(UserDict, object):
             return None
         else:
             return cls.__type__
-    
+
     @classmethod
     def makeid(cls):
         """Create a new id for data object overwrite this in specific model types if required"""
@@ -91,12 +97,12 @@ class DomainObject(UserDict, object):
         if rawid is not None:
             return str(rawid)
         return None
-    
+
     def set_id(self, id=None):
         if id is None:
             id = self.makeid()
         self.data["id"] = str(id)
-    
+
     @property
     def version(self):
         return self.meta.get('_version', None)
@@ -104,7 +110,7 @@ class DomainObject(UserDict, object):
     @property
     def json(self):
         return json.dumps(self.data)
-    
+
     def set_created(self, date=None):
         if date is None:
             self.data['created_date'] = dates.now_str()
@@ -118,7 +124,7 @@ class DomainObject(UserDict, object):
     @property
     def created_timestamp(self):
         return dates.parse(self.data.get("created_date"))
-    
+
     @property
     def last_updated(self):
         return self.data.get("last_updated")
@@ -140,7 +146,7 @@ class DomainObject(UserDict, object):
             app.logger.warning("System is in READ-ONLY mode, save command cannot run")
             return
 
-        if retries > app.config.get("ES_RETRY_HARD_LIMIT", 1000):   # an arbitrary large number
+        if retries > app.config.get("ES_RETRY_HARD_LIMIT", 1000):  # an arbitrary large number
             retries = app.config.get("ES_RETRY_HARD_LIMIT", 1000)
 
         if app.config.get("ES_BLOCK_WAIT_OVERRIDE") is not None:
@@ -170,7 +176,10 @@ class DomainObject(UserDict, object):
         r = None
         while attempt <= retries:
             try:
-                r = ES.index(self.index_name(), d, doc_type=self.doc_type(), id=self.data.get("id"), headers=CONTENT_TYPE_JSON)
+                r = ES.index(self.index_name(), d, doc_type=self.doc_type(),
+                             id=self.data.get("id"),
+                             headers=CONTENT_TYPE_JSON,
+                             timeout=app.config.get('ES_READ_TIMEOUT', '1m'), )
                 break
 
             except (elasticsearch.ConnectionError, elasticsearch.ConnectionTimeout):
@@ -193,7 +202,7 @@ class DomainObject(UserDict, object):
                 raise ElasticSearchWriteException(e)
 
             # wait before retrying
-            time.sleep((2**attempt) * back_off_factor)
+            time.sleep((2 ** attempt) * back_off_factor)
 
         if attempt > retries:
             raise DAOSaveExceptionMaxRetriesReached(
@@ -228,7 +237,7 @@ class DomainObject(UserDict, object):
         try:
             ES.delete(self.index_name(), self.id, doc_type=self.doc_type())
         except elasticsearch.NotFoundError:
-            pass    # This is to preserve the old behaviour
+            pass  # This is to preserve the old behaviour
 
     @staticmethod
     def make_query(theq=None, should_terms=None, consistent_order=True, **kwargs):
@@ -394,7 +403,7 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def pull_by_key(cls, key, value):
-        res = cls.query(q={"query": {"term": {key+app.config['FACET_FIELD']: value}}})
+        res = cls.query(q={"query": {"term": {key + app.config['FACET_FIELD']: value}}})
         if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
             return cls.pull(res['hits']['hits'][0]['_source']['id'])
         else:
@@ -422,7 +431,7 @@ class DomainObject(UserDict, object):
         :param kwargs are passed directly to Elasticsearch search() function
         """
 
-        if retry > app.config.get("ES_RETRY_HARD_LIMIT", 1000) + 1:   # an arbitrary large number
+        if retry > app.config.get("ES_RETRY_HARD_LIMIT", 1000) + 1:  # an arbitrary large number
             retry = app.config.get("ES_RETRY_HARD_LIMIT", 1000) + 1
 
         r = None
@@ -433,14 +442,17 @@ class DomainObject(UserDict, object):
             try:
                 # ES 7.10 updated target to whole index, since specifying type for search is deprecated
                 # r = requests.post(cls.target_whole_index() + recid + "_search", data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
-                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(), headers=CONTENT_TYPE_JSON, **kwargs)
+                if kwargs.get('timeout') is None:
+                    kwargs['timeout'] = app.config.get('ES_READ_TIMEOUT', '1m')
+                r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(),
+                              headers=CONTENT_TYPE_JSON, **kwargs)
                 break
             except Exception as e:
                 exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
                 if isinstance(exception, ESMappingMissingError):
                     raise exception
             time.sleep(0.5)
-                
+
         if r is not None:
             return r
         if exception is not None:
@@ -465,13 +477,19 @@ class DomainObject(UserDict, object):
             app.logger.warning("System is in READ-ONLY mode, delete_by_query command cannot run")
             return
 
-        #r = requests.delete(cls.target() + "_query", data=json.dumps(query))
-        #return r
+        # r = requests.delete(cls.target() + "_query", data=json.dumps(query))
+        # return r
         return ES.delete_by_query(cls.index_name(), json.dumps(query), doc_type=cls.doc_type())
 
-
     @classmethod
-    def destroy_index(cls):
+    def destroy_index(cls, **es_kwargs):
+        default_es_kwargs = {
+            'timeout': '5m',
+            'request_timeout': 1001,
+        }
+        default_es_kwargs.update(es_kwargs)
+        es_kwargs = default_es_kwargs
+
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warning("System is in READ-ONLY mode, destroy_index command cannot run")
             return
@@ -481,7 +499,7 @@ class DomainObject(UserDict, object):
         # else:
         #     return esprit.raw.delete_index(es_connection)
         print('Destroying indexes with prefix ' + app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
-        return ES.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*')
+        return ES.indices.delete(app.config['ELASTIC_SEARCH_DB_PREFIX'] + '*', **es_kwargs)
 
     @classmethod
     def check_es_raw_response(cls, res, extra_trace_info=''):
@@ -507,7 +525,7 @@ class DomainObject(UserDict, object):
                     "\nES HTTP Response status: {es_status}"
                     "\nES Response:{es_resp}\n"
                     .format(es_status=res.get('status', 'unknown'), es_resp=json.dumps(res, indent=2))
-                    ) + extra_trace_info
+                ) + extra_trace_info
             )
         return True
 
@@ -548,7 +566,8 @@ class DomainObject(UserDict, object):
         return rs
 
     @classmethod
-    def iterate(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True, keepalive: str = '1m'):
+    def iterate(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True,
+                keepalive: str = '1m'):
         """ Provide an iterable of all items in a model, use
         :param q: The query to scroll results on
         :param page_size: limited by ElasticSearch, check settings to override
@@ -579,9 +598,9 @@ class DomainObject(UserDict, object):
                 res,
                 wrap=wrap,
                 extra_trace_info=
-                    "\nScroll initialised:\n{q}\n"
-                    "\n\nPage #{counter} of the ES response with size {page_size}."
-                    .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
+                "\nScroll initialised:\n{q}\n"
+                "\n\nPage #{counter} of the ES response with size {page_size}."
+                        .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)):
 
             # apply the limit
             if limit is not None and counter >= int(limit):
@@ -633,10 +652,10 @@ class DomainObject(UserDict, object):
                     yield cls(**r)
                 else:
                     yield r
-    
+
     @classmethod
-    def iterall(cls, page_size=1000, limit=None):
-        return cls.iterate(MatchAllQuery().query(), page_size, limit)
+    def iterall(cls, page_size=1000, limit=None, **kwargs):
+        return cls.iterate(MatchAllQuery().query(), page_size, limit, **kwargs)
 
     # an alias for the iterate function
     scroll = iterate
@@ -885,7 +904,8 @@ class DomainObject(UserDict, object):
         substring = substring.lower()
 
         if " " in substring and not prefix_only:
-            res = cls.wildcard_autocomplete_query(filter_field, substring, before=True, after=True, facet_size=size, facet_field=facet_field)
+            res = cls.wildcard_autocomplete_query(filter_field, substring, before=True, after=True, facet_size=size,
+                                                  facet_field=facet_field)
         else:
             res = cls.prefix_query(filter_field, substring, size=size, facet_field=facet_field, analyzed_field=analyzed)
 
@@ -918,7 +938,8 @@ class DomainObject(UserDict, object):
     def q2obj(cls, **kwargs):
         extra_trace_info = ''
         if 'q' in kwargs:
-            extra_trace_info = "\nQuery sent to ES (before manipulation in DomainObject.query):\n{}\n".format(json.dumps(kwargs['q'], indent=2))
+            extra_trace_info = "\nQuery sent to ES (before manipulation in DomainObject.query):\n{}\n".format(
+                json.dumps(kwargs['q'], indent=2))
 
         res = cls.query(**kwargs)
         rs = cls.handle_es_raw_response(res, wrap=True, extra_trace_info=extra_trace_info)
@@ -970,7 +991,9 @@ class DomainObject(UserDict, object):
                     return
             else:
                 if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
-                    raise BlockTimeOutException("Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
+                    raise BlockTimeOutException(
+                        "Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(
+                            id=id, limit=max_retry_seconds))
 
             time.sleep(sleep)
 
@@ -1004,6 +1027,17 @@ class DomainObject(UserDict, object):
         for id in ids:
             cls.blockdeleted(id, sleep, individual_max_retry_seconds)
 
+    @classmethod
+    def save_all(cls, models, blocking=False):
+        for m in models:
+            m.save()
+        if blocking:
+            cls.blockall((m.id, getattr(m, "last_updated", None)) for m in models)
+
+
+
+
+
 
 class BlockTimeOutException(Exception):
     pass
@@ -1024,6 +1058,8 @@ class ESMappingMissingError(Exception):
 class ESError(Exception):
     pass
 
+
+
 ########################################################################
 # Some useful ES queries
 ########################################################################
@@ -1032,7 +1068,7 @@ class ESError(Exception):
 class MatchAllQuery(object):
     def query(self):
         return {
-            "track_total_hits" : True,
+            "track_total_hits": True,
             "query": {
                 "match_all": {}
             }
@@ -1052,7 +1088,7 @@ class BlockQuery(object):
                     ]
                 }
             },
-            "_source" : False,
+            "_source": False,
             "docvalue_fields": [
                 {"field": "last_updated", "format": "date_time_no_millis"}
             ]
@@ -1076,6 +1112,8 @@ class PrefixAutocompleteQuery(object):
                 self._agg_name: {"terms": {"field": self._agg_field, "size": self._agg_size}}
             }
         }
+
+
 
 class WildcardAutocompleteQuery(object):
     def __init__(self, wildcard_field, wildcard_query, agg_name, agg_field, agg_size):
@@ -1119,7 +1157,8 @@ class Facetview2(object):
         return {"term": {term: value}}
 
     @staticmethod
-    def make_query(query_string=None, filters=None, default_operator="OR", sort_parameter=None, sort_order="asc", default_field=None):
+    def make_query(query_string=None, filters=None, default_operator="OR", sort_parameter=None, sort_order="asc",
+                   default_field=None):
         query_part = {"match_all": {}}
         if query_string is not None:
             query_part = {"query_string": {"query": query_string, "default_operator": default_operator}}
@@ -1144,3 +1183,9 @@ class Facetview2(object):
     @staticmethod
     def url_encode_query(query):
         return urllib.parse.quote(json.dumps(query).replace(' ', ''))
+
+
+def patch_model_for_bulk(obj: DomainObject):
+    obj.data['es_type'] = obj.__type__
+    obj.data['id'] = obj.makeid()
+    return obj

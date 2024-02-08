@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from portality import constants
 from portality.core import app
-from portality.lib import es_data_mapping
+from portality.lib import es_data_mapping, coerce, dates
 from portality.models.v2 import shared_structs
 from portality.models.v2.journal import JournalLikeObject, Journal
 from portality.lib.coerce import COERCE_MAP
@@ -150,9 +150,18 @@ class Application(JournalLikeObject):
     def set_application_status(self, val):
         self.__seamless__.set_with_struct("admin.application_status", val)
 
+    def set_date_applied(self, date=None):
+        if date is None:
+            date = dates.now_str()
+        self.__seamless__.set_with_struct("admin.date_applied", date)
+
     @property
     def date_applied(self):
         return self.__seamless__.get_single("admin.date_applied")
+
+    @property
+    def date_applied_timestamp(self):
+        return self.__seamless__.get_single("admin.date_applied", coerce=coerce.to_datestamp())
 
     @date_applied.setter
     def date_applied(self, val):
@@ -244,14 +253,9 @@ class AllPublisherApplications(DomainObject):
 
 MAPPING_OPTS = {
     "dynamic": None,
-    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
-    "exceptions": {
-        "admin.notes.note": {
-            "type": "text",
-            "index": False,
-            # "include_in_all": False        # Removed in es6 fixme: do we need to look at copy_to for the mapping?
-        }
-    }
+    "coerces": Journal.add_mapping_extensions(app.config["DATAOBJ_TO_MAPPING_DEFAULTS"]),
+    "exceptions": app.config["ADMIN_NOTES_SEARCH_MAPPING"],
+    "additional_mappings": app.config["ADMIN_NOTES_INDEX_ONLY_FIELDS"]
 }
 
 
