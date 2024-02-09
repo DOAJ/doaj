@@ -1,12 +1,35 @@
 {
+	"batch": 10000,
 	"types": [
 		{
 			"type": "journal",
 			"init_with_model": true,
-			"keepalive": "1m",
+			"keepalive": "20m",
 			"functions" : [
 				"portality.migrate.3751_turkey_search.operations.correct_turkey"
-			]
+			],
+			"query": {
+				"query": {
+					"term": {
+						"index.country.exact": "Turkey"
+					}
+				}
+			}
+		},
+		{
+			"type": "application",
+			"init_with_model": true,
+			"keepalive": "20m",
+			"functions" : [
+				"portality.migrate.3751_turkey_search.operations.correct_turkey"
+			],
+			"query": {
+				"query": {
+					"term": {
+						"index.country.exact": "Turkey"
+					}
+				}
+			}
 		}
 	]
 }
