@@ -1,19 +1,23 @@
+import csv
 import logging
+import random
+import re
+import string
+from datetime import datetime
+from datetime import timedelta
 
-from portality.lib.argvalidate import argvalidate
-from portality.lib import dates
+from portality import lock
 from portality import models, constants
 from portality.bll import exceptions
-from portality.core import app
-from portality import lock
 from portality.bll.doaj import DOAJ
-from portality.lib.dates import FMT_DATETIME_SHORT
-from portality.store import StoreFactory, prune_container, StoreException
+from portality.core import app
 from portality.crosswalks.journal_questions import Journal2QuestionXwalk
+from portality.lib import dates
+from portality.lib.argvalidate import argvalidate
+from portality.lib.dates import FMT_DATETIME_SHORT
+from portality.store import StoreException
+from portality.store import StoreFactory, prune_container
 from portality.util import no_op
-
-from datetime import datetime, timedelta
-import re, csv, random, string
 
 
 class JournalService(object):
@@ -128,7 +132,7 @@ class JournalService(object):
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("csv", [
-            {"arg": prune, "allow_none" : False, "arg_name" : "prune"},
+            {"arg": prune, "allow_none": False, "arg_name": "prune"},
             {"arg": logger, "allow_none": True, "arg_name": "logger"}
         ], exceptions.ArgumentException)
 
@@ -158,18 +162,21 @@ class JournalService(object):
             url = mainStore.url(container_id, filename)
             logger("Stored CSV in main cache store at {x}".format(x=url))
         finally:
-            tmpStore.delete_file(container_id, filename) # don't delete the container, just in case someone else is writing to it
+            # don't delete the container, just in case someone else is writing to it
+            tmpStore.delete_file(container_id, filename)
             logger("Deleted file from tmp store")
 
         action_register = []
         if prune:
             logger("Pruning old CSVs from store")
+
             def sort(filelist):
                 rx = "journalcsv__doaj_(.+?)_utf8.csv"
                 return sorted(filelist, key=lambda x: datetime.strptime(re.match(rx, x).groups(1)[0], FMT_DATETIME_SHORT), reverse=True)
 
             def _filter(f_name):
                 return f_name.startswith("journalcsv__")
+
             action_register = prune_container(mainStore, container_id, sort, filter=_filter, keep=2, logger=logger)
             logger("Pruned old CSVs from store")
 
