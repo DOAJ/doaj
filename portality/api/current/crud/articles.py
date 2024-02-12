@@ -91,6 +91,8 @@ class ArticlesCrudApi(CrudApi):
             raise Api403Error(str(e))
         except IngestException as e:
             raise Api400Error(str(e))
+        except (exceptions.ElasticSearchWriteException, exceptions.DAOSaveExceptionMaxRetriesReached) as e:
+            raise Api500Error(str(e))
 
 
         # Check we are allowed to create an article for this journal
@@ -241,6 +243,8 @@ class ArticlesCrudApi(CrudApi):
             raise Api400Error((str(e)))
         except DuplicateArticleException as e:
             raise Api403Error(str(e))
+        except (exceptions.ElasticSearchWriteException, exceptions.DAOSaveExceptionMaxRetriesReached) as e:
+            raise Api500Error(str(e))
 
         if result.get("success") == 0:
             raise Api400Error("Article update failed for unanticipated reason")
