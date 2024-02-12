@@ -18,13 +18,6 @@ ed:
   country: Australia
   language: Chinese, English
   featured: true
-
-- name: Ikhwan Arief
-  area: Science, Technology
-  year_since:
-  city: Padang, West Sumatra
-  country: Indonesia
-  language: Indonesian, English
   
 - name: Juyeon Park
   area: Librarianship
@@ -154,11 +147,11 @@ ass_ed:
   language: Hungarian, English
 
 - name: Andrea Marchitelli
-  area: Librarianship
+  area: Library Science
   year_since:
-  city: 
-  country: Poland
-  language: Polish, English
+  city: Rome
+  country: Italy
+  language: Italian, English
 
 - name: Andronic Octavian
   area: Medicine
@@ -404,14 +397,6 @@ ass_ed:
   city: Hainan
   country: China
   language: English
-
-- name: João Sousa
-  area: Social Sciences
-  year_since:
-  city:
-  country: Angola
-  language: Portuguese, English
-  photo: "sousa.JPG"
 
 - name: JooYeun Son
   area:
