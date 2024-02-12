@@ -651,8 +651,11 @@ $.extend(true, doaj, {
                 frag = frag.replace(/{{FILTERS}}/g, treeFrag);
 
                 // now render it into the page
-                this.component.context.html(frag);
-                feather.replace();
+                if (!this.stringSearch){
+                    this.component.context.html(frag);
+                    feather.replace();
+                }
+
 
                 // trigger all the post-render set-up functions
                 this.setUIOpen();
@@ -814,6 +817,7 @@ $.extend(true, doaj, {
                     filterEl.html("");
                     filterEl.hide();
                     mainEl.show();
+                    this.stringSearch = false;
                     return;
                 }
                 if (term.length < 3) {
@@ -822,6 +826,7 @@ $.extend(true, doaj, {
                     mainEl.hide();
                     return;
                 }
+                this.stringSearch = true;
                 term = term.toLowerCase();
 
                 function entryMatch(entry) {
