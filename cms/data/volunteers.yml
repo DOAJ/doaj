@@ -355,7 +355,6 @@ ass_ed:
   country: Republic of Korea
   language: Korean, English
 
-
 - name: Iryna Kuchma
   area: Humanities, Social Sciences
   year_since:
@@ -794,6 +793,14 @@ ass_ed:
   country: India
   language: Kannada, English
   photo: "Vasanth.jpg"
+
+- name: Wileidys Artigas
+  area: Library Science
+  year_since:
+  city: Plano, Texas
+  country: USA
+  language: Spanish, English and Portuguese
+  photo: "Wileidys.jpg"
   
 - name: Yalçın Tükel 
   area: Sports recreation
