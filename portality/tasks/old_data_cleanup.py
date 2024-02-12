@@ -13,7 +13,7 @@ from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import schedule, long_running
 
 target_queue = long_running
-MODEL_TOBE_CLEANUP = [
+MODELS_TOBE_CLEANUP = [
     Notification,
     BackgroundJob,
     ApiLog,
@@ -65,7 +65,7 @@ def clean_all_old_data(logger_fn=None):
     if logger_fn is None:
         logger_fn = print
 
-    for klazz in MODEL_TOBE_CLEANUP:
+    for klazz in MODELS_TOBE_CLEANUP:
         _clean_old_data(klazz, logger_fn=logger_fn)
     logger_fn("old data cleanup completed")
 
