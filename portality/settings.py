@@ -1381,6 +1381,7 @@ TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
 TASK_DATA_RETENTION_DAYS = {
     "notification": 180, # ~~-> Notifications:Feature ~~
     "background_job": 180, # ~~-> BackgroundJobs:Feature ~~
+    "api_log": 180, # ~~-> ApiLog:Feature ~~
 }
 
 ########################################
