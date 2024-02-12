@@ -474,6 +474,15 @@ ass_ed:
   language: English, Spanish
   photo: "Kristen.jpg"
 
+
+- name: Lee Yang Díaz Chieng
+  area: Information Sciences
+  year_since:
+  city: Guantánamo
+  country: Cuba
+  language: Spanish and English
+  photo: "Lee.jpg"
+
 - name: Lena Lönngren
   area:
   year_since:
