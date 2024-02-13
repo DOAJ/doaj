@@ -1539,7 +1539,7 @@ DATALOG_JA_WORKSHEET_NAME = 'Added'
 # ~~->ApiRate:Feature~~
 
 # api rate limits per minute for user have no api key or normal api key
-RATE_LIMITS_PER_MIN_DEFAULT = 1
+RATE_LIMITS_PER_MIN_DEFAULT = 10
 
 # api rate limits per minute for user have two-tiered api key
 RATE_LIMITS_PER_MIN_T2 = 1000
