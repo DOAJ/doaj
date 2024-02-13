@@ -237,8 +237,8 @@ def respond(data, status, metadata=None):
 
 
 def resp_err(error, log_msg, status_code, status_msg):
-    magic = uuid.uuid1()
-    err_msg = str(error) + " (ref: {y})".format(y=magic)
+    err_ref_id = uuid.uuid1()
+    err_msg = str(error) + " (ref: {y})".format(y=err_ref_id)
     app.logger.info(log_msg + f' -- {err_msg}')
     t = deepcopy(ERROR_TEMPLATE)
     t['status'] = status_msg
