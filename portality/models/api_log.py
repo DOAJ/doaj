@@ -1,9 +1,12 @@
+import datetime
+
 from portality.dao import DomainObject
+from portality.lib import dates
 
 
 class ApiLog(DomainObject):
     """~~ApiLog:Model->DomainObject:Model~~"""
-    __type__ = "api_rate"
+    __type__ = "api_log"
 
     def __init__(self, **kwargs):
         super(ApiLog, self).__init__(**kwargs)
@@ -41,10 +44,34 @@ class ApiLog(DomainObject):
         """
         self.data["target"] = target
 
-    @property
-    def created_date(self):
-        return self.data.get("created_date")
+    @classmethod
+    def create(cls, src: str, target: str):
+        api_log = ApiLog()
+        api_log.src = src
+        api_log.target = target
+        api_log.set_created()
+        api_log.save()
+        return api_log
 
-    @created_date.setter
-    def created_date(self, val):
-        self.data["created_date"] = val
+
+class ApiRateQuery:
+
+    def __init__(self, src: str, target: str, since):
+        if isinstance(since, datetime.datetime):
+            since = dates.format(since)
+        self._src = src
+        self._target = target
+        self._since = since
+
+    def query(self):
+        return {
+            'query': {
+                'bool': {
+                    'must': [
+                        {'range': {'created_date': {'gte': self._since}}},
+                        {'term': {'src': self._src}},
+                        {'term': {'target': self._target}},
+                    ]
+                }
+            }
+        }

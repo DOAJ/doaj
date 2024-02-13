@@ -126,3 +126,12 @@ class DOAJ(object):
         """
         from portality.bll.services import tour
         return tour.TourService()
+
+    @classmethod
+    def apiRateService(cls):
+        """
+        Obtain an instance of the api_rate service  ~~->ApiRate:Service~~
+        :return:  ApiRateService
+        """
+        from portality.bll.services import api_rate
+        return api_rate.ApiRateService()
