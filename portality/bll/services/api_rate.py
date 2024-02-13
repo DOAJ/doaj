@@ -1,6 +1,5 @@
 import datetime
 import functools
-import logging
 
 from portality.api import Api429Error
 from portality.core import app
