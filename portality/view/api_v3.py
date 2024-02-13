@@ -52,11 +52,13 @@ def api_spec():
 
 
 # Handle wayward paths by raising an API404Error
-@blueprint.route("/<path:invalid_path>", methods=["POST", "GET", "PUT", "DELETE", "PATCH", "HEAD"])     # leaving out methods should mean all, but tests haven't shown that behaviour.
+# leaving out methods should mean all, but tests haven't shown that behaviour.
+@blueprint.route("/<path:invalid_path>", methods=["POST", "GET", "PUT", "DELETE", "PATCH", "HEAD"])
 def missing_resource(invalid_path):
     docs_url = app.config.get("BASE_URL", "") + url_for('.docs')
     spec_url = app.config.get("BASE_URL", "") + url_for('.api_spec')
-    raise Api404Error("No endpoint at {0}. See {1} for valid paths or read the documentation at {2}.".format(invalid_path, spec_url, docs_url))
+    raise Api404Error("No endpoint at {0}. See {1} for valid paths or read the documentation at {2}.".format(
+        invalid_path, spec_url, docs_url))
 
 
 @swag(swag_summary='Search your applications <span class="red">[Authenticated, not public]</span>',
@@ -309,7 +311,8 @@ def retrieve_journal(journal_id):
 @write_required(api=True)
 @swag(swag_summary='Create applications in bulk <span class="red">[Authenticated, not public]</span>',
       swag_spec=ApplicationsBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('bulk_application_create', 'Bulk application create'))
+@plausible.pa_event(ANALYTICS_CATEGORY,
+                    action=ANALYTICS_ACTIONS.get('bulk_application_create', 'Bulk application create'))
 def bulk_application_create():
     # get the data from the request
     try:
@@ -334,7 +337,8 @@ def bulk_application_create():
 @write_required(api=True)
 @swag(swag_summary='Delete applications in bulk <span class="red">[Authenticated, not public]</span>',
       swag_spec=ApplicationsBulkApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-@plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('bulk_application_delete', 'Bulk application delete'))
+@plausible.pa_event(ANALYTICS_CATEGORY,
+                    action=ANALYTICS_ACTIONS.get('bulk_application_delete', 'Bulk application delete'))
 def bulk_application_delete():
     # get the data from the request
     try:
