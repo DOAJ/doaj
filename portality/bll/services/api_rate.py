@@ -13,6 +13,7 @@ ROLE_API_RATE_T2 = 'api_rate_t2'
 def count_api_rate(src: str, target: str) -> float:
     minutes = 1
     since = dates.now() - datetime.timedelta(minutes=minutes)
+    ApiLog.refresh()
     count = ApiLog.count(body=ApiRateQuery(src=src, target=target, since=since).query())
     rate = count / minutes
     return rate
