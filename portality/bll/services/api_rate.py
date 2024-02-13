@@ -53,8 +53,8 @@ class ApiRateService:
             limited_api_rate = ApiRateService.get_allowed_rate(api_user)
             app.logger.debug(f'track_api_rate src[{src}] target[{target}] '
                       f'cur_rate[{cur_api_rate}] limited[{limited_api_rate}]')
-            if cur_api_rate > limited_api_rate:
-                app.logger.info(f'reject src[{src}] target[{target}] rate[{cur_api_rate} > {limited_api_rate}]')
+            if cur_api_rate >= limited_api_rate:
+                app.logger.info(f'reject src[{src}] target[{target}] rate[{cur_api_rate} >= {limited_api_rate}]')
                 raise Api429Error('Rate limit exceeded')
             else:
                 ApiLog.create(src, target)
