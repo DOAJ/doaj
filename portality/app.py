@@ -9,34 +9,34 @@ new ones as required too.
 
 ~~DOAJ:WebApp~~
 """
+import logging
+import os
+import sys
+from datetime import datetime
 
-import os, sys
-import tzlocal
 import pytz
-
+import tzlocal
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, send_from_directory
 from flask_login import login_user, current_user
 
-from datetime import datetime
-
 import portality.models as models
-from portality.core import app, es_connection, initialise_index
 from portality import settings
+from portality.core import app, es_connection, initialise_index
 from portality.lib import edges, dates
 from portality.lib.dates import FMT_DATETIME_STD, FMT_YEAR
-
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
-from portality.view.publisher import blueprint as publisher
-from portality.view.query import blueprint as query
+from portality.view.apply import blueprint as apply
+from portality.view.atom import blueprint as atom
 from portality.view.doaj import blueprint as doaj
+from portality.view.doajservices import blueprint as services
+from portality.view.editor import blueprint as editor
+from portality.view.jct import blueprint as jct
 from portality.view.oaipmh import blueprint as oaipmh
 from portality.view.openurl import blueprint as openurl
-from portality.view.atom import blueprint as atom
-from portality.view.editor import blueprint as editor
-from portality.view.doajservices import blueprint as services
-from portality.view.jct import blueprint as jct
-from portality.view.apply import blueprint as apply
+from portality.view.publisher import blueprint as publisher
+from portality.view.query import blueprint as query
+
 if 'api1' in app.config['FEATURES']:
     from portality.view.api_v1 import blueprint as api_v1
 if 'api2' in app.config['FEATURES']:
@@ -443,6 +443,17 @@ def run_server(host=None, port=None, fake_https=False):
         that can help for debugging Plausible
     :return:
     """
+
+    if app.config.get('DEBUG_DEV_LOG', False):
+        app.logger.handlers = []
+        log = logging.getLogger()
+        log.setLevel(logging.DEBUG)
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        ch.setFormatter(logging.Formatter('%(asctime)s %(levelname).4s %(processName)s%(threadName)s - '
+                                          '%(message)s --- [%(name)s][%(funcName)s:%(lineno)d]'))
+        log.addHandler(ch)
+
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)
     if len(sys.argv) > 1:
         if sys.argv[1] == '-d':
