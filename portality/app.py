@@ -51,35 +51,35 @@ from portality.view.tours import blueprint as tours
 if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False):
     from portality.view.testdrive import blueprint as testdrive
 
-app.register_blueprint(account, url_prefix='/account') #~~->Account:Blueprint~~
-app.register_blueprint(admin, url_prefix='/admin') #~~-> Admin:Blueprint~~
-app.register_blueprint(publisher, url_prefix='/publisher') #~~-> Publisher:Blueprint~~
-app.register_blueprint(query, name='query', url_prefix='/query') # ~~-> Query:Blueprint~~
+app.register_blueprint(account, url_prefix='/account')  # ~~->Account:Blueprint~~
+app.register_blueprint(admin, url_prefix='/admin')  # ~~-> Admin:Blueprint~~
+app.register_blueprint(publisher, url_prefix='/publisher')  # ~~-> Publisher:Blueprint~~
+app.register_blueprint(query, name='query', url_prefix='/query')  # ~~-> Query:Blueprint~~
 app.register_blueprint(query, name='admin_query', url_prefix='/admin_query')
 app.register_blueprint(query, name='publisher_query', url_prefix='/publisher_query')
 app.register_blueprint(query, name='editor_query', url_prefix='/editor_query')
 app.register_blueprint(query, name='associate_query', url_prefix='/associate_query')
 app.register_blueprint(query, name='dashboard_query', url_prefix="/dashboard_query")
-app.register_blueprint(editor, url_prefix='/editor') # ~~-> Editor:Blueprint~~
-app.register_blueprint(services, url_prefix='/service') # ~~-> Services:Blueprint~~
+app.register_blueprint(editor, url_prefix='/editor')  # ~~-> Editor:Blueprint~~
+app.register_blueprint(services, url_prefix='/service')  # ~~-> Services:Blueprint~~
 if 'api1' in app.config['FEATURES']:
-    app.register_blueprint(api_v1, url_prefix='/api/v1') # ~~-> APIv1:Blueprint~~
+    app.register_blueprint(api_v1, url_prefix='/api/v1')  # ~~-> APIv1:Blueprint~~
 if 'api2' in app.config['FEATURES']:
-    app.register_blueprint(api_v2, url_prefix='/api/v2') # ~~-> APIv2:Blueprint~~
+    app.register_blueprint(api_v2, url_prefix='/api/v2')  # ~~-> APIv2:Blueprint~~
 if 'api3' in app.config['FEATURES']:
-    app.register_blueprint(api_v3, name='api', url_prefix='/api') # ~~-> APIv3:Blueprint~~
-    app.register_blueprint(api_v3, name='api_v3', url_prefix='/api/v3') # ~~-> APIv3:Blueprint~~
-app.register_blueprint(status, name='status', url_prefix='/status') # ~~-> Status:Blueprint~~
+    app.register_blueprint(api_v3, name='api', url_prefix='/api')  # ~~-> APIv3:Blueprint~~
+    app.register_blueprint(api_v3, name='api_v3', url_prefix='/api/v3')  # ~~-> APIv3:Blueprint~~
+app.register_blueprint(status, name='status', url_prefix='/status')  # ~~-> Status:Blueprint~~
 app.register_blueprint(status, name='_status', url_prefix='/_status')
-app.register_blueprint(apply, url_prefix='/apply') # ~~-> Apply:Blueprint~~
-app.register_blueprint(jct, url_prefix="/jct") # ~~-> JCT:Blueprint~~
-app.register_blueprint(dashboard, url_prefix="/dashboard") #~~-> Dashboard:Blueprint~~
+app.register_blueprint(apply, url_prefix='/apply')  # ~~-> Apply:Blueprint~~
+app.register_blueprint(jct, url_prefix="/jct")  # ~~-> JCT:Blueprint~~
+app.register_blueprint(dashboard, url_prefix="/dashboard")  # ~~-> Dashboard:Blueprint~~
 app.register_blueprint(tours, url_prefix="/tours")  # ~~-> Tours:Blueprint~~
 
-app.register_blueprint(oaipmh) # ~~-> OAIPMH:Blueprint~~
-app.register_blueprint(openurl) # ~~-> OpenURL:Blueprint~~
-app.register_blueprint(atom) # ~~-> Atom:Blueprint~~
-app.register_blueprint(doaj) # ~~-> DOAJ:Blueprint~~
+app.register_blueprint(oaipmh)  # ~~-> OAIPMH:Blueprint~~
+app.register_blueprint(openurl)  # ~~-> OpenURL:Blueprint~~
+app.register_blueprint(atom)  # ~~-> Atom:Blueprint~~
+app.register_blueprint(doaj)  # ~~-> DOAJ:Blueprint~~
 
 if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False):
     app.logger.warning('Enabling TESTDRIVE at /testdrive')
@@ -90,6 +90,7 @@ if app.config.get("DEBUG", False) and app.config.get("TESTDRIVE_ENABLED", False)
 # to the app being run directly by python portality/app.py
 # putting it here ensures it will run under any web server
 initialise_index(app, es_connection)
+
 
 # serve static files from multiple potential locations
 # this allows us to override the standard static file handling with our own dynamic version
@@ -108,10 +109,13 @@ def custom_static(path):
             return send_from_directory(os.path.dirname(target), os.path.basename(target))
     abort(404)
 
+
 # Configure Analytics
 # ~~-> PlausibleAnalytics:ExternalService~~
 from portality.lib import plausible
+
 plausible.create_logfile(app.config.get('PLAUSIBLE_LOG_DIR', None))
+
 
 # Redirects from previous DOAJ app.
 # RJ: I have decided to put these here so that they can be managed
@@ -139,6 +143,7 @@ def legacy():
 def another_legacy_csv_route():
     return redirect("/csv"), 301
 
+
 ###################################################
 
 # ~~-> DOAJArticleXML:Schema~~
@@ -146,9 +151,9 @@ def another_legacy_csv_route():
 def legacy_doaj_XML_schema():
     schema_fn = 'doajArticles.xsd'
     return send_file(
-            os.path.join(app.config.get("STATIC_DIR"), "doaj", schema_fn),
-            mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
-            )
+        os.path.join(app.config.get("STATIC_DIR"), "doaj", schema_fn),
+        mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
+    )
 
 
 # ~~-> CrossrefArticleXML:WebRoute~~
@@ -182,7 +187,7 @@ def set_current_context():
         "app": app,
         "current_year": dates.now_str(FMT_YEAR),
         "base_url": app.config.get('BASE_URL'),
-        }
+    }
 
 
 # Jinja2 Template Filters
@@ -193,7 +198,7 @@ def bytes_to_filesize(size):
     units = ["bytes", "Kb", "Mb", "Gb"]
     scale = 0
     while size > 1000 and scale < len(units):
-        size = float(size) / 1000.0     # note that it is no longer 1024
+        size = float(size) / 1000.0  # note that it is no longer 1024
         scale += 1
     return "{size:.1f}{unit}".format(size=size, unit=units[scale])
 
@@ -286,6 +291,7 @@ def form_diff_table_subject_expand(val):
 
     return ", ".join(results)
 
+
 @app.template_filter("is_in_the_past")
 def is_in_the_past(dttm):
     return dates.is_before(dttm, dates.today())
@@ -297,6 +303,7 @@ def is_in_the_past(dttm):
 def search_query_source_wrapper():
     def search_query_source(**params):
         return edges.make_url_query(**params)
+
     return dict(search_query_source=search_query_source)
 
 
@@ -311,6 +318,7 @@ def maned_of_wrapper():
             if len(egs) > 0:
                 assignments = models.Application.assignment_to_editor_groups(egs)
         return egs, assignments
+
     return dict(maned_of=maned_of)
 
 
@@ -325,7 +333,9 @@ def editor_of_wrapper():
             if len(egs) > 0:
                 assignments = models.Application.assignment_to_editor_groups(egs)
         return egs, assignments
+
     return dict(editor_of=editor_of)
+
 
 @app.context_processor
 def associate_of_wrapper():
@@ -338,7 +348,9 @@ def associate_of_wrapper():
             if len(egs) > 0:
                 assignments = models.Application.assignment_to_editor_groups(egs)
         return egs, assignments
+
     return dict(associate_of=associate_of)
+
 
 # ~~-> Account:Model~~
 # ~~-> AuthNZ:Feature~~
@@ -478,4 +490,3 @@ def run_server(host=None, port=None, fake_https=False):
 
 if __name__ == "__main__":
     run_server()
-
