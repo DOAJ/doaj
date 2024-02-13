@@ -9,6 +9,7 @@ from portality.api.current import ApplicationsCrudApi, ArticlesCrudApi, Journals
 from portality.api.current import DiscoveryApi, DiscoveryException
 from portality.api.current import jsonify_models, jsonify_data_object, Api400Error, Api404Error, created, \
     no_content, bulk_created
+from portality.bll import DOAJ
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional, swag, write_required
 from portality.lib import plausible
@@ -20,6 +21,7 @@ API_VERSION_NUMBER = '3.0.1'  # OA start added 2022-03-21
 # Google Analytics category for API events
 ANALYTICS_CATEGORY = app.config.get('ANALYTICS_CATEGORY_API', 'API Hit')
 ANALYTICS_ACTIONS = app.config.get('ANALYTICS_ACTIONS_API', {})
+api_rate_service = DOAJ.apiRateService()
 
 
 @blueprint.route('/')
@@ -28,6 +30,7 @@ def api_v3_root():
 
 
 @blueprint.route('/docs')
+@api_rate_service.track_api_rate
 def docs():
     account_url = None
     if current_user.is_authenticated:
@@ -41,6 +44,7 @@ def docs():
 
 
 @blueprint.route('/swagger.json')
+@api_rate_service.track_api_rate
 def api_spec():
     swag = swagger(app)
     swag['info']['title'] = ""
@@ -54,6 +58,7 @@ def api_spec():
 # Handle wayward paths by raising an API404Error
 # leaving out methods should mean all, but tests haven't shown that behaviour.
 @blueprint.route("/<path:invalid_path>", methods=["POST", "GET", "PUT", "DELETE", "PATCH", "HEAD"])
+@api_rate_service.track_api_rate
 def missing_resource(invalid_path):
     docs_url = app.config.get("BASE_URL", "") + url_for('.docs')
     spec_url = app.config.get("BASE_URL", "") + url_for('.api_spec')
@@ -67,6 +72,7 @@ def missing_resource(invalid_path):
 @api_key_required
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('search_applications', 'Search applications'),
                     record_value_of_which_arg='search_query')
+@api_rate_service.track_api_rate
 def search_applications(search_query):
     # get the values for the 2 other bits of search info: the page number and the page size
     page = request.values.get("page", 1)
@@ -98,6 +104,7 @@ def search_applications(search_query):
 @blueprint.route('/search/journals/<path:search_query>')
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('search_journals', 'Search journals'),
                     record_value_of_which_arg='search_query')
+@api_rate_service.track_api_rate
 def search_journals(search_query):
     # get the values for the 2 other bits of search info: the page number and the page size
     page = request.values.get("page", 1)
@@ -129,6 +136,7 @@ def search_journals(search_query):
 @blueprint.route('/search/articles/<path:search_query>')
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('search_articles', 'Search articles'),
                     record_value_of_which_arg='search_query')
+@api_rate_service.track_api_rate
 def search_articles(search_query):
     # get the values for the 2 other bits of search info: the page number and the page size
     page = request.values.get("page", 1)
@@ -165,6 +173,7 @@ def search_articles(search_query):
 @swag(swag_summary='Create an application <span class="red">[Authenticated, not public]</span>',
       swag_spec=ApplicationsCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('create_application', 'Create application'))
+@api_rate_service.track_api_rate
 def create_application():
     # get the data from the request
     try:
@@ -185,6 +194,7 @@ def create_application():
       swag_spec=ApplicationsCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('retrieve_application', 'Retrieve application'),
                     record_value_of_which_arg='application_id')
+@api_rate_service.track_api_rate
 def retrieve_application(application_id):
     a = ApplicationsCrudApi.retrieve(application_id, current_user)
     return jsonify_models(a)
@@ -197,6 +207,7 @@ def retrieve_application(application_id):
       swag_spec=ApplicationsCrudApi.update_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('update_application', 'Update application'),
                     record_value_of_which_arg='application_id')
+@api_rate_service.track_api_rate
 def update_application(application_id):
     # get the data from the request
     try:
@@ -218,6 +229,7 @@ def update_application(application_id):
       swag_spec=ApplicationsCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('delete_application', 'Delete application'),
                     record_value_of_which_arg='application_id')
+@api_rate_service.track_api_rate
 def delete_application(application_id):
     ApplicationsCrudApi.delete(application_id, current_user._get_current_object())
     return no_content()
@@ -232,6 +244,7 @@ def delete_application(application_id):
 @swag(swag_summary='Create an article <span class="red">[Authenticated, not public]</span>',
       swag_spec=ArticlesCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('create_article', 'Create article'))
+@api_rate_service.track_api_rate
 def create_article():
     # get the data from the request
     try:
@@ -252,6 +265,7 @@ def create_article():
       swag_spec=ArticlesCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('retrieve_article', 'Retrieve article'),
                     record_value_of_which_arg='article_id')
+@api_rate_service.track_api_rate
 def retrieve_article(article_id):
     a = ArticlesCrudApi.retrieve(article_id, current_user)
     return jsonify_models(a)
@@ -264,6 +278,7 @@ def retrieve_article(article_id):
       swag_spec=ArticlesCrudApi.update_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('update_article', 'Update article'),
                     record_value_of_which_arg='article_id')
+@api_rate_service.track_api_rate
 def update_article(article_id):
     # get the data from the request
     try:
@@ -285,6 +300,7 @@ def update_article(article_id):
       swag_spec=ArticlesCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('delete_article', 'Delete article'),
                     record_value_of_which_arg='article_id')
+@api_rate_service.track_api_rate
 def delete_article(article_id):
     ArticlesCrudApi.delete(article_id, current_user)
     return no_content()
@@ -299,6 +315,7 @@ def delete_article(article_id):
       swag_spec=JournalsCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('retrieve_journal', 'Retrieve journal'),
                     record_value_of_which_arg='journal_id')
+@api_rate_service.track_api_rate
 def retrieve_journal(journal_id):
     return jsonify_data_object(JournalsCrudApi.retrieve(journal_id, current_user))
 
@@ -313,6 +330,7 @@ def retrieve_journal(journal_id):
       swag_spec=ApplicationsBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY,
                     action=ANALYTICS_ACTIONS.get('bulk_application_create', 'Bulk application create'))
+@api_rate_service.track_api_rate
 def bulk_application_create():
     # get the data from the request
     try:
@@ -339,6 +357,7 @@ def bulk_application_create():
       swag_spec=ApplicationsBulkApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY,
                     action=ANALYTICS_ACTIONS.get('bulk_application_delete', 'Bulk application delete'))
+@api_rate_service.track_api_rate
 def bulk_application_delete():
     # get the data from the request
     try:
@@ -360,6 +379,7 @@ def bulk_application_delete():
 @swag(swag_summary='Bulk article creation <span class="red">[Authenticated, not public]</span>',
       swag_spec=ArticlesBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('bulk_article_create', 'Bulk article create'))
+@api_rate_service.track_api_rate
 def bulk_article_create():
     # get the data from the request
     try:
@@ -385,6 +405,7 @@ def bulk_article_create():
 @swag(swag_summary='Bulk article delete <span class="red">[Authenticated, not public]</span>',
       swag_spec=ArticlesBulkApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('bulk_article_delete', 'Bulk article delete'))
+@api_rate_service.track_api_rate
 def bulk_article_delete():
     # get the data from the request
     try:
