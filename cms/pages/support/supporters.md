@@ -15,4 +15,4 @@ Check [our Institutions and libraries support page](/support/) for pricing and b
 
 ## Current supporters
 
-<iframe width="100%" height="500px" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTNhI5rDAvhODscyFp0GW3meD4gHEHFP11vpivCBuC-KYNQd-YO-nNfhKp0DrLvmzlB91Yo8XlL0zFO/pubhtml?widget=true&amp;headers=false"></iframe>
+<iframe width="100%" height="500px" src="https://docs.google.com/spreadsheets/d/1duF1gSh5tQKFlb9Jp1TLklfd1u5KL7xDyJGr8DchAnE/pubhtml?widget=true&amp;headers=false"></iframe>
