@@ -68,8 +68,12 @@ class ApiRateService:
         if api_user is not None and ApiRateService.is_t2_user(api_user):
             return app.config.get('RATE_LIMITS_PER_MIN_T2', 1000)
 
+        return ApiRateService.get_default_api_rate()
+
+    @staticmethod
+    def get_default_api_rate():
         return app.config.get('RATE_LIMITS_PER_MIN_DEFAULT', 10)
 
     @staticmethod
     def is_t2_user(api_user: Account) -> bool:
-        return api_user.has_role(ROLE_API_RATE_T2)
+        return isinstance(api_user, Account) and api_user.has_role(ROLE_API_RATE_T2)

@@ -36,11 +36,18 @@ def docs():
     if current_user.is_authenticated:
         account_url = url_for('account.username', username=current_user.id, _external=True,
                               _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
+
+    api_rate_limit = api_rate_serv.get_allowed_rate(current_user)
+    is_default_api_rate = api_rate_limit == api_rate_serv.get_default_api_rate()
+
     return render_template('api/current/api_docs.html',
                            api_version=API_VERSION_NUMBER,
                            base_url=app.config.get("BASE_API_URL", url_for('.api_v3_root')),
                            contact_us_url=url_for('doaj.contact'),
-                           account_url=account_url)
+                           account_url=account_url,
+                           api_rate_limit=api_rate_limit,
+                           is_default_api_rate=is_default_api_rate,
+                           )
 
 
 @blueprint.route('/swagger.json')
