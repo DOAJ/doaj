@@ -66,10 +66,8 @@ Instructions for reviewers:
   - [ ] Developer
   - [ ] Reviewer
   
-- Functional tests have been added/modified
-  - [ ] N/A
-  - [ ] Developer
-  - [ ] Reviewer
+- Functional tests (Mention the steps how to test the feature) if applicable
+  
   
 - Code has been run manually in development, and functional tests followed locally
   - [ ] N/A
