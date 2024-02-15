@@ -12,3 +12,7 @@
 .swagger-ui code {
     background: #333;
 }
+
+.swagger-ui .information-container {
+    display: none;
+}
