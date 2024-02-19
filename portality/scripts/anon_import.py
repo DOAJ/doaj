@@ -4,16 +4,20 @@ Clear out the index and retrieve new anonymised data, according to a configurati
 Configure the target index in your *.cfg override file
 For now, this import script requires the same index pattern (prefix, 'types', index-per-type setting) as the exporter.
 
-E.g. for dev:
+Will ignore your setting STORE_IMPL in app.cfg - defaults to s3, alternatively use local storage via [-s local]
 
-Ensure in dev.cfg you've set STORE_IMPL = "portality.store.StoreS3"
-python portality/scripts/anon_import.py data_import_settings/dev_basics.json
+E.g. for dev:
+DOAJENV=dev python portality/scripts/anon_import.py data_import_settings/dev_basics.json
+
+or for a test server:
+DOAJENV=test python portality/scripts/anon_import.py data_import_settings/test_server.json
 """
 
 import json, gzip, shutil, elasticsearch
 from portality.core import app, es_connection, initialise_index
 from portality.store import StoreFactory
 from portality.dao import DomainObject
+from doajtest.helpers import patch_config
 
 
 def do_import(config):
@@ -101,10 +105,27 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("config", help="Config file for import run")
+    parser.add_argument("config", help="Config file for import run, e.g dev_basics.json")
+    parser.add_argument('-s', '--storeimpl',
+                        help="Use S3 (default) or StoreLocal as anon data source",
+                        choices=['s3', 'local'],
+                        default='s3',
+                        required=False)
     args = parser.parse_args()
 
     with open(args.config, "r", encoding="utf-8") as f:
-        config = json.loads(f.read())
+        cf = json.loads(f.read())
 
-    do_import(config)
+    if args.storeimpl == 'local':
+        print("\n**\nImporting from Local storage")
+        original_configs = patch_config(app, {
+            'STORE_IMPL': "portality.store.StoreLocal"
+        })
+    else:
+        print("\n**\nImporting from S3 storage")
+        original_configs = patch_config(app, {
+            'STORE_IMPL': "portality.store.StoreS3"
+        })
+
+    do_import(cf)
+    patch_config(app, original_configs)
