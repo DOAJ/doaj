@@ -1,10 +1,10 @@
 # ~~APISearch:Feature->API:Feature~~
+import portality.dao
 from portality.api.common import Api
 from portality import util
 from portality.core import app
 from portality.lib import dates
 from portality import models
-import esprit
 import re, json, uuid, os
 from copy import deepcopy
 from flask import url_for
@@ -312,7 +312,7 @@ class DiscoveryApi(Api):
             app.logger.error(u"Error executing discovery query search for {i}: {x} (ref: {y})".format(i=index_type, x=msg, y=magic))
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
-        obs = [klass(**raw) for raw in esprit.raw.unpack_json_result(res)]
+        obs = klass.handle_es_raw_response(res, wrap=True)
         return cls._make_response(endpoint, res, q, page, page_size, sort, obs)
 
     @classmethod

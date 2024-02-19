@@ -30,8 +30,8 @@ OUTDIR=$DOAJ_DOCS/$BRANCH/coverage
 COVERAGE_FILE=$OUTDIR/coverage.data
 export COVERAGE_FILE
 
-echo "coverage run --source=portality,esprit,combinatrix,dictdiffer $(which pytest) $BASE_DIR/doajtest/unit/"
-coverage run --source=portality,esprit,combinatrix,dictdiffer $(which pytest) $BASE_DIR/doajtest/unit/
+echo "coverage run --source=portality,combinatrix,dictdiffer $(which pytest) $BASE_DIR/doajtest/unit/"
+coverage run --source=portality,combinatrix,dictdiffer $(which pytest) $BASE_DIR/doajtest/unit/
 
 echo "coverage html --include=portality*.py --omit=*/migrate/*,*/scripts/* -d $OUTDIR/report"
 coverage html --include=portality*.py --omit=*/migrate/*,*/scripts/* -d $OUTDIR/report

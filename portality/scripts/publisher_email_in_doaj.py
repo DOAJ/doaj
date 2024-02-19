@@ -1,15 +1,11 @@
 """ Creates a CSV of publisher email addresses """
 
 import os, csv
-import esprit
-from portality.core import es_connection
 from portality.models import Account, Journal
 from portality.lib import dates
 from portality.util import ipt_prefix
 
 from portality.app_email import email_archive
-
-conn = es_connection
 
 publisher_query = {
     'query': {
@@ -22,8 +18,7 @@ publisher_query = {
 
 def publishers_with_journals():
     """ Get accounts for all publishers with journals in the DOAJ """
-    for acc in esprit.tasks.scroll(conn, ipt_prefix(Account.__type__), q=publisher_query):
-        account = Account(**acc)
+    for account in Account.scroll(q=publisher_query, page_size=100, keepalive='5m'):
         journal_ids = account.journal
         if journal_ids is not None:
             for j in journal_ids:
