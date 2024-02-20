@@ -86,7 +86,7 @@
                 <article class="card card--with-icon">
                     <span data-feather="user-check" aria-hidden="true"></span>
                     <div>
-                        <p>Look up the journal’s:</p>
+                        <p>Look up the journal's:</p>
                         <ul>
                             {% if bibjson.aims_scope_url %}
                                 <li><a href="{{ bibjson.aims_scope_url }}" target="_blank" rel="noopener">
@@ -178,7 +178,7 @@
                                         {% for license_option in ldata[1] %}
                                             {# TODO: how do we display public domain licenses + publishers’ own? #}
                                             {# TODO: there’s probably a better way to do this #}
-                                            {# RJ Note: I have adjusted this bit of the template to do this slightly better, but until we have journals with multiple lincenses we're not sure how weird it will look #}
+                                            {# RJ Note: I have adjusted this bit of the template to do this slightly better, but until we have journals with multiple licenses we're not sure how weird it will look #}
                                             {% if license_option == 'by' %}{% include 'includes/svg/by.svg' %}
                                                 <span class="sr-only">Attribution</span>
                                             {% endif %}
@@ -314,7 +314,7 @@
                         {% endif %}
 
                         {% if bibjson.institution_name %}
-                            <dt>Society or institution</dt>
+                            <dt>Other organisation</dt>
                             <dd>{{ bibjson.institution_name }}{% if bibjson.institution_country %},
                                 {{ bibjson.institution_country_name() }}{% endif %}</dd>
                         {% endif %}

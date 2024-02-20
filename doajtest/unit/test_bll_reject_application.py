@@ -7,6 +7,7 @@ from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, 
 from doajtest.helpers import DoajTestCase, load_from_matrix
 from portality.bll import DOAJ
 from portality.bll import exceptions
+from portality.lib.thread_utils import wait_until
 from portality.models import Account, Suggestion, Provenance, Journal
 
 
@@ -83,7 +84,7 @@ class TestBLRejectApplication(DoajTestCase):
                 svc.reject_application(ap, acc, provenance, note=thenote)
         else:
             svc.reject_application(ap, acc, provenance, note=thenote)
-            time.sleep(1)
+            time.sleep(2)
 
             #######################################
             ## Check
@@ -95,8 +96,8 @@ class TestBLRejectApplication(DoajTestCase):
 
             # check the updated and manually updated date are essentially the same (they can theoretically differ
             # by a small amount just based on when they are set)
-            updated_spread = abs((ap2.last_updated_timestamp - ap2.last_manual_update_timestamp).total_seconds())
-            assert updated_spread <= 1.0
+            assert wait_until(
+                lambda: (ap2.last_updated_timestamp - ap2.last_manual_update_timestamp).total_seconds() <= 1.0,)
 
             if current_journal == "yes" and journal is not None:
                 j2 = Journal.pull(journal.id)

@@ -7,7 +7,7 @@ sticky_sidenav: true
 featuremap: ~~GuideToApplying:Fragment~~
 
 ---
-Before you start the application process, you will be asked to log in or register. You can save your progress and review all your answers before you submit them. A [PDF version of the application form](/static/doaj/docs/2023-07-04-DOAJQuestions.pdf) is available for reference only.
+Before you start the application process, you will be asked to log in or register. You can save your progress and review all your answers before you submit them. To help you, a [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for download.
 
 ## Basic criteria for inclusion
 
@@ -105,8 +105,6 @@ Journals that publish special issues or other content curated by guest editors m
 - Journals must ensure that guest editors’ credentials are checked and approved
 - The Editor-in-Chief or dedicated board members must oversee the guest editors
 - Papers submitted to a special issue by the guest editor(s) must be handled under an independent review process and make up no more than 25% of the issue's total
-
-DOAJ will not accept a journal if all content in the last year/volume is published as special issues.
 
 ---
 
@@ -206,23 +204,9 @@ The appeal should contain the following information:
 - Evidence for the DOAJ Appeals Committee to consider
 - The original notification of rejection/removal
 
-Appeals are considered by the DOAJ Appeals Committee, consisting of the Editor-in-Chief and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
+Appeals are considered by the DOAJ Appeals Committee, consisting of the Head of Editorial and members of the editorial team. Committee meetings are held monthly. After your case is discussed, a member of the Committee will contact you with the result of your appeal. This will not be the same Managing Editor who handled your case originally.
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
-
----
-
-## Updating your journal record
-
-For journals accepted into DOAJ, it is important that the information we hold about them is up to date. 
-
-You can update the journal information via our API or by logging into your account and going to your Publisher dashboard. Under 'My journals' is a list of all the journals connected to your account. Use the black 'Update' button next to each journal record to submit an update request to us.
-
-A journal update request form will open with the current answers pre-filled. Change any answers that need to be updated. If you haven't updated the journal since before November 2020, when we revised the form, we suggest that you review every answer. Note that some questions may not have an answer, as new questions were added in November 2020.
-
-Once you have amended and reviewed the answers, submit the update request to us.
-
-The DOAJ editorial team reviews update requests for accuracy and we aim to process them within six weeks of submission.
 
 ---
 
@@ -252,10 +236,12 @@ Our criteria are available in:
 
 ## Change log
 
-This is Version 2.0 of the Guide to applying.
+This is Version 2.2 of our Guide to applying.
 
-*Version 2.0 (November 2023 - addition of new criteria around special issues, smaller changes for clarity and plain English.)*<br>
+*Version 2.2 (January 2024 - removed 'DOAJ will not accept a journal if all content in the last year/volume is published as special issues' from the Special Issues section of the Basic criteria.)*<br>
+<s>Version 2.1 (November 2023 - changed Editor-in-Chief to Head of Editorial in the Appeals section; removed the 'Updating your journal record' section as this information is now on the Publisher information page.)</s><br>
+<s>Version 2.0 (November 2023 - addition of new criteria around special issues, smaller changes for clarity and plain English.)</s><br>
 <s>Version: 1.3 (April 2023 - further clarification to endogeny, displaying journal rankings, information about author charges and reviewers, flipped journals and journals/publishers with multiple exclusions )</s><br>
 <s>Version: 1.2 (February 2022 - extra copyright and licensing information were moved to a separate page)</s><br>
 <s>Version: 1.1 (December 2021 - a clarification to endogeny criterion)</s><br>
-<s>Version 1.0 (November 1.0)
+<s>Version 1.0 (November 1.0)</s>

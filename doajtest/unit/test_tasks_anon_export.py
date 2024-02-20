@@ -15,10 +15,8 @@ class TestAnonExport(DoajTestCase):
     def test_execute(self):
 
         # prepare test data
-        for _ in range(3):
-            BackgroundJob().save()
-        for _ in range(2):
-            Account().save(blocking=True)
+        BackgroundJob.save_all((BackgroundJob() for _ in range(3)), blocking=True)
+        Account.save_all((Account() for _ in range(2)), blocking=True)
 
         new_background_jobs = list(BackgroundJob.scroll())
         new_accounts = list(Account.scroll())

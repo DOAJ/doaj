@@ -152,8 +152,7 @@ class AnonExportBackgroundTask(BackgroundTask):
     __action__ = "anon_export"
 
     def run(self):
-        kwargs = self.create_raw_param_dict(self.background_job.params,
-                                            ['clean', 'limit', 'batch_size'])
+        kwargs = self.get_bgjob_params()
         kwargs['logger_fn'] = self.background_job.add_audit_message
 
         tmpStore = StoreFactory.tmp()
