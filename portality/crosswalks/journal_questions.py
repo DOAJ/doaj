@@ -334,7 +334,7 @@ class Journal2QuestionXwalk(object):
                 continue
 
             # Only deal with a question if there's a value - TODO: what does this mean for yes_no_or_blank?
-            if len(v.strip()) > 0:
+            if v and len(v.strip()) > 0:
                 # Get the question key from the CSV column header
                 form_key = cls.p(k)
 
