@@ -79,6 +79,7 @@ if __name__ == "__main__":
     if validation_results.has_errors_or_warnings():
         print(f'ERROR: CSV validation failed.')
         print(validation_results.json(indent=2))
+        print(f'No updates processed.')
         exit(1)
 
     # if we get to here, the records can all be imported, so we can go ahead with minimal
