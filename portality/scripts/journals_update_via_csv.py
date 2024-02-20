@@ -127,6 +127,8 @@ if __name__ == "__main__":
             if len(updates) == 0:
                 print("No updates to do")
                 continue
+            
+            [print(upd) for upd in updates]
 
             # Create an update request for this journal
             update_req = None
