@@ -9,10 +9,17 @@ if __name__ == "__main__":
         exit()
 
     user = app.config.get("SYSTEM_USERNAME")
+    print("Running journal CSV export for user {}".format(user))
+
     job = journal_csv.JournalCSVBackgroundTask.prepare(user)
-    job = StdOutBackgroundJob(job)
+    job = StdOutBackgroundJob(job, force_logging=True)
+    print("Background Job prepared with id {}".format(job.id))
+
     task = journal_csv.JournalCSVBackgroundTask(job)
+    print("Background task created")
+
     BackgroundApi.execute(task)
+    print("Finished journal CSV export for user {}".format(user))
 
 
 

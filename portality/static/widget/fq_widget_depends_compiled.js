@@ -1,5 +1,7 @@
 /** base namespace for all DOAJ-specific functions */
+// ~~ DOAJ:Library ~~
 var doaj = {
+    scrollPosition: 100,
     init : function() {
         // Use Feather icons
         feather.replace();
@@ -8,50 +10,48 @@ var doaj = {
         var openMenu = document.querySelector(".secondary-nav__menu-toggle");
         var nav = document.querySelector(".secondary-nav__menu");
 
-        openMenu.addEventListener('click', function() {
-            nav.classList.toggle("secondary-nav__menu-toggle--active");
-        }, false);
+        if (openMenu) {
+            openMenu.addEventListener('click', function () {
+                nav.classList.toggle("secondary-nav__menu-toggle--active");
+            }, false);
+        }
 
-        // Display back-to-top button on scroll
-        var topBtn = document.getElementById("top");
+        // On scroll, display back-to-top button & add class to header primary menu
+        var topBtn = document.getElementById("top"),
+            topNav = document.querySelector(".primary-nav");
 
-        function displayTopBtn() {
-            if (topBtn) {
-                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+        function displayOnScroll() {
+            if (topBtn && topNav) {
+                if (document.body.scrollTop > doaj.scrollPosition || document.documentElement.scrollTop > doaj.scrollPosition) {
                     topBtn.style.display = "flex";
+                    topNav.classList.add("primary-nav--scrolled");
                 } else {
                     topBtn.style.display = "none";
+                    topNav.classList.remove("primary-nav--scrolled");
                 }
             }
         }
 
-        // Hide header menu on down scroll; display on scroll up
-        var prevScrollPos = window.pageYOffset,
-            topNav = document.querySelector(".primary-nav");
-
-        function hideNav() {
-            var currentScrollPos = window.pageYOffset;
-
-            if (prevScrollPos > currentScrollPos) {
-                topNav.classList.remove("primary-nav--scrolled");
-            } else {
-                topNav.classList.add("primary-nav--scrolled");
-            }
-            prevScrollPos = currentScrollPos;
-        }
-
-        window.onscroll = function() {
-            displayTopBtn();
-            hideNav();
-        };
+        window.addEventListener("scroll", function() {
+          displayOnScroll();
+        });
 
         // Tabs
         jQuery (function($) {
             $("[role='tab']").click(function(e) {
                 e.preventDefault();
-                $(this).attr("aria-selected", "true");
-                $(this).parent().siblings().children().attr("aria-selected", "false");
-                var tabpanelShow = $(this).attr("href");
+                let el = $(this);
+
+                el.attr("aria-selected", "true");
+                el.siblings().children().attr("aria-selected", "false");
+
+                let tabpanelShow = el.attr("href");
+                if (!tabpanelShow) {
+                    let innerLink = el.find("a");
+                    innerLink.attr("aria-selected", "true");
+                    tabpanelShow = innerLink.attr("href")
+                }
+
                 $(tabpanelShow).attr("aria-hidden", "false");
                 $(tabpanelShow).siblings().attr("aria-hidden", "true");
             });
@@ -69,29 +69,29 @@ var doaj = {
         doaj.bindMiniSearch();
     },
 
-    bitlyShortener : function(query, success_callback, error_callback) {
-
-        function callbackWrapper(data) {
-            success_callback(data.url);
-        }
-
-        function errorHandler() {
-            alert("Sorry, we're unable to generate short urls at this time");
-            error_callback();
-        }
-
-        var page = window.location.protocol + '//' + window.location.host + window.location.pathname;
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            dataType: "jsonp",
-            url: "/service/shorten",
-            data : JSON.stringify({page: page, query: query}),
-            success: callbackWrapper,
-            error: errorHandler
-        });
-    },
+    // bitlyShortener : function(query, success_callback, error_callback) {
+    //     // ~~-> Bitly:ExternalService ~~
+    //     function callbackWrapper(data) {
+    //         success_callback(data.url);
+    //     }
+    //
+    //     function errorHandler() {
+    //         alert("Sorry, we're unable to generate short urls at this time");
+    //         error_callback();
+    //     }
+    //
+    //     var page = window.location.protocol + '//' + window.location.host + window.location.pathname;
+    //
+    //     $.ajax({
+    //         type: "POST",
+    //         contentType: "application/json",
+    //         dataType: "jsonp",
+    //         url: "/service/shorten",
+    //         data : JSON.stringify({page: page, query: query}),
+    //         success: callbackWrapper,
+    //         error: errorHandler
+    //     });
+    // },
 
     journal_toc_id : function(journal) {
         // if e-issn is available, use that
@@ -244,6 +244,59 @@ var doaj = {
         } else {
             doaj.scroller.doScroll = true;
         }
+    },
+
+    searchQuerySource : function (params) {
+        // ~~-> Edges:Technology ~~
+        // ~~-> Elasticsearch:Technology ~~
+        // ~~-> Edges:Query ~~
+        let terms = params.terms;
+        let term = params.term;
+        let queryString = params.queryString;
+        let sort = params.sort;
+
+        let musts = [];
+        if (terms) {
+            for (let term of terms) {
+                musts.push({"terms" : term})
+            }
+        }
+
+        if (term) {
+            for (let t of term) {
+                musts.push({"term" : t});
+            }
+        }
+
+        if (queryString) {
+            musts.push({
+                "query_string" : {
+                    "default_operator" : "AND",
+                    "query" : queryString
+                }
+            })
+        }
+
+        let query = {"match_all": {}}
+        if (musts.length > 0) {
+            query = {
+                "bool" : {
+                    "must" : musts
+                }
+            }
+        }
+
+        let obj = {"query": query}
+        if (sort) {
+            if (Array.isArray(sort)) {
+                obj["sort"] = sort;
+            } else {
+                obj["sort"] = [sort];
+            }
+        }
+
+        let source = JSON.stringify(obj)
+        return encodeURIComponent(source)
     }
 };
 
@@ -4494,6 +4547,24 @@ $.extend(edges, {
 });
 
 $.extend(true, doaj, {
+    filters : {
+        noCharges : function() {
+            return {
+                id: "no_charges",
+                display: "Without fees",
+                must: [
+                    es.newTermFilter({
+                        field: "bibjson.apc.has_apc",
+                        value: false
+                    }),
+                    es.newTermFilter({
+                        field: "bibjson.other_charges.has_other_charges",
+                        value: false
+                    })
+                ]
+            }
+        }
+    },
     facets : {
         inDOAJ : function() {
             return edges.newRefiningANDTermSelector({
@@ -4503,9 +4574,236 @@ $.extend(true, doaj, {
                 display: "In DOAJ?",
                 deactivateThreshold: 1,
                 valueMap : {
-                    1 : "True",
-                    0 : "False"
+                    1 : "Yes",
+                    0 : "No",
+                    true: "Yes",
+                    false: "No"
                 },
+                parseSelectedValueString: function(val) {
+                    // this is needed because ES7 doesn't understand "1" or `1` to be `true`, so
+                    // we convert the string value of the aggregation back to a boolean
+                    return val === "1"
+                },
+                filterToAggValue : function(val) {
+                    return val === true ? 1 : 0;
+                },
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+
+        openOrClosed: function() {
+            return edges.newRefiningANDTermSelector({
+                id: "application_type",
+                category: "facet",
+                field: "index.application_type.exact",
+                display: "Open or closed?",
+                deactivateThreshold : 1,
+                orderDir: "asc",
+                valueMap : {
+                    "finished application/update": "Closed",
+                    "update request": "Open",
+                    "new application": "Open"
+                },
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+
+        applicationStatus : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "application_status",
+                category: "facet",
+                field: "admin.application_status.exact",
+                display: "Status",
+                deactivateThreshold: 1,
+                valueFunction: doaj.valueMaps.adminStatusMap,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        hasEditorGroup : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "has_editor_group",
+                category: "facet",
+                field: "index.has_editor_group.exact",
+                display: "Has editor group?",
+                deactivateThreshold : 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        hasEditor : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "has_editor",
+                category: "facet",
+                field: "index.has_editor.exact",
+                display: "Has Associate Editor?",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        editorGroup : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "editor_group",
+                category: "facet",
+                field: "admin.editor_group.exact",
+                display: "Editor group",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        editor : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "editor",
+                category: "facet",
+                field: "admin.editor.exact",
+                display: "Editor",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        hasAPC : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "author_pays",
+                category: "facet",
+                field: "index.has_apc.exact",
+                display: "Publication charges?",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        classification : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "classification",
+                category: "facet",
+                field: "index.classification.exact",
+                display: "Classification",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        language : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "language",
+                category: "facet",
+                field: "index.language.exact",
+                display: "Journal language",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        countryPublisher : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "country_publisher",
+                category: "facet",
+                field: "index.country.exact",
+                display: "Country of publisher",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        subject : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "subject",
+                category: "facet",
+                field: "index.subject.exact",
+                display: "Subject",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        publisher : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "publisher",
+                category: "facet",
+                field: "bibjson.publisher.name.exact",
+                display: "Publisher",
+                deactivateThreshold: 1,
+                renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
+                    controls: true,
+                    open: false,
+                    togglable: true,
+                    countFormat: doaj.valueMaps.countFormat,
+                    hideInactive: true
+                })
+            })
+        },
+        journalLicence : function() {
+            return edges.newRefiningANDTermSelector({
+                id: "journal_license",
+                category: "facet",
+                field: "index.license.exact",
+                display: "Journal license",
+                deactivateThreshold: 1,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
                     open: false,
@@ -4531,11 +4829,28 @@ $.extend(true, doaj, {
             'accepted' : 'Accepted'
         },
 
+        adminStatusMap: function(value) {
+            if (doaj.valueMaps.applicationStatus.hasOwnProperty(value)) {
+                return doaj.valueMaps.applicationStatus[value];
+            }
+            return value;
+        },
+
         displayYearPeriod : function(params) {
             var from = params.from;
             var to = params.to;
             var field = params.field;
             var display = (new Date(parseInt(from))).getUTCFullYear();
+            return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
+        },
+
+        displayYearMonthPeriod : function(params) {
+            var from = params.from;
+            var to = params.to;
+            var field = params.field;
+
+            let d = new Date(parseInt(from))
+            let display = d.getUTCFullYear().toString() + "-" + doaj.valueMaps.monthPadding(d.getUTCMonth() + 1);
             return {to: to, toType: "lt", from: from, fromType: "gte", display: display}
         },
 
@@ -4564,10 +4879,36 @@ $.extend(true, doaj, {
 
         countFormat : edges.numFormat({
             thousandsSeparator: ","
+        }),
+
+        monthPadding: edges.numFormat({
+            zeroPadding: 2
         })
     },
-
     components : {
+        pager : function(id, category) {
+            return edges.newPager({
+                id: id,
+                category: category,
+                renderer: edges.bs3.newPagerRenderer({
+                    sizeOptions: [10, 25, 50, 100],
+                    numberFormat: doaj.valueMaps.countFormat,
+                    scroll: false
+                })
+            })
+        },
+
+        searchingNotification : function() {
+            return edges.newSearchingNotification({
+                id: "searching-notification",
+                category: "searching-notification",
+                finishedEvent: "edges:post-render",
+                renderer : doaj.renderers.newSearchingNotificationRenderer({
+                    scrollOnSearch: true
+                })
+            })
+        },
+
         subjectBrowser : function(params) {
             var tree = params.tree;
             var hideEmpty = edges.getParam(params.hideEmpty, false);
@@ -4618,7 +4959,7 @@ $.extend(true, doaj, {
                     showCounts: false
                 })
             })
-        },
+        }
     },
 
     templates : {
@@ -4651,7 +4992,7 @@ $.extend(true, doaj, {
                     <p id="share_embed"></p>\
                     <h2 id="result-count"></h2>\
                     <div class="row">\
-                        <div class="col-md-3">\
+                        <div class="col-sm-2 col-md-3">\
                             <aside class="filters">\
                               <h2 class="filters__heading" type="button" data-toggle="collapse" data-target="#filters" aria-expanded="false">\
                                 <span data-feather="sliders" aria-hidden="true"></span> Refine search results \
@@ -4662,7 +5003,7 @@ $.extend(true, doaj, {
                             </aside>\
                         </div>\
                             \
-                        <div class="col-md-9">\
+                        <div class="col-sm-10 col-md-9">\
                             <aside id="selected-filters"></aside>\
                             <nav>\
                                 <h3 class="sr-only">Display options</h3>\
@@ -4757,6 +5098,8 @@ $.extend(true, doaj, {
 
             this.scrollTarget = edges.getParam(params.scrollTarget, "body");
 
+            this.scrollOnSearch = edges.getParam(params.scrollOnSearch, false);
+
             // namespace to use in the page
             this.namespace = "doaj-notification";
 
@@ -4774,8 +5117,11 @@ $.extend(true, doaj, {
                         <span class='sr-only'>Loading results…</span>
                       </div>`
                     this.component.edge.context.before(frag);
-                    let offset = $(this.scrollTarget).offset().top
-                    window.scrollTo(0, offset);
+
+                    if (this.scrollOnSearch) {
+                        let offset = $(this.scrollTarget).offset().top
+                        window.scrollTo(0, offset);
+                    }
                 } else {
                     let that = this;
                     let idSelector = edges.css_id_selector(this.namespace, "loading", this);
@@ -4841,13 +5187,13 @@ $.extend(true, doaj, {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
                 var placeholder = 'Search ' + this.component.nodeCount + ' subjects';
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.title + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.title + toggle + '</button></h3>\
+                    <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <label for="' + searchId + '" class="sr-only">' + placeholder + '</label>\
                         <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '">\
                         <ul class="filter__choices" id="' + filteredId + '" style="display:none"></ul>\
                         <ul class="filter__choices" id="' + mainListId + '">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, treeFrag);
@@ -5131,8 +5477,7 @@ $.extend(true, doaj, {
 
                     sortOptions = '<div class="input-group ' + sortClasses + '"> \
                                     <button type="button" class="input-group__input ' + directionClass + '" title="" href="#"></button> \
-                                    <select class="' + sortFieldClass + ' input-group__input"> \
-                                        <option value="_score">Relevance</option>';
+                                    <select class="' + sortFieldClass + ' input-group__input">';
 
                     for (var i = 0; i < comp.sortOptions.length; i++) {
                         var field = comp.sortOptions[i].field;
@@ -5140,7 +5485,8 @@ $.extend(true, doaj, {
                         sortOptions += '<option value="' + field + '">' + edges.escapeHtml(display) + '</option>';
                     }
 
-                    sortOptions += ' </select></div>';
+                    sortOptions += '<option value="_score">Relevance</option>\
+                      </select></div>';
                 }
 
                 // select box for fields to search on
@@ -5194,7 +5540,7 @@ $.extend(true, doaj, {
                     clearFrag = '<div class="col-xs-6" style="text-align: right;">' + clearFrag + '</div>';
                 }
 
-                var frag = searchBox + '<div class="row">' + sortOptions + clearFrag + '</div>';
+                var frag = searchBox + '<div class="container-fluid"><div class="row">' + sortOptions + clearFrag + '</div></div>';
 
                 comp.context.html(frag);
 
@@ -5274,13 +5620,14 @@ $.extend(true, doaj, {
             };
 
             this.setUISortField = function () {
+                let sb = this.component.sortBy
                 if (!this.component.sortBy) {
-                    return;
+                    sb = "_score";
                 }
                 // get the selector we need
                 var sortSelector = edges.css_class_selector(this.namespace, "sortby", this);
                 var el = this.component.jq(sortSelector);
-                el.val(this.component.sortBy);
+                el.val(sb);
             };
 
             this.setUISearchField = function () {
@@ -5497,15 +5844,15 @@ $.extend(true, doaj, {
 
                 var comp = this.component;
 
-                var shareButtonFrag = "";
                 var shareButtonClass = edges.css_classes(this.namespace, "toggle-share", this);
                 var modalId = edges.css_id(this.namespace, "modal", this);
-                shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--tertiary" role="button">' + this.shareLinkText + '</button>';
+                let shareButtonFrag = '<button data-toggle="modal" data-target="#' + modalId + '" class="' + shareButtonClass + ' button button--tertiary" role="button">' + this.shareLinkText + '</button>';
 
-                var shorten = "";
+                let shorten = "";
                 if (this.component.urlShortener) {
                     var shortenClass = edges.css_classes(this.namespace, "shorten", this);
-                    shorten = '<p>Share a link to this search</p>'
+                    var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this)
+                    shorten = '<p><button class="' + shortenButtonClass + '">shorten url</button></p>';
                 }
                 var embed = "";
                 if (this.component.embedSnippet) {
@@ -5515,11 +5862,11 @@ $.extend(true, doaj, {
                 }
                 var shareBoxClass = edges.css_classes(this.namespace, "share", this);
                 var shareUrlClass = edges.css_classes(this.namespace, "share-url", this);
-                var shortenButtonClass = edges.css_classes(this.namespace, "shorten-url", this);
+
                 var shareFrag = '<div class="' + shareBoxClass + '">\
-                    ' + shorten + '\
+                    <p>Share a link to this search</p>\
                     <textarea style="width: 100%; height: 150px" readonly class="' + shareUrlClass + '"></textarea>\
-                    <p><button class="' + shortenButtonClass + '">shorten url</button></p>\
+                    ' + shorten + '\
                     ' + embed + '\
                 </div>';
 
@@ -5746,13 +6093,12 @@ $.extend(true, doaj, {
                 var textIdSelector = edges.css_id_selector(this.namespace, "text", this);
                 var text = this.component.jq(textIdSelector).val();
 
-                if (text === "") {
-                    return;
-                }
-
                 // if there is search text, then proceed to run the search
                 var val = this.component.jq(element).val();
                 this.component.setSearchField(val, false);
+                if (text === "") {
+                    return;
+                }
                 this.component.setSearchText(text);
             };
 
@@ -6028,10 +6374,10 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.component.display + toggle + '</button></h3>\
+                    <div class="filter__body collapse"  style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, filterFrag + results);
@@ -6075,7 +6421,7 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < openBits.length; j++) {
                     //    i.removeClass(openBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.addClass(closeBits[j]);
                     //}
@@ -6087,9 +6433,9 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.removeClass(closeBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < openBits.length; j++) {
-                     //   i.addClass(openBits[j]);
+                    //   i.addClass(openBits[j]);
                     //}
                     //results.hide();
 
@@ -6135,6 +6481,7 @@ $.extend(true, doaj, {
 
             // whether to hide or just disable the facet if not active
             this.hideInactive = edges.getParam(params.hideInactive, false);
+            this.hideEmpty = edges.getParam(params.hideEmpty, false)
 
             // whether the facet should be open or closed
             // can be initialised and is then used to track internal state
@@ -6199,6 +6546,9 @@ $.extend(true, doaj, {
                     // render each value, if it is not also a filter that has been set
                     for (var i = 0; i < ts.values.length; i++) {
                         var val = ts.values[i];
+                        if (val.count === 0 && this.hideEmpty) {
+                            continue
+                        }
                         if ($.inArray(val.display, filterTerms) === -1) {
 
                             var ltData = "";
@@ -6275,10 +6625,10 @@ $.extend(true, doaj, {
                 if (this.togglable) {
                     toggle = '<span data-feather="chevron-down" aria-hidden="true"></span>';
                 }
-                var frag = '<h3 class="label label--secondary filter__heading" type="button" id="' + toggleId + '">' + this.component.display + toggle + '</h3>\
-                    <div class="filter__body collapse" aria-expanded="false" style="height: 0px" id="' + resultsId + '">\
+                var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.component.display + toggle + '</button></h3>\
+                    <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <ul class="filter__choices">{{FILTERS}}</ul>\
-                    </div>';
+                    </div></div>';
 
                 // substitute in the component parts
                 frag = frag.replace(/{{FILTERS}}/g, filterFrag + results);
@@ -6333,7 +6683,7 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < openBits.length; j++) {
                     //    i.removeClass(openBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.addClass(closeBits[j]);
                     //}
@@ -6345,9 +6695,9 @@ $.extend(true, doaj, {
                     //var i = toggle.find("i");
                     //for (var j = 0; j < closeBits.length; j++) {
                     //    i.removeClass(closeBits[j]);
-                   // }
+                    // }
                     //for (var j = 0; j < openBits.length; j++) {
-                     //   i.addClass(openBits[j]);
+                    //   i.addClass(openBits[j]);
                     //}
                     //results.hide();
 
@@ -6468,7 +6818,7 @@ $.extend(true, doaj, {
 
                             // the remove block looks different, depending on the kind of filter to remove
                             if (def.filter === "term" || def.filter === "terms") {
-                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" alt="Remove" title="Remove">';
+                                filters += '<a href="DELETE" class="' + removeClass + '" data-bool="must" data-filter="' + def.filter + '" data-field="' + field + '" data-value="' + val.val + '" data-value-idx="' + j + '" alt="Remove" title="Remove">';
                                 filters += def.display + valDisplay;
                                 filters += ' <span data-feather="x" aria-hidden="true"></span>';
                                 filters += "</a>";
@@ -6523,6 +6873,7 @@ $.extend(true, doaj, {
 
             this.removeFilter = function (element) {
                 var el = this.component.jq(element);
+                var sf = this.component;
 
                 // if this is a compound filter, remove it by id
                 var compound = el.attr("data-compound");
@@ -6538,7 +6889,9 @@ $.extend(true, doaj, {
 
                 var value = false;
                 if (ft === "terms" || ft === "term") {
-                    value = el.attr("data-value");
+                    let values = sf.mustFilters[field].values;
+                    let idx = el.attr("data-value-idx")
+                    value = values[idx].val
                 } else if (ft === "range") {
                     value = {};
 
@@ -6737,14 +7090,20 @@ $.extend(true, doaj, {
 
                 var seal = "";
                 if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="' + this.doaj_url + '/apply/seal" class="tag tag--featured" target="_blank">'
+                    seal = '<a href="' + this.doaj_url + '/apply/seal" target="_blank">'
                     if (this.widget){
-                        seal += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/check-circle.svg" alt="check-circle icon">'
+                        seal += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/check-circle.svg"> DOAJ Seal</a>'
                     }
                     else {
-                        seal += '<i data-feather="check-circle" aria-hidden="true"></i>'
+                        seal += '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1em; width: auto;">\
+                                  <path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/>\
+                                  <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/>\
+                                  <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/>\
+                                  <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/>\
+                          </svg>\
+                          <p class="sr-only">DOAJ Seal</p>\
+                      </a>';
                     }
-                    seal += ' DOAJ Seal</a>';
                 }
                 var issn = resultobj.bibjson.pissn;
                 if (!issn) {
@@ -6775,9 +7134,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                  subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
-                  subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
-                  subjects += '</ul>';
+                    subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                    subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                    subjects += '</ul>';
                 }
 
                 var update_or_added = "";
@@ -6814,6 +7173,15 @@ $.extend(true, doaj, {
                 }
                 apcs += '</li>';
 
+                var rights = "";
+                if (resultobj.bibjson.copyright) {
+                    var copyright_url = resultobj.bibjson.copyright.url;
+                    rights += '<a href="' + copyright_url + '" target="_blank" rel="noopener">';
+                    rights += resultobj.bibjson.copyright.author_retains ? 'Author <strong> retains </strong> all rights' : 'Author <strong> doesn\'t retain </strong> all rights';
+                    rights += '</a>';
+                }
+
+
                 var licenses = "";
                 if (resultobj.bibjson.license && resultobj.bibjson.license.length > 0) {
                     var terms_url = resultobj.bibjson.ref.license_terms;
@@ -6821,7 +7189,7 @@ $.extend(true, doaj, {
                         var lic = resultobj.bibjson.license[i];
                         var license_url = lic.url || terms_url;
                         licenses += '<a href="' + license_url + '" target="_blank" rel="noopener">' + edges.escapeHtml(lic.type) + '</a>';
-                        if (i != (resultobj.bibjson.license.length-1)) {
+                        if (i !== (resultobj.bibjson.license.length-1)) {
                             licenses += ', ';
                         }
                     }
@@ -6835,15 +7203,26 @@ $.extend(true, doaj, {
                 }
 
                 var actions = "";
+                var modals = "";
                 if (this.actions.length > 0) {
                     actions = '<h4 class="label">Actions</h4><ul class="tags">';
                     for (var i = 0; i < this.actions.length; i++) {
                         var act = this.actions[i];
                         var actSettings = act(resultobj);
                         if (actSettings) {
+                            let data = "";
+                            if (actSettings.data) {
+                                let dataAttrs = Object.keys(actSettings.data);
+                                for(let j = 0; j < dataAttrs.length; j++) {
+                                    data += " data-" + dataAttrs[j] + "=" + actSettings.data[dataAttrs[j]];
+                                }
+                            }
                             actions += '<li class="tag">\
-                                <a href="' + actSettings.link + '">' + actSettings.label + '</a>\
+                                <a href="' + actSettings.link + '" tabindex="0" role="button" ' + data + '>' + actSettings.label + '</a>\
                             </li>';
+                            if (actSettings.modal) {
+                                modals += actSettings.modal
+                            }
                         }
                     }
                     actions += '</ul>';
@@ -6853,7 +7232,6 @@ $.extend(true, doaj, {
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
-                          ' + seal + '\
                           <h3 class="search-results__heading">\
                             <a href="' + this.doaj_url + '/toc/' + issn + '" target="_blank">\
                               ' + edges.escapeHtml(resultobj.bibjson.title) + '\
@@ -6865,6 +7243,20 @@ $.extend(true, doaj, {
                     frag += '<i data-feather="link" aria-hidden="true"></i>'
                 }
 
+
+                let externalLink = "";
+                if (resultobj.bibjson.ref && resultobj.bibjson.ref.journal) {
+                    externalLink = '<li><a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website ';
+
+                    if (this.widget){
+                        externalLink += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
+                    }
+                    else {
+                        externalLink += '<i data-feather="external-link" aria-hidden="true"></i>'
+                    }
+
+                    externalLink += '</a></li>';
+                }
 
                 frag +='</sup>\
                             </a>\
@@ -6878,38 +7270,28 @@ $.extend(true, doaj, {
                             </li>\
                             ' + language + '\
                           </ul>\
-                          <ul>\
-                            ' + subjects + '\
-                          </ul>\
+                          ' + subjects + '\
                         </div>\
                       </div>\
                       <aside class="col-sm-4 search-results__aside">\
+                        ' + seal + '\
                         <ul>\
                           <li>\
                             ' + update_or_added + '\
                           </li>\
                           ' + articles + '\
-                          <li>\
-                            <a href="' + resultobj.bibjson.ref.journal + '" target="_blank" rel="noopener">Website '
-
-                if (this.widget){
-                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
-                }
-                else {
-                    frag += '<i data-feather="external-link" aria-hidden="true"></i>'
-                }
-
-
-
-                frag += '</a></li>\
-                          <li>\
+                          ' + externalLink + '\
+                        <li>\
                             ' + apcs + '\
+                          </li>\
+                          <li>\
+                            ' + rights + '\
                           </li>\
                           <li>\
                             ' + licenses + '\
                           </li>\
                         </ul>\
-                        ' + actions + '\
+                        ' + actions + modals + '\
                       </aside>\
                     </article>\
                   </li>';
@@ -6960,9 +7342,9 @@ $.extend(true, doaj, {
 
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                  subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
-                  subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
-                  subjects += '</ul>';
+                    subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                    subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                    subjects += '</ul>';
                 }
 
                 var subjects_or_keywords = keywords === "" ? subjects : keywords;
@@ -7076,11 +7458,11 @@ $.extend(true, doaj, {
                         </ul>\
                       </aside>\
                     </article></li>';
-                        /*
-                         <li>\
-                            ' + license + '\
-                         </li>\
-                         */
+                /*
+                 <li>\
+                    ' + license + '\
+                 </li>\
+                 */
                 // close off the result and return
                 return frag;
             };
@@ -7233,7 +7615,7 @@ $.extend(true, doaj, {
                 var deleteLinkUrl = deleteLinkTemplate.replace("__application_id__", resultobj.id);
                 var deleteClass = edges.css_classes(this.namespace, "delete", this);
                 if (resultobj.es_type === "draft_application" ||
-                        resultobj.admin.application_status === "update_request") {
+                    resultobj.admin.application_status === "update_request") {
                     deleteLink = '<li class="tag">\
                         <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-application" class="' + deleteClass + '"\
                             data-title="' + titleText + '">\
@@ -7370,20 +7752,7 @@ $.extend(true, doaj, {
                 }
 
                 var last_updated = "Last updated ";
-                last_updated += doaj.humanDate(resultobj.last_updated);
-
-                /*
-                var icon = "edit-3";
-                if (accessLink[1] === "View") {
-                    icon = "eye";
-                }
-                var viewOrEdit = '<li class="tag">\
-                    <a href="' + accessLink[0] + '">\
-                        <span data-feather="' + icon + '" aria-hidden="true"></span>\
-                        <span>' + accessLink[1] + '</span>\
-                    </a>\
-                </li>';
-                 */
+                last_updated += doaj.humanDate(resultobj.last_manual_update);
 
                 var deleteLink = "";
                 var deleteLinkTemplate = doaj.publisherUpdatesSearchConfig.deleteLinkTemplate;
@@ -7483,9 +7852,9 @@ $.extend(true, doaj, {
             this._renderPublicJournal = function(resultobj) {
                 var seal = "";
                 if (edges.objVal("admin.seal", resultobj, false)) {
-                    seal = '<a href="/apply/seal" class="tag tag--featured" target="_blank">\
-                            <span data-feather="check-circle" aria-hidden="true"></span>\
-                            DOAJ Seal\
+                    seal = '<a href="/apply/seal" target="_blank">\
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1em; width: auto;"><path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/> <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/> <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/> <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/></svg>\
+                              <span class="sr-only">DOAJ Seal</span>\
                           </a>';
                 }
                 var issn = resultobj.bibjson.pissn;
@@ -7517,9 +7886,9 @@ $.extend(true, doaj, {
                 // add the subjects
                 var subjects = "";
                 if (edges.hasProp(resultobj, "index.classification_paths") && resultobj.index.classification_paths.length > 0) {
-                  subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
-                  subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
-                  subjects += '</ul>';
+                    subjects = '<h4>Journal subjects</h4><ul class="inlined-list">';
+                    subjects += "<li>" + resultobj.index.classification_paths.join(",&nbsp;</li><li>") + "</li>";
+                    subjects += '</ul>';
                 }
 
                 var update_or_added = "";
@@ -7592,7 +7961,6 @@ $.extend(true, doaj, {
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
                         <header>\
-                          ' + seal + '\
                           <h3 class="search-results__heading">\
                             <a href="/toc/' + issn + '">\
                               ' + edges.escapeHtml(resultobj.bibjson.title) + '\
@@ -7613,6 +7981,7 @@ $.extend(true, doaj, {
                         </div>\
                       </div>\
                       <aside class="col-sm-4 search-results__aside">\
+                        ' + seal + '\
                         <ul>\
                           <li>\
                             ' + update_or_added + '\
@@ -7673,8 +8042,7 @@ $.extend(true, doaj, {
 
                     sortOptions = label + '\
                         ' + direction + ' \
-                        <select name="' + selectName + '" class="form-control input-sm ' + sortFieldClass + '" id="' + selectName + '"> \
-                            <option value="_score">Relevance</option>';
+                        <select name="' + selectName + '" class="form-control input-sm ' + sortFieldClass + '" id="' + selectName + '">';
 
                     for (var i = 0; i < comp.sortOptions.length; i++) {
                         var field = comp.sortOptions[i].field;
@@ -7783,7 +8151,7 @@ $.extend(true, doaj, {
 
     fieldRender: {
         titleField : function (val, resultobj, renderer) {
-            var field = '<h3>';
+            var field = '<div class="flex-space-between"><h3 class="type-01 font-serif">';
             if (resultobj.bibjson.title) {
                 if (resultobj.es_type === "journal") {
                     var display = edges.escapeHtml(resultobj.bibjson.title);
@@ -7794,45 +8162,57 @@ $.extend(true, doaj, {
                 } else {
                     field += edges.escapeHtml(resultobj.bibjson.title);
                 }
+                field += "</h3>";
                 if (resultobj.admin && resultobj.admin.seal) {
-                    field += "<p><span class='tag tag--featured'>\
-                              <span data-feather='check-circle' aria-hidden='true'></span>\
-                              DOAJ Seal</span></p>​​";
+                    field += '<div><a href="/apply/seal" target="_blank">\
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 499 176" style="height: 1rem; width: auto; margin-left: .5em;">\
+                              <path fill="#982E0A" d="M175.542.5c-48.325 0-87.5 39.175-87.5 87.5v87.5c48.325 0 87.5-39.175 87.5-87.5V.5Z"/>\
+                              <path fill="#FD5A3B" d="M.542.5c48.326 0 87.5 39.175 87.5 87.5v87.5c-48.325 0-87.5-39.175-87.5-87.5V.5Z"/>\
+                              <path fill="#282624" d="M235.398 1.246h31.689c12.262.082 21.458 5.178 27.589 15.285 2.195 3.397 3.583 6.96 4.163 10.688.456 3.728.684 10.17.684 19.324 0 9.735-.353 16.528-1.057 20.38-.331 1.948-.828 3.687-1.491 5.22a48.029 48.029 0 0 1-2.548 4.66c-2.651 4.267-6.338 7.788-11.06 10.563-4.681 2.983-10.418 4.474-17.212 4.474h-30.757V1.246Zm13.732 77.608h16.404c7.705 0 13.297-2.63 16.777-7.891 1.532-1.947 2.506-4.412 2.92-7.395.373-2.94.559-8.45.559-16.528 0-7.87-.186-13.504-.559-16.901-.497-3.397-1.677-6.151-3.542-8.264-3.811-5.261-9.196-7.809-16.155-7.643H249.13v64.622Zm56.247-32.311c0-10.522.311-17.564.932-21.126.663-3.563 1.678-6.442 3.045-8.637 2.195-4.184 5.716-7.912 10.563-11.185C324.681 2.281 330.625.583 337.75.5c7.208.083 13.214 1.781 18.02 5.095 4.763 3.273 8.202 7 10.314 11.185 1.533 2.195 2.589 5.074 3.169 8.637.539 3.562.808 10.604.808 21.126 0 10.356-.269 17.357-.808 21.002-.58 3.645-1.636 6.566-3.169 8.761-2.112 4.184-5.551 7.87-10.314 11.06-4.806 3.314-10.812 5.054-18.02 5.22-7.125-.166-13.069-1.906-17.833-5.22-4.847-3.19-8.368-6.876-10.563-11.06a100.47 100.47 0 0 1-1.802-3.914c-.497-1.285-.911-2.9-1.243-4.847-.621-3.645-.932-10.646-.932-21.002Zm13.794 0c0 8.906.332 14.933.995 18.082.579 3.148 1.76 5.695 3.541 7.642 1.45 1.864 3.356 3.376 5.717 4.536 2.32 1.367 5.095 2.05 8.326 2.05 3.273 0 6.11-.683 8.513-2.05 2.278-1.16 4.101-2.672 5.468-4.536 1.781-1.947 3.003-4.494 3.666-7.642.621-3.149.932-9.176.932-18.082s-.311-14.975-.932-18.206c-.663-3.065-1.885-5.572-3.666-7.518-1.367-1.864-3.19-3.418-5.468-4.66-2.403-1.202-5.24-1.844-8.513-1.927-3.231.083-6.006.725-8.326 1.926-2.361 1.243-4.267 2.796-5.717 4.66-1.781 1.947-2.962 4.454-3.541 7.519-.663 3.231-.995 9.3-.995 18.206Zm100.053 12.862-13.11-39.58h-.249l-13.111 39.58h26.47Zm3.915 12.179h-34.361l-6.96 20.256h-14.539l32.932-90.594h11.495l32.932 90.594H430.16l-7.021-20.256Zm32.87 1.18c1.284 1.699 2.941 3.087 4.971 4.163 2.03 1.285 4.412 1.927 7.146 1.927 3.645.083 7.125-1.18 10.439-3.79 1.615-1.285 2.878-2.983 3.79-5.096.953-2.03 1.429-4.577 1.429-7.643V1.245h13.732v62.448c-.166 9.113-3.148 16.155-8.948 21.126-5.758 5.095-12.448 7.684-20.07 7.767-10.521-.249-18.371-4.184-23.549-11.806l11.06-8.016Z"/>\
+                              <path fill="#982E0A" fill-rule="evenodd" d="M266.081 175.5c-25.674 0-30.683-15.655-30.683-23.169h16.907s0 11.272 13.776 11.272c9.393 0 11.897-4.384 11.897-8.141 0-5.866-7.493-7.304-16.099-8.955-11.604-2.227-25.229-4.841-25.229-19.223 0-11.271 10.645-20.664 28.179-20.664 25.047 0 28.804 14.402 28.804 20.664h-16.907s0-8.767-11.897-8.767c-6.888 0-10.646 3.507-10.646 7.515 0 4.559 6.764 5.942 14.818 7.589 11.857 2.424 26.511 5.421 26.511 19.963 0 12.523-10.646 21.916-29.431 21.916Zm68.035 0c-21.917 0-32.562-15.404-32.562-34.44 0-19.036 11.146-34.44 32.562-34.44 21.415 0 31.309 15.404 31.309 34.44 0 1.503-.125 3.757-.125 3.757h-46.087c.751 10.019 5.009 17.533 15.529 17.533 10.645 0 12.524-10.019 12.524-10.019h17.533s-3.757 23.169-30.683 23.169Zm13.275-41.954c-1.127-8.015-4.634-13.776-13.275-13.776-8.642 0-12.9 5.761-14.402 13.776h27.677Zm44.961-5.01c.251-7.013 4.384-10.019 11.898-10.019 6.888 0 10.645 3.006 10.645 8.141 0 6.056-7.139 7.672-15.828 9.639-1.732.392-3.526.798-5.337 1.256-10.77 2.756-20.789 8.266-20.789 20.414 0 12.023 8.766 17.533 20.664 17.533 16.656 0 20.664-14.402 20.664-14.402h.626v12.524h17.533v-44.46c0-16.906-12.524-22.542-28.178-22.542-15.029 0-28.429 5.26-29.431 21.916h17.533Zm22.543 12.274c0 9.643-3.131 23.419-15.028 23.419-5.636 0-9.143-3.131-9.143-8.141 0-5.76 4.759-8.641 10.395-10.019l.674-.168c4.853-1.209 10.35-2.579 13.102-5.091Zm47.739 19.035h31.935v13.777h-49.468v-65.124h17.533v51.347Z" clip-rule="evenodd"/>\
+                              </svg>\
+                            <span class="sr-only">DOAJ Seal</span>\
+                          </a></div>';
                 }
-                return field + "</h3>"
+                return field + "</div>";
             } else {
                 return false;
             }
         },
 
         authorPays : function(val, resultobj, renderer) {
-            var field = "";
-            if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
-                field += 'Has charges';
-            } else if (edges.hasProp(resultobj, "bibjson.other_charges.has_other_charges") && resultobj.bibjson.other_charges.has_other_charges) {
-                field += 'Has charges';
-            }
-            if (field === "") {
-                field = 'No charges';
-            }
-
-            var urls = [];
-            if (edges.hasProp(resultobj, "bibjson.apc.url")) {
-                urls.push(resultobj.bibjson.apc.url);
-            }
-            if (edges.hasProp(resultobj, "bibjson.has_other_charges.url")) {
-                urls.push(resultobj.bibjson.has_other_charges.url)
-            }
-
-            if (urls.length > 0) {
-                field += ' (see ';
-                for (var i = 0; i < urls.length; i++) {
-                    field += '<a href="' + urls[i] + '">' + urls[i] + '</a>';
+            if (resultobj.es_type === "journal") {
+                var field = "";
+                if (edges.hasProp(resultobj, "bibjson.apc.max") && resultobj.bibjson.apc.max.length > 0) {
+                    field += 'Has charges';
+                } else if (edges.hasProp(resultobj, "bibjson.other_charges.has_other_charges") && resultobj.bibjson.other_charges.has_other_charges) {
+                    field += 'Has charges';
                 }
-                field += ')';
-            }
+                if (field === "") {
+                    field = 'No charges';
+                }
 
-            return field ? field : false;
+                var urls = [];
+                if (edges.hasProp(resultobj, "bibjson.apc.url")) {
+                    urls.push(resultobj.bibjson.apc.url);
+                }
+                if (edges.hasProp(resultobj, "bibjson.has_other_charges.url")) {
+                    urls.push(resultobj.bibjson.has_other_charges.url)
+                }
+
+                if (urls.length > 0) {
+                    field += ' (see ';
+                    for (var i = 0; i < urls.length; i++) {
+                        field += '<a href="' + urls[i] + '">' + urls[i] + '</a>';
+                    }
+                    field += ')';
+                }
+
+                return field ? field : false;
+            }
+            else {
+                return false;
+            }
         },
 
         abstract : function (val, resultobj, renderer) {
@@ -8006,20 +8386,25 @@ $.extend(true, doaj, {
                 if (resultobj.es_type === "application") {
                     // determine the link name
                     var linkName = "Review application";
-                    if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
-                        linkName = "View finished application";
-                        if (resultobj.admin.related_journal) {
-                            linkName = "View finished update";
+                    if (resultobj.admin.application_type === "new_application") {
+                        if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
+                            linkName = "View application (finished)"
+                        } else {
+                            linkName = "Review application"
                         }
-                    } else if (resultobj.admin.current_journal) {
-                        linkName = "Review update";
+                    } else {
+                        if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
+                            linkName = "View update (finished)"
+                        } else {
+                            linkName = "Review update"
+                        }
                     }
 
                     var result = '<p><a class="edit_suggestion_link button" href="';
                     result += params.editUrl;
                     result += resultobj['id'];
                     result += '" target="_blank"';
-                    result += '>' + linkName + '</a></p>';
+                    result += ' style="margin-bottom: .75em;">' + linkName + '</a></p>';
                     return result;
                 }
                 return false;
@@ -8046,16 +8431,81 @@ $.extend(true, doaj, {
                     // if it's not a suggestion or an article .. (it's a
                     // journal!)
                     // we really need to expose _type ...
-                    var result = '<p><a class="edit_journal_link button button--tertiary" href="';
+                    var result = '<p><a class="edit_journal_link button" href="';
                     result += params.editUrl;
                     result += resultobj['id'];
                     result += '" target="_blank"';
-                    result += '>Edit this journal</a></p>';
+                    result += ' style="margin-bottom: .75em;">Edit this journal</a></p>';
                     return result;
                 }
                 return false;
             }
         },
+    },
+
+    bulk : {
+        applicationMultiFormBox : function(edge_instance, doaj_type) {
+            return doaj.multiFormBox.newMultiFormBox({
+                edge : edge_instance,
+                selector: "#admin-bulk-box",
+                bindings : {
+                    editor_group : function(context) {
+                        autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
+                    }
+                },
+                validators : {
+                    application_status : function(context) {
+                        var val = context.find("#application_status").val();
+                        if (val === "") {
+                            return {valid: false};
+                        }
+                        return {valid: true};
+                    },
+                    editor_group : function(context) {
+                        var val = context.find("#editor_group").val();
+                        if (val === "") {
+                            return {valid: false};
+                        }
+                        return {valid: true};
+                    },
+                    note : function(context) {
+                        var val = context.find("#note").val();
+                        if (val === "") {
+                            return {valid: false};
+                        }
+                        return {valid: true};
+                    }
+                },
+                submit : {
+                    note : {
+                        data: function(context) {
+                            return {
+                                note: $('#note', context).val()
+                            };
+                        }
+                    },
+                    editor_group : {
+                        data : function(context) {
+                            return {
+                                editor_group: $('#editor_group', context).val()
+                            };
+                        }
+                    },
+                    application_status : {
+                        data : function(context) {
+                            return {
+                                application_status: $('#application_status', context).val()
+                            };
+                        }
+                    }
+                },
+                urls : {
+                    note : "/admin/" + doaj_type + "/bulk/add_note",
+                    editor_group : "/admin/" + doaj_type + "/bulk/assign_editor_group",
+                    application_status : "/admin/" + doaj_type + "/bulk/change_status"
+                }
+            });
+        }
     }
 
 });
@@ -8296,3 +8746,4 @@ $.extend(true, edges, {
         }
     }
 });
+

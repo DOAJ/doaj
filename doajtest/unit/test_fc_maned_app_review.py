@@ -43,8 +43,13 @@ def mock_lookup_code(code):
 # Source objects to be used for testing
 #####################################################################
 
-APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
-APPLICATION_FORM = ApplicationFixtureFactory.make_application_form(role="maned")
+def make_application_source():
+    return ApplicationFixtureFactory.make_update_request_source()
+
+
+def make_application_form():
+    return ApplicationFixtureFactory.make_application_form(role="maned")
+
 
 ######################################################
 # Main test class
@@ -86,7 +91,7 @@ class TestManEdAppReview(DoajTestCase):
 
         # we start by constructing it from source
         formulaic_context = ApplicationFormFactory.context("admin")
-        app = models.Application(**APPLICATION_SOURCE)
+        app = models.Application(**make_application_source())
         jid = app.current_journal
         JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
         JOURNAL_SOURCE["id"] = jid
@@ -100,8 +105,8 @@ class TestManEdAppReview(DoajTestCase):
 
         # now construct it from form data (with a known source)
         fc = formulaic_context.processor(
-            formdata=MultiDict(APPLICATION_FORM),
-            source=models.Suggestion(**APPLICATION_SOURCE))
+            formdata=MultiDict(make_application_form()),
+            source=models.Suggestion(**make_application_source()))
 
         assert isinstance(fc, AdminApplication)
         assert fc.form is not None
@@ -115,7 +120,7 @@ class TestManEdAppReview(DoajTestCase):
         # no disabled fields, so just test the function runs
 
         # run the validation itself
-        fc.form.subject.choices = mock_lcc_choices # set the choices allowed for the subject manually (part of the test)
+        fc.form.subject.choices = mock_lcc_choices  # set the choices allowed for the subject manually (part of the test)
         assert fc.validate(), fc.form.errors
 
         # run the crosswalk (no need to look in detail, xwalks are tested elsewhere)
@@ -167,12 +172,12 @@ class TestManEdAppReview(DoajTestCase):
         assert len(h) == 1
 
         # set up an application which is an update on an existing journal
-        s = models.Application(**APPLICATION_SOURCE)
+        s = models.Application(**make_application_source())
         s.set_current_journal(extant_j.id)
         s.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
         # set up the form which "accepts" this update request
-        fd = deepcopy(APPLICATION_FORM)
+        fd = deepcopy(make_application_form())
         fd["application_status"] = constants.APPLICATION_STATUS_ACCEPTED
         fd = MultiDict(fd)
 
@@ -237,8 +242,8 @@ class TestManEdAppReview(DoajTestCase):
 
         # TODO: this behaviour has changed to be 'required' in all statuses according to form config (remove on verify)
         # However, we should be able to set it to a different status rather than 'accepted'
-        #fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
-        #assert fc.validate(), fc.form.errors
+        # fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
+        # assert fc.validate(), fc.form.errors
 
         ctx.pop()
 
@@ -259,7 +264,7 @@ class TestManEdAppReview(DoajTestCase):
 
         fc = formulaic_context.processor(
             source=app,
-            formdata=MultiDict(APPLICATION_FORM)
+            formdata=MultiDict(make_application_form())
         )
 
         # check the form has the continuations data
@@ -289,11 +294,11 @@ class TestManEdAppReview(DoajTestCase):
         owner.save(blocking=True)
 
         # construct a context from a form submission
-        source = deepcopy(APPLICATION_FORM)
+        source = deepcopy(make_application_form())
         source["application_status"] = constants.APPLICATION_STATUS_ACCEPTED
         fd = MultiDict(source)
 
-        app = models.Application(**APPLICATION_SOURCE)
+        app = models.Application(**make_application_source())
         jid = app.current_journal
         JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
         JOURNAL_SOURCE["id"] = jid
@@ -332,11 +337,11 @@ class TestManEdAppReview(DoajTestCase):
         owner.save(blocking=True)
 
         # construct a context from a form submission
-        form_source = deepcopy(APPLICATION_FORM)
+        form_source = deepcopy(make_application_form())
         form_source["application_status"] = constants.APPLICATION_STATUS_REJECTED
         fd = MultiDict(form_source)
         formulaic_context = ApplicationFormFactory.context("admin")
-        app = models.Application(**APPLICATION_SOURCE)
+        app = models.Application(**make_application_source())
         jid = app.current_journal
         JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
         JOURNAL_SOURCE["id"] = jid
@@ -363,6 +368,8 @@ class TestManEdAppReview(DoajTestCase):
 
     def test_07_disallowed_statuses(self):
         """ Check that managing editors can access applications in any status """
+        APPLICATION_SOURCE = make_application_source()
+        APPLICATION_FORM = make_application_form()
 
         acc = models.Account()
         acc.set_id("contextuser")
@@ -374,10 +381,10 @@ class TestManEdAppReview(DoajTestCase):
         owner.save(blocking=True)
 
         # Check that an accepted application can't be regressed by a managing editor
-        accepted_source = APPLICATION_SOURCE.copy()
+        accepted_source = make_application_source().copy()
         accepted_source['admin']['application_status'] = constants.APPLICATION_STATUS_ACCEPTED
 
-        completed_form = APPLICATION_FORM.copy()
+        completed_form = make_application_form().copy()
         completed_form['application_status'] = constants.APPLICATION_STATUS_COMPLETED
 
         # Construct the formcontext from form data (with a known source)

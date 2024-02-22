@@ -30,6 +30,7 @@
                             <option value="issn">ISSN</option>
                             <option value="subject">Subject</option>
                             <option value="publisher">Publisher</option>
+                            <option value="country">Country of publisher</option>
                         </select>
 
                         <button class="input-group__input label" type="submit">Search</button>
@@ -51,7 +52,7 @@
                     {% set source = search_query_source(term=[{"bibjson.apc.has_apc":False},{"bibjson.other_charges.has_other_charges":False}]) %}
                     <a href='{{ url_for('doaj.journals_search') }}?source={{ source }}'>
                         <span class="stat__number">{{ statistics.no_apc }}</span>
-                        <span class="stat__description">journals without APC<span style="text-transform: lowercase;">s</span></span>
+                        <span class="stat__description">journals without fees</span>
                     </a>
                 </p>
                 <p class="col-md-2 stat">
@@ -90,7 +91,7 @@
                   </p>
                  <p>DOAJ is twenty years old in 2023.</p>
                  <p>
-                      <a href="{{ url_for('doaj.at_20') }}" class="button">Fund our 20th anniversary campiagn</a>
+                      <a href="{{ url_for('doaj.at_20') }}" class="button">Fund our 20th anniversary campaign</a>
                   </p>  
               </article>
 
@@ -195,12 +196,25 @@
         <div class="container">
           <header>
               <h2 class="label">Volunteers</h2>
-              <p>DOAJ would not be able to do the work that we do without our volunteers.</p>
+              <p>We would not be able to work without our volunteers, such as these top-performing editors and associate editors.</p>
               <p><a href="{{ url_for('doaj.volunteers') }}" class="button">&rarr; Meet our volunteers</a></p>
           </header>
 
             <div class="row">
                 {% for volunteer in data.volunteers.ed %}
+                {% if volunteer.featured == true %}
+                    <article class="col-md-3">
+                        {# TODO: Still need volunteer photos
+                        <figure class="portrait portrait__img--split">
+                            <div class="portrait__bg portrait__bg-img--3d" style="background-image: url('../../img/team/clara.jpg')" alt="Portrait of {{ volunteer.name }}"></div>
+                        </figure>#}
+                        <p class="label label--secondary"><small>{{ volunteer.area }}</small></p>
+                        <h3>{{ volunteer.name }}</h3>
+                        <p>{{ volunteer.city }}, {{ volunteer.country }} ({{ volunteer.language }})</p>
+                    </article>
+                {% endif %}
+                {% endfor %}
+                {% for volunteer in data.volunteers.ass_ed %}
                 {% if volunteer.featured == true %}
                     <article class="col-md-3">
                         {# TODO: Still need volunteer photos
@@ -226,7 +240,7 @@
                         <header class="card__header">
                           <h2 class="label label--secondary">Recently-added journals</h2>
                         </header>
-                        <p>DOAJ’s team of managing editors, editors, and volunteers work together with publishers to index new journals. As soon as they’re accepted, these journals are displayed on our website, freely accessible to everyone.</p>
+                        <p>DOAJ’s team of managing editors, editors, and volunteers work with publishers to index new journals. As soon as they’re accepted, these journals are displayed on our website freely accessible to everyone.</p>
                         {# TODO: Make sure these links work #}
                         <p>&rarr; <a href="{{ url_for('atom.feed') }}">See Atom feed</a></p>
                         <p>&rarr; <a href="{{ url_for('doaj.csv_data') }}">DOWNLOAD all journals as CSV</a></p>
