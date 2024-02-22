@@ -153,6 +153,7 @@ ass_ed:
   city: Rome
   country: Italy
   language: Italian, English
+  photo: "Marchitelli.jpg"
 
 - name: Andronic Octavian
   area: Medicine
@@ -211,6 +212,14 @@ ass_ed:
   country: Argentina
   language: Spanish, English
   photo: "CarlosAlegre.jpg"
+  
+- name: Carla Longo
+  area: Humanities
+  year_since:
+  city: St Andrews
+  country: Scotland
+  language: Italian, English, Latin, Ancient Greek
+  photo: "Longo.jpg"
   
 - name: Cezary Borkowicz
   area: Librarianship
@@ -390,6 +399,13 @@ ass_ed:
   city: Hainan
   country: China
   language: English
+
+- name: João Pedro Oliveira
+  area: Health Sciences
+  year_since:
+  city: Porto
+  country: Portugal
+  language: Portuguese, English
 
 - name: JooYeun Son
   area:
