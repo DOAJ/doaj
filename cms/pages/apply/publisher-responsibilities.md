@@ -163,7 +163,7 @@ When we withdraw your journal, we will send you an email. Remind yourself of the
 - We have to withdraw your journal from DOAJ if it no longer adheres to our criteria or to publishing best practices.
 - We have to withdraw the journal if it is inactive (ceased publishing) or the website is unavailable.
 
-You can also check our [list of withdrawn journals](https://docs.google.com/spreadsheets/d/183mRBRqs2jOyP0qZWXN8dUd02D4vL0Mov_kgYF8HORM/edit#gid=1650882189) and ask for more information by [contacting our Help Desk](mailto:helpdesk@doaj.org).
+You can also check our [log of withdrawn journals](https://docs.google.com/spreadsheets/d/1Kv3MbgFSgtSDnEGkA2JacrSjunRu0umHeZCtcMeqO5E/edit#gid=2104690845&range=A1) and ask for more information by [contacting our Help Desk](mailto:helpdesk@doaj.org).
 
 ### Journal is not listed on my dashboard
 
