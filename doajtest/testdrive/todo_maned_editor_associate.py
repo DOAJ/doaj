@@ -152,13 +152,24 @@ def build_maned_applications(un, eg, owner, eponymous_group):
         "title": un + " Maned Low Priority Pending Application"
     }]
 
-    ur = build_application(un + " Maned Update Request", 5 * w, 5 * w, constants.APPLICATION_STATUS_UPDATE_REQUEST,
+    lmur = build_application(un + " Last Month Maned Update Request", 5 * w, 5 * w, constants.APPLICATION_STATUS_UPDATE_REQUEST,
                            editor_group=eponymous_group.name, owner=owner, update_request=True)
-    ur.save()
-    apps["update_request"] = [{
-        "id": ur.id,
-        "title": un + " Maned Update Request"
-    }]
+    lmur.save()
+
+    tmur = build_application(un + " This Month Maned Update Request", 0, 0, constants.APPLICATION_STATUS_UPDATE_REQUEST,
+                           editor_group=eponymous_group.name, owner=owner, update_request=True)
+    tmur.save()
+
+    apps["update_request"] = [
+        {
+            "id": lmur.id,
+            "title": un + " Last Month Maned Update Request"
+        },
+        {
+            "id": tmur.id,
+            "title": un + " This Month Maned Update Request"
+        }
+    ]
 
     return apps
 

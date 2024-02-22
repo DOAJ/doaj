@@ -2,6 +2,8 @@ from portality.lib.argvalidate import argvalidate
 from portality import models
 from portality.bll import exceptions
 from portality import constants
+from portality.lib import dates
+from datetime import datetime
 
 class TodoService(object):
     """
@@ -84,7 +86,8 @@ class TodoService(object):
                 queries.append(TodoRules.maned_completed(size, maned_of))
                 queries.append(TodoRules.maned_assign_pending(size, maned_of))
             if update_requests:
-                queries.append(TodoRules.maned_update_requests(size, maned_of))
+                queries.append(TodoRules.maned_last_month_update_requests(size, maned_of))
+                queries.append(TodoRules.maned_new_update_requests(size, maned_of))
 
         if new_applications:    # editor and associate editor roles only deal with new applications
             if account.has_role("editor"):
@@ -243,12 +246,16 @@ class TodoRules(object):
         return constants.TODO_MANED_ASSIGN_PENDING, assign_pending, sort_date, 0
 
     @classmethod
-    def maned_update_requests(cls, size, maned_of):
+    def maned_last_month_update_requests(cls, size, maned_of):
+        som = dates.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        now = dates.now()
+        since_som = int((now - som).total_seconds())
+
         sort_date = "created_date"
         assign_pending = TodoQuery(
             musts=[
                 TodoQuery.exists("admin.editor_group"),
-                TodoQuery.cd_older_than(4),
+                TodoQuery.cd_older_than(since_som, unit="s"),
                 # TodoQuery.status([constants.APPLICATION_STATUS_UPDATE_REQUEST]),
                 TodoQuery.editor_group(maned_of),
                 TodoQuery.is_update_request()
@@ -260,7 +267,27 @@ class TodoRules(object):
             sort=sort_date,
             size=size
         )
-        return constants.TODO_MANED_UPDATE_REQUEST, assign_pending, sort_date, 2
+        return constants.TODO_MANED_LAST_MONTH_UPDATE_REQUEST, assign_pending, sort_date, 2
+
+    @classmethod
+    def maned_new_update_requests(cls, size, maned_of):
+        sort_date = "created_date"
+        assign_pending = TodoQuery(
+            musts=[
+                TodoQuery.exists("admin.editor_group"),
+                # TodoQuery.cd_older_than(4),
+                # TodoQuery.status([constants.APPLICATION_STATUS_UPDATE_REQUEST]),
+                TodoQuery.editor_group(maned_of),
+                TodoQuery.is_update_request()
+            ],
+            must_nots=[
+                TodoQuery.status([constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED])
+                # TodoQuery.exists("admin.editor")
+            ],
+            sort=sort_date,
+            size=size
+        )
+        return constants.TODO_MANED_NEW_UPDATE_REQUEST, assign_pending, sort_date, -2
 
     @classmethod
     def editor_stalled(cls, groups, size):
@@ -483,11 +510,11 @@ class TodoQuery(object):
         }
 
     @classmethod
-    def cd_older_than(cls, weeks):
+    def cd_older_than(cls, count, unit="w"):
         return {
             "range": {
                 "admin.date_applied": {
-                    "lte": "now-" + str(weeks) + "w"
+                    "lte": "now-" + str(count) + unit
                 }
             }
         }
