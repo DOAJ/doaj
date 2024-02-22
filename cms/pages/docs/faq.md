@@ -144,11 +144,12 @@ If you received a spreadsheet from us, please complete it as soon as possible. T
 
 Before you send us the file, you must do two things:
 
-1. Convert the spreadsheet to a CSV. To do this, you will need to first delete the instructions tab and then Save as CSV.
+1. Convert the spreadsheet to a CSV. To do this, you will need to first delete the instructions tab and then Save as CSV. (Save in the Unicode UTF-8 format.)
 2. [Validate it](/publisher/journal-csv).
 
 Here are some tips on how to ensure that your CSV file will pass validation:
 
+- make sure CSV is in UTF-8 format
 - don't change an ISSN or Title of a journal. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
 - don't add a new journal to the file. To do this, [submit a new application](/apply/).
 - don't change the title of a column
