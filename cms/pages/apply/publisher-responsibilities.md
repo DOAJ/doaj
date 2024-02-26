@@ -172,3 +172,7 @@ You can also check our [log of withdrawn journals](https://docs.google.com/sprea
 ### Unknown journal on my dashboard
 
 - [Contact our Help Desk](mailto:helpdesk@doaj.org) with the journal title and ISSN; they will help you.
+
+## Version history
+
+This is Version 1 of our Publisher information page.
