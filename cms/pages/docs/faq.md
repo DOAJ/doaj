@@ -176,3 +176,7 @@ The following warnings may be seen after validating your CSV:
 | We couldn't understand the information in _question_ |                                                                 | The information in the cell doesn't match the formatting requirements. Check the Instructions tab in the spreadsheet sent to you.                                                                                                   |
 
 From time to time, other validation errors might be seen if one of the cells contains completely incorrect information. For example, the cell should contain a URL but it contains text. These error messages are self-explanatory,, but contact Help Desk if you require help.
+
+## Version history
+
+This is Version 1 of Metadata help page.
