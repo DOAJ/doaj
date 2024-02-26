@@ -175,8 +175,11 @@ The following warnings may be seen after validating your CSV:
 | You may not change _question_. Please revert it to match what was sent to you in the spreadsheet.                      | During editing, the question has been changed. The question must be exactly as it is in the spreadsheet sent to you. Please change it.                                                                                              |
 | We couldn't understand the information in _question_ |                                                                 | The information in the cell doesn't match the formatting requirements. Check the Instructions tab in the spreadsheet sent to you.                                                                                                   |
 
-From time to time, other validation errors might be seen if one of the cells contains completely incorrect information. For example, the cell should contain a URL but it contains text. These error messages are self-explanatory,, but contact Help Desk if you require help.
+From time to time, other validation errors might be seen if one of the cells contains completely incorrect information. For example, the cell should contain a URL but it contains text. These error messages should be easy to understand but contact the Help Desk if you have questions.
 
 ## Version history
 
-This is Version 1 of Metadata help page.
+This is Version 2 of our Metadata help page.
+
+*Version 2.0 (December 2023 - added the entire 'Using a spreadsheet to update your journal metadata' section)*<br>
+<s>Version 1.0 (November 2023 - created this whole page with new content)</s><br>
