@@ -47,3 +47,7 @@ All seven criteria must be met for a journal to be awarded the Seal. Failure to 
   - Creative Commons licensing information must be displayed in all full-text article formats.
 7. Copyright and publishing rights
   -  Authors must retain unrestricted copyright and all publishing rights when publishing under any license permitted by the journal.
+
+## Version information
+
+This is Version 1 of our Seal criteria.
