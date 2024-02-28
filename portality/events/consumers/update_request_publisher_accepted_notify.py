@@ -13,7 +13,7 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
     ID = "update_request:publisher:accepted:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         if event.id != constants.EVENT_APPLICATION_STATUS:
             return False
 

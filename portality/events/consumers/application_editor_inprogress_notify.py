@@ -12,7 +12,7 @@ class ApplicationEditorInProgressNotify(EventConsumer):
     ID = "application:editor:inprogress:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_STATUS and \
                 event.context.get("old_status") in [constants.APPLICATION_STATUS_READY, constants.APPLICATION_STATUS_COMPLETED] and \
                 event.context.get("new_status") == constants.APPLICATION_STATUS_IN_PROGRESS

@@ -61,7 +61,7 @@ class EventsService(object):
     def consume(self, event):
         for consumer in self.EVENT_CONSUMERS:
             try:
-                if consumer.consumes(event):
+                if consumer.should_consume(event):
                     consumer.consume(event)
             except Exception as e:
                 app.logger.error("Error in consumer {x}: {e}".format(e=str(e), x=consumer.ID))

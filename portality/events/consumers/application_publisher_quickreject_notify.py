@@ -14,7 +14,7 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
     ID = "application:publisher:quickreject:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_STATUS and \
                 event.context.get("application") is not None and \
                 event.context.get("old_status") != constants.APPLICATION_STATUS_REJECTED and \

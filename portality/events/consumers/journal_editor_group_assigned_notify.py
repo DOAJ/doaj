@@ -12,7 +12,7 @@ class JournalEditorGroupAssignedNotify(EventConsumer):
     ID = "journal:editor_group:assigned:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED and \
                event.context.get("journal") is not None
 

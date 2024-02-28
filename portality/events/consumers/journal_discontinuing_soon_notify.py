@@ -15,7 +15,7 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
     ID = "journal:assed:discontinuing_soon:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_JOURNAL_DISCONTINUING_SOON and \
                 event.context.get("journal") is not None and \
                 event.context.get("discontinue_date") is not None

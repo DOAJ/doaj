@@ -13,7 +13,7 @@ class ApplicationPublisherAssignedNotify(EventConsumer):
     ID = "application:publisher:assigned:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         if event.id != constants.EVENT_APPLICATION_ASSED_ASSIGNED:
             return False
 

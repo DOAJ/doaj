@@ -3,7 +3,7 @@ class EventConsumer(object):
     ID = None
 
     @classmethod
-    def consumes(cls, event) -> bool:
+    def should_consume(cls, event) -> bool:
         """
         Determine whether this consumer should consume the given event
         """

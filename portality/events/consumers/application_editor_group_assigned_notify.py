@@ -11,7 +11,7 @@ class ApplicationEditorGroupAssignedNotify(EventConsumer):
     ID = "application:editor_group:assigned:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED and \
                event.context.get("application") is not None
 

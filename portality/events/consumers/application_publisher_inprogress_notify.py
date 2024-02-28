@@ -12,7 +12,7 @@ class ApplicationPublisherInprogressNotify(EventConsumer):
     ID = "application:publisher:inprogress:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_STATUS and \
                event.context.get("application") is not None and \
                event.context.get("old_status") == constants.APPLICATION_STATUS_PENDING and \

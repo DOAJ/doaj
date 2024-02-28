@@ -11,7 +11,7 @@ class ApplicationAssedAssignedNotify(EventConsumer):
     ID = "application:assed:assigned:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_ASSED_ASSIGNED and \
                event.context.get("application") is not None
 
