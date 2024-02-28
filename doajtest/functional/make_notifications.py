@@ -1,5 +1,11 @@
 # ~~Notifications:FunctionalTest~~
-from portality import models
+
+from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
+from doajtest.fixtures.v2.journals import JournalFixtureFactory
+from doajtest.mocks.mock_mail import MockMail
+from portality import constants
+from portality import models, app_email
+from portality.core import app
 from portality.events.consumers import application_assed_assigned_notify, \
     application_assed_inprogress_notify, \
     application_editor_completed_notify, \
@@ -18,11 +24,9 @@ from portality.events.consumers import application_assed_assigned_notify, \
     update_request_publisher_accepted_notify, \
     update_request_publisher_assigned_notify, \
     update_request_publisher_rejected_notify
-from portality.models.event import Event
+from portality.events.consumers.update_request_publisher_submitted_notify import UpdateRequestPublisherSubmittedNotify
 from portality.models import EditorGroup
-from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
-from doajtest.fixtures.v2.journals import JournalFixtureFactory
-from portality import constants
+from portality.models.event import Event
 
 USER = "richard"
 
@@ -44,9 +48,12 @@ NOTIFICATIONS = [
     "journal_editor_group_assigned_notify",
     "update_request_publisher_accepted_notify",
     "update_request_publisher_assigned_notify",
-    "update_request_publisher_rejected_notify"
+    "update_request_publisher_rejected_notify",
+    UpdateRequestPublisherSubmittedNotify.ID,
 ]
 
+app.config["ENABLE_EMAIL"] = True
+app_email.Mail = MockMail
 
 ##############################################
 ## ApplicationAssedAssignedNotify
@@ -62,7 +69,6 @@ if "application_assed_assigned_notify" in NOTIFICATIONS:
     aaan = application_assed_assigned_notify.ApplicationAssedAssignedNotify()
     aaan.consume(event)
 
-
 ##############################################
 ## ApplicationAssedAssignedNotify
 if "application_assed_inprogress_notify" in NOTIFICATIONS:
@@ -77,7 +83,6 @@ if "application_assed_inprogress_notify" in NOTIFICATIONS:
     aain = application_assed_inprogress_notify.ApplicationAssedInprogressNotify()
     aain.consume(event)
 
-
 ##############################################
 ## ApplicationEditorCompletedNotify
 if "application_editor_completed_notify" in NOTIFICATIONS:
@@ -85,6 +90,7 @@ if "application_editor_completed_notify" in NOTIFICATIONS:
         return EditorGroup(**{
             "editor": USER
         })
+
 
     eg_pull = EditorGroup.pull
     EditorGroup.pull = editor_group_mock_pull
@@ -109,6 +115,7 @@ if "application_editor_group_assigned_notify" in NOTIFICATIONS:
             "editor": USER
         })
 
+
     eg_pull = EditorGroup.pull_by_key
     EditorGroup.pull_by_key = editor_group_mock_pull
 
@@ -124,7 +131,6 @@ if "application_editor_group_assigned_notify" in NOTIFICATIONS:
 
     EditorGroup.pull_by_key = eg_pull
 
-
 ##############################################
 ## ApplicationEditorInprogressNotify
 if "application_editor_inprogress_notify" in NOTIFICATIONS:
@@ -132,6 +138,7 @@ if "application_editor_inprogress_notify" in NOTIFICATIONS:
         return EditorGroup(**{
             "editor": USER
         })
+
 
     eg_pull = EditorGroup.pull
     EditorGroup.pull = editor_group_mock_pull
@@ -148,7 +155,6 @@ if "application_editor_inprogress_notify" in NOTIFICATIONS:
 
     EditorGroup.pull = eg_pull
 
-
 ##############################################
 ## ApplicationManedReadyNotify
 if "application_maned_ready_notify" in NOTIFICATIONS:
@@ -156,6 +162,7 @@ if "application_maned_ready_notify" in NOTIFICATIONS:
         return EditorGroup(**{
             "maned": USER
         })
+
 
     eg_pull = EditorGroup.pull_by_key
     EditorGroup.pull_by_key = editor_group_mock_pull
@@ -199,7 +206,6 @@ if "application_publisher_assigned_notify" in NOTIFICATIONS:
     })
     con = application_publisher_assigned_notify.ApplicationPublisherAssignedNotify()
     con.consume(event)
-
 
 ##############################################
 ## ApplicationPublisherCreatedNotify
@@ -295,6 +301,7 @@ if "journal_editor_group_assigned_notify" in NOTIFICATIONS:
             "editor": USER
         })
 
+
     eg_pull = EditorGroup.pull_by_key
     EditorGroup.pull_by_key = editor_group_mock_pull
 
@@ -352,3 +359,11 @@ if "update_request_publisher_rejected_notify" in NOTIFICATIONS:
     })
     con = update_request_publisher_rejected_notify.UpdateRequestPublisherRejectedNotify()
     con.consume(event)
+
+if UpdateRequestPublisherSubmittedNotify.ID in NOTIFICATIONS:
+    event = Event(constants.EVENT_APPLICATION_STATUS, USER, context={
+        'application_title': 'MYYYYYYYY Application Title',
+        'issns': ['1234-5678', '9876-5432'],
+        'date_applied': '2021-01-01',
+    })
+    UpdateRequestPublisherSubmittedNotify.consume(event)

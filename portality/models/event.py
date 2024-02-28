@@ -3,12 +3,12 @@ import json
 
 
 class Event(object):
-    def __init__(self, id=None, who=None, context=None, raw=None):
+    def __init__(self, id=None, who: str = None, context: dict = None, raw=None):
         if raw is not None:
             self.data = raw
         else:
             self.data = {
-                "when" : dates.now_str()
+                "when": dates.now_str()
             }
             if id is not None:
                 self.id = id

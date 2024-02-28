@@ -1,4 +1,5 @@
 from portality.core import app
+from portality.events.consumers.update_request_publisher_submitted_notify import UpdateRequestPublisherSubmittedNotify
 from portality.lib import plugin
 
 from portality.events.consumers.account_created_email import AccountCreatedEmail
@@ -49,7 +50,8 @@ class EventsService(object):
         UpdateRequestPublisherAcceptedNotify,
         UpdateRequestPublisherAssignedNotify,
         UpdateRequestPublisherRejectedNotify,
-        JournalDiscontinuingSoonNotify
+        UpdateRequestPublisherSubmittedNotify,
+        JournalDiscontinuingSoonNotify,
     ]
 
     def __init__(self):
