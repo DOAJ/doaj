@@ -58,6 +58,6 @@ class UpdateRequestPublisherSubmittedNotify(EventConsumer):
             issns=consumer_utils.parse_email_issns(application.bibjson().issns())
         )
 
-        notification.action = url_for("publisher.journals")
+        notification.action = url_for("publisher.updates_in_progress")
 
         svc.notify(notification)
