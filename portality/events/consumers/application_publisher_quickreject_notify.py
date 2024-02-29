@@ -1,4 +1,5 @@
 # ~~ApplicationPublisherQuickRejectNotify:Consumer~~
+from portality.events import consumer_utils
 from portality.lib import dates
 from portality.lib.dates import FMT_DATE_HUMAN_A
 from portality.util import url_for
@@ -28,11 +29,7 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
         if note:
             note = "\n\n**Reason for rejection**\n\n" + note + "\n\n"
 
-        try:
-            application = models.Application(**app_source)
-        except Exception as e:
-            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
-
+        application = consumer_utils.parse_application(app_source)
         if not application.owner:
             return
 

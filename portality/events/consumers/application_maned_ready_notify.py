@@ -1,4 +1,5 @@
 # ~~ApplicationManedReadyNotify:Consumer~~
+from portality.events import consumer_utils
 from portality.util import url_for
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -20,11 +21,7 @@ class ApplicationManedReadyNotify(EventConsumer):
     def consume(cls, event):
         app_source = event.context.get("application")
 
-        try:
-            application = models.Application(**app_source)
-        except Exception as e:
-            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
-
+        application = consumer_utils.parse_application(app_source)
         if not application.editor_group:
             return
 

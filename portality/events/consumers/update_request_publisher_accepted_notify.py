@@ -1,4 +1,5 @@
 # ~~UpdateRequestPublisherAcceptedNotify:Consumer~~
+from portality.events import consumer_utils
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -29,11 +30,7 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
         if event.context.get("new_status") != constants.APPLICATION_STATUS_ACCEPTED:
             return False
 
-        try:
-            application = models.Application(**app_source)
-        except Exception as e:
-            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
-
+        application = consumer_utils.parse_application(app_source)
         is_update_request = application.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST
         return is_update_request
 
@@ -46,11 +43,7 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
 
         app_source = event.context.get("application")
 
-        try:
-            application = models.Application(**app_source)
-        except Exception as e:
-            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
-
+        application = consumer_utils.parse_application(app_source)
         if not application.owner:
             return
 
