@@ -1,5 +1,7 @@
 import time
+from copy import deepcopy
 
+from doajtest.fixtures import ApplicationFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import constants
 from portality import models
@@ -14,21 +16,39 @@ class TestUpdateRequestPublisherSubmittedNotify(DoajTestCase):
         super(TestUpdateRequestPublisherSubmittedNotify, self).tearDown()
 
     def test_should_consume(self):
+        # success
+        source = ApplicationFixtureFactory.make_application_source()
         assert UpdateRequestPublisherSubmittedNotify.should_consume(models.Event(
             constants.EVENT_APPLICATION_UR_SUBMITTED,
-            who="testuser",
-        ))
-
-    def test_should_consume__fail(self):
-        # missing who
-        assert not UpdateRequestPublisherSubmittedNotify.should_consume(models.Event(
-            constants.EVENT_APPLICATION_UR_SUBMITTED,
+            context={"application": source},
         ))
 
         # event id mismatch
         assert not UpdateRequestPublisherSubmittedNotify.should_consume(models.Event(
-            'some_other_event_id',
-            who="testuser",
+            'akdjlaskdjalksjdlaskjdlaks',
+            context={"application": source},
+        ))
+
+        # no application in context
+        assert not UpdateRequestPublisherSubmittedNotify.should_consume(models.Event(
+            constants.EVENT_APPLICATION_UR_SUBMITTED,
+            context={},
+        ))
+
+        # application type mismatch
+        source_type_mismatch = deepcopy(source)
+        source_type_mismatch['admin']['application_type'] = constants.APPLICATION_TYPE_NEW_APPLICATION
+        assert not UpdateRequestPublisherSubmittedNotify.should_consume(models.Event(
+            constants.EVENT_APPLICATION_UR_SUBMITTED,
+            context={"application": source_type_mismatch},
+        ))
+
+        # no owner
+        source_no_owner = deepcopy(source)
+        source_no_owner['admin']['owner'] = None
+        assert not UpdateRequestPublisherSubmittedNotify.should_consume(models.Event(
+            constants.EVENT_APPLICATION_UR_SUBMITTED,
+            context={"application": source_no_owner},
         ))
 
     def test_consume_success(self):
@@ -37,10 +57,9 @@ class TestUpdateRequestPublisherSubmittedNotify(DoajTestCase):
         acc.set_email("test@example.com")
         acc.save(blocking=True)
 
+        source = ApplicationFixtureFactory.make_application_source()
         context: UpdateRequestPublisherSubmittedNotify.Context = {
-            'application_title': "Test Application xxxxx",
-            'date_applied': "1999-11-11",
-            'issns': ['9999-9999'],
+            'application': source,
         }
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS,
@@ -57,6 +76,6 @@ class TestUpdateRequestPublisherSubmittedNotify(DoajTestCase):
         assert n.who == "publisher"
         assert n.created_by == UpdateRequestPublisherSubmittedNotify.ID
         assert n.classification == constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
-        assert context['application_title'] in n.long
+        assert source['bibjson']['title'] in n.long
         assert n.short is not None
         assert not n.is_seen()
