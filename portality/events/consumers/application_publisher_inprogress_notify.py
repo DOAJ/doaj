@@ -1,4 +1,5 @@
 # ~~ApplicationPublisherInProgressNotify:Consumer~~
+from portality.events import consumer_utils
 from portality.util import url_for
 from portality.core import app
 from portality.events.consumer import EventConsumer
@@ -47,7 +48,7 @@ class ApplicationPublisherInprogressNotify(EventConsumer):
             volunteers=volunteers
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns())
+            issns=consumer_utils.parse_email_issns(application.bibjson().issns())
         )
 
         svc.notify(notification)

@@ -47,7 +47,7 @@ class ApplicationManedReadyNotify(EventConsumer):
             editor=editor
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns())
+            issns=consumer_utils.parse_email_issns(application.bibjson().issns())
         )
         notification.action = url_for("admin.application", application_id=application.id)
 

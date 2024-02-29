@@ -1,4 +1,5 @@
 # ~~ApplicationPublisherCreatedNotify:Notifications~~
+from portality.events import consumer_utils
 from portality.util import url_for
 from portality.lib import dates
 from portality.events.consumer import EventConsumer
@@ -42,7 +43,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
                                                                  application_date=dates.human_date(application.date_applied),
                                                                  volunteers_url=url_for("doaj.volunteers"))
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns())
+            issns=consumer_utils.parse_email_issns(application.bibjson().issns())
         )
 
         svc.notify(notification)

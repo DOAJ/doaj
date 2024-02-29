@@ -1,4 +1,5 @@
 # ~~JournalAssedAssignedNotify:Consumer~~
+from portality.events import consumer_utils
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -40,7 +41,7 @@ class JournalAssedAssignedNotify(EventConsumer):
             group_name=journal.editor_group
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in journal.bibjson().issns())
+            issns=consumer_utils.parse_email_issns(journal.bibjson().issns())
         )
         notification.action = url_for("editor.journal_page", journal_id=journal.id)
 

@@ -55,7 +55,7 @@ class UpdateRequestPublisherSubmittedNotify(EventConsumer):
             date_applied=dates.human_date(application.date_applied),
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in event.context.get('issns', []))
+            issns=consumer_utils.parse_email_issns(application.bibjson().issns())
         )
 
         notification.action = url_for("publisher.journals")
