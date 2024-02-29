@@ -18,9 +18,7 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
         if event.id != constants.EVENT_APPLICATION_STATUS:
             return False
 
-        # TODO: in the long run this needs to move out to the user's email preferences but for now it
-        # is here to replicate the behaviour in the code it replaces
-        if not app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+        if not consumer_utils.is_enable_publisher_email():
             return False
 
         app_source = event.context.get("application")
@@ -36,9 +34,7 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
 
     @classmethod
     def consume(cls, event):
-        # TODO: in the long run this needs to move out to the user's email preferences but for now it
-        # is here to replicate the behaviour in the code it replaces
-        if not app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+        if not consumer_utils.is_enable_publisher_email():
             return
 
         app_source = event.context.get("application")
