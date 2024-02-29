@@ -220,6 +220,14 @@ ass_ed:
   country: Scotland
   language: Italian, English, Latin, Ancient Greek
   photo: "Longo.jpg"
+
+- name: Carla Marques
+  area: Information and library sciences
+  year_since:
+  city: Braga
+  country: Portugal
+  language: Information and library sciences
+  photo: "Carla.jpg"
   
 - name: Cezary Borkowicz
   area: Librarianship
@@ -243,7 +251,7 @@ ass_ed:
   city: Bengkulu
   country: Indonesia
   language: Indonesian, English
-  photo:
+  photo: "Danner.png"
   
 - name: Daria Chrześcijańska
   area: Computer Science, Social Sciences
@@ -275,6 +283,7 @@ ass_ed:
   city: Samarinda
   country: Indonesia
   language: Indonesian, English
+  photo: "DEDI.jpg"
   
 - name: Dessy Harisanty
   area: Library and Information Science
@@ -467,7 +476,7 @@ ass_ed:
   city:
   country: Indonesia
   language: Indonesian, English
-  photo:
+  photo: "Khoirul.jpg"
 
 - name: Kristen Totleben
   area: Librarianship, Humanities, Social Sciences
