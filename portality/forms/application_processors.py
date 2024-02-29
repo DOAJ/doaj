@@ -732,15 +732,11 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # email the publisher to tell them we received their update request
         if email_alert:
-            bibjson = self.target.bibjson()
-            events_svc = DOAJ.eventsService()
-            events_svc.trigger(models.Event(
+            DOAJ.eventsService().trigger(models.Event(
                 constants.EVENT_APPLICATION_UR_SUBMITTED,
                 current_user.id,
                 context={
-                    'application_title': bibjson.title,
-                    'issns': bibjson.issns(),
-                    'date_applied': self.target.date_applied,
+                    'application': self.target.data,
                 }
             ))
 

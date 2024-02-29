@@ -1,10 +1,10 @@
-# ~~UpdateRequestPublisherAcceptedNotify:Consumer~~
+# ~~UpdateRequestPublisherSubmittedNotify:Consumer~~
 from typing import TypedDict
 
 from portality import constants
 from portality import models
 from portality.bll import DOAJ
-from portality.core import app
+from portality.events import consumer_utils
 from portality.events.consumer import EventConsumer
 from portality.lib import dates
 from portality.util import url_for
@@ -15,30 +15,44 @@ class UpdateRequestPublisherSubmittedNotify(EventConsumer):
 
     class Context(TypedDict):
         # no usage, just for developer reference
-        application_title: str
-        date_applied: str
-        issns: list
+        application: dict
 
     @classmethod
     def should_consume(cls, event):
-        return event.id == constants.EVENT_APPLICATION_UR_SUBMITTED and event.who
+        if event.id != constants.EVENT_APPLICATION_UR_SUBMITTED:
+            return False
+
+        if not consumer_utils.is_enable_publisher_email():
+            return False
+
+        app_source = event.context.get("application")
+        if app_source is None:
+            return False
+
+        application = consumer_utils.parse_application(app_source)
+        if application.application_type != constants.APPLICATION_TYPE_UPDATE_REQUEST:
+            return False
+
+        if not application.owner:
+            return False
+
+        return True
 
     @classmethod
     def consume(cls, event):
-        if not app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-            return
+        application = consumer_utils.parse_application(event.context.get("application"))
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
 
         notification = models.Notification()
-        notification.who = event.who
+        notification.who = application.owner
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
         notification.long = svc.long_notification(cls.ID).format(
-            application_title=event.context.get('application_title', '<Missing Title>'),
-            date_applied=dates.human_date(event.context.get('date_applied', dates.DEFAULT_TIMESTAMP_VAL)),
+            title=application.bibjson().title,
+            date_applied=dates.human_date(application.date_applied),
         )
         notification.short = svc.short_notification(cls.ID).format(
             issns=", ".join(issn for issn in event.context.get('issns', []))
