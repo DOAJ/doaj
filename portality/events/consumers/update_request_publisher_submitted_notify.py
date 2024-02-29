@@ -15,7 +15,7 @@ class UpdateRequestPublisherSubmittedNotify(EventConsumer):
 
     class Context(TypedDict):
         # no usage, just for developer reference
-        title: str
+        application_title: str
         date_applied: str
         issns: list
 
