@@ -51,7 +51,7 @@ class UpdateRequestPublisherSubmittedNotify(EventConsumer):
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
 
         notification.long = svc.long_notification(cls.ID).format(
-            title=application.bibjson().title,
+            application_title=application.bibjson().title,
             date_applied=dates.human_date(application.date_applied),
         )
         notification.short = svc.short_notification(cls.ID).format(
