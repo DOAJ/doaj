@@ -734,7 +734,7 @@ class PublisherUpdateRequest(ApplicationProcessor):
         if email_alert:
             DOAJ.eventsService().trigger(models.Event(
                 constants.EVENT_APPLICATION_UR_SUBMITTED,
-                current_user.id,
+                current_user and current_user.id,
                 context={
                     'application': self.target.data,
                 }
