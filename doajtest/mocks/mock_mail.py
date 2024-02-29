@@ -1,3 +1,6 @@
+from flask_mail import Message
+
+
 class MockMail:
     def __init__(self, *args, **kwargs):
         self.messages = []
@@ -12,5 +15,3 @@ class MockMail:
         print(message.body)
         print('---------------------------')
         self.messages.append(message)
-
-

@@ -361,9 +361,11 @@ if "update_request_publisher_rejected_notify" in NOTIFICATIONS:
     con.consume(event)
 
 if UpdateRequestPublisherSubmittedNotify.ID in NOTIFICATIONS:
+    application = ApplicationFixtureFactory.make_application_source()
+    application["admin"]["owner"] = USER
+    application["bibjson"]["title"] = "Update Request Publisher Submitted Notify"
+    application["id"] = "update_request_publisher_submitted_notify"
     event = Event(constants.EVENT_APPLICATION_STATUS, USER, context={
-        'application_title': 'MYYYYYYYY Application Title',
-        'issns': ['1234-5678', '9876-5432'],
-        'date_applied': '2021-01-01',
+        'application': application,
     })
     UpdateRequestPublisherSubmittedNotify.consume(event)
