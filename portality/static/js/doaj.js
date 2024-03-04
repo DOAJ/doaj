@@ -69,30 +69,6 @@ var doaj = {
         doaj.bindMiniSearch();
     },
 
-    // bitlyShortener : function(query, success_callback, error_callback) {
-    //     // ~~-> Bitly:ExternalService ~~
-    //     function callbackWrapper(data) {
-    //         success_callback(data.url);
-    //     }
-    //
-    //     function errorHandler() {
-    //         alert("Sorry, we're unable to generate short urls at this time");
-    //         error_callback();
-    //     }
-    //
-    //     var page = window.location.protocol + '//' + window.location.host + window.location.pathname;
-    //
-    //     $.ajax({
-    //         type: "POST",
-    //         contentType: "application/json",
-    //         dataType: "jsonp",
-    //         url: "/service/shorten",
-    //         data : JSON.stringify({page: page, query: query}),
-    //         success: callbackWrapper,
-    //         error: errorHandler
-    //     });
-    // },
-
     doajUrlShortener : function(url, success_callback, error_callback) {
         function callbackWrapper(data) {
             success_callback(data.short_url);
