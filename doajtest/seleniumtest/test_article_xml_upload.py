@@ -7,6 +7,7 @@ from parameterized import parameterized
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
+import doajtest.helpers
 from doajtest import selenium_helpers
 from doajtest.fixtures import JournalFixtureFactory, url_path, article_doajxml
 from doajtest.fixtures.accounts import PUBLISHER_B_SOURCE, create_publisher_a, create_maned_a
@@ -72,7 +73,7 @@ class ArticleXmlUploadCommonSTC(SeleniumTestCase):
             return new_file_upload.status not in (FileUploadStatus.Validated, FileUploadStatus.Incoming)
 
         # interval 0.5 is good because ES can't handle too many requests
-        selenium_helpers.wait_unit(_cond_fn, timeout=15, check_interval=0.5)
+        doajtest.helpers.wait_unit(_cond_fn, timeout=15, check_interval=0.5)
         return new_file_upload
 
 
@@ -176,7 +177,7 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
         self.upload_submit_file(file_path)
 
         assert 'File uploaded and waiting to be processed' in self.find_ele_by_css('.alert--success').text
-        selenium_helpers.wait_unit(
+        doajtest.helpers.wait_unit(
             lambda: len(_find_history_rows()) == n_org_rows + 1,
             timeout=10, check_interval=1
         )
@@ -306,7 +307,7 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
                                                             XML_FORMAT_DOAJ)
         self.assert_history_row_success(latest_history_row)
         selenium_helpers.goto(self.selenium, url_path.url_toc_articles(journal_issn))
-        selenium_helpers.wait_unit(lambda: self.find_eles_by_css(article_title_selector))
+        doajtest.helpers.wait_unit(lambda: self.find_eles_by_css(article_title_selector))
         assert expected_title in [e.get_attribute('innerHTML').strip()
                                   for e in self.find_eles_by_css(article_title_selector)]
 
