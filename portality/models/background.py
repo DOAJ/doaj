@@ -250,8 +250,18 @@ class BackgroundJobQueryBuilder:
             },
         }
 
-    def append_must(self, must_dict: dict):
-        self.query_dict["query"]["bool"]["must"].append(must_dict)
+    def _append_bool_condition(self, bool_key: str, condition: dict):
+        if bool_key not in self.query_dict['query']['bool']:
+            self.query_dict['query']['bool'][bool_key] = []
+        self.query_dict['query']['bool'][bool_key].append(condition)
+        return self
+
+    def append_must(self, condition: dict):
+        self._append_bool_condition('must', condition)
+        return self
+
+    def append_must_not(self, condition: dict):
+        self._append_bool_condition('must_not', condition)
         return self
 
     def since(self, since: datetime.datetime):
@@ -268,13 +278,19 @@ class BackgroundJobQueryBuilder:
         self.append_must({"term": {"queue_id.exact": queue_id}})
         return self
 
-    def status_includes(self, status):
-        if isinstance(status, str):
-            status = [status]
-        elif not isinstance(status, list):
-            status = list(status)
+    def _to_list(self, item):
+        if isinstance(item, str):
+            item = [item]
+        elif not isinstance(item, list):
+            item = list(item)
+        return item
 
-        self.append_must({"terms": {"status.exact": status}})
+    def status_includes(self, status):
+        self.append_must({"terms": {"status.exact": self._to_list(status)}})
+        return self
+
+    def status_excludes(self, status):
+        self.append_must_not({"terms": {"status.exact": self._to_list(status)}})
         return self
 
     def size(self, size: int):
@@ -325,5 +341,3 @@ class LastCompletedJobQuery:
                 .order_by('last_updated', 'desc')
                 .size(1)
                 .build_query_dict())
-
-
