@@ -16,7 +16,7 @@ from portality.core import app
 from portality.decorators import ssl_required, api_key_required
 from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
-from portality.lib import plausible
+from portality.lib import plausible, urlshort
 from portality.ui.messages import Messages
 
 # ~~DOAJ:Blueprint~~
@@ -43,7 +43,8 @@ def cookie_consent():
     else:
         resp = make_response()
     # set a cookie that lasts for one year
-    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"), Messages.CONSENT_COOKIE_VALUE, max_age=31536000, samesite=None, secure=True)
+    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"), Messages.CONSENT_COOKIE_VALUE, max_age=31536000,
+                    samesite=None, secure=True)
     return resp
 
 
@@ -55,7 +56,8 @@ def dismiss_site_note():
     else:
         resp = make_response()
     # set a cookie that lasts for one year
-    resp.set_cookie(app.config.get("SITE_NOTE_KEY"), app.config.get("SITE_NOTE_COOKIE_VALUE"), max_age=app.config.get("SITE_NOTE_SLEEP"), samesite=None, secure=True)
+    resp.set_cookie(app.config.get("SITE_NOTE_KEY"), app.config.get("SITE_NOTE_COOKIE_VALUE"),
+                    max_age=app.config.get("SITE_NOTE_SLEEP"), samesite=None, secure=True)
     return resp
 
 
@@ -100,7 +102,7 @@ def search():
 def search_post():
     """ Redirect a query from the box on the index page to the search page. """
     if request.form.get('origin') != 'ui':
-        abort(400)                                              # bad request - we must receive searches from our own UI
+        abort(400)  # bad request - we must receive searches from our own UI
 
     ref = request.form.get("ref")
     if ref is None:
@@ -115,14 +117,14 @@ def search_post():
 
     # lhs for journals, rhs for articles
     field_map = {
-        "all" : (None, None),
-        "title" : ("bibjson.title", "bibjson.title"),
-        "abstract" : (None, "bibjson.abstract"),
-        "subject" : ("index.classification", "index.classification"),
-        "author" : (None, "bibjson.author.name"),
-        "issn" : ("index.issn.exact", None),
-        "publisher" : ("bibjson.publisher.name", None),
-        "country" : ("index.country", None)
+        "all": (None, None),
+        "title": ("bibjson.title", "bibjson.title"),
+        "abstract": (None, "bibjson.abstract"),
+        "subject": ("index.classification", "index.classification"),
+        "author": (None, "bibjson.author.name"),
+        "issn": ("index.issn.exact", None),
+        "publisher": ("bibjson.publisher.name", None),
+        "country": ("index.country", None)
     }
     default_field_opts = field_map.get(field, None)
     default_field = None
@@ -143,6 +145,7 @@ def search_post():
 
     return redirect(route + '?source=' + urllib.parse.quote(json.dumps(query)) + "&ref=" + urllib.parse.quote(ref))
 
+
 #############################################
 
 # FIXME: this should really live somewhere else more appropirate to who can access it
@@ -151,9 +154,9 @@ def search_post():
 @ssl_required
 def journal_readonly(journal_id):
     if (
-        not current_user.has_role("admin")
-        or not current_user.has_role("editor")
-        or not current_user.has_role("associate_editor")
+            not current_user.has_role("admin")
+            or not current_user.has_role("editor")
+            or not current_user.has_role("associate_editor")
     ):
         abort(401)
 
@@ -234,11 +237,13 @@ def get_from_local_store(container, filename):
 def autocomplete(doc_type, field_name):
     prefix = request.args.get('q', '')
     if not prefix:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
+        return jsonify({'suggestions': [
+            {"id": "", "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
 
     m = models.lookup_model(doc_type)
     if not m:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
+        return jsonify({'suggestions': [
+            {"id": "", "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
 
     size = request.args.get('size', 5)
 
@@ -286,6 +291,7 @@ def find_toc_journal_by_identifier(identifier):
 def is_issn_by_identifier(identifier):
     return len(identifier) == 9
 
+
 def find_correct_redirect_identifier(identifier, bibjson) -> str:
     """
     return None if identifier is correct and no redirect is needed
@@ -326,6 +332,7 @@ def find_correct_redirect_identifier(identifier, bibjson) -> str:
         # let it continue loading if we only have the hex UUID for the journal (no ISSNs)
         # and the user is referring to the toc page via that ID
 
+
 @blueprint.route("/toc/<identifier>")
 def toc(identifier=None):
     """ Table of Contents page for a journal. identifier may be the journal id or an issn """
@@ -338,7 +345,7 @@ def toc(identifier=None):
         return redirect(url_for('doaj.toc', identifier=real_identifier), 301)
     else:
         # now render all that information
-        return render_template('doaj/toc.html', journal=journal, bibjson=bibjson )
+        return render_template('doaj/toc.html', journal=journal, bibjson=bibjson)
 
 
 @blueprint.route("/toc/articles/<identifier>")
@@ -365,11 +372,10 @@ def toc_articles(identifier=None, volume=None, issue=None):
                             + '?source=' + dao.Facetview2.url_encode_query(q))
 
         # now render all that information
-        return render_template('doaj/toc_articles.html', journal=journal, bibjson=bibjson )
+        return render_template('doaj/toc_articles.html', journal=journal, bibjson=bibjson)
 
 
-
-#~~->Article:Page~~
+# ~~->Article:Page~~
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
     # identifier must be the article id
@@ -387,7 +393,8 @@ def article_page(identifier=None):
         if len(journals) > 0:
             journal = journals[0]
 
-    return render_template('doaj/article.html', article=article, journal=journal, page={"highlight" : True})
+    return render_template('doaj/article.html', article=article, journal=journal, page={"highlight": True})
+
 
 # Not using this form for now but we might bring it back later
 # @blueprint.route("/contact/", methods=["GET", "POST"])
@@ -530,7 +537,8 @@ def xml():
 
 @blueprint.route("/docs/widgets/")
 def widgets():
-    return render_template("layouts/static_page.html", page_frag="/docs/widgets.html", base_url=app.config.get('BASE_URL'))
+    return render_template("layouts/static_page.html", page_frag="/docs/widgets.html",
+                           base_url=app.config.get('BASE_URL'))
 
 
 @blueprint.route("/docs/public-data-dump/")
@@ -552,9 +560,11 @@ def faq():
 def about():
     return render_template("layouts/static_page.html", page_frag="/about/index.html")
 
+
 @blueprint.route("/at-20/")
 def at_20():
     return render_template("layouts/static_page.html", page_frag="/about/at-20.html")
+
 
 @blueprint.route("/about/ambassadors/")
 def ambassadors():
@@ -652,3 +662,13 @@ def publishers():
 @blueprint.route("/password-reset/")
 def new_password_reset():
     return redirect(url_for('account.forgot'), code=301)
+
+
+@blueprint.route("/sc/<alias>")
+def shortened_url(alias):
+    # KTODO handle plausible
+    url = urlshort.find_url_by_alias(alias)
+    if url:
+        return redirect(url)
+
+    abort(404)

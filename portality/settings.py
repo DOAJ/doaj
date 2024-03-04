@@ -705,6 +705,8 @@ MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
 MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
 MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
 MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
+MAPPINGS['url_shortener'] = MAPPINGS["account"]    #~~->URLShortener:Model~~
+
 
 #########################################
 # Query Routes
