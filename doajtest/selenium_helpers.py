@@ -1,6 +1,5 @@
 import datetime
 import logging
-import time
 import multiprocessing
 from multiprocessing import Process, freeze_support
 from typing import TYPE_CHECKING
@@ -8,11 +7,10 @@ from typing import TYPE_CHECKING
 import selenium
 from selenium import webdriver
 from selenium.common import StaleElementReferenceException, ElementClickInterceptedException
-from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 
 from doajtest.fixtures.url_path import URL_LOGOUT
-from doajtest.helpers import DoajTestCase, patch_config
+from doajtest.helpers import DoajTestCase, patch_config, wait_unit
 from portality import app, models, core
 from portality.dao import ESMappingMissingError
 
@@ -218,16 +216,6 @@ def login_by_acc(driver: 'WebDriver', acc: models.Account = None):
         traceback.print_exc()
         breakpoint()  # for checking, how could this happen?
     assert "/login" not in driver.current_url
-
-
-def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1,
-              timeout_msg="wait_unit but exit_cond timeout"):
-    start = time.time()
-    while (time.time() - start) < timeout:
-        if exit_cond_fn():
-            return
-        time.sleep(check_interval)
-    raise TimeoutError(timeout_msg)
 
 
 def wait_unit_elements(driver: 'WebDriver', css_selector: str, timeout=10, check_interval=0.1):

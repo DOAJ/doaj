@@ -4,6 +4,7 @@ import hashlib
 import logging
 import os
 import shutil
+import time
 from contextlib import contextmanager
 from glob import glob
 from unittest import TestCase
@@ -411,3 +412,13 @@ def login(app_client, username, password, follow_redirects=True):
 
 def logout(app_client, follow_redirects=True):
     return app_client.get(url_for('account.logout'), follow_redirects=follow_redirects)
+
+
+def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1,
+              timeout_msg="wait_unit but exit_cond timeout"):
+    start = time.time()
+    while (time.time() - start) < timeout:
+        if exit_cond_fn():
+            return
+        time.sleep(check_interval)
+    raise TimeoutError(timeout_msg)
