@@ -81,4 +81,4 @@ def find_url_by_alias(alias: str) -> Optional[str]:
 
 def parse_shortened_url(alias: str) -> str:
     """ parse the shortened url from the given alias """
-    return url_for('doaj.shortened_url', alias=alias)
+    return app.config.get("BASE_URL") + url_for('doaj.shortened_url', alias=alias)

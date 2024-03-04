@@ -1531,3 +1531,11 @@ DATALOG_JA_FILENAME = 'DOAJ: journals added and withdrawn'
 
 # worksheet name or tab name that datalog will write to
 DATALOG_JA_WORKSHEET_NAME = 'Added'
+
+
+
+################################
+# Url Shortener
+# ~~->URLShortener:Feature~~
+
+ALLOWED_SHORTEN_PATH = ['/search/journals', '/search/articles']

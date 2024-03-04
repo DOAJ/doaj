@@ -93,6 +93,27 @@ var doaj = {
     //     });
     // },
 
+    doajUrlShortener : function(url, success_callback, error_callback) {
+        function callbackWrapper(data) {
+            success_callback(data.short_url);
+        }
+
+        function errorHandler() {
+            alert("Sorry, we're unable to generate short urls at this time");
+            error_callback && error_callback();
+        }
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/service/shorten",
+            data : JSON.stringify({url: url}),
+            success: callbackWrapper,
+            error: errorHandler
+        });
+
+    },
+
     journal_toc_id : function(journal) {
         // if e-issn is available, use that
         // if not, but a p-issn is available, use that
