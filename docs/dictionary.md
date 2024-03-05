@@ -6,3 +6,5 @@
 | inst    | instance                     |
 | fmt     | format                       |
 | exparam | extra parameter              |
+| maned   | Managing Editor              |
+| gsheet  | Google Sheet                 |

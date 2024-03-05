@@ -18,13 +18,6 @@ ed:
   country: Australia
   language: Chinese, English
   featured: true
-
-- name: Ikhwan Arief
-  area: Science, Technology
-  year_since:
-  city: Padang, West Sumatra
-  country: Indonesia
-  language: Indonesian, English
   
 - name: Juyeon Park
   area: Librarianship
@@ -58,11 +51,12 @@ ed:
   photo: "napa.jpg"
 
 - name: Pablo Hernandez
-  area: Medical Sciences
+  area: Medical Sciences, Nutrition
   year_since:
   city: Caracas
   country: Venezuela
   language: Spanish, English
+  featured: true
   photo: "Pablo.jpg"
 
 - name: Paola Galimberti
@@ -121,7 +115,15 @@ ass_ed:
   city: Florence
   country: Italy
   language: Italian, English, Spanish
-  
+
+- name: Amber Osman
+  area: Open Science, Publication Ethics, Scholarly communication
+  year_since:
+  city: Karachi
+  country: Pakistan
+  language: Urdu, English
+  photo: "Amber.jpeg"
+
 - name: Amir Reza Asnafi
   area: Library and Information Science, Scientometrics
   year_since:
@@ -136,6 +138,7 @@ ass_ed:
   city: Madiun
   country: Indonesia
   language: Indonesian, English
+  photo: "Andista.jpg"
 
 - name: Andrea Imre
   area: Library Science, Music, General
@@ -145,11 +148,11 @@ ass_ed:
   language: Hungarian, English
 
 - name: Andrea Marchitelli
-  area: Librarianship
+  area: Library Science
   year_since:
-  city: 
-  country: Poland
-  language: Polish, English
+  city: Rome
+  country: Italy
+  language: Italian, English
 
 - name: Andronic Octavian
   area: Medicine
@@ -271,6 +274,14 @@ ass_ed:
   country: Indonesia
   language: Bahasa Indonesia, English
   photo: "dh.jpg"  
+  
+- name: Dumitru Lisnic
+  area: History and Religious Studies, Ethnography, Anthropology
+  year_since:
+  city: Balți
+  country: Republic of Moldova
+  language: Romanian, Russian, Ukrainian, German
+  photo: "Dumitru.jpg"  
 
 - name: Dr. Eko Supraptono
   area: Technology
@@ -286,6 +297,14 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
+- name: Eduardo Enrique Chibas Muñoz
+  area: Health Sciences
+  year_since:
+  city: Guantánamo
+  country: Cuba
+  language: Spanish
+  photo: "Eduardo.jpg"
+
 - name: Eko Pramudya Laksana
   area: Social Sciences
   year_since:
@@ -293,13 +312,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Emma Molls
-  area: Librarianship
-  year_since:
-  city: Minneapolis, MN
-  country: USA
-  language: English
-  
 - name: Emrah Kaya
   area: Social Sciences, Humanities
   year_since:
@@ -344,7 +356,6 @@ ass_ed:
   country: Republic of Korea
   language: Korean, English
 
-
 - name: Iryna Kuchma
   area: Humanities, Social Sciences
   year_since:
@@ -387,14 +398,6 @@ ass_ed:
   country: China
   language: English
 
-- name: João Sousa
-  area: Social Sciences
-  year_since:
-  city:
-  country: Angola
-  language: Portuguese, English
-  photo: "sousa.JPG"
-
 - name: JooYeun Son
   area:
   year_since:
@@ -430,6 +433,7 @@ ass_ed:
   city: Edirne
   country: Türkiye
   language: English, Turkish, German
+  featured: true
   photo: "Kadri Kiran.jpg"
 
 - name: Kâmil B. Varınca
@@ -462,6 +466,22 @@ ass_ed:
   city: Charlottetown
   country: Canada
   language: English
+
+- name: Kristen Totleben
+  area: Librarianship, Humanities, Social Sciences
+  year_since:
+  city: Rochester, New York
+  country: USA
+  language: English, Spanish
+  photo: "Kristen.jpg"
+
+- name: Lee Yang Díaz Chieng
+  area: Information Sciences
+  year_since:
+  city: Guantánamo
+  country: Cuba
+  language: Spanish and English
+  photo: "Lee.jpg"
 
 - name: Lena Lönngren
   area:
@@ -572,14 +592,6 @@ ass_ed:
   language: Spanish, English
   photo: "MilagroCastro.jpg"
 
-- name: Milton Ramirez
-  area: Humanities and Social Sciences
-  year_since:
-  city:
-  country: New Jersey, USA
-  language: Spanish, English
-  photo: "MiltonRamirez.jpg"
-
 - name: Muhamad Taufik Hidayat
   area: Humanities, Social Sciences
   year_since:
@@ -594,6 +606,7 @@ ass_ed:
   city: Kyiv
   country: Ukraine
   language: Ukranian, Russian, English, Polish
+  featured: true
   photo: "Nataliia.jpg"
  
 - name: Nathalia Avila
@@ -635,11 +648,11 @@ ass_ed:
   language: Ukrainian, Russian, English, Polish
   
 - name: Olena Zimba
-  area: Medicine, Science Communication
+  area: Medicine, Science Communication, Rheumatology, Public Health
   year_since:
   city: Lviv
   country: Ukraine
-  language: Ukrainian, Russian, English
+  language: Ukrainian, Russian, English, Polish
   photo: "OlenaZimba.jpg"
 
 - name: Olga Kirillova
@@ -672,7 +685,7 @@ ass_ed:
   language: English
   photo: "princessnwafor.jpg"
   
-- name: Priya Rangra
+- name: Priya
   area: Open Source Software, Open Science, Information Seeking Behaviour, Applications of ICT and AI in Libraries, Bibliometric Analysis
   year_since:
   city: Himachal Pradesh
@@ -686,21 +699,6 @@ ass_ed:
   city:
   country: Indonesia
   language: Indonesian, English
-
-- name: Ran Dang
-  area: Biology, Medical Sciences
-  year_since:
-  city: Zhengzhou
-  country: China
-  language: Chinese, English
-  photo: "randang.jpg"
-
-- name: Raúl Sampieri
-  area: Science
-  year_since:
-  city:
-  country: Mexico
-  language: Spanish, English
 
 - name: Remedios Melero (Reme)
   area: Social Sciences
@@ -745,14 +743,6 @@ ass_ed:
   country: Italy
   language: Italian, English, German
   
-- name: Sridhar Gutam
-  area: Plant Physiology, Tree Phenology and Open Science
-  year_since:
-  city: Bengaluru
-  country: India
-  language: Telugu, English, Hindi, Kannada
-  photo: "Sridhar_photo.png"
-
 - name: Sofia Fagiolo
   area: Librarianship
   year_since:
@@ -812,6 +802,14 @@ ass_ed:
   country: India
   language: Kannada, English
   photo: "Vasanth.jpg"
+
+- name: Wileidys Artigas
+  area: Library Science
+  year_since:
+  city: Plano, Texas
+  country: USA
+  language: Spanish, English and Portuguese
+  photo: "Wileidys.jpg"
   
 - name: Yalçın Tükel 
   area: Sports recreation

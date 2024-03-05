@@ -138,4 +138,31 @@ tests:
   - step: Click enter
     results:
       - Focus is moved to the main content
+- title: Test minisearch section
+  context:
+    role: anonymous
+  steps:
+    - step: Go to the landing page
+    - step: Click "Journals" radio button
+    - step: Open "In all fields" dropdown
+      results:
+        - Options Title, ISSN, Subject, Publisher and Country of Publisher are available
+    - step: Choose "Articles" radio button
+    - step: Open "In all fields" dropdown
+      results:
+      - Options Title, Abstract, Subject and Author are available
+    - step: perform search of Journal (eg. "Medicine", "Title")
+      results:
+        - You are redirected to /search/journals results page
+        - The top search fields are filled with the current query
+        - Correct search results are displayed
+    - step: perform search of Article (eg. "Medicine", "Title")
+      results:
+        - You are redirected to /search/articles results page
+        - The top search fields are filled with the current query
+        - Correct search results are displayed
+    - step: repeat searches for different fields
+      results:
+        - Each time correct results page is displayed
+
 
