@@ -355,11 +355,8 @@ def toc_articles(identifier=None):
                                 volume=volume, issue=issue), 301)
     else:
 
-        if is_issn_by_identifier(identifier) and volume:
-            filters = [dao.Facetview2.make_term_filter('bibjson.journal.volume.exact', volume)]
-            if issue:
-                filters += [dao.Facetview2.make_term_filter('bibjson.journal.number.exact', issue)]
-            q = dao.Facetview2.make_query(filters=filters)
+        if is_issn_by_identifier(identifier):
+            q = dao.Facetview2.make_query()
 
             # The issn we are using to build the TOC
             issn = bibjson.get_preferred_issn()
