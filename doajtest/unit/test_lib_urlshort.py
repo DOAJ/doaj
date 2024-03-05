@@ -79,3 +79,6 @@ class TestUrlshortRoute(DoajTestCase):
             rv = c.get(surl)
             assert rv.status_code == 302
             assert rv.headers['Location'] == url
+
+
+    # KTODO add /services/shorten
