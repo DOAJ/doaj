@@ -4,6 +4,7 @@ from doajtest.helpers import DoajTestCase, wait_unit
 from portality import models
 from portality.lib import urlshort
 from portality.models import UrlShortener
+from portality.util import url_for
 
 
 def wait_any_url_shortener():
@@ -69,6 +70,11 @@ class TestLibUrlshort(DoajTestCase):
         assert urlshort.find_url_by_alias(alias) == data[alias]
 
 
+def surl_to_alias(surl):
+    alias = surl[surl.rfind('/') + 1:]
+    return alias
+
+
 class TestUrlshortRoute(DoajTestCase):
     def test_urlshort_route(self):
         url = 'https://www.google.com'
@@ -80,5 +86,23 @@ class TestUrlshortRoute(DoajTestCase):
             assert rv.status_code == 302
             assert rv.headers['Location'] == url
 
+    def test_urlshort_route__not_found(self):
+        with self.app_test.test_client() as c:
+            rv = c.get(urlshort.parse_shortened_url('nnnnnnnnot_found'))
+            assert rv.status_code == 404
 
-    # KTODO add /services/shorten
+    def test_create_shorten_url(self):
+        data = {'url': 'http://localhost:5004/search/journals'}
+        with self.app_test.test_client() as c:
+            rv = c.post(url_for('doajservices.shorten'), json=data)
+            assert rv.status_code == 200
+            assert rv.json['short_url']
+
+        wait_unit(wait_any_url_shortener)
+        assert urlshort.find_url_by_alias(surl_to_alias(rv.json['short_url'])) == data['url']
+
+    def test_create_shorten_url__invalid(self):
+        data = {'url': 'http://localhost:5004/invalid'}
+        with self.app_test.test_client() as c:
+            rv = c.post(url_for('doajservices.shorten'), json=data)
+            assert rv.status_code == 400
