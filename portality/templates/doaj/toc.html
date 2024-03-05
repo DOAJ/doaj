@@ -273,6 +273,11 @@
                                                target="_blank" rel="noopener">
                                                 {{ policy }}
                                             </a>
+                                        {% elif bibjson.deposit_policy_url %}
+                                            <a href="{{ bibjson.deposit_policy_url|safe }}"
+                                               target="_blank" rel="noopener">
+                                                {{ policy }}
+                                            </a>
                                         {% else %}
                                             {{ policy }}
                                         {% endif %}
