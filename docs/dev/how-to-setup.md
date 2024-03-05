@@ -5,8 +5,7 @@ Setup google API key for google sheet
 
 * go to https://console.cloud.google.com/
 * create and select a project on the top left
-* searching for "Google Drive API" and enable it, url should be some thing
-  like (https://console.cloud.google.com/marketplace/product/google/drive.googleapis.com)
+* searching for "Google Drive API" and enable it, url should be some thing like (https://console.cloud.google.com/marketplace/product/google/drive.googleapis.com)
 * searching for "Google Sheets API" and enable it
 
 ### create key
