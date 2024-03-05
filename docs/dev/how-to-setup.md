@@ -5,7 +5,8 @@ Setup google API key for google sheet
 
 * go to https://console.cloud.google.com/
 * create and select a project on the top left
-* searching for "Google Drive API" and enable it, url should be some thing like (https://console.cloud.google.com/marketplace/product/google/drive.googleapis.com)
+* searching for "Google Drive API" and enable it, url should be some thing
+  like (https://console.cloud.google.com/marketplace/product/google/drive.googleapis.com)
 * searching for "Google Sheets API" and enable it
 
 ### create key
@@ -47,21 +48,21 @@ How to setup for dev with Plausible
 -----------------------------------
 
 * run plausible
-  * ref 'https://github.com/plausible/community-edition'
-  * update `plausible-conf.env`
-  * run docker `docker-compose up`
-  * testing configuration by browse `http://localhost:8000` and login admin user
+    * ref 'https://github.com/plausible/community-edition'
+    * update `plausible-conf.env`
+    * run docker `docker-compose up`
+    * testing configuration by browse `http://localhost:8000` and login admin user
 * setup fake domain in /etc/hosts
-  * e.g. `127.0.0.1    doaj.dev.local`
+    * e.g. `127.0.0.1    doaj.dev.local`
 * setup dev.cfg
-  * `DEBUG = False`
-  * `BASE_URL = "https://doaj.dev.local:5004"`
-  * `PLAUSIBLE_URL = "http://localhost:8000"`
-  * `PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/script.outbound-links.file-downloads.js"`
-  * `PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event"`
-  * `PLAUSIBLE_SITE_NAME = "doaj.dev.local"`
+    * `DEBUG = False`
+    * `BASE_URL = "https://doaj.dev.local:5004"`
+    * `PLAUSIBLE_URL = "http://localhost:8000"`
+    * `PLAUSIBLE_JS_URL = PLAUSIBLE_URL + "/js/script.outbound-links.file-downloads.js"`
+    * `PLAUSIBLE_API_URL = PLAUSIBLE_URL + "/api/event"`
+    * `PLAUSIBLE_SITE_NAME = "doaj.dev.local"`
 * update `portality/app.py`, change `fake_https=True` e.g. `run_server(fake_https=True)`
-  *  you might need `cryptography~=42.0` installed in pip
+    * you might need `cryptography~=42.0` installed in pip
 * run `portality/app.py`
 * testing configuration by browse `https://doaj.dev.local:5004`
 
