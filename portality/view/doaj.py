@@ -665,10 +665,12 @@ def new_password_reset():
 
 
 @blueprint.route("/sc/<alias>")
+@plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_URLSHORT', 'Urlshort'),
+                    action=app.config.get('ANALYTICS_ACTION_URLSHORT_REDIRECT', 'Redirect'))
 def shortened_url(alias):
-    # KTODO handle plausible
     url = urlshort.find_url_by_alias(alias)
     if url:
         return redirect(url)
 
+    app.logger.debug(f"Shortened URL not found: [{alias}]")
     abort(404)

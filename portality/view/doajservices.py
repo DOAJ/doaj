@@ -8,7 +8,7 @@ from portality import lock, models
 from portality.bll import DOAJ
 from portality.core import app
 from portality.decorators import ssl_required, write_required
-from portality.lib import urlshort
+from portality.lib import urlshort, plausible
 from portality.util import jsonp
 
 blueprint = Blueprint('doajservices', __name__)
@@ -58,6 +58,8 @@ def unlocked():
 
 
 @blueprint.route("/shorten", methods=["POST"])
+@plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_URLSHORT', 'Urlshort'),
+                    action=app.config.get('ANALYTICS_ACTION_URLSHORT_ADD', 'Find or create shortener url'))
 def shorten():
     """ create shortener url """
     data = json.loads(request.data)

@@ -1265,6 +1265,12 @@ ANALYTICS_CATEGORY_OPENURL = 'OpenURL'
 ANALYTICS_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
 ANALYTICS_ACTION_PUBLICDATADUMP = 'Download'
 
+# Plausible for Urlshort
+# ~~->URLShortener:Feature~~
+ANALYTICS_CATEGORY_URLSHORT = 'Urlshort'
+ANALYTICS_ACTION_URLSHORT_ADD = 'Find or create shortener url'
+ANALYTICS_ACTION_URLSHORT_REDIRECT = 'Redirect'
+
 # Plausible for API
 # ~~-> API:Feature~~
 ANALYTICS_CATEGORY_API = 'API Hit'
