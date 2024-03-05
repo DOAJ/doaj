@@ -44,7 +44,7 @@ If you use an institutional email address, your institution may apply extra secu
 2. If you are applying for the first time, [register with us first](/account/register).
 3. If you already have a DOAJ account, [sign in](/account/login) to submit a new application.
 
-A [sample of the application form](/static/doaj/docs/2023-07-04-DOAJQuestions.pdf) (Downloads a PDF) is available. Details of the [application process](/apply/guide/#the-application-process) are in the guide.
+A [PDF list of the questions](/static/doaj/docs/DOAJquestions-for-reference-only.pdf) is available for your reference. Details of the [application process](/apply/guide/#the-application-process) are in the guide.
 
 ### Rejected applications
 
@@ -75,7 +75,7 @@ You can access your dashboard and account settings by logging into your account.
 On [your dashboard](/publisher/), you can
 
 - See [a list of your journals](/publisher/journal) indexed in DOAJ
-- [Submit an update request](/apply/guide/#updating-your-journal-record) when journal details change
+- [Submit an update request](/publisher-responsibilities/#keeping-your-journal-records-up-to-date) when journal details change
 - [Upload](/publisher/uploadfile) or [enter](/publisher/metadata) article metadata for your journals
 - Download the Seal logo (only for journals awarded the DOAJ Seal).
 - Upload your full-text content (only for journals preserved via JASPER).
@@ -163,7 +163,7 @@ When we withdraw your journal, we will send you an email. Remind yourself of the
 - We have to withdraw your journal from DOAJ if it no longer adheres to our criteria or to publishing best practices.
 - We have to withdraw the journal if it is inactive (ceased publishing) or the website is unavailable.
 
-You can also check our [list of withdrawn journals](https://docs.google.com/spreadsheets/d/183mRBRqs2jOyP0qZWXN8dUd02D4vL0Mov_kgYF8HORM/edit#gid=1650882189) and ask for more information by [contacting our Help Desk](mailto:helpdesk@doaj.org).
+You can also check our [log of withdrawn journals](https://docs.google.com/spreadsheets/d/1Kv3MbgFSgtSDnEGkA2JacrSjunRu0umHeZCtcMeqO5E/edit#gid=2104690845&range=A1) and ask for more information by [contacting our Help Desk](mailto:helpdesk@doaj.org).
 
 ### Journal is not listed on my dashboard
 
@@ -172,3 +172,7 @@ You can also check our [list of withdrawn journals](https://docs.google.com/spre
 ### Unknown journal on my dashboard
 
 - [Contact our Help Desk](mailto:helpdesk@doaj.org) with the journal title and ISSN; they will help you.
+
+## Version history
+
+This is Version 1 of our Publisher information page.

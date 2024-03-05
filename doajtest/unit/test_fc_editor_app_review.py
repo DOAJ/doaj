@@ -39,12 +39,18 @@ def mock_lookup_code(code):
     if code == "SF600-1100": return 'Veterinary medicine'
     return None
 
+
 #####################################################################
 # Source objects to be used for testing
 #####################################################################
 
-APPLICATION_SOURCE = ApplicationFixtureFactory.make_update_request_source()
-APPLICATION_FORM = ApplicationFixtureFactory.make_application_form(role="editor")
+def make_application_source():
+    return ApplicationFixtureFactory.make_update_request_source()
+
+
+def make_application_form():
+    return ApplicationFixtureFactory.make_application_form(role="editor")
+
 
 ######################################################
 # Main test class
@@ -83,6 +89,8 @@ class TestEditorAppReview(DoajTestCase):
         acc.add_role("editor")
         ctx = self._make_and_push_test_context(acc=acc)
 
+        APPLICATION_SOURCE = make_application_source()
+
         # we start by constructing it from source
         formulaic_context = ApplicationFormFactory.context("editor")
         fc = formulaic_context.processor(source=models.Application(**APPLICATION_SOURCE))
@@ -90,7 +98,7 @@ class TestEditorAppReview(DoajTestCase):
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
-        #assert fc.template is not None
+        # assert fc.template is not None
 
         # TODO: we are no longer testing the render here - should we move this?
         """
@@ -111,7 +119,7 @@ class TestEditorAppReview(DoajTestCase):
 
         # now construct it from form data (with a known source)
         formulaic_context = ApplicationFormFactory.context("editor")
-        fc = formulaic_context.processor(formdata=MultiDict(APPLICATION_FORM),
+        fc = formulaic_context.processor(formdata=MultiDict(make_application_form()),
                                          source=models.Application(**APPLICATION_SOURCE))
 
         assert isinstance(fc, EditorApplication)
@@ -126,7 +134,7 @@ class TestEditorAppReview(DoajTestCase):
         assert fc.form.editor_group.data == "editorgroup"
 
         # run the validation itself
-        fc.form.subject.choices = mock_lcc_choices # set the choices allowed for the subject manually (part of the test)
+        fc.form.subject.choices = mock_lcc_choices  # set the choices allowed for the subject manually (part of the test)
         assert fc.validate(), fc.form.errors
 
         # run the crosswalk (no need to look in detail, xwalks are tested elsewhere)
@@ -141,7 +149,7 @@ class TestEditorAppReview(DoajTestCase):
         assert fc.target.owner == "publisher"
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"
-        assert fc.target.application_status == constants.APPLICATION_STATUS_PENDING, fc.target.application_status # is updated by the form
+        assert fc.target.application_status == constants.APPLICATION_STATUS_PENDING, fc.target.application_status  # is updated by the form
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
@@ -195,6 +203,7 @@ class TestEditorAppReview(DoajTestCase):
         acc.set_id("contextuser")
         acc.add_role("editor")
         ctx = self._make_and_push_test_context(acc=acc)
+        APPLICATION_SOURCE = make_application_source()
 
         eg = models.EditorGroup()
         eg.set_name(APPLICATION_SOURCE["admin"]["editor_group"])
@@ -204,7 +213,7 @@ class TestEditorAppReview(DoajTestCase):
         time.sleep(1.5)
 
         # construct a context from a form submission
-        source = deepcopy(APPLICATION_FORM)
+        source = deepcopy(make_application_form())
         source["application_status"] = constants.APPLICATION_STATUS_READY
         fd = MultiDict(source)
         formulaic_context = ApplicationFormFactory.context("editor")
@@ -231,6 +240,8 @@ class TestEditorAppReview(DoajTestCase):
         acc.set_id("contextuser")
         acc.add_role("editor")
         ctx = self._make_and_push_test_context(acc=acc)
+        APPLICATION_SOURCE = make_application_source()
+        APPLICATION_FORM = make_application_form()
 
         # Check that an accepted application can't be regressed by an editor
         accepted_source = APPLICATION_SOURCE.copy()
@@ -302,10 +313,10 @@ class TestEditorAppReview(DoajTestCase):
         associate_account.save(blocking=True)
 
         # Check that an editor can change from 'completed' to 'in progress' after a failed review
-        completed_source = APPLICATION_SOURCE.copy()
+        completed_source = make_application_source().copy()
         completed_source['admin']['application_status'] = constants.APPLICATION_STATUS_COMPLETED
 
-        in_progress_form = APPLICATION_FORM.copy()
+        in_progress_form = make_application_form().copy()
         in_progress_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Construct the formcontext from form data (with a known source)

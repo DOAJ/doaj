@@ -2,7 +2,7 @@ from copy import deepcopy
 
 from portality import constants
 from portality.core import app
-from portality.lib import es_data_mapping
+from portality.lib import es_data_mapping, coerce, dates
 from portality.models.v2 import shared_structs
 from portality.models.v2.journal import JournalLikeObject, Journal
 from portality.lib.coerce import COERCE_MAP
@@ -150,9 +150,18 @@ class Application(JournalLikeObject):
     def set_application_status(self, val):
         self.__seamless__.set_with_struct("admin.application_status", val)
 
+    def set_date_applied(self, date=None):
+        if date is None:
+            date = dates.now_str()
+        self.__seamless__.set_with_struct("admin.date_applied", date)
+
     @property
     def date_applied(self):
         return self.__seamless__.get_single("admin.date_applied")
+
+    @property
+    def date_applied_timestamp(self):
+        return self.__seamless__.get_single("admin.date_applied", coerce=coerce.to_datestamp())
 
     @date_applied.setter
     def date_applied(self, val):

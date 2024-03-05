@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.5.5"
+DOAJ_VERSION = "6.6.3"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -72,6 +72,8 @@ ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
+
+ES_READ_TIMEOUT = '1m'
 
 #####################################################
 # Elastic APM config  (MUST be configured in env file)
@@ -443,7 +445,8 @@ HUEY_SCHEDULE = {
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"}
+    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
+    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "*/30"},
 }
 
 HUEY_TASKS = {
@@ -1486,3 +1489,43 @@ TOURS = {
         }
     ]
 }
+
+
+#######################################################
+# Selenium test environment
+
+# url of selenium server, selenium remote will be used if it's not empty
+# usually it's a docker container and the url should be 'http://localhost:4444/wd/hub'
+SELENIUM_REMOTE_URL = 'http://localhost:4444/wd/hub'
+
+# host and port that used to run doaj server in background for selenium testcases
+# if you use docker selenium browser container, ip should be ip of docker network interface such as 172.17.0.1
+# SELENIUM_DOAJ_HOST = 'localhost'
+SELENIUM_DOAJ_HOST = '172.17.0.1'
+SELENIUM_DOAJ_PORT = 5014
+
+
+
+
+
+#############################################
+# Google Sheet
+# ~~->GoogleSheet:ExternalService~~
+
+# Google Sheet API
+# value should be key file path of json, empty string means disabled
+GOOGLE_KEY_PATH = ''
+
+
+
+#############################################
+# Datalog
+# ~~->Datalog:Feature~~
+
+### Datalog for Journal Added
+
+# google sheet filename for datalog ja
+DATALOG_JA_FILENAME = 'DOAJ: journals added and withdrawn'
+
+# worksheet name or tab name that datalog will write to
+DATALOG_JA_WORKSHEET_NAME = 'Added'

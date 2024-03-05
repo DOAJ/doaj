@@ -135,8 +135,8 @@
        {% set action = TODOS[todo.action_id[0]] %}
       {% set app_route = "admin.application" if current_user.has_role("admin") else "editor.application" %}
        {% set app_url =  url_for(app_route, application_id=todo.object_id) %}
-      {% set app_date = todo.object.created_timestamp %}
-       <li class="todo-list__item" data-app-url="{{ app_url }}">
+      {% set app_date = todo.object.date_applied_timestamp %}
+       <li class="todo-list__item" data-app-url="{{ app_url }}" data-action-ids="{{ todo.action_id|join(",") }}">
          <article class="flex-col flex-space-between card card--compact" style="border-color: {{ action.colour }};">
            <div class="flex">
              <a href="{{ app_url }}" target="_blank" title="{{ todo.title }}">

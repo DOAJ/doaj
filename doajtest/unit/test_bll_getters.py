@@ -9,6 +9,7 @@ from doajtest.helpers import DoajTestCase
 from portality import lock
 from portality.bll import DOAJ
 from portality.bll import exceptions
+from portality.lib import thread_utils
 from portality.models import Journal, Suggestion, Account
 
 
@@ -85,9 +86,10 @@ class TestBLLGetters(DoajTestCase):
                 else:
                     assert retrieved is None
 
-                time.sleep(1)
+                def has_lock():
+                    return lock.has_lock("journal", journal_id, account.id)
 
-                assert lock.has_lock("journal", journal_id, account.id)
+                assert thread_utils.wait_until(has_lock, timeout=5)
 
     @parameterized.expand(load_application_cases)
     def test_02_get_application(self, name, application, application_id, account, lock_application, raises=None):
@@ -119,6 +121,7 @@ class TestBLLGetters(DoajTestCase):
                 else:
                     assert retrieved is None
 
-                time.sleep(1)
+                def has_lock():
+                    return lock.has_lock(constants.LOCK_APPLICATION, application_id, account.id)
 
-                assert lock.has_lock(constants.LOCK_APPLICATION, application_id, account.id)
+                assert thread_utils.wait_until(has_lock, timeout=5)

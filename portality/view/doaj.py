@@ -121,7 +121,8 @@ def search_post():
         "subject" : ("index.classification", "index.classification"),
         "author" : (None, "bibjson.author.name"),
         "issn" : ("index.issn.exact", None),
-        "publisher" : ("bibjson.publisher.name", None)
+        "publisher" : ("bibjson.publisher.name", None),
+        "country" : ("index.country", None)
     }
     default_field_opts = field_map.get(field, None)
     default_field = None
