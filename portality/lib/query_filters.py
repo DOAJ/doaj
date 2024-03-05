@@ -20,10 +20,7 @@ def remove_fields(query: dict, fields_to_remove: list):
 
 def public_query_validator(q):
     # no deep paging
-    if q.from_result() > 10000:
-        return False
-
-    if q.size() > 200:
+    if (q.from_result()+q.size()) > 10000:
         return False
 
     return True
