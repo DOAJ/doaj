@@ -30,7 +30,6 @@ def api_v3_root():
 
 
 @blueprint.route('/docs')
-@api_rate_serv.track_api_rate
 def docs():
     account_url = None
     if current_user.is_authenticated:
@@ -51,7 +50,6 @@ def docs():
 
 
 @blueprint.route('/swagger.json')
-@api_rate_serv.track_api_rate
 def api_spec():
     swag = swagger(app)
     swag['info']['title'] = ""
@@ -65,7 +63,6 @@ def api_spec():
 # Handle wayward paths by raising an API404Error
 # leaving out methods should mean all, but tests haven't shown that behaviour.
 @blueprint.route("/<path:invalid_path>", methods=["POST", "GET", "PUT", "DELETE", "PATCH", "HEAD"])
-@api_rate_serv.track_api_rate
 def missing_resource(invalid_path):
     docs_url = app.config.get("BASE_URL", "") + url_for('.docs')
     spec_url = app.config.get("BASE_URL", "") + url_for('.api_spec')
@@ -111,7 +108,6 @@ def search_applications(search_query):
 @blueprint.route('/search/journals/<path:search_query>')
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('search_journals', 'Search journals'),
                     record_value_of_which_arg='search_query')
-@api_rate_serv.track_api_rate
 def search_journals(search_query):
     # get the values for the 2 other bits of search info: the page number and the page size
     page = request.values.get("page", 1)
@@ -143,7 +139,6 @@ def search_journals(search_query):
 @blueprint.route('/search/articles/<path:search_query>')
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('search_articles', 'Search articles'),
                     record_value_of_which_arg='search_query')
-@api_rate_serv.track_api_rate
 def search_articles(search_query):
     # get the values for the 2 other bits of search info: the page number and the page size
     page = request.values.get("page", 1)
@@ -272,7 +267,6 @@ def create_article():
       swag_spec=ArticlesCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('retrieve_article', 'Retrieve article'),
                     record_value_of_which_arg='article_id')
-@api_rate_serv.track_api_rate
 def retrieve_article(article_id):
     a = ArticlesCrudApi.retrieve(article_id, current_user)
     return jsonify_models(a)
@@ -322,7 +316,6 @@ def delete_article(article_id):
       swag_spec=JournalsCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @plausible.pa_event(ANALYTICS_CATEGORY, action=ANALYTICS_ACTIONS.get('retrieve_journal', 'Retrieve journal'),
                     record_value_of_which_arg='journal_id')
-@api_rate_serv.track_api_rate
 def retrieve_journal(journal_id):
     return jsonify_data_object(JournalsCrudApi.retrieve(journal_id, current_user))
 
