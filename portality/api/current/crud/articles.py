@@ -5,7 +5,9 @@ from typing import Dict
 from portality.api.current.crud.common import CrudApi
 from portality.api.current import Api400Error, Api401Error, Api403Error, Api404Error, Api500Error
 from portality.api.current.data_objects.article import IncomingArticleDO, OutgoingArticleDO
+from portality.bll import exceptions
 from portality.core import app
+from portality.dao import ElasticSearchWriteException, DAOSaveExceptionMaxRetriesReached
 from portality.lib import dataobj
 from portality import models, app_email
 from portality.bll.doaj import DOAJ
@@ -90,6 +92,10 @@ class ArticlesCrudApi(CrudApi):
             raise Api400Error(str(e))
         except DuplicateArticleException as e:
             raise Api403Error(str(e))
+        except IngestException as e:
+            raise Api400Error(str(e))
+        except (ElasticSearchWriteException, DAOSaveExceptionMaxRetriesReached) as e:
+            raise Api500Error(str(e))
 
 
         # Check we are allowed to create an article for this journal
@@ -250,6 +256,8 @@ class ArticlesCrudApi(CrudApi):
             raise Api400Error((str(e)))
         except DuplicateArticleException as e:
             raise Api403Error(str(e))
+        except (exceptions.ElasticSearchWriteException, exceptions.DAOSaveExceptionMaxRetriesReached) as e:
+            raise Api500Error(str(e))
 
         if result.get("success") == 0:
             raise Api400Error("Article update failed for unanticipated reason")
