@@ -39,12 +39,12 @@ class ApiRateService:
                 api_key = request.values['api_key']
                 api_user = Account.pull_by_api_key(api_key)
                 if api_user is None:
-                    app.logger.debug(f'api_key [{api_key}] not found src[{flask_utils.get_remote_addr()}]')
+                    app.logger.debug(f'api_key not found [{api_key}]')
                 else:
                     src = api_key
 
             if src is None:
-                src = flask_utils.get_remote_addr()
+                raise ValueError('api_key not found')
 
             target = request.url_rule.endpoint
 
