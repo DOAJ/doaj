@@ -1,9 +1,12 @@
-#~~API:Feature~~
-import json, uuid
-from portality.core import app
-from flask import request
+# ~~API:Feature~~
+import json
+import uuid
 from copy import deepcopy
+
+from flask import request
 from link_header import LinkHeader, Link
+
+from portality.core import app
 
 LINK_HEADERS = ['next', 'prev', 'last']
 TOTAL_RESULTS_COUNT = ['total']
@@ -16,17 +19,17 @@ class Api(object):
     # ~~->Swagger:Feature~~
     # ~~->API:Documentation~~
     SWAG_TEMPLATE = {
-        "description" : "",
+        "description": "",
         "responses": {},
         "parameters": [],
         "tags": []
     }
     R200 = {"schema": {}, "description": "A successful request/response"}
     R201 = {"schema": {"properties": CREATED_TEMPLATE}, "description": "Resource created successfully, response "
-                                                                      "contains the new resource ID and location."}
-    R201_BULK = {"schema": {"items": {"properties" : CREATED_TEMPLATE, "type" : "object"}, "type" : "array"},
-                            "description": "Resources created successfully, response contains the new resource IDs "
-                                           "and locations."}
+                                                                       "contains the new resource ID and location."}
+    R201_BULK = {"schema": {"items": {"properties": CREATED_TEMPLATE, "type": "object"}, "type": "array"},
+                 "description": "Resources created successfully, response contains the new resource IDs "
+                                "and locations."}
     R204 = {"description": "OK (Request succeeded), No Content"}
     R400 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Bad Request. Your request body was missing a "
                                                                      "required field, or the data in one of the "
@@ -125,6 +128,13 @@ class Api409Error(Exception):
     pass
 
 
+class Api429Error(Exception):
+    """
+    Too many requests
+    """
+    pass
+
+
 class Api500Error(Exception):
     pass
 
@@ -201,7 +211,7 @@ def generate_link_headers(metadata):
         links.append(Link(v, rel=k))  # e.g. Link("https://example.com/foo", rel="next")
 
     return str(LinkHeader(links))  # RFC compliant headers e.g.
-       # <https://example.com/foo>; rel=next, <https://example.com/bar>; rel=last
+    # <https://example.com/foo>; rel=next, <https://example.com/bar>; rel=last
 
 
 def respond(data, status, metadata=None):
@@ -224,6 +234,16 @@ def respond(data, status, metadata=None):
         return app.response_class(content, status, headers, mimetype='application/javascript')
     else:
         return app.response_class(data, status, headers, mimetype='application/json')
+
+
+def resp_err(error, log_msg, status_code, status_msg):
+    err_ref_id = uuid.uuid1()
+    err_msg = str(error) + " (ref: {y})".format(y=err_ref_id)
+    app.logger.info(log_msg + f' -- {err_msg}')
+    t = deepcopy(ERROR_TEMPLATE)
+    t['status'] = status_msg
+    t['error'] = err_msg
+    return respond(json.dumps(t), status_code)
 
 
 @app.errorhandler(Api400Error)
@@ -264,6 +284,13 @@ def forbidden(error):
     t['status'] = 'forbidden'
     t['error'] = str(error) + " (ref: {y})".format(y=magic)
     return respond(json.dumps(t), 403)
+
+
+@app.errorhandler(Api429Error)
+def too_many_requests(error):
+    return resp_err(error,
+                    f"Sending 429 Too Many Requests from client",
+                    429, 'too_many_requests')
 
 
 @app.errorhandler(Api500Error)

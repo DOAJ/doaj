@@ -1,14 +1,14 @@
 # ~~ PlausibleAnalytics:ExternalService~~
-import json
 import logging
 import os
-import requests
-
 from functools import wraps
 from threading import Thread
 
-from portality.core import app
+import requests
 from flask import request
+
+from portality.core import app
+from portality.lib import flask_utils
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +50,7 @@ def send_event(goal: str, on_completed=None, **props_kwargs):
     headers = {'Content-Type': 'application/json'}
     if request:
         # Add IP from CloudFlare header or remote_addr - this works because we have ProxyFix on the app
-        headers["X-Forwarded-For"] = request.headers.get("cf-connecting-ip", request.remote_addr)
+        headers["X-Forwarded-For"] = flask_utils.get_remote_addr()
         user_agent_key = 'User-Agent'
         user_agent_val = request.headers.get(user_agent_key)
         if user_agent_val:

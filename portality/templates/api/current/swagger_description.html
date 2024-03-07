@@ -21,6 +21,18 @@ You can fill in the parameters needed by the API and it will construct and send 
 If you already have an account, please log in, click 'My Account' and 'Settings' to see your API key. If you do not see an API key then please <a href="{{ contact_us_url }}">contact us</a></p>
 {% endif %}
 
+
+<h2 id="rate_limiting">Rate limiting</h2>
+<p>
+    {% if is_default_api_rate %}
+        Default rate limit is {{ api_rate_limit }} requests per minute. API rate can be increase to {{ config.get('RATE_LIMITS_PER_MIN_T2') }}.
+    {% else %}
+        Your API key is rate limited to {{ api_rate_limit }} requests per minute.
+    {% endif %}
+    If you exceed this limit, you will receive a 429 status code.
+    If you need a higher rate limit, please <a href="{{ contact_us_url }}">contact us</a>.
+</p>
+
 <h2 id="intro_help">Help and support</h2>
 
 <p>We have 3 API groups that you can join for API announcements and discussion:</p>
