@@ -666,32 +666,6 @@ class FieldDefinitions:
             {"display": "Publisher's own license", "value": "Publisher's own license",
              "subfields": ["license_attributes"]},
         ],
-        "contexts": {
-            "public": {
-                "validate": [
-                    {
-                        "only_if": {
-                            "fields": [
-                                {"field": "preservation_service", "not": "none"},
-                            ],
-                            "message": "You cannot provide a country for the other organisation question without providing the other organisation's name"
-                        }
-                    }
-                ]
-            },
-            "update_request": {
-                "validate": [
-                    {
-                        "only_if": {
-                            "fields": [
-                                {"field": "preservation_service", "not": "none"},
-                            ],
-                            "message": "You cannot provide a country for the other organisation question without providing the other organisation's name"
-                        }
-                    }
-                ]
-            }
-        },
         "help": {
             "long_help": ["The journal must use some form of licensing to be considered for indexing in DOAJ. ",
                           "If Creative Commons licensing is not used, then select <em>Publisher's own license</em> and enter "
