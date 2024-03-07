@@ -350,7 +350,6 @@ def toc_articles(identifier=None):
     journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
-    print(real_identifier)
     if real_identifier:
         return redirect(url_for('doaj.toc_articles', identifier=real_identifier), 301)
     else:
