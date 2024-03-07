@@ -513,7 +513,7 @@ class FieldDefinitions:
             },
             "update_request": {
                 "validate": [{"different_to": {"field": "institution_name",
-                                               "message": "The Publisher name and Other organisation name cannot be the same."}}]
+                                               "message": "The Publisher name and Other organisation name cannot be the same blablabla update request."}}]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
@@ -589,6 +589,18 @@ class FieldDefinitions:
             "full_contents"  # ~~^->FullContents:FormWidget~~
         ],
         "contexts": {
+            "public": {
+                "validate": [{"different_to": {"field": "publisher_name",
+                                               "message": "The Publisher name and Other organisation name cannot be the same."}}]
+                # ~~^-> DifferetTo:FormValidator~~
+
+            },
+            "update_request": {
+                "validate": [{"different_to": {"field": "publisher_name",
+                                               "message": "The Publisher name and Other organisation name cannot be the same blablabla update request."}}]
+                # ~~^-> DifferetTo:FormValidator~~
+
+            },
             "admin": {
                 "widgets": [
                     "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
