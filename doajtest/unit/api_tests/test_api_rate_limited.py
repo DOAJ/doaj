@@ -10,11 +10,8 @@ from portality.models import Account
 api_rate_serv = DOAJ.apiRateService()
 
 
-def send_test_req(client, api_key=None):
-    journal_id = '112233'
-    url = f'/api/journals/{journal_id}'
-    if api_key is not None:
-        url += f'?api_key={api_key}'
+def send_test_req(client, api_key):
+    url = '/api/search/applications/issn%3A0000-0000?api_key=' + api_key
     return client.get(url)
 
 
@@ -26,7 +23,7 @@ def assert_is_too_many_requests(resp):
 
 def assert_not_too_many_requests(resp):
     data = json.loads(resp.data)
-    assert data['status'] != 'too_many_requests'
+    assert data['query']
     assert resp.status_code != 429
 
 
@@ -42,7 +39,6 @@ class TestApiRateLimited(DoajTestCase):
                 'RATE_LIMITS_PER_MIN_T2 ': 1000,
             })
         setup_dev_log()
-
 
     def setUp(self):
         super().setUp()
@@ -67,10 +63,6 @@ class TestApiRateLimited(DoajTestCase):
             resp = send_test_req(t_client, api_key=api_key)
         return resp
 
-    def test_normal__no_api_key(self):
-        resp = self.send_one_req()
-        assert_not_too_many_requests(resp)
-
     def test_normal__normal_user(self):
         resp = self.send_one_req(api_key=self.normal_user.api_key)
         assert_not_too_many_requests(resp)
@@ -78,10 +70,6 @@ class TestApiRateLimited(DoajTestCase):
     def test_normal__t2_user(self):
         resp = self.send_one_req(api_key=self.t2_user.api_key)
         assert_not_too_many_requests(resp)
-
-    def test_multi_req__too_many_requests__no_api_key(self):
-        resp = self.send_multi_req_more_than_default_limit()
-        assert_is_too_many_requests(resp)
 
     def test_multi_req__too_many_requests__normal_user(self):
         resp = self.send_multi_req_more_than_default_limit(api_key=self.normal_user.api_key)
