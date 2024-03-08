@@ -28,6 +28,7 @@ from portality.forms.validate import (
     DifferentTo,
     RequiredIfOtherValue,
     OnlyIf,
+    OnlyIfExists,
     NotIf,
     GroupMember,
     RequiredValue,
@@ -643,6 +644,30 @@ class FieldDefinitions:
         "widgets": [
             {"select": {"allow_clear": True}}
         ],
+        "contexts": {
+            "public": {
+                "validate": [
+                    {
+                        "only_if_exists": {
+                            "fields":
+                                [{"field": "institution_name"}],
+                            "message": "You cannot provide a country for the other organisation question without providing the other organisations name",
+                        }
+                    }
+                ]
+            },
+            "update_request": {
+                "validate": [
+                    {
+                        "only_if_exists": {
+                            "fields":
+                                [{"field": "institution_name"}],
+                            "message": "You cannot provide a country for the other organisation question without providing the other organisations name",
+                        }
+                    }
+                ]
+            },
+        },
         "attr": {
             "class": "input-xlarge"
         }
@@ -2941,7 +2966,19 @@ class OnlyIfBuilder:
 
     @staticmethod
     def wtforms(fields, settings):
-        return OnlyIf(settings.get('fields') or fields, settings.get('message'))
+        return OnlyIf(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
+
+
+class OnlyIfExistsBuilder:
+    # ~~->$ OnlyIf:FormValidator~~
+    @staticmethod
+    def render(settings, html_attrs):
+        html_attrs["data-parsley-only-if-exists"] = ",".join([f["field"] for f in settings.get("fields", [])])
+        html_attrs["data-parsley-only-if-exists-message"] = "<p><small>" + settings.get("message") + "</small></p>"
+
+    @staticmethod
+    def wtforms(fields, settings):
+        return OnlyIfExists(other_fields=settings.get('fields') or fields, ignore_empty=settings.get('ignore_empty', True), message=settings.get('message'))
 
 
 class NotIfBuildier:
@@ -3056,6 +3093,7 @@ PYTHON_FUNCTIONS = {
             "different_to": DifferentToBuilder.render,
             "required_if": RequiredIfBuilder.render,
             "only_if": OnlyIfBuilder.render,
+            "only_if_exists": OnlyIfExistsBuilder.render,
             "group_member": GroupMemberBuilder.render,
             "not_if": NotIfBuildier.render,
             "required_value": RequiredValueBuilder.render,
@@ -3077,6 +3115,7 @@ PYTHON_FUNCTIONS = {
             "different_to": DifferentToBuilder.wtforms,
             "required_if": RequiredIfBuilder.wtforms,
             "only_if": OnlyIfBuilder.wtforms,
+            "only_if_exists": OnlyIfExistsBuilder.wtforms,
             "group_member": GroupMemberBuilder.wtforms,
             "not_if": NotIfBuildier.wtforms,
             "required_value": RequiredValueBuilder.wtforms,

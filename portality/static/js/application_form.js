@@ -906,6 +906,29 @@ window.Parsley.addValidator("onlyIf", {
     priority: 1
 });
 
+window.Parsley.addValidator("onlyIfExists", {
+    validateString: function (values, requirement, parsleyInstance) {
+        let fields = requirement.split(",");
+        for (var i = 0; i < fields.length; i++) {
+            let field = fields[i];
+            let other = $("[name=" + field + "]");
+            let type = other.attr("type");
+            if (type === "checkbox" || type === "radio") {
+                let checked = other.filter(":checked");
+                if (checked.length === 0) {
+                    return false;
+                }
+                return true;
+            }
+            return !!other.val()
+        }
+    },
+    messages: {
+        en: 'This only can be set when requirements are met'
+    },
+    priority: 1
+});
+
 window.Parsley.addValidator("notIf", {
     validateString : function(value, requirement, parsleyInstance) {
         if (!!value){
