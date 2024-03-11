@@ -234,7 +234,7 @@ Our criteria are available in:
 
 ---
 
-## Change log
+## Version history
 
 This is Version 2.2 of our Guide to applying.
 
