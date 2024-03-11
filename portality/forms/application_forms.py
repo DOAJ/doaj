@@ -514,7 +514,7 @@ class FieldDefinitions:
             },
             "update_request": {
                 "validate": [{"different_to": {"field": "institution_name",
-                                               "message": "The Publisher name and Other organisation name cannot be the same blablabla update request."}}]
+                                               "message": "The Publisher name and Other organisation name cannot be the same."}}]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
@@ -598,7 +598,7 @@ class FieldDefinitions:
             },
             "update_request": {
                 "validate": [{"different_to": {"field": "publisher_name",
-                                               "message": "The Publisher name and Other organisation name cannot be the same blablabla update request."}}]
+                                               "message": "The Publisher name and Other organisation name cannot be the same."}}]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
@@ -651,7 +651,7 @@ class FieldDefinitions:
                         "only_if_exists": {
                             "fields":
                                 [{"field": "institution_name"}],
-                            "message": "You cannot provide a country for the other organisation question without providing the other organisations name",
+                            "message": "You cannot provide a country for the other organisation question without providing the other organisation's name",
                         }
                     }
                 ]
@@ -662,7 +662,7 @@ class FieldDefinitions:
                         "only_if_exists": {
                             "fields":
                                 [{"field": "institution_name"}],
-                            "message": "You cannot provide a country for the other organisation question without providing the other organisations name",
+                            "message": "You cannot provide a country for the other organisation question without providing the other organisation's name",
                         }
                     }
                 ]
