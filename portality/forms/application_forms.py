@@ -1390,9 +1390,10 @@ class FieldDefinitions:
         "input": "checkbox",
         "multiple": True,
         "options": [
-            {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo", "subfields": ["deposit_policy_url"]},
-            {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
             {"display": "Diadorim", "value": "Diadorim", "subfields": ["deposit_policy_url"]},
+            {"display": "Dulcinea", "value": "Dulcinea", "subfields": ["deposit_policy_url"]},
+            {"display": "Mir@bel", "value": "Mir@bel", "subfields": ["deposit_policy_url"]},
+            {"display": "Sherpa/Romeo", "value": "Sherpa/Romeo", "subfields": ["deposit_policy_url"]},
             {"display": "Other (including publisher’s own site)", "value": "other", "subfields": ["deposit_policy_other", "deposit_policy_url"]},
             {"display": "<em>The journal has no repository policy</em>", "value": "none", "exclusive": True}
         ],
@@ -1440,10 +1441,10 @@ class FieldDefinitions:
         "label": "Where can we find this information?",
         "input": "text",
         "diff_table_context": "Repository policy",
-        "conditional": [{"field": "deposit_policy", "value": "Sherpa/Romeo"},
+        "conditional": [{"field": "deposit_policy", "value": "Diadorim"},
                         {"field": "deposit_policy", "value": "Dulcinea"},
-                        {"field": "deposit_policy", "value": "Diadorim"},
-                        {"field": "deposit_policy", "value": "Diadorim"},
+                        {"field": "deposit_policy", "value": "Mir@bel"},
+                        {"field": "deposit_policy", "value": "Sherpa/Romeo"},
                         {"field": "deposit_policy", "value": "other"}],
         "help": {
             "doaj_criteria": "You must provide a URL",
@@ -1464,9 +1465,10 @@ class FieldDefinitions:
                         "required_if": {
                             "field": "deposit_policy",
                             "value": [
-                                "Sherpa/Romeo",
-                                "Dulcinea",
                                 "Diadorim",
+                                "Dulcinea",
+                                "Mir@bel",
+                                "Sherpa/Romeo",
                                 "other"
                             ]
                         }
@@ -1480,9 +1482,10 @@ class FieldDefinitions:
                         "required_if": {
                             "field": "deposit_policy",
                             "value": [
-                                "Sherpa/Romeo",
-                                "Dulcinea",
                                 "Diadorim",
+                                "Dulcinea",
+                                "Mir@bel",
+                                "Sherpa/Romeo",
                                 "other"
                             ]
                         }
@@ -1787,8 +1790,10 @@ class FieldDefinitions:
                 }
             }
         ],
-        "widgets" : [
-            "tagentry"
+        "widgets": [
+            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+            "full_contents",  # ~~^->FullContents:FormWidget~~
+            "tagentry"  # ~~-> TagEntry:FormWidget~~
         ],
         "help" : {
             "render_error_box": False
@@ -1810,12 +1815,14 @@ class FieldDefinitions:
                 }
             }
         ],
-        "widgets" : [
-            "tagentry"
-        ],
         "help" : {
             "render_error_box": False
-        }
+        },
+        "widgets": [
+            "click_to_copy",  # ~~^-> ClickToCopy:FormWidget~~
+            "full_contents",  # ~~^->FullContents:FormWidget~~
+            "tagentry"  # ~~-> TagEntry:FormWidget~~
+        ]
     }
 
     # ~~->$ Subject:FormField~~
