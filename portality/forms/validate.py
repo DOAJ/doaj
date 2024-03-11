@@ -472,6 +472,20 @@ class NotIf(OnlyIf):
                 validators.ValidationError(self.message)
 
 
+class OnlyIfExists(OnlyIf):
+    """
+    Field only validates if other fields DOES have ANY values (or are truthy)
+    ~~NotIf:FormValidator~~
+    """
+
+    def __call__(self, form, field):
+        others = self.get_other_fields(form)
+
+        for o_f in self.other_fields:
+            other = others[o_f["field"]]
+            if not other.data or not field.data:
+                validators.ValidationError(self.message)
+
 class NoScriptTag(object):
     """
     Checks that a field does not contain a script html tag
