@@ -1,7 +1,7 @@
 from portality import models
 
 from doajtest.fixtures import AccountFixtureFactory, ArticleFixtureFactory, EditorGroupFixtureFactory, \
-    ApplicationFixtureFactory
+    ApplicationFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase, deep_sort
 
 from portality.bll.services.query import QueryService, Query
@@ -15,6 +15,13 @@ QUERY_ROUTE = {
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Article"
+        },
+        "journal" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj"],
+            "result_filters" : ["public_result_filter"],
+            "dao" : "portality.models.Journal"
         }
     },
     "publisher_query" : {
@@ -591,3 +598,37 @@ class TestQuery(DoajTestCase):
                             {'query': 'application test','default_operator': 'AND'}},
                             'size': 0, 'track_total_hits': True}, account=None, additional_parameters={"ref":"fqw"})
         assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
+
+    def test_article_query_ascci_folding(self):
+        self.article12 = models.Article(
+            **ArticleFixtureFactory.make_article_with_title("I can’t really think in English"))
+        self.article12.save(blocking=True)
+        qsvc = QueryService()
+
+        res = qsvc.search('query', 'article', {"query": {"match_all": {}}}, account=None, additional_parameters={})
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        res = qsvc.search('query', 'article', {'query': {'query_string':
+                                                                     {'query': "I can't really think in English",
+                                                                      'default_operator': 'AND'}},
+                                                       'size': 0, 'track_total_hits': True}, account=None,
+                                                        additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+
+    def test_journal_query_ascii_folding(self):
+        self.journal = models.Journal(**JournalFixtureFactory.make_journal_with_title("I can’t really think in English"))
+        self.journal.save(blocking=True)
+        qsvc = QueryService()
+
+        res = qsvc.search('query', 'journal', {"query": {"match_all": {}}}, account=None, additional_parameters={})
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        res = qsvc.search('query', 'journal', {'query': {'query_string':
+                                                             {'query': "I can't really think in English",
+                                                              'default_operator': 'AND'}},
+                                                                'size': 0, 'track_total_hits': True}, account=None,
+                                                                additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]

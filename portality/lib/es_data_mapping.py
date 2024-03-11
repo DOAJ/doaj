@@ -5,6 +5,8 @@
 # ~~->Seamless:Library~~
 # ~~->DataObj:Library~~
 
+from copy import deepcopy
+
 from portality.lib import plugin
 
 
@@ -32,7 +34,11 @@ def apply_mapping_opts(field_name, path, spec, mapping_opts):
     if dot_path in mapping_opts.get('exceptions', {}):
         return mapping_opts['exceptions'][dot_path]
     elif spec['coerce'] in mapping_opts['coerces']:
-        return mapping_opts['coerces'][spec['coerce']]
+        field_mapping = deepcopy(mapping_opts['coerces'][spec['coerce']])
+        if 'additional_fields' in spec:
+            field_mapping = {**field_mapping, **spec['additional_fields']}
+
+        return field_mapping
     else:
         # We have found a data type in the struct we don't have a map for to ES type.
         raise Exception("Mapping error - no mapping found for {}".format(spec['coerce']))

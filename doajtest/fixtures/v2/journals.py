@@ -45,6 +45,13 @@ class JournalFixtureFactory(object):
         return deepcopy(JOURNAL_FORM_EXPANDED)
 
     @staticmethod
+    def make_journal_with_title(title, in_doaj=True):
+        journal = deepcopy(JOURNAL_SOURCE)
+        journal['admin']['in_doaj'] = in_doaj
+        journal["bibjson"]["title"] = title
+        return journal
+
+    @staticmethod
     def make_bulk_edit_data():
         return deepcopy(JOURNAL_BULK_EDIT)
 

@@ -6,11 +6,16 @@ from copy import deepcopy
 from datetime import datetime
 
 from portality import datasets, constants
+from portality.core import app
 from portality.dao import DomainObject
+from portality.lib import es_data_mapping
+from portality.lib.coerce import COERCE_MAP
 from portality.lib.dates import FMT_DATETIME_STD
+from portality.lib.seamless import SeamlessMixin
 from portality.models import Journal
 from portality.models.v1.bibjson import GenericBibJSON  # NOTE that article specifically uses the v1 BibJSON
 from portality.models.v1 import shared_structs
+from portality.models.v2.shared_structs import ARTICLE_STRUCT
 from portality.lib import normalise, dates
 
 
@@ -21,8 +26,74 @@ class NoValidOwnerException(Exception):
     pass
 
 
-class Article(DomainObject):
+ARTICLE_BIBJSON_EXTENSION = {
+    "objects" : ["bibjson"],
+    "structs" : {
+        "bibjson" : {
+            "fields" : {
+                "year" : {"coerce" : "unicode"},
+                "month" : {"coerce" : "unicode"},
+                "start_page" : {"coerce" : "unicode"},
+                "end_page" : {"coerce" : "unicode"},
+                "abstract" : {"coerce" : "unicode"}
+            },
+            "lists" : {
+                "author" : {"contains" : "object"}
+            },
+            "objects" : [
+                "journal"
+            ],
+
+            "structs" : {
+                "author" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "affiliation" : {"coerce" : "unicode"},
+                        "email" : {"coerce": "unicode"},
+                        "orcid_id" : {"coerce" : "unicode"}
+                    }
+                },
+
+                "journal" : {
+                    "fields" : {
+                        "volume" : {"coerce" : "unicode"},
+                        "number" : {"coerce" : "unicode"},
+                        "publisher" : {"coerce" : "unicode"},
+                        "title" : {"coerce" : "unicode"},
+                        "country" : {"coerce" : "unicode"}
+                    },
+                    "lists" : {
+                        "language" : {"contains" : "field", "coerce" : "unicode"},
+                        "issns" : {"contains" : "field", "coerce" : "unicode"}
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+MAPPING_OPTS = {
+    "dynamic": None,
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
+    "exceptions": {},
+    "additional_mappings": {}
+}
+
+
+class Article(SeamlessMixin, DomainObject):
     __type__ = "article"
+
+    __SEAMLESS_STRUCT__ = [
+        ARTICLE_STRUCT,
+        shared_structs.SHARED_BIBJSON,
+        ARTICLE_BIBJSON_EXTENSION
+    ]
+
+    __SEAMLESS_COERCE__ = COERCE_MAP
+
+    def mappings(self):
+        return es_data_mapping.create_mapping(self.__seamless_struct__.raw, MAPPING_OPTS)
 
     @classmethod
     def duplicates(cls, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
@@ -804,52 +875,6 @@ class ArticleBibJSON(GenericBibJSON):
 
         return ["LCC:" + x for x in full_list if x is not None]
 
-ARTICLE_BIBJSON_EXTENSION = {
-    "objects" : ["bibjson"],
-    "structs" : {
-        "bibjson" : {
-            "fields" : {
-                "year" : {"coerce" : "unicode"},
-                "month" : {"coerce" : "unicode"},
-                "start_page" : {"coerce" : "unicode"},
-                "end_page" : {"coerce" : "unicode"},
-                "abstract" : {"coerce" : "unicode"}
-            },
-            "lists" : {
-                "author" : {"contains" : "object"}
-            },
-            "objects" : [
-                "journal"
-            ],
-
-            "structs" : {
-                "author" : {
-                    "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "affiliation" : {"coerce" : "unicode"},
-                        "email" : {"coerce": "unicode"},
-                        "orcid_id" : {"coerce" : "unicode"}
-                    }
-                },
-
-                "journal" : {
-                    "fields" : {
-                        "volume" : {"coerce" : "unicode"},
-                        "number" : {"coerce" : "unicode"},
-                        "publisher" : {"coerce" : "unicode"},
-                        "title" : {"coerce" : "unicode"},
-                        "country" : {"coerce" : "unicode"}
-                    },
-                    "lists" : {
-                        "language" : {"contains" : "field", "coerce" : "unicode"},
-                        "issns" : {"contains" : "field", "coerce" : "unicode"}
-                    }
-                }
-            }
-
-        }
-    }
-}
 
 ##################################################
 

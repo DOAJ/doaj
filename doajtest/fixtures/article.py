@@ -134,6 +134,13 @@ class ArticleFixtureFactory(object):
     def make_article_apido_struct():
         return deepcopy(ARTICLE_STRUCT)
 
+    @staticmethod
+    def make_article_with_title(title):
+        source = deepcopy(ARTICLE_SOURCE)
+        source["bibjson"]["title"] = title
+
+        return source
+
 
 ARTICLE_SOURCE = {
     "id": "abcdefghijk_article",
