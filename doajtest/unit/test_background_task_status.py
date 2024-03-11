@@ -147,8 +147,11 @@ class TestBackgroundTaskStatus(DoajTestCase):
 
         journal_csv_dict = status_dict['queues']['main_queue']['errors'].get(JournalCSVBackgroundTask.__action__, {})
 
-        assert is_stable(status_dict['status'])
-        assert not journal_csv_dict
+        assert not is_stable(status_dict['status'])
+        assert journal_csv_dict
+        # unstable action should be on top of the list after sorting
+        first_key = next(iter(status_dict['queues']['main_queue']['errors']))
+        assert not is_stable(status_dict['queues']['main_queue']['errors'][first_key]['status'])
 
     @apply_test_case_config(bg_monitor_errors_config__a)
     def test_create_background_status__error_in_period_found(self):
