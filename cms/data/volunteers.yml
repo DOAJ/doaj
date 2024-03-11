@@ -380,6 +380,7 @@ ass_ed:
   city: Valencia
   country: Spain
   language: Spanish, English
+  photo: "Margalejo.jpeg"
 
 - name: Jamila Jaber
   area: Library and Information Science
@@ -656,6 +657,7 @@ ass_ed:
   city: Donostia
   country: Spain
   language: Euskera, Spanish, English
+  photo: "Agirre.JPG"
 
 - name: Paula Carina de Araújo
   area: Library and Information Science
@@ -752,6 +754,14 @@ ass_ed:
   country: Mali
   language: French
   photo: "sogoba1.jpg"
+
+- name: Susana Costa
+  area: Library and Information Sciences
+  year_since:
+  city: Braga
+  country: Portugal
+  language: Portuguese, English
+  photo: "Costa.jpeg"
 
 - name: Swasti Maharani
   area: Mathematics
