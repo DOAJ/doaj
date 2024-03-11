@@ -186,4 +186,16 @@ tests:
   - step: click spacebar to check the filter
     results:
       - filter is applied
+- title: 'Test Public Search Ascii Folding: Articles/Journals'
+  context:
+    role: anonymous
+  steps:
+  - step: Make sure there is a Journal or Article which has special ascii characters (example - I can’t really think in English ) in one of the following fields
+      - Title
+      - Publisher name
+      - Country name
+  - step: Go to the DOAJ search page at /search/articles for article search or /search/journals for journal search
+  - step: search with ascii characters instead of special characters (example - I can't really think in English)
+    results:
+    - Same search results will be displayed when searched with special characters (I can’t really think in English)
 
