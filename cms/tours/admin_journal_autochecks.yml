@@ -1,0 +1,14 @@
+steps:
+  - selector: '.autochecks-manager-toggle'
+    title: Autochecks are available on this Journal
+    content: |
+      <div>
+      <p>This journal has had a number of checks carried out on its data, to aid in your review. To see these checks alongside
+      the questions in the form, click this button to show them.</p>
+      <p>For now these are quite basic, covering the following fields:</p>
+      <ol>
+        <li>Print and Online ISSNs: these are checked to see if they are registered and valid in issn.org</li>
+        <li>Archiving policy: these are checked to see if the journal is being archived in the selected services, and how current the data is.</li>
+      </ol>
+      <p>In time, more checks will become available.</p>
+      </div>
