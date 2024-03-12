@@ -6,6 +6,7 @@ from portality import constants
 class TodoService(object):
     """
     ~~Todo:Service->DOAJ:Service~~
+    ~~-> ApplicationStatuses:Config~~
     """
 
     def group_stats(self, group_id):
