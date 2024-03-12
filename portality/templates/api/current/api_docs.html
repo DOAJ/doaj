@@ -5,8 +5,6 @@
 {% block extra_stylesheets %}
     <!-- get Swagger UI css -->
     <link rel="stylesheet" href="/static/vendor/swagger-ui-5.11.6/swagger-ui.css"/>
-
-
     <!-- get DOAJ swagger overrides -->
     <link href='/static/doaj/css/doaj_api.css' media='screen' rel='stylesheet' type='text/css'/>
 {% endblock %}
@@ -20,6 +18,7 @@
                     <p class="label">Docs</p>
                     <h1>API </h1>
                     {% include "api/current/swagger_description.html" %}
+                    <h2 id="swagger_info">Available endpoints</h2>
                     <div id="swagger-section" class="swagger-section">
                         <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
                     </div>
