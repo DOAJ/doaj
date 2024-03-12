@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.6.4"
+DOAJ_VERSION = "6.6.5"
 API_VERSION = "3.0.1"
 
 ######################################
