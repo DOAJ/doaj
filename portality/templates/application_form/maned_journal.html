@@ -87,6 +87,18 @@
 {% endblock %}
 
 {% block extra_js_bottom scoped %}
+    {% if autochecks %}
+    <script type="application/javascript">
+        doaj.autochecks = {{ autochecks.data|tojson }}
+    </script>
+    <script type="text/javascript" src="/static/js/autochecks.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    {% endif %}
     {% set factory = "journal" %}
     {% include "application_form/js/_form_js.html" %}
+    {% if autochecks %}
+    <script type="application/javascript">
+        // doaj.autocheckers.dismissed = new doaj.autocheckers.DismissedAutochecks({})
+        doaj.autocheckers.manager = new doaj.autocheckers.AutochecksManager({})
+    </script>
+    {% endif %}
 {% endblock %}
