@@ -35,7 +35,8 @@ ARTICLE_BIBJSON_EXTENSION = {
                 "month" : {"coerce" : "unicode"},
                 "start_page" : {"coerce" : "unicode"},
                 "end_page" : {"coerce" : "unicode"},
-                "abstract" : {"coerce" : "unicode"}
+                "abstract" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
+                                                                                 "search_analyzer": "ascii_folded"}}
             },
             "lists" : {
                 "author" : {"contains" : "object"}
@@ -47,7 +48,8 @@ ARTICLE_BIBJSON_EXTENSION = {
             "structs" : {
                 "author" : {
                     "fields" : {
-                        "name" : {"coerce" : "unicode"},
+                        "name" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
+                                                                                 "search_analyzer": "ascii_folded"}},
                         "affiliation" : {"coerce" : "unicode"},
                         "email" : {"coerce": "unicode"},
                         "orcid_id" : {"coerce" : "unicode"}
@@ -58,7 +60,8 @@ ARTICLE_BIBJSON_EXTENSION = {
                     "fields" : {
                         "volume" : {"coerce" : "unicode"},
                         "number" : {"coerce" : "unicode"},
-                        "publisher" : {"coerce" : "unicode"},
+                        "publisher" : {"coerce" : "unicode", "additional_fields":{"analyzer": "ascii_folded",
+                                                                                 "search_analyzer": "ascii_folded"}},
                         "title" : {"coerce" : "unicode"},
                         "country" : {"coerce" : "unicode"}
                     },

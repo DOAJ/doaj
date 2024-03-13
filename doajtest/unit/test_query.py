@@ -601,7 +601,7 @@ class TestQuery(DoajTestCase):
 
     def test_article_query_ascci_folding(self):
         self.article12 = models.Article(
-            **ArticleFixtureFactory.make_article_with_title("I can’t really think in English"))
+            **ArticleFixtureFactory.make_article_with_data({"bibjson":{"title":"I can’t really think in English"}}))
         self.article12.save(blocking=True)
         qsvc = QueryService()
 
@@ -616,9 +616,17 @@ class TestQuery(DoajTestCase):
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
+        res = qsvc.search('query', 'article', {'query': {'query_string':
+                                                             {'query': "I can’t really think in English",
+                                                              'default_operator': 'AND'}},
+                                               'size': 0, 'track_total_hits': True}, account=None,
+                          additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
 
     def test_journal_query_ascii_folding(self):
-        self.journal = models.Journal(**JournalFixtureFactory.make_journal_with_title("I can’t really think in English"))
+        self.journal = models.Journal(**JournalFixtureFactory.make_journal_with_data("I can’t really think in English"))
         self.journal.save(blocking=True)
         qsvc = QueryService()
 
@@ -630,5 +638,106 @@ class TestQuery(DoajTestCase):
                                                               'default_operator': 'AND'}},
                                                                 'size': 0, 'track_total_hits': True}, account=None,
                                                                 additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        res = qsvc.search('query', 'journal', {'query': {'query_string':
+                                                             {'query': "I can’t really think in English",
+                                                              'default_operator': 'AND'}},
+                                               'size': 0, 'track_total_hits': True}, account=None,
+                          additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+
+    def test_article_query_ascci_folding_data(self):
+        self.article12 = models.Article(
+            **ArticleFixtureFactory.make_article_with_data(title="Kadınlarının sağlık",
+                publisher_name="Ankara Üniversitesi", abstract="Araştırma grubunu", country="Türkiye",
+                                                           author="Sultan  GÜÇLÜ"))
+        self.article12.save(blocking=True)
+        qsvc = QueryService()
+
+        res = qsvc.search('query', 'article', {"query": {"match_all": {}}}, account=None, additional_parameters={})
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # check for title
+        res = qsvc.search('query', 'article', {'query': {'query_string':
+                                                                     {'query': "Kadinlarinin saglik",
+                                                                      'default_operator': 'AND'}},
+                                                       'size': 0, 'track_total_hits': True}, account=None,
+                                                        additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # echeck for publisher
+        res = qsvc.search('query', 'article', {'query': {'query_string':
+                                                             {'query': "Ankara Universitesi",
+                                                              'default_operator': 'AND'}},
+                                               'size': 0, 'track_total_hits': True}, account=None,
+                          additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # check for abstract
+        res = qsvc.search('query', 'article', {'query': {'query_string':
+                                                             {'query': "Arastırma grubunu",
+                                                              'default_operator': 'AND'}},
+                                               'size': 0, 'track_total_hits': True}, account=None,
+                          additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # check for country
+        res = qsvc.search('query', 'article', {'query': {'query_string':
+                                                             {'query': "Turkiye",
+                                                              'default_operator': 'AND'}},
+                                               'size': 0, 'track_total_hits': True}, account=None,
+                          additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # check for author
+        res = qsvc.search('query', 'article', {'query': {'query_string':
+                  {'query': "Sultan GUCLU", 'default_operator': 'AND'}}, 'size': 0, 'track_total_hits': True},
+                          account=None, additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+
+    def test_journal_query_ascii_folding_data(self):
+        self.journal = models.Journal(**JournalFixtureFactory.make_journal_with_data(title="Kadınlarının sağlık",
+                publisher_name="Ankara Üniversitesi", country="Türkiye",))
+        self.journal.save(blocking=True)
+        qsvc = QueryService()
+
+        # check if journal exist
+        res = qsvc.search('query', 'journal', {"query": {"match_all": {}}}, account=None, additional_parameters={})
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # check for title search
+        res = qsvc.search('query', 'journal', {'query': {'query_string':
+                                                             {'query': "Kadinlarinin saglik",
+                                                              'default_operator': 'AND'}},
+                                               'size': 0, 'track_total_hits': True}, account=None,
+                          additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # check for publisher name
+        res = qsvc.search('query', 'journal', {'query': {'query_string':
+                                                             {'query': "Ankara Universitesi",
+                                                              'default_operator': 'AND'}},
+                                               'size': 0, 'track_total_hits': True}, account=None,
+                          additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
+
+        # check for country
+        res = qsvc.search('query', 'journal', {'query': {'query_string':
+                                                             {'query': "Turkiye",
+                                                              'default_operator': 'AND'}},
+                                               'size': 0, 'track_total_hits': True}, account=None,
+                          additional_parameters={"ref": "fqw"})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
