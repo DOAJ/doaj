@@ -566,6 +566,14 @@ ass_ed:
   country:
   language: Spanish, English
 
+- name: Martyna Mirecka
+  area: History, Political Science
+  year_since:
+  city: Łupice
+  country: Poland
+  language: Polish, English
+  photo: "Mirecka.jpeg"
+ 
 - name: Melih Sever
   area: Social Sciences
   year_since:
