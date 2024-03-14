@@ -659,6 +659,11 @@ $.extend(true, doaj, {
                 this.component.context.html(frag);
                 feather.replace();
 
+                if (this.lastSearch) {
+                    var searchSelector = edges.css_id_selector(namespace, "search", this);
+                    this.filterSubjects($(searchSelector));
+                }
+
 
                 // trigger all the post-render set-up functions
                 this.setUIOpen();
