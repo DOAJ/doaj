@@ -126,22 +126,8 @@ class OpenURLRequest(object):
             # (assuming that the user gave us specific enough information
             ident = journal.id
 
-            # If there request has a volume parameter, query for presence of an article with that volume
-            if self.volume:
-                vol_iss_results = self.query_for_vol(journal)
-
-                if vol_iss_results == None:
-                    # we were asked for a vol/issue, but weren't given the correct information to get it.
-                    return None
-                elif vol_iss_results['hits']['total']['value'] > 0:
-                    # construct the toc url using the ident, plus volume and issue
-                    jtoc_url = url_for("doaj.toc", identifier=ident, volume=self.volume, issue=self.issue)
-                else:
-                    # If no results, the DOAJ does not contain the vol/issue being searched. (Show openurl 404)
-                    jtoc_url = None
-            else:
-                # if no volume parameter, construct the toc url using the ident only
-                jtoc_url = url_for("doaj.toc", identifier=ident)
+            # construct the toc url using the ident only
+            jtoc_url = url_for("doaj.toc", identifier=ident)
             return jtoc_url
 
         #~~->Article:Page~~

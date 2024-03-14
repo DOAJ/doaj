@@ -21,7 +21,7 @@
     {% endif %}
 
     {% if f.help("short_help") %}
-       <p><small>{{ f.help("short_help") | safe }}</small></p>
+       <p class="form__short-help"><small>{{ f.help("short_help") | safe }}</small></p>
     {% endif %}
 
     {% if f.get("hint") %}<p><small>{{ f.hint | safe }}</small></p>{% endif %}
@@ -63,6 +63,10 @@
             {% endfor %}
         </ul>
     </div>
+    {% endif %}
+
+    {% if f.widgets  %}
+    <div id="{{ f.name }}_widgets-container" class="widgets-container"></div>
     {% endif %}
 
 </div>
