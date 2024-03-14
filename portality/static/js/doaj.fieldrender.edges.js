@@ -642,7 +642,12 @@ $.extend(true, doaj, {
                 var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.title + toggle + '</button></h3>\
                     <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <label for="' + searchId + '" class="sr-only">' + placeholder + '</label>\
-                        <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '">\
+                        <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '"';
+                if (this.lastSearch) {
+                    frag += 'value="' + this.lastSearch + '"';
+                }
+
+                frag += '>\
                         <ul class="filter__choices" id="' + filteredId + '" style="display:none"></ul>\
                         <ul class="filter__choices" id="' + mainListId + '">{{FILTERS}}</ul>\
                     </div></div>';
@@ -651,10 +656,8 @@ $.extend(true, doaj, {
                 frag = frag.replace(/{{FILTERS}}/g, treeFrag);
 
                 // now render it into the page
-                if (!this.stringSearch){
-                    this.component.context.html(frag);
-                    feather.replace();
-                }
+                this.component.context.html(frag);
+                feather.replace();
 
 
                 // trigger all the post-render set-up functions
@@ -817,7 +820,7 @@ $.extend(true, doaj, {
                     filterEl.html("");
                     filterEl.hide();
                     mainEl.show();
-                    this.stringSearch = false;
+                    this.lastSearch = null;
                     return;
                 }
                 if (term.length < 3) {
@@ -826,7 +829,8 @@ $.extend(true, doaj, {
                     mainEl.hide();
                     return;
                 }
-                this.stringSearch = true;
+                this.lastSearch = term;
+                // this.lastScroll = this.component.jq(mainSelector).scrollTop();
                 term = term.toLowerCase();
 
                 function entryMatch(entry) {
