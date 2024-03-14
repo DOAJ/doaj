@@ -669,7 +669,9 @@ $.extend(true, doaj, {
                 this.setUIOpen();
 
                 var mainListSelector = edges.css_id_selector(namespace, "main", this);
-                this.component.jq(mainListSelector).scrollTop(this.lastScroll);
+                var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
+                var selector = this.lastSearch ? filterSelector : mainSelector;
+                this.component.jq(selector).scrollTop(this.lastScroll);
 
                 var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
                 edges.on(checkboxSelector, "change", this, "filterToggle");
@@ -794,7 +796,8 @@ $.extend(true, doaj, {
 
             this.filterToggle = function(element) {
                 var mainListSelector = edges.css_id_selector(this.namespace, "main", this);
-                this.lastScroll = this.component.jq(mainListSelector).scrollTop();
+                var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
+                this.lastScroll = this.lastSearch ? this.component.jq(filterSelector).scrollTop() : this.component.jq(mainListSelector).scrollTop();
                 var el = this.component.jq(element);
                 // var filter_id = this.component.jq(element).attr("id");
                 var checked = el.is(":checked");
