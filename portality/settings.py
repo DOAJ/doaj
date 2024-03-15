@@ -73,6 +73,8 @@ ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
 
+ES_READ_TIMEOUT = '2m'
+
 #####################################################
 # Elastic APM config  (MUST be configured in env file)
 # ~~->APM:Feature~~
