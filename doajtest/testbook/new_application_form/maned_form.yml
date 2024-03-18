@@ -48,7 +48,10 @@ tests:
     results:
     - A message at the top of the form tells you that you can only choose one or two
       subject classifications
-  - step: Remove one subject classification and 'Save'
+  - step: Remove one subject classification
+  - step: Click "Unlock & Close"
+    results: Confirmation dialog is displayed warning you about unsaved changes
+  - step: Click "Stay on Page" and then 'Save'
     results:
     - The form saves
     - The changes you applied, both to the form, and in the functionality box, have

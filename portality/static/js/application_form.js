@@ -460,7 +460,6 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             event.preventDefault();
             let id = $(this).attr("data-id");
             let type = $(this).attr("data-type");
-            that.submitting = true;
             that.unlock({type : type, id : id})
         });
 
@@ -477,7 +476,7 @@ doaj.af.EditorialApplicationForm = class extends doaj.af.BaseApplicationForm {
             // ignore any "view note" modal close button hits
             // FIXME: I don't love this, it feels brittle, but I don't have a better solution
             let exceptClasses = ["formulaic-notemodal-close"];
-            let exceptIds = ["open_withdraw_reinstate"];
+            let exceptIds = ["open_withdraw_reinstate", "unlock"];
             let excepted = false;
             for (let i = 0; i < exceptClasses.length; i++) {
                 if ($(event.currentTarget).hasClass(exceptClasses[i])) {
