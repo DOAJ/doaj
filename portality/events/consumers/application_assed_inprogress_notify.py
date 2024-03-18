@@ -34,7 +34,7 @@ class ApplicationAssedInprogressNotify(EventConsumer):
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
         notification.long = svc.long_notification(cls.ID).format(application_title=application.bibjson().title)
         notification.short = svc.short_notification(cls.ID).format(
-            issns=consumer_utils.parse_email_issns(application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
         notification.action = url_for("editor.application", application_id=application.id)
 

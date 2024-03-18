@@ -57,7 +57,7 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
             publisher_dashboard_url=app.config.get('BASE_URL', "https://doaj.org") + url_for("publisher.journals")
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=consumer_utils.parse_email_issns(application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
 
         notification.action = url_for("publisher.journals")

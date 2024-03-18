@@ -55,7 +55,7 @@ class UpdateRequestPublisherRejectedNotify(EventConsumer):
             date_applied=date_applied,
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=consumer_utils.parse_email_issns(application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
 
         # there is no action url associated with this notification

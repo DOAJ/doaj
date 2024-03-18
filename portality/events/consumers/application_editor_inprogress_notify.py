@@ -55,7 +55,7 @@ class ApplicationEditorInProgressNotify(EventConsumer):
             application_title=application.bibjson().title
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=consumer_utils.parse_email_issns(application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
         notification.action = url_for("editor.application", application_id=application.id)
 

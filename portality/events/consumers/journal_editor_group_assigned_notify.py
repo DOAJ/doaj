@@ -46,7 +46,7 @@ class JournalEditorGroupAssignedNotify(EventConsumer):
             journal_name=journal.bibjson().title
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=consumer_utils.parse_email_issns(journal.bibjson().issns())
+            issns=journal.bibjson().issns_as_text()
         )
         notification.action = url_for("editor.journal_page", journal_id=journal.id)
 
