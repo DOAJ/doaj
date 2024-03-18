@@ -4,7 +4,6 @@ import hashlib
 import logging
 import os
 import shutil
-import time
 from contextlib import contextmanager
 from glob import glob
 from unittest import TestCase
@@ -15,8 +14,10 @@ from flask_login import login_user
 from doajtest.fixtures import ArticleFixtureFactory, ApplicationFixtureFactory
 from portality import core, dao, models
 from portality.core import app
+from portality.dao import any_pending_tasks, query_data_tasks
 from portality.lib import paths, dates
 from portality.lib.dates import FMT_DATE_STD
+from portality.lib.thread_utils import wait_until
 from portality.tasks.redis_huey import main_queue, long_running
 from portality.util import url_for
 
@@ -84,6 +85,10 @@ class WithES:
 CREATED_INDICES = []
 
 
+def initialise_index():
+    core.initialise_index(app, core.es_connection)
+
+
 def create_index(index_type):
     if index_type in CREATED_INDICES:
         return
@@ -133,6 +138,7 @@ class DoajTestCase(TestCase):
             "ES_RETRY_HARD_LIMIT": 0,
             "ES_BLOCK_WAIT_OVERRIDE": 0.5,
             "ES_READ_TIMEOUT": '5m',
+            'ES_SOCKET_TIMEOUT': 5 * 60,
             "ELASTIC_SEARCH_DB": app.config.get('ELASTIC_SEARCH_TEST_DB'),
             'ELASTIC_SEARCH_DB_PREFIX': create_es_db_prefix(cls),
             "FEATURES": app.config['VALID_FEATURES'],
@@ -414,11 +420,18 @@ def logout(app_client, follow_redirects=True):
     return app_client.get(url_for('account.logout'), follow_redirects=follow_redirects)
 
 
-def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1,
-              timeout_msg="wait_unit but exit_cond timeout"):
-    start = time.time()
-    while (time.time() - start) < timeout:
-        if exit_cond_fn():
-            return
-        time.sleep(check_interval)
-    raise TimeoutError(timeout_msg)
+def wait_until_no_es_incomplete_tasks():
+    """
+
+    wait until no ES pending tasks and no data tasks is running
+
+    created for make sure model.save() or model.delete() is completed
+
+    if your data still can not be query, try Model.refresh()
+
+    """
+
+    def _cond_fn():
+        return not any_pending_tasks() and len(query_data_tasks(timeout='3m')) == 0
+
+    return wait_until(_cond_fn, 10, 0.2)
