@@ -215,6 +215,8 @@ def journal_page(journal_id):
         return render_template("admin/journal_locked.html", journal=journal, lock=l.lock)
 
     fc = JournalFormFactory.context("admin", extra_param=exparam_editing_user())
+    autochecks = models.Autocheck.for_journal(journal_id)
+
     if request.method == "GET":
         job = None
         job_id = request.values.get("job")
@@ -233,7 +235,7 @@ def journal_page(journal_id):
 
         return fc.render_template(lock=lockinfo, job=job, obj=journal, lcc_tree=lcc_jstree,
                                   past_cont_list=past_cont_list, future_cont_list=future_cont_list,
-                                  )
+                                  autochecks=autochecks)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=journal)
@@ -248,7 +250,7 @@ def journal_page(journal_id):
                 flash(str(e))
                 return redirect(url_for("admin.journal_page", journal_id=journal.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
+            return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree, autochecks=autochecks)
 
 
 DisplayContData = namedtuple('DisplayContData', ['issn', 'title', 'id'])
@@ -405,10 +407,12 @@ def application(application_id):
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
 
+    autochecks = models.Autocheck.for_application(application_id)
+
     if request.method == "GET":
         fc.processor(source=ap)
         return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff,
-                                  current_journal=current_journal, lcc_tree=lcc_jstree)
+                                  current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
 
     elif request.method == "POST":
         processor = fc.processor(formdata=request.form, source=ap)
@@ -428,8 +432,7 @@ def application(application_id):
                 flash(str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
-                                      lcc_tree=lcc_jstree)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])

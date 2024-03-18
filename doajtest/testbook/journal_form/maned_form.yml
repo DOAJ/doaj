@@ -126,3 +126,22 @@ tests:
     - step: Attempt to paste the value (use separate editor)
       results:
         - Correct value is pasted
+- title: Check button linking to the article's page
+  context:
+    role: Admin
+  steps:
+    - step: Click "See this journal in doaj" button under the journal's title on the left
+      results:
+        - The journal's public page is opened in a new tab
+        - On the journal's public page at the top the button "Edit this journal" is shown
+    - step: Click "Edit this journal" button
+      results:
+        - The journal's admin metadata form is opened in a new tab with correct data
+    - step: Confirm above buttons are shown only for admin user. Log out from admin account and log in as publisher
+    - step: Navigate to the article's public page as a publisher
+      results:
+        - The button "Edit this journal" is not displayed
+    - step: Log out
+    - step: Navigate to the article's public page as an anonymous user
+      results:
+        - The button "Edit this journal" is not displayed

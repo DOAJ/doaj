@@ -49,6 +49,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--dry-run", help="Run this script without actually making index changes", action='store_true')
     parser.add_argument("-m", "--manual-review", help="Don't finalise the update requests, instead leave open for manual review.", action='store_true')
     parser.add_argument("-y", "--yes", help="Bypass prompt to accept the note", action='store_true')
+    parser.add_argument("-f", "--force", help="Ignore warnings and process changes anyway (errors still halt)", action='store_true')
 
     args = parser.parse_args()
 
@@ -79,7 +80,12 @@ if __name__ == "__main__":
     if validation_results.has_errors_or_warnings():
         print(f'ERROR: CSV validation failed.')
         print(validation_results.json(indent=2))
-        exit(1)
+
+        if not validation_results.has_errors() and args.force:
+            print('Forcing update despite warnings...')
+        else:
+            print(f'Errors found. No updates processed.')
+            exit(1)
 
     # if we get to here, the records can all be imported, so we can go ahead with minimal
     # additional checks
@@ -121,7 +127,8 @@ if __name__ == "__main__":
             if len(updates) == 0:
                 print("No updates to do")
                 continue
-
+            
+            [print(upd) for upd in updates]
 
             # Create an update request for this journal
             update_req = None
@@ -164,7 +171,7 @@ if __name__ == "__main__":
                         # This is the update request, in 'update request' state
                         update_req_for_review = fc.target
 
-                        # Create an Admin update request review form - portality.forms.application_processors.AdminApplication
+                        # Admin update request review form - portality.forms.application_processors.AdminApplication
                         # ~~ ^->ManEdApplication:FormContext ~~
                         formulaic_context2 = ApplicationFormFactory.context("admin")
                         fc2 = formulaic_context2.processor(
