@@ -1,10 +1,11 @@
 import time
 
-from doajtest.helpers import DoajTestCase, wait_unit
+from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.lib import urlshort
 from portality.models import UrlShortener
 from portality.util import url_for
+from portality.lib.thread_utils import wait_until
 
 
 def wait_any_url_shortener():
@@ -62,7 +63,7 @@ class TestLibUrlshort(DoajTestCase):
             alias = surl[surl.rfind('/') + 1:]
             data[alias] = url
 
-        wait_unit(wait_any_url_shortener)
+        wait_until(wait_any_url_shortener)
 
         results = models.UrlShortener.q2obj()
 
@@ -79,7 +80,7 @@ class TestUrlshortRoute(DoajTestCase):
     def test_urlshort_route(self):
         url = 'https://www.google.com'
         surl = urlshort.add_url_shortener(url)
-        wait_unit(wait_any_url_shortener)
+        wait_until(wait_any_url_shortener)
 
         with self.app_test.test_client() as c:
             rv = c.get(surl)
@@ -98,7 +99,7 @@ class TestUrlshortRoute(DoajTestCase):
             assert rv.status_code == 200
             assert rv.json['short_url']
 
-        wait_unit(wait_any_url_shortener)
+        wait_until(wait_any_url_shortener)
         assert urlshort.find_url_by_alias(surl_to_alias(rv.json['short_url'])) == data['url']
 
     def test_create_shorten_url__invalid(self):

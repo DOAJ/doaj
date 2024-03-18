@@ -7,7 +7,6 @@ from parameterized import parameterized
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
 
-import doajtest.helpers
 from doajtest import selenium_helpers
 from doajtest.fixtures import JournalFixtureFactory, url_path, article_doajxml
 from doajtest.fixtures.accounts import PUBLISHER_B_SOURCE, create_publisher_a, create_maned_a
@@ -16,6 +15,7 @@ from doajtest.fixtures.url_path import URL_PUBLISHER_UPLOADFILE, URL_ADMIN_BGJOB
 from doajtest.selenium_helpers import SeleniumTestCase
 from portality import models, dao
 from portality.constants import FileUploadStatus
+from portality.lib.thread_utils import wait_until
 
 HISTORY_ROW_PROCESSING_FAILED = 'processing failed'
 XML_FORMAT_DOAJ = 'doaj'
@@ -62,7 +62,7 @@ class ArticleXmlUploadCommonSTC(SeleniumTestCase):
         self.assert_history_row(history_row, note=f'successfully processed {n_article} articles imported')
 
     @staticmethod
-    def wait_unit_file_upload_status_ready():
+    def wait_until_file_upload_status_ready():
         new_file_upload = None
 
         def _cond_fn():
@@ -73,7 +73,7 @@ class ArticleXmlUploadCommonSTC(SeleniumTestCase):
             return new_file_upload.status not in (FileUploadStatus.Validated, FileUploadStatus.Incoming)
 
         # interval 0.5 is good because ES can't handle too many requests
-        doajtest.helpers.wait_unit(_cond_fn, timeout=15, check_interval=0.5)
+        wait_until(_cond_fn, timeout=15, sleep_time=0.5)
         return new_file_upload
 
 
@@ -108,7 +108,7 @@ class ArticleXmlUploadDoajXmlFailSTC(ArticleXmlUploadCommonSTC):
         assert err_msg in alert_ele.text
 
         # # wait for background job to finish
-        self.wait_unit_file_upload_status_ready()
+        self.wait_until_file_upload_status_ready()
 
         self.selenium.refresh()
         new_rows = find_history_rows(self.selenium)
@@ -177,16 +177,16 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
         self.upload_submit_file(file_path)
 
         assert 'File uploaded and waiting to be processed' in self.find_ele_by_css('.alert--success').text
-        doajtest.helpers.wait_unit(
+        wait_until(
             lambda: len(_find_history_rows()) == n_org_rows + 1,
-            timeout=10, check_interval=1
+            timeout=10, sleep_time=1
         )
         new_rows = _find_history_rows()
         assert n_org_rows + 1 == len(new_rows)
         assert n_file_upload + 1 == models.FileUpload.count()
 
         # wait for background job to finish
-        new_file_upload = self.wait_unit_file_upload_status_ready()
+        new_file_upload = self.wait_until_file_upload_status_ready()
 
         # assert file upload status
         assert new_file_upload.filename == Path(file_path).name
@@ -307,7 +307,7 @@ class ArticleXmlUploadDoajXmlSTC(ArticleXmlUploadCommonSTC):
                                                             XML_FORMAT_DOAJ)
         self.assert_history_row_success(latest_history_row)
         selenium_helpers.goto(self.selenium, url_path.url_toc_articles(journal_issn))
-        doajtest.helpers.wait_unit(lambda: self.find_eles_by_css(article_title_selector))
+        wait_until(lambda: self.find_eles_by_css(article_title_selector))
         assert expected_title in [e.get_attribute('innerHTML').strip()
                                   for e in self.find_eles_by_css(article_title_selector)]
 
