@@ -7,6 +7,7 @@ from portality.bll import DOAJ
 from portality.bll import exceptions
 from portality.lib import dates
 from portality.core import app
+from portality.models import Account
 
 
 class UpdateRequestPublisherAssignedNotify(EventConsumer):
@@ -17,7 +18,7 @@ class UpdateRequestPublisherAssignedNotify(EventConsumer):
         if event.id != constants.EVENT_APPLICATION_ASSED_ASSIGNED:
             return False
 
-        if not consumer_utils.is_enable_publisher_email():
+        if not Account.is_enable_publisher_email():
             return False
 
         app_source = event.context.get("application")

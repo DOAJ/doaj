@@ -6,6 +6,7 @@ from portality.events import consumer_utils
 from portality.events.consumer import EventConsumer
 from portality.lib import dates
 from portality.lib.dates import FMT_DATE_HUMAN_A
+from portality.models import Account
 
 
 class UpdateRequestPublisherRejectedNotify(EventConsumer):
@@ -16,7 +17,7 @@ class UpdateRequestPublisherRejectedNotify(EventConsumer):
         if event.id != constants.EVENT_APPLICATION_STATUS:
             return False
 
-        if not consumer_utils.is_enable_publisher_email():
+        if not Account.is_enable_publisher_email():
             return False
 
         app_source = event.context.get("application")

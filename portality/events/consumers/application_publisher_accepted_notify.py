@@ -1,12 +1,13 @@
 # ~~ApplicationPublisherAcceptedNotify:Consumer~~
-from portality.events import consumer_utils
-from portality.util import url_for
-from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
-from portality.lib import edges, dates
-from portality.bll import DOAJ, exceptions
+from portality.bll import DOAJ
 from portality.core import app
+from portality.events import consumer_utils
+from portality.events.consumer import EventConsumer
+from portality.lib import dates
+from portality.models import Account
+from portality.util import url_for
 
 
 class ApplicationPublisherAcceptedNotify(EventConsumer):
@@ -17,7 +18,7 @@ class ApplicationPublisherAcceptedNotify(EventConsumer):
         if event.id != constants.EVENT_APPLICATION_STATUS:
             return False
 
-        if not consumer_utils.is_enable_publisher_email():
+        if not Account.is_enable_publisher_email():
             return False
 
         app_source = event.context.get("application")
@@ -33,7 +34,7 @@ class ApplicationPublisherAcceptedNotify(EventConsumer):
 
     @classmethod
     def consume(cls, event):
-        if not consumer_utils.is_enable_publisher_email():
+        if not Account.is_enable_publisher_email():
             return
 
         app_source = event.context.get("application")

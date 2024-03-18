@@ -7,6 +7,7 @@ from portality.bll import DOAJ
 from portality.events import consumer_utils
 from portality.events.consumer import EventConsumer
 from portality.lib import dates
+from portality.models import Account
 from portality.util import url_for
 
 
@@ -22,7 +23,7 @@ class UpdateRequestPublisherSubmittedNotify(EventConsumer):
         if event.id != constants.EVENT_APPLICATION_UR_SUBMITTED:
             return False
 
-        if not consumer_utils.is_enable_publisher_email():
+        if not Account.is_enable_publisher_email():
             return False
 
         app_source = event.context.get("application")
