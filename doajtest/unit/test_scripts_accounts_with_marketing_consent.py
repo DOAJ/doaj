@@ -61,7 +61,7 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
                 str('False')
             ])
 
-        thread_utils.wait_until(lambda: org_size + num_new_records == Account.count(), sleep_time=0.4)
+        thread_utils.wait_until(lambda: org_size + num_new_records * 3 == Account.count(), sleep_time=0.4)
         publishers_with_consent(output_file)
 
         assert os.path.exists(output_file)
