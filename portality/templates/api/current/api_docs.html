@@ -12,8 +12,7 @@
 {% block content %}
     <div class="container page-content">
         <div class="row">
-            <div class="col-md-4 col-md-push-8"></div>
-            <div class="col-md-8 col-md-pull-4">
+            <div class="col-md-8">
                 <section>
                     <p class="label">Docs</p>
                     <h1>API </h1>
@@ -24,6 +23,9 @@
                     </div>
                     {% include "api/current/extra_docs.html" %}
                 </section>
+            </div>
+            <div class="col-md-4">
+                {% include "api/current/sidenav.html" %}
             </div>
         </div>
     </div>
