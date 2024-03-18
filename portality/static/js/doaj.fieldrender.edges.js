@@ -611,6 +611,7 @@ $.extend(true, doaj, {
             this.namespace = "doaj-subject-browser";
 
             this.lastScroll = 0;
+            this.lastSearch = edges.getParam(params.lastSearch, null);
 
             this.draw = function() {
                 // for convenient short references ...
@@ -670,7 +671,7 @@ $.extend(true, doaj, {
 
                 var mainListSelector = edges.css_id_selector(namespace, "main", this);
                 var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
-                var selector = this.lastSearch ? filterSelector : mainSelector;
+                var selector = this.lastSearch ? filterSelector : mainListSelector;
                 this.component.jq(selector).scrollTop(this.lastScroll);
 
                 var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
