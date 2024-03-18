@@ -9,6 +9,7 @@ from portality.bll import DOAJ
 from portality.core import app
 from portality.decorators import ssl_required, write_required
 from portality.lib import urlshort, plausible
+from portality.models.url_shortener import CountWithinDaysQuery
 from portality.util import jsonp
 
 blueprint = Blueprint('doajservices', __name__)
@@ -62,6 +63,16 @@ def unlocked():
                     action=app.config.get('ANALYTICS_ACTION_URLSHORT_ADD', 'Find or create shortener url'))
 def shorten():
     """ create shortener url """
+
+    # check if limit reached
+    n_created = models.UrlShortener.hit_count(CountWithinDaysQuery(
+        app.config.get("URLSHORT_LIMIT_WITHIN_DAYS", 7)
+    ).query())
+    n_created_limit = app.config.get("URLSHORT_LIMIT", 100_000)
+    if n_created >= n_created_limit:
+        app.logger.warning(f"Url shortener limit reached: [{n_created=}] >= [{n_created_limit=}]")
+        abort(429)
+
     data = json.loads(request.data)
     url = data['url']
 

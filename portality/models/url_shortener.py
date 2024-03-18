@@ -57,3 +57,20 @@ class AliasQuery:
             },
             '_source': ['alias'],
         }
+
+
+class CountWithinDaysQuery:
+    def __init__(self, days: int):
+        self.days = days
+
+    def query(self):
+        return {
+            "size": 0,
+            "query": {
+                "range": {
+                    "created_date": {
+                        "gte": f"now-{self.days}d",
+                    }
+                }
+            }
+        }
