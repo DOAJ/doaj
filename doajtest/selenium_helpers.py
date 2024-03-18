@@ -230,7 +230,7 @@ def wait_until_elements(driver: 'WebDriver', css_selector: str, timeout=10, chec
         except:
             return False
 
-    wait_until(exit_cond_fn, timeout, check_interval)
+    wait_until(exit_cond_fn, timeout=timeout, sleep_time=check_interval)
     return elements
 
 
@@ -245,7 +245,7 @@ def wait_until_click(driver: 'WebDriver', css_selector: str, timeout=10, check_i
         except (StaleElementReferenceException, ElementClickInterceptedException):
             return False
 
-    wait_until(_click, timeout=10, check_interval=0.1)
+    wait_until(_click, timeout=timeout, sleep_time=check_interval)
 
 
 def click_edges_item(driver: 'WebDriver', ele_name, item_name):
