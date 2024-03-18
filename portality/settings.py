@@ -1569,5 +1569,3 @@ AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
 URLSHORT_LIMIT_WITHIN_DAYS = 7
 URLSHORT_LIMIT = 50_000
 URLSHORT_ALLOWED_SUPERDOMAINS = ['doaj.org']
-
-ALLOWED_SHORTEN_PATH = ['/search/journals', '/search/articles']

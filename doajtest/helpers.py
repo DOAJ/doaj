@@ -145,7 +145,9 @@ class DoajTestCase(TestCase):
             'ENABLE_EMAIL': False,
             "FAKER_SEED": 1,
             "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
-            'CMS_BUILD_ASSETS_ON_STARTUP': False
+            'CMS_BUILD_ASSETS_ON_STARTUP': False,
+            'URLSHORT_ALLOWED_SUPERDOMAINS': ['doaj.org', 'localhost', '127.0.0.1'],
+
         }
 
     @classmethod

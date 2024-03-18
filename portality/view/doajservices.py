@@ -73,12 +73,12 @@ def shorten():
         app.logger.warning(f"Url shortener limit reached: [{n_created=}] >= [{n_created_limit=}]")
         abort(429)
 
-    data = json.loads(request.data)
-    url = data['url']
+    url = json.loads(request.data)['url']
 
     # validate url
-    path = urlparse(url).path
-    if not any(path == p for p in app.config.get("ALLOWED_SHORTEN_PATH", [])):
+    hostname = urlparse(url).hostname
+    if not any((hostname == d or hostname.endswith(f".{d}"))
+               for d in app.config.get("URLSHORT_ALLOWED_SUPERDOMAINS", [])):
         app.logger.warning(f"Invalid url shorten request: {url}")
         abort(400)
 
@@ -117,6 +117,7 @@ def dismiss_autocheck(autocheck_set_id, autocheck_id):
         abort(404)
     return make_response(json.dumps({"status": "success"}))
 
+
 @blueprint.route("/autocheck/undismiss/<autocheck_set_id>/<autocheck_id>", methods=["GET", "POST"])
 @jsonp
 @login_required
@@ -128,4 +129,3 @@ def undismiss_autocheck(autocheck_set_id, autocheck_id):
     if not done:
         abort(404)
     return make_response(json.dumps({"status": "success"}))
-

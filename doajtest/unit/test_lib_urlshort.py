@@ -103,7 +103,7 @@ class TestUrlshortRoute(DoajTestCase):
         assert urlshort.find_url_by_alias(surl_to_alias(rv.json['short_url'])) == data['url']
 
     def test_create_shorten_url__invalid(self):
-        data = {'url': 'http://localhost:5004/invalid'}
+        data = {'url': 'http://invalid.domain.abc/aaaaa'}
         with self.app_test.test_client() as c:
             rv = c.post(url_for('doajservices.shorten'), json=data)
             assert rv.status_code == 400
