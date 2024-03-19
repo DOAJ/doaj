@@ -1,4 +1,4 @@
-import re, json
+import re, json, os
 
 BLOCK_RE = "{% block (.*?) %}"
 ENDBLOCK_RE = "{% endblock (.*?)%}"
@@ -6,19 +6,29 @@ ENDBLOCK_RE = "{% endblock (.*?)%}"
 EXTENDS_RE = "{% extends \"(.*?)\" %}"
 INCLUDES_RE = "{% include \"(.*?)\".*?%}"
 
+TEMPLATE_DIR = "/home/richard/Dropbox/Code/doaj3/portality/templates"
+TEMPLATE_FILTER = "*.html"
 
-
-TEMPLATE = "/home/richard/Dropbox/Code/doaj3/portality/templates/layouts/dashboard_base.html"
+# TEMPLATE = "/home/richard/Dropbox/Code/doaj3/portality/templates/layouts/dashboard_base.html"
 
 records = []
 
-file_record = {
-    "type": "template",
-    "file": TEMPLATE,
-}
+for (root, dirs, files) in os.walk(TEMPLATE_DIR, topdown=True):
+    for f in files:
+        if f.endswith(".html"):
+            template = os.path.join(root, f)
+            break
 
-with open(TEMPLATE, "r") as f:
-    lines = f.readlines()
+
+def analyse_template(template):
+    with open(template, "r") as f:
+        lines = f.readlines()
+
+    structure = destructure(lines)
+    records = analyse(structure, template)
+    return records
+
+
 
 
 def destructure(lines):
@@ -98,8 +108,10 @@ def analyse(structure, template_name):
     tr = {
         "type": "template",
         "file": template_name,
-        "blocks": list(structure.get("blocks", {}).keys())
     }
+
+    if structure.get("blocks"):
+        tr["blocks"] = list(structure.get("blocks", {}).keys())
 
     for i, line in enumerate(structure["content"]):
         em = re.match(EXTENDS_RE, line)
@@ -112,20 +124,24 @@ def analyse(structure, template_name):
                 tr["includes"] = []
             tr["includes"].append(im.group(1))
 
+    records.append(tr)
+
     for k, v in structure.get("blocks", {}).items():
         records += _analyse_block(v["structure"], k, template_name)
 
-    records.append(tr)
     return records
 
-def _analyse_block(block, block_name, template_name):
+def _analyse_block(block, block_name, template_name, parent_block=None):
     records = []
     br = {
         "type": "block",
         "name": block_name,
         "file": template_name,
-        "blocks": list(block.get("blocks", {}).keys())
+        "parent_block": parent_block
     }
+
+    if block.get("blocks"):
+        br["blocks"] = list(block.get("blocks", {}).keys())
 
     for i, line in enumerate(block["content"]):
         im = re.search(INCLUDES_RE, line)
@@ -136,26 +152,17 @@ def _analyse_block(block, block_name, template_name):
 
     records.append(br)
 
+    # print(block)
     for k, v in block.get("blocks", {}).items():
-        records += _analyse_block(v["structure"], k, template_name)
+        substructure = v["structure"]
+        if substructure:
+            records += _analyse_block(substructure, k, template_name, block_name)
+
+    return records
 
 structure = destructure(lines)
+# print(json.dumps(structure, indent=2))
+
 analysis = analyse(structure, TEMPLATE)
-
-
-# with open(TEMPLATE, "r") as f:
-#     for line in f:
-#         em = re.match(EXTENDS_RE, line)
-#         if em:
-#             file_record["extends"] = em.group(1)
-#
-#         im = re.search(INCLUDES_RE, line)
-#         if im:
-#             if "includes" not in file_record:
-#                 file_record["includes"] = []
-#             file_record["includes"].append(im.group(1))
-#
-# records.append(file_record)
-
 print(json.dumps(analysis, indent=2))
 
