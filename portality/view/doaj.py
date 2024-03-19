@@ -12,11 +12,12 @@ from portality import constants
 from portality import dao
 from portality import models
 from portality import store
+from portality.bll import DOAJ
 from portality.core import app
 from portality.decorators import ssl_required, api_key_required
 from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
-from portality.lib import plausible, urlshort
+from portality.lib import plausible
 from portality.ui.messages import Messages
 
 # ~~DOAJ:Blueprint~~
@@ -656,7 +657,7 @@ def new_password_reset():
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_URLSHORT', 'Urlshort'),
                     action=app.config.get('ANALYTICS_ACTION_URLSHORT_REDIRECT', 'Redirect'))
 def shortened_url(alias):
-    url = urlshort.find_url_by_alias(alias)
+    url = DOAJ.urlshortService().find_url_by_alias(alias)
     if url:
         return redirect(url)
 

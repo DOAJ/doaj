@@ -2,11 +2,12 @@ import time
 
 from doajtest.helpers import DoajTestCase, patch_config
 from portality import models
-from portality.lib import urlshort
+from portality.bll import DOAJ
+from portality.lib.thread_utils import wait_until
 from portality.models import UrlShortener
 from portality.util import url_for
-from portality.lib.thread_utils import wait_until
 
+urlshort = DOAJ.urlshortService()
 
 def wait_any_url_shortener():
     models.UrlShortener.refresh()
