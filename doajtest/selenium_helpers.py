@@ -143,7 +143,8 @@ class SeleniumTestCase(DoajTestCase):
             self.selenium.find_element(By.CSS_SELECTOR, 'div.container')
             log.info('doaj server is running')
             return True
-        except selenium.common.exceptions.NoSuchElementException:
+        except (selenium.common.exceptions.NoSuchElementException,
+                selenium.common.exceptions.WebDriverException):
             log.info('doaj server is not running')
             return False
 
@@ -160,7 +161,7 @@ class SeleniumTestCase(DoajTestCase):
         self.doaj_process.terminate()
         self.doaj_process.join()
         wait_until(lambda: not self._is_doaj_server_running(), 10, 1,
-                  timeout_msg='doaj server is still running')
+                   timeout_msg='doaj server is still running')
 
         self.selenium.quit()
 
