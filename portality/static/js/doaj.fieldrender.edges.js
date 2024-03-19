@@ -839,7 +839,6 @@ $.extend(true, doaj, {
                     return;
                 }
                 this.lastSearch = term;
-                // this.lastScroll = this.component.jq(mainSelector).scrollTop();
                 term = term.toLowerCase();
 
                 function entryMatch(entry) {
