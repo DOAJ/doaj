@@ -21,6 +21,7 @@ HTTP_URL = (
     r'^(?:https?)://'     # Scheme: http(s) or ftp
     r'(?:[\w-]+\.)*[\w-]+'    # Domain name (optional subdomains)
     r'(?:\.[a-z]{2,})'        # Top-level domain (e.g., .com, .org)
+    r'(?:\:(0|6[0-5][0-5][0-3][0-5]|[1-5][0-9][0-9][0-9][0-9]|[1-9][0-9]{0,3}))?'   # port (0-65535) preceded with `:`
     r'(?:\/[^\/\s]*)*'        # Path (optional)
     r'(?:\?[^\/\s]*)?'        # Query string (optional)
     r'(?:#[^\/\s]*)?$'        # Fragment (optional)
