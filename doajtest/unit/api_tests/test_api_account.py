@@ -1,5 +1,6 @@
 from flask import Response
 
+from doajtest import helpers
 from doajtest.helpers import DoajTestCase, with_es
 from portality import models
 from portality.core import load_account_for_login_manager
@@ -10,6 +11,7 @@ class TestAPIClient(DoajTestCase):
     @classmethod
     def setUpClass(cls):
         super(TestAPIClient, cls).setUpClass()
+        helpers.initialise_index()
 
         # Turn off debug so we're allowed to add these routes after the app has been used in other tests
         cls.app_test.debug = False

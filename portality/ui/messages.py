@@ -116,6 +116,17 @@ class Messages(object):
     DISCONTINUED_JOURNALS_FOUND_NOTIFICATION_ERROR_LOG = "Error sending notification with journals discontinuing soon."
     NO_DISCONTINUED_JOURNALS_FOUND_LOG = "No journals discontinuing soon found"
 
+    FORMS__APPLICATION_STATUS__PENDING = "Pending"
+    FORMS__APPLICATION_STATUS__IN_PROGRESS = 'In Progress'
+    FORMS__APPLICATION_STATUS__COMPLETED = 'Completed'
+    FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW = 'Post Submission Automation'
+    FORMS__APPLICATION_STATUS__UPDATE_REQUEST = 'Update Request'
+    FORMS__APPLICATION_STATUS__REVISIONS_REQUIRED = 'Revisions Required'
+    FORMS__APPLICATION_STATUS__ON_HOLD = 'On Hold'
+    FORMS__APPLICATION_STATUS__READY = 'Ready'
+    FORMS__APPLICATION_STATUS__REJECTED = 'Rejected'
+    FORMS__APPLICATION_STATUS__ACCEPTED = 'Accepted'
+
     JOURNAL_CSV_VALIDATE__HEADER_CASE_MISMATCH = '"{h}" has mismatching case to expected header "{expected}".'
     JOURNAL_CSV_VALIDATE__INVALID_HEADER = '"{h}" is not a valid column header. Please revert it to match what was sent to you in the original file.'
     JOURNAL_CSV_VALIDATE__REQUIRED_HEADER_MISSING = '"{h}" is a required column missing from this upload. Please refer to the original file and restore the column.'

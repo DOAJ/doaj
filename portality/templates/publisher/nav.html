@@ -8,14 +8,14 @@
 {% set csv = url_for('publisher.journal_csv') %}
 
 {% set tabs = [
-    (index, "My drafts", 0, constants.ROLE_PUBLISHER),
+    (index, "My draft applications", 0, constants.ROLE_PUBLISHER),
     (journals, "My journals", 1, constants.ROLE_PUBLISHER),
     (urs, "My update requests", 2, constants.ROLE_PUBLISHER),
     (xml, "Upload article XML", 3, constants.ROLE_PUBLISHER),
     (metadata, "Enter article metadata", 4, constants.ROLE_PUBLISHER),
     (preservation, "Upload preservation file", 5, constants.ROLE_PUBLISHER_PRESERVATION),
     (csv, "Validate your CSV", 6, constants.ROLE_PUBLISHER_JOURNAL_CSV),
-    (help, "Help", 7, constants.ROLE_PUBLISHER),
+    (help, "XML help", 7, constants.ROLE_PUBLISHER),
     ]
 %}
 
