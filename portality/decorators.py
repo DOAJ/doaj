@@ -3,8 +3,6 @@ from functools import wraps
 from flask import request, abort, redirect, flash, url_for, render_template, make_response
 from flask_login import login_user, current_user
 
-from portality.api.common import Api401Error
-
 from portality.core import app
 from portality.lib import dates
 from portality.models import Account
@@ -39,6 +37,7 @@ def api_key_required(fn):
                 if login_user(user, remember=False):
                     return fn(*args, **kwargs)
         # else
+        from portality.api.common import Api401Error
         raise Api401Error("An API Key is required to access this.")
 
     return decorated_view

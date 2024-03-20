@@ -115,3 +115,9 @@ class DoajXmlArticleFixtureFactory(object):
     @classmethod
     def upload_the_same_issns(cls):
         return cls._response_from_xpath("//record[journalTitle='2 The Same ISSNs']")
+
+
+def to_articles(article_file_handle: BytesIO):
+    from portality.crosswalks.article_doaj_xml import DOAJXWalk
+    articles = DOAJXWalk().crosswalk_file(file_handle=article_file_handle, add_journal_info=False)
+    return articles

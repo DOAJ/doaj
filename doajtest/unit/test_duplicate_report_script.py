@@ -22,7 +22,7 @@ class TestArticleMatch(DoajTestCase):
     def test_01_duplicates_report(self):
         """Check duplication reporting across all articles in the index"""
 
-        tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True).as_posix()
+        tmp_dir = paths.create_tmp_path(is_auto_mkdir=True).as_posix()
 
         # Create 2 identical articles, a duplicate pair
         article1 = models.Article(**ArticleFixtureFactory.make_article_source(
@@ -80,7 +80,7 @@ class TestArticleMatch(DoajTestCase):
     def test_02_duplicates_global_criteria(self):
         """ Check we match only the actual duplicates, amongst other articles in the index. """
 
-        tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True).as_posix()
+        tmp_dir = paths.create_tmp_path(is_auto_mkdir=True).as_posix()
 
         dup_doi = '10.xxx/xxx/duplicate'
         dup_fulltext = 'http://fulltext.url/article/duplicate'

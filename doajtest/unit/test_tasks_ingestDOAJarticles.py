@@ -1,27 +1,27 @@
-from doajtest.helpers import DoajTestCase
-from lxml import etree
-
-from doajtest.mocks.bll_article import BLLArticleMockFactory
-from doajtest.mocks.ftp import FTPMockFactory
-from doajtest.mocks.file import FileMockFactory
-from doajtest.mocks.response import ResponseMockFactory
-from doajtest.mocks.xwalk import XwalkMockFactory
-from portality.tasks import ingestarticles
-from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
-from doajtest.fixtures.accounts import AccountFixtureFactory
-from doajtest.fixtures.article import ArticleFixtureFactory
+import ftplib
+import os
 import time
-from portality.crosswalks import article_doaj_xml
-from portality.bll.services import article as articleSvc
-
-from portality import models
-from portality.core import app
-
-from portality.background import BackgroundException
-
-import ftplib, os, requests
 from urllib.parse import urlparse
 
+import requests
+from lxml import etree
+
+from doajtest import helpers
+from doajtest.fixtures.article import ArticleFixtureFactory
+from doajtest.fixtures.article_doajxml import DoajXmlArticleFixtureFactory
+from doajtest.helpers import DoajTestCase
+from doajtest.mocks.bll_article import BLLArticleMockFactory
+from doajtest.mocks.file import FileMockFactory
+from doajtest.mocks.ftp import FTPMockFactory
+from doajtest.mocks.response import ResponseMockFactory
+from doajtest.mocks.xwalk import XwalkMockFactory
+from doajtest.unit_tester import article_upload_tester
+from portality import models
+from portality.background import BackgroundException
+from portality.bll.services import article as articleSvc
+from portality.core import app
+from portality.crosswalks import article_doaj_xml
+from portality.tasks import ingestarticles
 from portality.ui.messages import Messages
 
 
@@ -95,9 +95,26 @@ class TestIngestArticlesDoajXML(DoajTestCase):
             if os.path.exists(path):
                 os.remove(path)
 
-
     def mock_load_schema(self, doc):
         return self.schema
+
+    def run_background_process_simple(self, acc_id, handle):
+        f = FileMockFactory(stream=handle)
+
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare(acc_id, schema="doaj", upload_file=f)
+        id = job.params.get("ingest_articles__file_upload_id")
+        self.cleanup_ids.append(id)
+
+        # because file upload gets created and saved by prepare
+        time.sleep(1)
+
+        task = ingestarticles.IngestArticlesBackgroundTask(job)
+        task.run()
+
+        # because file upload needs to be re-saved
+        time.sleep(1)
+
+        return models.FileUpload.pull(id)
 
     def test_01_doaj_file_upload_success(self):
 
@@ -118,7 +135,6 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         assert len(previous) == 1
 
-
     def test_02_doaj_file_upload_invalid(self):
 
         handle = DoajXmlArticleFixtureFactory.invalid_schema_xml()
@@ -134,10 +150,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is not None and fu.error != ""
-        assert list(fu.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(fu, expected_details=True)
 
         # file should have been removed from upload dir
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
@@ -164,11 +177,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         self.cleanup_ids.append(id)
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is None
-        assert list(fu.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(fu, expected_details=False)
 
         # file should have been removed from disk
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
@@ -220,11 +229,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is None
-        assert list(fu.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(fu, expected_details=False)
 
         # now try again with an invalid url
         requests.head = ResponseMockFactory.head_success
@@ -239,11 +244,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is None
-        assert list(fu.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(fu, expected_details=False)
 
     def test_06_doaj_url_upload_ftp_success(self):
         ftplib.FTP = FTPMockFactory.create("doaj")
@@ -275,11 +276,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         id = previous[0].id
 
         fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is None
-        assert list(fu.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(fu, expected_details=False)
 
     def test_08_doajxml_prepare_file_upload_success(self):
 
@@ -287,7 +284,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         f = FileMockFactory(stream=handle)
 
         previous = []
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="doaj", previous=previous)
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="doaj",
+                                                                  previous=previous)
 
         assert job is not None
         assert "ingest_articles__file_upload_id" in job.params
@@ -308,7 +306,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         previous = []
         with self.assertRaises(BackgroundException):
-            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="doaj", previous=previous)
+            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", upload_file=f, schema="doaj",
+                                                                      previous=previous)
 
         assert len(previous) == 1
         id = previous[0].id
@@ -347,7 +346,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         previous = []
 
         with self.assertRaises(BackgroundException):
-            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="doaj", previous=previous)
+            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url=url, schema="doaj",
+                                                                      previous=previous)
 
         assert len(previous) == 1
         id = previous[0].id
@@ -369,7 +369,8 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         # upload dir not configured
         del app.config["UPLOAD_DIR"]
         with self.assertRaises(BackgroundException):
-            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url="http://whatever", schema="doaj", previous=[])
+            job = ingestarticles.IngestArticlesBackgroundTask.prepare("testuser", url="http://whatever", schema="doaj",
+                                                                      previous=[])
 
     def test_13_ftp_upload_success(self):
         ftplib.FTP = FTPMockFactory.create("doaj")
@@ -381,7 +382,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
 
-        url= "ftp://upload"
+        url = "ftp://upload"
         parsed_url = urlparse(url)
 
         job = models.BackgroundJob()
@@ -403,7 +404,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
 
-        url= "ftp://fail"
+        url = "ftp://fail"
         parsed_url = urlparse(url)
 
         job = models.BackgroundJob()
@@ -411,16 +412,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         result = ingestarticles.ftp_upload(job, path, parsed_url, file_upload)
 
         assert result is False
-        assert file_upload.status == "failed"
-        assert file_upload.error is not None and file_upload.error != ""
-        assert file_upload.error_details is None
-        assert list(file_upload.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(file_upload, expected_details=False)
 
     def test_15_http_upload_success(self):
         requests.head = ResponseMockFactory.head_fail
         requests.get = ResponseMockFactory.doaj_get_success
 
-        url= "http://upload"
+        url = "http://upload"
 
         file_upload = models.FileUpload()
         file_upload.set_id()
@@ -484,10 +482,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert file_upload.status == "failed"
-        assert file_upload.error is not None and file_upload.error != ""
-        assert file_upload.error_details is not None and file_upload.error_details != ""
-        assert list(file_upload.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(file_upload, expected_details=True)
 
     def test_19_download_http_error(self):
         requests.head = ResponseMockFactory.head_fail
@@ -510,10 +505,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         result = task._download(file_upload)
 
         assert result is False
-        assert file_upload.status == "failed"
-        assert file_upload.error is not None and file_upload.error != ""
-        assert file_upload.error_details is None
-        assert list(file_upload.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(file_upload, expected_details=False)
 
     def test_20_download_ftp_valid(self):
         ftplib.FTP = FTPMockFactory.create("doaj")
@@ -557,10 +549,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
 
-        assert file_upload.status == "failed"
-        assert file_upload.error is not None and file_upload.error != ""
-        assert file_upload.error_details is not None and file_upload.error_details != ""
-        assert list(file_upload.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(file_upload, expected_details=True)
 
     def test_22_download_ftp_error(self):
         ftplib.FTP = FTPMockFactory.create("doaj")
@@ -582,24 +571,13 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         result = task._download(file_upload)
 
         assert result is False
-        assert file_upload.status == "failed"
-        assert file_upload.error is not None and file_upload.error != ""
-        assert file_upload.error_details is None
-        assert list(file_upload.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(file_upload, expected_details=False)
 
     def test_23_doaj_process_success(self):
-
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal('testowner', pissn='1234-5678'),
+            article_upload_tester.create_simple_publisher("testowner"),
+        ])
 
         job = models.BackgroundJob()
 
@@ -621,16 +599,12 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         assert not os.path.exists(path)
 
-        assert file_upload.status == "processed"
-        assert file_upload.imported == 1
-        assert file_upload.new == 1
+        article_upload_tester.assert_processed(file_upload)
 
     def test_24_process_invalid_file(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal('testowner', pissn='1234-5678'),
+        ])
 
         job = models.BackgroundJob()
 
@@ -651,19 +625,14 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task._process(file_upload)
 
         assert not os.path.exists(path)
-        assert file_upload.status == "failed"
-        assert file_upload.error is not None and file_upload.error != ""
-        assert file_upload.error_details is not None and file_upload.error_details != ""
-        assert list(file_upload.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(file_upload, expected_details=True)
 
     def test_25_process_filesystem_error(self):
         articleSvc.ArticleService.batch_create_articles = BLLArticleMockFactory.batch_create
 
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal('testowner', pissn='1234-5678'),
+        ])
 
         job = models.BackgroundJob()
 
@@ -684,67 +653,23 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         task._process(file_upload)
 
         assert not os.path.exists(path)
-        assert file_upload.status == "failed"
-        assert file_upload.error is not None and file_upload.error != ""
-        assert file_upload.error_details is None
-        assert list(file_upload.failure_reasons.keys()) == []
-
-    def test_26_run_validated(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = FileMockFactory(stream=handle)
-
-        previous = []
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", upload_file=f, schema="doaj", previous=previous)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "processed"
+        article_upload_tester.assert_failed(file_upload, expected_details=False)
 
     def test_27_run_exists(self):
         requests.head = ResponseMockFactory.head_fail
         requests.get = ResponseMockFactory.doaj_get_success
 
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal('testowner', pissn='1234-5678'),
+            article_upload_tester.create_simple_publisher("testowner"),
+        ])
 
         url = "http://valid"
 
         previous = []
 
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", url=url, schema="doaj", previous=previous)
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", url=url, schema="doaj",
+                                                                  previous=previous)
         id = job.params.get("ingest_articles__file_upload_id")
         self.cleanup_ids.append(id)
 
@@ -773,617 +698,55 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         with self.assertRaises(BackgroundException):
             task.run()
 
-        job.params = {"ingest_articles__file_upload_id" : "whatever"}
+        job.params = {"ingest_articles__file_upload_id": "whatever"}
 
         with self.assertRaises(BackgroundException):
             task.run()
 
     def test_29_submit_success(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = FileMockFactory(stream=handle)
-
-        previous = []
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", upload_file=f, schema="doaj", previous=previous)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        # this assumes that huey is in always eager mode, and thus this immediately calls the async task,
-        # which in turn calls execute, which ultimately calls run
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "processed"
+        article_upload_tester.test_submit_success(self.run_background_process_simple)
 
     def test_31_doaj_run_fail_unmatched_issn(self):
-        # Create a journal with 2 issns, one of which is the same as an issn on the
-        # article, but the article also contains an issn which doesn't match the journal
-        # We expect a failed ingest
-
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        bj.add_identifier(bj.E_ISSN, "9876-5432")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_ambiguous()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed", "received status: {}".format(fu.status)
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is None
-
-        fr = fu.failure_reasons
-        assert "unmatched" in fr
-        assert fr["unmatched"] == ["2345-6789"]
+        article_upload_tester.test_fail_unmatched_issn(self.run_background_process_simple)
 
     def test_32_run_doaj_fail_shared_issn(self):
-        # Create 2 journals with the same issns but different owners, which match the issns on the article
-        # We expect an ingest failure
-
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "9876-5432")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        j2 = models.Journal()
-        j2.set_owner("testowner2")
-        j2.set_in_doaj(True)
-        bj2 = j2.bibjson()
-        bj2.add_identifier(bj2.P_ISSN, "1234-5678")
-        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-        j2.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is None
-
-        fr = fu.failure_reasons
-        assert "shared" in fr
-        assert "1234-5678" in fr["shared"]
-        assert "9876-5432" in fr["shared"]
+        article_upload_tester.test_fail_shared_issn(self.run_background_process_simple)
 
     def test_33_run_fail_unowned_issn(self):
-        # Create 2 journals with different owners and one different issn each.  The two issns in the
-        # article match each of the journals respectively
-        # article match each of the journals respectively
-        # We expect an ingest failure
-
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        j2 = models.Journal()
-        j2.set_owner("testowner2")
-        j2.set_in_doaj(True)
-        bj2 = j2.bibjson()
-        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-        j2.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is None
-
-        fr = fu.failure_reasons
-        assert "unowned" in fr
-        assert "9876-5432" in fr["unowned"]
+        article_upload_tester.test_fail_unowned_issn(self.run_background_process_simple)
 
     def test_34_doaj_journal_2_article_2_success(self):
-        # Create a journal with two issns both of which match the 2 issns in the article
-        # we expect a successful article ingest
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        bj.add_identifier(bj.E_ISSN, "9876-5432")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "processed"
-        assert fu.imported == 1
-        assert fu.updates == 0
-        assert fu.new == 1
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 0
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1
+        article_upload_tester.test_journal_2_article_2_success(self.run_background_process_simple)
 
     def test_35_doaj_journal_2_article_1_success(self):
-        # Create a journal with 2 issns, one of which is present in the article as the
-        # only issn
-        # We expect a successful article ingest
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        bj.add_identifier(bj.E_ISSN, "9876-5432")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "processed"
-        assert fu.imported == 1
-        assert fu.updates == 0
-        assert fu.new == 1
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 0
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1
+        article_upload_tester.test_journal_2_article_1_success(self.run_background_process_simple)
 
     def test_37_doaj_journal_1_article_1_success(self):
-        # Create a journal with 1 issn, which is the same 1 issn on the article
-        # we expect a successful article ingest
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "processed"
-        assert fu.imported == 1
-        assert fu.updates == 0
-        assert fu.new == 1
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 0
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1
+        article_upload_tester.test_journal_1_article_1_success(self.run_background_process_simple)
 
     def test_38_doaj_journal_2_article_2_1_different_success(self):
-        # Create a journal with 2 issns, one of which is the same as an issn on the
-        # article, but the article also contains an issn which doesn't match the journal
-        # We expect a failed ingest
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        bj.add_identifier(bj.E_ISSN, "9876-5432")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_ambiguous()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.imported == 0
-        assert fu.updates == 0
-        assert fu.new == 0
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 1
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678", "2345-6789"])]
-        assert len(found) == 0
+        article_upload_tester.test_journal_2_article_2_1_different_success(self.run_background_process_simple)
 
     def test_39_doaj_2_journals_different_owners_both_issns_fail(self):
-        # Create 2 journals with the same issns but different owners, which match the issns on the article
-        # We expect an ingest failure
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "9876-5432")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        j2 = models.Journal()
-        j2.set_owner("testowner2")
-        j2.set_in_doaj(True)
-        bj2 = j2.bibjson()
-        bj2.add_identifier(bj2.P_ISSN, "1234-5678")
-        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-        j2.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.imported == 0
-        assert fu.updates == 0
-        assert fu.new == 0
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 2
-        assert "1234-5678" in fr["shared"]
-        assert "9876-5432" in fr["shared"]
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 0
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0
+        article_upload_tester.test_2_journals_different_owners_both_issns_fail(
+            self.run_background_process_simple)
 
     def test_40_doaj_2_journals_different_owners_issn_each_fail(self):
-        # Create 2 journals with different owners and one different issn each.  The two issns in the
-        # article match each of the journals respectively
-        # We expect an ingest failure
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        j2 = models.Journal()
-        j2.set_owner("testowner2")
-        j2.set_in_doaj(True)
-        bj2 = j2.bibjson()
-        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-        j2.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.imported == 0
-        assert fu.updates == 0
-        assert fu.new == 0
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 1
-        assert "9876-5432" in fr["unowned"]
-        assert len(fr.get("unmatched", [])) == 0
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0
+        article_upload_tester.test_2_journals_different_owners_issn_each_fail(
+            self.run_background_process_simple)
 
     def test_41_doaj_2_journals_same_owner_issn_each_fail(self):
-        # Create 2 journals with the same owner, each with one different issn.  The article's 2 issns
-        # match each of these issns
-        # We expect a failed article ingest - articles must match only ONE journal
-        j1 = models.Journal()
-        j1.set_owner("testowner")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        j2 = models.Journal()
-        j2.set_owner("testowner")
-        j2.set_in_doaj(True)
-        bj2 = j2.bibjson()
-        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-        j2.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.imported == 0
-        assert fu.updates == 0
-        assert fu.new == 0
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 2  # error message for each article
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0
+        article_upload_tester.test_2_journals_same_owner_issn_each_fail(self.run_background_process_simple)
 
     def test_42_doaj_2_journals_different_owners_different_issns_mixed_article_fail(self):
-        # Create 2 different journals with different owners and different issns (2 each).
-        # The article's issns match one issn in each journal
-        # We expect an ingest failure
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "2345-6789")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        j2 = models.Journal()
-        j2.set_owner("testowner2")
-        j2.set_in_doaj(True)
-        bj2 = j2.bibjson()
-        bj2.add_identifier(bj2.P_ISSN, "8765-4321")
-        bj2.add_identifier(bj2.E_ISSN, "9876-5432")
-        j2.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.imported == 0
-        assert fu.updates == 0
-        assert fu.new == 0
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 1
-        assert "9876-5432" in fr["unowned"]
-        assert len(fr.get("unmatched", [])) == 0
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0
+        article_upload_tester.test_2_journals_different_owners_different_issns_mixed_article_fail(
+            self.run_background_process_simple)
 
     def test_43_doaj_duplication(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        bj.add_identifier(bj.E_ISSN, "9876-5432")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal("testowner", pissn="1234-5678", eissn="9876-5432"),
+            article_upload_tester.create_simple_publisher("testowner")
+        ])
 
         # make both handles, as we want as little gap as possible between requests in a moment
         handle1 = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
@@ -1419,261 +782,28 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert fu2.status == "processed", "received status: {}".format(fu2.status)
 
         # now let's check that only one article got created
-        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1, "found: {}".format(len(found))
+        assert models.Article.count_by_issns(["1234-5678", "9876-5432"]) == 1
 
     def test_44_doaj_journal_1_article_1_superlong_noclip(self):
-        # Create a journal with 1 issn, which is the same 1 issn on the article
-        # we expect a successful article ingest
-        # But it's just shy of 30000 unicode characters long!
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_1_issn_superlong_should_not_clip()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "processed"
-        assert fu.imported == 1
-        assert fu.updates == 0
-        assert fu.new == 1
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 0
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1
-        assert len(found[0].bibjson().abstract) == 26264
+        article_upload_tester.test_journal_1_article_1_superlong_noclip(self.run_background_process_simple)
 
     def test_doaj_45_journal_1_article_1_superlong_clip(self):
-        # Create a journal with 1 issn, which is the same 1 issn on the article
-        # we expect a successful article ingest
-        # But it's over 40k unicode characters long!
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_1_issn_superlong_should_clip()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "processed"
-        assert fu.imported == 1
-        assert fu.updates == 0
-        assert fu.new == 1
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 0
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678"])]
-        assert len(found) == 1
-        assert len(found[0].bibjson().abstract) == 30000
+        article_upload_tester.test_journal_1_article_1_superlong_clip(self.run_background_process_simple)
 
     def test_46_doaj_one_journal_one_article_2_issns_one_unknown(self):
-        # Create one journal and ingest one article.  The Journal has two issns, and the article
-        # has two issns, but one of the journal's issns is unknown
-        # We expect an ingest failure
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "2222-2222")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.imported == 0
-        assert fu.updates == 0
-        assert fu.new == 0
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 1
-        assert "9876-5432" in fr["unmatched"]
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 0
+        article_upload_tester.test_one_journal_one_article_2_issns_one_unknown(self.run_background_process_simple)
 
     def test_47_doaj_lcc_spelling_error(self):
-        # create a journal with a broken subject classification
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        bj1.add_identifier(bj1.E_ISSN, "9876-5432")
-        bj1.add_subject("LCC", "Whatever", "WHATEVA")
-        bj1.add_subject("LCC", "Aquaculture. Fisheries. Angling", "SH1-691")
-        j1.set_in_doaj(True)
-        j1.save()
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
-
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None, 'expected FileUpload is not None, received: {}'.format(fu)
-        assert fu.status == "processed", 'expected status processed, received: {}'.format(fu.status)
-        assert fu.imported == 1, 'expected 1 imported, received: {}'.format(fu.imported)
-        assert fu.updates == 0, 'expected 0 updates, received: {}'.format(fu.updates)
-        assert fu.new == 1, 'expected 1 new, received: {}'.format(fu.new)
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 0
-
-        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
-        assert len(found) == 1
-
-        cpaths = found[0].data["index"]["classification_paths"]
-        assert len(cpaths) == 1
-        assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling"
+        article_upload_tester.test_lcc_spelling_error(self.run_background_process_simple)
 
     def test_48_doaj_unknown_journal_issn(self):
-        # create a journal with one of the ISSNs specified
-        j1 = models.Journal()
-        j1.set_owner("testowner1")
-        bj1 = j1.bibjson()
-        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
-        j1.set_in_doaj(True)
-        j1.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner1")
-        account.save(blocking=True)
-
-        # take an article with 2 issns, but one of which is not in the index
-        handle = DoajXmlArticleFixtureFactory.upload_2_issns_correct()
-        f = FileMockFactory(stream=handle)
-
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
-        id = job.params.get("ingest_articles__file_upload_id")
-        self.cleanup_ids.append(id)
-
-        # because file upload gets created and saved by prepare
-        time.sleep(1)
-
-        task = ingestarticles.IngestArticlesBackgroundTask(job)
-        task.run()
-
-        # because file upload needs to be re-saved
-        time.sleep(1)
-
-        fu = models.FileUpload.pull(id)
-        assert fu is not None
-        assert fu.status == "failed"
-        assert fu.imported == 0
-        assert fu.updates == 0
-        assert fu.new == 0
-
-        fr = fu.failure_reasons
-        assert len(fr.get("shared", [])) == 0
-        assert len(fr.get("unowned", [])) == 0
-        assert len(fr.get("unmatched", [])) == 1
-
+        article_upload_tester.test_unknown_journal_issn(self.run_background_process_simple)
 
     def test_49_doaj_noids(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal("testowner", pissn="1234-5678"),
+            article_upload_tester.create_simple_publisher("testowner"),
+        ])
 
         job = models.BackgroundJob()
 
@@ -1820,10 +950,7 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
         fu = models.FileUpload.pull(id)
         assert fu is not None
-        assert fu.status == "failed"
-        assert fu.error is not None and fu.error != ""
-        assert fu.error_details is not None and fu.error != ""
-        assert list(fu.failure_reasons.keys()) == []
+        article_upload_tester.assert_failed(fu, expected_details=True)
 
         # file should have been removed from upload dir
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
@@ -1834,16 +961,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert os.path.exists(fad)
 
     def test_59_same_issns(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal("testowner", pissn="1234-5678"),
+            article_upload_tester.create_simple_publisher("testowner"),
+        ])
 
         job = models.BackgroundJob()
 
@@ -1866,20 +987,14 @@ class TestIngestArticlesDoajXML(DoajTestCase):
         assert not os.path.exists(path)
 
         assert file_upload.status == "failed", "expected: failed, received: {}".format(file_upload.status)
-        assert file_upload.error == Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, "Expected: '{}', received: {}".format(Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, file_upload.error)
+        assert file_upload.error == Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, "Expected: '{}', received: {}".format(
+            Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN, file_upload.error)
 
     def test_60_doaj_no_issns(self):
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(True)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal("testowner", pissn="1234-5678"),
+            article_upload_tester.create_simple_publisher("testowner"),
+        ])
 
         job = models.BackgroundJob()
 
@@ -1906,17 +1021,10 @@ class TestIngestArticlesDoajXML(DoajTestCase):
 
     def test_61_journal_not_indoaj(self):
         """ You can't upload an article for a journal that's been withdrawn"""
-        j = models.Journal()
-        j.set_owner("testowner")
-        bj = j.bibjson()
-        bj.add_identifier(bj.P_ISSN, "1234-5678")
-        j.set_in_doaj(False)
-        j.save(blocking=True)
-
-        asource = AccountFixtureFactory.make_publisher_source()
-        account = models.Account(**asource)
-        account.set_id("testowner")
-        account.save(blocking=True)
+        helpers.save_all_block_last([
+            article_upload_tester.create_simple_journal("testowner", pissn="1234-5678", in_doaj=False),
+            article_upload_tester.create_simple_publisher("testowner"),
+        ])
 
         job = models.BackgroundJob()
 

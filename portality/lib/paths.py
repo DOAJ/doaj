@@ -36,7 +36,7 @@ def get_project_root() -> Path:
     return Path(__file__).parent.parent.parent.absolute()
 
 
-def create_tmp_dir(is_auto_mkdir=False) -> Path:
+def create_tmp_path(is_auto_mkdir=False) -> Path:
     num_retry = 20
     for _ in range(num_retry):
         path = Path(tempfile.NamedTemporaryFile().name)

@@ -161,7 +161,9 @@ class IncomingArticleDO(dataobj.DataObj, swagger.SwaggerSupport):
     def __init__(self, raw=None):
         self._add_struct(BASE_ARTICLE_STRUCT)
         self._add_struct(INCOMING_ARTICLE_REQUIRED)
-        super(IncomingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_ARTICLE_COERCE, swagger_trans=BASE_ARTICLE_SWAGGER_TRANS)
+        super(IncomingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True,
+                                                coerce_map=BASE_ARTICLE_COERCE,
+                                                swagger_trans=BASE_ARTICLE_SWAGGER_TRANS)
 
     def _trim_empty_strings(self):
 

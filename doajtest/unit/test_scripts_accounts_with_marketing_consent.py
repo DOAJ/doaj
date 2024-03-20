@@ -15,7 +15,7 @@ class TestScriptsAccountsWithMarketingConsent(DoajTestCase):
     @with_es(indices=[models.Account.__type__], warm_mappings=[models.Account.__type__])
     def test_01_publishers_with_consent(self):
 
-        tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True)
+        tmp_dir = paths.create_tmp_path(is_auto_mkdir=True)
         num_new_records = 20
         org_size = Account.count()
 
