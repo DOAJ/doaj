@@ -62,10 +62,12 @@ def execute_by_job_id(job_id, task_factory: TaskFactory):
     BackgroundApi.execute(task)
 
 
-def execute_by_bg_task_type(bg_task_type: Type[BackgroundTask], **prepare_kwargs):
+def execute_by_bg_task_type(bg_task_type: Type[BackgroundTask], job_wrapper=None, **prepare_kwargs):
     """ wrapper for execute by BackgroundTask """
     user = app.config.get("SYSTEM_USERNAME")
     job = bg_task_type.prepare(user, **prepare_kwargs)
+    if job_wrapper is not None:
+        job = job_wrapper(job)
     task = bg_task_type(job)
     BackgroundApi.execute(task)
 
@@ -187,3 +189,13 @@ def submit_by_background_job(background_job, execute_fn):
     """
     background_job.save()
     execute_fn.schedule(args=(background_job.id,), delay=10)
+
+
+def create_execute_fn(task_queue: RedisHuey, task_factory: TaskFactory, task_name=None, script=True):
+    """ Common way to create execute_fn for BackgroundTask """
+
+    @register_execute(task_queue, task_name=task_name, script=script)
+    def _execute_fn(job_id):
+        execute_by_job_id(job_id, task_factory)
+
+    return _execute_fn

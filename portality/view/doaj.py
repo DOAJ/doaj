@@ -342,29 +342,17 @@ def toc(identifier=None):
 
 
 @blueprint.route("/toc/articles/<identifier>")
-@blueprint.route("/toc/articles/<identifier>/<volume>")
-@blueprint.route("/toc/articles/<identifier>/<volume>/<issue>")
-def toc_articles(identifier=None, volume=None, issue=None):
+def toc_articles_legacy(identifier=None):
+    return redirect(url_for('doaj.toc_articles', identifier=identifier, volume=1, issue=1), 301)
+
+@blueprint.route("/toc/<identifier>/articles")
+def toc_articles(identifier=None):
     journal = find_toc_journal_by_identifier(identifier)
     bibjson = journal.bibjson()
     real_identifier = find_correct_redirect_identifier(identifier, bibjson)
     if real_identifier:
-        return redirect(url_for('doaj.toc_articles', identifier=real_identifier,
-                                volume=volume, issue=issue), 301)
+        return redirect(url_for('doaj.toc_articles', identifier=real_identifier), 301)
     else:
-
-        if is_issn_by_identifier(identifier) and volume:
-            filters = [dao.Facetview2.make_term_filter('bibjson.journal.volume.exact', volume)]
-            if issue:
-                filters += [dao.Facetview2.make_term_filter('bibjson.journal.number.exact', issue)]
-            q = dao.Facetview2.make_query(filters=filters)
-
-            # The issn we are using to build the TOC
-            issn = bibjson.get_preferred_issn()
-            return redirect(url_for('doaj.toc', identifier=issn)
-                            + '?source=' + dao.Facetview2.url_encode_query(q))
-
-        # now render all that information
         return render_template('doaj/toc_articles.html', journal=journal, bibjson=bibjson )
 
 

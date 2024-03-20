@@ -1642,6 +1642,58 @@ class TestModels(DoajTestCase):
         a2 = models.Application(**asource)
         assert a2.bibjson().language.pop() == 'interpretive dance'
 
+    def test_39_autochecks(self):
+        a = models.Autocheck()
+        a.application = "1234"
+        a.journal = "9876"
+        a.add_check("field", "original", "suggested", "advice", "http://ref.com", {"context": "here"}, "checker")
+
+        assert a.application == "1234"
+        assert a.journal == "9876"
+        assert len(a.checks) == 1
+        assert len(a.checks_raw) == 1
+
+        check = a.checks[0]
+        assert check["field"] == "field"
+        assert check["original_value"] == "original"
+        assert check["suggested_value"] == ["suggested"]
+        assert check["advice"] == "advice"
+        assert check["reference_url"] == "http://ref.com"
+        assert check["context"] == {"context": "here"}
+        assert check["checked_by"] == "checker"
+        assert check["id"] is not None
+        assert "dismissed" not in check
+
+        a.add_check("field", "original", "suggested", "advice", "http://ref.com", {"context": "here"}, "checker")
+        assert len(a.checks) == 1
+
+        a.add_check("field2", "original", "suggested", "advice", "http://ref.com", {"context": "here"}, "checker")
+        assert len(a.checks) == 2
+
+        a.dismiss(check["id"])
+        check = a.checks[0]
+        assert check["dismissed"] is True
+
+        a.undismiss(check["id"])
+        check = a.checks[0]
+        assert "dismissed" not in check
+
+    def test_40_autocheck_retrieves(self):
+        a = models.Autocheck()
+        a.application = "1234"
+        a.add_check("field", "original", "suggested", "advice", "http://ref.com", {"context": "here"}, "checker")
+        a.save(blocking=True)
+
+        ap2 = models.Autocheck.for_application("1234")
+        assert ap2.application == "1234"
+
+        a = models.Autocheck()
+        a.journal = "9876"
+        a.add_check("field", "original", "suggested", "advice", "http://ref.com", {"context": "here"}, "checker")
+        a.save(blocking=True)
+
+        ap2 = models.Autocheck.for_journal("9876")
+        assert ap2.journal == "9876"
 
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):

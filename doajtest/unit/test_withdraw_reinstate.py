@@ -1,3 +1,4 @@
+from doajtest import helpers
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory, ArticleFixtureFactory, ApplicationFixtureFactory
 from flask_login import current_user
@@ -11,6 +12,7 @@ class TestWithdrawReinstate(DoajTestCase):
 
     def setUp(self):
         super(TestWithdrawReinstate, self).setUp()
+        helpers.initialise_index()
 
     def tearDown(self):
         super(TestWithdrawReinstate, self).tearDown()
