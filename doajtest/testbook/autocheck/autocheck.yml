@@ -1,0 +1,122 @@
+suite: Autocheck
+testset: Autocheck
+tests:
+
+- title: Preparation
+  context:
+    role: Any Authenticated User
+  steps:
+  - step: Activate the testdrive setup for this test suite, by using the following url
+    path: /testdrive/autocheck
+    results:
+    - You receive the testdrive setup details, including an admin account for you to use, 
+      and an application and journal which have been autochecked for testing
+  - step: Log into DOAJ using the admin credentials supplied by the testdrive.  You may want to do 
+      this in a private browsing window, so you can remain logged in to your own account in your
+      main window.
+    path: /account/login
+    results:
+    - You are logged in as an admin user
+  - step: You may now proceed to the tests below
+
+- title: Application autochecks
+  context:
+    role: Admin
+  depends:
+  - suite: Autocheck
+    testset: Autocheck
+    test: Preparation
+  steps:
+  - step: Go to the Application admin_url supplied by the testdrive setup
+    results:
+    - You are looking at a test Application created for this test
+  - step: Scroll down to find the ISSN (print) and ISSN (online) fields
+    results:
+      - The Print ISSN field is annotated with a green tick, and text which says that ISSN
+        is fully registered at ISSN.org
+      - The Electronic ISSN field is annotated with an orange cross, which says the ISSN is not
+        registered at ISSN.org
+  - step: Click on one of the "see record" links in the annotation
+    results:
+      - The link is opened in a new window/tab
+      - You are taken to the ISSN.org record.  Note that for the purposes of this test, this
+        is a random record on ISSN.org, unrelated to the actual record in DOAJ.
+  - step: Close the ISSN.org window/tab and return to the application form
+  - step: Scroll to the "Best Practice" section of the application form, and look at the "Long-term preservation services" question
+    results:
+      - "4 checks are visible attached to this question, for: CLOCKSS, LOCKSS, PMC and PKP PN"
+      - CLOCKSS is annotated with a green tick, saying it is archived
+      - LOCKSS is annotated with a red cross, saying it is not current
+      - PMC is annotated with a grey info symbol, saying it is not currently recorded by Keepers
+      - PKP PN is annotated with a red cross, saying it is not archived
+  - step: Click on one of the "see record" links in the annotation
+    results:
+      - The link is opened in a new window/tab
+      - You are taken to the ISSN.org record.  Note that for the purposes of this test, this
+        is a random record on ISSN.org, unrelated to the actual record in DOAJ.
+  - step: Close the ISSN.org window/tab and return to the application form
+  - step: Scroll to the top of the application form
+    results:
+      - There is text which tells you when the Autochecks were made, and an option to Hide All Autochecks
+  - step: Click "Hide All Autochecks", then scroll through the form
+    results:
+      - The autochecks are all hidden
+  - step: Return to the top of the application form and click "Show All Autochecks", then scroll through the form
+    results:
+      - The autochecks are all visible again
+
+- title: Journal autochecks
+  context:
+    role: Admin
+  depends:
+  - suite: Autocheck
+    testset: Autocheck
+    test: Preparation
+  steps:
+  - step: Go to the Journal admin_url supplied by the testdrive setup
+    results:
+    - You are looking at a test Journal created for this test
+  - step: Scroll down to find the ISSN (print) and ISSN (online) fields
+    results:
+      - The Print ISSN field is annotated with a green tick, and text which says that ISSN
+        is fully registered at ISSN.org
+      - The Electronic ISSN field is annotated with an red cross, which says the ISSN is not
+        found at ISSN.org
+  - step: Click on one of the "see record" links in the annotation
+    results:
+      - The link is opened in a new window/tab
+      - You are taken to the ISSN.org record.  Note that for the purposes of this test, this
+        is a random record on ISSN.org, unrelated to the actual record in DOAJ.
+  - step: Close the ISSN.org window/tab and return to the journal form
+  - step: Scroll to the "Best Practice" section of the application form, and look at the "Long-term preservation services" question
+    results:
+      - "4 checks are visible attached to this question, for: CLOCKSS, LOCKSS, PMC and PKP PN"
+      - CLOCKSS is annotated with a green tick, saying it is archived
+      - LOCKSS is annotated with a red cross, saying it is not current
+      - PMC is annotated with a grey info symbol, saying it is not currently recorded by Keepers
+      - PKP PN is annotated with a red cross, saying it is not archived
+  - step: Click on one of the "see record" links in the annotation
+    results:
+      - The link is opened in a new window/tab
+      - You are taken to the ISSN.org record.  Note that for the purposes of this test, this
+        is a random record on ISSN.org, unrelated to the actual record in DOAJ.
+  - step: Close the ISSN.org window/tab and return to the journal form
+  - step: Scroll to the top of the journal form
+    results:
+      - There is text which tells you when the Autochecks were made, and an option to Hide All Autochecks
+  - step: Click "Hide All Autochecks", then scroll through the form
+    results:
+      - The autochecks are all hidden
+  - step: Return to the top of the journal form and click "Show All Autochecks", then scroll through the form
+    results:
+      - The autochecks are all visible again
+
+- title: Teardown
+  context:
+    role: Any Authenticated User
+  steps:
+  - step: Close your private browsing window you used for the test
+  - step: Click the "Teardown" url supplied by the testdrive setup
+    results:
+    - You receive a success notification in your browser window
+  - step: You can now close the testdrive browser tab/window
