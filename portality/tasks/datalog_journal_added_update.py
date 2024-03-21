@@ -1,3 +1,14 @@
+"""
+Background job that automatically populate a Google sheet that shows accepted journals.
+
+about how to setup google sheet API key for testing, please reference to
+`Setup google API key for google sheet` in `how-to-setup.md`
+
+References
+* [Origin](https://github.com/DOAJ/doajPM/issues/2810)
+* [No longer display Seal](https://github.com/DOAJ/doajPM/issues/3829)
+"""
+
 import datetime
 import itertools
 import logging
