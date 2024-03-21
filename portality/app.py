@@ -9,7 +9,7 @@ new ones as required too.
 
 ~~DOAJ:WebApp~~
 """
-
+import logging
 import os, sys
 import tzlocal
 import pytz
@@ -434,6 +434,23 @@ def page_not_found(e):
     return render_template('500.html'), 500
 
 
+is_dev_log_setup_completed = False
+
+
+def setup_dev_log():
+    global is_dev_log_setup_completed
+    if not is_dev_log_setup_completed:
+        is_dev_log_setup_completed = True
+        app.logger.handlers = []
+        log = logging.getLogger()
+        log.setLevel(logging.DEBUG)
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        ch.setFormatter(logging.Formatter('%(asctime)s %(levelname).4s %(processName)s%(threadName)s - '
+                                          '%(message)s --- [%(name)s][%(funcName)s:%(lineno)d]'))
+        log.addHandler(ch)
+
+
 def run_server(host=None, port=None, fake_https=False):
     """
     :param host:
@@ -443,6 +460,10 @@ def run_server(host=None, port=None, fake_https=False):
         that can help for debugging Plausible
     :return:
     """
+
+    if app.config.get('DEBUG_DEV_LOG', False):
+        setup_dev_log()
+
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)
     if len(sys.argv) > 1:
         if sys.argv[1] == '-d':
