@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redhead: Jinja2 template structure browser</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+        }
+
+        .blocks {
+            font-size: 14px;
+            font-weight: bold;
+            color: blue;
+        }
+
+        .includes {
+            font-size: 14px;
+            font-weight: bold;
+            color: green;
+        }
+
+        .extensions {
+            font-size: 14px;
+            font-weight: bold;
+            color: red;
+        }
+
+        .overridden_by {
+            font-size: 14px;
+            font-weight: bold;
+            color: purple;
+        }
+
+        .path {
+            font-style: italic;
+            color: rgb(128, 128, 128);
+        }
+
+        .path-separator {
+            padding-left: 5px;
+            padding-right: 5px;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+<body>
+
+{% macro render_file_node(node, display) %}
+    <li {% if not display %}style="display:none"{% endif %}>
+        {{ path_layout(node.name) }}
+        {% if node.blocks|length > 0 or node.includes|length > 0 or node.extensions|length > 0 %}
+        <ul>
+            {% if node.blocks|length > 0 %}
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        {% for block in node.blocks %}
+                            {{ render_block_node(block) }}
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if node.includes|length > 0 %}
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="includes">Includes</span>
+                    <ul>
+                        {% for include in node.includes %}
+                            {{ render_file_node(include) }}
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if node.extensions|length > 0 %}
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="extensions">Extensions</span>
+                    <ul>
+                        {% for extension in node.extensions %}
+                            {{ render_file_node(extension) }}
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{% macro render_block_node(node) %}
+    <li style="display:none">
+        {{ node.name }}
+        <span class="path">
+        {% if not node.content %}<em>[Empty]</em>{% else %}<em>[Has Content]</em>{% endif %}
+        {% if node.overrides|length == 0 %}<em>[New Definition]</em>{% endif %}
+        {% if node.scoped %}[Scoped]{% endif %}
+        {% if node.overridden_by|length == 0 and not node.content %}[WARNING: Unused block]{% endif %}
+        {% for over in node.overrides %}
+            {% if not loop.first %}<br>{% endif %}
+            {% for p in over.paths %}
+                [{{ p|join(" < ") }}]
+            {% endfor %}
+        {% endfor %}
+        </span>
+        {% if node.blocks|length > 0 or node.includes|length > 0 or node.overridden_by|length > 0 %}
+        <ul>
+            {% if node.blocks|length > 0 %}
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        {% for block in node.blocks %}
+                            {{ render_block_node(block) }}
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if node.includes|length > 0 %}
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="includes">Includes</span>
+                    <ul>
+                        {% for include in node.includes %}
+                            {{ render_file_node(include) }}
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if node.overridden_by|length > 0 %}
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        {% for over in node.overridden_by %}
+                            <li style="display:none">
+                                {{ over.file }}
+                                {% if not over.content %}<em>[Empty]</em>{% endif %}
+                                {% for p in over.paths %}
+                                    {% if not loop.first %}<br>{% endif %}
+                                    <span class="path">[{{ p|join(" > ") }}]</span>
+                                {% endfor %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{% macro path_layout(path) %}
+    {% set bits = path.split("/") %}
+    {%- for bit in bits %}
+        <span class="path-element">{{ bit }}</span>{% if not loop.last %}<span class="path-separator">/</span>{% endif %}
+    {% endfor -%}
+{% endmacro %}
+
+<a href="#" class="expand-all">Expand all</a> | <a href="#" class="collapse-all">Collapse all</a>
+
+<ul>
+    {% for node in tree %}
+        {{ render_file_node(node, true) }}
+    {% endfor %}
+</ul>
+
+<script
+			  src="https://code.jquery.com/jquery-3.7.1.min.js"
+			  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+			  crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    jQuery (document).ready (function($) {
+        $(".toggle").on("click", function(event) {
+            event.preventDefault();
+            let $this = $(this);
+            let $parent = $this.parent();
+            let $ul = $parent.children("ul");
+            let state = $this.data("state");
+            if (state === "hidden") {
+                $ul.children("li").show();
+                $this.data("state", "shown");
+                $this.text("-");
+            } else {
+                $ul.children("li").hide();
+                $this.data("state", "hidden");
+                $this.text("+");
+            }
+        });
+
+        $(".expand-all").on("click", function(event) {
+            event.preventDefault();
+            let toggles = $("a.toggle");
+            toggles.each(function() {
+                let $this = $(this);
+                if ($this.data("state") === "shown") {
+                    return;
+                }
+                $this.trigger("click");
+            });
+        });
+
+        $(".collapse-all").on("click", function(event) {
+            event.preventDefault();
+            let toggles = $("a.toggle");
+            toggles.each(function() {
+                let $this = $(this);
+                if ($this.data("state") === "hidden") {
+                    return;
+                }
+                $this.trigger("click");
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
