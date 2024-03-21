@@ -756,12 +756,13 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # email the publisher to tell them we received their update request
         if email_alert:
-            try:
-                # ~~-> Email:Notifications~~
-                self._send_received_email()
-            except app_email.EmailException as e:
-                self.add_alert("We were unable to send you an email confirmation - possible problem with your email address")
-                app.logger.exception('Error sending reapplication received email to publisher')
+            DOAJ.eventsService().trigger(models.Event(
+                constants.EVENT_APPLICATION_UR_SUBMITTED,
+                current_user and current_user.id,
+                context={
+                    'application': self.target.data,
+                }
+            ))
 
     def _carry_subjects_and_seal(self):
         # carry over the subjects
@@ -770,33 +771,6 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # carry over the seal
         self.target.set_seal(self.source.has_seal())
-
-    def _send_received_email(self):
-        # ~~-> Account:Model~~
-        acc = models.Account.pull(self.target.owner)
-        if acc is None:
-            self.add_alert("Unable to locate account for specified owner")
-            return
-
-        # ~~-> Email:Library~~
-        to = [acc.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - update request received"
-
-        try:
-            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                app_email.send_mail(to=to,
-                                    fro=fro,
-                                    subject=subject,
-                                    template_name="email/publisher_update_request_received.jinja2",
-                                    application=self.target,
-                                    owner=acc)
-                self.add_alert('A confirmation email has been sent to ' + acc.email + '.')
-        except app_email.EmailException as e:
-            magic = str(uuid.uuid1())
-            self.add_alert('Hm, sending the "update request received" email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-            app.logger.error(magic + "\n" + repr(e))
-            raise e
 
 
 class PublisherUpdateRequestReadOnly(ApplicationProcessor):

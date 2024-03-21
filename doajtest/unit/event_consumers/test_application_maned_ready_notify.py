@@ -14,19 +14,19 @@ class TestApplicationManedReadyNotify(DoajTestCase):
     def tearDown(self):
         super(TestApplicationManedReadyNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
         event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application" : {}, "old_status" : "in progress", "new_status": "ready"})
-        assert ApplicationManedReadyNotify.consumes(event)
+        assert ApplicationManedReadyNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS,
                              context={"application": {}, "old_status": "ready", "new_status": "ready"})
-        assert not ApplicationManedReadyNotify.consumes(event)
+        assert not ApplicationManedReadyNotify.should_consume(event)
 
         event = models.Event("test:event", context={"application" : "2345"})
-        assert not ApplicationManedReadyNotify.consumes(event)
+        assert not ApplicationManedReadyNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS)
-        assert not ApplicationManedReadyNotify.consumes(event)
+        assert not ApplicationManedReadyNotify.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")

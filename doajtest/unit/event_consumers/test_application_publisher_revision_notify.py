@@ -15,21 +15,21 @@ class TestApplicationPublisherRevisionNotify(DoajTestCase):
     def tearDown(self):
         super(TestApplicationPublisherRevisionNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
         source = ApplicationFixtureFactory.make_application_source()
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": {}, "old_status": "in progress", "new_status": "revisions_required"})
-        assert ApplicationPublisherRevisionNotify.consumes(event)
+        assert ApplicationPublisherRevisionNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS,
                              context={"application": {}, "old_status": "revisions_required", "new_status": "revisions_required"})
-        assert not ApplicationPublisherRevisionNotify.consumes(event)
+        assert not ApplicationPublisherRevisionNotify.should_consume(event)
 
         event = models.Event("test:event", context={"application" : {}})
-        assert not ApplicationPublisherRevisionNotify.consumes(event)
+        assert not ApplicationPublisherRevisionNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS)
-        assert not ApplicationPublisherRevisionNotify.consumes(event)
+        assert not ApplicationPublisherRevisionNotify.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")

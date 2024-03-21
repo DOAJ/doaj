@@ -1,4 +1,5 @@
 # ~~ApplicationPublisherInProgressNotify:Consumer~~
+from portality.events import consumer_utils
 from portality.util import url_for
 from portality.core import app
 from portality.events.consumer import EventConsumer
@@ -12,7 +13,7 @@ class ApplicationPublisherInprogressNotify(EventConsumer):
     ID = "application:publisher:inprogress:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_STATUS and \
                event.context.get("application") is not None and \
                event.context.get("old_status") == constants.APPLICATION_STATUS_PENDING and \
@@ -47,7 +48,7 @@ class ApplicationPublisherInprogressNotify(EventConsumer):
             volunteers=volunteers
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
 
         svc.notify(notification)

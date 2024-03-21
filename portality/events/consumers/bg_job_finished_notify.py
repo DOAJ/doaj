@@ -13,7 +13,7 @@ class BGJobFinishedNotify(EventConsumer):
     ID = "bg:job_finished:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.BACKGROUND_JOB_FINISHED and \
                event.context.get("job") is not None
 

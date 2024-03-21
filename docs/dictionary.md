@@ -8,3 +8,4 @@
 | exparam | extra parameter              |
 | maned   | Managing Editor              |
 | gsheet  | Google Sheet                 |
+| svc     | service                      |

@@ -12,7 +12,7 @@ class AccountPasswordResetEmail(EventConsumer):
     ID = "account:password_reset:email"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_ACCOUNT_PASSWORD_RESET and event.context.get("account") is not None
 
     @classmethod

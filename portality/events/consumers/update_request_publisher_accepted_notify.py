@@ -1,4 +1,6 @@
 # ~~UpdateRequestPublisherAcceptedNotify:Consumer~~
+from portality.events import consumer_utils
+from portality.models import Account
 from portality.util import url_for
 
 from portality.events.consumer import EventConsumer
@@ -13,13 +15,11 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
     ID = "update_request:publisher:accepted:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         if event.id != constants.EVENT_APPLICATION_STATUS:
             return False
 
-        # TODO: in the long run this needs to move out to the user's email preferences but for now it
-        # is here to replicate the behaviour in the code it replaces
-        if not app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+        if not Account.is_enable_publisher_email():
             return False
 
         app_source = event.context.get("application")
@@ -29,28 +29,18 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
         if event.context.get("new_status") != constants.APPLICATION_STATUS_ACCEPTED:
             return False
 
-        try:
-            application = models.Application(**app_source)
-        except Exception as e:
-            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
-
+        application = consumer_utils.parse_application(app_source)
         is_update_request = application.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST
         return is_update_request
 
     @classmethod
     def consume(cls, event):
-        # TODO: in the long run this needs to move out to the user's email preferences but for now it
-        # is here to replicate the behaviour in the code it replaces
-        if not app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+        if not Account.is_enable_publisher_email():
             return
 
         app_source = event.context.get("application")
 
-        try:
-            application = models.Application(**app_source)
-        except Exception as e:
-            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
-
+        application = consumer_utils.parse_application(app_source)
         if not application.owner:
             return
 
@@ -68,7 +58,7 @@ class UpdateRequestPublisherAcceptedNotify(EventConsumer):
             publisher_dashboard_url=app.config.get('BASE_URL', "https://doaj.org") + url_for("publisher.journals")
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
 
         notification.action = url_for("publisher.journals")

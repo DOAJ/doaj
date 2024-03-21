@@ -1,20 +1,26 @@
-# ~~UpdateRequestPublisherRejectedNotify:Consumer~~
+# ~~UpdateRequestPublisherSubmittedNotify:Consumer~~
+from typing import TypedDict
+
 from portality import constants
 from portality import models
 from portality.bll import DOAJ
 from portality.events import consumer_utils
 from portality.events.consumer import EventConsumer
 from portality.lib import dates
-from portality.lib.dates import FMT_DATE_HUMAN_A
 from portality.models import Account
+from portality.util import url_for
 
 
-class UpdateRequestPublisherRejectedNotify(EventConsumer):
-    ID = "update_request:publisher:rejected:notify"
+class UpdateRequestPublisherSubmittedNotify(EventConsumer):
+    ID = "update_request:publisher:submitted:notify"
+
+    class Context(TypedDict):
+        # no usage, just for developer reference
+        application: dict
 
     @classmethod
     def should_consume(cls, event):
-        if event.id != constants.EVENT_APPLICATION_STATUS:
+        if event.id != constants.EVENT_APPLICATION_UR_SUBMITTED:
             return False
 
         if not Account.is_enable_publisher_email():
@@ -24,23 +30,18 @@ class UpdateRequestPublisherRejectedNotify(EventConsumer):
         if app_source is None:
             return False
 
-        if event.context.get("new_status") != constants.APPLICATION_STATUS_REJECTED:
-            return False
-
-        if event.context.get("old_status") == constants.APPLICATION_STATUS_REJECTED:
-            return False
-
         application = consumer_utils.parse_application(app_source)
-        is_update_request = application.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST
-        return is_update_request
+        if application.application_type != constants.APPLICATION_TYPE_UPDATE_REQUEST:
+            return False
+
+        if not application.owner:
+            return False
+
+        return True
 
     @classmethod
     def consume(cls, event):
-        app_source = event.context.get("application")
-
-        application = consumer_utils.parse_application(app_source)
-        if not application.owner:
-            return
+        application = consumer_utils.parse_application(event.context.get("application"))
 
         # ~~-> Notifications:Service ~~
         svc = DOAJ.notificationsService()
@@ -49,16 +50,15 @@ class UpdateRequestPublisherRejectedNotify(EventConsumer):
         notification.who = application.owner
         notification.created_by = cls.ID
         notification.classification = constants.NOTIFICATION_CLASSIFICATION_STATUS_CHANGE
-        datetime_object = dates.parse(application.date_applied)
-        date_applied = datetime_object.strftime(FMT_DATE_HUMAN_A)
+
         notification.long = svc.long_notification(cls.ID).format(
-            title=application.bibjson().title,
-            date_applied=date_applied,
+            application_title=application.bibjson().title,
+            date_applied=dates.human_date(application.date_applied),
         )
         notification.short = svc.short_notification(cls.ID).format(
             issns=application.bibjson().issns_as_text()
         )
 
-        # there is no action url associated with this notification
+        notification.action = url_for("publisher.updates_in_progress")
 
         svc.notify(notification)

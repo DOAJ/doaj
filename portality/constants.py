@@ -60,12 +60,14 @@ TODO_ASSOCIATE_ALL_APPLICATIONS = "todo_associate_all_applications"
 
 # Roles
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
+ROLE_API = "api"
 
 EVENT_ACCOUNT_CREATED = "account:created"
 EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
 EVENT_APPLICATION_STATUS = "application:status"
 EVENT_APPLICATION_ASSED_ASSIGNED = "application:assed:assigned"
 EVENT_APPLICATION_CREATED = "application:created"
+EVENT_APPLICATION_UR_SUBMITTED = "application:ur_submitted"
 EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED = "application:editor_group:assigned"
 EVENT_JOURNAL_ASSED_ASSIGNED = "journal:assed:assigned"
 EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED = "journal:editor_group:assigned"

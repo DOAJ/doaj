@@ -1,4 +1,5 @@
 from portality.core import app
+from portality.events.consumers.update_request_publisher_submitted_notify import UpdateRequestPublisherSubmittedNotify
 from portality.lib import plugin
 
 from portality.events.consumers.account_created_email import AccountCreatedEmail
@@ -49,7 +50,8 @@ class EventsService(object):
         UpdateRequestPublisherAcceptedNotify,
         UpdateRequestPublisherAssignedNotify,
         UpdateRequestPublisherRejectedNotify,
-        JournalDiscontinuingSoonNotify
+        UpdateRequestPublisherSubmittedNotify,
+        JournalDiscontinuingSoonNotify,
     ]
 
     def __init__(self):
@@ -61,7 +63,7 @@ class EventsService(object):
     def consume(self, event):
         for consumer in self.EVENT_CONSUMERS:
             try:
-                if consumer.consumes(event):
+                if consumer.should_consume(event):
                     consumer.consume(event)
             except Exception as e:
                 app.logger.error("Error in consumer {x}: {e}".format(e=str(e), x=consumer.ID))

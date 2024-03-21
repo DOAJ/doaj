@@ -14,15 +14,15 @@ class TestApplicationPublisherCreatedNotify(DoajTestCase):
     def tearDown(self):
         super(TestApplicationPublisherCreatedNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
         event = models.Event(constants.EVENT_APPLICATION_CREATED, context={"application" : {}})
-        assert ApplicationPublisherCreatedNotify.consumes(event)
+        assert ApplicationPublisherCreatedNotify.should_consume(event)
 
         event = models.Event("test:event", context={"application" : {}})
-        assert not ApplicationPublisherCreatedNotify.consumes(event)
+        assert not ApplicationPublisherCreatedNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_CREATED)
-        assert not ApplicationPublisherCreatedNotify.consumes(event)
+        assert not ApplicationPublisherCreatedNotify.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")

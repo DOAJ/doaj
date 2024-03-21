@@ -14,15 +14,15 @@ class TestJournalEditorGroupAssignedNotify(DoajTestCase):
     def tearDown(self):
         super(TestJournalEditorGroupAssignedNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
         event = models.Event(constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED, context={"journal" : {}})
-        assert JournalEditorGroupAssignedNotify.consumes(event)
+        assert JournalEditorGroupAssignedNotify.should_consume(event)
 
         event = models.Event("test:event", context={"journal" : {}})
-        assert not JournalEditorGroupAssignedNotify.consumes(event)
+        assert not JournalEditorGroupAssignedNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED)
-        assert not JournalEditorGroupAssignedNotify.consumes(event)
+        assert not JournalEditorGroupAssignedNotify.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")

@@ -11,7 +11,7 @@ class MockConsumer(EventConsumer):
     CONSUMED = []
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         cls.CONSUMES.append(event)
         return cls.CONSUME_RESULT
 
