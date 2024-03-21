@@ -72,7 +72,6 @@ def to_datalog_journal_added(journal: Journal) -> DatalogJournalAdded:
     bibjson = journal.bibjson()
     title = bibjson.title
     issn = bibjson.eissn or bibjson.pissn
-    has_seal = journal.has_seal()
     try:
         has_continuations = any([journal.get_future_continuations() + journal.get_past_continuations()])
     except RecursionError:
@@ -80,7 +79,6 @@ def to_datalog_journal_added(journal: Journal) -> DatalogJournalAdded:
 
     record = DatalogJournalAdded(title=title, issn=issn,
                                  date_added=journal.created_timestamp,
-                                 has_seal=has_seal,
                                  has_continuations=has_continuations,
                                  journal_id=journal.id)
 
@@ -162,7 +160,6 @@ def find_new_xlsx_rows(last_issn, page_size=400) -> list:
 def to_display_data(datalog: DatalogJournalAdded) -> list:
     return [datalog.title, datalog.issn,
             dates.reformat(datalog.date_added, out_format=DatalogJournalAdded.DATE_FMT),
-            'Seal' if datalog.has_seal else '',
             'Yes' if datalog.has_continuations else '']
 
 
