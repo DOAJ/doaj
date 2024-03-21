@@ -34,7 +34,12 @@ class UpgradeTask(object):
 class UpgradeType(TypedDict):
     type: str  # name / key of the MODELS class
     action: str  # default is update
-    query: dict  # ES query to use to find the records to upgrade
+
+    """
+    ES query to use to find the records to upgrade
+    default is match_all if query is None
+    """
+    query: dict
     keepalive: str  # ES keepalive time for the scroll, default 1m
     scroll_size: int  # ES scroll size, default 1000
 
