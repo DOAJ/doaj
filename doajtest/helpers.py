@@ -18,6 +18,7 @@ from portality.dao import any_pending_tasks, query_data_tasks
 from portality.lib import paths, dates
 from portality.lib.dates import FMT_DATE_STD
 from portality.lib.thread_utils import wait_until
+from portality.tasks import redis_huey
 from portality.tasks.redis_huey import main_queue, long_running
 from portality.util import url_for
 
@@ -160,10 +161,7 @@ class DoajTestCase(TestCase):
         # always_eager has been replaced by immediate
         # for huey version > 2
         # https://huey.readthedocs.io/en/latest/guide.html
-        main_queue.always_eager = True
-        long_running.always_eager = True
-        main_queue.immediate = True
-        long_running.immediate = True
+        redis_huey.run_bgjobs_immediately()
 
         dao.DomainObject.save = dao_proxy(dao.DomainObject.save, type="instance")
         dao.DomainObject.delete = dao_proxy(dao.DomainObject.delete, type="instance")

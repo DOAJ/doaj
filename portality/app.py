@@ -455,6 +455,11 @@ def run_server(host=None, port=None, fake_https=False):
                         port=app.config.get('DEBUG_PYCHARM_PORT', 6000),
                         stdoutToServer=True, stderrToServer=True)
 
+    # run background jobs immediately if DEBUG_BGJOBS_IMMEDIATELY is True
+    if app.config.get('DEBUG_BGJOBS_IMMEDIATELY', False):
+        from portality.tasks import redis_huey
+        redis_huey.run_bgjobs_immediately()
+
     run_kwargs = {}
     if fake_https:
         run_kwargs['ssl_context'] = 'adhoc'
