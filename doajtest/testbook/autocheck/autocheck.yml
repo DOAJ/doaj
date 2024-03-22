@@ -55,6 +55,14 @@ tests:
       - You are taken to the ISSN.org record.  Note that for the purposes of this test, this
         is a random record on ISSN.org, unrelated to the actual record in DOAJ.
   - step: Close the ISSN.org window/tab and return to the application form
+  - step: Scroll to the "Other archiving policy"
+    results:
+      - Input box contain value "None"
+      - This field annotated with red cross, saying "None" value found
+  - step: Scroll to the "Name of other website where policy is registered"
+    results:
+      - Input box contain value "None"
+      - This field annotated with red cross, saying "None" value found
   - step: Scroll to the top of the application form
     results:
       - There is text which tells you when the Autochecks were made, and an option to Hide All Autochecks
