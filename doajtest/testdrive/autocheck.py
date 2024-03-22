@@ -1,15 +1,16 @@
-from portality import constants
-from doajtest.testdrive.factory import TestDrive
+from datetime import datetime
+
 from doajtest.fixtures.v2.applications import ApplicationFixtureFactory
 from doajtest.fixtures.v2.journals import JournalFixtureFactory
-from portality import models
-from datetime import datetime
-from portality.autocheck.checkers.issn_active import ISSNActive, ISSNChecker
-from portality.autocheck.resources.issn_org import ISSNOrgData
-from portality.autocheck.checkers.keepers_registry import KeepersRegistry
-from portality.bll import DOAJ
+from doajtest.testdrive.factory import TestDrive
 from flask import url_for
+from portality import constants
+from portality import models
+from portality.autocheck.checkers.issn_active import ISSNChecker
+from portality.autocheck.resources.issn_org import ISSNOrgData
+from portality.bll import DOAJ
 from portality.core import app
+
 
 class Autocheck(TestDrive):
 
@@ -35,8 +36,13 @@ class Autocheck(TestDrive):
         ap.remove_current_journal()
         ap.remove_related_journal()
         apbj = ap.bibjson()
-        apbj.set_preservation(["CLOCKSS", "LOCKSS", "PMC", "PKP PN"], "http://policy.example.com")
+        apbj.set_preservation(["CLOCKSS", "LOCKSS", "PMC", "PKP PN", "None"], "http://policy.example.com")
         ap.set_id(ap.makeid())
+
+        # # data for autocheck no_none_value
+        apbj.deposit_policy = ['None']
+        apbj.persistent_identifier_scheme = ['None']
+
         ap.save()
 
         bj = ap.bibjson()
@@ -47,7 +53,7 @@ class Autocheck(TestDrive):
 
         pissn_data = ISSNOrgData({
             "mainEntityOfPage": {
-                "version": "Register"   # this means the ISSN is registered at ISSN.org
+                "version": "Register"  # this means the ISSN is registered at ISSN.org
             },
             "subjectOf": [
                 {
@@ -69,7 +75,7 @@ class Autocheck(TestDrive):
 
         eissn_data = ISSNOrgData({
             "mainEntityOfPage": {
-                "version": "Pending"    # this means the ISSN is not registered at ISSN.org
+                "version": "Pending"  # this means the ISSN is not registered at ISSN.org
             },
             "subjectOf": [
                 {
@@ -100,13 +106,7 @@ class Autocheck(TestDrive):
             pissn_data,
             False)
 
-        acSvc = DOAJ.autochecksService(
-            autocheck_plugins=[
-                # (journal, application, plugin)
-                (True, True, ISSNActive),
-                (True, True, KeepersRegistry)
-            ]
-        )
+        acSvc = DOAJ.autochecksService()
         ac1 = acSvc.autocheck_application(ap)
 
         ##################################################
@@ -132,7 +132,7 @@ class Autocheck(TestDrive):
         ISSNChecker.retrieve_from_source = lambda *args, **kwargs: (
             eissn,
             "https://portal.issn.org/resource/ISSN/9999-000X",
-            None,   # Don't pass in any data, so we get the Not Found response
+            None,  # Don't pass in any data, so we get the Not Found response
             False,
             pissn,
             "https://portal.issn.org/resource/ISSN/2682-4396",

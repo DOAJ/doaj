@@ -25,14 +25,14 @@ doaj.autocheckers.ISSNActive = class {
     }
 
     draw(autocheck) {
-        let icon = this.ICONS[autocheck.advice];
         let message = this.MESSAGES[autocheck.advice];
         message = message.replace("{{ISSN}}", autocheck.original_value);
 
-        let style = this.STYLE[autocheck.advice];
+        const frag = drawIconMessage(
+            autocheck, message,
+            this.ICONS[autocheck.advice],
+            this.STYLE[autocheck.advice]);
 
-        let frag = `<div><span class="icon-container icon-container--${autocheck.advice} icon-container--${style}"><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>)</div>`;
         return frag;
     }
 }
@@ -60,23 +60,66 @@ doaj.autocheckers.KeepersRegistry = class {
     }
 
     draw(autocheck) {
-        let icon = this.ICONS[autocheck.advice];
         let message = this.MESSAGES[autocheck.advice];
 
         let context = JSON.parse(autocheck.context);
         message = message.replace("{service}", context.service);
 
-        let style = this.STYLE[autocheck.advice];
+        const frag = drawIconMessage(
+            autocheck, message,
+            this.ICONS[autocheck.advice],
+            this.STYLE[autocheck.advice]);
 
-        let frag = `<div><span class="icon-container icon-container--${autocheck.advice} icon-container--${style}""><span data-feather="${icon}" aria-hidden="true"></span></span>
-                    ${message} (<a href="${autocheck.reference_url}" target="_blank">see record</a>)</div>`;
         return frag;
     }
 }
 
+doaj.autocheckers.NoNoneValue = class {
+    MESSAGES = {
+        "none_value_found": "This field should not contain the value 'None'.",
+    }
+
+    ICONS = {
+        "none_value_found": "x-circle",
+    }
+
+    STYLE = {
+        "none_value_found": "error",
+    }
+
+    draw(autocheck) {
+        let message = this.MESSAGES[autocheck.advice];
+
+        const frag = drawIconMessage(
+            autocheck, message,
+            this.ICONS[autocheck.advice],
+            this.STYLE[autocheck.advice]);
+
+        return frag;
+    }
+}
+
+function drawIconMessage(autocheck, message, icon, style) {
+    let msg_reference_url = '';
+    if (autocheck.reference_url) {
+        msg_reference_url = ` (<a href="${autocheck.reference_url}" target="_blank">see record</a>)`
+    }
+
+    const frag = `
+    <div>
+    <span class="icon-container icon-container--${autocheck.advice} icon-container--${style}"">
+    <span data-feather="${icon}" aria-hidden="true"></span>
+    </span>
+    ${message} ${msg_reference_url}
+    </div>
+    `;
+    return frag;
+}
+
 doaj.autocheckers.registry = {
     "issn_active": doaj.autocheckers.ISSNActive,
-    "keepers_registry": doaj.autocheckers.KeepersRegistry
+    "keepers_registry": doaj.autocheckers.KeepersRegistry,
+    "no_none_value": doaj.autocheckers.NoNoneValue,
 }
 
 doaj.autocheckers.AutochecksManager = class {
