@@ -1,12 +1,13 @@
-from portality.crosswalks.application_form import ApplicationFormXWalk, JournalFormXWalk
-from portality.autocheck.resource_bundle import ResourceBundle
 from portality import models
-
 from portality.autocheck.checkers.issn_active import ISSNActive
 from portality.autocheck.checkers.keepers_registry import KeepersRegistry
+from portality.autocheck.checkers.no_none_value import NoNoneValue
+from portality.autocheck.resource_bundle import ResourceBundle
+from portality.crosswalks.application_form import ApplicationFormXWalk, JournalFormXWalk
 
 AUTOCHECK_PLUGINS = [
     # (Active on Journal?, Active on Application?, Plugin Class)
+    (True, True, NoNoneValue),
     (True, True, ISSNActive),
     (True, True, KeepersRegistry)
 ]
