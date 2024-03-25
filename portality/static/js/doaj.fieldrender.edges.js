@@ -612,6 +612,7 @@ $.extend(true, doaj, {
             this.namespace = "doaj-subject-browser";
 
             this.lastScroll = 0;
+            this.lastSearch = edges.getParam(params.lastSearch, null);
 
             this.draw = function() {
                 // for convenient short references ...
@@ -643,7 +644,12 @@ $.extend(true, doaj, {
                 var frag = '<div class="accordion"><h3 class="label label--secondary filter__heading" id="' + toggleId + '"><button class="aria-button" aria-expanded="false">' + this.title + toggle + '</button></h3>\
                     <div class="filter__body collapse" style="height: 0px" id="' + resultsId + '">\
                         <label for="' + searchId + '" class="sr-only">' + placeholder + '</label>\
-                        <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '">\
+                        <input type="text" name="' + searchId + '" id="' + searchId + '" class="filter__search" placeholder="' + placeholder + '"';
+                if (this.lastSearch) {
+                    frag += 'value="' + this.lastSearch + '"';
+                }
+
+                frag += '>\
                         <ul class="filter__choices" id="' + filteredId + '" style="display:none"></ul>\
                         <ul class="filter__choices" id="' + mainListId + '">{{FILTERS}}</ul>\
                     </div></div>';
@@ -655,11 +661,19 @@ $.extend(true, doaj, {
                 this.component.context.html(frag);
                 feather.replace();
 
+                if (this.lastSearch) {
+                    var searchSelector = edges.css_id_selector(namespace, "search", this);
+                    this.filterSubjects($(searchSelector));
+                }
+
+
                 // trigger all the post-render set-up functions
                 this.setUIOpen();
 
                 var mainListSelector = edges.css_id_selector(namespace, "main", this);
-                this.component.jq(mainListSelector).scrollTop(this.lastScroll);
+                var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
+                var selector = this.lastSearch ? filterSelector : mainListSelector;
+                this.component.jq(selector).scrollTop(this.lastScroll);
 
                 var checkboxSelector = edges.css_class_selector(namespace, "selector", this);
                 edges.on(checkboxSelector, "change", this, "filterToggle");
@@ -784,7 +798,8 @@ $.extend(true, doaj, {
 
             this.filterToggle = function(element) {
                 var mainListSelector = edges.css_id_selector(this.namespace, "main", this);
-                this.lastScroll = this.component.jq(mainListSelector).scrollTop();
+                var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
+                this.lastScroll = this.lastSearch ? this.component.jq(filterSelector).scrollTop() : this.component.jq(mainListSelector).scrollTop();
                 var el = this.component.jq(element);
                 // var filter_id = this.component.jq(element).attr("id");
                 var checked = el.is(":checked");
@@ -815,6 +830,7 @@ $.extend(true, doaj, {
                     filterEl.html("");
                     filterEl.hide();
                     mainEl.show();
+                    this.lastSearch = null;
                     return;
                 }
                 if (term.length < 3) {
@@ -823,6 +839,7 @@ $.extend(true, doaj, {
                     mainEl.hide();
                     return;
                 }
+                this.lastSearch = term;
                 term = term.toLowerCase();
 
                 function entryMatch(entry) {
