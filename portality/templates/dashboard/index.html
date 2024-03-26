@@ -3,6 +3,25 @@
 
 
 {% block content %}
+    <div class="flex-end">
+        {% if request.values.get("filter") == None %}
+            <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}" >Show all</a></span>
+        {% else %}
+            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}" >Show all</a></span>
+        {% endif %}
+
+        {%  if request.values.get("filter") == "na" %}
+            <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}?filter=na">New Applications</a></span>
+        {% else %}
+            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=na">New Applications</a></span>
+        {% endif %}
+
+        {%  if request.values.get("filter") == "ur" %}
+            <span class="tag tag--primary"><a href="{{ url_for("dashboard.top_todo") }}?filter=ur">Update Requests</a></span>
+        {% else %}
+            <span class="tag tag--tertiary"><a href="{{ url_for("dashboard.top_todo") }}?filter=ur">Update Requests</a></span>
+        {% endif %}
+    </div>
   {% include "dashboard/_todo.html" %}
   <section>
     {# ~~->$GroupStatus:Feature~~ #}

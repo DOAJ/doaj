@@ -29,7 +29,7 @@ def restrict():
 def index():
     # ~~-> Todo:Service~~
     svc = DOAJ.todoService()
-    todos = svc.top_todo(current_user._get_current_object(), size=app.config.get("TODO_LIST_SIZE"))
+    todos = svc.top_todo(current_user._get_current_object(), size=app.config.get("TODO_LIST_SIZE"), update_requests=False)
     # ~~-> Dashboard:Page~~
     return render_template('editor/dashboard.html', todos=todos)
 
