@@ -152,10 +152,10 @@
         <code>Unable to validate document with identified schema</code>
       </th>
       <td>
-        No XML schema could be found. The schema, in particular DOAJ’s standard schema, is necessary to read an XML document.
+        No XML schema could be found. The schema, in particular DOAJ’s standard schema, is necessary to read an XML document. This message also dislpays when ORCID IDs are not formatted correctly.
       </td>
       <td>
-        Check that the file conforms to the DOAJ schema using a validator.<br/>
+        Check that the file conforms to the DOAJ schema using a validator. In particular, make sure that ORCID URLs start with https and not http.<br/>
         <br/>
         Often, the problem arises because the XML is missing a required tag. The schema validation will fail if you try to upload XML to DOAJ that is missing a specific tag. You can see exactly <a href="{{ url_for('doaj.xml') }}">which tags are required here</a>.<br/>
         <br/>
