@@ -2,10 +2,12 @@
 ~~Migrations:Framework~~
 # FIXME: this script requires more work if it's to be used for specified source and target clusters
 """
-import json, os, dictdiffer
-from datetime import datetime, timedelta
-from copy import deepcopy
+import dictdiffer
+import json
+import os
 from collections import OrderedDict
+from copy import deepcopy
+from datetime import timedelta
 from typing import TypedDict, List, Dict
 
 from portality import models
@@ -13,7 +15,7 @@ from portality.dao import ScrollTimeoutException
 from portality.lib import plugin, dates
 from portality.lib.dataobj import DataStructureException
 from portality.lib.seamless import SeamlessException
-from portality.dao import ScrollTimeoutException
+from portality.models.datalog_journal_added import DatalogJournalAdded
 
 MODELS = {
     "journal": models.Journal,  # ~~->Journal:Model~~
@@ -21,7 +23,8 @@ MODELS = {
     "suggestion": models.Suggestion,  # ~~->Application:Model~~
     "application": models.Application,
     "account": models.Account,  # ~~->Account:Model~~
-    "background_job": models.BackgroundJob  # ~~->BackgroundJob:Model~~
+    "background_job": models.BackgroundJob,  # ~~->BackgroundJob:Model~~
+    'datalog_journal_added': DatalogJournalAdded,
 }
 
 
@@ -34,7 +37,12 @@ class UpgradeTask(object):
 class UpgradeType(TypedDict):
     type: str  # name / key of the MODELS class
     action: str  # default is update
-    query: dict  # ES query to use to find the records to upgrade
+
+    """
+    ES query to use to find the records to upgrade
+    default is match_all if query is None
+    """
+    query: dict
     keepalive: str  # ES keepalive time for the scroll, default 1m
     scroll_size: int  # ES scroll size, default 1000
 

@@ -1,0 +1,14 @@
+{
+	"batch": 10000,
+	"types": [
+		{
+			"type": "datalog_journal_added",
+			"init_with_model": false,
+			"action": "index",
+			"keepalive": "20m",
+			"functions" : [
+				"portality.migrate.3829_remove_seal_column.operations.remove_has_seal"
+			]
+		}
+	]
+}
