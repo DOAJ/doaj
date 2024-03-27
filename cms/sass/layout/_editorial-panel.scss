@@ -16,8 +16,14 @@
     position: sticky;
     top: 100px;
 
+    &__wrapper {
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 75px - 1.5rem - 25px); //(full viewport)-(nav height)-(top padding)-(bottom padding)
+    }
+
     &__content {
-      max-height: 70vh;
+      flex: 1;
       overflow-y: scroll;
 
       select, textarea, input {
