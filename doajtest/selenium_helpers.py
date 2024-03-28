@@ -1,14 +1,13 @@
 import datetime
 import logging
-import time
 import multiprocessing
+import time
 from multiprocessing import Process, freeze_support
 from typing import TYPE_CHECKING
 
 import selenium
 from selenium import webdriver
-from selenium.common import StaleElementReferenceException, ElementClickInterceptedException
-from selenium.webdriver import DesiredCapabilities
+from selenium.common.exceptions import StaleElementReferenceException, ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 
 from doajtest.fixtures.url_path import URL_LOGOUT
