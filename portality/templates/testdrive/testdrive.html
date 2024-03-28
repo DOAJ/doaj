@@ -14,16 +14,24 @@
     {% if k != "teardown" %}
     <h2>{{ k }}</h2>
     <dl>
-    {% for k1, v1 in v.items() %}
-        <dt>{{ k1 }}</dt>
-        <dd>
-            {% if v1 is iterable and (var is not string and var is not mapping) %}
-                {{ v1 }}
-            {% else %}
-                {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}</dd>
-            {% endif %}
+    {% if v is mapping %}
+        {% for k1, v1 in v.items() %}
+            <dt>{{ k1 }}</dt>
+            <dd>
+                {% if v1 is iterable and (var is not string and var is not mapping) %}
+                    {{ v1 }}
+                {% else %}
+                    {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}</dd>
+                {% endif %}
 
-    {% endfor %}
+        {% endfor %}
+    {% elif v is iterable %}
+        <dt>list of values:</dt>
+        {% for v1 in v %}
+            <dd>
+                {% if v1.startswith("http") %}<a href="{{ v1 }}" target="_blank">{% endif %}{{ v1 }}{% if v1.startswith("http") %}</a>{% endif %}</dd>
+        {% endfor %}
+    {% endif %}
     </dl>
     {% endif %}
 {% endfor %}
