@@ -8,75 +8,75 @@ from portality.bll.services.query import QueryService, Query
 from portality.bll import exceptions
 
 QUERY_ROUTE = {
-    "query" : {
-        "article" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Article"
+    "query": {
+        "article": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj"],
+            "result_filters": ["public_result_filter"],
+            "dao": "portality.models.Article"
         },
-        "journal" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Journal"
+        "journal": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj"],
+            "result_filters": ["public_result_filter"],
+            "dao": "portality.models.Journal"
         }
     },
-    "publisher_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "publisher",
-            "query_filters" : ["owner", "only_in_doaj"],
-            "result_filters" : ["publisher_result_filter"],
-            "dao" : "portality.models.Journal"
+    "publisher_query": {
+        "journal": {
+            "auth": True,
+            "role": "publisher",
+            "query_filters": ["owner", "only_in_doaj"],
+            "result_filters": ["publisher_result_filter"],
+            "dao": "portality.models.Journal"
         }
     },
-    "admin_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.Journal"
+    "admin_query": {
+        "journal": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Application"
         },
     },
-    "api_query" : {
-        "article" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj", "public_source"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Article",
-            "page_size" : 1
+    "api_query": {
+        "article": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj", "public_source"],
+            "result_filters": ["public_result_filter"],
+            "dao": "portality.models.Article",
+            "page_size": 1
         },
-        "journal" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj", "public_source"],
-            "dao" : "portality.models.Journal"
+        "journal": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj", "public_source"],
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : None,
-            "query_filters" : ["owner", "private_source"],
-            "dao" : "portality.models.Suggestion"
+        "suggestion": {
+            "auth": True,
+            "role": None,
+            "query_filters": ["owner", "private_source"],
+            "dao": "portality.models.Suggestion"
         }
     },
-    "editor_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "editor",
-            "dao" : "portality.models.Journal"
+    "editor_query": {
+        "journal": {
+            "auth": True,
+            "role": "editor",
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : "editor",
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": True,
+            "role": "editor",
+            "dao": "portality.models.Application"
         }
     },
     "associate_query": {
@@ -85,71 +85,78 @@ QUERY_ROUTE = {
             "role": "associate_editor",
             "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : True,
-            "role" : "associate_editor",
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": True,
+            "role": "associate_editor",
+            "dao": "portality.models.Application"
         }
     }
 }
 
 SEARCH_ALL_QUERY_ROUTE = {
-    "query" : {
-        "journal" : {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Journal"
+    "query": {
+        "journal": {
+            "auth": False,
+            "role": None,
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Journal"
         }
     },
-    "editor_query" : {
-        "journal" : {
-            "auth" : True,
-            "role" : "editor",
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Journal"
+    "editor_query": {
+        "journal": {
+            "auth": True,
+            "role": "editor",
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : False,
-            "role" : "editor",
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": False,
+            "role": "editor",
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Application"
         }
     },
     "associate_query": {
         "journal": {
             "auth": False,
             "role": "associate_editor",
-            "query_filters" : ["search_all_meta"],
+            "query_filters": ["search_all_meta"],
             "dao": "portality.models.Journal"
         },
-        "suggestion" : {
-            "auth" : False,
-            "role" : "associate_editor",
-            "query_filters" : ["search_all_meta"],
-            "dao" : "portality.models.Application"
+        "suggestion": {
+            "auth": False,
+            "role": "associate_editor",
+            "query_filters": ["search_all_meta"],
+            "dao": "portality.models.Application"
         }
     }
 }
 
 QUERY_FILTERS = {
-    "non_public_fields_validator" : "portality.lib.query_filters.non_public_fields_validator",
+    "non_public_fields_validator": "portality.lib.query_filters.non_public_fields_validator",
 
     # query filters
-    "only_in_doaj" : "portality.lib.query_filters.only_in_doaj",
-    "owner" : "portality.lib.query_filters.owner",
-    "associate" : "portality.lib.query_filters.associate",
-    "editor" : "portality.lib.query_filters.editor",
+    "only_in_doaj": "portality.lib.query_filters.only_in_doaj",
+    "owner": "portality.lib.query_filters.owner",
+    "associate": "portality.lib.query_filters.associate",
+    "editor": "portality.lib.query_filters.editor",
 
     # result filters
-    "public_result_filter" : "portality.lib.query_filters.public_result_filter",
+    "public_result_filter": "portality.lib.query_filters.public_result_filter",
 
     # source filter
     "public_source": "portality.lib.query_filters.public_source",
 
     # search on all meta field
-    "search_all_meta" : "portality.lib.query_filters.search_all_meta",
+    "search_all_meta": "portality.lib.query_filters.search_all_meta",
 }
+
+MATCH_ALL_RAW_QUERY = {"query": {"match_all": {}}}
+
+
+def raw_query(query):
+    return {'query': {'query_string': {'query': query, 'default_operator': 'AND'}}, 'size': 0, 'track_total_hits': True}
+
 
 def without_keys(d, keys):
     return {x: d[x] for x in d if x not in keys}
@@ -195,8 +202,8 @@ class TestQuery(DoajTestCase):
 
     def test_01_auth(self):
         with self.app_test.test_client() as t_client:
-            response = t_client.get('/query/journal')  # not in the settings above
-            assert response.status_code == 403, response.status_code
+            response = t_client.get('/query/journal')
+            assert response.status_code == 200, response.status_code
 
             # theoretically should be a 404, but the code checks QUERY_ROUTE config first, so auth checks go first
             response = t_client.get('/query/nonexistent')
@@ -229,39 +236,42 @@ class TestQuery(DoajTestCase):
         q = Query()
         q.add_must({"term": {"admin.in_doaj": True}})
         assert q.as_dict() == {
-            'track_total_hits' : True,
+            'track_total_hits': True,
             'query': {
                 'bool': {
                     'must': [
-                        {"match_all" : {}},
+                        {"match_all": {}},
                         {'term': {'admin.in_doaj': True}}
                     ]
                 }
             }
-        },q.as_dict()
+        }, q.as_dict()
 
         q = Query()
         q.clear_match_all()
-        assert q.as_dict() == {'track_total_hits' : True, 'query': {}}, q.as_dict()
+        assert q.as_dict() == {'track_total_hits': True, 'query': {}}, q.as_dict()
 
         q = Query()
         q.add_include("last_updated")
-        assert q.as_dict() == {'track_total_hits' : True, "query": {"match_all": {}},"_source": {"includes": ["last_updated"]}}, q.as_dict()
+        assert q.as_dict() == {'track_total_hits': True, "query": {"match_all": {}},
+                               "_source": {"includes": ["last_updated"]}}, q.as_dict()
 
         q = Query()
         q.add_include(["last_updated", "id"])
-        assert sorted(q.as_dict()) == sorted({'track_total_hits' : True, "query": {"match_all": {}},"_source": {"includes": ["last_updated", "id"]}}) or sorted(q.as_dict()) == sorted({"query": {"match_all": {}},"_source": {"include": ["last_updated", "id"]}}), sorted(q.as_dict())
-
+        assert sorted(q.as_dict()) == sorted({'track_total_hits': True, "query": {"match_all": {}},
+                                              "_source": {"includes": ["last_updated", "id"]}}) or sorted(
+            q.as_dict()) == sorted(
+            {"query": {"match_all": {}}, "_source": {"include": ["last_updated", "id"]}}), sorted(q.as_dict())
 
     def test_03_query_svc_get_config(self):
         qsvc = QueryService()
         cfg = qsvc._get_config_for_search('query', 'article', account=None)
         assert cfg == {
-            "auth" : False,
-            "role" : None,
-            "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Article"
+            "auth": False,
+            "role": None,
+            "query_filters": ["only_in_doaj"],
+            "result_filters": ["public_result_filter"],
+            "dao": "portality.models.Article"
         }, cfg
 
         with self.assertRaises(exceptions.AuthoriseException):
@@ -276,22 +286,23 @@ class TestQuery(DoajTestCase):
         pub = models.Account(**AccountFixtureFactory.make_publisher_source())
         cfg = qsvc._get_config_for_search('publisher_query', 'journal', account=pub)
         assert cfg == {
-            "auth" : True,
-            "role" : "publisher",
-            "query_filters" : ["owner", "only_in_doaj"],
-            "result_filters" : ["publisher_result_filter"],
-            "dao" : "portality.models.Journal"
+            "auth": True,
+            "role": "publisher",
+            "query_filters": ["owner", "only_in_doaj"],
+            "result_filters": ["publisher_result_filter"],
+            "dao": "portality.models.Journal"
         }
 
-        with self.assertRaises(exceptions.AuthoriseException):  # because account is a publisher and an 'admin' role is needed
+        with self.assertRaises(
+                exceptions.AuthoriseException):  # because account is a publisher and an 'admin' role is needed
             cfg = qsvc._get_config_for_search('admin_query', 'journal', account=pub)
 
         maned = models.Account(**AccountFixtureFactory.make_managing_editor_source())
         cfg = qsvc._get_config_for_search('admin_query', 'journal', account=maned)
         assert cfg == {
-            "auth" : True,
-            "role" : "admin",
-            "dao" : "portality.models.Journal"
+            "auth": True,
+            "role": "admin",
+            "dao": "portality.models.Journal"
         }
 
     def test_04_pre_filter_search_query(self):
@@ -299,7 +310,7 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
         cfg = qsvc._get_config_for_search('query', 'article', account=None)
 
-        assert q.as_dict() == {"track_total_hits" : True, "query": {"match_all": {}}}, q.as_dict()
+        assert q.as_dict() == {"track_total_hits": True, "query": {"match_all": {}}}, q.as_dict()
         qsvc._pre_filter_search_query(cfg, q)
         assert q.as_dict() == {
             "track_total_hits": True,
@@ -320,27 +331,30 @@ class TestQuery(DoajTestCase):
         cfg = qsvc._get_config_for_search('query', 'article', account=None)
 
         res = {
-          "hits": {
-            "hits": [
-              { "_type": "article", "_source": { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}}
-            ],
-            "total": 3
-          }
+            "hits": {
+                "hits": [
+                    {"_type": "article",
+                     "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier"}, "bibjson": {}}},
+                    {"_type": "article",
+                     "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier"}, "bibjson": {}}},
+                    {"_type": "article",
+                     "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier"}, "bibjson": {}}}
+                ],
+                "total": 3
+            }
         }
 
         res = qsvc._post_filter_search_results(cfg, res)
 
         assert res == {
-          "hits": {
-            "hits": [
-              { "_type": "article", "_source": { "admin": { "seal": False }, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False }, "bibjson": {}}},
-              { "_type": "article", "_source": { "admin": { "seal": False }, "bibjson": {}}}
-            ],
-            "total": 3
-          }
+            "hits": {
+                "hits": [
+                    {"_type": "article", "_source": {"admin": {"seal": False}, "bibjson": {}}},
+                    {"_type": "article", "_source": {"admin": {"seal": False}, "bibjson": {}}},
+                    {"_type": "article", "_source": {"admin": {"seal": False}, "bibjson": {}}}
+                ],
+                "total": 3
+            }
         }
 
     def test_06_post_filter_search_results_unpacked(self):
@@ -350,30 +364,30 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
         cfg = qsvc._get_config_for_search('query', 'article', account=None)
 
-        res1 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
-        res2 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
-        res3 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
+        res1 = {"admin": {"seal": False, "publisher_record_id": "some_identifier"}, "bibjson": {}}
+        res2 = {"admin": {"seal": False, "publisher_record_id": "some_identifier"}, "bibjson": {}}
+        res3 = {"admin": {"seal": False, "publisher_record_id": "some_identifier"}, "bibjson": {}}
 
         res1 = qsvc._post_filter_search_results(cfg, res1, unpacked=True)
-        assert res1 == { "admin": { "seal": False }, "bibjson": {}}
+        assert res1 == {"admin": {"seal": False}, "bibjson": {}}
 
         res2 = qsvc._post_filter_search_results(cfg, res2, unpacked=True)
-        assert res2 == { "admin": { "seal": False }, "bibjson": {}}
+        assert res2 == {"admin": {"seal": False}, "bibjson": {}}
 
         res3 = qsvc._post_filter_search_results(cfg, res3, unpacked=True)
-        assert res1 == { "admin": { "seal": False }, "bibjson": {}}
+        assert res1 == {"admin": {"seal": False}, "bibjson": {}}
 
     def test_07_get_query(self):
         # q = Query()
         raw_query = {
-            "query" : {
-                "query_string" : {
-                    "query" : '*',
+            "query": {
+                "query_string": {
+                    "query": '*',
                     "default_operator": "AND"
                 }
             },
-            "from" : 0,
-            "size" : 100
+            "from": 0,
+            "size": 100
         }
         qsvc = QueryService()
         cfg = qsvc._get_config_for_search('api_query', 'journal', account=None)
@@ -386,7 +400,7 @@ class TestQuery(DoajTestCase):
                     'must': [
                         {'query_string': {'query': '*', 'default_operator': 'AND'}}
                     ],
-                    "filter" : [
+                    "filter": [
                         {'term': {'admin.in_doaj': True}}
                     ]
                 }
@@ -454,8 +468,10 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
 
         res = qsvc.search('query', 'journal', {'query': {'query_string': {'query': 'testing',
-                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
-                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
+                                                                          'default_operator': 'AND'}}, 'size': 0,
+                                               'aggs': {'country_publisher':
+                                                            {'terms': {'field': 'index.country.exact', 'size': 100,
+                                                                       'order': {'_count': 'desc'}}}},
                                                'track_total_hits': True}, account=None, additional_parameters={})
         assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
 
@@ -468,9 +484,12 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
 
         res = qsvc.search('admin_query', 'journal', {'query': {'query_string': {'query': 'testing',
-                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
-                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
-                                               'track_total_hits': True}, account=maned, additional_parameters={})
+                                                                                'default_operator': 'AND'}}, 'size': 0,
+                                                     'aggs': {'country_publisher':
+                                                                  {'terms': {'field': 'index.country.exact',
+                                                                             'size': 100,
+                                                                             'order': {'_count': 'desc'}}}},
+                                                     'track_total_hits': True}, account=maned, additional_parameters={})
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
     def test_editor_query_notes(self):
@@ -489,9 +508,13 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
 
         res = qsvc.search('editor_query', 'journal', {'query': {'query_string': {'query': 'testing',
-                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
-                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
-                                               'track_total_hits': True}, account=editor, additional_parameters={})
+                                                                                 'default_operator': 'AND'}}, 'size': 0,
+                                                      'aggs': {'country_publisher':
+                                                                   {'terms': {'field': 'index.country.exact',
+                                                                              'size': 100,
+                                                                              'order': {'_count': 'desc'}}}},
+                                                      'track_total_hits': True}, account=editor,
+                          additional_parameters={})
         assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
 
     def test_associate_editor_query_notes(self):
@@ -510,9 +533,14 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
 
         res = qsvc.search('associate_query', 'journal', {'query': {'query_string': {'query': 'testing',
-                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
-                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
-                                               'track_total_hits': True}, account=associate, additional_parameters={})
+                                                                                    'default_operator': 'AND'}},
+                                                         'size': 0, 'aggs': {'country_publisher':
+                {'terms': {
+                    'field': 'index.country.exact',
+                    'size': 100,
+                    'order': {'_count': 'desc'}}}},
+                                                         'track_total_hits': True}, account=associate,
+                          additional_parameters={})
         assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
 
     def test_associate_editor_application_query_notes(self):
@@ -532,9 +560,14 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
 
         res = qsvc.search('associate_query', 'suggestion', {'query': {'query_string': {'query': 'application test',
-                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
-                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
-                                               'track_total_hits': True}, account=associate, additional_parameters={})
+                                                                                       'default_operator': 'AND'}},
+                                                            'size': 0, 'aggs': {'country_publisher':
+                {'terms': {
+                    'field': 'index.country.exact',
+                    'size': 100,
+                    'order': {'_count': 'desc'}}}},
+                                                            'track_total_hits': True}, account=associate,
+                          additional_parameters={})
         assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
 
     def test_editor_application_query_notes(self):
@@ -554,9 +587,14 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
 
         res = qsvc.search('editor_query', 'suggestion', {'query': {'query_string': {'query': 'application test',
-                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
-                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
-                                               'track_total_hits': True}, account=editor, additional_parameters={})
+                                                                                    'default_operator': 'AND'}},
+                                                         'size': 0, 'aggs': {'country_publisher':
+                {'terms': {
+                    'field': 'index.country.exact',
+                    'size': 100,
+                    'order': {'_count': 'desc'}}}},
+                                                         'track_total_hits': True}, account=editor,
+                          additional_parameters={})
         assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
 
     def test_admin_application_query_notes(self):
@@ -574,9 +612,14 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
 
         res = qsvc.search('admin_query', 'suggestion', {'query': {'query_string': {'query': 'application test',
-                            'default_operator': 'AND'}}, 'size': 0, 'aggs': {'country_publisher':
-                            {'terms': {'field': 'index.country.exact', 'size': 100, 'order': {'_count': 'desc'}}}},
-                                               'track_total_hits': True}, account=med, additional_parameters={})
+                                                                                   'default_operator': 'AND'}},
+                                                        'size': 0, 'aggs': {'country_publisher':
+                {'terms': {
+                    'field': 'index.country.exact',
+                    'size': 100,
+                    'order': {'_count': 'desc'}}}},
+                                                        'track_total_hits': True}, account=med,
+                          additional_parameters={})
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
     def test_journal_article_query_notes(self):
@@ -595,149 +638,121 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
 
         res = qsvc.search('query', 'journal,article', {'query': {'query_string':
-                            {'query': 'application test','default_operator': 'AND'}},
-                            'size': 0, 'track_total_hits': True}, account=None, additional_parameters={"ref":"fqw"})
+                                                                     {'query': 'application test',
+                                                                      'default_operator': 'AND'}},
+                                                       'size': 0, 'track_total_hits': True}, account=None,
+                          additional_parameters={"ref": "fqw"})
         assert res['hits']['total']["value"] == 0, res['hits']['total']["value"]
 
     def test_article_query_ascci_folding(self):
         self.article12 = models.Article(
-            **ArticleFixtureFactory.make_article_with_data({"bibjson":{"title":"I can’t really think in English"}}))
+            **ArticleFixtureFactory.make_article_with_data({"bibjson": {"title": "I can’t really think in English"}}))
         self.article12.save(blocking=True)
         qsvc = QueryService()
 
-        res = qsvc.search('query', 'article', {"query": {"match_all": {}}}, account=None, additional_parameters={})
+        res = qsvc.search('query', 'article', MATCH_ALL_RAW_QUERY, account=None,
+                          additional_parameters={})
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
-        res = qsvc.search('query', 'article', {'query': {'query_string':
-                                                                     {'query': "I can't really think in English",
-                                                                      'default_operator': 'AND'}},
-                                                       'size': 0, 'track_total_hits': True}, account=None,
-                                                        additional_parameters={"ref": "fqw"})
-
-        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
-
-        res = qsvc.search('query', 'article', {'query': {'query_string':
-                                                             {'query': "I can’t really think in English",
-                                                              'default_operator': 'AND'}},
-                                               'size': 0, 'track_total_hits': True}, account=None,
-                          additional_parameters={"ref": "fqw"})
+        res = qsvc.search('query', 'article', raw_query("I can't really think in English"),
+                          account=None, additional_parameters={"ref": "fqw"})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
+        res = qsvc.search('query', 'article', raw_query("I can’t really think in English"),
+                          account=None, additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
     def test_journal_query_ascii_folding(self):
         self.journal = models.Journal(**JournalFixtureFactory.make_journal_with_data("I can’t really think in English"))
         self.journal.save(blocking=True)
         qsvc = QueryService()
 
-        res = qsvc.search('query', 'journal', {"query": {"match_all": {}}}, account=None, additional_parameters={})
+        res = qsvc.search('query', 'journal', MATCH_ALL_RAW_QUERY, account=None,
+                          additional_parameters={})
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
-        res = qsvc.search('query', 'journal', {'query': {'query_string':
-                                                             {'query': "I can't really think in English",
-                                                              'default_operator': 'AND'}},
-                                                                'size': 0, 'track_total_hits': True}, account=None,
-                                                                additional_parameters={"ref": "fqw"})
-
-        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
-
-        res = qsvc.search('query', 'journal', {'query': {'query_string':
-                                                             {'query': "I can’t really think in English",
-                                                              'default_operator': 'AND'}},
-                                               'size': 0, 'track_total_hits': True}, account=None,
-                          additional_parameters={"ref": "fqw"})
+        res = qsvc.search('query', 'journal', raw_query("I can't really think in English"),
+                          account=None, additional_parameters={"ref": "fqw"})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
+        res = qsvc.search('query', 'journal', raw_query("I can’t really think in English"),
+                          account=None, additional_parameters={"ref": "fqw"})
+
+        assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
     def test_article_query_ascci_folding_data(self):
         self.article12 = models.Article(
             **ArticleFixtureFactory.make_article_with_data(title="Kadınlarının sağlık",
-                publisher_name="Ankara Üniversitesi", abstract="Araştırma grubunu", country="Türkiye",
+                                                           publisher_name="Ankara Üniversitesi",
+                                                           abstract="Araştırma grubunu", country="Türkiye",
                                                            author="Sultan  GÜÇLÜ"))
         self.article12.save(blocking=True)
         qsvc = QueryService()
 
-        res = qsvc.search('query', 'article', {"query": {"match_all": {}}}, account=None, additional_parameters={})
+        res = qsvc.search('query', 'article', MATCH_ALL_RAW_QUERY, account=None,
+                          additional_parameters={})
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
         # check for title
-        res = qsvc.search('query', 'article', {'query': {'query_string':
-                                                                     {'query': "Kadinlarinin saglik",
-                                                                      'default_operator': 'AND'}},
-                                                       'size': 0, 'track_total_hits': True}, account=None,
-                                                        additional_parameters={"ref": "fqw"})
+        res = qsvc.search('query', 'article', raw_query("Kadinlarinin saglik"), account=None,
+                          additional_parameters={"ref": "fqw"})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
         # echeck for publisher
-        res = qsvc.search('query', 'article', {'query': {'query_string':
-                                                             {'query': "Ankara Universitesi",
-                                                              'default_operator': 'AND'}},
-                                               'size': 0, 'track_total_hits': True}, account=None,
+        res = qsvc.search('query', 'article', raw_query("Ankara Universitesi"), account=None,
                           additional_parameters={"ref": "fqw"})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
         # check for abstract
-        res = qsvc.search('query', 'article', {'query': {'query_string':
-                                                             {'query': "Arastırma grubunu",
-                                                              'default_operator': 'AND'}},
-                                               'size': 0, 'track_total_hits': True}, account=None,
+        res = qsvc.search('query', 'article', raw_query("Arastırma grubunu"), account=None,
                           additional_parameters={"ref": "fqw"})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
         # check for country
-        res = qsvc.search('query', 'article', {'query': {'query_string':
-                                                             {'query': "Turkiye",
-                                                              'default_operator': 'AND'}},
-                                               'size': 0, 'track_total_hits': True}, account=None,
+        res = qsvc.search('query', 'article', raw_query("Turkiye"), account=None,
                           additional_parameters={"ref": "fqw"})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
         # check for author
-        res = qsvc.search('query', 'article', {'query': {'query_string':
-                  {'query': "Sultan GUCLU", 'default_operator': 'AND'}}, 'size': 0, 'track_total_hits': True},
-                          account=None, additional_parameters={"ref": "fqw"})
+        res = qsvc.search('query', 'article', raw_query("Sultan GUCLU"), account=None,
+                          additional_parameters={"ref": "fqw"})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
-
     def test_journal_query_ascii_folding_data(self):
-        self.journal = models.Journal(**JournalFixtureFactory.make_journal_with_data(title="Kadınlarının sağlık",
-                publisher_name="Ankara Üniversitesi", country="Türkiye",))
+        self.journal = models.Journal(**JournalFixtureFactory
+                                      .make_journal_with_data(title="Kadınlarının sağlık",
+                                                              publisher_name="Ankara Üniversitesi",
+                                                              country="Türkiye", ))
         self.journal.save(blocking=True)
         qsvc = QueryService()
 
         # check if journal exist
-        res = qsvc.search('query', 'journal', {"query": {"match_all": {}}}, account=None, additional_parameters={})
+        res = qsvc.search('query', 'journal', MATCH_ALL_RAW_QUERY, account=None,
+                          additional_parameters={})
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
         # check for title search
-        res = qsvc.search('query', 'journal', {'query': {'query_string':
-                                                             {'query': "Kadinlarinin saglik",
-                                                              'default_operator': 'AND'}},
-                                               'size': 0, 'track_total_hits': True}, account=None,
+        res = qsvc.search('query', 'journal', raw_query("Kadinlarinin saglik"), account=None,
                           additional_parameters={"ref": "fqw"})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
         # check for publisher name
-        res = qsvc.search('query', 'journal', {'query': {'query_string':
-                                                             {'query': "Ankara Universitesi",
-                                                              'default_operator': 'AND'}},
-                                               'size': 0, 'track_total_hits': True}, account=None,
+        res = qsvc.search('query', 'journal', raw_query("Ankara Universitesi"), account=None,
                           additional_parameters={"ref": "fqw"})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
 
         # check for country
-        res = qsvc.search('query', 'journal', {'query': {'query_string':
-                                                             {'query': "Turkiye",
-                                                              'default_operator': 'AND'}},
-                                               'size': 0, 'track_total_hits': True}, account=None,
+        res = qsvc.search('query', 'journal', raw_query("Turkiye"), account=None,
                           additional_parameters={"ref": "fqw"})
 
         assert res['hits']['total']["value"] == 1, res['hits']['total']["value"]
