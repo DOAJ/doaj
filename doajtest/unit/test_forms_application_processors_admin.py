@@ -1,3 +1,4 @@
+from doajtest import helpers
 from doajtest.fixtures import JournalFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models, constants
@@ -12,6 +13,11 @@ APPLICATION_FORM = ApplicationFixtureFactory.make_application_form()
 
 
 class TestPublicApplicationProcessorAdmin(DoajTestCase):
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        super().setUpClass()
+        helpers.initialise_index()
 
     def setUp(self):
         super(TestPublicApplicationProcessorAdmin, self).setUp()

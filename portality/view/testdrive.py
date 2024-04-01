@@ -22,6 +22,11 @@ def testdrive(test_id):
     teardown = app.config.get("BASE_URL") + url_for("testdrive.teardown", test_id=test_id) + "?d=" + parse.quote_plus(json.dumps(params))
     params["teardown"] = teardown
 
+    if request.values.get("json"):
+        resp = make_response(json.dumps(params))
+        resp.mimetype = "application/json"
+        return resp
+
     return render_template("testdrive/testdrive.html", params=params, name=test_id)
 
 

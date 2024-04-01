@@ -2,7 +2,8 @@ import time
 
 from parameterized import parameterized
 
-from portality import constants
+from doajtest import helpers
+from portality import constants, dao
 from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase, load_from_matrix
 from portality.bll import DOAJ
@@ -84,7 +85,8 @@ class TestBLRejectApplication(DoajTestCase):
                 svc.reject_application(ap, acc, provenance, note=thenote)
         else:
             svc.reject_application(ap, acc, provenance, note=thenote)
-            time.sleep(2)
+            helpers.wait_until_no_es_incomplete_tasks()
+            dao.refresh()
 
             #######################################
             ## Check
@@ -96,8 +98,8 @@ class TestBLRejectApplication(DoajTestCase):
 
             # check the updated and manually updated date are essentially the same (they can theoretically differ
             # by a small amount just based on when they are set)
-            assert wait_until(
-                lambda: (ap2.last_updated_timestamp - ap2.last_manual_update_timestamp).total_seconds() <= 1.0,)
+            updated_spread = abs((ap2.last_updated_timestamp - ap2.last_manual_update_timestamp).total_seconds())
+            assert updated_spread <= 1.0
 
             if current_journal == "yes" and journal is not None:
                 j2 = Journal.pull(journal.id)

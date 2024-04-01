@@ -1,16 +1,13 @@
-from time import sleep
-
-from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
-
 from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, wait_until_no_es_incomplete_tasks
+from parameterized import parameterized
 from portality import constants
 from portality import models
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.lib.paths import rel2abs
 from portality.lib import dates
+from portality.lib.paths import rel2abs
 
 
 def load_cases():
@@ -158,7 +155,8 @@ class TestBLLTopTodoManed(DoajTestCase):
         # counter to maned_assign_pending
         self.build_application("no_assed", 3 * w, 3 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps, assign_pending)
 
-        sleep(2)
+        wait_until_no_es_incomplete_tasks()
+        models.Application.refresh()
 
         # size = int(size_arg)
         size=25
