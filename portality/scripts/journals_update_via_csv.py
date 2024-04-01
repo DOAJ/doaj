@@ -83,7 +83,7 @@ if __name__ == "__main__":
     if args.sys:
         acc = sys_acc
     else:
-        found_account_name = re.split(r'[._]', args.infile)[0] if args.prefix else args.account
+        found_account_name = re.split(r'[._]', os.path.basename(args.infile))[0] if args.prefix else args.account
         print(f'Creating Update Requests as account {found_account_name}')
 
         acc = Account.pull(found_account_name)
