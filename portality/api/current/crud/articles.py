@@ -10,7 +10,9 @@ from portality import models, app_email
 from portality.bll.doaj import DOAJ
 from portality.bll.exceptions import ArticleMergeConflict, ArticleNotAcceptable, DuplicateArticleException, \
     IngestException
+from portality.dao import ElasticSearchWriteException, DAOSaveExceptionMaxRetriesReached
 from copy import deepcopy
+
 
 class ArticlesCrudApi(CrudApi):
 
@@ -91,7 +93,7 @@ class ArticlesCrudApi(CrudApi):
             raise Api403Error(str(e))
         except IngestException as e:
             raise Api400Error(str(e))
-        except (exceptions.ElasticSearchWriteException, exceptions.DAOSaveExceptionMaxRetriesReached) as e:
+        except (ElasticSearchWriteException, DAOSaveExceptionMaxRetriesReached) as e:
             raise Api500Error(str(e))
 
 
@@ -243,7 +245,7 @@ class ArticlesCrudApi(CrudApi):
             raise Api400Error((str(e)))
         except DuplicateArticleException as e:
             raise Api403Error(str(e))
-        except (exceptions.ElasticSearchWriteException, exceptions.DAOSaveExceptionMaxRetriesReached) as e:
+        except (ElasticSearchWriteException, DAOSaveExceptionMaxRetriesReached) as e:
             raise Api500Error(str(e))
 
         if result.get("success") == 0:
