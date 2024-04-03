@@ -1,16 +1,13 @@
-from time import sleep
-
-from parameterized import parameterized
 from combinatrix.testintegration import load_parameter_sets
-
 from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, wait_until_no_es_incomplete_tasks
+from parameterized import parameterized
 from portality import constants
 from portality import models
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.lib.paths import rel2abs
 from portality.lib import dates
+from portality.lib.paths import rel2abs
 
 
 def load_cases():
@@ -43,7 +40,8 @@ class TestBLLTopTodoManed(DoajTestCase):
             "todo_maned_follow_up_old",
             "todo_maned_ready",
             "todo_maned_completed",
-            "todo_maned_assign_pending"
+            "todo_maned_assign_pending",
+            "todo_maned_new_update_request"
         ]
 
         category_args = {
@@ -97,6 +95,10 @@ class TestBLLTopTodoManed(DoajTestCase):
 
         self.build_application("maned_assign_pending", 4 * w, 4 * w, constants.APPLICATION_STATUS_PENDING, apps,
                                assign_pending)
+
+        # an update request
+        self.build_application("maned_update_request", 5 * w, 5 * w, constants.APPLICATION_STATUS_UPDATE_REQUEST, apps,
+                               update_request=True)
 
         # Applications that should never be reported
         ############################################
@@ -158,7 +160,8 @@ class TestBLLTopTodoManed(DoajTestCase):
         # counter to maned_assign_pending
         self.build_application("no_assed", 3 * w, 3 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps, assign_pending)
 
-        sleep(2)
+        wait_until_no_es_incomplete_tasks()
+        models.Application.refresh()
 
         # size = int(size_arg)
         size=25
@@ -194,13 +197,20 @@ class TestBLLTopTodoManed(DoajTestCase):
                 else:   # the todo item is not positioned at all
                     assert len(positions.get(k, [])) == 0
 
-    def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None):
+    def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None, update_request=False):
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
         ap.set_id(id)
         ap.set_last_manual_update(dates.before_now(lmu_diff))
         ap.set_date_applied(dates.before_now(cd_diff))
         ap.set_application_status(status)
+
+        if update_request:
+            ap.application_type = constants.APPLICATION_TYPE_UPDATE_REQUEST
+        else:
+            ap.remove_current_journal()
+            ap.remove_related_journal()
+            ap.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
 
         if additional_fn is not None:
             additional_fn(ap)

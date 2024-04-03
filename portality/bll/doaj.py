@@ -128,6 +128,11 @@ class DOAJ(object):
         return tour.TourService()
 
     @classmethod
+    def autochecksService(cls, autocheck_plugins=None):
+        from portality.bll.services import autochecks
+        return autochecks.AutocheckService(autocheck_plugins=autocheck_plugins)
+
+    @classmethod
     def hueyJobService(cls):
         """
         Obtain an instance of the huey_job service  ~~->HueyJob:Service~~
@@ -135,4 +140,3 @@ class DOAJ(object):
         """
         from portality.bll.services import huey_job
         return huey_job.HueyJobService()
-

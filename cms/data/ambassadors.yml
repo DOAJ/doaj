@@ -65,7 +65,7 @@
     
 - name: Mahmoud Khalifa
   region: Middle East and Persian Gulf
-  bio: "Mahmoud is the founder of Cybrarians, the Arabic Portal for Librarianship and Information, a non-profit organization located in Egypt since 2002, and working on serving library and information community in Arab countries. He is PhD candidate in Humboldt University of Berlin, Germany. He works on a dissertation about The national information policies. Mahmoud was an Associate at IFLA International Leaders Programme, 2016-2018, and an accredited trainer for the IFLA BSLA programme (Building Strong Library Association), as well as an OCLC Fellow at Jay Jordan IFLA/OCLC Early Career Development Fellowship Program, class 2010. In 2013 he was the winner of the Scientific Research Academy’s prize in informatics in Egypt. Professionally, he worked in Library of Congress Cairo Office from 2006-2018."
+  bio: "Mahmoud is a PhD candidate at Humboldt University of Berlin, Germany. He is writing his dissertation about national information policies. Mahmoud was an associate at the IFLA International Leaders Programme, 2016-2018, and an accredited trainer for the IFLA BSLA programme (Building Strong Library Association), as well as an OCLC Fellow at Jay Jordan IFLA/OCLC Early Career Development Fellowship Program, class 2010. Professionally, he worked in the Library of Congress Cairo Office from 2006-2018. As a researcher, he published more than 20 articles, book chapters, and conference papers."
   photo: "mahmoud.jpg"
   coi:
     2022: https://drive.google.com/file/d/10s7B0WeTPqpaafhThv-i8q03uIFaAAue/view?usp=sharing
@@ -126,13 +126,6 @@ of scientific journals in academic communication, and academic publishing under 
 He has been an editor of Journal of Educational Evaluation for Health Professions since 2005. His goal with DOAJ is to pursue the registration of all open access journals from Korea to DOAJ."
   photo: "sun-huh.jpg"
   coi:
-
-- name: Thomas Herve Mboa Nkoudou
-  region: West and Central Africa
-  bio: "Thomas is a PhD candidate in Public Communication at Université Laval (Canada) and deeply engaged in advocating for open science and promoting best practices of scholarly communication in Africa. He has been involved in promoting open access in Haiti and French-speaking African countries (<a href='https://www.projetsoha.org/' target='_blank'>projet SOHA</a>) and is the initiator and organiser of the yearly Africa Open Science and Hardware Summit (<a href='https://africaosh.com/' target='_blank'>AfricaOSH</a>). He is a member of the OpenCon organising committee and an instructor at <a href='https://www.force11.org/' target='_blank'>Force11</a> Scholarly Communication Institute. He has made it his mission to make scientific resources produced in African-based universities more visible locally and abroad."
-  photo: "thomas_mboa.png"
-  coi:
-    2022: https://drive.google.com/file/d/19rmrksWpCdP_GAHH8ZPT-HkaBgIjwA1x/view?usp=sharing
 
 - name: Vrushali Dandawate
   region: India

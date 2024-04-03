@@ -1,0 +1,40 @@
+suite: Autocheck
+testset: Application Submission Workflow
+tests:
+
+- title: Submit application for autochecking
+  steps:
+  - step: To create the publisher and admin accounts required for this test, and to prepare the environment,
+      use the testdrive setup linked below
+    path: /testdrive/autocheck_application_submission
+    results:
+      - you receive a page which contains at least a set of admin account credentials and publisher account credentials
+  - step: Log in with a publisher account
+    path: /account/login
+  - step: Go to the application form
+    path: /apply/
+  - step: | 
+      Complete the application form as you like, but ensure to set the following values:
+      * ISSN (print): 1848-3380
+      * ISSN (online): 0005-1144
+      * Archiving policy: CLOCKSS, LOCKSS
+  - step: Submit the application
+    results:
+      - The application is successfully submitted
+  - step: Log out as a publisher and log in as an administrator
+  - step: Go to the background jobs view
+    results:
+      - A background job is present for the application autochecks for the application you just submitted (it is probably
+        the top job, but if not limit by action "application_autochecks" to find it)
+      - The status of the job is either "queued" or "completed".  If it is "queued" wait for it to finish (you will need to refresh
+        the page to see the status change)
+      - It should move to "completed" fairly quickly, if it does not the test may have failed
+  - step: Go to the application search and find the application you just submitted (e.g. sort by date applied, descending, and it
+      should be the first result)
+  - step: Open the application for reviewing and scroll through it
+    results:
+      - There is text at the top which tells you when the Autochecks were made, dated to today, and an option to Hide All Autochecks
+      - The ISSN (print) field has an autocheck annotation
+      - The ISSN (online) field has an autocheck annotation
+      - The Archiving Policy question has autocheck annotations for all selected services
+  - step: Delete the accounts you created for this test by clicking the "Teardown" link in the testdrive page you used to create them

@@ -1,4 +1,6 @@
 # ~~Constants:Config~~
+
+# ~~-> ApplicationStatuses:Config~~
 APPLICATION_STATUS_ACCEPTED = "accepted"
 APPLICATION_STATUS_REJECTED = "rejected"
 APPLICATION_STATUS_UPDATE_REQUEST = "update_request"
@@ -8,6 +10,7 @@ APPLICATION_STATUS_IN_PROGRESS = "in progress"
 APPLICATION_STATUS_COMPLETED = "completed"
 APPLICATION_STATUS_ON_HOLD = "on hold"
 APPLICATION_STATUS_READY = "ready"
+APPLICATION_STATUS_POST_SUBMISSION_REVIEW = "post_submission_review"
 
 APPLICATION_STATUSES_ALL = [
     APPLICATION_STATUS_ACCEPTED,
@@ -18,7 +21,8 @@ APPLICATION_STATUSES_ALL = [
     APPLICATION_STATUS_IN_PROGRESS,
     APPLICATION_STATUS_COMPLETED,
     APPLICATION_STATUS_ON_HOLD,
-    APPLICATION_STATUS_READY
+    APPLICATION_STATUS_READY,
+    APPLICATION_STATUS_POST_SUBMISSION_REVIEW
 ]
 
 APPLICATION_TYPE_UPDATE_REQUEST = "update_request"
@@ -44,6 +48,8 @@ TODO_MANED_FOLLOW_UP_OLD = "todo_maned_follow_up_old"
 TODO_MANED_READY = "todo_maned_ready"
 TODO_MANED_COMPLETED = "todo_maned_completed"
 TODO_MANED_ASSIGN_PENDING = "todo_maned_assign_pending"
+TODO_MANED_LAST_MONTH_UPDATE_REQUEST = "todo_maned_last_month_update_request"
+TODO_MANED_NEW_UPDATE_REQUEST = "todo_maned_new_update_request"
 TODO_EDITOR_STALLED = "todo_editor_stalled"
 TODO_EDITOR_FOLLOW_UP_OLD = "todo_editor_follow_up_old"
 TODO_EDITOR_COMPLETED = "todo_editor_completed"
@@ -78,6 +84,8 @@ BACKGROUND_JOB_FINISHED = "bg:job_finished"
 PROCESS__QUICK_REJECT = "quick_reject"
 
 # Role
+ROLE_ADMIN = "admin"
+ROLE_PUBLISHER = "publisher"
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
 ROLE_PUBLISHER = "publisher"
