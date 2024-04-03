@@ -41,7 +41,7 @@ class TestBLLTopTodoManed(DoajTestCase):
             "todo_maned_ready",
             "todo_maned_completed",
             "todo_maned_assign_pending",
-            "todo_maned_update_request"
+            "todo_maned_new_update_request"
         ]
 
         category_args = {
