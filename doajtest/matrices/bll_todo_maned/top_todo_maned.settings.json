@@ -179,7 +179,7 @@
       }
     },
     {
-      "name": "todo_maned_update_request",
+      "name": "todo_maned_new_update_request",
       "type": "conditional",
       "default": "",
       "values": {
@@ -208,7 +208,7 @@
       }
     },
     {
-      "name": "todo_maned_update_request_order",
+      "name": "todo_maned_new_update_request_order",
       "type": "conditional",
       "default": "",
       "values": {
