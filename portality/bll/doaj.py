@@ -126,3 +126,8 @@ class DOAJ(object):
         """
         from portality.bll.services import tour
         return tour.TourService()
+
+    @classmethod
+    def autochecksService(cls, autocheck_plugins=None):
+        from portality.bll.services import autochecks
+        return autochecks.AutocheckService(autocheck_plugins=autocheck_plugins)

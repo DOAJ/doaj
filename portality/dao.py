@@ -52,8 +52,7 @@ class DomainObject(UserDict, object):
     which provide interaction with ES index such as (save, delete, query, etc.)
     """
 
-    # set the type on the model that inherits this
-    # which also is ES index name of the model
+    # set the type on the model that inherits this# which also is ES index name of the model
     __type__ = None
 
     def __init__(self, **kwargs):
@@ -179,7 +178,7 @@ class DomainObject(UserDict, object):
                 r = ES.index(self.index_name(), d, doc_type=self.doc_type(),
                              id=self.data.get("id"),
                              headers=CONTENT_TYPE_JSON,
-                             timeout=app.config.get('ES_READ_TIMEOUT', '1m'), )
+                             timeout=app.config.get('ES_READ_TIMEOUT', None), )
                 break
 
             except (elasticsearch.ConnectionError, elasticsearch.ConnectionTimeout):
@@ -443,7 +442,7 @@ class DomainObject(UserDict, object):
                 # ES 7.10 updated target to whole index, since specifying type for search is deprecated
                 # r = requests.post(cls.target_whole_index() + recid + "_search", data=json.dumps(qobj),  headers=CONTENT_TYPE_JSON)
                 if kwargs.get('timeout') is None:
-                    kwargs['timeout'] = app.config.get('ES_READ_TIMEOUT', '1m')
+                    kwargs['timeout'] = app.config.get('ES_READ_TIMEOUT', None)
                 r = ES.search(body=json.dumps(qobj), index=cls.index_name(), doc_type=cls.doc_type(),
                               headers=CONTENT_TYPE_JSON, **kwargs)
                 break
@@ -991,9 +990,10 @@ class DomainObject(UserDict, object):
                     return
             else:
                 if (dates.now() - start_time).total_seconds() >= max_retry_seconds:
-                    raise BlockTimeOutException(
-                        "Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(
-                            id=id, limit=max_retry_seconds))
+                    raise (BlockTimeOutException(
+                        "Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}"
+                        .format(
+                            id=id, limit=max_retry_seconds)))
 
             time.sleep(sleep)
 
@@ -1035,8 +1035,30 @@ class DomainObject(UserDict, object):
             cls.blockall((m.id, getattr(m, "last_updated", None)) for m in models)
 
 
+def any_pending_tasks():
+    """ Check if there are any pending tasks in the elasticsearch task queue """
+    results = ES.cluster.pending_tasks()
+    return len(results["tasks"]) > 0
 
 
+def query_data_tasks(timeout='30s'):
+    """ Check if there are any pending tasks in the elasticsearch task queue """
+    results = ES.tasks.list(params={
+        "actions": 'indices:data*',
+        "timeout": timeout,
+        "wait_for_completion": 'true',
+    })
+    tasks = []
+    for node in results['nodes'].values():
+        tasks.extend(node['tasks'].values())
+    return tasks
+
+
+def refresh():
+    """
+    refresh all indexes to make newly added or deleted documents immediately searchable
+    """
+    return ES.indices.refresh()
 
 
 class BlockTimeOutException(Exception):
@@ -1057,7 +1079,6 @@ class ESMappingMissingError(Exception):
 
 class ESError(Exception):
     pass
-
 
 
 ########################################################################
@@ -1112,7 +1133,6 @@ class PrefixAutocompleteQuery(object):
                 self._agg_name: {"terms": {"field": self._agg_field, "size": self._agg_size}}
             }
         }
-
 
 
 class WildcardAutocompleteQuery(object):

@@ -171,7 +171,7 @@ Any direct marketing activities, including solicitation of manuscripts, that are
 
 ## Version history
 
-- This is Version 4.0 of the Principles of Transparency and Best Practice in Scholarly Publishing
+- This is Version 4.0 - September 2022
 - [Version 3.0](https://docs.google.com/document/d/1wtnA5zj02Hn3XY_SUWvs3U22DC9MaaNVrdiCHYXlrGE/edit?usp=sharing) - January 2018
 - [Version 2.0](https://oaspa.org/principles-of-transparency-and-best-practice-in-scholarly-publishing-2/?highlight=principles) - June 2015 (on the OASPA website)
 - [Version 1.0](https://oaspa.org/principles-of-transparency-and-best-practice-in-scholarly-publishing/?highlight=principles) - December 2013 (on the OASPA website)

@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.6.2"
+DOAJ_VERSION = "6.6.8"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -72,7 +72,7 @@ ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
 
-ES_READ_TIMEOUT = '1m'
+ES_READ_TIMEOUT = '2m'
 
 #####################################################
 # Elastic APM config  (MUST be configured in env file)
@@ -389,6 +389,7 @@ ASSOC_ED_IDLE_DAYS = 10
 ASSOC_ED_IDLE_WEEKS = 3
 
 # Which statuses the notification queries should be filtered to show
+# ~~-> ApplicationStatuses:Config~~
 MAN_ED_NOTIFICATION_STATUSES = [
     constants.APPLICATION_STATUS_PENDING,
     constants.APPLICATION_STATUS_IN_PROGRESS, constants.APPLICATION_STATUS_COMPLETED,
@@ -450,7 +451,9 @@ HUEY_SCHEDULE = {
 
 HUEY_TASKS = {
     "ingest_articles": {"retries": 10, "retry_delay": 15},
-    "preserve": {"retries": 0, "retry_delay": 15}
+    "preserve": {"retries": 0, "retry_delay": 15},
+    "application_autochecks": {"retries": 0, "retry_delay": 15},
+    "journal_autochecks": {"retries": 0, "retry_delay": 15}
 }
 
 ####################################
@@ -481,7 +484,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Application", # ~~->Application:Model~~
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
     "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
-    "portality.models.background.BackgroundJob" # ~~-> BackgroundJob:Model~~
+    "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
+    "portality.models.autocheck.Autocheck" # ~~-> Autocheck:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -1486,6 +1490,15 @@ TOURS = {
             "name": "Your group activity",
             "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
         }
+    ],
+    "/admin/journal/*": [
+        {
+            "roles": ["admin"],
+            "selectors": [".autochecks-manager-toggle"],
+            "content_id": "admin_journal_autochecks",
+            "name": "Autochecks",
+            "description": "Autochecks are available on some journals, and can help you to identify potential problems with the journal's metadata."
+        }
     ]
 }
 
@@ -1528,3 +1541,12 @@ DATALOG_JA_FILENAME = 'DOAJ: journals added and withdrawn'
 
 # worksheet name or tab name that datalog will write to
 DATALOG_JA_WORKSHEET_NAME = 'Added'
+
+##################################################
+# Autocheck Resource configurations
+
+# Should we autocheck incoming applications and update requests
+AUTOCHECK_INCOMING = False
+
+AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
+AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
