@@ -8,18 +8,18 @@ class TestRisEntry(TestCase):
     def test_get_set_item__basic(self):
         test_value = 'value_a'
         entry = RisEntry()
-        entry['primary_author'] = test_value
-        assert entry['primary_author'] == test_value
+        entry['A1'] = test_value
+        assert entry['A1'] == test_value
 
     def test_get_set_item__alias(self):
         test_value = 'value_a'
         entry = RisEntry()
-        entry['primary_author'] = test_value
+        entry['A1'] = test_value
         assert entry['A1'] == test_value
 
     def test_getitem__valid_undefined(self):
         entry = RisEntry()
-        assert entry['primary_author'] is None
+        assert entry['A1'] is None
 
     def test_setitem__raise_field_not_found(self):
         entry = RisEntry()
@@ -33,9 +33,9 @@ class TestRisEntry(TestCase):
 
     def test_to_dict(self):
         entry = RisEntry()
-        entry['primary_author'] = 'value_a'
-        entry['secondary_author'] = 'value_b'
-        entry['tertiary_author'] = 'value_c'
+        entry['A1'] = 'value_a'
+        entry['A2'] = 'value_b'
+        entry['A3'] = 'value_c'
         assert entry.to_dict() == {
             'A1': 'value_a',
             'A2': 'value_b',
@@ -44,8 +44,8 @@ class TestRisEntry(TestCase):
 
     def test_to_text(self):
         entry = RisEntry()
-        entry['primary_author'] = 'value_a'
-        entry['secondary_author'] = 'value_b'
+        entry['A1'] = 'value_a'
+        entry['A2'] = 'value_b'
         entry['TY'] = 'JOUR'
 
         expected = """
