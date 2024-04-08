@@ -197,7 +197,7 @@ class ApplicationsCrudApi(CrudApi):
 
         # is the current account the owner of the application
         # if not we raise a 404 because that id does not exist for that user account.
-        if ap.owner != account.id:
+        if "admin" not in account.role and ap.owner != account.id:
             raise Api404Error()
 
         # if we get to here we're going to give the user back the application
