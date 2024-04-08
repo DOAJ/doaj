@@ -17,6 +17,7 @@ import json, gzip, shutil, elasticsearch
 from portality.core import app, es_connection, initialise_index
 from portality.store import StoreFactory
 from portality.dao import DomainObject
+from portality import models
 from doajtest.helpers import patch_config
 
 
@@ -64,37 +65,41 @@ def do_import(config):
         limit = cfg.get("limit", -1)
         limit = None if limit == -1 else limit
 
-        n = 1
-        while True:
-            filename = import_type + ".bulk" + "." + str(n)
-            handle = mainStore.get(container, filename)
-            if handle is None:
-                break
-            tempStore.store(container, filename + ".gz", source_stream=handle)
-            print(("Retrieved {x} from storage".format(x=filename)))
-            handle.close()
+        dao = models.lookup_models_by_type(import_type, DomainObject)
+        if dao:
 
-            print(("Unzipping {x} in temporary store".format(x=filename)))
-            compressed_file = tempStore.path(container, filename + ".gz")
-            uncompressed_file = tempStore.path(container, filename, must_exist=False)
-            with gzip.open(compressed_file, "rb") as f_in, open(uncompressed_file, "wb") as f_out:
-                shutil.copyfileobj(f_in, f_out)
-            tempStore.delete_file(container, filename + ".gz")
+            n = 1
+            while True:
+                filename = import_type + ".bulk" + "." + str(n)
+                handle = mainStore.get(container, filename)
+                if handle is None:
+                    break
+                tempStore.store(container, filename + ".gz", source_stream=handle)
+                print(("Retrieved {x} from storage".format(x=filename)))
+                handle.close()
 
-            print(("Importing from {x}".format(x=filename)))
+                print(("Unzipping {x} in temporary store".format(x=filename)))
+                compressed_file = tempStore.path(container, filename + ".gz")
+                uncompressed_file = tempStore.path(container, filename, must_exist=False)
+                with gzip.open(compressed_file, "rb") as f_in, open(uncompressed_file, "wb") as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+                tempStore.delete_file(container, filename + ".gz")
 
-            dao = DomainObject()
-            dao.__type__ = import_type
-            imported_count = dao.bulk_load_from_file(uncompressed_file,
-                                                    limit=limit, max_content_length=config.get("max_content_length", 100000000))
-            tempStore.delete_file(container, filename)
+                print(("Importing from {x}".format(x=filename)))
 
-            if limit is not None and imported_count != -1:
-                limit -= imported_count
-            if limit is not None and limit <= 0:
-                break
+                imported_count = dao.bulk_load_from_file(uncompressed_file,
+                                                        limit=limit, max_content_length=config.get("max_content_length", 100000000))
+                tempStore.delete_file(container, filename)
 
-            n += 1
+                if limit is not None and imported_count != -1:
+                    limit -= imported_count
+                if limit is not None and limit <= 0:
+                    break
+
+                n += 1
+
+            else:
+                print(("dao class not available for the import {x}. Skipping import {x}".format(x=import_type)))
 
     # once we've finished importing, clean up by deleting the entire temporary container
     tempStore.delete_container(container)
