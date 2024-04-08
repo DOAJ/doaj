@@ -5,21 +5,24 @@ from portality.lib.ris import RisEntry
 
 class TestRisEntry(TestCase):
 
-    def test_get_set_item__basic(self):
+    def test_get_set_item(self):
         test_value = 'value_a'
         entry = RisEntry()
         entry['A1'] = test_value
-        assert entry['A1'] == test_value
+        assert entry['A1'] == [test_value]
 
-    def test_get_set_item__alias(self):
-        test_value = 'value_a'
+    def test_append(self):
         entry = RisEntry()
-        entry['A1'] = test_value
-        assert entry['A1'] == test_value
+        entry.append('A1', '1')
+        entry['A1'].append('2')
+        assert entry['A1'] == ['1', '2']
+
+        entry['A1'] = '9'
+        assert entry['A1'] == ['9']
 
     def test_getitem__valid_undefined(self):
         entry = RisEntry()
-        assert entry['A1'] is None
+        assert entry['A1'] == []
 
     def test_setitem__raise_field_not_found(self):
         entry = RisEntry()
@@ -30,17 +33,6 @@ class TestRisEntry(TestCase):
         entry = RisEntry()
         with self.assertRaises(ValueError):
             print(entry['qoidjqowijdkncoiqw'])
-
-    def test_to_dict(self):
-        entry = RisEntry()
-        entry['A1'] = 'value_a'
-        entry['A2'] = 'value_b'
-        entry['A3'] = 'value_c'
-        assert entry.to_dict() == {
-            'A1': 'value_a',
-            'A2': 'value_b',
-            'A3': 'value_c'
-        }
 
     def test_to_text(self):
         entry = RisEntry()
@@ -66,9 +58,9 @@ ER  -
                 """.strip() + ' \n'
 
         entry = RisEntry.from_text(expected)
-        assert entry['TY'] == 'JOUR'
-        assert dict(entry.to_dict()) == {
-            'TY': 'JOUR',
-            'A1': 'value_a',
-            'A2': 'value_b'
+        assert entry.type == 'JOUR'
+        assert dict(entry.data) == {
+            'TY': ['JOUR'],
+            'A1': ['value_a'],
+            'A2': ['value_b'],
         }

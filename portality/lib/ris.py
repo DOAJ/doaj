@@ -3,6 +3,7 @@ very simple library for RIS format
 
 file format references: https://en.wikipedia.org/wiki/RIS_(file_format)
 """
+import collections
 import logging
 from collections import OrderedDict
 from typing import Dict, Optional
@@ -142,19 +143,24 @@ def find_tag(field_name) -> Optional[str]:
 class RisEntry:
 
     def __init__(self):
-        self.data: Dict[str, str] = OrderedDict()
+        self.data: collections.defaultdict[str, list] = collections.defaultdict(list)
 
     def __setitem__(self, field_name, value):
         tag = find_tag(field_name)
-        self.data[tag] = value
+        self.data[tag] = [value]
 
-    def __getitem__(self, field_name) -> str:
+    def append(self, tag, value) -> list:
+        tag = find_tag(tag)
+        self[tag].append(value)
+        return self[tag]
+
+    def __getitem__(self, field_name) -> list:
         tag = find_tag(field_name)
-        return self.data.get(tag)
+        return self.data[tag]
 
     @property
     def type(self):
-        return self[RTAG_TYPE]
+        return self[RTAG_TYPE] and self[RTAG_TYPE][0]
 
     @type.setter
     def type(self, value):
@@ -164,11 +170,13 @@ class RisEntry:
     def from_dict(cls, d: dict):
         instance = cls()
         for k, v in d.items():
-            setattr(instance, k, v)
-        return instance
+            if isinstance(v, list):
+                for vv in v:
+                    instance[k].append(vv)
+            else:
+                instance[k].append(v)
 
-    def to_dict(self) -> dict:
-        return self.data.copy()
+        return instance
 
     @classmethod
     def from_text(cls, text: str):
@@ -186,7 +194,7 @@ class RisEntry:
             tag, val = _to_tag_value(line)
             if tag == RTAG_END:
                 break
-            entry[tag] = val
+            entry[tag].append(val)
         return entry
 
     def to_text(self) -> str:
@@ -207,7 +215,9 @@ class RisEntry:
 
         text = ''
         for tag in tags:
-            text += _to_line(tag, self.data[tag])
+            values = self.data[tag]
+            for v in values:
+                text += _to_line(tag, v)
 
         text += _to_line(RTAG_END, '')
         return text
