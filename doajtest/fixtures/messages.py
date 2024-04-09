@@ -1,0 +1,1 @@
+ERROR_OA_STATEMENT = "DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time."
