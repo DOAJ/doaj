@@ -144,7 +144,8 @@ class RisEntry:
 
     def __init__(self, type_of_reference: str = None):
         self.data: collections.defaultdict[str, list] = collections.defaultdict(list)
-        self.type = type_of_reference
+        if type_of_reference:
+            self.type = type_of_reference
 
     def __setitem__(self, field_name, value):
         tag = find_tag(field_name)
