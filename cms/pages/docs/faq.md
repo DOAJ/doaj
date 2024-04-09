@@ -10,10 +10,10 @@ featuremap: ~~FAQ:Fragment~~
 
 After your journal is indexed in DOAJ and you start to upload article metadata to us, we generate journal and article metadata. We make these publicly and freely available via different methods:
 
-- Our [Atom feed](https://staticdoaj.cottagelabs.com/feed)
-- Our [OAI-PMH service](https://staticdoaj.cottagelabs.com/docs/oai-pmh/)
-- [A journal CSV](https://staticdoaj.cottagelabs.com/csv) file (updates every 60 minutes)
-- Our [API](https://staticdoaj.cottagelabs.com/docs/api/)
+- Our [Atom feed](https://doaj.org/feed)
+- Our [OAI-PMH service](https://doaj.org/docs/oai-pmh/)
+- [A journal CSV](https://doaj.org/csv) file (updates every 60 minutes)
+- Our [API](https://doaj.org/docs/api/)
 - On our website
 
 Our metadata is collected and incorporated into commercial discovery systems, library discovery portals and search engines around the world. Here are some of them:
@@ -144,11 +144,12 @@ If you received a spreadsheet from us, please complete it as soon as possible. T
 
 Before you send us the file, you must do two things:
 
-1. Convert the spreadsheet to a CSV. To do this, you will need to first delete the instructions tab and then Save as CSV.
+1. Convert the spreadsheet to a CSV. To do this, you will need to first delete the instructions tab and then Save as CSV. (Save in the Unicode UTF-8 format.)
 2. [Validate it](/publisher/journal-csv).
 
 Here are some tips on how to ensure that your CSV file will pass validation:
 
+- make sure CSV is in UTF-8 format
 - don't change an ISSN or Title of a journal. To do this, contact [Help Desk](mailto:helpdesk@doaj.org).
 - don't add a new journal to the file. To do this, [submit a new application](/apply/).
 - don't change the title of a column
@@ -174,4 +175,11 @@ The following warnings may be seen after validating your CSV:
 | You may not change _question_. Please revert it to match what was sent to you in the spreadsheet.                      | During editing, the question has been changed. The question must be exactly as it is in the spreadsheet sent to you. Please change it.                                                                                              |
 | We couldn't understand the information in _question_ |                                                                 | The information in the cell doesn't match the formatting requirements. Check the Instructions tab in the spreadsheet sent to you.                                                                                                   |
 
-From time to time, other validation errors might be seen if one of the cells contains completely incorrect information. For example, the cell should contain a URL but it contains text. These error messages are self-explanatory,, but contact Help Desk if you require help.
+From time to time, other validation errors might be seen if one of the cells contains completely incorrect information. For example, the cell should contain a URL but it contains text. These error messages should be easy to understand but contact the Help Desk if you have questions.
+
+## Version history
+
+This is Version 2 of our Metadata help page.
+
+*Version 2.0 (December 2023 - added the entire 'Using a spreadsheet to update your journal metadata' section)*<br>
+<s>Version 1.0 (November 2023 - created this whole page with new content)</s><br>

@@ -29,6 +29,8 @@ entries:
         route: doaj.xml               # ~~->XMLDocumentation:WebRoute~~
       - label: Metadata help
         route: doaj.faq               # ~~->FAQ:WebRoute~~
+      - label: Preservation
+        route: doaj.preservation      # ~~->Preservation:WebRoute~~
   - id: about
     label: About
     footer: true

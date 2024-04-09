@@ -79,12 +79,14 @@ class SiteService(object):
             create_url_element(urlset, u, toc_changefreq)
             counter += 1
 
-        # do all the journal ToCs
+        # do all the journal ToCs and articles
         for j in models.Journal.all_in_doaj():
             # first create an entry purely for the journal
             toc_loc = base_url + "toc/" + j.toc_id
+            toc_art_loc = base_url + "toc/" + j.toc_id + "/articles"
             create_url_element(urlset, toc_loc, toc_changefreq, lastmod=j.last_updated)
-            counter += 1
+            create_url_element(urlset, toc_art_loc, toc_changefreq)
+            counter += 2
 
         # log to the screen
         action_register.append("{x} urls written to sitemap".format(x=counter))
