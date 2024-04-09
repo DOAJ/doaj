@@ -2872,6 +2872,8 @@ $.extend(true, doaj, {
                     published = 'Published ' + name;
                 }
 
+                const export_url = this.doaj_url + '/service/export/article/' + resultobj.id;
+
                 var frag = '<li class="card search-results__record">\
                     <article class="row">\
                       <div class="col-sm-8 search-results__main">\
@@ -2904,6 +2906,9 @@ $.extend(true, doaj, {
                 frag += '</a></li>\
                           <li>\
                             <a href="' + this.doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
+                          </li>\
+                          <li>\
+                            <a href="' + export_url + '" target="_blank">Export RIS</a>\
                           </li>\
                           <li>\
                             ' + published + '\
