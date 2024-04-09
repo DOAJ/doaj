@@ -11,6 +11,7 @@ from portality.lib import dates
 from werkzeug.datastructures import FileStorage
 from portality.models.article import Article
 from portality.models import Account
+from portality.ui.messages import Messages
 
 
 def mock_pull_by_key(key, value):
@@ -244,4 +245,4 @@ class TestPreservationMultipleJournals(TestPreservationSetup):
             response = t_client.post('/publisher/preservation', data={})
             with t_client.session_transaction() as session:
                 flash_messages = session.get('_flashes')
-                assert any(msg[1] == "No file provided for upload" for msg in flash_messages)
+                assert any(msg[1] == Messages.PRESERVATION_NO_FILE for msg in flash_messages)
