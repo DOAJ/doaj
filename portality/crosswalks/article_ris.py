@@ -4,9 +4,16 @@ from portality import models
 from portality.lib import jsonpath_utils
 from portality.lib.ris import RisEntry
 
+
+def extra_author_names(article) -> list:
+    query = '$.bibjson.author[*].name'
+    values = jsonpath_utils.find_values(query, article)
+    return sorted(set(values))
+
+
 RIS_ARTICLE_MAPPING = {
     'T1': '$.bibjson.title',
-    'AU': '$.bibjson.author[*].name',
+    'AU': extra_author_names,
     'PY': '$.bibjson.year',
     'JO': '$.bibjson.journal.title',
     'VL': '$.bibjson.journal.volume',
@@ -29,7 +36,12 @@ class ArticleRisXWalk:
 
         entry = RisEntry(type_of_reference='JOUR')
         for tag, query in RIS_ARTICLE_MAPPING.items():
-            for v in jsonpath_utils.find_values(query, article):
+            if callable(query):
+                values = query(article)
+            else:
+                values = jsonpath_utils.find_values(query, article)
+
+            for v in values:
                 entry[tag].append(v)
 
         return entry
