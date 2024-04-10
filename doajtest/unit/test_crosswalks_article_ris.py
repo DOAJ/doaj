@@ -18,8 +18,10 @@ TY  - JOUR
 T1  - Article Title
 AU  - The Author
 PY  - 1991
-JO  - The Title
+JF  - The Title
+PB  - The Publisher
 VL  - 1
+IS  - 99
 SP  - 3
 EP  - 21
 UR  - http://www.example.com/article
