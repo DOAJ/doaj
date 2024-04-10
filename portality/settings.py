@@ -716,11 +716,11 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : False,
             "role" : None,
-            "query_validators" : ["non_public_fields_validator", "public_query_validator"],
-            "query_filters" : ["only_in_doaj", "last_update_fallback", "search_all_meta"],
-            "result_filters" : ["public_result_filter"],
+            # "query_validators" : ["non_public_fields_validator", "public_query_validator"],
+            # "query_filters" : ["only_in_doaj", "last_update_fallback", "search_all_meta"],
+            # "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.Journal", # ~~->Journal:Model~~
-            "required_parameters" : {"ref" : ["ssw", "public_journal", "subject_page"]}
+            # "required_parameters" : {"ref" : ["ssw", "public_journal", "subject_page"]}
         },
         # ~~->PublicArticleQuery:Endpoint~~
         "article" : {

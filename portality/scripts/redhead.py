@@ -345,6 +345,10 @@ def serialise(tree):
     ctx.push()
     return render_template("redhead/tree.html", tree=tree)
 
+def serialise_blocks(tree):
+    ctx = app.test_request_context("/")
+    ctx.push()
+    return render_template("redhead/blocks.html", tree=tree)
 
 def _get_base_templates(records):
     base = []
@@ -370,6 +374,87 @@ def _get_base_templates(records):
     return base
 
 
+def _expand_block_tree_node(record, records):
+    b = record
+
+    node = {
+        "name": b["name"],
+        "blocks": [],
+        # "includes": [],
+        # "content": b["content"],
+        # "overridden_by": [],
+        # "overrides": [],
+        # "scoped": b.get("scoped", False),
+        "files": []
+    }
+
+    all_block_definitions = [b]
+    for r in records:
+        if r["type"] == "block" and r["name"] == b["name"] and r["file"] != b["file"]:
+            all_block_definitions.append(r)
+
+    node["files"] += [x["file"] for x in all_block_definitions]
+
+    blocklist = []
+    for entry in all_block_definitions:
+        for block in entry.get("blocks", []):
+            for r in records:
+                if r["type"] == "block" and r["file"] == entry["file"] and r["name"] == block:
+                    isnew = True
+                    for b in blocklist:
+                        if b["name"] == r["name"] and b["file"] == r["file"]:
+                            isnew = False
+                    if isnew:
+                        blocklist.append(r)
+
+    blocklist.sort(key=lambda x: x["name"])
+    for bs in blocklist:
+        br = _expand_block_tree_node(bs, records)
+        node["blocks"].append(br)
+
+        # includes = []
+        # if "includes" in b:
+        #     for r in records:
+        #         if r["type"] == "template" and r["file"] in b["includes"]:
+        #             includes.append(r)
+        #
+        #     includes.sort(key=lambda x: x["file"])
+        #     for inc in includes:
+        #         incn = _expand_file_node(inc, records)
+        #         node["includes"].append(incn)
+        #
+        # overridden_by = []
+        # for r in records:
+        #     if r["type"] == "block" and r["name"] == b["name"] and r["file"] != b["file"]:
+        #         paths = _extension_paths(r["file"], b["file"], records)
+        #         if len(paths) > 0:
+        #             overridden_by.append((r, paths))
+        #
+        # overridden_by.sort(key=lambda x: x[0]["file"])
+        # for ov, paths in overridden_by:
+        #     node["overridden_by"].append({
+        #         "file": ov["file"],
+        #         "content": ov["content"],
+        #         "paths": paths
+        #     })
+        #
+        # overrides = []
+        # for r in records:
+        #     if r["type"] == "block" and r["name"] == b["name"] and r["file"] != b["file"]:
+        #         paths = _extension_paths(b["file"], r["file"], records)
+        #         if len(paths) > 0:
+        #             overrides.append((r, paths))
+        #
+        # overrides.sort(key=lambda x: x[0]["file"])
+        # for ov, paths in overrides:
+        #     node["overrides"].append({
+        #         "file": ov["file"],
+        #         "content": ov["content"],
+        #         "paths": paths
+        #     })
+
+    return node
+
 def block_treeify(records):
     base = _get_base_templates(records)
 
@@ -383,14 +468,7 @@ def block_treeify(records):
 
         blockset.sort(key=lambda x: x["name"])
         for bs in blockset:
-            br = _expand_block_node(bs, records)
-            node["blocks"].append(br)
-
-        tree.append({
-            "name": block,
-            "files": [b["file"]],
-            "children": []
-        })
+            tree.append(_expand_block_tree_node(bs, records))
 
     return tree
 
@@ -419,3 +497,7 @@ block_tree = block_treeify(records)
 
 with open(os.path.join(OUT_DIR, "redhead_blocks.json"), "w") as f:
     f.write(json.dumps(block_tree, indent=2))
+
+block_html = serialise_blocks(block_tree)
+with open(os.path.join(OUT_DIR, "redhead_blocks.html"), "w") as f:
+    f.write(block_html)
