@@ -22,7 +22,7 @@ class ApplicationForm_OACompliance(TestFieldsCommon):
 
     def test_oa_statement(self):
         field_name = "boai"
-        self.required_radio_button_field(field_name,FixtureMessages.ERROR_YES_REQUIRED)
+        self.this_radio_button_field_is_required(field_name, FixtureMessages.ERROR_YES_REQUIRED)
 
         # specific case = "Yes" value required
         self.find_question(field_name)
@@ -40,17 +40,17 @@ class ApplicationForm_OACompliance(TestFieldsCommon):
 
     def test_oa_statement_url(self):
         field_name = "oa_statement_url"
-        self.required_simple_field(field_name=field_name,
-                                          expected_error_value=FixtureMessages.ERROR_OA_STATEMENT_URL)
-        self.simple_field_failed(field_name=field_name, value="this_is_not_url", expected_error_value=FixtureMessages.ERROR_INVALID_URL)
+        self.this_simple_field_is_required(field_name=field_name,
+                                           expected_error_value=FixtureMessages.ERROR_OA_STATEMENT_URL)
+        self.simple_field_fail(field_name=field_name, value="this_is_not_url", expected_error_value=FixtureMessages.ERROR_INVALID_URL)
         self.simple_field_success(field_name=field_name, value="https://www.test.com")
 
     def test_oa_start(self):
         field_name = "oa_start"
-        self.required_simple_field(field_name=field_name,
-                                          expected_error_value=FixtureMessages.ERROR_OA_START_REQUIRED)
-        self.simple_field_failed(field_name=field_name, value="0",
-                                        expected_error_value=FixtureMessages.ERROR_OA_START_INVALID_VALUE)
-        self.simple_field_failed(field_name=field_name, value="9999",
-                                        expected_error_value=FixtureMessages.ERROR_OA_START_INVALID_VALUE)
+        self.this_simple_field_is_required(field_name=field_name,
+                                           expected_error_value=FixtureMessages.ERROR_OA_START_REQUIRED)
+        self.simple_field_fail(field_name=field_name, value="0",
+                               expected_error_value=FixtureMessages.ERROR_OA_START_INVALID_VALUE)
+        self.simple_field_fail(field_name=field_name, value="9999",
+                               expected_error_value=FixtureMessages.ERROR_OA_START_INVALID_VALUE)
         self.simple_field_success(field_name=field_name, value="2020")

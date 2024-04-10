@@ -23,7 +23,7 @@ class Interactions():
         return
 
     @classmethod
-    def goto_to_section(self, js_click, section_number):
+    def goto_section(self, js_click, section_number):
         js_click(f"#page_link-{section_number}");
 
 
@@ -64,7 +64,7 @@ class TestFieldsCommon(SeleniumTestCase):
         else:
             return None
 
-    def required_simple_field(self, field_name, expected_error_value=None):
+    def this_simple_field_is_required(self, field_name, expected_error_value=None):
         # Step 1: Find the question with "field_name"
         question = self.find_question(field_name)
         assert question is not None, f"Question with field name '{field_name}' not found"
@@ -126,7 +126,7 @@ class TestFieldsCommon(SeleniumTestCase):
             raise ValueError(
                 f"Unexpected input type '{input_type}' for field '{field_name}'. Expected 'text' or 'number'.")
 
-    def simple_field_failed(self, field_name, value, expected_error_value=None):
+    def simple_field_fail(self, field_name, value, expected_error_value=None):
         self.add_value_to_simple_field(field_name, value)
         Interactions.click_next_button(self.js_click)
         error_message = self.get_error_message(field_name)
@@ -145,7 +145,7 @@ class TestFieldsCommon(SeleniumTestCase):
         self.clear_simple_field(field_name)
 
 
-    def required_radio_button_field(self, field_name, expected_error_value=None):
+    def this_radio_button_field_is_required(self, field_name, expected_error_value=None):
         question_container = self.find_question(field_name)
 
         # Check if the question is marked as required
