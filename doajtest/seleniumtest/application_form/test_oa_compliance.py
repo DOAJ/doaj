@@ -8,13 +8,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
-from doajtest.fixtures.url_path import URL_APPLY
 from doajtest.seleniumtest.application_form.test_application_form_commons import TestFieldsCommon
 from doajtest.seleniumtest.application_form.test_application_form_commons import Interactions
 from doajtest.fixtures.application_form_error_messages import FixtureMessages
 from portality import models
-
-from doajtest.fixtures.accounts import create_publisher_a
 
 
 class ApplicationForm_OACompliance(SeleniumTestCase):
@@ -24,13 +21,7 @@ class ApplicationForm_OACompliance(SeleniumTestCase):
         super().setUp()
         self.common = TestFieldsCommon(self.selenium, self.js_click)
         self.interact = Interactions(self.selenium, self.js_click)
-        self.goto_application_page()
-
-    def goto_application_page(self, acc: models.Account = None):
-        publisher = acc or create_publisher_a()
-        selenium_helpers.login_by_acc(self.selenium, publisher)
-        selenium_helpers.goto(self.selenium, URL_APPLY)
-        return
+        self.interact.goto_application_page()
 
     def test_oa_statement(self):
         field_name = "boai"

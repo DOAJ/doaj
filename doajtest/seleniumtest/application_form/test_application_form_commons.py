@@ -2,7 +2,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
+from doajtest import selenium_helpers
 from doajtest.selenium_helpers import SeleniumTestCase
+from portality import models
+from doajtest.fixtures.accounts import create_publisher_a
+from doajtest.fixtures.url_path import URL_APPLY
 
 
 class Interactions():
@@ -25,6 +29,13 @@ class Interactions():
 
     def clickNextButton(self):
         self.clickButton(button_class_selector="nextBtn")
+
+
+    def goto_application_page(self, acc: models.Account = None):
+        publisher = acc or create_publisher_a()
+        selenium_helpers.login_by_acc(self.selenium, publisher)
+        selenium_helpers.goto(self.selenium, URL_APPLY)
+        return
 
 
 SIMPLE_FIELDS_TYPES = ["text", "number", "url"]
