@@ -14,46 +14,43 @@ from doajtest.fixtures.application_form_error_messages import FixtureMessages
 from portality import models
 
 
-class ApplicationForm_OACompliance(SeleniumTestCase):
+class ApplicationForm_OACompliance(TestFieldsCommon):
 
-    # go to application page before each test
-    def setUp(self):
+    def setUp(self) -> None:
         super().setUp()
-        self.common = TestFieldsCommon(self.selenium, self.js_click)
-        self.interact = Interactions(self.selenium, self.js_click)
-        self.interact.goto_application_page()
+        Interactions.goto_application_page(self.selenium);
 
     def test_oa_statement(self):
         field_name = "boai"
-        self.common.test_if_required_radio_button_field(field_name,FixtureMessages.ERROR_YES_REQUIRED)
+        self.required_radio_button_field(field_name,FixtureMessages.ERROR_YES_REQUIRED)
 
         # specific case = "Yes" value required
-        self.common.find_question(field_name)
+        self.find_question(field_name)
         no_radio_button_selector = f'#{field_name}-1'
         self.js_click(no_radio_button_selector)
-        self.interact.click_next_button()
-        error = self.common.get_error_message(field_name)
+        Interactions.click_next_button(self.js_click)
+        error = self.get_error_message(field_name)
         assert error == FixtureMessages.ERROR_OA_STATEMENT
 
         yes_radio_button_selector = f"#{field_name}-0"
         self.js_click(yes_radio_button_selector)
-        self.interact.click_next_button()
-        error = self.common.get_error_message(field_name)
+        Interactions.click_next_button(self.js_click)
+        error = self.get_error_message(field_name)
         assert error == None
 
     def test_oa_statement_url(self):
         field_name = "oa_statement_url"
-        self.common.test_if_required_simple_field(field_name=field_name,
-                                                  expected_error_value=FixtureMessages.ERROR_OA_STATEMENT_URL)
-        self.common.test_error_simple_field(field_name=field_name, value="this_is_not_url", expected_error_value=FixtureMessages.ERROR_INVALID_URL)
-        self.common.test_simple_field_success(field_name=field_name, value="https://www.test.com")
+        self.required_simple_field(field_name=field_name,
+                                          expected_error_value=FixtureMessages.ERROR_OA_STATEMENT_URL)
+        self.simple_field_failed(field_name=field_name, value="this_is_not_url", expected_error_value=FixtureMessages.ERROR_INVALID_URL)
+        self.simple_field_success(field_name=field_name, value="https://www.test.com")
 
     def test_oa_start(self):
         field_name = "oa_start"
-        self.common.test_if_required_simple_field(field_name=field_name,
-                                                  expected_error_value=FixtureMessages.ERROR_OA_START_REQUIRED)
-        self.common.test_error_simple_field(field_name=field_name, value="0",
-                                            expected_error_value=FixtureMessages.ERROR_OA_START_INVALID_VALUE)
-        self.common.test_error_simple_field(field_name=field_name, value="9999",
-                                            expected_error_value=FixtureMessages.ERROR_OA_START_INVALID_VALUE)
-        self.common.test_simple_field_success(field_name=field_name, value="2020")
+        self.required_simple_field(field_name=field_name,
+                                          expected_error_value=FixtureMessages.ERROR_OA_START_REQUIRED)
+        self.simple_field_failed(field_name=field_name, value="0",
+                                        expected_error_value=FixtureMessages.ERROR_OA_START_INVALID_VALUE)
+        self.simple_field_failed(field_name=field_name, value="9999",
+                                        expected_error_value=FixtureMessages.ERROR_OA_START_INVALID_VALUE)
+        self.simple_field_success(field_name=field_name, value="2020")
