@@ -72,7 +72,6 @@ class SeleniumTestCase(DoajTestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        print("setUpClass")
         super().setUpClass()
         cls.originals = patch_config(cls.app_test, {
             "DEBUG": False,
