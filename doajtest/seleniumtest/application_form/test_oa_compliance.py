@@ -31,13 +31,13 @@ class ApplicationForm_OACompliance(SeleniumTestCase):
         self.common.find_question(field_name)
         no_radio_button_selector = f'#{field_name}-1'
         self.js_click(no_radio_button_selector)
-        self.interact.clickNextButton()
+        self.interact.click_next_button()
         error = self.common.get_error_message(field_name)
         assert error == FixtureMessages.ERROR_OA_STATEMENT
 
         yes_radio_button_selector = f"#{field_name}-0"
         self.js_click(yes_radio_button_selector)
-        self.interact.clickNextButton()
+        self.interact.click_next_button()
         error = self.common.get_error_message(field_name)
         assert error == None
 
@@ -46,6 +46,7 @@ class ApplicationForm_OACompliance(SeleniumTestCase):
         self.common.test_if_required_simple_field(field_name=field_name,
                                                   expected_error_value=FixtureMessages.ERROR_OA_STATEMENT_URL)
         self.common.test_error_simple_field(field_name=field_name, value="this_is_not_url", expected_error_value=FixtureMessages.ERROR_INVALID_URL)
+        self.common.test_simple_field_success(field_name=field_name, value="https://www.test.com")
 
     def test_oa_start(self):
         field_name = "oa_start"
@@ -55,3 +56,4 @@ class ApplicationForm_OACompliance(SeleniumTestCase):
                                             expected_error_value=FixtureMessages.ERROR_OA_START_INVALID_VALUE)
         self.common.test_error_simple_field(field_name=field_name, value="9999",
                                             expected_error_value=FixtureMessages.ERROR_OA_START_INVALID_VALUE)
+        self.common.test_simple_field_success(field_name=field_name, value="2020")
