@@ -1,1 +1,2 @@
 ERROR_OA_STATEMENT = "DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time."
+ERROR_OA_STATEMENT_URL = "Enter the URL for the journal’s Open Access statement page"
