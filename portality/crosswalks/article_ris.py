@@ -15,8 +15,10 @@ RIS_ARTICLE_MAPPING = {
     'T1': '$.bibjson.title',
     'AU': extra_author_names,
     'PY': '$.bibjson.year',
-    'JO': '$.bibjson.journal.title',
+    'JF': '$.bibjson.journal.title',
+    'PB': '$.bibjson.journal.publisher',
     'VL': '$.bibjson.journal.volume',
+    'IS': '$.bibjson.journal.number',
     'SP': '$.bibjson.start_page',
     'EP': '$.bibjson.end_page',
     'UR': '$.bibjson.link[*].url',
@@ -24,6 +26,7 @@ RIS_ARTICLE_MAPPING = {
     'KW': '$.bibjson.keywords[*]',
     'DOI': '$.bibjson.identifier[?(@.type == "doi")].id',
     'SN': '$.bibjson.journal.issns[*]',
+    'LA': '$.language.language',
 }
 
 
