@@ -212,9 +212,8 @@ def upload_file():
         job = IngestArticlesBackgroundTask.prepare(current_user.id, upload_file=f, schema=schema, url=url, previous=previous)
         IngestArticlesBackgroundTask.submit(job)
     except TaskException as e:
-        magic = str(uuid.uuid1())
-        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str="", id=magic))
-        app.logger.exception('File upload error. ' + magic)
+        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str=str(e)))
+        app.logger.exception('File upload error. ' + str(e))
         return resp
     except BackgroundException as e:
         if str(e) == Messages.NO_FILE_UPLOAD_ID:
@@ -223,10 +222,8 @@ def upload_file():
                 schema = ""
             return render_template('publisher/uploadmetadata.html', previous=previous, schema=schema, error=True)
 
-
-        magic = str(uuid.uuid1())
-        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str=str(e), id=magic))
-        app.logger.exception('File upload error. ' + magic + '; ' + str(e))
+        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str=str(e)))
+        app.logger.exception('File upload error. ' + str(e))
         return resp
 
     if f is not None and f.filename != "":

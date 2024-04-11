@@ -3506,7 +3506,9 @@ $.extend(true, doaj, {
                         if (dir === undefined) {
                             dir = "";
                         }
-                        dir = " " + dir;
+                        if (dir !== "") {
+                            dir = " " + dir;
+                        }
                         sortOptions += '<option value="' + field + '' + dir + '">' + edges.escapeHtml(display) + '</option>';
                     }
 
