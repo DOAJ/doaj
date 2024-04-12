@@ -100,6 +100,20 @@ Choose how you want to upload article metadata to us.
 - **Documentation** No
 - **Troubleshooting**: you must be careful to enter the Print ISSN and Electronic ISSN in the right field.
 
+### A note about updating articles
+
+Sometimes article metadata needs to be updated. We use the Full Text URL and DOI, if present, to identify and match articles. If you are updating article metadata with details about authors, affiliations, year, volume, issue, etc or adding a DOI to an article that doesn't have one in DOAJ, you will be able to send us the updated metadata, using one of the methods above, without any problem.
+
+However, if you need to update the Full Text URL or DOI of articles that already have that metadata present in DOAJ, you will need to contact us first. Submitting new FUll Text URLs or DOIs will cause duplicate articles to be created. Our preferenc here is that we delete the existing article records first.
+
+If you do need us to delete article metadata, please contact Help Desk with the following details:
+
+- journal title
+- ISSN(s)
+- years to be deleted (we can only delete whole years) or if we should delete all article for a journal
+
+We will confirm the number of articles to delete with you. Deleting articles is instantaneous and cannot be reversed.
+
 ## Help with metadata uploads
 
 ### My authors have multiple affiliations
