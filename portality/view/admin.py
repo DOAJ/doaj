@@ -322,6 +322,7 @@ def journals_bulk_reinstate():
 #####################################################################
 
 @blueprint.route("/journal/<journal_id>/article-info/", methods=["GET"])
+@login_required
 def journal_article_info(journal_id):
     j = models.Journal.pull(journal_id)
     if j is None:
