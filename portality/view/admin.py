@@ -7,13 +7,14 @@ from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
 from werkzeug.datastructures import MultiDict
 
-from portality import dao
 import portality.models as models
 from portality import constants
+from portality import dao
 from portality import lock
 from portality.background import BackgroundSummary
 from portality.bll import DOAJ, exceptions
 from portality.bll.exceptions import ArticleMergeConflict, DuplicateArticleException
+from portality.bll.services.query import Query
 from portality.core import app
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.decorators import ssl_required, restrict_to_role, write_required
@@ -28,8 +29,6 @@ from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_b
 from portality.ui.messages import Messages
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.view.forms import EditorGroupForm, MakeContinuation
-
-from portality.bll.services.query import Query
 from portality.view.view_helper import exparam_editing_user
 
 # ~~Admin:Blueprint~~
@@ -322,6 +321,15 @@ def journals_bulk_reinstate():
 #
 #####################################################################
 
+@blueprint.route("/journal/<journal_id>/article-info/", methods=["GET"])
+def journal_article_info(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    return {'n_articles': models.Article.count_by_issns(j.bibjson().issns())}
+
+
 @blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
 @login_required
 @ssl_required
@@ -432,7 +440,8 @@ def application(application_id):
                 flash(str(e))
                 return redirect(url_for("admin.application", application_id=ap.id, _anchor='cannot_edit'))
         else:
-            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal, lcc_tree=lcc_jstree, autochecks=autochecks)
+            return fc.render_template(obj=ap, lock=lockinfo, form_diff=form_diff, current_journal=current_journal,
+                                      lcc_tree=lcc_jstree, autochecks=autochecks)
 
 
 @blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])
