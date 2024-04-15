@@ -2255,19 +2255,26 @@ var formulaic = {
 
         newArticleInfo : (params) => edges.instantiate(formulaic.widgets.ArticleInfo, params),
         ArticleInfo: function ({formulaic, fieldDef, args}) {
+            const sealSelector = '.doaj_seal__container'
+
             const init = () => {
                 const paths = window.location.pathname.split('/')
                 const journalId = paths[paths.length - 1]
                 fetch(`/admin/journal/${journalId}/article-info`)
                     .then(response => response.json())
                     .then(data => {
-                        const $p = $('.doaj_seal__container').prev('p');
+                        const $p = $(sealSelector).prev('p');
                         const text = $p.text()
                         $p.text(text + `This journal has ${data.n_articles} articles in DOAJ.`)
                     })
             };
 
-            init();
+
+            if ($(sealSelector).length) {
+                init();
+            } else {
+                console.log('skip ArticleInfo, seal section not found')
+            }
         },
 
 
