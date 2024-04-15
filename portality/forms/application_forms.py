@@ -1603,7 +1603,7 @@ class FieldDefinitions:
     # ~~->$ DOAJSeal:FormField~~
     DOAJ_SEAL = {
         "name": "doaj_seal",
-        "label": "The journal has fulfilled all the criteria for the Seal. Award the Seal?",
+        "label": "Award the Seal?",
         "input": "checkbox",
         "validate": [
             {
@@ -1626,7 +1626,10 @@ class FieldDefinitions:
                                 "the journal must use a persistent identifier"
                 }
             }
-        ]
+        ],
+        "widgets": [
+            "article_info",
+        ],
     }
 
     # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
@@ -1882,7 +1885,6 @@ class FieldDefinitions:
         "widgets": [
             {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}},
             "note_modal",
-            "article_info",
         ],
         "merge_disabled" : "merge_disabled_notes",
     }
