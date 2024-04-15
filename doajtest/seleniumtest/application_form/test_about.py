@@ -38,3 +38,17 @@ class ApplicationForm_About(TestFieldsCommon):
         self.this_simple_field_is_required(field_name=field_name, expected_error_value=FixtureMessages.ERROR_JOURNAL_URL_REQUIRED)
         self.simple_field_fail(field_name=field_name, value="incorect_url", expected_error_value=FixtureMessages.ERROR_JOURNAL_URL_INVALID)
         self.simple_field_success(field_name=field_name, value="https://www.absurdChronicles.com")
+
+    def test_issns(self):
+        field_name_pissn="pissn"
+        field_name_eissn="eissn"
+        self.this_field_is_optional_if("pissn", "eissn", "1111-1111", FixtureMessages.ERROR_PISSN_OR_EISSN_REQUIRED);
+        self.this_field_is_optional_if("eissn", "pissn", "1111-1111", FixtureMessages.ERROR_PISSN_OR_EISSN_REQUIRED);
+
+        self.these_field_must_be_different_than(field_name="eissn", different_than_field="pissn", correct_value="1111-1111", expected_error_value=FixtureMessages.ERROR_PISSN_AND_EISSN_MUST_BE_DIFFERENT)
+
+        self.simple_field_fail(field_name="pissn", value="incorrect_issn", expected_error_value=FixtureMessages.ERROR_INCORRECT_ISSN);
+        self.simple_field_fail(field_name="eissn", value="incorrect_issn", expected_error_value=FixtureMessages.ERROR_INCORRECT_ISSN);
+
+        self.simple_field_success("pissn", value="1111-1111");
+        self.simple_field_success("eissn", value="2222-2222");

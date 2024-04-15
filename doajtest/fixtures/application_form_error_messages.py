@@ -12,3 +12,6 @@ class FixtureMessages(object):
     ERROR_YES_OR_NO_REQUREID = "Select Yes or No"
     ERROR_JOURNAL_URL_REQUIRED = "Enter the URL for the journal’s homepage"
     ERROR_JOURNAL_URL_INVALID = "This value should be a valid url."
+    ERROR_PISSN_OR_EISSN_REQUIRED = "You must provide one or both of an online ISSN or a print ISSN"
+    ERROR_INCORRECT_ISSN = "This is not a valid ISSN"
+    ERROR_PISSN_AND_EISSN_MUST_BE_DIFFERENT = "This field must contain a different value to 'ISSN (print)'"

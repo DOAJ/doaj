@@ -45,7 +45,7 @@ class TestFieldsCommon(SeleniumTestCase):
     def get_error_message(self, field_name):
         error_div_id = f"{field_name}_checkbox-errors"
         error_xpath = f"//div[@id='{error_div_id}']/ul/li/p/small"
-        parsley_error_xpath = f"//div[@id='{error_div_id}']/ul/li[@class='parsley-type']"
+        parsley_error_xpath = f"//div[@id='{error_div_id}']/ul/li[starts-with(@class, 'parsley-')]"
 
         try:
             # Check for custom error message
@@ -120,6 +120,8 @@ class TestFieldsCommon(SeleniumTestCase):
 
         input_type = input_element.get_attribute('type')
         if input_type in SIMPLE_FIELDS_TYPES:
+            # make sure it's clear initially
+            input_element.clear()
             input_element.send_keys(value)
         else:
             raise ValueError(
@@ -179,4 +181,23 @@ class TestFieldsCommon(SeleniumTestCase):
 
         Interactions.click_next_button(self.selenium, self.js_click)
         error = self.get_error_message(field_name)
-        assert error == expected_error_value
+        if expected_error_value is not None:
+            assert error_msg == expected_error_value
+
+    def this_field_is_optional_if(self, field_name, optional_if_field_name, optional_if_value, expected_error_value):
+        self.clear_simple_field(field_name);
+        self.clear_simple_field(optional_if_field_name);
+        Interactions.click_next_button(self.selenium, self.js_click)
+        error_msg = self.get_error_message(field_name);
+        if expected_error_value is not None:
+            assert error_msg == expected_error_value
+        self.add_value_to_simple_field(optional_if_field_name, optional_if_value);
+        self.this_simple_field_is_optional(field_name);
+
+    def these_field_must_be_different_than(self, field_name, different_than_field, correct_value, expected_error_value):
+        self.add_value_to_simple_field(different_than_field, correct_value);
+        self.add_value_to_simple_field(field_name, correct_value);
+        Interactions.click_next_button(self.selenium, self.js_click)
+        error_msg = self.get_error_message(field_name);
+        if expected_error_value is not None:
+            assert error_msg == expected_error_value
