@@ -607,7 +607,8 @@ def editor_group(group_id=None):
                         ae.add_role("associate_editor")
                         ae.save()
 
-            eg.set_name(form.name.data)
+            if eg.name is None:
+                eg.set_name(form.name.data)
             eg.set_maned(form.maned.data)
             eg.set_editor(form.editor.data)
             if associates is not None:
