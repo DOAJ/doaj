@@ -1155,14 +1155,14 @@ var formulaic = {
 
             this._renderAutocheck = function(autocheck) {
                 let frag = "<li>";
-                
+
                 if (autocheck.checked_by && doaj.autocheckers &&
                     doaj.autocheckers.registry.hasOwnProperty(autocheck.checked_by)) {
                     frag += (new doaj.autocheckers.registry[autocheck.checked_by]()).draw(autocheck)
                 } else {
                     frag += this._defaultRender(autocheck);
                 }
-                
+
                 frag += `</li>`;
                 return frag;
             }
@@ -2252,5 +2252,20 @@ var formulaic = {
 
             this.init();
         },
+
+        newArticleInfo : (params) => edges.instantiate(formulaic.widgets.ArticleInfo, params),
+        ArticleInfo: function ({formulaic, fieldDef, args}) {
+            const init = () => {
+                console.log()
+                console.log(this.fieldDef);
+                debugger
+            };
+
+            init();
+        },
+
+
+
+
     }
 };

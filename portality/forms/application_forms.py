@@ -1881,7 +1881,8 @@ class FieldDefinitions:
         "entry_template": "application_form/_entry_group.html",
         "widgets": [
             {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}},
-            "note_modal"
+            "note_modal",
+            "article_info",
         ],
         "merge_disabled" : "merge_disabled_notes",
     }
@@ -3042,7 +3043,8 @@ JAVASCRIPT_FUNCTIONS = {
     "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
     "note_modal" : "formulaic.widgets.newNoteModal", # ~~-> NoteModal:FormWidget~~
     "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
-        "issn_link" : "formulaic.widgets.newIssnLink" # ~~-> IssnLink:FormWidget~~,
+    "issn_link" : "formulaic.widgets.newIssnLink", # ~~-> IssnLink:FormWidget~~,
+    "article_info": "formulaic.widgets.newArticleInfo", # ~~-> ArticleInfo:FormWidget~~
 }
 
 
