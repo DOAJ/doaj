@@ -218,6 +218,9 @@ def login_by_acc(driver: 'WebDriver', acc: models.Account = None):
         breakpoint()  # for checking, how could this happen?
     assert "/login" not in driver.current_url
 
+def wait_for(driver: 'WebDriver', duration: int):
+    driver.implicitly_wait(duration);
+
 
 def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1,
               timeout_msg="wait_unit but exit_cond timeout"):

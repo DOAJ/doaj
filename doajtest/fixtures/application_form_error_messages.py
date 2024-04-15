@@ -10,3 +10,5 @@ class FixtureMessages(object):
     ERROR_OA_START_INVALID_VALUE = f'This value should be between 1900 and {current_year}'
     ERROR_INVALID_URL = "This value should be a valid url."
     ERROR_YES_OR_NO_REQUREID = "Select Yes or No"
+    ERROR_JOURNAL_URL_REQUIRED = "Enter the URL for the journal’s homepage"
+    ERROR_JOURNAL_URL_INVALID = "This value should be a valid url."

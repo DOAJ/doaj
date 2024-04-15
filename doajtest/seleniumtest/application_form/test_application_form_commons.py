@@ -1,30 +1,32 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import NoSuchElementException
 from doajtest import selenium_helpers
 from doajtest.selenium_helpers import SeleniumTestCase
 from portality import models
 from doajtest.fixtures.accounts import create_publisher_a
 from doajtest.fixtures.url_path import URL_APPLY
 
-
+TIMEOUT = 1;
 class Interactions():
 
     @classmethod
-    def click_next_button(self, js_click):
+    def click_next_button(cls, driver, js_click):
         js_click(selector=".nextBtn")
+        selenium_helpers.wait_for(driver, TIMEOUT)
 
     @classmethod
-    def goto_application_page(self, driver: 'WebDriver', acc: models.Account = None):
+    def goto_application_page(cls, driver: 'WebDriver', acc: models.Account = None):
         publisher = acc or create_publisher_a()
         selenium_helpers.login_by_acc(driver, publisher)
         selenium_helpers.goto(driver, URL_APPLY)
-        return
+        selenium_helpers.wait_for(driver, TIMEOUT)
 
     @classmethod
-    def goto_section(self, js_click, section_number):
+    def goto_section(cls, driver, js_click, section_number):
         js_click(f"#page_link-{section_number}");
+        selenium_helpers.wait_for(driver, TIMEOUT)
 
 
 SIMPLE_FIELDS_TYPES = ["text", "number", "url"]
@@ -47,16 +49,12 @@ class TestFieldsCommon(SeleniumTestCase):
 
         try:
             # Check for custom error message
-            error_element = WebDriverWait(self.selenium, 1).until(
-                EC.visibility_of_element_located((By.XPATH, error_xpath))
-            )
-        except TimeoutException:
+            error_element = self.selenium.find_element(By.XPATH, error_xpath)
+        except NoSuchElementException:
             try:
                 # check for parsley general error message if custom is not displayed
-                error_element = WebDriverWait(self.selenium, 1).until(
-                    EC.visibility_of_element_located((By.XPATH, parsley_error_xpath))
-                )
-            except TimeoutException:
+                error_element = self.selenium.find_element(By.XPATH, parsley_error_xpath)
+            except NoSuchElementException:
                 return None
 
         if error_element.is_displayed():
@@ -65,12 +63,9 @@ class TestFieldsCommon(SeleniumTestCase):
             return None
 
     def this_simple_field_is_required(self, field_name, expected_error_value=None):
-        # Step 1: Find the question with "field_name"
         question = self.find_question(field_name)
         assert question is not None, f"Question with field name '{field_name}' not found"
 
-        # Step 2: Assure the value = ""
-        # Assuming 'value' is a direct child of the question element
         input_element = question.find_element(By.CSS_SELECTOR, 'input')
         self.selenium.execute_script("arguments[0].scrollIntoView(true);", input_element)
         WebDriverWait(self.selenium, 1).until(EC.visibility_of(input_element))
@@ -84,7 +79,7 @@ class TestFieldsCommon(SeleniumTestCase):
 
         assert input_element.get_attribute('required') is not None, f"Field '{field_name}' is not marked as required"
 
-        Interactions.click_next_button(self.js_click)
+        Interactions.click_next_button(self.selenium, self.js_click)
 
         # Step 4: Assure the required error exists
         error_message = self.get_error_message(field_name)
@@ -94,6 +89,25 @@ class TestFieldsCommon(SeleniumTestCase):
         if expected_error_value is not None:
             assert error_message == expected_error_value, \
                 f"Error message for field '{field_name}' does not match expected value"
+
+    def this_simple_field_is_optional(self, field_name):
+        question = self.find_question(field_name)
+        assert question is not None, f"Question with field name '{field_name}' not found"
+
+        input_element = question.find_element(By.CSS_SELECTOR, 'input')
+        self.selenium.execute_script("arguments[0].scrollIntoView(true);", input_element)
+        WebDriverWait(self.selenium, 1).until(EC.visibility_of(input_element))
+
+        input_type = input_element.get_attribute('type')
+        if input_type in SIMPLE_FIELDS_TYPES:
+            input_element.clear()
+        else:
+            raise ValueError(
+                f"Unexpected input type '{input_type}' for field '{field_name}'. Expected 'text' or 'number'.")
+
+        # Step 4: Assure the required error exists
+        error_message = self.get_error_message(field_name)
+        assert error_message is None, f"Field '{field_name}' should be optional"
 
     def add_value_to_simple_field(self, field_name, value):
         # Step 1: Find the question with "field_name"
@@ -110,6 +124,8 @@ class TestFieldsCommon(SeleniumTestCase):
         else:
             raise ValueError(
                 f"Unexpected input type '{input_type}' for field '{field_name}'. Expected 'text' or 'number'.")
+
+        Interactions.click_next_button(self.selenium, self.js_click)
 
     def clear_simple_field(self, field_name):
         question = self.find_question(field_name)
@@ -128,22 +144,21 @@ class TestFieldsCommon(SeleniumTestCase):
 
     def simple_field_fail(self, field_name, value, expected_error_value=None):
         self.add_value_to_simple_field(field_name, value)
-        Interactions.click_next_button(self.js_click)
+        Interactions.click_next_button(self.selenium, self.js_click)
         error_message = self.get_error_message(field_name)
-        assert error_message is not None, f"Required error for field '{field_name}' not displayed"
+        assert error_message is not None
 
         if expected_error_value is not None:
-            assert error_message == expected_error_value, \
-                f"Error message for field '{field_name}' does not match expected value"
+            assert error_message == expected_error_value
+
         self.clear_simple_field(field_name)
 
     def simple_field_success(self, field_name, value):
         self.add_value_to_simple_field(field_name, value)
-        Interactions.click_next_button(self.js_click)
+        Interactions.click_next_button(self.selenium, self.js_click)
         error_message = self.get_error_message(field_name)
         assert error_message is None
         self.clear_simple_field(field_name)
-
 
     def this_radio_button_field_is_required(self, field_name, expected_error_value=None):
         question_container = self.find_question(field_name)
@@ -162,6 +177,6 @@ class TestFieldsCommon(SeleniumTestCase):
         for radio_button in radio_buttons:
             self.selenium.execute_script("arguments[0].checked = false;", radio_button)
 
-        Interactions.click_next_button(self.js_click)
+        Interactions.click_next_button(self.selenium, self.js_click)
         error = self.get_error_message(field_name)
         assert error == expected_error_value

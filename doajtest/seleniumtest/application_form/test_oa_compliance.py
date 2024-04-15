@@ -28,13 +28,13 @@ class ApplicationForm_OACompliance(TestFieldsCommon):
         self.find_question(field_name)
         no_radio_button_selector = f'#{field_name}-1'
         self.js_click(no_radio_button_selector)
-        Interactions.click_next_button(self.js_click)
+        Interactions.click_next_button(self.selenium, self.js_click)
         error = self.get_error_message(field_name)
         assert error == FixtureMessages.ERROR_OA_STATEMENT
 
         yes_radio_button_selector = f"#{field_name}-0"
         self.js_click(yes_radio_button_selector)
-        Interactions.click_next_button(self.js_click)
+        Interactions.click_next_button(self.selenium, self.js_click)
         error = self.get_error_message(field_name)
         assert error == None
 
@@ -43,7 +43,7 @@ class ApplicationForm_OACompliance(TestFieldsCommon):
         self.this_simple_field_is_required(field_name=field_name,
                                            expected_error_value=FixtureMessages.ERROR_OA_STATEMENT_URL)
         self.simple_field_fail(field_name=field_name, value="this_is_not_url", expected_error_value=FixtureMessages.ERROR_INVALID_URL)
-        self.simple_field_success(field_name=field_name, value="https://www.test.com")
+        self.simple_field_success(field_name=field_name, value="https://www.ridiculousResearchRodeo.com")
 
     def test_oa_start(self):
         field_name = "oa_start"

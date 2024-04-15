@@ -14,14 +14,27 @@ from doajtest.fixtures.application_form_error_messages import FixtureMessages
 from portality import models
 
 
-class ApplicationForm_OACompliance(SeleniumTestCase):
+class ApplicationForm_About(TestFieldsCommon):
 
     # go to application page before each test
     def setUp(self):
         super().setUp()
-        self.common = TestFieldsCommon(self.selenium, self.js_click)
-        self.interact = Interactions(self.selenium, self.js_click)
-        self.interact.goto_application_page()
+        Interactions.goto_application_page(self.selenium)
+        Interactions.goto_section(self.selenium, self.js_click, 1);
 
 
-    def test_oa_statement(self):
+    def test_title(self):
+        field_name="title"
+        self.this_simple_field_is_required(field_name=field_name)
+        self.simple_field_success(field_name=field_name, value="Serendipity Science: Accidental Alchemy & Quantum Quirks")
+
+    def test_alternative_title(self):
+        field_name="alternative_title"
+        self.this_simple_field_is_optional(field_name=field_name)
+        self.simple_field_success(field_name, value="The Absurd Chronicles of Science: From Alchemy to Mischief")
+
+    def test_journal_url(self):
+        field_name="journal_url"
+        self.this_simple_field_is_required(field_name=field_name, expected_error_value=FixtureMessages.ERROR_JOURNAL_URL_REQUIRED)
+        self.simple_field_fail(field_name=field_name, value="incorect_url", expected_error_value=FixtureMessages.ERROR_JOURNAL_URL_INVALID)
+        self.simple_field_success(field_name=field_name, value="https://www.absurdChronicles.com")
