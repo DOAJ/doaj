@@ -18,10 +18,10 @@ class TestAdminEditorGroups(DoajTestCase):
 
     def test_editor_group_creation_and_update(self):
         with self.app_test.test_client() as t_client:
-            ## Test creating a EditorGroup
+            # Test creating an EditorGroup
 
             login(t_client, "admin", "password123")
-            data = {"name":"Test Group", "editor":"eddie"}
+            data = {"name": "Test Group", "editor": "eddie"}
             response = t_client.post('/admin/editor_group', data=data)
             assert response.status_code == 302
 
@@ -30,14 +30,13 @@ class TestAdminEditorGroups(DoajTestCase):
             editor_group_id = EditorGroup.group_exists_by_name("Test Group")
             self.assertIsNotNone(editor_group_id)
 
+            # Test EditorGroup name is not editable (silent failure if supplied)
             data = {"name": "New Test Group", "editor": "eddie"}
-            response = t_client.post('/admin/editor_group/'+editor_group_id, data=data)
+            response = t_client.post('/admin/editor_group/' + editor_group_id, data=data)
             assert response.status_code == 302
-
-            ## Test EditorGroup name is not editable
 
             # give some time for the new record to be indexed
             time.sleep(1)
             updated_group = EditorGroup.pull(editor_group_id)
+            self.assertEquals(updated_group.name, "Test Group")
             self.assertNotEquals(updated_group.name, "New Test Group")
-
