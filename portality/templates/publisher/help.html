@@ -27,6 +27,17 @@
   <tbody>
     <tr>
       <th>
+        <code>Text decode failed, expected utf-8 encoded XML</code>
+      </th>
+      <td>
+        We were not able to read the file that you provided and it isn't in a recognised format. It may not be XML.
+      </td>
+      <td>
+        You can only upload XML files only to us and they must be in one of the formats we accept: DOAJ or Crossref XML.
+      </td>
+    </tr>
+    <tr>
+      <th>
         <code>X articles imported ([number] new, [number] updated); N articles failed</code>
       </th>
       <td>
@@ -141,10 +152,10 @@
         <code>Unable to validate document with identified schema</code>
       </th>
       <td>
-        No XML schema could be found. The schema, in particular DOAJ’s standard schema, is necessary to read an XML document.
+        No XML schema could be found. The schema, in particular DOAJ’s standard schema, is necessary to read an XML document. This message also dislpays when ORCID IDs are not formatted correctly.
       </td>
       <td>
-        Check that the file conforms to the DOAJ schema using a validator.<br/>
+        Check that the file conforms to the DOAJ schema using a validator. In particular, make sure that ORCID URLs start with https and not http.<br/>
         <br/>
         Often, the problem arises because the XML is missing a required tag. The schema validation will fail if you try to upload XML to DOAJ that is missing a specific tag. You can see exactly <a href="{{ url_for('doaj.xml') }}">which tags are required here</a>.<br/>
         <br/>

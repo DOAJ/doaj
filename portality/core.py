@@ -213,7 +213,8 @@ def put_mappings(conn, mappings):
     for key, mapping in iter(mappings.items()):
         altered_key = app.config['ELASTIC_SEARCH_DB_PREFIX'] + key
         if not conn.indices.exists(altered_key):
-            r = conn.indices.create(index=altered_key, body=mapping)
+            r = conn.indices.create(index=altered_key, body=mapping,
+                                    request_timeout=app.config.get("ES_SOCKET_TIMEOUT", None))
             print("Creating ES Type + Mapping in index {0} for {1}; status: {2}".format(altered_key, key, r))
         else:
             print("ES Type + Mapping already exists in index {0} for {1}".format(altered_key, key))

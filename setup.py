@@ -5,11 +5,12 @@ import sys
 
 setup(
     name='doaj',
-    version='6.6.3',
+    version='6.6.10',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
         "bagit==1.8.1",
+        "beautifulsoup4",
         "boto3==1.18.50",
         "elastic-apm==5.2.2",
         "elasticsearch==7.13.0",

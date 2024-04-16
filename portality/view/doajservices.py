@@ -112,3 +112,29 @@ def group_status(group_id):
     svc = DOAJ.todoService()
     stats = svc.group_stats(group_id)
     return make_response(json.dumps(stats))
+
+
+@blueprint.route("/autocheck/dismiss/<autocheck_set_id>/<autocheck_id>", methods=["GET", "POST"])
+@jsonp
+@login_required
+def dismiss_autocheck(autocheck_set_id, autocheck_id):
+    if not current_user.has_role("admin"):
+        abort(404)
+    svc = DOAJ.autochecksService()
+    done = svc.dismiss(autocheck_set_id, autocheck_id)
+    if not done:
+        abort(404)
+    return make_response(json.dumps({"status": "success"}))
+
+@blueprint.route("/autocheck/undismiss/<autocheck_set_id>/<autocheck_id>", methods=["GET", "POST"])
+@jsonp
+@login_required
+def undismiss_autocheck(autocheck_set_id, autocheck_id):
+    if not current_user.has_role("admin"):
+        abort(404)
+    svc = DOAJ.autochecksService()
+    done = svc.undismiss(autocheck_set_id, autocheck_id)
+    if not done:
+        abort(404)
+    return make_response(json.dumps({"status": "success"}))
+

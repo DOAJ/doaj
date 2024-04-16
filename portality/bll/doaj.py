@@ -128,6 +128,10 @@ class DOAJ(object):
         return tour.TourService()
 
     @classmethod
+    def autochecksService(cls, autocheck_plugins=None):
+        from portality.bll.services import autochecks
+        return autochecks.AutocheckService(autocheck_plugins=autocheck_plugins)
+    @classmethod
     def apiRateService(cls):
         """
         Obtain an instance of the api_rate service  ~~->ApiRate:Service~~

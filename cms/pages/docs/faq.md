@@ -10,10 +10,10 @@ featuremap: ~~FAQ:Fragment~~
 
 After your journal is indexed in DOAJ and you start to upload article metadata to us, we generate journal and article metadata. We make these publicly and freely available via different methods:
 
-- Our [Atom feed](https://staticdoaj.cottagelabs.com/feed)
-- Our [OAI-PMH service](https://staticdoaj.cottagelabs.com/docs/oai-pmh/)
-- [A journal CSV](https://staticdoaj.cottagelabs.com/csv) file (updates every 60 minutes)
-- Our [API](https://staticdoaj.cottagelabs.com/docs/api/)
+- Our [Atom feed](https://doaj.org/feed)
+- Our [OAI-PMH service](https://doaj.org/docs/oai-pmh/)
+- [A journal CSV](https://doaj.org/csv) file (updates every 60 minutes)
+- Our [API](https://doaj.org/docs/api/)
 - On our website
 
 Our metadata is collected and incorporated into commercial discovery systems, library discovery portals and search engines around the world. Here are some of them:
