@@ -137,6 +137,8 @@ class Messages(object):
     JOURNAL_CSV_VALIDATE__CANNOT_MAKE_UR = "We couldn't create an update for this journal because: {reason}"
     JOURNAL_CSV_VALIDATE__INVALID_DATA = "We couldn't understand the information in '{question}'"
 
+    PRESERVATION_NO_FILE = "No file provided for upload"
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):
