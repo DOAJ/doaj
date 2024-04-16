@@ -8,10 +8,16 @@ from portality.decorators import write_required
 from portality.lib import dates
 from portality.lib.es_queries import ES_DATETIME_FMT
 from portality.models import Notification, BackgroundJob
+from portality.models.api_log import ApiLog
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import schedule, long_running
 
 target_queue = long_running
+MODELS_TOBE_CLEANUP = [
+    Notification,
+    BackgroundJob,
+    ApiLog,
+]
 
 
 class RetentionQuery:
@@ -59,7 +65,7 @@ def clean_all_old_data(logger_fn=None):
     if logger_fn is None:
         logger_fn = print
 
-    for klazz in [Notification, BackgroundJob]:
+    for klazz in MODELS_TOBE_CLEANUP:
         _clean_old_data(klazz, logger_fn=logger_fn)
     logger_fn("old data cleanup completed")
 

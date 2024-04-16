@@ -709,6 +709,7 @@ MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
 MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
 MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
 MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
+MAPPINGS['api_log'] = MAPPINGS["account"]    #~~->ApiLog:Model~~
 
 #########################################
 # Query Routes
@@ -1385,6 +1386,7 @@ TASKS_ANON_EXPORT_SCROLL_TIMEOUT = '5m'
 TASK_DATA_RETENTION_DAYS = {
     "notification": 180, # ~~-> Notifications:Feature ~~
     "background_job": 180, # ~~-> BackgroundJobs:Feature ~~
+    "api_log": 180, # ~~-> ApiLog:Feature ~~
 }
 
 ########################################
@@ -1551,3 +1553,18 @@ AUTOCHECK_INCOMING = False
 
 AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
 AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
+
+
+
+##################################################
+# ApiRate
+# ~~->ApiRate:Feature~~
+
+# api rate limits per minute for user have no api key or normal api key
+RATE_LIMITS_PER_MIN_DEFAULT = 10
+
+# api rate limits per minute for user have two-tiered api key
+RATE_LIMITS_PER_MIN_T2 = 1000
+
+
+

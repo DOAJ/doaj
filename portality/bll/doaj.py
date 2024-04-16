@@ -131,3 +131,11 @@ class DOAJ(object):
     def autochecksService(cls, autocheck_plugins=None):
         from portality.bll.services import autochecks
         return autochecks.AutocheckService(autocheck_plugins=autocheck_plugins)
+    @classmethod
+    def apiRateService(cls):
+        """
+        Obtain an instance of the api_rate service  ~~->ApiRate:Service~~
+        :return:  ApiRateService
+        """
+        from portality.bll.services import api_rate
+        return api_rate.ApiRateService()

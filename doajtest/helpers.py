@@ -145,7 +145,14 @@ class DoajTestCase(TestCase):
             'ENABLE_EMAIL': False,
             "FAKER_SEED": 1,
             "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
-            'CMS_BUILD_ASSETS_ON_STARTUP': False
+            'CMS_BUILD_ASSETS_ON_STARTUP': False,
+
+            # disable send plausible request
+            'PLAUSIBLE_URL': '',
+            'PLAUSIBLE_API_URL': '',
+
+            'RATE_LIMITS_PER_MIN_DEFAULT': 1000000,
+            'RATE_LIMITS_PER_MIN_T2 ': 1000000,
         }
 
     @classmethod
