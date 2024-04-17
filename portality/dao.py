@@ -9,7 +9,7 @@ import urllib.parse
 from collections import UserDict
 from copy import deepcopy
 from datetime import timedelta
-from typing import List, Self
+from typing import List, Self, Iterable, Union, Dict
 
 from portality.core import app, es_connection as ES
 from portality.lib import dates
@@ -565,7 +565,7 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def iterate(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True,
-                keepalive: str = '1m'):
+                keepalive: str = '1m') -> Iterable[Union[Self, Dict]]:
         """ Provide an iterable of all items in a model, use
         :param q: The query to scroll results on
         :param page_size: limited by ElasticSearch, check settings to override
