@@ -22,8 +22,6 @@ if __name__ == '__main__':
     parser.add_argument("--save", help="Apply the changes to the Journal record", action='store_true')
     args = parser.parse_args()
 
-    print(args.save)
-
     with open('Mirabel-deposit-policy.csv', encoding='utf-8-sig') as f:
         reader = csv.DictReader(f)
 
