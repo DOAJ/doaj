@@ -9,7 +9,10 @@ import urllib.parse
 from collections import UserDict
 from copy import deepcopy
 from datetime import timedelta
-from typing import List, Self, Iterable, Union, Dict
+from typing import List, Iterable, Union, Dict
+
+if sys.version_info >= (3, 11):
+    from typing import Self
 
 from portality.core import app, es_connection as ES
 from portality.lib import dates
@@ -380,7 +383,7 @@ class DomainObject(UserDict, object):
         return ES.indices.refresh(index=cls.index_name())
 
     @classmethod
-    def pull(cls, id_) -> Self:
+    def pull(cls, id_) -> 'Self':
         """Retrieve object by id."""
         if id_ is None or id_ == '':
             return None
@@ -400,7 +403,7 @@ class DomainObject(UserDict, object):
         return cls(**out)
 
     @classmethod
-    def pull_by_key(cls, key, value) -> Self:
+    def pull_by_key(cls, key, value) -> 'Self':
         res = cls.query(q={"query": {"term": {key + app.config['FACET_FIELD']: value}}})
         if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
             return cls.pull(res['hits']['hits'][0]['_source']['id'])
@@ -408,7 +411,7 @@ class DomainObject(UserDict, object):
             return None
 
     @classmethod
-    def object_query(cls, q=None, **kwargs) -> List[Self]:
+    def object_query(cls, q=None, **kwargs) -> List['Self']:
         result = cls.query(q, **kwargs)
         return [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
 
@@ -565,7 +568,7 @@ class DomainObject(UserDict, object):
 
     @classmethod
     def iterate(cls, q: dict = None, page_size: int = 1000, limit: int = None, wrap: bool = True,
-                keepalive: str = '1m') -> Iterable[Union[Self, Dict]]:
+                keepalive: str = '1m') -> Iterable[Union['Self', Dict]]:
         """ Provide an iterable of all items in a model, use
         :param q: The query to scroll results on
         :param page_size: limited by ElasticSearch, check settings to override
@@ -833,7 +836,7 @@ class DomainObject(UserDict, object):
         return result
 
     @classmethod
-    def q2obj(cls, **kwargs) -> List[Self]:
+    def q2obj(cls, **kwargs) -> List['Self']:
         extra_trace_info = ''
         if 'q' in kwargs:
             extra_trace_info = "\nQuery sent to ES (before manipulation in DomainObject.query):\n{}\n".format(
