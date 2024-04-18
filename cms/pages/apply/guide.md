@@ -223,7 +223,7 @@ Our criteria are available in:
 - [Chinese](https://zenodo.org/record/4633341)
 - [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
 - [Finnish](https://docs.google.com/document/d/1BLuaFerSw0G4L2GCVcGeu3rB7SXT7fWL0px26ME9jo0/edit?usp=sharing)
-- [French (Canadian)](https://drive.google.com/drive/folders/1-9FraAimhA9Ks64tvKE_W4wsQ8LNob9a?usp=sharing)
+- [French](https://www.erudit.org/public/documents/guidecandidatureDOAJ.pdf) - hosted by Érudit
 - [German](https://bibliothek.thws.de/leitfaden-fuer-die-zeitschriftenregistrierung-bei-doaj/)
 - [Japanese](https://drive.google.com/file/d/1MDRlcc7SJnv8yOlZ1aCqbivXOZevxH4a/view?usp=sharing)
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
