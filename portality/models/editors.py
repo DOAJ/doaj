@@ -1,5 +1,11 @@
+import sys
+from typing import List, Optional
+
 from portality.dao import DomainObject, ScrollInitialiseException
 from portality.models import Account
+
+if sys.version_info >= (3, 11):
+    from typing import Self
 
 
 class EditorGroup(DomainObject):
@@ -9,7 +15,7 @@ class EditorGroup(DomainObject):
     __type__ = "editor_group"
 
     @classmethod
-    def group_exists_by_name(cls, name):
+    def group_exists_by_name(cls, name) -> Optional[str]:
         q = EditorGroupQuery(name)
         res = cls.query(q=q.query())
         ids = [hit.get("_source", {}).get("id") for hit in res.get("hits", {}).get("hits", []) if "_source" in hit]
@@ -19,7 +25,7 @@ class EditorGroup(DomainObject):
             return ids[0]
 
     @classmethod
-    def _groups_by_x(cls, **kwargs):
+    def _groups_by_x(cls, **kwargs) -> List['Self']:
         """ Generalised editor groups by maned / editor / associate """
         # ~~-> EditorGroupMember:Query~~
         q = EditorGroupMemberQuery(**kwargs)
@@ -30,15 +36,15 @@ class EditorGroup(DomainObject):
             return []
 
     @classmethod
-    def groups_by_maned(cls, maned):
+    def groups_by_maned(cls, maned) -> List['Self']:
         return cls._groups_by_x(maned=maned)
 
     @classmethod
-    def groups_by_editor(cls, editor):
+    def groups_by_editor(cls, editor) -> List['Self']:
         return cls._groups_by_x(editor=editor)
 
     @classmethod
-    def groups_by_associate(cls, associate):
+    def groups_by_associate(cls, associate) -> List['Self']:
         return cls._groups_by_x(associate=associate)
 
     @property
@@ -101,7 +107,7 @@ class EditorGroupQuery(object):
 
     def query(self):
         q = {
-            "track_total_hits" : True,
+            "track_total_hits": True,
             "query": {"term": {"name.exact": self.name}}
         }
         return q
@@ -111,6 +117,7 @@ class EditorGroupMemberQuery(object):
     """
     ~~EditorGroupMember:Query->Elasticsearch:Technology~~
     """
+
     def __init__(self, editor=None, associate=None, maned=None):
         self.editor = editor
         self.associate = associate
@@ -120,7 +127,7 @@ class EditorGroupMemberQuery(object):
         q = {
             "track_total_hits": True,
             "query": {"bool": {"should": []}},
-            "sort": {"name.exact": {"order" : "asc"}}
+            "sort": {"name.exact": {"order": "asc"}}
         }
         if self.editor is not None:
             et = {"term": {"editor.exact": self.editor}}
@@ -129,6 +136,6 @@ class EditorGroupMemberQuery(object):
             at = {"term": {"associates.exact": self.associate}}
             q["query"]["bool"]["should"].append(at)
         if self.maned is not None:
-            mt = {"term" : {"maned.exact" : self.maned}}
+            mt = {"term": {"maned.exact": self.maned}}
             q["query"]["bool"]["should"].append(mt)
         return q
