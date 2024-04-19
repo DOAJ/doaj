@@ -1323,6 +1323,8 @@ class FieldDefinitions:
             "admin": {
                 "widgets": [
                     "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "multiple_field",
                 ]
             }
         },
@@ -1349,6 +1351,7 @@ class FieldDefinitions:
             "admin": {
                 "widgets": [
                     "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                 ]
             }
         },
@@ -1453,6 +1456,7 @@ class FieldDefinitions:
             "admin": {
                 "widgets": [
                     "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                 ]
             }
         },
@@ -1565,6 +1569,7 @@ class FieldDefinitions:
             "admin": {
                 "widgets": [
                     "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
                 ]
             }
         },
