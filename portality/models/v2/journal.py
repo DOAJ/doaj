@@ -220,11 +220,17 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             return Account.pull(self.owner)
         return None
 
+    # KTODO add property self.editor_group_ids
+
     @property
     def editor_group(self):
+        # KTODO replace with self._cache_editor_group_name with query pull
         return self.__seamless__.get_single("admin.editor_group")
 
+    # KTODO add setter of editor_group for warning and DEBUGGING and redirect the value to self.editor_group_ids
+
     def set_editor_group(self, eg):
+        # KTODO add warning and DEBUGGING and redirect the value to self.editor_group_ids
         self.__seamless__.set_with_struct("admin.editor_group", eg)
 
     def remove_editor_group(self):
