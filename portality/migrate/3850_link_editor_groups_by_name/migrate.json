@@ -1,0 +1,21 @@
+{
+	"batch" : 10000,
+	"types": [
+		{
+			"type" : "application",
+			"init_with_model" : true,
+			"keepalive" : "5m",
+			"functions" : [
+				"portality.migrate.3850_link_editor_groups_by_name.operations.name_to_id"
+			]
+		},
+		{
+			"type" : "journal",
+			"init_with_model" : true,
+			"keepalive" : "5m",
+			"functions" : [
+				"portality.migrate.3850_link_editor_groups_by_name.operations.name_to_id"
+			]
+		}
+	]
+}
