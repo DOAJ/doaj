@@ -99,7 +99,7 @@ doaj.autocheckers.NoNoneValue = class {
     }
 }
 
-function drawIconMessage(autocheck, message, icon, style) {
+doaj.autocheckers.drawIconMessage = function(autocheck, message, icon, style) {
     let msg_reference_url = '';
     if (autocheck.reference_url) {
         msg_reference_url = ` (<a href="${autocheck.reference_url}" target="_blank">see record</a>)`
