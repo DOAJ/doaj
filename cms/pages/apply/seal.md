@@ -48,6 +48,10 @@ All seven criteria must be met for a journal to be awarded the Seal. Failure to 
 7. Copyright and publishing rights
   -  Authors must retain unrestricted copyright and all publishing rights when publishing under any license permitted by the journal.
 
+## In other languages
+
+[French](https://www.erudit.org/public/documents/sceauDOAJ.pdf) - hosted by Érudit
+
 ## Version history
 
 This is Version 1 of our Seal criteria.

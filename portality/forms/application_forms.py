@@ -1598,7 +1598,7 @@ class FieldDefinitions:
     }
 
     #######################################
-    ## Ediorial fields
+    ## Editorial fields
 
     # ~~->$ DOAJSeal:FormField~~
     DOAJ_SEAL = {
