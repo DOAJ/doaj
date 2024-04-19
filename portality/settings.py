@@ -17,6 +17,7 @@ API_VERSION = "3.0.1"
 
 HOST = '0.0.0.0'
 DEBUG = False
+DEBUG_DEV_LOG = False  # show all log of each module
 PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
