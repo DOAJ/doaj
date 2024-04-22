@@ -14,5 +14,7 @@ class ConcurrencyPreventionService():
         value = self.rs.get(key)
         return value is not None and value != id
 
-    def storeConcurrency(self, key, id, timeout=10):
+    def storeConcurrency(self, key, id, timeout=None):
+        if timeout is None:
+            timeout = app.config.get("UR_CONCURRENCY_TIMEOUT", 10)
         self.rs.set(key, id, ex=timeout)
