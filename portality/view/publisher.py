@@ -212,9 +212,8 @@ def upload_file():
         job = IngestArticlesBackgroundTask.prepare(current_user.id, upload_file=f, schema=schema, url=url, previous=previous)
         IngestArticlesBackgroundTask.submit(job)
     except TaskException as e:
-        magic = str(uuid.uuid1())
-        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str="", id=magic))
-        app.logger.exception('File upload error. ' + magic)
+        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str=str(e)))
+        app.logger.exception('File upload error. ' + str(e))
         return resp
     except BackgroundException as e:
         if str(e) == Messages.NO_FILE_UPLOAD_ID:
@@ -223,10 +222,8 @@ def upload_file():
                 schema = ""
             return render_template('publisher/uploadmetadata.html', previous=previous, schema=schema, error=True)
 
-
-        magic = str(uuid.uuid1())
-        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str=str(e), id=magic))
-        app.logger.exception('File upload error. ' + magic + '; ' + str(e))
+        flash(Messages.PUBLISHER_UPLOAD_ERROR.format(error_str=str(e)))
+        app.logger.exception('File upload error. ' + str(e))
         return resp
 
     if f is not None and f.filename != "":
@@ -266,25 +263,29 @@ def preservation():
     if request.method == "POST":
 
         f = request.files.get("file")
-        app.logger.info(f"Preservation file {f.filename}")
+
         resp = make_response(redirect(url_for("publisher.preservation")))
 
         # create model object to store status details
         preservation_model = models.PreservationState()
         preservation_model.set_id()
-        preservation_model.initiated(current_user.id, f.filename)
+
 
         previous.insert(0, preservation_model)
 
         app.logger.debug(f"Preservation model created with id {preservation_model.id}")
 
         if f is None or f.filename == "":
-            error_str = "No file provided to upload"
+            error_str = Messages.PRESERVATION_NO_FILE
             flash(error_str, "error")
+            preservation_model.initiated(current_user.id, "none")
             preservation_model.failed(error_str)
             preservation_model.save()
             return resp
 
+        app.logger.info(f"Preservation file {f.filename}")
+
+        preservation_model.initiated(current_user.id, f.filename)
         preservation_model.validated()
         preservation_model.save()
 

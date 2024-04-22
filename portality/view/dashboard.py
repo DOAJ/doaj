@@ -1,5 +1,5 @@
 from flask import Blueprint, make_response
-from flask import render_template, abort
+from flask import render_template, abort, request
 from flask_login import current_user, login_required
 
 from portality.decorators import ssl_required
@@ -18,9 +18,19 @@ blueprint = Blueprint('dashboard', __name__)
 @login_required
 @ssl_required
 def top_todo():
+    filter = request.values.get("filter")
+    new_applications, update_requests = True, True
+    if filter == "na":
+        update_requests = False
+    elif filter == "ur":
+        new_applications = False
+
     # ~~-> Todo:Service~~
     svc = DOAJ.todoService()
-    todos = svc.top_todo(current_user._get_current_object(), size=app.config.get("TODO_LIST_SIZE"))
+    todos = svc.top_todo(current_user._get_current_object(),
+                         size=app.config.get("TODO_LIST_SIZE"),
+                         new_applications=new_applications,
+                         update_requests=update_requests)
 
     # ~~-> Dashboard:Page~~
     return render_template('dashboard/index.html', todos=todos)

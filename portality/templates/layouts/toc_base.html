@@ -17,8 +17,7 @@
     <div class="container page-content">
         <header>
             {% if not current_user.is_anonymous and current_user.has_role("admin") %}
-                <a class="button button--tertiary" href="{{ url_for('admin.journal_page', journal_id=journal.id) }}"
-                   target="_blank">Edit this journal</a>
+                <a class="button button--tertiary" href="{{ url_for('admin.journal_page', journal_id=journal.id) }}">Edit this journal</a>
             {% endif %}
             {% if journal.last_manually_updated_since(days=30) %}
                 <span class="label label--secondary">
