@@ -40,7 +40,8 @@ class TestBLLTopTodoManed(DoajTestCase):
             "todo_maned_follow_up_old",
             "todo_maned_ready",
             "todo_maned_completed",
-            "todo_maned_assign_pending"
+            "todo_maned_assign_pending",
+            "todo_maned_new_update_request"
         ]
 
         category_args = {
@@ -94,6 +95,10 @@ class TestBLLTopTodoManed(DoajTestCase):
 
         self.build_application("maned_assign_pending", 4 * w, 4 * w, constants.APPLICATION_STATUS_PENDING, apps,
                                assign_pending)
+
+        # an update request
+        self.build_application("maned_update_request", 5 * w, 5 * w, constants.APPLICATION_STATUS_UPDATE_REQUEST, apps,
+                               update_request=True)
 
         # Applications that should never be reported
         ############################################
@@ -192,13 +197,20 @@ class TestBLLTopTodoManed(DoajTestCase):
                 else:   # the todo item is not positioned at all
                     assert len(positions.get(k, [])) == 0
 
-    def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None):
+    def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None, update_request=False):
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
         ap.set_id(id)
         ap.set_last_manual_update(dates.before_now(lmu_diff))
         ap.set_date_applied(dates.before_now(cd_diff))
         ap.set_application_status(status)
+
+        if update_request:
+            ap.application_type = constants.APPLICATION_TYPE_UPDATE_REQUEST
+        else:
+            ap.remove_current_journal()
+            ap.remove_related_journal()
+            ap.application_type = constants.APPLICATION_TYPE_NEW_APPLICATION
 
         if additional_fn is not None:
             additional_fn(ap)
