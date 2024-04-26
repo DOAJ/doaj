@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redhead: Jinja2 template structure browser</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+        }
+
+        .blocks {
+            font-size: 14px;
+            font-weight: bold;
+            color: blue;
+        }
+
+        .files {
+            font-size: 14px;
+            font-weight: bold;
+            color: green;
+        }
+
+        .extensions {
+            font-size: 14px;
+            font-weight: bold;
+            color: red;
+        }
+
+        .overridden_by {
+            font-size: 14px;
+            font-weight: bold;
+            color: purple;
+        }
+
+        .path {
+            font-style: italic;
+            color: rgb(128, 128, 128);
+        }
+
+        .path-separator {
+            padding-left: 5px;
+            padding-right: 5px;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+<body>
+
+
+
+
+
+
+<a href="redhead_tree.html">File Inheritance</a> | <a href="redhead_blocks.html">Block Inheritance</a> |
+    <a href="redhead_records.json">Records JSON</a> | <a href="redhead_tree.json">Tree JSON</a> | <a href="redhead_blocks.json">Blocks JSON</a><br><br>
+
+<a href="#" class="expand-all">Expand all</a> | <a href="#" class="collapse-all">Collapse all</a>
+
+<ul>
+    
+        
+    <li >
+        base_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                <ul>
+                    
+                        
+    <li style="display:none">
+        extra_header
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        management_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">management</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        nav
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">management</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        page_title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">management</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">static-page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">account</span><span class="path-separator">/</span>
+    
+        <span class="path-element">login.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        public_content
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">static-page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">account</span><span class="path-separator">/</span>
+    
+        <span class="path-element">login.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                </ul>
+            </li>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">management</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        base_js
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                <ul>
+                    
+                        
+    <li style="display:none">
+        management_js
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">management</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        public_js
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                </ul>
+            </li>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">management</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        base_meta
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                <ul>
+                    
+                        
+    <li style="display:none">
+        meta_description
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">static-page.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        meta_og_description
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">static-page.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        meta_og_title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">static-page.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        meta_twitter_description
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">static-page.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        meta_twitter_title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">static-page.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                        
+    <li style="display:none">
+        public_meta
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                    
+                </ul>
+            </li>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        base_stylesheets
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        body_attrs
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        body_class
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">management</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        body_id
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        page_title
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        <ul>
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="files">Files</span>
+                    <ul>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">static-page.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">account</span><span class="path-separator">/</span>
+    
+        <span class="path-element">login.html</span>
+    </li>
+                        
+                            <li style="display:none">
+    
+        <span class="path-element">management</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+</ul>
+
+<script
+			  src="https://code.jquery.com/jquery-3.7.1.min.js"
+			  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+			  crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    jQuery (document).ready (function($) {
+        $(".toggle").on("click", function(event) {
+            event.preventDefault();
+            let $this = $(this);
+            let $parent = $this.parent();
+            let $ul = $parent.children("ul");
+            let state = $this.data("state");
+            if (state === "hidden") {
+                $ul.children("li").show();
+                $this.data("state", "shown");
+                $this.text("-");
+            } else {
+                $ul.children("li").hide();
+                $this.data("state", "hidden");
+                $this.text("+");
+            }
+        });
+
+        $(".expand-all").on("click", function(event) {
+            event.preventDefault();
+            let toggles = $("a.toggle");
+            toggles.each(function() {
+                let $this = $(this);
+                if ($this.data("state") === "shown") {
+                    return;
+                }
+                $this.trigger("click");
+            });
+        });
+
+        $(".collapse-all").on("click", function(event) {
+            event.preventDefault();
+            let toggles = $("a.toggle");
+            toggles.each(function() {
+                let $this = $(this);
+                if ($this.data("state") === "hidden") {
+                    return;
+                }
+                $this.trigger("click");
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

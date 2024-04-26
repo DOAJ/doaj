@@ -1,0 +1,174 @@
+[
+  {
+    "name": "base_content",
+    "blocks": [
+      {
+        "name": "extra_header",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/index.html"
+        ]
+      },
+      {
+        "name": "management_content",
+        "blocks": [],
+        "files": [
+          "management/base.html"
+        ]
+      },
+      {
+        "name": "nav",
+        "blocks": [],
+        "files": [
+          "management/base.html"
+        ]
+      },
+      {
+        "name": "page_title",
+        "blocks": [],
+        "files": [
+          "management/base.html",
+          "base.html",
+          "public/layouts/static-page.html",
+          "public/account/login.html"
+        ]
+      },
+      {
+        "name": "public_content",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/index.html",
+          "public/layouts/static-page.html",
+          "public/account/login.html"
+        ]
+      }
+    ],
+    "files": [
+      "base.html",
+      "public/base.html",
+      "management/base.html"
+    ]
+  },
+  {
+    "name": "base_js",
+    "blocks": [
+      {
+        "name": "management_js",
+        "blocks": [],
+        "files": [
+          "management/base.html"
+        ]
+      },
+      {
+        "name": "public_js",
+        "blocks": [],
+        "files": [
+          "public/base.html"
+        ]
+      }
+    ],
+    "files": [
+      "base.html",
+      "public/base.html",
+      "management/base.html"
+    ]
+  },
+  {
+    "name": "base_meta",
+    "blocks": [
+      {
+        "name": "meta_description",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/layouts/static-page.html"
+        ]
+      },
+      {
+        "name": "meta_og_description",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/layouts/static-page.html"
+        ]
+      },
+      {
+        "name": "meta_og_title",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/layouts/static-page.html"
+        ]
+      },
+      {
+        "name": "meta_twitter_description",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/layouts/static-page.html"
+        ]
+      },
+      {
+        "name": "meta_twitter_title",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/layouts/static-page.html"
+        ]
+      },
+      {
+        "name": "public_meta",
+        "blocks": [],
+        "files": [
+          "public/base.html"
+        ]
+      }
+    ],
+    "files": [
+      "base.html",
+      "public/base.html"
+    ]
+  },
+  {
+    "name": "base_stylesheets",
+    "blocks": [],
+    "files": [
+      "base.html"
+    ]
+  },
+  {
+    "name": "body_attrs",
+    "blocks": [],
+    "files": [
+      "base.html"
+    ]
+  },
+  {
+    "name": "body_class",
+    "blocks": [],
+    "files": [
+      "base.html",
+      "public/index.html",
+      "management/base.html"
+    ]
+  },
+  {
+    "name": "body_id",
+    "blocks": [],
+    "files": [
+      "base.html"
+    ]
+  },
+  {
+    "name": "page_title",
+    "blocks": [],
+    "files": [
+      "base.html",
+      "public/layouts/static-page.html",
+      "public/account/login.html",
+      "management/base.html"
+    ]
+  }
+]

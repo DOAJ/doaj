@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redhead: Jinja2 template structure browser</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+        }
+
+        .blocks {
+            font-size: 14px;
+            font-weight: bold;
+            color: blue;
+        }
+
+        .includes {
+            font-size: 14px;
+            font-weight: bold;
+            color: green;
+        }
+
+        .dynamic_includes {
+            font-size: 14px;
+            font-weight: bold;
+            color: #4dc04d;
+        }
+
+        .extensions {
+            font-size: 14px;
+            font-weight: bold;
+            color: red;
+        }
+
+        .overridden_by {
+            font-size: 14px;
+            font-weight: bold;
+            color: purple;
+        }
+
+        .path {
+            font-style: italic;
+            color: rgb(128, 128, 128);
+        }
+
+        .path-separator {
+            padding-left: 5px;
+            padding-right: 5px;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+<body>
+
+
+
+
+
+
+
+<a href="redhead_tree.html">File Inheritance</a> | <a href="redhead_blocks.html">Block Inheritance</a> |
+    <a href="redhead_records.json">Records JSON</a> | <a href="redhead_tree.json">Tree JSON</a> | <a href="redhead_blocks.json">Blocks JSON</a><br>
+
+<a href="#" class="expand-all">Expand all</a> | <a href="#" class="collapse-all">Collapse all</a>
+
+<ul>
+    
+        
+    <li >
+        
+    
+        <span class="path-element">base.html</span>
+    
+        
+        <ul>
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        base_content
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                management/base.html
+                                
+                                
+                                    
+                                    <span class="path">[base.html &gt; management/base.html]</span>
+                                
+                            </li>
+                        
+                            <li style="display:none">
+                                public/base.html
+                                
+                                
+                                    
+                                    <span class="path">[base.html &gt; public/base.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        base_js
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                management/base.html
+                                
+                                
+                                    
+                                    <span class="path">[base.html &gt; management/base.html]</span>
+                                
+                            </li>
+                        
+                            <li style="display:none">
+                                public/base.html
+                                <em>[Empty]</em>
+                                
+                                    
+                                    <span class="path">[base.html &gt; public/base.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        base_meta
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                public/base.html
+                                
+                                
+                                    
+                                    <span class="path">[base.html &gt; public/base.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        base_stylesheets
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        [WARNING: Unused block]
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        body_attrs
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        [WARNING: Unused block]
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        body_class
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                management/base.html
+                                
+                                
+                                    
+                                    <span class="path">[base.html &gt; management/base.html]</span>
+                                
+                            </li>
+                        
+                            <li style="display:none">
+                                public/index.html
+                                
+                                
+                                    
+                                    <span class="path">[base.html &gt; public/base.html &gt; public/index.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        body_id
+        <span class="path">
+        <em>[Has Content]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        page_title
+        <span class="path">
+        <em>[Has Content]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                management/base.html
+                                
+                                
+                                    
+                                    <span class="path">[base.html &gt; management/base.html]</span>
+                                
+                            </li>
+                        
+                            <li style="display:none">
+                                public/account/login.html
+                                
+                                
+                                    
+                                    <span class="path">[base.html &gt; public/base.html &gt; public/account/login.html]</span>
+                                
+                            </li>
+                        
+                            <li style="display:none">
+                                public/layouts/static-page.html
+                                
+                                
+                                    
+                                    <span class="path">[base.html &gt; public/base.html &gt; public/layouts/static-page.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="extensions">Extensions</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        
+    
+        <span class="path-element">management</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    
+        
+        <ul>
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        base_content
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [base.html &lt; management/base.html]
+            
+        
+        </span>
+        
+        <ul>
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        management_content
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        [WARNING: Unused block]
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        nav
+        <span class="path">
+        <em>[Has Content]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        page_title
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [base.html &lt; management/base.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="dynamic_includes">Dynamic Includes</span>
+                    <ul>
+                        
+                            <li style="display:none"><code>config.get(&#34;SITE_NOTE_TEMPLATE&#34;)</code></li>
+                        
+                    </ul>
+                </li>
+            
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        base_js
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [base.html &lt; management/base.html]
+            
+        
+        </span>
+        
+        <ul>
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        management_js
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        [WARNING: Unused block]
+        
+        </span>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+            
+            
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        body_class
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [base.html &lt; management/base.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+            
+            
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">base.html</span>
+    
+        
+        <ul>
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        base_content
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [base.html &lt; public/base.html]
+            
+        
+        </span>
+        
+        <ul>
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        extra_header
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                public/index.html
+                                
+                                
+                                    
+                                    <span class="path">[public/base.html &gt; public/index.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        public_content
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                public/account/login.html
+                                
+                                
+                                    
+                                    <span class="path">[public/base.html &gt; public/account/login.html]</span>
+                                
+                            </li>
+                        
+                            <li style="display:none">
+                                public/index.html
+                                
+                                
+                                    
+                                    <span class="path">[public/base.html &gt; public/index.html]</span>
+                                
+                            </li>
+                        
+                            <li style="display:none">
+                                public/layouts/static-page.html
+                                
+                                
+                                    
+                                    <span class="path">[public/base.html &gt; public/layouts/static-page.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="dynamic_includes">Dynamic Includes</span>
+                    <ul>
+                        
+                            <li style="display:none"><code>config.get(&#34;SITE_NOTE_TEMPLATE&#34;)</code></li>
+                        
+                    </ul>
+                </li>
+            
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        base_js
+        <span class="path">
+        <em>[Empty]</em>
+        
+        
+        [WARNING: Unused block]
+        
+            
+            
+                [base.html &lt; public/base.html]
+            
+        
+        </span>
+        
+        <ul>
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        public_js
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        [WARNING: Unused block]
+        
+        </span>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+            
+            
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        base_meta
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [base.html &lt; public/base.html]
+            
+        
+        </span>
+        
+        <ul>
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        meta_description
+        <span class="path">
+        <em>[Has Content]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                public/layouts/static-page.html
+                                
+                                
+                                    
+                                    <span class="path">[public/base.html &gt; public/layouts/static-page.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        meta_og_description
+        <span class="path">
+        <em>[Has Content]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                public/layouts/static-page.html
+                                
+                                
+                                    
+                                    <span class="path">[public/base.html &gt; public/layouts/static-page.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        meta_og_title
+        <span class="path">
+        <em>[Has Content]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                public/layouts/static-page.html
+                                
+                                
+                                    
+                                    <span class="path">[public/base.html &gt; public/layouts/static-page.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        meta_twitter_description
+        <span class="path">
+        <em>[Has Content]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                public/layouts/static-page.html
+                                
+                                
+                                    
+                                    <span class="path">[public/base.html &gt; public/layouts/static-page.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        meta_twitter_title
+        <span class="path">
+        <em>[Has Content]</em>
+        <em>[New Definition]</em>
+        
+        
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="overridden_by">Overridden by</span>
+                    <ul>
+                        
+                            <li style="display:none">
+                                public/layouts/static-page.html
+                                
+                                
+                                    
+                                    <span class="path">[public/base.html &gt; public/layouts/static-page.html]</span>
+                                
+                            </li>
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        public_meta
+        <span class="path">
+        <em>[Empty]</em>
+        <em>[New Definition]</em>
+        
+        [WARNING: Unused block]
+        
+        </span>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+            
+            
+            
+        </ul>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="extensions">Extensions</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">account</span><span class="path-separator">/</span>
+    
+        <span class="path-element">login.html</span>
+    
+        
+        <ul>
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        page_title
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [base.html &lt; public/base.html &lt; public/account/login.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        public_content
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [public/base.html &lt; public/account/login.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+            
+            
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">index.html</span>
+    
+        
+        <ul>
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        body_class
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [base.html &lt; public/base.html &lt; public/index.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        extra_header
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [public/base.html &lt; public/index.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        public_content
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [public/base.html &lt; public/index.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+            
+            
+            
+        </ul>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">static-page.html</span>
+    
+        
+        <ul>
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
+                    <ul>
+                        
+                            
+    <li style="display:none">
+        meta_description
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [public/base.html &lt; public/layouts/static-page.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        meta_og_description
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [public/base.html &lt; public/layouts/static-page.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        meta_og_title
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [public/base.html &lt; public/layouts/static-page.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        meta_twitter_description
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [public/base.html &lt; public/layouts/static-page.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        meta_twitter_title
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [public/base.html &lt; public/layouts/static-page.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        page_title
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [base.html &lt; public/base.html &lt; public/layouts/static-page.html]
+            
+        
+        </span>
+        
+    </li>
+
+                        
+                            
+    <li style="display:none">
+        public_content
+        <span class="path">
+        <em>[Has Content]</em>
+        
+        
+        
+        
+            
+            
+                [public/base.html &lt; public/layouts/static-page.html]
+            
+        
+        </span>
+        
+        <ul>
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="dynamic_includes">Dynamic Includes</span>
+                    <ul>
+                        
+                            <li style="display:none"><code>inc</code></li>
+                        
+                            <li style="display:none"><code>page.frag</code></li>
+                        
+                    </ul>
+                </li>
+            
+            
+        </ul>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+            
+            
+            
+        </ul>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+                        
+                    </ul>
+                </li>
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">_static-page_no-sidenav.html</span>
+    
+        
+        <ul>
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="dynamic_includes">Dynamic Includes</span>
+                    <ul>
+                        
+                            <li style="display:none"><code>page.aside</code></li>
+                        
+                            <li style="display:none"><code>page.frag</code></li>
+                        
+                            <li style="display:none"><code>page.include</code></li>
+                        
+                    </ul>
+                </li>
+            
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        
+    
+        <span class="path-element">public</span><span class="path-separator">/</span>
+    
+        <span class="path-element">layouts</span><span class="path-separator">/</span>
+    
+        <span class="path-element">_static-page_sidenav.html</span>
+    
+        
+        <ul>
+            
+            
+            
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="dynamic_includes">Dynamic Includes</span>
+                    <ul>
+                        
+                            <li style="display:none"><code>page.frag</code></li>
+                        
+                            <li style="display:none"><code>page.include</code></li>
+                        
+                            <li style="display:none"><code>page.preface</code></li>
+                        
+                            <li style="display:none"><code>page.sidenav_include</code></li>
+                        
+                    </ul>
+                </li>
+            
+            
+        </ul>
+        
+    </li>
+
+    
+        
+    <li >
+        
+    
+        <span class="path-element">redhead</span><span class="path-separator">/</span>
+    
+        <span class="path-element">blocks.html</span>
+    
+        
+    </li>
+
+    
+        
+    <li >
+        
+    
+        <span class="path-element">redhead</span><span class="path-separator">/</span>
+    
+        <span class="path-element">tree.html</span>
+    
+        
+    </li>
+
+    
+</ul>
+
+<script
+			  src="https://code.jquery.com/jquery-3.7.1.min.js"
+			  integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+			  crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    jQuery (document).ready (function($) {
+        $(".toggle").on("click", function(event) {
+            event.preventDefault();
+            let $this = $(this);
+            let $parent = $this.parent();
+            let $ul = $parent.children("ul");
+            let state = $this.data("state");
+            if (state === "hidden") {
+                $ul.children("li").show();
+                $this.data("state", "shown");
+                $this.text("-");
+            } else {
+                $ul.children("li").hide();
+                $this.data("state", "hidden");
+                $this.text("+");
+            }
+        });
+
+        $(".expand-all").on("click", function(event) {
+            event.preventDefault();
+            let toggles = $("a.toggle");
+            toggles.each(function() {
+                let $this = $(this);
+                if ($this.data("state") === "shown") {
+                    return;
+                }
+                $this.trigger("click");
+            });
+        });
+
+        $(".collapse-all").on("click", function(event) {
+            event.preventDefault();
+            let toggles = $("a.toggle");
+            toggles.each(function() {
+                let $this = $(this);
+                if ($this.data("state") === "hidden") {
+                    return;
+                }
+                $this.trigger("click");
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

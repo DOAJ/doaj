@@ -1,0 +1,983 @@
+[
+  {
+    "name": "base_content",
+    "blocks": [
+      {
+        "name": "body_class",
+        "blocks": [],
+        "files": [
+          "layouts/public_base.html",
+          "500.html",
+          "401.html",
+          "404.html",
+          "400.html",
+          "unlocked.html",
+          "layouts/dashboard_base.html",
+          "layouts/toc_base.html",
+          "doaj/article.html"
+        ]
+      },
+      {
+        "name": "body_class",
+        "blocks": [],
+        "files": [
+          "layouts/dashboard_base.html",
+          "500.html",
+          "401.html",
+          "404.html",
+          "400.html",
+          "unlocked.html",
+          "layouts/public_base.html",
+          "layouts/toc_base.html",
+          "doaj/article.html"
+        ]
+      },
+      {
+        "name": "body_id",
+        "blocks": [],
+        "files": [
+          "layouts/dashboard_base.html",
+          "application_form/editor_application.html",
+          "application_form/maned_application.html",
+          "application_form/maned_journal.html",
+          "application_form/assed_application.html",
+          "application_form/assed_journal.html",
+          "application_form/editor_journal.html"
+        ]
+      },
+      {
+        "name": "extra_header",
+        "blocks": [],
+        "files": [
+          "layouts/public_base.html",
+          "layouts/dashboard_base.html"
+        ]
+      },
+      {
+        "name": "extra_header",
+        "blocks": [],
+        "files": [
+          "layouts/dashboard_base.html",
+          "layouts/public_base.html"
+        ]
+      },
+      {
+        "name": "extra_js_bottom",
+        "blocks": [],
+        "files": [
+          "layouts/public_base.html",
+          "dashboard/notifications.html",
+          "dashboard/index.html",
+          "publisher/updates_in_progress.html",
+          "publisher/metadata.html",
+          "publisher/journals.html",
+          "publisher/uploadmetadata.html",
+          "publisher/preservation.html",
+          "publisher/journal_csv.html",
+          "publisher/index.html",
+          "layouts/dashboard_base.html",
+          "account/view.html",
+          "account/register.html",
+          "account/users.html",
+          "admin/global_notifications_search.html",
+          "admin/applications.html",
+          "admin/update_requests.html",
+          "admin/editor_group.html",
+          "admin/admin_site_search.html",
+          "admin/background_jobs_search.html",
+          "admin/editor_group_search.html",
+          "admin/article_metadata.html",
+          "admin/index.html",
+          "editor/group_journals.html",
+          "editor/associate_applications.html",
+          "editor/group_applications.html",
+          "editor/associate_journals.html",
+          "editor/dashboard.html",
+          "doaj/contact.html",
+          "doaj/articles_search.html",
+          "doaj/journals_search.html",
+          "doaj/toc_articles.html",
+          "api/current/api_docs.html",
+          "application_form/editor_application.html",
+          "application_form/public_application.html",
+          "application_form/readonly_application.html",
+          "application_form/maned_application.html",
+          "application_form/maned_journal.html",
+          "application_form/assed_application.html",
+          "application_form/assed_journal.html",
+          "application_form/editor_journal.html",
+          "application_form/publisher_update_request.html",
+          "application_form/readonly_journal.html"
+        ]
+      },
+      {
+        "name": "extra_js_bottom",
+        "blocks": [],
+        "files": [
+          "layouts/dashboard_base.html",
+          "dashboard/notifications.html",
+          "dashboard/index.html",
+          "publisher/updates_in_progress.html",
+          "publisher/metadata.html",
+          "publisher/journals.html",
+          "publisher/uploadmetadata.html",
+          "publisher/preservation.html",
+          "publisher/journal_csv.html",
+          "publisher/index.html",
+          "layouts/public_base.html",
+          "account/view.html",
+          "account/register.html",
+          "account/users.html",
+          "admin/global_notifications_search.html",
+          "admin/applications.html",
+          "admin/update_requests.html",
+          "admin/editor_group.html",
+          "admin/admin_site_search.html",
+          "admin/background_jobs_search.html",
+          "admin/editor_group_search.html",
+          "admin/article_metadata.html",
+          "admin/index.html",
+          "editor/group_journals.html",
+          "editor/associate_applications.html",
+          "editor/group_applications.html",
+          "editor/associate_journals.html",
+          "editor/dashboard.html",
+          "doaj/contact.html",
+          "doaj/articles_search.html",
+          "doaj/journals_search.html",
+          "doaj/toc_articles.html",
+          "api/current/api_docs.html",
+          "application_form/editor_application.html",
+          "application_form/public_application.html",
+          "application_form/readonly_application.html",
+          "application_form/maned_application.html",
+          "application_form/maned_journal.html",
+          "application_form/assed_application.html",
+          "application_form/assed_journal.html",
+          "application_form/editor_journal.html",
+          "application_form/publisher_update_request.html",
+          "application_form/readonly_journal.html"
+        ]
+      },
+      {
+        "name": "main_panel",
+        "blocks": [
+          {
+            "name": "content",
+            "blocks": [
+              {
+                "name": "admin_content",
+                "blocks": [],
+                "files": [
+                  "admin/admin_base.html",
+                  "account/users.html",
+                  "admin/continuation.html",
+                  "admin/journal_locked.html",
+                  "admin/global_notifications_search.html",
+                  "admin/application_locked.html",
+                  "admin/applications.html",
+                  "admin/update_requests.html",
+                  "admin/editor_group.html",
+                  "admin/admin_site_search.html",
+                  "admin/background_jobs_search.html",
+                  "admin/editor_group_search.html",
+                  "admin/article_metadata.html",
+                  "admin/index.html"
+                ]
+              },
+              {
+                "name": "editor_content",
+                "blocks": [],
+                "files": [
+                  "editor/editor_base.html",
+                  "editor/group_journals.html",
+                  "editor/journal_locked.html",
+                  "editor/associate_applications.html",
+                  "editor/group_applications.html",
+                  "editor/application_locked.html",
+                  "editor/associate_journals.html",
+                  "editor/dashboard.html",
+                  "application_form/editor_application.html",
+                  "application_form/assed_application.html",
+                  "application_form/assed_journal.html",
+                  "application_form/editor_journal.html"
+                ]
+              },
+              {
+                "name": "publisher_content",
+                "blocks": [],
+                "files": [
+                  "publisher/publisher_base.html",
+                  "publisher/locked.html",
+                  "publisher/updates_in_progress.html",
+                  "publisher/metadata.html",
+                  "publisher/readonly.html",
+                  "publisher/journals.html",
+                  "publisher/uploadmetadata.html",
+                  "publisher/preservation.html",
+                  "publisher/journal_csv.html",
+                  "publisher/help.html",
+                  "publisher/application_already_submitted.html",
+                  "publisher/index.html",
+                  "application_form/readonly_application.html",
+                  "application_form/publisher_update_request.html"
+                ]
+              },
+              {
+                "name": "single_col_content",
+                "blocks": [],
+                "files": [
+                  "layouts/single_col_page.html",
+                  "500.html",
+                  "401.html",
+                  "404.html",
+                  "400.html",
+                  "publisher/application_deleted.html",
+                  "doaj/readonly.html"
+                ]
+              },
+              {
+                "name": "title",
+                "blocks": [],
+                "files": [
+                  "layouts/single_col_page.html",
+                  "500.html",
+                  "401.html",
+                  "404.html",
+                  "400.html",
+                  "unlocked.html",
+                  "publisher/application_deleted.html",
+                  "doaj/readonly.html"
+                ]
+              },
+              {
+                "name": "toc_content",
+                "blocks": [],
+                "files": [
+                  "layouts/toc_base.html",
+                  "doaj/toc.html",
+                  "doaj/toc_articles.html"
+                ]
+              }
+            ],
+            "files": [
+              "layouts/public_base.html",
+              "unlocked.html",
+              "dashboard/notifications.html",
+              "dashboard/index.html",
+              "openurl/404.html",
+              "openurl/help.html",
+              "publisher/publisher_base.html",
+              "layouts/single_col_page.html",
+              "layouts/dashboard_base.html",
+              "layouts/toc_base.html",
+              "account/view.html",
+              "account/reset.html",
+              "account/register.html",
+              "account/login_to_apply.html",
+              "account/forgot.html",
+              "admin/admin_base.html",
+              "editor/editor_base.html",
+              "doaj/contact.html",
+              "doaj/articles_search.html",
+              "doaj/journals_search.html",
+              "doaj/article.html",
+              "api/current/api_docs.html",
+              "application_form/public_application.html",
+              "application_form/maned_application.html",
+              "application_form/maned_journal.html",
+              "application_form/readonly_journal.html"
+            ]
+          },
+          {
+            "name": "content",
+            "blocks": [
+              {
+                "name": "admin_content",
+                "blocks": [],
+                "files": [
+                  "admin/admin_base.html",
+                  "account/users.html",
+                  "admin/continuation.html",
+                  "admin/journal_locked.html",
+                  "admin/global_notifications_search.html",
+                  "admin/application_locked.html",
+                  "admin/applications.html",
+                  "admin/update_requests.html",
+                  "admin/editor_group.html",
+                  "admin/admin_site_search.html",
+                  "admin/background_jobs_search.html",
+                  "admin/editor_group_search.html",
+                  "admin/article_metadata.html",
+                  "admin/index.html"
+                ]
+              },
+              {
+                "name": "editor_content",
+                "blocks": [],
+                "files": [
+                  "editor/editor_base.html",
+                  "editor/group_journals.html",
+                  "editor/journal_locked.html",
+                  "editor/associate_applications.html",
+                  "editor/group_applications.html",
+                  "editor/application_locked.html",
+                  "editor/associate_journals.html",
+                  "editor/dashboard.html",
+                  "application_form/editor_application.html",
+                  "application_form/assed_application.html",
+                  "application_form/assed_journal.html",
+                  "application_form/editor_journal.html"
+                ]
+              },
+              {
+                "name": "publisher_content",
+                "blocks": [],
+                "files": [
+                  "publisher/publisher_base.html",
+                  "publisher/locked.html",
+                  "publisher/updates_in_progress.html",
+                  "publisher/metadata.html",
+                  "publisher/readonly.html",
+                  "publisher/journals.html",
+                  "publisher/uploadmetadata.html",
+                  "publisher/preservation.html",
+                  "publisher/journal_csv.html",
+                  "publisher/help.html",
+                  "publisher/application_already_submitted.html",
+                  "publisher/index.html",
+                  "application_form/readonly_application.html",
+                  "application_form/publisher_update_request.html"
+                ]
+              },
+              {
+                "name": "single_col_content",
+                "blocks": [],
+                "files": [
+                  "layouts/single_col_page.html",
+                  "500.html",
+                  "401.html",
+                  "404.html",
+                  "400.html",
+                  "publisher/application_deleted.html",
+                  "doaj/readonly.html"
+                ]
+              },
+              {
+                "name": "title",
+                "blocks": [],
+                "files": [
+                  "layouts/single_col_page.html",
+                  "500.html",
+                  "401.html",
+                  "404.html",
+                  "400.html",
+                  "unlocked.html",
+                  "publisher/application_deleted.html",
+                  "doaj/readonly.html"
+                ]
+              },
+              {
+                "name": "toc_content",
+                "blocks": [],
+                "files": [
+                  "layouts/toc_base.html",
+                  "doaj/toc.html",
+                  "doaj/toc_articles.html"
+                ]
+              }
+            ],
+            "files": [
+              "layouts/dashboard_base.html",
+              "unlocked.html",
+              "dashboard/notifications.html",
+              "dashboard/index.html",
+              "openurl/404.html",
+              "openurl/help.html",
+              "publisher/publisher_base.html",
+              "layouts/single_col_page.html",
+              "layouts/public_base.html",
+              "layouts/toc_base.html",
+              "account/view.html",
+              "account/reset.html",
+              "account/register.html",
+              "account/login_to_apply.html",
+              "account/forgot.html",
+              "admin/admin_base.html",
+              "editor/editor_base.html",
+              "doaj/contact.html",
+              "doaj/articles_search.html",
+              "doaj/journals_search.html",
+              "doaj/article.html",
+              "api/current/api_docs.html",
+              "application_form/public_application.html",
+              "application_form/maned_application.html",
+              "application_form/maned_journal.html",
+              "application_form/readonly_journal.html"
+            ]
+          },
+          {
+            "name": "page_title",
+            "blocks": [],
+            "files": [
+              "layouts/dashboard_base.html",
+              "500.html",
+              "401.html",
+              "404.html",
+              "400.html",
+              "unlocked.html",
+              "publisher/locked.html",
+              "publisher/updates_in_progress.html",
+              "publisher/metadata.html",
+              "publisher/readonly.html",
+              "publisher/journals.html",
+              "publisher/uploadmetadata.html",
+              "publisher/preservation.html",
+              "publisher/journal_csv.html",
+              "publisher/application_deleted.html",
+              "publisher/help.html",
+              "publisher/index.html",
+              "publisher/publisher_base.html",
+              "layouts/base.html",
+              "layouts/toc_base.html",
+              "account/view.html",
+              "account/reset.html",
+              "account/register.html",
+              "account/users.html",
+              "account/login_to_apply.html",
+              "account/forgot.html",
+              "admin/continuation.html",
+              "admin/journal_locked.html",
+              "admin/global_notifications_search.html",
+              "admin/application_locked.html",
+              "admin/applications.html",
+              "admin/update_requests.html",
+              "admin/editor_group.html",
+              "admin/admin_site_search.html",
+              "admin/background_jobs_search.html",
+              "admin/editor_group_search.html",
+              "admin/article_metadata.html",
+              "admin/index.html",
+              "editor/group_journals.html",
+              "editor/journal_locked.html",
+              "editor/associate_applications.html",
+              "editor/group_applications.html",
+              "editor/application_locked.html",
+              "editor/associate_journals.html",
+              "doaj/readonly.html",
+              "doaj/articles_search.html",
+              "doaj/journals_search.html",
+              "doaj/article.html",
+              "api/current/api_docs.html",
+              "application_form/editor_application.html",
+              "application_form/public_application.html",
+              "application_form/readonly_application.html",
+              "application_form/maned_application.html",
+              "application_form/maned_journal.html",
+              "application_form/assed_application.html",
+              "application_form/assed_journal.html",
+              "application_form/editor_journal.html",
+              "application_form/publisher_update_request.html",
+              "application_form/readonly_journal.html"
+            ]
+          }
+        ],
+        "files": [
+          "layouts/public_base.html",
+          "layouts/dashboard_base.html"
+        ]
+      },
+      {
+        "name": "main_panel",
+        "blocks": [
+          {
+            "name": "content",
+            "blocks": [
+              {
+                "name": "admin_content",
+                "blocks": [],
+                "files": [
+                  "admin/admin_base.html",
+                  "account/users.html",
+                  "admin/continuation.html",
+                  "admin/journal_locked.html",
+                  "admin/global_notifications_search.html",
+                  "admin/application_locked.html",
+                  "admin/applications.html",
+                  "admin/update_requests.html",
+                  "admin/editor_group.html",
+                  "admin/admin_site_search.html",
+                  "admin/background_jobs_search.html",
+                  "admin/editor_group_search.html",
+                  "admin/article_metadata.html",
+                  "admin/index.html"
+                ]
+              },
+              {
+                "name": "editor_content",
+                "blocks": [],
+                "files": [
+                  "editor/editor_base.html",
+                  "editor/group_journals.html",
+                  "editor/journal_locked.html",
+                  "editor/associate_applications.html",
+                  "editor/group_applications.html",
+                  "editor/application_locked.html",
+                  "editor/associate_journals.html",
+                  "editor/dashboard.html",
+                  "application_form/editor_application.html",
+                  "application_form/assed_application.html",
+                  "application_form/assed_journal.html",
+                  "application_form/editor_journal.html"
+                ]
+              },
+              {
+                "name": "publisher_content",
+                "blocks": [],
+                "files": [
+                  "publisher/publisher_base.html",
+                  "publisher/locked.html",
+                  "publisher/updates_in_progress.html",
+                  "publisher/metadata.html",
+                  "publisher/readonly.html",
+                  "publisher/journals.html",
+                  "publisher/uploadmetadata.html",
+                  "publisher/preservation.html",
+                  "publisher/journal_csv.html",
+                  "publisher/help.html",
+                  "publisher/application_already_submitted.html",
+                  "publisher/index.html",
+                  "application_form/readonly_application.html",
+                  "application_form/publisher_update_request.html"
+                ]
+              },
+              {
+                "name": "single_col_content",
+                "blocks": [],
+                "files": [
+                  "layouts/single_col_page.html",
+                  "500.html",
+                  "401.html",
+                  "404.html",
+                  "400.html",
+                  "publisher/application_deleted.html",
+                  "doaj/readonly.html"
+                ]
+              },
+              {
+                "name": "title",
+                "blocks": [],
+                "files": [
+                  "layouts/single_col_page.html",
+                  "500.html",
+                  "401.html",
+                  "404.html",
+                  "400.html",
+                  "unlocked.html",
+                  "publisher/application_deleted.html",
+                  "doaj/readonly.html"
+                ]
+              },
+              {
+                "name": "toc_content",
+                "blocks": [],
+                "files": [
+                  "layouts/toc_base.html",
+                  "doaj/toc.html",
+                  "doaj/toc_articles.html"
+                ]
+              }
+            ],
+            "files": [
+              "layouts/dashboard_base.html",
+              "unlocked.html",
+              "dashboard/notifications.html",
+              "dashboard/index.html",
+              "openurl/404.html",
+              "openurl/help.html",
+              "publisher/publisher_base.html",
+              "layouts/single_col_page.html",
+              "layouts/public_base.html",
+              "layouts/toc_base.html",
+              "account/view.html",
+              "account/reset.html",
+              "account/register.html",
+              "account/login_to_apply.html",
+              "account/forgot.html",
+              "admin/admin_base.html",
+              "editor/editor_base.html",
+              "doaj/contact.html",
+              "doaj/articles_search.html",
+              "doaj/journals_search.html",
+              "doaj/article.html",
+              "api/current/api_docs.html",
+              "application_form/public_application.html",
+              "application_form/maned_application.html",
+              "application_form/maned_journal.html",
+              "application_form/readonly_journal.html"
+            ]
+          },
+          {
+            "name": "content",
+            "blocks": [
+              {
+                "name": "admin_content",
+                "blocks": [],
+                "files": [
+                  "admin/admin_base.html",
+                  "account/users.html",
+                  "admin/continuation.html",
+                  "admin/journal_locked.html",
+                  "admin/global_notifications_search.html",
+                  "admin/application_locked.html",
+                  "admin/applications.html",
+                  "admin/update_requests.html",
+                  "admin/editor_group.html",
+                  "admin/admin_site_search.html",
+                  "admin/background_jobs_search.html",
+                  "admin/editor_group_search.html",
+                  "admin/article_metadata.html",
+                  "admin/index.html"
+                ]
+              },
+              {
+                "name": "editor_content",
+                "blocks": [],
+                "files": [
+                  "editor/editor_base.html",
+                  "editor/group_journals.html",
+                  "editor/journal_locked.html",
+                  "editor/associate_applications.html",
+                  "editor/group_applications.html",
+                  "editor/application_locked.html",
+                  "editor/associate_journals.html",
+                  "editor/dashboard.html",
+                  "application_form/editor_application.html",
+                  "application_form/assed_application.html",
+                  "application_form/assed_journal.html",
+                  "application_form/editor_journal.html"
+                ]
+              },
+              {
+                "name": "publisher_content",
+                "blocks": [],
+                "files": [
+                  "publisher/publisher_base.html",
+                  "publisher/locked.html",
+                  "publisher/updates_in_progress.html",
+                  "publisher/metadata.html",
+                  "publisher/readonly.html",
+                  "publisher/journals.html",
+                  "publisher/uploadmetadata.html",
+                  "publisher/preservation.html",
+                  "publisher/journal_csv.html",
+                  "publisher/help.html",
+                  "publisher/application_already_submitted.html",
+                  "publisher/index.html",
+                  "application_form/readonly_application.html",
+                  "application_form/publisher_update_request.html"
+                ]
+              },
+              {
+                "name": "single_col_content",
+                "blocks": [],
+                "files": [
+                  "layouts/single_col_page.html",
+                  "500.html",
+                  "401.html",
+                  "404.html",
+                  "400.html",
+                  "publisher/application_deleted.html",
+                  "doaj/readonly.html"
+                ]
+              },
+              {
+                "name": "title",
+                "blocks": [],
+                "files": [
+                  "layouts/single_col_page.html",
+                  "500.html",
+                  "401.html",
+                  "404.html",
+                  "400.html",
+                  "unlocked.html",
+                  "publisher/application_deleted.html",
+                  "doaj/readonly.html"
+                ]
+              },
+              {
+                "name": "toc_content",
+                "blocks": [],
+                "files": [
+                  "layouts/toc_base.html",
+                  "doaj/toc.html",
+                  "doaj/toc_articles.html"
+                ]
+              }
+            ],
+            "files": [
+              "layouts/public_base.html",
+              "unlocked.html",
+              "dashboard/notifications.html",
+              "dashboard/index.html",
+              "openurl/404.html",
+              "openurl/help.html",
+              "publisher/publisher_base.html",
+              "layouts/single_col_page.html",
+              "layouts/dashboard_base.html",
+              "layouts/toc_base.html",
+              "account/view.html",
+              "account/reset.html",
+              "account/register.html",
+              "account/login_to_apply.html",
+              "account/forgot.html",
+              "admin/admin_base.html",
+              "editor/editor_base.html",
+              "doaj/contact.html",
+              "doaj/articles_search.html",
+              "doaj/journals_search.html",
+              "doaj/article.html",
+              "api/current/api_docs.html",
+              "application_form/public_application.html",
+              "application_form/maned_application.html",
+              "application_form/maned_journal.html",
+              "application_form/readonly_journal.html"
+            ]
+          },
+          {
+            "name": "page_title",
+            "blocks": [],
+            "files": [
+              "layouts/dashboard_base.html",
+              "500.html",
+              "401.html",
+              "404.html",
+              "400.html",
+              "unlocked.html",
+              "publisher/locked.html",
+              "publisher/updates_in_progress.html",
+              "publisher/metadata.html",
+              "publisher/readonly.html",
+              "publisher/journals.html",
+              "publisher/uploadmetadata.html",
+              "publisher/preservation.html",
+              "publisher/journal_csv.html",
+              "publisher/application_deleted.html",
+              "publisher/help.html",
+              "publisher/index.html",
+              "publisher/publisher_base.html",
+              "layouts/base.html",
+              "layouts/toc_base.html",
+              "account/view.html",
+              "account/reset.html",
+              "account/register.html",
+              "account/users.html",
+              "account/login_to_apply.html",
+              "account/forgot.html",
+              "admin/continuation.html",
+              "admin/journal_locked.html",
+              "admin/global_notifications_search.html",
+              "admin/application_locked.html",
+              "admin/applications.html",
+              "admin/update_requests.html",
+              "admin/editor_group.html",
+              "admin/admin_site_search.html",
+              "admin/background_jobs_search.html",
+              "admin/editor_group_search.html",
+              "admin/article_metadata.html",
+              "admin/index.html",
+              "editor/group_journals.html",
+              "editor/journal_locked.html",
+              "editor/associate_applications.html",
+              "editor/group_applications.html",
+              "editor/application_locked.html",
+              "editor/associate_journals.html",
+              "doaj/readonly.html",
+              "doaj/articles_search.html",
+              "doaj/journals_search.html",
+              "doaj/article.html",
+              "api/current/api_docs.html",
+              "application_form/editor_application.html",
+              "application_form/public_application.html",
+              "application_form/readonly_application.html",
+              "application_form/maned_application.html",
+              "application_form/maned_journal.html",
+              "application_form/assed_application.html",
+              "application_form/assed_journal.html",
+              "application_form/editor_journal.html",
+              "application_form/publisher_update_request.html",
+              "application_form/readonly_journal.html"
+            ]
+          }
+        ],
+        "files": [
+          "layouts/dashboard_base.html",
+          "layouts/public_base.html"
+        ]
+      },
+      {
+        "name": "nav",
+        "blocks": [],
+        "files": [
+          "layouts/dashboard_base.html",
+          "admin/admin_base.html",
+          "editor/editor_base.html"
+        ]
+      }
+    ],
+    "files": [
+      "layouts/base.html",
+      "layouts/public_base.html",
+      "layouts/dashboard_base.html"
+    ]
+  },
+  {
+    "name": "extra_meta_tags",
+    "blocks": [],
+    "files": [
+      "layouts/base.html",
+      "doaj/article.html"
+    ]
+  },
+  {
+    "name": "extra_stylesheets",
+    "blocks": [],
+    "files": [
+      "layouts/base.html",
+      "publisher/publisher_base.html",
+      "account/register.html",
+      "admin/admin_base.html",
+      "editor/editor_base.html",
+      "api/current/api_docs.html",
+      "application_form/publisher_update_request.html"
+    ]
+  },
+  {
+    "name": "meta_description",
+    "blocks": [],
+    "files": [
+      "layouts/base.html",
+      "layouts/toc_base.html",
+      "doaj/articles_search.html",
+      "doaj/journals_search.html",
+      "doaj/article.html"
+    ]
+  },
+  {
+    "name": "meta_og_description",
+    "blocks": [],
+    "files": [
+      "layouts/base.html",
+      "layouts/toc_base.html",
+      "doaj/articles_search.html",
+      "doaj/journals_search.html",
+      "doaj/article.html"
+    ]
+  },
+  {
+    "name": "meta_og_title",
+    "blocks": [],
+    "files": [
+      "layouts/base.html",
+      "layouts/toc_base.html",
+      "doaj/articles_search.html",
+      "doaj/journals_search.html",
+      "doaj/article.html"
+    ]
+  },
+  {
+    "name": "meta_twitter_description",
+    "blocks": [],
+    "files": [
+      "layouts/base.html",
+      "layouts/toc_base.html",
+      "doaj/articles_search.html",
+      "doaj/journals_search.html",
+      "doaj/article.html"
+    ]
+  },
+  {
+    "name": "meta_twitter_title",
+    "blocks": [],
+    "files": [
+      "layouts/base.html",
+      "layouts/toc_base.html",
+      "doaj/articles_search.html",
+      "doaj/journals_search.html",
+      "doaj/article.html"
+    ]
+  },
+  {
+    "name": "page_title",
+    "blocks": [],
+    "files": [
+      "layouts/base.html",
+      "500.html",
+      "401.html",
+      "404.html",
+      "400.html",
+      "unlocked.html",
+      "publisher/locked.html",
+      "publisher/updates_in_progress.html",
+      "publisher/metadata.html",
+      "publisher/readonly.html",
+      "publisher/journals.html",
+      "publisher/uploadmetadata.html",
+      "publisher/preservation.html",
+      "publisher/journal_csv.html",
+      "publisher/application_deleted.html",
+      "publisher/help.html",
+      "publisher/index.html",
+      "publisher/publisher_base.html",
+      "layouts/dashboard_base.html",
+      "layouts/toc_base.html",
+      "account/view.html",
+      "account/reset.html",
+      "account/register.html",
+      "account/users.html",
+      "account/login_to_apply.html",
+      "account/forgot.html",
+      "admin/continuation.html",
+      "admin/journal_locked.html",
+      "admin/global_notifications_search.html",
+      "admin/application_locked.html",
+      "admin/applications.html",
+      "admin/update_requests.html",
+      "admin/editor_group.html",
+      "admin/admin_site_search.html",
+      "admin/background_jobs_search.html",
+      "admin/editor_group_search.html",
+      "admin/article_metadata.html",
+      "admin/index.html",
+      "editor/group_journals.html",
+      "editor/journal_locked.html",
+      "editor/associate_applications.html",
+      "editor/group_applications.html",
+      "editor/application_locked.html",
+      "editor/associate_journals.html",
+      "doaj/readonly.html",
+      "doaj/articles_search.html",
+      "doaj/journals_search.html",
+      "doaj/article.html",
+      "api/current/api_docs.html",
+      "application_form/editor_application.html",
+      "application_form/public_application.html",
+      "application_form/readonly_application.html",
+      "application_form/maned_application.html",
+      "application_form/maned_journal.html",
+      "application_form/assed_application.html",
+      "application_form/assed_journal.html",
+      "application_form/editor_journal.html",
+      "application_form/publisher_update_request.html",
+      "application_form/readonly_journal.html"
+    ]
+  },
+  {
+    "name": "pagination_menu",
+    "blocks": [],
+    "files": [
+      "application_form/pagination_menu_admin.html",
+      "application_form/pagination_menu.html"
+    ]
+  }
+]

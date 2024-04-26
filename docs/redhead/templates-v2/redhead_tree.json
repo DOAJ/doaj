@@ -1,0 +1,864 @@
+[
+  {
+    "name": "base.html",
+    "blocks": [
+      {
+        "name": "base_content",
+        "blocks": [],
+        "includes": [],
+        "content": false,
+        "overridden_by": [
+          {
+            "file": "management/base.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "management/base.html"
+              ]
+            ]
+          },
+          {
+            "file": "public/base.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "public/base.html"
+              ]
+            ]
+          }
+        ],
+        "overrides": [],
+        "scoped": false
+      },
+      {
+        "name": "base_js",
+        "blocks": [],
+        "includes": [],
+        "content": false,
+        "overridden_by": [
+          {
+            "file": "management/base.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "management/base.html"
+              ]
+            ]
+          },
+          {
+            "file": "public/base.html",
+            "content": false,
+            "paths": [
+              [
+                "base.html",
+                "public/base.html"
+              ]
+            ]
+          }
+        ],
+        "overrides": [],
+        "scoped": false
+      },
+      {
+        "name": "base_meta",
+        "blocks": [],
+        "includes": [],
+        "content": false,
+        "overridden_by": [
+          {
+            "file": "public/base.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "public/base.html"
+              ]
+            ]
+          }
+        ],
+        "overrides": [],
+        "scoped": false
+      },
+      {
+        "name": "base_stylesheets",
+        "blocks": [],
+        "includes": [],
+        "content": false,
+        "overridden_by": [],
+        "overrides": [],
+        "scoped": false
+      },
+      {
+        "name": "body_attrs",
+        "blocks": [],
+        "includes": [],
+        "content": false,
+        "overridden_by": [],
+        "overrides": [],
+        "scoped": false
+      },
+      {
+        "name": "body_class",
+        "blocks": [],
+        "includes": [],
+        "content": false,
+        "overridden_by": [
+          {
+            "file": "management/base.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "management/base.html"
+              ]
+            ]
+          },
+          {
+            "file": "public/index.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "public/base.html",
+                "public/index.html"
+              ]
+            ]
+          }
+        ],
+        "overrides": [],
+        "scoped": false
+      },
+      {
+        "name": "body_id",
+        "blocks": [],
+        "includes": [],
+        "content": true,
+        "overridden_by": [],
+        "overrides": [],
+        "scoped": false
+      },
+      {
+        "name": "page_title",
+        "blocks": [],
+        "includes": [],
+        "content": true,
+        "overridden_by": [
+          {
+            "file": "management/base.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "management/base.html"
+              ]
+            ]
+          },
+          {
+            "file": "public/account/login.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "public/base.html",
+                "public/account/login.html"
+              ]
+            ]
+          },
+          {
+            "file": "public/layouts/static-page.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "public/base.html",
+                "public/layouts/static-page.html"
+              ]
+            ]
+          }
+        ],
+        "overrides": [],
+        "scoped": false
+      }
+    ],
+    "includes": [],
+    "extensions": [
+      {
+        "name": "management/base.html",
+        "blocks": [
+          {
+            "name": "base_content",
+            "blocks": [
+              {
+                "name": "management_content",
+                "blocks": [],
+                "includes": [],
+                "content": false,
+                "overridden_by": [],
+                "overrides": [],
+                "scoped": false
+              },
+              {
+                "name": "nav",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [],
+                "scoped": false
+              },
+              {
+                "name": "page_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "base.html",
+                        "management/base.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "content": true,
+            "overridden_by": [],
+            "overrides": [
+              {
+                "file": "base.html",
+                "content": false,
+                "paths": [
+                  [
+                    "base.html",
+                    "management/base.html"
+                  ]
+                ]
+              }
+            ],
+            "scoped": false,
+            "dynamic_includes": [
+              "config.get(\"SITE_NOTE_TEMPLATE\")"
+            ]
+          },
+          {
+            "name": "base_js",
+            "blocks": [
+              {
+                "name": "management_js",
+                "blocks": [],
+                "includes": [],
+                "content": false,
+                "overridden_by": [],
+                "overrides": [],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "content": true,
+            "overridden_by": [],
+            "overrides": [
+              {
+                "file": "base.html",
+                "content": false,
+                "paths": [
+                  [
+                    "base.html",
+                    "management/base.html"
+                  ]
+                ]
+              }
+            ],
+            "scoped": false
+          },
+          {
+            "name": "body_class",
+            "blocks": [],
+            "includes": [],
+            "content": true,
+            "overridden_by": [],
+            "overrides": [
+              {
+                "file": "base.html",
+                "content": false,
+                "paths": [
+                  [
+                    "base.html",
+                    "management/base.html"
+                  ]
+                ]
+              }
+            ],
+            "scoped": false
+          }
+        ],
+        "includes": [],
+        "extensions": []
+      },
+      {
+        "name": "public/base.html",
+        "blocks": [
+          {
+            "name": "base_content",
+            "blocks": [
+              {
+                "name": "extra_header",
+                "blocks": [],
+                "includes": [],
+                "content": false,
+                "overridden_by": [
+                  {
+                    "file": "public/index.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/index.html"
+                      ]
+                    ]
+                  }
+                ],
+                "overrides": [],
+                "scoped": false
+              },
+              {
+                "name": "public_content",
+                "blocks": [],
+                "includes": [],
+                "content": false,
+                "overridden_by": [
+                  {
+                    "file": "public/account/login.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/login.html"
+                      ]
+                    ]
+                  },
+                  {
+                    "file": "public/index.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/index.html"
+                      ]
+                    ]
+                  },
+                  {
+                    "file": "public/layouts/static-page.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "overrides": [],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "content": true,
+            "overridden_by": [],
+            "overrides": [
+              {
+                "file": "base.html",
+                "content": false,
+                "paths": [
+                  [
+                    "base.html",
+                    "public/base.html"
+                  ]
+                ]
+              }
+            ],
+            "scoped": false,
+            "dynamic_includes": [
+              "config.get(\"SITE_NOTE_TEMPLATE\")"
+            ]
+          },
+          {
+            "name": "base_js",
+            "blocks": [
+              {
+                "name": "public_js",
+                "blocks": [],
+                "includes": [],
+                "content": false,
+                "overridden_by": [],
+                "overrides": [],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "content": false,
+            "overridden_by": [],
+            "overrides": [
+              {
+                "file": "base.html",
+                "content": false,
+                "paths": [
+                  [
+                    "base.html",
+                    "public/base.html"
+                  ]
+                ]
+              }
+            ],
+            "scoped": false
+          },
+          {
+            "name": "base_meta",
+            "blocks": [
+              {
+                "name": "meta_description",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [
+                  {
+                    "file": "public/layouts/static-page.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "overrides": [],
+                "scoped": false
+              },
+              {
+                "name": "meta_og_description",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [
+                  {
+                    "file": "public/layouts/static-page.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "overrides": [],
+                "scoped": false
+              },
+              {
+                "name": "meta_og_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [
+                  {
+                    "file": "public/layouts/static-page.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "overrides": [],
+                "scoped": false
+              },
+              {
+                "name": "meta_twitter_description",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [
+                  {
+                    "file": "public/layouts/static-page.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "overrides": [],
+                "scoped": false
+              },
+              {
+                "name": "meta_twitter_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [
+                  {
+                    "file": "public/layouts/static-page.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "overrides": [],
+                "scoped": false
+              },
+              {
+                "name": "public_meta",
+                "blocks": [],
+                "includes": [],
+                "content": false,
+                "overridden_by": [],
+                "overrides": [],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "content": true,
+            "overridden_by": [],
+            "overrides": [
+              {
+                "file": "base.html",
+                "content": false,
+                "paths": [
+                  [
+                    "base.html",
+                    "public/base.html"
+                  ]
+                ]
+              }
+            ],
+            "scoped": false
+          }
+        ],
+        "includes": [],
+        "extensions": [
+          {
+            "name": "public/account/login.html",
+            "blocks": [
+              {
+                "name": "page_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "base.html",
+                        "public/base.html",
+                        "public/account/login.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "public_content",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/login.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "extensions": []
+          },
+          {
+            "name": "public/index.html",
+            "blocks": [
+              {
+                "name": "body_class",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "base.html",
+                        "public/base.html",
+                        "public/index.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "extra_header",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/index.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "public_content",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/index.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "extensions": []
+          },
+          {
+            "name": "public/layouts/static-page.html",
+            "blocks": [
+              {
+                "name": "meta_description",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "meta_og_description",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "meta_og_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "meta_twitter_description",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "meta_twitter_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "page_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "base.html",
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "public_content",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/layouts/static-page.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false,
+                "dynamic_includes": [
+                  "inc",
+                  "page.frag"
+                ]
+              }
+            ],
+            "includes": [],
+            "extensions": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "public/layouts/_static-page_no-sidenav.html",
+    "blocks": [],
+    "includes": [],
+    "extensions": [],
+    "dynamic_includes": [
+      "page.aside",
+      "page.frag",
+      "page.include"
+    ]
+  },
+  {
+    "name": "public/layouts/_static-page_sidenav.html",
+    "blocks": [],
+    "includes": [],
+    "extensions": [],
+    "dynamic_includes": [
+      "page.frag",
+      "page.include",
+      "page.preface",
+      "page.sidenav_include"
+    ]
+  },
+  {
+    "name": "redhead/blocks.html",
+    "blocks": [],
+    "includes": [],
+    "extensions": []
+  },
+  {
+    "name": "redhead/tree.html",
+    "blocks": [],
+    "includes": [],
+    "extensions": []
+  }
+]

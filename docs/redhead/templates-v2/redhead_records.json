@@ -1,0 +1,479 @@
+[
+  {
+    "type": "template",
+    "file": "base.html",
+    "blocks": [
+      "page_title",
+      "base_meta",
+      "base_stylesheets",
+      "body_class",
+      "body_id",
+      "body_attrs",
+      "base_content",
+      "base_js"
+    ],
+    "includes": [
+      "doaj/cookie_consent.html",
+      "_js_includes.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_meta",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_stylesheets",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "body_class",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "body_id",
+    "file": "base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "body_attrs",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_content",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_js",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "public/base.html",
+    "blocks": [
+      "base_meta",
+      "base_content",
+      "base_js"
+    ],
+    "extends": [
+      "base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "base_meta",
+    "file": "public/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "blocks": [
+      "meta_description",
+      "meta_og_title",
+      "meta_og_description",
+      "meta_twitter_title",
+      "meta_twitter_description",
+      "public_meta"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "meta_description",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_og_title",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_og_description",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_twitter_title",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_twitter_description",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_meta",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_content",
+    "file": "public/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "blocks": [
+      "extra_header",
+      "public_content"
+    ],
+    "includes": [
+      "includes/header.html",
+      "includes/_flash_notification.html",
+      "includes/_quick_search_modal.html",
+      "includes/footer.html"
+    ],
+    "dynamic_includes": [
+      "config.get(\"SITE_NOTE_TEMPLATE\")"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "extra_header",
+    "file": "public/base.html",
+    "parent_block": "base_content",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/base.html",
+    "parent_block": "base_content",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_js",
+    "file": "public/base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false,
+    "blocks": [
+      "public_js"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "public_js",
+    "file": "public/base.html",
+    "parent_block": "base_js",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "public/index.html",
+    "blocks": [
+      "body_class",
+      "extra_header",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "body_class",
+    "file": "public/index.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "extra_header",
+    "file": "public/index.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/index.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "public/layouts/_static-page_no-sidenav.html",
+    "dynamic_includes": [
+      "page.frag",
+      "page.aside",
+      "page.include"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "public/layouts/_static-page_sidenav.html",
+    "dynamic_includes": [
+      "page.preface",
+      "page.frag",
+      "page.include",
+      "page.sidenav_include"
+    ],
+    "includes": [
+      "includes/_sidenav_toc.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "public/layouts/static-page.html",
+    "blocks": [
+      "page_title",
+      "meta_og_title",
+      "meta_twitter_title",
+      "meta_description",
+      "meta_og_description",
+      "meta_twitter_description",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_og_title",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_twitter_title",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_description",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_og_description",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_twitter_description",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "dynamic_includes": [
+      "inc",
+      "page.frag"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "public/account/login.html",
+    "blocks": [
+      "page_title",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/account/login.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/account/login.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "account/_login_form.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "management/base.html",
+    "blocks": [
+      "body_class",
+      "base_content",
+      "base_js"
+    ],
+    "extends": [
+      "base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "body_class",
+    "file": "management/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_content",
+    "file": "management/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "blocks": [
+      "nav",
+      "page_title",
+      "management_content"
+    ],
+    "dynamic_includes": [
+      "config.get(\"SITE_NOTE_TEMPLATE\")"
+    ],
+    "includes": [
+      "includes/svg/doaj-icon.svg",
+      "includes/_tourist_nav.html",
+      "includes/_flash_notification.html",
+      "includes/_back-to-top.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "nav",
+    "file": "management/base.html",
+    "parent_block": "base_content",
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "dashboard/nav.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "management/base.html",
+    "parent_block": "base_content",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "management_content",
+    "file": "management/base.html",
+    "parent_block": "base_content",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_js",
+    "file": "management/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "blocks": [
+      "management_js"
+    ],
+    "includes": [
+      "includes/_tourist.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "management_js",
+    "file": "management/base.html",
+    "parent_block": "base_js",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "redhead/tree.html"
+  },
+  {
+    "type": "template",
+    "file": "redhead/blocks.html"
+  }
+]

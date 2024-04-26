@@ -3,38 +3,21 @@ from flask import render_template
 from portality.app import app
 from copy import deepcopy
 
-FILE_PREFIX = ""
 
 BLOCK_RE = "{%[-]{0,1} block (.*?) (.*?)%}"
 ENDBLOCK_RE = "{%[-]{0,1} endblock (.*?)%}"
-
 EXTENDS_RE = "{% extends [\"'](.*?)[\"'] %}"
 INCLUDES_RE = "{% include [\"'](.*?)[\"'].*?%}"
 IMPORTS_RE = "{% from [\"'](.*?)[\"'].*?%}"
 DYNAMIC_INCLUDES_RE = "{% include ([^\"'].*?) %}"
 
-TEMPLATE_DIR = "/home/richard/Dropbox/Code/doaj3/portality/templates"
-TEMPLATE_FILTER = "*.html"
-TEMPLATE_ROOT = "/home/richard/Dropbox/Code/doaj3/portality/templates"
 
-OUT_DIR = "/home/richard/tmp/doaj/redhead"
-
-if not TEMPLATE_DIR.endswith("/"):
-    TEMPLATE_DIR += "/"
-
-if not TEMPLATE_ROOT.endswith("/"):
-    TEMPLATE_ROOT += "/"
-
-if not TEMPLATE_ROOT == TEMPLATE_DIR:
-    FILE_PREFIX = TEMPLATE_DIR[len(TEMPLATE_ROOT):]
-
-
-def analyse_template(template):
+def analyse_template(template, template_dir, file_prefix):
     with open(template, "r") as f:
         lines = f.readlines()
 
     structure = destructure(lines)
-    records = analyse(structure, template)
+    records = analyse(structure, template, template_dir, file_prefix)
     return records
 
 
@@ -112,11 +95,11 @@ def _find_block_end(lines):
     return None, None, None
 
 
-def analyse(structure, template_name):
+def analyse(structure, template_name, template_dir, file_prefix):
     records = []
     tr = {
         "type": "template",
-        "file": FILE_PREFIX + template_name[len(TEMPLATE_DIR):]
+        "file": file_prefix + template_name[len(template_dir):]
     }
 
     if structure.get("blocks"):
@@ -144,17 +127,17 @@ def analyse(structure, template_name):
     records.append(tr)
 
     for k, v in structure.get("blocks", {}).items():
-        records += _analyse_block(v["structure"], k, template_name, scoped=v.get("scoped", False))
+        records += _analyse_block(v["structure"], k, template_name, template_dir, file_prefix, scoped=v.get("scoped", False))
 
     return records
 
 
-def _analyse_block(block, block_name, template_name, parent_block=None, scoped=False):
+def _analyse_block(block, block_name, template_name, template_dir, file_prefix, parent_block=None, scoped=False):
     records = []
     br = {
         "type": "block",
         "name": block_name,
-        "file": FILE_PREFIX + template_name[len(TEMPLATE_DIR):],
+        "file": file_prefix + template_name[len(template_dir):],
         "parent_block": parent_block,
         "content": False,
         "scoped": scoped
@@ -190,7 +173,7 @@ def _analyse_block(block, block_name, template_name, parent_block=None, scoped=F
     for k, v in block.get("blocks", {}).items():
         substructure = v["structure"]
         if substructure:
-            records += _analyse_block(substructure, k, template_name, block_name)
+            records += _analyse_block(substructure, k, template_name, template_dir, file_prefix, parent_block=block_name)
 
     return records
 
@@ -502,35 +485,75 @@ def block_treeify(records):
     return tree
 
 
-if not os.path.exists(OUT_DIR):
-    os.makedirs(OUT_DIR, exist_ok=True)
+def redhead(out_dir, template_dir, template_root=None, template_filters=None):
+    file_prefix = ""
 
-records = []
+    if not template_dir.endswith("/"):
+        template_dir += "/"
 
-for (root, dirs, files) in os.walk(TEMPLATE_DIR, topdown=True):
-    for f in files:
-        if f.endswith(".html"):
-            template = os.path.join(root, f)
-            print("Analysing", template)
-            records += analyse_template(template)
+    if template_root is None:
+        template_root = template_dir
 
-with open(os.path.join(OUT_DIR, "redhead_records.json"), "w") as f:
-    f.write(json.dumps(records, indent=2))
+    if not template_root.endswith("/"):
+        template_root += "/"
 
-tree = treeify(records)
+    if not template_root == template_dir:
+        file_prefix = template_dir[len(template_root):]
 
-with open(os.path.join(OUT_DIR, "redhead_tree.json"), "w") as f:
-    f.write(json.dumps(tree, indent=2))
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir, exist_ok=True)
 
-html = serialise(tree)
-with open(os.path.join(OUT_DIR, "redhead_tree.html"), "w") as f:
-    f.write(html)
+    records = []
 
-block_tree = block_treeify(records)
+    for (root, dirs, files) in os.walk(template_dir, topdown=True):
+        for f in files:
+            passed_filter = False
+            if template_filters is not None:
+                for tf in template_filters:
+                    if re.match(tf, f):
+                        passed_filter = True
+                        break
+            else:
+                passed_filter = True
+            if passed_filter:
+                template = os.path.join(root, f)
+                print("Analysing", template)
+                records += analyse_template(template, template_dir, file_prefix)
+            else:
+                print("Skipping", f)
 
-with open(os.path.join(OUT_DIR, "redhead_blocks.json"), "w") as f:
-    f.write(json.dumps(block_tree, indent=2))
+    with open(os.path.join(out_dir, "redhead_records.json"), "w") as f:
+        f.write(json.dumps(records, indent=2))
 
-block_html = serialise_blocks(block_tree)
-with open(os.path.join(OUT_DIR, "redhead_blocks.html"), "w") as f:
-    f.write(block_html)
+    tree = treeify(records)
+
+    with open(os.path.join(out_dir, "redhead_tree.json"), "w") as f:
+        f.write(json.dumps(tree, indent=2))
+
+    html = serialise(tree)
+    with open(os.path.join(out_dir, "redhead_tree.html"), "w") as f:
+        f.write(html)
+
+    block_tree = block_treeify(records)
+
+    with open(os.path.join(out_dir, "redhead_blocks.json"), "w") as f:
+        f.write(json.dumps(block_tree, indent=2))
+
+    block_html = serialise_blocks(block_tree)
+    with open(os.path.join(out_dir, "redhead_blocks.html"), "w") as f:
+        f.write(block_html)
+
+
+if __name__ == "__main__":
+    import argparse
+    import json
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("config", help="The config file of run configurations")
+    args = parser.parse_args()
+
+    with open(args.config, "r") as f:
+        config = json.load(f)
+
+    for c in config:
+        redhead(c["out_dir"], c["template_dir"], template_root=c.get("template_root"), template_filters=c.get("template_filters"))
