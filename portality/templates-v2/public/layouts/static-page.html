@@ -27,7 +27,7 @@
     {% endif %}
 
     {% if page.layout %}
-        {% set inc = "public/layouts/_static-page_" + page.layout + ".html" %}
+        {% set inc = templates.STATIC_PAGE_LAYOUT.format(layout=page.layout) %}
         {% include inc %}
     {% else %}
         {% include page.frag %}
