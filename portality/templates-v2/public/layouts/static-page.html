@@ -1,4 +1,4 @@
-{% extends "framework/public_base.html" %}
+{% extends "public/base.html" %}
 {% set page = data.frontmatter[page_frag] %}
 
 {% block page_title %}{{ page.title }}{% endblock %}
@@ -27,7 +27,7 @@
     {% endif %}
 
     {% if page.layout %}
-        {% set inc = "layouts/" + page.layout + ".html" %}
+        {% set inc = "public/layouts/_static-page_" + page.layout + ".html" %}
         {% include inc %}
     {% else %}
         {% include page.frag %}

@@ -18,6 +18,7 @@ from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
 from portality.lib import plausible
 from portality.ui.messages import Messages
+from portality.ui import templates
 
 # ~~DOAJ:Blueprint~~
 blueprint = Blueprint('doaj', __name__)
@@ -433,22 +434,22 @@ def google_webmaster_tools():
 
 @blueprint.route("/accessibility/")
 def accessibility():
-    return render_template("layouts/static_page.html", page_frag="/legal/accessibility.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/accessibility.html")
 
 
 @blueprint.route("/privacy/")
 def privacy():
-    return render_template("layouts/static_page.html", page_frag="/legal/privacy.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/privacy.html")
 
 
 @blueprint.route("/contact/")
 def contact():
-    return render_template("layouts/static_page.html", page_frag="/legal/contact.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/contact.html")
 
 
 @blueprint.route("/terms/")
 def terms():
-    return render_template("layouts/static_page.html", page_frag="/legal/terms.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/terms.html")
 
 
 @blueprint.route("/media/")
@@ -456,67 +457,67 @@ def media():
     """
     ~~Media:WebRoute~~
     """
-    return render_template("layouts/static_page.html", page_frag="/legal/media.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/legal/media.html")
 
 
 @blueprint.route("/support/")
 def support():
-    return render_template("layouts/static_page.html", page_frag="/support/index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/index.html")
 
 
 @blueprint.route("/support/sponsors/")
 def sponsors():
-    return render_template("layouts/static_page.html", page_frag="/support/sponsors.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/sponsors.html")
 
 
 @blueprint.route("/support/publisher-supporters/")
 def publisher_supporters():
-    return render_template("layouts/static_page.html", page_frag="/support/publisher-supporters.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/publisher-supporters.html")
 
 
 @blueprint.route("/support/supporters/")
 def supporters():
-    return render_template("layouts/static_page.html", page_frag="/support/supporters.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/supporters.html")
 
 
 @blueprint.route("/support/thank-you/")
 def application_thanks():
-    return render_template("layouts/static_page.html", page_frag="/support/thank-you.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/support/thank-you.html")
 
 
 @blueprint.route("/apply/guide/")
 def guide():
-    return render_template("layouts/static_page.html", page_frag="/apply/guide.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/guide.html")
 
 
 @blueprint.route("/apply/seal/")
 def seal():
-    return render_template("layouts/static_page.html", page_frag="/apply/seal.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/seal.html")
 
 
 @blueprint.route("/apply/transparency/")
 def transparency():
-    return render_template("layouts/static_page.html", page_frag="/apply/transparency.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/transparency.html")
 
 
 @blueprint.route("/apply/why-index/")
 def why_index():
-    return render_template("layouts/static_page.html", page_frag="/apply/why-index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/why-index.html")
 
 
 @blueprint.route("/apply/publisher-responsibilities/")
 def publisher_responsibilities():
-    return render_template("layouts/static_page.html", page_frag="/apply/publisher-responsibilities.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/publisher-responsibilities.html")
 
 
 @blueprint.route("/apply/copyright-and-licensing/")
 def copyright_and_licensing():
-    return render_template("layouts/static_page.html", page_frag="/apply/copyright-and-licensing.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/apply/copyright-and-licensing.html")
 
 
 @blueprint.route("/docs/oai-pmh/")
 def oai_pmh():
-    return render_template("layouts/static_page.html", page_frag="/docs/oai-pmh.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/oai-pmh.html")
 
 
 @blueprint.route('/docs/api/')
@@ -526,60 +527,60 @@ def docs():
 
 @blueprint.route("/docs/xml/")
 def xml():
-    return render_template("layouts/static_page.html", page_frag="/docs/xml.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/xml.html")
 
 
 @blueprint.route("/docs/widgets/")
 def widgets():
-    return render_template("layouts/static_page.html", page_frag="/docs/widgets.html", base_url=app.config.get('BASE_URL'))
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/widgets.html", base_url=app.config.get('BASE_URL'))
 
 
 @blueprint.route("/docs/public-data-dump/")
 def public_data_dump():
-    return render_template("layouts/static_page.html", page_frag="/docs/public-data-dump.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/public-data-dump.html")
 
 
 @blueprint.route("/docs/openurl/")
 def openurl():
-    return render_template("layouts/static_page.html", page_frag="/docs/openurl.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/openurl.html")
 
 
 @blueprint.route("/docs/faq/")
 def faq():
-    return render_template("layouts/static_page.html", page_frag="/docs/faq.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/docs/faq.html")
 
 
 @blueprint.route("/about/")
 def about():
-    return render_template("layouts/static_page.html", page_frag="/about/index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/index.html")
 
 @blueprint.route("/at-20/")
 def at_20():
-    return render_template("layouts/static_page.html", page_frag="/about/at-20.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/at-20.html")
 
 @blueprint.route("/about/ambassadors/")
 def ambassadors():
-    return render_template("layouts/static_page.html", page_frag="/about/ambassadors.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/ambassadors.html")
 
 
 @blueprint.route("/about/advisory-board-council/")
 def abc():
-    return render_template("layouts/static_page.html", page_frag="/about/advisory-board-council.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/advisory-board-council.html")
 
 
 @blueprint.route("/about/volunteers/")
 def volunteers():
-    return render_template("layouts/static_page.html", page_frag="/about/volunteers.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/volunteers.html")
 
 
 @blueprint.route("/about/team/")
 def team():
-    return render_template("layouts/static_page.html", page_frag="/about/team.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/about/team.html")
 
 
 @blueprint.route("/preservation/")
 def preservation():
-    return render_template("layouts/static_page.html", page_frag="/preservation/index.html")
+    return render_template(templates.STATIC_PAGE, page_frag="/preservation/index.html")
 
 
 # LEGACY ROUTES

@@ -13,6 +13,8 @@ from portality.models import Account, Event
 from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
 from portality.bll import DOAJ
 
+from portality.ui import templates
+
 blueprint = Blueprint('account', __name__)
 
 
@@ -217,7 +219,7 @@ def login():
     if request.args.get("redirected") == "apply":
         form['next'].data = url_for("apply.public_application")
         return render_template('account/login_to_apply.html', form=form)
-    return render_template('account/login.html', form=form)
+    return render_template(templates.GLOBAL_LOGIN, form=form)
 
 
 @blueprint.route('/forgot', methods=['GET', 'POST'])
