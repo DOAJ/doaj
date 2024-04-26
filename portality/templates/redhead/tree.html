@@ -22,6 +22,12 @@
             color: green;
         }
 
+        .dynamic_includes {
+            font-size: 14px;
+            font-weight: bold;
+            color: #4dc04d;
+        }
+
         .extensions {
             font-size: 14px;
             font-weight: bold;
@@ -52,7 +58,7 @@
 {% macro render_file_node(node, display) %}
     <li {% if not display %}style="display:none"{% endif %}>
         {{ path_layout(node.name) }}
-        {% if node.blocks|length > 0 or node.includes|length > 0 or node.extensions|length > 0 %}
+        {% if node.blocks|length > 0 or node.includes|length > 0 or node.extensions|length > 0 or node.dynamic_includes|length > 0 %}
         <ul>
             {% if node.blocks|length > 0 %}
                 <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
@@ -68,6 +74,15 @@
                     <ul>
                         {% for include in node.includes %}
                             {{ render_file_node(include) }}
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if node.dynamic_includes|length > 0 %}
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="dynamic_includes">Dynamic Includes</span>
+                    <ul>
+                        {% for include in node.dynamic_includes %}
+                            <li style="display:none"><code>{{ include }}</code></li>
                         {% endfor %}
                     </ul>
                 </li>
@@ -101,7 +116,7 @@
             {% endfor %}
         {% endfor %}
         </span>
-        {% if node.blocks|length > 0 or node.includes|length > 0 or node.overridden_by|length > 0 %}
+        {% if node.blocks|length > 0 or node.includes|length > 0 or node.overridden_by|length > 0 or node.dynamic_includes|length > 0 %}
         <ul>
             {% if node.blocks|length > 0 %}
                 <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="blocks">Blocks</span>
@@ -117,6 +132,15 @@
                     <ul>
                         {% for include in node.includes %}
                             {{ render_file_node(include) }}
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if node.dynamic_includes|length > 0 %}
+                <li>[<a href="#" class="toggle" data-state="hidden">+</a>] <span class="dynamic_includes">Dynamic Includes</span>
+                    <ul>
+                        {% for include in node.dynamic_includes %}
+                            <li style="display:none"><code>{{ include }}</code></li>
                         {% endfor %}
                     </ul>
                 </li>

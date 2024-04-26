@@ -3,21 +3,30 @@ from flask import render_template
 from portality.app import app
 from copy import deepcopy
 
+FILE_PREFIX = ""
 
-BLOCK_RE = "{% block (.*?) (.*?)%}"
-ENDBLOCK_RE = "{% endblock (.*?)%}"
+BLOCK_RE = "{%[-]{0,1} block (.*?) (.*?)%}"
+ENDBLOCK_RE = "{%[-]{0,1} endblock (.*?)%}"
 
 EXTENDS_RE = "{% extends [\"'](.*?)[\"'] %}"
 INCLUDES_RE = "{% include [\"'](.*?)[\"'].*?%}"
 IMPORTS_RE = "{% from [\"'](.*?)[\"'].*?%}"
+DYNAMIC_INCLUDES_RE = "{% include ([^\"'].*?) %}"
 
 TEMPLATE_DIR = "/home/richard/Dropbox/Code/doaj3/portality/templates"
 TEMPLATE_FILTER = "*.html"
+TEMPLATE_ROOT = "/home/richard/Dropbox/Code/doaj3/portality/templates"
 
-OUT_DIR = "/home/richard/tmp/doaj/redhead/"
+OUT_DIR = "/home/richard/tmp/doaj/redhead"
 
 if not TEMPLATE_DIR.endswith("/"):
     TEMPLATE_DIR += "/"
+
+if not TEMPLATE_ROOT.endswith("/"):
+    TEMPLATE_ROOT += "/"
+
+if not TEMPLATE_ROOT == TEMPLATE_DIR:
+    FILE_PREFIX = TEMPLATE_DIR[len(TEMPLATE_ROOT):]
 
 
 def analyse_template(template):
@@ -107,7 +116,7 @@ def analyse(structure, template_name):
     records = []
     tr = {
         "type": "template",
-        "file": template_name[len(TEMPLATE_DIR):]
+        "file": FILE_PREFIX + template_name[len(TEMPLATE_DIR):]
     }
 
     if structure.get("blocks"):
@@ -126,6 +135,12 @@ def analyse(structure, template_name):
                 tr["includes"] = []
             tr["includes"].append(im.group(1))
 
+        dim = re.search(DYNAMIC_INCLUDES_RE, line)
+        if dim:
+            if "dynamic_includes" not in tr:
+                tr["dynamic_includes"] = []
+            tr["dynamic_includes"].append(dim.group(1))
+
     records.append(tr)
 
     for k, v in structure.get("blocks", {}).items():
@@ -139,7 +154,7 @@ def _analyse_block(block, block_name, template_name, parent_block=None, scoped=F
     br = {
         "type": "block",
         "name": block_name,
-        "file": template_name[len(TEMPLATE_DIR):],
+        "file": FILE_PREFIX + template_name[len(TEMPLATE_DIR):],
         "parent_block": parent_block,
         "content": False,
         "scoped": scoped
@@ -157,6 +172,12 @@ def _analyse_block(block, block_name, template_name, parent_block=None, scoped=F
             if "includes" not in br:
                 br["includes"] = []
             br["includes"].append(im.group(1))
+
+        dim = re.search(DYNAMIC_INCLUDES_RE, line)
+        if dim:
+            if "dynamic_includes" not in br:
+                br["dynamic_includes"] = []
+            br["dynamic_includes"].append(dim.group(1))
 
         ip = re.search(IMPORTS_RE, line)
         if ip:
@@ -227,6 +248,10 @@ def _expand_file_node(record, records):
             incn = _expand_file_node(inc, records)
             node["includes"].append(incn)
 
+    if "dynamic_includes" in b:
+        node["dynamic_includes"] = b["dynamic_includes"]
+        node["dynamic_includes"].sort()
+
     return node
 
 
@@ -264,6 +289,10 @@ def _expand_block_node(record, records):
         for inc in includes:
             incn = _expand_file_node(inc, records)
             node["includes"].append(incn)
+
+    if "dynamic_includes" in b:
+        node["dynamic_includes"] = b["dynamic_includes"]
+        node["dynamic_includes"].sort()
 
     overridden_by = []
     for r in records:
@@ -471,6 +500,10 @@ def block_treeify(records):
             tree.append(_expand_block_tree_node(bs, records))
 
     return tree
+
+
+if not os.path.exists(OUT_DIR):
+    os.makedirs(OUT_DIR, exist_ok=True)
 
 records = []
 

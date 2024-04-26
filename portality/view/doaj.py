@@ -27,7 +27,8 @@ blueprint = Blueprint('doaj', __name__)
 def home():
     news = models.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     recent_journals = models.Journal.recent(max=16)
-    return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
+    # return render_template('doaj/index.html', news=news, recent_journals=recent_journals)
+    return render_template('public/index.html', news=news, recent_journals=recent_journals)
 
 
 @blueprint.route('/login/')
