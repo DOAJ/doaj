@@ -2872,7 +2872,7 @@ $.extend(true, doaj, {
                     published = 'Published ' + name;
                 }
 
-                const export_url = this.doaj_url + '/service/export/article/' + resultobj.id;
+                const export_url = this.doaj_url + '/service/export/article/' + resultobj.id + '/ris';
 
                 var frag = '<li class="card search-results__record">\
                     <article class="row">\

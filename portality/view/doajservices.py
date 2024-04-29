@@ -142,10 +142,14 @@ def undismiss_autocheck(autocheck_set_id, autocheck_id):
     return make_response(json.dumps({"status": "success"}))
 
 
-@blueprint.route('/export/article/<article_id>')
-def export_article_ris(article_id):
+@blueprint.route('/export/article/<article_id>/<fmt>')
+def export_article_ris(article_id, fmt):
     article = models.Article.pull(article_id)
     if not article:
+        abort(404)
+
+    if fmt != 'ris':
+        # only support ris for now
         abort(404)
 
     byte_stream = BytesIO()

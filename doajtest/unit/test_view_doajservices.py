@@ -15,7 +15,7 @@ class TestDoajservices(DoajTestCase):
         ris = ArticleRisXWalk.article2ris(article).to_text()
 
         with self.app_test.test_client() as t_client:
-            url = url_for('doajservices.export_article_ris', article_id=article.id)
+            url = url_for('doajservices.export_article_ris', article_id=article.id, fmt='ris')
             response = t_client.get(url)
             assert response.status_code == 200
             assert response.get_data(as_text=True) == ris
@@ -23,6 +23,6 @@ class TestDoajservices(DoajTestCase):
     def test_export_article_ris__not_found(self):
         with self.app_test.test_client() as t_client:
             url = url_for('doajservices.export_article_ris',
-                          article_id='article_id_that_does_not_exist')
+                          article_id='article_id_that_does_not_exist', fmt='ris')
             response = t_client.get(url)
             assert response.status_code == 404
