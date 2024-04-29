@@ -9,14 +9,13 @@ to see articles being bulk created, and the status response.
 import requests, json
 from doajtest.fixtures.article import ArticleFixtureFactory
 
-API_KEY = "c7659b4bf01a456f80ec82fcb8295bfa"
+API_KEY = "af2185c6bc8c4d47b076e92b7467151b"
 
-# make some articles to bulk load (just a couple is fine)
+# make some articles to bulk load (Use quite a few to justify the async)
 
-articles = [ArticleFixtureFactory.make_article_source(in_doaj=True, eissn="1111-1111", pissn="2222-2222")] * 2
+articles = ArticleFixtureFactory.make_many_article_sources(800, in_doaj=True, eissn="1111-1111", pissn="2222-2222")
 data = json.dumps(articles)
 
-resp = requests.post(f"http://localhost:5004/api/bulk/articles?api_key={API_KEY}", data=data)
+resp = requests.post(f"https://testdoaj.cottagelabs.com/api/bulk/articles?api_key={API_KEY}", data=data)
 print(resp.status_code)
 print(resp.text)
-

@@ -385,7 +385,9 @@ def bulk_article_create():
     resp_content = json.dumps(
         {'msg': 'Your article bulk upload is being processed.  Please check the status link for progress.',
          'upload_id': upload_id,
-         "status": app.config.get("BASE_URL", "") + url_for("api_v4.bulk_article_create_status", upload_id=upload_id)})
+         "status": app.config.get("BASE_URL", "") + url_for("api_v4.bulk_article_create_status",
+                                                            upload_id=upload_id,
+                                                            api_key=current_user._get_current_object().api_key)})
     return respond(resp_content, 202)
 
 
