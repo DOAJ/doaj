@@ -1,6 +1,18 @@
 # List of sponsors separated by tiers (premier, sustaining, basic)
 # ~~Sponsors:Data~~
 
+- name: Pensoft Publishers
+  url: https://pensoft.net/media
+  logo: Pensoft.png
+
+- name: Our Research
+  url: https://ourresearch.org/
+  logo: OurResearch.png
+
+- name: SirsiDynix
+  url: https://www.sirsidynix.com/
+  logo: Sirsi.png
+  
 - name: Royal Society of Chemistry
   url: https://www.rsc.org/
   logo: rsc.png
@@ -32,10 +44,6 @@
 - name: Frontiers
   url: https://www.frontiersin.org/
   logo: frontiers.svg
-
-- name: Knowledge E
-  url: https://knowledgee.com/
-  logo: knowledgee.png
 
 - name: MDPI
   url: https://www.mdpi.com/
@@ -75,7 +83,7 @@
 
 - name: De Gruyter
   url: https://www.degruyter.com/
-  logo: Degruyter.svg
+  logo: De Gruyter.svg
 
 - name: eLife Sciences Publications
   url: https://elifesciences.org/
@@ -100,10 +108,6 @@
 - name: International Union for Conservation of Nature
   url: https://iucn.org/
   logo: IUCN.svg
-
-- name: JMIR Publications
-  url: https://jmirpublications.com/
-  logo: jmir.svg
 
 - name: Karger
   url: https://www.karger.com/
