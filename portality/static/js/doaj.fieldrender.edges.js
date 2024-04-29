@@ -2899,8 +2899,7 @@ $.extend(true, doaj, {
                             <a href="' + ftl + '" target="_blank" rel="noopener"> Read online '
                 if (this.widget){
                     frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/external-link.svg" alt="external-link icon">'
-                }
-                else {
+                } else {
                     frag += '<i data-feather="external-link" aria-hidden="true"></i>'
                 }
                 frag += '</a></li>\
@@ -2908,7 +2907,14 @@ $.extend(true, doaj, {
                             <a href="' + this.doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
                           </li>\
                           <li>\
-                            <a href="' + export_url + '" target="_blank">Export RIS</a>\
+                            <a href="' + export_url + '" target="_blank">\
+                            Export RIS '
+                if (this.widget){
+                    frag += '<img src="' + this.doaj_url + '/static/doaj/images/feather-icons/download.svg" alt="external-link icon">'
+                } else {
+                    frag += '<i data-feather="download" aria-hidden="true"></i>'
+                }
+                            frag += '</a>\
                           </li>\
                           <li>\
                             ' + published + '\
