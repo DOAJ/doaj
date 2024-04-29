@@ -278,7 +278,8 @@ $.extend(true, doaj, {
             'on hold' : 'On Hold',
             'ready' : 'Ready',
             'rejected' : 'Rejected',
-            'accepted' : 'Accepted'
+            'accepted' : 'Accepted',
+            'post_submission_review': "Autochecking",
         },
 
         adminStatusMap: function(value) {
@@ -3148,7 +3149,8 @@ $.extend(true, doaj, {
                 "in progress" : "Under review by an editor",
                 "completed" : "Under review by an editor",
                 "on hold" : "Under review by an editor",
-                "ready" : "Under review by an editor"
+                "ready" : "Under review by an editor",
+                "post_submission_review": "Pending"
             };
 
             this.draw = function () {
@@ -3228,7 +3230,8 @@ $.extend(true, doaj, {
                 var deleteLinkUrl = deleteLinkTemplate.replace("__application_id__", resultobj.id);
                 var deleteClass = edges.css_classes(this.namespace, "delete", this);
                 if (resultobj.es_type === "draft_application" ||
-                    resultobj.admin.application_status === "update_request") {
+                    resultobj.admin.application_status === "update_request" ||
+                    resultobj.admin.application_status === "post_submission_review") {
                     deleteLink = '<li class="tag">\
                         <a href="' + deleteLinkUrl + '"  data-toggle="modal" data-target="#modal-delete-update-request" class="' + deleteClass + '"\
                             data-title="' + titleText + '">\
@@ -3520,7 +3523,9 @@ $.extend(true, doaj, {
                         if (dir === undefined) {
                             dir = "";
                         }
-                        dir = " " + dir;
+                        if (dir !== "") {
+                            dir = " " + dir;
+                        }
                         sortOptions += '<option value="' + field + '' + dir + '">' + edges.escapeHtml(display) + '</option>';
                     }
 

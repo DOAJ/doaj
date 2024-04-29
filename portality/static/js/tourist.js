@@ -9,22 +9,39 @@ doaj.tourist.init = function(params) {
     doaj.tourist.allTours = params.tours || [];
     doaj.tourist.cookiePrefix = params.cookie_prefix;
 
-    $(".trigger_tour").on("click", doaj.tourist.triggerTour);
+    let available = doaj.tourist.listAvailableTours();
+    let availableIds = available.map((x) => { return x.content_id });
 
-    let first = doaj.tourist.findNextTour();
-    if (first) {
-        doaj.tourist.start(first);
+    let navContainer = $("#dropdown--tour_nav")
+
+    if (availableIds.length === 0) {
+        navContainer.hide();
+    } else {
+        let tourNav = $("#feature_tours li");
+        for (let navEntry of tourNav) {
+            let ne = $(navEntry);
+            let trigger = ne.find("a.trigger_tour");
+            let tourId = trigger.attr("data-tour-id");
+            if (!availableIds.includes(tourId)) {
+                ne.hide();
+            }
+        }
+
+        $(".trigger_tour").on("click", doaj.tourist.triggerTour);
+        navContainer.show();
+        navContainer.hoverIntent(doaj.tourist.showDropdown, doaj.tourist.hideDropdown);
+
+        let first = doaj.tourist.findNextTour();
+        if (first) {
+            doaj.tourist.start(first);
+        }
     }
-
-    $("#dropdown--tour_nav").hoverIntent(doaj.tourist.showDropdown, doaj.tourist.hideDropdown);
 }
 
 doaj.tourist.showDropdown = function(e) {
-    console.log("showDropdown` called")
     $("#feature_tours").show();
 }
 doaj.tourist.hideDropdown = function() {
-    console.log("showDropdown` called")
     $("#feature_tours").hide();
 }
 
@@ -33,14 +50,52 @@ doaj.tourist.findNextTour = function() {
 
     let first = false;
     for (let tour of doaj.tourist.allTours) {
+        // check to see if required selectors are present on the page
+        if (tour.selectors) {
+            let selectorsPresent = 0;
+            for (let selector of tour.selectors) {
+                let el = $(selector);
+                if (el.length > 0) {
+                    selectorsPresent++;
+                }
+            }
+            if (tour.selectors.length !== selectorsPresent) {
+                continue;
+            }
+        }
+
+        // if we are good to go ahead, then check the cookies to see if the tour needs to be shown
         let cookieName = doaj.tourist.cookiePrefix + tour.content_id + "=" + tour.content_id;
         let cookie = cookies.find(c => c === cookieName);
+
+        // if it has not previously been shown, then show it
         if (!cookie) {
             first = tour;
             break;
         }
     }
     return first;
+}
+
+doaj.tourist.listAvailableTours = function() {
+    let available = [];
+    for (let tour of doaj.tourist.allTours) {
+        // check to see if required selectors are present on the page
+        if (tour.selectors) {
+            let selectorsPresent = 0;
+            for (let selector of tour.selectors) {
+                let el = $(selector);
+                if (el.length > 0) {
+                    selectorsPresent++;
+                }
+            }
+            if (tour.selectors.length !== selectorsPresent) {
+                continue;
+            }
+        }
+        available.push(tour);
+    }
+    return available;
 }
 
 doaj.tourist.start = function (tour) {

@@ -1,13 +1,16 @@
 {% if obj.owner %}
     {% set account = obj.owner_account %}
-    {% if account.id == current_user.id %}
-        <ul class="tags">
+    <ul class="tags">
+        {% if account.id == current_user.id %}
             <li class="tag"><span>Assigned to you</span></li>
-        </ul>
-    {% else %}
-        <ul class="tags">
+        {% else %}
             <li class="tag"><a href="mailto:{{account.email}}" target="_blank"><span data-feather="mail" aria-hidden="true"></span> {{account.name}}</a>
                 (<a href="{{ url_for("account.username", username=account.id) }}">{{ account.id }}</a>)</li>
-        </ul>
-    {% endif %}
+        {% endif %}
+        {% if obj.application_status %}
+            <li>
+                <span class="tag tag--tertiary label label--secondary">Status: {{ obj.application_status }}</span>
+            </li>
+        {% endif %}
+    </ul>
 {% endif %}

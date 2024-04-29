@@ -11,6 +11,14 @@
   }
 }
 
+.form__legend {
+  margin-bottom: $spacing-03;
+  font-weight: 700;
+  line-height: 1;
+  @include typescale-01;
+  @include font-serif;
+}
+
 .form__header {
   margin-bottom: 0;
   padding-bottom: $spacing-03;

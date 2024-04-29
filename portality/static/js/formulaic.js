@@ -581,6 +581,11 @@ var formulaic = {
             var selector = "." + this.containerClassTemplate.replace("{name}", name);
             return $(selector, context);
         };
+
+        this.widgetsContainer = function(params) {
+            var context = this.get_context(params);
+            return $("#" + params.name + "_widgets-container", context)
+        }
     },
 
     edges : {
@@ -1076,6 +1081,112 @@ var formulaic = {
             $(select2_elem).focus();
         },
 
+        _make_empty_container: function(namespace, containerName, form, fieldDef, additionalClasses, additionalStyles) {
+            if (!additionalClasses) {
+                additionalClasses = "";
+            }
+            if (!additionalStyles) {
+                additionalStyles = "";
+            }
+
+            let containerSelector = edges.css_class_selector(namespace, containerName);
+            let elements = form.controlSelect.widgetsContainer({name: fieldDef.name});
+            let existing = false;
+            for (let i = 0; i < elements.length; i++) {
+                let el = $(elements[i]);
+                let cont = el.find(containerSelector)
+                if (cont.length > 0) {
+                    cont.empty();
+                    existing = true;
+                }
+            }
+
+            if (!existing) {
+                let containerClass = edges.css_classes(namespace, containerName);
+                elements.append(`<div class="${containerClass} ${additionalClasses}" ${additionalStyles}></div>`);
+            }
+
+            return elements.find(containerSelector);
+        },
+
+        newAutocheck : function(params) {
+            return edges.instantiate(formulaic.widgets.Autocheck, params);
+        },
+        Autocheck: function(params) {
+            this.fieldDef = params.fieldDef;
+            this.form = params.formulaic;
+
+            this.namespace = "formulaic-autocheck-" + this.fieldDef.name;
+
+            this.init = function() {
+                let annos = this._getAutochecksForField();
+                if (annos.length === 0) {
+                    return;
+                }
+
+                let generalClass = "formulaic-autocheck-container";
+                let defaultDisplay = "style='display: none'";
+                let cont = formulaic.widgets._make_empty_container(this.namespace, "autochecks", this.form, this.fieldDef, generalClass, defaultDisplay);
+
+                let frag = "";
+                for (let anno of annos) {
+                    frag += this._renderAutocheck(anno)
+                }
+
+                let listClass = edges.css_classes(this.namespace, "list")
+                frag = `<ul class="${listClass}">${frag}</ul>`;
+                cont.html(frag);
+
+                feather.replace();
+            }
+
+            this._getAutochecksForField = function() {
+                if (!doaj.autochecks) {
+                    return [];
+                }
+                let applicable = [];
+                for (let anno of doaj.autochecks.checks) {
+                    if (anno.field && anno.field === this.fieldDef.name) {
+                        applicable.push(anno);
+                    }
+                }
+                return applicable;
+            }
+
+            this._renderAutocheck = function(autocheck) {
+                let frag = "<li>";
+                
+                if (autocheck.checked_by && doaj.autocheckers &&
+                    doaj.autocheckers.registry.hasOwnProperty(autocheck.checked_by)) {
+                    frag += (new doaj.autocheckers.registry[autocheck.checked_by]()).draw(autocheck)
+                } else {
+                    frag += this._defaultRender(autocheck);
+                }
+                
+                frag += `</li>`;
+                return frag;
+            }
+
+            this._defaultRender = function(autocheck) {
+                let frag = "";
+                if (autocheck.advice) {
+                    frag += `${autocheck.advice}<br>`
+                }
+                if (autocheck.reference_url) {
+                    frag += `<a href="${autocheck.reference_url}" target="_blank">${autocheck.reference_url}</a><br>`
+                }
+                if (autocheck.suggested_value) {
+                    frag += `Suggested Value(s): ${autocheck.suggested_value.join(", ")}<br>`
+                }
+                if (autocheck.original_value) {
+                    frag += `(Original value when automated checks ran: ${autocheck.original_value})`
+                }
+                return frag;
+            }
+
+            this.init();
+        },
+
         newSubjectTree : function(params) {
             return edges.instantiate(formulaic.widgets.SubjectTree, params);
         },
@@ -1202,7 +1313,7 @@ var formulaic = {
             this.fieldDef = params.fieldDef;
             this.form = params.formulaic;
 
-            this.ns = "formulaic-clickableowner";
+            this.namespace = "formulaic-clickableowner";
 
             this.link = false;
 
@@ -1222,11 +1333,12 @@ var formulaic = {
                     if (this.link) {
                         this.link.attr("href", "/account/" + val);
                     } else {
-                        var classes = edges.css_classes(this.ns, "visit");
-                        var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="/account/' + val + '">See this account’s profile</a></small></p>');
+                        let cont = formulaic.widgets._make_empty_container(this.namespace, "clickable_owner", this.form, this.fieldDef);
+                        var classes = edges.css_classes(this.namespace, "visit");
+                        var id = edges.css_id(this.namespace, this.fieldDef.name);
+                        cont.html('<p><small><a id="' + id + '" class="' + classes + ' tag" rel="noopener noreferrer" target="_blank" href="/account/' + val + '"><span data-feather="user" aria-hidden="true"></span> See this account’s profile</a></small></p>');
 
-                        var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
+                        var selector = edges.css_id_selector(this.namespace, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
                     }
                 } else if (this.link) {
@@ -1303,10 +1415,8 @@ var formulaic = {
             this.link = false;
 
             this.init = function() {
-                var elements = this.form.controlSelect.input(
-                    {name: this.fieldDef.name});
-                // TODO: should work as-you-type by changing "change" to "keyup" event; doesn't work in edges
-                //edges.on(elements, "change.ClickableUrl", this, "updateUrl");
+                var elements = this.form.controlSelect.input({name: this.fieldDef.name});
+
                 edges.on(elements, "keyup.ClickableUrl", this, "updateUrl");
 
                 for (var i = 0; i < elements.length; i++) {
@@ -1317,16 +1427,17 @@ var formulaic = {
             this.updateUrl = function(element) {
                 var that = $(element);
                 var val = that.val();
-                var id = edges.css_id(this.ns, this.fieldDef.name);
 
                 if (val && (val.substring(0,7) === "http://" || val.substring(0,8) === "https://") && val.length > 10) {
                     if (this.link) {
-                        this.link.text(val);
                         this.link.attr("href", val);
                     } else {
                         var classes = edges.css_classes(this.ns, "visit");
-                        that.after('<p><small><a id="' + id + '" class="' + classes + '" rel="noopener noreferrer" target="_blank" href="' + val + '">' + val + '</a></small></p>');
-
+                        var id = edges.css_id(this.ns, this.fieldDef.name);
+                        that.after('<p><a id="' + id + '" class="' + classes + ' button" style="margin: 0; height: 100%" rel="noopener noreferrer" target="_blank" title="Open URL in a new tab" href="' + val + '">\
+                                        Open link\
+                                        <span data-feather="external-link" aria-hidden="true"></span>\
+                                    </a></p>');
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.link = $(selector, this.form.context);
                     }
@@ -1376,9 +1487,10 @@ var formulaic = {
                     if (this.container) {
                         this.container.html('<small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small>');
                     } else {
+                        let cont = formulaic.widgets._make_empty_container(this.ns, "clickable_url", this.form, this.fieldDef);
                         var classes = edges.css_classes(this.ns, "contents");
                         var id = edges.css_id(this.ns, this.fieldDef.name);
-                        that.after('<p id="' + id + '" class="' + classes + '"><small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small></p>');
+                        cont.html('<p id="' + id + '" class="' + classes + '"><small><strong>Full contents: ' + edges.escapeHtml(val) + '</strong></small></p>');
 
                         var selector = edges.css_id_selector(this.ns, this.fieldDef.name);
                         this.container = $(selector, this.form.context);
@@ -1619,7 +1731,7 @@ var formulaic = {
                     let f = this.fields[idx];
                     let s2_input = $($(f).select2());
                     $(f).on("focus", formulaic.widgets._select2_shift_focus);
-                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="tag remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
+                    s2_input.after($('<button type="button" id="remove_field__' + f.name + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
                     if (idx !== 0) {
                         s2_input.attr("required", false);
                         s2_input.attr("data-parsley-validate-if-empty", "true");
@@ -1755,7 +1867,7 @@ var formulaic = {
 
                 for (var idx = 0; idx < this.divs.length; idx++) {
                     let div = $(this.divs[idx]);
-                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="tag remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
+                    div.append($('<button type="button" id="remove_field__' + this.fieldDef["name"] + '--id_' + idx + '" class="remove_field__button">Remove <span data-feather="x" aria-hidden="true"/></button>'));
 
                     if (idx !== 0) {
                         let inputs = div.find(":input");
