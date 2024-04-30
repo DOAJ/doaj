@@ -40,15 +40,15 @@ class ApplicationForm_OACompliance(TestFieldsCommon):
 
     def test_oa_statement_url(self):
         field_name = "oa_statement_url"
-        self.this_simple_field_is_required(field_name=field_name,
-                                           expected_error_value=FixtureMessages.ERROR_OA_STATEMENT_URL)
+        self.this_field_is_required(field_name=field_name,
+                                    expected_error_value=FixtureMessages.ERROR_OA_STATEMENT_URL)
         self.simple_field_fail(field_name=field_name, value="this_is_not_url", expected_error_value=FixtureMessages.ERROR_INVALID_URL)
         self.simple_field_success(field_name=field_name, value="https://www.ridiculousResearchRodeo.com")
 
     def test_oa_start(self):
         field_name = "oa_start"
-        self.this_simple_field_is_required(field_name=field_name,
-                                           expected_error_value=FixtureMessages.ERROR_OA_START_REQUIRED)
+        self.this_field_is_required(field_name=field_name,
+                                    expected_error_value=FixtureMessages.ERROR_OA_START_REQUIRED)
         self.simple_field_fail(field_name=field_name, value="0",
                                expected_error_value=FixtureMessages.ERROR_OA_START_INVALID_VALUE)
         self.simple_field_fail(field_name=field_name, value="9999",

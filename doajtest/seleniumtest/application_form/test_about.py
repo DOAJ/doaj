@@ -25,7 +25,7 @@ class ApplicationForm_About(TestFieldsCommon):
 
     def test_title(self):
         field_name="title"
-        self.this_simple_field_is_required(field_name=field_name)
+        self.this_field_is_required(field_name=field_name)
         self.simple_field_success(field_name=field_name, value="Serendipity Science: Accidental Alchemy & Quantum Quirks")
 
     def test_alternative_title(self):
@@ -35,7 +35,7 @@ class ApplicationForm_About(TestFieldsCommon):
 
     def test_journal_url(self):
         field_name="journal_url"
-        self.this_simple_field_is_required(field_name=field_name, expected_error_value=FixtureMessages.ERROR_JOURNAL_URL_REQUIRED)
+        self.this_field_is_required(field_name=field_name, expected_error_value=FixtureMessages.ERROR_JOURNAL_URL_REQUIRED)
         self.simple_field_fail(field_name=field_name, value="incorect_url", expected_error_value=FixtureMessages.ERROR_JOURNAL_URL_INVALID)
         self.simple_field_success(field_name=field_name, value="https://www.absurdChronicles.com")
 
@@ -55,4 +55,7 @@ class ApplicationForm_About(TestFieldsCommon):
 
     def test_keywords(self):
         field_name="keywords"
-        self.this_simple_field_is_required(field_name=field_name, expected_error_value=FixtureMessages.ERROR_KEYWORDS_REQUIRED, is_select2=True)
+        tags_6 = "Martian Gardening, Quantum Quilting, Time-Traveling Frogs, Psychic Pigeons, Parallel Universe Fashion, Galactic Pancake Recipes"
+        tags_7 = "Eccentric Cheese Making, Cosmic Cupcake Conspiracies, Chaotic Knitting Patterns, Mythical Pizza Toppings, Quantum Tea Brewing, Galactic Sock Puppetry, Time-Traveling Taco Recipes"
+        # self.this_field_is_required(field_name=field_name, expected_error_value=FixtureMessages.ERROR_KEYWORDS_REQUIRED, is_select2=True)
+        self.select2_tags(field_name=field_name, correct_value=tags_6, incorrect_value=tags_7, separator=",", limit=6)

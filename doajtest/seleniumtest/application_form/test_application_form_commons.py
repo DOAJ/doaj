@@ -94,7 +94,7 @@ class TestFieldsCommon(SeleniumTestCase):
             raise ValueError(
                 f"Unexpected input type '{input_type}' for field '{field_name}'. Expected 'text' or 'number'.")
 
-    def this_simple_field_is_required(self, field_name, field_id=None, expected_error_value=None, is_select2=False):
+    def this_field_is_required(self, field_name, field_id=None, expected_error_value=None, is_select2=False):
         question = self.find_question(field_name)
 
         main_input = self.find_main_input_in_question(question);
@@ -105,7 +105,6 @@ class TestFieldsCommon(SeleniumTestCase):
         else:
             assert main_input.get_attribute('required') is not None, f"Field '{field_name}' is not marked as required"
 
-        self.check_if_simple_input(field_name, main_input)
         Interactions.click_next_button(self.selenium, self.js_click)
 
         self.check_error_msg(field_name, expected_error_value)
@@ -182,3 +181,34 @@ class TestFieldsCommon(SeleniumTestCase):
         self.add_value_to_simple_field(field_name, correct_value);
         Interactions.click_next_button(self.selenium, self.js_click)
         self.check_error_msg(field_name, expected_error_value)
+
+    def select2_tags(self, field_name, correct_value, incorrect_value=None, limit=None, hint=None, min_chars=None, separator=None):
+        select2_results_id = "select2-results"
+        # make sure that if limit is not None then incorrect_value is not None either
+        if limit is not None and incorrect_value is None:
+            raise ValueError(
+                f"If you provide limit, you need to provide incorrect value.")
+        # find question and input
+        question = self.find_question(field_name=field_name);
+        input = self.find_main_input_in_question(question);
+
+        # test whether focus shows the dropdown
+        input.send_keys("");
+        dropdown = self.find_hidden_element(select2_results_id);
+        assert dropdown is not None
+
+        #if the hint is not None, check the hint
+        if hint is not None:
+            dropdown.find_element(By.TAG_NAME, "li");
+            assert dropdown.text == hint
+
+        # test whether input shows dropdown; if min_chars - whether shows after len(input) >= min_chars
+
+        # test choosing an option from the list
+
+        # test adding string with limiters - correct value
+
+        # if limit is not None - add incorrect value, test limit message
+
+        # unfocus - see if value has correct length (over limit tags not added in the previous step)
+        pass
