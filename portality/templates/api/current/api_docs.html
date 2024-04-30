@@ -54,4 +54,17 @@
             });
         });
     </script>
+
+    <script>
+        $('.page-nav__item a[href^="#"]').on('click', function (e) {
+            // Prevent the default anchor behavior
+            e.preventDefault();
+            var targetId = $(this).attr('href').substring(1);
+            var $targetElement = $('#' + targetId);
+            var scrollPosition = $targetElement.offset().top - parseFloat($targetElement.css('scroll-margin-top'));
+            $('html, body').animate({
+                scrollTop: scrollPosition
+            }, 'fast');
+        });
+    </script>
 {% endblock %}
