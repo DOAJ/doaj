@@ -2255,7 +2255,7 @@ var formulaic = {
 
         newArticleInfo : (params) => edges.instantiate(formulaic.widgets.ArticleInfo, params),
         ArticleInfo: function ({formulaic, fieldDef, args}) {
-            const sealSelector = '.doaj_seal__container'
+            const sealSelector = 'label[for=doaj_seal]';
 
             const init = () => {
                 const paths = window.location.pathname.split('/')
@@ -2263,9 +2263,8 @@ var formulaic = {
                 fetch(`/admin/journal/${journalId}/article-info`)
                     .then(response => response.json())
                     .then(data => {
-                        const $p = $(sealSelector).prev('p');
-                        const text = $p.text()
-                        $p.text(text + `This journal has ${data.n_articles} articles in DOAJ.`)
+                        const $ele = $(sealSelector);
+                        $ele.text($ele.text() + `This journal has ${data.n_articles} articles in DOAJ.`)
                     })
             };
 
