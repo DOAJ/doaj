@@ -12,7 +12,7 @@ class TestViewAdmin(DoajTestCase):
 
     def setUp(self):
         super().setUp()
-        self.acc = create_maned_a(is_save=True)
+        self.acc = create_maned_a(save=True)
 
     def test_journal_article_info(self):
         journal = models.Journal(
