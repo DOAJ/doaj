@@ -72,8 +72,8 @@ ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
-
-ES_READ_TIMEOUT = '2m'
+ELASTICSEARCH_REQ_TIMEOUT = 20  # Seconds - used in core.py for whole ES connection request timeout
+ES_READ_TIMEOUT = '2m'  # Minutes - used in DAO for searches
 
 #####################################################
 # Elastic APM config  (MUST be configured in env file)
