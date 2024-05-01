@@ -1603,8 +1603,13 @@ class FieldDefinitions:
     # ~~->$ DOAJSeal:FormField~~
     DOAJ_SEAL = {
         "name": "doaj_seal",
-        "label": "Award the Seal?",
+        "label": "The journal may have fulfilled all the criteria for the Seal.",
+        "multiple": True,
         "input": "checkbox",
+        "options": [
+            {"display": "Award the Seal?", "value": 'y'},
+        ],
+
         "validate": [
             {
                 "only_if" : {
