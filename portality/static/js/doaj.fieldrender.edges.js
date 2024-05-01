@@ -2903,10 +2903,7 @@ $.extend(true, doaj, {
                     frag += '<i data-feather="external-link" aria-hidden="true"></i>'
                 }
                 frag += '</a></li>\
-                          <li>\
-                            <a href="' + this.doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
-                          </li>\
-                          <li>\
+                         <li>\
                             <a href="' + export_url + '" target="_blank">\
                             Export RIS '
                 if (this.widget){
@@ -2915,6 +2912,9 @@ $.extend(true, doaj, {
                     frag += '<i data-feather="download" aria-hidden="true"></i>'
                 }
                             frag += '</a>\
+                          </li>\
+                          <li>\
+                            <a href="' + this.doaj_url + '/toc/' + issns[0] + '" target="_blank" rel="noopener">About the journal</a>\
                           </li>\
                           <li>\
                             ' + published + '\
