@@ -51,6 +51,7 @@ All seven criteria must be met for a journal to be awarded the Seal. Failure to 
 ## In other languages
 
 [French](https://www.erudit.org/public/documents/sceauDOAJ.pdf) - hosted by Érudit
+[Portuguese](https://www.editoracubo.com.br/wp-content/uploads/2024/04/o-Selo-DOAJ.pdf) - hosted by Editora Cubo
 
 ## Version history
 
