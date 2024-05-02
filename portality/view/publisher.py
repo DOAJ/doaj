@@ -200,6 +200,8 @@ def upload_file():
     # otherwise we are dealing with a POST - file upload or supply of url
     f = request.files.get("file")
     schema = request.values.get("schema")
+    if not schema:
+        abort(400)
     url = request.values.get("upload-xml-link")
     resp = make_response(redirect(url_for("publisher.upload_file")))
     resp.set_cookie("schema", schema)
