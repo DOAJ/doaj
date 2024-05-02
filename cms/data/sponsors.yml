@@ -83,7 +83,7 @@
 
 - name: De Gruyter
   url: https://www.degruyter.com/
-  logo: degruyter.svg
+  logo: de_gruyter.svg
 
 - name: eLife Sciences Publications
   url: https://elifesciences.org/
