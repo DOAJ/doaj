@@ -34,9 +34,9 @@ def add_url_shortener(url: str) -> str:
     return parse_shortened_url(alias)
 
 
-def create_new_alias() -> str:
+def create_new_alias(n_retry=5) -> str:
     alias_len = app.config.get("URLSHORT_ALIAS_LENGTH")
-    for _ in range(5):
+    for _ in range(n_retry):
         alias = ''.join(random.sample(ALIAS_CHARS, alias_len))
         cnt = models.UrlShortener.hit_count(UrlQuery(alias).query())
         if cnt == 0:
