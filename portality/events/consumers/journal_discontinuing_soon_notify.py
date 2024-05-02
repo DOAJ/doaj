@@ -12,7 +12,7 @@ from portality.lib import edges
 from portality import dao
 
 class JournalDiscontinuingSoonNotify(EventConsumer):
-    ID = "journal:assed:discontinuing_soon:notify"
+    ID = "journal:maned:discontinuing_soon:notify"
 
     @classmethod
     def consumes(cls, event):
