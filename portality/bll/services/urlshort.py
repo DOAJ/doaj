@@ -1,6 +1,5 @@
 import random
 import string
-import threading
 from typing import Optional
 
 from portality import models
@@ -9,9 +8,7 @@ from portality.models.url_shortener import AliasQuery, UrlQuery
 from portality.util import url_for
 
 # global current status of the alias length
-alias_len = 6
 ALIAS_CHARS = string.ascii_letters + string.digits
-alias_lock = threading.Lock()
 
 
 def add_url_shortener(url: str) -> str:
@@ -31,23 +28,19 @@ def add_url_shortener(url: str) -> str:
     if shortened_url:
         return shortened_url
 
-    with alias_lock:
-        alias = create_new_alias()
-        models.UrlShortener(url=url, alias=alias).save()
+    alias = create_new_alias()
+    models.UrlShortener(url=url, alias=alias).save()
 
     return parse_shortened_url(alias)
 
 
 def create_new_alias() -> str:
-    global alias_len
+    alias_len = app.config.get("URLSHORT_ALIAS_LENGTH")
     for _ in range(5):
         alias = ''.join(random.sample(ALIAS_CHARS, alias_len))
         cnt = models.UrlShortener.hit_count(UrlQuery(alias).query())
         if cnt == 0:
             return alias
-
-        alias_len += 1
-        app.logger.info(f'alias length increased to {alias_len}')
 
     raise ValueError('Could not create a unique alias')
 

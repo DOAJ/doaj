@@ -3,11 +3,13 @@ import time
 from doajtest.helpers import DoajTestCase, patch_config
 from portality import models
 from portality.bll import DOAJ
+from portality.core import app
 from portality.lib.thread_utils import wait_until
 from portality.models import UrlShortener
 from portality.util import url_for
 
 urlshort = DOAJ.urlshortService()
+
 
 def wait_any_url_shortener():
     models.UrlShortener.refresh()
@@ -22,7 +24,7 @@ class TestLibUrlshort(DoajTestCase):
         self.assertEqual(len(aliases), n_samples)
 
         assert len(aliases) == n_samples
-        assert len(list(aliases)[0]) == urlshort.alias_len
+        assert len(list(aliases)[0]) == app.config.get("URLSHORT_ALIAS_LENGTH")
 
     def test_parse_shortened_url(self):
         alias = 'alias_abc'
