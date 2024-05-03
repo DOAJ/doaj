@@ -17,6 +17,7 @@ API_VERSION = "3.0.1"
 
 HOST = '0.0.0.0'
 DEBUG = False
+DEBUG_DEV_LOG = False  # show all log of each module
 PORT = 5004
 SSL = True
 VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production', 'harvester']
@@ -709,6 +710,8 @@ MAPPINGS['lock'] = MAPPINGS["account"]    #~~->Lock:Model~~
 MAPPINGS['provenance'] = MAPPINGS["account"]    #~~->Provenance:Model~~
 MAPPINGS['preserve'] = MAPPINGS["account"]    #~~->Preservation:Model~~
 MAPPINGS['notification'] = MAPPINGS["account"]    #~~->Notification:Model~~
+MAPPINGS['url_shortener'] = MAPPINGS["account"]    #~~->URLShortener:Model~~
+
 
 #########################################
 # Query Routes
@@ -1267,6 +1270,12 @@ ANALYTICS_CATEGORY_OPENURL = 'OpenURL'
 ANALYTICS_CATEGORY_PUBLICDATADUMP = 'PublicDataDump'
 ANALYTICS_ACTION_PUBLICDATADUMP = 'Download'
 
+# Plausible for Urlshort
+# ~~->URLShortener:Feature~~
+ANALYTICS_CATEGORY_URLSHORT = 'Urlshort'
+ANALYTICS_ACTION_URLSHORT_ADD = 'Find or create shortener url'
+ANALYTICS_ACTION_URLSHORT_REDIRECT = 'Redirect'
+
 # Plausible for API
 # ~~-> API:Feature~~
 ANALYTICS_CATEGORY_API = 'API Hit'
@@ -1551,3 +1560,17 @@ AUTOCHECK_INCOMING = False
 
 AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
 AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
+
+
+
+################################
+# Url Shortener
+# ~~->URLShortener:Feature~~
+
+# URLSHORT_LIMIT* used to limit the number of short URLs (URLSHORT_LIMIT) created
+# by a user within a certain time period (URLSHORT_LIMIT_WITHIN_DAYS)
+URLSHORT_LIMIT_WITHIN_DAYS = 7
+URLSHORT_LIMIT = 50_000
+
+URLSHORT_ALLOWED_SUPERDOMAINS = ['doaj.org']
+URLSHORT_ALIAS_LENGTH = 6
