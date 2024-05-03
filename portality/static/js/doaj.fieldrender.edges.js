@@ -1370,7 +1370,7 @@ $.extend(true, doaj, {
             this.toggleShorten = function(element) {
                 if (!this.component.shortUrl) {
                     var callback = edges.objClosure(this, "updateShortUrl");
-                    this.component.generateShortUrl(this.component.edge.fullUrl(), callback);
+                    this.component.generateShortUrl(callback);
                 } else {
                     this.updateShortUrl();
                 }

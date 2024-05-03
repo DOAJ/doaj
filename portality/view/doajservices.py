@@ -6,10 +6,10 @@ from flask_login import current_user, login_required
 
 from portality import lock, models
 from portality.bll import DOAJ
+from portality.bll.services import urlshort
 from portality.core import app
 from portality.decorators import ssl_required, write_required
 from portality.lib import plausible
-from portality.bll.services import urlshort
 from portality.models.url_shortener import CountWithinDaysQuery
 from portality.util import jsonp
 

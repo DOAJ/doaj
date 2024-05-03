@@ -1567,7 +1567,10 @@ AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
 # Url Shortener
 # ~~->URLShortener:Feature~~
 
+# URLSHORT_LIMIT* used to limit the number of short URLs (URLSHORT_LIMIT) created
+# by a user within a certain time period (URLSHORT_LIMIT_WITHIN_DAYS)
 URLSHORT_LIMIT_WITHIN_DAYS = 7
 URLSHORT_LIMIT = 50_000
+
 URLSHORT_ALLOWED_SUPERDOMAINS = ['doaj.org']
 URLSHORT_ALIAS_LENGTH = 6
