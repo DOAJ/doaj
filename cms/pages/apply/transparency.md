@@ -171,7 +171,7 @@ Any direct marketing activities, including solicitation of manuscripts, that are
 
 ## Version history
 
-- This is Version 4.0 of the Principles of Transparency and Best Practice in Scholarly Publishing
+- This is Version 4.0 - September 2022
 - [Version 3.0](https://docs.google.com/document/d/1wtnA5zj02Hn3XY_SUWvs3U22DC9MaaNVrdiCHYXlrGE/edit?usp=sharing) - January 2018
 - [Version 2.0](https://oaspa.org/principles-of-transparency-and-best-practice-in-scholarly-publishing-2/?highlight=principles) - June 2015 (on the OASPA website)
 - [Version 1.0](https://oaspa.org/principles-of-transparency-and-best-practice-in-scholarly-publishing/?highlight=principles) - December 2013 (on the OASPA website)
@@ -203,6 +203,7 @@ WAME is a global nonprofit voluntary association of editors of peer-reviewed med
 
 - [Bengali](https://docs.google.com/document/d/1hsCynqvYbnaUwnu7VxlEPNKn076mz1KrRUdQ4vefYX4/edit?usp=sharing) - Google document
 - [Chinese](https://zenodo.org/records/10401800) - PDF, Zenodo
+- [French](https://www.erudit.org/public/documents/transparenceDOAJ.pdf) - hosted by Érudit
 - [Korean](https://drive.google.com/file/d/1Uyh5uZR1vbkPwcIvN1h7PPlHVwu0fMHA/view?usp=sharing) - PDF
 - [Portuguese](https://docs.google.com/document/d/155dAHllL2KhPhzTsR3UhbMEASYjkxP157fAtiZ1jw2w/edit?usp=sharing) - Google document
 - [Serbian](https://www.ceon.rs/index.php?option=com_content&view=article&id=654:transparentnost-i-najbolja-praksa&catid=94&lang=sr&Itemid=578) (hosted at ceon.rs)
