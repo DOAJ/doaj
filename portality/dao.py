@@ -447,20 +447,11 @@ class DomainObject(UserDict, object):
                 break
             except Exception as e:
                 try:
-                    json.dumps(e.args[2])
-                except TypeError:
-                    raise e(
-                        (
-                            "Elasticsearch returned an error:"
-                            "\nES HTTP Response status: {es_status}"
-                            "\nES Response:{es_resp}"
-                            .format(es_status=res.get('status', 'unknown'), es_resp=es_resp)
-                        ) + extra_trace_info
-                    )
-                else:
                     exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
                     if isinstance(exception, ESMappingMissingError):
                         raise exception
+                except TypeError:
+                    raise e
 
             time.sleep(0.5)
 
