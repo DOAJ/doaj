@@ -166,18 +166,10 @@ def load_crossref_schema(app):
 
 def create_es_connection(app):
     # ~~ElasticConnection:Framework->Elasticsearch:Technology~~
-    # temporary logging config for debugging index-per-type
-    #import logging
-    #esprit.raw.configure_logging(logging.DEBUG)
 
-    # FIXME: we are removing esprit conn in favour of elasticsearch lib
-    # make a connection to the index
-    # if app.config['ELASTIC_SEARCH_INDEX_PER_TYPE']:
-    #     conn = esprit.raw.Connection(host=app.config['ELASTIC_SEARCH_HOST'], index='')
-    # else:
-    #     conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
-
-    conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'], verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True))
+    conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'],
+                                       verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True),
+                                       request_timeout=app.config.get('ELASTICSEARCH_REQ_TIMEOUT', 15))
 
     return conn
 
