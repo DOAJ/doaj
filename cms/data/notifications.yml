@@ -142,7 +142,7 @@ update_request:publisher:rejected:notify:
   short:
     Your update request ({issns}) was rejected
 
-journal:assed:discontinuing_soon:notify:
+journal:maned:discontinuing_soon:notify:
   long: |
     Journal "{title}" (id: {id}) will discontinue in {days} days.
   short:
