@@ -598,13 +598,6 @@ class EditorApplication(ApplicationProcessor):
 
         # email managing editors if the application was newly set to 'ready'
         if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
-            # Tell the ManEds who has made the status change - the editor in charge of the group
-            # ~~-> EditorGroup:Model~~
-            editor_group_name = self.target.editor_group
-            editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
-            editor_group = models.EditorGroup.pull(editor_group_id)
-            editor_acc = editor_group.get_editor_account()
-
             # record the event in the provenance tracker
             # ~~-> Provenance:Model~~
             models.Provenance.make(current_user, "status:ready", self.target)
