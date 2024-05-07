@@ -100,6 +100,12 @@ class EditorGroup(DomainObject):
         all_eds = self.associates + [self.editor]
         return account_name in all_eds
 
+    @classmethod
+    def find_editor_role_by_id(cls, editor_group_id, user_id) -> str:
+        # KTODO change to .pull()
+        eg = cls.pull_by_key("name", editor_group_id)
+        return "editor" if eg is not None and eg.editor == user_id else "associate_editor"
+
 
 class EditorGroupQuery(object):
     def __init__(self, name):
