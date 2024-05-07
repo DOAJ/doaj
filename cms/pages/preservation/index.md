@@ -46,9 +46,7 @@ We hope that many DOAJ-indexed publishers will want to take part but to ensure o
 - Your content is licensed with a CC BY licence (sometimes, we will accept less open licenses).
 - The copyright of published content remains with the author.
 
-DOAJ is committed to providing the JASPER service free of charge. Since the JASPER service is currently free of charge*, we will analyse the financial status of journals or publishers quite closely. We reserve the right not to include a journal or a publisher in JASPER if we think it is or could be supported or funded by an organisation capable of covering the costs of long-term preservation. This is a necessary step while JASPER remains free of charge.
-
-*other partners reserve the right to change this
+DOAJ is committed to providing the JASPER service free of charge. Since the JASPER service is currently free of charge, we will analyse the financial status of journals or publishers quite closely. We reserve the right not to include a journal or a publisher in JASPER if we think it is or could be supported or funded by an organisation capable of covering the costs of long-term preservation. This is a necessary step while JASPER remains free of charge.
 
 ## To apply
 
