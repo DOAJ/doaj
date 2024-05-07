@@ -1,3 +1,5 @@
+import datetime
+import random
 from copy import deepcopy
 from typing import Dict, Iterable
 
@@ -86,7 +88,7 @@ class ArticleFixtureFactory(object):
 
             # now some very quick and very dirty date generation
             fakemonth = i % 12 + 1
-            template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
+            template['created_date'] = f"{random.randint(2013, 2024)}-{fakemonth:02}-01T00:00:00Z"
 
             # Remove template ISSNs and add new ones
             template['bibjson']['identifier'] = []
