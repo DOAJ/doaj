@@ -1598,12 +1598,12 @@ class FieldDefinitions:
     }
 
     #######################################
-    ## Ediorial fields
+    ## Editorial fields
 
     # ~~->$ DOAJSeal:FormField~~
     DOAJ_SEAL = {
         "name": "doaj_seal",
-        "label": "The journal has fulfilled all the criteria for the Seal. Award the Seal?",
+        "label": "The journal may have fulfilled all the criteria for the Seal. Award the Seal?",
         "input": "checkbox",
         "validate": [
             {

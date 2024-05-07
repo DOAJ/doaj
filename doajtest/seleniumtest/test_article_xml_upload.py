@@ -15,6 +15,7 @@ from doajtest.fixtures.url_path import URL_PUBLISHER_UPLOADFILE, URL_ADMIN_BGJOB
 from doajtest.selenium_helpers import SeleniumTestCase
 from portality import models, dao
 from portality.constants import FileUploadStatus
+from portality.ui.messages import Messages
 
 HISTORY_ROW_PROCESSING_FAILED = 'processing failed'
 XML_FORMAT_DOAJ = 'doaj'
@@ -92,10 +93,10 @@ class ArticleXmlUploadDoajXmlFailSTC(ArticleXmlUploadCommonSTC):
          'Unable to parse XML file'),
         # case "Upload a file containing 2 identical ISSNs"
         (article_doajxml.IDENTICAL_ISSNS,
-         '', 'failed The Print and Online ISSNs supplied are identical'),
+         '', Messages.EXCEPTION_IDENTICAL_PISSN_AND_EISSN),
         # case "Upload a file without ISSN"
         (article_doajxml.NO_ISSN,
-         '', 'Neither Print ISSN nor Online ISSN has been supplied'),
+         '', Messages.EXCEPTION_NO_ISSNS),
     ])
     def test_upload_fail(self, file_path, err_msg, expected_note):
         """ cases about upload article failed with error message """
