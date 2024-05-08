@@ -17,21 +17,30 @@ function autocomplete(selector, doc_field, doc_type, mininput, include_input, al
                 return { results: data["suggestions"] };
             }
         };
+    var csc = function(term) {return {"id":term, "text": term};};
     var initSel = function (element, callback) {
             var data = {id: element.val(), text: element.val()};
             callback(data);
         };
 
-    let select2Param = {
-        minimumInputLength: mininput,
-        ajax: ajax,
-        initSelection : initSel,
-        placeholder: "Start typing…",
-        allowClear: allow_clear
-    };
     if (include_input) {
         // apply the create search choice
-        select2Param.createSearchChoice = function(term) {return {"id":term, "text": term};};
+        $(selector).select2({
+            minimumInputLength: mininput,
+            ajax: ajax,
+            createSearchChoice: csc,
+            initSelection : initSel,
+            placeholder: "Start typing…",
+            allowClear: allow_clear
+        });
+    } else {
+        // go without the create search choice option
+        $(selector).select2({
+            minimumInputLength: mininput,
+            ajax: ajax,
+            initSelection : initSel,
+            placeholder: "Start typing…",
+            allowClear: allow_clear
+        });
     }
-    $(selector).select2(select2Param);
 }
