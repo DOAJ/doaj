@@ -40,15 +40,15 @@ application:publisher:accepted:notify:
   long: |
     Congratulations! The application submitted for **{application_title}** on {application_date} has been accepted for inclusion in DOAJ.
 
-    You may access the journal record from your Publisher dashboard: [{publisher_dashboard_url}]({publisher_dashboard_url}) using your DOAJ username and password.
+    You may access the journal record from your Publisher dashboard: [{publisher_dashboard_url}]({publisher_dashboard_url}) using your DOAJ account ID or email address, and password.
 
-    If there are changes or updates to the information about your journal at any time after it has been accepted, please submit an Update Request from your Publisher dashboard promptly. Please be aware that failure to do this may result in removal of your journal from DOAJ.
+    If there are changes or updates to the information about your journal at any time after it has been accepted, please [submit an Update Request](https://doaj.org/publisher/journal) from your Publisher dashboard promptly. Failure to do this promptly may result in the withdrawal of your journal from DOAJ.
 
-    How to submit an Update Request: [{faq_url}#how-do-i-update-the-information-about-my-journal]({faq_url}#how-do-i-update-the-information-about-my-journal)
+    [How to submit an Update Request](https://doaj.org/apply/publisher-responsibilities/#keeping-your-journal-records-up-to-date)
 
     To increase the visibility, impact, distribution and usage of your journal content, we encourage you to upload article metadata for this journal to DOAJ as soon as possible.
 
-    How to upload article metadata: [{faq_url}#how-do-i-upload-article-metadata]({faq_url}#how-do-i-upload-article-metadata)
+    [How to upload article metadata](https://doaj.org/docs/faq/#uploading-article-metadata)
 
     We are delighted to welcome this journal into DOAJ. Do not hesitate to contact us at [helpdesk@doaj.org](mailto:helpdesk@doaj.org) if you have any questions.
   short:
@@ -142,7 +142,7 @@ update_request:publisher:rejected:notify:
   short:
     Your update request ({issns}) was rejected
 
-journal:assed:discontinuing_soon:notify:
+journal:maned:discontinuing_soon:notify:
   long: |
     Journal "{title}" (id: {id}) will discontinue in {days} days.
   short:
