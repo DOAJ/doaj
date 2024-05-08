@@ -1,4 +1,6 @@
-from typing import Any
+from typing import Any, Optional
+
+from portality.dao import DomainObject
 # import the versioned objects, so that the current version is the default one
 from portality.models.v2 import shared_structs
 from portality.models.v2.bibjson import JournalLikeBibJSON
@@ -32,7 +34,7 @@ from portality.models.autocheck import Autocheck
 import sys
 
 
-def lookup_model(name='', capitalize=True, split_on="_"):
+def lookup_model(name='', capitalize=True, split_on="_") -> Optional[DomainObject]:
     parts = name.split(split_on)
     if capitalize:
         parts = [p.capitalize() for p in parts]

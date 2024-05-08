@@ -2151,14 +2151,17 @@ var formulaic = {
                 let mininput = this.params.min_input === undefined ? 3 : this.params.min_input;
                 let include_input = this.params.include === undefined ? true : this.params.include;
                 let allow_clear = this.params.allow_clear_input === undefined ? true : this.params.allow_clear_input;
+                const id_field = this.params.id_field;
 
+                let url = `${current_scheme}//${current_domain}/autocomplete/${doc_type}/${doc_field}`;
+                if (id_field) {
+                    url +=  `/${id_field}`;
+                }
                 let ajax = {
-                    url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
+                    url: url,
                     dataType: 'json',
                     data: function (term, page) {
-                        return {
-                            q: term
-                        };
+                        return { q: term };
                     },
                     results: function (data, page) {
                         return { results: data["suggestions"] };

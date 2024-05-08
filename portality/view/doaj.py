@@ -229,22 +229,23 @@ def get_from_local_store(container, filename):
     file_handle = localStore.get(container, filename)
     return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
 
+def _no_suggestions_response():
+    return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
     prefix = request.args.get('q', '')
     if not prefix:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
+        return _no_suggestions_response()  # select2 does not understand 400, which is the correct code here...
 
     m = models.lookup_model(doc_type)
     if not m:
-        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
+        return _no_suggestions_response()  # select2 does not understand 404, which is the correct code here...
 
     size = request.args.get('size', 5)
 
     filter_field = app.config.get("AUTOCOMPLETE_ADVANCED_FIELD_MAPS", {}).get(field_name)
 
-    suggs = []
     if filter_field is None:
         suggs = m.autocomplete(field_name, prefix, size=size)
     else:
@@ -253,6 +254,22 @@ def autocomplete(doc_type, field_name):
     return jsonify({'suggestions': suggs})
     # you shouldn't return lists top-level in a JSON response:
     # http://flask.pocoo.org/docs/security/#json-security
+
+
+@blueprint.route('/autocomplete/<doc_type>/<field_name>/<id_field>', methods=["GET", "POST"])
+def autocomplete_pair(doc_type, field_name, id_field):
+    prefix = request.args.get('q', '')
+    if not prefix:
+        return _no_suggestions_response()  # select2 does not understand 400, which is the correct code here...
+
+    m = models.lookup_model(doc_type)
+    if not m:
+        return _no_suggestions_response()  # select2 does not understand 404, which is the correct code here...
+
+    size = request.args.get('size', 5)
+    suggs = m.autocomplete_pair(field_name, prefix.lower(), id_field, field_name, size=size)
+    return jsonify({'suggestions': suggs})
+
 
 
 def find_toc_journal_by_identifier(identifier):

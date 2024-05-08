@@ -7,7 +7,7 @@ import uuid
 from collections import UserDict
 from copy import deepcopy
 from datetime import timedelta
-from typing import List, Iterable, Union, Dict
+from typing import List, Iterable, Union, Dict, TypedDict
 
 import elasticsearch
 
@@ -24,6 +24,10 @@ if sys.version_info >= (3, 11):
 
 ES_MAPPING_MISSING_REGEX = re.compile(r'.*No mapping found for \[[a-zA-Z0-9-_\.]+?\] in order to sort on.*', re.DOTALL)
 CONTENT_TYPE_JSON = {'Content-Type': 'application/json'}
+
+class IdText(TypedDict):
+    id: str
+    text: str
 
 
 class ElasticSearchWriteException(Exception):
@@ -797,7 +801,7 @@ class DomainObject(UserDict, object):
         return cls.send_query(q.query())
 
     @classmethod
-    def advanced_autocomplete(cls, filter_field, facet_field, substring, size=5, prefix_only=True):
+    def advanced_autocomplete(cls, filter_field, facet_field, substring, size=5, prefix_only=True) -> List[IdText]:
         analyzed = True
         if " " in substring:
             analyzed = False
@@ -818,7 +822,7 @@ class DomainObject(UserDict, object):
         return result
 
     @classmethod
-    def autocomplete(cls, field, prefix, size=5):
+    def autocomplete(cls, field, prefix, size=5) -> List[IdText]:
         res = None
         # if there is a space in the prefix, the prefix query won't work, so we fall back to a wildcard
         # we only do this if we have to, because the wildcard query is a little expensive
@@ -834,6 +838,15 @@ class DomainObject(UserDict, object):
             # terms will now go to the front of the result list
             result.append({"id": term['key'], "text": term['key']})
         return result
+
+    @classmethod
+    def autocomplete_pair(cls, query_field, query_prefix, id_field, text_field, size=5) -> List[IdText]:
+        query = AutocompletePairQuery(query_field, query_prefix,
+                                      source_fields=[id_field, text_field],
+                                      size=size).query()
+        objs = cls.q2obj(q=query)
+        return [{"id": getattr(obj, id_field), "text": getattr(obj, text_field)} for obj in objs]
+
 
     @classmethod
     def q2obj(cls, **kwargs) -> List['Self']:
@@ -1058,6 +1071,25 @@ class WildcardAutocompleteQuery(object):
                 }
             }
         }
+
+
+class AutocompletePairQuery(object):
+    def __init__(self, query_field, query_value, source_fields=None, size=5):
+        self.query_field = query_field
+        self.query_value = query_value
+        self.source_fields = source_fields
+        self.size = size
+
+    def query(self):
+        query = {
+            "query": {
+                "prefix": {self.query_field: self.query_value}
+            },
+            "size": self.size
+        }
+        if self.source_fields is not None:
+            query["_source"] = self.source_fields
+        return query
 
 
 #########################################################################

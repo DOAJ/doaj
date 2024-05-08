@@ -640,7 +640,7 @@ def user_autocomplete():
 @ssl_required
 def eg_associates_dropdown():
     egn = request.values.get("egn")
-    eg = models.EditorGroup.pull_by_key("name", egn)
+    eg = models.EditorGroup.pull(egn)
 
     if eg is not None:
         editors = [eg.editor]

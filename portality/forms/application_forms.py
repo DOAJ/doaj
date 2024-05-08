@@ -1720,7 +1720,8 @@ class FieldDefinitions:
         "label": "Group",
         "input": "text",
         "widgets": [
-            {"autocomplete": {"type" : "editor_group", "field": "name", "include" : False}} # ~~^-> Autocomplete:FormWidget~~
+            {"autocomplete": {"type" : "editor_group", "field": "name", "include" : False,
+                              "id_field": "id" }} # ~~^-> Autocomplete:FormWidget~~
         ],
         "contexts" : {
             "editor" : {
@@ -1728,7 +1729,8 @@ class FieldDefinitions:
             },
             "admin" : {
                 "widgets" : [
-                    {"autocomplete": {"type": "editor_group", "field": "name", "include" : False}}, # ~~^-> Autocomplete:FormWidget~~
+                    {"autocomplete": {"type": "editor_group", "field": "name", "include" : False,
+                                      "id_field": "id"}}, # ~~^-> Autocomplete:FormWidget~~
                     {"load_editors" : {"field" : "editor"}}
                 ]
             }
@@ -2561,11 +2563,11 @@ def editor_choices(field, formulaic_context):
     if wtf is None:
         return [{"display" : "", "value" : ""}]
 
-    editor_group_name = wtf.data
-    if editor_group_name is None:
+    editor_group_id = wtf.data
+    if editor_group_id is None:
         return [{"display" : "", "value" : ""}]
     else:
-        eg = EditorGroup.pull_by_key("name", editor_group_name)
+        eg = EditorGroup.pull(editor_group_id)
         if eg is not None:
             editors = [eg.editor]
             editors += eg.associates
