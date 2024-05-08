@@ -776,11 +776,7 @@ class FormulaicField(object):
             for k, v in custom_args.items():
                 kwargs[k] = v
 
-        wtf = None
-        if wtfinst is not None:
-            wtf = wtfinst
-        else:
-            wtf = self.wtfield
+        wtf = self.wtfield
 
         if add_data_as_choice and hasattr(wtf, "choices") and wtf.data not in [c[0] for c in wtf.choices]:
             wtf.choices += [(wtf.data, wtf.data)]
