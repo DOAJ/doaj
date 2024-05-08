@@ -2168,7 +2168,6 @@ var formulaic = {
                     }
                 };
 
-                var csc = function(term) {return {"id":term, "text": term};};
 
                 var initSel = function (element, callback) {
                     var data = {id: element.val(), text: element.val()};
@@ -2179,26 +2178,18 @@ var formulaic = {
 
                 $(selector).on("focus", formulaic.widgets._select2_shift_focus);
 
+                let select2Param = {
+                    minimumInputLength: mininput,
+                    ajax: ajax,
+                    initSelection : initSel,
+                    allowClear: allow_clear,
+                    width: 'resolve'
+                };
                 if (include_input) {
                     // apply the create search choice
-                    $(selector).select2({
-                        minimumInputLength: mininput,
-                        ajax: ajax,
-                        createSearchChoice: csc,
-                        initSelection : initSel,
-                        allowClear: allow_clear,
-                        width: 'resolve'
-                    });
-                } else {
-                    // go without the create search choice option
-                    $(selector).select2({
-                        minimumInputLength: mininput,
-                        ajax: ajax,
-                        initSelection : initSel,
-                        allowClear: allow_clear,
-                        width: 'resolve'
-                    });
+                    select2Param.createSearchChoice = (term) => ({"id": term, "text": term});
                 }
+                $(selector).select2(select2Param);
 
                 $(selector).on("focus", formulaic.widgets._select2_shift_focus);
             };
