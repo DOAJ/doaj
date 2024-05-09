@@ -27,6 +27,7 @@ def name_to_id(model: Union[Application, Journal]):
 
 
 def id_to_name(model: Union[Application, Journal]):
+    # for rollback for only
     warnings.warn("TOBEREMOVE: rollback for debug only")
     eg_id = model.editor_group
     if eg_id is None:
