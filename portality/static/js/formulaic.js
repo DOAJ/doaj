@@ -2170,8 +2170,25 @@ var formulaic = {
 
 
                 var initSel = function (element, callback) {
-                    var data = {id: element.val(), text: element.val()};
-                    callback(data);
+                    function setIdText(id, text) {
+                        callback({id: id, text: text || id});
+                    }
+                    const eleVal = element.val();
+
+                    if (!id_field) {
+                        setIdText(eleVal, eleVal);
+                        return;
+                    }
+
+                    $.ajax({
+                        type : "GET",
+                        data : {id : eleVal},
+                        dataType: "json",
+                        url: `${current_scheme}//${current_domain}/autocomplete-text/${doc_type}/${doc_field}/${id_field}`,
+                        success: function(resp) {
+                            setIdText(eleVal, resp?.text);
+                        }
+                    })
                 };
 
                 let selector = "[name='" + this.fieldDef.name + "']";

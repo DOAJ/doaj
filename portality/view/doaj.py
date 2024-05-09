@@ -3,6 +3,7 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
+from typing import Optional
 
 from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
@@ -13,6 +14,7 @@ from portality import dao
 from portality import models
 from portality import store
 from portality.core import app
+from portality.dao import IdTextTermQuery
 from portality.decorators import ssl_required, api_key_required
 from portality.forms.application_forms import JournalFormFactory
 from portality.lcc import lcc_jstree
@@ -229,8 +231,10 @@ def get_from_local_store(container, filename):
     file_handle = localStore.get(container, filename)
     return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
 
+
 def _no_suggestions_response():
     return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})
+
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
@@ -269,6 +273,40 @@ def autocomplete_pair(doc_type, field_name, id_field):
     size = request.args.get('size', 5)
     suggs = m.autocomplete_pair(field_name, prefix.lower(), id_field, field_name, size=size)
     return jsonify({'suggestions': suggs})
+
+
+@blueprint.route('/autocomplete-text/<doc_type>/<field_name>/<id_field>', methods=["GET", "POST"])
+def autocomplete_text_mapping(doc_type, field_name, id_field):
+    """
+    This route is used by the autocomplete widget to get the text value by id
+    """
+
+    id_value = request.args.get('id')
+    text = id_text_mapping(doc_type, field_name, id_field, id_value)
+    return jsonify({'id': id_value, 'text': text})
+
+
+def id_text_mapping(doc_type, field_name, id_field, id_value) -> Optional[str]:
+
+    query_factory_mapping = {
+        ('editor_group', 'id', 'name', ): lambda: IdTextTermQuery(id_field, id_value, field_name).query(),
+    }
+    query_factory = query_factory_mapping.get((doc_type, id_field, field_name))
+    if not query_factory:
+        app.logger.warning(f"Unsupported id_text_mapping for "
+                           f"doc_type[{doc_type}], field_name[{field_name}], id_field[{id_field}]")
+        return None
+
+    if not id_value:
+        return None
+
+    m = models.lookup_model(doc_type)
+    if not m:
+        app.logger.warning(f"model not found for doc_type[{doc_type}]")
+        return None
+
+    query = query_factory()
+    return m.get_target_value(query, field_name)
 
 
 

@@ -7,7 +7,7 @@ import uuid
 from collections import UserDict
 from copy import deepcopy
 from datetime import timedelta
-from typing import List, Iterable, Union, Dict, TypedDict
+from typing import List, Iterable, Union, Dict, TypedDict, Optional
 
 import elasticsearch
 
@@ -24,6 +24,7 @@ if sys.version_info >= (3, 11):
 
 ES_MAPPING_MISSING_REGEX = re.compile(r'.*No mapping found for \[[a-zA-Z0-9-_\.]+?\] in order to sort on.*', re.DOTALL)
 CONTENT_TYPE_JSON = {'Content-Type': 'application/json'}
+
 
 class IdText(TypedDict):
     id: str
@@ -847,6 +848,20 @@ class DomainObject(UserDict, object):
         objs = cls.q2obj(q=query)
         return [{"id": getattr(obj, id_field), "text": getattr(obj, text_field)} for obj in objs]
 
+    @classmethod
+    def get_target_value(cls, query, field_name) -> Optional[str]:
+        query['_source'] = [field_name]
+        query['size'] = 2
+        res = cls.query(q=query)
+        size = res.get('hits', {}).get('total', {}).get('value', 0)
+
+        if size > 1:
+            app.logger.debug("More than one record found for query {q}".format(q=json.dumps(query, indent=2)))
+
+        if size > 0:
+            return res['hits']['hits'][0]['_source'].get(field_name)
+
+        return None
 
     @classmethod
     def q2obj(cls, **kwargs) -> List['Self']:
@@ -1137,6 +1152,22 @@ class Facetview2(object):
     @staticmethod
     def url_encode_query(query):
         return urllib.parse.quote(json.dumps(query).replace(' ', ''))
+
+
+#########################################################################
+# id to text Queries
+#########################################################################
+
+class IdTextTermQuery:
+    def __init__(self, id_field, id_value, field_name):
+        self.id_field = id_field
+        self.id_value = id_value
+        self.field_name = field_name
+
+    def query(self):
+        return {
+            "query": {"term": {self.id_field: self.id_value}}
+        }
 
 
 def patch_model_for_bulk(obj: DomainObject):
