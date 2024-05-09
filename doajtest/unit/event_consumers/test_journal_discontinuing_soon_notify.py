@@ -14,7 +14,7 @@ def pull_application(cls, id):
     return app
 
 @classmethod
-def pull_by_key(cls, key, value):
+def pull_editor_group(cls, value):
     ed = models.EditorGroup()
     acc = models.Account()
     acc.set_id('testuser')
@@ -30,13 +30,13 @@ class TestJournalDiscontinuingSoonNotify(DoajTestCase):
         super(TestJournalDiscontinuingSoonNotify, self).setUp()
         self.pull_application = models.Application.pull
         models.Application.pull = pull_application
-        self.pull_by_key = models.EditorGroup.pull_by_key
-        models.EditorGroup.pull_by_key = pull_by_key
+        self.pull_editor_group = models.EditorGroup.pull
+        models.EditorGroup.pull = pull_editor_group
 
     def tearDown(self):
         super(TestJournalDiscontinuingSoonNotify, self).tearDown()
         models.Application.pull = self.pull_application
-        models.EditorGroup.pull_by_key = self.pull_by_key
+        models.EditorGroup.pull = self.pull_editor_group
 
     def test_consumes(self):
 

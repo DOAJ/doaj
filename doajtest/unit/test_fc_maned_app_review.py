@@ -17,7 +17,7 @@ from portality.forms.application_processors import AdminApplication
 #####################################################################
 
 @classmethod
-def editor_group_pull(cls, field, value):
+def editor_group_pull(cls, value):
     eg = models.EditorGroup()
     eg.set_editor("eddie")
     eg.set_associates(["associate", "assan"])
@@ -61,8 +61,8 @@ class TestManEdAppReview(DoajTestCase):
     def setUp(self):
         super(TestManEdAppReview, self).setUp()
 
-        self.editor_group_pull = models.EditorGroup.pull_by_key
-        models.EditorGroup.pull_by_key = editor_group_pull
+        self.editor_group_pull = models.EditorGroup.pull
+        models.EditorGroup.pull = editor_group_pull
 
         self.old_lcc_choices = lcc.lcc_choices
         lcc.lcc_choices = mock_lcc_choices

@@ -13,7 +13,7 @@ from doajtest.fixtures import JournalFixtureFactory
 #####################################################################
 
 @classmethod
-def editor_group_pull(cls, field, value):
+def editor_group_pull(cls, value):
     eg = models.EditorGroup()
     eg.set_editor("eddie")
     eg.set_associates(["associate", "assan"])
@@ -39,15 +39,15 @@ class TestEditorJournalReview(DoajTestCase):
     def setUp(self):
         super(TestEditorJournalReview, self).setUp()
 
-        self.editor_group_pull = models.EditorGroup.pull_by_key
-        models.EditorGroup.pull_by_key = editor_group_pull
+        self.editor_group_pull = models.EditorGroup.pull
+        models.EditorGroup.pull = editor_group_pull
 
         self.old_lookup_code = lcc.lookup_code
         lcc.lookup_code = mock_lookup_code
 
     def tearDown(self):
         super(TestEditorJournalReview, self).tearDown()
-        models.EditorGroup.pull_by_key = self.editor_group_pull
+        models.EditorGroup.pull = self.editor_group_pull
         lcc.lookup_code = self.old_lookup_code
 
 

@@ -41,7 +41,8 @@ class TestApplicationManedReadyNotify(DoajTestCase):
         acc.save()
 
         eg = models.EditorGroup()
-        eg.set_name(app.editor_group)
+        eg.set_name("test group")
+        eg.set_id(app.editor_group)
         eg.set_maned(acc.id)
         eg.save(blocking=True)
 
