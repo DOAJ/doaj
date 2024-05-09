@@ -2175,7 +2175,11 @@ var formulaic = {
                     }
                     const eleVal = element.val();
 
-                    if (!id_field) {
+                    if (!id_field || !eleVal) {
+                        /*
+                        no need to query text value if id_field is not provided (not id text mapping)
+                        or if the element value is empty
+                         */
                         setIdText(eleVal, eleVal);
                         return;
                     }
