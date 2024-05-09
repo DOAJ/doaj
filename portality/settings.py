@@ -1518,9 +1518,6 @@ SELENIUM_DOAJ_HOST = '172.17.0.1'
 SELENIUM_DOAJ_PORT = 5014
 
 
-
-
-
 #############################################
 # Google Sheet
 # ~~->GoogleSheet:ExternalService~~
@@ -1551,3 +1548,12 @@ AUTOCHECK_INCOMING = False
 
 AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
 AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
+
+
+##################################################
+# Background jobs Management settings
+
+# list of actions name that will be cleaned up if they are redundant
+BGJOB_MANAGE_REDUNDANT_ACTIONS = [
+    'read_news', 'journal_csv'
+]
