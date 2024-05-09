@@ -23,7 +23,8 @@ class ApplicationService(object):
     ~~Application:Service->DOAJ:Service~~
     """
 
-    def prevent_concurrent_ur_submission(self, ur, record_if_not_concurrent=True):
+    @staticmethod
+    def prevent_concurrent_ur_submission(ur: models.Application, record_if_not_concurrent=True):
         """
         Prevent duplicated update request submission
         :param ur:
@@ -31,11 +32,13 @@ class ApplicationService(object):
         :return:
         """
         cs = DOAJ.concurrencyPreventionService()
-        if cs.checkConcurrency(ur.current_journal, ur.id):
-            raise exceptions.ConcurrentUpdateRequestException(Messages.CONCURRENT_UPDATE_REQUEST)
 
-        if record_if_not_concurrent:
-            cs.storeConcurrency(ur.current_journal, ur.id, timeout=app.config.get("UR_CONCURRENCY_TIMEOUT", 10))
+        if ur.current_journal is not None and ur.id is not None:
+            if cs.check_concurrency(ur.current_journal, ur.id):
+                raise exceptions.ConcurrentUpdateRequestException(Messages.CONCURRENT_UPDATE_REQUEST)
+
+            if record_if_not_concurrent:
+                cs.store_concurrency(ur.current_journal, ur.id, timeout=app.config.get("UR_CONCURRENCY_TIMEOUT", 10))
 
     def reject_application(self, application, account, provenance=True, note=None, manual_update=True):
         """
