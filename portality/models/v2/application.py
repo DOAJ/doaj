@@ -7,6 +7,9 @@ from portality.models.v2 import shared_structs
 from portality.models.v2.journal import JournalLikeObject, Journal
 from portality.lib.coerce import COERCE_MAP
 from portality.dao import DomainObject
+from portality.bll import DOAJ
+
+
 
 APPLICATION_STRUCT = {
     "objects": [
@@ -208,8 +211,17 @@ class Application(JournalLikeObject):
             self.set_last_updated()
 
     def save(self, sync_owner=True, **kwargs):
+        if self.id is None:
+            self.set_id(self.makeid())
+
+        if self.application_type == constants.APPLICATION_TYPE_UPDATE_REQUEST:
+            # ~~-> Concurrency_Prevention:Service ~~
+            cs = DOAJ.applicationService()
+            cs.prevent_concurrent_ur_submission(self, record_if_not_concurrent=True)
+
         self.prep()
         self.verify_against_struct()
+
         if sync_owner:
             self._sync_owner_to_journal()
         return super(Application, self).save(**kwargs)
