@@ -62,6 +62,7 @@ TODO_ASSOCIATE_ALL_APPLICATIONS = "todo_associate_all_applications"
 
 # Roles
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
+ROLE_API = "api"
 
 EVENT_ACCOUNT_CREATED = "account:created"
 EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
