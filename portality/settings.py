@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.6.0"
+DOAJ_VERSION = "6.6.11"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -72,8 +72,8 @@ ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
-
-ES_READ_TIMEOUT = '1m'
+ELASTICSEARCH_REQ_TIMEOUT = 20  # Seconds - used in core.py for whole ES connection request timeout
+ES_READ_TIMEOUT = '2m'  # Minutes - used in DAO for searches
 
 #####################################################
 # Elastic APM config  (MUST be configured in env file)
@@ -390,6 +390,7 @@ ASSOC_ED_IDLE_DAYS = 10
 ASSOC_ED_IDLE_WEEKS = 3
 
 # Which statuses the notification queries should be filtered to show
+# ~~-> ApplicationStatuses:Config~~
 MAN_ED_NOTIFICATION_STATUSES = [
     constants.APPLICATION_STATUS_PENDING,
     constants.APPLICATION_STATUS_IN_PROGRESS, constants.APPLICATION_STATUS_COMPLETED,
@@ -445,12 +446,15 @@ HUEY_SCHEDULE = {
     "anon_export": {"month": "*", "day": "10", "day_of_week": "*", "hour": "6", "minute": "30"},
     "old_data_cleanup": {"month": "*", "day": "12", "day_of_week": "*", "hour": "6", "minute": "30"},
     "monitor_bgjobs": {"month": "*", "day": "*/6", "day_of_week": "*", "hour": "10", "minute": "0"},
-    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"}
+    "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
+    "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "*/30"},
 }
 
 HUEY_TASKS = {
     "ingest_articles": {"retries": 10, "retry_delay": 15},
-    "preserve": {"retries": 0, "retry_delay": 15}
+    "preserve": {"retries": 0, "retry_delay": 15},
+    "application_autochecks": {"retries": 0, "retry_delay": 15},
+    "journal_autochecks": {"retries": 0, "retry_delay": 15}
 }
 
 ####################################
@@ -481,7 +485,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Application", # ~~->Application:Model~~
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
     "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
-    "portality.models.background.BackgroundJob" # ~~-> BackgroundJob:Model~~
+    "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
+    "portality.models.autocheck.Autocheck" # ~~-> Autocheck:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -1492,6 +1497,15 @@ TOURS = {
             "name": "Your group activity",
             "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
         }
+    ],
+    "/admin/journal/*": [
+        {
+            "roles": ["admin"],
+            "selectors": [".autochecks-manager-toggle"],
+            "content_id": "admin_journal_autochecks",
+            "name": "Autochecks",
+            "description": "Autochecks are available on some journals, and can help you to identify potential problems with the journal's metadata."
+        }
     ]
 }
 
@@ -1509,3 +1523,37 @@ SELENIUM_REMOTE_URL = 'http://localhost:4444/wd/hub'
 SELENIUM_DOAJ_HOST = '172.17.0.1'
 SELENIUM_DOAJ_PORT = 5014
 
+
+
+
+
+#############################################
+# Google Sheet
+# ~~->GoogleSheet:ExternalService~~
+
+# Google Sheet API
+# value should be key file path of json, empty string means disabled
+GOOGLE_KEY_PATH = ''
+
+
+
+#############################################
+# Datalog
+# ~~->Datalog:Feature~~
+
+### Datalog for Journal Added
+
+# google sheet filename for datalog ja
+DATALOG_JA_FILENAME = 'DOAJ: journals added and withdrawn'
+
+# worksheet name or tab name that datalog will write to
+DATALOG_JA_WORKSHEET_NAME = 'Added'
+
+##################################################
+# Autocheck Resource configurations
+
+# Should we autocheck incoming applications and update requests
+AUTOCHECK_INCOMING = False
+
+AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
+AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests

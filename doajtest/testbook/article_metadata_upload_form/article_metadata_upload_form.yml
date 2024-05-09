@@ -10,7 +10,7 @@ tests:
   - step: Do not fill in any data yet. Click "Add Article" button at the bottom of
       the page
     results:
-    - Black popup "Please fill that field in" below the Title field is shown
+    - You are scrolled back up to the Title field
     - Title field is focussed (it is possible to type straight into the field without
       the need to click in it)
   - step: "In \"Article Title\" textbox enter valid article title\n (any string of\
@@ -21,10 +21,10 @@ tests:
     - 'Red error: ''You must provide the Full-Text URL or the DOI'' appears under
       the URL field and the DOI field'
     - Red error "Please provide at least one author" under Authors fields appears
-    - Red error "Either this field or Journal ISSN (online version) is required" under
-      "Journal ISSN (print version)" appears
-    - Red error "Either this field or Journal ISSN (print version) is required" under
-      "Journal ISSN (online version)" appears
+    - Red error "Either this field or Online ISSN is required" under
+      "ISSN, Print" appears
+    - Red error "Either this field or Print ISSN is required" under
+      "ISSN, Online" appears
   - step: In Authors section click on orange "Add more authors" button
     results:
     - One row for author is added
@@ -55,11 +55,10 @@ tests:
   - step: Select 2 identical ISSNs
   - step: Click "Add Article" button
     results:
-    - 'Errors: "This field must contain a different value to the field ''eissn''"
-      and "This field must contain a different value to the field ''pissn''" are shown
-      below ISSNs inputs'
+    - 'The error: "The Print and Online ISSNs supplied are identical. If you supply 2 ISSNs they must be different."
+      is shown below each ISSN field.'
   - step: Choose different Online ISSN
   - step: Click "Add Article" button
     results:
-    - 'At the top of the page you see the confirmation message:  Article created/updated'
+    - 'At the top of the page you see the confirmation message:  Article created/updated (Dismiss)'
     - https://docs.google.com/spreadsheets/d/1KGv7DEwocDvdbT8giN9Aw2EWtZGzKympouEw_uR2q18/edit#gid=782367369

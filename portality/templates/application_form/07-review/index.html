@@ -5,9 +5,9 @@
 
 {% set t = { "val": 0} %}
 {% if obj %}
-  <h1>{{ obj.data.bibjson.title }}</h1>
+  <legend class="form__legend"><div>{{ obj.data.bibjson.title }}</div></legend>
 {% else %}
-  <h1><span data-feather="eye"></span> Review your answers</h1>
+  <legend class="form__legend"><div><span data-feather="eye"></span> Review your answers</div></legend>
 {% endif %}
 
 <table id="review_table" class="review-table">

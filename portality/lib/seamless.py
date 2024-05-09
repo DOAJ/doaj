@@ -164,6 +164,33 @@ class SeamlessException(Exception):
 
 
 class SeamlessMixin(object):
+    """
+    
+    remember merge data property if you Mixin with DomainObject
+
+    ------
+    Example
+    ```python
+    class DatalogJournalAdded(SeamlessMixin, DomainObject):
+        ...
+
+        @property
+        def data(self):
+            return self.__seamless__.data
+    ```
+
+    remember to setup __init__ like below, otherwise your object wrap in iterable will not work
+
+    ----
+    ```python
+    def __init__(self, **kwargs):
+        super(DatalogJournalAdded, self).__init__(raw=kwargs)
+
+    ```
+
+
+    
+    """
 
     __SEAMLESS_STRUCT__ = None
 
@@ -467,6 +494,32 @@ class SeamlessData(object):
 
         # otherwise, append
         current.append(val)
+
+    def exists_in_list(self, path, val=None, matchsub=None, apply_struct_on_matchsub=True):
+        l = self.get_list(path)
+
+        for entry in l:
+            if val is not None:
+                if entry == val:
+                    return True
+            elif matchsub is not None:
+                # attempt to coerce the sub
+                if apply_struct_on_matchsub:
+                    try:
+                        type, struct, instructions = self._struct.lookup(path)
+                        if struct is not None:
+                            matchsub = struct.construct(matchsub, struct).data
+                    except:
+                        pass
+
+                matches = 0
+                for k, v in matchsub.items():
+                    if entry.get(k) == v:
+                        matches += 1
+                if matches == len(list(matchsub.keys())):
+                    return True
+
+        return False
 
     def delete_from_list(self, path, val=None, matchsub=None, prune=True, apply_struct_on_matchsub=True):
         """

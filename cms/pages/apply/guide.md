@@ -106,8 +106,6 @@ Journals that publish special issues or other content curated by guest editors m
 - The Editor-in-Chief or dedicated board members must oversee the guest editors
 - Papers submitted to a special issue by the guest editor(s) must be handled under an independent review process and make up no more than 25% of the issue's total
 
-DOAJ will not accept a journal if all content in the last year/volume is published as special issues.
-
 ---
 
 ### Licensing
@@ -225,7 +223,7 @@ Our criteria are available in:
 - [Chinese](https://zenodo.org/record/4633341)
 - [Danish](https://pro.kb.dk/danske-open-access-tidsskrifter-og-directory-open-access-journals/basisbetingelser-indeksering)
 - [Finnish](https://docs.google.com/document/d/1BLuaFerSw0G4L2GCVcGeu3rB7SXT7fWL0px26ME9jo0/edit?usp=sharing)
-- [French (Canadian)](https://drive.google.com/drive/folders/1-9FraAimhA9Ks64tvKE_W4wsQ8LNob9a?usp=sharing)
+- [French](https://www.erudit.org/public/documents/guidecandidatureDOAJ.pdf) - hosted by Érudit
 - [German](https://bibliothek.thws.de/leitfaden-fuer-die-zeitschriftenregistrierung-bei-doaj/)
 - [Japanese](https://drive.google.com/file/d/1MDRlcc7SJnv8yOlZ1aCqbivXOZevxH4a/view?usp=sharing)
 - [Lithuanian](https://drive.google.com/file/d/1f7YXn6cXGXhDH9AbPJyOiM7_tHVRMe4j/view?usp=sharing)
@@ -236,13 +234,14 @@ Our criteria are available in:
 
 ---
 
-## Change log
+## Version history
 
-This is Version 2.1 of the Guide to applying.
+This is Version 2.2 of our Guide to applying.
 
-*Version 2.1 (November 2023 - changed Editor-in-Chief to Head of Editorial in the Appeals section; removed the 'Updating your journal record' section as this information is now on the Publisher information page.)*<br>
+*Version 2.2 (January 2024 - removed 'DOAJ will not accept a journal if all content in the last year/volume is published as special issues' from the Special Issues section of the Basic criteria.)*<br>
+<s>Version 2.1 (November 2023 - changed Editor-in-Chief to Head of Editorial in the Appeals section; removed the 'Updating your journal record' section as this information is now on the Publisher information page.)</s><br>
 <s>Version 2.0 (November 2023 - addition of new criteria around special issues, smaller changes for clarity and plain English.)</s><br>
 <s>Version: 1.3 (April 2023 - further clarification to endogeny, displaying journal rankings, information about author charges and reviewers, flipped journals and journals/publishers with multiple exclusions )</s><br>
 <s>Version: 1.2 (February 2022 - extra copyright and licensing information were moved to a separate page)</s><br>
 <s>Version: 1.1 (December 2021 - a clarification to endogeny criterion)</s><br>
-<s>Version 1.0 (November 1.0)
+<s>Version 1.0 (November 1.0)</s>

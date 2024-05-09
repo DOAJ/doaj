@@ -49,3 +49,11 @@ But the license applies to the readers **and** the author when:
 ## Further reading
 
 Further reading and more examples are [available as a downloadable presentation](https://drive.google.com/drive/folders/190BgMV0ImGk-gUpHu5ai_R-uvO8NDAB8?usp=sharing).
+
+## In other languages
+
+[French](https://www.erudit.org/public/documents/licencedroitsauteursDOAJ.pdf) - hosted by Érudit
+
+## Version history
+
+This is Version 1 of our Licensing and copyright page.

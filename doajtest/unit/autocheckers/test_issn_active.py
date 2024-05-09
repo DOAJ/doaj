@@ -1,0 +1,105 @@
+from doajtest.helpers import DoajTestCase
+from doajtest.fixtures import ApplicationFixtureFactory
+from doajtest.mocks.autocheck_resource_bundle_Resource import ResourceBundleResourceMockFactory
+
+from portality.autocheck.checkers.issn_active import ISSNActive
+from portality import models
+from portality.autocheck.resource_bundle import Resource, ResourceBundle
+
+
+class TestISSNActive(DoajTestCase):
+    def setUp(self):
+        self.old_fetch = Resource.fetch
+        super(TestISSNActive, self).setUp()
+
+    def tearDown(self):
+        Resource.fetch = self.old_fetch
+        super(TestISSNActive, self).tearDown()
+
+    def test_01_issn_fetch_fail(self):
+        Resource.fetch = ResourceBundleResourceMockFactory.fail_fetch()
+
+        issn_active = ISSNActive()
+
+        form = {
+            "pissn": "1234-5678",
+            "eissn": "9876-5432"
+        }
+
+        source = ApplicationFixtureFactory.make_application_source()
+        app = models.Application(**source)
+
+        autochecks = models.Autocheck()
+        resources = ResourceBundle()
+
+        issn_active.check(form, app, autochecks, resources, logger=lambda x: x)
+
+        assert len(autochecks.checks) == 2
+        for anno in autochecks.checks:
+            assert anno.get("advice") == issn_active.UNABLE_TO_ACCESS
+
+    def test_02_not_found(self):
+        Resource.fetch = ResourceBundleResourceMockFactory.not_found_fetch()
+
+        issn_active = ISSNActive()
+
+        form = {
+            "pissn": "1234-5678",
+            "eissn": "9876-5432"
+        }
+
+        source = ApplicationFixtureFactory.make_application_source()
+        app = models.Application(**source)
+
+        autochecks = models.Autocheck()
+        resources = ResourceBundle()
+
+        issn_active.check(form, app, autochecks, resources, logger=lambda x: x)
+
+        assert len(autochecks.checks) == 2
+        for anno in autochecks.checks:
+            assert anno.get("advice") == issn_active.NOT_FOUND
+
+    def test_03_fully_validated(self):
+        Resource.fetch = ResourceBundleResourceMockFactory.no_contact_resource_fetch(version="Register")
+
+        issn_active = ISSNActive()
+
+        form = {
+            "pissn": "1234-5678",
+            "eissn": "9876-5432"
+        }
+
+        source = ApplicationFixtureFactory.make_application_source()
+        app = models.Application(**source)
+
+        autochecks = models.Autocheck()
+        resources = ResourceBundle()
+
+        issn_active.check(form, app, autochecks, resources, logger=lambda x: x)
+
+        assert len(autochecks.checks) == 2
+        for anno in autochecks.checks:
+            assert anno.get("advice") == issn_active.FULLY_VALIDATED
+
+    def test_04_not_validated(self):
+        Resource.fetch = ResourceBundleResourceMockFactory.no_contact_resource_fetch(version="Pending")
+
+        issn_active = ISSNActive()
+
+        form = {
+            "pissn": "1234-5678",
+            "eissn": "9876-5432"
+        }
+
+        source = ApplicationFixtureFactory.make_application_source()
+        app = models.Application(**source)
+
+        autochecks = models.Autocheck()
+        resources = ResourceBundle()
+
+        issn_active.check(form, app, autochecks, resources, logger=lambda x: x)
+
+        assert len(autochecks.checks) == 2
+        for anno in autochecks.checks:
+            assert anno.get("advice") == issn_active.NOT_VALIDATED

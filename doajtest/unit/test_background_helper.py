@@ -4,6 +4,7 @@ import huey.api
 
 from doajtest import helpers
 from portality import constants
+from portality.background import BackgroundTask
 from portality.core import app
 from portality.tasks.helpers import background_helper
 from portality.tasks.redis_huey import long_running, main_queue
@@ -23,6 +24,13 @@ class TestBackgroundHelper(TestCase):
                 task_queue, excepted = case
                 result = background_helper.get_queue_id_by_task_queue(task_queue)
                 assert excepted == result
+
+
+def fixture_bgtask_class(action_name):
+    class FakeBgtask(BackgroundTask):
+        __action__ = action_name
+
+    return FakeBgtask
 
 
 class TestRedisHueyTaskHelper(TestCase):
@@ -49,7 +57,7 @@ class TestRedisHueyTaskHelper(TestCase):
         helpers.patch_config(app, cls.org_config)
 
     def test_register_schedule(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue, self.task_name_a)
+        helper = background_helper.RedisHueyTaskHelper(main_queue, fixture_bgtask_class(self.task_name_a))
 
         @helper.register_schedule
         def _fn():
@@ -58,14 +66,15 @@ class TestRedisHueyTaskHelper(TestCase):
         assert isinstance(_fn, huey.api.TaskWrapper)
 
     def test_register_schedule__schedule_not_found(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue, self.task_name_schedule_not_exist)
+        helper = background_helper.RedisHueyTaskHelper(main_queue,
+                                                       fixture_bgtask_class(self.task_name_schedule_not_exist))
         with self.assertRaises(RuntimeError):
             @helper.register_schedule
             def _fn():
                 print('fake fn')
 
     def test_register_execute(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue, self.task_name_b)
+        helper = background_helper.RedisHueyTaskHelper(main_queue, fixture_bgtask_class(self.task_name_b))
 
         @helper.register_execute(is_load_config=True)
         def _fn():
@@ -75,7 +84,8 @@ class TestRedisHueyTaskHelper(TestCase):
         assert _fn.retries == self.expected_retries
 
     def test_register_execute__config_not_found(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue, self.task_name_schedule_not_exist)
+        helper = background_helper.RedisHueyTaskHelper(main_queue,
+                                                       fixture_bgtask_class(self.task_name_schedule_not_exist))
 
         with self.assertRaises(RuntimeError):
             @helper.register_execute(is_load_config=True)
@@ -83,7 +93,8 @@ class TestRedisHueyTaskHelper(TestCase):
                 print('fake fn')
 
     def test_register_execute__without_load_config(self):
-        helper = background_helper.RedisHueyTaskHelper(main_queue, self.task_name_schedule_not_exist)
+        helper = background_helper.RedisHueyTaskHelper(main_queue,
+                                                       fixture_bgtask_class(self.task_name_schedule_not_exist))
 
         @helper.register_execute(is_load_config=False)
         def _fn():

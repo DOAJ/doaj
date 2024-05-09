@@ -1,6 +1,18 @@
 # List of sponsors separated by tiers (premier, sustaining, basic)
 # ~~Sponsors:Data~~
 
+- name: Pensoft Publishers
+  url: https://pensoft.net/media
+  logo: Pensoft.png
+
+- name: Our Research
+  url: https://ourresearch.org/
+  logo: OurResearch.png
+
+- name: SirsiDynix
+  url: https://www.sirsidynix.com/
+  logo: Sirsi.png
+  
 - name: Royal Society of Chemistry
   url: https://www.rsc.org/
   logo: rsc.png
@@ -25,13 +37,13 @@
   url: https://www.ebsco.com/
   logo: ebsco.svg
 
+- name: Springer Nature Ltd
+  url: https://www.springernature.com/gp
+  logo: SN_stack_logo.png
+
 - name: Frontiers
   url: https://www.frontiersin.org/
   logo: frontiers.svg
-
-- name: Knowledge E
-  url: https://knowledgee.com/
-  logo: knowledgee.png
 
 - name: MDPI
   url: https://www.mdpi.com/
@@ -71,7 +83,7 @@
 
 - name: De Gruyter
   url: https://www.degruyter.com/
-  logo: Degruyter.svg
+  logo: de_gruyter.svg
 
 - name: eLife Sciences Publications
   url: https://elifesciences.org/
@@ -96,10 +108,6 @@
 - name: International Union for Conservation of Nature
   url: https://iucn.org/
   logo: IUCN.svg
-
-- name: JMIR Publications
-  url: https://jmirpublications.com/
-  logo: jmir.svg
 
 - name: Karger
   url: https://www.karger.com/
@@ -144,4 +152,8 @@
 - name: Beijing Lanbotu Technology Co
   url: https://xueshu.libtools.com.cn/?tenant_id=1 
   logo: Beijing.jpg
+
+- name: Association of Learned and Professional Society Publishers
+  url: https://www.alpsp.org/
+  logo: ALPSP.png   
 
