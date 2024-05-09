@@ -2,19 +2,20 @@ from portality.core import app
 import redis
 
 
-class ConcurrencyPreventionService():
+class ConcurrencyPreventionService:
     def __init__(self):
         self.rs = redis.Redis(host=app.config.get("REDIS_HOST"), port=app.config.get("REDIS_PORT"))
 
-    def checkConcurrency(self, key, id):
+    def check_concurrency(self, key, _id):
         """
         Checks whether concurrent request has been submitted
         Returns true if clash is detected
         """
         value = self.rs.get(key)
-        return value is not None and value != id
+        return value is not None and value != _id
 
-    def storeConcurrency(self, key, id, timeout=None):
+    def store_concurrency(self, key, _id, timeout=None):
         if timeout is None:
             timeout = app.config.get("UR_CONCURRENCY_TIMEOUT", 10)
-        self.rs.set(key, id, ex=timeout)
+        if timeout > 0:
+            self.rs.set(key, _id, ex=timeout)

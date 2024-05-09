@@ -1,4 +1,4 @@
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, patch_config
 from doajtest.fixtures import JournalFixtureFactory
 from portality.models import Journal
 from portality.bll.exceptions import ConcurrentUpdateRequestException
@@ -6,12 +6,16 @@ from portality.bll import DOAJ
 from portality.core import app
 import time
 
+
 class TestConcurrentSaves(DoajTestCase):
     def setUp(self):
         super(TestConcurrentSaves, self).setUp()
+        # Re-enable concurrency check for this test
+        self.original_config = patch_config(self.app_test, {"UR_CONCURRENCY_TIMEOUT": 10})
 
     def tearDown(self):
         super(TestConcurrentSaves, self).tearDown()
+        patch_config(self.app_test, self.original_config)
 
     def test_01_update_request(self):
         # we need a journal to create update requests for
