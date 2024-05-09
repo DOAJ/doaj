@@ -239,9 +239,9 @@ def editor_notifications(emails_dict, limit=None):
     group_stats = find_group_stats(EdAppQuery(status_filters).query(), limit)
 
     # Get the email addresses for the editor in charge of each group, Add the template to their email
-    for (group_name, group_count) in group_stats:
+    for (group_id, group_count) in group_stats:
         # get editor group object by name
-        eg = models.EditorGroup.pull_by_key("name", group_name)
+        eg = models.EditorGroup.pull(group_id)
         if eg is None:
             continue
 
@@ -249,7 +249,8 @@ def editor_notifications(emails_dict, limit=None):
         editor = eg.get_editor_account()
         ed_email = editor.email
 
-        text = render_template('email/workflow_reminder_fragments/editor_groupcount_frag', num=group_count, ed_group=group_name, url=ed_url)
+        text = render_template('email/workflow_reminder_fragments/editor_groupcount_frag',
+                               num=group_count, ed_group=group_id, url=ed_url)
         _add_email_paragraph(emails_dict, ed_email, eg.editor, text)
 
     # Second note - records within editor group not touched for so long
@@ -264,9 +265,9 @@ def editor_notifications(emails_dict, limit=None):
     group_stats = find_group_stats(EdAgeQuery(newest_date_stamp, status_filters).query(), limit)
 
     # Get the email addresses for the editor in charge of each group, Add the template to their email
-    for (group_name, group_count) in group_stats:
+    for (group_id, group_count) in group_stats:
         # get editor group object by name
-        eg = models.EditorGroup.pull_by_key("name", group_name)
+        eg = models.EditorGroup.pull(group_id)
         if eg is None:
             continue
 
@@ -274,7 +275,8 @@ def editor_notifications(emails_dict, limit=None):
         editor = eg.get_editor_account()
         ed_email = editor.email
 
-        text = render_template('email/workflow_reminder_fragments/editor_age_frag', num=group_count, ed_group=group_name, url=ed_age_url, x_weeks=X_WEEKS)
+        text = render_template('email/workflow_reminder_fragments/editor_age_frag',
+                               num=group_count, ed_group=group_id, url=ed_age_url, x_weeks=X_WEEKS)
         _add_email_paragraph(emails_dict, ed_email, eg.editor, text)
 
 

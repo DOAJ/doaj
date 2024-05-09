@@ -505,13 +505,13 @@ class GroupMember(MultiFieldValidator):
         # lifted from from formcontext
         editor = field.data
         if editor is not None and editor != "":
-            editor_group_name = group_field.data
-            if editor_group_name is not None and editor_group_name != "":
-                eg = EditorGroup.pull_by_key("name", editor_group_name)
+            editor_group_id = group_field.data
+            if editor_group_id is not None and editor_group_id != "":
+                eg = EditorGroup.pull(editor_group_id)
                 if eg is not None:
                     if eg.is_member(editor):
                         return  # success - an editor group was found and our editor was in it
-                raise validators.ValidationError("Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_name))
+                raise validators.ValidationError("Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_id))
             else:
                 raise validators.ValidationError("An editor has been assigned without an editor group")
 

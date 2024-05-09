@@ -29,7 +29,7 @@ class ApplicationManedReadyNotify(EventConsumer):
             return
 
 
-        eg = models.EditorGroup.pull_by_key("name", application.editor_group)
+        eg = models.EditorGroup.pull(application.editor_group)
         managing_editor = eg.maned
         if not managing_editor:
             return
