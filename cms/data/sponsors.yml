@@ -65,10 +65,6 @@
   url: https://www.frontiersin.org/
   logo: frontiers.svg
 
-- name: Georg Thieme Verlag KG
-  url: https://www.thieme.com/
-  logo: thieme.svg  
-
 - name: Iași University of Life Sciences
   url: https://iuls.ro/en/
   logo: Lasi.png 
@@ -153,6 +149,10 @@
   url: https://www.taylorandfrancisgroup.com/
   logo: tf.svg  
 
+- name: Georg Thieme Verlag KG
+  url: https://www.thieme.com/
+  logo: thieme.svg  
+  
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg 
