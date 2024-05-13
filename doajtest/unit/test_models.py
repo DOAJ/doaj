@@ -1177,6 +1177,25 @@ class TestModels(DoajTestCase):
         res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher.name", "BioMed C")
         assert len(res) == 1, "autocomplete for 'BioMed C': found {}, expected 2".format(len(res))
 
+    def test_autocomplete_pair(self):
+        eg = models.EditorGroup()
+        eg.set_id("id-1")
+        eg.set_name("eg name 1")
+        eg.save()
+
+        eg = models.EditorGroup()
+        eg.set_id("id-2")
+        eg.set_name("eg name 2")
+        eg.save(blocking=True)
+
+        res = models.EditorGroup.autocomplete_pair('name', 'eg', 'id', 'name')
+        assert len(res) == 2
+        assert {r['id']:r['text'] for r in res} == {'id-1': 'eg name 1', 'id-2': 'eg name 2'}
+
+    def test_autocomplete_pair__not_found(self):
+        res = models.EditorGroup.autocomplete_pair('name', 'aksjdlaksjdlkasjdl', 'id', 'name')
+        assert len(res) == 0
+
     def test_23_provenance(self):
         """Read and write properties into the provenance model"""
         p = models.Provenance()
