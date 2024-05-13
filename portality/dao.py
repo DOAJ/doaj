@@ -1159,10 +1159,9 @@ class Facetview2(object):
 #########################################################################
 
 class IdTextTermQuery:
-    def __init__(self, id_field, id_value, field_name):
+    def __init__(self, id_field, id_value):
         self.id_field = id_field
         self.id_value = id_value
-        self.field_name = field_name
 
     def query(self):
         return {

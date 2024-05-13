@@ -307,7 +307,7 @@ def autocomplete_text_mapping(doc_type, field_name, id_field):
 def id_text_mapping(doc_type, field_name, id_field, id_value) -> Optional[str]:
 
     query_factory_mapping = {
-        ('editor_group', 'id', 'name', ): lambda: IdTextTermQuery(id_field, id_value, field_name).query(),
+        ('editor_group', 'id', 'name', ): lambda: IdTextTermQuery(id_field, id_value).query(),
     }
     query_factory = query_factory_mapping.get((doc_type, id_field, field_name))
     if not query_factory:
