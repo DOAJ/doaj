@@ -262,6 +262,24 @@ def autocomplete(doc_type, field_name):
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>/<id_field>', methods=["GET", "POST"])
 def autocomplete_pair(doc_type, field_name, id_field):
+    """
+    different from autocomplete, in response json, the values of `id` and `text` are used different field
+    `id` used value of `id_field`
+    `text` used value of `field_name`
+    parameter `q` will be used to search the prefix of `field_name` value
+
+    Parameters
+    ----------
+    doc_type
+    field_name
+    id_field
+
+    Returns
+    -------
+        Json string with follow format:
+        {suggestions: [{id: id_field, text: field_name}]}
+    """
+
     prefix = request.args.get('q', '')
     if not prefix:
         return _no_suggestions_response()  # select2 does not understand 400, which is the correct code here...
