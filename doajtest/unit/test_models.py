@@ -399,10 +399,10 @@ class TestModels(DoajTestCase):
 
         # now hit the key methods involved in article deletes
         query = {
-            "query" : {
-                "bool" : {
-                    "must" : [
-                        {"term" : {"bibjson.title.exact" : "Test Article 0"}}
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"bibjson.title.exact": "Test Article 0"}}
                     ]
                 }
             }
@@ -457,10 +457,10 @@ class TestModels(DoajTestCase):
 
         # now hit the key methods involved in journal deletes
         query = {
-            "query" : {
-                "bool" : {
-                    "must" : [
-                        {"term" : {"bibjson.title.exact" : "Test Journal 1"}}
+            "query": {
+                "bool": {
+                    "must": [
+                        {"term": {"bibjson.title.exact": "Test Journal 1"}}
                     ]
                 }
             }
@@ -479,14 +479,14 @@ class TestModels(DoajTestCase):
         assert len(self.list_today_article_history_files()) == 1
 
         assert len(models.Journal.all()) == 4
-        assert len(self.list_today_journal_history_files()) == 6    # Because all journals are snapshot at create time
+        assert len(self.list_today_journal_history_files()) == 6  # Because all journals are snapshot at create time
 
     @patch_history_dir('JOURNAL_HISTORY_DIR')
     def test_08_iterate(self):
         for jsrc in JournalFixtureFactory.make_many_journal_sources(count=99, in_doaj=True):
             j = models.Journal(**jsrc)
             j.save()
-        time.sleep(2) # index all the journals
+        time.sleep(2)  # index all the journals
         journal_ids = []
         theqgen = models.JournalQuery()
         for j in models.Journal.iterate(q=theqgen.all_in_doaj(), page_size=10):
@@ -564,9 +564,11 @@ class TestModels(DoajTestCase):
         assert b.preservation_summary == ["LOCKSS", "CLOCKSS", "Somewhere else", ["A national library", "Trinity"]]
 
         b.add_archiving_policy("SAFE")
-        assert b.preservation_summary == ["LOCKSS", "CLOCKSS", "Somewhere else", "SAFE", ["A national library", "Trinity"]]
+        assert b.preservation_summary == ["LOCKSS", "CLOCKSS", "Somewhere else", "SAFE",
+                                          ["A national library", "Trinity"]]
 
-        assert b.flattened_archiving_policies == ['LOCKSS', 'CLOCKSS', "Somewhere else", 'SAFE', 'A national library: Trinity'], b.flattened_archiving_policies
+        assert b.flattened_archiving_policies == ['LOCKSS', 'CLOCKSS', "Somewhere else", 'SAFE',
+                                                  'A national library: Trinity'], b.flattened_archiving_policies
 
     def test_13_generic_bibjson(self):
         source = BibJSONFixtureFactory.generic_bibjson()
@@ -589,7 +591,7 @@ class TestModels(DoajTestCase):
         gbj.title = "Updated Title"
         gbj.add_identifier("doi", "10.1234/7")
         gbj.add_keyword("test")
-        gbj.add_keyword("ONE") # make sure keywords are stored in lowercase
+        gbj.add_keyword("ONE")  # make sure keywords are stored in lowercase
         keyword = None  # make sure None keyword doesn't cause error
         gbj.add_keyword(keyword)
         gbj.add_url("http://test", "test")
@@ -600,11 +602,11 @@ class TestModels(DoajTestCase):
         assert gbj.get_one_identifier("doi") == "10.1234/7"
         assert gbj.keywords == ["word", "key", "test", "one"]
         assert gbj.get_single_url("test") == "http://test"
-        assert gbj.subjects()[2] == {"scheme" : "TEST", "term" : "first", "code" : "one"}
+        assert gbj.subjects()[2] == {"scheme": "TEST", "term": "first", "code": "one"}
 
         gbj.remove_identifiers("doi")
-        gbj.set_keywords("TwO") # make sure keywords are stored in lowercase
-        gbj.set_subjects({"scheme" : "TEST", "term" : "first", "code" : "one"})
+        gbj.set_keywords("TwO")  # make sure keywords are stored in lowercase
+        gbj.set_subjects({"scheme": "TEST", "term": "first", "code": "one"})
         assert gbj.keywords == ["two"]
 
         keywords = []
@@ -665,7 +667,8 @@ class TestModels(DoajTestCase):
         assert bj.plagiarism_detection is True
         assert bj.plagiarism_url == "http://plagiarism.screening"
         assert bj.preservation is not None
-        assert bj.preservation_summary == ["LOCKSS", "CLOCKSS", "A safe place", ["A national library", "Trinity"], ["A national library", "Imperial"]]
+        assert bj.preservation_summary == ["LOCKSS", "CLOCKSS", "A safe place", ["A national library", "Trinity"],
+                                           ["A national library", "Imperial"]]
         assert bj.preservation_url == "http://digital.archiving.policy"
         assert bj.publisher_name == "The Publisher"
         assert bj.publisher_country == "US"
@@ -787,7 +790,8 @@ class TestModels(DoajTestCase):
         assert len(bj.apc) == 2
         assert bj.deposit_policy == ["Never", "OK"]
         assert bj.pid_scheme == ["Handle", "PURL"]
-        assert bj.preservation_summary == ["LOCKSS", "MOUNTAIN", ["A national library", "UCL"], ["A national library", "LSE"]]
+        assert bj.preservation_summary == ["LOCKSS", "MOUNTAIN", ["A national library", "UCL"],
+                                           ["A national library", "LSE"]]
 
         # special methods
         assert bj.issns() == ["1111-111X", "0000-000X"], bj.issns()
@@ -820,8 +824,8 @@ class TestModels(DoajTestCase):
         assert bj.pid_scheme == ["ARK", "PURL"]
 
         assert bj.subject == bj.subjects()
-        bj.set_subjects({"scheme" : "whatever", "term" : "also whatever"})
-        assert bj.subject == [{"scheme" : "whatever", "term" : "also whatever"}]
+        bj.set_subjects({"scheme": "whatever", "term": "also whatever"})
+        assert bj.subject == [{"scheme": "whatever", "term": "also whatever"}]
         bj.remove_subjects()
         assert len(bj.subject) == 0
 
@@ -899,7 +903,6 @@ class TestModels(DoajTestCase):
         assert bj.replaces == []
         assert bj.subject == []
 
-
     def test_15_continuations(self):
         journal = models.Journal()
         bj = journal.bibjson()
@@ -963,7 +966,8 @@ class TestModels(DoajTestCase):
         assert bj.publisher == "IEEE"
         assert bj.author[0].get("name") == "Test"
         assert bj.author[0].get("affiliation") == "University of Life"
-        assert bj.author[0].get("orcid_id") == "https://orcid.org/0000-0001-1234-1234", "received: {}".format(bj.author[0].get("orcid_id"))
+        assert bj.author[0].get("orcid_id") == "https://orcid.org/0000-0001-1234-1234", "received: {}".format(
+            bj.author[0].get("orcid_id"))
 
         bj.year = "2000"
         bj.month = "5"
@@ -995,7 +999,8 @@ class TestModels(DoajTestCase):
         assert bj.publisher == "Elsevier"
         assert bj.author[1].get("name") == "Testing"
         assert bj.author[1].get("affiliation") == "School of Hard Knocks"
-        assert bj.author[1].get("orcid_id") == "0000-0001-4321-4321", "received: {}".format(bj.author[1].get("orcid_id"))
+        assert bj.author[1].get("orcid_id") == "0000-0001-4321-4321", "received: {}".format(
+            bj.author[1].get("orcid_id"))
 
         del bj.year
         del bj.month
@@ -1190,7 +1195,7 @@ class TestModels(DoajTestCase):
 
         res = models.EditorGroup.autocomplete_pair('name', 'eg', 'id', 'name')
         assert len(res) == 2
-        assert {r['id']:r['text'] for r in res} == {'id-1': 'eg name 1', 'id-2': 'eg name 2'}
+        assert {r['id']: r['text'] for r in res} == {'id-1': 'eg name 1', 'id-2': 'eg name 2'}
 
     def test_autocomplete_pair__not_found(self):
         res = models.EditorGroup.autocomplete_pair('name', 'aksjdlaksjdlkasjdl', 'id', 'name')
@@ -1261,7 +1266,7 @@ class TestModels(DoajTestCase):
 
         eg2 = models.EditorGroup()
         eg2.set_id("editor")
-        eg2.set_name("Editor")   # note: REQUIRED so that the mapping includes .name, which is needed to find groups_by
+        eg2.set_name("Editor")  # note: REQUIRED so that the mapping includes .name, which is needed to find groups_by
         eg2.set_editor(acc.id)
         eg2.save()
 
@@ -1295,7 +1300,7 @@ class TestModels(DoajTestCase):
         source = BackgroundFixtureFactory.example()
         source["params"]["ids"] = ["1", "2", "3"]
         source["params"]["type"] = "suggestion"
-        source["reference"]["query"]  = json.dumps({"query" : {"match_all" : {}}})
+        source["reference"]["query"] = json.dumps({"query": {"match_all": {}}})
         bj = models.BackgroundJob(**source)
         bj.save()
 
@@ -1308,8 +1313,8 @@ class TestModels(DoajTestCase):
         bj = models.BackgroundJob(**source)
         bj.save(blocking=True)
 
-        assert len(models.BackgroundJob.active(source["action"])) == 1, "expected 1 active, got {x}".format(x=len(models.BackgroundJob.active(source["action"])))
-
+        assert len(models.BackgroundJob.active(source["action"])) == 1, "expected 1 active, got {x}".format(
+            x=len(models.BackgroundJob.active(source["action"])))
 
     def test_27_article_journal_sync(self):
         j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
@@ -1386,25 +1391,29 @@ class TestModels(DoajTestCase):
         # make a bunch of articles variably in doaj/not in doaj, for/not for the issn we'll search
         for i in range(1, 3):
             article = models.Article(
-                **ArticleFixtureFactory.make_article_source(eissn="1111-1111", pissn="1111-1111", with_id=False, in_doaj=True)
+                **ArticleFixtureFactory.make_article_source(eissn="1111-1111", pissn="1111-1111", with_id=False,
+                                                            in_doaj=True)
             )
             article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
             articles.append(article)
         for i in range(3, 5):
             article = models.Article(
-                **ArticleFixtureFactory.make_article_source(eissn="1111-1111", pissn="1111-1111", with_id=False, in_doaj=False)
+                **ArticleFixtureFactory.make_article_source(eissn="1111-1111", pissn="1111-1111", with_id=False,
+                                                            in_doaj=False)
             )
             article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
             articles.append(article)
         for i in range(5, 7):
             article = models.Article(
-                **ArticleFixtureFactory.make_article_source(eissn="2222-2222", pissn="2222-2222", with_id=False, in_doaj=True)
+                **ArticleFixtureFactory.make_article_source(eissn="2222-2222", pissn="2222-2222", with_id=False,
+                                                            in_doaj=True)
             )
             article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
             articles.append(article)
         for i in range(7, 9):
             article = models.Article(
-                **ArticleFixtureFactory.make_article_source(eissn="2222-2222", pissn="2222-2222", with_id=False, in_doaj=False)
+                **ArticleFixtureFactory.make_article_source(eissn="2222-2222", pissn="2222-2222", with_id=False,
+                                                            in_doaj=False)
             )
             article.set_created("2019-01-0" + str(i) + "T00:00:00Z")
             articles.append(article)
@@ -1421,18 +1430,20 @@ class TestModels(DoajTestCase):
 
     def test_31_cache(self):
         models.Cache.cache_site_statistics({
-            "journals" : 10,
-            "new_journals" : 20,
-            "countries" : 30,
-            "abstracts" : 40,
-            "no_apc" : 50
+            "journals": 10,
+            "new_journals": 20,
+            "countries": 30,
+            "abstracts": 40,
+            "no_apc": 50
         })
 
         models.Cache.cache_csv("/csv/filename.csv")
 
         models.Cache.cache_sitemap("sitemap.xml")
 
-        models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article", 100, "jc", "jf", "http://example.com/journal", 200)
+        models.Cache.cache_public_data_dump("ac", "af", "http://example.com/article",
+                                            100, "jc", "jf",
+                                            "http://example.com/journal", 200)
 
         time.sleep(1)
 
@@ -1526,26 +1537,26 @@ class TestModels(DoajTestCase):
         # find_by_journal_url(cls, url, in_doaj=None, max=10)
         # recent(cls, max=10):
 
-# TODO: reinstate this test when author emails have been disallowed again
-# '''
-#     def test_33_article_with_author_email(self):
-#         """Check the system disallows articles with emails in the author field"""
-#         a_source = ArticleFixtureFactory.make_article_source()
-#
-#         # Creating a model from a source with email is rejected by the DataObj
-#         a_source['bibjson']['author'][0]['email'] = 'author@example.com'
-#         with self.assertRaises(dataobj.DataStructureException):
-#             a = models.Article(**a_source)
-#             bj = a.bibjson()
-#
-#         # Remove the email address again to create the model
-#         del a_source['bibjson']['author'][0]['email']
-#         a = models.Article(**a_source)
-#
-#         # We can't add an author with an email address any more.
-#         with self.assertRaises(TypeError):
-#             a.bibjson().add_author(name='Ms Test', affiliation='School of Rock', email='author@example.com')
-# '''
+    # TODO: reinstate this test when author emails have been disallowed again
+    # '''
+    #     def test_33_article_with_author_email(self):
+    #         """Check the system disallows articles with emails in the author field"""
+    #         a_source = ArticleFixtureFactory.make_article_source()
+    #
+    #         # Creating a model from a source with email is rejected by the DataObj
+    #         a_source['bibjson']['author'][0]['email'] = 'author@example.com'
+    #         with self.assertRaises(dataobj.DataStructureException):
+    #             a = models.Article(**a_source)
+    #             bj = a.bibjson()
+    #
+    #         # Remove the email address again to create the model
+    #         del a_source['bibjson']['author'][0]['email']
+    #         a = models.Article(**a_source)
+    #
+    #         # We can't add an author with an email address any more.
+    #         with self.assertRaises(TypeError):
+    #             a.bibjson().add_author(name='Ms Test', affiliation='School of Rock', email='author@example.com')
+    # '''
 
     def test_34_preserve(self):
         model = models.PreservationState()
@@ -1594,7 +1605,7 @@ class TestModels(DoajTestCase):
         assert event2.context.get("key2") == "value2"
         assert event2.when == event.when
 
-        event3 = models.Event("ABCD", "another", {"key3" : "value3"})
+        event3 = models.Event("ABCD", "another", {"key3": "value3"})
         assert event3.id == "ABCD"
         assert event3.who == "another"
         assert event3.context.get("key3") == "value3"
@@ -1714,9 +1725,9 @@ class TestModels(DoajTestCase):
         ap2 = models.Autocheck.for_journal("9876")
         assert ap2.journal == "9876"
 
+
 class TestAccount(DoajTestCase):
     def test_get_name_safe(self):
-
         # have name
         acc = models.Account.make_account(email='user@example.com')
         acc_name = 'Account Name'
