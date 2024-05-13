@@ -85,10 +85,6 @@
   url: https://www.karger.com/
   logo: karger.png
 
-- name: KeAI Communications
-  url: https://www.keaipublishing.com/
-  logo: keai.svg
-
 - name: MDPI
   url: https://www.mdpi.com/
   logo: mdpi.svg  
@@ -96,10 +92,6 @@
 - name: NERAC Inc.
   url: https://www.nerac.com/
   logo: nerac.jpg
-
-- name: OASPA
-  url: https://oaspa.org/
-  logo: oaspa.png
 
 - name: OA.Works
   url: https://oa.works/
