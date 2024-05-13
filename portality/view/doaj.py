@@ -301,7 +301,7 @@ def autocomplete_text_mapping(doc_type, field_name, id_field):
 
     id_value = request.args.get('id')
     text = id_text_mapping(doc_type, field_name, id_field, id_value)
-    return jsonify({'id': id_value, 'text': text})
+    return jsonify({'id': id_value, 'text': text or ''})
 
 
 def id_text_mapping(doc_type, field_name, id_field, id_value) -> Optional[str]:
