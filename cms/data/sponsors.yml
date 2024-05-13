@@ -89,10 +89,6 @@
   url: https://iucn.org/
   logo: IUCN.svg
 
-- name: John Wiley and Sons LTD
-  url: https://www.wiley.com/en-us 
-  logo: Wiley_Wordmark_black.png
-
 - name: Karger
   url: https://www.karger.com/
   logo: karger.png
@@ -161,4 +157,7 @@
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg 
 
+- name: John Wiley and Sons LTD
+  url: https://www.wiley.com/en-us 
+  logo: Wiley_Wordmark_black.png
 
