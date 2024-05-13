@@ -250,7 +250,7 @@ def editor_notifications(emails_dict, limit=None):
         ed_email = editor.email
 
         text = render_template('email/workflow_reminder_fragments/editor_groupcount_frag',
-                               num=group_count, ed_group=group_id, url=ed_url)
+                               num=group_count, ed_group=eg.name, url=ed_url)
         _add_email_paragraph(emails_dict, ed_email, eg.editor, text)
 
     # Second note - records within editor group not touched for so long
@@ -276,7 +276,7 @@ def editor_notifications(emails_dict, limit=None):
         ed_email = editor.email
 
         text = render_template('email/workflow_reminder_fragments/editor_age_frag',
-                               num=group_count, ed_group=group_id, url=ed_age_url, x_weeks=X_WEEKS)
+                               num=group_count, ed_group=eg.name, url=ed_age_url, x_weeks=X_WEEKS)
         _add_email_paragraph(emails_dict, ed_email, eg.editor, text)
 
 
