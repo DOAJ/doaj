@@ -8,6 +8,7 @@ from collections import UserDict
 from copy import deepcopy
 from datetime import timedelta
 from typing import List, Iterable, Union, Dict, TypedDict, Optional
+from typing import TYPE_CHECKING
 
 import elasticsearch
 
@@ -15,8 +16,9 @@ from portality.core import app, es_connection as ES
 from portality.lib import dates
 from portality.lib.dates import FMT_DATETIME_STD
 
-if sys.version_info >= (3, 11):
-    from typing import Self
+if TYPE_CHECKING:
+    if sys.version_info >= (3, 11):
+        from typing import Self
 
 # All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 # You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
