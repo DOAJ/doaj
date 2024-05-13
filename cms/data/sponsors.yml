@@ -125,10 +125,6 @@
   url: https://plos.org/
   logo: plos.svg
   
-- name: Royal Society of Chemistry
-  url: https://www.rsc.org/
-  logo: rsc.png
-
 - name: SAGE Publishing
   url: https://www.sagepublications.com/
   logo: sage.svg
@@ -149,10 +145,6 @@
   url: https://www.taylorandfrancisgroup.com/
   logo: tf.svg  
 
-- name: Georg Thieme Verlag KG
-  url: https://www.thieme.com/
-  logo: thieme.svg  
-  
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
   logo: ubiquity.svg 
