@@ -25,6 +25,10 @@
   url: https://www.cappelendammundervisning.no/
   logo: cda.jpg
 
+- name: Cogitatio Press
+  url: https://www.cogitatiopress.com/
+  logo: cogitatio.png
+
 - name: Copernicus Publications
   url: https://publications.copernicus.org
   logo: copernicus.svg
@@ -43,15 +47,15 @@
 
 - name: eLife Sciences Publications
   url: https://elifesciences.org/
-  logo: elife.svg
+  logo: Elife-logo-2020.png
 
 - name: Elsevier
   url: https://www.elsevier.com/
-  logo: elsevier.svg
+  logo: Elsevier_logo_2019.svg
 
 - name: Emerald Publishing
   url: https://emeraldpublishing.com/
-  logo: emerald.svg
+  logo: emerald.png
 
 - name: Le Consortium Érudit
   url: https://www.erudit.org/en/
