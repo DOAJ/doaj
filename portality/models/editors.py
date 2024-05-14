@@ -1,7 +1,7 @@
 import sys
 from typing import List, Optional
 
-from portality.dao import DomainObject, ScrollInitialiseException
+from portality.dao import DomainObject, ScrollInitialiseException, IdTextTermQuery
 from portality.models import Account
 
 if sys.version_info >= (3, 11):
@@ -46,6 +46,10 @@ class EditorGroup(DomainObject):
     @classmethod
     def groups_by_associate(cls, associate) -> List['Self']:
         return cls._groups_by_x(associate=associate)
+
+    @classmethod
+    def find_name_by_id(cls, editor_group_id) -> Optional[str]:
+        return cls.get_target_value(IdTextTermQuery('id', editor_group_id).query(), "name")
 
     @property
     def name(self):

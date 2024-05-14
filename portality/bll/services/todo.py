@@ -126,15 +126,18 @@ class TodoService(object):
         for aid, q, sort, boost in queries:
             applications = models.Application.object_query(q=q.query())
             for ap in applications:
-                todos.append({
+                todo = {
                     "date": ap.last_manual_update_timestamp if sort == "last_manual_update" else ap.date_applied_timestamp,
                     "date_type": sort,
                     "action_id": [aid],
                     "title": ap.bibjson().title,
                     "object_id": ap.id,
                     "object": ap,
-                    "boost": boost
-                })
+                    "boost": boost,
+                }
+                if ap.editor_group:
+                    todo["editor_group_name"] = models.EditorGroup.find_name_by_id(ap.editor_group) or ap.editor_group
+                todos.append(todo)
 
         todos = self._rationalise_todos(todos, size)
 
