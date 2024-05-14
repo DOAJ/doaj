@@ -268,16 +268,8 @@ def autocomplete_pair(doc_type, field_name, id_field):
     `text` used value of `field_name`
     parameter `q` will be used to search the prefix of `field_name` value
 
-    Parameters
-    ----------
-    doc_type
-    field_name
-    id_field
-
-    Returns
-    -------
-        Json string with follow format:
-        {suggestions: [{id: id_field, text: field_name}]}
+    Json string with follow format:
+    {suggestions: [{id: id_field, text: field_name}]}
     """
 
     prefix = request.args.get('q', '')
