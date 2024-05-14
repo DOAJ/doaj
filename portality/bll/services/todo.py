@@ -28,7 +28,7 @@ class TodoService(object):
                 "email": None if acc is None else acc.email
             }
 
-        q = GroupStatsQuery(eg.name)
+        q = GroupStatsQuery(eg.id)
         resp = models.Application.query(q=q.query())
 
         stats["total"] = {"applications": 0, "update_requests": 0}
@@ -538,7 +538,7 @@ class TodoQuery(object):
     def editor_groups(cls, groups: Iterable[EditorGroup]):
         return {
             "terms": {
-                "admin.editor_group.exact": [g.name for g in groups]
+                "admin.editor_group.exact": [g.id for g in groups]
             }
         }
 
@@ -557,8 +557,8 @@ class GroupStatsQuery:
     ~~^->Elasticsearch:Technology~~
     """
 
-    def __init__(self, group_name, editor_count=10):
-        self.group_name = group_name
+    def __init__(self, group_id, editor_count=10):
+        self.group_id = group_id
         self.editor_count = editor_count
 
     def query(self):
@@ -569,7 +569,7 @@ class GroupStatsQuery:
                     "must": [
                         {
                             "term": {
-                                "admin.editor_group.exact": self.group_name
+                                "admin.editor_group.exact": self.group_id
                             }
                         }
                     ],

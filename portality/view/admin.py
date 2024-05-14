@@ -706,7 +706,7 @@ def bulk_assign_editor_group(doaj_type):
 
     summary = task(
         selection_query=get_query_from_request(payload, doaj_type),
-        editor_group=payload['editor_group'],
+        editor_group=models.EditorGroup.group_exists_by_name(payload['editor_group']) or payload['editor_group'],
         dry_run=payload.get('dry_run', True)
     )
 
@@ -743,6 +743,11 @@ def bulk_edit_journal_metadata():
     payload = get_web_json_payload()
     if not "metadata" in payload:
         raise BulkAdminEndpointException("key 'metadata' not present in request json")
+
+    # replace editor_group name with id
+    if "editor_group" in payload["metadata"]:
+        _eg = payload["metadata"]["editor_group"]
+        payload["metadata"]["editor_group"] = models.EditorGroup.group_exists_by_name(_eg) or _eg
 
     formdata = MultiDict(payload["metadata"])
     formulaic_context = JournalFormFactory.context("bulk_edit", extra_param=exparam_editing_user())

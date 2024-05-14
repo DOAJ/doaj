@@ -106,8 +106,7 @@ class EditorGroup(DomainObject):
 
     @classmethod
     def find_editor_role_by_id(cls, editor_group_id, user_id) -> str:
-        # KTODO change to .pull()
-        eg = cls.pull_by_key("name", editor_group_id)
+        eg = cls.pull(editor_group_id)
         return "editor" if eg is not None and eg.editor == user_id else "associate_editor"
 
 

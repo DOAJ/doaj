@@ -1,6 +1,7 @@
 from copy import deepcopy
+from typing import Iterable
 
-from portality import constants
+from portality import constants, models
 from portality.core import app
 from portality.lib import es_data_mapping, coerce, dates
 from portality.models.v2 import shared_structs
@@ -92,7 +93,7 @@ class Application(JournalLikeObject):
 
     @classmethod
     def assignment_to_editor_groups(cls, egs):
-        q = AssignedEditorGroupsQuery([eg.name for eg in egs])
+        q = AssignedEditorGroupsQuery([eg.id for eg in egs])
         res = cls.query(q.query())
         buckets = res.get("aggregations", {}).get("editor_groups", {}).get("buckets", [])
         assignments = {}
