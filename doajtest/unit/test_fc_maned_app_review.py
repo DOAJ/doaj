@@ -1,5 +1,6 @@
 import time
 from copy import deepcopy
+from unittest.mock import patch
 
 from werkzeug.datastructures import MultiDict
 
@@ -58,26 +59,9 @@ def make_application_form():
 
 class TestManEdAppReview(DoajTestCase):
 
-    def setUp(self):
-        super(TestManEdAppReview, self).setUp()
-
-        self.editor_group_pull = models.EditorGroup.pull
-        models.EditorGroup.pull = editor_group_pull
-
-        self.old_lcc_choices = lcc.lcc_choices
-        lcc.lcc_choices = mock_lcc_choices
-
-        self.old_lookup_code = lcc.lookup_code
-        lcc.lookup_code = mock_lookup_code
-
-    def tearDown(self):
-        super(TestManEdAppReview, self).tearDown()
-
-        models.EditorGroup.pull_by_key = self.editor_group_pull
-        lcc.lcc_choices = self.old_lcc_choices
-
-        lcc.lookup_code = self.old_lookup_code
-
+    @patch('portality.models.EditorGroup.pull', editor_group_pull)
+    @patch('portality.lcc.lcc_choices', mock_lcc_choices)
+    @patch('portality.lcc.lookup_code', mock_lookup_code)
     def test_01_maned_review_success(self):
         """Give the editor's application form a full workout"""
         acc = models.Account()
@@ -203,6 +187,9 @@ class TestManEdAppReview(DoajTestCase):
 
         ctx.pop()
 
+    @patch('portality.models.EditorGroup.pull', editor_group_pull)
+    @patch('portality.lcc.lcc_choices', mock_lcc_choices)
+    @patch('portality.lcc.lookup_code', mock_lookup_code)
     def test_03_classification_required(self):
         acc = models.Account()
         acc.set_id("steve")

@@ -1,5 +1,6 @@
 import time
 from copy import deepcopy
+from unittest.mock import patch
 
 from werkzeug.datastructures import MultiDict
 
@@ -58,30 +59,13 @@ def make_application_form():
 
 class TestEditorAppReview(DoajTestCase):
 
-    def setUp(self):
-        super(TestEditorAppReview, self).setUp()
-
-        self.editor_group_pull = models.EditorGroup.pull
-        models.EditorGroup.pull = editor_group_pull
-
-        self.old_lcc_choices = lcc.lcc_choices
-        lcc.lcc_choices = mock_lcc_choices
-
-        self.old_lookup_code = lcc.lookup_code
-        lcc.lookup_code = mock_lookup_code
-
-    def tearDown(self):
-        super(TestEditorAppReview, self).tearDown()
-
-        models.EditorGroup.pull = self.editor_group_pull
-        lcc.lcc_choices = self.old_lcc_choices
-
-        lcc.lookup_code = self.old_lookup_code
-
     ###########################################################
     # Tests on the editor's application form
     ###########################################################
 
+    @patch('portality.models.EditorGroup.pull', editor_group_pull)
+    @patch('portality.lcc.lcc_choices', mock_lcc_choices)
+    @patch('portality.lcc.lookup_code', mock_lookup_code)
     def test_01_editor_review_success(self):
         """Give the editor's application form a full workout"""
         acc = models.Account()
@@ -167,6 +151,9 @@ class TestEditorAppReview(DoajTestCase):
 
         ctx.pop()
 
+    @patch('portality.models.EditorGroup.pull', editor_group_pull)
+    @patch('portality.lcc.lcc_choices', mock_lcc_choices)
+    @patch('portality.lcc.lookup_code', mock_lookup_code)
     def test_02_classification_required(self):
         # Check we can mark an application 'ready' with a subject classification present
         in_progress_application = models.Suggestion(**ApplicationFixtureFactory.make_update_request_source())
