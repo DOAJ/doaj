@@ -5,7 +5,7 @@ import sys
 
 setup(
     name='doaj',
-    version='6.6.11',
+    version='6.6.12',
     packages=find_packages(),
     install_requires=[
         "awscli==1.20.50",
@@ -89,4 +89,10 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
     ],
+    entry_points={
+        'console_scripts': [
+            'manage-bgjobs = portality.scripts.manage_background_jobs:main',
+        ],
+    },
+
 )

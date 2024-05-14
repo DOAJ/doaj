@@ -62,6 +62,7 @@ TODO_ASSOCIATE_ALL_APPLICATIONS = "todo_associate_all_applications"
 
 # Roles
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
+ROLE_API = "api"
 
 EVENT_ACCOUNT_CREATED = "account:created"
 EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
@@ -97,6 +98,7 @@ CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minut
 # ~~-> BackgroundTask:Monitoring~~
 # BackgroundJob.status
 BGJOB_STATUS_QUEUED = 'queued'
+BGJOB_STATUS_PROCESSING = 'processing'
 BGJOB_STATUS_ERROR = 'error'
 BGJOB_STATUS_COMPLETE = 'complete'
 
