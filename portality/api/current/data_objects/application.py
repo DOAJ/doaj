@@ -302,7 +302,6 @@ class IncomingApplication(SeamlessMixin, swagger.SwaggerSupport):
         return self.__seamless__.get_single("admin.editor_group")
 
     def set_editor_group(self, eg):
-        # KTODO
         self.__seamless__.set_with_struct("admin.editor_group", eg)
 
     def remove_editor_group(self):
