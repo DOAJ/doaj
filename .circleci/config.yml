@@ -10,6 +10,7 @@ jobs:
       - image: cimg/python:3.8.10
         environment:
           DOAJENV: test
+      - image: cimg/redis:6.2.14
       - image: elasticsearch:7.10.1
         environment:
           - xpack.security.enabled: false
