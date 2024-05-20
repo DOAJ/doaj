@@ -9,7 +9,7 @@ class Messages(object):
         Your update request has been submitted. You may make further changes until the DOAJ Editorial Team picks it up
         for review. Click the 'Edit' button to make further changes or 'Delete' to cancel the request.
         """, 'success')
-    PUBLISHER_UPLOAD_ERROR = """An error has occurred and your upload may not have succeeded. {error_str} <br \> If the problem persists, please send the error details from the Notes column of the History of Uploads box below and a screenshot of the entire error message"""
+    PUBLISHER_UPLOAD_ERROR = """An error has occurred and your upload did not succeed. {error_str} <br \> If the problem persists, please send the error details from the Notes column of the History of Uploads box below and a screenshot of the entire error message"""
     NO_FILE_UPLOAD_ID="""No file upload record has been specified"""
 
     ARTICLE_METADATA_SUBMITTED_FLASH = ("<a href='{url}' target='_blank'>Article created/updated</a>", "success")
