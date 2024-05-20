@@ -13,6 +13,10 @@
   url: https://aosis.co.za/
   logo: aosis.png
 
+- name: Association of Learned and Professional Society Publishers
+  url: https://www.alpsp.org/
+  logo: ALPSP.png
+  
 - name: Cambridge University Press
   url: https://www.cambridge.org/
   logo: cambridge.svg
@@ -32,6 +36,10 @@
 - name: De Gruyter
   url: https://www.degruyter.com/
   logo: de_gruyter.svg
+
+- name: Delta Think Inc
+  url: https://deltathink.com/
+  logo: delta.png
 
 - name: Digital Science
   url: https://www.digital-science.com/
@@ -85,6 +93,10 @@
   url: https://www.karger.com/
   logo: karger.png
 
+- name: KEAI - Guest Marketing Service Ltd
+  url: https://www.keaipublishing.com/en/
+  logo: keai.svg
+
 - name: MDPI
   url: https://www.mdpi.com/
   logo: mdpi.svg  
@@ -92,6 +104,10 @@
 - name: NERAC Inc.
   url: https://www.nerac.com/
   logo: nerac.jpg
+
+- name: Open Access Scholarly Publishers Association
+  url: https://www.oaspa.org/
+  logo: oaspa.png
 
 - name: OA.Works
   url: https://oa.works/
