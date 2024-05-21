@@ -11,25 +11,17 @@
             <form method="post" action="
 
                     {{ url_for('admin.editor_group') }}{% if form.group_id.data and form.group_id.data != '' %}/{{ form.group_id.data }}{% endif %}"
-                  class="form form--compact" id="editor_group_form">
+                  class="form form--compact" id="editor_group_form" class="editor_group">
                 <fieldset>
                     {{ form.group_id }}
                     {{ render_field_horizontal(form.name, placeholder="Enter a unique group name") }}
                     {{ render_field_horizontal(form.maned, placeholder="Managing Editor’s user ID") }}
                     {% if form.maned_error %}
-                        <div class="alert alert--danger">
-                            <ul>
-                                <li>Please provide a managing editor for the group.</li>
-                            </ul>
-                        </div>
+                            <p class="editor_group__error">Please provide a managing editor for the group.</p>
                     {% endif %}
                     {{ render_field_horizontal(form.editor, placeholder="Editor’s user ID") }}
                     {% if form.editor_error %}
-                        <div class="alert alert--danger">
-                            <ul>
-                                <li>Please provide an editor for the group.</li>
-                            </ul>
-                        </div>
+                            <p class="editor_group__error">Please provide an editor for the group.</p>
                     {% endif %}
                     {{ render_field_horizontal(form.associates, placeholder="Associate editor user IDs") }}
                     <button class="button button--primary" type="submit">Save Group</button>
