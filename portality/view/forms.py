@@ -95,8 +95,24 @@ class EditorGroupForm(Form):
     group_id = HiddenField("Group ID", [validators.Optional()])
     name = StringField("Group Name", [validators.DataRequired(), UniqueGroupName()])
     maned = StringField("Managing Editor", [validators.Optional(), MustHaveRole("admin")])
-    editor = StringField("Editor", [validators.DataRequired(), NotRole("publisher")])
+
+    editor = StringField("Editor", [validators.Optional(), NotRole("publisher")])
     associates = StringField("Associate Editors", [validators.Optional(), NotRole("publisher")])
+
+    def __init__(self, formdata=None, obj=None, prefix='', data=None, meta=None, **kwargs):
+        super().__init__(formdata=formdata, obj=obj, prefix=prefix, data=data, meta=meta, **kwargs)
+        self.editor_error = False;
+        self.maned_error = False;
+
+    def _validate_editors(self):
+        if not self.data["maned"]:
+            self.maned_error = True;
+        if not self.data["editor"]:
+            self.editor_error = True;
+        return not self.maned_error and not self.editor_error;
+
+    def validate(self, extra_validators = None):
+        return self._validate_editors() and super(EditorGroupForm, self).validate();
 
 ##########################################################################
 ## Continuations Forms
