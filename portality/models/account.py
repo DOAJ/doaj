@@ -56,7 +56,7 @@ class Account(DomainObject, UserMixin):
         res = cls.query(q='email:"' + email + '"')
         if res.get('hits', {}).get('total', {}).get('value', 0) == 1:
             acc = cls(**res['hits']['hits'][0]['_source'])
-            if acc.email == email:  # Only return the account if it was an exact match with supplied email
+            if acc.email.lower() == email.lower():  # Only return the account if it was an exact match with supplied email
                 return acc
         return None
 
