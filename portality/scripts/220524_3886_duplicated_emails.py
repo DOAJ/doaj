@@ -1,5 +1,6 @@
 from portality.models import Account
 from portality.bll.services.query import QueryService
+from portality.core import app
 import csv
 
 QUERY = {
@@ -30,7 +31,7 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--out", help="output file path", required=True)
     args = parser.parse_args()
 
-    admin_account = Account.make_account(email="admin@test.com", username="admin", name="Admin", roles=["admin"])
+    admin_account = Account.make_account(email="admin@test.com", username="admin", name="Admin", roles=["admin"])   # create dummy admin account for search purposes
     admin_account.set_password('password123')
     admin_account.save()
 
@@ -45,3 +46,5 @@ if __name__ == "__main__":
 
         for row in buckets:
             writer.writerow([row["key"], row["doc_count"]])
+
+    admin_account.delete() # delete dummy account
