@@ -1,0 +1,15 @@
+QUERY = {
+    "size": 0,
+    "aggs": {
+        "duplicate_emails": {
+            "terms": {
+                "script": {
+                    "source": "doc['email.exact'].value.toLowerCase()",
+                    "lang": "painless"
+                },
+                "size": 10000,
+                "min_doc_count": 2
+            }
+        }
+    }
+}
