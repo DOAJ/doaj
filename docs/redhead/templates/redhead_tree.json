@@ -1,5 +1,74 @@
 [
   {
+    "name": "account/_login_form.html",
+    "blocks": [
+      {
+        "name": "login_form",
+        "blocks": [],
+        "includes": [
+          {
+            "name": "_formhelpers.html",
+            "blocks": [],
+            "includes": [],
+            "extensions": []
+          }
+        ],
+        "content": true,
+        "overridden_by": [],
+        "overrides": [],
+        "scoped": false
+      }
+    ],
+    "includes": [],
+    "extensions": []
+  },
+  {
+    "name": "account/_register_form.html",
+    "blocks": [
+      {
+        "name": "register_form",
+        "blocks": [],
+        "includes": [
+          {
+            "name": "_formhelpers.html",
+            "blocks": [],
+            "includes": [],
+            "extensions": []
+          }
+        ],
+        "content": true,
+        "overridden_by": [],
+        "overrides": [],
+        "scoped": false
+      }
+    ],
+    "includes": [],
+    "extensions": []
+  },
+  {
+    "name": "account/_reset_form.html",
+    "blocks": [
+      {
+        "name": "reset_form",
+        "blocks": [],
+        "includes": [
+          {
+            "name": "_formhelpers.html",
+            "blocks": [],
+            "includes": [],
+            "extensions": []
+          }
+        ],
+        "content": true,
+        "overridden_by": [],
+        "overrides": [],
+        "scoped": false
+      }
+    ],
+    "includes": [],
+    "extensions": []
+  },
+  {
     "name": "application_form/_application_warning_msg.html",
     "blocks": [],
     "includes": [],
@@ -419,17 +488,6 @@
         "content": false,
         "overridden_by": [
           {
-            "file": "account/register.html",
-            "content": true,
-            "paths": [
-              [
-                "layouts/base.html",
-                "layouts/public_base.html",
-                "account/register.html"
-              ]
-            ]
-          },
-          {
             "file": "admin/admin_base.html",
             "content": true,
             "paths": [
@@ -810,50 +868,6 @@
                 "layouts/public_base.html",
                 "layouts/single_col_page.html",
                 "500.html"
-              ]
-            ]
-          },
-          {
-            "file": "account/forgot.html",
-            "content": true,
-            "paths": [
-              [
-                "layouts/base.html",
-                "layouts/public_base.html",
-                "account/forgot.html"
-              ]
-            ]
-          },
-          {
-            "file": "account/login_to_apply.html",
-            "content": true,
-            "paths": [
-              [
-                "layouts/base.html",
-                "layouts/public_base.html",
-                "account/login_to_apply.html"
-              ]
-            ]
-          },
-          {
-            "file": "account/register.html",
-            "content": true,
-            "paths": [
-              [
-                "layouts/base.html",
-                "layouts/public_base.html",
-                "account/register.html"
-              ]
-            ]
-          },
-          {
-            "file": "account/reset.html",
-            "content": true,
-            "paths": [
-              [
-                "layouts/base.html",
-                "layouts/public_base.html",
-                "account/reset.html"
               ]
             ]
           },
@@ -2357,6 +2371,10 @@
                 "blocks": [],
                 "includes": [],
                 "extensions": []
+              },
+              {
+                "name": "includes/svg/doaj-icon.svg",
+                "unresolved": true
               }
             ],
             "content": true,
@@ -4023,6 +4041,12 @@
                             "extensions": []
                           },
                           {
+                            "name": "application_form/_autochecks.html",
+                            "blocks": [],
+                            "includes": [],
+                            "extensions": []
+                          },
+                          {
                             "name": "application_form/_backend_validation.html",
                             "blocks": [],
                             "includes": [],
@@ -4081,7 +4105,10 @@
                             "name": "application_form/editorial_form_fields.html",
                             "blocks": [],
                             "includes": [],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "application_form/editorial_side_panel.html",
@@ -4094,7 +4121,11 @@
                                 "extensions": []
                               }
                             ],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template",
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "includes/_hotjar.html",
@@ -4243,6 +4274,12 @@
                             "extensions": []
                           },
                           {
+                            "name": "application_form/_autochecks.html",
+                            "blocks": [],
+                            "includes": [],
+                            "extensions": []
+                          },
+                          {
                             "name": "application_form/_backend_validation.html",
                             "blocks": [],
                             "includes": [],
@@ -4301,7 +4338,10 @@
                             "name": "application_form/editorial_form_fields.html",
                             "blocks": [],
                             "includes": [],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "application_form/editorial_side_panel.html",
@@ -4314,7 +4354,11 @@
                                 "extensions": []
                               }
                             ],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template",
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "includes/_hotjar.html",
@@ -4993,6 +5037,12 @@
                             "extensions": []
                           },
                           {
+                            "name": "application_form/_autochecks.html",
+                            "blocks": [],
+                            "includes": [],
+                            "extensions": []
+                          },
+                          {
                             "name": "application_form/_backend_validation.html",
                             "blocks": [],
                             "includes": [],
@@ -5051,7 +5101,10 @@
                             "name": "application_form/editorial_form_fields.html",
                             "blocks": [],
                             "includes": [],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "application_form/editorial_side_panel.html",
@@ -5064,7 +5117,11 @@
                                 "extensions": []
                               }
                             ],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template",
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "includes/_hotjar.html",
@@ -5202,6 +5259,12 @@
                             "extensions": []
                           },
                           {
+                            "name": "application_form/_autochecks.html",
+                            "blocks": [],
+                            "includes": [],
+                            "extensions": []
+                          },
+                          {
                             "name": "application_form/_backend_validation.html",
                             "blocks": [],
                             "includes": [],
@@ -5260,7 +5323,10 @@
                             "name": "application_form/editorial_form_fields.html",
                             "blocks": [],
                             "includes": [],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "application_form/editorial_side_panel.html",
@@ -5273,7 +5339,11 @@
                                 "extensions": []
                               }
                             ],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template",
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "includes/_hotjar.html",
@@ -5405,6 +5475,12 @@
                             "extensions": []
                           },
                           {
+                            "name": "application_form/_autochecks.html",
+                            "blocks": [],
+                            "includes": [],
+                            "extensions": []
+                          },
+                          {
                             "name": "application_form/_backend_validation.html",
                             "blocks": [],
                             "includes": [],
@@ -5463,7 +5539,10 @@
                             "name": "application_form/editorial_form_fields.html",
                             "blocks": [],
                             "includes": [],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "application_form/editorial_side_panel.html",
@@ -5476,7 +5555,11 @@
                                 "extensions": []
                               }
                             ],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template",
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "includes/_hotjar.html",
@@ -5614,6 +5697,12 @@
                             "extensions": []
                           },
                           {
+                            "name": "application_form/_autochecks.html",
+                            "blocks": [],
+                            "includes": [],
+                            "extensions": []
+                          },
+                          {
                             "name": "application_form/_backend_validation.html",
                             "blocks": [],
                             "includes": [],
@@ -5672,7 +5761,10 @@
                             "name": "application_form/editorial_form_fields.html",
                             "blocks": [],
                             "includes": [],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "application_form/editorial_side_panel.html",
@@ -5685,7 +5777,11 @@
                                 "extensions": []
                               }
                             ],
-                            "extensions": []
+                            "extensions": [],
+                            "dynamic_includes": [
+                              "field_template",
+                              "field_template"
+                            ]
                           },
                           {
                             "name": "includes/_hotjar.html",
@@ -6520,16 +6616,6 @@
                 "content": false,
                 "overridden_by": [
                   {
-                    "file": "account/register.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "layouts/public_base.html",
-                        "account/register.html"
-                      ]
-                    ]
-                  },
-                  {
                     "file": "account/view.html",
                     "content": true,
                     "paths": [
@@ -6723,46 +6809,6 @@
                     "includes": [],
                     "content": false,
                     "overridden_by": [
-                      {
-                        "file": "account/forgot.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/public_base.html",
-                            "account/forgot.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "account/login_to_apply.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/public_base.html",
-                            "account/login_to_apply.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "account/register.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/public_base.html",
-                            "account/register.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "account/reset.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/public_base.html",
-                            "account/reset.html"
-                          ]
-                        ]
-                      },
                       {
                         "file": "account/view.html",
                         "content": true,
@@ -7020,311 +7066,6 @@
         ],
         "includes": [],
         "extensions": [
-          {
-            "name": "account/forgot.html",
-            "blocks": [
-              {
-                "name": "content",
-                "blocks": [],
-                "includes": [],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/public_base.html",
-                    "content": false,
-                    "paths": [
-                      [
-                        "layouts/public_base.html",
-                        "account/forgot.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              },
-              {
-                "name": "page_title",
-                "blocks": [],
-                "includes": [],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/base.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "layouts/base.html",
-                        "layouts/public_base.html",
-                        "account/forgot.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              }
-            ],
-            "includes": [],
-            "extensions": []
-          },
-          {
-            "name": "account/login_to_apply.html",
-            "blocks": [
-              {
-                "name": "content",
-                "blocks": [],
-                "includes": [
-                  {
-                    "name": "account/_login_form.html",
-                    "blocks": [
-                      {
-                        "name": "login_form",
-                        "blocks": [],
-                        "includes": [
-                          {
-                            "name": "_formhelpers.html",
-                            "blocks": [],
-                            "includes": [],
-                            "extensions": []
-                          }
-                        ],
-                        "content": true,
-                        "overridden_by": [],
-                        "overrides": [],
-                        "scoped": false
-                      }
-                    ],
-                    "includes": [],
-                    "extensions": []
-                  }
-                ],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/public_base.html",
-                    "content": false,
-                    "paths": [
-                      [
-                        "layouts/public_base.html",
-                        "account/login_to_apply.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              },
-              {
-                "name": "page_title",
-                "blocks": [],
-                "includes": [],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/base.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "layouts/base.html",
-                        "layouts/public_base.html",
-                        "account/login_to_apply.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              }
-            ],
-            "includes": [],
-            "extensions": []
-          },
-          {
-            "name": "account/register.html",
-            "blocks": [
-              {
-                "name": "content",
-                "blocks": [],
-                "includes": [
-                  {
-                    "name": "account/_register_form.html",
-                    "blocks": [
-                      {
-                        "name": "register_form",
-                        "blocks": [],
-                        "includes": [
-                          {
-                            "name": "_formhelpers.html",
-                            "blocks": [],
-                            "includes": [],
-                            "extensions": []
-                          }
-                        ],
-                        "content": true,
-                        "overridden_by": [],
-                        "overrides": [],
-                        "scoped": false
-                      }
-                    ],
-                    "includes": [],
-                    "extensions": []
-                  }
-                ],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/public_base.html",
-                    "content": false,
-                    "paths": [
-                      [
-                        "layouts/public_base.html",
-                        "account/register.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              },
-              {
-                "name": "extra_js_bottom",
-                "blocks": [],
-                "includes": [],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/public_base.html",
-                    "content": false,
-                    "paths": [
-                      [
-                        "layouts/public_base.html",
-                        "account/register.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              },
-              {
-                "name": "extra_stylesheets",
-                "blocks": [],
-                "includes": [],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/base.html",
-                    "content": false,
-                    "paths": [
-                      [
-                        "layouts/base.html",
-                        "layouts/public_base.html",
-                        "account/register.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              },
-              {
-                "name": "page_title",
-                "blocks": [],
-                "includes": [],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/base.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "layouts/base.html",
-                        "layouts/public_base.html",
-                        "account/register.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              }
-            ],
-            "includes": [],
-            "extensions": []
-          },
-          {
-            "name": "account/reset.html",
-            "blocks": [
-              {
-                "name": "content",
-                "blocks": [],
-                "includes": [
-                  {
-                    "name": "account/_reset_form.html",
-                    "blocks": [
-                      {
-                        "name": "reset_form",
-                        "blocks": [],
-                        "includes": [
-                          {
-                            "name": "_formhelpers.html",
-                            "blocks": [],
-                            "includes": [],
-                            "extensions": []
-                          }
-                        ],
-                        "content": true,
-                        "overridden_by": [],
-                        "overrides": [],
-                        "scoped": false
-                      }
-                    ],
-                    "includes": [],
-                    "extensions": []
-                  }
-                ],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/public_base.html",
-                    "content": false,
-                    "paths": [
-                      [
-                        "layouts/public_base.html",
-                        "account/reset.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              },
-              {
-                "name": "page_title",
-                "blocks": [],
-                "includes": [],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/base.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "layouts/base.html",
-                        "layouts/public_base.html",
-                        "account/reset.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              }
-            ],
-            "includes": [],
-            "extensions": []
-          },
           {
             "name": "api/current/api_docs.html",
             "blocks": [
@@ -9159,6 +8900,10 @@
                     "blocks": [],
                     "includes": [],
                     "extensions": []
+                  },
+                  {
+                    "name": "includes/svg/seal.svg",
+                    "unresolved": true
                   }
                 ],
                 "content": true,
@@ -9354,7 +9099,36 @@
                   {
                     "name": "toc_content",
                     "blocks": [],
-                    "includes": [],
+                    "includes": [
+                      {
+                        "name": "includes/svg/by.svg",
+                        "unresolved": true
+                      },
+                      {
+                        "name": "includes/svg/cc.svg",
+                        "unresolved": true
+                      },
+                      {
+                        "name": "includes/svg/copyright.svg",
+                        "unresolved": true
+                      },
+                      {
+                        "name": "includes/svg/nc.svg",
+                        "unresolved": true
+                      },
+                      {
+                        "name": "includes/svg/nd.svg",
+                        "unresolved": true
+                      },
+                      {
+                        "name": "includes/svg/sa.svg",
+                        "unresolved": true
+                      },
+                      {
+                        "name": "includes/svg/zero.svg",
+                        "unresolved": true
+                      }
+                    ],
                     "content": true,
                     "overridden_by": [],
                     "overrides": [
@@ -11227,5 +11001,11 @@
         ]
       }
     ]
+  },
+  {
+    "name": "testdrive/testdrive.html",
+    "blocks": [],
+    "includes": [],
+    "extensions": []
   }
 ]

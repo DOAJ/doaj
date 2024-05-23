@@ -77,7 +77,6 @@
           "publisher/index.html",
           "layouts/dashboard_base.html",
           "account/view.html",
-          "account/register.html",
           "account/users.html",
           "admin/global_notifications_search.html",
           "admin/applications.html",
@@ -126,7 +125,6 @@
           "publisher/index.html",
           "layouts/public_base.html",
           "account/view.html",
-          "account/register.html",
           "account/users.html",
           "admin/global_notifications_search.html",
           "admin/applications.html",
@@ -272,10 +270,6 @@
               "layouts/dashboard_base.html",
               "layouts/toc_base.html",
               "account/view.html",
-              "account/reset.html",
-              "account/register.html",
-              "account/login_to_apply.html",
-              "account/forgot.html",
               "admin/admin_base.html",
               "editor/editor_base.html",
               "doaj/contact.html",
@@ -399,10 +393,6 @@
               "layouts/public_base.html",
               "layouts/toc_base.html",
               "account/view.html",
-              "account/reset.html",
-              "account/register.html",
-              "account/login_to_apply.html",
-              "account/forgot.html",
               "admin/admin_base.html",
               "editor/editor_base.html",
               "doaj/contact.html",
@@ -441,11 +431,7 @@
               "layouts/base.html",
               "layouts/toc_base.html",
               "account/view.html",
-              "account/reset.html",
-              "account/register.html",
               "account/users.html",
-              "account/login_to_apply.html",
-              "account/forgot.html",
               "admin/continuation.html",
               "admin/journal_locked.html",
               "admin/global_notifications_search.html",
@@ -600,10 +586,6 @@
               "layouts/public_base.html",
               "layouts/toc_base.html",
               "account/view.html",
-              "account/reset.html",
-              "account/register.html",
-              "account/login_to_apply.html",
-              "account/forgot.html",
               "admin/admin_base.html",
               "editor/editor_base.html",
               "doaj/contact.html",
@@ -727,10 +709,6 @@
               "layouts/dashboard_base.html",
               "layouts/toc_base.html",
               "account/view.html",
-              "account/reset.html",
-              "account/register.html",
-              "account/login_to_apply.html",
-              "account/forgot.html",
               "admin/admin_base.html",
               "editor/editor_base.html",
               "doaj/contact.html",
@@ -769,11 +747,7 @@
               "layouts/base.html",
               "layouts/toc_base.html",
               "account/view.html",
-              "account/reset.html",
-              "account/register.html",
               "account/users.html",
-              "account/login_to_apply.html",
-              "account/forgot.html",
               "admin/continuation.html",
               "admin/journal_locked.html",
               "admin/global_notifications_search.html",
@@ -845,7 +819,6 @@
     "files": [
       "layouts/base.html",
       "publisher/publisher_base.html",
-      "account/register.html",
       "admin/admin_base.html",
       "editor/editor_base.html",
       "api/current/api_docs.html",
@@ -932,11 +905,7 @@
       "layouts/dashboard_base.html",
       "layouts/toc_base.html",
       "account/view.html",
-      "account/reset.html",
-      "account/register.html",
       "account/users.html",
-      "account/login_to_apply.html",
-      "account/forgot.html",
       "admin/continuation.html",
       "admin/journal_locked.html",
       "admin/global_notifications_search.html",
@@ -970,6 +939,27 @@
       "application_form/editor_journal.html",
       "application_form/publisher_update_request.html",
       "application_form/readonly_journal.html"
+    ]
+  },
+  {
+    "name": "register_form",
+    "blocks": [],
+    "files": [
+      "account/_register_form.html"
+    ]
+  },
+  {
+    "name": "login_form",
+    "blocks": [],
+    "files": [
+      "account/_login_form.html"
+    ]
+  },
+  {
+    "name": "reset_form",
+    "blocks": [],
+    "files": [
+      "account/_reset_form.html"
     ]
   },
   {

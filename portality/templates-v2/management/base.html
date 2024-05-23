@@ -7,6 +7,14 @@
 {% set editor_of_groups, editor_of_assignments = editor_of() %}
 {% set associate_of_groups, associate_of_assignments = associate_of() %}
 
+{% block base_meta %}
+    {% block management_meta %}{% endblock %}
+{% endblock %}
+
+{% block base_stylesheets %}
+    {% block management_stylesheets %}{% endblock %}
+{% endblock %}
+
 {% block body_class %}dashboard{% endblock %}
 
 {# ~~Dashboard:Template~~ #}
@@ -172,8 +180,6 @@
         </p>
     </main>
     {% include "includes/_back-to-top.html" %}
-
-
 
 {% endblock %}
 

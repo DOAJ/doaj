@@ -69,6 +69,16 @@
         "content": false,
         "overridden_by": [
           {
+            "file": "management/base.html",
+            "content": false,
+            "paths": [
+              [
+                "base.html",
+                "management/base.html"
+              ]
+            ]
+          },
+          {
             "file": "public/base.html",
             "content": true,
             "paths": [
@@ -87,7 +97,28 @@
         "blocks": [],
         "includes": [],
         "content": false,
-        "overridden_by": [],
+        "overridden_by": [
+          {
+            "file": "management/base.html",
+            "content": false,
+            "paths": [
+              [
+                "base.html",
+                "management/base.html"
+              ]
+            ]
+          },
+          {
+            "file": "public/base.html",
+            "content": false,
+            "paths": [
+              [
+                "base.html",
+                "public/base.html"
+              ]
+            ]
+          }
+        ],
         "overrides": [],
         "scoped": false
       },
@@ -147,12 +178,34 @@
         "content": true,
         "overridden_by": [
           {
+            "file": "management/admin/account/create.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "management/base.html",
+                "management/admin/account/create.html"
+              ]
+            ]
+          },
+          {
             "file": "management/base.html",
             "content": true,
             "paths": [
               [
                 "base.html",
                 "management/base.html"
+              ]
+            ]
+          },
+          {
+            "file": "public/account/forgot.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "public/base.html",
+                "public/account/forgot.html"
               ]
             ]
           },
@@ -164,6 +217,39 @@
                 "base.html",
                 "public/base.html",
                 "public/account/login.html"
+              ]
+            ]
+          },
+          {
+            "file": "public/account/login_to_apply.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "public/base.html",
+                "public/account/login_to_apply.html"
+              ]
+            ]
+          },
+          {
+            "file": "public/account/register.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "public/base.html",
+                "public/account/register.html"
+              ]
+            ]
+          },
+          {
+            "file": "public/account/reset.html",
+            "content": true,
+            "paths": [
+              [
+                "base.html",
+                "public/base.html",
+                "public/account/reset.html"
               ]
             ]
           },
@@ -196,14 +282,30 @@
                 "blocks": [],
                 "includes": [],
                 "content": false,
-                "overridden_by": [],
+                "overridden_by": [
+                  {
+                    "file": "management/admin/account/create.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "management/base.html",
+                        "management/admin/account/create.html"
+                      ]
+                    ]
+                  }
+                ],
                 "overrides": [],
                 "scoped": false
               },
               {
                 "name": "nav",
                 "blocks": [],
-                "includes": [],
+                "includes": [
+                  {
+                    "name": "dashboard/nav.html",
+                    "unresolved": true
+                  }
+                ],
                 "content": true,
                 "overridden_by": [],
                 "overrides": [],
@@ -214,7 +316,18 @@
                 "blocks": [],
                 "includes": [],
                 "content": true,
-                "overridden_by": [],
+                "overridden_by": [
+                  {
+                    "file": "management/admin/account/create.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "management/base.html",
+                        "management/admin/account/create.html"
+                      ]
+                    ]
+                  }
+                ],
                 "overrides": [
                   {
                     "file": "base.html",
@@ -230,7 +343,24 @@
                 "scoped": false
               }
             ],
-            "includes": [],
+            "includes": [
+              {
+                "name": "includes/_back-to-top.html",
+                "unresolved": true
+              },
+              {
+                "name": "includes/_flash_notification.html",
+                "unresolved": true
+              },
+              {
+                "name": "includes/_tourist_nav.html",
+                "unresolved": true
+              },
+              {
+                "name": "includes/svg/doaj-icon.svg",
+                "unresolved": true
+              }
+            ],
             "content": true,
             "overridden_by": [],
             "overrides": [
@@ -258,13 +388,100 @@
                 "blocks": [],
                 "includes": [],
                 "content": false,
+                "overridden_by": [
+                  {
+                    "file": "management/admin/account/create.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "management/base.html",
+                        "management/admin/account/create.html"
+                      ]
+                    ]
+                  }
+                ],
+                "overrides": [],
+                "scoped": false
+              }
+            ],
+            "includes": [
+              {
+                "name": "includes/_tourist.html",
+                "unresolved": true
+              }
+            ],
+            "content": true,
+            "overridden_by": [],
+            "overrides": [
+              {
+                "file": "base.html",
+                "content": false,
+                "paths": [
+                  [
+                    "base.html",
+                    "management/base.html"
+                  ]
+                ]
+              }
+            ],
+            "scoped": false
+          },
+          {
+            "name": "base_meta",
+            "blocks": [
+              {
+                "name": "management_meta",
+                "blocks": [],
+                "includes": [],
+                "content": false,
                 "overridden_by": [],
                 "overrides": [],
                 "scoped": false
               }
             ],
             "includes": [],
-            "content": true,
+            "content": false,
+            "overridden_by": [],
+            "overrides": [
+              {
+                "file": "base.html",
+                "content": false,
+                "paths": [
+                  [
+                    "base.html",
+                    "management/base.html"
+                  ]
+                ]
+              }
+            ],
+            "scoped": false
+          },
+          {
+            "name": "base_stylesheets",
+            "blocks": [
+              {
+                "name": "management_stylesheets",
+                "blocks": [],
+                "includes": [],
+                "content": false,
+                "overridden_by": [
+                  {
+                    "file": "management/admin/account/create.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "management/base.html",
+                        "management/admin/account/create.html"
+                      ]
+                    ]
+                  }
+                ],
+                "overrides": [],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "content": false,
             "overridden_by": [],
             "overrides": [
               {
@@ -302,7 +519,111 @@
           }
         ],
         "includes": [],
-        "extensions": []
+        "extensions": [
+          {
+            "name": "management/admin/account/create.html",
+            "blocks": [
+              {
+                "name": "management_content",
+                "blocks": [],
+                "includes": [
+                  {
+                    "name": "account/_register_form.html",
+                    "unresolved": true
+                  }
+                ],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "management/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "management/base.html",
+                        "management/admin/account/create.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "management_js",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "management/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "management/base.html",
+                        "management/admin/account/create.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "management_stylesheets",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "management/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "management/base.html",
+                        "management/admin/account/create.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "page_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "base.html",
+                        "management/base.html",
+                        "management/admin/account/create.html"
+                      ]
+                    ]
+                  },
+                  {
+                    "file": "management/base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "management/base.html",
+                        "management/admin/account/create.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "extensions": []
+          }
+        ]
       },
       {
         "name": "public/base.html",
@@ -337,12 +658,52 @@
                 "content": false,
                 "overridden_by": [
                   {
+                    "file": "public/account/forgot.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/forgot.html"
+                      ]
+                    ]
+                  },
+                  {
                     "file": "public/account/login.html",
                     "content": true,
                     "paths": [
                       [
                         "public/base.html",
                         "public/account/login.html"
+                      ]
+                    ]
+                  },
+                  {
+                    "file": "public/account/login_to_apply.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/login_to_apply.html"
+                      ]
+                    ]
+                  },
+                  {
+                    "file": "public/account/register.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/register.html"
+                      ]
+                    ]
+                  },
+                  {
+                    "file": "public/account/reset.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/reset.html"
                       ]
                     ]
                   },
@@ -371,7 +732,24 @@
                 "scoped": false
               }
             ],
-            "includes": [],
+            "includes": [
+              {
+                "name": "includes/_flash_notification.html",
+                "unresolved": true
+              },
+              {
+                "name": "includes/_quick_search_modal.html",
+                "unresolved": true
+              },
+              {
+                "name": "includes/footer.html",
+                "unresolved": true
+              },
+              {
+                "name": "includes/header.html",
+                "unresolved": true
+              }
+            ],
             "content": true,
             "overridden_by": [],
             "overrides": [
@@ -399,7 +777,18 @@
                 "blocks": [],
                 "includes": [],
                 "content": false,
-                "overridden_by": [],
+                "overridden_by": [
+                  {
+                    "file": "public/account/register.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/register.html"
+                      ]
+                    ]
+                  }
+                ],
                 "overrides": [],
                 "scoped": false
               }
@@ -550,10 +939,99 @@
               }
             ],
             "scoped": false
+          },
+          {
+            "name": "base_stylesheets",
+            "blocks": [
+              {
+                "name": "public_stylesheets",
+                "blocks": [],
+                "includes": [],
+                "content": false,
+                "overridden_by": [
+                  {
+                    "file": "public/account/register.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/register.html"
+                      ]
+                    ]
+                  }
+                ],
+                "overrides": [],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "content": false,
+            "overridden_by": [],
+            "overrides": [
+              {
+                "file": "base.html",
+                "content": false,
+                "paths": [
+                  [
+                    "base.html",
+                    "public/base.html"
+                  ]
+                ]
+              }
+            ],
+            "scoped": false
           }
         ],
         "includes": [],
         "extensions": [
+          {
+            "name": "public/account/forgot.html",
+            "blocks": [
+              {
+                "name": "page_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "base.html",
+                        "public/base.html",
+                        "public/account/forgot.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "public_content",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/forgot.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "extensions": []
+          },
           {
             "name": "public/account/login.html",
             "blocks": [
@@ -581,7 +1059,12 @@
               {
                 "name": "public_content",
                 "blocks": [],
-                "includes": [],
+                "includes": [
+                  {
+                    "name": "account/_login_form.html",
+                    "unresolved": true
+                  }
+                ],
                 "content": true,
                 "overridden_by": [],
                 "overrides": [
@@ -592,6 +1075,205 @@
                       [
                         "public/base.html",
                         "public/account/login.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "extensions": []
+          },
+          {
+            "name": "public/account/login_to_apply.html",
+            "blocks": [
+              {
+                "name": "page_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "base.html",
+                        "public/base.html",
+                        "public/account/login_to_apply.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "public_content",
+                "blocks": [],
+                "includes": [
+                  {
+                    "name": "account/_login_form.html",
+                    "unresolved": true
+                  }
+                ],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/login_to_apply.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "extensions": []
+          },
+          {
+            "name": "public/account/register.html",
+            "blocks": [
+              {
+                "name": "page_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "base.html",
+                        "public/base.html",
+                        "public/account/register.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "public_content",
+                "blocks": [],
+                "includes": [
+                  {
+                    "name": "account/_register_form.html",
+                    "unresolved": true
+                  }
+                ],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/register.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "public_js",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/register.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "public_stylesheets",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/register.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              }
+            ],
+            "includes": [],
+            "extensions": []
+          },
+          {
+            "name": "public/account/reset.html",
+            "blocks": [
+              {
+                "name": "page_title",
+                "blocks": [],
+                "includes": [],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "base.html",
+                    "content": true,
+                    "paths": [
+                      [
+                        "base.html",
+                        "public/base.html",
+                        "public/account/reset.html"
+                      ]
+                    ]
+                  }
+                ],
+                "scoped": false
+              },
+              {
+                "name": "public_content",
+                "blocks": [],
+                "includes": [
+                  {
+                    "name": "account/_reset_form.html",
+                    "unresolved": true
+                  }
+                ],
+                "content": true,
+                "overridden_by": [],
+                "overrides": [
+                  {
+                    "file": "public/base.html",
+                    "content": false,
+                    "paths": [
+                      [
+                        "public/base.html",
+                        "public/account/reset.html"
                       ]
                     ]
                   }

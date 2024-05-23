@@ -14,7 +14,8 @@
         "name": "management_content",
         "blocks": [],
         "files": [
-          "management/base.html"
+          "management/base.html",
+          "management/admin/account/create.html"
         ]
       },
       {
@@ -31,7 +32,12 @@
           "management/base.html",
           "base.html",
           "public/layouts/static-page.html",
-          "public/account/login.html"
+          "public/account/reset.html",
+          "public/account/login.html",
+          "public/account/register.html",
+          "public/account/login_to_apply.html",
+          "public/account/forgot.html",
+          "management/admin/account/create.html"
         ]
       },
       {
@@ -41,7 +47,11 @@
           "public/base.html",
           "public/index.html",
           "public/layouts/static-page.html",
-          "public/account/login.html"
+          "public/account/reset.html",
+          "public/account/login.html",
+          "public/account/register.html",
+          "public/account/login_to_apply.html",
+          "public/account/forgot.html"
         ]
       }
     ],
@@ -58,14 +68,16 @@
         "name": "management_js",
         "blocks": [],
         "files": [
-          "management/base.html"
+          "management/base.html",
+          "management/admin/account/create.html"
         ]
       },
       {
         "name": "public_js",
         "blocks": [],
         "files": [
-          "public/base.html"
+          "public/base.html",
+          "public/account/register.html"
         ]
       }
     ],
@@ -78,6 +90,13 @@
   {
     "name": "base_meta",
     "blocks": [
+      {
+        "name": "management_meta",
+        "blocks": [],
+        "files": [
+          "management/base.html"
+        ]
+      },
       {
         "name": "meta_description",
         "blocks": [],
@@ -128,14 +147,34 @@
     ],
     "files": [
       "base.html",
-      "public/base.html"
+      "public/base.html",
+      "management/base.html"
     ]
   },
   {
     "name": "base_stylesheets",
-    "blocks": [],
+    "blocks": [
+      {
+        "name": "management_stylesheets",
+        "blocks": [],
+        "files": [
+          "management/base.html",
+          "management/admin/account/create.html"
+        ]
+      },
+      {
+        "name": "public_stylesheets",
+        "blocks": [],
+        "files": [
+          "public/base.html",
+          "public/account/register.html"
+        ]
+      }
+    ],
     "files": [
-      "base.html"
+      "base.html",
+      "public/base.html",
+      "management/base.html"
     ]
   },
   {
@@ -167,8 +206,13 @@
     "files": [
       "base.html",
       "public/layouts/static-page.html",
+      "public/account/reset.html",
       "public/account/login.html",
-      "management/base.html"
+      "public/account/register.html",
+      "public/account/login_to_apply.html",
+      "public/account/forgot.html",
+      "management/base.html",
+      "management/admin/account/create.html"
     ]
   }
 ]

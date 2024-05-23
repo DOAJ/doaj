@@ -1,8 +1,8 @@
-{% extends "layouts/public_base.html" %}
+{% extends "public/base.html" %}
 
 {% block page_title %}Register{% endblock %}
 
-{% block extra_stylesheets %}
+{% block public_stylesheets %}
     <style>
         #recaptcha_div iframe {
             padding: unset;
@@ -11,7 +11,7 @@
     </style>
 {% endblock %}
 
-{% block content %}
+{% block public_content %}
 <div class="page-content">
     <section class="container">
         <div class="row">
@@ -33,19 +33,19 @@
 </div>
 {% endblock %}
 
-{% block extra_js_bottom %}
+{% block public_js %}
     {% if current_user.is_authenticated and current_user.has_role("create_user") %}
-    <!-- select2 for role picker on admin create user form -->
-    <script type="text/javascript">
-    jQuery(document).ready(function($) {
-        $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
-    });
-    </script>
+        <!-- select2 for role picker on admin create user form -->
+        <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
+        });
+        </script>
+    {% endif %}
 
-{% endif %}
     {% if config.get("RECAPTCHA_ENABLE") %}
-    <!-- reCAPTCHA for the register form -->
-    <script type="text/javascript" src="/static/js/recaptcha.js?v={{config.get('DOAJ_VERSION')}}"></script>
-    <script src="https://www.recaptcha.net/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+        <!-- reCAPTCHA for the register form -->
+        <script type="text/javascript" src="/static/js/recaptcha.js?v={{config.get('DOAJ_VERSION')}}"></script>
+        <script src="https://www.recaptcha.net/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
     {% endif %}
 {% endblock %}

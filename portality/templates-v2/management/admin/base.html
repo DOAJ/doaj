@@ -1,0 +1,18 @@
+{% extends "management/base.html" %}
+
+{% block management_stylesheets %}
+    {% block admin_stylesheets %}{% endblock %}
+{% endblock %}
+
+{% block nav %}
+    {% include 'dashboard/nav.html' %}
+{% endblock %}
+
+{% block management_content %}
+    {% block admin_content %}{% endblock %}
+    {% include "includes/_hotjar.html" %}
+{% endblock %}
+
+{% block management_js %}
+    {% block admin_js %}{% endblock %}
+{% endblock %}

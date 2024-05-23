@@ -218,7 +218,7 @@ def login():
 
     if request.args.get("redirected") == "apply":
         form['next'].data = url_for("apply.public_application")
-        return render_template('account/login_to_apply.html', form=form)
+        return render_template(templates.LOGIN_TO_APPLY, form=form)
     return render_template(templates.GLOBAL_LOGIN, form=form)
 
 
@@ -238,12 +238,12 @@ def forgot():
         if account is None:
             util.flash_with_url('Error - your account username / email address is not recognised.' + CONTACT_INSTR,
                                 'error')
-            return render_template('account/forgot.html')
+            return render_template(templates.FORGOT_PASSWORD)
 
         if not account.data.get('email'):
             util.flash_with_url('Error - your account does not have an associated email address.' + CONTACT_INSTR,
                                 'error')
-            return render_template('account/forgot.html')
+            return render_template(templates.FORGOT_PASSWORD)
 
         # if we get to here, we have a user account to reset
         reset_token = uuid.uuid4().hex
@@ -258,7 +258,7 @@ def forgot():
             util.flash_with_url('Debug mode - url for reset is <a href={0}>{0}</a>'.format(
                 url_for('account.reset', reset_token=account.reset_token)))
 
-    return render_template('account/forgot.html')
+    return render_template(templates.FORGOT_PASSWORD)
 
 
 class ResetForm(Form):
@@ -284,7 +284,7 @@ def reset(reset_token):
         conf = request.values.get("confirm")
         if pw != conf:
             flash("Passwords do not match - please try again", "error")
-            return render_template("account/reset.html", account=account, form=form)
+            return render_template(templates.RESET_PASSWORD, account=account, form=form)
 
         # update the user's account
         account.set_password(pw)
@@ -296,7 +296,7 @@ def reset(reset_token):
         login_user(account, remember=True)
         return redirect(url_for('doaj.home'))
 
-    return render_template("account/reset.html", account=account, form=form)
+    return render_template(templates.RESET_PASSWORD, account=account, form=form)
 
 
 @blueprint.route('/logout')
@@ -323,7 +323,7 @@ class RegisterForm(RedirectForm):
 @blueprint.route('/register', methods=['GET', 'POST'])
 @ssl_required
 @write_required()
-def register():
+def register(template=templates.REGISTER):
     # 3rd-party registration only for those with create_user role, only allow public registration when configured
     if current_user.is_authenticated and not current_user.has_role("create_user") \
             or current_user.is_anonymous and app.config.get('PUBLIC_REGISTER', False) is False:
@@ -362,4 +362,8 @@ def register():
 
     if request.method == 'POST' and not form.validate():
         flash('Please correct the errors', 'error')
-    return render_template('account/register.html', form=form)
+    return render_template(template, form=form)
+
+@blueprint.route('/create/', methods=['GET', 'POST'])
+def create():
+    return register(template=templates.CREATE_USER)

@@ -1521,36 +1521,6 @@
   },
   {
     "type": "template",
-    "file": "account/reset.html",
-    "blocks": [
-      "page_title",
-      "content"
-    ],
-    "extends": [
-      "layouts/public_base.html"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "page_title",
-    "file": "account/reset.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
-  },
-  {
-    "type": "block",
-    "name": "content",
-    "file": "account/reset.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false,
-    "includes": [
-      "account/_reset_form.html"
-    ]
-  },
-  {
-    "type": "template",
     "file": "account/_register_form.html",
     "blocks": [
       "register_form"
@@ -1566,54 +1536,6 @@
     "includes": [
       "_formhelpers.html"
     ]
-  },
-  {
-    "type": "template",
-    "file": "account/register.html",
-    "blocks": [
-      "page_title",
-      "extra_stylesheets",
-      "content",
-      "extra_js_bottom"
-    ],
-    "extends": [
-      "layouts/public_base.html"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "page_title",
-    "file": "account/register.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
-  },
-  {
-    "type": "block",
-    "name": "extra_stylesheets",
-    "file": "account/register.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
-  },
-  {
-    "type": "block",
-    "name": "content",
-    "file": "account/register.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false,
-    "includes": [
-      "account/_register_form.html"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "extra_js_bottom",
-    "file": "account/register.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
   },
   {
     "type": "template",
@@ -1674,63 +1596,6 @@
     "includes": [
       "_formhelpers.html"
     ]
-  },
-  {
-    "type": "template",
-    "file": "account/login_to_apply.html",
-    "blocks": [
-      "page_title",
-      "content"
-    ],
-    "extends": [
-      "layouts/public_base.html"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "page_title",
-    "file": "account/login_to_apply.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
-  },
-  {
-    "type": "block",
-    "name": "content",
-    "file": "account/login_to_apply.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false,
-    "includes": [
-      "account/_login_form.html"
-    ]
-  },
-  {
-    "type": "template",
-    "file": "account/forgot.html",
-    "blocks": [
-      "page_title",
-      "content"
-    ],
-    "extends": [
-      "layouts/public_base.html"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "page_title",
-    "file": "account/forgot.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
-  },
-  {
-    "type": "block",
-    "name": "content",
-    "file": "account/forgot.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
   },
   {
     "type": "template",
@@ -3059,6 +2924,10 @@
   },
   {
     "type": "template",
+    "file": "testdrive/testdrive.html"
+  },
+  {
+    "type": "template",
     "file": "data/ambassadors.html"
   },
   {
@@ -3374,7 +3243,10 @@
   },
   {
     "type": "template",
-    "file": "application_form/editorial_form_fields.html"
+    "file": "application_form/editorial_form_fields.html",
+    "dynamic_includes": [
+      "field_template"
+    ]
   },
   {
     "type": "template",
@@ -3396,6 +3268,10 @@
     "file": "application_form/editorial_side_panel.html",
     "includes": [
       "application_form/_contact.html"
+    ],
+    "dynamic_includes": [
+      "field_template",
+      "field_template"
     ]
   },
   {
@@ -3508,6 +3384,7 @@
     "includes": [
       "application_form/_edit_status.html",
       "application_form/_backend_validation.html",
+      "application_form/_autochecks.html",
       "application_form/_application_diff.html",
       "application_form/editorial_form_fields.html",
       "application_form/_fieldsets.html",
@@ -3589,6 +3466,10 @@
   {
     "type": "template",
     "file": "application_form/_application_warning_msg.html"
+  },
+  {
+    "type": "template",
+    "file": "application_form/_autochecks.html"
   },
   {
     "type": "template",

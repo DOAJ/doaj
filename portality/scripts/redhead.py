@@ -264,13 +264,25 @@ def _expand_block_node(record, records):
 
     includes = []
     if "includes" in b:
+        resolved = []
         for r in records:
             if r["type"] == "template" and r["file"] in b["includes"]:
                 includes.append(r)
+                resolved.append(r["file"])
+        for inc in b["includes"]:
+            if inc not in resolved:
+                includes.append({
+                    "name": inc,
+                    "file": inc,
+                    "unresolved": True
+                })
 
         includes.sort(key=lambda x: x["file"])
         for inc in includes:
-            incn = _expand_file_node(inc, records)
+            if inc.get("unresolved"):
+                incn = {"name": inc["name"], "unresolved": True}
+            else:
+                incn = _expand_file_node(inc, records)
             node["includes"].append(incn)
 
     if "dynamic_includes" in b:

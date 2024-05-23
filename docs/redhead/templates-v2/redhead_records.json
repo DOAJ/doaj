@@ -86,6 +86,7 @@
     "file": "public/base.html",
     "blocks": [
       "base_meta",
+      "base_stylesheets",
       "base_content",
       "base_js"
     ],
@@ -154,6 +155,25 @@
     "name": "public_meta",
     "file": "public/base.html",
     "parent_block": "base_meta",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_stylesheets",
+    "file": "public/base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false,
+    "blocks": [
+      "public_stylesheets"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "public_stylesheets",
+    "file": "public/base.html",
+    "parent_block": "base_stylesheets",
     "content": false,
     "scoped": false
   },
@@ -349,6 +369,36 @@
   },
   {
     "type": "template",
+    "file": "public/account/reset.html",
+    "blocks": [
+      "page_title",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/account/reset.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/account/reset.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "account/_reset_form.html"
+    ]
+  },
+  {
+    "type": "template",
     "file": "public/account/login.html",
     "blocks": [
       "page_title",
@@ -379,8 +429,115 @@
   },
   {
     "type": "template",
+    "file": "public/account/register.html",
+    "blocks": [
+      "page_title",
+      "public_stylesheets",
+      "public_content",
+      "public_js"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/account/register.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_stylesheets",
+    "file": "public/account/register.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/account/register.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "account/_register_form.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "public_js",
+    "file": "public/account/register.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "public/account/login_to_apply.html",
+    "blocks": [
+      "page_title",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/account/login_to_apply.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/account/login_to_apply.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "account/_login_form.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "public/account/forgot.html",
+    "blocks": [
+      "page_title",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/account/forgot.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/account/forgot.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "template",
     "file": "management/base.html",
     "blocks": [
+      "base_meta",
+      "base_stylesheets",
       "body_class",
       "base_content",
       "base_js"
@@ -388,6 +545,44 @@
     "extends": [
       "base.html"
     ]
+  },
+  {
+    "type": "block",
+    "name": "base_meta",
+    "file": "management/base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false,
+    "blocks": [
+      "management_meta"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "management_meta",
+    "file": "management/base.html",
+    "parent_block": "base_meta",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_stylesheets",
+    "file": "management/base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false,
+    "blocks": [
+      "management_stylesheets"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "management_stylesheets",
+    "file": "management/base.html",
+    "parent_block": "base_stylesheets",
+    "content": false,
+    "scoped": false
   },
   {
     "type": "block",
@@ -466,6 +661,54 @@
     "file": "management/base.html",
     "parent_block": "base_js",
     "content": false,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "management/admin/account/create.html",
+    "blocks": [
+      "page_title",
+      "management_stylesheets",
+      "management_content",
+      "management_js"
+    ],
+    "extends": [
+      "management/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "management/admin/account/create.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "management_stylesheets",
+    "file": "management/admin/account/create.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "management_content",
+    "file": "management/admin/account/create.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "account/_register_form.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "management_js",
+    "file": "management/admin/account/create.html",
+    "parent_block": null,
+    "content": true,
     "scoped": false
   },
   {
