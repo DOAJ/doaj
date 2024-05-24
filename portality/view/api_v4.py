@@ -39,9 +39,21 @@ def docs():
     if current_user.is_authenticated:
         account_url = url_for('account.username', username=current_user.id, _external=True,
                               _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
-    return render_template('api/current/api_docs.html',
+
+    major_version = app.config.get("CURRENT_API_MAJOR_VERSION")
+    is_current = False
+    if major_version is not None:
+        is_current = API_VERSION_NUMBER.startswith(major_version + ".")
+    base_url = app.config.get("BASE_API_URL")
+    if not base_url.endswith("/"):
+        base_url = base_url + "/"
+    if not is_current:
+        this_major_version = API_VERSION_NUMBER.split(".")[0]
+        base_url = base_url + "v" + this_major_version + "/"
+
+    return render_template('api/v4/api_docs.html',
                            api_version=API_VERSION_NUMBER,
-                           base_url=app.config.get("BASE_API_URL", url_for('.api_root')),
+                           base_url=base_url,
                            contact_us_url=url_for('doaj.contact'),
                            account_url=account_url)
 
@@ -52,8 +64,18 @@ def api_spec():
     swag['info']['title'] = ""
     swag['info']['version'] = API_VERSION_NUMBER
 
-    # Strip out the duplicate versioned route from the swagger so we only show latest as /api/
-    [swag['paths'].pop(p) for p in list(swag['paths'].keys()) if re.match(r'/api/v\d+/', p)]
+    major_version = app.config.get("CURRENT_API_MAJOR_VERSION")
+    is_current = False
+    if major_version is not None:
+        is_current = API_VERSION_NUMBER.startswith(major_version + ".")
+
+    if is_current:
+        # Strip out all the `vN` specific routes, leaving only the "current" /api route displayed
+        [swag['paths'].pop(p) for p in list(swag['paths'].keys()) if re.match(r'/api/v\d+/', p)]
+    else:
+        this_major_version = API_VERSION_NUMBER.split(".")[0]
+        # strip out all the routes that are not for this version
+        [swag['paths'].pop(p) for p in list(swag['paths'].keys()) if not re.match('/api/v' + this_major_version + '/', p)]
     return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
 
 

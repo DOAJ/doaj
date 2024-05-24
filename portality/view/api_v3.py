@@ -1,6 +1,6 @@
-import json
+import json, re
 
-from flask import Blueprint, url_for, request
+from flask import Blueprint, url_for, request, render_template, make_response, jsonify, redirect
 from flask_login import current_user
 
 from portality.api.current import Api400Error, bulk_created
@@ -11,6 +11,7 @@ from portality.core import app
 from portality.decorators import api_key_required, api_key_optional, swag, write_required
 from portality.lib import plausible
 from portality.view import api_v4
+from flask_swagger import swagger
 
 blueprint = Blueprint('api_v3', __name__)
 
@@ -23,17 +24,54 @@ ANALYTICS_ACTIONS = app.config.get('ANALYTICS_ACTIONS_API', {})
 
 @blueprint.route('/')
 def api_root():
-    return api_v4.api_root()
+    return redirect(url_for('.api_spec'))
 
 
 @blueprint.route('/docs')
 def docs():
-    return api_v4.docs()
+    account_url = None
+    if current_user.is_authenticated:
+        account_url = url_for('account.username', username=current_user.id, _external=True,
+                              _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
+
+    major_version = app.config.get("CURRENT_API_MAJOR_VERSION")
+    is_current = False
+    if major_version is not None:
+        is_current = API_VERSION_NUMBER.startswith(major_version + ".")
+    base_url = app.config.get("BASE_API_URL")
+    if not base_url.endswith("/"):
+        base_url = base_url + "/"
+    if not is_current:
+        this_major_version = API_VERSION_NUMBER.split(".")[0]
+        base_url = base_url + "v" + this_major_version + "/"
+
+    return render_template('api/v3/api_docs.html',
+                           api_version=API_VERSION_NUMBER,
+                           base_url=base_url,
+                           contact_us_url=url_for('doaj.contact'),
+                           account_url=account_url)
 
 
 @blueprint.route('/swagger.json')
 def api_spec():
-    return api_v4.api_spec()
+    swag = swagger(app)
+    swag['info']['title'] = ""
+    swag['info']['version'] = API_VERSION_NUMBER
+
+    major_version = app.config.get("CURRENT_API_MAJOR_VERSION")
+    is_current = False
+    if major_version is not None:
+        is_current = API_VERSION_NUMBER.startswith(major_version + ".")
+
+    if is_current:
+        # Strip out all the `vN` specific routes, leaving only the "current" /api route displayed
+        [swag['paths'].pop(p) for p in list(swag['paths'].keys()) if re.match(r'/api/v\d+/', p)]
+    else:
+        this_major_version = API_VERSION_NUMBER.split(".")[0]
+        # strip out all the routes that are not for this version
+        [swag['paths'].pop(p) for p in list(swag['paths'].keys()) if
+         not re.match('/api/v' + this_major_version + '/', p)]
+    return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
 
 # Handle wayward paths by raising an API404Error
 @blueprint.route("/<path:invalid_path>", methods=["POST", "GET", "PUT", "DELETE", "PATCH",

@@ -1,0 +1,119 @@
+{% extends "layouts/public_base.html" %}
+
+{% block page_title %}API{% endblock %}
+
+{% block extra_stylesheets %}
+<!-- get Swagger UI css -->
+    <link href='/static/vendor/swagger-ui/src/main/html/css/reset.css' media='screen' rel='stylesheet' type='text/css'/>
+    <link href='/static/vendor/swagger-ui/src/main/html/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
+    <link href='/static/vendor/swagger-ui/src/main/html/css/reset.css' media='print' rel='stylesheet' type='text/css'/>
+    <link href='/static/vendor/swagger-ui/src/main/html/css/print.css' media='print' rel='stylesheet' type='text/css'/>
+
+<!-- get DOAJ swagger overrides -->
+    <link href='/static/doaj/css/doaj_api.css' media='screen' rel='stylesheet' type='text/css' />
+{% endblock %}
+
+{% block content %}
+    <div class="container page-content">
+        <div class="row">
+            <div class="col-md-4 col-md-push-8"></div>
+
+            <div class="col-md-8 col-md-pull-4">
+                <section>
+                    <p class="label">Docs</p>
+                    <h1>API </h1>
+                    <div class="alert alert--danger">
+                        <p>This is a preview release of the v4 API.  This will become the current version of the API
+                        in July 2024.  Please review the below timeline and migration notes, and upgrade your integrations
+                        as soon as possible.</p>
+
+                        <p>Documentation for the existing current API (v3) is available <a href="{{ url_for("api_v3.docs") }}">here</a></p>
+
+                        <p>This new version of the API introduces significant performance improvements on the bulk article upload endpoint (/api/bulk/articles).</p>
+
+                        <p>This change is not backwards compatible with the existing API version, so if you rely on bulk article uploads, you will need to upgrade your integrations to use the new version.</p>
+
+                        <p>This upgrade affects only the /api/bulk/articles endpoint. If you do not use this feature, your API integrations will continue to work normally.</p>
+
+                        <p>The bulk articles endpoint will change from a synchronous upload to an asynchronous one. In the new version, you will upload a batch of articles to be ingested, and the system will respond immediately with an "Accepted" response, and a link to a status endpoint which will track the import progress of your request. This has been done for several reasons:</p>
+                        <ul style="margin-left: 0.75rem !important">
+                            <li>It is consistent with the manual bulk upload approach we have in the user interface</li>
+                            <li>It allows us to manage the performance of the API better</li>
+                            <li>It mitigates issues some users have had with large uploads timing out</li>
+                        </ul>
+
+                        <h2>Timeline</h2>
+                        <ol style="margin-left: 0.75rem !important; list-style: auto">
+                            <li><strong>18 June 2024</strong> - v4 of the API will be released and available at the base URL /api/v4. It will not replace the existing current API version (v3). If you are reliant on the bulk article upload, you should:
+                                <ol style="margin-left: 0.75rem !important; list-style: auto">
+                                    <li>Try out the new bulk endpoint; upgrade your integrations immediately if feasible.</li>
+                                    <li>If upgrading your integrations in the short term is not feasible, you should fix your existing integration to point to /api/v3, which will continue to work in the medium term.</li>
+                                </ol>
+                            </li>
+
+                            <li><strong>Approximately 1 month after 18th June 2024</strong> (exact date to be confirmed) The v4 API will become the "current" API version and will be available at /api AND /api/v4. At this point, old integrations with the bulk article upload will cease to work, and you must switch to using /api/v3 if you want to get it to work again. If you wish to continue using this feature long-term, you must upgrade your integrations.</li>
+
+                            <li><strong>Approximately 6 months after 18th June 2024</strong> (exact date to be confirmed) All previous API versions (v1, v2 and v3) will cease to support bulk article uploads, and if you wish to use this feature, you must use the v4 API. All other backwards-compatible API features in those previous versions of the API will continue to work as normal.</li>
+
+                        </ol>
+
+                        <p>Please get in touch if you have any questions.</p>
+                    </div>
+                    {% include "api/includes/swagger_description.html" %}
+                    <div id="swagger-section" class="swagger-section">
+                        <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+                    </div>
+                    {% include "api/v4/extra_docs.html" %}
+                    {% include "api/includes/_version-history.html" %}
+                </section>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js_bottom %}
+<!--get Swagger UI's javascripts -->
+<script src='/static/vendor/swagger-ui/lib/jquery-1.8.0.min.js' type='text/javascript'></script>
+<script src='/static/vendor/swagger-ui/lib/jquery.slideto.min.js' type='text/javascript'></script>
+<script src='/static/vendor/swagger-ui/lib/jquery.wiggle.min.js' type='text/javascript'></script>
+<script src='/static/vendor/swagger-ui/lib/jquery.ba-bbq.min.js' type='text/javascript'></script>
+<script src='/static/vendor/swagger-ui/lib/handlebars-2.0.0.js' type='text/javascript'></script>
+<script src='/static/vendor/swagger-ui/lib/underscore-min.js' type='text/javascript'></script>
+<script src='/static/vendor/swagger-ui/lib/backbone-min.js' type='text/javascript'></script>
+<script src='/static/vendor/swagger-ui/dist/swagger-ui.js' type='text/javascript'></script>
+<script src='/static/vendor/swagger-ui/lib/highlight.7.3.pack.js' type='text/javascript'></script>
+<script src='/static/vendor/swagger-ui/lib/marked.js' type='text/javascript'></script>
+<script src='/static/vendor/swagger-ui/lib/swagger-oauth.js' type='text/javascript'></script>
+
+<script type="text/javascript">
+    $(function () {
+      var url = current_scheme + '//' + current_domain + "/api/v4/swagger.json";
+      console.log(url);
+      window.swaggerUi = new SwaggerUi({
+        url: url,
+        validatorUrl: null,
+        docExpansion: 'list',
+        dom_id: "swagger-ui-container",
+        supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
+        onComplete: function(swaggerApi, swaggerUi){
+          $('pre code').each(function(i, e) {
+            hljs.highlightBlock(e)
+          });
+        },
+        onFailure: function(data) {
+          log("Unable to Load SwaggerUI");
+        },
+        apisSorter: "alpha",
+        showRequestHeaders: false
+      });
+
+      window.swaggerUi.load();
+
+      function log() {
+        if ('console' in window) {
+          console.log.apply(console, arguments);
+        }
+      }
+  });
+  </script>
+{% endblock %}

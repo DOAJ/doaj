@@ -16,45 +16,23 @@
 {% block content %}
     <div class="container page-content">
         <div class="row">
-            <div class="col-md-4 col-md-push-8">
-                {# todo: this nav was bumping into swagger
-              <nav class="page-nav" data-spy="affix">
-
-                <h2 class="page-nav__heading">Jump to:</h2>
-                <ul class="page-nav__list">
-                    <li class="page-nav__item item-h2"><a href="#intro_auth">Using this live documentation page</a></li>
-                    <li class="page-nav__item item-h2"><a href="#intro_help">Help and support</a></li>
-                    <li class="page-nav__item item-h2"><a href='#swagger-section'>Try it out!</a></li>
-                    <li class="page-nav__item item-h2"><a href="#search_api">Search API</a></li>
-                    <ul class="page-nav__sublist">
-                        <li class="page-nav__item item-h3"><a href="#query_syntax">Query string syntax</a></li>
-                        <li class="page-nav__item item-h3"><a href="#default_query_operator">Default handling of phrases</a></li>
-                        <li class="page-nav__item item-h3"><a href="#specific_field_search">Searching inside a specific field</a></li>
-                        <li class="page-nav__item item-h3"><a href="#special_characters">Special characters</a></li>
-                        <li class="page-nav__item item-h3"><a href="#short_field_names">Short field names</a></li>
-                        <li class="page-nav__item item-h3"><a href="#sorting">Sorting of results</a></li>
-                        <li class="page-nav__item item-h3"><a href="#query_string_advanced_usage">The query string - advanced usage</a></li>
-                    </ul>
-                    <li class="page-nav__item item-h2"><a href="#crud_api">CRUD API</a></li>
-                    <ul class="page-nav__sublist">
-                        <li class="page-nav__item item-h3"><a href="#creating_articles">Creating articles</a></li>
-                        <li class="page-nav__item item-h3"><a href="#update_requests">Applications - Update Requests</a></li>
-                    </ul>
-
-                </ul>
-              </nav>
-                #}
-            </div>
+            <div class="col-md-4 col-md-push-8">{# temporarily empty #}</div>
 
             <div class="col-md-8 col-md-pull-4">
                 <section>
                     <p class="label">Docs</p>
                     <h1>API </h1>
-                    {% include "api/current/swagger_description.html" %}
+                    <div class="alert alert--message">
+                        <p>This is the current version of the DOAJ API</p>
+                        <p>A new version of the API is due in July 2024, and you can preview it <a href="{{ url_for("api_v4.docs") }}">here</a>.
+                        You should review the release notes and migration instructions as soon as possible.</p>
+                    </div>
+                    {% include "api/includes/swagger_description.html" %}
                     <div id="swagger-section" class="swagger-section">
                         <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
                     </div>
-                    {% include "api/current/extra_docs.html" %}
+                    {% include "api/v3/extra_docs.html" %}
+                    {% include "api/includes/_version-history.html" %}
                 </section>
             </div>
         </div>
@@ -77,7 +55,7 @@
 
 <script type="text/javascript">
     $(function () {
-      var url = current_scheme + '//' + current_domain + "/api/swagger.json";
+      var url = current_scheme + '//' + current_domain + "/api/v3/swagger.json";
       console.log(url);
       window.swaggerUi = new SwaggerUi({
         url: url,
