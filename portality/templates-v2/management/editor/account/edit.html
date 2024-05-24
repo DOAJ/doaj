@@ -1,0 +1,22 @@
+{% extends "management/editor/base.html" %}
+
+{% block page_title %}{{ account.name if account.name else account.email }}’s profile{% endblock %}
+
+{% block editor_content %}
+
+    <div class="row">
+        <div class="col-md-8">
+            {% include 'account/_edit_user_form.html' %}
+        </div>
+
+        <div class="col-md-4">
+            {% include "_account/includes/_marketing-consent.html" %}
+            {% include "_account/includes/_api-access.html" %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block editor_js %}
+    {% include "_account/includes/_edit_form_js.html" %}
+{% endblock %}

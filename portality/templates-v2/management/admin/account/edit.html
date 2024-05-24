@@ -1,0 +1,49 @@
+{% extends "management/admin/base.html" %}
+{# ~~Account:Page~~ #}
+
+{% block page_title %}{{ account.name if account.name else account.email }}’s profile{% endblock %}
+
+{% block admin_content %}
+<div class="row">
+    <div class="col-md-8">
+
+        <ul class="tags">
+            <li><a href="/account" class="tag tag--secondary">View <strong>all</strong> user accounts</a></li>
+            {% set Q1 = '{"query":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
+            {% set Q2 = '"}}]}}}' %}
+            <li><a href="/admin/?source={{Q1}}{{account.id}}{{Q2}}" class="tag tag--secondary">View <strong>this user’s</strong> journals</a></li>
+        </ul>
+
+        {% if current_user.id != account.id %}
+            <p class="alert">
+                <span data-feather="alert-triangle" aria-hidden="true"></span>
+                You are editing a user account that is <strong>not your own</strong>. Be careful!
+            </p>
+        {% endif %}
+
+        {% include 'account/_edit_user_form.html' %}
+
+        {% if current_user.is_super %}
+            <hr/>
+            <h2>Delete this account</h2>
+            <p><span data-feather="alert-triangle" aria-hidden="true"></span> This <strong>irrevocably</strong> deletes the account.</p>
+            <form action="" method="POST">
+                <input type="checkbox" name="delete_confirm" id="delete_confirm" value="delete_confirm">
+                <label for="delete_confirm">Yes, I’m sure</label>
+                <input type="submit" name="submit" value="Delete" class="button">
+            </form>
+        {% endif %}
+
+    </div>
+
+    <div class="col-md-4">
+        {% include "_account/includes/_marketing-consent.html" %}
+        {% include "_account/includes/_api-access.html" %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block admin_js %}
+    {% include "_account/includes/_edit_form_js.html" %}
+{% endblock %}

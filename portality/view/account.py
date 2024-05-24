@@ -24,7 +24,7 @@ blueprint = Blueprint('account', __name__)
 def index():
     if not current_user.has_role("list_users"):
         abort(401)
-    return render_template("account/users.html")
+    return render_template(templates.USER_LIST)
 
 
 class UserEditForm(Form):
@@ -55,6 +55,12 @@ class UserEditForm(Form):
 def username(username):
     acc = Account.pull(username)
 
+    template = templates.PUBLIC_EDIT_USER
+    if current_user.is_super:
+        template = templates.ADMIN_EDIT_USER
+    elif current_user.has_role(constants.ROLE_ASSOCIATE_EDITOR) or current_user.has_role(constants.ROLE_EDITOR):
+        template = templates.EDITOR_EDIT_USER
+
     if acc is None:
         abort(404)
     if (request.method == 'DELETE' or
@@ -65,7 +71,7 @@ def username(username):
             conf = request.values.get("delete_confirm")
             if conf is None or conf != "delete_confirm":
                 flash('Check the box to confirm you really mean it!', "error")
-                return render_template('account/view.html', account=acc, form=UserEditForm(obj=acc))
+                return render_template(template, account=acc, form=UserEditForm(obj=acc))
             acc.delete()
             flash('Account ' + acc.id + ' deleted')
             return redirect(url_for('.index'))
@@ -77,19 +83,11 @@ def username(username):
         form = UserEditForm(obj=acc, formdata=request.form)
 
         if not form.validate():
-            return render_template('account/view.html', account=acc, form=form)
+            return render_template(template, account=acc, form=form)
 
         newdata = request.json if request.json else request.values
         if request.values.get('submit', False) == 'Generate a new API Key':
             acc.generate_api_key()
-
-        # if 'id' in newdata and len(newdata['id']) > 0:
-        #     if newdata['id'] != current_user.id == acc.id:
-        #         flash('You may not edit the ID of your own account', 'error')
-        #         return render_template('account/view.html', account=acc, form=form)
-        #     else:
-        #         acc.delete()        # request for the old record to be deleted from ES
-        #         acc.set_id(newdata['id'])
 
         if 'name' in newdata:
             acc.set_name(newdata['name'])
@@ -128,7 +126,7 @@ def username(username):
 
         acc.save()
         flash("Record updated")
-        return render_template('account/view.html', account=acc, form=form)
+        return render_template(template, account=acc, form=form)
 
     else:  # GET
         if util.request_wants_json():
@@ -138,7 +136,7 @@ def username(username):
             return resp
         else:
             form = UserEditForm(obj=acc)
-            return render_template('account/view.html', account=acc, form=form)
+            return render_template(template, account=acc, form=form)
 
 
 def get_redirect_target(form=None, acc=None):

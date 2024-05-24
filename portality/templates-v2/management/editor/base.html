@@ -1,0 +1,19 @@
+{% extends "management/base.html" %}
+
+{% block management_stylesheets %}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+    {% block editor_stylesheets %}{% endblock %}
+{% endblock %}
+
+{% block nav %}
+    {% include 'editor/nav.html' %}
+{% endblock %}
+
+{% block management_content %}
+    {% block editor_content %}{% endblock %}
+    {% include "includes/_hotjar.html" %}
+{% endblock %}
+
+{% block management_js %}
+    {% block editor_js %}{% endblock %}
+{% endblock %}

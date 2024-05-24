@@ -60,9 +60,6 @@ TODO_ASSOCIATE_FOLLOW_UP_OLD = "todo_associate_follow_up_old"
 TODO_ASSOCIATE_START_PENDING = "todo_associate_start_pending"
 TODO_ASSOCIATE_ALL_APPLICATIONS = "todo_associate_all_applications"
 
-# Roles
-ROLE_ASSOCIATE_EDITOR = 'associate_editor'
-
 EVENT_ACCOUNT_CREATED = "account:created"
 EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
 EVENT_APPLICATION_STATUS = "application:status"
@@ -86,9 +83,9 @@ PROCESS__QUICK_REJECT = "quick_reject"
 # Role
 ROLE_ADMIN = "admin"
 ROLE_PUBLISHER = "publisher"
+ROLE_EDITOR = "editor"
 ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
-ROLE_PUBLISHER = "publisher"
 ROLE_PUBLISHER_JOURNAL_CSV = "journal_csv"
 ROLE_PUBLISHER_PRESERVATION = "preservation"
 
