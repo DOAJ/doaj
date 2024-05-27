@@ -14,19 +14,19 @@ class TestApplicationEditorCompletedNotify(DoajTestCase):
     def tearDown(self):
         super(TestApplicationEditorCompletedNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
         event = models.Event(constants.EVENT_APPLICATION_STATUS, context={"application": ApplicationFixtureFactory.make_application_source(), "old_status": "in progress", "new_status": "completed"})
-        assert ApplicationEditorCompletedNotify.consumes(event)
+        assert ApplicationEditorCompletedNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS,
                              context={"application": ApplicationFixtureFactory.make_application_source(), "old_status": "completed", "new_status": "completed"})
-        assert not ApplicationEditorCompletedNotify.consumes(event)
+        assert not ApplicationEditorCompletedNotify.should_consume(event)
 
         event = models.Event("test:event", context={"application": ApplicationFixtureFactory.make_application_source()})
-        assert not ApplicationEditorCompletedNotify.consumes(event)
+        assert not ApplicationEditorCompletedNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_APPLICATION_STATUS)
-        assert not ApplicationEditorCompletedNotify.consumes(event)
+        assert not ApplicationEditorCompletedNotify.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")

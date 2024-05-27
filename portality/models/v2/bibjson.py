@@ -601,13 +601,16 @@ class JournalLikeBibJSON(SeamlessMixin):
     #####################################################
     ## External utility functions
 
-    def issns(self):
+    def issns(self) -> list:
         issns = []
         if self.pissn:
             issns.append(self.pissn)
         if self.eissn:
             issns.append(self.eissn)
         return issns
+
+    def issns_as_text(self) -> str:
+        return ", ".join(issn for issn in self.issns())
 
     def publisher_country_name(self):
         if self.publisher_country is not None:

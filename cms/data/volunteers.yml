@@ -19,13 +19,13 @@ ed:
   language: Chinese, English
   featured: true
   
-- name: Juyeon Park
-  area: Librarianship
+- name: Jiayi Xu
+  area: Academic Publishing
   year_since:
-  city: Seoul
-  country: Korea
-  language: Korean, English
-
+  city: Chongqing
+  country: China
+  language: Chinese, English
+  
 - name: Lut Tamam
   area: Medicine
   year_since:
@@ -42,7 +42,7 @@ ed:
   language: Indonesian, English
   photo: "Ratodi.jpg"
 
-- name: Natalia Pamuła-Cieślak
+- name: Natalia Pamuła
   area: Humanities, Social Sciences
   year_since:
   city: Toruń
@@ -75,6 +75,7 @@ ed:
   city: Tabriz
   country: Iran
   language: Persian, English, Azeri
+  photo: "Rasoul.jpg"
   
 - name: S.Suharto
   area: Humanities, Social Sciences
@@ -94,6 +95,14 @@ ed:
 ## All associate editors
 
 ass_ed:
+- name: K. Adhinarayanan
+  area: Scientometric and Bibliometric Studies, Biotechnology, Library and Information Science 
+  year_since:
+  city: Tiruchirappalli 
+  country: India
+  language: Tamil, English
+  photo: "Dr. K.JPG"
+  
 - name: Alain Chaple
   area: Medical Sciences
   year_since:
@@ -162,6 +171,7 @@ ass_ed:
   city: Bucharest
   country: Romania
   language: Romanian, English
+  photo: "Octav.jpg"
   
 - name: Anna Sidorko
   area: Library Science
@@ -397,13 +407,6 @@ ass_ed:
   country:
   language: English
 
-- name: Jiayi Xu
-  area: Publishing
-  year_since:
-  city: Chongqing
-  country: China
-  language: Chinese,English
-
 - name: Jinjin Liu
   area: Social Sciences, Medicine
   year_since:
@@ -433,11 +436,19 @@ ass_ed:
   language: Portuguese, English
   photo: "jlima.jpg"
 
-- name: JuYeon Park
-  area:
+- name: Julio Zetter
+  area: Library Science
   year_since:
-  city:
-  country:
+  city: Mexico City
+  country: Mexico
+  language: Spanish, English
+  photo: "Julio.jpg"
+  
+- name: Juyeon Park
+  area: Librarianship
+  year_since:
+  city: Seoul
+  country: Korea
   language: Korean, English
 
 - name: Kadri Kıran
@@ -495,6 +506,14 @@ ass_ed:
   city:
   country: Finland
   language: Finnish, English
+  
+- name: Leila Yang
+  area: Scholarly Publishing
+  year_since:
+  city: Beijing
+  country: China
+  language: Chinese, English
+  photo: "Yang.jpg"
 
 - name: Liana Penabad Camacho
   area: Social Sciences
@@ -511,6 +530,14 @@ ass_ed:
   country: Colombia
   language: Spanish, English
 
+- name: Liping Yang
+  area: Material Engineering, Library Studies
+  year_since:
+  city: Suzhou
+  country: China
+  language: Chinese, English
+  photo: "Liping.jpg"
+
 - name: Lorri Peters
   area: Science
   year_since:
@@ -524,6 +551,7 @@ ass_ed:
   city: Târgu jiu
   country: Romania
   language: Romanian, English
+  photo: "Flavius.jpg"
 
 - name: Marco Tullney
   area: Social Sciences, Technology
@@ -566,7 +594,7 @@ ass_ed:
   city: Łupice
   country: Poland
   language: Polish, English
-  photo: "Mirecka.jpeg"
+  photo: "Martyna.JPG"
  
 - name: Melih Sever
   area: Social Sciences
@@ -669,6 +697,14 @@ ass_ed:
   language: Portuguese, English
   photo: "paulacarina.JPG"
 
+- name: Patrícia Aragão
+  area: Academic Publications, Languages and Literature
+  year_since:
+  city: Rio Grande Do Sul
+  country: Brazil
+  language: Portuguese, Spanish, Italian, English
+  photo: "Patricia.jpg"
+
 - name: Princess Uju E. Nwafor-Orizu
   area: Medicine
   year_since:
@@ -734,6 +770,13 @@ ass_ed:
   city: Milan
   country: Italy
   language: Italian, English, German
+  
+- name: Shiying Li
+  area: Forensic Science
+  year_since:
+  city: Shanghai
+  country: China
+  language: Chinese
 
 - name: Soon Kim
   area:
