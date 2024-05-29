@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+from collections import OrderedDict
 
 import pandas as pd
 from gspread.utils import ValueInputOption
@@ -8,7 +9,6 @@ from gspread.utils import ValueInputOption
 from portality.lib import gsheet
 from portality.scripts.githubpri import pri_data_serv, gdrive_sheet_serv, github_serv
 from portality.scripts.githubpri.gdrive_sheet_serv import create_or_load_worksheet
-from collections import OrderedDict
 
 log = logging.getLogger(__name__)
 

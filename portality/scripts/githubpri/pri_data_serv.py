@@ -30,6 +30,7 @@ class PriIssue(TypedDict):
     rule_id: str
     title: str
     issue_url: str
+    status: str
 
 
 class GithubIssue(TypedDict):
@@ -98,7 +99,7 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Di
     return df_list
 
 
-def _issues_by_user(project, priority, sender) -> Dict[str, List[GithubIssue]]:
+def _issues_by_user(project, priority, sender: GithubReqSender) -> Dict[str, List[GithubIssue]]:
     cols = priority.get("columns", [])
     if len(cols) == 0:
         cols = DEFAULT_COLUMNS
@@ -149,7 +150,7 @@ def _get_column_issues(project, col, sender: GithubReqSender):
             issues.append(issue_data)
 
     COLUMN_CACHE[col] = issues
-    print("Column issues {x}".format(x=[i.get("url") for i in issues]))
+    print("Column issues {x}".format(x=[i.get("number") for i in issues]))
     return issues
 
 
