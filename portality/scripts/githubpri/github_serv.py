@@ -12,16 +12,36 @@ class GithubReqSender:
         :param password_key:
         password of username or github api key
         """
-        self.username = username
-        self.password_key = password_key
-        if self.password_key is None:
+        if username and password_key is None:
             raise ValueError("api_key or password must be provided")
-
-    def _create_github_request_kwargs(self) -> dict:
-        req_kwargs = {'auth': HTTPBasicAuth(self.username, self.password_key)}
-        return req_kwargs
+        self.username_password = (username, password_key)
 
     def get(self, url, **req_kwargs):
-        final_req_kwargs = self._create_github_request_kwargs()
-        final_req_kwargs.update(req_kwargs)
-        return requests.get(url, **final_req_kwargs)
+        return send_request_get(url, auth=self.username_password, **req_kwargs)
+
+
+def send_request_get(url, method='get', auth=None, **req_kwargs):
+    """
+
+    Parameters
+    ----------
+    url
+    method
+    auth
+        accept HTTPBasicAuth, Tuple[username, password], Dict or None
+    req_kwargs
+
+    Returns
+    -------
+
+    """
+    final_req_kwargs = {}
+    if auth is not None:
+        if isinstance(auth, tuple):
+            auth = HTTPBasicAuth(*auth)
+        if isinstance(auth, dict):
+            auth = HTTPBasicAuth(auth['username'], auth['password'])
+        final_req_kwargs |= {'auth': auth}
+
+    final_req_kwargs |= req_kwargs
+    return requests.request(method, url, **final_req_kwargs)
