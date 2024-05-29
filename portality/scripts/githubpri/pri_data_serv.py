@@ -9,38 +9,15 @@ from collections import defaultdict
 from typing import TypedDict, List, Dict
 
 import pandas as pd
-import requests
-from requests.auth import HTTPBasicAuth
+
+from portality.scripts.githubpri.github_serv import GithubReqSender
 
 REPO = "https://api.github.com/repos/DOAJ/doajPM/"
 PROJECTS = REPO + "projects"
 PROJECT_NAME = "DOAJ Kanban"
 DEFAULT_COLUMNS = ["Review", "In progress", "To Do"]
-HEADERS = {"Accept": "application/vnd.github+json"}
 
 DEFAULT_USER = 'Claimable'
-
-
-class GithubReqSender:
-    def __init__(self, username=None, password_key=None):
-        """
-        :param password_key: 
-        password of username or github api key
-        """
-        self.username = username
-        self.password_key = password_key
-        if self.password_key is None:
-            raise ValueError("api_key or password must be provided")
-
-    def create_github_request_kwargs(self) -> dict:
-        req_kwargs = {'headers': dict(HEADERS)}
-        req_kwargs['auth'] = HTTPBasicAuth(self.username, self.password_key)
-        return req_kwargs
-
-    def get(self, url, **req_kwargs):
-        final_req_kwargs = self.create_github_request_kwargs()
-        final_req_kwargs.update(req_kwargs)
-        return requests.get(url, **final_req_kwargs)
 
 
 class Rule(TypedDict):
