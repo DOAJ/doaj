@@ -1,3 +1,7 @@
+"""
+main script of team priorities sheet generation
+"""
+
 import logging
 import os
 import sys

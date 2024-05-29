@@ -1,5 +1,6 @@
 """
 functions and logic of priority data
+core logic of githubpri
 """
 
 import csv

@@ -1,3 +1,7 @@
+"""
+functions to interact with "Github" for githubpri
+"""
+
 import requests
 from requests.auth import HTTPBasicAuth
 
