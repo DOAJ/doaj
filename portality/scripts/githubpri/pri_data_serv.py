@@ -77,9 +77,14 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Di
     project = [p for p in project_list if p.get("name") == PROJECT_NAME][0]
     user_priorities = defaultdict(list)
     for priority in load_rules(priorities_file):
-        print("Applying rule {x}".format(x=json.dumps(priority)))
+        print("Applying rule [{x}]".format(x=json.dumps(priority)))
         issues_by_user = _issues_by_user(project, priority, sender)
-        print("Unfiltered matches for rule {x}".format(x=issues_by_user))
+        print("Unfiltered matches for rule: ".format(x=issues_by_user))
+        for user, issues in issues_by_user.items():
+            print(user)
+            for i in issues:
+                print('  * [{}] {}'.format(i.get('issue_number'), i.get('title')))
+
         for user, issues in issues_by_user.items():
             issues: List[GithubIssue]
             pri_issues = [PriIssue(rule_id=priority.get("id", 1),
@@ -90,7 +95,9 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Di
                           for github_issue in issues]
             pri_issues = [i for i in pri_issues if
                           i['issue_url'] not in {u['issue_url'] for u in user_priorities[user]}]
-            print("Novel issues for rule for user {x} {y}".format(x=user, y=pri_issues))
+            print("Novel issues for rule for user [{x}]".format(x=user))
+            for i in pri_issues:
+                print('  * {}'.format(i.get('title')))
             user_priorities[user] += pri_issues
 
     df_list = {}
