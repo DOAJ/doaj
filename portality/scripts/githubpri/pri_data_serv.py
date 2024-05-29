@@ -1,3 +1,7 @@
+"""
+functions and logic of priority data
+"""
+
 import csv
 import json
 import os
@@ -75,14 +79,18 @@ def load_rules(rules_file) -> List[Rule]:
 
 def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Dict[str, pd.DataFrame]:
     """
-
     ENV VARIABLE `DOAJ_GITHUB_KEY` will be used if username and password are not provided
 
-    :param priorities_file:
-    :param username:
-    :param password:
-    :return:
+    Parameters
+    ----------
+    priorities_file
+    sender
+
+    Returns
+    -------
+        dict mapping 'username' to 'priority dataframe'
     """
+
     resp = sender.get(PROJECTS)
     if resp.status_code >= 400:
         raise ConnectionError(f'Error fetching github projects: {resp.status_code} {resp.text}')
