@@ -5,8 +5,6 @@ functions to interact with "Github" for githubpri
 import requests
 from requests.auth import HTTPBasicAuth
 
-HEADERS = {"Accept": "application/vnd.github+json"}
-
 
 class GithubReqSender:
     def __init__(self, username=None, password_key=None):
@@ -20,8 +18,7 @@ class GithubReqSender:
             raise ValueError("api_key or password must be provided")
 
     def _create_github_request_kwargs(self) -> dict:
-        req_kwargs = {'headers': dict(HEADERS)}
-        req_kwargs['auth'] = HTTPBasicAuth(self.username, self.password_key)
+        req_kwargs = {'auth': HTTPBasicAuth(self.username, self.password_key)}
         return req_kwargs
 
     def get(self, url, **req_kwargs):
