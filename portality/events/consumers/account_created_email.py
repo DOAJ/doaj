@@ -12,7 +12,7 @@ class AccountCreatedEmail(EventConsumer):
     ID = "account:created:email"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_ACCOUNT_CREATED and event.context.get("account") is not None
 
     @classmethod

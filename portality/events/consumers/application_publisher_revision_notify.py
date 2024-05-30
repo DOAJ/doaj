@@ -1,5 +1,5 @@
 # ~~ApplicationPublisherRevisionNotify:Consumer~~
-
+from portality.events import consumer_utils
 from portality.events.consumer import EventConsumer
 from portality import constants
 from portality import models
@@ -13,7 +13,7 @@ class ApplicationPublisherRevisionNotify(EventConsumer):
     ID = "application:publisher:revision:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_STATUS and \
                event.context.get("application") is not None and \
                event.context.get("old_status") != constants.APPLICATION_STATUS_REVISIONS_REQUIRED and \
@@ -44,7 +44,7 @@ class ApplicationPublisherRevisionNotify(EventConsumer):
             date_applied=date_applied
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
 
         svc.notify(notification)

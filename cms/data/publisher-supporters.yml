@@ -1,7 +1,4 @@
 # ~~PublisherSupporters:Data~~
-- name: Cogitatio Press
-  url: https://www.cogitatiopress.com/
-
 - name: Faculty of Communication, Universitas Tarumanagara
   url: https://fikom.untar.ac.id/
 
@@ -23,8 +20,5 @@
 - name: Scientia Agropecuaria
   url: https://revistas.unitru.edu.pe/index.php/scientiaagrop
 
-- name: Springer Nature
-  url: https://www.springernature.com/gp
-  
 - name: Tsinghua University Press
   url: https://www.tsinghua.edu.cn/en/

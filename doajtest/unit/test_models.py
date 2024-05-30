@@ -1204,7 +1204,7 @@ class TestModels(DoajTestCase):
         s.data["junk"] = "in here"
         with self.assertRaises(seamless.SeamlessException):
             s.save()
-        assert s.id is None
+        assert s.id is not None   # ID is necessary for duplication check
 
         p = models.Provenance()
         p.type = "suggestion"

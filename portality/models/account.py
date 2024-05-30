@@ -246,3 +246,9 @@ class Account(DomainObject, UserMixin):
             if author is not None and author.name:
                 return author.name
         return ''
+
+    @classmethod
+    def is_enable_publisher_email(cls) -> bool:
+        # TODO: in the long run this needs to move out to the user's email preferences but for now it
+        # is here to replicate the behaviour in the code it replaces
+        return app.config.get("ENABLE_PUBLISHER_EMAIL", False)
