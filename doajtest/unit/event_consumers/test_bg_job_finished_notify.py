@@ -14,15 +14,15 @@ class TestBGJobFinishedNotify(DoajTestCase):
     def tearDown(self):
         super(TestBGJobFinishedNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
         event = models.Event(constants.BACKGROUND_JOB_FINISHED, context={"job" : {}})
-        assert BGJobFinishedNotify.consumes(event)
+        assert BGJobFinishedNotify.should_consume(event)
 
         event = models.Event("test:event", context={"job" : "2345"})
-        assert not BGJobFinishedNotify.consumes(event)
+        assert not BGJobFinishedNotify.should_consume(event)
 
         event = models.Event(constants.BACKGROUND_JOB_FINISHED)
-        assert not BGJobFinishedNotify.consumes(event)
+        assert not BGJobFinishedNotify.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")

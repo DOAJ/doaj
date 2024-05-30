@@ -17,10 +17,28 @@ from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll.exceptions import AuthoriseException
 from portality.forms.application_forms import ApplicationFormFactory
 
+
 class ApplicationService(object):
     """
     ~~Application:Service->DOAJ:Service~~
     """
+
+    @staticmethod
+    def prevent_concurrent_ur_submission(ur: models.Application, record_if_not_concurrent=True):
+        """
+        Prevent duplicated update request submission
+        :param ur:
+        :param record_if_not_concurrent:
+        :return:
+        """
+        cs = DOAJ.concurrencyPreventionService()
+
+        if ur.current_journal is not None and ur.id is not None:
+            if cs.check_concurrency(ur.current_journal, ur.id):
+                raise exceptions.ConcurrentUpdateRequestException(Messages.CONCURRENT_UPDATE_REQUEST)
+
+            if record_if_not_concurrent:
+                cs.store_concurrency(ur.current_journal, ur.id, timeout=app.config.get("UR_CONCURRENCY_TIMEOUT", 10))
 
     def reject_application(self, application, account, provenance=True, note=None, manual_update=True):
         """

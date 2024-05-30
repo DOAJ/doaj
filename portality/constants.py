@@ -65,6 +65,7 @@ EVENT_ACCOUNT_PASSWORD_RESET = "account:password_reset"
 EVENT_APPLICATION_STATUS = "application:status"
 EVENT_APPLICATION_ASSED_ASSIGNED = "application:assed:assigned"
 EVENT_APPLICATION_CREATED = "application:created"
+EVENT_APPLICATION_UR_SUBMITTED = "application:ur_submitted"
 EVENT_APPLICATION_EDITOR_GROUP_ASSIGNED = "application:editor_group:assigned"
 EVENT_JOURNAL_ASSED_ASSIGNED = "journal:assed:assigned"
 EVENT_JOURNAL_EDITOR_GROUP_ASSIGNED = "journal:editor_group:assigned"
@@ -88,12 +89,14 @@ ROLE_ASSOCIATE_EDITOR = 'associate_editor'
 ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
 ROLE_PUBLISHER_JOURNAL_CSV = "journal_csv"
 ROLE_PUBLISHER_PRESERVATION = "preservation"
+ROLE_API = "api"
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
 # ~~-> BackgroundTask:Monitoring~~
 # BackgroundJob.status
 BGJOB_STATUS_QUEUED = 'queued'
+BGJOB_STATUS_PROCESSING = 'processing'
 BGJOB_STATUS_ERROR = 'error'
 BGJOB_STATUS_COMPLETE = 'complete'
 
