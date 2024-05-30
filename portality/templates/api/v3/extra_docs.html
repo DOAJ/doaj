@@ -1,4 +1,4 @@
-<h2 id="search_api"><a name="search-api"></a>Search API</h2>
+<h2 id="search_api"><a name="search-api"></a>How-To Guide on Search API</h2>
 
     <h3 id="query_syntax">Query string syntax</h3>
     <p>If you'd like to do more complex queries than simple words or phrases, read <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax" target="_blank">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax</a>. The DOAJ database is built on Elasticsearch and knowing more about its query syntax will let you send more advanced queries. (This is not a prerequisite for using the DOAJ API - in the sections below, we provide instructions for the most common use cases.) If you think that what you have achieved with the API would be useful for others to know and would like us to add an example to this documentation, submit it to <a href="https://groups.google.com/g/doaj-public-api">our API group</a>.</p>
@@ -30,7 +30,7 @@ doi:10.3389%5C/fpsyg.2013.00479
 
 
     <h3 id="short_field_names">Short field names</h3>
-    <p>For conveniance we also offer shorter field names for you to use when querying. Note that <em>you cannot use the ".exact" notation mentioned above on these substitutions</em>.</p>
+    <p>For convenience we also offer shorter field names for you to use when querying. Note that <em>you cannot use the ".exact" notation mentioned above on these substitutions</em>.</p>
 
     <p>The substitutions for journals are as follows:<br>
         <ul>
@@ -94,7 +94,7 @@ sort=bibjson.title:desc
         <li><p>Proximity Searches. <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_proximity_searches">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_proximity_searches</a></p></li>
     </ol>
 
-    <h2 id="crud_api">CRUD API</h2>
+    <h2 id="crud_api">How-To Guide on CRUD API</h2>
     <h3 id="creating_articles">Creating articles</h3>
     <p>Documentation for the structure of the JSON documents that you can send to our API
         is <a href="https://doaj.github.io/doaj-docs/master/data_models/IncomingAPIArticle">hosted on our Github repository</a>.</p>
@@ -142,7 +142,7 @@ sort=bibjson.title:desc
 
 <!--API FAQs-->
 
-<h2><a name="api-faq"></a>API FAQs</h2>
+<h2 id="api-faq">API FAQs</h2>
 <h3>Is there an upload limit for uploading articles, or a rate limit?</h3>
 <p>No, there is no limit set on how many articles you can upload, but we do have a rate limit. See below.</p>
 

@@ -1,4 +1,5 @@
 import json, signal
+import re
 from functools import wraps
 from flask import request, abort, redirect, flash, url_for, render_template, make_response
 from flask_login import login_user, current_user
@@ -15,7 +16,7 @@ def swag(swag_summary, swag_spec):
     Decorator for API functions, adding swagger info to the swagger spec.
     """
     def decorator(f):
-        f.summary = swag_summary
+        f.summary = re.sub('</?(span|div).*?>', '', swag_summary)
         f.swag = swag_spec
         f.description = swag_summary
         return f

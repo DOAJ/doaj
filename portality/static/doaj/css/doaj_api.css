@@ -1,38 +1,89 @@
 /****************************************
  * API Docs Styles
  */
-
-.swagger-section .heading h3 {
-  font-family: 'Source Code Pro', monospace;
-  font-weight: 400;
+.swagger-section {
+    font-size: 0.7rem;
 }
 
-.swagger-section .swagger-ui-wrap {
-    max-width: inherit;
+.swagger-ui .wrapper {
+    padding: 0;
 }
 
-.swagger-section .swagger-ui-wrap ul#resources {
+.swagger-ui .title pre {
+    background: initial
+}
+
+.swagger-ui code {
+    background: #333;
+}
+
+.swagger-ui .information-container {
+    display: none;
+}
+
+.swagger-ui .opblock-tag {
     padding-left: 0;
+    font-size: 1.424em;
+    color: #282624;
 }
 
-.swagger-section h4 {
-  font-family: 'Source Sans Pro', sans-serif;
-  letter-spacing: 0.01em;
+.swagger-ui .opblock-tag.no-desc span {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 1.424em;
+    line-height: 1.05;
+    font-weight: 400;
 }
 
-ul,
-ol {
-    list-style: initial;
-    padding-left: 0 !important;
-    margin-left: 0 !important;
+.swagger-ui .opblock.opblock-delete {
+    background-color: #FD5A3B10; /* $grapefruit with opacity 0.1 */
+    border-color: #FD5A3B; /* $grapefruit with opacity 1 */
+    border-radius: 0;
+    color: #282624; /* warm black */
 }
 
-.swagger-section .swagger-ui-wrap .footer {
-    visibility: hidden;
+.swagger-ui .opblock.opblock-delete .opblock-summary-method {
+    border-radius: 0;
+    background-color: #FD5A3B; /* $grapefruit */
+    color: #FFF;
 }
 
-.swagger-section a {
-    width: 4rem !important;
+.swagger-ui .opblock.opblock-post {
+    background-color: #47A17810; /* $mid-green with opacity 0.1 */
+    border-color: #47A178; /* $mid-green with opacity 1 */
+    border-radius: 0;
+    color: #282624; /* warm black */
+}
+
+.swagger-ui .opblock.opblock-post .opblock-summary-method {
+    border-radius: 0;
+    background-color: #47A178; /* $grapefruit */
+    color: #FFF;
+}
+
+.swagger-ui .opblock.opblock-get {
+    background-color: #5C595610; /* $dark-grey with opacity 0.1 */
+    border-color: #5C5956; /* $grapefruit with opacity 1 */
+    border-radius: 0;
+    color: #282624; /* warm black */
+}
+
+.swagger-ui .opblock.opblock-get .opblock-summary-method {
+    border-radius: 0;
+    background-color: #5C5956; /* $dark-grey */
+    color: #FFF;
+}
+
+.swagger-ui .opblock.opblock-put {
+    background-color: #F9D95010; /* $yellow with opacity 0.1 */
+    border-color: #F9D950; /* $yellow with opacity 1 */
+    border-radius: 0;
+    color: #282624; /* warm black */
+}
+
+.swagger-ui .opblock.opblock-put .opblock-summary-method {
+    border-radius: 0;
+    background-color: #F9D950; /* $yellow */
+    color: #282624; /* warm black */
 }
 
 .swagger-section .swagger-ui-wrap table tbody tr td {
