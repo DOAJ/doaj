@@ -11,10 +11,9 @@ from typing import TypedDict, List, Dict
 
 import pandas as pd
 
+from portality.scripts.githubpri import github_serv
 from portality.scripts.githubpri.github_serv import GithubReqSender
 
-REPO = "https://api.github.com/repos/DOAJ/doajPM/"
-PROJECTS = REPO + "projects"
 PROJECT_NAME = "DOAJ Kanban"
 DEFAULT_COLUMNS = ["Review", "In progress", "To Do"]
 
@@ -70,10 +69,7 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Di
         dict mapping 'username' to 'priority dataframe'
     """
 
-    resp = sender.get(PROJECTS)
-    if resp.status_code >= 400:
-        raise ConnectionError(f'Error fetching github projects: {resp.status_code} {resp.text}')
-    project_list = resp.json()
+    project_list = github_serv.get_projects('DOAJ/doajPM', sender.username_password)
     project = [p for p in project_list if p.get("name") == PROJECT_NAME][0]
     user_priorities = defaultdict(list)
     for priority in load_rules(priorities_file):
