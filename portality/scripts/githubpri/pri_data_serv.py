@@ -5,6 +5,7 @@ core logic of githubpri
 
 import csv
 import json
+import logging
 import os
 from collections import defaultdict
 from typing import TypedDict, List, Dict
@@ -18,6 +19,8 @@ PROJECT_NAME = "DOAJ Kanban"
 DEFAULT_COLUMNS = ["Review", "In progress", "To Do"]
 
 DEFAULT_USER = 'Claimable'
+
+log = logging.getLogger(__name__)
 
 
 class Rule(TypedDict):
@@ -69,7 +72,7 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Di
         dict mapping 'username' to 'priority dataframe'
     """
 
-    project_list = github_serv.get_projects('DOAJ/doajPM', sender.username_password)
+    project_list = github_serv.get_projects('DOAJ/doajPM', auth=sender.username_password)
     project = [p for p in project_list if p.get("name") == PROJECT_NAME][0]
     user_priorities = defaultdict(list)
     for priority in load_rules(priorities_file):
@@ -110,7 +113,7 @@ def _issues_by_user(project, priority, sender: GithubReqSender) -> Dict[str, Lis
 
     user_issues = defaultdict(list)
     for status_col in cols:
-        column_issues = _get_column_issues(project, status_col, sender)
+        column_issues = get_column_issues(project.get("columns_url"), status_col, sender)
         labels = priority.get("labels", [])
         if len(labels) == 0:
             _split_by_user(user_issues, column_issues, status_col)
@@ -125,33 +128,23 @@ def _issues_by_user(project, priority, sender: GithubReqSender) -> Dict[str, Lis
 COLUMN_CACHE = {}
 
 
-def _get_column_issues(project, col, sender: GithubReqSender):
+def get_column_issues(columns_url, col, sender: GithubReqSender):
     if col in COLUMN_CACHE:
         return COLUMN_CACHE[col]
 
     print("Fetching column issues {x}".format(x=col))
-    cols_url = project.get("columns_url")
-    resp = sender.get(cols_url)
-    col_data = resp.json()
+    col_data = sender.send_cached_json(columns_url)
+    column_records = [c for c in col_data if c.get("name") == col]
+    if len(column_records) == 0:
+        log.warning("Column not found: {x}".format(x=col))
+        return []
+    if len(column_records) > 1:
+        log.warning("Multiple columns found: {x}".format(x=col))
 
-    column_record = [c for c in col_data if c.get("name") == col][0]
-    cards_url = column_record.get("cards_url")
-
-    params = {"per_page": 100, "page": 1}
     issues = []
-
-    while True:
-        resp = sender.get(cards_url, params=params)
-        cards_data = resp.json()
-        if len(cards_data) == 0:
-            break
-        params["page"] += 1
-
-        for card_data in cards_data:
-            content_url = card_data.get("content_url")
-            resp = sender.get(content_url)
-            issue_data = resp.json()
-            issues.append(issue_data)
+    for card_data in sender.yield_all(column_records[0].get("cards_url")):
+        issue_data = sender.send(card_data.get("content_url")).json()
+        issues.append(issue_data)
 
     COLUMN_CACHE[col] = issues
     print("Column issues {x}".format(x=[i.get("number") for i in issues]))
