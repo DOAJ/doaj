@@ -9,7 +9,8 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.6.11"
+DOAJ_VERSION = "6.6.12"
+API_VERSION = "3.0.1"
 
 ######################################
 # Deployment configuration
@@ -421,8 +422,8 @@ APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in pro
 # ~~->BackgroundTasks:Feature~~
 
 # huey/redis settings
-HUEY_REDIS_HOST = os.getenv('HUEY_REDIS_HOST', '127.0.0.1')
-HUEY_REDIS_PORT = os.getenv('HUEY_REDIS_PORT', 6379)
+REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
+REDIS_PORT = os.getenv('REDIS_PORT', 6379)
 HUEY_EAGER = False
 
 # Crontab for never running a job - February 31st (use to disable tasks)
@@ -1413,6 +1414,12 @@ BG_MONITOR_LAST_COMPLETED = {
     'long_running': 93600,  # 26 hours
 }
 
+# Default monitoring config for background job types which are not enumerated in BG_MONITOR_ERRORS_CONFIG below
+BG_MONITOR_DEFAULT_CONFIG = {
+    'total': 2,
+    'oldest': 1200,
+}
+
 # Configures the monitoring period and the allowed number of errors in that period before a queue is marked
 # as unstable
 BG_MONITOR_ERRORS_CONFIG = {
@@ -1521,8 +1528,10 @@ SELENIUM_REMOTE_URL = 'http://localhost:4444/wd/hub'
 SELENIUM_DOAJ_HOST = '172.17.0.1'
 SELENIUM_DOAJ_PORT = 5014
 
+#################################################
+# Concurrency timeout(s)
 
-
+UR_CONCURRENCY_TIMEOUT = 10
 
 
 #############################################
@@ -1532,7 +1541,6 @@ SELENIUM_DOAJ_PORT = 5014
 # Google Sheet API
 # value should be key file path of json, empty string means disabled
 GOOGLE_KEY_PATH = ''
-
 
 
 #############################################
@@ -1555,3 +1563,12 @@ AUTOCHECK_INCOMING = False
 
 AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
 AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
+
+
+##################################################
+# Background jobs Management settings
+
+# list of actions name that will be cleaned up if they are redundant
+BGJOB_MANAGE_REDUNDANT_ACTIONS = [
+    'read_news', 'journal_csv'
+]

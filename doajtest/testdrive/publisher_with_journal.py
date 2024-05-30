@@ -15,6 +15,8 @@ class PublisherWithJournal(TestDrive):
 
         source = JournalFixtureFactory.make_journal_source(in_doaj=True)
         j = models.Journal(**source)
+        j.remove_current_application()
+        j.set_id(j.makeid())
         j.set_owner(acc.id)
         j.bibjson().eissn = "1111-1111"
         j.bibjson().pissn = "2222-2222"
