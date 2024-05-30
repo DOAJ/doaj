@@ -32,7 +32,7 @@ def priorities(priorities_file,
                gdrive_filename=None,
                github_username=None,
                github_password_key=None, ):
-    sender = github_serv.GithubReqSender(username=github_username, password_key=github_password_key)
+    sender = github_serv.GithubReqSender(token_password=github_password_key, username=github_username)
     user_pri_map = pri_data_serv.create_priorities_excel_data(priorities_file, sender)
 
     if outfile is not None:

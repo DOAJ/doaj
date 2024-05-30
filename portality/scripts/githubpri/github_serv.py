@@ -8,14 +8,18 @@ from requests.auth import HTTPBasicAuth
 
 
 class GithubReqSender:
-    def __init__(self, username=None, password_key=None):
+    def __init__(self, token_password, username=None):
         """
-        :param password_key:
-        password of username or github api key
+
+        Parameters
+        ----------
+        token_password
+            password of username or github api key
+        username
         """
-        if username and password_key is None:
+        if token_password is None:
             raise ValueError("api_key or password must be provided")
-        self.username_password = (username, password_key)
+        self.username_password = (username, token_password)
 
     def get(self, url, **req_kwargs):
         return send_request_get(url, auth=self.username_password, **req_kwargs)
