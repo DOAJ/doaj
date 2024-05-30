@@ -13,7 +13,7 @@ from typing import TypedDict, List, Dict
 import pandas as pd
 
 from portality.scripts.githubpri import github_serv
-from portality.scripts.githubpri.github_serv import GithubReqSender
+from portality.scripts.githubpri.github_serv import GithubReqSender, get_column_issues
 
 PROJECT_NAME = "DOAJ Kanban"
 DEFAULT_COLUMNS = ["Review", "In progress", "To Do"]
@@ -123,32 +123,6 @@ def _issues_by_user(project, priority, sender: GithubReqSender) -> Dict[str, Lis
         _split_by_user(user_issues, labelled_issues, status_col)
 
     return user_issues
-
-
-COLUMN_CACHE = {}
-
-
-def get_column_issues(columns_url, col, sender: GithubReqSender):
-    if col in COLUMN_CACHE:
-        return COLUMN_CACHE[col]
-
-    print("Fetching column issues {x}".format(x=col))
-    col_data = sender.send_cached_json(columns_url)
-    column_records = [c for c in col_data if c.get("name") == col]
-    if len(column_records) == 0:
-        log.warning("Column not found: {x}".format(x=col))
-        return []
-    if len(column_records) > 1:
-        log.warning("Multiple columns found: {x}".format(x=col))
-
-    issues = []
-    for card_data in sender.yield_all(column_records[0].get("cards_url")):
-        issue_data = sender.send(card_data.get("content_url")).json()
-        issues.append(issue_data)
-
-    COLUMN_CACHE[col] = issues
-    print("Column issues {x}".format(x=[i.get("number") for i in issues]))
-    return issues
 
 
 def _filter_issues_by_label(issues, labels):

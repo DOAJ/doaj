@@ -1,6 +1,8 @@
 """
 functions to interact with "Github" for githubpri
 """
+import functools
+import logging
 import warnings
 from typing import Optional, Union, List, Iterable
 
@@ -11,6 +13,8 @@ from requests.auth import HTTPBasicAuth
 URL_API = "https://api.github.com"
 
 AuthLike = Union[dict, tuple, HTTPBasicAuth, None]
+
+log = logging.getLogger(__name__)
 
 
 class GithubReqSender:
@@ -36,6 +40,7 @@ class GithubReqSender:
     def send(self, url, method='get', **req_kwargs) -> Response:
         return send_request(url, method=method, auth=self.username_password, **req_kwargs)
 
+    @functools.lru_cache(maxsize=102400)
     def send_cached_json(self, url):
         if url in self.url_json_cache:
             return self.url_json_cache[url]
@@ -49,6 +54,11 @@ class GithubReqSender:
 
     def __hash__(self):
         return hash(self.username_password)
+
+    def __eq__(self, other):
+        if not isinstance(other, GithubReqSender):
+            return False
+        return self.__hash__() == other.__hash__()
 
 
 def send_request(url, method='get',
@@ -118,3 +128,23 @@ def yields_all(url, auth: AuthLike, params=None, n_per_page=100) -> Iterable[dic
             break
 
         final_params["page"] += 1
+
+
+@functools.lru_cache(maxsize=102400)
+def get_column_issues(columns_url, col, sender: GithubReqSender):
+    print("Fetching column issues {x}".format(x=col))
+    col_data = sender.send_cached_json(columns_url)
+    column_records = [c for c in col_data if c.get("name") == col]
+    if len(column_records) == 0:
+        log.warning("Column not found: {x}".format(x=col))
+        return []
+    if len(column_records) > 1:
+        log.warning("Multiple columns found: {x}".format(x=col))
+
+    issues = []
+    for card_data in sender.yield_all(column_records[0].get("cards_url")):
+        issue_data = sender.send(card_data.get("content_url")).json()
+        issues.append(issue_data)
+
+    print("Column issues {x}".format(x=[i.get("number") for i in issues]))
+    return issues
