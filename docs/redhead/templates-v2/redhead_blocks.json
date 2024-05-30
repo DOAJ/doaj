@@ -12,17 +12,40 @@
       },
       {
         "name": "management_content",
-        "blocks": [],
+        "blocks": [
+          {
+            "name": "admin_content",
+            "blocks": [],
+            "files": [
+              "management/admin/base.html",
+              "management/admin/admin_site_search.html",
+              "management/admin/account/users.html",
+              "management/admin/account/create.html",
+              "management/admin/account/edit.html"
+            ]
+          },
+          {
+            "name": "editor_content",
+            "blocks": [],
+            "files": [
+              "management/editor/base.html",
+              "management/editor/account/edit.html"
+            ]
+          }
+        ],
         "files": [
           "management/base.html",
-          "management/admin/account/create.html"
+          "management/admin/base.html",
+          "management/editor/base.html"
         ]
       },
       {
         "name": "nav",
         "blocks": [],
         "files": [
-          "management/base.html"
+          "management/base.html",
+          "management/admin/base.html",
+          "management/editor/base.html"
         ]
       },
       {
@@ -37,7 +60,12 @@
           "public/account/register.html",
           "public/account/login_to_apply.html",
           "public/account/forgot.html",
-          "management/admin/account/create.html"
+          "public/account/edit.html",
+          "management/admin/admin_site_search.html",
+          "management/admin/account/users.html",
+          "management/admin/account/create.html",
+          "management/admin/account/edit.html",
+          "management/editor/account/edit.html"
         ]
       },
       {
@@ -51,7 +79,8 @@
           "public/account/login.html",
           "public/account/register.html",
           "public/account/login_to_apply.html",
-          "public/account/forgot.html"
+          "public/account/forgot.html",
+          "public/account/edit.html"
         ]
       }
     ],
@@ -66,10 +95,30 @@
     "blocks": [
       {
         "name": "management_js",
-        "blocks": [],
+        "blocks": [
+          {
+            "name": "admin_js",
+            "blocks": [],
+            "files": [
+              "management/admin/base.html",
+              "management/admin/account/users.html",
+              "management/admin/account/create.html",
+              "management/admin/account/edit.html"
+            ]
+          },
+          {
+            "name": "editor_js",
+            "blocks": [],
+            "files": [
+              "management/editor/base.html",
+              "management/editor/account/edit.html"
+            ]
+          }
+        ],
         "files": [
           "management/base.html",
-          "management/admin/account/create.html"
+          "management/admin/base.html",
+          "management/editor/base.html"
         ]
       },
       {
@@ -77,7 +126,8 @@
         "blocks": [],
         "files": [
           "public/base.html",
-          "public/account/register.html"
+          "public/account/register.html",
+          "public/account/edit.html"
         ]
       }
     ],
@@ -156,10 +206,27 @@
     "blocks": [
       {
         "name": "management_stylesheets",
-        "blocks": [],
+        "blocks": [
+          {
+            "name": "admin_stylesheets",
+            "blocks": [],
+            "files": [
+              "management/admin/base.html",
+              "management/admin/account/create.html"
+            ]
+          },
+          {
+            "name": "editor_stylesheets",
+            "blocks": [],
+            "files": [
+              "management/editor/base.html"
+            ]
+          }
+        ],
         "files": [
           "management/base.html",
-          "management/admin/account/create.html"
+          "management/admin/base.html",
+          "management/editor/base.html"
         ]
       },
       {
@@ -211,8 +278,13 @@
       "public/account/register.html",
       "public/account/login_to_apply.html",
       "public/account/forgot.html",
+      "public/account/edit.html",
       "management/base.html",
-      "management/admin/account/create.html"
+      "management/admin/admin_site_search.html",
+      "management/admin/account/users.html",
+      "management/admin/account/create.html",
+      "management/admin/account/edit.html",
+      "management/editor/account/edit.html"
     ]
   }
 ]

@@ -6,7 +6,7 @@
 
 {% block admin_content %}
     <h1 class="sr-only">Update requests</h1>
-    {% include "admin/_applications_and_update_requests_common.html" %}
+    {% include "management/admin/includes/_applications_and_update_requests_common.html" %}
 {% endblock %}
 
 {% block extra_js_bottom %}
@@ -22,7 +22,7 @@
     });
     </script>
 
-    {% include "admin/_applications_and_update_requests_common_js.html" %}
+    {% include "management/admin/includes/_applications_and_update_requests_common_js.html" %}
     <script type="text/javascript" src="/static/js/edges/admin.update_requests.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endblock %}

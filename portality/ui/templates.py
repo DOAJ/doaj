@@ -13,3 +13,10 @@ PUBLIC_EDIT_USER = "public/account/edit.html"
 # Static content
 STATIC_PAGE = "public/layouts/static-page.html"
 STATIC_PAGE_LAYOUT = "public/layouts/_static-page_{layout}.html"
+
+# Admin area
+ADMIN_SITE_SEARCH = "management/admin/admin_site_search.html"
+APPLICATION_LOCKED = "management/admin/application_locked.html"
+APPLICATIONS_SEARCH = "management/admin/applications.html"
+ADMIN_ARTICLE_FORM = "management/admin/article_metadata.html"
+BACKGROUND_JOBS_SEARCH = "management/admin/background_jobs_search.html"

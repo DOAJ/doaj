@@ -1,74 +1,5 @@
 [
   {
-    "name": "account/_login_form.html",
-    "blocks": [
-      {
-        "name": "login_form",
-        "blocks": [],
-        "includes": [
-          {
-            "name": "_formhelpers.html",
-            "blocks": [],
-            "includes": [],
-            "extensions": []
-          }
-        ],
-        "content": true,
-        "overridden_by": [],
-        "overrides": [],
-        "scoped": false
-      }
-    ],
-    "includes": [],
-    "extensions": []
-  },
-  {
-    "name": "account/_register_form.html",
-    "blocks": [
-      {
-        "name": "register_form",
-        "blocks": [],
-        "includes": [
-          {
-            "name": "_formhelpers.html",
-            "blocks": [],
-            "includes": [],
-            "extensions": []
-          }
-        ],
-        "content": true,
-        "overridden_by": [],
-        "overrides": [],
-        "scoped": false
-      }
-    ],
-    "includes": [],
-    "extensions": []
-  },
-  {
-    "name": "account/_reset_form.html",
-    "blocks": [
-      {
-        "name": "reset_form",
-        "blocks": [],
-        "includes": [
-          {
-            "name": "_formhelpers.html",
-            "blocks": [],
-            "includes": [],
-            "extensions": []
-          }
-        ],
-        "content": true,
-        "overridden_by": [],
-        "overrides": [],
-        "scoped": false
-      }
-    ],
-    "includes": [],
-    "extensions": []
-  },
-  {
     "name": "application_form/_application_warning_msg.html",
     "blocks": [],
     "includes": [],
@@ -872,53 +803,6 @@
             ]
           },
           {
-            "file": "account/users.html",
-            "content": true,
-            "paths": [
-              [
-                "layouts/base.html",
-                "layouts/dashboard_base.html",
-                "admin/admin_base.html",
-                "account/users.html"
-              ]
-            ]
-          },
-          {
-            "file": "account/view.html",
-            "content": true,
-            "paths": [
-              [
-                "layouts/base.html",
-                "layouts/dashboard_base.html",
-                "account/view.html"
-              ],
-              [
-                "layouts/base.html",
-                "layouts/public_base.html",
-                "publisher/publisher_base.html",
-                "account/view.html"
-              ],
-              [
-                "layouts/base.html",
-                "layouts/dashboard_base.html",
-                "editor/editor_base.html",
-                "account/view.html"
-              ]
-            ]
-          },
-          {
-            "file": "admin/admin_site_search.html",
-            "content": true,
-            "paths": [
-              [
-                "layouts/base.html",
-                "layouts/dashboard_base.html",
-                "admin/admin_base.html",
-                "admin/admin_site_search.html"
-              ]
-            ]
-          },
-          {
             "file": "admin/application_locked.html",
             "content": true,
             "paths": [
@@ -1603,43 +1487,6 @@
                 "content": false,
                 "overridden_by": [
                   {
-                    "file": "account/users.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "layouts/dashboard_base.html",
-                        "admin/admin_base.html",
-                        "account/users.html"
-                      ]
-                    ]
-                  },
-                  {
-                    "file": "account/view.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "layouts/dashboard_base.html",
-                        "account/view.html"
-                      ],
-                      [
-                        "layouts/dashboard_base.html",
-                        "editor/editor_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  },
-                  {
-                    "file": "admin/admin_site_search.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "layouts/dashboard_base.html",
-                        "admin/admin_base.html",
-                        "admin/admin_site_search.html"
-                      ]
-                    ]
-                  },
-                  {
                     "file": "admin/applications.html",
                     "content": true,
                     "paths": [
@@ -1883,21 +1730,6 @@
                     "content": false,
                     "overridden_by": [
                       {
-                        "file": "account/view.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/dashboard_base.html",
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
                         "file": "admin/admin_base.html",
                         "content": true,
                         "paths": [
@@ -1980,43 +1812,6 @@
                     "includes": [],
                     "content": true,
                     "overridden_by": [
-                      {
-                        "file": "account/users.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "admin/admin_base.html",
-                            "account/users.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "account/view.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/dashboard_base.html",
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "admin/admin_site_search.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "admin/admin_base.html",
-                            "admin/admin_site_search.html"
-                          ]
-                        ]
-                      },
                       {
                         "file": "admin/application_locked.html",
                         "content": true,
@@ -2400,187 +2195,6 @@
         "includes": [],
         "extensions": [
           {
-            "name": "account/view.html",
-            "blocks": [
-              {
-                "name": "content",
-                "blocks": [],
-                "includes": [
-                  {
-                    "name": "account/_edit_user_form.html",
-                    "blocks": [
-                      {
-                        "name": "edit_user_form",
-                        "blocks": [],
-                        "includes": [
-                          {
-                            "name": "_formhelpers.html",
-                            "blocks": [],
-                            "includes": [],
-                            "extensions": []
-                          }
-                        ],
-                        "content": true,
-                        "overridden_by": [],
-                        "overrides": [],
-                        "scoped": false
-                      }
-                    ],
-                    "includes": [],
-                    "extensions": []
-                  }
-                ],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "editor/editor_base.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "editor/editor_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  },
-                  {
-                    "file": "layouts/dashboard_base.html",
-                    "content": false,
-                    "paths": [
-                      [
-                        "layouts/dashboard_base.html",
-                        "account/view.html"
-                      ],
-                      [
-                        "layouts/dashboard_base.html",
-                        "editor/editor_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  },
-                  {
-                    "file": "layouts/public_base.html",
-                    "content": false,
-                    "paths": [
-                      [
-                        "layouts/public_base.html",
-                        "publisher/publisher_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  },
-                  {
-                    "file": "publisher/publisher_base.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "publisher/publisher_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              },
-              {
-                "name": "extra_js_bottom",
-                "blocks": [],
-                "includes": [],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/dashboard_base.html",
-                    "content": false,
-                    "paths": [
-                      [
-                        "layouts/dashboard_base.html",
-                        "account/view.html"
-                      ],
-                      [
-                        "layouts/dashboard_base.html",
-                        "editor/editor_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  },
-                  {
-                    "file": "layouts/public_base.html",
-                    "content": false,
-                    "paths": [
-                      [
-                        "layouts/public_base.html",
-                        "publisher/publisher_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              },
-              {
-                "name": "page_title",
-                "blocks": [],
-                "includes": [],
-                "content": true,
-                "overridden_by": [],
-                "overrides": [
-                  {
-                    "file": "layouts/base.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "layouts/base.html",
-                        "layouts/dashboard_base.html",
-                        "account/view.html"
-                      ],
-                      [
-                        "layouts/base.html",
-                        "layouts/public_base.html",
-                        "publisher/publisher_base.html",
-                        "account/view.html"
-                      ],
-                      [
-                        "layouts/base.html",
-                        "layouts/dashboard_base.html",
-                        "editor/editor_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  },
-                  {
-                    "file": "layouts/dashboard_base.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "layouts/dashboard_base.html",
-                        "account/view.html"
-                      ],
-                      [
-                        "layouts/dashboard_base.html",
-                        "editor/editor_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  },
-                  {
-                    "file": "publisher/publisher_base.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "publisher/publisher_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  }
-                ],
-                "scoped": false
-              }
-            ],
-            "includes": [],
-            "extensions": []
-          },
-          {
             "name": "admin/admin_base.html",
             "blocks": [
               {
@@ -2592,26 +2206,6 @@
                     "includes": [],
                     "content": false,
                     "overridden_by": [
-                      {
-                        "file": "account/users.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "admin/admin_base.html",
-                            "account/users.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "admin/admin_site_search.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "admin/admin_base.html",
-                            "admin/admin_site_search.html"
-                          ]
-                        ]
-                      },
                       {
                         "file": "admin/application_locked.html",
                         "content": true,
@@ -2834,196 +2428,6 @@
             "includes": [],
             "extensions": [
               {
-                "name": "account/users.html",
-                "blocks": [
-                  {
-                    "name": "admin_content",
-                    "blocks": [],
-                    "includes": [],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "admin/admin_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "admin/admin_base.html",
-                            "account/users.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  },
-                  {
-                    "name": "extra_js_bottom",
-                    "blocks": [],
-                    "includes": [
-                      {
-                        "name": "_edges_common_js.html",
-                        "blocks": [],
-                        "includes": [],
-                        "extensions": []
-                      }
-                    ],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "layouts/dashboard_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "admin/admin_base.html",
-                            "account/users.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  },
-                  {
-                    "name": "page_title",
-                    "blocks": [],
-                    "includes": [],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "layouts/base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/base.html",
-                            "layouts/dashboard_base.html",
-                            "admin/admin_base.html",
-                            "account/users.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "layouts/dashboard_base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "admin/admin_base.html",
-                            "account/users.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  }
-                ],
-                "includes": [
-                  {
-                    "name": "_edges_common_css.html",
-                    "blocks": [],
-                    "includes": [],
-                    "extensions": []
-                  }
-                ],
-                "extensions": []
-              },
-              {
-                "name": "admin/admin_site_search.html",
-                "blocks": [
-                  {
-                    "name": "admin_content",
-                    "blocks": [],
-                    "includes": [],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "admin/admin_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "admin/admin_base.html",
-                            "admin/admin_site_search.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  },
-                  {
-                    "name": "extra_js_bottom",
-                    "blocks": [],
-                    "includes": [
-                      {
-                        "name": "_edges_common_js.html",
-                        "blocks": [],
-                        "includes": [],
-                        "extensions": []
-                      }
-                    ],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "layouts/dashboard_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "admin/admin_base.html",
-                            "admin/admin_site_search.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  },
-                  {
-                    "name": "page_title",
-                    "blocks": [],
-                    "includes": [],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "layouts/base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/base.html",
-                            "layouts/dashboard_base.html",
-                            "admin/admin_base.html",
-                            "admin/admin_site_search.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "layouts/dashboard_base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "admin/admin_base.html",
-                            "admin/admin_site_search.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  }
-                ],
-                "includes": [
-                  {
-                    "name": "_edges_common_css.html",
-                    "blocks": [],
-                    "includes": [],
-                    "extensions": []
-                  }
-                ],
-                "extensions": []
-              },
-              {
                 "name": "admin/application_locked.html",
                 "blocks": [
                   {
@@ -3091,10 +2495,8 @@
                     "blocks": [],
                     "includes": [
                       {
-                        "name": "admin/_applications_and_update_requests_common.html",
-                        "blocks": [],
-                        "includes": [],
-                        "extensions": []
+                        "name": "management/admin/includes/_applications_and_update_requests_common.html",
+                        "unresolved": true
                       }
                     ],
                     "content": true,
@@ -3118,17 +2520,8 @@
                     "blocks": [],
                     "includes": [
                       {
-                        "name": "admin/_applications_and_update_requests_common_js.html",
-                        "blocks": [],
-                        "includes": [
-                          {
-                            "name": "_edges_common_js.html",
-                            "blocks": [],
-                            "includes": [],
-                            "extensions": []
-                          }
-                        ],
-                        "extensions": []
+                        "name": "management/admin/includes/_applications_and_update_requests_common_js.html",
+                        "unresolved": true
                       }
                     ],
                     "content": true,
@@ -3901,10 +3294,8 @@
                     "blocks": [],
                     "includes": [
                       {
-                        "name": "admin/_applications_and_update_requests_common.html",
-                        "blocks": [],
-                        "includes": [],
-                        "extensions": []
+                        "name": "management/admin/includes/_applications_and_update_requests_common.html",
+                        "unresolved": true
                       }
                     ],
                     "content": true,
@@ -3928,17 +3319,8 @@
                     "blocks": [],
                     "includes": [
                       {
-                        "name": "admin/_applications_and_update_requests_common_js.html",
-                        "blocks": [],
-                        "includes": [
-                          {
-                            "name": "_edges_common_js.html",
-                            "blocks": [],
-                            "includes": [],
-                            "extensions": []
-                          }
-                        ],
-                        "extensions": []
+                        "name": "management/admin/includes/_applications_and_update_requests_common_js.html",
+                        "unresolved": true
                       }
                     ],
                     "content": true,
@@ -4740,18 +4122,7 @@
                   }
                 ],
                 "content": true,
-                "overridden_by": [
-                  {
-                    "file": "account/view.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "editor/editor_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  }
-                ],
+                "overridden_by": [],
                 "overrides": [
                   {
                     "file": "layouts/dashboard_base.html",
@@ -4817,187 +4188,6 @@
             ],
             "includes": [],
             "extensions": [
-              {
-                "name": "account/view.html",
-                "blocks": [
-                  {
-                    "name": "content",
-                    "blocks": [],
-                    "includes": [
-                      {
-                        "name": "account/_edit_user_form.html",
-                        "blocks": [
-                          {
-                            "name": "edit_user_form",
-                            "blocks": [],
-                            "includes": [
-                              {
-                                "name": "_formhelpers.html",
-                                "blocks": [],
-                                "includes": [],
-                                "extensions": []
-                              }
-                            ],
-                            "content": true,
-                            "overridden_by": [],
-                            "overrides": [],
-                            "scoped": false
-                          }
-                        ],
-                        "includes": [],
-                        "extensions": []
-                      }
-                    ],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "editor/editor_base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "layouts/dashboard_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/dashboard_base.html",
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "layouts/public_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "layouts/public_base.html",
-                            "publisher/publisher_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "publisher/publisher_base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "publisher/publisher_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  },
-                  {
-                    "name": "extra_js_bottom",
-                    "blocks": [],
-                    "includes": [],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "layouts/dashboard_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/dashboard_base.html",
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "layouts/public_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "layouts/public_base.html",
-                            "publisher/publisher_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  },
-                  {
-                    "name": "page_title",
-                    "blocks": [],
-                    "includes": [],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "layouts/base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/base.html",
-                            "layouts/dashboard_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/base.html",
-                            "layouts/public_base.html",
-                            "publisher/publisher_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/base.html",
-                            "layouts/dashboard_base.html",
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "layouts/dashboard_base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/dashboard_base.html",
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "publisher/publisher_base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "publisher/publisher_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  }
-                ],
-                "includes": [],
-                "extensions": []
-              },
               {
                 "name": "application_form/assed_application.html",
                 "blocks": [
@@ -6616,17 +5806,6 @@
                 "content": false,
                 "overridden_by": [
                   {
-                    "file": "account/view.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "layouts/public_base.html",
-                        "publisher/publisher_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  },
-                  {
                     "file": "api/current/api_docs.html",
                     "content": true,
                     "paths": [
@@ -6809,17 +5988,6 @@
                     "includes": [],
                     "content": false,
                     "overridden_by": [
-                      {
-                        "file": "account/view.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/public_base.html",
-                            "publisher/publisher_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
                       {
                         "file": "api/current/api_docs.html",
                         "content": true,
@@ -9422,18 +8590,7 @@
                   }
                 ],
                 "content": true,
-                "overridden_by": [
-                  {
-                    "file": "account/view.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "publisher/publisher_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  }
-                ],
+                "overridden_by": [],
                 "overrides": [
                   {
                     "file": "layouts/public_base.html",
@@ -9486,16 +8643,6 @@
                 "includes": [],
                 "content": true,
                 "overridden_by": [
-                  {
-                    "file": "account/view.html",
-                    "content": true,
-                    "paths": [
-                      [
-                        "publisher/publisher_base.html",
-                        "account/view.html"
-                      ]
-                    ]
-                  },
                   {
                     "file": "application_form/publisher_update_request.html",
                     "content": true,
@@ -9635,187 +8782,6 @@
             ],
             "includes": [],
             "extensions": [
-              {
-                "name": "account/view.html",
-                "blocks": [
-                  {
-                    "name": "content",
-                    "blocks": [],
-                    "includes": [
-                      {
-                        "name": "account/_edit_user_form.html",
-                        "blocks": [
-                          {
-                            "name": "edit_user_form",
-                            "blocks": [],
-                            "includes": [
-                              {
-                                "name": "_formhelpers.html",
-                                "blocks": [],
-                                "includes": [],
-                                "extensions": []
-                              }
-                            ],
-                            "content": true,
-                            "overridden_by": [],
-                            "overrides": [],
-                            "scoped": false
-                          }
-                        ],
-                        "includes": [],
-                        "extensions": []
-                      }
-                    ],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "editor/editor_base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "layouts/dashboard_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/dashboard_base.html",
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "layouts/public_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "layouts/public_base.html",
-                            "publisher/publisher_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "publisher/publisher_base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "publisher/publisher_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  },
-                  {
-                    "name": "extra_js_bottom",
-                    "blocks": [],
-                    "includes": [],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "layouts/dashboard_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/dashboard_base.html",
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "layouts/public_base.html",
-                        "content": false,
-                        "paths": [
-                          [
-                            "layouts/public_base.html",
-                            "publisher/publisher_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  },
-                  {
-                    "name": "page_title",
-                    "blocks": [],
-                    "includes": [],
-                    "content": true,
-                    "overridden_by": [],
-                    "overrides": [
-                      {
-                        "file": "layouts/base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/base.html",
-                            "layouts/dashboard_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/base.html",
-                            "layouts/public_base.html",
-                            "publisher/publisher_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/base.html",
-                            "layouts/dashboard_base.html",
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "layouts/dashboard_base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "layouts/dashboard_base.html",
-                            "account/view.html"
-                          ],
-                          [
-                            "layouts/dashboard_base.html",
-                            "editor/editor_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      },
-                      {
-                        "file": "publisher/publisher_base.html",
-                        "content": true,
-                        "paths": [
-                          [
-                            "publisher/publisher_base.html",
-                            "account/view.html"
-                          ]
-                        ]
-                      }
-                    ],
-                    "scoped": false
-                  }
-                ],
-                "includes": [],
-                "extensions": []
-              },
               {
                 "name": "application_form/publisher_update_request.html",
                 "blocks": [

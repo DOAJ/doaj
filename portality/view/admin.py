@@ -26,6 +26,7 @@ from portality.models import Journal
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, \
     article_bulk_delete
 from portality.ui.messages import Messages
+from portality.ui import templates
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.view.forms import EditorGroupForm, MakeContinuation
 
@@ -366,7 +367,7 @@ def journal_continue(journal_id):
 @ssl_required
 def suggestions():
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
-    return render_template("admin/applications.html",
+    return render_template(templates.APPLICATIONS_SEARCH,
                            admin_page=True,
                            application_status_choices=application_statuses(None, fc))
 
@@ -402,7 +403,7 @@ def application(application_id):
     try:
         lockinfo = lock.lock(constants.LOCK_APPLICATION, application_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/application_locked.html", application=ap, lock=l.lock)
+        return render_template(templates.APPLICATION_LOCKED, application=ap, lock=l.lock)
 
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
     form_diff, current_journal = ApplicationFormXWalk.update_request_diff(ap)
@@ -507,7 +508,7 @@ def admin_site_search():
     edit_formulaic_context = JournalFormFactory.context("bulk_edit", extra_param=exparam_editing_user())
     edit_form = edit_formulaic_context.render_template()
 
-    return render_template("admin/admin_site_search.html",
+    return render_template(templates.ADMIN_SITE_SEARCH,
                            admin_page=True,
                            edit_form=edit_form)
 
@@ -523,7 +524,7 @@ def editor_group_search():
 @login_required
 @ssl_required
 def background_jobs_search():
-    return render_template("admin/background_jobs_search.html", admin_page=True)
+    return render_template(templates.BACKGROUND_JOBS_SEARCH, admin_page=True)
 
 
 @blueprint.route("/notifications")

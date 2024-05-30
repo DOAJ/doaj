@@ -76,13 +76,10 @@
           "publisher/journal_csv.html",
           "publisher/index.html",
           "layouts/dashboard_base.html",
-          "account/view.html",
-          "account/users.html",
           "admin/global_notifications_search.html",
           "admin/applications.html",
           "admin/update_requests.html",
           "admin/editor_group.html",
-          "admin/admin_site_search.html",
           "admin/background_jobs_search.html",
           "admin/editor_group_search.html",
           "admin/article_metadata.html",
@@ -124,13 +121,10 @@
           "publisher/journal_csv.html",
           "publisher/index.html",
           "layouts/public_base.html",
-          "account/view.html",
-          "account/users.html",
           "admin/global_notifications_search.html",
           "admin/applications.html",
           "admin/update_requests.html",
           "admin/editor_group.html",
-          "admin/admin_site_search.html",
           "admin/background_jobs_search.html",
           "admin/editor_group_search.html",
           "admin/article_metadata.html",
@@ -168,7 +162,6 @@
                 "blocks": [],
                 "files": [
                   "admin/admin_base.html",
-                  "account/users.html",
                   "admin/continuation.html",
                   "admin/journal_locked.html",
                   "admin/global_notifications_search.html",
@@ -176,7 +169,6 @@
                   "admin/applications.html",
                   "admin/update_requests.html",
                   "admin/editor_group.html",
-                  "admin/admin_site_search.html",
                   "admin/background_jobs_search.html",
                   "admin/editor_group_search.html",
                   "admin/article_metadata.html",
@@ -269,7 +261,6 @@
               "layouts/single_col_page.html",
               "layouts/dashboard_base.html",
               "layouts/toc_base.html",
-              "account/view.html",
               "admin/admin_base.html",
               "editor/editor_base.html",
               "doaj/contact.html",
@@ -291,7 +282,6 @@
                 "blocks": [],
                 "files": [
                   "admin/admin_base.html",
-                  "account/users.html",
                   "admin/continuation.html",
                   "admin/journal_locked.html",
                   "admin/global_notifications_search.html",
@@ -299,7 +289,6 @@
                   "admin/applications.html",
                   "admin/update_requests.html",
                   "admin/editor_group.html",
-                  "admin/admin_site_search.html",
                   "admin/background_jobs_search.html",
                   "admin/editor_group_search.html",
                   "admin/article_metadata.html",
@@ -392,7 +381,6 @@
               "layouts/single_col_page.html",
               "layouts/public_base.html",
               "layouts/toc_base.html",
-              "account/view.html",
               "admin/admin_base.html",
               "editor/editor_base.html",
               "doaj/contact.html",
@@ -430,8 +418,6 @@
               "publisher/publisher_base.html",
               "layouts/base.html",
               "layouts/toc_base.html",
-              "account/view.html",
-              "account/users.html",
               "admin/continuation.html",
               "admin/journal_locked.html",
               "admin/global_notifications_search.html",
@@ -439,7 +425,6 @@
               "admin/applications.html",
               "admin/update_requests.html",
               "admin/editor_group.html",
-              "admin/admin_site_search.html",
               "admin/background_jobs_search.html",
               "admin/editor_group_search.html",
               "admin/article_metadata.html",
@@ -484,7 +469,6 @@
                 "blocks": [],
                 "files": [
                   "admin/admin_base.html",
-                  "account/users.html",
                   "admin/continuation.html",
                   "admin/journal_locked.html",
                   "admin/global_notifications_search.html",
@@ -492,7 +476,6 @@
                   "admin/applications.html",
                   "admin/update_requests.html",
                   "admin/editor_group.html",
-                  "admin/admin_site_search.html",
                   "admin/background_jobs_search.html",
                   "admin/editor_group_search.html",
                   "admin/article_metadata.html",
@@ -585,7 +568,6 @@
               "layouts/single_col_page.html",
               "layouts/public_base.html",
               "layouts/toc_base.html",
-              "account/view.html",
               "admin/admin_base.html",
               "editor/editor_base.html",
               "doaj/contact.html",
@@ -607,7 +589,6 @@
                 "blocks": [],
                 "files": [
                   "admin/admin_base.html",
-                  "account/users.html",
                   "admin/continuation.html",
                   "admin/journal_locked.html",
                   "admin/global_notifications_search.html",
@@ -615,7 +596,6 @@
                   "admin/applications.html",
                   "admin/update_requests.html",
                   "admin/editor_group.html",
-                  "admin/admin_site_search.html",
                   "admin/background_jobs_search.html",
                   "admin/editor_group_search.html",
                   "admin/article_metadata.html",
@@ -708,7 +688,6 @@
               "layouts/single_col_page.html",
               "layouts/dashboard_base.html",
               "layouts/toc_base.html",
-              "account/view.html",
               "admin/admin_base.html",
               "editor/editor_base.html",
               "doaj/contact.html",
@@ -746,8 +725,6 @@
               "publisher/publisher_base.html",
               "layouts/base.html",
               "layouts/toc_base.html",
-              "account/view.html",
-              "account/users.html",
               "admin/continuation.html",
               "admin/journal_locked.html",
               "admin/global_notifications_search.html",
@@ -755,7 +732,6 @@
               "admin/applications.html",
               "admin/update_requests.html",
               "admin/editor_group.html",
-              "admin/admin_site_search.html",
               "admin/background_jobs_search.html",
               "admin/editor_group_search.html",
               "admin/article_metadata.html",
@@ -904,8 +880,6 @@
       "publisher/publisher_base.html",
       "layouts/dashboard_base.html",
       "layouts/toc_base.html",
-      "account/view.html",
-      "account/users.html",
       "admin/continuation.html",
       "admin/journal_locked.html",
       "admin/global_notifications_search.html",
@@ -913,7 +887,6 @@
       "admin/applications.html",
       "admin/update_requests.html",
       "admin/editor_group.html",
-      "admin/admin_site_search.html",
       "admin/background_jobs_search.html",
       "admin/editor_group_search.html",
       "admin/article_metadata.html",
@@ -939,27 +912,6 @@
       "application_form/editor_journal.html",
       "application_form/publisher_update_request.html",
       "application_form/readonly_journal.html"
-    ]
-  },
-  {
-    "name": "register_form",
-    "blocks": [],
-    "files": [
-      "account/_register_form.html"
-    ]
-  },
-  {
-    "name": "login_form",
-    "blocks": [],
-    "files": [
-      "account/_login_form.html"
-    ]
-  },
-  {
-    "name": "reset_form",
-    "blocks": [],
-    "files": [
-      "account/_reset_form.html"
     ]
   },
   {

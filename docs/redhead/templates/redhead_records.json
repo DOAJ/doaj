@@ -1480,161 +1480,6 @@
   },
   {
     "type": "template",
-    "file": "account/view.html",
-    "blocks": [
-      "page_title",
-      "content",
-      "extra_js_bottom"
-    ],
-    "extends": [
-      "layouts/dashboard_base.html",
-      "publisher/publisher_base.html",
-      "editor/editor_base.html"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "page_title",
-    "file": "account/view.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
-  },
-  {
-    "type": "block",
-    "name": "content",
-    "file": "account/view.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false,
-    "includes": [
-      "account/_edit_user_form.html"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "extra_js_bottom",
-    "file": "account/view.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
-  },
-  {
-    "type": "template",
-    "file": "account/_register_form.html",
-    "blocks": [
-      "register_form"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "register_form",
-    "file": "account/_register_form.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false,
-    "includes": [
-      "_formhelpers.html"
-    ]
-  },
-  {
-    "type": "template",
-    "file": "account/users.html",
-    "blocks": [
-      "page_title",
-      "admin_content",
-      "extra_js_bottom"
-    ],
-    "extends": [
-      "admin/admin_base.html"
-    ],
-    "includes": [
-      "_edges_common_css.html"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "page_title",
-    "file": "account/users.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
-  },
-  {
-    "type": "block",
-    "name": "admin_content",
-    "file": "account/users.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
-  },
-  {
-    "type": "block",
-    "name": "extra_js_bottom",
-    "file": "account/users.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false,
-    "includes": [
-      "_edges_common_js.html"
-    ]
-  },
-  {
-    "type": "template",
-    "file": "account/_login_form.html",
-    "blocks": [
-      "login_form"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "login_form",
-    "file": "account/_login_form.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false,
-    "includes": [
-      "_formhelpers.html"
-    ]
-  },
-  {
-    "type": "template",
-    "file": "account/_edit_user_form.html",
-    "blocks": [
-      "edit_user_form"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "edit_user_form",
-    "file": "account/_edit_user_form.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false,
-    "includes": [
-      "_formhelpers.html"
-    ]
-  },
-  {
-    "type": "template",
-    "file": "account/_reset_form.html",
-    "blocks": [
-      "reset_form"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "reset_form",
-    "file": "account/_reset_form.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false,
-    "includes": [
-      "_formhelpers.html"
-    ]
-  },
-  {
-    "type": "template",
     "file": "admin/continuation.html",
     "blocks": [
       "page_title",
@@ -1735,10 +1580,6 @@
   },
   {
     "type": "template",
-    "file": "admin/_applications_and_update_requests_common.html"
-  },
-  {
-    "type": "template",
     "file": "admin/application_locked.html",
     "blocks": [
       "page_title",
@@ -1795,7 +1636,7 @@
     "content": true,
     "scoped": false,
     "includes": [
-      "admin/_applications_and_update_requests_common.html"
+      "management/admin/includes/_applications_and_update_requests_common.html"
     ]
   },
   {
@@ -1806,7 +1647,7 @@
     "content": true,
     "scoped": false,
     "includes": [
-      "admin/_applications_and_update_requests_common_js.html"
+      "management/admin/includes/_applications_and_update_requests_common_js.html"
     ]
   },
   {
@@ -1840,7 +1681,7 @@
     "content": true,
     "scoped": false,
     "includes": [
-      "admin/_applications_and_update_requests_common.html"
+      "management/admin/includes/_applications_and_update_requests_common.html"
     ]
   },
   {
@@ -1851,7 +1692,7 @@
     "content": true,
     "scoped": false,
     "includes": [
-      "admin/_applications_and_update_requests_common_js.html"
+      "management/admin/includes/_applications_and_update_requests_common_js.html"
     ]
   },
   {
@@ -1893,55 +1734,6 @@
     "parent_block": null,
     "content": true,
     "scoped": false
-  },
-  {
-    "type": "template",
-    "file": "admin/_applications_and_update_requests_common_js.html",
-    "includes": [
-      "_edges_common_js.html"
-    ]
-  },
-  {
-    "type": "template",
-    "file": "admin/admin_site_search.html",
-    "blocks": [
-      "page_title",
-      "admin_content",
-      "extra_js_bottom"
-    ],
-    "extends": [
-      "admin/admin_base.html"
-    ],
-    "includes": [
-      "_edges_common_css.html"
-    ]
-  },
-  {
-    "type": "block",
-    "name": "page_title",
-    "file": "admin/admin_site_search.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
-  },
-  {
-    "type": "block",
-    "name": "admin_content",
-    "file": "admin/admin_site_search.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false
-  },
-  {
-    "type": "block",
-    "name": "extra_js_bottom",
-    "file": "admin/admin_site_search.html",
-    "parent_block": null,
-    "content": true,
-    "scoped": false,
-    "includes": [
-      "_edges_common_js.html"
-    ]
   },
   {
     "type": "template",
