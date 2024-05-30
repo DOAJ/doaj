@@ -1,6 +1,7 @@
 """
 functions to interact with "Github" for githubpri
 """
+from typing import Optional, Union
 
 import requests
 from requests.auth import HTTPBasicAuth
@@ -21,27 +22,31 @@ class GithubReqSender:
 
 
 def send_request_get(url, method='get', auth=None, **req_kwargs):
+    final_req_kwargs = {}
+    auth = create_auth(auth)
+    if auth is not None:
+        final_req_kwargs = {'auth': auth}
+    final_req_kwargs |= req_kwargs
+    return requests.request(method, url, **final_req_kwargs)
+
+
+def create_auth(auth: Union[dict, tuple, HTTPBasicAuth, None]) -> Optional[HTTPBasicAuth]:
     """
 
     Parameters
     ----------
-    url
-    method
     auth
         accept HTTPBasicAuth, Tuple[username, password], Dict or None
-    req_kwargs
 
     Returns
     -------
+        HTTPBasicAuth
 
     """
-    final_req_kwargs = {}
+
     if auth is not None:
         if isinstance(auth, tuple):
             auth = HTTPBasicAuth(*auth)
         if isinstance(auth, dict):
             auth = HTTPBasicAuth(auth['username'], auth['password'])
-        final_req_kwargs |= {'auth': auth}
-
-    final_req_kwargs |= req_kwargs
-    return requests.request(method, url, **final_req_kwargs)
+    return auth
