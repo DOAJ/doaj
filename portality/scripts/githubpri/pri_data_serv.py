@@ -107,20 +107,16 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Di
 
 
 def _issues_by_user(project, priority, sender: GithubReqSender) -> Dict[str, List[GithubIssue]]:
-    cols = priority.get("columns", [])
-    if len(cols) == 0:
-        cols = DEFAULT_COLUMNS
+    cols = priority.get("columns", []) or DEFAULT_COLUMNS
 
     user_issues = defaultdict(list)
     for status_col in cols:
         column_issues = get_column_issues(project.get("columns_url"), status_col, sender)
         labels = priority.get("labels", [])
-        if len(labels) == 0:
-            _split_by_user(user_issues, column_issues, status_col)
-            continue
+        if labels:
+            column_issues = _filter_issues_by_label(column_issues, labels)
 
-        labelled_issues = _filter_issues_by_label(column_issues, labels)
-        _split_by_user(user_issues, labelled_issues, status_col)
+        _split_by_user(user_issues, column_issues, status_col)
 
     return user_issues
 
