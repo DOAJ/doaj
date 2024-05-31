@@ -11,8 +11,8 @@ import pandas as pd
 from gspread.utils import ValueInputOption
 
 from portality.lib import gsheet
-from portality.scripts.githubpri import pridata, gdrive_sheet_serv, github_utils
-from portality.scripts.githubpri.gdrive_sheet_serv import create_or_load_worksheet
+from portality.scripts.githubpri import pridata, pri_gsheets, github_utils
+from portality.scripts.githubpri.pri_gsheets import create_or_load_worksheet
 
 log = logging.getLogger(__name__)
 
@@ -70,7 +70,7 @@ def priorities(priorities_file,
             cell.value = f'=HYPERLINK("{link}", "{title}")'
         worksheet.update_cells(cells, ValueInputOption.user_entered)
 
-    gdrive_sheet_serv.apply_prilist_styles(worksheet, display_df)
+    pri_gsheets.apply_prilist_styles(worksheet, display_df)
     print(f'[End] update google sheet [{gdrive_filename}]')
 
 

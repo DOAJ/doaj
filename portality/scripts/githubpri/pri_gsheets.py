@@ -1,5 +1,5 @@
 """
-functions to interact with "google drive sheets" for githubpri
+functions to interact with "Google Drive Sheets" for githubpri
 """
 
 import datetime
