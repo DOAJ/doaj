@@ -11,7 +11,7 @@ import pandas as pd
 from gspread.utils import ValueInputOption
 
 from portality.lib import gsheet
-from portality.scripts.githubpri import pri_data_serv, gdrive_sheet_serv, github_serv
+from portality.scripts.githubpri import pridata, gdrive_sheet_serv, github_serv
 from portality.scripts.githubpri.gdrive_sheet_serv import create_or_load_worksheet
 
 log = logging.getLogger(__name__)
@@ -19,10 +19,10 @@ log = logging.getLogger(__name__)
 
 def to_ordered_df_by_user_pri_map(user_pri_map):
     user_pri_map = user_pri_map.copy()
-    claimable_df = user_pri_map.pop(pri_data_serv.DEFAULT_USER, None)
+    claimable_df = user_pri_map.pop(pridata.DEFAULT_USER, None)
     user_pri_map = OrderedDict(sorted(user_pri_map.items(), key=lambda x: x[0].lower()))
     if claimable_df is not None:
-        user_pri_map[pri_data_serv.DEFAULT_USER] = claimable_df
+        user_pri_map[pridata.DEFAULT_USER] = claimable_df
     return pd.concat(user_pri_map, axis=1)
 
 
@@ -33,7 +33,7 @@ def priorities(priorities_file,
                github_username=None,
                github_password_key=None, ):
     sender = github_serv.GithubReqSender(token_password=github_password_key, username=github_username)
-    user_pri_map = pri_data_serv.create_priorities_excel_data(priorities_file, sender)
+    user_pri_map = pridata.create_priorities_excel_data(priorities_file, sender)
 
     if outfile is not None:
         to_ordered_df_by_user_pri_map(user_pri_map).to_csv(outfile)

@@ -1,6 +1,7 @@
 """
 functions and logic of priority data
 core logic of githubpri
+extract data from Github and convert to priority order format
 """
 
 import csv
