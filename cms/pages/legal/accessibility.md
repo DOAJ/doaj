@@ -43,7 +43,7 @@ If you need information on this website in a different format like accessible PD
 
 We'll consider your request and reply in 5 working days. Unfortunately, DOAJ doesn't have an organisational telephone number. 
 
-If you cannot view the map or the embedded spreadsheet on our [_Supporters_](/support/supporters) page, and have a specific question about either of those, please email us.
+If you cannot view the embedded spreadsheet on our [_Supporters_](/support/supporters) page and have a specific question about either, please email us.
 
 ## Reporting accessibility problems with this website
 
@@ -51,7 +51,7 @@ We’re always looking to improve the accessibility of this website. If you find
 
 ## Enforcement procedure
 
-The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the 'accessibility regulations'). If you're not happy with how we respond to your complaint, contact the Equality Advisory and Support Service (EASS).
+The Equality and Human Rights Commission (EHRC) is responsible for enforcing the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018 (the 'accessibility regulations'). If you're unhappy with how we respond to your complaint, contact the Equality Advisory and Support Service (EASS).
 
 ---
 
