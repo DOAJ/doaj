@@ -7,11 +7,11 @@ featuremap: ~~Accessibility:Fragment~~
 
 ---
 
-This accessibility statement applies to [doaj.org](https://www.doaj.org) exclusively.
+This accessibility statement applies to [doaj.org](https://doaj.org) exclusively.
 
-Its subdomain [blog.doaj.org](https://blog.doaj.org) and its sister site, [doajbestpracticeguide.org](https://www.doajbestpracticeguide.org), are WordPress sites and **are not covered by this statement**.
+Its subdomain [blog.doaj.org](https://blog.doaj.org) and sister site [doajbestpracticeguide.org](https://www.doajbestpracticeguide.org) are WordPress sites and **are not covered by this statement**.
 
-This website is run by DOAJ, on behalf of IS4OA. We want as many people as possible to be able to use this website. For example, that means you should be able to:
+This website is run by DOAJ on behalf of IS4OA. We want as many people as possible to be able to use this website. For example, that means you should be able to:
 
 - Change colours, contrast levels and fonts.
 - Zoom in up to 300% without the text spilling off the screen.
@@ -41,16 +41,13 @@ If you need information on this website in a different format like accessible PD
 
 - **Email** [helpdesk@doaj.org](mailto:helpdesk@doaj.org)  
 
-We'll consider your request and get back to you in 5 working days. Unfortunately, DOAJ doesn't have an organisational telephone number. 
+We'll consider your request and reply in 5 working days. Unfortunately, DOAJ doesn't have an organisational telephone number. 
 
-If you cannot view the map or the embedded spreadsheet on our [_Supporters_](/support/supporters) page, and have a specific question about either of those, call or email us.
+If you cannot view the map or the embedded spreadsheet on our [_Supporters_](/support/supporters) page, and have a specific question about either of those, please email us.
 
 ## Reporting accessibility problems with this website
 
-We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page or think we're not meeting accessibility requirements, you can do either of the following:
-
-- Submit a [GitHub issue](https://github.com/DOAJ/doaj/issues/new/choose)
-- **Email** Dom Mitchell, DOAJ Operations Manager, [dom@doaj.org](mailto:dom@doaj.org)
+We’re always looking to improve the accessibility of this website. If you find any problems not listed on this page or think we're not meeting accessibility requirements, you can submit a [GitHub issue](https://github.com/DOAJ/doaj/issues/new/choose) or email our Helpdesk: [helpdesk@doaj.org](mailto:helpdesk@doaj.org)
 
 ## Enforcement procedure
 
@@ -58,9 +55,9 @@ The Equality and Human Rights Commission (EHRC) is responsible for enforcing the
 
 ---
 
-## Technical information about this website’s accessibility
+## Technical information about this website's accessibility
 
-DOAJ is committed to making its website accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.
+DOAJ is committed to making its website accessible in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.
 
 ### Compliance status
 
