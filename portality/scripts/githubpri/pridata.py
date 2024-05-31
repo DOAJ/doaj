@@ -13,8 +13,8 @@ from typing import TypedDict, List, Dict
 
 import pandas as pd
 
-from portality.scripts.githubpri import github_serv
-from portality.scripts.githubpri.github_serv import GithubReqSender, get_column_issues
+from portality.scripts.githubpri import github_utils
+from portality.scripts.githubpri.github_utils import GithubReqSender, get_column_issues
 
 PROJECT_NAME = "DOAJ Kanban"
 DEFAULT_COLUMNS = ["Review", "In progress", "To Do"]
@@ -73,7 +73,7 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Di
         dict mapping 'username' to 'priority dataframe'
     """
 
-    project = github_serv.get_project('DOAJ/doajPM', PROJECT_NAME, auth=sender.username_password)
+    project = github_utils.get_project('DOAJ/doajPM', PROJECT_NAME, auth=sender.username_password)
     user_priorities = defaultdict(list)
     for priority in load_rules(priorities_file):
         print("Applying rule [{x}]".format(x=json.dumps(priority)))

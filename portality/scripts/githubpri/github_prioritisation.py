@@ -11,7 +11,7 @@ import pandas as pd
 from gspread.utils import ValueInputOption
 
 from portality.lib import gsheet
-from portality.scripts.githubpri import pridata, gdrive_sheet_serv, github_serv
+from portality.scripts.githubpri import pridata, gdrive_sheet_serv, github_utils
 from portality.scripts.githubpri.gdrive_sheet_serv import create_or_load_worksheet
 
 log = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ def priorities(priorities_file,
                gdrive_filename=None,
                github_username=None,
                github_password_key=None, ):
-    sender = github_serv.GithubReqSender(token_password=github_password_key, username=github_username)
+    sender = github_utils.GithubReqSender(token_password=github_password_key, username=github_username)
     user_pri_map = pridata.create_priorities_excel_data(priorities_file, sender)
 
     if outfile is not None:
