@@ -4,12 +4,14 @@ core logic of githubpri
 extract data from Github and convert to priority order format
 """
 
+from __future__ import annotations
+
 import csv
 import json
 import logging
 import os
 from collections import defaultdict
-from typing import TypedDict, List, Dict
+from typing import TypedDict
 
 import pandas as pd
 
@@ -26,8 +28,8 @@ log = logging.getLogger(__name__)
 
 class Rule(TypedDict):
     id: str
-    labels: List[str]
-    columns: List[str]
+    labels: list[str]
+    columns: list[str]
 
 
 class PriIssue(TypedDict):
@@ -44,7 +46,7 @@ class GithubIssue(TypedDict):
     title: str
 
 
-def load_rules(rules_file) -> List[Rule]:
+def load_rules(rules_file) -> list[Rule]:
     if not os.path.exists(rules_file):
         raise FileNotFoundError(f"Rules file [{rules_file}] not found")
     with open(rules_file, "r") as f:
@@ -59,7 +61,7 @@ def load_rules(rules_file) -> List[Rule]:
     return rules
 
 
-def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Dict[str, pd.DataFrame]:
+def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> dict[str, pd.DataFrame]:
     """
     ENV VARIABLE `DOAJ_GITHUB_KEY` will be used if username and password are not provided
 
@@ -85,7 +87,7 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Di
                 print('  * [{}] {}'.format(i.get('issue_number'), i.get('title')))
 
         for user, issues in issues_by_user.items():
-            issues: List[GithubIssue]
+            issues: list[GithubIssue]
             pri_issues = [PriIssue(rule_id=priority.get("id", 1),
                                    title='[{}] {}'.format(github_issue['issue_number'], github_issue['title']),
                                    issue_url=_ui_url(github_issue['api_url']),
@@ -106,7 +108,7 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Di
     return df_list
 
 
-def _issues_by_user(project, priority, sender: GithubReqSender) -> Dict[str, List[GithubIssue]]:
+def _issues_by_user(project, priority, sender: GithubReqSender) -> dict[str, list[GithubIssue]]:
     cols = priority.get("columns", []) or DEFAULT_COLUMNS
 
     user_issues = defaultdict(list)

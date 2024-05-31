@@ -1,10 +1,12 @@
 """
 functions to interact with "Github" for githubpri
 """
+from __future__ import annotations
+
 import functools
 import logging
 import warnings
-from typing import Optional, Union, List, Iterable
+from typing import Union, Iterable
 
 import requests
 from requests import Response
@@ -75,7 +77,7 @@ def send_request(url, method='get',
     return resp
 
 
-def create_auth(auth: AuthLike) -> Optional[HTTPBasicAuth]:
+def create_auth(auth: AuthLike) -> HTTPBasicAuth | None:
     """
 
     Parameters
@@ -97,7 +99,7 @@ def create_auth(auth: AuthLike) -> Optional[HTTPBasicAuth]:
     return auth
 
 
-def get_projects(full_name, auth: AuthLike) -> List[dict]:
+def get_projects(full_name, auth: AuthLike) -> list[dict]:
     """
 
     Parameters
@@ -116,7 +118,7 @@ def get_projects(full_name, auth: AuthLike) -> List[dict]:
     return project_list
 
 
-def get_project(full_name, project_name, auth: AuthLike) -> Optional[dict]:
+def get_project(full_name, project_name, auth: AuthLike) -> dict | None:
     project_list = get_projects(full_name, auth)
     names = [p for p in project_list if p.get("name") == project_name]
     if len(names) == 0:
