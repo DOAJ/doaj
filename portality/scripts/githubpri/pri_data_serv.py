@@ -72,8 +72,7 @@ def create_priorities_excel_data(priorities_file, sender: GithubReqSender) -> Di
         dict mapping 'username' to 'priority dataframe'
     """
 
-    project_list = github_serv.get_projects('DOAJ/doajPM', auth=sender.username_password)
-    project = [p for p in project_list if p.get("name") == PROJECT_NAME][0]
+    project = github_serv.get_project('DOAJ/doajPM', PROJECT_NAME, auth=sender.username_password)
     user_priorities = defaultdict(list)
     for priority in load_rules(priorities_file):
         print("Applying rule [{x}]".format(x=json.dumps(priority)))

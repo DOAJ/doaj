@@ -116,6 +116,16 @@ def get_projects(full_name, auth: AuthLike) -> List[dict]:
     return project_list
 
 
+def get_project(full_name, project_name, auth: AuthLike) -> Optional[dict]:
+    project_list = get_projects(full_name, auth)
+    names = [p for p in project_list if p.get("name") == project_name]
+    if len(names) == 0:
+        return None
+    if len(names) > 1:
+        log.warning("Multiple projects found: {x}".format(x=project_name))
+    return names[0]
+
+
 def yields_all(url, auth: AuthLike, params=None, n_per_page=100) -> Iterable[dict]:
     final_params = {"per_page": n_per_page, "page": 1}
     if params is not None:
