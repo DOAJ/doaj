@@ -129,21 +129,16 @@
     <section class="hero homepage__blog">
         <div class="container">
             <h2 class="label label--secondary">News Service</h2>
-
             <div class="row">
                 {# Latest posts #}
-                <div class="col-md-8">
-                    <div class="row">
                         {% for n in news %}
-                        <article class="col-sm-4 col-md-4">
+                        <article class="col-md-3">
                             <a href="{{ n.url }}" target="_blank" rel="noopener">
                                 <time datetime="{{ n.published }}"><small class="label label--tertiary">{{ n.published_formatted() }}</small></time>
                                 <h3>{{ n.title|safe }}</h3>
                             </a>
                         </article>
                         {% endfor %}
-                    </div>
-                </div>
             </div>
 
             <p><a href="https://blog.doaj.org/" class="button" target="_blank" rel="noopener">&rarr; All blog posts</a></p>
