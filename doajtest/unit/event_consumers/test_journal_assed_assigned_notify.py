@@ -14,15 +14,15 @@ class TestJournalAssedAssignedNotify(DoajTestCase):
     def tearDown(self):
         super(TestJournalAssedAssignedNotify, self).tearDown()
 
-    def test_consumes(self):
+    def test_should_consume(self):
         event = models.Event(constants.EVENT_JOURNAL_ASSED_ASSIGNED, context={"journal" : {}})
-        assert JournalAssedAssignedNotify.consumes(event)
+        assert JournalAssedAssignedNotify.should_consume(event)
 
         event = models.Event("test:event", context={"journal" : {}})
-        assert not JournalAssedAssignedNotify.consumes(event)
+        assert not JournalAssedAssignedNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_JOURNAL_ASSED_ASSIGNED)
-        assert not JournalAssedAssignedNotify.consumes(event)
+        assert not JournalAssedAssignedNotify.should_consume(event)
 
     def test_consume_success(self):
         self._make_and_push_test_context("/")
