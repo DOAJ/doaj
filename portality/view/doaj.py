@@ -1,3 +1,4 @@
+from __future__ import annotations
 import json
 import re
 import urllib.error
@@ -289,14 +290,21 @@ def autocomplete_pair(doc_type, field_name, id_field):
 def autocomplete_text_mapping(doc_type, field_name, id_field):
     """
     This route is used by the autocomplete widget to get the text value by id
+
+    Json string with follow format:
+    {id_val: text_val}
     """
 
     id_value = request.args.get('id')
-    text = id_text_mapping(doc_type, field_name, id_field, id_value)
-    return jsonify({'id': id_value, 'text': text or ''})
+    if id_value is None:
+        id_value = request.json.get('ids', [])
+    else:
+        id_value = id_value.strip()
+    id_map = id_text_mapping(doc_type, field_name, id_field, id_value)
+    return jsonify(id_map)
 
 
-def id_text_mapping(doc_type, field_name, id_field, id_value) -> Optional[str]:
+def id_text_mapping(doc_type, field_name, id_field, id_value) -> dict:
 
     query_factory_mapping = {
         ('editor_group', 'id', 'name', ): lambda: IdTextTermQuery(id_field, id_value).query(),
@@ -305,18 +313,18 @@ def id_text_mapping(doc_type, field_name, id_field, id_value) -> Optional[str]:
     if not query_factory:
         app.logger.warning(f"Unsupported id_text_mapping for "
                            f"doc_type[{doc_type}], field_name[{field_name}], id_field[{id_field}]")
-        return None
+        return {}
 
     if not id_value:
-        return None
+        return {}
 
     m = models.lookup_model(doc_type)
     if not m:
         app.logger.warning(f"model not found for doc_type[{doc_type}]")
-        return None
+        return {}
 
     query = query_factory()
-    return m.get_target_value(query, field_name)
+    return m.get_target_values(query, id_field, field_name)
 
 
 

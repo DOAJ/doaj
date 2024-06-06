@@ -55,6 +55,7 @@ $.extend(true, doaj, {
                     field: "admin.editor_group.exact",
                     display: "Editor Group",
                     deactivateThreshold: 1,
+                    valueFunction: new doaj.fieldRender.editorGroupNameFactory(),
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,

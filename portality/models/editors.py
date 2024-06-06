@@ -49,7 +49,8 @@ class EditorGroup(DomainObject):
 
     @classmethod
     def find_name_by_id(cls, editor_group_id) -> Optional[str]:
-        return cls.get_target_value(IdTextTermQuery('id', editor_group_id).query(), "name")
+        return cls.get_target_value(IdTextTermQuery('id', editor_group_id).query(),
+                                    id_name=editor_group_id, field_name="name")
 
     @property
     def name(self):

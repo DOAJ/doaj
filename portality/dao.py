@@ -1,3 +1,4 @@
+from __future__ import annotations
 import json
 import re
 import sys
@@ -843,7 +844,7 @@ class DomainObject(UserDict, object):
         return result
 
     @classmethod
-    def autocomplete_pair(cls, query_field, query_prefix, id_field, text_field, size=5) -> List[IdText]:
+    def autocomplete_pair(cls, query_field, query_prefix, id_field, text_field, size=5) -> list[IdText]:
         query = AutocompletePairQuery(query_field, query_prefix,
                                       source_fields=[id_field, text_field],
                                       size=size).query()
@@ -851,19 +852,24 @@ class DomainObject(UserDict, object):
         return [{"id": getattr(obj, id_field), "text": getattr(obj, text_field)} for obj in objs]
 
     @classmethod
-    def get_target_value(cls, query, field_name) -> Optional[str]:
-        query['_source'] = [field_name]
-        query['size'] = 2
-        res = cls.query(q=query)
-        size = res.get('hits', {}).get('total', {}).get('value', 0)
-
-        if size > 1:
+    def get_target_value(cls, query, id_name, field_name) -> str | None:
+        results = cls.get_target_values(query, id_name, field_name, size=2)
+        if len(results) > 1:
             app.logger.debug("More than one record found for query {q}".format(q=json.dumps(query, indent=2)))
 
-        if size > 0:
-            return res['hits']['hits'][0]['_source'].get(field_name)
+        if len(results) > 0:
+            return list(results.values())[0]
 
         return None
+
+
+    @classmethod
+    def get_target_values(cls, query, id_name, field_name, size=1000) -> dict[str]:
+        query['_source'] = [id_name, field_name]
+        query['size'] = size
+        res = cls.query(q=query)
+        return {hit['_source'].get(id_name): hit['_source'].get(field_name)
+                for hit in res['hits']['hits']}
 
     @classmethod
     def q2obj(cls, **kwargs) -> List['Self']:
@@ -965,6 +971,13 @@ class DomainObject(UserDict, object):
             m.save()
         if blocking:
             cls.blockall((m.id, getattr(m, "last_updated", None)) for m in models)
+
+    @classmethod
+    def save_all_block_last(cls, objects):
+        *objs, last = objects
+        for obj in objects:
+            obj.save()
+        last.save(blocking=True)
 
 
 def any_pending_tasks():
@@ -1166,9 +1179,11 @@ class IdTextTermQuery:
         self.id_value = id_value
 
     def query(self):
-        return {
-            "query": {"term": {self.id_field: self.id_value}}
-        }
+        if isinstance(self.id_value, list):
+            term = {"terms": {self.id_field: self.id_value}}
+        else:
+            term = {"term": {self.id_field: self.id_value}}
+        return {"query": term}
 
 
 def patch_model_for_bulk(obj: DomainObject):

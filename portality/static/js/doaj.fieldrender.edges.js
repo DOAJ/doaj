@@ -128,6 +128,7 @@ $.extend(true, doaj, {
                 field: "admin.editor_group.exact",
                 display: "Editor group",
                 deactivateThreshold: 1,
+                valueFunction: new doaj.fieldRender.editorGroupNameFactory(),
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
                     open: false,
@@ -3898,6 +3899,28 @@ $.extend(true, doaj, {
                 return false;
             }
         },
+
+        editorGroupNameFactory: function() {
+            let resultMap = null;
+            this.mapCallable = function (val) {
+                return resultMap[val] || val
+            }
+            this.mapCallable.prepareMap = function (values) {
+                $.ajax({
+                    url: "/autocomplete-text/editor_group/name/id",
+                    type: "POST",
+                    contentType: "application/json",
+                    dataType: 'json',
+                    data: JSON.stringify({'ids': values}) ,
+                    async: false,
+                    success: function (data) {
+                        resultMap = data;
+                    }
+                });
+            }
+
+            return this.mapCallable
+        }
     },
 
     bulk : {

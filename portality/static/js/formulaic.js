@@ -2190,7 +2190,7 @@ var formulaic = {
                         dataType: "json",
                         url: `${current_scheme}//${current_domain}/autocomplete-text/${doc_type}/${doc_field}/${id_field}`,
                         success: function(resp) {
-                            setIdText(eleVal, resp?.text);
+                            setIdText(eleVal, resp[eleVal]);
                         }
                     })
                 };
