@@ -493,6 +493,9 @@ $.extend(true, doaj, {
                             false : "No"
                         }
                     },
+                    valueFunctions : {
+                        "admin.editor_group.exact" : new doaj.fieldRender.editorGroupNameFactory(),
+                    },
                     rangeFunctions : {
                         "bibjson.discontinued_date" : doaj.valueMaps.displayYearPeriod
                     }

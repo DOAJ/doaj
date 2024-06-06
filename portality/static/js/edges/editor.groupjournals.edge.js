@@ -382,7 +382,10 @@ $.extend(true, doaj, {
                             true : "True",
                             false : "False"
                         }
-                    }
+                    },
+                    valueFunctions : {
+                        "admin.editor_group.exact" : new doaj.fieldRender.editorGroupNameFactory(),
+                    },
                 })
             ];
 

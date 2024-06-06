@@ -229,6 +229,9 @@ $.extend(true, doaj, {
                             "new application": "Open"
                         }
                     },
+                    valueFunctions : {
+                        "admin.editor_group.exact" : new doaj.fieldRender.editorGroupNameFactory(),
+                    },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         omit : [
                             "bibjson.apc.has_apc",

@@ -383,7 +383,10 @@ $.extend(true, doaj, {
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'index.license.exact' : 'Journal license',
                         "index.has_apc.exact" : "Publication charges?"
-                    }
+                    },
+                    valueFunctions : {
+                        "admin.editor_group.exact" : new doaj.fieldRender.editorGroupNameFactory(),
+                    },
                 })
             ];
 

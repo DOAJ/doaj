@@ -229,7 +229,10 @@ $.extend(true, doaj, {
                             "update request": "Open",
                             "new application": "Open"
                         }
-                    }
+                    },
+                    valueFunctions : {
+                        "admin.editor_group.exact" : new doaj.fieldRender.editorGroupNameFactory(),
+                    },
                 })
             ];
 

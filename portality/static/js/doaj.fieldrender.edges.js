@@ -3906,6 +3906,9 @@ $.extend(true, doaj, {
                 return resultMap[val] || val
             }
             this.mapCallable.prepareMap = function (values) {
+                if (values.length === 0) {
+                    return
+                }
                 $.ajax({
                     url: "/autocomplete-text/editor_group/name/id",
                     type: "POST",
