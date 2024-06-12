@@ -12,6 +12,7 @@
       <fieldset>
         {{ form.group_id }}
         {% if form.name.data %}
+          {# Do not allow the user to edit the name. issue #3859 #}
           <input id="name" name="name" type="hidden" value="{{ form.name.data }}">
         {% endif %}
         {{ render_field_horizontal(form.name, placeholder="Enter a unique group name") }}
