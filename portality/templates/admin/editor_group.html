@@ -60,6 +60,7 @@
         });
 
         $("#editor").select2({
+            allowClear: true,
             minimumInputLength: 1,
             query: function (query) {
                 userAutocomplete(query.term, query.callback)
