@@ -516,13 +516,13 @@ class FieldDefinitions:
             },
             "public": {
                 "validate": [{"different_to": {"field": "institution_name",
-                                               "message": "The Publisher name and Other organisation name cannot be the same."}}]
+                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
             "update_request": {
                 "validate": [{"different_to": {"field": "institution_name",
-                                               "message": "The Publisher name and Other organisation name cannot be the same."}}]
+                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
@@ -600,13 +600,13 @@ class FieldDefinitions:
         "contexts": {
             "public": {
                 "validate": [{"different_to": {"field": "publisher_name",
-                                               "message": "The Publisher name and Other organisation name cannot be the same."}}]
+                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
             "update_request": {
                 "validate": [{"different_to": {"field": "publisher_name",
-                                               "message": "The Publisher name and Other organisation name cannot be the same."}}]
+                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
@@ -659,7 +659,7 @@ class FieldDefinitions:
                         "only_if_exists": {
                             "fields":
                                 [{"field": "institution_name"}],
-                            "message": "You cannot provide a country for the other organisation question without providing the other organisation's name",
+                            "message": "'You must provide the other organization's name. You cannot provide just the country.",
                         }
                     }
                 ]
@@ -670,7 +670,7 @@ class FieldDefinitions:
                         "only_if_exists": {
                             "fields":
                                 [{"field": "institution_name"}],
-                            "message": "You cannot provide a country for the other organisation question without providing the other organisation's name",
+                            "message": "'You must provide the other organization's name. You cannot provide just the country.",
                         }
                     }
                 ]
