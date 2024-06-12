@@ -18,7 +18,7 @@
 
 {% block publisher_content scoped %}
 
-    {% import "application_form/_application_warning_msg.html" as _msg %}
+    {% import "_application-form/includes/_application_warning_msg.html" as _msg %}
     {{ _msg.build_journal_withdrawn_deleted_msg(obj) }}
 
     <body id="apply">
@@ -34,7 +34,7 @@
                           method="post"
                           data-formulaic-after="{{ formulaic_after }}">
 
-                        {% include "application_form/_fieldsets.html" %}
+                        {% include "_application-form/includes/_public_fieldsets.html" %}
 
                         <div class="tab form-section">
                             {% include "application_form/07-review/index.html" %}

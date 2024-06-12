@@ -1,0 +1,101 @@
+{% extends "management/admin/base.html" %}
+
+{% macro show_cont_list(cont_list, cont_name) %}
+    {% if cont_list %}
+        <span>{{ cont_name }}</span>
+        <ul>
+            {% for issn, jid, title in cont_list %}
+                <li>
+                    {% if jid %}
+                        <a href="{{ url_for("admin.journal_page", journal_id=jid ) }}" target="_blank">
+                            [{{ issn }}]{{ title }} ( {{ jid }} )
+                        </a>
+                    {% else %}
+                        {{ issn }} ( Related journal not found )
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% set form_id = "maned_form" %}
+{% set formulaic_after = url_for("admin.journal_page", journal_id=obj.id) %}
+{% set form_action = url_for("admin.journal_page", journal_id=obj.id) %}
+
+{% set js_validation = True %}
+{% set auto_save = 0 %}
+{% set notabs = true %}
+{% set diff_table = false %}
+{% set quick_reject = false %}
+{% set withdrawable = true %}
+
+{% block page_title %}Journal: {{ obj.bibjson().title }}{% endblock %}
+{% block body_id %}apply{% endblock %}
+
+{% block admin_content scoped %}
+    {% include "management/_application-form/includes/_editorial_form_body.html" %}
+
+    <div class="modal" id="modal-withdraw_reinstate" tabindex="-1" role="dialog"
+         aria-labelledby="modalLabel-withdraw_reinstate">
+        <div class="modal__dialog" role="document">
+            {% set action_label = "Withdraw" if obj.is_in_doaj() else "Reinstate" %}
+            {% set message = "Are you sure you want to " + action_label + " " + obj.id %}
+
+            {% if job %}
+                {% set action_label = "Withdrawing" if obj.is_in_doaj() else "Reinstating" %}
+                {% set job_url = "/admin/background_jobs?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22" + job.id + "%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%2C%22from%22%3A0%2C%22size%22%3A25%7D" %}
+                {% set message = "There is currently a background job " + action_label + " " + obj.id + ".  You can view the progress of this job <a href='" + job_url + "' target='_blank'>here</a> (opens in new tab). You will get an email when your request has been processed; this could take anything from a few minutes to a few hours." %}
+            {% endif %}
+            <h3 class="modal__title" id="modalLabel-withdraw_reinstate">
+                {{ action_label }}
+            </h3>
+            <p>{% autoescape off %}{{ message }}{% endautoescape %}</p>
+
+            {% if not job %}
+
+            {# withdraw or reinstate only this journal #}
+            {% set url_name = "admin.journal_deactivate"  if obj.is_in_doaj() else "admin.journal_activate" %}
+            {% set action = url_for(url_name, journal_id=obj.id) %}
+            <form method="post" action="{{ action }}" id="journal_witdraw_reinstate">
+                <button class="button button--primary" type="submit" id="submit_quick_reject">{{ action_label }}</button>
+            </form>
+
+
+            {# withdraw or reinstate all continuations #}
+            {% if obj.is_in_doaj() and (
+                    obj.bibjson().replaces or obj.bibjson().is_replaced_by
+                ) %}
+
+            <p>
+                {% autoescape off %}
+                This journal is connected to another/others by a continuation.
+                Please remember to withdraw all affected records.
+                {% endautoescape %}
+            </p>
+
+            {{ show_cont_list(past_cont_list, "Older") }}
+            {{ show_cont_list(future_cont_list, "Newer") }}
+
+            {% endif %}
+            {% endif %}
+            <button type="button" data-dismiss="modal" class="modal__close">Close</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block admin_js scoped %}
+    {% if autochecks %}
+        <script type="application/javascript">
+            doaj.autochecks = {{ autochecks.data|tojson }}
+        </script>
+        <script type="text/javascript" src="/static/js/autochecks.js?v={{config.get('DOAJ_VERSION')}}"></script>
+    {% endif %}
+    {% set factory = "journal" %}
+    {% include "application_form/js/_form_js.html" %}
+    {% if autochecks %}
+        <script type="application/javascript">
+            doaj.autocheckers.manager = new doaj.autocheckers.AutochecksManager({})
+        </script>
+    {% endif %}
+{% endblock %}

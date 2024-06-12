@@ -27,8 +27,7 @@ input[disabled] {
 {% block publisher_content scoped %}
 <body id="apply">
     <main class="container">
-        {% include "application_form/_backend_validation.html" %}
-
+        {% include "_application-form/includes/_backend_validation.html" %}
         <div class="row">
             <div class="col-md-8">
                 <section class="page-content">
@@ -48,7 +47,7 @@ input[disabled] {
                       method="post"
                       data-formulaic-after="{{ formulaic_after }}">
 
-                        {% include "application_form/_fieldsets.html" %}
+                        {% include "_application-form/includes/_public_fieldsets.html" %}
 
                         <div class="tab form-section">
                             {% include "application_form/07-review/index.html" %}

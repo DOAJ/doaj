@@ -45,6 +45,7 @@ from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext,
 from portality.models import EditorGroup
 from portality.regex import ISSN, ISSN_COMPILED
 from portality.ui.messages import Messages
+from portality.ui import templates
 
 # Stop words used in the keywords field
 STOP_WORDS = [
@@ -2341,7 +2342,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.NOTES["name"]
     ]
     MANED["processor"] = application_processors.AdminApplication
-    MANED["templates"]["form"] = "application_form/maned_application.html"
+    MANED["templates"]["form"] = templates.MANED_APPLICATION_FORM
 
 
 class JournalContextDefinitions:
@@ -2415,7 +2416,7 @@ class JournalContextDefinitions:
         FieldSetDefinitions.CONTINUATIONS["name"]
     ]
     MANED["processor"] = application_processors.ManEdJournalReview
-    MANED["templates"]["form"] = "application_form/maned_journal.html"
+    MANED["templates"]["form"] = templates.MANED_JOURNAL_FORM
 
     # ~~->$ BulkEditJournal:FormContext~~
     # ~~^-> JournalForm:Crosswalk~~

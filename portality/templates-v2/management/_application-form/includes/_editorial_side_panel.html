@@ -1,5 +1,5 @@
 <div class="editorial-panel__wrapper">
-    {% include "application_form/_contact.html" %}
+    {% include "management/_application-form/includes/_contact.html" %}
     {% if obj %}
         <h3 class="label"> Locked for editing until <span id="lock_expires"
                                                           data-timestamp="{{ lock.utc_expires() }}">{{ lock.expire_formatted() }}</span>
@@ -56,7 +56,5 @@
                 {% endfor %}
             {% endif %}
         </fieldset>
-
-        {#    <section class="dismissed-autochecks"></section>#}
     </aside>
 </div>
