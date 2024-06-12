@@ -1,0 +1,30 @@
+{% extends "management/admin/base.html" %}
+
+{% block admin_stylesheets %}
+    {% include "_edges_common_css.html" %}
+    {# FIXME: for some reason this is not in edges common, why is that? #}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
+
+{% block page_title %}Journals{% endblock %}
+
+{% block admin_content %}
+    <h1 class="sr-only">Journals</h1>
+
+    <div id="admin_journals"></div>
+{% endblock %}
+
+{% block admin_js %}
+    <script type="text/javascript">
+        $.extend(true, doaj, {
+            adminJournalsSearchConfig : {
+                journalEditUrl : "{{ url_for('admin.journal_page', journal_id='') }}",
+                applicationsUrl : "{{ url_for('admin.suggestions') }}",
+                searchPath : '/admin_query/journal/_search'
+            }
+        });
+    </script>
+
+    {% include "_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/admin.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+{% endblock %}

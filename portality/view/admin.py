@@ -48,7 +48,7 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template('admin/index.html', admin_page=True)
+    return render_template(templates.JOURNALS_SEARCH, admin_page=True)
 
 
 @blueprint.route("/journals", methods=["GET"])
@@ -213,7 +213,7 @@ def journal_page(journal_id):
     try:
         lockinfo = lock.lock(constants.LOCK_JOURNAL, journal_id, current_user.id)
     except lock.Locked as l:
-        return render_template("admin/journal_locked.html", journal=journal, lock=l.lock)
+        return render_template(templates.JOURNAL_LOCKED, journal=journal, lock=l.lock)
 
     fc = JournalFormFactory.context("admin", extra_param=exparam_editing_user())
     autochecks = models.Autocheck.for_journal(journal_id)
@@ -336,12 +336,12 @@ def journal_continue(journal_id):
         type = request.values.get("type")
         form = MakeContinuation()
         form.type.data = type
-        return render_template("admin/continuation.html", form=form, current=j)
+        return render_template(templates.CONTINUATION, form=form, current=j)
 
     elif request.method == "POST":
         form = MakeContinuation(request.form)
         if not form.validate():
-            return render_template('admin/continuation.html', form=form, current=j)
+            return render_template(templates.CONTINUATION, form=form, current=j)
 
         if form.type.data is None:
             abort(400)
@@ -377,7 +377,7 @@ def suggestions():
 @ssl_required
 def update_requests():
     fc = ApplicationFormFactory.context("admin", extra_param=exparam_editing_user())
-    return render_template("admin/update_requests.html",
+    return render_template(templates.UPDATE_REQUESTS_SEARCH,
                            admin_page=True,
                            application_status_choices=application_statuses(None, fc))
 
@@ -517,7 +517,7 @@ def admin_site_search():
 @login_required
 @ssl_required
 def editor_group_search():
-    return render_template("admin/editor_group_search.html", admin_page=True)
+    return render_template(templates.EDITOR_GROUP_SEARCH, admin_page=True)
 
 
 @blueprint.route("/background_jobs")
@@ -532,7 +532,7 @@ def background_jobs_search():
 @ssl_required
 def global_notifications_search():
     """ ~~->AdminNotificationsSearch:Page~~ """
-    return render_template("admin/global_notifications_search.html", admin_page=True)
+    return render_template(templates.GLOBAL_NOTIFICATIONS_SEARCH, admin_page=True)
 
 
 @blueprint.route("/editor_group", methods=["GET", "POST"])
@@ -554,7 +554,7 @@ def editor_group(group_id=None):
             form.maned.data = eg.maned
             form.editor.data = eg.editor
             form.associates.data = ",".join(eg.associates)
-        return render_template("admin/editor_group.html", admin_page=True, form=form)
+        return render_template(templates.EDITOR_GROUP, admin_page=True, form=form)
 
     elif request.method == "POST":
 
@@ -618,7 +618,7 @@ def editor_group(group_id=None):
                 "success")
             return redirect(url_for('admin.editor_group_search'))
         else:
-            return render_template("admin/editor_group.html", admin_page=True, form=form)
+            return render_template(templates.EDITOR_GROUP, admin_page=True, form=form)
 
 
 @blueprint.route("/autocomplete/user")

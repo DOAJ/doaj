@@ -1,8 +1,12 @@
-{% extends "admin/admin_base.html" %}
+{% extends "management/admin/base.html" %}
 {# ~~ AdminNotificationsSearch:Page~~ #}
 
 {# ~~-> Edges:Technology ~~ #}
-{% include "_edges_common_css.html" %}
+{% block admin_stylesheets %}
+    {% include "_edges_common_css.html" %}
+    {# FIXME: for some reason this is not in edges common, why is that? #}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+{% endblock %}
 
 {% block page_title %}Notifications{% endblock %}
 
@@ -11,7 +15,7 @@
     <div id="admin_notifications"></div>
 {% endblock %}
 
-{% block extra_js_bottom %}
+{% block admin_js %}
 
     <script type="text/javascript">
     $.extend(true, doaj, {
