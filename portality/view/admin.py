@@ -551,7 +551,7 @@ def editor_group(group_id=None):
             form.group_id.data = eg.id
             form.name.data = eg.name
             # Do not allow the user to edit the name. issue #3859
-            form.name.render_kw = {'readonly': True}
+            form.name.render_kw = {'disabled': True}
             form.maned.data = eg.maned
             form.editor.data = eg.editor
             form.associates.data = ",".join(eg.associates)
