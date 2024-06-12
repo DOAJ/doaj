@@ -1,4 +1,5 @@
 # ~~ApplicationPublisherCreatedNotify:Notifications~~
+from portality.events import consumer_utils
 from portality.util import url_for
 from portality.lib import dates
 from portality.events.consumer import EventConsumer
@@ -12,7 +13,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
     ID = "application:publisher:created:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_CREATED and event.context.get("application") is not None
 
     @classmethod
@@ -42,7 +43,7 @@ class ApplicationPublisherCreatedNotify(EventConsumer):
                                                                  application_date=dates.human_date(application.date_applied),
                                                                  volunteers_url=url_for("doaj.volunteers"))
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
 
         svc.notify(notification)

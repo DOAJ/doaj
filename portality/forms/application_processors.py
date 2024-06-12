@@ -253,7 +253,10 @@ class NewApplication(ApplicationProcessor):
         # set some administrative data
         now = dates.now_str()
         self.target.date_applied = now
-        self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
+        if app.config.get("AUTOCHECK_INCOMING", False):
+            self.target.set_application_status(constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW)
+        else:
+            self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
         self.target.set_owner(account.id)
         self.target.set_last_manual_update()
 
@@ -279,6 +282,15 @@ class NewApplication(ApplicationProcessor):
             eventsSvc.trigger(models.Event(constants.EVENT_APPLICATION_CREATED, account.id, {
                 "application": self.target.data
             }))
+
+            # Kick off the post-submission review
+            if app.config.get("AUTOCHECK_INCOMING", False):
+                # FIXME: imports are delayed because of a circular import problem buried in portality.decorators
+                from portality.tasks.application_autochecks import ApplicationAutochecks
+                from portality.tasks.helpers import background_helper
+                background_helper.submit_by_bg_task_type(ApplicationAutochecks,
+                                                         application=self.target.id,
+                                                         status_on_complete=constants.APPLICATION_STATUS_PENDING)
 
 
 class AdminApplication(ApplicationProcessor):
@@ -704,8 +716,11 @@ class PublisherUpdateRequest(ApplicationProcessor):
         # if we are allowed to finalise, kick this up to the superclass
         super(PublisherUpdateRequest, self).finalise()
 
-        # set the status to update_request (if not already)
-        self.target.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
+        # set the status to post submission review (will be updated again later after the review job runs)
+        if app.config.get("AUTOCHECK_INCOMING", False):
+            self.target.set_application_status(constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW)
+        else:
+            self.target.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -730,14 +745,24 @@ class PublisherUpdateRequest(ApplicationProcessor):
             else:
                 self.target.remove_current_journal()
 
+        # Kick off the post-submission review
+        if app.config.get("AUTOCHECK_INCOMING", False):
+            # FIXME: imports are delayed because of a circular import problem buried in portality.decorators
+            from portality.tasks.application_autochecks import ApplicationAutochecks
+            from portality.tasks.helpers import background_helper
+            background_helper.submit_by_bg_task_type(ApplicationAutochecks,
+                                                     application=self.target.id,
+                                                     status_on_complete=constants.APPLICATION_STATUS_UPDATE_REQUEST)
+
         # email the publisher to tell them we received their update request
         if email_alert:
-            try:
-                # ~~-> Email:Notifications~~
-                self._send_received_email()
-            except app_email.EmailException as e:
-                self.add_alert("We were unable to send you an email confirmation - possible problem with your email address")
-                app.logger.exception('Error sending reapplication received email to publisher')
+            DOAJ.eventsService().trigger(models.Event(
+                constants.EVENT_APPLICATION_UR_SUBMITTED,
+                current_user and current_user.id,
+                context={
+                    'application': self.target.data,
+                }
+            ))
 
     def _carry_subjects_and_seal(self):
         # carry over the subjects
@@ -746,33 +771,6 @@ class PublisherUpdateRequest(ApplicationProcessor):
 
         # carry over the seal
         self.target.set_seal(self.source.has_seal())
-
-    def _send_received_email(self):
-        # ~~-> Account:Model~~
-        acc = models.Account.pull(self.target.owner)
-        if acc is None:
-            self.add_alert("Unable to locate account for specified owner")
-            return
-
-        # ~~-> Email:Library~~
-        to = [acc.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'helpdesk@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - update request received"
-
-        try:
-            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                app_email.send_mail(to=to,
-                                    fro=fro,
-                                    subject=subject,
-                                    template_name="email/publisher_update_request_received.jinja2",
-                                    application=self.target,
-                                    owner=acc)
-                self.add_alert('A confirmation email has been sent to ' + acc.email + '.')
-        except app_email.EmailException as e:
-            magic = str(uuid.uuid1())
-            self.add_alert('Hm, sending the "update request received" email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-            app.logger.error(magic + "\n" + repr(e))
-            raise e
 
 
 class PublisherUpdateRequestReadOnly(ApplicationProcessor):

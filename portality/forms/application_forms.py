@@ -45,6 +45,7 @@ from portality.lib import dates
 from portality.lib.formulaic import Formulaic, WTFormsBuilder, FormulaicContext, FormulaicField
 from portality.models import EditorGroup
 from portality.regex import ISSN, ISSN_COMPILED
+from portality.ui.messages import Messages
 
 # Stop words used in the keywords field
 STOP_WORDS = [
@@ -308,7 +309,12 @@ class FieldDefinitions:
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
-                }
+                },
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "issn_link"  # ~~^->IssnLink:FormWidget~~
+                ]
             },
             "editor": {
                 "disabled": True,
@@ -381,7 +387,12 @@ class FieldDefinitions:
                                   "The ISSN must match what is given on the journal website."],
                     "placeholder": "",
                     "doaj_criteria": "ISSN must be provided"
-                }
+                },
+                "widgets": [
+                    "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
+                    "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                    "issn_link"  # ~~^->IssnLink:FormWidget~~
+                ]
             },
             "editor": {
                 "disabled": True,
@@ -432,9 +443,6 @@ class FieldDefinitions:
             {"required": {"message": "Enter at least <strong>one subject keyword</strong> in English"}},
             {"stop_words": {"disallowed": STOP_WORDS}},  # ~~^->StopWords:FormValidator~~
             {"max_tags": {"max": 6}}
-        ],
-        "postprocessing": [
-            "to_lower"  # FIXME: this might just be a feature of the crosswalk
         ],
         "widgets": [
             {
@@ -1080,9 +1088,6 @@ class FieldDefinitions:
             {"required": {"message": "Enter an average number of weeks"}},
             {"int_range": {"gte": 1, "lte": 100}}
         ],
-        "asynchronous_warning": [
-            {"int_range": {"lte": 2}}
-        ],
         "attr": {
             "min": "1",
             "max": "100"
@@ -1346,7 +1351,14 @@ class FieldDefinitions:
         },
         "validate": [
             {"required": {"message": "Select <strong>at least one</strong> option"}}
-        ]
+        ],
+        "contexts" : {
+            "admin": {
+                "widgets": [
+                    "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                ]
+            }
+        }
     }
 
     # ~~->$ PreservationServiceLibrary:FormField~~
@@ -1369,9 +1381,6 @@ class FieldDefinitions:
                 "message": "Enter the name(s) of the national library or libraries where the journal is archived"
             }
             }
-        ],
-        "asynchronous_warning": [
-            {"warn_on_value": {"value": "None"}}
         ],
         "widgets": [
             "trim_whitespace",  # ~~^-> TrimWhitespace:FormWidget~~
@@ -1672,12 +1681,12 @@ class FieldDefinitions:
     }
 
     #######################################
-    ## Ediorial fields
+    ## Editorial fields
 
     # ~~->$ DOAJSeal:FormField~~
     DOAJ_SEAL = {
         "name": "doaj_seal",
-        "label": "The journal has fulfilled all the criteria for the Seal. Award the Seal?",
+        "label": "The journal may have fulfilled all the criteria for the Seal. Award the Seal?",
         "input": "checkbox",
         "validate": [
             {
@@ -2589,24 +2598,30 @@ def quick_reject(field, formulaic_context_name):
 
 def application_statuses(field, formulaic_context):
     # ~~->$ ApplicationStatus:Workflow~~
+    # ~~-> ApplicationStatuses:Config~~
     _application_status_base = [  # This is all the Associate Editor sees
         ('', ' '),
-        (constants.APPLICATION_STATUS_PENDING, 'Pending'),
-        (constants.APPLICATION_STATUS_IN_PROGRESS, 'In Progress'),
-        (constants.APPLICATION_STATUS_COMPLETED, 'Completed')
+        (constants.APPLICATION_STATUS_PENDING, Messages.FORMS__APPLICATION_STATUS__PENDING),
+        (constants.APPLICATION_STATUS_IN_PROGRESS, Messages.FORMS__APPLICATION_STATUS__IN_PROGRESS),
+        (constants.APPLICATION_STATUS_COMPLETED, Messages.FORMS__APPLICATION_STATUS__COMPLETED)
     ]
 
+    # Note that an admin is given the Post Submission Automation status, as technically they
+    # may edit an item that's in this status, but it is functionally useless to them
+    # It would be nice to be able to somehow disable it being changed, perhaps we can do that
+    # via a widget
     _application_status_admin = _application_status_base + [
-        (constants.APPLICATION_STATUS_UPDATE_REQUEST, 'Update Request'),
-        (constants.APPLICATION_STATUS_REVISIONS_REQUIRED, 'Revisions Required'),
-        (constants.APPLICATION_STATUS_ON_HOLD, 'On Hold'),
-        (constants.APPLICATION_STATUS_READY, 'Ready'),
-        (constants.APPLICATION_STATUS_REJECTED, 'Rejected'),
-        (constants.APPLICATION_STATUS_ACCEPTED, 'Accepted')
+        (constants.APPLICATION_STATUS_POST_SUBMISSION_REVIEW, Messages.FORMS__APPLICATION_STATUS__POST_SUBMISSION_REVIEW),
+        (constants.APPLICATION_STATUS_UPDATE_REQUEST, Messages.FORMS__APPLICATION_STATUS__UPDATE_REQUEST),
+        (constants.APPLICATION_STATUS_REVISIONS_REQUIRED, Messages.FORMS__APPLICATION_STATUS__REVISIONS_REQUIRED),
+        (constants.APPLICATION_STATUS_ON_HOLD, Messages.FORMS__APPLICATION_STATUS__ON_HOLD),
+        (constants.APPLICATION_STATUS_READY, Messages.FORMS__APPLICATION_STATUS__READY),
+        (constants.APPLICATION_STATUS_REJECTED, Messages.FORMS__APPLICATION_STATUS__REJECTED),
+        (constants.APPLICATION_STATUS_ACCEPTED, Messages.FORMS__APPLICATION_STATUS__ACCEPTED)
     ]
 
     _application_status_editor = _application_status_base + [
-        (constants.APPLICATION_STATUS_READY, 'Ready'),
+        (constants.APPLICATION_STATUS_READY, Messages.FORMS__APPLICATION_STATUS__READY),
     ]
 
     formulaic_context_name = None
@@ -2619,7 +2634,7 @@ def application_statuses(field, formulaic_context):
     elif formulaic_context_name == "editor":
         status_list = _application_status_editor
     elif formulaic_context_name == "accepted":
-        status_list = [(constants.APPLICATION_STATUS_ACCEPTED, 'Accepted')]  # just the one status - Accepted
+        status_list = [(constants.APPLICATION_STATUS_ACCEPTED, Messages.FORMS__APPLICATION_STATUS__ACCEPTED)]  # just the one status - Accepted
     else:
         status_list = _application_status_base
 
@@ -3145,6 +3160,7 @@ JAVASCRIPT_FUNCTIONS = {
     "load_editors": "formulaic.widgets.newLoadEditors",  # ~~-> LoadEditors:FormWidget~~
     "trim_whitespace": "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
     "note_modal": "formulaic.widgets.newNoteModal",  # ~~-> NoteModal:FormWidget~~,
+    "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
     "issn_link": "formulaic.widgets.newIssnLink"  # ~~-> IssnLink:FormWidget~~,
 }
 

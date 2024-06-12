@@ -9,7 +9,7 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.6.4"
+DOAJ_VERSION = "6.6.12"
 API_VERSION = "3.0.1"
 
 ######################################
@@ -72,8 +72,8 @@ ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
-
-ES_READ_TIMEOUT = '1m'
+ELASTICSEARCH_REQ_TIMEOUT = 20  # Seconds - used in core.py for whole ES connection request timeout
+ES_READ_TIMEOUT = '2m'  # Minutes - used in DAO for searches
 
 #####################################################
 # Elastic APM config  (MUST be configured in env file)
@@ -390,6 +390,7 @@ ASSOC_ED_IDLE_DAYS = 10
 ASSOC_ED_IDLE_WEEKS = 3
 
 # Which statuses the notification queries should be filtered to show
+# ~~-> ApplicationStatuses:Config~~
 MAN_ED_NOTIFICATION_STATUSES = [
     constants.APPLICATION_STATUS_PENDING,
     constants.APPLICATION_STATUS_IN_PROGRESS, constants.APPLICATION_STATUS_COMPLETED,
@@ -419,8 +420,8 @@ APP_MACHINES_INTERNAL_IPS = [HOST + ':' + str(PORT)] # This should be set in pro
 # ~~->BackgroundTasks:Feature~~
 
 # huey/redis settings
-HUEY_REDIS_HOST = os.getenv('HUEY_REDIS_HOST', '127.0.0.1')
-HUEY_REDIS_PORT = os.getenv('HUEY_REDIS_PORT', 6379)
+REDIS_HOST = os.getenv('REDIS_HOST', '127.0.0.1')
+REDIS_PORT = os.getenv('REDIS_PORT', 6379)
 HUEY_EAGER = False
 
 # Crontab for never running a job - February 31st (use to disable tasks)
@@ -451,7 +452,9 @@ HUEY_SCHEDULE = {
 
 HUEY_TASKS = {
     "ingest_articles": {"retries": 10, "retry_delay": 15},
-    "preserve": {"retries": 0, "retry_delay": 15}
+    "preserve": {"retries": 0, "retry_delay": 15},
+    "application_autochecks": {"retries": 0, "retry_delay": 15},
+    "journal_autochecks": {"retries": 0, "retry_delay": 15}
 }
 
 ####################################
@@ -482,7 +485,8 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Application", # ~~->Application:Model~~
     "portality.models.DraftApplication",    # ~~-> DraftApplication:Model~~
     "portality.models.harvester.HarvestState",   # ~~->HarvestState:Model~~
-    "portality.models.background.BackgroundJob" # ~~-> BackgroundJob:Model~~
+    "portality.models.background.BackgroundJob", # ~~-> BackgroundJob:Model~~
+    "portality.models.autocheck.Autocheck" # ~~-> Autocheck:Model~~
 ]
 
 # Map from dataobj coercion declarations to ES mappings
@@ -1333,7 +1337,7 @@ MINIMAL_OA_START_DATE = 1900
 ## EPMC Client configuration
 # ~~-> EPMC:ExternalService~~
 EPMC_REST_API = "https://www.ebi.ac.uk/europepmc/webservices/rest/"
-EPMC_TARGET_VERSION = "6.6"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
+EPMC_TARGET_VERSION = "6.9"     # doc here: https://europepmc.org/docs/Europe_PMC_RESTful_Release_Notes.pdf
 EPMC_HARVESTER_THROTTLE = 0.2
 
 # General harvester configuration
@@ -1403,6 +1407,12 @@ TASKS_MONITOR_BGJOBS_FROM = "helpdesk@doaj.org"
 BG_MONITOR_LAST_COMPLETED = {
     'main_queue': 7200,     # 2 hours
     'long_running': 93600,  # 26 hours
+}
+
+# Default monitoring config for background job types which are not enumerated in BG_MONITOR_ERRORS_CONFIG below
+BG_MONITOR_DEFAULT_CONFIG = {
+    'total': 2,
+    'oldest': 1200,
 }
 
 # Configures the monitoring period and the allowed number of errors in that period before a queue is marked
@@ -1487,6 +1497,15 @@ TOURS = {
             "name": "Your group activity",
             "description": "Your dashboard shows you who is working on what, and the status of your group's applications"
         }
+    ],
+    "/admin/journal/*": [
+        {
+            "roles": ["admin"],
+            "selectors": [".autochecks-manager-toggle"],
+            "content_id": "admin_journal_autochecks",
+            "name": "Autochecks",
+            "description": "Autochecks are available on some journals, and can help you to identify potential problems with the journal's metadata."
+        }
     ]
 }
 
@@ -1504,8 +1523,10 @@ SELENIUM_REMOTE_URL = 'http://localhost:4444/wd/hub'
 SELENIUM_DOAJ_HOST = '172.17.0.1'
 SELENIUM_DOAJ_PORT = 5014
 
+#################################################
+# Concurrency timeout(s)
 
-
+UR_CONCURRENCY_TIMEOUT = 10
 
 
 #############################################
@@ -1515,7 +1536,6 @@ SELENIUM_DOAJ_PORT = 5014
 # Google Sheet API
 # value should be key file path of json, empty string means disabled
 GOOGLE_KEY_PATH = ''
-
 
 
 #############################################
@@ -1529,3 +1549,21 @@ DATALOG_JA_FILENAME = 'DOAJ: journals added and withdrawn'
 
 # worksheet name or tab name that datalog will write to
 DATALOG_JA_WORKSHEET_NAME = 'Added'
+
+##################################################
+# Autocheck Resource configurations
+
+# Should we autocheck incoming applications and update requests
+AUTOCHECK_INCOMING = False
+
+AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
+AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
+
+
+##################################################
+# Background jobs Management settings
+
+# list of actions name that will be cleaned up if they are redundant
+BGJOB_MANAGE_REDUNDANT_ACTIONS = [
+    'read_news', 'journal_csv'
+]
