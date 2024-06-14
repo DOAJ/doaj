@@ -37,6 +37,7 @@ class Autocheck(TestDrive):
         ap.remove_related_journal()
         apbj = ap.bibjson()
         apbj.set_preservation(["CLOCKSS", "LOCKSS", "PMC", "PKP PN"], "http://policy.example.com")
+        apbj.publication_time_weeks = 8;
         ap.set_id(ap.makeid())
         ap.save()
 
@@ -125,9 +126,10 @@ class Autocheck(TestDrive):
         j = models.Journal(**source)
         j.remove_current_application()
         j.set_id(ap.makeid())
+        bj = j.bibjson();
+        bj.publication_time_weeks = 2;
         j.save()
 
-        bj = j.bibjson()
         pissn = bj.get_one_identifier(bj.P_ISSN)
         eissn = bj.get_one_identifier(bj.E_ISSN)
 
