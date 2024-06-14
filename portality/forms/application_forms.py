@@ -1071,8 +1071,8 @@ class FieldDefinitions:
             "apc_currency",
             "apc_max"
         ],
-        "template": "application_form/_list.html",
-        "entry_template": "application_form/_entry_group_horizontal.html",
+        "template": templates.AF_LIST,
+        "entry_template": templates.AF_ENTRY_GROUP_HORIZONTAL,
         "widgets": [
             "multiple_field"
         ]
@@ -1878,8 +1878,8 @@ class FieldDefinitions:
             "note_id",
             "note_author_id",
         ],
-        "template": "application_form/_list.html",
-        "entry_template": "application_form/_entry_group.html",
+        "template": templates.AF_LIST,
+        "entry_template": templates.AF_ENTRY_GOUP,
         "widgets": [
             {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}},
             "note_modal"
@@ -2274,8 +2274,8 @@ class ApplicationContextDefinitions:
         ],
         "templates": {
             "form" : templates.PUBLIC_APPLICATION_FORM,
-            "default_field" : "application_form/_field.html",
-            "default_group" : "application_form/_group.html"
+            "default_field" : templates.AF_FIELD,
+            "default_group" : templates.AF_GROUP
         },
         "crosswalks": {
             "obj2form": ApplicationFormXWalk.obj2form,
@@ -2371,8 +2371,8 @@ class JournalContextDefinitions:
         ],
         "templates": {
             "form" : templates.MANED_READ_ONLY_JOURNAL,
-            "default_field" : "application_form/_field.html",
-            "default_group" : "application_form/_group.html"
+            "default_field" : templates.AF_FIELD,
+            "default_group" : templates.AF_GROUP
         },
         "crosswalks": {
             "obj2form": JournalFormXWalk.obj2form,
@@ -2432,9 +2432,9 @@ class JournalContextDefinitions:
             FieldSetDefinitions.BULK_EDIT["name"]
         ],
         "templates": {
-            "form" : "application_form/maned_journal_bulk_edit.html",
-            "default_field" : "application_form/_field.html",
-            "default_group" : "application_form/_group.html"
+            "form" : templates.MANED_JOURNAL_BULK_EDIT,
+            "default_field" : templates.AF_FIELD,
+            "default_group" : templates.AF_GROUP
         },
         "crosswalks": {
             "obj2form": JournalFormXWalk.obj2form,

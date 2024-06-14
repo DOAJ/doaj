@@ -40,6 +40,14 @@ PUBLISHER_UPDATE_REQUEST_FORM = "public/publisher/publisher_update_request.html"
 PUBLISHER_READ_ONLY_APPLICATION = "public/publisher/readonly_application.html"
 MANED_READ_ONLY_JOURNAL = "management/admin/readonly_journal.html"
 EDITOR_READ_ONLY_JOURNAL = "management/editor/readonly_journal.html"
+MANED_JOURNAL_BULK_EDIT = "management/admin/_application-form/layouts/maned_journal_bulk_edit.html"
+
+# Reusable application form components
+AF_ENTRY_GOUP = "_application-form/includes/_entry_group.html"
+AF_ENTRY_GROUP_HORIZONTAL = "_application-form/includes/_entry_group_horizontal.html"
+AF_FIELD = "_application-form/includes/_field.html"
+AF_GROUP = "_application-form/includes/_group.html"
+AF_LIST = "_application-form/includes/_list.html"
 
 # Publisher area
 PUBLISHER_DRAFTS = "public/publisher/drafts.html"
