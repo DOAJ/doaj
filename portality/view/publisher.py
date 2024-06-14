@@ -11,6 +11,7 @@ from portality.forms.application_forms import ApplicationFormFactory
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 from portality.tasks.preservation import *
 from portality.ui.messages import Messages
+from portality.ui import templates
 from portality import lock
 from portality.models import DraftApplication
 from portality.lcc import lcc_jstree
@@ -34,7 +35,7 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template("publisher/index.html")
+    return render_template(templates.PUBLISHER_DRAFTS)
 
 
 @blueprint.route("/journal")

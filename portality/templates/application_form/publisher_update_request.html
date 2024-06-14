@@ -50,10 +50,10 @@ input[disabled] {
                         {% include "_application-form/includes/_public_fieldsets.html" %}
 
                         <div class="tab form-section">
-                            {% include "application_form/07-review/index.html" %}
+                            {% include "public/_application-form/includes/_review.html" %}
                         </div>
                         <p class="cannot-submit" id="cannot-submit-invalid-fields" style="display: none"><i>You cannot submit the application because it contains some invalid fields. Please review your answers and try again.</i></p>
-                        {% include "application_form/_buttons.html" %}
+                        {% include "public/_application-form/includes/_buttons.html" %}
 
                         <input type="hidden" name="id" value="{{ obj.id }}">
 
@@ -63,10 +63,10 @@ input[disabled] {
 
             <div class="col-md-4">
                 <div >
-                    {% include "application_form/pagination_menu.html" %}
+                    {% include "public/_application-form/includes/_pagination_menu.html" %}
                 </div>
                 <div class="row">
-                    {% include "application_form/aside_menu.html" %}
+                    {% include "public/_application-form/includes/_aside_menu.html" %}
                 </div>
             </div>
         </div>
@@ -76,5 +76,5 @@ input[disabled] {
 {% endblock %}
 
 {% block extra_js_bottom scoped %}
-    {% include "application_form/js/_form_js.html" %}
+    {% include "_application-form/includes/_form_js.html" %}
 {% endblock %}

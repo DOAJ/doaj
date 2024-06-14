@@ -31,3 +31,11 @@ UPDATE_REQUESTS_SEARCH = "management/admin/update_requests.html"
 # Application Form
 MANED_APPLICATION_FORM = "management/admin/maned_application.html"
 MANED_JOURNAL_FORM = "management/admin/maned_journal.html"
+EDITOR_APPLICATION_FORM = "management/editor/editor_application.html"
+EDITOR_JOURNAL_FORM = "management/editor/editor_journal.html"
+ASSED_APPLICATION_FORM = "management/assessor/assed_application.html"
+ASSED_JOURNAL_FORM = "management/assessor/assed_journal.html"
+PUBLIC_APPLICATION_FORM = "public/public_application.html"
+
+# Publisher area
+PUBLISHER_DRAFTS = "public/publisher/drafts.html"

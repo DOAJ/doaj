@@ -1,0 +1,26 @@
+{% extends "public/base.html" %}
+
+{% block public_meta %}
+    {% block publisher_meta %}{% endblock %}
+{% endblock %}
+
+{% block public_stylesheets %}
+    <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
+    {% block publisher_stylesheets %}{% endblock %}
+{% endblock %}
+
+{% block page_title %}Publisher dashboard{% endblock %}
+
+{% block public_content %}
+    <div class="container">
+        <h1>Publisher dashboard</h1>
+        {% include 'publisher/nav.html' %}
+        {% block publisher_content %}{% endblock %}
+    </div>
+
+    {% include "includes/_hotjar.html" %}
+{% endblock %}
+
+{% block public_js %}
+    {% block publisher_js %}{% endblock %}
+{% endblock %}

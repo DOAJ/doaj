@@ -2273,7 +2273,7 @@ class ApplicationContextDefinitions:
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
         ],
         "templates": {
-            "form" : "application_form/public_application.html",
+            "form" : templates.PUBLIC_APPLICATION_FORM,
             "default_field" : "application_form/_field.html",
             "default_group" : "application_form/_group.html"
         },
@@ -2310,7 +2310,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.NOTES["name"]
     ]
     ASSOCIATE["processor"] = application_processors.AssociateApplication
-    ASSOCIATE["templates"]["form"] = "application_form/assed_application.html"
+    ASSOCIATE["templates"]["form"] = templates.ASSED_APPLICATION_FORM
 
     # ~~->$ EditorApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2324,7 +2324,7 @@ class ApplicationContextDefinitions:
         FieldSetDefinitions.NOTES["name"]
     ]
     EDITOR["processor"] = application_processors.EditorApplication
-    EDITOR["templates"]["form"] = "application_form/editor_application.html"
+    EDITOR["templates"]["form"] = templates.EDITOR_APPLICATION_FORM
 
     # ~~->$ ManEdApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2391,7 +2391,7 @@ class JournalContextDefinitions:
     ]
     ASSOCIATE["name"] = "associate_editor"
     ASSOCIATE["processor"] = application_processors.AssEdJournalReview
-    ASSOCIATE["templates"]["form"] = "application_form/assed_journal.html"
+    ASSOCIATE["templates"]["form"] = templates.ASSED_JOURNAL_FORM
 
     # ~~->$ EditorJournal:FormContext~~
     # ~~^-> AssEdJournal:FormContext~~
@@ -2402,7 +2402,7 @@ class JournalContextDefinitions:
         FieldSetDefinitions.REVIEWERS["name"]
     ]
     EDITOR["processor"] = application_processors.EditorJournalReview
-    EDITOR["templates"]["form"] = "application_form/editor_journal.html"
+    EDITOR["templates"]["form"] = templates.EDITOR_JOURNAL_FORM
 
     # ~~->$ ManEdJournal:FormContext~~
     # ~~^-> EditorJournal:FormContext~~

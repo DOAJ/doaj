@@ -1,4 +1,4 @@
-{% extends "editor/editor_base.html" %}
+{% extends "management/editor/base.html" %}
 
 {% set form_id = "assed_form" %}
 {% set formulaic_after = url_for("editor.application", application_id=obj.id) %}
@@ -14,14 +14,14 @@
 {% block body_id %}apply{% endblock %}
 
 {% block editor_content scoped %}
-<h3>{{ obj.bibjson().title }}</h3>
-<main class="page-content">
-    {% include "management/_application-form/includes/_editorial_form_body.html" %}
-</main>
+    <h3>{{ obj.bibjson().title }}</h3>
+    <main class="page-content">
+        {% include "management/_application-form/includes/_editorial_form_body.html" %}
+    </main>
 
-{% include "includes/_hotjar.html" %}
+    {% include "includes/_hotjar.html" %}
 {% endblock %}
 
-{% block extra_js_bottom scoped %}
-    {% include "application_form/js/_form_js.html" %}
+{% block editor_js scoped %}
+    {% include "_application-form/includes/_form_js.html" %}
 {% endblock %}
