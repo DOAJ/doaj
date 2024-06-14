@@ -5,14 +5,14 @@
 {% endblock %}
 
 {% block nav %}
-    {% include 'dashboard/nav.html' %}
+    {% include "management/admin/includes/_nav.html" %}
 {% endblock %}
 
 {% block management_content %}
     {% block admin_content %}{% endblock %}
-    {% include "includes/_hotjar.html" %}
 {% endblock %}
 
 {% block management_js %}
+    {% include "includes/_hotjar.html" %}
     {% block admin_js %}{% endblock %}
 {% endblock %}

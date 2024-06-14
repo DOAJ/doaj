@@ -27,6 +27,8 @@ GLOBAL_NOTIFICATIONS_SEARCH = "management/admin/global_notifications_search.html
 JOURNALS_SEARCH = "management/admin/journals_search.html"
 JOURNAL_LOCKED = "management/admin/journal_locked.html"
 UPDATE_REQUESTS_SEARCH = "management/admin/update_requests.html"
+DASHBOARD = "management/admin/dashboard.html"
+NOTIFICATIONS = "management/admin/notifications.html"
 
 # Application Form
 MANED_APPLICATION_FORM = "management/admin/maned_application.html"

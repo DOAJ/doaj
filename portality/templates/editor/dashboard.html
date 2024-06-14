@@ -1,7 +1,7 @@
 {% extends "editor/editor_base.html" %}
 
 {% block editor_content %}
-    {% include "dashboard/_todo.html" %}
+    {% include "management/includes/_todo.html" %}
     <section>
         {# ~~->$GroupStatus:Feature~~ #}
         {% if editor_of_groups | length != 0 %}

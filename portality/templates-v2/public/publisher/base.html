@@ -17,10 +17,9 @@
         {% include 'publisher/nav.html' %}
         {% block publisher_content %}{% endblock %}
     </div>
-
-    {% include "includes/_hotjar.html" %}
 {% endblock %}
 
 {% block public_js %}
+    {% include "includes/_hotjar.html" %}
     {% block publisher_js %}{% endblock %}
 {% endblock %}

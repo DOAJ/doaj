@@ -18,7 +18,6 @@ but we are leaving it in place in case that changes #}
 {% block editor_content scoped %}
     <h3>{{ obj.bibjson().title }}</h3>
     {% include "management/_application-form/includes/_editorial_form_body.html" %}
-    {% include "includes/_hotjar.html" %}
 {% endblock %}
 
 {% block editor_js scoped %}
