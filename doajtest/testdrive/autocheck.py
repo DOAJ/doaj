@@ -7,6 +7,7 @@ from datetime import datetime
 from portality.autocheck.checkers.issn_active import ISSNActive, ISSNChecker
 from portality.autocheck.resources.issn_org import ISSNOrgData
 from portality.autocheck.checkers.keepers_registry import KeepersRegistry
+from portality.autocheck.checkers.publication_time import PublicationTime
 from portality.bll import DOAJ
 from flask import url_for
 from portality.core import app
@@ -104,7 +105,8 @@ class Autocheck(TestDrive):
             autocheck_plugins=[
                 # (journal, application, plugin)
                 (True, True, ISSNActive),
-                (True, True, KeepersRegistry)
+                (True, True, KeepersRegistry),
+                (True, True, PublicationTime)
             ]
         )
         ac1 = acSvc.autocheck_application(ap)

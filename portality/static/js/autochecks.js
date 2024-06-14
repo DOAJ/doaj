@@ -37,6 +37,34 @@ doaj.autocheckers.ISSNActive = class {
     }
 }
 
+doaj.autocheckers.PublicationTime = class {
+     MESSAGES = {
+        "below_2_weeks": "Average time between article submission & publication is 2 weeks or shorter",
+        "over_2_weeks": "Average time between article submission & publication is more than 2 weeks",
+    }
+
+    ICONS = {
+        "below_2_weeks": "x-circle",
+        "over_2_weeks": "check-circle",
+    }
+
+    STYLE = {
+        "below_2_weeks": "warn",
+        "over_2_weeks": "success",
+    }
+
+    draw(autocheck) {
+        let icon = this.ICONS[autocheck.advice];
+        let message = this.MESSAGES[autocheck.advice];
+        let style = this.STYLE[autocheck.advice];
+
+        let frag = `<div><span class="icon-container icon-container--${autocheck.advice} icon-container--${style}"><span data-feather="${icon}" aria-hidden="true"></span></span>
+                    ${message} </div>`;
+        console.log(frag);
+        return frag;
+    }
+}
+
 doaj.autocheckers.KeepersRegistry = class {
     MESSAGES = {
         "missing": "Keepers does not show any content archived in {service}.",
@@ -76,7 +104,8 @@ doaj.autocheckers.KeepersRegistry = class {
 
 doaj.autocheckers.registry = {
     "issn_active": doaj.autocheckers.ISSNActive,
-    "keepers_registry": doaj.autocheckers.KeepersRegistry
+    "keepers_registry": doaj.autocheckers.KeepersRegistry,
+    "publication_time": doaj.autocheckers.PublicationTime
 }
 
 doaj.autocheckers.AutochecksManager = class {

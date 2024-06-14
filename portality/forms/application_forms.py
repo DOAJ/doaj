@@ -1024,6 +1024,13 @@ class FieldDefinitions:
         "attr": {
             "min": "1",
             "max": "100"
+        },
+        "contexts" : {
+            "admin": {
+                "widgets": [
+                    "autocheck",  # ~~^-> Autocheck:FormWidget~~
+                ]
+            }
         }
     }
 
