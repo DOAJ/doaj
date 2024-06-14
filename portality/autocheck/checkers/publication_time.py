@@ -8,7 +8,7 @@ class PublicationTime(Checker):
     __identity__ = "publication_time"
 
     BELOW_THRESHOLD = "below_threshold"
-    OVER_THRESHOLD = "above_threshold"
+    OVER_THRESHOLD = "over_threshold"
 
     def check(self, form: dict,
               jla: JournalLikeObject,

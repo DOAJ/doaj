@@ -40,17 +40,17 @@ doaj.autocheckers.ISSNActive = class {
 doaj.autocheckers.PublicationTime = class {
      MESSAGES = {
         "below_threshold": "Average time between article submission & publication is {{ THRESHOLD }} weeks or shorter",
-        "above_threshold": "Average time between article submission & publication is more than {{ THRESHOLD }} weeks",
+        "over_threshold": "Average time between article submission & publication is more than {{ THRESHOLD }} weeks",
     }
 
     ICONS = {
         "below_threshold": "x-circle",
-        "above_threshold": "check-circle",
+        "over_threshold": "check-circle",
     }
 
     STYLE = {
         "below_threshold": "warn",
-        "above_threshold": "success",
+        "over_threshold": "success",
     }
 
     draw(autocheck) {
