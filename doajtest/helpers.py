@@ -5,6 +5,7 @@ import logging
 import os
 import shutil
 from contextlib import contextmanager
+import time
 from glob import glob
 from unittest import TestCase
 
@@ -146,7 +147,8 @@ class DoajTestCase(TestCase):
             "FAKER_SEED": 1,
             "EVENT_SEND_FUNCTION": "portality.events.shortcircuit.send_event",
             'CMS_BUILD_ASSETS_ON_STARTUP': False,
-            "UR_CONCURRENCY_TIMEOUT": 0
+            "UR_CONCURRENCY_TIMEOUT": 0,
+            'UPLOAD_ASYNC_DIR': paths.create_tmp_path(is_auto_mkdir=True).as_posix(),
         }
 
     @classmethod
@@ -236,8 +238,12 @@ class DoajTestCase(TestCase):
 
         :return:
         """
-        models.Article(**ArticleFixtureFactory.make_article_source()).save()
-        models.Application(**ApplicationFixtureFactory.make_application_source()).save()
+        for m in [
+             models.Article(**ArticleFixtureFactory.make_article_source()),
+             models.Application(**ApplicationFixtureFactory.make_application_source()),
+        ]:
+            m.save(blocking=True)
+            m.delete()
         models.Notification().save()
 
 
@@ -336,7 +342,7 @@ def patch_history_dir(dir_key):
             # setup new path
             org_config_val = DoajTestCase.app_test.config[dir_key]
             org_hist_dir = hist_class.SAVE_BASE_DIRECTORY
-            _new_path = paths.create_tmp_dir(is_auto_mkdir=True)
+            _new_path = paths.create_tmp_path(is_auto_mkdir=True)
             hist_class.SAVE_BASE_DIRECTORY = _new_path.as_posix()
             DoajTestCase.app_test.config[dir_key] = _new_path.as_posix()
 
@@ -367,8 +373,8 @@ class StoreLocalPatcher:
         self.org_store_local_dir = cur_app.config["STORE_LOCAL_DIR"]
         self.org_store_tmp_dir = cur_app.config["STORE_TMP_DIR"]
 
-        self.new_store_local_dir = paths.create_tmp_dir(is_auto_mkdir=True)
-        self.new_store_tmp_dir = paths.create_tmp_dir(is_auto_mkdir=True)
+        self.new_store_local_dir = paths.create_tmp_path(is_auto_mkdir=True)
+        self.new_store_tmp_dir = paths.create_tmp_path(is_auto_mkdir=True)
 
         cur_app.config["STORE_IMPL"] = "portality.store.StoreLocal"
         cur_app.config["STORE_LOCAL_DIR"] = self.new_store_local_dir
@@ -436,3 +442,26 @@ def wait_until_no_es_incomplete_tasks():
         return not any_pending_tasks() and len(query_data_tasks(timeout='3m')) == 0
 
     return wait_until(_cond_fn, 10, 0.2)
+
+
+def wait_unit(exit_cond_fn, timeout=10, check_interval=0.1,
+              timeout_msg="wait_unit but exit_cond timeout"):
+    start = time.time()
+    while (time.time() - start) < timeout:
+        if exit_cond_fn():
+            return
+        time.sleep(check_interval)
+    raise TimeoutError(timeout_msg)
+
+
+def save_all_block_last(model_list):
+    model_list = list(model_list)
+    if not model_list:
+        return model_list
+
+    *model_list, last = model_list
+    for model in model_list:
+        model.save()
+    last.save(blocking=True)
+
+    return model_list

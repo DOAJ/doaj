@@ -11,7 +11,7 @@ from portality.models.v2.application import Application as Suggestion
 from portality.models.lcc import LCC
 from portality.models.account import Account
 from portality.models.editors import EditorGroup, EditorGroupMemberQuery, EditorGroupQuery
-from portality.models.uploads import FileUpload, ExistsFileQuery, OwnerFileQuery, ValidFileQuery
+from portality.models.uploads import FileUpload, ExistsFileQuery, OwnerFileQuery, ValidFileQuery, BulkArticles
 from portality.models.lock import Lock
 from portality.models.history import ArticleHistory, JournalHistory
 from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery, NoJournalException
