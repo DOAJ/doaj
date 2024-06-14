@@ -22,19 +22,16 @@ testdata_datalog_list = [
     DatalogJournalAdded(title='titlec',
                         issn='1234-3000',
                         date_added='2021-01-01',
-                        has_seal=True,
                         has_continuations=True,
                         ),
     DatalogJournalAdded(title='titleb',
                         issn='1234-2000',
                         date_added='2021-01-01',
-                        has_seal=True,
                         has_continuations=True,
                         ),
     DatalogJournalAdded(title='titlea',
                         issn='1234-1000',
                         date_added='2020-01-01',
-                        has_seal=True,
                         has_continuations=True,
                         ),
 ]
@@ -94,20 +91,18 @@ class TestDatalogJournalAddedUpdate(DoajTestCase):
         ]
 
     def test_to_display_data(self):
-        assert ['titleg', '1234-7000', '01-January-2222', 'Seal', 'Yes', ] == to_display_data(
+        assert ['titleg', '1234-7000', '01-January-2222', 'Yes', ] == to_display_data(
             DatalogJournalAdded(title='titleg',
                                 issn='1234-7000',
                                 date_added='2222-01-01',
-                                has_seal=True,
                                 has_continuations=True,
                                 ),
         )
 
-        assert ['titlexxx', '1234-9999', '02-January-2222', '', ''] == to_display_data(
+        assert ['titlexxx', '1234-9999', '02-January-2222', ''] == to_display_data(
             DatalogJournalAdded(title='titlexxx',
                                 issn='1234-9999',
                                 date_added='2222-01-02',
-                                has_seal=False,
                                 has_continuations=False,
                                 ),
         )
