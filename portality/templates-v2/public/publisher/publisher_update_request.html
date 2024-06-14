@@ -1,6 +1,7 @@
-{% extends "publisher/publisher_base.html" %}
+{% extends "public/publisher/base.html" %}
 
 {% block page_title %}{{ obj.bibjson().title }} &ndash; Update request{% endblock %}
+{% block body_id %}apply{% endblock %}
 
 {% set form_id = "update_request" %}
 {% set form_action = url_for("publisher.update_request", journal_id=obj.current_journal) %}
@@ -16,17 +17,16 @@
 {% set TAB6 = {"title": "Best practice", "fieldsets": ["archiving_policy", "deposit_policy", "unique_identifiers"]} %}
 {% set FORM = [TAB1, TAB2, TAB3, TAB4, TAB5, TAB6] %}
 
-{% block extra_stylesheets %}
-<style>
-input[disabled] {
-  display: none;
-}
-</style>
+{% block publisher_stylesheets %}
+    <style>
+        input[disabled] {
+            display: none;
+        }
+    </style>
 {% endblock %}
 
 {% block publisher_content scoped %}
-<body id="apply">
-    <main class="container">
+    <div class="container">
         {% include "_application-form/includes/_backend_validation.html" %}
         <div class="row">
             <div class="col-md-8">
@@ -35,17 +35,17 @@ input[disabled] {
                     <h2>Journal update request form for <em>{{ obj.bibjson().title }}</em></h2>
 
                     <div class="alert">
-                      <p>This form is for you to update the information that we hold about your journal. It is a copy of what we hold currently. Once you submit the update, it will be reviewed by one of our Managing Editors.</p>
-                      <p><em>Some fields cannot be edited here. You must <a href="mailto:helpdesk@doaj.org">contact us</a> to change those.</em></p>
+                        <p>This form is for you to update the information that we hold about your journal. It is a copy of what we hold currently. Once you submit the update, it will be reviewed by one of our Managing Editors.</p>
+                        <p><em>Some fields cannot be edited here. You must <a href="mailto:helpdesk@doaj.org">contact us</a> to change those.</em></p>
                     </div>
 
                     <form id="{{ form_id }}"
-                      data-context = "{{ formulaic_context.name }}"
-                      class="application_form"
-                      novalidate
-                      action="{{ form_action }}"
-                      method="post"
-                      data-formulaic-after="{{ formulaic_after }}">
+                          data-context = "{{ formulaic_context.name }}"
+                          class="application_form"
+                          novalidate
+                          action="{{ form_action }}"
+                          method="post"
+                          data-formulaic-after="{{ formulaic_after }}">
 
                         {% include "_application-form/includes/_public_fieldsets.html" %}
 
@@ -70,11 +70,10 @@ input[disabled] {
                 </div>
             </div>
         </div>
-    </main>
- </body>
+    </div>
 
 {% endblock %}
 
-{% block extra_js_bottom scoped %}
+{% block publisher_js scoped %}
     {% include "_application-form/includes/_form_js.html" %}
 {% endblock %}

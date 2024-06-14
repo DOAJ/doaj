@@ -147,27 +147,6 @@ def search_post():
 
 #############################################
 
-# FIXME: this should really live somewhere else more appropirate to who can access it
-@blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
-@login_required
-@ssl_required
-def journal_readonly(journal_id):
-    if (
-        not current_user.has_role("admin")
-        or not current_user.has_role("editor")
-        or not current_user.has_role("associate_editor")
-    ):
-        abort(401)
-
-    j = models.Journal.pull(journal_id)
-    if j is None:
-        abort(404)
-
-    fc = JournalFormFactory.context("readonly")
-    fc.processor(source=j)
-    return fc.render_template(obj=j, lcc_tree=lcc_jstree)
-
-
 @blueprint.route("/csv")
 @plausible.pa_event(app.config.get('ANALYTICS_CATEGORY_JOURNALCSV', 'JournalCSV'),
                     action=app.config.get('ANALYTICS_ACTION_JOURNALCSV', 'Download'))

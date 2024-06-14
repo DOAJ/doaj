@@ -1,6 +1,7 @@
 {% extends "public/base.html" %}
 
 {% block page_title %}Application form{% endblock %}
+{% block body_id %}apply{% endblock %}
 
 {% set form_id = "new_form" %}
 {% set form_action = url_for("apply.public_application") %}
@@ -21,7 +22,6 @@
 
 
 {% block public_content scoped %}
-    <body id="apply">
     <div class="container">
         {% include "_application-form/includes/_backend_validation.html" %}
         <div class="row">
@@ -64,9 +64,8 @@
             </div>
         </div>
     </div>
-    </body>
 {% endblock %}
 
-{% block extra_js_bottom scoped %}
+{% block public_js scoped %}
     {% include "_application-form/includes/_form_js.html" %}
 {% endblock %}

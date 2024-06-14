@@ -13,7 +13,7 @@
     $.extend(true, doaj, {
         editorGroupApplicationsSearchConfig : {
             applicationEditUrl : "{{ url_for('editor.application', application_id='') }}",
-            readOnlyJournalUrl: "{{ url_for('doaj.journal_readonly', journal_id="") }}",
+            readOnlyJournalUrl: "{{ url_for('editor.journal_readonly', journal_id="") }}",
             searchPath : '/editor_query/suggestion/_search'
         }
     });

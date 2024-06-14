@@ -108,6 +108,18 @@ def journal_page(journal_id):
         else:
             return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree)
 
+@blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
+@login_required
+@ssl_required
+def journal_readonly(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    fc = JournalFormFactory.context("editor_readonly")
+    fc.processor(source=j)
+    return fc.render_template(obj=j, lcc_tree=lcc_jstree, notabs=True)
+
 
 @blueprint.route("/application/<application_id>", methods=["GET", "POST"])
 @write_required()

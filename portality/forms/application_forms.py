@@ -2290,14 +2290,14 @@ class ApplicationContextDefinitions:
     UPDATE = deepcopy(PUBLIC)
     UPDATE["name"] = "update_request"
     UPDATE["processor"] = application_processors.PublisherUpdateRequest
-    UPDATE["templates"]["form"] = "application_form/publisher_update_request.html"
+    UPDATE["templates"]["form"] = templates.PUBLISHER_UPDATE_REQUEST_FORM
 
     # ~~->$ ReadOnlyApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
     READ_ONLY = deepcopy(PUBLIC)
     READ_ONLY["name"] = "application_read_only"
     READ_ONLY["processor"] = application_processors.NewApplication  # FIXME: enter the real processor
-    READ_ONLY["templates"]["form"] = "application_form/readonly_application.html"
+    READ_ONLY["templates"]["form"] = templates.PUBLISHER_READ_ONLY_APPLICATION
 
     # ~~->$ AssociateEditorApplication:FormContext~~
     # ~~^-> NewApplication:FormContext~~
@@ -2349,8 +2349,8 @@ class JournalContextDefinitions:
     # ~~->$ ReadOnlyJournal:FormContext~~
     # ~~^-> JournalForm:Crosswalk~~
     # ~~^-> ReadOnlyJournal:FormProcessor~~
-    READ_ONLY = {
-        "name": "readonly",
+    ADMIN_READ_ONLY = {
+        "name": "admin_readonly",
         "fieldsets": [
             FieldSetDefinitions.BASIC_COMPLIANCE["name"],
             FieldSetDefinitions.ABOUT_THE_JOURNAL["name"],
@@ -2370,7 +2370,7 @@ class JournalContextDefinitions:
             FieldSetDefinitions.UNIQUE_IDENTIFIERS["name"]
         ],
         "templates": {
-            "form" : "application_form/readonly_journal.html",
+            "form" : templates.MANED_READ_ONLY_JOURNAL,
             "default_field" : "application_form/_field.html",
             "default_group" : "application_form/_group.html"
         },
@@ -2381,10 +2381,15 @@ class JournalContextDefinitions:
         "processor": application_processors.ReadOnlyJournal
     }
 
+    # identical context for editors, mostly to support the different view contexts
+    EDITOR_READ_ONLY = deepcopy(ADMIN_READ_ONLY)
+    EDITOR_READ_ONLY["name"] = "editor_readonly"
+    EDITOR_READ_ONLY["templates"]["form"] = templates.EDITOR_READ_ONLY_JOURNAL
+
     # ~~->$ AssEditorJournal:FormContext~~
     # ~~^-> ReadOnlyJournal:FormContext~~
     # ~~^-> AssEdJournal:FormProcessor~~
-    ASSOCIATE = deepcopy(READ_ONLY)
+    ASSOCIATE = deepcopy(ADMIN_READ_ONLY)
     ASSOCIATE["fieldsets"] += [
         FieldSetDefinitions.SUBJECT["name"],
         FieldSetDefinitions.NOTES["name"]
@@ -2458,7 +2463,8 @@ APPLICATION_FORMS = {
 
 JOURNAL_FORMS = {
     "contexts": {
-        JournalContextDefinitions.READ_ONLY["name"]: JournalContextDefinitions.READ_ONLY,
+        JournalContextDefinitions.ADMIN_READ_ONLY["name"]: JournalContextDefinitions.ADMIN_READ_ONLY,
+        JournalContextDefinitions.EDITOR_READ_ONLY["name"]: JournalContextDefinitions.EDITOR_READ_ONLY,
         JournalContextDefinitions.BULK_EDIT["name"]: JournalContextDefinitions.BULK_EDIT,
         JournalContextDefinitions.ASSOCIATE["name"]: JournalContextDefinitions.ASSOCIATE,
         JournalContextDefinitions.EDITOR["name"]: JournalContextDefinitions.EDITOR,

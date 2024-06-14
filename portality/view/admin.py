@@ -254,6 +254,18 @@ def journal_page(journal_id):
             return fc.render_template(lock=lockinfo, obj=journal, lcc_tree=lcc_jstree, autochecks=autochecks)
 
 
+@blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
+@login_required
+@ssl_required
+def journal_readonly(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    fc = JournalFormFactory.context("admin_readonly")
+    fc.processor(source=j)
+    return fc.render_template(obj=j, lcc_tree=lcc_jstree, notabs=True)
+
 DisplayContData = namedtuple('DisplayContData', ['issn', 'title', 'id'])
 
 
