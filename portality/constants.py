@@ -93,6 +93,7 @@ ROLE_PUBLIC_DATA_DUMP = "public_data_dump"
 ROLE_PUBLISHER = "publisher"
 ROLE_PUBLISHER_JOURNAL_CSV = "journal_csv"
 ROLE_PUBLISHER_PRESERVATION = "preservation"
+ROLE_API = "api"
 
 CRON_NEVER = {"month": "2", "day": "31", "day_of_week": "*", "hour": "*", "minute": "*"}
 
@@ -133,6 +134,10 @@ class BgjobOutcomeStatus(ConstantList):
     Pending = 'pending'
     Success = 'success'
     Fail = 'fail'
+
+
+class BaseArticlesUploadStatus(ConstantList):
+    Processed = 'processed'
 
 
 # Storage scopes
