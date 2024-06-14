@@ -55,6 +55,9 @@ tests:
       - You are taken to the ISSN.org record.  Note that for the purposes of this test, this
         is a random record on ISSN.org, unrelated to the actual record in DOAJ.
   - step: Close the ISSN.org window/tab and return to the application form
+  - step: Scroll down to find the "_Average number of weeks between article submission & publication_" field
+    results:
+      - The _Average number of weeks between article submission & publication_ field is annotated with a green tick, and text which says that average time between article submission & publication is more than 2 weeks
   - step: Scroll to the top of the application form
     results:
       - There is text which tells you when the Autochecks were made, and an option to Hide All Autochecks
@@ -101,6 +104,9 @@ tests:
       - You are taken to the ISSN.org record.  Note that for the purposes of this test, this
         is a random record on ISSN.org, unrelated to the actual record in DOAJ.
   - step: Close the ISSN.org window/tab and return to the journal form
+  - step: Scroll down to find the "_Average number of weeks between article submission & publication_" field
+    results:
+      - The _Average number of weeks between article submission & publication_ field is annotated with a green tick, and text which says that average time between article submission & publication is 2 weeks or shorter
   - step: Scroll to the top of the journal form
     results:
       - There is text which tells you when the Autochecks were made, and an option to Hide All Autochecks
