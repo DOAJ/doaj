@@ -17,16 +17,19 @@ class PublicationTime(Checker):
               logger: Callable):
 
         publication_time = form.get("publication_time_weeks")
+        publication_time_threshold = app.config.get("AUTOCHECK_PUBLICATION_THRESHOLD", 2)
 
-        if int(publication_time) <= app.config.get("AUTOCHECK_PUBLICATION_THRESHOLD", 2):
+        if int(publication_time) <= publication_time_threshold:
             autochecks.add_check(
                 field="publication_time_weeks",
                 advice=self.BELOW_THRESHOLD,
-                checked_by=self.__identity__
+                checked_by=self.__identity__,
+                context={"threshold": publication_time_threshold}
             )
         else:
             autochecks.add_check(
                 field="publication_time_weeks",
                 advice=self.OVER_THRESHOLD,
-                checked_by=self.__identity__
+                checked_by=self.__identity__,
+                context={"threshold": publication_time_threshold}
             )

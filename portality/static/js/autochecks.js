@@ -39,8 +39,8 @@ doaj.autocheckers.ISSNActive = class {
 
 doaj.autocheckers.PublicationTime = class {
      MESSAGES = {
-        "below_threshold": "Average time between article submission & publication is 2 weeks or shorter",
-        "above_threshold": "Average time between article submission & publication is more than 2 weeks",
+        "below_threshold": "Average time between article submission & publication is {{ THRESHOLD }} weeks or shorter",
+        "above_threshold": "Average time between article submission & publication is more than {{ THRESHOLD }} weeks",
     }
 
     ICONS = {
@@ -57,6 +57,8 @@ doaj.autocheckers.PublicationTime = class {
         let icon = this.ICONS[autocheck.advice];
         let message = this.MESSAGES[autocheck.advice];
         let style = this.STYLE[autocheck.advice];
+        let context = JSON.parse(autocheck.context);
+        message = message.replace("{{ THRESHOLD }}", context.threshold);
 
         let frag = `<div><span class="icon-container icon-container--${autocheck.advice} icon-container--${style}"><span data-feather="${icon}" aria-hidden="true"></span></span>
                     ${message} </div>`;
