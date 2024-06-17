@@ -458,7 +458,8 @@ def oai_pmh():
 
 @blueprint.route('/docs/api/')
 def docs():
-    return redirect(url_for('api_v3.docs'))
+    major_version = app.config.get("CURRENT_API_MAJOR_VERSION")
+    return redirect(url_for('api_v' + major_version + '.docs'))
 
 
 @blueprint.route("/docs/xml/")
