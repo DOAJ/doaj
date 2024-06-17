@@ -30,7 +30,7 @@ class TestBulkArticlesCreate(DoajTestCase):
         acc = create_user_with_api_key()
         handle = DoajXmlArticleFixtureFactory.upload_1_issn_correct()
         with self.app_test.test_client() as t_client:
-            response = t_client.post(url_for('api.bulk_article_create', api_key=acc.api_key),
+            response = t_client.post(url_for('api_v4.bulk_article_create', api_key=acc.api_key),
                                      data=load_json_by_handle(handle),
                                      )
             assert response.status_code == 202
@@ -38,7 +38,7 @@ class TestBulkArticlesCreate(DoajTestCase):
     def test_bulk_article_create__invalid_input(self):
         acc = create_user_with_api_key()
         with self.app_test.test_client() as t_client:
-            response = t_client.post(url_for('api.bulk_article_create', api_key=acc.api_key),
+            response = t_client.post(url_for('api_v4.bulk_article_create', api_key=acc.api_key),
                                      data='{invalid json forma]',
                                      )
             assert response.status_code == 400
@@ -56,7 +56,7 @@ class TestBulkArticlesStatus(DoajTestCase):
         time.sleep(1)
 
         with self.app_test.test_client() as t_client:
-            resp = t_client.get(url_for('api.bulk_article_create_status',
+            resp = t_client.get(url_for('api_v4.bulk_article_create_status',
                                         upload_id=task.id,
                                         api_key=acc.api_key))
 
@@ -75,7 +75,7 @@ class TestBulkArticlesStatus(DoajTestCase):
         time.sleep(1)
 
         with self.app_test.test_client() as t_client:
-            resp = t_client.get(url_for('api.bulk_article_create_status',
+            resp = t_client.get(url_for('api_v4.bulk_article_create_status',
                                         upload_id=task.id,
                                         api_key=acc.api_key))
             assert resp.status_code == 400
@@ -84,7 +84,7 @@ class TestBulkArticlesStatus(DoajTestCase):
         acc = create_user_with_api_key()
 
         with self.app_test.test_client() as t_client:
-            resp = t_client.get(url_for('api.bulk_article_create_status',
+            resp = t_client.get(url_for('api_v4.bulk_article_create_status',
                                         upload_id='lkadjlaksdjlaksdjlask',
                                         api_key=acc.api_key))
             assert resp.status_code == 400
