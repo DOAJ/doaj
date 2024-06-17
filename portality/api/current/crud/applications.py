@@ -13,6 +13,7 @@ from portality.bll.exceptions import AuthoriseException, NoSuchObjectException
 from portality import lock
 from portality.crosswalks.application_form import ApplicationFormXWalk
 from portality.forms.application_forms import ApplicationFormFactory
+from portality.ui import templates
 
 from copy import deepcopy
 
@@ -78,7 +79,7 @@ class ApplicationsCrudApi(CrudApi):
                 app_email.send_mail(to=to,
                                      fro=fro,
                                      subject=subject,
-                                     template_name="email/script_tag_detected.jinja2",
+                                     template_name=templates.EMAIL_SCRIPT_TAG_DETECTED,
                                      es_type=es_type,
                                      data=jdata)
             except app_email.EmailException:

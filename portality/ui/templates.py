@@ -70,3 +70,15 @@ EDITOR_GROUP_APPLICATIONS_SEARCH = "management/editor/group_applications.html"
 
 # Utilities
 SITE_NOTE = "includes/_site_note.html"
+
+# Email templates
+EMAIL_ACCOUNT_CREATED = "email/account_created.jinja2"
+EMAIL_PASSWORD_RESET = "email/account_password_reset.jinja2"
+EMAIL_NOTIFICATION = "email/notification_email.jinja2"
+EMAIL_SCRIPT_TAG_DETECTED = "email/script_tag_detected.jinja2"
+EMAIL_EDITOR_APPLICATION_COMPLETED = "email/editor_application_completed.jinja2"
+EMAIL_WF_ADMIN_AGE = "email/workflow_reminder_fragments/admin_age_frag.jinja2"
+EMAIL_WF_ADMIN_READY = "email/workflow_reminder_fragments/admin_ready_frag.jinja2"
+EMAIL_WF_ASSED_AGE = "email/workflow_reminder_fragments/assoc_ed_age_frag.jinja2"
+EMAIL_WF_EDITOR_AGE = "email/workflow_reminder_fragments/editor_age_frag.jinja2"
+EMAIL_WF_EDITOR_GROUPCOUNT = "email/workflow_reminder_fragments/editor_groupcount_frag.jinja2"
