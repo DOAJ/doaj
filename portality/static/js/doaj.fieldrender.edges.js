@@ -128,13 +128,14 @@ $.extend(true, doaj, {
                 field: "admin.editor_group.exact",
                 display: "Editor group",
                 deactivateThreshold: 1,
-                valueFunction: new doaj.fieldRender.editorGroupNameFactory(),
+                valueFunction: doaj.fieldRender.editorGroupNameCallback,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
                     open: false,
                     togglable: true,
                     countFormat: doaj.valueMaps.countFormat,
-                    hideInactive: true
+                    hideInactive: true,
+                    noDisplayEscape: true,
                 })
             })
         },
@@ -3900,29 +3901,30 @@ $.extend(true, doaj, {
             }
         },
 
-        editorGroupNameFactory: function() {
-            let resultMap = null;
-            this.mapCallable = function (val) {
-                return resultMap[val] || val
-            }
-            this.mapCallable.prepareMap = function (values) {
-                if (values.length === 0) {
-                    return
-                }
-                $.ajax({
-                    url: "/autocomplete-text/editor_group/name/id",
-                    type: "POST",
-                    contentType: "application/json",
-                    dataType: 'json',
-                    data: JSON.stringify({'ids': values}) ,
-                    async: false,
-                    success: function (data) {
-                        resultMap = data;
-                    }
-                });
-            }
+        editorGroupNameCallback: function(val, resultobj, renderer) {
+            return `<span class="editorGroupNameCallback" data-id="${val}">${val}</span>`
+        },
+        editorGroupNameTrigger: function(queryResult) {
+            /**
+             * used in edges:post-render to trigger the editor group name callback
+             */
 
-            return this.mapCallable
+            let editorGroupIds = queryResult.data.hits.hits.map(i => i._source.admin.editor_group)
+            editorGroupIds.push(...queryResult.data.aggregations.editor_group.buckets.map(i => i.key))
+            editorGroupIds = editorGroupIds.filter(i => i !== undefined)
+            $.ajax({
+                url: "/autocomplete-text/editor_group/name/id",
+                type: "POST",
+                contentType: "application/json",
+                dataType: 'json',
+                data: JSON.stringify({'ids': editorGroupIds}) ,
+                success: function (data) {
+                    $('.editorGroupNameCallback').each(function() {
+                        const id = $(this).data('id')
+                        $(this).text(edges.escapeHtml(data[id] || id))
+                    })
+                }
+            });
         }
     },
 
