@@ -1,15 +1,15 @@
-{% extends "layouts/public_base.html" %}
+{% extends "public/base.html" %}
 
-{% block body_class %}article-details{% endblock %}
+{% block page_title %}{% include "public/includes/_article_meta_title.html" %}{% endblock %}
 
-{% block page_title %}{% include "doaj/includes/_article_meta_title.html" %}{% endblock %}
-{% block meta_og_title %}{% include "doaj/includes/_article_meta_title.html" %}{% endblock %}
-{% block meta_twitter_title %}{% include "doaj/includes/_article_meta_title.html" %}{% endblock %}
-{%- block meta_description -%}{% include "doaj/includes/_article_meta_description.html" %}{%- endblock -%}
-{%- block meta_og_description -%}{% include "doaj/includes/_article_meta_description.html" %}{%- endblock -%}
-{%- block meta_twitter_description -%}{% include "doaj/includes/_article_meta_description.html" %}{%- endblock -%}
+{% block meta_og_title %}{% include "public/includes/_article_meta_title.html" %}{% endblock %}
+{% block meta_twitter_title %}{% include "public/includes/_article_meta_title.html" %}{% endblock %}
 
-{% block extra_meta_tags %}
+{%- block meta_description -%}{% include "public/includes/_article_meta_description.html" %}{%- endblock -%}
+{%- block meta_og_description -%}{% include "public/includes/_article_meta_description.html" %}{%- endblock -%}
+{%- block meta_twitter_description -%}{% include "public/includes/_article_meta_description.html" %}{%- endblock -%}
+
+{% block public_meta %}
     {% set bibjson = article.bibjson() %}
     {% set jbib = journal.bibjson() %}
     {% set jtitle, cite = bibjson.vancouver_citation() %}
@@ -51,7 +51,9 @@
     {% endfor %}
 {% endblock %}
 
-{% block content %}
+{% block body_class %}article-details{% endblock %}
+
+{% block public_content %}
 
     {%
             set TYN = {

@@ -1,6 +1,4 @@
-{% extends "layouts/public_base.html" %}
-
-{% block body_attrs %}class="search"{% endblock %}
+{% extends "public/base.html" %}
 
 {% block page_title %}Articles{% endblock %}
 {% block meta_og_title %}Articles{% endblock %}
@@ -9,14 +7,14 @@
 {%- block meta_og_description -%}Find open access articles in DOAJ.{%- endblock -%}
 {%- block meta_twitter_description -%}Find open access articles in DOAJ.{%- endblock -%}
 
-{% block content %}
+{% block public_content %}
     <div class="container page-content">
         <div id="public-article-search"></div>
         {% include "includes/search-help-modal.html" %}
     </div>
 {% endblock %}
 
-{% block extra_js_bottom %}
+{% block public_js %}
     <script type="text/javascript">
     $.extend(true, doaj, {
         publicSearchConfig : {
@@ -28,4 +26,4 @@
 
     {% include "_edges_common_js.html" %}
     <script type="text/javascript" src="/static/js/edges/public.article.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
-{% endblock extra_js_bottom %}
+{% endblock %}

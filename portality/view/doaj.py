@@ -80,12 +80,12 @@ def fqw_hit():
 
 @blueprint.route("/search/journals", methods=["GET"])
 def journals_search():
-    return render_template("doaj/journals_search.html", lcc_tree=lcc_jstree)
+    return render_template(templates.PUBLIC_JOURNAL_SEARCH, lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/search/articles", methods=["GET"])
 def articles_search():
-    return render_template("doaj/articles_search.html", lcc_tree=lcc_jstree)
+    return render_template(templates.PUBLIC_ARTICLE_SEARCH, lcc_tree=lcc_jstree)
 
 
 @blueprint.route("/search", methods=['GET'])
@@ -319,7 +319,7 @@ def toc(identifier=None):
         return redirect(url_for('doaj.toc', identifier=real_identifier), 301)
     else:
         # now render all that information
-        return render_template('doaj/toc.html', journal=journal, bibjson=bibjson )
+        return render_template(templates.PUBLIC_TOC_MAIN, journal=journal, bibjson=bibjson, tab="main")
 
 
 @blueprint.route("/toc/articles/<identifier>")
@@ -334,7 +334,7 @@ def toc_articles(identifier=None):
     if real_identifier:
         return redirect(url_for('doaj.toc_articles', identifier=real_identifier), 301)
     else:
-        return render_template('doaj/toc_articles.html', journal=journal, bibjson=bibjson )
+        return render_template(templates.PUBLIC_TOC_ARTICLES, journal=journal, bibjson=bibjson, tab="articles")
 
 
 
@@ -356,38 +356,7 @@ def article_page(identifier=None):
         if len(journals) > 0:
             journal = journals[0]
 
-    return render_template('doaj/article.html', article=article, journal=journal, page={"highlight" : True})
-
-# Not using this form for now but we might bring it back later
-# @blueprint.route("/contact/", methods=["GET", "POST"])
-# def contact():
-#     if request.method == "GET":
-#         form = ContactUs()
-#         if current_user.is_authenticated:
-#             form.email.data = current_user.email
-#         return render_template("doaj/contact.html", form=form)
-#     elif request.method == "POST":
-#         prepop = request.values.get("ref")
-#         form = ContactUs(request.form)
-#
-#         if current_user.is_authenticated and (form.email.data is None or form.email.data == ""):
-#             form.email.data = current_user.email
-#
-#         if prepop is not None:
-#             return render_template("doaj/contact.html", form=form)
-#
-#         if not form.validate():
-#             return render_template("doaj/contact.html", form=form)
-#
-#         data = _verify_recaptcha(form.recaptcha_value.data)
-#         if data["success"]:
-#             send_contact_form(form)
-#             flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
-#             form = ContactUs()
-#             return render_template("doaj/contact.html", form=form)
-#         else:
-#             flash("Your form could not be submitted,", "error")
-#             return render_template("doaj/contact.html", form=form)
+    return render_template(templates.PUBLIC_ARTICLE, article=article, journal=journal, page={"highlight" : True})
 
 
 ###############################################################

@@ -10,6 +10,14 @@ ADMIN_EDIT_USER = "management/admin/account/edit.html"
 EDITOR_EDIT_USER = "management/editor/account/edit.html"
 PUBLIC_EDIT_USER = "public/account/edit.html"
 
+# Public pages
+PUBLIC_ARTICLE = "public/article.html"
+PUBLIC_ARTICLE_SEARCH = "public/articles_search.html"
+PUBLIC_JOURNAL_SEARCH = "public/journals_search.html"
+PUBLIC_READ_ONLY_MODE = "public/readonly_mode.html"
+PUBLIC_TOC_MAIN = "public/toc_main.html"
+PUBLIC_TOC_ARTICLES = "public/toc_articles.html"
+
 # Static content
 STATIC_PAGE = "public/layouts/static-page.html"
 STATIC_PAGE_LAYOUT = "public/layouts/_static-page_{layout}.html"
@@ -24,7 +32,7 @@ CONTINUATION = "management/admin/continuation.html"
 EDITOR_GROUP = "management/admin/editor_group.html"
 EDITOR_GROUP_SEARCH = "management/admin/editor_group_search.html"
 GLOBAL_NOTIFICATIONS_SEARCH = "management/admin/global_notifications_search.html"
-JOURNALS_SEARCH = "management/admin/journals_search.html"
+ADMIN_JOURNALS_SEARCH = "management/admin/journals_search.html"
 JOURNAL_LOCKED = "management/admin/journal_locked.html"
 UPDATE_REQUESTS_SEARCH = "management/admin/update_requests.html"
 DASHBOARD = "management/admin/dashboard.html"
@@ -53,3 +61,12 @@ AF_LIST = "_application-form/includes/_list.html"
 
 # Publisher area
 PUBLISHER_DRAFTS = "public/publisher/drafts.html"
+
+# Editor Area
+EDITOR_APPLICATION_LOCKED = "management/editor/application_locked.html"
+EDITOR_YOUR_APPLICATIONS_SEARCH = "management/editor/your_applications.html"
+EDITOR_DASHBOARD = "management/editor/dashboard.html"
+EDITOR_GROUP_APPLICATIONS_SEARCH = "management/editor/group_applications.html"
+
+# Utilities
+SITE_NOTE = "includes/_site_note.html"

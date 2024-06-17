@@ -52,7 +52,7 @@
       data-spy="scroll" data-offset="70">
 
 {% if not request.cookies.get(config.get("CONSENT_COOKIE_KEY")) %}
-    {% include "doaj/cookie_consent.html" %}
+    {% include "includes/_cookie_consent.html" %}
 {% endif %}
 
 {% block base_content %}{% endblock %}

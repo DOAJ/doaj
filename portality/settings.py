@@ -271,7 +271,6 @@ SITE_NOTE_ACTIVE = False
 SITE_NOTE_KEY = "doaj-site-note"
 SITE_NOTE_SLEEP = 259200    # every 3 days
 SITE_NOTE_COOKIE_VALUE = "You have seen our most recent site wide announcement"
-SITE_NOTE_TEMPLATE = "doaj/site_note.html"
 
 ####################################
 # Authorisation settings

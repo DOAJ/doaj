@@ -69,7 +69,7 @@ Any modifications to this file must be reflected in the new templates too.
 </head>
 
 {% if not request.cookies.get(config.get("CONSENT_COOKIE_KEY")) %}
-    {% include "doaj/cookie_consent.html" %}
+    {% include "includes/_cookie_consent.html" %}
 {% endif %}
 
 {% block base_content %}{% endblock %}

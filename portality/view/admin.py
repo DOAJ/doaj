@@ -48,7 +48,7 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template(templates.JOURNALS_SEARCH, admin_page=True)
+    return render_template(templates.ADMIN_JOURNALS_SEARCH, admin_page=True)
 
 
 @blueprint.route("/journals", methods=["GET"])

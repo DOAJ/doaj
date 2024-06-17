@@ -40,7 +40,13 @@
 
     {# global site note #}
     {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
-        {% include config.get("SITE_NOTE_TEMPLATE") %}
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    {% include templates.SITE_NOTE %}
+                </div>
+            </div>
+        </div>
     {% endif %}
 
     <main id="maincontent">

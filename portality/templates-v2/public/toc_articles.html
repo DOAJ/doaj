@@ -1,4 +1,4 @@
-{% extends "layouts/toc_base.html" %}
+{% extends "public/layouts/toc.html" %}
 
 {% block toc_content %}
 
@@ -10,7 +10,7 @@
 
 {% endblock %}
 
-{% block extra_js_bottom %}
+{% block public_js %}
 
     <script type="text/javascript">
         {% set toc_issns_js_str = '"' + journal.bibjson().issns() | join('","') + '"' %}
@@ -41,4 +41,4 @@
     <script type="text/javascript"
             src="/static/js/edges/public.toc.edge.js?v={{ config.get('DOAJ_VERSION') }}"></script>
 
-{% endblock extra_js_bottom %}
+{% endblock %}
