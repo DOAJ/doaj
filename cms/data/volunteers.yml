@@ -42,7 +42,7 @@ ed:
   language: Indonesian, English
   photo: "Ratodi.jpg"
 
-- name: Natalia Pamuła-Cieślak
+- name: Natalia Pamuła
   area: Humanities, Social Sciences
   year_since:
   city: Toruń
@@ -95,8 +95,8 @@ ed:
 ## All associate editors
 
 ass_ed:
-- name: Adhi Narayanan
-  area: Scientometric and Bibliometric Studies, Biotechnology 
+- name: K. Adhinarayanan
+  area: Scientometric and Bibliometric Studies, Biotechnology, Library and Information Science 
   year_since:
   city: Tiruchirappalli 
   country: India
@@ -697,11 +697,19 @@ ass_ed:
   language: Portuguese, English
   photo: "paulacarina.JPG"
 
+- name: Patrícia Aragão
+  area: Academic Publications, Languages and Literature
+  year_since:
+  city: Rio Grande Do Sul
+  country: Brazil
+  language: Portuguese, Spanish, Italian, English
+  photo: "Patricia.jpg"
+
 - name: Princess Uju E. Nwafor-Orizu
   area: Medicine
   year_since:
   city:
-  country:
+  country: Nigeria
   language: English
   photo: "princessnwafor.jpg"
   

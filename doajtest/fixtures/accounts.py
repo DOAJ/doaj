@@ -1,5 +1,7 @@
 from copy import deepcopy
 
+from portality import models
+
 
 class AccountFixtureFactory(object):
     @staticmethod
@@ -91,3 +93,11 @@ def create_maned_a(save=False):
         maned.save(blocking=True)
     return maned
 
+
+def create_publisher_account__a(acc_id="testowner", is_save=True, blocking=True) -> models.Account:
+    acc_src = AccountFixtureFactory.make_publisher_source()
+    account = models.Account(**acc_src)
+    account.set_id(acc_id)
+    if is_save:
+        account.save(blocking=blocking)
+    return account

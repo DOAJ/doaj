@@ -1,6 +1,7 @@
 from doajtest.helpers import DoajTestCase, with_es
 from portality import models
 import time
+import portality.app # noqa, setup routes
 
 
 class TestApiErrors(DoajTestCase):
