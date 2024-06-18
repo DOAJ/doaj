@@ -30,7 +30,7 @@ Any modifications to this file must be reflected in the new templates too.
           {% include "includes/svg/doaj-icon.svg" %}
         </a>
         <ul class="unstyled-list flex-center">
-            {% include "includes/_tourist_nav.html" %}
+            {% include "_tourist/includes/_tourist_nav.html" %}
             {# ~~->Notifications:Feature~~ #}
           <li class="dropdown dropdown--notifications flex-center" id="notifications_nav">
             <a href="/dashboard/notifications" class="dropdown__trigger label" id="dropdown__trigger--notifications" role="button" aria-haspopup="true" aria-expanded="false">
@@ -194,7 +194,7 @@ Any modifications to this file must be reflected in the new templates too.
         </script>
     {% endif %}
 
-    {% include "includes/_tourist.html" %}
+    {% include "_tourist/includes/_tourist.html" %}
 
     </body>
 {% endblock %}

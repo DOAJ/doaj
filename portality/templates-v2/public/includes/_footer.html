@@ -1,4 +1,4 @@
-{% include "includes/_nav_modals.html" %}
+{% include "public/includes/_nav_modals.html" %}
 
 <footer class="page-footer">
     <div class="container">
@@ -7,7 +7,7 @@
             {% set columns = data.nav.entries|selectattr("footer")|list %}
             {% for column in columns %}
                 {% set section_id=column.id %}
-                {% include "includes/footer-column.html" %}
+                {% include "public/includes/_footer-column.html" %}
             {% endfor %}
         </section>
         <section class="legal">
@@ -27,10 +27,10 @@
                 </p>
 
                 {% set section_id = "legal" %}
-                <ul>{% include "includes/menu-items.html" %}</ul>
+                <ul>{% include "public/includes/_menu-items.html" %}</ul>
 
                 {% set section_id = "companies" %}
-                <ul>{% include "includes/menu-items.html" %}</ul>
+                <ul>{% include "public/includes/_menu-items.html" %}</ul>
             </div>
             <div class="page-footer__licensing">
                 <p>

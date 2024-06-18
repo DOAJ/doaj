@@ -32,7 +32,7 @@
                 {% include "includes/svg/doaj-icon.svg" %}
             </a>
             <ul class="unstyled-list flex-center">
-                {% include "includes/_tourist_nav.html" %}
+                {% include "_tourist/includes/_tourist_nav.html" %}
                 {# ~~->Notifications:Feature~~ #}
                 <li class="dropdown dropdown--notifications flex-center" id="notifications_nav">
                     <a href="/dashboard/notifications" class="dropdown__trigger label" id="dropdown__trigger--notifications" role="button" aria-haspopup="true" aria-expanded="false">
@@ -183,7 +183,7 @@
 
 {% block base_js %}
     <script type="text/javascript" src="/static/js/notifications.js?v={{config.get('DOAJ_VERSION')}}"></script>
-    {% include "includes/_tourist.html" %}
+    {% include "_tourist/includes/_tourist.html" %}
 
     {% block management_js %}{% endblock %}
 {% endblock %}

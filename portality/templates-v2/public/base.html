@@ -31,12 +31,12 @@
     <a href="#maincontent" class="skip-to-main"><span aria-hidden="true" data-feather="arrow-down"></span></a>
 
     <header class="page-header">
-        {% include "includes/header.html" %}
+        {% include "public/includes/_header.html" %}
         <div class="container">{% include "includes/_flash_notification.html" %}</div>
         {% block extra_header %}{% endblock %}
     </header>
 
-    {% include "includes/_quick_search_modal.html" %}
+    {% include "public/includes/_quick_search_modal.html" %}
 
     {# global site note #}
     {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
@@ -53,7 +53,7 @@
         {% block public_content %}{% endblock %}
     </main>
 
-    {% include "includes/footer.html" %}
+    {% include "public/includes/_footer.html" %}
 
 {% endblock %}
 

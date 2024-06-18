@@ -19,7 +19,7 @@
                   <ul class="nav-bar" role="menubar" id="main_actions">
                     {% for column in columns %}
                         {% set section_id=column.id %}
-                        {% include "includes/header-primary-navigation.html" %}
+                        {% include "public/includes/_header-primary-navigation.html" %}
                     {% endfor %}
                     <li class="flex-center primary-nav__search" data-toggle="modal" data-target="#modal-search" tabindex="0" role="button">
                       <span class="label"> Search</span>
@@ -50,19 +50,19 @@
                 {% set columns = data.nav.entries|selectattr("secondary")|list %}
                 {% for column in columns %}
                     {% set section_id=column.id %}
-                    {% include "includes/header-secondary-navigation.html" %}
+                    {% include "public/includes/_header-secondary-navigation.html" %}
                 {% endfor %}
                 {% set columns = data.nav.entries|selectattr("secondary_mobile")|list %}
                 {% set mobile=True %}
                 {% for column in columns %}
                     {% set section_id=column.id %}
-                    {% include "includes/header-secondary-navigation.html" %}
+                    {% include "public/includes/_header-secondary-navigation.html" %}
                 {% endfor %}
-                {% include "includes/_header-secondary-navigation-account.html" %}
+                {% include "public/includes/_header-secondary-navigation-account.html" %}
             </ul>
             <ul class="nav-bar secondary-nav__menu" role="menu">
               {% set mobile=False %}
-              {% include "includes/_header-secondary-navigation-account.html" %}
+              {% include "public/includes/_header-secondary-navigation-account.html" %}
             </ul>
         </div>
     </div>
