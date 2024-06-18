@@ -1,13 +1,13 @@
-{% extends "publisher/publisher_base.html" %}
+{% extends "public/publisher/base.html" %}
 
 {% block page_title %}My update requests{% endblock %}
 
 {% block publisher_content %}
-    <header><h2>My update requests</h2></header>
-<div id="publisher_update_requests"></div>
+    <h2>My update requests</h2>
+    <div id="publisher_update_requests"></div>
 {% endblock %}
 
-{% block extra_js_bottom %}
+{% block publisher_js %}
 
     <script type="text/javascript">
     $.extend(true, doaj, {
@@ -23,7 +23,7 @@
     });
     </script>
 
-    {% include "_edges_common_js.html" %}
+    {% include "includes/_edges_common_js.html" %}
     <script type="text/javascript" src="/static/js/edges/publisher.update_requests.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endblock %}

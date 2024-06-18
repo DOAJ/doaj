@@ -1,15 +1,15 @@
-{% extends "layouts/public_base.html" %}
+{% extends "public/base.html" %}
 
 {% block page_title %}API{% endblock %}
 
-{% block extra_stylesheets %}
+{% block public_stylesheets %}
     <!-- get Swagger UI css -->
     <link rel="stylesheet" href="/static/vendor/swagger-ui-5.11.6/swagger-ui.css"/>
     <!-- get DOAJ swagger overrides -->
     <link href='/static/doaj/css/doaj_api.css' media='screen' rel='stylesheet' type='text/css'/>
 {% endblock %}
 
-{% block content %}
+{% block public_content %}
     <div class="container page-content">
         <div class="row">
             <div class="col-md-8">
@@ -21,23 +21,23 @@
                         <p>A new version of the API is due in July 2024, and you can preview it <a href="{{ url_for("api_v4.docs") }}">here</a>.
                         You should review the release notes and migration instructions as soon as possible.</p>
                     </div>
-                    {% include "api/includes/swagger_description.html" %}
+                    {% include "public/api/includes/_swagger_description.html" %}
                     <h2 id="swagger_info">Full API reference</h2>
                     <div id="swagger-section" class="swagger-section">
                         <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
                     </div>
-                    {% include "api/v3/extra_docs.html" %}
-                    {% include "api/includes/_version-history.html" %}
+                    {% include "public/api/v3/includes/_extra_docs.html" %}
+                    {% include "public/api/includes/_version-history.html" %}
                 </section>
             </div>
             <div class="col-md-4">
-                {% include "api/v3/sidenav.html" %}
+                {% include "public/api/v3/includes/_sidenav.html" %}
             </div>
         </div>
     </div>
 {% endblock %}
 
-{% block extra_js_bottom %}
+{% block public_js %}
     <!--get Swagger UI's javascripts -->
     <script src="/static/vendor/swagger-ui-5.11.6/swagger-ui-bundle.js"></script>
 

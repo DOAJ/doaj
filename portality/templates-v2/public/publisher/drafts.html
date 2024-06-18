@@ -3,7 +3,7 @@
 {% block page_title %}My drafts{% endblock %}
 
 {% block publisher_content %}
-    <header><h2>My drafts</h2></header>
+    <h2>My drafts</h2>
     <div id="publisher_applications"></div>
 {% endblock %}
 
@@ -24,7 +24,7 @@
         });
     </script>
 
-    {% include "_edges_common_js.html" %}
+    {% include "includes/_edges_common_js.html" %}
     <script type="text/javascript" src="/static/js/edges/publisher.mydrafts.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% endblock %}

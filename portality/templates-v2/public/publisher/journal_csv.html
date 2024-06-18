@@ -1,13 +1,13 @@
+{% extends "public/publisher/base.html" %}
 <!--~~JournalCSV:Page~~-->
 <!--~~->JournalCSV:Feature-->
-
-{% extends "publisher/publisher_base.html" %}
 
 {% block page_title %}Validate your CSV{% endblock %}
 
 {% block publisher_content %}
     <div class="row">
         <header class="col-md-4">
+            <p></p> {# FIXME: style workaround #}
             <h2>Validate your CSV</h2>
 
             <div class="alert">
@@ -34,7 +34,7 @@
     <div id="validation-results"></div>
 {% endblock %}
 
-{% block extra_js_bottom %}
+{% block publisher_js %}
     <script type="text/javascript" src="/static/js/publisher_csv.js?v={{config.get('DOAJ_VERSION')}}"></script>
     <script type="text/javascript">
         $(document).ready(function() {

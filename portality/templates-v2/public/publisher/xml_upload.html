@@ -1,8 +1,7 @@
+{% extends "public/publisher/base.html" %}
 <!--~~UploadMetadata:Page~~-->
 <!--~~->Crossref442:Feature-->
 <!--~~->Crossref531:Feature-->
-
-{% extends "publisher/publisher_base.html" %}
 
 {% block page_title %}Upload article XML{% endblock %}
 
@@ -14,6 +13,7 @@
 
     <div class="row">
         <header class="col-md-4">
+            <p></p> {# FIXME: style workaround #}
             <h2>Upload article XML</h2>
 
             <div class="alert">
@@ -171,7 +171,7 @@
 
 {% endblock %}
 
-{% block extra_js_bottom %}
+{% block publisher_js %}
     <script type="text/javascript">
         $(document).ready(function() {
 

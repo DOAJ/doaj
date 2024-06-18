@@ -700,7 +700,7 @@ class PublisherMetadataForm(MetadataForm):
         super(PublisherMetadataForm, self).__init__(source=source, form_data=form_data, user=user)
 
     def set_template(self):
-        self.template = "publisher/metadata.html"
+        self.template = templates.PUBLISHER_ARTICLE_METADATA
 
     def render_template(self, **kwargs):
         self._check_for_author_errors(**kwargs)

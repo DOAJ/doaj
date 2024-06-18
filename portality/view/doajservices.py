@@ -8,6 +8,7 @@ from portality.decorators import ssl_required, write_required, restrict_to_role
 from portality.util import jsonp
 from portality import lock, models
 from portality.bll import DOAJ
+from portality.ui import templates
 
 blueprint = Blueprint('doajservices', __name__)
 
@@ -52,7 +53,10 @@ def unlocked():
     Redirect to this route on completion of an unlock
     :return:
     """
-    return render_template("unlocked.html")
+    if current_user.is_super:
+        return render_template(templates.ADMIN_UNLOCKED)
+    else:
+        return render_template(templates.EDITOR_UNLOCKED)
 
 
 # @blueprint.route("/shorten", methods=["POST"])

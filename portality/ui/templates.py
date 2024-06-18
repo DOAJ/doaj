@@ -24,6 +24,16 @@ OPENURL_HELP = "public/openurl/help.html"
 STATIC_PAGE = "public/layouts/static-page.html"
 STATIC_PAGE_LAYOUT = "public/layouts/_static-page_{layout}.html"
 
+# Error pages
+ERROR_400 = "public/400.html"
+ERROR_401 = "public/401.html"
+ERROR_404 = "public/404.html"
+ERROR_500 = "public/500.html"
+
+# API
+API_V3_DOCS = "public/api/v3/api_docs.html"
+API_V4_DOCS = "public/api/v4/api_docs.html"
+
 # Admin area
 ADMIN_SITE_SEARCH = "management/admin/admin_site_search.html"
 APPLICATION_LOCKED = "management/admin/application_locked.html"
@@ -39,6 +49,7 @@ JOURNAL_LOCKED = "management/admin/journal_locked.html"
 UPDATE_REQUESTS_SEARCH = "management/admin/update_requests.html"
 DASHBOARD = "management/admin/dashboard.html"
 NOTIFICATIONS = "management/admin/notifications.html"
+ADMIN_UNLOCKED = "management/admin/unlocked.html"
 
 # Application Form
 MANED_APPLICATION_FORM = "management/admin/maned_application.html"
@@ -63,12 +74,24 @@ AF_LIST = "_application-form/includes/_list.html"
 
 # Publisher area
 PUBLISHER_DRAFTS = "public/publisher/drafts.html"
+PUBLISHER_APPLICATION_ALREADY_SUBMITTED = "public/publisher/application_already_submitted.html"
+PUBLISHER_APPLICATION_DELETED = "public/publisher/application_deleted.html"
+PUBLISHER_XML_HELP = "public/publisher/xml_help.html"
+PUBLISHER_CSV_UPLOAD = "public/publisher/journal_csv.html"
+PUBLISHER_JOURNAL_SEARCH = "public/publisher/journals.html"
+PUBLISHER_LOCKED = "public/publisher/locked.html"
+PUBLISHER_ARTICLE_METADATA = "public/publisher/article_metadata.html"
+PUBLISHER_PRESERVATION = "public/publisher/preservation.html"
+PUBLISHER_PRESERVATION_READONLY = "public/publisher/readonly_preservation.html"
+PUBLISHER_UPDATE_REQUESTS = "public/publisher/update_requests.html"
+PUBLISHER_XML_UPLOAD = "public/publisher/xml_upload.html"
 
 # Editor Area
 EDITOR_APPLICATION_LOCKED = "management/editor/application_locked.html"
 EDITOR_YOUR_APPLICATIONS_SEARCH = "management/editor/your_applications.html"
 EDITOR_DASHBOARD = "management/editor/dashboard.html"
 EDITOR_GROUP_APPLICATIONS_SEARCH = "management/editor/group_applications.html"
+EDITOR_UNLOCKED = "management/editor/unlocked.html"
 
 # Utilities
 SITE_NOTE = "includes/_site_note.html"

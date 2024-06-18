@@ -367,12 +367,12 @@ def _extension_paths(child, parent, records):
 def serialise(tree):
     ctx = app.test_request_context("/")
     ctx.push()
-    return render_template("redhead/tree.html", tree=tree)
+    return render_template("dev/redhead/tree.html", tree=tree)
 
 def serialise_blocks(tree):
     ctx = app.test_request_context("/")
     ctx.push()
-    return render_template("redhead/blocks.html", tree=tree)
+    return render_template("dev/redhead/blocks.html", tree=tree)
 
 def _get_base_templates(records):
     base = []

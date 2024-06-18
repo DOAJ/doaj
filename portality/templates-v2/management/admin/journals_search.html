@@ -1,7 +1,7 @@
 {% extends "management/admin/base.html" %}
 
 {% block admin_stylesheets %}
-    {% include "_edges_common_css.html" %}
+    {% include "management/includes/_edges_common_css.html" %}
     {# FIXME: for some reason this is not in edges common, why is that? #}
     <link rel="stylesheet" type="text/css" href="/static/doaj/css/edges.css">
 {% endblock %}
@@ -25,6 +25,6 @@
         });
     </script>
 
-    {% include "_edges_common_js.html" %}
+    {% include "includes/_edges_common_js.html" %}
     <script type="text/javascript" src="/static/js/edges/admin.journals.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
 {% endblock %}

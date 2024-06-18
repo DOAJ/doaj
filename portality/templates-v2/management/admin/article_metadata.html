@@ -29,8 +29,8 @@
         <div class="col-md-6">
             {% include "includes/_error_header.html" %}
 
-            {% from "_formhelpers.html" import render_field_horizontal %}
-            {% from "_formhelpers.html" import render_field %}
+            {% from "includes/_formhelpers.html" import render_field_horizontal %}
+            {% from "includes/_formhelpers.html" import render_field %}
 
             <form method="post" action="{{ url_for('admin.article_page', article_id=form_context.source.id) }}" class="form form--compact" id="article_metadata_form">
                 {% include "_articles/includes/_article_metadata_form.html" %}
