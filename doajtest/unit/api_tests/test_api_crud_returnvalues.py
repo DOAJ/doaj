@@ -1,3 +1,4 @@
+from doajtest import helpers
 from doajtest.helpers import DoajTestCase, with_es
 from portality import models
 from doajtest.fixtures import ApplicationFixtureFactory, ArticleFixtureFactory, JournalFixtureFactory
@@ -205,9 +206,7 @@ class TestCrudReturnValues(DoajTestCase):
 
     @staticmethod
     def login(app, username, password):
-        return app.post('/account/login',
-                        data=dict(username=username, password=password),
-                        follow_redirects=True)
+        return helpers.login(app, username, password)
 
     @staticmethod
     def logout(app):

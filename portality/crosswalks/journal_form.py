@@ -289,7 +289,7 @@ class JournalGenericXWalk(object):
                 obj.set_editor(editor)
 
         if getattr(form, "doaj_seal", None):
-            obj.set_seal(form.doaj_seal.data)
+            obj.set_seal('y' in form.doaj_seal.data)
 
     @classmethod
     def bibjson2form(cls, bibjson, forminfo):
@@ -457,7 +457,7 @@ class JournalGenericXWalk(object):
         if obj.editor is not None:
             forminfo['editor'] = obj.editor
 
-        forminfo['doaj_seal'] = obj.has_seal()
+        forminfo['doaj_seal'] = ['y'] if obj.has_seal() else []
 
 
 class JournalFormXWalk(JournalGenericXWalk):

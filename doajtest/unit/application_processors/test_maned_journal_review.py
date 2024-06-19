@@ -148,7 +148,7 @@ class TestManEdJournalReview(DoajTestCase):
         )
 
         # set the seal to False using the form
-        fc.form.doaj_seal.data = False
+        fc.form.doaj_seal.data = []
 
         # run the crosswalk, don't test it at all in this test
         fc.form2target()
@@ -162,7 +162,7 @@ class TestManEdJournalReview(DoajTestCase):
         fc.source.set_seal(True)
         fc.source2form()
 
-        assert fc.form.doaj_seal.data is True
+        assert 'y' in fc.form.doaj_seal.data
 
     def test_05_maned_review_continuations(self):
         # construct it from form data (with a known source)

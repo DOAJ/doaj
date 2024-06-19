@@ -1155,14 +1155,14 @@ var formulaic = {
 
             this._renderAutocheck = function(autocheck) {
                 let frag = "<li>";
-                
+
                 if (autocheck.checked_by && doaj.autocheckers &&
                     doaj.autocheckers.registry.hasOwnProperty(autocheck.checked_by)) {
                     frag += (new doaj.autocheckers.registry[autocheck.checked_by]()).draw(autocheck)
                 } else {
                     frag += this._defaultRender(autocheck);
                 }
-                
+
                 frag += `</li>`;
                 return frag;
             }
@@ -2252,5 +2252,32 @@ var formulaic = {
 
             this.init();
         },
+
+        newArticleInfo : (params) => edges.instantiate(formulaic.widgets.ArticleInfo, params),
+        ArticleInfo: function ({formulaic, fieldDef, args}) {
+            const sealSelector = 'label[for=doaj_seal]';
+
+            const init = () => {
+                const paths = window.location.pathname.split('/')
+                const journalId = paths[paths.length - 1]
+                fetch(`/admin/journal/${journalId}/article-info`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const $ele = $(sealSelector);
+                        $ele.text($ele.text() + `This journal has ${data.n_articles} articles in DOAJ.`)
+                    })
+            };
+
+
+            if ($(sealSelector).length) {
+                init();
+            } else {
+                console.log('skip ArticleInfo, seal section not found')
+            }
+        },
+
+
+
+
     }
 };

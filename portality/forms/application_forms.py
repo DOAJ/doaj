@@ -1603,8 +1603,13 @@ class FieldDefinitions:
     # ~~->$ DOAJSeal:FormField~~
     DOAJ_SEAL = {
         "name": "doaj_seal",
-        "label": "The journal may have fulfilled all the criteria for the Seal. Award the Seal?",
+        "label": "The journal may have fulfilled all the criteria for the Seal.",
+        "multiple": True,
         "input": "checkbox",
+        "options": [
+            {"display": "Award the Seal?", "value": 'y'},
+        ],
+
         "validate": [
             {
                 "only_if" : {
@@ -1626,7 +1631,10 @@ class FieldDefinitions:
                                 "the journal must use a persistent identifier"
                 }
             }
-        ]
+        ],
+        "widgets": [
+            "article_info",
+        ],
     }
 
     # FIXME: this probably shouldn't be in the admin form fieldsets, rather its own separate form
@@ -1881,7 +1889,7 @@ class FieldDefinitions:
         "entry_template": "application_form/_entry_group.html",
         "widgets": [
             {"infinite_repeat" : {"enable_on_repeat" : ["textarea"]}},
-            "note_modal"
+            "note_modal",
         ],
         "merge_disabled" : "merge_disabled_notes",
     }
@@ -3042,7 +3050,8 @@ JAVASCRIPT_FUNCTIONS = {
     "trim_whitespace" : "formulaic.widgets.newTrimWhitespace",  # ~~-> TrimWhitespace:FormWidget~~
     "note_modal" : "formulaic.widgets.newNoteModal", # ~~-> NoteModal:FormWidget~~
     "autocheck": "formulaic.widgets.newAutocheck", # ~~-> Autocheck:FormWidget~~
-        "issn_link" : "formulaic.widgets.newIssnLink" # ~~-> IssnLink:FormWidget~~,
+    "issn_link" : "formulaic.widgets.newIssnLink", # ~~-> IssnLink:FormWidget~~,
+    "article_info": "formulaic.widgets.newArticleInfo", # ~~-> ArticleInfo:FormWidget~~
 }
 
 
