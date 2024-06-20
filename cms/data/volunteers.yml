@@ -112,7 +112,7 @@ ass_ed:
   photo: "alainchaple.png"
   
 - name: Aleksandra Zawadzka
-  area: Librarianship
+  area: Library Science
   year_since:
   city: Wroclaw
   country: Poland
@@ -138,7 +138,7 @@ ass_ed:
   area: Library and Information Science, Scientometrics
   year_since:
   city: Tehran
-  country: I.R.Iran
+  country: Iran
   language: Persian (Farsi), English
   photo: "Amir Reza Asnafi.jpg"
   
@@ -151,7 +151,7 @@ ass_ed:
   photo: "Andista.jpg"
 
 - name: Andrea Imre
-  area: Library Science, Music, General
+  area: Library Science, Music
   year_since:
   city: Carbondale, IL
   country: USA
@@ -164,22 +164,7 @@ ass_ed:
   country: Italy
   language: Italian, English
   photo: "Marchitelli.jpg"
-
-- name: Andronic Octavian
-  area: Medicine
-  year_since:
-  city: Bucharest
-  country: Romania
-  language: Romanian, English
-  photo: "Octav.jpg"
   
-- name: Anna Sidorko
-  area: Library Science
-  year_since:
-  city: Warsaw
-  country: Poland
-  language: Polish, English
-
 - name: Annarita Barbaro
   area: Humanities
   year_since:
@@ -203,7 +188,7 @@ ass_ed:
   photo: "azhar.jpg"
 
 - name: Ben Catt
-  area: Librarianship, Research Support
+  area: Library Science, Research Support
   year_since:
   city: York
   country: United Kingdom
@@ -233,15 +218,15 @@ ass_ed:
   photo: "Longo.jpg"
 
 - name: Carla Marques
-  area: Information and library sciences
+  area: Information and Library Sciences
   year_since:
   city: Braga
   country: Portugal
-  language: Information and library sciences
+  language: Portuguese, English
   photo: "Carla.jpg"
   
 - name: Cezary Borkowicz
-  area: Librarianship
+  area: Library Science
   year_since:
   city:  Biała Podlaska
   country: Poland
@@ -309,18 +294,11 @@ ass_ed:
   year_since:
   city: Balți
   country: Republic of Moldova
-  language: Romanian, Russian, Ukrainian, German
+  language: Romanian, Russian, Ukrainian, English
   photo: "Dumitru.jpg"  
 
-- name: Dr. Eko Supraptono
-  area: Technology
-  year_since:
-  city: Semarang
-  country: Indonesia
-  language: Indonesian, English
-
 - name: Dwi Fajar Saputra
-  area: Librarianship
+  area: Library Science
   year_since:
   city: Jakarta
   country: Indonesia
@@ -341,6 +319,13 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
+- name: Eko Supraptono
+  area: Technology
+  year_since:
+  city: Semarang
+  country: Indonesia
+  language: Indonesian, English
+  
 - name: Emrah Kaya
   area: Social Sciences, Humanities
   year_since:
@@ -349,6 +334,14 @@ ass_ed:
   language: English
   photo: "Emrah Kaya.jpg"
 
+- name: Flavius-Cristian Marcau 
+  area: Social Sciences
+  year_since:
+  city: Târgu jiu
+  country: Romania
+  language: Romanian, English
+  photo: "Flavius.jpg"
+  
 - name: Francesco Cavinato
   area: Humanities, Social Sciences
   year_since:
@@ -357,7 +350,7 @@ ass_ed:
   language: Italian, English
 
 - name: Hanae Lrhoul
-  area: Librarianship
+  area: Library Science
   year_since:
   city: Rabat
   country: Morocco
@@ -370,13 +363,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
   photo: "handoko.jpg"
-
-- name: Hyun Jung Yi
-  area:
-  year_since:
-  city:
-  country: Republic of Korea
-  language: Korean, English
 
 - name: Iryna Kuchma
   area: Humanities, Social Sciences
@@ -400,13 +386,6 @@ ass_ed:
   country: Lebanon
   language: Arabic, French, English
 
-- name: Janne Pölönen
-  area:
-  year_since:
-  city:
-  country:
-  language: English
-
 - name: Jinjin Liu
   area: Social Sciences, Medicine
   year_since:
@@ -420,13 +399,6 @@ ass_ed:
   city: Porto
   country: Portugal
   language: Portuguese, English
-
-- name: JooYeun Son
-  area:
-  year_since:
-  city:
-  country:
-  language: Korean, English
 
 - name: Juliana Soares Lima
   area: Librarianship and information science
@@ -445,7 +417,7 @@ ass_ed:
   photo: "Julio.jpg"
   
 - name: Juyeon Park
-  area: Librarianship
+  area: Library Science
   year_since:
   city: Seoul
   country: Korea
@@ -485,7 +457,7 @@ ass_ed:
   photo: "Khoirul.jpg"
 
 - name: Kristen Totleben
-  area: Librarianship, Humanities, Social Sciences
+  area: Library Science, Humanities, Social Sciences
   year_since:
   city: Rochester, New York
   country: USA
@@ -499,13 +471,6 @@ ass_ed:
   country: Cuba
   language: Spanish and English
   photo: "Lee.jpg"
-
-- name: Lena Lönngren
-  area:
-  year_since:
-  city:
-  country: Finland
-  language: Finnish, English
   
 - name: Leila Yang
   area: Scholarly Publishing
@@ -545,14 +510,6 @@ ass_ed:
   country: USA
   language: English
 
-- name: Marcau Flavius-Cristian
-  area: Social Sciences
-  year_since:
-  city: Târgu jiu
-  country: Romania
-  language: Romanian, English
-  photo: "Flavius.jpg"
-
 - name: Marco Tullney
   area: Social Sciences, Technology
   year_since:
@@ -580,13 +537,6 @@ ass_ed:
   city: Montréal
   country: Canada
   language: French, English
-  
-- name: Mario Alejandro Marín
-  area:
-  year_since:
-  city:
-  country:
-  language: Spanish, English
 
 - name: Martyna Mirecka
   area: History, Political Science
@@ -603,6 +553,13 @@ ass_ed:
   country: Türkiye
   language: English
 
+- name: Mihaela Teodor 
+  area: Humanities, Social Sciences
+  year_since:
+  city: Bucharest
+  country: Romania
+  language: Romanian, English, French
+  
 - name: Milagro Castro
   area: Social Sciences
   year_since:
@@ -624,16 +581,9 @@ ass_ed:
   year_since:
   city: Kyiv
   country: Ukraine
-  language: Ukranian, Russian, English, Polish
+  language: Ukrainian, Russian, English, Polish
   featured: true
   photo: "Nataliia.jpg"
- 
-- name: Nathalia Avila
-  area:
-  year_since:
-  city:
-  country:
-  language: Spanish, English
   
 - name: Natia Gabedava
   area: Humanities, Education
@@ -659,6 +609,14 @@ ass_ed:
   language: Arabic, French, English, Kabyle
   photo: "nourelhouda.png"
 
+- name: Octavian Andronic 
+  area: Medicine
+  year_since:
+  city: Bucharest
+  country: Romania
+  language: Romanian, English
+  photo: "Octav.jpg"
+  
 - name: Oleksii Vasyliev
   area: Science, Technology
   year_since:
@@ -673,13 +631,6 @@ ass_ed:
   country: Ukraine
   language: Ukrainian, Russian, English, Polish
   photo: "OlenaZimba.jpg"
-
-- name: Olga Kirillova
-  area:
-  year_since:
-  city:
-  country:
-  language:
 
 - name: Oskia Agirre
   area: Library and Information Science
@@ -721,13 +672,6 @@ ass_ed:
   language: English
   photo: "Priya.jpg"
 
-- name: Prof. Dr. Sudarmin
-  area: Science
-  year_since:
-  city:
-  country: Indonesia
-  language: Indonesian, English
-
 - name: Remedios Melero (Reme)
   area: Social Sciences
   year_since:
@@ -758,14 +702,14 @@ ass_ed:
   photo: "amini.jpg"
 
 - name: Sara Jalalzadeh Asrjadidi
-  area: Librarianship
+  area: Library Science
   year_since:
   city: Tabriz
   country: Iran
   language: Persian, Azari, Turkish, English
 
 - name: Sara Ricetto
-  area: Open Access, Open Science
+  area: Scholarly Publishing
   year_since:
   city: Milan
   country: Italy
@@ -777,13 +721,6 @@ ass_ed:
   city: Shanghai
   country: China
   language: Chinese
-
-- name: Soon Kim
-  area:
-  year_since:
-  city:
-  country: Republic of Korea
-  language: Korean, English
 
 - name: Stewart C Baker
   area: Humanities, Library Science
@@ -800,6 +737,13 @@ ass_ed:
   language: French
   photo: "sogoba1.jpg"
 
+- name: Sudarmin
+  area: Science
+  year_since:
+  city:
+  country: Indonesia
+  language: Indonesian, English
+  
 - name: Susana Costa
   area: Library and Information Sciences
   year_since:
@@ -815,13 +759,6 @@ ass_ed:
   country: Indonesia
   language: Indonesian, English
 
-- name: Teodor Mihaela
-  area: Humanities, Social Sciences
-  year_since:
-  city: Bucharest
-  country: Romania
-  language: Romanian, English, French
-
 - name: Utiya Hikmah
   area: Material Physics
   year_since:
@@ -831,7 +768,7 @@ ass_ed:
   photo: "utiyah.jpg"
   
 - name: Vasanth N
-  area: Librarianship
+  area: Library Science
   year_since:
   city: Mysore
   country: India
@@ -843,7 +780,7 @@ ass_ed:
   year_since:
   city: Plano, Texas
   country: USA
-  language: Spanish, English and Portuguese
+  language: Spanish, English, Portuguese
   photo: "Wileidys.jpg"
   
 - name: Yalçın Tükel 
