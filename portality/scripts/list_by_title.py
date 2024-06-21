@@ -1,9 +1,7 @@
 import csv
 import re
 from copy import deepcopy
-import esprit
 import string
-from portality.core import es_connection
 from portality.util import ipt_prefix
 from portality import models
 from unidecode import unidecode
@@ -39,8 +37,7 @@ def list_by_title(input, out):
     conn = es_connection
 
     application_rows = []
-    for a in esprit.tasks.scroll(conn, ipt_prefix(models.Suggestion.__type__), q=APPS_NOT_ACCEPTED, page_size=1000, keepalive='5m'):
-        application = models.Suggestion(_source=a)
+    for application in models.Application.scroll(q=APPS_NOT_ACCEPTED, page_size=1000, keepalive='5m'):
         title = application.bibjson().title
         alt = application.bibjson().alternative_title
         titles = []
@@ -56,8 +53,7 @@ def list_by_title(input, out):
                     break
 
     journal_rows = []
-    for j in esprit.tasks.scroll(conn, models.Journal.__type__, q=ALL_JOURNALS, page_size=1000, keepalive='5m'):
-        journal = models.Journal(_source=j)
+    for journal in models.Journal.scroll(q=ALL_JOURNALS, page_size=1000, keepalive='5m'):
         title = journal.bibjson().title
         alt = journal.bibjson().alternative_title
         titles = []

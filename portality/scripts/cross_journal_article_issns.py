@@ -3,19 +3,16 @@ Script which determines which articles have ISSNs which belong to two distinct J
 """
 
 from portality import models
-from portality.core import app
-from datetime import datetime
 from portality.lib import dates
-import esprit
 import codecs
 import csv
 
 
 IN_DOAJ = {
-    "query" : {
-        "bool" : {
-            "must" : [
-                {"term" : {"admin.in_doaj" : True}}
+    "query": {
+        "bool": {
+            "must": [
+                {"term": {"admin.in_doaj": True}}
             ]
         }
     }
@@ -33,7 +30,6 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
     total = models.Article.count()
 
     with codecs.open(args.out, "wb", "utf-8") as f:
@@ -43,13 +39,12 @@ if __name__ == "__main__":
         counter = 1
         sofar = 0
         start = dates.now()
-        for a in esprit.tasks.scroll(conn, models.Article.__type__, IN_DOAJ, page_size=1000, keepalive='5m'):
+        for article in models.Article.scroll(q=IN_DOAJ, page_size=1000, keepalive='5m'):
             sofar += 1
             if sofar % 1000 == 0:
                 eta = dates.eta(start, sofar, total)
                 print("{now} : {sofar}/{total} | ETA {eta}".format(now=dates.now_str(), sofar=sofar, total=total, eta=eta))
 
-            article = models.Article(**a)
             bibjson = article.bibjson()
             issns = bibjson.issns()
             if len(issns) == 1:
@@ -68,6 +63,3 @@ if __name__ == "__main__":
                 print(row)
 
             counter += 1
-
-
-

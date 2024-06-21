@@ -1,4 +1,4 @@
-import esprit, csv
+import csv
 
 from portality.core import es_connection
 from portality.util import ipt_prefix

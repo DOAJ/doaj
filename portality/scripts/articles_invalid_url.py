@@ -1,7 +1,5 @@
 from portality import models
-from portality.core import es_connection
 from portality.util import ipt_prefix
-import esprit
 import re
 import csv
 
@@ -31,14 +29,11 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    conn = es_connection
-
     with open(args.out, "w", encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(["ID", "Article Title", "URL", "In Doaj", "Created Date"])
 
-        for j in esprit.tasks.scroll(conn, ipt_prefix(models.Article.__type__), q=INVALID_URLS, page_size=100, keepalive='5m'):
-            article = models.Article(_source=j)
+        for article in Article.scroll(q=INVALID_URLS, page_size=100, keepalive='5m'):
             bibjson = article.bibjson()
             fulltext = bibjson.get_single_url("fulltext")
 
