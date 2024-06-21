@@ -166,7 +166,9 @@ def load_crossref_schema(app):
 def create_es_connection(app):
     # ~~ElasticConnection:Framework->Elasticsearch:Technology~~
 
-    conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'], verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True))
+    conn = elasticsearch.Elasticsearch(app.config['ELASTICSEARCH_HOSTS'],
+                                       verify_certs=app.config.get("ELASTIC_SEARCH_VERIFY_CERTS", True),
+                                       request_timeout=app.config.get('ELASTICSEARCH_REQ_TIMEOUT', 15))
 
     return conn
 
