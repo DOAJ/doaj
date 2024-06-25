@@ -22,6 +22,7 @@ doaj.dashboard.init = function(context) {
     if (first) {
         first.trigger("click");
     }
+
 }
 
 doaj.dashboard.groupTabClick = function(event) {
