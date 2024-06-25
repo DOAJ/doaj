@@ -1,0 +1,18 @@
+from datetime import datetime
+
+current_year = datetime.now().year
+
+class FixtureMessages(object):
+    ERROR_YES_REQUIRED = "You must answer Yes to continue"
+    ERROR_OA_STATEMENT = "DOAJ only indexes open access journals which comply with the statement above. Please check and update the open access statement of your journal. You may return to this application at any time."
+    ERROR_OA_STATEMENT_URL = "Enter the URL for the journal’s Open Access statement page"
+    ERROR_OA_START_REQUIRED = "Enter the Year (YYYY)."
+    ERROR_OA_START_INVALID_VALUE = f'This value should be between 1900 and {current_year}'
+    ERROR_INVALID_URL = "This value should be a valid url."
+    ERROR_YES_OR_NO_REQUREID = "Select Yes or No"
+    ERROR_JOURNAL_URL_REQUIRED = "Enter the URL for the journal’s homepage"
+    ERROR_JOURNAL_URL_INVALID = "This value should be a valid url."
+    ERROR_PISSN_OR_EISSN_REQUIRED = "You must provide one or both of an online ISSN or a print ISSN"
+    ERROR_INCORRECT_ISSN = "This is not a valid ISSN"
+    ERROR_PISSN_AND_EISSN_MUST_BE_DIFFERENT = "This field must contain a different value to 'ISSN (print)'"
+    ERROR_KEYWORDS_REQUIRED = "Enter at least one subject keyword in English"
