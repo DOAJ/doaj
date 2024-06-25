@@ -17,6 +17,7 @@ doaj.dashboard.bannerTextFile = "/assets/motivational_banners.yml"
 
 doaj.dashboard.init = function (context) {
     doaj.dashboard.context = context;
+    doaj.dashboard.motivationalBanners = motivational_banners;
     doaj.dashboard.context.historical_count = historical_count;
     $(".js-group-tab").on("click", doaj.dashboard.groupTabClick);
 
@@ -32,35 +33,23 @@ doaj.dashboard.init = function (context) {
 doaj.dashboard.generateMotivationalBanner = function () {
 
     _addNumberToBanner = function (text) {
-        console.log(text);
         var number = `<span class="tag tag--confirmation">` + doaj.dashboard.context.historical_count + `</span>`;
         var bannerTextWithNumber = text.replace(/{{ COUNT }}/g, number);
-        console.log(bannerTextWithNumber)
         return bannerTextWithNumber;
     }
     _addTextToBanner = function (text) {
         $("#banner_text_placeholder").html(text);
     }
 
-    $.get(doaj.dashboard.bannerTextFile, function (data) {
-        doaj.dashboard.context.historical_count = 3;
-        try {
-            var parsedData = jsyaml.load(data);
-            var bannerText = "";
-            if (doaj.dashboard.context.historical_count == 0) {
-                bannerText = parsedData["banners"]["zero_count"][0];
-            } else {
-                var available_texts = parsedData["banners"]["positive_count"]
-                var randomIndex = Math.floor(Math.random() * available_texts.length);
-                var randomBannerText = available_texts[randomIndex];
-                console.log(randomBannerText);
-                bannerText = _addNumberToBanner(randomBannerText);
-            }
-            _addTextToBanner(bannerText);
-        } catch (e) {
-            console.error("Error parsing YAML:", e);
-        }
-    }, 'text'); // The 'text' parameter is important to ensure the file is read as plain text
+    if (doaj.dashboard.context.historical_count == 0) {
+        bannerText = doaj.dashboard.motivationalBanners["banners"]["zero_count"][0];
+    } else {
+        var available_texts = doaj.dashboard.motivationalBanners["banners"]["positive_count"]
+        var randomIndex = Math.floor(Math.random() * available_texts.length);
+        var randomBannerText = available_texts[randomIndex];
+        bannerText = _addNumberToBanner(randomBannerText);
+    }
+    _addTextToBanner(bannerText);
 }
 
 doaj.dashboard.groupTabClick = function (event) {
