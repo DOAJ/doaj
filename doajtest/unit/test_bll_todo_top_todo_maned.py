@@ -217,3 +217,59 @@ class TestBLLTopTodoManed(DoajTestCase):
 
         ap.save()
         app_registry.append(ap)
+
+    def test_historical_count(self):
+        EDITOR_GROUP_SOURCE = EditorGroupFixtureFactory.make_editor_group_source()
+        eg = models.EditorGroup(**EDITOR_GROUP_SOURCE)
+        maned = models.Account(**AccountFixtureFactory.make_managing_editor_source())
+
+        EDITOR_SOURCE = AccountFixtureFactory.make_editor_source()
+        ASSED1_SOURCE = AccountFixtureFactory.make_assed1_source()
+        ASSED2_SOURCE = AccountFixtureFactory.make_assed2_source()
+        ASSED3_SOURCE = AccountFixtureFactory.make_assed3_source()
+        editor = models.Account(**EDITOR_SOURCE)
+        assed1 = models.Account(**ASSED1_SOURCE)
+        assed2 = models.Account(**ASSED2_SOURCE)
+        assed3 = models.Account(**ASSED3_SOURCE)
+        editor.save(blocking=True)
+        assed1.save(blocking=True)
+        assed2.save(blocking=True)
+        assed3.save(blocking=True)
+        eg.set_maned(maned.id)
+        eg.set_editor(editor.id)
+        eg.set_associates([assed1.id, assed2.id, assed3.id])
+        eg.save(blocking=True)
+
+        self.add_provenance_record("status:" + constants.APPLICATION_STATUS_READY, "editor", editor.id, eg)
+        self.add_provenance_record("status:" + constants.APPLICATION_STATUS_COMPLETED, "associate_editor", assed1.id, eg)
+        self.add_provenance_record("status:" + constants.APPLICATION_STATUS_COMPLETED, "associate_editor", assed2.id, eg)
+        self.add_provenance_record("status:" + constants.APPLICATION_STATUS_COMPLETED, "associate_editor", assed3.id, eg)
+
+        stats = self.svc.historical_numbers(eg)
+
+        self.assertEqual(stats["year"], dates.now_str(dates.FMT_YEAR))
+        self.assertEqual(stats["editor"]["name"], editor.name)
+        self.assertEqual(stats["editor"]["count"], 1)
+
+        associate_editors = [assed1.name, assed2.name, assed3.name]
+
+        for assed in stats["associate_editors"]:
+            self.assertTrue(assed["name"] in associate_editors)
+            self.assertEqual(assed["count"], 1)
+
+        editor_count = self.svc.historical_count(editor)
+        self.assertEqual(editor_count, 1)
+        assed_count = self.svc.historical_count(assed1)
+        self.assertEqual(assed_count, 1)
+
+
+    def add_provenance_record(self, status, role, user, editor_group):
+        data = {
+            "user": user,
+            "roles": [role],
+            "type": "suggestion",
+            "action": status,
+            "editor_group": [editor_group.id]
+        }
+        p1 = models.Provenance(**data)
+        p1.save(blocking=True)
