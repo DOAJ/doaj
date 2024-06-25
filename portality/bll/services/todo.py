@@ -61,7 +61,58 @@ class TodoService(object):
                 elif b["key"] == constants.APPLICATION_TYPE_UPDATE_REQUEST:
                     stats["by_status"][bucket["key"]]["update_requests"] = b["doc_count"]
 
+        stats["historical_numbers"] = self.historical_numbers(eg)
+
         return stats
+
+    def historical_numbers(self, editor_group:models.EditorGroup):
+        """
+        Get the count of applications in an editor group where
+        Associate Editors set to Completed when they have done their review
+        Editors set them to Ready
+        in current year
+        :param editor_group:
+        :return: historical for editor and associate editor in dict
+        """
+        editor_status = "status:" + constants.APPLICATION_STATUS_READY
+        associate_status = "status:" + constants.APPLICATION_STATUS_COMPLETED
+
+        stats = {"year":dates.now_str(dates.FMT_YEAR)}
+
+        hs = HistoricalNumbersQuery(editor_group.editor, editor_status, editor_group.id)
+        # ~~-> Provenance:Model ~~
+        editor_count = models.Provenance.count(body=hs.query())
+
+        # ~~-> Account:Model ~~
+        acc = models.Account.pull(editor_group.editor)
+        stats["editor"] = {"name":acc.name, "count": editor_count}
+
+        stats["associate_editors"] = []
+        for associate in editor_group.associates:
+            hs = HistoricalNumbersQuery(associate, associate_status, editor_group.id)
+            associate_count = models.Provenance.count(body=hs.query())
+            acc = models.Account.pull(associate)
+            stats["associate_editors"].append({"name":acc.name, "count":associate_count})
+
+        return stats
+
+    def historical_count(self, account):
+        """
+        Get the count of overall applications
+        Associate Editors set to Completed
+        Editors set them to Ready
+        in current year
+        :param account:
+        :return:
+        """
+        if account.has_role("editor"):
+            hs = HistoricalNumbersQuery(account.id, "status:" + constants.APPLICATION_STATUS_READY)
+        elif account.has_role("associate_editor"):
+            hs = HistoricalNumbersQuery(account.id, "status:" + constants.APPLICATION_STATUS_COMPLETED)
+
+        count = models.Provenance.count(body=hs.query())
+
+        return count
 
 
     def top_todo(self, account, size=25, new_applications=True, update_requests=True):
@@ -629,6 +680,35 @@ class GroupStatsQuery():
                             }
                         }
                     }
+                }
+            }
+        }
+
+
+class HistoricalNumbersQuery:
+    """
+    ~~->$HistoricalNumbers:Query~~
+    ~~^->Elasticsearch:Technology~~
+    """
+    def __init__(self, editor, application_status, editor_group=None):
+        self.editor_group = editor_group
+        self.editor = editor
+        self.application_status = application_status
+
+    def query(self):
+        must_terms = [{"range": {"last_updated": {"gte": "now/y", "lte": "now"}}},
+            {"term": {"type": "suggestion"}},
+            {"term": {"user": self.editor}},
+            {"term": {"action": self.application_status}}
+        ]
+
+        if self.editor_group:
+            must_terms.append({"term": {"editor_group": self.editor_group}})
+
+        return {
+            "query": {
+                "bool": {
+                    "must": must_terms
                 }
             }
         }

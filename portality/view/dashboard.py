@@ -32,8 +32,10 @@ def top_todo():
                          new_applications=new_applications,
                          update_requests=update_requests)
 
+    count = svc.historical_count(current_user._get_current_object())
+
     # ~~-> Dashboard:Page~~
-    return render_template('dashboard/index.html', todos=todos)
+    return render_template('dashboard/index.html', todos=todos, historical_count=count)
 
 
 @blueprint.route("/top_notifications")
