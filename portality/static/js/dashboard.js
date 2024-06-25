@@ -1,6 +1,6 @@
 // ~~Dashboard:Feature~~
 doaj.dashboard = {
-    statusOrder : [
+    statusOrder: [
         "pending",
         "in progress",
         "completed",
@@ -13,8 +13,11 @@ doaj.dashboard = {
     ]
 };
 
-doaj.dashboard.init = function(context) {
+doaj.dashboard.bannerTextFile = "/assets/motivational_banners.yml"
+
+doaj.dashboard.init = function (context) {
     doaj.dashboard.context = context;
+    doaj.dashboard.context.historical_count = historical_count;
     $(".js-group-tab").on("click", doaj.dashboard.groupTabClick);
 
     // trigger a click on the first one, so there is something for the user to look at
@@ -22,16 +25,51 @@ doaj.dashboard.init = function(context) {
     if (first) {
         first.trigger("click");
     }
+    this.generateMotivationalBanner();
 
 }
 
-doaj.dashboard.groupTabClick = function(event) {
+doaj.dashboard.generateMotivationalBanner = function () {
+
+    _addNumberToBanner = function (text) {
+        console.log(text);
+        var number = `<span class="tag tag--confirmation">` + doaj.dashboard.context.historical_count + `</span>`;
+        var bannerTextWithNumber = text.replace(/{{ COUNT }}/g, number);
+        console.log(bannerTextWithNumber)
+        return bannerTextWithNumber;
+    }
+    _addTextToBanner = function (text) {
+        $("#banner_text_placeholder").html(text);
+    }
+
+    $.get(doaj.dashboard.bannerTextFile, function (data) {
+        doaj.dashboard.context.historical_count = 3;
+        try {
+            var parsedData = jsyaml.load(data);
+            var bannerText = "";
+            if (doaj.dashboard.context.historical_count == 0) {
+                bannerText = parsedData["banners"]["zero_count"][0];
+            } else {
+                var available_texts = parsedData["banners"]["positive_count"]
+                var randomIndex = Math.floor(Math.random() * available_texts.length);
+                var randomBannerText = available_texts[randomIndex];
+                console.log(randomBannerText);
+                bannerText = _addNumberToBanner(randomBannerText);
+            }
+            _addTextToBanner(bannerText);
+        } catch (e) {
+            console.error("Error parsing YAML:", e);
+        }
+    }, 'text'); // The 'text' parameter is important to ensure the file is read as plain text
+}
+
+doaj.dashboard.groupTabClick = function (event) {
     let groupId = $(event.target).attr("data-group-id");
     doaj.dashboard.loadGroupTab(groupId);
 }
 
 // ~~->GroupStats:Endpoint~~
-doaj.dashboard.loadGroupTab = function(groupId) {
+doaj.dashboard.loadGroupTab = function (groupId) {
     $.ajax({
         type: "GET",
         contentType: "application/json",
@@ -42,16 +80,16 @@ doaj.dashboard.loadGroupTab = function(groupId) {
     });
 }
 
-doaj.dashboard.groupLoaded = function(data) {
+doaj.dashboard.groupLoaded = function (data) {
     let container = $("#group-tab");
     container.html(doaj.dashboard.renderGroupInfo(data));
 }
 
-doaj.dashboard.groupLoadError = function(data) {
+doaj.dashboard.groupLoadError = function (data) {
     alert("Unable to determine group status at this time");
 }
 
-doaj.dashboard.renderGroupInfo = function(data) {
+doaj.dashboard.renderGroupInfo = function (data) {
     // ~~-> EditorGroup:Model~~
 
     // first remove the editor from the associates list if they are there
@@ -71,10 +109,10 @@ doaj.dashboard.renderGroupInfo = function(data) {
         let ed = allEditors[i];
         // ~~-> ApplicationSearch:Page~~
         let appQuerySource = doaj.searchQuerySource({
-            "term" : [
-                {"admin.editor.exact" : ed},
-                {"admin.editor_group.exact" : data.editor_group.name},
-                {"index.application_type.exact" : "new application"}    // this is required so we only see open applications, not finished ones
+            "term": [
+                {"admin.editor.exact": ed},
+                {"admin.editor_group.exact": data.editor_group.name},
+                {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
             ],
             "sort": [{"admin.date_applied": {"order": "asc"}}]
         })
@@ -100,8 +138,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
             editorListFrag += `<li>`
             if (data.editors[ed].email) {
                 editorListFrag += `<a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>`
-            }
-            else {
+            } else {
                 editorListFrag += `<span class="label tag">${ed}${isEd} (no email)</span>`
             }
 
@@ -112,10 +149,10 @@ doaj.dashboard.renderGroupInfo = function(data) {
 
     // ~~-> ApplicationSearch:Page~~
     let appUnassignedSource = doaj.searchQuerySource({
-        "term" : [
-            {"admin.editor_group.exact" : data.editor_group.name},
+        "term": [
+            {"admin.editor_group.exact": data.editor_group.name},
             {"index.has_editor.exact": "No"},
-            {"index.application_type.exact" : "new application"}    // this is required so we only see open applications, not finished ones
+            {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
         ],
         "sort": [{"admin.date_applied": {"order": "asc"}}]
     });
@@ -145,7 +182,7 @@ doaj.dashboard.renderGroupInfo = function(data) {
                     ],
                     "sort": [{"admin.date_applied": {"order": "asc"}}]
                 })
-                appStatusProgressBar += `<li class="progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications/data.total.applications)*100}%;">
+                appStatusProgressBar += `<li class="progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications / data.total.applications) * 100}%;">
                     <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appStatusSource}" class="progress-bar__link" title="See ${data.by_status[status].applications} ${status} application(s)">
                         <strong>${data.by_status[status].applications}</strong>
                     </a></li>`;
@@ -155,9 +192,9 @@ doaj.dashboard.renderGroupInfo = function(data) {
 
     // ~~-> ApplicationSearch:Page~~
     let appGroupSource = doaj.searchQuerySource({
-        "term" : [
-            {"admin.editor_group.exact" : data.editor_group.name},
-            {"index.application_type.exact" : "new application"}    // this is required so we only see open applications, not finished ones
+        "term": [
+            {"admin.editor_group.exact": data.editor_group.name},
+            {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
         ],
         "sort": [{"admin.date_applied": {"order": "asc"}}]
     });
