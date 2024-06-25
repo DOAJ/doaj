@@ -175,17 +175,15 @@
                     </nav>
                 </div>
                 <div class="row">
-                {% set historical_count = 3 %}
                     <div class="col-md-12 col-lg-12 center">
-                        {% if historical_count > 0 %}
-                        <div class="alert alert--success motivational-banner font-serif type-06" id="motivational-banner">
-                            <h3>{% include "includes/svg/award.svg" %} Congratulations! You completed <span class="tag tag--confirmation"> {{ historical_count }} </span> applications so far this year!</h3>
-                        </div>
-                        {% else %}
-                        <div class="alert alert--success motivational-banner font-serif type-06" id="motivational-banner">
-                            <h3> You haven't completed any applications this year yet. Start by choosing one from the list below.</h3>
-                        </div>
-                        {% endif %}
+                            <div class="alert {% if historical_count > 0 %}alert--success{% else %}alert--info{% endif %} motivational-banner font-serif type-06">
+                                <h3 id="motivational-banner">
+                                    {% if historical_count > 0 %}
+                                        {% include "includes/svg/award.svg" %}
+                                    {% endif %}
+                                    <span id="banner_text_placeholder">{{ BANNER_TEXT }}</span>
+                                </h3>
+                            </div>
                     </div>
                 </div>
             </header>
@@ -211,6 +209,11 @@
     {% include '_js_includes.html' %}
     <script type="text/javascript" src="/static/js/notifications.js?v={{ config.get('DOAJ_VERSION') }}"></script>
     {% block extra_js_bottom %}{% endblock extra_js_bottom %}
+
+    <script>
+        var historical_count = {{ historical_count }};
+    </script>
+
 
     {% if not request.cookies.get("doaj-consent") %}
         <script type="text/javascript">
