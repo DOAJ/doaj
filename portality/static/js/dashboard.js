@@ -72,6 +72,7 @@ doaj.dashboard.loadGroupTab = function (groupId) {
 doaj.dashboard.groupLoaded = function (data) {
     let container = $("#group-tab");
     container.html(doaj.dashboard.renderGroupInfo(data));
+    console.log(data);
 }
 
 doaj.dashboard.groupLoadError = function (data) {
@@ -79,146 +80,132 @@ doaj.dashboard.groupLoadError = function (data) {
 }
 
 doaj.dashboard.renderGroupInfo = function (data) {
-    // ~~-> EditorGroup:Model~~
-
-    // first remove the editor from the associates list if they are there
-    if (data.editor_group.associates && data.editor_group.associates.length > 0) {
-        let edInAssEd = data.editor_group.associates.indexOf(data.editor_group.editor)
-        if (edInAssEd > -1) {
-            data.editor_group.associates.splice(edInAssEd, 1);
+    // Remove the editor from the associates list if they are there
+    _removeEditorFromAssociates = function (data) {
+        if (data.editor_group.associates && data.editor_group.associates.length > 0) {
+            let edInAssEd = data.editor_group.associates.indexOf(data.editor_group.editor);
+            if (edInAssEd > -1) {
+                data.editor_group.associates.splice(edInAssEd, 1);
+            }
+        } else {
+            data.editor_group.associates = [];  // to avoid having to keep checking it below
         }
-    } else {
-        data.editor_group.associates = [];  // just to avoid having to keep checking it below
     }
 
-    let allEditors = [data.editor_group.editor].concat(data.editor_group.associates);
+    // Generate the search query source
+    _generateSearchQuerySource = function (term, sort) {
+        return doaj.searchQuerySource({
+            "term": term,
+            "sort": sort
+        });
+    }
 
-    let editorListFrag = "";
-    for (let i = 0; i < allEditors.length; i++) {
-        let ed = allEditors[i];
-        // ~~-> ApplicationSearch:Page~~
-        let appQuerySource = doaj.searchQuerySource({
-            "term": [
+    // Generate the editor list fragment
+    _generateEditorListFragment = function (data, allEditors) {
+        let editorListFrag = "";
+        for (let i = 0; i < allEditors.length; i++) {
+            let ed = allEditors[i];
+            let appQuerySource = _generateSearchQuerySource([
                 {"admin.editor.exact": ed},
                 {"admin.editor_group.exact": data.editor_group.name},
-                {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
-            ],
-            "sort": [{"admin.date_applied": {"order": "asc"}}]
-        })
-        // // ~~-> UpdateRequestsSearch:Page ~~
-        // let urQuerySource = doaj.searchQuerySource({"term" : [
-        //     {"admin.editor.exact" : ed},
-        //     {"admin.editor_group.exact" : data.editor_group.name},
-        //     {"index.application_type.exact" : "update request"}    // this is required so we only see open update requests, not finished ones
-        // ]})
-        let appCount = 0;
-        let urCount = 0;
-        if (data.by_editor[ed]) {
-            appCount = data.by_editor[ed].applications || 0;
-            urCount = data.by_editor[ed].update_requests || 0;
-        }
+                {"index.application_type.exact": "new application"}    // only see open applications, not finished ones
+            ], [{"admin.date_applied": {"order": "asc"}}]);
 
-        if (data.editors[ed]) {
-            let isEd = "";
-            if (i === 0) {  // first one in the list is always the editor
-                isEd = " (Editor)"
+            let appCount = data.by_editor[ed]?.applications || 0;
+            let urCount = data.by_editor[ed]?.update_requests || 0;
+
+            if (data.editors[ed]) {
+                let isEd = i === 0 ? " (Editor)" : "";
+                editorListFrag += `<li>`;
+                if (data.editors[ed].email) {
+                    editorListFrag += `<a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>`;
+                } else {
+                    editorListFrag += `<span class="label tag">${ed}${isEd} (no email)</span>`;
+                }
+                editorListFrag += `<a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a></li>`;
             }
-
-            editorListFrag += `<li>`
-            if (data.editors[ed].email) {
-                editorListFrag += `<a href="mailto:${data.editors[ed].email}" target="_blank" class="label tag" title="Send an email to ${ed}">${ed}${isEd}</a>`
-            } else {
-                editorListFrag += `<span class="label tag">${ed}${isEd} (no email)</span>`
-            }
-
-            editorListFrag += `<a href= "${doaj.dashboard.context.applicationsSearchBase}?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a>
-            </li>`;
         }
+        return editorListFrag;
     }
 
-    // ~~-> ApplicationSearch:Page~~
-    let appUnassignedSource = doaj.searchQuerySource({
-        "term": [
+    // Generate the unassigned applications fragment
+    _generateUnassignedApplicationsFragment = function (data) {
+        let appUnassignedSource = _generateSearchQuerySource([
             {"admin.editor_group.exact": data.editor_group.name},
             {"index.has_editor.exact": "No"},
-            {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
-        ],
-        "sort": [{"admin.date_applied": {"order": "asc"}}]
-    });
-    // ~~-> UpdateRequestsSearch:Page ~~
-    // let urUnassignedSource = doaj.searchQuerySource({"term" : [
-    //         {"admin.editor_group.exact" : data.editor_group.name},
-    //         {"index.has_editor.exact": "No"},
-    //         {"index.application_type.exact" : "update request"}    // this is required so we only see open update requests, not finished ones
-    // ]})
-    editorListFrag += `<li>
-        <span class="label tag tag--featured">Unassigned</span>
-        <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appUnassignedSource}" class="tag tag--tertiary" title="See unassigned applications">${data.unassigned.applications} <span class="sr-only">applications</span></a>
-    </li>`;
+            {"index.application_type.exact": "new application"}    // only see open applications, not finished ones
+        ], [{"admin.date_applied": {"order": "asc"}}]);
 
-    let appStatusProgressBar = "";
+        return `<li>
+            <span class="label tag tag--featured">Unassigned</span>
+            <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appUnassignedSource}" class="tag tag--tertiary" title="See unassigned applications">${data.unassigned.applications} <span class="sr-only">applications</span></a>
+        </li>`;
+    }
 
-    for (let j = 0; j < doaj.dashboard.statusOrder.length; j++) {
-        let status = doaj.dashboard.statusOrder[j];
-        if (data.by_status.hasOwnProperty(status)) {
-            if (data.by_status[status].applications > 0) {
-                // ~~-> ApplicationSearch:Page~~
-                let appStatusSource = doaj.searchQuerySource({
-                    "term": [
-                        {"admin.editor_group.exact": data.editor_group.name},
-                        {"admin.application_status.exact": status},
-                        {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
-                    ],
-                    "sort": [{"admin.date_applied": {"order": "asc"}}]
-                })
+    // Generate the status progress bar
+    _generateStatusProgressBar = function (data) {
+        let appStatusProgressBar = "";
+        for (let status of doaj.dashboard.statusOrder) {
+            if (data.by_status[status]?.applications > 0) {
+                let appStatusSource = _generateSearchQuerySource([
+                    {"admin.editor_group.exact": data.editor_group.name},
+                    {"admin.application_status.exact": status},
+                    {"index.application_type.exact": "new application"}    // only see open applications, not finished ones
+                ], [{"admin.date_applied": {"order": "asc"}}]);
+
                 appStatusProgressBar += `<li class="progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications / data.total.applications) * 100}%;">
                     <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appStatusSource}" class="progress-bar__link" title="See ${data.by_status[status].applications} ${status} application(s)">
                         <strong>${data.by_status[status].applications}</strong>
                     </a></li>`;
             }
         }
+        return appStatusProgressBar;
     }
 
-    // ~~-> ApplicationSearch:Page~~
-    let appGroupSource = doaj.searchQuerySource({
-        "term": [
+    // Generate the main fragment
+    _renderMainFragment = function (data) {
+        _removeEditorFromAssociates(data);
+
+        let allEditors = [data.editor_group.editor].concat(data.editor_group.associates);
+        let editorListFrag = _generateEditorListFragment(data, allEditors);
+        let unassignedFragment = _generateUnassignedApplicationsFragment(data);
+        let appStatusProgressBar = _generateStatusProgressBar(data);
+
+        let appGroupSource = _generateSearchQuerySource([
             {"admin.editor_group.exact": data.editor_group.name},
-            {"index.application_type.exact": "new application"}    // this is required so we only see open applications, not finished ones
-        ],
-        "sort": [{"admin.date_applied": {"order": "asc"}}]
-    });
-    // ~~-> UpdateRequestsSearch:Page ~~
-    // let urGroupSource = doaj.searchQuerySource({ "term" : [
-    //     {"admin.editor_group.exact" : data.editor_group.name},
-    //     {"index.application_type.exact" : "update request"}    // this is required so we only see open applications, not finished ones
-    // ]})
-    let frag = `<div class="tabs__content card">
-        <h3>
-          ${data.editor_group.name}’s open applications
-          <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appGroupSource}" class="tag tag--secondary" title="See all ${data.editor_group.name}’s open applications ">${data.total.applications}<span class="sr-only"> applications</span></a>
-        </h3>
+            {"index.application_type.exact": "new application"}    // only see open applications, not finished ones
+        ], [{"admin.date_applied": {"order": "asc"}}]);
 
-        <section>
-          <h4 class="label label--secondary">By editor</h4>
-          <ul class="inlined-list">
-              ${editorListFrag}
-          </ul>
-        </section>
+        return `<div class="tabs__content card">
+            <h3>
+                ${data.editor_group.name}’s open applications
+                <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appGroupSource}" class="tag tag--secondary" title="See all ${data.editor_group.name}’s open applications">${data.total.applications}<span class="sr-only"> applications</span></a>
+            </h3>
+            <section>
+                <h4 class="label label--secondary">By editor</h4>
+                <ul class="inlined-list">
+                    ${editorListFrag}
+                    ${unassignedFragment}
+                </ul>
+            </section>
+            <section>
+                <h4 class="label label--secondary">Applications by status</h4>
+                <h3 class="sr-only">Status progress bar colour legend</h3>
+                <ul class="inlined-list">
+                    <li><span class="progress-bar__bar--pending label label--secondary" style="padding: .5em;">Pending</span></li>
+                    <li><span class="progress-bar__bar--in-progress label label--secondary" style="padding: .5em;">In progress</span></li>
+                    <li><span class="progress-bar__bar--completed label label--secondary" style="padding: .5em;">Completed</span></li>
+                    <li><span class="progress-bar__bar--on-hold label label--secondary" style="padding: .5em;">On hold</span></li>
+                    <li><span class="progress-bar__bar--ready label" style="padding: .5em; color: #FFF;">Ready</span></li>
+                </ul>
+                <ul class="inlined-list progress-bar">
+                    ${appStatusProgressBar}
+                </ul>
+            </section>
+        </div>`;
+    }
 
-        <section>
-          <h4 class="label label--secondary">Applications by status</h4>
-          <h3 class="sr-only">Status progress bar colour legend</h3>
-          <ul class="inlined-list">
-            <li><span class="progress-bar__bar--pending label label--secondary" style="padding: .5em;">Pending</span></li>
-            <li><span class="progress-bar__bar--in-progress label label--secondary" style="padding: .5em;">In progress</span></li>
-            <li><span class="progress-bar__bar--completed label label--secondary" style="padding: .5em;">Completed</span></li>
-            <li><span class="progress-bar__bar--on-hold label label--secondary" style="padding: .5em;">On hold</span></li>
-            <li><span class="progress-bar__bar--ready label" style="padding: .5em; color: #FFF;">Ready</span></li>
-          </ul>
-          <ul class="inlined-list progress-bar">
-            ${appStatusProgressBar}
-          </ul>
-        </section>
-      </div>`;
-    return frag;
+    return _renderMainFragment(data);
 }
+
+
