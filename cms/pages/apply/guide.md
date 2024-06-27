@@ -208,6 +208,8 @@ Appeals are considered by the DOAJ Appeals Committee, consisting of the Head of 
 
 No further communication will be entered into after the appeal is heard and the Committee has made their decision.
 
+Appeals or complaints that include abuse of DOAJ editors will not be considered. See our [Zero tolerance policy](https://doaj.org/about/#zero-tolerance-policy). DOAJ reserves the right to impose a penalty on publishers for such behaviour. 
+
 ---
 
 ## In other languages
