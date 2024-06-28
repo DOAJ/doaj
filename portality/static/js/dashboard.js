@@ -162,6 +162,34 @@ doaj.dashboard.renderGroupInfo = function (data) {
         return appStatusProgressBar;
     }
 
+     _generateStatisticsFragment = function (data) {
+        let statisticsFrag = "";
+        let historicalNumbers = data.historical_numbers;
+
+        if (historicalNumbers) {
+            statisticsFrag += `<section>
+                <h3>Statistics for the current year (${historicalNumbers.year})</h3>`;
+
+            // Ready applications by editor
+            statisticsFrag += `<h4 class="label label--secondary">Editor's <span class="progress-bar__bar--ready label" style="padding: .5em; color: #FFF; display: unset;">Ready</span> Applications: `;
+            statisticsFrag += `<span class="label tag" style="margin-left: .5em;">${historicalNumbers.editor.name}</span> <span class="tag tag--tertiary">${historicalNumbers.editor.count}</span></h4>`;
+
+
+            // Completed applications by associated editor
+            statisticsFrag += `<h4 class="label label--secondary">Applications <span class="progress-bar__bar--completed label label--secondary" style="padding: .5em; display: unset;">Completed</span> by associated editors</h4>`;
+            statisticsFrag += `<ul class="inlined-list">`;
+            for (let associateEditor of historicalNumbers.associate_editors) {
+                statisticsFrag += `<li><span class="label tag">${associateEditor.name}</span> <span class="tag tag--tertiary">${associateEditor.count}</span></span>`;
+            }
+
+            statisticsFrag += `</ul>
+                </section>`;
+        }
+
+        return statisticsFrag;
+    };
+
+
     // Generate the main fragment
     _renderMainFragment = function (data) {
         _removeEditorFromAssociates(data);
@@ -170,39 +198,36 @@ doaj.dashboard.renderGroupInfo = function (data) {
         let editorListFrag = _generateEditorListFragment(data, allEditors);
         let unassignedFragment = _generateUnassignedApplicationsFragment(data);
         let appStatusProgressBar = _generateStatusProgressBar(data);
+        let statisticsFragment = _generateStatisticsFragment(data);
 
         let appGroupSource = _generateSearchQuerySource([
             {"admin.editor_group.exact": data.editor_group.name},
             {"index.application_type.exact": "new application"}    // only see open applications, not finished ones
         ], [{"admin.date_applied": {"order": "asc"}}]);
 
-        return `<div class="tabs__content card">
-            <h3>
-                ${data.editor_group.name}’s open applications
-                <a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appGroupSource}" class="tag tag--secondary" title="See all ${data.editor_group.name}’s open applications">${data.total.applications}<span class="sr-only"> applications</span></a>
-            </h3>
-            <section>
-                <h4 class="label label--secondary">By editor</h4>
-                <ul class="inlined-list">
-                    ${editorListFrag}
-                    ${unassignedFragment}
-                </ul>
-            </section>
-            <section>
-                <h4 class="label label--secondary">Applications by status</h4>
-                <h3 class="sr-only">Status progress bar colour legend</h3>
-                <ul class="inlined-list">
-                    <li><span class="progress-bar__bar--pending label label--secondary" style="padding: .5em;">Pending</span></li>
-                    <li><span class="progress-bar__bar--in-progress label label--secondary" style="padding: .5em;">In progress</span></li>
-                    <li><span class="progress-bar__bar--completed label label--secondary" style="padding: .5em;">Completed</span></li>
-                    <li><span class="progress-bar__bar--on-hold label label--secondary" style="padding: .5em;">On hold</span></li>
-                    <li><span class="progress-bar__bar--ready label" style="padding: .5em; color: #FFF;">Ready</span></li>
-                </ul>
-                <ul class="inlined-list progress-bar">
-                    ${appStatusProgressBar}
-                </ul>
-            </section>
-        </div>`;
+
+        // Combine all fragments
+        let frag = `<div class="tabs__content card">
+        <h3>${data.editor_group.name}’s open applications</h3>
+        
+        <section>
+          <h4 class="label label--secondary">By editor</h4>
+          <ul class="inlined-list">
+              ${editorListFrag}
+          </ul>
+        </section>
+        
+        <section>
+          <h4 class="label label--secondary">Applications by status</h4>
+          <ul class="inlined-list progress-bar">
+              ${appStatusProgressBar}
+          </ul>
+        </section>
+        
+        ${statisticsFragment}
+      </div>`;
+
+        return frag;
     }
 
     return _renderMainFragment(data);

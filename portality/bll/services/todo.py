@@ -85,14 +85,14 @@ class TodoService(object):
 
         # ~~-> Account:Model ~~
         acc = models.Account.pull(editor_group.editor)
-        stats["editor"] = {"name":acc.name, "count": editor_count}
+        stats["editor"] = {"name":acc.id, "count": editor_count}
 
         stats["associate_editors"] = []
         for associate in editor_group.associates:
             hs = HistoricalNumbersQuery(associate, associate_status, editor_group.id)
             associate_count = models.Provenance.count(body=hs.query())
             acc = models.Account.pull(associate)
-            stats["associate_editors"].append({"name":acc.name, "count":associate_count})
+            stats["associate_editors"].append({"name":acc.id, "count":associate_count})
 
         return stats
 
