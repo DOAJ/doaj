@@ -1,7 +1,6 @@
 from copy import deepcopy
-from typing import Iterable
 
-from portality import constants, models
+from portality import constants
 from portality.core import app
 from portality.lib import es_data_mapping, coerce, dates
 from portality.models.v2 import shared_structs
