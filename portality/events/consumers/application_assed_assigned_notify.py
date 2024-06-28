@@ -1,4 +1,5 @@
 # ~~ ApplicationAssedAssignedNotify:Consumer ~~
+from portality.events import consumer_utils
 from portality.util import url_for
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -11,7 +12,7 @@ class ApplicationAssedAssignedNotify(EventConsumer):
     ID = "application:assed:assigned:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_ASSED_ASSIGNED and \
                event.context.get("application") is not None
 
@@ -19,11 +20,7 @@ class ApplicationAssedAssignedNotify(EventConsumer):
     def consume(cls, event):
         app_source = event.context.get("application")
 
-        try:
-            application = models.Application(**app_source)
-        except Exception as e:
-            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
-
+        application = consumer_utils.parse_application(app_source)
         if not application.editor:
             raise exceptions.NoSuchPropertyException("Application {x} does not have property `editor`".format(x=application.id))
 
@@ -39,7 +36,7 @@ class ApplicationAssedAssignedNotify(EventConsumer):
             group_name=models.EditorGroup.find_name_by_id(application.editor_group) or application.editor_group
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
         notification.action = url_for("editor.application", application_id=application.id)
 

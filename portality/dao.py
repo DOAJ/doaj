@@ -457,9 +457,13 @@ class DomainObject(UserDict, object):
                               headers=CONTENT_TYPE_JSON, **kwargs)
                 break
             except Exception as e:
-                exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
-                if isinstance(exception, ESMappingMissingError):
-                    raise exception
+                try:
+                    exception = ESMappingMissingError(e) if ES_MAPPING_MISSING_REGEX.match(json.dumps(e.args[2])) else e
+                    if isinstance(exception, ESMappingMissingError):
+                        raise exception
+                except TypeError:
+                    raise e
+
             time.sleep(0.5)
 
         if r is not None:

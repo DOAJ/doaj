@@ -7,7 +7,8 @@ VALID_URL_LISTS = [
     "http://ftp.example.com/file%20name.txt",
     "https://revistalogos.policia.edu.co:8443/index.php/rlct/about",
     "https://revistalogos.policia.edu.co:65535/index.php/rlct/about",
-    "https://revistalogos.policia.edu.co:0/index.php/rlct/about"
+    "https://revistalogos.policia.edu.co:0/index.php/rlct/about",
+    'http://example-xxxx.xx:999/a/b/c?d=1&f=2#qq',
 ]
 
 INVALID_URL_LISTS = [

@@ -29,19 +29,19 @@ def pull_editor_group(cls, value):
 
 class TestJournalDiscontinuingSoonNotify(DoajTestCase):
 
-    def test_consumes(self):
+    def test_should_consume(self):
 
         event = models.Event("test:event", context={"data" : {"1234"}})
-        assert not JournalDiscontinuingSoonNotify.consumes(event)
+        assert not JournalDiscontinuingSoonNotify.should_consume(event)
 
         event = models.Event("test:event", context={"data": {}})
-        assert not JournalDiscontinuingSoonNotify.consumes(event)
+        assert not JournalDiscontinuingSoonNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_JOURNAL_DISCONTINUING_SOON)
-        assert not JournalDiscontinuingSoonNotify.consumes(event)
+        assert not JournalDiscontinuingSoonNotify.should_consume(event)
 
         event = models.Event(constants.EVENT_JOURNAL_DISCONTINUING_SOON, context = {"journal": {"1234"}, "discontinue_date": "2002-22-02"})
-        assert JournalDiscontinuingSoonNotify.consumes(event)
+        assert JournalDiscontinuingSoonNotify.should_consume(event)
 
     @patch('portality.models.EditorGroup.pull', pull_editor_group)
     @patch('portality.models.Application.pull', pull_application)
