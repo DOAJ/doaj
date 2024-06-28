@@ -2,6 +2,7 @@
     {# ~~->$GroupStatus:Feature~~ #}
     {% if groups | length != 0 %}
         <h2>Activity</h2>
+        {% include "includes/_color_legend.html" %}
         <div class="tabs">
         <nav class="tabs__menu">
             {# note that js-managed-groups-tabs and the structure beneath it is required in dashboard.js - if you change the
