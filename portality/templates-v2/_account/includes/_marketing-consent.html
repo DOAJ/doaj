@@ -1,0 +1,23 @@
+<aside>
+    <h2 class="label">Marketing consent</h2>
+    <form action="" method="POST" class="form form--compact">
+        <p>
+            Your DOAJ account must have an email address in it because we have to contact you with important account and journal information such as security updates; updates to the information we hold about your journal; problems with article metadata, etc. This is part of our responsibility to you to ensure that your journal information is safe and up-to-date.
+        </p>
+        <p>
+            We also send out occasional marketing emails, such as publisher surveys, opinion polls, newsletters and new functionality alerts. For those emails, we need your consent to use your email address. You may come back here and change your response at any time.
+        </p>
+        <div class="form__question">
+            <input type="radio" name="marketing_consent" id="marketing_consent_yes" {% if account.marketing_consent %}checked="checked"{% endif %} value="true">
+            <label for="marketing_consent_yes">
+                I consent to DOAJ using my email address for its own marketing purposes
+            </label>
+            <input type="radio" name="marketing_consent" id="marketing_consent_no" {% if account.marketing_consent == False %}checked="checked"{% endif %} value="false">
+            <label for="marketing_consent_no">I do not consent to DOAJ using my email address for its own marketing purposes</label>
+        </div>
+        <p>
+            DOAJ does not share your name and email address with any other organisation. Please read <a href="{{ url_for('doaj.privacy') }}">our full privacy policy</a>.
+        </p>
+        <input type="submit" class="button" name="submit" value="Save consent">
+    </form>
+</aside>

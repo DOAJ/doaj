@@ -1,0 +1,40 @@
+{% from "_application-form/includes/_value.html" import value %}
+
+{% if current_journal %}
+    <h2 class="alert">
+        <span data-feather="alert-triangle" aria-hidden="true"></span>
+        The following fields have changed:
+    </h2>
+
+    <table>
+        <thead>
+        <tr>
+            <th style="width: 30%"></th>
+            <th style="width: 35%;">Previous</th>
+            <th style="width: 35%;">New</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for f in formulaic_context.list_fields_in_order() %}
+            {% if f.name in form_diff %}
+                {% set previous = form_diff[f.name]['a'] %}
+                {% set new = form_diff[f.name]['b'] %}
+                <tr>
+                    <td>
+                        {% if f.diff_table_context %}
+                            <p>{{ f.diff_table_context }} information</p>
+                        {% endif %}
+                        <a href="#question-{{ f.name }}">{{ f.label }}</a>
+                    </td>
+                    <td>
+                        {{ value(previous, f.name, formulaic_context) }}
+                    </td>
+                    <td>
+                        {{ value(new, f.name, formulaic_context) }}
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

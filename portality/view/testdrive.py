@@ -27,7 +27,7 @@ def testdrive(test_id):
         resp.mimetype = "application/json"
         return resp
 
-    return render_template("testdrive/testdrive.html", params=params, name=test_id)
+    return render_template("dev/testdrive/testdrive.html", params=params, name=test_id)
 
 
 @blueprint.route("/<test_id>/teardown")

@@ -1,0 +1,29 @@
+{% extends "public/base.html" %}
+
+{% block page_title %}Journals{% endblock %}
+{% block meta_og_title %}Journals{% endblock %}
+{% block meta_twitter_title %}Journals{% endblock %}
+{%- block meta_description -%}Find open access journals in DOAJ.{%- endblock -%}
+{%- block meta_og_description -%}Find open access journals in DOAJ.{%- endblock -%}
+{%- block meta_twitter_description -%}Find open access journals in DOAJ.{%- endblock -%}
+
+{% block public_content %}
+    <div class="container page-content">
+        <div id="public-journal-search"></div>
+        {% include "public/includes/_search-help-modal.html" %}
+    </div>
+{% endblock %}
+
+{% block public_js %}
+    <script type="text/javascript">
+    $.extend(true, doaj, {
+        publicSearchConfig : {
+            publicSearchPath : '{{ url_for("query.query", path="journal/_search") }}?ref=public_journal',
+            lccTree: {{ lcc_tree|tojson }}
+        }
+    });
+    </script>
+
+    {% include "includes/_edges_common_js.html" %}
+    <script type="text/javascript" src="/static/js/edges/public.journal.edge.js?v={{config.get('DOAJ_VERSION')}}"></script>
+{% endblock %}

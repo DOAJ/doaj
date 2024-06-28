@@ -1,0 +1,34 @@
+{% extends "public/publisher/base.html" %}
+{# ~~PublisherArticleMetadata:Page~~ #}
+
+{% block page_title %}Enter article metadata{% endblock %}
+
+{% block publisher_content %}
+<div class="row">
+    <header class="col-md-4">
+        <p></p> {# FIXME: style workaround #}
+        <h2>Enter article metadata</h2>
+    </header>
+
+        {% include "includes/_error_header.html" %}
+
+        {% from "includes/_formhelpers.html" import render_field_horizontal %}
+        {% from "includes/_formhelpers.html" import render_field %}
+
+        <form method="post" action="{{ url_for('publisher.metadata') }}" class="col-md-8 form form--compact" id="article_metadata_form">
+            {% include "_articles/includes/_article_metadata_form.html" %}
+            <button class="button button--primary" type="submit">Add Article</button>
+        </form>
+</div>
+{% endblock %}
+
+{% block publisher_js %}
+    <script type="text/javascript" src="/static/js/article_metadata_form.js"></script>
+    <script type="text/javascript" src="/static/js/dontleave.js"></script>
+    <script type="text/javascript">
+    {# ~~->DontLeave:Feature~~ #}
+    jQuery(document).ready(function($) {
+        doaj.dontleave.init({containerSelector: "#article_metadata_form"});
+    });
+    </script>
+{% endblock %}

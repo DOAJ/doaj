@@ -8,7 +8,7 @@ from portality.core import app
 from portality.lib import dates
 from portality.models import Account
 from portality.models.harvester import HarvesterProgressReport as Report
-
+from portality.ui import templates
 
 def swag(swag_summary, swag_spec):
     """
@@ -119,7 +119,8 @@ def write_required(script=False, api=False):
                     resp.mimetype = "application/json"
                     return resp
                 else:
-                    return render_template("doaj/readonly.html")
+                    # FIXME: ideally, this would show a different page for each different user class
+                    return render_template(templates.PUBLIC_READ_ONLY_MODE)
 
             return fn(*args, **kwargs)
 

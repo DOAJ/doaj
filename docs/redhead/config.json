@@ -1,0 +1,12 @@
+[
+    {
+        "template_dir": "/home/richard/Dropbox/Code/doaj3/portality/templates",
+        "template_filters": [".*\\.html$", ".*\\.jinja2$", ".*_frag$"],
+        "out_dir": "/home/richard/Dropbox/Code/doaj3/docs/redhead/templates"
+    },
+    {
+        "template_dir": "/home/richard/Dropbox/Code/doaj3/portality/templates-v2",
+        "template_filters": [".*\\.html$", ".*\\.jinja2$", ".*_frag$"],
+        "out_dir": "/home/richard/Dropbox/Code/doaj3/docs/redhead/templates-v2"
+    }
+]

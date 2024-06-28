@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block base_meta %}
+    <meta name="description" content="{% block meta_description %}DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is freely available online for everyone.{% endblock %}">
+
+    <!-- OpenGraph -->
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{% block meta_og_title %}Directory of Open Access Journals{% endblock %} – DOAJ">
+    <meta property="og:description" content="{%- block meta_og_description -%}DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is freely available online for everyone.{%- endblock -%}">
+    <meta property="og:image" content="{{ base_url }}/assets/img/opengraph/img.png">
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="twitter:domain" content="doaj.org">
+    <meta property="twitter:creator" content="@DOAJplus">
+    <meta property="twitter:url" content="https://doaj.org">
+    <meta name="twitter:title" content="{% block meta_twitter_title %}Directory of Open Access Journals{% endblock %} – DOAJ">
+    <meta name="twitter:description" content="{%- block meta_twitter_description -%}DOAJ is a unique and extensive index of diverse open access journals from around the world, driven by a growing community, committed to ensuring quality content is freely available online for everyone.{%- endblock -%}">
+    <meta name="twitter:image" content="{{ base_url }}/assets/img/opengraph/img.png">
+
+    {% block public_meta %}{% endblock %}
+{% endblock %}
+
+{% block base_stylesheets %}
+    {% block public_stylesheets %}{% endblock %}
+{% endblock %}
+
+{% block base_content %}
+
+    <a href="#maincontent" class="skip-to-main"><span aria-hidden="true" data-feather="arrow-down"></span></a>
+
+    <header class="page-header">
+        {% include "public/includes/_header.html" %}
+        <div class="container">{% include "includes/_flash_notification.html" %}</div>
+        {% block extra_header %}{% endblock %}
+    </header>
+
+    {% include "public/includes/_quick_search_modal.html" %}
+
+    {# global site note #}
+    {% if config.get("SITE_NOTE_ACTIVE", False) and not request.cookies.get(config.get("SITE_NOTE_KEY")) %}
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    {% include templates.SITE_NOTE %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <main id="maincontent">
+        {% block public_content %}{% endblock %}
+    </main>
+
+    {% include "public/includes/_footer.html" %}
+
+{% endblock %}
+
+{% block base_js %}
+    {% block public_js %}{% endblock %}
+{% endblock %}
+

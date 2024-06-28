@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <title>{% block page_title %}Directory of Open Access Journals{% endblock %} – DOAJ</title>
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/assets/img/favicon/site.webmanifest">
+    <link rel="mask-icon" href="/assets/img/favicon/safari-pinned-tab.svg" color="#fd5a3b">
+    <link rel="shortcut icon" href="/assets/img/favicon/favicon.ico">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="msapplication-config" content="/assets/img/favicon/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    {% block base_meta %}{% endblock %}
+
+    <!-- Faster Google font loading from https://csswizardry.com/2020/05/the-fastest-google-fonts/ -->
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin />
+
+    <link rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" />
+
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap"
+          media="print" onload="this.media='all'" />
+
+    <noscript>
+        <link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" />
+    </noscript>
+
+    {# FIXME: probably just on the application form? #}
+    <link rel="stylesheet" type="text/css" href="/static/vendor/select2-3.5.4/select2.css">
+
+    {# Page-specific styles  todo: select2 could possibly go here #}
+    {% block base_stylesheets %}{% endblock %}
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="/static/doaj/css/main.css?v={{config.get('DOAJ_VERSION')}}">
+
+</head>
+
+<body class="{% block body_class %}{% endblock %}"
+      id="{% block body_id %}body{% endblock %}" {% block body_attrs %}{% endblock %}
+      data-spy="scroll" data-offset="70">
+
+{% if not request.cookies.get(config.get("CONSENT_COOKIE_KEY")) %}
+    {% include "includes/_cookie_consent.html" %}
+{% endif %}
+
+{% block base_content %}{% endblock %}
+
+{% include 'includes/_js_includes.html' %}
+
+{% if not request.cookies.get("doaj-consent") %}
+    <script type="text/javascript">
+        jQuery(document).ready(function() {
+            $(".cookie-consent #cookie-consent-hide").on("click", setCookieConsent);
+            $(".site-note-dismiss").on("click", dissmissSiteNote);
+        });
+    </script>
+{% endif %}
+
+{% block base_js %}{% endblock %}
+
+</body>
+
+</html>

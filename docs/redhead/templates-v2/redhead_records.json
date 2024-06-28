@@ -1,0 +1,1142 @@
+[
+  {
+    "type": "template",
+    "file": "base.html",
+    "blocks": [
+      "page_title",
+      "base_meta",
+      "base_stylesheets",
+      "body_class",
+      "body_id",
+      "body_attrs",
+      "base_content",
+      "base_js"
+    ],
+    "includes": [
+      "doaj/cookie_consent.html",
+      "_js_includes.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_meta",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_stylesheets",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "body_class",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "body_id",
+    "file": "base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "body_attrs",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_content",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_js",
+    "file": "base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "public/base.html",
+    "blocks": [
+      "base_meta",
+      "base_stylesheets",
+      "base_content",
+      "base_js"
+    ],
+    "extends": [
+      "base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "base_meta",
+    "file": "public/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "blocks": [
+      "meta_description",
+      "meta_og_title",
+      "meta_og_description",
+      "meta_twitter_title",
+      "meta_twitter_description",
+      "public_meta"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "meta_description",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_og_title",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_og_description",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_twitter_title",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_twitter_description",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_meta",
+    "file": "public/base.html",
+    "parent_block": "base_meta",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_stylesheets",
+    "file": "public/base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false,
+    "blocks": [
+      "public_stylesheets"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "public_stylesheets",
+    "file": "public/base.html",
+    "parent_block": "base_stylesheets",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_content",
+    "file": "public/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "blocks": [
+      "extra_header",
+      "public_content"
+    ],
+    "includes": [
+      "includes/header.html",
+      "includes/_flash_notification.html",
+      "includes/_quick_search_modal.html",
+      "includes/footer.html"
+    ],
+    "dynamic_includes": [
+      "config.get(\"SITE_NOTE_TEMPLATE\")"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "extra_header",
+    "file": "public/base.html",
+    "parent_block": "base_content",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/base.html",
+    "parent_block": "base_content",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_js",
+    "file": "public/base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false,
+    "blocks": [
+      "public_js"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "public_js",
+    "file": "public/base.html",
+    "parent_block": "base_js",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "public/index.html",
+    "blocks": [
+      "body_class",
+      "extra_header",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "body_class",
+    "file": "public/index.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "extra_header",
+    "file": "public/index.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/index.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "public/layouts/_static-page_no-sidenav.html",
+    "dynamic_includes": [
+      "page.frag",
+      "page.aside",
+      "page.include"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "public/layouts/_static-page_sidenav.html",
+    "dynamic_includes": [
+      "page.preface",
+      "page.frag",
+      "page.include",
+      "page.sidenav_include"
+    ],
+    "includes": [
+      "includes/_sidenav_toc.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "public/layouts/static-page.html",
+    "blocks": [
+      "page_title",
+      "meta_og_title",
+      "meta_twitter_title",
+      "meta_description",
+      "meta_og_description",
+      "meta_twitter_description",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_og_title",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_twitter_title",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_description",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_og_description",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "meta_twitter_description",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/layouts/static-page.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "dynamic_includes": [
+      "inc",
+      "page.frag"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "public/account/reset.html",
+    "blocks": [
+      "page_title",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/account/reset.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/account/reset.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_account/includes/_reset_form.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "public/account/login.html",
+    "blocks": [
+      "page_title",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/account/login.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/account/login.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_account/includes/_login_form.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "public/account/register.html",
+    "blocks": [
+      "page_title",
+      "public_stylesheets",
+      "public_content",
+      "public_js"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/account/register.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_stylesheets",
+    "file": "public/account/register.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/account/register.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_account/includes/_register_form.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "public_js",
+    "file": "public/account/register.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "public/account/login_to_apply.html",
+    "blocks": [
+      "page_title",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/account/login_to_apply.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/account/login_to_apply.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_account/includes/_login_form.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "public/account/forgot.html",
+    "blocks": [
+      "page_title",
+      "public_content"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/account/forgot.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/account/forgot.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "public/account/edit.html",
+    "blocks": [
+      "page_title",
+      "public_content",
+      "public_js"
+    ],
+    "extends": [
+      "public/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "public/account/edit.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "public_content",
+    "file": "public/account/edit.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_account/includes/_edit_user_form.html",
+      "_account/includes/_marketing-consent.html",
+      "_account/includes/_api-access.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "public_js",
+    "file": "public/account/edit.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_account/includes/_edit_form_js.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "_account/includes/_edit_form_js.html"
+  },
+  {
+    "type": "template",
+    "file": "_account/includes/_register_form.html"
+  },
+  {
+    "type": "template",
+    "file": "_account/includes/_login_form.html"
+  },
+  {
+    "type": "template",
+    "file": "_account/includes/_edit_user_form.html"
+  },
+  {
+    "type": "template",
+    "file": "_account/includes/_api-access.html"
+  },
+  {
+    "type": "template",
+    "file": "_account/includes/_marketing-consent.html"
+  },
+  {
+    "type": "template",
+    "file": "_account/includes/_reset_form.html"
+  },
+  {
+    "type": "template",
+    "file": "management/base.html",
+    "blocks": [
+      "base_meta",
+      "base_stylesheets",
+      "body_class",
+      "base_content",
+      "base_js"
+    ],
+    "extends": [
+      "base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "base_meta",
+    "file": "management/base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false,
+    "blocks": [
+      "management_meta"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "management_meta",
+    "file": "management/base.html",
+    "parent_block": "base_meta",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_stylesheets",
+    "file": "management/base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false,
+    "blocks": [
+      "management_stylesheets"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "management_stylesheets",
+    "file": "management/base.html",
+    "parent_block": "base_stylesheets",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "body_class",
+    "file": "management/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_content",
+    "file": "management/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "blocks": [
+      "nav",
+      "page_title",
+      "management_content"
+    ],
+    "dynamic_includes": [
+      "config.get(\"SITE_NOTE_TEMPLATE\")"
+    ],
+    "includes": [
+      "includes/svg/doaj-icon.svg",
+      "includes/_tourist_nav.html",
+      "includes/_flash_notification.html",
+      "includes/_back-to-top.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "nav",
+    "file": "management/base.html",
+    "parent_block": "base_content",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "management/base.html",
+    "parent_block": "base_content",
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "management_content",
+    "file": "management/base.html",
+    "parent_block": "base_content",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "base_js",
+    "file": "management/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "blocks": [
+      "management_js"
+    ],
+    "includes": [
+      "includes/_tourist.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "management_js",
+    "file": "management/base.html",
+    "parent_block": "base_js",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "management/admin/base.html",
+    "blocks": [
+      "management_stylesheets",
+      "nav",
+      "management_content",
+      "management_js"
+    ],
+    "extends": [
+      "management/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "management_stylesheets",
+    "file": "management/admin/base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false,
+    "blocks": [
+      "admin_stylesheets"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "admin_stylesheets",
+    "file": "management/admin/base.html",
+    "parent_block": "management_stylesheets",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "nav",
+    "file": "management/admin/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "dashboard/nav.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "management_content",
+    "file": "management/admin/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "blocks": [
+      "admin_content"
+    ],
+    "includes": [
+      "includes/_hotjar.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "admin_content",
+    "file": "management/admin/base.html",
+    "parent_block": "management_content",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "management_js",
+    "file": "management/admin/base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false,
+    "blocks": [
+      "admin_js"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "admin_js",
+    "file": "management/admin/base.html",
+    "parent_block": "management_js",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "management/admin/admin_site_search.html",
+    "blocks": [
+      "page_title",
+      "admin_content",
+      "extra_js_bottom"
+    ],
+    "extends": [
+      "management/admin/base.html"
+    ],
+    "includes": [
+      "_edges_common_css.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "management/admin/admin_site_search.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "admin_content",
+    "file": "management/admin/admin_site_search.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "extra_js_bottom",
+    "file": "management/admin/admin_site_search.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_edges_common_js.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "management/admin/includes/_applications_and_update_requests_common.html"
+  },
+  {
+    "type": "template",
+    "file": "management/admin/includes/_applications_and_update_requests_common_js.html",
+    "includes": [
+      "_edges_common_js.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "management/admin/account/users.html",
+    "blocks": [
+      "page_title",
+      "admin_content",
+      "admin_js"
+    ],
+    "extends": [
+      "management/admin/base.html"
+    ],
+    "includes": [
+      "_edges_common_css.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "management/admin/account/users.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "admin_content",
+    "file": "management/admin/account/users.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "admin_js",
+    "file": "management/admin/account/users.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_edges_common_js.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "management/admin/account/create.html",
+    "blocks": [
+      "page_title",
+      "admin_stylesheets",
+      "admin_content",
+      "admin_js"
+    ],
+    "extends": [
+      "management/admin/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "management/admin/account/create.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "admin_stylesheets",
+    "file": "management/admin/account/create.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "admin_content",
+    "file": "management/admin/account/create.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_account/includes/_register_form.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "admin_js",
+    "file": "management/admin/account/create.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "management/admin/account/edit.html",
+    "blocks": [
+      "page_title",
+      "admin_content",
+      "admin_js"
+    ],
+    "extends": [
+      "management/admin/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "management/admin/account/edit.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "admin_content",
+    "file": "management/admin/account/edit.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_account/includes/_edit_user_form.html",
+      "_account/includes/_marketing-consent.html",
+      "_account/includes/_api-access.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "admin_js",
+    "file": "management/admin/account/edit.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_account/includes/_edit_form_js.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "management/editor/base.html",
+    "blocks": [
+      "management_stylesheets",
+      "nav",
+      "management_content",
+      "management_js"
+    ],
+    "extends": [
+      "management/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "management_stylesheets",
+    "file": "management/editor/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "blocks": [
+      "editor_stylesheets"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "editor_stylesheets",
+    "file": "management/editor/base.html",
+    "parent_block": "management_stylesheets",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "nav",
+    "file": "management/editor/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "editor/nav.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "management_content",
+    "file": "management/editor/base.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "blocks": [
+      "editor_content"
+    ],
+    "includes": [
+      "includes/_hotjar.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "editor_content",
+    "file": "management/editor/base.html",
+    "parent_block": "management_content",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "management_js",
+    "file": "management/editor/base.html",
+    "parent_block": null,
+    "content": false,
+    "scoped": false,
+    "blocks": [
+      "editor_js"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "editor_js",
+    "file": "management/editor/base.html",
+    "parent_block": "management_js",
+    "content": false,
+    "scoped": false
+  },
+  {
+    "type": "template",
+    "file": "management/editor/account/edit.html",
+    "blocks": [
+      "page_title",
+      "editor_content",
+      "editor_js"
+    ],
+    "extends": [
+      "management/editor/base.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "page_title",
+    "file": "management/editor/account/edit.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false
+  },
+  {
+    "type": "block",
+    "name": "editor_content",
+    "file": "management/editor/account/edit.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_account/includes/_edit_user_form.html",
+      "_account/includes/_marketing-consent.html",
+      "_account/includes/_api-access.html"
+    ]
+  },
+  {
+    "type": "block",
+    "name": "editor_js",
+    "file": "management/editor/account/edit.html",
+    "parent_block": null,
+    "content": true,
+    "scoped": false,
+    "includes": [
+      "_account/includes/_edit_form_js.html"
+    ]
+  },
+  {
+    "type": "template",
+    "file": "redhead/tree.html"
+  },
+  {
+    "type": "template",
+    "file": "redhead/blocks.html"
+  }
+]

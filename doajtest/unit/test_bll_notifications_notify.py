@@ -5,6 +5,7 @@ from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.bll import DOAJ
 from portality.ui.messages import Messages
+from portality.ui import templates
 from portality.bll.exceptions import NoSuchObjectException, NoSuchPropertyException
 
 # A regex string for searching the log entries
@@ -60,7 +61,7 @@ class TestBLLNotifications(DoajTestCase):
         info_stream_contents = self.info_stream.getvalue()
 
         # check an email is sent
-        template = re.escape('email/notification_email.jinja2')
+        template = re.escape(templates.EMAIL_NOTIFICATION)
         to = re.escape('test@example.com')
         subject = n2.short
         email_matched = re.search(
