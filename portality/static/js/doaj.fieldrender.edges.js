@@ -3902,7 +3902,11 @@ $.extend(true, doaj, {
         },
 
         editorGroupNameCallback: function(val, resultobj, renderer) {
-            return `<span class="editorGroupNameCallback" data-id="${val}">${val}</span>`
+            if (val) {
+                return `<span class="editorGroupNameCallback" data-id="${val}">${val}</span>`
+            } else {
+                return val
+            }
         },
         editorGroupNameTrigger: function(queryResult) {
             /**
