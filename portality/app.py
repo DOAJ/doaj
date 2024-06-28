@@ -11,6 +11,8 @@ new ones as required too.
 """
 
 import os, sys
+
+import elasticsearch.exceptions
 import tzlocal
 import pytz
 
@@ -440,6 +442,12 @@ def page_not_found(e):
 @app.errorhandler(500)
 def page_not_found(e):
     return render_template(templates.ERROR_500), 500
+
+
+@app.errorhandler(elasticsearch.exceptions.RequestError)
+def handle_es_request_error(e):
+    app.logger.exception(e)
+    return render_template('400.html'), 400
 
 
 def run_server(host=None, port=None, fake_https=False):
