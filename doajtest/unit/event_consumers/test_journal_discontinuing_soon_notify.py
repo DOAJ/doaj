@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from portality import models
 from portality import constants
 from portality.bll import exceptions
@@ -14,7 +16,7 @@ def pull_application(cls, id):
     return app
 
 @classmethod
-def pull_by_key(cls, key, value):
+def pull_editor_group(cls, value):
     ed = models.EditorGroup()
     acc = models.Account()
     acc.set_id('testuser')
@@ -26,17 +28,6 @@ def pull_by_key(cls, key, value):
     return ed
 
 class TestJournalDiscontinuingSoonNotify(DoajTestCase):
-    def setUp(self):
-        super(TestJournalDiscontinuingSoonNotify, self).setUp()
-        self.pull_application = models.Application.pull
-        models.Application.pull = pull_application
-        self.pull_by_key = models.EditorGroup.pull_by_key
-        models.EditorGroup.pull_by_key = pull_by_key
-
-    def tearDown(self):
-        super(TestJournalDiscontinuingSoonNotify, self).tearDown()
-        models.Application.pull = self.pull_application
-        models.EditorGroup.pull_by_key = self.pull_by_key
 
     def test_should_consume(self):
 
@@ -52,6 +43,8 @@ class TestJournalDiscontinuingSoonNotify(DoajTestCase):
         event = models.Event(constants.EVENT_JOURNAL_DISCONTINUING_SOON, context = {"journal": {"1234"}, "discontinue_date": "2002-22-02"})
         assert JournalDiscontinuingSoonNotify.should_consume(event)
 
+    @patch('portality.models.EditorGroup.pull', pull_editor_group)
+    @patch('portality.models.Application.pull', pull_application)
     def test_consume_success(self):
         self._make_and_push_test_context("/")
 

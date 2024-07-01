@@ -68,13 +68,13 @@ def build_application(title, lmu_diff, cd_diff, status, editor=None, editor_grou
     return ap
 
 
-def build_applications(un, eg):
+def build_applications(un: str, eg: models.Application):
     w = 7 * 24 * 60 * 60
 
     apps = {}
 
     app = build_application(un + " Stalled Application", 6 * w, 7 * w, constants.APPLICATION_STATUS_IN_PROGRESS,
-                                 editor_group=eg.name)
+                            editor_group=eg.id)
     app.save()
     apps["stalled"] = [{
         "id": app.id,
@@ -82,7 +82,7 @@ def build_applications(un, eg):
     }]
 
     app = build_application(un + " Old Application", 8 * w, 8 * w, constants.APPLICATION_STATUS_IN_PROGRESS,
-                                 editor_group=eg.name)
+                            editor_group=eg.id)
     app.save()
     apps["old"] = [{
         "id": app.id,
@@ -90,7 +90,7 @@ def build_applications(un, eg):
     }]
 
     app = build_application(un + " Completed Application", 1 * w, 1 * w, constants.APPLICATION_STATUS_COMPLETED,
-                                 editor_group=eg.name)
+                            editor_group=eg.id)
     app.save()
     apps["completed"] = [{
         "id": app.id,
@@ -98,7 +98,7 @@ def build_applications(un, eg):
     }]
 
     app = build_application(un + " Pending Application", 1 * w, 1 * w, constants.APPLICATION_STATUS_PENDING,
-                                 editor_group=eg.name)
+                            editor_group=eg.id)
     app.remove_editor()
     app.save()
     apps["pending"] = [{
@@ -107,4 +107,3 @@ def build_applications(un, eg):
     }]
 
     return apps
-

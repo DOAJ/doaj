@@ -36,9 +36,7 @@ class ApplicationEditorInProgressNotify(EventConsumer):
             return
 
         # Notification is to the editor in charge of this application's assigned editor group
-        editor_group_name = application.editor_group
-        editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
-        eg = models.EditorGroup.pull(editor_group_id)
+        eg = models.EditorGroup.pull(application.editor_group)
         group_editor = eg.editor
 
         if not group_editor:

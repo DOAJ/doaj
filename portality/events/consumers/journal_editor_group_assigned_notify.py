@@ -29,8 +29,7 @@ class JournalEditorGroupAssignedNotify(EventConsumer):
         if not journal.editor_group:
             return
 
-        editor_group = models.EditorGroup.pull_by_key("name", journal.editor_group)
-
+        editor_group = models.EditorGroup.pull(journal.editor_group)
         if not editor_group.editor:
             raise exceptions.NoSuchPropertyException("Editor Group {x} does not have property `editor`".format(x=editor_group.id))
 

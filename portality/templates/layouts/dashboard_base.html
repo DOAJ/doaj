@@ -98,7 +98,7 @@
                       {% for eg in managed_groups|sort(attribute="name") %}
                       <li>
                         {% set app_source = search_query_source(term=[
-                                {"admin.editor_group.exact" : eg.name},
+                                {"admin.editor_group.exact" : eg.id},
                                 {"index.application_type.exact" : "new application"}
                             ], sort=[{"admin.date_applied": {"order": "asc"}}]
                         ) %}
@@ -118,11 +118,14 @@
                         {% for eg in editor_of_groups|sort(attribute="name") %}
                           <li>
                             {% set app_source = search_query_source(term=[
-                                    {"admin.editor_group.exact" : eg.name},
+                                    {"admin.editor_group.exact" : eg.id},
                                     {"index.application_type.exact" : "new application"}
                                 ], sort=[{"admin.date_applied": {"order": "asc"}}]
                             ) %}
-                            <a href="{{ url_for('editor.group_suggestions') }}?source={{ app_source }}" title="See all {{ eg.name }} applications" class="tag tag--tertiary label"><span data-feather="users" aria-hidden="true"></span> <strong>{{ eg.name }}</strong></a>
+                            <a href="{{ url_for('editor.group_suggestions') }}?source={{ app_source }}"
+                               title="See all {{ eg.name }} applications" class="tag tag--tertiary label"> <span data-feather="users" aria-hidden="true"></span>
+                                <strong>{{ eg.name }}</strong>
+                            </a>
                             {% set maned = eg.get_maned_account() %}
                             <a href="mailto:{{ maned.email }}" class="tag label"><span data-feather="mail" aria-hidden="true"></span> {{ maned.id }} (Managing Editor)</a>
                             {{ " / " if not loop.last else "" }}

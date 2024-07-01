@@ -78,12 +78,14 @@ $.extend(true, doaj, {
                     field: "admin.editor_group.exact",
                     display: "Editor Group",
                     deactivateThreshold: 1,
+                    valueFunction: doaj.fieldRender.editorGroupNameCallback,
                     renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                         controls: true,
                         open: false,
                         togglable: true,
                         countFormat: countFormat,
-                        hideInactive: true
+                        hideInactive: true,
+                        noDisplayEscape: true,
                     })
                 }),
                 edges.newRefiningANDTermSelector({
@@ -293,7 +295,8 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre" : "<strong>Editor Group</strong>: ",
-                                    "field" : "admin.editor_group"
+                                    "field" : "admin.editor_group",
+                                    valueFunction: doaj.fieldRender.editorGroupNameCallback,
                                 }
                             ],
                             [
@@ -382,7 +385,10 @@ $.extend(true, doaj, {
                         'bibjson.publisher.name.exact' : 'Publisher',
                         'index.license.exact' : 'Journal license',
                         "index.has_apc.exact" : "Publication charges?"
-                    }
+                    },
+                    valueFunctions : {
+                        "admin.editor_group.exact" : doaj.fieldRender.editorGroupNameCallback,
+                    },
                 })
             ];
 
@@ -398,6 +404,9 @@ $.extend(true, doaj, {
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
+                    },
+                    "edges:post-render" : function () {
+                        doaj.fieldRender.editorGroupNameTrigger(e.result);
                     }
                 }
             });

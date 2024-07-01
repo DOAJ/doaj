@@ -144,7 +144,8 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre" : "<strong>Editor Group</strong>: ",
-                                    "field" : "admin.editor_group"
+                                    "field" : "admin.editor_group",
+                                    valueFunction: doaj.fieldRender.editorGroupNameCallback,
                                 }
                             ],
                             [
@@ -229,7 +230,10 @@ $.extend(true, doaj, {
                             "update request": "Open",
                             "new application": "Open"
                         }
-                    }
+                    },
+                    valueFunctions : {
+                        "admin.editor_group.exact" : doaj.fieldRender.editorGroupNameCallback,
+                    },
                 })
             ];
 
@@ -245,6 +249,9 @@ $.extend(true, doaj, {
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
+                    },
+                    "edges:post-render" : function () {
+                        doaj.fieldRender.editorGroupNameTrigger(e.result);
                     }
                 }
             });

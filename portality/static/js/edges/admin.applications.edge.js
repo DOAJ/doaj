@@ -133,7 +133,8 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre" : "<strong>Editor group</strong>: ",
-                                    "field" : "admin.editor_group"
+                                    "field" : "admin.editor_group",
+                                    valueFunction: doaj.fieldRender.editorGroupNameCallback,
                                 }
                             ],
                             [
@@ -229,6 +230,9 @@ $.extend(true, doaj, {
                             "new application": "Open"
                         }
                     },
+                    valueFunctions : {
+                        "admin.editor_group.exact" : doaj.fieldRender.editorGroupNameCallback,
+                    },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         omit : [
                             "bibjson.apc.has_apc",
@@ -250,6 +254,9 @@ $.extend(true, doaj, {
                 callbacks : {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
+                    },
+                    "edges:post-render" : function () {
+                        doaj.fieldRender.editorGroupNameTrigger(e.result);
                     }
                 }
             });

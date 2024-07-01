@@ -20,7 +20,7 @@ WITH_CONSENT = {
 HEADERS = ["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?"]
 
 
-def output_map(acc):
+def output_map(acc: Account):
     updated_since_create = acc.created_timestamp < acc.last_updated_timestamp
 
     return {

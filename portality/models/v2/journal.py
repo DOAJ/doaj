@@ -220,9 +220,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             return Account.pull(self.owner)
         return None
 
+
     @property
     def editor_group(self):
         return self.__seamless__.get_single("admin.editor_group")
+
 
     def set_editor_group(self, eg):
         self.__seamless__.set_with_struct("admin.editor_group", eg)

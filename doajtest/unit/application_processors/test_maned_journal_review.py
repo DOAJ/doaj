@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from doajtest.helpers import DoajTestCase
 
 from portality import models
@@ -17,7 +19,7 @@ JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
 #####################################################################
 
 @classmethod
-def editor_group_pull(cls, field, value):
+def editor_group_pull(cls, value):
     eg = models.EditorGroup()
     eg.set_editor("eddie")
     eg.set_associates(["associate", "assan"])
@@ -32,20 +34,8 @@ def mock_lookup_code(code):
 
 class TestManEdJournalReview(DoajTestCase):
 
-    def setUp(self):
-        super(TestManEdJournalReview, self).setUp()
-
-        self.editor_group_pull = models.EditorGroup.pull_by_key
-        models.EditorGroup.pull_by_key = editor_group_pull
-
-        self.old_lookup_code = lcc.lookup_code
-        lcc.lookup_code = mock_lookup_code
-
-    def tearDown(self):
-        super(TestManEdJournalReview, self).tearDown()
-        models.EditorGroup.pull_by_key = self.editor_group_pull
-        lcc.lookup_code = self.old_lookup_code
-
+    @patch('portality.models.EditorGroup.pull', editor_group_pull)
+    @patch('portality.lcc.lookup_code', mock_lookup_code)
     def test_01_maned_review_success(self):
         """Give the Managing Editor's journal form a full workout"""
 

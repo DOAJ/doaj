@@ -56,6 +56,7 @@ class TestBLLTopTodoEditor(DoajTestCase):
         w = 7 * 24 * 60 * 60
 
         account = None
+        editor_group_id = None
         if account_arg == "admin":
             asource = AccountFixtureFactory.make_managing_editor_source()
             account = models.Account(**asource)
@@ -65,6 +66,7 @@ class TestBLLTopTodoEditor(DoajTestCase):
             eg_source = EditorGroupFixtureFactory.make_editor_group_source(editor=account.id)
             eg = models.EditorGroup(**eg_source)
             eg.save(blocking=True)
+            editor_group_id = eg.id
         elif account_arg == "assed":
             asource = AccountFixtureFactory.make_assed1_source()
             account = models.Account(**asource)
@@ -76,19 +78,23 @@ class TestBLLTopTodoEditor(DoajTestCase):
         ############################################################
 
         # an application created more than 8 weeks ago
-        self.build_application("editor_follow_up_old", 2 * w, 9 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
+        self.build_application("editor_follow_up_old", 2 * w, 9 * w, constants.APPLICATION_STATUS_IN_PROGRESS,
+                               apps, editor_group_id=editor_group_id)
 
         # an application that was last updated over 6 weeks ago
-        self.build_application("editor_stalled", 7 * w, 7 * w, constants.APPLICATION_STATUS_IN_PROGRESS, apps)
+        self.build_application("editor_stalled", 7 * w, 7 * w, constants.APPLICATION_STATUS_IN_PROGRESS,
+                               apps, editor_group_id=editor_group_id)
 
         # an application that was modifed recently into the completed status
-        self.build_application("editor_completed", 2 * w, 2 * w, constants.APPLICATION_STATUS_COMPLETED, apps)
+        self.build_application("editor_completed", 2 * w, 2 * w, constants.APPLICATION_STATUS_COMPLETED,
+                               apps, editor_group_id=editor_group_id)
 
         # an application that is pending without an editor assigned
         def assign_pending(ap):
             ap.remove_editor()
 
-        self.build_application("editor_assign_pending", 2 * w, 2 * w, constants.APPLICATION_STATUS_PENDING, apps, additional_fn=assign_pending)
+        self.build_application("editor_assign_pending", 2 * w, 2 * w, constants.APPLICATION_STATUS_PENDING,
+                               apps, additional_fn=assign_pending, editor_group_id=editor_group_id)
 
         wait_until_no_es_incomplete_tasks()
         models.Application.refresh()
@@ -127,7 +133,8 @@ class TestBLLTopTodoEditor(DoajTestCase):
                 else:   # the todo item is not positioned at all
                     assert len(positions.get(k, [])) == 0
 
-    def build_application(self, id, lmu_diff, cd_diff, status, app_registry, additional_fn=None):
+    def build_application(self, id, lmu_diff, cd_diff, status, app_registry,
+                          additional_fn=None, editor_group_id=None):
         source = ApplicationFixtureFactory.make_application_source()
         ap = models.Application(**source)
         ap.set_id(id)
@@ -138,6 +145,9 @@ class TestBLLTopTodoEditor(DoajTestCase):
 
         if additional_fn is not None:
             additional_fn(ap)
+
+        if editor_group_id is not None:
+            ap.set_editor_group(editor_group_id)
 
         ap.save()
         app_registry.append(ap)

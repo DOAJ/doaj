@@ -109,7 +109,7 @@ def editor(q):
     gnames = []
     groups = models.EditorGroup.groups_by_editor(current_user.id)
     for g in groups:
-        gnames.append(g.name)
+        gnames.append(g.id)
     q.clear_match_all()
     q.add_must({"terms" : {"admin.editor_group.exact" : gnames}})
     return q

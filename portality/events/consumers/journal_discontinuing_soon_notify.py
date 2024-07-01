@@ -32,7 +32,7 @@ class JournalDiscontinuingSoonNotify(EventConsumer):
         if not journal.editor_group:
             return
 
-        eg = models.EditorGroup.pull_by_key("name", journal.editor_group)
+        eg = models.EditorGroup.pull(journal.editor_group)
         managing_editor = eg.maned
         if not managing_editor:
             return
