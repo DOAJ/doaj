@@ -3925,7 +3925,7 @@ $.extend(true, doaj, {
                 success: function (data) {
                     $('.editorGroupNameCallback').each(function() {
                         const id = $(this).data('id')
-                        $(this).text(edges.escapeHtml(data[id] || id))
+                        $(this).text(data[id] || id)
                     })
                 }
             });
