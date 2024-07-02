@@ -32,6 +32,7 @@ app.cfg
 # directories of transient stuff that gets created locally
 media/*
 upload/*
+upload_async/*
 !upload/README.md
 failed_articles/*
 !failed_articles/README.md
