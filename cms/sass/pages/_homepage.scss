@@ -126,7 +126,7 @@
     }
 
     article {
-      margin-bottom: $spacing-04;
+      margin-bottom: $spacing-05;
 
       a {
         display: block;
@@ -134,7 +134,7 @@
         border-top: 1px solid $grapefruit;
       }
 
-      &:nth-of-type(4) {
+      &:nth-of-type(5) {
         clear: both; // Make sure fifth blog post starts on new line
       }
     }

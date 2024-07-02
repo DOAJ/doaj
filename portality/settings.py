@@ -1134,7 +1134,7 @@ BLOG_URL = "http://doajournals.wordpress.com/"
 
 BLOG_FEED_URL = "http://doajournals.wordpress.com/feed/atom/"
 
-FRONT_PAGE_NEWS_ITEMS = 6
+FRONT_PAGE_NEWS_ITEMS = 4
 
 NEWS_PAGE_NEWS_ITEMS = 20
 
