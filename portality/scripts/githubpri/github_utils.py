@@ -5,8 +5,9 @@ from __future__ import annotations
 
 import functools
 import logging
+import os
 import warnings
-from typing import Union, Iterable
+from typing import Union, Iterable, TypedDict
 
 import requests
 from requests import Response
@@ -41,6 +42,9 @@ class GithubReqSender:
 
     def send(self, url, method='get', **req_kwargs) -> Response:
         return send_request(url, method=method, auth=self.username_password, **req_kwargs)
+
+    def query_graphql(self, query: str) -> dict:
+        return self.send("https://api.github.com/graphql", method='post', json={'query': query}).json()
 
     @functools.lru_cache(maxsize=102400)
     def send_cached_json(self, url):
@@ -124,7 +128,7 @@ def get_project(full_name, project_name, auth: AuthLike) -> dict | None:
     if len(names) == 0:
         return None
     if len(names) > 1:
-        log.warning("Multiple projects found: {x}".format(x=project_name))
+        log.warning(f"Multiple projects found: {project_name}")
     return names[0]
 
 
@@ -144,14 +148,14 @@ def yields_all(url, auth: AuthLike, params=None, n_per_page=100) -> Iterable[dic
 
 @functools.lru_cache(maxsize=102400)
 def get_column_issues(columns_url, col, sender: GithubReqSender):
-    print("Fetching column issues {x}".format(x=col))
+    print(f"Fetching column issues {col}")
     col_data = sender.send_cached_json(columns_url)
     column_records = [c for c in col_data if c.get("name") == col]
     if len(column_records) == 0:
-        log.warning("Column not found: {x}".format(x=col))
+        log.warning(f"Column not found: {col}")
         return []
     if len(column_records) > 1:
-        log.warning("Multiple columns found: {x}".format(x=col))
+        log.warning(f"Multiple columns found: {col}")
 
     issues = []
     for card_data in sender.yield_all(column_records[0].get("cards_url")):
@@ -160,3 +164,123 @@ def get_column_issues(columns_url, col, sender: GithubReqSender):
 
     print("Column issues {x}".format(x=[i.get("number") for i in issues]))
     return issues
+
+
+class Issue(TypedDict):
+    number: int
+    title: str
+    status: str
+    url: str
+    assignees: list[str]
+    label_names: list[str]
+
+
+def find_all_issues(owner, repo, project_number, sender: GithubReqSender) -> Iterable[Issue]:
+    query_template = """
+    {
+      repository(owner: "%s", name: "%s") {
+        projectV2(number: %s) {
+          url
+          title
+          items(first: 100, after: AFTER_CURSOR) {
+            pageInfo {
+              endCursor
+              hasNextPage
+            }
+            nodes {
+              content {
+                ... on Issue {
+                  id
+                  number
+                  title
+                  state
+                  url 
+                  stateReason
+                  labels (first:100) {
+                    nodes {
+                      name
+                    }
+                  }
+                  assignees(first: 100) {
+                   nodes {
+                      name
+                      login
+                   }
+                  }
+                }
+              }
+              fieldValues(first: 100) {
+                nodes {
+                  ... on ProjectV2ItemFieldSingleSelectValue {
+                    name
+                    field {
+                      ... on ProjectV2SingleSelectField {
+                        name
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    """ % (owner, repo, project_number)
+
+    # Function to fetch all items with pagination
+    def fetch_all_items():
+        # all_projects = []
+        after_cursor = None
+        while True:
+            # Replace AFTER_CURSOR placeholder in the query template
+            query = query_template.replace("AFTER_CURSOR", f'"{after_cursor}"' if after_cursor else "null")
+
+            data = sender.query_graphql(query)
+
+            # Process the data
+            project = data['data']['repository']['projectV2']
+            items = project['items']['nodes']
+            yield from items
+            # print(f'items: {len(items)}')
+            # all_projects.extend(items)
+
+            # Check if there are more pages
+            page_info = project['items']['pageInfo']
+            if page_info['hasNextPage']:
+                after_cursor = page_info['endCursor']
+            else:
+                break
+
+    def _to_issue(item):
+        content = item['content']
+        return Issue(
+            number=content['number'],
+            title=content['title'],
+            url=content['url'],
+            assignees=[a['login'] for a in content['assignees']['nodes']],
+            status=next((f['name'] for f in item['fieldValues']['nodes']
+                         if f and f['field']['name'] == 'Status'), None),
+            label_names=[l['name'] for l in content['labels']['nodes']],
+        )
+
+    # Fetch all items
+    all_items = fetch_all_items()
+    all_items = (i for i in all_items if i['content'])
+    return map(_to_issue, all_items)
+    #
+    # # Filter to include only issues
+    # issues = [item['content'] for item in all_items if 'id' in item['content']]
+    # for issue in issues:
+    #     print(f"Issue ID: {issue['id']}, Title: {issue['title']}, State: {issue['state']}, URL: {issue['url']}, "
+    #           f"State Reason: {issue['stateReason']}")
+
+
+def main():
+    sender = GithubReqSender(os.environ.get('DOAJ_GITHUB_KEY'))
+    for i in find_all_issues(sender):
+        print(i)
+
+
+if __name__ == '__main__':
+    main()
