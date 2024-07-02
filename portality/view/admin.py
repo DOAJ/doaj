@@ -550,6 +550,8 @@ def editor_group(group_id=None):
             eg = models.EditorGroup.pull(group_id)
             form.group_id.data = eg.id
             form.name.data = eg.name
+            # Do not allow the user to edit the name. issue #3859
+            form.name.render_kw = {'disabled': True}
             form.maned.data = eg.maned
             form.editor.data = eg.editor
             form.associates.data = ",".join(eg.associates)
@@ -605,7 +607,8 @@ def editor_group(group_id=None):
                         ae.add_role("associate_editor")
                         ae.save()
 
-            eg.set_name(form.name.data)
+            if eg.name is None:
+                eg.set_name(form.name.data)
             eg.set_maned(form.maned.data)
             eg.set_editor(form.editor.data)
             if associates is not None:

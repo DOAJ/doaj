@@ -11,6 +11,10 @@
     <form method="post" action="{{ url_for('admin.editor_group') }}{% if form.group_id.data and form.group_id.data != '' %}/{{form.group_id.data}}{% endif %}" class="form form--compact" id="editor_group_form">
       <fieldset>
         {{ form.group_id }}
+        {% if form.name.data %}
+          {# Do not allow the user to edit the name. issue #3859 #}
+          <input id="name" name="name" type="hidden" value="{{ form.name.data }}">
+        {% endif %}
         {{ render_field_horizontal(form.name, placeholder="Enter a unique group name") }}
         {{ render_field_horizontal(form.maned, placeholder="Managing Editor’s user ID") }}
         {{ render_field_horizontal(form.editor, placeholder="Editor’s user ID") }}
