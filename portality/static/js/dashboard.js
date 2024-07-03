@@ -13,8 +13,6 @@ doaj.dashboard = {
     ]
 };
 
-doaj.dashboard.bannerTextFile = "/assets/motivational_banners.yml"
-
 doaj.dashboard.init = function (context) {
     doaj.dashboard.context = context;
     doaj.dashboard.motivationalBanners = motivational_banners;
@@ -72,7 +70,6 @@ doaj.dashboard.loadGroupTab = function (groupId) {
 doaj.dashboard.groupLoaded = function (data) {
     let container = $("#group-tab");
     container.html(doaj.dashboard.renderGroupInfo(data));
-    console.log(data);
 }
 
 doaj.dashboard.groupLoadError = function (data) {
@@ -170,10 +167,11 @@ doaj.dashboard.renderGroupInfo = function (data) {
             statisticsFrag += `<section>
                 <h3>Statistics for the current year (${historicalNumbers.year})</h3>`;
 
-            // Ready applications by editor
-            statisticsFrag += `<h4 class="label label--secondary">Editor's <span class="progress-bar__bar--ready label" style="padding: .5em; color: #FFF; display: unset;">Ready</span> Applications: `;
-            statisticsFrag += `<span class="label tag" style="margin-left: .5em;">${historicalNumbers.editor.name}</span> <span class="tag tag--tertiary">${historicalNumbers.editor.count}</span></h4>`;
-
+            if (current_user.role.includes("admin")) {
+                // Ready applications by editor
+                statisticsFrag += `<h4 class="label label--secondary">Editor's <span class="progress-bar__bar--ready label" style="padding: .5em; color: #FFF; display: unset;">Ready</span> Applications: `;
+                statisticsFrag += `<span class="label tag" style="margin-left: .5em;">${historicalNumbers.editor.name}</span> <span class="tag tag--tertiary">${historicalNumbers.editor.count}</span></h4>`;
+            }
 
             // Completed applications by associated editor
             statisticsFrag += `<h4 class="label label--secondary">Applications <span class="progress-bar__bar--completed label label--secondary" style="padding: .5em; display: unset;">Completed</span> by associated editors</h4>`;
