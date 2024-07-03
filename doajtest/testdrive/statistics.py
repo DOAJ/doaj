@@ -62,7 +62,7 @@ class Statistics(TestDrive):
                 "username": self.asseds[1]["id"],
                 "password": self.asseds[1]["pass"]
             },
-            "additional_information": self.finished_by_user,
+            "finished_applications": self.finished_by_user,
             "non_renderable": {
                 "asseds": [assed['id'] for assed in
                            self.asseds[2:]],
@@ -172,7 +172,7 @@ class Statistics(TestDrive):
     def teardown(self, params):
         for key, obj in params.items():
             print(key)
-            if key != "non_renderable" and key != "additional_information":
+            if key != "non_renderable" and key != "finished_applications":
                 models.Account.remove_by_id(obj["username"])
 
         non_renderable = params.get("non_renderable", {})
