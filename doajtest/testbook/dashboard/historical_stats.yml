@@ -6,7 +6,7 @@ tests:
       role: managing editor/admin
       testdrive: statistics
     steps:
-      - step: Go to "/testdrive/statistics" and wait for the page to load slowly.
+      - step: Navigate to "/testdrive/statistics" and wait for the page to load slowly. This should be done once at the beginning of the test session and not refreshed between individual tests.
       - step: Log in with provided managing_editor credentials.
         results:
           - User dashboard is displayed.
@@ -26,7 +26,7 @@ tests:
       role: editor_0
       testdrive: statistics
     steps:
-      - step: Go to "/testdrive/statistics" and wait for the page to load slowly.
+      - step: Navigate to "/testdrive/statistics" and wait for the page to load slowly. This should be done once at the beginning of the test session and not refreshed between individual tests.
       - step: Log in with provided editor_0 credentials.
         results:
           - User dashboard is displayed.
@@ -46,7 +46,7 @@ tests:
       role: editor_1
       testdrive: statistics
     steps:
-      - step: Go to "/testdrive/statistics" and wait for the page to load slowly.
+      - step: Navigate to "/testdrive/statistics" and wait for the page to load slowly. This should be done once at the beginning of the test session and not refreshed between individual tests.
       - step: Log in with provided editor_1 credentials.
         results:
           - User dashboard is displayed.
@@ -66,7 +66,7 @@ tests:
       role: associate editor
       testdrive: statistics
     steps:
-      - step: Go to "/testdrive/statistics" and wait for the page to load slowly.
+      - step: Navigate to "/testdrive/statistics" and wait for the page to load slowly. This should be done once at the beginning of the test session and not refreshed between individual tests.
       - step: Log in with provided associate_editor_0 credentials.
         results:
           - User dashboard is displayed.
@@ -83,7 +83,7 @@ tests:
       role: associate editor
       testdrive: statistics
     steps:
-      - step: Go to "/testdrive/statistics" and wait for the page to load slowly.
+      - step: Navigate to "/testdrive/statistics" and wait for the page to load slowly. This should be done once at the beginning of the test session and not refreshed between individual tests.
       - step: Log in with provided associate_editor_1 credentials.
         results:
           - User dashboard is displayed.
