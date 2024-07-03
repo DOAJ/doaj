@@ -19,7 +19,7 @@ class Statistics(TestDrive):
     FINISHED_APPLICATIONS = [
         {'role': 'editor', 'group': 0, 'index': 0, 'count': 2},
         {'role': 'editor', 'group': 1, 'index': 0, 'count': 3},
-        {'role': 'editor', 'group': 1, 'index': 1, 'count': 3},
+        {'role': 'editor', 'group': 2, 'index': 1, 'count': 3},
         {'role': 'assed', 'group': 0, 'index': 0, 'count': 0},
         {'role': 'assed', 'group': 0, 'index': 1, 'count': 4},
         {'role': 'assed', 'group': 1,  'index': 2, 'count': 0},
@@ -32,9 +32,9 @@ class Statistics(TestDrive):
 
     # Define editor groups and associate editors' associations
     EDITOR_GROUPS = {
-        'eg0': {'editor_index': 0, 'start_assed_index': 0, 'end_assed_index': 2},
-        'eg1': {'editor_index': 0, 'start_assed_index': 2, 'end_assed_index': 5},
-        'eg2': {'editor_index': 1, 'start_assed_index': 5, 'end_assed_index': 8},
+        'Group_0': {'editor_index': 0, 'start_assed_index': 0, 'end_assed_index': 2},
+        'Group_1': {'editor_index': 0, 'start_assed_index': 2, 'end_assed_index': 5},
+        'Group_2': {'editor_index': 1, 'start_assed_index': 5, 'end_assed_index': 8},
     }
 
     def setup(self) -> dict:
@@ -59,8 +59,8 @@ class Statistics(TestDrive):
                 "password": self.asseds[0]["pass"]
             },
             "associate_editor_2": {
-                "username": self.asseds[2]["id"],
-                "password": self.asseds[2]["pass"]
+                "username": self.asseds[1]["id"],
+                "password": self.asseds[1]["pass"]
             },
             "additional_information": self.finished_by_user,
             "non_renderable": {
@@ -97,7 +97,7 @@ class Statistics(TestDrive):
 
         # Create associate editors accounts
         self.asseds = []
-        for i in range(1, self.NUMBER_OF_ASSEDITORS + 1):
+        for i in range(self.NUMBER_OF_ASSEDITORS):
             us = self.create_random_str()
             pw = self.create_random_str()
             assed = models.Account.make_account(us + "@example.com", us, "AssEd" + str(i) + " " + us,
@@ -149,8 +149,9 @@ class Statistics(TestDrive):
 
             status = "status:" + app_status
             user_id = users[idx]["id"]
+            user_name_with_eg = user_id + " (" + role + " in " + group_key + ")"
 
-            self.finished_by_user[user_id] = str(count)
+            self.finished_by_user[user_name_with_eg] = str(count)
 
             for i in range(count):
                 p = self.add_provenance_record(status, role, user_id, group_key)
@@ -170,7 +171,8 @@ class Statistics(TestDrive):
 
     def teardown(self, params):
         for key, obj in params.items():
-            if key != "non_renderable":
+            print(key)
+            if key != "non_renderable" and key != "additional_information":
                 models.Account.remove_by_id(obj["username"])
 
         non_renderable = params.get("non_renderable", {})
@@ -183,6 +185,8 @@ class Statistics(TestDrive):
 
         for group in non_renderable.get("groups", []):
             models.Provenance.remove_by_id(group)
+
+        return {"success": True}
 
 
 if __name__ == "__main__":
