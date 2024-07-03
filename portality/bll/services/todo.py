@@ -698,7 +698,7 @@ class HistoricalNumbersQuery:
     def query(self):
         must_terms = [{"range": {"last_updated": {"gte": "now/y", "lte": "now"}}},
             {"term": {"type": "suggestion"}},
-            {"term": {"user": self.editor}},
+            {"term": {"user.exact": self.editor}},
             {"term": {"action": self.application_status}}
         ]
 
