@@ -1,0 +1,97 @@
+suite: Dashboard
+testset: Historical Statistics
+tests:
+  - title: Historical Statistics Display - Managing Editor with 3 groups
+    context:
+      role: managing editor/admin
+      testdrive: statistics
+    steps:
+      - step: Go to "/testdrive/statistics" and wait for the page to load slowly.
+      - step: Log in with provided managing_editor credentials.
+        results:
+          - User dashboard is displayed.
+      - step: Verify the motivational banner at the top of the dashboard (green) and check number of finished applications.
+        results:
+          - The motivational banner is GREEN and shows the correct sum of applications finished in all groups.
+      - step: Verify historical statistics in the Activity section at the bottom.
+        results:
+          - Three groups are displayed.
+          - Only associate editors are shown in the Activity section for each group.
+          - Each group has the correct statistics for the current year.
+          - The number of READY/COMPLETED applications matches the "additional information" table.
+      - step: Log out.
+      - step: (Optional) Click the link at the bottom of the testdrive page to free resources after finishing this test session.
+  - title: Historical Statistics Display - Editor with 2 groups
+    context:
+      role: editor_0
+      testdrive: statistics
+    steps:
+      - step: Go to "/testdrive/statistics" and wait for the page to load slowly.
+      - step: Log in with provided editor_0 credentials.
+        results:
+          - User dashboard is displayed.
+      - step: Verify the motivational banner at the top of the dashboard (green) and check number of finished applications.
+        results:
+          - The motivational banner is GREEN and shows the correct sum of applications finished in both groups.
+      - step: Verify historical statistics in the Activity section at the bottom.
+        results:
+          - Two groups are displayed.
+          - Only associate editors are shown in the Activity section for each group.
+          - Each group has the correct statistics for the current year.
+          - The number of READY/COMPLETED applications matches the "additional information" table.
+      - step: Log out.
+      - step: (Optional) Click the link at the bottom of the testdrive page to free resources after finishing this test session.
+  - title: Historical Statistics Display - Editor with 1 group
+    context:
+      role: editor_1
+      testdrive: statistics
+    steps:
+      - step: Go to "/testdrive/statistics" and wait for the page to load slowly.
+      - step: Log in with provided editor_1 credentials.
+        results:
+          - User dashboard is displayed.
+      - step: Verify the motivational banner at the top of the dashboard (green) and check number of finished applications.
+        results:
+          - The motivational banner is GREEN and shows the correct sum of applications finished in the group.
+      - step: Verify historical statistics in the Activity section at the bottom.
+        results:
+          - One group is displayed.
+          - Only associate editors are shown in the Activity section for the group.
+          - The group has the correct statistics for the current year.
+          - The number of READY/COMPLETED applications matches the "additional information" table.
+      - step: Log out.
+      - step: (Optional) Click the link at the bottom of the testdrive page to free resources after finishing this test session.
+  - title: Historical Statistics Display - Associate Editors with 0 finished applications
+    context:
+      role: associate editor
+      testdrive: statistics
+    steps:
+      - step: Go to "/testdrive/statistics" and wait for the page to load slowly.
+      - step: Log in with provided associate_editor_0 credentials.
+        results:
+          - User dashboard is displayed.
+      - step: Verify the motivational banner at the top of the dashboard (grey).
+        results:
+          - The motivational banner is GREY with appropriate information about no finished applications.
+      - step: Verify no statistics are displayed at the bottom of the page.
+        results:
+          - No statistics are displayed in the Activity section.
+      - step: Log out.
+      - step:
+  - title: Historical Statistics Display - Associate Editor 1
+    context:
+      role: associate editor
+      testdrive: statistics
+    steps:
+      - step: Go to "/testdrive/statistics" and wait for the page to load slowly.
+      - step: Log in with provided associate_editor_1 credentials.
+        results:
+          - User dashboard is displayed.
+      - step: Verify the motivational banner at the top of the dashboard (green).
+        results:
+          - The motivational banner is GREEN.
+      - step: Verify no statistics are displayed at the bottom of the page.
+        results:
+          - No statistics are displayed in the Activity section.
+      - step: Log out.
+      - step: (Optional) Click the link at the bottom of the testdrive page to free resources after finishing this test session.
