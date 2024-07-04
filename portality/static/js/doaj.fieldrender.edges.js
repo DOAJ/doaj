@@ -614,9 +614,15 @@ $.extend(true, doaj, {
 
             this.namespace = "doaj-subject-browser";
 
+            this.viewWindowScrollOffset = 0;
             this.lastScroll = 0;
             this.lastSearch = edges.getParam(params.lastSearch, null);
             this.lastClickedEl = edges.getParam(params.lastClickedEl, null);
+
+            this.init = function(component) {
+                edges.newRenderer().init.call(this, component);
+                component.edge.context.on("edges:pre-reset", edges.eventClosure(this, "reset"));
+            }
 
             this.draw = function () {
                 // for convenient short references ...
@@ -688,6 +694,13 @@ $.extend(true, doaj, {
                 var searchSelector = edges.css_id_selector(namespace, "search", this);
                 edges.on(searchSelector, "keyup", this, "filterSubjects");
             };
+
+            this.reset = function(edge) {
+                this.lastSearch = null;
+                this.viewWindowScrollOffset = 0;
+                this.lastClickedEl = null;
+                this.lastScroll = 0;
+            }
 
             this._renderTree = function (params) {
                 var st = edges.getParam(params.tree, []);
@@ -805,9 +818,10 @@ $.extend(true, doaj, {
                 var filterSelector = edges.css_id_selector(this.namespace, "filtered", this);
                 this.lastScroll = this.lastSearch ? this.component.jq(filterSelector).scrollTop() : this.component.jq(mainListSelector).scrollTop();
                 var el = this.component.jq(element);
-                // var filter_id = this.component.jq(element).attr("id");
                 var checked = el.is(":checked");
                 this.lastClickedEl = el[0].id;
+                let offset = this.lastSearch ? this.component.jq(filterSelector).offset().top : this.component.jq(mainListSelector).offset().top;
+                this.viewWindowScrollOffset = el.offset().top - offset;
                 var value = el.attr("data-value");
                 if (checked) {
                     this.component.addFilter({value: value});
@@ -857,7 +871,7 @@ $.extend(true, doaj, {
                 var st = this.component.syncTree;
                 var elemToScroll = this._findRenderedElement(st, this.lastClickedEl);
                 if (elemToScroll) {
-                    browser.scrollTop = elemToScroll.offsetTop - browser.offsetTop;
+                    browser.scrollTop = elemToScroll.offsetTop - browser.offsetTop - this.viewWindowScrollOffset;
                 }
             }
 
@@ -889,9 +903,6 @@ $.extend(true, doaj, {
                 }
                 this.lastSearch = term;
                 term = term.toLowerCase();
-                if (this.lastClickedEl) {
-                    this.scrollView(filterEl);
-                }
 
                 function entryMatch(entry) {
                     if (that.hideEmpty && entry.count === 0 && entry.childCount === 0) {
@@ -943,6 +954,10 @@ $.extend(true, doaj, {
                     filterEl.html(displayReport.frag);
                     mainEl.hide();
                     filterEl.show();
+
+                    if (this.lastClickedEl) {
+                        this.scrollView(filterEl);
+                    }
 
                     var checkboxSelector = edges.css_class_selector(this.namespace, "selector", this);
                     edges.on(checkboxSelector, "change", this, "filterToggle");
