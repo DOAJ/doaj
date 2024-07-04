@@ -1,12 +1,18 @@
-from doajtest.helpers import DoajTestCase, with_es
-from portality.api.current import ArticlesBulkApi, Api401Error, Api400Error
-from portality import models
-from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
-from copy import deepcopy
-from flask import url_for
+"""
+test the bulk article API by ArticlesBulkApi layer
+"""
 import json
 import time
+from pathlib import Path
+from unittest.mock import patch
+
+from flask import url_for
 from portality.lib.thread_utils import wait_until
+
+from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
+from doajtest.helpers import DoajTestCase, with_es, wait_unit
+from portality import models
+from portality.api.current import ArticlesBulkApi, Api401Error, Api400Error
 
 
 class TestBulkArticle(DoajTestCase):
@@ -20,29 +26,8 @@ class TestBulkArticle(DoajTestCase):
     @with_es(indices=[models.Article.__type__, models.Journal.__type__],
              warm_mappings=[models.Article.__type__])
     def test_01_create_articles_success(self):
-        def find_dict_in_list(lst, key, value):
-            for i, dic in enumerate(lst):
-                if dic[key] == value:
-                    return i
-            return -1
 
-        # set up all the bits we need - 10 articles
-        dataset = []
-        for i in range(1, 11):
-            data = ArticleFixtureFactory.make_incoming_api_article()
-            # change the DOI and fulltext URLs to escape duplicate detection
-            # and try with multiple articles
-            doi_ix = find_dict_in_list(data['bibjson']['identifier'], 'type', 'doi')
-            if doi_ix == -1:
-                data['bibjson']['identifier'].append({"type": "doi"})
-            data['bibjson']['identifier'][doi_ix]['id'] = '10.0000/SOME.IDENTIFIER.{0}'.format(i)
-
-            fulltext_url_ix = find_dict_in_list(data['bibjson']['link'], 'type', 'fulltext')
-            if fulltext_url_ix == -1:
-                data['bibjson']['link'].append({"type": "fulltext"})
-            data['bibjson']['link'][fulltext_url_ix]['url'] = 'http://www.example.com/article_{0}'.format(i)
-
-            dataset.append(deepcopy(data))
+        dataset = list(ArticleFixtureFactory.make_bulk_incoming_api_article(10))
 
         # create an account that we'll do the create as
         account = models.Account()
@@ -459,3 +444,34 @@ class TestBulkArticle(DoajTestCase):
         # check that 400 is raised
         with self.assertRaises(Api400Error):
             ids = ArticlesBulkApi.create(dataset, account)
+
+
+    def test_create_async__success(self):
+        income_articles = list(ArticleFixtureFactory.make_bulk_incoming_api_article(10))
+        self.assert_create_async(income_articles, 1, 1)
+
+    def test_create_async__invalid_income_articles_format(self):
+        income_articles = [{'invalid_input': 1}]
+        self.assert_create_async(income_articles, 1, 1)
+
+    def test_create_async__invalid_json_format(self):
+        income_articles = [{'invalid_input': set()}]
+        with self.assertRaises(TypeError):
+            ArticlesBulkApi.create_async(income_articles, models.Account())
+
+    def assert_create_async(self, income_articles, offset_articles, offset_files):
+        def _count_files():
+            return len(list(Path(self.app_test.config.get("UPLOAD_ASYNC_DIR", "/tmp")).glob("*.json")))
+
+        n_org_articles = models.BulkArticles.count()
+        n_org_files = _count_files()
+        with patch_bgtask_submit() as mock_submit:
+            ArticlesBulkApi.create_async(income_articles, models.Account())
+            mock_submit.assert_called_once()
+
+        assert _count_files() == n_org_files + offset_files
+        wait_unit(lambda: models.BulkArticles.count() == n_org_articles + offset_articles, 5, 0.5)
+
+
+def patch_bgtask_submit():
+    return patch('portality.tasks.article_bulk_create.ArticleBulkCreateBackgroundTask.submit')

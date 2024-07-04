@@ -3,13 +3,15 @@ from doajtest import test_constants
 import requests
 from io import BytesIO
 from unittest.mock import patch
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, login
 from doajtest.mocks.preservation import PreservationMock
 from portality.tasks import preservation
 from portality.core import app
 from portality.lib import dates
 from werkzeug.datastructures import FileStorage
 from portality.models.article import Article
+from portality.models import Account
+from portality.ui.messages import Messages
 
 
 def mock_pull_by_key(key, value):
@@ -232,3 +234,15 @@ class TestPreservationMultipleJournals(TestPreservationSetup):
         assert issn == "2051-5960"
         assert article_id == "00003741594643f4996e2555a01e03c7"
         assert metadata_json["bibjson"]["identifier"][0]["id"] == "10.1186/s40478-018-0619-9"
+
+    def test_empty_file(self):
+        admin_account = Account.make_account(email="admin@test.com", username="admin", name="Admin", roles=["admin"])
+        admin_account.set_password('password123')
+        admin_account.save()
+
+        with self.app_test.test_client() as t_client:
+            login(t_client, "admin", "password123")
+            response = t_client.post('/publisher/preservation', data={})
+            with t_client.session_transaction() as session:
+                flash_messages = session.get('_flashes')
+                assert any(msg[1] == Messages.PRESERVATION_NO_FILE for msg in flash_messages)

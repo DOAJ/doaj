@@ -1,4 +1,5 @@
 # ~~ApplicationEditorCompletedNotify:Consumer~~
+from portality.events import consumer_utils
 from portality.util import url_for
 from portality.events.consumer import EventConsumer
 from portality import constants
@@ -11,7 +12,7 @@ class ApplicationEditorCompletedNotify(EventConsumer):
     ID = "application:editor:completed:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_STATUS and \
                 event.context.get("old_status") != constants.APPLICATION_STATUS_COMPLETED and \
                 event.context.get("new_status") == constants.APPLICATION_STATUS_COMPLETED
@@ -59,7 +60,7 @@ class ApplicationEditorCompletedNotify(EventConsumer):
             associate_editor=associate_editor
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
         notification.action = url_for("editor.application", application_id=application.id)
 
