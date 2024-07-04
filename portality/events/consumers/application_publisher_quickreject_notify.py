@@ -1,4 +1,5 @@
 # ~~ApplicationPublisherQuickRejectNotify:Consumer~~
+from portality.events import consumer_utils
 from portality.lib import dates
 from portality.lib.dates import FMT_DATE_HUMAN_A
 from portality.util import url_for
@@ -14,7 +15,7 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
     ID = "application:publisher:quickreject:notify"
 
     @classmethod
-    def consumes(cls, event):
+    def should_consume(cls, event):
         return event.id == constants.EVENT_APPLICATION_STATUS and \
                 event.context.get("application") is not None and \
                 event.context.get("old_status") != constants.APPLICATION_STATUS_REJECTED and \
@@ -28,11 +29,7 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
         if note:
             note = "\n\n**Reason for rejection**\n\n" + note + "\n\n"
 
-        try:
-            application = models.Application(**app_source)
-        except Exception as e:
-            raise exceptions.NoSuchObjectException("Unable to construct Application from supplied source - data structure validation error, {x}".format(x=e))
-
+        application = consumer_utils.parse_application(app_source)
         if not application.owner:
             return
 
@@ -52,7 +49,7 @@ class ApplicationPublisherQuickRejectNotify(EventConsumer):
             doaj_guide_url=app.config.get('BASE_URL', "https://doaj.org") + url_for("doaj.guide")
         )
         notification.short = svc.short_notification(cls.ID).format(
-            issns=", ".join(issn for issn in application.bibjson().issns())
+            issns=application.bibjson().issns_as_text()
         )
 
         # there is no action url for this notification

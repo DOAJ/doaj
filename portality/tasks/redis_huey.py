@@ -2,11 +2,13 @@ from huey import RedisHuey, crontab
 from portality.core import app
 
 # every-day background jobs that take a few minutes each (like, bulk deletes and anything else requested by the user)
-main_queue = RedisHuey('doaj_main_queue', host=app.config['HUEY_REDIS_HOST'], port=app.config['HUEY_REDIS_PORT'],
+main_queue = RedisHuey('doaj_main_queue',
+                       host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'],
                        always_eager=app.config.get("HUEY_EAGER", False))
 
 # jobs that might take a long time, like the harvester or the anon export, which can run for several hours
-long_running = RedisHuey('doaj_long_running', host=app.config['HUEY_REDIS_HOST'], port=app.config['HUEY_REDIS_PORT'],
+long_running = RedisHuey('doaj_long_running',
+                         host=app.config['REDIS_HOST'], port=app.config['REDIS_PORT'],
                          always_eager=app.config.get("HUEY_EAGER", False))
 
 """

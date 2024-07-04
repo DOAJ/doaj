@@ -173,6 +173,10 @@ You can also check our [log of withdrawn journals](https://docs.google.com/sprea
 
 - [Contact our Help Desk](mailto:helpdesk@doaj.org) with the journal title and ISSN; they will help you.
 
+## In other languages
+
+[French](https://www.erudit.org/public/documents/infoediteursDOAJ.pdf) - hosted by Érudit
+
 ## Version history
 
 This is Version 1 of our Publisher information page.
