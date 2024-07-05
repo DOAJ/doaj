@@ -364,6 +364,14 @@ ass_ed:
   language: Indonesian, English
   photo: "handoko.jpg"
 
+- name: Ina Smith
+  area: Humanities, Social Sciences
+  year_since:
+  city: Pretoria
+  country: South Africa
+  language: English
+  photo: "ina-smith.png"
+  
 - name: Iryna Kuchma
   area: Humanities, Social Sciences
   year_since:
@@ -545,7 +553,15 @@ ass_ed:
   country: Poland
   language: Polish, English
   photo: "Martyna.JPG"
- 
+
+ - name: Maxim Mitrofanov
+  area: International Relations, Political Science
+  year_since:
+  city: Moscow
+  country: Russian Federation
+  language: Russian, English
+  photo: "max.png"
+  
 - name: Melih Sever
   area: Social Sciences
   year_since:
@@ -576,6 +592,14 @@ ass_ed:
   language: Indonesian, English
   photo: "MuhamadTaufik.jpg"
   
+- name: Natalia Popova
+  area: Sociology
+  year_since:
+  city: Ekaterinburg
+  country: Russian Federation
+  language: Russian, English
+  photo: "Popova-1.jpeg"
+  
 - name: Nataliia Kaliuzhna
   area: Library and Information Science
   year_since:
@@ -584,7 +608,7 @@ ass_ed:
   language: Ukrainian, Russian, English, Polish
   featured: true
   photo: "Nataliia.jpg"
-  
+
 - name: Natia Gabedava
   area: Humanities, Education
   year_since:
