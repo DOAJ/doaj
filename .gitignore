@@ -132,3 +132,6 @@ doajtest/unit/resources/harvester_resp_temp.json
 
 # playground dir for try things out
 portality/_playground/*
+
+# ignore local gitignore
+.gitignore-local
