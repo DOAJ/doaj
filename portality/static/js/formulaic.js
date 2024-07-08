@@ -2255,7 +2255,7 @@ var formulaic = {
 
         newArticleInfo : (params) => edges.instantiate(formulaic.widgets.ArticleInfo, params),
         ArticleInfo: function ({formulaic, fieldDef, args}) {
-            const $sealEle = $('label[for=doaj_seal]');
+            const $sealEle = $('label[for=doaj_seal-0]');
 
             if (!$sealEle.length) {
                 console.log('skip ArticleInfo, seal section not found')
@@ -2271,7 +2271,7 @@ var formulaic = {
             fetch(`/admin/journal/${journalId}/article-info`)
                 .then(response => response.json())
                 .then(data => {
-                    $sealEle.text($sealEle.text() + `This journal has ${data.n_articles} articles in DOAJ.`)
+                    $sealEle.text($sealEle.text() + ` (This journal has ${data.n_articles} articles in DOAJ)`)
                 })
         },
 
