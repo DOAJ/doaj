@@ -331,6 +331,21 @@ def journal_article_info(journal_id):
     return {'n_articles': models.Article.count_by_issns(j.bibjson().issns(), in_doaj=True)}
 
 
+@blueprint.route("/journal/<journal_id>/article-info/admin-site-search", methods=["GET"])
+@login_required
+def journal_article_info_admin_site_search(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    issns = j.bibjson().issns()
+    if not issns:
+        abort(404)
+
+    target_url = '/admin/admin_site_search?source={"query":{"bool":{"must":[{"term":{"admin.in_doaj":true}},{"term":{"es_type.exact":"article"}},{"query_string":{"query":"%s","default_operator":"AND","default_field":"index.issn.exact"}}]}},"track_total_hits":true}'
+    return redirect(target_url % issns[0].replace('-', r'\\-'))
+
+
 @blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
 @login_required
 @ssl_required

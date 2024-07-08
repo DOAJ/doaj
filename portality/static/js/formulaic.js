@@ -2271,7 +2271,12 @@ var formulaic = {
             fetch(`/admin/journal/${journalId}/article-info`)
                 .then(response => response.json())
                 .then(data => {
-                    $sealEle.text($sealEle.text() + ` (This journal has ${data.n_articles} articles in DOAJ)`)
+                    let articleText = `(This journal has ${data.n_articles} articles in DOAJ)`
+                    if (data.n_articles > 0) {
+                        const articlesUrl = `/admin/journal/${journalId}/article-info/admin-site-search`
+                        articleText = `<a href="${articlesUrl}">${articleText}</a>`
+                    }
+                    $sealEle.html($sealEle.text() + ` ${articleText}`)
                 })
         },
 
