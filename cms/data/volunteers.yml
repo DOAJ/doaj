@@ -365,12 +365,11 @@ ass_ed:
   photo: "handoko.jpg"
 
 - name: Ina Smith
-  area: Humanities, Social Sciences
+  area: Scholarly Publishing, Instructional Design
   year_since:
   city: Pretoria
   country: South Africa
-  language: English
-  photo: "ina-smith.png"
+  language: English, Africaans
   
 - name: Iryna Kuchma
   area: Humanities, Social Sciences
@@ -560,7 +559,6 @@ ass_ed:
   city: Moscow
   country: Russian Federation
   language: Russian, English
-  photo: "max.png"
   
 - name: Melih Sever
   area: Social Sciences
@@ -598,7 +596,6 @@ ass_ed:
   city: Ekaterinburg
   country: Russian Federation
   language: Russian, English
-  photo: "Popova-1.jpeg"
   
 - name: Nataliia Kaliuzhna
   area: Library and Information Science
