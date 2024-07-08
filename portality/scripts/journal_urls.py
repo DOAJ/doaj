@@ -51,7 +51,9 @@ def get_csv_file_name():
 
 def extra_columns(j):
     """Add extra columns"""
-    return [('Journal ID', j.id)]
+    account = j.owner_account
+    return [('Journal ID', j.id), ('Account Name', account.name if account else ''),
+                                   ('Account Email', account.email if account else '')]
 
 
 def generate_journals_csv(csv_file):
