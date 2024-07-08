@@ -728,13 +728,6 @@ ass_ed:
   city: Tabriz
   country: Iran
   language: Persian, Azari, Turkish, English
-
-- name: Sara Ricetto
-  area: Scholarly Publishing
-  year_since:
-  city: Milan
-  country: Italy
-  language: Italian, English, German
   
 - name: Shiying Li
   area: Forensic Science
