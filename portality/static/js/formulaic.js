@@ -2274,7 +2274,7 @@ var formulaic = {
                     let articleText = `(This journal has ${data.n_articles} articles in DOAJ)`
                     if (data.n_articles > 0) {
                         const articlesUrl = `/admin/journal/${journalId}/article-info/admin-site-search`
-                        articleText = `<a href="${articlesUrl}">${articleText}</a>`
+                        articleText = `<a href="${articlesUrl}" target="_blank">${articleText}</a>`
                     }
                     $sealEle.html($sealEle.text() + ` ${articleText}`)
                 })
