@@ -328,7 +328,7 @@ def journal_article_info(journal_id):
     if j is None:
         abort(404)
 
-    return {'n_articles': models.Article.count_by_issns(j.bibjson().issns())}
+    return {'n_articles': models.Article.count_by_issns(j.bibjson().issns(), in_doaj=True)}
 
 
 @blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
