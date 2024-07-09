@@ -105,18 +105,15 @@ def get_metadata(app):
 
 if __name__ == "__main__":
 
-    # import argparse
-    #
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("-o", "--out", help="output file path without extention!")
-    # args = parser.parse_args()
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-o", "--out", help="output file path without extention!", required=True)
+    args = parser.parse_args()
 
     # Output file paths
-    # output_by_year = args.out + "-by_year.csv"
-    # output_by_country = args.out + "-by_country.csv"
-
-    output_by_year = "output-by_year.csv"
-    output_by_country = "output-by_country.csv"
+    output_by_year = args.out + "-by_year.csv"
+    output_by_country = args.out + "-by_country.csv"
 
     apps_by_year_count = count_apps_per_year()
     apps_by_country_count = count_apps_per_country()
@@ -130,16 +127,16 @@ if __name__ == "__main__":
 
         writer_country = csv.writer(f_by_country)
         writer_country.writerow(["ID", "Title", "PISSN", "EISSN", "Created", "Country"])
-    #
-    #     currently_processed_year = ""
-    #     for app in models.Application.iterate(q=QUERY_BY_YEAR, page_size=100, keepalive='5m'):
-    #         meta = get_metadata(app)
-    #         if (meta["year"] != currently_processed_year):
-    #             currently_processed_year = meta["year"]
-    #             writer_year.writerow(
-    #                 ["YEAR:", currently_processed_year, "COUNT:", str(apps_by_year_count[currently_processed_year])])
-    #
-    #         writer_year.writerow([meta["id"], meta["title"], meta["pissn"], meta["eissn"], meta["country"], meta["year"]])
+
+        currently_processed_year = ""
+        for app in models.Application.iterate(q=QUERY_BY_YEAR, page_size=100, keepalive='5m'):
+            meta = get_metadata(app)
+            if (meta["year"] != currently_processed_year):
+                currently_processed_year = meta["year"]
+                writer_year.writerow(
+                    ["YEAR:", currently_processed_year, "COUNT:", str(apps_by_year_count[currently_processed_year])])
+
+            writer_year.writerow([meta["id"], meta["title"], meta["pissn"], meta["eissn"], meta["country"], meta["year"]])
 
         currently_processed_country = ""
         for app in models.Application.iterate(q=QUERY_BY_COUNTRY, page_size=100, keepalive='5m'):
@@ -151,6 +148,5 @@ if __name__ == "__main__":
 
             writer_country.writerow(
                 [meta["id"], meta["title"], meta["pissn"], meta["eissn"], meta["year"], meta["country"]])
-            print("processing by country...")
 
     print("Reports generated successfully.")
