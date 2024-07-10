@@ -4,7 +4,6 @@ import re
 import urllib.error
 import urllib.parse
 import urllib.request
-from typing import Optional
 
 from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify

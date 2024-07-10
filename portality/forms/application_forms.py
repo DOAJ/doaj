@@ -1803,8 +1803,8 @@ class FieldDefinitions:
         "label": "Group",
         "input": "text",
         "widgets": [
-            {"autocomplete": {"type": "editor_group", "field": "name", "include": False,
-                                                            "id_field": "id" }} # ~~^-> Autocom                              dget~~
+            {"autocomplete": {"type": "editor_group", "field": "name",
+                              "include": False, "id_field": "id" }} # ~~^-> Autocom                              dget~~
         ],
         "contexts": {
             "editor": {
@@ -1812,8 +1812,9 @@ class FieldDefinitions:
             },
             "admin" : {
                 "widgets" : [
-                    {"autocomplete": {"type": "editor_group", "field": "name", "include" : False, "id_field": "id" }}, # ~~^-> Autocomplete:FormWidget~~
-                    {"load_editors" : {"field" : "editor"}}
+                    {"autocomplete": {"type": "editor_group", "field": "name",
+                                      "include": False, "id_field": "id" }}, # ~~^-> Autocomplete:FormWidget~~
+                    {"load_editors" : {"field": "editor"}}
                 ]
             }
         }
