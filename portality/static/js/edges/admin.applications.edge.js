@@ -133,8 +133,7 @@ $.extend(true, doaj, {
                             [
                                 {
                                     "pre" : "<strong>Editor group</strong>: ",
-                                    "field" : "admin.editor_group",
-                                    valueFunction: doaj.fieldRender.editorGroupNameCallback,
+                                    "field" : "index.editor_group_name",
                                 }
                             ],
                             [
