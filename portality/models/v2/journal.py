@@ -1,3 +1,4 @@
+from __future__ import annotations
 from portality.dao import DomainObject
 from portality.core import app
 from portality.lib.dates import DEFAULT_TIMESTAMP_VAL
@@ -47,7 +48,6 @@ JOURNAL_STRUCT = {
             "fields": {
                 "publisher_ac": {"coerce": "unicode"},
                 "institution_ac": {"coerce": "unicode"},
-                "editor_group_name": {"coerce": "unicode"},
             }
         }
     }
@@ -234,12 +234,20 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         self.__seamless__.delete("admin.editor_group")
         self.__seamless__.delete("index.editor_group_name")
 
-    def editor_group_name(self, index=True):
+    def editor_group_name(self, index=True, default_id=False) -> str | None:
+        name = None
         if index:
-            return self.__seamless__.get_single("index.editor_group_name")
+            name = self.__seamless__.get_single("index.editor_group_name")
         elif self.editor_group:
             from portality.models import EditorGroup
-            return EditorGroup.find_name_by_id(self.editor_group)
+            name = EditorGroup.find_name_by_id(self.editor_group)
+
+        if default_id:
+            name = name or self.editor_group
+
+        return name
+
+
 
     @property
     def editor(self):

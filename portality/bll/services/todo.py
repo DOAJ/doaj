@@ -136,7 +136,7 @@ class TodoService(object):
                     "boost": boost,
                 }
                 if ap.editor_group:
-                    todo["editor_group_name"] = models.EditorGroup.find_name_by_id(ap.editor_group) or ap.editor_group
+                    todo["editor_group_name"] = ap.editor_group_name(default_id=True)
                 todos.append(todo)
 
         todos = self._rationalise_todos(todos, size)
