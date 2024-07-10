@@ -46,7 +46,8 @@ JOURNAL_STRUCT = {
         "index": {
             "fields": {
                 "publisher_ac": {"coerce": "unicode"},
-                "institution_ac": {"coerce": "unicode"}
+                "institution_ac": {"coerce": "unicode"},
+                "editor_group_name": {"coerce": "unicode"},
             }
         }
     }
@@ -231,6 +232,14 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
 
     def remove_editor_group(self):
         self.__seamless__.delete("admin.editor_group")
+        self.__seamless__.delete("index.editor_group_name")
+
+    def editor_group_name(self, index=True):
+        if index:
+            return self.__seamless__.get_single("index.editor_group_name")
+        elif self.editor_group:
+            from portality.models import EditorGroup
+            return EditorGroup.find_name_by_id(self.editor_group)
 
     @property
     def editor(self):
@@ -453,6 +462,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         if self.editor is not None:
             has_editor = "Yes"
 
+        editor_group_name = self.editor_group_name(index=False)
+
         # build the index part of the object
         index = {}
 
@@ -487,6 +498,8 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
             index["schema_code"] = schema_codes
         if len(schema_codes_tree) > 0:
             index["schema_codes_tree"] = schema_codes_tree
+        if editor_group_name:
+            index["editor_group_name"] = editor_group_name
 
         self.__seamless__.set_with_struct("index", index)
 
