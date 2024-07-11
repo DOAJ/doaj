@@ -73,6 +73,10 @@
   url: https://www.frontiersin.org/
   logo: frontiers.svg
 
+- name: Gruppo Italiano Frattura
+  url: https://www.gruppofrattura.eu/
+  logo: igf.png  
+
 - name: Iași University of Life Sciences
   url: https://iuls.ro/en/
   logo: Lasi.png 
@@ -84,6 +88,10 @@
 - name: IET
   url: https://www.theiet.org/
   logo: iet.svg
+
+- name: INCAS - National Institute for Aerospace Research “Elie Carafoli”
+  url: https://www.incas.ro/
+  logo: Logo1.png
 
 - name: Institute of Physics
   url: https://www.iop.org/
