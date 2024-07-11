@@ -12,7 +12,7 @@ from portality.lib.coerce import COERCE_MAP
 from copy import deepcopy
 from datetime import datetime, timedelta
 
-import string, uuid
+from elasticsearch import helpers
 from unidecode import unidecode
 
 JOURNAL_STRUCT = {
@@ -124,6 +124,41 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
         # create an array of objects, using cls rather than Journal, which means subclasses can use it too
         records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
+
+    @classmethod
+    def renew_editor_group_name(cls,
+                                editor_group_id: str,
+                                new_editor_group_name: str,
+                                batch_size: int = 10000,
+                                ):
+        """
+        Renew editor_group_name in the index.
+        for ALL documents with related editor_group_id.
+        """
+
+        query = ByEditorGroupIdQuery(editor_group_id).query()
+        query['_source'] = ['id']
+
+        def _to_action(_id):
+            return {
+                "_op_type": "update",
+                "_index": cls.index_name(),
+                "_id": _id,
+                "script": {
+                    "source": "ctx._source.index.editor_group_name = params.new_value",
+                    "lang": "painless",
+                    "params": {
+                        "new_value": new_editor_group_name
+                    }
+                }
+            }
+
+        ids = [j['id'] for j in cls.iterate(q=query, wrap=False, page_size=batch_size, keepalive='5m')]
+        app.logger.info(f"Found {len(ids)} {cls.__name__} with editor_group_id: {editor_group_id}")
+
+        id_batches = (ids[i:i + batch_size] for i in range(0, len(ids), batch_size))
+        for _sub_ids in id_batches:
+            helpers.bulk(dao.ES, [_to_action(_id) for _id in _sub_ids])
 
     ############################################
     ## base property methods
@@ -1190,4 +1225,23 @@ class RecentJournalsQuery(object):
             "sort" : [
                 {"created_date" : {"order" : "desc"}}
             ]
+        }
+
+
+class ByEditorGroupIdQuery:
+
+    def __init__(self, editor_group_id):
+        self.editor_group_id = editor_group_id
+
+    def query(self):
+        return {
+            'query': {
+                'bool': {
+                    'filter': {
+                        'term': {
+                            'admin.editor_group.exact': self.editor_group_id
+                        }
+                    }
+                }
+            },
         }
