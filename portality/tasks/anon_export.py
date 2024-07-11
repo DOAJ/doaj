@@ -187,12 +187,11 @@ huey_helper = AnonExportBackgroundTask.create_huey_helper(long_running)
 
 @huey_helper.register_schedule
 def scheduled_anon_export():
-    background_helper.submit_by_bg_task_type(AnonExportBackgroundTask,
-                                             clean=app.config.get("TASKS_ANON_EXPORT_CLEAN", False),
-                                             limit=app.config.get("TASKS_ANON_EXPORT_LIMIT", None),
-                                             batch_size=app.config.get("TASKS_ANON_EXPORT_BATCH_SIZE", 100000))
+    huey_helper.scheduled_common(clean=app.config.get("TASKS_ANON_EXPORT_CLEAN", False),
+                                 limit=app.config.get("TASKS_ANON_EXPORT_LIMIT", None),
+                                 batch_size=app.config.get("TASKS_ANON_EXPORT_BATCH_SIZE", 100000))
 
 
 @huey_helper.register_execute(is_load_config=False)
 def anon_export(job_id):
-    background_helper.execute_by_job_id(job_id, AnonExportBackgroundTask)
+    huey_helper.execute_common(job_id)
