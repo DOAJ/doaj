@@ -145,9 +145,13 @@
   url: https://www.sagepublications.com/
   logo: sage.svg
 
+- name: Scandinavian University Press
+  url: https://www.universitetsforlaget.no/en/
+  logo: sage.svg
+  
 - name: SciFree
   url: https://scifree.se/
-  logo: scifree.svg
+  logo: scup-logo.png
 
 - name: SirsiDynix
   url: https://www.sirsidynix.com/
