@@ -138,7 +138,8 @@ def run_anon_export(tmpStore, mainStore, container, clean=False, limit=None, bat
         out_rollover_fn = functools.partial(_copy_on_complete, logger_fn=logger_fn, tmpStore=tmpStore,
                                             mainStore=mainStore, container=container)
         _ = model.dump(q=iter_q, limit=limit, transform=transform, out_template=output_file, out_batch_sizes=batch_size,
-                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"], scroll_keepalive=app.config.get('TASKS_ANON_EXPORT_SCROLL_TIMEOUT', '5m'))
+                       out_rollover_callback=out_rollover_fn, es_bulk_fields=["_id"],
+                       scroll_keepalive=app.config.get('TASKS_ANON_EXPORT_SCROLL_TIMEOUT', '5m'))
 
         logger_fn((dates.now_str() + " done\n"))
 
