@@ -147,11 +147,11 @@
 
 - name: Scandinavian University Press
   url: https://www.universitetsforlaget.no/en/
-  logo: sage.svg
+  logo: scup-logo.png
   
 - name: SciFree
   url: https://scifree.se/
-  logo: scup-logo.png
+  logo: scifree.svg
 
 - name: SirsiDynix
   url: https://www.sirsidynix.com/
