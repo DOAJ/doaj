@@ -605,12 +605,17 @@ def editor_group(group_id=None):
                         ae.add_role("associate_editor")
                         ae.save()
 
+            is_name_changed = eg.name != form.name.data
             eg.set_name(form.name.data)
             eg.set_maned(form.maned.data)
             eg.set_editor(form.editor.data)
             if associates is not None:
                 eg.set_associates(associates)
             eg.save()
+
+            if is_name_changed:
+                models.Journal.renew_editor_group_name(eg.id, eg.name)
+                models.Application.renew_editor_group_name(eg.id, eg.name)
 
             flash(
                 "Group was updated - changes may not be reflected below immediately.  Reload the page to see the update.",
