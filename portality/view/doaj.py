@@ -262,15 +262,13 @@ def autocomplete(doc_type, field_name):
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>/<id_field>', methods=["GET", "POST"])
 def autocomplete_pair(doc_type, field_name, id_field):
-    """
+    r"""
     different from autocomplete, in response json, the values of `id` and `text` are used different field
 
-    Parameters
-    ---------------
+    Parameters:
         `q` -- will be used to search record with value that start with `q` in `field_name` field
 
-    Returns
-    ---------------
+    Returns:
         Json string with follow format:
         {suggestions: [{id: id_field, text: field_name}]}
 
