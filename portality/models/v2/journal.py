@@ -267,6 +267,11 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     def set_editor_group(self, eg):
         self.__seamless__.set_with_struct("admin.editor_group", eg)
 
+    @property
+    def editor_group_name(self):
+        # index.editor_group_name set by _generate_index
+        return self.__seamless__.get_single("index.editor_group_name")
+
     def remove_editor_group(self):
         self.__seamless__.delete("admin.editor_group")
         self.__seamless__.delete("index.editor_group_name")
