@@ -211,7 +211,7 @@ $.extend(true, doaj, {
                         'index.application_type.exact' : 'Application',
                         'index.has_editor_group.exact' : 'Editor group',
                         'index.has_editor.exact' : 'Associate Editor',
-                        'admin.editor_group.exact' : 'Editor group',
+                        'index.editor_group_name.exact' : 'Editor group',
                         'admin.editor.exact' : 'Editor',
                         'index.classification.exact' : 'Classification',
                         'index.language.exact' : 'Language',
@@ -228,9 +228,6 @@ $.extend(true, doaj, {
                             "update request": "Open",
                             "new application": "Open"
                         }
-                    },
-                    valueFunctions : {
-                        "admin.editor_group.exact" : doaj.fieldRender.editorGroupNameCallback,
                     },
                     renderer : doaj.renderers.newSelectedFiltersRenderer({
                         omit : [
@@ -254,9 +251,6 @@ $.extend(true, doaj, {
                     "edges:query-fail" : function() {
                         alert("There was an unexpected error.  Please reload the page and try again.  If the issue persists please contact an administrator.");
                     },
-                    "edges:post-render" : function () {
-                        doaj.fieldRender.editorGroupNameTrigger(e.result);
-                    }
                 }
             });
             doaj.adminApplicationsSearch.activeEdges[selector] = e;

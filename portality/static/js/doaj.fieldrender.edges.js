@@ -125,17 +125,15 @@ $.extend(true, doaj, {
             return edges.newRefiningANDTermSelector({
                 id: "editor_group",
                 category: "facet",
-                field: "admin.editor_group.exact",
+                field: "index.editor_group_name.exact",
                 display: "Editor group",
                 deactivateThreshold: 1,
-                valueFunction: doaj.fieldRender.editorGroupNameCallback,
                 renderer: edges.bs3.newRefiningANDTermSelectorRenderer({
                     controls: true,
                     open: false,
                     togglable: true,
                     countFormat: doaj.valueMaps.countFormat,
                     hideInactive: true,
-                    noDisplayEscape: true,
                 })
             })
         },
@@ -3900,36 +3898,6 @@ $.extend(true, doaj, {
                 return false;
             }
         },
-
-        editorGroupNameCallback: function(val, resultobj, renderer) {
-            if (val) {
-                return `<span class="editorGroupNameCallback" data-id="${val}">${val}</span>`
-            } else {
-                return val
-            }
-        },
-        editorGroupNameTrigger: function(queryResult) {
-            /**
-             * used in edges:post-render to trigger the editor group name callback
-             */
-
-            let editorGroupIds = queryResult.data.hits.hits.map(i => i._source.admin.editor_group)
-            editorGroupIds.push(...queryResult.data.aggregations.editor_group.buckets.map(i => i.key))
-            editorGroupIds = editorGroupIds.filter(i => i !== undefined)
-            $.ajax({
-                url: "/autocomplete-text/editor_group/name/id",
-                type: "POST",
-                contentType: "application/json",
-                dataType: 'json',
-                data: JSON.stringify({'ids': editorGroupIds}) ,
-                success: function (data) {
-                    $('.editorGroupNameCallback').each(function() {
-                        const id = $(this).data('id')
-                        $(this).text(data[id] || id)
-                    })
-                }
-            });
-        }
     },
 
     bulk : {
