@@ -132,7 +132,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
     @classmethod
     def renew_editor_group_name(cls,
                                 editor_group_id: str,
-                                new_editor_group_name: str,
+                                new_name: str,
                                 batch_size: int = 10000,
                                 ):
         """
@@ -152,7 +152,7 @@ class JournalLikeObject(SeamlessMixin, DomainObject):
                     "source": "ctx._source.index.editor_group_name = params.new_value",
                     "lang": "painless",
                     "params": {
-                        "new_value": new_editor_group_name
+                        "new_value": new_name
                     }
                 }
             }
