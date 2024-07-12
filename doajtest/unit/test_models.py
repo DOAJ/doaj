@@ -1770,3 +1770,44 @@ class TestAccount(DoajTestCase):
 
         journals = models.Journal.find_by_issn_exact(["1111-1111", "3333-3333"], True)
         assert len(journals) == 0
+
+
+class TestJournal(DoajTestCase):
+    def test_renew_editor_group_name(self):
+        # preparing data
+        eg1 = models.EditorGroup(**{
+            'id': 'eg1',
+            'name': 'Editor Group 111111',
+        })
+        eg2 = models.EditorGroup(**{
+            'id': 'eg2',
+            'name': 'Editor Group 222222',
+        })
+        models.DomainObject.save_all_block_last([eg1, eg2])
+
+        journals = [models.Journal(**j) for j in JournalFixtureFactory.make_many_journal_sources(count=3, in_doaj=True)]
+        journals[0].set_editor_group(eg1.id)
+        journals[1].set_editor_group(eg1.id)
+        journals[2].set_editor_group(eg2.id)
+
+        models.DomainObject.save_all_block_last(journals)
+
+        def refresh_journals(journals):
+            return [models.Journal.pull(j.id) for j in journals]
+
+        journals = refresh_journals(journals)
+        assert journals[0].editor_group_name == eg1.name
+        assert journals[1].editor_group_name == eg1.name
+        assert journals[2].editor_group_name == eg2.name
+
+        # start testing
+        new_name = 'XXCCCCXXX'
+        models.Journal.renew_editor_group_name(
+            editor_group_id=eg1.id,
+            new_name=new_name,
+        )
+
+        journals = refresh_journals(journals)
+        assert journals[0].editor_group_name == new_name
+        assert journals[1].editor_group_name == new_name
+        assert journals[2].editor_group_name == eg2.name
