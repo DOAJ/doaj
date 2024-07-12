@@ -264,12 +264,18 @@ def autocomplete(doc_type, field_name):
 def autocomplete_pair(doc_type, field_name, id_field):
     """
     different from autocomplete, in response json, the values of `id` and `text` are used different field
-    `id` used value of `id_field`
-    `text` used value of `field_name`
-    parameter `q` will be used to search the prefix of `field_name` value
 
-    Json string with follow format:
-    {suggestions: [{id: id_field, text: field_name}]}
+    Parameters
+    ---------------
+        `q` -- will be used to search record with value that start with `q` in `field_name` field
+
+    Returns
+    ---------------
+        Json string with follow format:
+        {suggestions: [{id: id_field, text: field_name}]}
+
+        `id` used value of `id_field`
+        `text` used value of `field_name`
     """
 
     prefix = request.args.get('q', '')
