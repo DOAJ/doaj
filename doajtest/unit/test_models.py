@@ -1796,9 +1796,9 @@ class TestJournal(DoajTestCase):
             return [models.Journal.pull(j.id) for j in journals]
 
         journals = refresh_journals(journals)
-        assert journals[0].editor_group_name == eg1.name
-        assert journals[1].editor_group_name == eg1.name
-        assert journals[2].editor_group_name == eg2.name
+        assert journals[0].editor_group_name() == eg1.name
+        assert journals[1].editor_group_name() == eg1.name
+        assert journals[2].editor_group_name() == eg2.name
 
         # start testing
         new_name = 'XXCCCCXXX'
@@ -1808,6 +1808,6 @@ class TestJournal(DoajTestCase):
         )
 
         journals = refresh_journals(journals)
-        assert journals[0].editor_group_name == new_name
-        assert journals[1].editor_group_name == new_name
-        assert journals[2].editor_group_name == eg2.name
+        assert journals[0].editor_group_name() == new_name
+        assert journals[1].editor_group_name() == new_name
+        assert journals[2].editor_group_name() == eg2.name
