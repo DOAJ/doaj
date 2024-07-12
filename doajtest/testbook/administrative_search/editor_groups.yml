@@ -65,3 +65,19 @@ tests:
   - step: Click the black X button to clear all filters
     results:
     - The interface returns to the initial state
+- title: Test Restrict editing group name
+  context:
+    role: admin
+  steps:
+  - step: Go to the DOAJ editor groups search at /admin/editor_groups
+    results:
+    - All available records are found, and the first page of results is shown
+  - step: Select a group and click on 'Edit This Group' button
+    results:
+    - The group is displayed in edit mode
+  - step: Check if the group name is editable
+    results:
+    - The name is not editable.
+  - step: Do any other changes and the save the changes
+    results:
+    - Changes saved successfully
