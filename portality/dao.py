@@ -28,7 +28,6 @@ if TYPE_CHECKING:
 ES_MAPPING_MISSING_REGEX = re.compile(r'.*No mapping found for \[[a-zA-Z0-9-_\.]+?\] in order to sort on.*', re.DOTALL)
 CONTENT_TYPE_JSON = {'Content-Type': 'application/json'}
 
-
 class IdText(TypedDict):
     id: str
     text: str
