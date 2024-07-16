@@ -149,7 +149,7 @@ else:
 # ~~->API:Feature~~
 BASE_API_URL = "https://doaj.org/api/"
 API_CURRENT_BLUEPRINT_NAME = "api_v4"  # change if upgrading API to new version and creating new view
-CURRENT_API_MAJOR_VERSION = "3"
+CURRENT_API_MAJOR_VERSION = "4"
 
 # URL used for the journal ToC URL in the journal CSV export
 # NOTE: must be the correct route as configured in view/doaj.py
