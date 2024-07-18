@@ -14,7 +14,6 @@ class DatalogJournalAdded(SeamlessMixin, DomainObject):
             "title": {"coerce": "unicode"},
             "issn": {"coerce": "unicode"},
             "date_added": {"coerce": "utcdatetime-datalog"},
-            "has_seal": {"coerce": "bool"},
             "has_continuations": {"coerce": "bool"},
             "journal_id": {"coerce": "unicode"},
             "created_date": {"coerce": "utcdatetime"},
@@ -62,14 +61,6 @@ class DatalogJournalAdded(SeamlessMixin, DomainObject):
     @property
     def date_added_str(self):
         return self.date_added.strftime(self.DATE_FMT)
-
-    @property
-    def has_seal(self):
-        return self.__seamless__.get_single("has_seal")
-
-    @has_seal.setter
-    def has_seal(self, val):
-        self.__seamless__.set_single('has_seal', val)
 
     @property
     def has_continuations(self):
