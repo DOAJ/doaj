@@ -1,5 +1,5 @@
 from copy import deepcopy
-from datetime import datetime
+from typing import Literal
 
 from flask import render_template, url_for, request
 from flask_login import current_user
@@ -525,15 +525,28 @@ MONTH_CHOICES = [("","---"), ("1", "01"), ("2", "02"), ("3", "03"), ("4", "04"),
 INITIAL_AUTHOR_FIELDS = 3
 
 
-def choices_for_article_issns(user, article_id=None):
+def choices_for_article_issns(user, article_id=None,
+                              issn_type: Literal['eissn', 'pissn', 'all'] = 'all'):
+
+    owner = None
     if "admin" in user.role and article_id is not None:
         # ~~->Article:Model~~
         a = models.Article.pull(article_id)
-        # ~~->Journal:Model~~
-        issns = models.Journal.issns_by_owner(a.get_owner(), in_doaj=True)
-    else:
-        issns = models.Journal.issns_by_owner(user.id, in_doaj=True)
+        if a:
+            owner = a.get_owner()
 
+    if not owner:
+        owner = user.id
+
+    if issn_type == 'eissn':
+        issn_field = 'bibjson.eissn.exact'
+    elif issn_type == 'pissn':
+        issn_field = 'bibjson.pissn.exact'
+    else:
+        issn_field = 'index.issn.exact'
+
+    # ~~->Journal:Model~~
+    issns = models.Journal.issns_by_owner(owner, in_doaj=True, issn_field=issn_field)
     ic = [("", "Select an ISSN")] + [(i, i) for i in issns]
     return ic
 
@@ -556,8 +569,14 @@ class ArticleForm(Form):
     fulltext = StringField("Full-text URL", [OptionalIf("doi", "You must provide the Full-Text URL or the DOI"), validators.URL()])
     publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(dates.now().year))
     publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default="" )
-    pissn = DOAJSelectField("Print", [ThisOrThat("eissn", "Either this field or Online ISSN is required"), DifferentTo("eissn", message=IDENTICAL_ISSNS_ERROR)], choices=[]) # choices set at construction
-    eissn = DOAJSelectField("Online", [ThisOrThat("pissn", "Either this field or Print ISSN is required"), DifferentTo("pissn", message=IDENTICAL_ISSNS_ERROR)], choices=[]) # choices set at construction
+    pissn = DOAJSelectField("Print", [
+        ThisOrThat("eissn", "Either this field or Online ISSN is required"),
+        DifferentTo("eissn", message=IDENTICAL_ISSNS_ERROR)
+    ], choices=[]) # choices set at construction
+    eissn = DOAJSelectField("Online", [
+        ThisOrThat("pissn", "Either this field or Print ISSN is required"),
+        DifferentTo("pissn", message=IDENTICAL_ISSNS_ERROR)
+    ], choices=[]) # choices set at construction
 
     volume = StringField("Volume", [validators.Optional(), NoScriptTag()])
     number = StringField("Issue", [validators.Optional(), NoScriptTag()])
@@ -566,13 +585,17 @@ class ArticleForm(Form):
 
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)
+        self.set_choices()
+
+    def set_choices(self, user=None, article_id=None):
+        user = user or current_user
         try:
-            self.pissn.choices = choices_for_article_issns(current_user)
-            self.eissn.choices = choices_for_article_issns(current_user)
-        except:
+            self.pissn.choices = choices_for_article_issns(user, issn_type='pissn', article_id=article_id)
+            self.eissn.choices = choices_for_article_issns(user, issn_type='eissn', article_id=article_id)
+        except Exception as e:
             # not logged in, and current_user is broken
             # probably you are loading the class from the command line
-            pass
+            app.logger.exception(str(e))
 
 
 
@@ -605,15 +628,7 @@ class MetadataForm(FormContext):
         super(MetadataForm, self).__init__(source=source, form_data=form_data)
 
     def _set_choices(self):
-        try:
-            ic = choices_for_article_issns(user=self.user, article_id=self.source.id)
-            self.form.pissn.choices = ic
-            self.form.eissn.choices = ic
-        except Exception as e:
-            print (str(e))
-            # not logged in, and current_user is broken
-            # probably you are loading the class from the command line
-            pass
+        self.form.set_choices(user=self.user, article_id=self.source.id)
 
     def modify_authors_if_required(self, request_data):
 
