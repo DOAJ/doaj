@@ -109,15 +109,18 @@ tests:
   - step: Click 'Remove' next to it
     results:
     - It disappears
-  - step:  Enter the same value in 'Publisher's name' and 'Society's name'
+  - step:  Enter the same value in 'Publisher's name' and Other organisation's name'
   - step: Click Next
     results:
-    - "You see the error message: The value of this field and the Publisher's Country field must be different."
+    - "You see the error message: The Publisher name oand Other organisation name cannot be the same."
   - step: Repeat the previous step, checking if the validator is case insensitive (e.g. "Publisher's name" and "publisher's Name")
     results:
       - The error message is still displayed
-  - step: Repeat steps X to X for the Publisher's Name, Country, Society name, Country
-  - step: Delete the values from 'Society name' and 'Society country', click Next
+  - step: Repeat steps X to X for the Publisher's Name, Country, Other organisation's name, Country
+  - step: Delete the values from 'Other organisation's name', leave 'Other organisation's country' filled in
+    results:
+      - "You see the error message: You cannot provide a country for the other organisation question without providing the other organisation's name"
+  - step: Fill back in the 'Other organisation's country" field
     results:
     - You can submit the page without providing answers to optional questions.
 

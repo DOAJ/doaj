@@ -21,8 +21,8 @@ tests:
       based (e.g. an image file or a PDF)
   - step: Click "Upload"
     results:
-    - A flash message with appropriate text appears at the top of the screen indicating an error has occurred
-    - Your file is shown in the "History of uploads" with status "processing failed"
+    - A flash message with appropriate text appears at the top of the screen, indicating an error has occurred
+    - Your file is shown in the "History of uploads" with the status "processing failed"
       and a suitable entry in the "Notes". Check that the explanation link goes to
       a suitable reason and resolution for the problem.
 
@@ -38,8 +38,8 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Click "Upload"
     results:
-    - A flash message with appropriate text appears at the top of the screen indicating an error has occurred
-    - Your file is shown in the "History of uploads" with status "processing failed"
+    - A flash message with appropriate text appears at the top of the screen, indicating an error has occurred
+    - Your file is shown in the "History of uploads" with the status "processing failed"
       and a suitable entry in the "Notes" (you may need to reload the page). Check
       that the explanation link goes to a suitable reason and resolution for the problem.
 
@@ -55,8 +55,8 @@ tests:
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
   - step: Click "Upload"
     results:
-    - A flash message with appropriate text appears at the top of the screen indicating an error has occurred
-    - Your file is shown in the "History of uploads" with status "processing failed"
+    - A flash message with appropriate text appears at the top of the screen, indicating an error has occurred
+    - Your file is shown in the "History of uploads" with the status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
 
@@ -75,12 +75,11 @@ tests:
     results:
     - 'A flash message appears at the top of the screen: File uploaded and waiting
       to be processed. Check back here for updates.'
-    - Your file is shown in the "History of uploads" with status "pending"
-  - step: wait a short amount of time for the job to process, then reload the page
-      (do not re-submit the form data).  If the job remains in "pending", reload the
+    - Click away to another tab and then back - your file is shown in the "History of uploads" with the status "pending"
+  - step: wait a short amount of time for the job to process, then click away and then back again. If the job remains in "pending", reload the
       page until the status changes.
     results:
-    - Your file is shown in the "History of uploads" with status "processing failed"
+    - Your file is shown in the "History of uploads" with the status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
 
@@ -100,10 +99,9 @@ tests:
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen indicating a successful upload:
-      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)'
-    - Your file is shown in the "History of uploads" with status "pending"
-  - step: wait a short amount of time for the job to process, then reload the page
-      (do not re-submit the form data).  If the job remains in "pending", reload the
+      File uploaded and waiting to be processed. Check back here for updates. (Dismiss)'
+    - Click away to another tab and then back - your file is shown in the "History of uploads" with status "pending"
+  - step: wait a short amount of time for the job to process, then click away and then back.  If the job remains in "pending", reload the
       page until the status changes.
     results:
     - Your file is shown in the "History of uploads" with status "processing failed"
@@ -111,14 +109,14 @@ tests:
       a suitable reason and resolution for the problem.
   - step: click on "(show error details)" for the record in the "History of uploads"
     results:
-    - Additional error details are shown, indicating that the publisher does not own
+    - Clicking 'show error details' shows information indicating that the publisher does not own
       ISSNs "0000-0000" and "0000-000X"
 
 - title: Upload a file containing ISSN that has been withdrawn
   context:
     role: publisher
   steps:
-  - step: Ensure that the publisher owns a journal with ISSN 0000-0000 that is not
+  - step: Ensure that the publisher owns a journal with ISSN 0000-1111 that is not
       in DOAJ (ie. has been withdrawn)
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: Choose "DOAJ Native XML" from "Format of the file" dropdown
@@ -128,19 +126,17 @@ tests:
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen indicating a successful upload:
-      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)'
-    - Your file is shown in the "History of uploads" with status "pending"
-  - step: wait a short amount of time for the job to process, then reload the page
-      (do not re-submit the form data).  If the job remains in "pending", reload the
+      File uploaded and waiting to be processed. Check back here for updates. (Dismiss)'
+    - Click away to another tab and then back - your file is shown in the "History of uploads" with the status "pending"
+  - step: wait a short amount of time for the job to process, then click away and then back.  If the job remains in "pending", reload the
       page until the status changes.
     results:
-    - Your file is shown in the "History of uploads" with status "processing failed"
+    - Your file is shown in the "History of uploads" with the status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
   - step: click on "(show error details)" for the record in the "History of uploads"
     results:
-    - Additional error details are shown, indicating that the journal has been withdrawn
-      from DOAJ and therefore the article cannot be accepted
+    - extra information indicates that ISSN is not in DOAJ
 
 - title: Upload a file containing ISSNs not previously seen in DOAJ
   context:
@@ -156,13 +152,12 @@ tests:
   - step: Click "Upload"
     results:
     - 'A flash message appears at the top of the screen indicating a successful upload:
-      File uploaded and waiting to be processed. Check back here for updates.(Dismiss)'
-    - Your file is shown in the "History of uploads" with status "pending"
-  - step: wait a short amount of time for the job to process, then reload the page
-      (do not re-submit the form data).  If the job remains in "pending", reload the
+      File uploaded and waiting to be processed. Check back here for updates. (Dismiss)'
+    - Click away to another tab and then back - your file is shown in the "History of uploads" with the status "pending"
+  - step: wait a short amount of time for the job to process, then click away and then back.  If the job remains in "pending", reload the
       page until the status changes.
     results:
-    - Your file is shown in the "History of uploads" with status "processing failed"
+    - Your file is shown in the "History of uploads" with the status "processing failed"
       and a suitable entry in the "Notes".  Check that the explanation link goes to
       a suitable reason and resolution for the problem.
   - step: click on "(show error details)" for the record in the "History of uploads"
@@ -214,9 +209,9 @@ tests:
     resource: /xml_upload_test_package/DOAJ/successful.xml
   - step: Click "Upload"
     results:
-    - A flash message appears at the top of the screen indicating a successful upload
+    - A flash message appears at the top of the screen, indicating a successful upload
       File uploaded and waiting to be processed. Check back here for updates.(Dismiss)
-    - Your file is shown in the "History of uploads" with status "pending"
+    - Your file is shown in the "History of uploads" with the status "pending"
   - step: wait a short amount of time for the job to process, then reload the page
       (do not re-submit the form data).  If the job remains in "pending", reload the
       page until the status changes.
@@ -239,9 +234,9 @@ tests:
     resource: /xml_upload_test_package/DOAJ/update.xml
   - step: Click "Upload"
     results:
-    - A flash message appears at the top of the screen indicating a successful upload
+    - A flash message appears at the top of the screen, indicating a successful upload
       File uploaded and waiting to be processed. Check back here for updates.(Dismiss)
-    - Your file is shown in the "History of uploads" with status "pending"
+    - Your file is shown in the "History of uploads" with the status "pending"
   - step: wait a short amount of time for the job to process, then reload the page
       (do not re-submit the form data).  If the job remains in "pending", reload the
       page until the status changes.
@@ -258,16 +253,16 @@ tests:
     role: publisher
   steps:
   - step: Run through test 7 and 8 to upload and update a new article
-  - step: 'Make sure there are no other articles in the databse with the DOI: 10.1234/100.
+  - step: 'Make sure there are no other articles in the database with the DOI: 10.1234/100.
       Delete those first.'
   - step: Go to the "Upload Article XML" tab in the "Publisher Area"
   - step: In the box "Provide a URL where we can download the XML", enter the URL below
     resource: /xml_upload_test_package/DOAJ/successful.xml
   - step: Click "Upload"
     results:
-    - A flash message appears at the top of the screen indicating that the file reference
+    - A flash message appears at the top of the screen, indicating that the file reference
       was successfully received
-    - Your file is shown in the "History of uploads" with status "pending"
+    - Your file is shown in the "History of uploads" with the status "pending"
   - step: wait a short amount of time for the job to process, then reload the page
       (do not re-submit the form data).  If the job remains in "pending", reload the
       page until the status changes.

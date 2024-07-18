@@ -247,15 +247,17 @@ huey_helper = DatalogJournalAddedUpdate.create_huey_helper(main_queue)
 
 @huey_helper.register_schedule
 def scheduled_datalog_journal_added_update():
-    background_helper.submit_by_bg_task_type(
-        DatalogJournalAddedUpdate,
+    huey_helper.scheduled_common(
         filename=app.config.get("DATALOG_JA_FILENAME"),
         worksheet_name=app.config.get("DATALOG_JA_WORKSHEET_NAME"),
         google_key_path=app.config.get("GOOGLE_KEY_PATH"),
     )
 
 
-datalog_journal_added_update = huey_helper.create_common_execute_fn()
+@huey_helper.register_execute(is_load_config=False)
+def datalog_journal_added_update(job_id):
+    huey_helper.execute_common(job_id)
+
 
 if __name__ == '__main__':
     records_new_journals(

@@ -1,0 +1,76 @@
+{% extends "layouts/public_base.html" %}
+
+{% block page_title %}API{% endblock %}
+
+{% block extra_stylesheets %}
+    <!-- get Swagger UI css -->
+    <link rel="stylesheet" href="/static/vendor/swagger-ui-5.11.6/swagger-ui.css"/>
+    <!-- get DOAJ swagger overrides -->
+    <link href='/static/doaj/css/doaj_api.css' media='screen' rel='stylesheet' type='text/css'/>
+{% endblock %}
+
+{% block content %}
+    <div class="container page-content">
+        <div class="row">
+            <div class="col-md-8">
+                <section>
+                    <p class="label">Docs</p>
+                    <h1>API </h1>
+                    <div class="alert alert--danger">
+                        <p>This is an old version of the DOAJ API</p>
+                        <p>A new version of the API is available <a href="{{ url_for("api_v4.docs") }}">here</a>.
+                        You should review the release notes and migration instructions as soon as possible.</p>
+                    </div>
+                    {% include "api/includes/swagger_description.html" %}
+                    <h2 id="swagger_info">Full API reference</h2>
+                    <div id="swagger-section" class="swagger-section">
+                        <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+                    </div>
+                    {% include "api/v3/extra_docs.html" %}
+                    {% include "api/includes/_version-history.html" %}
+                </section>
+            </div>
+            <div class="col-md-4">
+                {% include "api/v3/sidenav.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js_bottom %}
+    <!--get Swagger UI's javascripts -->
+    <script src="/static/vendor/swagger-ui-5.11.6/swagger-ui-bundle.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            var url = current_scheme + '//' + current_domain + "/api/v3/swagger.json";
+            console.log(url);
+            window.swaggerUi = SwaggerUIBundle({
+                url: url,
+                dom_id: "#swagger-ui-container",
+                validatorUrl: null,
+                docExpansion: 'list',
+                supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
+                onFailure: function (data) {
+                    console.log("Unable to Load SwaggerUI");
+                },
+                operationsSorter: "alpha",
+                useUnsafeMarkdown: true,
+                defaultModelExpandDepth: 2,
+            });
+        });
+    </script>
+
+    <script>
+        $('.page-nav__item a[href^="#"]').on('click', function (e) {
+            // Prevent the default anchor behavior
+            e.preventDefault();
+            var targetId = $(this).attr('href').substring(1);
+            var $targetElement = $('#' + targetId);
+            var scrollPosition = $targetElement.offset().top - parseFloat($targetElement.css('scroll-margin-top'));
+            $('html, body').animate({
+                scrollTop: scrollPosition
+            }, 'fast');
+        });
+    </script>
+{% endblock %}
