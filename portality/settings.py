@@ -9,8 +9,8 @@ from portality.lib import paths
 # Application Version information
 # ~~->API:Feature~~
 
-DOAJ_VERSION = "6.7.3"
-API_VERSION = "3.0.1"
+DOAJ_VERSION = "6.8.0"
+API_VERSION = "4.0.0"
 
 ######################################
 # Deployment configuration
@@ -67,7 +67,7 @@ ELASTIC_SEARCH_DB_PREFIX = "doaj-"    # note: include the separator
 ELASTIC_SEARCH_TEST_DB_PREFIX = "doajtest-"
 
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
-ELASTIC_SEARCH_VERSION = "1.7.5"
+ELASTIC_SEARCH_VERSION = "7.10.2"
 ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
