@@ -516,14 +516,20 @@ class FieldDefinitions:
                 ]
             },
             "public": {
-                "validate": [{"different_to": {"field": "institution_name",
-                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}]
+                "validate": [
+                    {"required": {"message": "Enter the name of the journal's publisher"}},
+                    {"different_to": {"field": "institution_name",
+                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}
+                ]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },
             "update_request": {
-                "validate": [{"different_to": {"field": "institution_name",
-                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}]
+                "validate": [
+                    {"required": {"message": "Enter the name of the journal's publisher"}},
+                    {"different_to": {"field": "institution_name",
+                                               "message": "The Publisher's name and Other organisation's name cannot be the same."}}
+                ]
                 # ~~^-> DifferetTo:FormValidator~~
 
             },

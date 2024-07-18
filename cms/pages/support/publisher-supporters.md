@@ -66,5 +66,3 @@ Please [contact us](/contact/) to discuss further.
 ## Supporting publishers, aggregators, and other organizations
 
 <div>{% include 'public/includes/_sponsors.html' %}</div>
-
-## Other publisher supporters
