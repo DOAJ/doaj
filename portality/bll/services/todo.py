@@ -274,8 +274,7 @@ class TodoRules(object):
             must_nots=[
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
-                    constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_ON_HOLD
+                    constants.APPLICATION_STATUS_REJECTED
                 ])
                 # TodoQuery.exists("admin.editor")
             ],
@@ -298,8 +297,7 @@ class TodoRules(object):
             must_nots=[
                 TodoQuery.status([
                     constants.APPLICATION_STATUS_ACCEPTED,
-                    constants.APPLICATION_STATUS_REJECTED,
-                    constants.APPLICATION_STATUS_ON_HOLD
+                    constants.APPLICATION_STATUS_REJECTED
                 ])
                 # TodoQuery.exists("admin.editor")
             ],
