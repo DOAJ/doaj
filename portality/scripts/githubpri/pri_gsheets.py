@@ -1,3 +1,7 @@
+"""
+functions to interact with "Google Drive Sheets" for githubpri
+"""
+
 import datetime
 
 import gspread
@@ -26,7 +30,6 @@ def apply_prilist_styles(worksheet, display_df):
 
         latest_username = username
         gs_col_idx = col_idx + 1
-        cells = worksheet.range(3, gs_col_idx, len(titles) + 3, gs_col_idx)
         gspfmt.format_cell_range(worksheet,
                                  range_idx_to_a1(1, gs_col_idx, n_row + 2, gs_col_idx),
                                  cell_format=gspfmt.CellFormat(
