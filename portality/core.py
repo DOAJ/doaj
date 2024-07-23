@@ -188,7 +188,11 @@ def create_es_connection(app):
 #     return type
 
 
-def put_mappings(conn, mappings):
+def get_doaj_index_name(name: str) -> str:
+    return app.config['ELASTIC_SEARCH_DB_PREFIX'] + name
+
+
+def put_mappings(conn: elasticsearch.Elasticsearch, mappings):
     # get the ES version that we're working with
     #es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
 
