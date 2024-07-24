@@ -412,14 +412,6 @@ if 'api1' in features or 'api2' in features or 'api3' in features:
             )
         return jsonify({'api_versions': vers})
 
-
-# Make the reCAPTCHA key available to the js
-# ~~-> ReCAPTCHA:ExternalService~~
-@app.route('/get_recaptcha_site_key')
-def get_site_key():
-    return app.config.get('RECAPTCHA_SITE_KEY', '')
-
-
 @app.errorhandler(400)
 def page_not_found(e):
     return render_template('400.html'), 400

@@ -39,9 +39,8 @@
                 {{ render_field_horizontal(form.email, style="width: 100%; max-width: 400px", placeholder="Please enter your email address") }}
                 <div style="display: none">{{ render_field_horizontal(form.subject, style="width: 400px; height: 50px", placeholder="Please do not modify this field", autocomplete="off") }}</div>
                 {{ render_field_horizontal(form.message, style="width: 100%; max-width: 400px; min-height: 200px", placeholder="Enter your message here") }}
-                {{form.recaptcha_value(id="recaptcha_value")}}
                 <div class="form-group">
-                    <div class="submit-with-recaptcha col-md-9 col-md-offset-3">
+                    <div class="col-md-9 col-md-offset-3">
                         <div id="html_element"></div>
                         <div>
                             <button id="submitBtn" class="btn btn-success" style="margin-top: 2em;"}>Send</button>
@@ -59,6 +58,4 @@
 
 {% block extra_js_bottom %}
     <script type="text/javascript" src="/static/js/contact.js?v={{config.get('DOAJ_VERSION')}}"></script>
-    <script type="text/javascript" src="/static/js/recaptcha.js?v={{config.get('DOAJ_VERSION')}}"></script>
-    <script src="https://www.recaptcha.net/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 {% endblock extra_js_bottom %}

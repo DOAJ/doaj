@@ -1361,15 +1361,6 @@ HARVEST_ACCOUNTS = []
 HARVESTER_ZOMBIE_AGE = 604800
 
 #######################################################
-# ReCAPTCHA configuration
-# ~~->ReCAPTCHA:ExternalService
-
-#Recaptcha test keys, should be overridden in dev.cfg by the keys obtained from Google ReCaptcha v2
-RECAPTCHA_ENABLE = True
-RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'
-RECAPTCHA_SECRET_KEY = "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
-
-#######################################################
 # Preservation configuration
 # ~~->Preservation:Feature
 PRESERVATION_URL = "http://PresevatinURL"

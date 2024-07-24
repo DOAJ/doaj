@@ -21,12 +21,9 @@
                 </div>
             {% endif %}
 
-            <div class=form__question id="recaptcha_div"></div>
-
             {{ render_field(form.next) }}
-            {{form.recaptcha_value(id="recaptcha_value")}}
 
-        <div class="submit-with-recaptcha actions">
+        <div class="actions">
             <input type="submit" id="submitBtn" class="button button--primary" value="Register" />
         </div>
     </form>
