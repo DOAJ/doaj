@@ -1563,3 +1563,7 @@ AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
 BGJOB_MANAGE_REDUNDANT_ACTIONS = [
     'read_news', 'journal_csv'
 ]
+
+##################################################
+# Honeypot bot-trap settings for forms (now: only registration form)
+HONEYPOT_TIMER_THRESHOLD = 7000;

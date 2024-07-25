@@ -1,0 +1,12 @@
+.hpemail {
+  position: absolute;
+  left: -9999px; /* Large negative offset */
+  top: -9999px;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0); /* Ensures the field is not visible for sr */
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
