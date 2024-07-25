@@ -448,6 +448,14 @@ ass_ed:
   language: Turkish, English
   photo: "kamil.jpg"
 
+- name: Kamila 
+  area: Library Science
+  year_since:
+  city: Gdańsk
+  country: Poland
+  language: Polish, English
+  photo: 
+  
 - name: Karima Akool Al-Sahili
   area: Medicine
   year_since:
