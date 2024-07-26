@@ -12,6 +12,7 @@ from portality.decorators import ssl_required, write_required
 from portality.models import Account, Event
 from portality.forms.validate import DataOptional, EmailAvailable, ReservedUsernames, IdAvailable, IgnoreUnchanged
 from portality.bll import DOAJ
+from portality.ui.messages import Messages
 
 blueprint = Blueprint('account', __name__)
 
@@ -364,7 +365,6 @@ def register():
             flash('Please correct the errors', 'error')
 
     if request.method == 'POST' and form.is_bot():
-        flash(
-            f"Are you sure you're a human? If you're having trouble logging in, please <a href='/contact'>contact us</a>.", "error")
+        flash(Messages.ARE_YOU_A_HUMAN, "error")
 
     return render_template('account/register.html', form=form)
