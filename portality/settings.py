@@ -451,6 +451,7 @@ HUEY_SCHEDULE = {
     "find_discontinued_soon": {"month": "*", "day": "*", "day_of_week": "*", "hour": "0", "minute": "3"},
     "datalog_journal_added_update": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "*/30"},
     "article_bulk_create": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "20"},
+    "auto_assign_editor_group_data": {"month": "*", "day": "*/7", "day_of_week": "*", "hour": "3", "minute": "30"},
 }
 
 HUEY_TASKS = {
@@ -1564,6 +1565,11 @@ AUTOCHECK_INCOMING = False
 AUTOCHECK_RESOURCE_ISSN_ORG_TIMEOUT = 10
 AUTOCHECK_RESOURCE_ISSN_ORG_THROTTLE = 1    # seconds between requests
 
+AUTO_ASSIGN_STORE_CONTAINER = "autoassign"
+AUTO_ASSIGN_EDITOR_BY_PUBLISHER_FILE = "by_pubisher.csv"
+AUTO_ASSIGN_EDITOR_BY_COUNTRY = "by_country.csv"
+AUTO_ASSIGN_EDITOR_BY_PUBLISHER_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQg09oCuqQcP0XTFyRiLzpPFoqUeEE6hSDEIglUvSLU-TGVP9C3j4XLgslmBLJmQcdlGujz1b9TN6CN/pub?gid=0&single=true&output=csv"
+AUTO_ASSIGN_EDITOR_BY_COUNTRY_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQg09oCuqQcP0XTFyRiLzpPFoqUeEE6hSDEIglUvSLU-TGVP9C3j4XLgslmBLJmQcdlGujz1b9TN6CN/pub?gid=1948254841&single=true&output=csv"
 
 ##################################################
 # Background jobs Management settings

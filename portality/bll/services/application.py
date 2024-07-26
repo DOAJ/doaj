@@ -2,7 +2,9 @@ import logging
 import csv
 import json
 import re
+from io import StringIO
 
+from portality.lib import httputil
 from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
 from portality import models
@@ -17,11 +19,117 @@ from portality.crosswalks.journal_form import JournalFormXWalk
 from portality.bll.exceptions import AuthoriseException
 from portality.forms.application_forms import ApplicationFormFactory
 
+from portality.store import StoreFactory
+
 
 class ApplicationService(object):
     """
     ~~Application:Service->DOAJ:Service~~
     """
+
+    def auto_assign_ur_editor_group(self, ur: models.Application):
+        """
+        Auto assign editor group to the update request
+        :param ur:
+        :return:
+        """
+        tmpstore = StoreFactory.tmp()
+        container = app.config.get("AUTO_ASSIGN_STORE_CONTAINER")
+        by_publisher = app.config.get("AUTO_ASSIGN_EDITOR_BY_PUBLISHER")
+        by_country = app.config.get("AUTO_ASSIGN_EDITOR_BY_COUNTRY")
+        by_publisher_path = tmpstore.path(container, by_publisher)
+
+        reason = ""
+
+        target = None
+        owner = ur.owner
+        with open(by_publisher_path, "r") as f:
+            reader = csv.reader(f)
+            reader.__next__()
+            for row in reader:
+                if row[1] == owner:
+                    target = row[2]
+                    reason = f"Owner `{owner}` is mapped to editor group `{target}`"
+                    break
+
+        if target is None:
+            by_country_path = tmpstore.path(container, by_country)
+            country = ur.bibjson().country_name()
+            with open(by_country_path, "r") as f:
+                reader = csv.reader(f)
+                reader.__next__()
+                for row in reader:
+                    if row[0] == country:
+                        target = row[1]
+                        reason = f"Country `{country}` is mapped to editor group `{target}`"
+                        break
+
+        if target is None:
+            return
+
+        id = models.EditorGroup.group_exists_by_name(target)
+        ur.set_editor_group(id)
+        ur.remove_editor()
+        ur.add_note(f"Editor group auto assigned to {target} because: {reason}")
+
+    @classmethod
+    def retrieve_ur_editor_group_sheets(cls):
+        tmpstore = StoreFactory.tmp()
+        container = app.config.get("AUTO_ASSIGN_STORE_CONTAINER")
+        by_publisher = app.config.get("AUTO_ASSIGN_EDITOR_BY_PUBLISHER")
+        by_country = app.config.get("AUTO_ASSIGN_EDITOR_BY_COUNTRY")
+
+        publisher_sheet = app.config.get("AUTO_ASSIGN_EDITOR_BY_PUBLISHER_SHEET")
+        country_sheet = app.config.get("AUTO_ASSIGN_EDITOR_BY_COUNTRY_SHEET")
+
+        presp = httputil.get(publisher_sheet)
+        if presp.status_code != 200:
+            raise exceptions.RemoteServiceException("Failed to retrieve publisher sheet")
+
+        cresp = httputil.get(country_sheet)
+        if cresp.status_code != 200:
+            raise exceptions.RemoteServiceException("Failed to retrieve country sheet")
+
+        pdata = presp.text
+        cdata = cresp.text
+
+        preader = csv.reader(StringIO(pdata))
+        creader = csv.reader(StringIO(cdata))
+
+        preader.__next__()
+        creader.__next__()
+
+        for row in preader:
+            account = row[1]
+            group = row[2]
+
+            if account is None or account == "":
+                raise ValueError("Account is empty")
+            if group is None or group == "":
+                raise ValueError("Group is empty")
+
+            acc = models.Account.pull(account)
+            if acc is None:
+                raise ValueError("Account not found")
+            if models.EditorGroup.group_exists_by_name(group) is None:
+                raise ValueError("Group not found")
+
+        for row in creader:
+            country = row[0]
+            group = row[1]
+
+            if country is None or country == "":
+                raise ValueError("Country is empty")
+            if group is None or group == "":
+                raise ValueError("Group is empty")
+
+            if models.EditorGroup.group_exists_by_name(group) is None:
+                raise ValueError("Group not found")
+
+        # if we get to here we have two valid sheets
+        tmpstore.store(container, by_publisher, StringIO(pdata))
+        tmpstore.store(container, by_country, StringIO(cdata))
+
 
     @staticmethod
     def prevent_concurrent_ur_submission(ur: models.Application, record_if_not_concurrent=True):
