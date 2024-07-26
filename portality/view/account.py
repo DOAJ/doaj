@@ -365,6 +365,6 @@ def register():
 
     if request.method == 'POST' and form.is_bot():
         flash(
-            f"Are you sure you're a human? If you're having trouble logging in, please <a href='/contact'>contact us</a>. {form.email.data, form.hptimer.data}", "error")
+            f"Are you sure you're a human? If you're having trouble logging in, please <a href='/contact'>contact us</a>.", "error")
 
     return render_template('account/register.html', form=form)
