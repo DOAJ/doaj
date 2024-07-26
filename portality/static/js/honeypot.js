@@ -1,3 +1,4 @@
+// ~~Honeypot:Feature~~
 doaj.honeypot = {}
 
 doaj.honeypot.init = function () {

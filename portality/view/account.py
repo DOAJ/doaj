@@ -331,6 +331,7 @@ class RegisterForm(RedirectForm):
 @ssl_required
 @write_required()
 def register():
+    # ~~-> Honeypot:Feature ~~
     # 3rd-party registration only for those with create_user role, only allow public registration when configured
     if current_user.is_authenticated and not current_user.has_role("create_user") \
             or current_user.is_anonymous and app.config.get('PUBLIC_REGISTER', False) is False:
