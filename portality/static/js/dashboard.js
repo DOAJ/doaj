@@ -126,14 +126,15 @@ doaj.dashboard.renderGroupInfo = function (data) {
 
     const statusLinks = _generateStatusLinks(data)
 
-    _generateColorLegend = function() {
+    _generateColorLegend = function(data) {
         return `<div id="color-legend" class="color-legend">
         <ul class="inlined-list">
             ${doaj.dashboard.visibleStatusFilters.map(status => {
             // Use the statusLink for each status
             const link = statusLinks[status] || '#'; // Fallback to # if no link is found
 
-            return `<li><a href="${link}" class="label status status--link status--${status.replace(' ', '-')}">${status}</a></li>`;
+            return `<li><a href="${link}" class="label status status--link status--${status.replace(' ', '-')}" title="See ${data.by_status[status]?.applications || 0} ${status} application(s)">
+${status}</a></li>`;
         }).join('')}
         </ul>
     </div>`;
@@ -194,7 +195,7 @@ doaj.dashboard.renderGroupInfo = function (data) {
             if (data.by_status[status]?.applications > 0) {
                 let url = statusLinks[status]; // Get the URL from the precomputed status links
 
-                appStatusProgressBar += `<li class="status status--link status--${status.replace(' ', '-')} progress-bar__bar progress-bar__bar--${status.replace(' ', '-')}" style="width: ${(data.by_status[status].applications / data.total.applications) * 100}%;">
+                appStatusProgressBar += `<li class="status status--link status--${status.replace(' ', '-')} progress-bar__bar" style="width: ${(data.by_status[status].applications / data.total.applications) * 100}%;">
                 <a href="${url}" class="progress-bar__link" title="See ${data.by_status[status].applications} ${status} application(s)">
                     <strong>${data.by_status[status].applications}</strong>
                 </a></li>`;
@@ -238,7 +239,7 @@ doaj.dashboard.renderGroupInfo = function (data) {
     _renderMainFragment = function (data) {
         _removeEditorFromAssociates(data);
 
-        let colorLegend = _generateColorLegend();
+        let colorLegend = _generateColorLegend(data);
         let allEditors = [data.editor_group.editor].concat(data.editor_group.associates);
         let editorListFrag = _generateEditorListFragment(data, allEditors);
         let appStatusProgressBar = _generateStatusProgressBar(data);
