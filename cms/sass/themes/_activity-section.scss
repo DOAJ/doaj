@@ -1,0 +1,54 @@
+
+.activity-section {
+
+  .status {
+
+    text-decoration: none;
+
+    &--link {
+      &:hover,
+      &:focus,
+      &:active {
+        color: $grapefruit;
+        text-decoration: none;
+      }
+    }
+
+    &--pending {
+      background-color: $yellow;
+      color: $warm-black;
+    }
+
+    &--in-progress {
+      background-color: $light-green;
+      color: $warm-black;
+    }
+
+    &--completed {
+      background-color: $mid-green;
+      color: $warm-black;
+    }
+
+    &--ready {
+      background-color: $dark-green;
+      color: $white;
+    }
+
+    &--on-hold {
+      background-color: $light-grey;
+      color: $warm-black;
+    }
+  }
+
+  .color-legend {
+    font-size: 18px;
+
+    li:not(:first-child) {
+      margin-left: $spacing-01;
+    }
+
+    a {
+      padding: $spacing-02;
+    }
+  }
+}
