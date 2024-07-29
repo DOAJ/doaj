@@ -100,6 +100,7 @@ doaj.dashboard.renderGroupInfo = function (data) {
     // Generate the editor list fragment
     _generateEditorListFragment = function (data, allEditors) {
         let editorListFrag = "";
+        let unassignedFragment = _generateUnassignedApplicationsFragment(data);
         for (let i = 0; i < allEditors.length; i++) {
             let ed = allEditors[i];
             let appQuerySource = _generateSearchQuerySource([
@@ -122,6 +123,7 @@ doaj.dashboard.renderGroupInfo = function (data) {
                 editorListFrag += `<a href="${doaj.dashboard.context.applicationsSearchBase}?source=${appQuerySource}" class="tag tag--tertiary" title="See ${ed}’s applications" style="margin-right: 1.5rem;"><strong>${appCount}</strong> <span class="sr-only">applications</span></a></li>`;
             }
         }
+        editorListFrag += `${unassignedFragment}`
         return editorListFrag;
     }
 
@@ -194,7 +196,6 @@ doaj.dashboard.renderGroupInfo = function (data) {
 
         let allEditors = [data.editor_group.editor].concat(data.editor_group.associates);
         let editorListFrag = _generateEditorListFragment(data, allEditors);
-        let unassignedFragment = _generateUnassignedApplicationsFragment(data);
         let appStatusProgressBar = _generateStatusProgressBar(data);
         let statisticsFragment = _generateStatisticsFragment(data);
 
