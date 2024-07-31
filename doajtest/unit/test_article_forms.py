@@ -2,6 +2,7 @@ from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory
 from doajtest.helpers import DoajTestCase, save_all_block_last
 from portality import models
 from portality.forms import article_forms
+from portality.forms.article_forms import ArticleFormFactory, PublisherMetadataForm
 
 
 class TestArticleFormsFunction(DoajTestCase):
@@ -21,3 +22,10 @@ class TestArticleFormsFunction(DoajTestCase):
         assert pissns != eissns
         assert len(issns)
         assert set(pissns) | set(eissns) == set(issns)
+
+    def test_empty_article_form(self):
+        user = models.Account(**AccountFixtureFactory.make_publisher_source())
+        form: PublisherMetadataForm = ArticleFormFactory.get_from_context(user=user, role="publisher")
+        assert form is not None
+        assert form.source is None
+        assert form.form_data is None

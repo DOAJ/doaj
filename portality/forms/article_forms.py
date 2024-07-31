@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Literal
+from typing import Literal, Optional
 
 from flask import render_template, url_for, request
 from flask_login import current_user
@@ -70,7 +70,7 @@ class FormContext(object):
         self._form = val
 
     @property
-    def source(self):
+    def source(self) -> Optional:
         return self._source
 
     @property
@@ -628,7 +628,8 @@ class MetadataForm(FormContext):
         super(MetadataForm, self).__init__(source=source, form_data=form_data)
 
     def _set_choices(self):
-        self.form.set_choices(user=self.user, article_id=self.source.id)
+        if self.source is not None:
+            self.form.set_choices(user=self.user, article_id=self.source.id)
 
     def modify_authors_if_required(self, request_data):
 
