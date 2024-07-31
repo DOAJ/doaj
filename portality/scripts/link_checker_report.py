@@ -103,8 +103,8 @@ def fetch_matching_rows(journal_url_index, report_values):
         # df_result_selected_columns = df_result[columns].copy()  # create a copy to avoid SettingWithCopyWarning
         df_result_selected_columns = pd.DataFrame(
             data=[list(journal_data)],
-            columns=['Journal title', 'Added on Date', 'Last updated Date', "Journal ID", "Publisher",
-                                      "Country of publisher" ]
+            columns=['Journal title', 'Added on Date', 'Last updated Date', "Journal ID", 'Account Name',
+                     'Account Email', "Publisher", "Country of publisher" ]
         )
 
         jid = df_result_selected_columns["Journal ID"].values[0]
@@ -141,7 +141,7 @@ def _index_journals(df):
             # FIXME: assumes each URL only appears once
             if isinstance(cell, str) and cell.startswith("http"):
                 # make an index of the URL to the journal title, added date, updated date and journal id
-                jidx[cell] = (row[0], row[50], row[51], row[54], row[9], row[10])
+                jidx[cell] = (row[0], row[50], row[51], row[54], row[55], row[56], row[9], row[10])
     return jidx
 
 
@@ -192,8 +192,8 @@ def generate_report(csv_files, journal_csv_file):
     journal_url_index = _index_journals(journal_df)
     log("Indexed journal urls")
 
-    master_df = pd.DataFrame(columns=['Journal title', 'Added on Date', 'Last updated Date', "Journal ID", "Publisher",
-                                      "Country of publisher",])
+    master_df = pd.DataFrame(columns=['Journal title', 'Added on Date', 'Last updated Date', "Journal ID",
+                                      'Account Name', 'Account Email', "Publisher", "Country of publisher",])
     for csv_file in csv_files:
         df = pd.read_csv(csv_file)
         log("Checking file {x}".format(x=csv_file))

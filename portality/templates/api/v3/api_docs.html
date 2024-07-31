@@ -16,9 +16,9 @@
                 <section>
                     <p class="label">Docs</p>
                     <h1>API </h1>
-                    <div class="alert alert--message">
-                        <p>This is the current version of the DOAJ API</p>
-                        <p>A new version of the API is due in July 2024, and you can preview it <a href="{{ url_for("api_v4.docs") }}">here</a>.
+                    <div class="alert alert--danger">
+                        <p>This is an old version of the DOAJ API</p>
+                        <p>A new version of the API is available <a href="{{ url_for("api_v4.docs") }}">here</a>.
                         You should review the release notes and migration instructions as soon as possible.</p>
                     </div>
                     {% include "api/includes/swagger_description.html" %}
