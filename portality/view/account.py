@@ -3,7 +3,7 @@ import uuid, json
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
 from flask_login import login_user, logout_user, current_user, login_required
-from wtforms import StringField, HiddenField, PasswordField, IntegerField, validators, Form
+from wtforms import StringField, HiddenField, PasswordField, DecimalField, validators, Form
 
 from portality import util
 from portality import constants
@@ -318,7 +318,7 @@ class RegisterForm(RedirectForm):
     roles = StringField('Roles')
     # These are honeypot (bot-trap) fields
     email = StringField('email')
-    hptimer = IntegerField('hptimer')
+    hptimer = DecimalField('hptimer')
 
     def is_bot(self):
         """
