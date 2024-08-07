@@ -188,11 +188,8 @@ def decode_resumption_token(resumption_token):
     # attempt to parse the resumption token out of base64 encoding and as a json object
     try:
         j = base64.urlsafe_b64decode(str(resumption_token))
-    except (TypeError, binascii.Error):
-        raise ResumptionTokenException()
-    try:
         d = json.loads(j.decode("utf-8"))   # convert the bytes to str for pre 3.5 compat
-    except ValueError:
+    except (TypeError, binascii.Error, ValueError):
         raise ResumptionTokenException()
 
     # if we succeed read out the parameters
