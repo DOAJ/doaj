@@ -164,6 +164,10 @@
 - name: Taylor & Francis Group
   url: https://www.taylorandfrancisgroup.com/
   logo: tf.svg  
+  
+- name: Tsinghua University Press
+  url: https://www.tsinghua.edu.cn/en/
+  logo: TSPlogo.jpg
 
 - name: Ubiquity Press
   url: https://www.ubiquitypress.com/
