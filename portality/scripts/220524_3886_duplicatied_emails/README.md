@@ -1,0 +1,1 @@
+Run query from `query.json` directly to find any accounts with duplicated emails (case-insensitive)
