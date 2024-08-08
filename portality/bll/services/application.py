@@ -732,6 +732,10 @@ class ApplicationService(object):
                             for sk, sv in v[0].items():
                                 validation.value(validation.ERROR, row_ix, pos, ". ".join(sv),
                                              was=was, now=now)
+                        elif isinstance(v[0], list):
+                            # If we have a list, we must go a level deeper
+                            validation.value(validation.ERROR, row_ix, pos, ". ".join(v[0]),
+                                             was=was, now=now)
                         else:
                             validation.value(validation.ERROR, row_ix, pos, ". ".join(v),
                                              was=was, now=now)
